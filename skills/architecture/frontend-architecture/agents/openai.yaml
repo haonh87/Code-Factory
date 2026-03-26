@@ -1,0 +1,7 @@
+interface:
+  display_name: "Frontend Architecture"
+  short_description: "Thiết kế kiến trúc frontend theo module"
+  default_prompt: "Dùng $frontend-architecture để chốt feature module, boundary UI/state và public contract cho frontend."
+
+policy:
+  allow_implicit_invocation: true
