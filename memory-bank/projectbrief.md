@@ -1,4 +1,4 @@
-# Project Brief
+﻿# Project Brief
 
 Đây là file đầu tiên cần đọc trong `memory-bank/`.
 
@@ -66,7 +66,8 @@ Snapshot hiện tại của repository:
 
 - 1 policy toàn cục cho Codex tại `policies/codex/AGENTS.global.md`.
 - 26 skill trong `skills/`, gồm các nhóm chức năng chính, 4 skill DevOps delivery và skill tích hợp tool như `notebooklm`.
-- 4 adapter/script cài đặt và cập nhật trong `adapters/codex/`.
+- 1 MCP server starter tại `mcp/github-push/`.
+- 6 adapter/script cài đặt và cập nhật trong `adapters/`, gồm `codex` và `mcp`.
 - 3 tài liệu tham chiếu workflow/runtime/examples tại `skills/orchestration/codex-workflow-chain/references/`.
 
 - 1 bộ Memory Bank chuẩn tại `memory-bank/`.
@@ -75,7 +76,7 @@ Các lớp mục tiêu đã được hiện thực một phần:
 
 - `workflows`: đã có.
 - `skills`: đã có.
-- `MCP`: chưa materialize trong repo hiện tại.
+- `MCP`: đã bắt đầu materialize với `github-push` server starter cho GitHub publish flow.
 - `agentic`: đã có orchestration spec và runtime reference theo hướng `Codex-first`, nhưng chưa materialize thành runtime framework riêng.
 - `multi-agent`: đã có orchestration spec và runtime reference theo hướng `Codex-first`, nhưng chưa materialize thành framework/chính sách riêng.
 - `code factory`: đang là định hướng của repo hơn là capability hoàn chỉnh đã bàn giao.
@@ -90,6 +91,8 @@ Project được xem là đang đi đúng hướng khi:
 - Project mở rộng được từ workflow/skill sang MCP, agentic và multi-agent mà không phá vỡ cấu trúc nền hiện có.
 - Skill mới có thể được thêm vào mà không phá vỡ layout runtime phẳng của Codex.
 - Tài liệu đủ tốt để một agent mất toàn bộ ngữ cảnh vẫn đọc vào và hiểu đúng project đang làm gì.
+
+
 
 
 

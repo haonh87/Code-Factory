@@ -1,4 +1,4 @@
-# System Patterns
+﻿# System Patterns
 
 ## Kiến Trúc Repository
 
@@ -6,6 +6,7 @@ Repository được tổ chức theo các lớp trách nhiệm rõ ràng:
 
 - `policies/`: chứa policy theo từng tool hoặc agent.
 - `skills/`: chứa skill theo nhóm chức năng.
+- `mcp/`: chứa MCP server hoặc capability runtime để model dùng tool và hệ thống ngoài.
 - `adapters/`: chứa script cài đặt hoặc cập nhật theo từng tool.
 - `memory-bank/`: chứa bộ nhớ dự án chuẩn để phục hồi ngữ cảnh.
 
@@ -80,12 +81,23 @@ Hệ quả thiết kế:
 - Cross-reference giữa các skill phải viết theo layout runtime phẳng.
 - Repo có thể nhóm skill theo domain để dễ quản trị nguồn mà không đổi runtime behavior.
 
+## Mẫu Hình MCP
+
+Khi materialize một MCP capability:
+
+- Server implementation nằm trong `mcp/<server-name>/`.
+- Bootstrap hoặc dependency install nằm trong `adapters/mcp/`.
+- MCP server nên nhỏ, tập trung vào một luồng nghiệp vụ rõ ràng.
+- Server phải có guardrail phạm vi thao tác, nhất là khi đụng Git, filesystem hoặc external API.
+- README riêng của từng server phải nêu rõ env vars, flow dùng tool và giới hạn an toàn.
+
 ## Mẫu Hình Mở Rộng
 
 Khi mở rộng project:
 
 - Thêm policy mới vào `policies/<tool>/`.
 - Thêm adapter mới vào `adapters/<tool>/`.
+- Thêm MCP server mới vào `mcp/<server-name>/`.
 - Thêm skill mới vào nhóm phù hợp trong `skills/`.
 - Chỉ tách nhóm skill mới khi nhóm hiện tại trở nên quá lớn hoặc khác hẳn về mục tiêu sử dụng.
 
@@ -94,5 +106,8 @@ Khi mở rộng project:
 - `frontend-architecture` có file `agents/openai.yaml` để bật implicit invocation.
 - Nhóm Obsidian hiện được vendor một phần từ `kepano/obsidian-skills`.
 - `notebooklm` là skill tích hợp tool ngoài ở mức CLI/MCP để hỗ trợ research-heavy workflow; output của nó được xem là supporting input, không phải source of truth.
+
+
+
 
 

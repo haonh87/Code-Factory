@@ -1,4 +1,4 @@
-# Progress
+﻿# Progress
 
 ## Trạng Thái Hiện Tại
 
@@ -24,6 +24,7 @@ Project đang ở trạng thái usable internal platform cho Codex, không còn 
 - Có bộ skill Obsidian để materialize artifact khi cần.
 - Có skill `notebooklm` để hỗ trợ research/query corpus lớn qua NotebookLM.
 - Có quy ước mở rộng repo theo `policies/<tool>` và `adapters/<tool>`.
+- Đã có materialization đầu tiên của lớp `MCP` với `mcp/github-push` và adapter cài dependency tương ứng.
 - Có Memory Bank để giữ tầm nhìn dự án và giảm mất ngữ cảnh giữa các session.
 - Đã có spec orchestration và runtime reference cho `agentic` và `multi-agent` theo hướng `Codex-first`.
 - Policy Codex đã phản ánh execution runtime ở mức sử dụng thực tế, không còn chỉ nằm trong reference docs.
@@ -31,7 +32,8 @@ Project đang ở trạng thái usable internal platform cho Codex, không còn 
 
 ## Việc Còn Thiếu
 
-- Materialization rõ ràng cho các lớp mục tiêu còn lại của AI KIT: `MCP`, runtime cho `agentic`, runtime cho `multi-agent`, `code factory`.
+- Mở rộng lớp `MCP` từ starter đầu tiên sang nhiều server/use case hơn.
+- Materialization rõ ràng cho runtime cho `agentic`, runtime cho `multi-agent`, `code factory`.
 - Template runtime artifact hoặc ví dụ end-to-end cụ thể hơn cho docker, swarm, k8s nếu muốn đẩy DevOps từ guideline sang starter pack.
 - Lộ trình và materialization chính thức để mở rộng từ Codex sang Claude, rồi các tool hoặc agent khác.
 - Cơ chế kiểm tra hoặc automation riêng để phát hiện drift giữa các tài liệu nguồn.
@@ -46,6 +48,7 @@ Project đang ở trạng thái usable internal platform cho Codex, không còn 
 - Tầm nhìn AI KIT rộng hơn hiện trạng repo, nên nếu không cập nhật roadmap rõ ràng thì dễ tạo kỳ vọng vượt quá phần đã hiện thực.
 - `agentic` và `multi-agent` đã có orchestration spec, runtime reference và policy Codex tương ứng, nhưng chưa có runner hoặc adapter runtime riêng để chứng minh behavior end-to-end.
 - `notebooklm` là external integration nên còn phụ thuộc auth, network và cách team quản lý notebook/query thực tế.
+- `github-push` MCP là side-effectful integration, nên cần guardrail tốt cho allowed root, auth và flow publish.
 
 ## Quyết Định Đã Chốt
 
@@ -61,6 +64,9 @@ Project đang ở trạng thái usable internal platform cho Codex, không còn 
 - Khi phần nền trên Codex đủ ổn định, lập kế hoạch port hoặc trừu tượng hóa để mở rộng sang Claude.
 - Mở rộng bộ ví dụ end-to-end cho thêm case `RESEARCH` hoặc release-heavy integration ngoài code/data flow hiện có.
 - Khi mở rộng sang agent/tool mới, tạo đủ cả policy, adapter và tài liệu tiến độ tương ứng.
+
+
+
 
 
 
