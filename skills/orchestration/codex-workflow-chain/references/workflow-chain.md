@@ -350,6 +350,14 @@ Một cách nhớ ngắn:
   - step 6 base: `<work_item_slug>.s06.task-dashboard.base`
   - step 8 base: `<work_item_slug>.s08.verification-dashboard.base`
 - Không dùng tên file mơ hồ kiểu `analysis.md`, `final.md`, `design-v2.md`, `notes.base`.
+- Không đặt tên file workflow theo loại nội dung cảm tính như `requirements.md`, `architecture.md`, `assessment.md`, `threshold.md`, `glossary.md`.
+- Mapping chuẩn:
+  - `requirements` -> map về `s01.restate`, `s03.open-questions` hoặc `s04.acceptance-criteria` tùy ý nghĩa thực tế.
+  - `architecture` hoặc `design` -> `s05.technical-approach.md`; nếu là sơ đồ thì `s05.architecture.canvas`.
+  - `assessment` -> `s03.open-questions.md` nếu đánh giá readiness đầu vào, hoặc `s08.verification.md` nếu đánh giá sau implement.
+  - `threshold` -> không tách file riêng; gộp vào `s04.acceptance-criteria.md`.
+  - `glossary` -> không phải step file; chỉ là section hoặc note dùng chung ngoài workflow step.
+- Nếu team cần rule ngắn gọn và validator riêng, xem `policies/codex/workflow-artifact-naming.md` và `scripts/validate-workflow-artifact-names.ps1`.
 
 ### Frontmatter Chuẩn Cho Note Chính
 

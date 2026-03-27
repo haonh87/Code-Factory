@@ -8,6 +8,15 @@ Nguồn sự thật để lưu và phục hồi ngữ cảnh dự án là `memor
 
 Bắt đầu từ [`memory-bank/projectbrief.md`](memory-bank/projectbrief.md), sau đó đọc lần lượt các file core còn lại trong `memory-bank/`.
 
+## Quy Ước Tên File Workflow Artifact
+
+Tên file workflow không đặt theo cách hiểu cá nhân như `requirements`, `architecture`, `assessment`, `threshold`, `glossary`.
+
+- Công thức chuẩn: `<work_item_slug>.sNN.<step-slug>.<ext>`
+- Danh sách tên file chuẩn theo từng step: xem [`policies/codex/workflow-artifact-naming.md`](policies/codex/workflow-artifact-naming.md)
+- Naming đầy đủ, frontmatter và block schema theo step: xem [`skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
+- Validator: `powershell -File scripts/validate-workflow-artifact-names.ps1 -WorkflowRoot <workflow-artifact-dir>`
+
 ## Thành Phần Trong Repository
 
 - `policies/codex/AGENTS.global.md`: chính sách workflow toàn cục cho Codex.
@@ -18,9 +27,18 @@ Bắt đầu từ [`memory-bank/projectbrief.md`](memory-bank/projectbrief.md), 
 - `skills/guardrails/`: skill contract, readiness, audit và gate DoR/DoD để khóa chất lượng.
 - `skills/obsidian/`: skill soạn thảo artifact theo hệ Obsidian như note Markdown, Bases và JSON Canvas.
 - `skills/notebooklm/`: skill tích hợp NotebookLM qua CLI/MCP cho các tác vụ research-heavy hoặc corpus lớn.
+- `mcp/github-push/`: MCP server Node để inspect repository, tạo repo GitHub, commit, cấu hình remote và push branch hiện tại.
 - `adapters/codex/install-codex-workflow.ps1`: script cài đặt cho Windows.
 - `adapters/codex/install-codex-global.cmd`: launcher Windows để cài global nhanh.
 - `adapters/codex/install-codex-workflow.sh`: script cài đặt cho Linux/macOS.
+- `adapters/mcp/install-github-push.ps1`: script cài dependency cho MCP GitHub Push trên Windows.
+- `adapters/mcp/install-github-push.sh`: script cài dependency cho MCP GitHub Push trên Linux/macOS.
+
+## MCP Hiện Có
+
+- `github-push`: MCP server starter để hỗ trợ luồng `inspect -> commit -> create repo -> configure remote -> push` cho GitHub bằng `git` và GitHub REST API.
+
+Xem chi tiết tại [`mcp/github-push/README.md`](mcp/github-push/README.md).
 
 ## Khả Năng DevOps Theo Môi Trường
 
