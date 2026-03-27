@@ -81,6 +81,12 @@ Nếu muốn workflow áp dụng cho toàn bộ thư mục trên máy Windows, t
 powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\codex-workflow-pack\adapters\codex\install-codex-workflow.ps1" -CreateDriveRootLinks
 ```
 
+Nếu muốn cập nhật lại root `AGENTS.md` đã tồn tại trước đó bằng bản mới nhất từ workflow pack:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\codex-workflow-pack\adapters\codex\install-codex-workflow.ps1" -CreateDriveRootLinks -OverwriteExistingDriveRootFiles
+```
+
 Ghi chú:
 - Skill trong `%USERPROFILE%\.codex\skills` là global cho mọi session Codex.
 - `AGENTS.md` chỉ dùng để áp policy workflow cho project; path tham chiếu bên trong skill phải khớp layout cài trong `%USERPROFILE%\.codex\skills`.
@@ -88,6 +94,7 @@ Ghi chú:
 - Script sẽ tự quét các ổ đĩa filesystem thay vì cố định `C`, `D`, `E`.
 - Nếu máy không cho tạo symlink, script sẽ thử copy `AGENTS.md` thay thế.
 - Nếu một ổ đã có `AGENTS.md`, script sẽ giữ nguyên và bỏ qua ổ đó.
+- Muốn ghi đè `AGENTS.md` đã tồn tại, truyền thêm `-OverwriteExistingDriveRootFiles`.
 
 ## Giải Nghĩa Nhanh Cho Cài Global
 
@@ -128,7 +135,7 @@ Trên Linux/macOS, nếu chỉ muốn cập nhật policy và skill mới vào C
 
 Ghi chú:
 - Script update `.sh` đồng bộ `~/.codex/AGENTS.global.md` và `~/.codex/skills`.
-- Nếu máy đang dùng `AGENTS.md` root-level theo kiểu file copy thay vì symlink, cần copy lại `AGENTS.md` đó hoặc chạy lại full install flow.
+- Trên Windows, nếu máy đang dùng `AGENTS.md` root-level theo kiểu file copy thay vì symlink, chạy lại full install flow với `-CreateDriveRootLinks -OverwriteExistingDriveRootFiles` cho ổ cần refresh.
 
 ## Quy Ước Mở Rộng
 

@@ -1,6 +1,7 @@
 param(
   [string]$RepoRoot = (Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $PSCommandPath))),
   [switch]$CreateDriveRootLinks,
+  [switch]$OverwriteExistingDriveRootFiles,
   [string[]]$DriveLetters
 )
 
@@ -63,8 +64,19 @@ if ($CreateDriveRootLinks) {
 
     $linkPath = Join-Path $root "AGENTS.md"
     if (Test-Path $linkPath) {
-      Write-Warning "Skip $linkPath because it already exists"
-      continue
+      if (-not $OverwriteExistingDriveRootFiles) {
+        Write-Warning "Skip $linkPath because it already exists"
+        continue
+      }
+
+      $existingItem = Get-Item -LiteralPath $linkPath -Force
+      $existingTarget = @($existingItem.Target)
+      if ($existingItem.LinkType -eq "SymbolicLink" -and $existingTarget.Count -eq 1 -and $existingTarget[0] -eq $globalAgentsDest) {
+        Write-Host "Keep existing symlink: $linkPath -> $globalAgentsDest"
+        continue
+      }
+
+      Remove-Item -LiteralPath $linkPath -Force
     }
 
     try {
