@@ -17,12 +17,14 @@ Triển khai thay đổi thực tế trong codebase theo hướng đã chốt.
 
 - Khi yêu cầu đã có thiết kế kỹ thuật đủ rõ để bắt đầu sửa code.
 - Khi cần thêm feature, sửa bug, refactor hoặc chỉnh config/doc đi kèm, gồm Dockerfile, compose hoặc manifest khi thuộc phạm vi.
+- Khi stack là React web hoặc Next.js và thay đổi chạm hook, context, server/client split, data fetching hoặc loading path, phối hợp thêm `react-web-implementation`.
 
 ## Không Thuộc Phạm Vi
 
 - Không tự thay đổi mục tiêu business hoặc acceptance criteria đã chốt.
 - Không tự đổi kiến trúc lớn nếu chưa phản hồi lại bước thiết kế.
 - Không bỏ qua quality gates khi đã biết cần verify.
+- Không thay thế guidance React-specific ở mức server/client split, state/context placement hoặc effect usage; dùng `react-web-implementation` khi stack là React web hoặc Next.js.
 
 ## Đầu Vào Tối Thiểu
 

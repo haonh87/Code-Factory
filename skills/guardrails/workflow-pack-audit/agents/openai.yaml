@@ -1,0 +1,7 @@
+interface:
+  display_name: "Workflow Pack Audit"
+  short_description: "Audit workflow pack cho drift, mismatch và conflict"
+  default_prompt: "Dùng $workflow-pack-audit để kiểm tra frontmatter, skill-name uniqueness, workflow-chain block/schema và cross-reference drift trong workflow pack."
+
+policy:
+  allow_implicit_invocation: true

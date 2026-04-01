@@ -1,0 +1,7 @@
+interface:
+  display_name: "Frontend Quality Review"
+  short_description: "Review accessibility, responsive và UX quality của frontend"
+  default_prompt: "Dùng $frontend-quality-review để rà accessibility, responsive layout, interaction feedback và performance heuristic của thay đổi frontend."
+
+policy:
+  allow_implicit_invocation: true

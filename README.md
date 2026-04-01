@@ -1,6 +1,6 @@
 # AI Agent Ops
 
-Repository này lưu trữ policy, workflow, skill và adapter cài đặt cho các tác vụ AI agent. Hiện tại repo ưu tiên Codex, nhưng cấu trúc đã được chia để sau này mở rộng thêm tool hoặc agent khác.
+Repository này lưu trữ policy, workflow, skill và adapter cài đặt cho các tác vụ AI agent. Hiện tại repo ưu tiên Codex, nhưng cấu trúc đã được tách nhóm để sau này có thể mở rộng thêm tool hoặc agent khác.
 
 ## Tài Liệu Định Hướng
 
@@ -22,8 +22,8 @@ Tên file workflow không đặt theo cách hiểu cá nhân như `requirements`
 - `policies/codex/AGENTS.global.md`: chính sách workflow toàn cục cho Codex.
 - `skills/orchestration/`: skill điều phối workflow tổng.
 - `skills/analysis/`: skill phân tích yêu cầu, product thinking và technical approach.
-- `skills/architecture/`: skill kiến trúc domain và thiết kế dữ liệu.
-- `skills/delivery/`: skill chia task, implement, testing, DevOps packaging/deploy và review thay đổi dữ liệu/code.
+- `skills/architecture/`: skill kiến trúc domain, frontend và thiết kế dữ liệu.
+- `skills/delivery/`: skill chia task, implement, testing, DevOps packaging/deploy và review thay đổi dữ liệu hoặc code.
 - `skills/guardrails/`: skill contract, readiness, audit và gate DoR/DoD để khóa chất lượng.
 - `skills/obsidian/`: skill soạn thảo artifact theo hệ Obsidian như note Markdown, Bases và JSON Canvas.
 - `skills/notebooklm/`: skill tích hợp NotebookLM qua CLI/MCP cho các tác vụ research-heavy hoặc corpus lớn.
@@ -31,8 +31,10 @@ Tên file workflow không đặt theo cách hiểu cá nhân như `requirements`
 - `adapters/codex/install-codex-workflow.ps1`: script cài đặt cho Windows.
 - `adapters/codex/install-codex-global.cmd`: launcher Windows để cài global nhanh.
 - `adapters/codex/install-codex-workflow.sh`: script cài đặt cho Linux/macOS.
-- `adapters/mcp/install-github-push.ps1`: script cài dependency cho MCP GitHub Push trên Windows.
-- `adapters/mcp/install-github-push.sh`: script cài dependency cho MCP GitHub Push trên Linux/macOS.
+- `adapters/mcp/install-github-push.ps1`: script cài dependency và đăng ký MCP GitHub Push vào `~/.codex/config.toml` trên Windows.
+- `adapters/mcp/configure-github-push-credentials.ps1`: script cấu hình `GITHUB_USERNAME` và `GITHUB_TOKEN` cho MCP GitHub Push trên Windows mà không ghi secret vào repo.
+- `adapters/mcp/configure-github-push-credentials.cmd`: launcher Windows để gọi nhanh credential adapter.
+- `adapters/mcp/install-github-push.sh`: script cài dependency và đăng ký MCP GitHub Push vào `~/.codex/config.toml` trên Linux/macOS.
 
 ## MCP Hiện Có
 
@@ -44,7 +46,7 @@ Xem chi tiết tại [`mcp/github-push/README.md`](mcp/github-push/README.md).
 
 - `local`: chuẩn đóng gói bằng `Dockerfile` và `compose.yaml`.
 - `dev`, `uat`, `prod`: workflow hiện có thể khóa runtime target theo `docker`, `docker swarm` hoặc `k8s`.
-- Cùng một image contract nên được promote giữa các môi trường; khác biệt nên nằm ở config/secrets và rollout strategy.
+- Cùng một image contract nên được promote giữa các môi trường; khác biệt nên nằm ở config, secrets và rollout strategy.
 - `deployment-devops` là skill umbrella để điều phối DevOps tổng từ `local` tới `prod`.
 - `containerization-packaging` khóa `Dockerfile`, `.dockerignore`, `compose.yaml` và packaging pattern theo ngôn ngữ hoặc workload.
 - `platform-runtime-deployment` và `ci-cd-release` lần lượt khóa runtime deploy và pipeline hoặc promotion hoặc approval cho `dev`, `uat`, `prod`.
@@ -58,8 +60,9 @@ Bộ skill này được vendor từ `kepano/obsidian-skills`, hiện lấy vào
 - `json-canvas`: tạo và chỉnh sửa JSON Canvas (`.canvas`).
 
 Ghi chú:
+
 - Chưa bundle `obsidian-cli` trong vòng này.
-- Script cài đặt hiện tại tự đồng bộ toàn bộ thư mục `skills/` theo đệ quy vào `~/.codex/skills/<skill-name>`, nên không cần thêm bước cài đặt riêng cho nhóm skill này.
+- Script cài đặt hiện tại tự động đồng bộ toàn bộ thư mục `skills/` theo đệ quy vào `~/.codex/skills/<skill-name>`, nên không cần thêm bước cài đặt riêng cho nhóm skill này.
 
 ## Đưa Lên GitHub
 
@@ -89,6 +92,7 @@ Hoặc dùng launcher Windows:
 ```
 
 Launcher này là cách cài khuyến nghị nếu muốn toàn bộ project trên máy Windows đều nhận workflow pack:
+
 - đồng bộ policy global vào `%USERPROFILE%\.codex`
 - đồng bộ toàn bộ skill vào `%USERPROFILE%\.codex\skills`
 - tạo `AGENTS.md` ở root các ổ đĩa filesystem để mọi project nằm dưới các ổ đó đều nhận workflow
@@ -106,6 +110,7 @@ powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\codex-workflow-pack\a
 ```
 
 Ghi chú:
+
 - Skill trong `%USERPROFILE%\.codex\skills` là global cho mọi session Codex.
 - `AGENTS.md` chỉ dùng để áp policy workflow cho project; path tham chiếu bên trong skill phải khớp layout cài trong `%USERPROFILE%\.codex\skills`.
 - `AGENTS.md` ở root mỗi ổ đĩa giúp policy workflow áp dụng cho mọi project nằm dưới ổ đó.
@@ -152,6 +157,7 @@ Trên Windows, nếu muốn đồng bộ và cài global nhanh, chạy lại `ad
 Trên Linux/macOS, nếu chỉ muốn cập nhật policy và skill mới vào Codex global đã cài sẵn, chạy `bash adapters/codex/update-codex-workflow.sh`.
 
 Ghi chú:
+
 - Script update `.sh` đồng bộ `~/.codex/AGENTS.global.md` và `~/.codex/skills`.
 - Trên Windows, nếu máy đang dùng `AGENTS.md` root-level theo kiểu file copy thay vì symlink, chạy lại full install flow với `-CreateDriveRootLinks -OverwriteExistingDriveRootFiles` cho ổ cần refresh.
 

@@ -21,6 +21,8 @@ Kiểm chứng thay đổi thực tế so với tiêu chí đã chốt trước 
 - Khi cần tổng hợp evidence trước bước review hoặc handoff cuối.
 - Khi thay đổi chạm vào domain logic, persistence, transaction, query, relation hoặc acceptance criteria.
 - Khi scope có deploy, dùng skill này cho test behavior ứng dụng và dùng `deployment-devops` cho review packaging hoặc rollout readiness.
+- Khi scope chạm screen, form, navigation, responsive layout, accessibility hoặc motion, phối hợp thêm `frontend-quality-review` để review screen-level quality.
+- Khi stack là React hoặc Next.js và thay đổi chạm hook, context, server/client split, data fetching hoặc render path, phối hợp thêm `react-best-practices-review`.
 
 ## Không Thuộc Phạm Vi
 
@@ -29,6 +31,8 @@ Kiểm chứng thay đổi thực tế so với tiêu chí đã chốt trước 
 - Không che giấu check bị skip; mọi check bỏ qua phải nêu rõ.
 - Không dùng unit test để thay thế kiểm chứng cho behavior phụ thuộc persistence thật.
 - Không thay thế deployment readiness review; nếu scope chạm packaging hoặc rollout, phối hợp thêm `deployment-devops`.
+- Không thay thế review frontend ở mức accessibility, responsive layout, interaction feedback hoặc visual consistency; dùng `frontend-quality-review` khi scope chạm surface UI.
+- Không thay thế review React-specific ở mức render boundary, effect hygiene hoặc client/server split; dùng `react-best-practices-review` khi scope chạm React web hoặc Next.js.
 
 ## Nguyên Tắc Phân Tầng Test
 

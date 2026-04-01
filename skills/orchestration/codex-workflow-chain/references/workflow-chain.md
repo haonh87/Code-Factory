@@ -4,7 +4,7 @@
 
 - Workflow chain mặc định của gói này là chuỗi delivery 8 bước cho một yêu cầu coding cụ thể.
 - Mỗi workflow step là một bước nghiệp vụ thật trong quá trình xử lý yêu cầu, không phải một trường mô tả hay một gate kiểm tra.
-- `goal`, `input`, `output`, `done_when`, `constraints`, isks`, `timebox` là bộ metadata chuẩn có thể gắn vào từng step để chi tiết hóa contract thực thi, quality gate và điều kiện handoff khi cần.
+- `goal`, `input`, `output`, `done_when`, `constraints`, `risks`, `timebox` là bộ metadata chuẩn có thể gắn vào từng step để chi tiết hóa contract thực thi, quality gate và điều kiện handoff khi cần.
 - Trong tài liệu workflow, `input` và `output` phải được viết theo ý nghĩa business trước; tên artifact kỹ thuật chỉ đặt trong ngoặc để truy vết, không dùng thay cho nội dung bàn giao.
 - Metadata không được xem là step riêng và không được dùng để thay thế workflow 8 bước.
 - Skill được gắn vào step để hỗ trợ phân tích, thực thi và kiểm soát chất lượng.
@@ -19,6 +19,7 @@
 - `system-design`: skill đề xuất và chọn technical approach.
 - `domain-architecture`: skill chốt domain module, bounded context, ownership và layer rule cho kiến trúc backend.
 - `frontend-architecture`: skill chốt feature module, route ownership, UI/state boundary, public contract và shared rule cho frontend application.
+- `frontend-experience-design`: skill chốt screen behavior, UI state, responsive rule, accessibility baseline và visual direction ở mức đủ để handoff cho delivery.
 - `database-design`: skill thiết kế schema, relationship, ownership, retention và audit ở mức design.
 - `deployment-devops`: skill điều phối DevOps tổng thể, khóa environment matrix và chọn skill chuyên trách cho `local`, `dev`, `uat`, `prod`.
 - `containerization-packaging`: skill khóa contract `Dockerfile`, `.dockerignore`, `compose.yaml`, build artifact và packaging pattern theo ngôn ngữ hoặc workload.
@@ -26,8 +27,11 @@
 - `ci-cd-release`: skill khóa pipeline CI/CD, registry, tagging, promotion flow, approval control và release guard.
 - `task-breakdown-planner`: skill chia thiết kế thành các task nhỏ để thực thi.
 - `implementation`: skill triển khai thay đổi thực tế trong codebase.
+- `react-web-implementation`: skill triển khai React web hoặc Next.js với server/client split, data fetching, state placement và loading path rõ ràng.
 - `testing`: skill verify theo acceptance criteria và quality gates, với chiến lược rõ giữa unit test, integration/database test và feature test.
 - `code-scan-review`: skill quét code theo ngôn ngữ để kiểm tra syntax, static analysis, security scan và performance heuristic.
+- `frontend-quality-review`: skill rà soát screen-level quality của frontend ở mức accessibility, responsive layout, interaction feedback và UX heuristic.
+- `react-best-practices-review`: skill rà soát render/data boundary, effect hygiene, state placement và performance heuristic đặc thù của React web hoặc Next.js.
 - `database-change-review`: skill rà soát migration safety, compatibility, query risk và release recommendation cho thay đổi database.
 - `step-goal-contract`: skill chốt contract cho từng step trước khi thực thi.
 - `input-readiness-assessor`: skill đánh giá mức sẵn sàng đầu vào (`READY|BLOCKED`).
@@ -55,8 +59,8 @@ Chuỗi này nên được đọc theo 4 lớp song song:
 - Skill như `requirement-analysis`, `system-design`, `testing` là lớp nghiệp vụ.
 - `obsidian-markdown`, `json-canvas`, `obsidian-bases` là lớp artifact, chỉ bật khi step thực sự sinh ra file tương ứng.
 - `agentic` và `multi-agent` là lớp execution topology; chúng quyết định cách step được chạy, không đổi ý nghĩa business của step.
-- Chi tiết execution policy, role contract, handoff/merge protocol và tích hợp `notebooklm` xem thêm tại eferences/execution-runtime.md`.
-- Ví dụ áp dụng end-to-end xem tại eferences/end-to-end-examples.md`.
+- Chi tiết execution policy, role contract, handoff/merge protocol và tích hợp `notebooklm` xem thêm tại `references/execution-runtime.md`.
+- Ví dụ áp dụng end-to-end xem tại `references/end-to-end-examples.md`.
 
 ## Lớp Execution Topology: `agentic` Và `multi-agent`
 
@@ -136,12 +140,12 @@ Luật tối thiểu cho `multi-agent`:
 |---|---|---|
 | `requirement-analysis`, `product-thinking` | Agent chính tự phân tích và khóa ý nghĩa business của step | Worker kiểu `analyst` hoặc `product-owner-proxy` cung cấp input cho coordinator |
 | `brainstorming`, `system-design` | Agent chính tự so sánh phương án rồi chốt recommendation | Worker kiểu `solution-designer`; nhiều worker có thể đại diện cho các option khác nhau |
-| `domain-architecture`, `frontend-architecture`, `database-design` | Agent chính gọi sâu theo boundary thật sự bị tác động | Specialist worker sở hữu từng boundary kiến trúc riêng |
+| `domain-architecture`, `frontend-architecture`, `frontend-experience-design`, `database-design` | Agent chính gọi sâu theo boundary thật sự bị tác động | Specialist worker sở hữu từng boundary kiến trúc hoặc screen behavior riêng |
 | `task-breakdown-planner` | Agent chính tự chia task và kiểm tra dependency | `planner` worker tạo plan, `dependency-reviewer` kiểm tra đường găng |
 | `deployment-devops` | Agent chính tự khóa scope DevOps tổng, environment matrix và hướng phối hợp giữa packaging, runtime, release | Worker kiểu `platform-architect`, `release-planner` hoặc `deployment-reviewer` cung cấp plan tổng và evidence cho coordinator |
 | `containerization-packaging`, `platform-runtime-deployment`, `ci-cd-release` | Agent chính tự khóa contract sâu theo từng layer packaging, runtime hoặc pipeline/release | Specialist worker kiểu `image-packager`, `platform-architect` hoặc `release-engineer` sở hữu output DevOps theo layer |
-| `implementation` | Agent chính tự sửa code trong phạm vi nhỏ hoặc vừa | Nhiều `builder` worker chia theo module hoặc path ownership |
-| `testing`, `code-scan-review`, `database-change-review` | Agent chính tự verify và ghi evidence | Verifier worker tách riêng theo loại kiểm định |
+| `implementation`, `react-web-implementation` | Agent chính tự sửa code trong phạm vi nhỏ hoặc vừa, có thể gọi sâu framework-specific guidance khi cần | Nhiều `builder` worker chia theo module hoặc path ownership; frontend builder có thể sở hữu riêng boundary React |
+| `testing`, `code-scan-review`, `frontend-quality-review`, `react-best-practices-review`, `database-change-review` | Agent chính tự verify và ghi evidence | Verifier worker tách riêng theo loại kiểm định hoặc framework review |
 | `notebooklm` | Agent chính tự dùng để tóm lược/query corpus lớn khi step có nhiều nguồn ngoài | Worker kiểu `notebooklm-researcher` gom insight từ notebook rồi handoff về coordinator; output chỉ là context phụ |
 | `step-goal-contract`, `input-readiness-assessor`, `step-goal-auditor`, `definition-of-ready-gate`, `definition-of-done-gate` | Guardrail nội bộ của cùng agent | Lớp contract/audit chung cho coordinator và worker; không thuộc ownership riêng của business skill |
 
@@ -188,7 +192,7 @@ S4 Acceptance Criteria + Definition of Ready
 S5 Technical Approach
 -> brainstorming
 -> system-design
--> khi cần: domain-architecture | frontend-architecture | database-design | deployment-devops | containerization-packaging | platform-runtime-deployment | ci-cd-release
+-> khi cần: domain-architecture | frontend-architecture | frontend-experience-design | database-design | deployment-devops | containerization-packaging | platform-runtime-deployment | ci-cd-release
 -> output: phương án kỹ thuật khuyến nghị + chi tiết kiến trúc cần khóa + deployment topology khi scope có runtime delivery (option-analysis-spec + technical-approach-spec + architecture-detail-spec khi cần)
 
 S6 Task Breakdown
@@ -198,16 +202,18 @@ S6 Task Breakdown
 
 S7 Implement
 -> implementation
+-> khi cần: react-web-implementation
 -> khi cần: deployment-devops | containerization-packaging | platform-runtime-deployment | ci-cd-release
--> output: thay đổi thực tế đã được thực hiện, gồm Dockerfile/compose/manifests/pipeline khi thuộc phạm vi (implementation-spec)
+-> output: thay đổi thực tế đã được thực hiện, gồm Dockerfile/compose/manifests/pipeline khi thuộc phạm vi và implementation notes khi stack là React web hoặc Next.js (implementation-spec + implementation-notes khi cần)
 
 S8 Verify + Definition of Done
 -> testing
 -> code-scan-review
+-> khi cần: frontend-quality-review | react-best-practices-review
 -> step-goal-auditor
 -> definition-of-done-gate
 -> khi cần: database-change-review | deployment-devops | containerization-packaging | platform-runtime-deployment | ci-cd-release
--> output: bằng chứng verify + deployment review khi có + kết luận DoD (verification-spec + scan-summary + database-review khi có + deployment-review khi có + step-audit + definition-of-done)
+-> output: bằng chứng verify + review findings khi có + deployment review khi có + kết luận DoD (verification-spec + scan-summary + review-findings khi có + database-review khi có + deployment-review khi có + step-audit + definition-of-done)
 ```
 
 Ghi chú:
@@ -256,10 +262,10 @@ Quy ước:
 | 2. Xác định mục tiêu business | Chốt giá trị nghiệp vụ và kết quả mong muốn | Bản hiểu chung về yêu cầu, business context và stakeholder intent | Mục tiêu business, kết quả mong muốn và phần không làm (`business-goal-spec`) | `codex-workflow-chain`, `product-thinking`, `step-goal-contract` | Chỉ chuyển khi mục tiêu business và phần không làm đã rõ |
 | 3. Liệt kê phần còn mơ hồ | Xác định câu hỏi mở, input còn thiếu, xung đột thông tin | Bản hiểu chung về yêu cầu, mục tiêu business, tài liệu hiện có và codebase context | Danh sách phần còn thiếu hoặc mâu thuẫn, trạng thái sẵn sàng đầu vào và audit bước (`readiness-spec`, `input-readiness-report`, `step-audit`) | `codex-workflow-chain`, `requirement-analysis`, `step-goal-contract`, `input-readiness-assessor`, `step-goal-auditor` | Chỉ chuyển khi `status=READY` hoặc có quyết định xử lý rõ ràng cho phần thiếu |
 | 4. Viết acceptance criteria và chốt DoR | Chuyển mục tiêu thành tiêu chí kiểm chứng được và khóa `Definition of Ready` trước khi đi vào design hoặc implementation planning | Mục tiêu business, phạm vi dự kiến và câu trả lời từ bước 3 | Bộ acceptance criteria đo được và kết luận `Definition of Ready` (`acceptance-criteria-spec`, `definition-of-ready`) | `codex-workflow-chain`, `requirement-analysis`, `step-goal-contract`, `definition-of-ready-gate` | Chỉ chuyển khi acceptance criteria đo được, có thể verify và DoR kết luận `READY` hoặc có quyết định xử lý blocker rõ ràng |
-| 5. Đề xuất technical approach | Đưa ra phương án kỹ thuật, so sánh trade-off, chọn hướng làm | Acceptance criteria đã chốt, codebase context và constraints kỹ thuật | Phương án kỹ thuật khuyến nghị, phân tích lựa chọn, chi tiết kiến trúc cần khóa và deployment topology khi phạm vi chạm runtime delivery (`option-analysis-spec`, `technical-approach-spec`, `architecture-detail-spec` khi cần) | `codex-workflow-chain`, `brainstorming`, `system-design`, `step-goal-contract`; thêm `domain-architecture` khi cần khóa backend boundary; thêm `frontend-architecture` khi cần khóa frontend boundary; thêm `database-design` khi cần khóa data boundary; thêm `deployment-devops` khi cần chốt DevOps tổng; thêm `containerization-packaging` khi cần khóa `Dockerfile` hoặc `compose`; thêm `platform-runtime-deployment` khi cần khóa runtime `docker` hoặc `swarm` hoặc `k8s`; thêm `ci-cd-release` khi cần khóa pipeline hoặc promotion flow | Chỉ chuyển khi có phương án khuyến nghị, boundary kiến trúc rõ ở nơi thật sự bị tác động và deployment/runtime contract đủ để bước sau chia task nếu scope có rollout |
+| 5. Đề xuất technical approach | Đưa ra phương án kỹ thuật, so sánh trade-off, chọn hướng làm | Acceptance criteria đã chốt, codebase context và constraints kỹ thuật | Phương án kỹ thuật khuyến nghị, phân tích lựa chọn, chi tiết kiến trúc cần khóa và deployment topology khi phạm vi chạm runtime delivery (`option-analysis-spec`, `technical-approach-spec`, `architecture-detail-spec` khi cần) | `codex-workflow-chain`, `brainstorming`, `system-design`, `step-goal-contract`; thêm `domain-architecture` khi cần khóa backend boundary; thêm `frontend-architecture` khi cần khóa frontend boundary theo source-code ownership; thêm `frontend-experience-design` khi cần khóa screen behavior, UI state, responsive rule hoặc visual constraint; thêm `database-design` khi cần khóa data boundary; thêm `deployment-devops` khi cần chốt DevOps tổng; thêm `containerization-packaging` khi cần khóa `Dockerfile` hoặc `compose`; thêm `platform-runtime-deployment` khi cần khóa runtime `docker` hoặc `swarm` hoặc `k8s`; thêm `ci-cd-release` khi cần khóa pipeline hoặc promotion flow | Chỉ chuyển khi có phương án khuyến nghị, boundary kiến trúc rõ ở nơi thật sự bị tác động và deployment/runtime contract đủ để bước sau chia task nếu scope có rollout |
 | 6. Chia task | Tách implementation thành việc nhỏ có thứ tự | Phương án kỹ thuật đã chọn, acceptance criteria, constraints, repo context, output kiến trúc liên quan và rollout notes khi có | Kế hoạch triển khai chia thành các task nhỏ có thứ tự và kiểm chứng được, gồm packaging, promotion, smoke và rollback task khi scope có DevOps (`task-breakdown-spec`) | `codex-workflow-chain`, `task-breakdown-planner`, `step-goal-contract`; thêm `deployment-devops` khi cần tách lane DevOps tổng; thêm `containerization-packaging` khi task cần tách build image, `.dockerignore` hoặc `compose`; thêm `platform-runtime-deployment` khi task cần tách manifest, stack hoặc runtime rollout; thêm `ci-cd-release` khi task cần tách pipeline, publish, promotion hoặc approval | Chỉ chuyển khi task đủ nhỏ để thực thi và kiểm chứng, bao gồm task riêng cho boundary kiến trúc, thay đổi dữ liệu hoặc release lane khi có |
-| 7. Implement | Thực hiện thay đổi đúng phạm vi và đúng hướng đã chốt | Kế hoạch triển khai, codebase hiện tại, conventions, constraints và rollout notes nếu có | Thay đổi thực tế trong code/config/doc, gồm Dockerfile, compose, manifest hoặc pipeline config khi thuộc phạm vi (`implementation-spec`) | `codex-workflow-chain`, `implementation`, `step-goal-contract`; thêm `deployment-devops` khi cần giữ contract DevOps tổng; thêm `containerization-packaging` khi materialize artifact đóng gói; thêm `platform-runtime-deployment` khi materialize artifact runtime deploy; thêm `ci-cd-release` khi materialize pipeline hoặc release config | Chỉ chuyển khi outputs thực tế đáp ứng contract của step và artifact deploy trong phạm vi đã được materialize hoặc ghi rõ limitation |
-| 8. Verify với criteria và chốt DoD | Đối chiếu kết quả thực tế với criteria và quality gates, sau đó khóa `Definition of Done` cho technical work item và kết luận release readiness khi có scope deploy | Acceptance criteria, thay đổi thực tế, test/lint/build logs, constraints, risks và output từ `database-design` hoặc các skill DevOps liên quan khi có | Bằng chứng verify, kết quả scan, review database khi có, deployment review khi có, audit step và kết luận `Definition of Done` (`verification-spec`, `scan-summary`, `database-review` khi có, `deployment-review` khi có, `step-audit`, `definition-of-done`) | `codex-workflow-chain`, `testing`, `code-scan-review`, `step-goal-contract`, `step-goal-auditor`, `definition-of-done-gate`; thêm `database-change-review` khi thay đổi thực sự chạm schema/query/migration/retention/rollback của database; thêm `deployment-devops` khi cần review DevOps tổng; thêm `containerization-packaging` khi cần review packaging; thêm `platform-runtime-deployment` khi cần review runtime rollout; thêm `ci-cd-release` khi cần review pipeline hoặc promotion readiness | Hoàn tất khi audit đủ bằng chứng, mức test phù hợp đã được cover, code scan theo ngôn ngữ đã hoàn tất, deployment review đã rõ `READY|READY_WITH_GUARDS|BLOCKED` nếu có scope deploy, DoD kết luận `DONE|PARTIAL|BLOCKED` rõ ràng và mọi thay đổi database quan trọng đã có khuyến nghị release |
+| 7. Implement | Thực hiện thay đổi đúng phạm vi và đúng hướng đã chốt | Kế hoạch triển khai, codebase hiện tại, conventions, constraints và rollout notes nếu có | Thay đổi thực tế trong code/config/doc, gồm Dockerfile, compose, manifest hoặc pipeline config khi thuộc phạm vi (`implementation-spec`, `implementation-notes` khi cần) | `codex-workflow-chain`, `implementation`, `step-goal-contract`; thêm `react-web-implementation` khi stack là React web hoặc Next.js và cần framework-specific guidance; thêm `deployment-devops` khi cần giữ contract DevOps tổng; thêm `containerization-packaging` khi materialize artifact đóng gói; thêm `platform-runtime-deployment` khi materialize artifact runtime deploy; thêm `ci-cd-release` khi materialize pipeline hoặc release config | Chỉ chuyển khi outputs thực tế đáp ứng contract của step và artifact deploy trong phạm vi đã được materialize hoặc ghi rõ limitation |
+| 8. Verify với criteria và chốt DoD | Đối chiếu kết quả thực tế với criteria và quality gates, sau đó khóa `Definition of Done` cho technical work item và kết luận release readiness khi có scope deploy | Acceptance criteria, thay đổi thực tế, test/lint/build logs, constraints, risks và output từ `database-design` hoặc các skill DevOps liên quan khi có | Bằng chứng verify, kết quả scan, review database khi có, review frontend hoặc React khi có, deployment review khi có, audit step và kết luận `Definition of Done` (`verification-spec`, `scan-summary`, `review-findings` khi có, `database-review` khi có, `deployment-review` khi có, `step-audit`, `definition-of-done`) | `codex-workflow-chain`, `testing`, `code-scan-review`, `step-goal-contract`, `step-goal-auditor`, `definition-of-done-gate`; thêm `frontend-quality-review` khi thay đổi chạm surface UI; thêm `react-best-practices-review` khi stack là React web hoặc Next.js và cần review render/data boundary; thêm `database-change-review` khi thay đổi thực sự chạm schema/query/migration/retention/rollback của database; thêm `deployment-devops` khi cần review DevOps tổng; thêm `containerization-packaging` khi cần review packaging; thêm `platform-runtime-deployment` khi cần review runtime rollout; thêm `ci-cd-release` khi cần review pipeline hoặc promotion readiness | Hoàn tất khi audit đủ bằng chứng, mức test phù hợp đã được cover, code scan theo ngôn ngữ đã hoàn tất, review frontend hoặc React đã rõ khi thuộc phạm vi, deployment review đã rõ `READY|READY_WITH_GUARDS|BLOCKED` nếu có scope deploy, DoD kết luận `DONE|PARTIAL|BLOCKED` rõ ràng và mọi thay đổi database quan trọng đã có khuyến nghị release |
 
 ## Quy Tắc Bắt Buộc Cho Artifact Obsidian
 
@@ -434,14 +440,14 @@ Quy tắc:
 | 2. Xác định mục tiêu business | `<work_item_slug>.s02.business-goal.md` | `## Step Contract`, `## Artifact Chính`, `## Traceability`, `## Handoff` | `step-goal-contract`, `product-thinking` |
 | 3. Liệt kê phần còn mơ hồ | `<work_item_slug>.s03.open-questions.md` | `## Step Contract`, `## Artifact Chính`, `## Input Readiness`, `## Audit`, `## Traceability`, `## Handoff` | `step-goal-contract`, artifact step 3, `input-readiness-assessor`, `step-goal-auditor` |
 | 4. Viết acceptance criteria và chốt DoR | `<work_item_slug>.s04.acceptance-criteria.md` | `## Step Contract`, `## Artifact Chính`, `## Definition of Ready`, `## Traceability`, `## Handoff` | `step-goal-contract`, artifact step 4, `definition-of-ready-gate` |
-| 5. Đề xuất technical approach | `<work_item_slug>.s05.technical-approach.md` | `## Step Contract`, `## Option Analysis`, `## Artifact Chính`, `## Architecture Details`, `## Traceability`, `## Handoff` | `step-goal-contract`, `brainstorming`, `system-design`, `domain-architecture` hoặc `frontend-architecture` hoặc `database-design` hoặc `deployment-devops` hoặc `containerization-packaging` hoặc `platform-runtime-deployment` hoặc `ci-cd-release` khi có |
+| 5. Đề xuất technical approach | `<work_item_slug>.s05.technical-approach.md` | `## Step Contract`, `## Option Analysis`, `## Artifact Chính`, `## Architecture Details`, `## Traceability`, `## Handoff` | `step-goal-contract`, `brainstorming`, `system-design`, `domain-architecture` hoặc `frontend-architecture` hoặc `frontend-experience-design` hoặc `database-design` hoặc `deployment-devops` hoặc `containerization-packaging` hoặc `platform-runtime-deployment` hoặc `ci-cd-release` khi có |
 | 6. Chia task | `<work_item_slug>.s06.task-breakdown.md` | `## Step Contract`, `## Artifact Chính`, `## Verification Plan`, `## Traceability`, `## Handoff` | `step-goal-contract`, `task-breakdown-planner` |
-| 7. Implement | `<work_item_slug>.s07.implementation.md` nếu có note | `## Step Contract`, `## Artifact Chính`, `## Traceability`, `## Handoff` | `step-goal-contract`, `implementation` |
-| 8. Verify với criteria và chốt DoD | `<work_item_slug>.s08.verification.md` | `## Step Contract`, `## Artifact Chính`, `## Scan Summary`, `## Database Review` khi có, `## Deployment Review` khi có, `## Audit`, `## Definition of Done`, `## Traceability`, `## Handoff` | `step-goal-contract`, `testing`, `code-scan-review`, `database-change-review` khi có, `deployment-devops` hoặc `containerization-packaging` hoặc `platform-runtime-deployment` hoặc `ci-cd-release` khi có, `step-goal-auditor`, `definition-of-done-gate` |
+| 7. Implement | `<work_item_slug>.s07.implementation.md` nếu có note | `## Step Contract`, `## Artifact Chính`, `## Implementation Notes` khi có, `## Traceability`, `## Handoff` | `step-goal-contract`, `implementation`, `react-web-implementation` khi có |
+| 8. Verify với criteria và chốt DoD | `<work_item_slug>.s08.verification.md` | `## Step Contract`, `## Artifact Chính`, `## Scan Summary`, `## Review Findings` khi có, `## Database Review` khi có, `## Deployment Review` khi có, `## Audit`, `## Definition of Done`, `## Traceability`, `## Handoff` | `step-goal-contract`, `testing`, `code-scan-review`, `frontend-quality-review` khi có, `react-best-practices-review` khi có, `database-change-review` khi có, `deployment-devops` hoặc `containerization-packaging` hoặc `platform-runtime-deployment` hoặc `ci-cd-release` khi có, `step-goal-auditor`, `definition-of-done-gate` |
 
 Ghi chú:
 - `artifact step 1`, `artifact step 3`, `artifact step 4` là schema tối giản ở workflow level, không thay cho schema chi tiết của skill nếu team muốn lưu chi tiết hơn.
-- Ở step 5, chọn `domain-architecture`, `frontend-architecture`, `database-design` theo phạm vi thật; không ép đủ cả ba nếu không liên quan.
+- Ở step 5, chọn `domain-architecture`, `frontend-architecture`, `frontend-experience-design`, `database-design` theo phạm vi thật; không ép gọi tất cả nếu không liên quan.
 - Ở step 7, chỉ tạo note khi implementation có `doc_changes`, cần handoff riêng, hoặc người dùng yêu cầu artifact doc.
 - Với `work_item_type=REFACTOR`, step 4 nên điền rõ `behavioral_invariants` để khóa phạm vi không đổi behavior.
 - Với `work_item_type=RESEARCH`, step 8 nên kết luận recommendation rõ thay vì chỉ log findings.
@@ -458,10 +464,11 @@ Ghi chú:
 | 4 | `definition-of-ready` | `## Definition of Ready` | schema `definition-of-ready-gate` |
 | 5 | `option-analysis-spec` | `## Option Analysis` | schema `brainstorming`; tối thiểu 2 options, 1 recommended option |
 | 5 | `technical-approach-spec` | `## Artifact Chính` | schema `system-design` |
-| 5 khi cần khóa boundary sâu | `architecture-detail-spec` | `## Architecture Details` | một hoặc nhiều schema kiến trúc chuyên biệt, gồm `deployment-devops`, `containerization-packaging`, `platform-runtime-deployment`, `ci-cd-release` khi có runtime delivery |
+| 5 khi cần khóa boundary sâu | `architecture-detail-spec` | `## Architecture Details` | một hoặc nhiều schema kiến trúc chuyên biệt, gồm `frontend-experience-design`, `deployment-devops`, `containerization-packaging`, `platform-runtime-deployment`, `ci-cd-release` khi có runtime delivery |
 | 6 | `task-breakdown-spec` | `## Artifact Chính` | schema `task-breakdown-planner` |
 | 7 | `implementation-spec` | `## Artifact Chính` | schema `implementation` |
-| 8 | `verification-spec` | `## Artifact Chính`, `## Scan Summary`, `## Database Review`, `## Deployment Review`, `## Audit` | schema `testing`; cộng thêm schema scan/review/audit khi có |
+| 7 khi cần framework-specific handoff | `implementation-notes` | `## Implementation Notes` | schema `react-web-implementation` khi stack là React web hoặc Next.js |
+| 8 | `verification-spec` | `## Artifact Chính`, `## Scan Summary`, `## Review Findings`, `## Database Review`, `## Deployment Review`, `## Audit` | schema `testing`; cộng thêm schema scan/review/audit khi có |
 | 8 khi scope có packaging hoặc rollout | `deployment-review` | `## Deployment Review` | schema `deployment-devops` và có thể cộng thêm `containerization-packaging`, `platform-runtime-deployment`, `ci-cd-release` |
 | 8 | `definition-of-done` | `## Definition of Done` | schema `definition-of-done-gate` |
 
@@ -781,6 +788,7 @@ content_skills:
   - step-goal-contract
   # thêm `domain-architecture` khi dùng
   # thêm `frontend-architecture` khi dùng
+  # thêm `frontend-experience-design` khi cần khóa screen behavior, UI state hoặc responsive rule
   # thêm `database-design` khi dùng
   # thêm `deployment-devops` khi cần chốt DevOps tổng
   # thêm `containerization-packaging` khi cần khóa `Dockerfile`, `.dockerignore`, `compose.yaml`
@@ -823,6 +831,7 @@ tags:
 # dùng một hoặc nhiều schema liên quan:
 # `domain-architecture`
 # `frontend-architecture`
+# `frontend-experience-design`
 # `database-design`
 # `deployment-devops` khi cần chốt DevOps tổng
 # `containerization-packaging` khi khóa `Dockerfile`, `.dockerignore`, `compose.yaml`
@@ -945,6 +954,7 @@ content_skills:
   - codex-workflow-chain
   - implementation
   - step-goal-contract
+  # thêm `react-web-implementation` khi stack là React web hoặc Next.js
   # thêm `deployment-devops` khi cần chốt DevOps tổng
   # thêm `containerization-packaging` khi cần khóa `Dockerfile`, `.dockerignore`, `compose.yaml`
   # thêm `platform-runtime-deployment` khi cần khóa runtime `docker`, `swarm`, `k8s`
@@ -973,6 +983,11 @@ tags:
 ## Artifact Chính
 ```yaml
 # dùng schema `implementation`
+```
+
+## Implementation Notes
+```yaml
+# dùng schema `react-web-implementation` khi step 7 chạm React web hoặc Next.js
 ```
 
 ## Traceability
@@ -1014,6 +1029,8 @@ content_skills:
   - step-goal-contract
   - step-goal-auditor
   - definition-of-done-gate
+  # thêm `frontend-quality-review` khi thay đổi chạm surface UI
+  # thêm `react-best-practices-review` khi stack là React web hoặc Next.js và cần review render/data boundary
   # thêm `database-change-review` khi có thay đổi database thuộc phạm vi review
   # thêm `deployment-devops` khi cần chốt DevOps tổng
   # thêm `containerization-packaging` khi cần khóa `Dockerfile`, `.dockerignore`, `compose.yaml`
@@ -1049,6 +1066,11 @@ tags:
 ## Scan Summary
 ```yaml
 # dùng schema `code-scan-review`
+```
+
+## Review Findings
+```yaml
+# dùng schema `frontend-quality-review` hoặc `react-best-practices-review` khi step có review frontend hoặc React
 ```
 
 ## Database Review
@@ -1268,6 +1290,49 @@ architecture_risks: []
 notes_for_next_step: ""
 ```
 
+### `frontend-experience-design`
+
+```yaml
+experience_target: ""
+primary_user_outcomes: []
+frontend_surfaces:
+  - surface: ""
+    purpose: ""
+    priority: CORE|SUPPORTING|AUXILIARY
+interaction_model:
+  entry_points: []
+  navigation_rules: []
+  primary_actions: []
+  secondary_actions: []
+  feedback_rules: []
+surface_states:
+  - surface: ""
+    loading: ""
+    empty: ""
+    error: ""
+    success: ""
+    blocked: ""
+layout_rules:
+  information_hierarchy: []
+  responsive_rules: []
+  density_rules: []
+visual_rules:
+  tone_keywords: []
+  emphasis_rules: []
+  color_constraints: []
+  typography_constraints: []
+  motion_rules: []
+accessibility_baseline:
+  keyboard_flow: []
+  screen_reader_notes: []
+  contrast_rules: []
+  touch_target_rules: []
+performance_guards: []
+design_system_hooks: []
+validation_checks: []
+notes_for_next_step: ""
+```
+
 ### `database-design`
 
 ```yaml
@@ -1440,6 +1505,74 @@ pipeline_recommendation: READY|READY_WITH_GUARDS|BLOCKED
 notes_for_implementation_or_ops: ""
 ```
 
+### `implementation`
+
+```yaml
+recommended_design: ""
+tasks_completed: []
+code_changes: []
+doc_changes: []
+config_changes: []
+outputs_actual: []
+known_limitations: []
+follow_up_items: []
+notes_for_testing: ""
+```
+
+### `react-web-implementation`
+
+```yaml
+implementation_target: ""
+framework_context:
+  stack: ""
+  routing_mode: ""
+  rendering_mode: []
+component_boundary_notes: []
+server_client_split_plan: []
+data_fetching_plan: []
+state_and_context_plan: []
+effect_usage_rules: []
+rendering_and_loading_plan: []
+performance_guards_applied: []
+files_or_modules_touched: []
+notes_for_review: ""
+```
+
+### `testing`
+
+```yaml
+verification_target: ""
+test_strategy:
+  unit_test:
+    required: true|false
+    rationale: ""
+  integration_test:
+    required: true|false
+    rationale: ""
+  database_test:
+    required: true|false
+    rationale: ""
+  feature_test:
+    required: true|false
+    rationale: ""
+criteria_results:
+  - criterion: ""
+    result: PASS|FAIL|PARTIAL
+    evidence: ""
+test_evidence:
+  unit_test: []
+  integration_test: []
+  database_test: []
+  feature_test: []
+commands_run: []
+skipped_checks: []
+status: PASS|FAIL|PARTIAL
+gaps: []
+residual_risks: []
+recommendation: ""
+notes_for_review: ""
+```
+
 ### `code-scan-review`
 
 ```yaml
@@ -1469,6 +1602,78 @@ performance_heuristic_results:
 skipped_scans: []
 overall_status: PASS|FAIL|PARTIAL
 remediation_actions: []
+notes_for_verify: ""
+```
+
+### `frontend-quality-review`
+
+```yaml
+review_target: ""
+review_scope:
+  surfaces: []
+  devices: []
+  critical_flows: []
+quality_gates:
+  accessibility: REQUIRED|OPTIONAL
+  responsive_layout: REQUIRED|OPTIONAL
+  interaction_feedback: REQUIRED|OPTIONAL
+  form_and_validation: REQUIRED|OPTIONAL
+  navigation_clarity: REQUIRED|OPTIONAL
+  performance_heuristic: REQUIRED|OPTIONAL
+  visual_consistency: REQUIRED|OPTIONAL
+findings:
+  - severity: HIGH|MEDIUM|LOW
+    area: ACCESSIBILITY|RESPONSIVE|INTERACTION|FORM|NAVIGATION|PERFORMANCE|VISUAL
+    surface: ""
+    issue: ""
+    evidence: ""
+    recommendation: ""
+criteria_results:
+  - criterion: ""
+    result: PASS|FAIL|PARTIAL
+    evidence: ""
+checks_run: []
+checks_skipped: []
+overall_status: PASS|FAIL|PARTIAL
+residual_risks: []
+handoff_recommendation: ""
+notes_for_review: ""
+```
+
+### `react-best-practices-review`
+
+```yaml
+review_target: ""
+framework_context:
+  stack: ""
+  rendering_mode: []
+  routing_mode: ""
+review_gates:
+  server_client_boundary: REQUIRED|OPTIONAL
+  data_fetching: REQUIRED|OPTIONAL
+  effect_hygiene: REQUIRED|OPTIONAL
+  state_placement: REQUIRED|OPTIONAL
+  context_scope: REQUIRED|OPTIONAL
+  render_stability: REQUIRED|OPTIONAL
+  list_rendering: REQUIRED|OPTIONAL
+  hydration_bundle_cost: REQUIRED|OPTIONAL
+  component_api_shape: REQUIRED|OPTIONAL
+findings:
+  - severity: HIGH|MEDIUM|LOW
+    area: SERVER_CLIENT|DATA_FETCHING|EFFECT|STATE|CONTEXT|RENDER|LIST|HYDRATION|COMPONENT_API
+    component_or_route: ""
+    issue: ""
+    evidence: ""
+    recommendation: ""
+criteria_results:
+  - criterion: ""
+    result: PASS|FAIL|PARTIAL
+    evidence: ""
+checks_run: []
+checks_skipped: []
+overall_status: PASS|FAIL|PARTIAL
+residual_risks: []
+handoff_recommendation: ""
 notes_for_verify: ""
 ```
 
@@ -1580,7 +1785,7 @@ next_action: ""
 - `output`: artifact bắt buộc step phải sinh ra.
 - `done_when`: điều kiện hoàn tất có thể kiểm chứng.
 - `constraints`: giới hạn không được vi phạm khi thực thi.
-- isks`: rủi ro cần theo dõi và phương án xử lý.
+- `risks`: rủi ro cần theo dõi và phương án xử lý.
 - `timebox`: giới hạn thời gian hoặc deadline của step.
 
 ## Cổng Ngôn Ngữ Và Mã Hóa Tiếng Việt

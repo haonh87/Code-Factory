@@ -1,0 +1,7 @@
+interface:
+  display_name: "React Web Implementation"
+  short_description: "Triển khai React/Next với boundary và fetch path rõ"
+  default_prompt: "Dùng $react-web-implementation để triển khai React web hoặc Next.js với server/client split, data fetching, state placement và loading path rõ ràng."
+
+policy:
+  allow_implicit_invocation: true

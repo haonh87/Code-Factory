@@ -24,7 +24,7 @@ Thiết kế kiến trúc cho frontend application xoay quanh feature hoặc mod
 
 ## Không Thuộc Phạm Vi
 
-- Không thiết kế chi tiết pixel UI, motion, màu sắc hoặc visual spec.
+- Không thiết kế chi tiết pixel UI, UI state, responsive rule, form feedback, motion, màu sắc hoặc visual spec; dùng `frontend-experience-design` khi cần khóa các điểm này trước khi implement.
 - Không thay thế cho `system-design` ở mức API, cache, infra hoặc kiến trúc liên hệ thống.
 - Không trực tiếp viết code production hoặc chia task implement chi tiết.
 - Không tự mở rộng scope business ngoài yêu cầu đã được làm rõ.
