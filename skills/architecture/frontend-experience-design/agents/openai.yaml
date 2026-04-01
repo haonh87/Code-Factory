@@ -1,0 +1,7 @@
+interface:
+  display_name: "Frontend Experience Design"
+  short_description: "Chốt screen, state và responsive rule cho frontend"
+  default_prompt: "Dùng $frontend-experience-design để chốt interaction, UI state, responsive rule và accessibility baseline trước khi implement frontend."
+
+policy:
+  allow_implicit_invocation: true

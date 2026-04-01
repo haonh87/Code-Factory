@@ -1,4 +1,4 @@
-# GitHub Push MCP
+﻿# GitHub Push MCP
 
 MCP server này giúp agent xử lý luồng `inspect -> commit -> create repo -> configure remote -> push` cho GitHub mà không cần `gh`.
 
@@ -6,7 +6,7 @@ MCP server này giúp agent xử lý luồng `inspect -> commit -> create repo -
 
 - Kiểm tra trạng thái Git repository trong workspace được cho phép.
 - Tạo repository mới trên GitHub qua REST API.
-- Gán hoặc cập nhật `origin` sang remote GitHub.
+- Gắn hoặc cập nhật `origin` sang remote GitHub.
 - Commit toàn bộ thay đổi hiện tại bằng `git add -A`.
 - Push branch hiện tại lên GitHub, có hỗ trợ `dryRun`.
 - Chạy một lệnh tổng hợp `publish_repository_to_github` khi muốn đi trọn luồng publish.
@@ -45,6 +45,18 @@ Hoặc dùng adapter:
 powershell -ExecutionPolicy Bypass -File adapters/mcp/install-github-push.ps1
 ```
 
+Adapter này sẽ:
+- cài dependency cho `mcp/github-push`
+- upsert MCP server `github-push` vào `~/.codex/config.toml`
+- đặt `GITHUB_PUSH_ALLOWED_ROOT` mặc định là thư mục cha của repo hiện tại
+- forward `GITHUB_TOKEN` và `GITHUB_USERNAME` từ shell environment thay vì ghi secret thẳng vào config
+
+Có thể override allowed root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File adapters/mcp/install-github-push.ps1 -AllowedRoot "D:/workspaces/RnD/AI"
+```
+
 ## Run
 
 ```powershell
@@ -52,28 +64,23 @@ cd mcp/github-push
 node src/index.js
 ```
 
-## Example MCP Config
+## Example Codex Config
 
-Điều chỉnh path theo máy của anh:
+Codex dùng `~/.codex/config.toml`. Block MCP tương đương:
 
-```json
-{
-  "mcpServers": {
-    "github-push": {
-      "command": "node",
-      "args": [
-        "D:/workspaces/RnD/AI/Code-Factory/mcp/github-push/src/index.js"
-      ],
-      "cwd": "D:/workspaces/RnD/AI/Code-Factory/mcp/github-push",
-      "env": {
-        "GITHUB_PUSH_ALLOWED_ROOT": "D:/workspaces/RnD/AI",
-        "GITHUB_TOKEN": "<your-token>",
-        "GITHUB_USERNAME": "<your-github-username>"
-      }
-    }
-  }
-}
+```toml
+[mcp_servers.github-push]
+command = "node"
+args = ["D:/workspaces/RnD/AI/Code-Factory/mcp/github-push/src/index.js"]
+cwd = "D:/workspaces/RnD/AI/Code-Factory/mcp/github-push"
+env = { GITHUB_PUSH_ALLOWED_ROOT = "D:/workspaces/RnD/AI" }
+env_vars = ["GITHUB_TOKEN", "GITHUB_USERNAME"]
 ```
+
+Ghi chú:
+- `GITHUB_TOKEN` chỉ bắt buộc khi gọi GitHub API hoặc HTTPS push.
+- `GITHUB_USERNAME` chỉ cần khi dùng `GITHUB_TOKEN` để HTTPS push.
+- Nếu dùng SSH hoặc credential helper sẵn có, không cần lưu token trong config.
 
 ## Tool List
 

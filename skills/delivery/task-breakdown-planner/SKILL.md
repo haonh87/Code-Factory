@@ -57,7 +57,7 @@ notes_for_implementation: ""
 - `dependencies_global`: phụ thuộc chung ảnh hưởng nhiều task.
 - `risk_notes`: rủi ro cần lưu ý trong lúc implement.
 - `verification_plan`: điểm kiểm chứng chính cho từng nhóm task.
-- `notes_for_implementation`: ghi chú bàn giao sang skill `implementation`, gồm deployment artifact hoặc rollout note khi có.
+- `notes_for_implementation`: ghi chú bàn giao sang skill `implementation`, gồm deployment artifact hoặc rollout note khi có; nếu stack là React web hoặc Next.js, ghi rõ React-specific handoff cho `react-web-implementation` khi cần.
 
 ## Chuẩn Hóa Output Trong Workflow Note
 
@@ -89,6 +89,7 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 - Nếu có dependency chặn toàn bộ implementation, đẩy nó lên sớm.
 - Nếu có task “nice to have” không bắt buộc cho AC, đưa ra ngoài phạm vi chính.
 - Nếu scope có deployment artifact, tách riêng task build image, compose hoặc manifest, smoke check và rollback guard; không gộp mơ hồ vào một task “deploy”.
+- Nếu stack là React web hoặc Next.js và task chạm server/client split, data fetching, state/context hoặc loading path, ghi rõ decision đó trong `notes_for_implementation` để bước implement không đoán lại.
 
 ## Điều Kiện Hoàn Tất
 

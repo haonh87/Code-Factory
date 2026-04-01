@@ -27,6 +27,8 @@ Quét code theo ngôn ngữ để phát hiện lỗi cú pháp, vấn đề stat
 - Không thay thế unit test, integration test hay feature test.
 - Không thay thế benchmark hiệu năng hoặc profiling runtime.
 - Không thay thế penetration test hoặc security assessment thủ công chuyên sâu.
+- Không thay thế review frontend ở mức accessibility, responsive layout, interaction feedback hoặc visual consistency; dùng `frontend-quality-review` khi scope chạm surface UI.
+- Không thay thế review React-specific ở mức data fetching, effect hygiene, state placement hoặc render stability; dùng `react-best-practices-review` khi stack là React web hoặc Next.js.
 - Không tự cài tool mới nếu chưa có trong môi trường và chưa được yêu cầu rõ.
 
 ## Đầu Vào Tối Thiểu

@@ -1,0 +1,7 @@
+interface:
+  display_name: "React Best Practices Review"
+  short_description: "Review render, fetch, effect và boundary của React/Next"
+  default_prompt: "Dùng $react-best-practices-review để rà server/client split, data fetching, effect hygiene, state placement và render stability của thay đổi React hoặc Next.js."
+
+policy:
+  allow_implicit_invocation: true
