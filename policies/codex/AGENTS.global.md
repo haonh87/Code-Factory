@@ -54,6 +54,7 @@ Với tác vụ coding, luôn áp dụng skill `codex-workflow-chain`.
 Nếu output có artifact theo hệ Obsidian, áp dụng thêm skill tương ứng theo quy tắc dưới đây.
 Khi work item phụ thuộc nhiều tài liệu ngoài hoặc corpus lớn, có thể áp dụng thêm `notebooklm` như skill research/tooling phụ trợ.
 Khi scope chạm `Dockerfile`, `compose.yaml`, image contract, runtime deploy, pipeline release, promotion `dev/uat/prod`, rollout hoặc rollback, áp dụng lane DevOps tương ứng: dùng `deployment-devops` khi cần chốt bức tranh tổng; dùng `containerization-packaging` cho packaging; dùng `platform-runtime-deployment` cho runtime deploy; dùng `ci-cd-release` cho pipeline, tagging, promotion và approval.
+Khi scope là frontend, dùng thêm skill chuyên biệt đúng step: ở step 5 dùng `frontend-experience-design` khi cần khóa screen behavior, UI state, responsive rule hoặc visual direction; ở step 7 dùng `react-web-implementation` khi stack là React web hoặc Next.js và cần framework-specific guidance; ở step 8 dùng `frontend-quality-review` khi thay đổi chạm surface UI và dùng `react-best-practices-review` khi cần review render/data boundary, effect hygiene hoặc server/client split của React.
 
 ## Yêu Cầu Execution Runtime
 

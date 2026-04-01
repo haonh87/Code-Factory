@@ -112,6 +112,7 @@ powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\codex-workflow-pack\a
 Ghi chú:
 
 - Skill trong `%USERPROFILE%\.codex\skills` là global cho mọi session Codex.
+- Installer hiện ghi lại danh sách skill do workflow pack này quản lý trong `%USERPROFILE%\.codex\.codex-workflow-pack.managed-skills.txt` và chỉ prune những skill cũ do chính pack này từng cài; không đụng vào skill hệ thống như `.system` hoặc skill tùy biến ngoài pack.
 - `AGENTS.md` chỉ dùng để áp policy workflow cho project; path tham chiếu bên trong skill phải khớp layout cài trong `%USERPROFILE%\.codex\skills`.
 - `AGENTS.md` ở root mỗi ổ đĩa giúp policy workflow áp dụng cho mọi project nằm dưới ổ đó.
 - Script sẽ tự quét các ổ đĩa filesystem thay vì cố định `C`, `D`, `E`.
@@ -159,6 +160,7 @@ Trên Linux/macOS, nếu chỉ muốn cập nhật policy và skill mới vào C
 Ghi chú:
 
 - Script update `.sh` đồng bộ `~/.codex/AGENTS.global.md` và `~/.codex/skills`.
+- Script install/update hiện chỉ prune skill stale từng được workflow pack này cài trước đó; skill ngoài pack vẫn được giữ nguyên.
 - Trên Windows, nếu máy đang dùng `AGENTS.md` root-level theo kiểu file copy thay vì symlink, chạy lại full install flow với `-CreateDriveRootLinks -OverwriteExistingDriveRootFiles` cho ổ cần refresh.
 
 ## Quy Ước Mở Rộng

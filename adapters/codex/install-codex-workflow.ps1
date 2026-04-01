@@ -9,6 +9,7 @@ $ErrorActionPreference = "Stop"
 
 $codexHome = Join-Path $HOME ".codex"
 $skillsHome = Join-Path $codexHome "skills"
+$managedSkillsManifest = Join-Path $codexHome ".codex-workflow-pack.managed-skills.txt"
 $globalAgentsSource = Join-Path $RepoRoot "policies\codex\AGENTS.global.md"
 $globalAgentsDest = Join-Path $codexHome "AGENTS.global.md"
 $skillsSourceRoot = Join-Path $RepoRoot "skills"
@@ -31,6 +32,17 @@ $skillDirs = Get-ChildItem -Path $skillsSourceRoot -Recurse -Filter SKILL.md |
   ForEach-Object { $_.Directory } |
   Sort-Object FullName -Unique
 
+$skillNames = $skillDirs |
+  ForEach-Object { $_.Name } |
+  Sort-Object -Unique
+
+$previousManagedSkillNames = @()
+if (Test-Path $managedSkillsManifest) {
+  $previousManagedSkillNames = Get-Content -Path $managedSkillsManifest |
+    Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+    Sort-Object -Unique
+}
+
 foreach ($skillDir in $skillDirs) {
   $skillDest = Join-Path $skillsHome $skillDir.Name
   if (Test-Path $skillDest) {
@@ -39,6 +51,23 @@ foreach ($skillDir in $skillDirs) {
   Copy-Item -Path $skillDir.FullName -Destination $skillDest -Recurse -Force
   Write-Host "Installed skill to: $skillDest"
 }
+
+foreach ($staleSkillName in $previousManagedSkillNames) {
+  if ($skillNames -contains $staleSkillName) {
+    continue
+  }
+
+  $staleSkillDest = Join-Path $skillsHome $staleSkillName
+  if (-not (Test-Path $staleSkillDest)) {
+    continue
+  }
+
+  Remove-Item -LiteralPath $staleSkillDest -Recurse -Force
+  Write-Host "Removed stale managed skill: $staleSkillDest"
+}
+
+Set-Content -Path $managedSkillsManifest -Value $skillNames -Encoding utf8
+Write-Host "Updated managed skills manifest: $managedSkillsManifest"
 
 if ($CreateDriveRootLinks) {
   if ($DriveLetters -and $DriveLetters.Count -gt 0) {
