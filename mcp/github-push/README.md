@@ -57,6 +57,33 @@ Có thể override allowed root:
 powershell -ExecutionPolicy Bypass -File adapters/mcp/install-github-push.ps1 -AllowedRoot "D:/workspaces/RnD/AI"
 ```
 
+### Configure Credentials Trên Windows
+
+Để dùng `create_github_repository` hoặc HTTPS push mà không ghi secret vào repo hay `~/.codex/config.toml`, dùng credential adapter:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File adapters/mcp/configure-github-push-credentials.ps1 -GitHubUsername "your-github-username"
+```
+
+Script sẽ prompt token bằng `Read-Host -AsSecureString`, lưu vào Windows `User` environment variables và nạp luôn cho session PowerShell hiện tại.
+
+Một số lệnh hữu ích:
+
+```powershell
+# Chỉ lưu cho session hiện tại
+powershell -ExecutionPolicy Bypass -File adapters/mcp/configure-github-push-credentials.ps1 -GitHubUsername "your-github-username" -Scope Process
+
+# Kiểm tra đã có biến môi trường hay chưa
+powershell -ExecutionPolicy Bypass -File adapters/mcp/configure-github-push-credentials.ps1 -ShowStatus
+
+# Xóa credential đã lưu ở User scope
+powershell -ExecutionPolicy Bypass -File adapters/mcp/configure-github-push-credentials.ps1 -Clear -Scope User
+```
+
+Ghi chú:
+- Tránh truyền token trực tiếp trên command line nếu không cần, vì shell history có thể lưu lại.
+- Nếu dùng SSH remote hoặc credential helper có sẵn, bạn có thể không cần `GITHUB_TOKEN` cho bước `git push`.
+
 ## Run
 
 ```powershell
