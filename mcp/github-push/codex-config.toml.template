@@ -1,0 +1,6 @@
+[mcp_servers.{{SERVER_NAME}}]
+command = "node"
+args = ["{{ENTRY_POINT}}"]
+cwd = "{{MCP_ROOT}}"
+env = { GITHUB_PUSH_ALLOWED_ROOT = "{{ALLOWED_ROOT}}" }
+env_vars = ["GITHUB_TOKEN", "GITHUB_USERNAME"]

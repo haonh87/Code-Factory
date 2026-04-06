@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 usage() {
@@ -20,7 +20,7 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 codex_home="${CODEX_HOME:-${HOME}/.codex}"
 allowed_root=""
 server_name="github-push"
-managed_comment="# Managed by adapters/mcp/install-github-push.sh"
+managed_comment="# Managed by adapters/mcp/install-github-push"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -49,10 +49,16 @@ while [[ $# -gt 0 ]]; do
 done
 
 mcp_root="${repo_root}/mcp/github-push"
+template_path="${mcp_root}/codex-config.toml.template"
 config_path="${codex_home}/config.toml"
 
 if [[ ! -f "${mcp_root}/package.json" ]]; then
   echo "Missing package.json: ${mcp_root}/package.json" >&2
+  exit 1
+fi
+
+if [[ ! -f "${template_path}" ]]; then
+  echo "Missing template: ${template_path}" >&2
   exit 1
 fi
 
@@ -62,6 +68,20 @@ fi
 
 cd "${mcp_root}"
 npm install
+
+render_managed_block() {
+  local entry_point line
+  entry_point="${mcp_root}/src/index.js"
+
+  printf '%s\n' "${managed_comment}"
+  while IFS= read -r line || [[ -n "${line}" ]]; do
+    line="${line//\{\{SERVER_NAME\}\}/${server_name}}"
+    line="${line//\{\{ENTRY_POINT\}\}/${entry_point}}"
+    line="${line//\{\{MCP_ROOT\}\}/${mcp_root}}"
+    line="${line//\{\{ALLOWED_ROOT\}\}/${allowed_root}}"
+    printf '%s\n' "${line}"
+  done < "${template_path}"
+}
 
 mkdir -p "${codex_home}"
 touch "${config_path}"
@@ -89,21 +109,13 @@ BEGIN {
     print $0
   }
 }
-' "${config_path}" | awk -v managed_comment="${managed_comment}" '$0 != managed_comment' > "${tmp_config}"
+' "${config_path}" | awk '$0 !~ /^# Managed by adapters\/mcp\/install-github-push(\.sh|\.ps1)?$/' > "${tmp_config}"
 
 if [[ -s "${tmp_config}" ]]; then
   printf '\n' >> "${tmp_config}"
 fi
 
-cat >> "${tmp_config}" <<EOF
-${managed_comment}
-[mcp_servers.${server_name}]
-command = "node"
-args = ["${mcp_root}/src/index.js"]
-cwd = "${mcp_root}"
-env = { GITHUB_PUSH_ALLOWED_ROOT = "${allowed_root}" }
-env_vars = ["GITHUB_TOKEN", "GITHUB_USERNAME"]
-EOF
+render_managed_block >> "${tmp_config}"
 
 mv "${tmp_config}" "${config_path}"
 

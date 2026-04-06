@@ -2,7 +2,7 @@
 model_reasoning_effort = "xhigh"
 personality = "pragmatic"
 
-# Managed by adapters/mcp/install-github-push.ps1
+# Managed by adapters/mcp/install-github-push
 [mcp_servers.github-push]
 command = "node"
 args = ["D:/workspaces/RnD/AI/Code-Factory/mcp/github-push/src/index.js"]

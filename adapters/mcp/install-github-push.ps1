@@ -9,11 +9,16 @@ $ErrorActionPreference = "Stop"
 $resolvedRepoRoot = (Resolve-Path -LiteralPath $RepoRoot).Path
 $mcpRoot = Join-Path $resolvedRepoRoot "mcp\github-push"
 $packageJson = Join-Path $mcpRoot "package.json"
+$templatePath = Join-Path $mcpRoot "codex-config.toml.template"
 $configPath = Join-Path $CodexHome "config.toml"
 $mcpServerName = "github-push"
 
 if (-not (Test-Path $packageJson)) {
   throw "Missing package.json: $packageJson"
+}
+
+if (-not (Test-Path -LiteralPath $templatePath)) {
+  throw "Missing template: $templatePath"
 }
 
 if (-not $AllowedRoot) {
@@ -71,6 +76,25 @@ function Trim-TrailingBlankLines {
   return $Lines
 }
 
+function Render-McpTemplate {
+  param(
+    [string[]]$Lines,
+    [hashtable]$Values
+  )
+
+  $rendered = New-Object "System.Collections.Generic.List[string]"
+
+  foreach ($line in $Lines) {
+    $renderedLine = $line
+    foreach ($key in $Values.Keys) {
+      $renderedLine = $renderedLine.Replace("{{$key}}", $Values[$key])
+    }
+    $rendered.Add($renderedLine)
+  }
+
+  return $rendered
+}
+
 Push-Location $mcpRoot
 try {
   npm install
@@ -88,22 +112,28 @@ else {
   $configLines = @()
 }
 
-$managedComment = "# Managed by adapters/mcp/install-github-push.ps1"
-$filteredLines = @(Remove-McpServerBlock -Lines $configLines -ServerName $mcpServerName | Where-Object { $_ -ne $managedComment })
+$managedComment = "# Managed by adapters/mcp/install-github-push"
+$legacyManagedComments = @(
+  $managedComment
+  "# Managed by adapters/mcp/install-github-push.sh"
+  "# Managed by adapters/mcp/install-github-push.ps1"
+)
+$filteredLines = @(Remove-McpServerBlock -Lines $configLines -ServerName $mcpServerName | Where-Object { $legacyManagedComments -notcontains $_ })
 $updatedLines = New-Object "System.Collections.Generic.List[string]"
 foreach ($line in $filteredLines) {
   $updatedLines.Add($line)
 }
 Trim-TrailingBlankLines -Lines $updatedLines | Out-Null
+$templateLines = Get-Content -LiteralPath $templatePath
 $managedBlock = @(
   $managedComment
-  "[mcp_servers.$mcpServerName]"
-  'command = "node"'
-  "args = [`"$normalizedEntryPoint`"]"
-  "cwd = `"$normalizedMcpRoot`""
-  "env = { GITHUB_PUSH_ALLOWED_ROOT = `"$normalizedAllowedRoot`" }"
-  'env_vars = ["GITHUB_TOKEN", "GITHUB_USERNAME"]'
 )
+$managedBlock += Render-McpTemplate -Lines $templateLines -Values @{
+  SERVER_NAME = $mcpServerName
+  ENTRY_POINT = $normalizedEntryPoint
+  MCP_ROOT = $normalizedMcpRoot
+  ALLOWED_ROOT = $normalizedAllowedRoot
+}
 
 if ($updatedLines.Count -gt 0) {
   $updatedLines.Add("")
@@ -118,5 +148,4 @@ Set-Content -LiteralPath $configPath -Value $updatedLines -Encoding utf8
 Write-Host "Installed GitHub Push MCP dependencies in: $mcpRoot"
 Write-Host "Updated Codex MCP config in: $configPath"
 Write-Host "Registered MCP server '$mcpServerName' with allowed root: $resolvedAllowedRoot"
-
 

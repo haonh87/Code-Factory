@@ -47,7 +47,7 @@ powershell -ExecutionPolicy Bypass -File adapters/mcp/install-github-push.ps1
 
 Adapter này sẽ:
 - cài dependency cho `mcp/github-push`
-- upsert MCP server `github-push` vào `~/.codex/config.toml`
+- render template [`codex-config.toml.template`](codex-config.toml.template) vào `~/.codex/config.toml`
 - đặt `GITHUB_PUSH_ALLOWED_ROOT` mặc định là thư mục cha của repo hiện tại
 - forward `GITHUB_TOKEN` và `GITHUB_USERNAME` từ shell environment thay vì ghi secret thẳng vào config
 
@@ -91,23 +91,25 @@ cd mcp/github-push
 node src/index.js
 ```
 
-## Example Codex Config
+## Codex Config Template
 
-Codex dùng `~/.codex/config.toml`. Block MCP tương đương:
+Template được commit sẵn tại [`codex-config.toml.template`](codex-config.toml.template). Installer sẽ thay các placeholder máy-local rồi ghi block này vào `~/.codex/config.toml`.
 
 ```toml
-[mcp_servers.github-push]
+[mcp_servers.{{SERVER_NAME}}]
 command = "node"
-args = ["D:/workspaces/RnD/AI/Code-Factory/mcp/github-push/src/index.js"]
-cwd = "D:/workspaces/RnD/AI/Code-Factory/mcp/github-push"
-env = { GITHUB_PUSH_ALLOWED_ROOT = "D:/workspaces/RnD/AI" }
+args = ["{{ENTRY_POINT}}"]
+cwd = "{{MCP_ROOT}}"
+env = { GITHUB_PUSH_ALLOWED_ROOT = "{{ALLOWED_ROOT}}" }
 env_vars = ["GITHUB_TOKEN", "GITHUB_USERNAME"]
 ```
 
 Ghi chú:
+- `SERVER_NAME`, `ENTRY_POINT`, `MCP_ROOT` và `ALLOWED_ROOT` được installer render theo máy hiện tại.
 - `GITHUB_TOKEN` chỉ bắt buộc khi gọi GitHub API hoặc HTTPS push.
 - `GITHUB_USERNAME` chỉ cần khi dùng `GITHUB_TOKEN` để HTTPS push.
 - Nếu dùng SSH hoặc credential helper sẵn có, không cần lưu token trong config.
+- Secret không được replace vào file template; runtime chỉ forward qua `env_vars`.
 
 ## Tool List
 
