@@ -29,7 +29,7 @@
 - `implementation`: skill triển khai thay đổi thực tế trong codebase.
 - `react-web-implementation`: skill triển khai React web hoặc Next.js với server/client split, data fetching, state placement và loading path rõ ràng.
 - `testing`: skill verify theo acceptance criteria và quality gates, với chiến lược rõ giữa unit test, integration/database test và feature test.
-- `code-scan-review`: skill quét code theo ngôn ngữ để kiểm tra syntax, static analysis, security scan và performance heuristic.
+- `code-scan-review`: skill quét code ở step 8 verify để kiểm tra syntax, static analysis, security scan và performance heuristic; chi tiết từng ngôn ngữ được tách trong reference của skill.
 - `frontend-quality-review`: skill rà soát screen-level quality của frontend ở mức accessibility, responsive layout, interaction feedback và UX heuristic.
 - `react-best-practices-review`: skill rà soát render/data boundary, effect hygiene, state placement và performance heuristic đặc thù của React web hoặc Next.js.
 - `database-change-review`: skill rà soát migration safety, compatibility, query risk và release recommendation cho thay đổi database.
@@ -1577,7 +1577,13 @@ notes_for_review: ""
 
 ```yaml
 scan_target: ""
+scan_scope:
+  mode: DIFF_ONLY|AFFECTED_MODULES|FULL_REPO
+  changed_files: []
+  affected_modules: []
 language_stack: []
+available_scan_tools: []
+false_positive_policy: "Diff-aware, evidence-based, dismiss only with reason"
 scan_plan:
   syntax: []
   static_analysis: []
@@ -1585,19 +1591,38 @@ scan_plan:
   performance_heuristic: []
 syntax_scan_results:
   - command: ""
+    scope: []
     status: PASS|FAIL|SKIP
     evidence: ""
+    blocker_files: []
 static_analysis_results:
   - command: ""
+    config_used: ""
+    scope: []
     status: PASS|FAIL|SKIP
     findings: []
+    new_blockers: []
 security_scan_results:
-  - command: ""
+  - command_or_check: ""
+    scope: []
     status: PASS|FAIL|SKIP
-    findings: []
+    findings:
+      - severity: HIGH|MEDIUM|LOW
+        confidence: HIGH|MEDIUM|LOW
+        category: ""
+        file: ""
+        line: 0
+        issue: ""
+        evidence: ""
+        recommendation: ""
+        false_positive_reason: ""
 performance_heuristic_results:
   - check: ""
+    scope: []
     status: PASS|FAIL|SKIP
+    expected_impact: HIGH|MEDIUM|LOW
+    confidence: HIGH|MEDIUM|LOW
+    trigger_condition: ""
     evidence: ""
 skipped_scans: []
 overall_status: PASS|FAIL|PARTIAL
