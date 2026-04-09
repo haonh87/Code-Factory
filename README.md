@@ -28,7 +28,9 @@ Tên file workflow không đặt theo cách hiểu cá nhân như `requirements`
 - `skills/obsidian/`: skill soạn thảo artifact theo hệ Obsidian như note Markdown, Bases và JSON Canvas.
 - `skills/notebooklm/`: skill tích hợp NotebookLM qua CLI/MCP cho các tác vụ research-heavy hoặc corpus lớn.
 - `mcp/github-push/`: MCP server Node để inspect repository, tạo repo GitHub, commit, cấu hình remote và push branch hiện tại.
+- `mcp/session-search/`: MCP server Node read-only để tra cứu local coding-agent session history qua `cass`.
 - `mcp/github-push/codex-config.toml.template`: template block MCP được render vào `~/.codex/config.toml` khi chạy installer.
+- `mcp/session-search/codex-config.toml.template`: template block MCP được render vào `~/.codex/config.toml` khi chạy installer cho Session Search MCP.
 - `adapters/codex/install-codex-workflow.ps1`: script cài đặt cho Windows.
 - `adapters/codex/install-codex-global.cmd`: launcher Windows để cài global nhanh.
 - `adapters/codex/install-codex-workflow.sh`: script cài đặt cho Linux/macOS.
@@ -36,13 +38,37 @@ Tên file workflow không đặt theo cách hiểu cá nhân như `requirements`
 - `adapters/mcp/configure-github-push-credentials.ps1`: script cấu hình `GITHUB_USERNAME` và `GITHUB_TOKEN` cho MCP GitHub Push trên Windows mà không ghi secret vào repo.
 - `adapters/mcp/configure-github-push-credentials.cmd`: launcher Windows để gọi nhanh credential adapter.
 - `adapters/mcp/install-github-push.sh`: script cài dependency và render template GitHub Push MCP vào `~/.codex/config.toml` trên Linux/macOS.
+- `adapters/mcp/install-session-search.ps1`: script cài dependency và render template Session Search MCP vào `~/.codex/config.toml` trên Windows.
+- `adapters/mcp/install-session-search.sh`: script cài dependency và render template Session Search MCP vào `~/.codex/config.toml` trên Linux/macOS.
 
 ## MCP Hiện Có
 
 - `github-push`: MCP server starter để hỗ trợ luồng `inspect -> commit -> create repo -> configure remote -> push` cho GitHub bằng `git` và GitHub REST API.
+- `session-search`: MCP server read-only để list, search, view và nối ngữ cảnh local coding-agent sessions bằng `cass`.
 - Template cấu hình đã được commit tại `mcp/github-push/codex-config.toml.template`; installer chỉ điền path máy-local rồi ghi sang `~/.codex/config.toml`.
+- Template cấu hình đã được commit tại `mcp/session-search/codex-config.toml.template`; installer điền allowed root máy-local rồi ghi sang `~/.codex/config.toml`.
 
-Xem chi tiết tại [`mcp/github-push/README.md`](mcp/github-push/README.md).
+Xem chi tiết tại [`mcp/github-push/README.md`](mcp/github-push/README.md) và [`mcp/session-search/README.md`](mcp/session-search/README.md).
+
+## Tra Cứu Session Với `cass`
+
+Nếu máy đã cài `cass`, có thể dùng CLI này để tra cứu lịch sử session Codex theo workspace.
+
+Ví dụ nhanh trên Linux/macOS:
+
+```bash
+cass health
+cass sessions --current --limit 5 --json
+cass search "status" --workspace "$(pwd)" --limit 5 --display lines
+```
+
+Ghi chú:
+
+- Trên macOS, `cass` mặc định dùng data dir tại `~/Library/Application Support/com.coding-agent-search.coding-agent-search/`.
+- Khi chạy trong sandbox hạn chế, `cass` có thể báo degraded hoặc không mở được database dù cài đặt cục bộ vẫn tốt.
+- Nếu gặp lỗi kiểu đó, hãy xác minh lại bằng `cass health` hoặc `cass search ...` ở môi trường ngoài sandbox trước khi chạy `cass doctor --fix` hoặc `cass index --full`.
+- Đã kiểm chứng ngày `2026-04-08` trên workspace này: `cass search "status"` trả hit từ local Codex sessions, còn truy vấn `notebooklm` không có hit ở thời điểm kiểm tra.
+- Nếu muốn expose capability này cho agent qua tool thay vì gọi CLI trực tiếp, dùng MCP [`mcp/session-search`](mcp/session-search/README.md); server này chỉ bọc các luồng read-only và không expose `cass doctor` hoặc `cass index`.
 
 ## Khả Năng DevOps Theo Môi Trường
 

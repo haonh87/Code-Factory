@@ -25,10 +25,12 @@ Project đang ở trạng thái usable internal platform cho Codex, không còn 
 - Có skill `notebooklm` để hỗ trợ research/query corpus lớn qua NotebookLM.
 - Có quy ước mở rộng repo theo `policies/<tool>` và `adapters/<tool>`.
 - Đã có materialization đầu tiên của lớp `MCP` với `mcp/github-push` và adapter cài dependency tương ứng.
+- Đã có MCP thứ hai là `mcp/session-search`, read-only wrapper quanh `cass` để tra cứu local coding-agent session history.
 - Có Memory Bank để giữ tầm nhìn dự án và giảm mất ngữ cảnh giữa các session.
 - Đã có spec orchestration và runtime reference cho `agentic` và `multi-agent` theo hướng `Codex-first`.
 - Policy Codex đã phản ánh execution runtime ở mức sử dụng thực tế, không còn chỉ nằm trong reference docs.
 - Đã có bộ ví dụ end-to-end cho `BUG` agentic, `FEATURE` multi-agent có `notebooklm`, và `CHANGE` database-heavy multi-agent.
+- Đã kiểm chứng ngày `2026-04-08` rằng `cass` có thể tra cứu local Codex sessions theo workspace khi chạy ngoài sandbox; truy vấn `status` trên repo này trả hit thực từ session history.
 
 ## Việc Còn Thiếu
 
@@ -49,6 +51,8 @@ Project đang ở trạng thái usable internal platform cho Codex, không còn 
 - `agentic` và `multi-agent` đã có orchestration spec, runtime reference và policy Codex tương ứng, nhưng chưa có runner hoặc adapter runtime riêng để chứng minh behavior end-to-end.
 - `notebooklm` là external integration nên còn phụ thuộc auth, network và cách team quản lý notebook/query thực tế.
 - `github-push` MCP là side-effectful integration, nên cần guardrail tốt cho allowed root, auth và flow publish.
+- `cass` có thể báo degraded trong sandbox hạn chế do không mở được DB/index ở Application Support, nên cần phân biệt lỗi quyền môi trường với lỗi cài đặt thật trước khi repair.
+- `session-search` hiện phụ thuộc runtime behavior và JSON contract của `cass`; nếu upstream CLI đổi schema thì MCP wrapper này cần cập nhật theo.
 
 ## Quyết Định Đã Chốt
 
@@ -64,8 +68,6 @@ Project đang ở trạng thái usable internal platform cho Codex, không còn 
 - Khi phần nền trên Codex đủ ổn định, lập kế hoạch port hoặc trừu tượng hóa để mở rộng sang Claude.
 - Mở rộng bộ ví dụ end-to-end cho thêm case `RESEARCH` hoặc release-heavy integration ngoài code/data flow hiện có.
 - Khi mở rộng sang agent/tool mới, tạo đủ cả policy, adapter và tài liệu tiến độ tương ứng.
-
-
 
 
 

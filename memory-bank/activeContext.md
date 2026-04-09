@@ -24,6 +24,8 @@ Trọng tâm hiện tại:
 - Đã tách DevOps thành `deployment-devops` làm skill điều phối tổng, cùng `containerization-packaging`, `platform-runtime-deployment`, `ci-cd-release` làm các skill chuyên trách.
 - Đã giữ DevOps delivery lane xuyên step 5 -> 8 cho local, dev, uat, prod; local có baseline bằng `Dockerfile` và `compose.yaml`, còn runtime đích ở môi trường xa là `docker`, `docker swarm` hoặc `k8s`.
 - Đã materialize lớp `MCP` đầu tiên bằng `mcp/github-push`, kèm adapter cài dependency trong `adapters/mcp/`.
+- Đã materialize thêm `mcp/session-search` như MCP read-only bọc `cass` để list/search/view local coding-agent sessions theo workspace, kèm adapter cài dependency và config.
+- Đã kiểm chứng `cass` CLI truy cập được local Codex session history theo workspace khi chạy ngoài sandbox; lỗi degraded quan sát trong sandbox là do quyền mở DB/index ở Application Support, không phải lỗi cài đặt cục bộ.
 
 ## Quyết Định Đang Có Hiệu Lực
 
@@ -48,6 +50,8 @@ Trọng tâm hiện tại:
 - `agentic` là loop một agent tự chạy `contract -> readiness -> execute -> self-check -> audit -> handoff`.
 - `multi-agent` là topology có `coordinator` điều phối nhiều worker/verifier quanh cùng một step contract.
 - `notebooklm` là skill tích hợp tool ngoài để research/query corpus lớn; output của nó không thay thế note `.md` nguồn sự thật.
+- `cass` phù hợp để tìm lại session Codex cũ theo workspace; nếu sandbox chặn data dir của `cass`, cần verify ngoài sandbox trước khi kết luận DB hỏng.
+- `session-search` nên giữ hẹp ở mức read-only retrieval; không nên expose repair/index/export flows của `cass` trong cùng server.
 - Layout runtime sau khi cài là flat theo `skill-name`, nên tên skill phải duy nhất toàn repo.
 - Với tác vụ chỉnh sửa note theo hệ Obsidian, ưu tiên `obsidian-markdown`; chỉ dùng `obsidian-bases` cho `.base` và `json-canvas` cho `.canvas`.
 
@@ -67,8 +71,6 @@ Trọng tâm hiện tại:
 - Có nguy cơ drift giữa `README.md` và `memory-bank/` nếu chỉ sửa một nơi.
 - Repo hiện thiên về policy và docs, nên chất lượng tài liệu chính là chất lượng sản phẩm.
 - Chưa có automation riêng để phát hiện lệch nội dung giữa các tài liệu nguồn.
-
-
 
 
 

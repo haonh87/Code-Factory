@@ -35,6 +35,8 @@ Hiện ngoại lệ đầu tiên là `mcp/github-push/package.json`, dùng để
 - `obsidian-cli` hiện chưa nằm trong scope tích hợp.
 - `agentic` và `multi-agent` hiện đã có orchestration spec và runtime reference theo hướng `Codex-first`; vẫn chưa có runtime framework riêng trong repo.
 - MCP GitHub Push dựa trên `git` CLI cục bộ và GitHub REST API; auth dùng `GITHUB_TOKEN`, còn HTTPS push có thể dùng `GIT_ASKPASS` tạm thời.
+- Trên macOS, `cass` mặc định đọc index và database từ `~/Library/Application Support/com.coding-agent-search.coding-agent-search/`; sandbox hạn chế có thể chặn mở DB dù môi trường local bên ngoài vẫn healthy.
+- MCP Session Search dựa trên `cass` CLI cục bộ, Node.js, `@modelcontextprotocol/sdk` và `zod`; server chỉ expose read-only retrieval trên session history.
 
 ## Pattern Sử Dụng Tool
 
@@ -44,6 +46,9 @@ Hiện ngoại lệ đầu tiên là `mcp/github-push/package.json`, dùng để
 - Dùng `update-codex-workflow.sh` để cập nhật policy và skill vào môi trường Codex đã cài sẵn trên Linux/macOS.
 - Dùng `notebooklm` qua `uvx --from notebooklm-mcp-cli ...` khi cần research/query corpus lớn; flow này có thể cần auth và network.
 - Dùng `adapters/mcp/install-github-push.ps1` hoặc `.sh` để cài dependency cho MCP GitHub Push.
+- Dùng `adapters/mcp/install-session-search.ps1` hoặc `.sh` để cài dependency và đăng ký MCP Session Search vào Codex config.
+- Dùng `cass health`, `cass sessions --current` và `cass search "<query>" --workspace "<path>"` khi cần tra cứu lại local Codex session history theo workspace.
+- Nếu `cass` báo degraded trong sandbox nhưng máy local vẫn có CLI, ưu tiên verify lại ngoài sandbox trước khi chạy flow repair như `cass doctor --fix` hoặc `cass index --full`.
 - Khi người dùng nói "formatter obsidian", map sang skill `obsidian-markdown` vì repo không có skill tên đó theo nguyên văn.
 
 ## Điều Cần Nhớ Khi Chỉnh Sửa Repo
@@ -61,8 +66,7 @@ Hiện ngoại lệ đầu tiên là `mcp/github-push/package.json`, dùng để
 - `frontend-architecture` có khai báo `openai.yaml` phục vụ implicit invocation.
 - `notebooklm` phụ thuộc vào `notebooklm-mcp-cli` và luồng xác thực của NotebookLM khi dùng CLI/MCP thực tế.
 - `github-push` MCP phụ thuộc `@modelcontextprotocol/sdk`, `zod`, `git`, Node.js và GitHub token khi dùng API hoặc HTTPS push.
-
-
+- `session-search` MCP phụ thuộc `@modelcontextprotocol/sdk`, `zod`, Node.js và `cass` CLI cục bộ có thể đọc được local session index/database.
 
 
 
