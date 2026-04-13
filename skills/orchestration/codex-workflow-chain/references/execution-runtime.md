@@ -4,6 +4,7 @@ Tài liệu này bổ sung cho `workflow-chain.md`.
 
 - `workflow-chain.md` trả lời: step nào, skill nào, artifact nào, gate nào.
 - Tài liệu này trả lời: chọn `agentic` hay `multi-agent`, chia role ra sao, handoff thế nào, merge thế nào và fallback thế nào để chạy thực tế theo hướng `Codex-first`.
+- Nếu work item chạy theo SDD, `spec-driven-development.md` là nguồn tham chiếu cho spec lifecycle, requirement IDs, spec freeze, spec change và coverage report; runtime không được bypass các gate đó.
 - Ví dụ thực thi cụ thể nằm ở `end-to-end-examples.md`.
 
 ## Phạm Vi
@@ -20,6 +21,7 @@ Tài liệu này bổ sung cho `workflow-chain.md`.
 - `step-goal-auditor`, `definition-of-ready-gate`, `definition-of-done-gate` vẫn là guardrail bắt buộc khi step yêu cầu.
 - Note `.md` chính của step là nơi duy nhất được xem là nguồn sự thật cho kết luận của step.
 - Output từ `notebooklm` chỉ là context phụ trợ; mọi kết luận chính thức phải được chốt lại vào note `.md` hoặc artifact workflow chuẩn.
+- Khi `sdd_mode` khác `none`, coordinator hoặc agent chính phải giữ trace từ `BRD/SRS` sang approach, task, implementation và verification; không đóng step nếu spec gap bị bỏ qua.
 
 ## Chính Sách Chọn Execution Mode Theo Codex-First
 

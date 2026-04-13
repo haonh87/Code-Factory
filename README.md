@@ -15,11 +15,17 @@ Tên file workflow không đặt theo cách hiểu cá nhân như `requirements`
 - Công thức chuẩn: `<work_item_slug>.sNN.<step-slug>.<ext>`
 - Danh sách tên file chuẩn theo từng step: xem [`policies/codex/workflow-artifact-naming.md`](policies/codex/workflow-artifact-naming.md)
 - Naming đầy đủ, frontmatter và block schema theo step: xem [`skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
+- Role-aware workflow, BRD/SRS rollout artifacts và cách dùng NotebookLM làm corpus retrieval: xem [`skills/orchestration/codex-workflow-chain/references/role-aware-workflow.md`](skills/orchestration/codex-workflow-chain/references/role-aware-workflow.md)
+- SDD lifecycle, requirement IDs, spec freeze/change và coverage report: xem [`skills/orchestration/codex-workflow-chain/references/spec-driven-development.md`](skills/orchestration/codex-workflow-chain/references/spec-driven-development.md)
+- Merge strategy giữa workflow hiện tại với `spec-kit`, `OpenSpec`, `cc-sdd` và `BMAD-METHOD`: xem [`skills/orchestration/codex-workflow-chain/references/sdd-merge-strategy.md`](skills/orchestration/codex-workflow-chain/references/sdd-merge-strategy.md)
+- Target architecture để hoàn thiện workflow backbone bằng các lớp governance/change/execution/planning: xem [`skills/orchestration/codex-workflow-chain/references/target-architecture.md`](skills/orchestration/codex-workflow-chain/references/target-architecture.md)
+- Governance Pack mức project, gồm `constitution`, `project-context`, checklist profile và exception register: xem [`project-context/README.md`](project-context/README.md)
 - Validator: `powershell -File scripts/validate-workflow-artifact-names.ps1 -WorkflowRoot <workflow-artifact-dir>`
 
 ## Thành Phần Trong Repository
 
 - `policies/codex/AGENTS.global.md`: chính sách workflow toàn cục cho Codex.
+- `project-context/`: Governance Pack mức project, gồm `constitution`, `project-context`, checklist profile và exception register.
 - `skills/orchestration/`: skill điều phối workflow tổng.
 - `skills/analysis/`: skill phân tích yêu cầu, product thinking và technical approach.
 - `skills/architecture/`: skill kiến trúc domain, frontend và thiết kế dữ liệu.
@@ -28,8 +34,10 @@ Tên file workflow không đặt theo cách hiểu cá nhân như `requirements`
 - `skills/obsidian/`: skill soạn thảo artifact theo hệ Obsidian như note Markdown, Bases và JSON Canvas.
 - `skills/notebooklm/`: skill tích hợp NotebookLM qua CLI/MCP cho các tác vụ research-heavy hoặc corpus lớn.
 - `mcp/github-push/`: MCP server Node để inspect repository, tạo repo GitHub, commit, cấu hình remote và push branch hiện tại.
+- `mcp/notebooklm/`: launcher MCP để Codex gọi upstream `notebooklm-mcp` qua `uvx` cho các tác vụ NotebookLM.
 - `mcp/session-search/`: MCP server Node read-only để tra cứu local coding-agent session history qua `cass`.
 - `mcp/github-push/codex-config.toml.template`: template block MCP được render vào `~/.codex/config.toml` khi chạy installer.
+- `mcp/notebooklm/codex-config.toml.template`: template block MCP được render vào `~/.codex/config.toml` khi chạy installer cho NotebookLM MCP.
 - `mcp/session-search/codex-config.toml.template`: template block MCP được render vào `~/.codex/config.toml` khi chạy installer cho Session Search MCP.
 - `adapters/codex/install-codex-workflow.ps1`: script cài đặt cho Windows.
 - `adapters/codex/install-codex-global.cmd`: launcher Windows để cài global nhanh.
@@ -38,17 +46,21 @@ Tên file workflow không đặt theo cách hiểu cá nhân như `requirements`
 - `adapters/mcp/configure-github-push-credentials.ps1`: script cấu hình `GITHUB_USERNAME` và `GITHUB_TOKEN` cho MCP GitHub Push trên Windows mà không ghi secret vào repo.
 - `adapters/mcp/configure-github-push-credentials.cmd`: launcher Windows để gọi nhanh credential adapter.
 - `adapters/mcp/install-github-push.sh`: script cài dependency và render template GitHub Push MCP vào `~/.codex/config.toml` trên Linux/macOS.
+- `adapters/mcp/install-notebooklm.ps1`: script đăng ký NotebookLM MCP vào `~/.codex/config.toml` trên Windows.
+- `adapters/mcp/install-notebooklm.sh`: script đăng ký NotebookLM MCP vào `~/.codex/config.toml` trên Linux/macOS.
 - `adapters/mcp/install-session-search.ps1`: script cài dependency và render template Session Search MCP vào `~/.codex/config.toml` trên Windows.
 - `adapters/mcp/install-session-search.sh`: script cài dependency và render template Session Search MCP vào `~/.codex/config.toml` trên Linux/macOS.
 
 ## MCP Hiện Có
 
 - `github-push`: MCP server starter để hỗ trợ luồng `inspect -> commit -> create repo -> configure remote -> push` cho GitHub bằng `git` và GitHub REST API.
+- `notebooklm`: launcher MCP để tích hợp upstream `notebooklm-mcp-cli` vào Codex qua `uvx`, phù hợp cho workflow research-heavy khi cần lưu corpus tài liệu và query/search ngữ cảnh cho brainstorming hoặc spec.
 - `session-search`: MCP server read-only để list, search, view và nối ngữ cảnh local coding-agent sessions bằng `cass`.
 - Template cấu hình đã được commit tại `mcp/github-push/codex-config.toml.template`; installer chỉ điền path máy-local rồi ghi sang `~/.codex/config.toml`.
+- Template cấu hình đã được commit tại `mcp/notebooklm/codex-config.toml.template`; installer điền path launcher và `uvx` binary máy-local rồi ghi sang `~/.codex/config.toml`.
 - Template cấu hình đã được commit tại `mcp/session-search/codex-config.toml.template`; installer điền allowed root máy-local rồi ghi sang `~/.codex/config.toml`.
 
-Xem chi tiết tại [`mcp/github-push/README.md`](mcp/github-push/README.md) và [`mcp/session-search/README.md`](mcp/session-search/README.md).
+Xem chi tiết tại [`mcp/github-push/README.md`](mcp/github-push/README.md), [`mcp/notebooklm/README.md`](mcp/notebooklm/README.md) và [`mcp/session-search/README.md`](mcp/session-search/README.md).
 
 ## Tra Cứu Session Với `cass`
 

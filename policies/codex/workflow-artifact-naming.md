@@ -19,16 +19,16 @@ Quy tắc:
 
 ## Tên File Chuẩn Theo Step
 
-| Step | Vai trò | File chuẩn |
+| Step | Tên ngắn | File chuẩn |
 |---|---|---|
-| 1 | Restate yêu cầu và discovery framing | `<work_item_slug>.s01.restate.md` |
-| 2 | Mục tiêu business | `<work_item_slug>.s02.business-goal.md` |
-| 3 | Phần còn mơ hồ, câu hỏi mở, readiness | `<work_item_slug>.s03.open-questions.md` |
-| 4 | Acceptance criteria và Definition of Ready | `<work_item_slug>.s04.acceptance-criteria.md` |
-| 5 | Technical approach và kiến trúc được chọn | `<work_item_slug>.s05.technical-approach.md` |
-| 6 | Task breakdown và verification plan | `<work_item_slug>.s06.task-breakdown.md` |
-| 7 | Implementation note khi thực sự cần materialize | `<work_item_slug>.s07.implementation.md` |
-| 8 | Verification, audit, Definition of Done | `<work_item_slug>.s08.verification.md` |
+| `s01` | Clarify | `<work_item_slug>.s01.restate.md` |
+| `s02` | Business Goal | `<work_item_slug>.s02.business-goal.md` |
+| `s03` | Open Questions | `<work_item_slug>.s03.open-questions.md` |
+| `s04` | Acceptance + DoR | `<work_item_slug>.s04.acceptance-criteria.md` |
+| `s05` | Technical Approach | `<work_item_slug>.s05.technical-approach.md` |
+| `s06` | Task Plan | `<work_item_slug>.s06.task-breakdown.md` |
+| `s07` | Implement | `<work_item_slug>.s07.implementation.md` |
+| `s08` | Verify + DoD | `<work_item_slug>.s08.verification.md` |
 
 ## Artifact Phụ Được Phép
 

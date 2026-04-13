@@ -24,8 +24,17 @@ Trọng tâm hiện tại:
 - Đã tách DevOps thành `deployment-devops` làm skill điều phối tổng, cùng `containerization-packaging`, `platform-runtime-deployment`, `ci-cd-release` làm các skill chuyên trách.
 - Đã giữ DevOps delivery lane xuyên step 5 -> 8 cho local, dev, uat, prod; local có baseline bằng `Dockerfile` và `compose.yaml`, còn runtime đích ở môi trường xa là `docker`, `docker swarm` hoặc `k8s`.
 - Đã materialize lớp `MCP` đầu tiên bằng `mcp/github-push`, kèm adapter cài dependency trong `adapters/mcp/`.
+- Đã materialize thêm `mcp/notebooklm` theo hướng launcher mỏng để Codex gọi upstream `notebooklm-mcp-cli` qua `uvx`, thay vì re-implement toàn bộ tool surface của NotebookLM trong repo; mục tiêu chính là lưu corpus tài liệu phụ trợ và query/search ngữ cảnh cho brainstorming, spec và research-heavy step.
 - Đã materialize thêm `mcp/session-search` như MCP read-only bọc `cass` để list/search/view local coding-agent sessions theo workspace, kèm adapter cài dependency và config.
 - Đã kiểm chứng `cass` CLI truy cập được local Codex session history theo workspace khi chạy ngoài sandbox; lỗi degraded quan sát trong sandbox là do quyền mở DB/index ở Application Support, không phải lỗi cài đặt cục bộ.
+- Đã mở rộng `codex-workflow-chain` theo hướng role-aware workflow với `execution_roles`, `role_signoffs`, matrix mặc định cho `po|ba|designer|developer|qc|devops`, block `## Role Outputs` và reference riêng `role-aware-workflow.md` để trace input/output/signoff theo role trong cùng note step.
+- Đã bổ sung lớp SDD vào `codex-workflow-chain` với `spec-driven-development.md`, `sdd_mode`, `spec_refs`, `spec_status`, spec freeze ở step 4, spec change protocol ở step 5-7 và spec coverage report ở step 8.
+- Đã chuẩn hóa tên hiển thị ngắn cho workflow 8 bước: `Clarify`, `Business Goal`, `Open Questions`, `Acceptance + DoR`, `Technical Approach`, `Task Plan`, `Implement`, `Verify + DoD`, trong khi giữ nguyên `step_id`, `step_slug` và file naming chuẩn.
+- Đã thêm và mở rộng `sdd-merge-strategy.md` để chốt cách kết hợp workflow hiện tại với `github/spec-kit`, `Fission-AI/OpenSpec`, `gotalab/cc-sdd` và `bmad-code-org/BMAD-METHOD` mà không thay toàn bộ host workflow.
+- Đã thêm `target-architecture.md` để mô tả kiến trúc đích: workflow hiện tại làm backbone, còn `spec-kit`, `OpenSpec`, `cc-sdd`, `BMAD-METHOD` lần lượt bổ sung governance, change, execution và adaptive planning layer.
+- Đã cập nhật workflow docs theo hướng `hybrid governance`: không tạo step riêng, nhưng nhúng `governance context`, `governance checks`, `governance exception` vào các step và gate phù hợp.
+- Đã đồng bộ lại contract giữa `workflow-chain.md`, `AGENTS.global.md`, `role-aware-workflow.md` và `target-architecture.md`: mô hình đọc theo 6 lớp đã thống nhất, `governance_ref` là field canonical, `governance_status` dùng enum chuẩn uppercase, còn `execution_mode` dùng `agentic|multi_agent` với `sequential_multi_role` chỉ là runtime fallback.
+- Đã materialize Governance Pack ở mức project tại `project-context/`, gồm `constitution`, `project-context`, checklist profile `default|strict|regulated` và `governance-exception-register`.
 
 ## Quyết Định Đang Có Hiệu Lực
 
@@ -40,16 +49,20 @@ Trọng tâm hiện tại:
 ## Mẫu Hình Quan Trọng Cần Nhớ
 
 - Workflow cốt lõi là chain 8 bước, không tách discovery và delivery thành hai workflow riêng.
+- SDD cũng không tạo workflow riêng; nó là lớp ràng buộc artifact/gate/traceability trên cùng 8 bước.
 - Gate readiness nằm ở step 4; gate done nằm ở step 8.
 - DevOps là delivery lane chạy xuyên step 5 -> 8; không tạo step 9 riêng.
 - `.md` là nguồn sự thật cho artifact workflow; `.canvas` và `.base` chỉ là lớp hỗ trợ.
-- Orchestration hiện nên được đọc theo 4 lớp: `step`, `content skill`, `artifact`, `execution topology`.
+- Orchestration hiện nên được đọc theo 6 lớp: `step`, `governance`, `SDD`, `content skill`, `artifact`, `execution topology`.
+- Khi cần trace ownership nghiệp vụ sâu hơn trong cùng một step, dùng thêm lớp `role outputs` trong note chính; không tách workflow thành nhiều workflow riêng theo role.
 - Khi materialize `MCP`, server implementation nằm trong `mcp/`, còn script bootstrap hoặc install nằm trong `adapters/mcp/`.
 - Với scope container hóa, local phải có Dockerfile và compose.yaml.
 - Với dev, uat, prod, runtime target phải được khai báo rõ là docker, docker swarm hoặc k8s.
 - `agentic` là loop một agent tự chạy `contract -> readiness -> execute -> self-check -> audit -> handoff`.
 - `multi-agent` là topology có `coordinator` điều phối nhiều worker/verifier quanh cùng một step contract.
 - `notebooklm` là skill tích hợp tool ngoài để research/query corpus lớn; output của nó không thay thế note `.md` nguồn sự thật.
+- `mcp/notebooklm` nên được hiểu là managed upstream integration; guardrail chủ yếu nằm ở cách bật/tắt MCP, auth và phạm vi sử dụng, không nằm ở việc repo này re-wrap lại từng upstream tool.
+- Trong product-development workflow, `BRD` và `SRS` là rollout outputs/source-of-truth; NotebookLM chỉ là lớp lưu corpus và truy hồi tài liệu trong lúc thực thi.
 - `cass` phù hợp để tìm lại session Codex cũ theo workspace; nếu sandbox chặn data dir của `cass`, cần verify ngoài sandbox trước khi kết luận DB hỏng.
 - `session-search` nên giữ hẹp ở mức read-only retrieval; không nên expose repair/index/export flows của `cass` trong cùng server.
 - Layout runtime sau khi cài là flat theo `skill-name`, nên tên skill phải duy nhất toàn repo.
@@ -71,10 +84,3 @@ Trọng tâm hiện tại:
 - Có nguy cơ drift giữa `README.md` và `memory-bank/` nếu chỉ sửa một nơi.
 - Repo hiện thiên về policy và docs, nên chất lượng tài liệu chính là chất lượng sản phẩm.
 - Chưa có automation riêng để phát hiện lệch nội dung giữa các tài liệu nguồn.
-
-
-
-
-
-
-

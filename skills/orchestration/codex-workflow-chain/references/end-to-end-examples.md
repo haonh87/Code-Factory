@@ -36,14 +36,14 @@ Tài liệu này minh họa cách áp dụng `workflow-chain.md` và `execution-
 
 | Step | Skill chính | Execution | Output mẫu |
 |---|---|---|---|
-| 1. Restate + discovery framing | `requirement-analysis`, `product-thinking` | `agentic` | Chốt đây là `BUG`, phạm vi là validation profile form, risk là đổi behavior nhập liệu ngoài ý muốn |
-| 2. Business goal | `product-thinking` | `agentic` | Mục tiêu là user nhập số hợp lệ theo chuẩn VN không bị chặn sai; không đổi luồng xác thực hay dữ liệu lịch sử |
-| 3. Open questions | `requirement-analysis`, `input-readiness-assessor`, `step-goal-auditor` | `agentic` | Chốt cần hỗ trợ các format nào, backend hay frontend đang reject, có migration dữ liệu không |
-| 4. Acceptance criteria + DoR | `requirement-analysis`, `definition-of-ready-gate` | `agentic` | Criteria ví dụ: `0901234567`, `090 123 4567`, `+84901234567` đều pass; input thiếu số vẫn fail; DoR=`READY` |
-| 5. Technical approach | `brainstorming`, `system-design` | `agentic` | Chọn normalize input ở shared validation util, không rải rule riêng ở nhiều component |
-| 6. Task breakdown | `task-breakdown-planner` | `agentic` | Task 1 sửa util normalize; Task 2 update test; Task 3 verify regression trên profile form |
-| 7. Implement | `implementation` | `agentic` | Sửa util validator/formatter, cập nhật unit test và note implementation |
-| 8. Verify + DoD | `testing`, `code-scan-review`, `step-goal-auditor`, `definition-of-done-gate` | `agentic` | Chạy unit test + lint + audit; xác nhận evidence đủ để đóng DoD |
+| `s01` Clarify | `requirement-analysis`, `product-thinking` | `agentic` | Chốt đây là `BUG`, phạm vi là validation profile form, risk là đổi behavior nhập liệu ngoài ý muốn |
+| `s02` Business Goal | `product-thinking` | `agentic` | Mục tiêu là user nhập số hợp lệ theo chuẩn VN không bị chặn sai; không đổi luồng xác thực hay dữ liệu lịch sử |
+| `s03` Open Questions | `requirement-analysis`, `input-readiness-assessor`, `step-goal-auditor` | `agentic` | Chốt cần hỗ trợ các format nào, backend hay frontend đang reject, có migration dữ liệu không |
+| `s04` Acceptance + DoR | `requirement-analysis`, `definition-of-ready-gate` | `agentic` | Criteria ví dụ: `0901234567`, `090 123 4567`, `+84901234567` đều pass; input thiếu số vẫn fail; DoR=`READY` |
+| `s05` Technical Approach | `brainstorming`, `system-design` | `agentic` | Chọn normalize input ở shared validation util, không rải rule riêng ở nhiều component |
+| `s06` Task Plan | `task-breakdown-planner` | `agentic` | Task 1 sửa util normalize; Task 2 update test; Task 3 verify regression trên profile form |
+| `s07` Implement | `implementation` | `agentic` | Sửa util validator/formatter, cập nhật unit test và note implementation |
+| `s08` Verify + DoD | `testing`, `code-scan-review`, `step-goal-auditor`, `definition-of-done-gate` | `agentic` | Chạy unit test + lint + audit; xác nhận evidence đủ để đóng DoD |
 
 ### Delivery Narrative Mẫu
 
@@ -115,14 +115,14 @@ handoff_format: worker-handoff-report
 
 | Step | Mode | Vai trò chính | Output mẫu |
 |---|---|---|---|
-| 1. Restate + discovery framing | `agentic` | `coordinator` | Chốt scope: thêm provider mới, không thay account migration |
-| 2. Business goal | `agentic` | `coordinator` | Chốt mục tiêu: giảm friction login, không làm yếu security policy |
-| 3. Open questions | `agentic` + có thể dùng `notebooklm` | `coordinator`, optional `notebooklm-researcher` | Gom câu hỏi về callback URL, session model, account linking, compliance |
-| 4. Acceptance criteria + DoR | `agentic` | `coordinator` | Criteria: user mới đăng nhập Google tạo account đúng rule; user cũ có thể link hoặc reject đúng policy; DoR=`READY` |
-| 5. Technical approach | `multi-agent` | `coordinator`, `notebooklm-researcher`, `backend-architect`, `frontend-architect` | Chốt OAuth callback flow, token exchange, UI state và risk map |
-| 6. Task breakdown | `multi-agent` | `coordinator`, `planner`, `dependency-reviewer` | Tách task backend auth, frontend CTA/state, config/secret, verify plan |
-| 7. Implement | `multi-agent` | `coordinator`, `backend-builder`, `frontend-builder`, `doc-owner` | Backend auth provider + callback + UI login button + docs/config changes |
-| 8. Verify + DoD | `multi-agent` | `coordinator`, `tester`, `scan-reviewer`, `auditor` | Integration evidence, code scan, security notes, final audit và DoD |
+| `s01` Clarify | `agentic` | `coordinator` | Chốt scope: thêm provider mới, không thay account migration |
+| `s02` Business Goal | `agentic` | `coordinator` | Chốt mục tiêu: giảm friction login, không làm yếu security policy |
+| `s03` Open Questions | `agentic` + có thể dùng `notebooklm` | `coordinator`, optional `notebooklm-researcher` | Gom câu hỏi về callback URL, session model, account linking, compliance |
+| `s04` Acceptance + DoR | `agentic` | `coordinator` | Criteria: user mới đăng nhập Google tạo account đúng rule; user cũ có thể link hoặc reject đúng policy; DoR=`READY` |
+| `s05` Technical Approach | `multi-agent` | `coordinator`, `notebooklm-researcher`, `backend-architect`, `frontend-architect` | Chốt OAuth callback flow, token exchange, UI state và risk map |
+| `s06` Task Plan | `multi-agent` | `coordinator`, `planner`, `dependency-reviewer` | Tách task backend auth, frontend CTA/state, config/secret, verify plan |
+| `s07` Implement | `multi-agent` | `coordinator`, `backend-builder`, `frontend-builder`, `doc-owner` | Backend auth provider + callback + UI login button + docs/config changes |
+| `s08` Verify + DoD | `multi-agent` | `coordinator`, `tester`, `scan-reviewer`, `auditor` | Integration evidence, code scan, security notes, final audit và DoD |
 
 ### Handoff Report Mẫu Từ `notebooklm-researcher`
 
@@ -182,14 +182,14 @@ recommended_next_action: "Coordinator chuyển issue này vào option analysis v
 
 | Step | Mode | Vai trò chính | Output mẫu |
 |---|---|---|---|
-| 1. Restate + discovery framing | `agentic` | `coordinator` | Chốt đây là `CHANGE`, không phải feature mới; phạm vi là chuẩn hóa phone và hỗ trợ lookup/dedup an toàn |
-| 2. Business goal | `agentic` | `coordinator` | Chốt mục tiêu là tìm kiếm và chống trùng chính xác hơn, không làm gián đoạn create/update customer hiện có |
-| 3. Open questions | `agentic` | `coordinator` | Xác định dữ liệu cũ bẩn ở mức nào, có bản ghi trùng sau normalize không, rollback window ra sao |
-| 4. Acceptance criteria + DoR | `agentic` | `coordinator` | Criteria: write path mới luôn sinh `normalized_phone`; dữ liệu cũ được backfill; unique index chỉ bật khi dữ liệu sạch; DoR=`READY` |
-| 5. Technical approach | `multi-agent` | `coordinator`, `backend-architect`, `data-architect` | Chọn rollout `expand-contract`: thêm cột nullable, dual-write, backfill, validate dữ liệu, rồi mới tạo unique index |
-| 6. Task breakdown | `multi-agent` | `coordinator`, `planner`, `migration-owner`, `dependency-reviewer` | Tách task schema add, app dual-write, backfill job, dữ liệu trùng cần xử lý, verify plan, rollout guards |
-| 7. Implement | `multi-agent` | `coordinator`, `app-builder`, `migration-owner`, `backfill-owner` | Tạo migration thêm cột, cập nhật service dual-write, viết backfill command/job, thêm logging/guard cho rollout |
-| 8. Verify + DoD | `multi-agent` | `coordinator`, `tester`, `database-reviewer`, `auditor` | Chạy test app path, kiểm tra backfill dry-run, review migration safety, chốt release recommendation và DoD |
+| `s01` Clarify | `agentic` | `coordinator` | Chốt đây là `CHANGE`, không phải feature mới; phạm vi là chuẩn hóa phone và hỗ trợ lookup/dedup an toàn |
+| `s02` Business Goal | `agentic` | `coordinator` | Chốt mục tiêu là tìm kiếm và chống trùng chính xác hơn, không làm gián đoạn create/update customer hiện có |
+| `s03` Open Questions | `agentic` | `coordinator` | Xác định dữ liệu cũ bẩn ở mức nào, có bản ghi trùng sau normalize không, rollback window ra sao |
+| `s04` Acceptance + DoR | `agentic` | `coordinator` | Criteria: write path mới luôn sinh `normalized_phone`; dữ liệu cũ được backfill; unique index chỉ bật khi dữ liệu sạch; DoR=`READY` |
+| `s05` Technical Approach | `multi-agent` | `coordinator`, `backend-architect`, `data-architect` | Chọn rollout `expand-contract`: thêm cột nullable, dual-write, backfill, validate dữ liệu, rồi mới tạo unique index |
+| `s06` Task Plan | `multi-agent` | `coordinator`, `planner`, `migration-owner`, `dependency-reviewer` | Tách task schema add, app dual-write, backfill job, dữ liệu trùng cần xử lý, verify plan, rollout guards |
+| `s07` Implement | `multi-agent` | `coordinator`, `app-builder`, `migration-owner`, `backfill-owner` | Tạo migration thêm cột, cập nhật service dual-write, viết backfill command/job, thêm logging/guard cho rollout |
+| `s08` Verify + DoD | `multi-agent` | `coordinator`, `tester`, `database-reviewer`, `auditor` | Chạy test app path, kiểm tra backfill dry-run, review migration safety, chốt release recommendation và DoD |
 
 ### Database Review Snapshot Cho Step 8
 

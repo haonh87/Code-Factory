@@ -22,19 +22,19 @@ Với mọi yêu cầu coding:
 5. Báo cáo thay đổi, rủi ro và bước tiếp theo.
 
 Diễn giải theo workflow chain hiện tại:
-- Step 1 không chỉ restate yêu cầu mà còn phải làm `discovery framing` ở mức đủ cho developer, bao gồm `work_item_type`, user/business context ban đầu, scope draft, assumption, dependency và risk ban đầu.
-- Step 4 là điểm chốt `Definition of Ready` trước khi chuyển hẳn sang technical approach và implementation planning.
-- Step 8 là điểm chốt `Definition of Done` cho phạm vi technical work item; khi scope có packaging hoặc rollout, step này đồng thời phải nêu rõ release readiness và handoff sang lane deploy tương ứng.
+- `s01` Clarify: làm rõ yêu cầu, `work_item_type`, context, scope draft, assumption, dependency, risk ban đầu và `governance context` liên quan.
+- `s04` Acceptance + DoR: chốt acceptance criteria, `Definition of Ready` và mức độ phù hợp với `governance` trước khi sang `Technical Approach` và implementation planning.
+- `s08` Verify + DoD: chốt `Definition of Done` và mức độ `governance compliance`; khi có packaging/rollout phải nêu rõ release readiness và handoff sang lane deploy tương ứng.
 
 Cách đọc nhanh theo ngôn ngữ business:
-- Step 1 nhận yêu cầu thô và bối cảnh ban đầu, trả ra bản hiểu chung về yêu cầu và phạm vi ban đầu.
-- Step 2 nhận bản hiểu chung từ step 1, trả ra mục tiêu business, giá trị mong đợi và phần không làm.
-- Step 3 nhận mục tiêu business cùng thông tin hiện có, trả ra danh sách điểm còn thiếu hoặc cần quyết định thêm.
-- Step 4 nhận mục tiêu business và câu trả lời cho phần mơ hồ, trả ra acceptance criteria đo được và kết luận đã sẵn sàng hay chưa.
-- Step 5 nhận acceptance criteria đã chốt, trả ra cách làm kỹ thuật được chọn và boundary bị tác động.
-- Step 6 nhận cách làm kỹ thuật đã chọn, trả ra kế hoạch triển khai thành các task nhỏ có thứ tự.
-- Step 7 nhận kế hoạch triển khai, trả ra thay đổi thực tế trong code/config/doc.
-- Step 8 nhận thay đổi thực tế và acceptance criteria, trả ra bằng chứng đạt/chưa đạt và kết luận mức độ hoàn tất.
+- `s01` Clarify: nhận yêu cầu thô và context, trả ra bản hiểu chung, scope ban đầu và `governance context`.
+- `s02` Business Goal: nhận bản hiểu chung, trả ra mục tiêu business, giá trị mong đợi và non-goals.
+- `s03` Open Questions: nhận mục tiêu cùng thông tin hiện có, trả ra missing input, conflict, `governance blocker` và owner cần quyết định.
+- `s04` Acceptance + DoR: nhận business goal và câu trả lời, trả ra acceptance criteria đo được, readiness verdict và `governance checks` cho readiness.
+- `s05` Technical Approach: nhận acceptance criteria, trả ra approach, boundary bị tác động và `governance exception` nếu có lệch chuẩn.
+- `s06` Task Plan: nhận approach, trả ra task plan nhỏ, có thứ tự, có thể verify và có đủ checkpoint review/governance.
+- `s07` Implement: nhận task plan, trả ra thay đổi thực tế trong code/config/doc và exception nếu implementation cần lệch chuẩn.
+- `s08` Verify + DoD: nhận thay đổi và criteria, trả ra evidence, coverage, mức độ `governance compliance` và kết luận hoàn tất.
 
 ## Cổng Chất Lượng Bắt Buộc
 
@@ -47,6 +47,12 @@ Trước khi bàn giao cuối cùng, chạy các kiểm tra phù hợp:
 - Khi scope có container hoặc deploy: kiểm tra build image, validate `compose.yaml` hoặc manifest tương ứng, và nêu rõ smoke hoặc rollback plan.
 
 Nếu không thể chạy kiểm tra nào, phải nêu rõ phần bị bỏ qua và lý do.
+
+## Governance Pack Mặc Định
+
+- Nếu không có chỉ định khác, `governance_ref` mặc định trỏ `project-context/project-context.md`.
+- `governance_profile=default|strict|regulated` nên dùng checklist tương ứng trong `project-context/checklists/`.
+- Nếu có `governance-exception` còn mở quá một step hoặc ảnh hưởng `DoD`, `release`, `business_acceptance`, phải cập nhật thêm `project-context/governance-exception-register.md`.
 
 ## Yêu Cầu Skill
 
@@ -63,21 +69,26 @@ Khi scope là frontend, dùng thêm skill chuyên biệt đúng step: ở step 5
 - Nếu runtime không hỗ trợ delegation ổn định, vẫn phải bám cùng spec nhưng chạy ở chế độ `sequential multi-role`; không được bỏ qua contract, handoff hay audit chỉ vì thiếu sub-agent thật.
 - Khi `multi-agent` hoặc `sequential multi-role` được dùng, `coordinator` là đầu mối duy nhất được kết luận handoff cuối step.
 - Output của worker không được xem là output cuối của step cho tới khi đã merge vào note `.md` nguồn sự thật và đi qua audit/gate tương ứng.
-- Nếu materialize workflow note, nên khai báo `execution_mode`, `execution_roles` và block `## Execution Topology` theo tài liệu tham chiếu runtime.
+- Nếu materialize workflow note, nên khai báo `execution_mode`, `execution_roles`, `role_signoffs` và block `## Execution Topology` theo tài liệu tham chiếu runtime; `role_signoffs` nên cover tối thiểu `dor`, `approach`, `release`, `business_acceptance`, `dod`.
+- Khi nhiều role nghiệp vụ cùng tham gia một step, ưu tiên trace contribution theo block `## Role Outputs` trong note chính trước khi tách artifact riêng cho từng role.
+- Khi work item chạy theo SDD, workflow note nên khai báo `sdd_mode`, `spec_refs` và `spec_status`; step 4 phải xử lý `spec-freeze-gate`, step 5-7 phải dùng `spec-change` khi lệch frozen spec, và step 8 phải có `spec-coverage-report` hoặc lý do bỏ qua rõ ràng.
 
 ## Giải Nghĩa Nhanh Cách Áp Skill
 
-Chính sách này được đọc theo 4 lớp:
+Chính sách này được đọc theo 6 lớp:
 
-- Lớp điều phối: `codex-workflow-chain` ép tác vụ coding đi theo workflow chain chuẩn.
-- Lớp execution runtime: chọn `agentic`, `multi-agent` hoặc `sequential multi-role` để vận hành step.
+- Lớp step: 8 bước delivery từ `Clarify` đến `Verify + DoD`.
+- Lớp governance: `constitution`, `project-context`, `checklist`, `exception/waiver` và rule dùng chung được nhúng vào gate của step.
+- Lớp SDD: dùng `BRD/SRS`, requirement IDs, spec freeze, spec change và spec coverage để spec điều khiển design/code/test khi scope yêu cầu.
 - Lớp skill nghiệp vụ: các skill phân tích, kiến trúc, delivery và guardrail được gọi theo step.
 - Lớp artifact: khi một step được materialize thành tài liệu hoặc artifact Obsidian, phải gọi thêm skill đúng loại file.
+- Lớp execution topology: step được vận hành theo `agentic` hoặc `multi_agent`; nếu runtime không hỗ trợ delegation ổn định thì fallback `sequential_multi_role`.
 
 Diễn giải thực tế:
 
-- `codex-workflow-chain` luôn là lớp bắt buộc cho tác vụ coding.
-- `agentic` là mode mặc định; `multi-agent` chỉ bật khi có lý do phối hợp thật sự.
+- `codex-workflow-chain` là skill điều phối bắt buộc để buộc tác vụ coding đi qua 8 step ở trên.
+- `agentic` là mode mặc định; `multi_agent` chỉ bật khi có lý do phối hợp thật sự; nếu runtime không hỗ trợ delegation ổn định thì fallback `sequential_multi_role`.
+- `governance` không phải step riêng; `governance context` thường xuất hiện ở `Clarify` hoặc `Open Questions`, `governance checks` thường được chốt ở `Acceptance + DoR`, `Task Plan`, `Verify + DoD`, còn `governance exception` phải xuất hiện rõ ở `Technical Approach` hoặc `Implement` khi có lệch chuẩn.
 - `notebooklm` là skill research/tooling phụ trợ khi step cần query hoặc tổng hợp corpus lớn ngoài codebase.
 - `deployment-devops` là skill điều phối DevOps tổng khi step chạm nhiều layer DevOps cùng lúc.
 - `containerization-packaging` là skill delivery cho `Dockerfile`, `.dockerignore`, `compose.yaml` và packaging contract theo ngôn ngữ hoặc workload.
