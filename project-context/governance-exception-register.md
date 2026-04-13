@@ -13,7 +13,8 @@ Register này dùng để theo dõi `governance-exception` hoặc `waiver` còn 
 
 1. Ghi `governance-exception` trong note step liên quan.
 2. Thêm một dòng vào register này.
-3. Cập nhật trạng thái khi mitigation hoàn tất, waiver được approve hoặc exception được đóng.
+3. Xác định `approved_by` theo `governance-role-model.md`.
+4. Cập nhật trạng thái khi mitigation hoàn tất, waiver được approve hoặc exception được đóng.
 
 ## Template Nhanh
 

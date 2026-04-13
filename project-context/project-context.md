@@ -8,6 +8,7 @@ Tài liệu này mô tả `governance context` đang có hiệu lực cho repo t
 - Mục tiêu hiện tại: chuẩn hóa workflow, skills, MCP và orchestration theo hướng `Codex-first`
 - Governance source nền:
   - `project-context/constitution.md`
+  - `project-context/governance-role-model.md`
   - `memory-bank/`
   - `policies/codex/AGENTS.global.md`
   - `skills/orchestration/codex-workflow-chain/references/workflow-chain.md`
@@ -71,3 +72,4 @@ Chuyển sang `regulated` khi có một hoặc nhiều tín hiệu sau:
 
 - Nếu scope chỉ là change nhỏ, vẫn nên dùng profile `default` thay vì để trống.
 - Nếu có `governance-exception` còn mở tới step 8, phải ghi thêm vào `project-context/governance-exception-register.md`.
+- `approved_by` của waiver hoặc exception phải theo authority trong `project-context/governance-role-model.md`.

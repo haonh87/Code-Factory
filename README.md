@@ -20,6 +20,7 @@ Tên file workflow không đặt theo cách hiểu cá nhân như `requirements`
 - Merge strategy giữa workflow hiện tại với `spec-kit`, `OpenSpec`, `cc-sdd` và `BMAD-METHOD`: xem [`skills/orchestration/codex-workflow-chain/references/sdd-merge-strategy.md`](skills/orchestration/codex-workflow-chain/references/sdd-merge-strategy.md)
 - Target architecture để hoàn thiện workflow backbone bằng các lớp governance/change/execution/planning: xem [`skills/orchestration/codex-workflow-chain/references/target-architecture.md`](skills/orchestration/codex-workflow-chain/references/target-architecture.md)
 - Governance Pack mức project, gồm `constitution`, `project-context`, checklist profile và exception register: xem [`project-context/README.md`](project-context/README.md)
+- Governance role model cho authority, exception và waiver: xem [`project-context/governance-role-model.md`](project-context/governance-role-model.md)
 - Validator: `powershell -File scripts/validate-workflow-artifact-names.ps1 -WorkflowRoot <workflow-artifact-dir>`
 
 ## Thành Phần Trong Repository

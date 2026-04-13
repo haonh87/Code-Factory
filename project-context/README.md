@@ -6,6 +6,7 @@ Thư mục này là source-of-truth cho `governance layer` ở mức project.
 
 - `constitution.md`: các nguyên tắc nền bắt buộc phải tôn trọng trong workflow.
 - `project-context.md`: bối cảnh đang có hiệu lực của repo, default profile, rule chọn checklist và các shortcut bị cấm.
+- `governance-role-model.md`: authority model cho role, signoff, exception và waiver.
 - `checklists/default.md`: checklist mặc định cho phần lớn work item.
 - `checklists/strict.md`: checklist tăng cường cho change có nhiều rủi ro hoặc nhiều boundary.
 - `checklists/regulated.md`: checklist tăng cường thêm cho scope có yêu cầu audit, approval hoặc compliance chặt.
@@ -19,6 +20,8 @@ Thư mục này là source-of-truth cho `governance layer` ở mức project.
   dùng một trong `default|strict|regulated|custom`.
 - `checklist_refs`:
   trỏ tới một hoặc nhiều checklist trong `project-context/checklists/`.
+- approval authority:
+  tra theo `governance-role-model.md`, không suy diễn chỉ từ `role_signoffs`.
 - `governance-exception`:
   phải xuất hiện trong note step liên quan, đồng thời được ghi vào `governance-exception-register.md` nếu exception còn mở hoặc cần audit xuyên step.
 

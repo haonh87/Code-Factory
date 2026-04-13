@@ -35,6 +35,7 @@ Trọng tâm hiện tại:
 - Đã cập nhật workflow docs theo hướng `hybrid governance`: không tạo step riêng, nhưng nhúng `governance context`, `governance checks`, `governance exception` vào các step và gate phù hợp.
 - Đã đồng bộ lại contract giữa `workflow-chain.md`, `AGENTS.global.md`, `role-aware-workflow.md` và `target-architecture.md`: mô hình đọc theo 6 lớp đã thống nhất, `governance_ref` là field canonical, `governance_status` dùng enum chuẩn uppercase, còn `execution_mode` dùng `agentic|multi_agent` với `sequential_multi_role` chỉ là runtime fallback.
 - Đã materialize Governance Pack ở mức project tại `project-context/`, gồm `constitution`, `project-context`, checklist profile `default|strict|regulated` và `governance-exception-register`.
+- Đã thêm `governance-role-model.md` để chốt authority giữa `po|ba|designer|developer|qc|devops`, tách rõ `step signoff` với `waiver authority`.
 
 ## Quyết Định Đang Có Hiệu Lực
 

@@ -63,3 +63,5 @@ Một `waiver` chỉ được xem là hợp lệ khi có đủ:
 - `review_date` hoặc điều kiện hết hiệu lực
 
 Nếu thiếu một trong các trường trên, coi như exception chưa được approve.
+
+Authority để xác định `approved_by` phải theo `project-context/governance-role-model.md`, không được tự suy diễn chỉ từ role đang edit note hoặc role signoff của step.

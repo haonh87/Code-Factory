@@ -38,6 +38,7 @@ Project đang ở trạng thái usable internal platform cho Codex, không còn 
 - Đã cập nhật workflow docs theo hướng `hybrid governance`, với `governance context`, `governance checks`, `governance exception` đi thẳng vào step contract, template note và gate.
 - Đã rà và đồng bộ lại các docs workflow để loại bỏ conflict nội dung: metadata governance/runtime dùng cùng enum và naming, mô hình 6 lớp khớp giữa policy và reference, và role-aware workflow đã phản ánh trách nhiệm governance theo từng step.
 - Đã có Governance Pack mức project trong `project-context/` để workflow dùng thật, thay vì chỉ mô tả governance ở mức contract.
+- Đã có thêm governance role model để xác định authority cho `governance-exception`, `waiver` và approval theo role, thay vì suy diễn từ step owner hoặc `role_signoffs`.
 - Policy Codex đã phản ánh execution runtime ở mức sử dụng thực tế, không còn chỉ nằm trong reference docs.
 - Đã có bộ ví dụ end-to-end cho `BUG` agentic, `FEATURE` multi-agent có `notebooklm`, và `CHANGE` database-heavy multi-agent.
 - Đã kiểm chứng ngày `2026-04-08` rằng `cass` có thể tra cứu local Codex sessions theo workspace khi chạy ngoài sandbox; truy vấn `status` trên repo này trả hit thực từ session history.

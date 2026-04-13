@@ -290,6 +290,7 @@ Artifact nền khuyến nghị:
 
 - `project-context/constitution.md`: nguyên tắc nền của dự án hoặc team.
 - `project-context/project-context.md`: bối cảnh, ràng buộc và preference đang có hiệu lực.
+- `project-context/governance-role-model.md`: authority model cho role, signoff, exception và waiver.
 - `project-context/checklists/*.md`: checklist profile dùng lại cho readiness, review hoặc DoD.
 - `project-context/governance-exception-register.md`: register theo dõi exception hoặc waiver còn mở ở mức project/work item.
 
@@ -314,8 +315,9 @@ Thứ tự đọc tối thiểu:
 
 1. `../../../../project-context/constitution.md`
 2. `../../../../project-context/project-context.md`
-3. checklist profile tương ứng
-4. `../../../../project-context/governance-exception-register.md` nếu work item có exception hoặc waiver đang mở
+3. `../../../../project-context/governance-role-model.md`
+4. checklist profile tương ứng
+5. `../../../../project-context/governance-exception-register.md` nếu work item có exception hoặc waiver đang mở
 
 ## Lớp SDD: Spec Driven Development
 

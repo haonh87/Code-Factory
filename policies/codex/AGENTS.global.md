@@ -52,6 +52,7 @@ Nếu không thể chạy kiểm tra nào, phải nêu rõ phần bị bỏ qua 
 
 - Nếu không có chỉ định khác, `governance_ref` mặc định trỏ `project-context/project-context.md`.
 - `governance_profile=default|strict|regulated` nên dùng checklist tương ứng trong `project-context/checklists/`.
+- `approved_by` của exception hoặc waiver phải theo `project-context/governance-role-model.md`, không suy diễn chỉ từ `role_signoffs`.
 - Nếu có `governance-exception` còn mở quá một step hoặc ảnh hưởng `DoD`, `release`, `business_acceptance`, phải cập nhật thêm `project-context/governance-exception-register.md`.
 
 ## Yêu Cầu Skill
