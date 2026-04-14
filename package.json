@@ -2,18 +2,19 @@
   "name": "ai-agent-ops",
   "private": true,
   "scripts": {
-    "scaffold:change": "node scripts/scaffold-change-package.js",
-    "scaffold:workflow": "node scripts/scaffold-workflow.js",
-    "scaffold:workflow-step": "node scripts/scaffold-workflow.js --single-step",
-    "validate:workflow": "node scripts/validate-workflow.js",
-    "validate:workflow:naming": "node scripts/validate-workflow-artifact-names.js",
-    "validate:workflow:governance": "node scripts/validate-workflow-governance.js",
-    "validate:workflow:sdd": "node scripts/validate-workflow-sdd.js",
-    "validate:workflow:change": "node scripts/validate-workflow-change.js",
-    "validate:workflow:execution": "node scripts/validate-workflow-execution.js",
-    "validate:workflow:planning": "node scripts/validate-workflow-planning.js",
-    "validate:workflow:authoring-smoke": "node scripts/run-workflow-authoring-smoke.js",
-    "validate:workflow:fixtures": "node scripts/run-workflow-governance-fixtures.js"
+    "wfc": "node packages/workflow-contracts/bin/wfc.js",
+    "scaffold:change": "node packages/workflow-contracts/bin/wfc.js scaffold-change",
+    "scaffold:workflow": "node packages/workflow-contracts/bin/wfc.js scaffold",
+    "scaffold:workflow-step": "node packages/workflow-contracts/bin/wfc.js scaffold-step",
+    "validate:workflow": "node packages/workflow-contracts/bin/wfc.js",
+    "validate:workflow:naming": "node packages/workflow-contracts/bin/wfc.js naming",
+    "validate:workflow:governance": "node packages/workflow-contracts/bin/wfc.js governance",
+    "validate:workflow:sdd": "node packages/workflow-contracts/bin/wfc.js sdd",
+    "validate:workflow:change": "node packages/workflow-contracts/bin/wfc.js change",
+    "validate:workflow:execution": "node packages/workflow-contracts/bin/wfc.js exec",
+    "validate:workflow:planning": "node packages/workflow-contracts/bin/wfc.js plan",
+    "validate:workflow:authoring-smoke": "node packages/workflow-contracts/bin/wfc.js smoke",
+    "validate:workflow:fixtures": "node packages/workflow-contracts/bin/wfc.js fixtures"
   },
   "engines": {
     "node": ">=18"
