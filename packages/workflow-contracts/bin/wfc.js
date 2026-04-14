@@ -45,6 +45,9 @@ const commandTable = {
     script: "run-workflow-governance-fixtures.js",
     cwd: packageRoot
   },
+  init: {
+    script: "init-workflow-contracts.js"
+  },
   smoke: {
     script: "run-workflow-authoring-smoke.js",
     cwd: packageRoot
@@ -209,12 +212,19 @@ function printHelp() {
       "  exec            Validate execution-layer contracts",
       "  plan            Validate planning-track contracts",
       "  fixtures        Run package governance fixtures",
+      "  init            Create minimal workflow-contracts baseline in a repo",
       "  smoke           Run scaffold -> validate smoke suite",
       "  scaffold        Scaffold workflow notes",
       "  scaffold-step   Scaffold a single workflow step",
       "  scaffold-change Scaffold a change package",
       "  version         Print version",
       "  help            Show this help",
+      "",
+      "Daily Flow:",
+      "  1. wfc init",
+      "  2. wfc scaffold --work-item <work-item-slug>",
+      "  3. wfc",
+      "  4. wfc sdd | wfc change | wfc exec | wfc plan",
       "",
       `Config: optional ${configFileName} in the repo root or any parent directory.`,
       "Defaults: projectRoot='.' and workflowRoot='work-items'."
