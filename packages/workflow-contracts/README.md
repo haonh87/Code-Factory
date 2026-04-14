@@ -2,6 +2,8 @@
 
 `workflow-contracts` là package CLI để scaffold và enforce workflow contracts trong local hoặc CI.
 
+Quickstart chi tiết: [`docs/workflow-contracts-quickstart.md`](../../docs/workflow-contracts-quickstart.md)
+
 ## CLI
 
 ```bash
