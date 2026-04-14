@@ -26,13 +26,22 @@ uvx --from notebooklm-mcp-cli notebooklm-mcp --help
 Check auth first:
 
 ```bash
-uvx --from notebooklm-mcp-cli nlm auth login --check
+uvx --from notebooklm-mcp-cli nlm login --check
 ```
 
 If needed:
 
 ```bash
 uvx --from notebooklm-mcp-cli nlm login
+```
+
+If you want to keep multiple saved accounts or switch reusable auth contexts:
+
+```bash
+uvx --from notebooklm-mcp-cli nlm login --profile work
+uvx --from notebooklm-mcp-cli nlm login --profile personal
+uvx --from notebooklm-mcp-cli nlm login switch work
+uvx --from notebooklm-mcp-cli nlm login profile list
 ```
 
 If the default flow is blocked, use OAuth variables documented by the upstream tool:
@@ -83,8 +92,12 @@ Run `uvx --from notebooklm-mcp-cli nlm --ai` for assistant-oriented documentatio
 ## Working Rules
 
 - Prefer `uvx --from notebooklm-mcp-cli nlm ...` over installing the package globally.
-- Check auth before debugging NotebookLM behavior.
+- Check auth first with `nlm login --check` before debugging NotebookLM behavior.
+- Treat `nlm login` as a one-time setup in normal cases; rerun only when NotebookLM session expires, account changes, or auth becomes invalid.
 - Keep notebook operations minimal and task-focused: only create notebooks, add sources, or generate artifacts needed for the current task.
+- In this repo, prefer NotebookLM as a corpus storage and retrieval layer for brainstorming, requirement framing, spec, design exploration, and other research-heavy workflow steps.
+- Treat BRD/SRS as rollout outputs of the product-development workflow; NotebookLM stores and retrieves supporting corpus during execution, but any decision-worthy conclusion must be written back into BRD, SRS, or the workflow note.
+- Prefer notebook list/create, source add, notebook query, and research start before broader media/share flows unless the user explicitly asks for those outputs.
 - If you are unsure which CLI or MCP arguments are required, check the upstream help or feature docs first.
 
 ## References

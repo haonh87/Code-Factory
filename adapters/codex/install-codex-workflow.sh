@@ -28,10 +28,14 @@ declare -a skill_names=()
 declare -a previous_managed_skill_names=()
 
 if [[ -f "${managed_skills_manifest}" ]]; then
-  mapfile -t previous_managed_skill_names < "${managed_skills_manifest}"
+  while IFS= read -r line || [[ -n "${line}" ]]; do
+    previous_managed_skill_names+=("${line}")
+  done < "${managed_skills_manifest}"
 fi
 
-mapfile -t skill_files < <(find "${skills_src_root}" -type f -name SKILL.md | sort)
+while IFS= read -r line || [[ -n "${line}" ]]; do
+  skill_files+=("${line}")
+done < <(find "${skills_src_root}" -type f -name SKILL.md | sort)
 
 for skill_file in "${skill_files[@]}"; do
   skill_src="$(dirname "${skill_file}")"
@@ -43,18 +47,20 @@ for skill_file in "${skill_files[@]}"; do
   echo "Installed skill to: ${skill_dest}"
 done
 
-for stale_skill in "${previous_managed_skill_names[@]}"; do
-  [[ -z "${stale_skill}" ]] && continue
-  if printf '%s\n' "${skill_names[@]}" | grep -Fxq -- "${stale_skill}"; then
-    continue
-  fi
+if (( ${#previous_managed_skill_names[@]} > 0 )); then
+  for stale_skill in "${previous_managed_skill_names[@]}"; do
+    [[ -z "${stale_skill}" ]] && continue
+    if printf '%s\n' "${skill_names[@]}" | grep -Fxq -- "${stale_skill}"; then
+      continue
+    fi
 
-  stale_skill_dest="${skills_home}/${stale_skill}"
-  if [[ -d "${stale_skill_dest}" ]]; then
-    rm -rf "${stale_skill_dest}"
-    echo "Removed stale managed skill: ${stale_skill_dest}"
-  fi
-done
+    stale_skill_dest="${skills_home}/${stale_skill}"
+    if [[ -d "${stale_skill_dest}" ]]; then
+      rm -rf "${stale_skill_dest}"
+      echo "Removed stale managed skill: ${stale_skill_dest}"
+    fi
+  done
+fi
 
 printf '%s\n' "${skill_names[@]}" > "${managed_skills_manifest}"
 echo "Updated managed skills manifest: ${managed_skills_manifest}"

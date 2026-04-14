@@ -2,29 +2,87 @@
 
 Repository này lưu trữ policy, workflow, skill và adapter cài đặt cho các tác vụ AI agent. Hiện tại repo ưu tiên Codex, nhưng cấu trúc đã được tách nhóm để sau này có thể mở rộng thêm tool hoặc agent khác.
 
-## Tài Liệu Định Hướng
+Tính tới `2026-04-14`, workflow backbone và các phase `0-5` trong implementation blueprint đã được materialize ở mức baseline. Trọng tâm còn lại là hardening sâu hơn, semantic lint và mở rộng phạm vi vận hành.
+
+## Bắt Đầu Ở Đây
 
 Nguồn sự thật để lưu và phục hồi ngữ cảnh dự án là `memory-bank/`.
 
-Bắt đầu từ [`memory-bank/projectbrief.md`](memory-bank/projectbrief.md), sau đó đọc lần lượt các file core còn lại trong `memory-bank/`.
+Nếu đang tiếp cận repo lần đầu, đọc theo thứ tự này:
+
+1. [`memory-bank/projectbrief.md`](memory-bank/projectbrief.md)
+2. [`skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`](skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
+3. [`skills/orchestration/codex-workflow-chain/references/workflow-overview.md`](skills/orchestration/codex-workflow-chain/references/workflow-overview.md)
+4. [`skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
+
+## Workflow Commands Nhanh
+
+Workflow authoring chuẩn dùng cùng một command surface qua `npm`:
+
+- scaffold change package: `npm run scaffold:change -- --change-id <CHANGE-ID> --work-item <work-item-slug>`
+- scaffold cả workflow: `npm run scaffold:workflow -- --work-item <work-item-slug> --planning-track <quick|full|enterprise>`
+- scaffold một step: `npm run scaffold:workflow-step -- --work-item <work-item-slug> --step <sNN>`
+- validate workflow chuẩn: `npm run validate:workflow -- --workflow-root work-items --project-root <repo-root>`
+- validate `SDD`: `npm run validate:workflow:sdd -- --workflow-root work-items --project-root <repo-root>`
+- validate change layer: `npm run validate:workflow:change -- --workflow-root work-items --project-root <repo-root>`
+- validate execution layer: `npm run validate:workflow:execution -- --workflow-root work-items`
+- validate adaptive planning: `npm run validate:workflow:planning -- --workflow-root work-items`
+- smoke test `scaffold -> validate`: `npm run validate:workflow:authoring-smoke`
+- chạy fixture suite: `npm run validate:workflow:fixtures`
+
+Ghi chú:
+
+- `--work-item` hiện là tên CLI ngắn cho `work_item_slug`.
+- `work_item_slug` là định danh của toàn bộ work item chạy xuyên 8 bước, ví dụ `fix-login-timeout`, `checkout-recovery`.
+- `work-items/` là canonical artifact root cho workflow artifacts thật của repo.
+
+## Workflow Docs
+
+### Overview Và Contract
+
+- Overview chính thức cho delivery/onboarding: [`workflow-overview-author-edition.md`](skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
+- Technical/internal reference: [`workflow-overview.md`](skills/orchestration/codex-workflow-chain/references/workflow-overview.md)
+- Contract, naming, frontmatter, block schema: [`workflow-chain.md`](skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
+- Naming whitelist theo step: [`workflow-artifact-naming.md`](policies/codex/workflow-artifact-naming.md)
+
+### Product, Role Và Spec
+
+- Role-aware workflow, `BRD/SRS`, role outputs, NotebookLM usage: [`role-aware-workflow.md`](skills/orchestration/codex-workflow-chain/references/role-aware-workflow.md)
+- `SDD` lifecycle, requirement IDs, spec freeze/change, coverage report: [`spec-driven-development.md`](skills/orchestration/codex-workflow-chain/references/spec-driven-development.md)
+- Product spec root cho `BRD/SRS`: [`product-specs/README.md`](product-specs/README.md)
+- Canonical artifact root cho workflow work items: [`work-items/README.md`](work-items/README.md)
+- Change package root: [`changes/README.md`](changes/README.md)
+
+### Governance, Runtime Và Planning
+
+- Governance Pack mức project: [`project-context/README.md`](project-context/README.md)
+- Governance decision model: [`project-context/governance-decision-model.md`](project-context/governance-decision-model.md)
+- Governance role model: [`project-context/governance-role-model.md`](project-context/governance-role-model.md)
+- Execution runtime cho `agentic|multi_agent`: [`execution-runtime.md`](skills/orchestration/codex-workflow-chain/references/execution-runtime.md)
+- Adaptive planning cho `quick|full|enterprise`: [`adaptive-planning.md`](skills/orchestration/codex-workflow-chain/references/adaptive-planning.md)
+- CI enforcement cho workflow tooling và artifacts: [`workflow-ci-enforcement.md`](skills/orchestration/codex-workflow-chain/references/workflow-ci-enforcement.md)
+- Fixture suite cho governance validator: [`tests/fixtures/workflow-governance/README.md`](tests/fixtures/workflow-governance/README.md)
+
+### Architecture Và Rollout
+
+- Merge strategy với `spec-kit`, `OpenSpec`, `cc-sdd`, `BMAD-METHOD`: [`sdd-merge-strategy.md`](skills/orchestration/codex-workflow-chain/references/sdd-merge-strategy.md)
+- Target architecture: [`target-architecture.md`](skills/orchestration/codex-workflow-chain/references/target-architecture.md)
+- Implementation blueprint theo phase, artifact, validator, CI: [`implementation-blueprint.md`](skills/orchestration/codex-workflow-chain/references/implementation-blueprint.md)
 
 ## Quy Ước Tên File Workflow Artifact
 
 Tên file workflow không đặt theo cách hiểu cá nhân như `requirements`, `architecture`, `assessment`, `threshold`, `glossary`.
 
 - Công thức chuẩn: `<work_item_slug>.sNN.<step-slug>.<ext>`
-- Danh sách tên file chuẩn theo từng step: xem [`policies/codex/workflow-artifact-naming.md`](policies/codex/workflow-artifact-naming.md)
-- Naming đầy đủ, frontmatter và block schema theo step: xem [`skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
-- Role-aware workflow, BRD/SRS rollout artifacts và cách dùng NotebookLM làm corpus retrieval: xem [`skills/orchestration/codex-workflow-chain/references/role-aware-workflow.md`](skills/orchestration/codex-workflow-chain/references/role-aware-workflow.md)
-- SDD lifecycle, requirement IDs, spec freeze/change và coverage report: xem [`skills/orchestration/codex-workflow-chain/references/spec-driven-development.md`](skills/orchestration/codex-workflow-chain/references/spec-driven-development.md)
-- Merge strategy giữa workflow hiện tại với `spec-kit`, `OpenSpec`, `cc-sdd` và `BMAD-METHOD`: xem [`skills/orchestration/codex-workflow-chain/references/sdd-merge-strategy.md`](skills/orchestration/codex-workflow-chain/references/sdd-merge-strategy.md)
-- Target architecture để hoàn thiện workflow backbone bằng các lớp governance/change/execution/planning: xem [`skills/orchestration/codex-workflow-chain/references/target-architecture.md`](skills/orchestration/codex-workflow-chain/references/target-architecture.md)
-- Governance Pack mức project, gồm `constitution`, `project-context`, checklist profile và exception register: xem [`project-context/README.md`](project-context/README.md)
-- Governance role model cho authority, exception và waiver: xem [`project-context/governance-role-model.md`](project-context/governance-role-model.md)
-- Validator: `powershell -File scripts/validate-workflow-artifact-names.ps1 -WorkflowRoot <workflow-artifact-dir>`
+- Danh sách tên file chuẩn theo từng step: [`policies/codex/workflow-artifact-naming.md`](policies/codex/workflow-artifact-naming.md)
+- Nếu cần chi tiết frontmatter và block schema theo step: [`skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
 
 ## Thành Phần Trong Repository
 
+- `.github/workflows/workflow-guardrails.yml`: GitHub Actions cho CI phase 1-5 baseline, hiện enforce `workflow-tooling`, `workflow-artifacts`, `workflow-sdd`, `workflow-changes`, `workflow-execution`, `workflow-planning`, `workflow-authoring-smoke`.
+- `changes/`: source-of-truth cho change package theo `proposal -> design -> tasks -> spec-delta -> archive`, đã materialize baseline ở phase 2.
+- `product-specs/`: source-of-truth cho `BRD/SRS` khi work item chạy theo SDD; phase 1 đã materialize baseline này.
+- `work-items/`: canonical artifact root cho workflow artifacts thật của repo.
 - `policies/codex/AGENTS.global.md`: chính sách workflow toàn cục cho Codex.
 - `project-context/`: Governance Pack mức project, gồm `constitution`, `project-context`, checklist profile và exception register.
 - `skills/orchestration/`: skill điều phối workflow tổng.

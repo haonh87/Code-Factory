@@ -2,6 +2,12 @@
 
 Tài liệu này định nghĩa workflow chain toàn cục cho các tác vụ coding.
 
+Nếu cần bản giới thiệu tổng thể theo góc nhìn tác giả trước khi đi vào policy vận hành, đọc thêm:
+`skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`
+
+Nếu cần bản tham chiếu nội bộ thiên về mechanics, validator, CI và rollout status, đọc thêm:
+`skills/orchestration/codex-workflow-chain/references/workflow-overview.md`
+
 ## Chính Sách Ngôn Ngữ Và Mã Hóa
 
 - Mặc định trao đổi với người dùng bằng tiếng Việt.
@@ -52,8 +58,14 @@ Nếu không thể chạy kiểm tra nào, phải nêu rõ phần bị bỏ qua 
 
 - Nếu không có chỉ định khác, `governance_ref` mặc định trỏ `project-context/project-context.md`.
 - `governance_profile=default|strict|regulated` nên dùng checklist tương ứng trong `project-context/checklists/`.
+- `governance_profile`, `governance_status` và trigger mở `governance-exception` phải theo `project-context/governance-decision-model.md`.
 - `approved_by` của exception hoặc waiver phải theo `project-context/governance-role-model.md`, không suy diễn chỉ từ `role_signoffs`.
 - Nếu có `governance-exception` còn mở quá một step hoặc ảnh hưởng `DoD`, `release`, `business_acceptance`, phải cập nhật thêm `project-context/governance-exception-register.md`.
+- `work-items/` là canonical artifact root cho workflow artifacts thật; khi materialize note workflow vào repo, mặc định đặt dưới `work-items/<work_item_slug>/`.
+- Khi materialize workflow note thành file, ưu tiên scaffold qua `npm run scaffold:workflow` hoặc `npm run scaffold:workflow-step` để giữ naming, frontmatter và governance block đồng nhất ngay từ đầu.
+- Nếu work item chạy `multi_agent`, authoring flow phải chạy thêm `npm run validate:workflow:execution -- --workflow-root work-items`.
+- Nếu work item có `planning_track`, authoring flow nên chạy thêm `npm run validate:workflow:planning -- --workflow-root work-items`.
+- Khi materialize workflow note thành file, nên chạy validator workflow chuẩn qua `npm run validate:workflow -- --workflow-root work-items --project-root <repo-root>` trước khi bàn giao cuối.
 
 ## Yêu Cầu Skill
 
@@ -70,7 +82,8 @@ Khi scope là frontend, dùng thêm skill chuyên biệt đúng step: ở step 5
 - Nếu runtime không hỗ trợ delegation ổn định, vẫn phải bám cùng spec nhưng chạy ở chế độ `sequential multi-role`; không được bỏ qua contract, handoff hay audit chỉ vì thiếu sub-agent thật.
 - Khi `multi-agent` hoặc `sequential multi-role` được dùng, `coordinator` là đầu mối duy nhất được kết luận handoff cuối step.
 - Output của worker không được xem là output cuối của step cho tới khi đã merge vào note `.md` nguồn sự thật và đi qua audit/gate tương ứng.
-- Nếu materialize workflow note, nên khai báo `execution_mode`, `execution_roles`, `role_signoffs` và block `## Execution Topology` theo tài liệu tham chiếu runtime; `role_signoffs` nên cover tối thiểu `dor`, `approach`, `release`, `business_acceptance`, `dod`.
+- Nếu materialize workflow note, nên khai báo `execution_mode`, `execution_roles`, `review_mode`, `verification_owner`, `role_signoffs` và block `## Execution Topology` hoặc runtime artifacts theo tài liệu tham chiếu runtime; `role_signoffs` nên cover tối thiểu `dor`, `approach`, `release`, `business_acceptance`, `dod`.
+- Nếu cần route workflow theo độ sâu khác nhau mà vẫn giữ backbone 8 bước, dùng `planning_track=quick|full|enterprise`; không tạo workflow song song mới.
 - Khi nhiều role nghiệp vụ cùng tham gia một step, ưu tiên trace contribution theo block `## Role Outputs` trong note chính trước khi tách artifact riêng cho từng role.
 - Khi work item chạy theo SDD, workflow note nên khai báo `sdd_mode`, `spec_refs` và `spec_status`; step 4 phải xử lý `spec-freeze-gate`, step 5-7 phải dùng `spec-change` khi lệch frozen spec, và step 8 phải có `spec-coverage-report` hoặc lý do bỏ qua rõ ràng.
 

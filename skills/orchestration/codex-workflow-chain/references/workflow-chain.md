@@ -63,7 +63,7 @@ Chuỗi này nên được đọc theo 6 lớp song song:
 - Skill như `requirement-analysis`, `system-design`, `testing` là lớp nghiệp vụ.
 - `obsidian-markdown`, `json-canvas`, `obsidian-bases` là lớp artifact, chỉ bật khi step thực sự sinh ra file tương ứng.
 - `agentic` và `multi-agent` là lớp execution topology; chúng quyết định cách step được chạy, không đổi ý nghĩa business của step. Trong schema/frontmatter dùng `multi_agent`; `sequential_multi_role` chỉ là runtime fallback.
-- Chi tiết SDD xem thêm tại `references/spec-driven-development.md`; cách merge workflow hiện tại với `spec-kit`, `OpenSpec`, `cc-sdd` và `BMAD-METHOD` xem tại `references/sdd-merge-strategy.md`; target architecture để hoàn thiện workflow backbone xem tại `references/target-architecture.md`; chi tiết execution policy, role contract, handoff/merge protocol và tích hợp `notebooklm` xem thêm tại `references/execution-runtime.md`.
+- Chi tiết SDD xem thêm tại `references/spec-driven-development.md`; cách merge workflow hiện tại với `spec-kit`, `OpenSpec`, `cc-sdd` và `BMAD-METHOD` xem tại `references/sdd-merge-strategy.md`; target architecture để hoàn thiện workflow backbone xem tại `references/target-architecture.md`; rollout cụ thể theo phase, artifact, validator và CI xem tại `references/implementation-blueprint.md`; chi tiết execution policy, role contract, handoff/merge protocol và tích hợp `notebooklm` xem thêm tại `references/execution-runtime.md`; routing `planning_track=quick|full|enterprise` xem tại `references/adaptive-planning.md`.
 - Ví dụ áp dụng end-to-end xem tại `references/end-to-end-examples.md`.
 
 ## Lớp Execution Topology: `agentic` Và `multi-agent`
@@ -290,6 +290,7 @@ Artifact nền khuyến nghị:
 
 - `project-context/constitution.md`: nguyên tắc nền của dự án hoặc team.
 - `project-context/project-context.md`: bối cảnh, ràng buộc và preference đang có hiệu lực.
+- `project-context/governance-decision-model.md`: decision rule cho profile, status và exception.
 - `project-context/governance-role-model.md`: authority model cho role, signoff, exception và waiver.
 - `project-context/checklists/*.md`: checklist profile dùng lại cho readiness, review hoặc DoD.
 - `project-context/governance-exception-register.md`: register theo dõi exception hoặc waiver còn mở ở mức project/work item.
@@ -315,9 +316,10 @@ Thứ tự đọc tối thiểu:
 
 1. `../../../../project-context/constitution.md`
 2. `../../../../project-context/project-context.md`
-3. `../../../../project-context/governance-role-model.md`
-4. checklist profile tương ứng
-5. `../../../../project-context/governance-exception-register.md` nếu work item có exception hoặc waiver đang mở
+3. `../../../../project-context/governance-decision-model.md`
+4. `../../../../project-context/governance-role-model.md`
+5. checklist profile tương ứng
+6. `../../../../project-context/governance-exception-register.md` nếu work item có exception hoặc waiver đang mở
 
 ## Lớp SDD: Spec Driven Development
 
@@ -499,9 +501,14 @@ Một cách nhớ ngắn:
   - `<work_item_slug>.s08.verification.md`
 - Tên file chuẩn cho artifact phụ:
   - step 5 canvas: `<work_item_slug>.s05.architecture.canvas`
+  - step 5 execution runtime: `<work_item_slug>.s05.execution-policy.md`
   - step 6 canvas: `<work_item_slug>.s06.task-map.canvas`
   - step 6 base: `<work_item_slug>.s06.task-dashboard.base`
+  - step 6 execution runtime: `<work_item_slug>.s06.worker-assignment.md`
+  - step 7 execution runtime: `<work_item_slug>.s07.worker-handoff-report.md`
+  - step 7 execution runtime: `<work_item_slug>.s07.merge-report.md`
   - step 8 base: `<work_item_slug>.s08.verification-dashboard.base`
+  - step 8 execution runtime khi cần: `<work_item_slug>.s08.execution-escalation.md`
 - Không dùng tên file mơ hồ kiểu `analysis.md`, `final.md`, `design-v2.md`, `notes.base`.
 - Không đặt tên file workflow theo loại nội dung cảm tính như `requirements.md`, `architecture.md`, `assessment.md`, `threshold.md`, `glossary.md`.
 - Mapping chuẩn:
@@ -509,8 +516,42 @@ Một cách nhớ ngắn:
   - `architecture` hoặc `design` -> `s05.technical-approach.md`; nếu là sơ đồ thì `s05.architecture.canvas`.
   - `assessment` -> `s03.open-questions.md` nếu đánh giá readiness đầu vào, hoặc `s08.verification.md` nếu đánh giá sau implement.
   - `threshold` -> không tách file riêng; gộp vào `s04.acceptance-criteria.md`.
-  - `glossary` -> không phải step file; chỉ là section hoặc note dùng chung ngoài workflow step.
-- Nếu team cần rule ngắn gọn và validator riêng, xem `policies/codex/workflow-artifact-naming.md` và `scripts/validate-workflow-artifact-names.ps1`.
+- `glossary` -> không phải step file; chỉ là section hoặc note dùng chung ngoài workflow step.
+- Nếu team cần rule ngắn gọn và validator riêng, xem `policies/codex/workflow-artifact-naming.md`, `scripts/validate-workflow-artifact-names.js`, `scripts/validate-workflow-governance.js` hoặc chạy command chuẩn `npm run validate:workflow -- --workflow-root work-items --project-root <repo-root>`.
+- Nếu cần automation ở mức PR/push thay vì chỉ local validate, xem thêm `workflow-ci-enforcement.md`.
+
+### Workflow Authoring Chuẩn
+
+Flow khuyến nghị khi materialize workflow note:
+
+1. Nếu work item gắn với một thay đổi đã được tách package, scaffold change package trước:
+   - `npm run scaffold:change -- --change-id <CHANGE-ID> --work-item <work_item_slug>`
+2. Scaffold note bằng command chuẩn:
+   - `npm run scaffold:workflow -- --work-item <work_item_slug> --planning-track <quick|full|enterprise>`
+   - `npm run scaffold:workflow-step -- --work-item <work_item_slug> --step <sNN>`
+3. Điền nội dung thực tế vào các block đã sinh.
+4. Chạy validator:
+   - `npm run validate:workflow -- --workflow-root work-items --project-root <repo-root>`
+   - nếu work item chạy theo SDD, chạy thêm `npm run validate:workflow:sdd -- --workflow-root work-items --project-root <repo-root>`
+   - nếu work item có `change_id`, chạy thêm `npm run validate:workflow:change -- --workflow-root work-items --project-root <repo-root>`
+   - nếu work item có `execution_mode=multi_agent`, chạy thêm `npm run validate:workflow:execution -- --workflow-root work-items`
+   - nếu work item dùng `planning_track` khác mặc định hoặc muốn enforce routing rule, chạy thêm `npm run validate:workflow:planning -- --workflow-root work-items`
+
+Ghi chú:
+
+- `scaffold:workflow` mặc định sinh vào `work-items/<work_item_slug>/` nếu không truyền `--workflow-root`.
+- `work-items/` là canonical artifact root cho workflow artifacts thật của repo.
+- `product-specs/` là root mặc định cho `BRD/SRS` thật khi work item chạy theo SDD.
+- `changes/` là root mặc định cho change package thật khi work item cần `change layer`.
+- `planning_track` mặc định là `full`; nếu không có field này trong artifact cũ, validator hiện treat như `full` để giữ backward compatibility.
+- `scaffold:workflow-step` sinh note tối giản nhưng đúng contract cho step được chọn; block `Governance Exceptions` và block SDD sẽ được thêm khi option tương ứng yêu cầu.
+- Nếu `execution_mode=multi_agent`, scaffold sẽ tự sinh runtime artifacts cho `s05`, `s06`, `s07` và thêm chúng vào `linked_artifacts` của note chính.
+- Nếu cần `governance_profile=custom`, scaffold phải truyền thêm `--governance-ref` và ít nhất một `--checklist-ref`.
+- `--work-item` hiện là tên CLI ngắn cho `work_item_slug`.
+- `work_item_slug` là định danh của một đơn vị công việc chạy xuyên toàn bộ workflow 8 bước, không phải tên step; nó nên được chốt ở `s01 Clarify` từ user request, ticket hoặc change request.
+- Nếu note thuộc change package đã được materialize, `change_id`, `change_status`, `spec_delta_refs` và `archive_status` phải nhất quán với `changes/<change-id>/`.
+- Nếu step chạy `multi_agent`, `review_mode`, `verification_owner` và `linked_artifacts` phải nhất quán với runtime artifacts tương ứng.
+- Ví dụ: user request "fix login timeout" có thể map thành `work_item_slug=fix-login-timeout`, từ đó tạo ra các file như `fix-login-timeout.s01.restate.md`, `fix-login-timeout.s04.acceptance-criteria.md`, `fix-login-timeout.s08.verification.md`.
 
 ### Frontmatter Chuẩn Cho Note Chính
 
@@ -528,18 +569,26 @@ artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
 status: draft
-governance_ref: ""
-governance_profile: default|strict|regulated|custom
-governance_status: ALIGNED|CHECKS_PENDING|EXCEPTION_RECORDED|WAIVER_APPROVED|BLOCKED|NOT_APPLICABLE
-checklist_refs: []
+governance_ref: "project-context/project-context.md"
+governance_profile: default
+governance_status: CHECKS_PENDING
+checklist_refs:
+  - "project-context/checklists/default.md"
+change_id: ""
+change_status: draft|proposed|approved|in_progress|verified|archived|blocked
+spec_delta_refs: []
+archive_status: not_ready|ready_to_archive|archived
 sdd_mode: none|light|strict
 spec_refs:
   brd: ""
   srs: ""
 spec_status: draft|reviewed|approved|frozen|change_requested|implemented|verified|accepted|deprecated|blocked
+planning_track: quick|full|enterprise
 execution_mode: agentic|multi_agent
 execution_roles: []
   # liệt kê các role nghiệp vụ thực sự tham gia step, ưu tiên vocabulary chuẩn như `po`, `ba`, `designer`, `developer`, `qc`, `devops`
+review_mode: self|independent|auto_fix_loop
+verification_owner: ""
 role_signoffs:
   dor: []
   approach: []
@@ -573,8 +622,11 @@ Quy tắc:
 - `sdd_mode` dùng `none` khi work item không chạy theo SDD, `light` khi chỉ cần trace BRD/SRS ở mức gọn, và `strict` khi bắt buộc requirement IDs, spec freeze, spec change protocol và coverage report.
 - `spec_refs` trỏ tới `BRD/SRS` thật nếu đã materialize; để trống khi chỉ dùng section trong note workflow.
 - `spec_status` phản ánh trạng thái spec tại thời điểm note được cập nhật; với SDD strict, step 5-7 không nên đi sâu khi spec vẫn chỉ ở `draft` nếu chưa có accepted assumptions.
+- `planning_track` dùng `quick` cho scope nhỏ/risk thấp, `full` cho baseline thông thường và `enterprise` khi cần review lane, governance và planning depth nặng hơn.
 - `execution_mode` dùng `agentic` khi một agent giữ trọn ownership của step; dùng `multi_agent` khi step được điều phối bởi coordinator và nhiều worker/verifier.
 - `execution_roles` phải phản ánh đúng role nghiệp vụ thực sự đã tham gia vào step; ưu tiên dùng vocabulary chuẩn `po|ba|designer|developer|qc|devops` và chỉ thêm role khác khi thật sự cần.
+- `review_mode` dùng `self` cho self-check thông thường, `independent` khi reviewer tách khỏi worker chính, và `auto_fix_loop` khi verify có vòng fix lặp được ghi nhận rõ.
+- `verification_owner` phải ghi role hoặc owner chịu trách nhiệm kết luận verify; với `review_mode != self` hoặc `execution_mode=multi_agent`, field này không nên để trống.
 - `role_signoffs` ghi rõ role nào giữ trách nhiệm signoff cho `dor`, `approach`, `release`, `business_acceptance`, `dod`; cho phép để trống khi work item chưa được gán owner, nhưng không được khai báo role không tồn tại.
 - `business_spec` là artifact mô tả intent, rule và scope ở phía business; `business_acceptance` là hành động signoff xác nhận implementation đã đáp ứng artifact đó và acceptance criteria liên quan, nên hai lớp này không thay thế nhau.
 - Vai trò execution topology như `coordinator`, `worker`, `verifier` nên nằm trong block `## Execution Topology`, không thay thế `execution_roles` trong frontmatter chính.
@@ -584,6 +636,13 @@ Quy tắc:
 - `linked_artifacts` liệt kê tên file artifact phụ có thật, không để link chết.
 - `tags` nên có tối thiểu `agent-ops` và `workflow/<step-id>`.
 - Nếu không có chỉ định khác, `governance_ref` nên trỏ `project-context/project-context.md` và `checklist_refs` nên trỏ checklist theo `governance_profile`.
+- `governance_profile`, `governance_status` và trigger mở `governance-exception` phải theo `project-context/governance-decision-model.md`.
+- `change_id` để trống khi work item không dùng `change layer`; nếu có giá trị, phải dùng pattern như `CHANGE-001`.
+- `change_status` chỉ dùng các giá trị `draft|proposed|approved|in_progress|verified|archived|blocked`.
+- `spec_delta_refs` chỉ điền khi `change_id` đã được gắn và phải trỏ tới delta thật dưới `changes/<change-id>/spec-delta/`.
+- `archive_status` dùng `not_ready|ready_to_archive|archived` và phải nhất quán với trạng thái archive của change package.
+- `multi_agent` ở rollout hiện tại chỉ nên bật trên `s05-s08`; nếu đã bật ở `s05-s07`, runtime artifacts tương ứng phải tồn tại và được link trong `linked_artifacts`.
+- `quick` không nên dùng `multi_agent`, `review_mode != self` hoặc `sdd_mode=strict`; `enterprise` nên có `governance_profile` chặt hơn `default` và review owner rõ ở step delivery.
 
 ### Block Bổ Sung Khi Muốn Trace Execution Topology
 
@@ -659,6 +718,13 @@ Quy tắc:
 
 ### Template Step 1. Clarify
 
+Ghi chú:
+
+- Các template step bên dưới kế thừa đầy đủ frontmatter chuẩn ở mục `Frontmatter Chuẩn Cho Note Chính`.
+- Nếu work item dùng `change layer`, các field `change_id`, `change_status`, `spec_delta_refs`, `archive_status` phải được giữ trong frontmatter của từng step note dù ví dụ rút gọn bên dưới không lặp lại toàn bộ phần diễn giải.
+- Nếu work item dùng `multi_agent`, các field `review_mode`, `verification_owner` và runtime artifacts phải được giữ đồng bộ với execution validator dù ví dụ rút gọn bên dưới không lặp lại toàn bộ file runtime.
+- Nếu work item dùng `planning_track` khác `full`, các preset và guardrail của track đó phải được giữ đồng bộ với planning validator dù ví dụ rút gọn bên dưới không lặp lại toàn bộ routing matrix.
+
 ````md
 ```md
 ---
@@ -673,10 +739,11 @@ artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
 status: draft
-governance_ref: ""
-governance_profile: default|strict|regulated|custom
-governance_status: ALIGNED|CHECKS_PENDING|EXCEPTION_RECORDED|WAIVER_APPROVED|BLOCKED|NOT_APPLICABLE
-checklist_refs: []
+governance_ref: "project-context/project-context.md"
+governance_profile: default
+governance_status: CHECKS_PENDING
+checklist_refs:
+  - "project-context/checklists/default.md"
 sdd_mode: none|light|strict
 spec_refs:
   brd: ""
@@ -771,10 +838,11 @@ artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
 status: draft
-governance_ref: ""
-governance_profile: default|strict|regulated|custom
-governance_status: ALIGNED|CHECKS_PENDING|EXCEPTION_RECORDED|WAIVER_APPROVED|BLOCKED|NOT_APPLICABLE
-checklist_refs: []
+governance_ref: "project-context/project-context.md"
+governance_profile: default
+governance_status: CHECKS_PENDING
+checklist_refs:
+  - "project-context/checklists/default.md"
 sdd_mode: none|light|strict
 spec_refs:
   brd: ""
@@ -846,10 +914,11 @@ artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
 status: draft
-governance_ref: ""
-governance_profile: default|strict|regulated|custom
-governance_status: ALIGNED|CHECKS_PENDING|EXCEPTION_RECORDED|WAIVER_APPROVED|BLOCKED|NOT_APPLICABLE
-checklist_refs: []
+governance_ref: "project-context/project-context.md"
+governance_profile: default
+governance_status: CHECKS_PENDING
+checklist_refs:
+  - "project-context/checklists/default.md"
 sdd_mode: none|light|strict
 spec_refs:
   brd: ""
@@ -941,10 +1010,11 @@ artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
 status: draft
-governance_ref: ""
-governance_profile: default|strict|regulated|custom
-governance_status: ALIGNED|CHECKS_PENDING|EXCEPTION_RECORDED|WAIVER_APPROVED|BLOCKED|NOT_APPLICABLE
-checklist_refs: []
+governance_ref: "project-context/project-context.md"
+governance_profile: default
+governance_status: CHECKS_PENDING
+checklist_refs:
+  - "project-context/checklists/default.md"
 sdd_mode: none|light|strict
 spec_refs:
   brd: ""
@@ -1043,10 +1113,11 @@ artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
 status: draft
-governance_ref: ""
-governance_profile: default|strict|regulated|custom
-governance_status: ALIGNED|CHECKS_PENDING|EXCEPTION_RECORDED|WAIVER_APPROVED|BLOCKED|NOT_APPLICABLE
-checklist_refs: []
+governance_ref: "project-context/project-context.md"
+governance_profile: default
+governance_status: CHECKS_PENDING
+checklist_refs:
+  - "project-context/checklists/default.md"
 sdd_mode: none|light|strict
 spec_refs:
   brd: ""
@@ -1166,10 +1237,11 @@ artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
 status: draft
-governance_ref: ""
-governance_profile: default|strict|regulated|custom
-governance_status: ALIGNED|CHECKS_PENDING|EXCEPTION_RECORDED|WAIVER_APPROVED|BLOCKED|NOT_APPLICABLE
-checklist_refs: []
+governance_ref: "project-context/project-context.md"
+governance_profile: default
+governance_status: CHECKS_PENDING
+checklist_refs:
+  - "project-context/checklists/default.md"
 sdd_mode: none|light|strict
 spec_refs:
   brd: ""
@@ -1267,10 +1339,11 @@ artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
 status: draft
-governance_ref: ""
-governance_profile: default|strict|regulated|custom
-governance_status: ALIGNED|CHECKS_PENDING|EXCEPTION_RECORDED|WAIVER_APPROVED|BLOCKED|NOT_APPLICABLE
-checklist_refs: []
+governance_ref: "project-context/project-context.md"
+governance_profile: default
+governance_status: CHECKS_PENDING
+checklist_refs:
+  - "project-context/checklists/default.md"
 sdd_mode: none|light|strict
 spec_refs:
   brd: ""
@@ -1369,10 +1442,11 @@ artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
 status: draft
-governance_ref: ""
-governance_profile: default|strict|regulated|custom
-governance_status: ALIGNED|CHECKS_PENDING|EXCEPTION_RECORDED|WAIVER_APPROVED|BLOCKED|NOT_APPLICABLE
-checklist_refs: []
+governance_ref: "project-context/project-context.md"
+governance_profile: default
+governance_status: CHECKS_PENDING
+checklist_refs:
+  - "project-context/checklists/default.md"
 sdd_mode: none|light|strict
 spec_refs:
   brd: ""
@@ -1541,7 +1615,7 @@ behavioral_invariants: []
 ### `governance-context`
 
 ```yaml
-governance_ref: ""
+governance_ref: "project-context/project-context.md"
 applicable_principles: []
 constraints: []
 prohibited_actions: []
@@ -2291,9 +2365,10 @@ timebox:
   deadline: ""
   escalation_rule: ""
 governance:
-  governance_ref: ""
+  governance_ref: "project-context/project-context.md"
   applicable_principles: []
-  checklist_refs: []
+  checklist_refs:
+    - "project-context/checklists/default.md"
   exception_policy: NONE|RECORD_REQUIRED|WAIVER_REQUIRED
 ```
 

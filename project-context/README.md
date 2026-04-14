@@ -7,6 +7,7 @@ Thư mục này là source-of-truth cho `governance layer` ở mức project.
 - `constitution.md`: các nguyên tắc nền bắt buộc phải tôn trọng trong workflow.
 - `project-context.md`: bối cảnh đang có hiệu lực của repo, default profile, rule chọn checklist và các shortcut bị cấm.
 - `governance-role-model.md`: authority model cho role, signoff, exception và waiver.
+- `governance-decision-model.md`: rule chọn profile, status transition, exception trigger và rule update register.
 - `checklists/default.md`: checklist mặc định cho phần lớn work item.
 - `checklists/strict.md`: checklist tăng cường cho change có nhiều rủi ro hoặc nhiều boundary.
 - `checklists/regulated.md`: checklist tăng cường thêm cho scope có yêu cầu audit, approval hoặc compliance chặt.
@@ -20,6 +21,8 @@ Thư mục này là source-of-truth cho `governance layer` ở mức project.
   dùng một trong `default|strict|regulated|custom`.
 - `checklist_refs`:
   trỏ tới một hoặc nhiều checklist trong `project-context/checklists/`.
+- `governance_status`:
+  đánh giá theo `governance-decision-model.md`, không tự đặt theo cảm giác.
 - approval authority:
   tra theo `governance-role-model.md`, không suy diễn chỉ từ `role_signoffs`.
 - `governance-exception`:
@@ -39,3 +42,20 @@ Thư mục này là source-of-truth cho `governance layer` ở mức project.
 - Không tạo workflow governance riêng.
 - Không dùng checklist profile như source-of-truth thay cho note step.
 - Không đóng `DoR`, `DoD`, `release` hoặc `business_acceptance` nếu requirement governance còn đang mở mà không có owner hoặc waiver rõ.
+
+## Validator
+
+- Command chuẩn:
+  `npm run validate:workflow -- --workflow-root work-items --project-root <repo-root>`
+- Governance validator hiện đã enforce thêm:
+  - authority tối thiểu cho `approved_by`
+  - gate/state rule cho `governance_status` ở `s04` và `s08` khi note đã qua `draft`
+  - tính nhất quán tối thiểu giữa note và `governance-exception-register.md`
+- Chạy fixture suite:
+  `npm run validate:workflow:fixtures`
+- Fixture suite cho governance validator:
+  `tests/fixtures/workflow-governance/README.md`
+
+Ghi chú:
+
+- `work-items/` là canonical artifact root cho workflow artifacts thật của repo.

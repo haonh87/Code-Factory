@@ -35,9 +35,14 @@ Quy tắc:
 | Step | Loại | File chuẩn |
 |---|---|---|
 | 5 | Architecture canvas | `<work_item_slug>.s05.architecture.canvas` |
+| 5 | Execution policy runtime artifact | `<work_item_slug>.s05.execution-policy.md` |
 | 6 | Task map canvas | `<work_item_slug>.s06.task-map.canvas` |
 | 6 | Task dashboard base | `<work_item_slug>.s06.task-dashboard.base` |
+| 6 | Worker assignment runtime artifact | `<work_item_slug>.s06.worker-assignment.md` |
+| 7 | Worker handoff runtime artifact | `<work_item_slug>.s07.worker-handoff-report.md` |
+| 7 | Merge report runtime artifact | `<work_item_slug>.s07.merge-report.md` |
 | 8 | Verification dashboard base | `<work_item_slug>.s08.verification-dashboard.base` |
+| 8 | Execution escalation runtime artifact khi cần | `<work_item_slug>.s08.execution-escalation.md` |
 
 ## Mapping Từ Tên Mơ Hồ Sang Tên Chuẩn
 
@@ -54,10 +59,11 @@ Quy tắc:
 ## Rule Kiểm Soát
 
 - Một step chỉ có một tên note chính cố định.
+- Runtime artifact `.md` chỉ được dùng cho execution runtime đã được whitelist; chúng không thay note chính của step.
 - Không thêm synonym vào filename.
 - `artifact_id`, `work_item_slug`, `step_id`, `step_slug` trong frontmatter phải khớp với filename.
 - Nếu một nội dung chỉ là phần con của step, giữ nó thành section trong note chuẩn, không tách thành file mới.
-- Nếu cần kiểm soát chặt, gom toàn bộ workflow artifact của work item vào một thư mục riêng, ví dụ `work-items/`.
+- `work-items/` là canonical artifact root; workflow artifact thật của repo phải được đặt dưới `work-items/<work_item_slug>/`.
 
 ## Ví Dụ
 
@@ -78,10 +84,30 @@ Sai:
 
 ## Cách Kiểm Tra
 
+Authoring khuyến nghị:
+
+```bash
+npm run scaffold:workflow -- --work-item <work-item-slug>
+```
+
+hoặc:
+
+```bash
+npm run scaffold:workflow-step -- --work-item <work-item-slug> --step <sNN>
+```
+
+Trong command scaffold:
+
+- `--work-item` hiện là tên CLI ngắn cho `work_item_slug`.
+- `work_item_slug` là định danh của một work item chạy xuyên workflow, thường được chốt ở `s01 Clarify`.
+- Ví dụ: `fix-login-timeout`, `checkout-recovery`, `payment-cutover`.
+
+Sau đó validate:
+
 Chạy validator trên thư mục chỉ chứa workflow artifact:
 
 ```powershell
-powershell -File scripts/validate-workflow-artifact-names.ps1 -WorkflowRoot .\work-items
+npm run validate:workflow:naming -- --workflow-root work-items
 ```
 
 Validator sẽ báo lỗi khi:

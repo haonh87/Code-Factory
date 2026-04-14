@@ -16,14 +16,14 @@ Repository được tổ chức theo các lớp trách nhiệm rõ ràng:
 
 Pattern cốt lõi của project là workflow coding 8 bước:
 
-1. Restate yêu cầu và discovery framing.
-2. Xác định mục tiêu business.
-3. Liệt kê phần còn mơ hồ.
-4. Viết acceptance criteria và chốt Definition of Ready.
-5. Đề xuất technical approach.
-6. Chia task.
+1. Clarify.
+2. Business Goal.
+3. Open Questions.
+4. Acceptance + DoR.
+5. Technical Approach.
+6. Task Plan.
 7. Implement.
-8. Verify với criteria và chốt Definition of Done.
+8. Verify + DoD.
 
 Điểm quan trọng của pattern này:
 
@@ -106,7 +106,6 @@ Khi mở rộng project:
 - `frontend-architecture` có file `agents/openai.yaml` để bật implicit invocation.
 - Nhóm Obsidian hiện được vendor một phần từ `kepano/obsidian-skills`.
 - `notebooklm` là skill tích hợp tool ngoài ở mức CLI/MCP để hỗ trợ research-heavy workflow; output của nó được xem là supporting input, không phải source of truth.
-
 
 
 

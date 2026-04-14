@@ -2,15 +2,17 @@
 
 ## Trạng Thái Làm Việc Hiện Tại
 
-Repository đang ở pha củng cố tài liệu nền để agent có thể phục hồi ngữ cảnh qua Memory Bank thay vì dựa vào trí nhớ phiên làm việc.
+Repository không còn ở pha chỉ củng cố tài liệu nền hoặc rollout baseline. Trọng tâm hiện tại là giữ baseline phase `0-5` ổn định và tăng độ chặt của hardening theo hướng có kiểm soát.
 
 Ở cấp định hướng sản phẩm, project đã được chốt là nền móng để xây dựng một bộ `AI KIT` cho quy trình phát triển sản phẩm số, không chỉ là workflow pack cho Codex.
 
 Trọng tâm hiện tại:
 
-- Xác lập `memory-bank/` theo đúng phương pháp Cline.
-- Chốt lại mô tả chuẩn về project: là gì, đã có gì, mục tiêu là gì.
-- Giữ một đường đọc rõ ràng giữa các file core trong `memory-bank/`.
+- Giữ `backbone workflow` và `governance layer` ổn định trong vận hành thật.
+- Giữ baseline của `SDD`, `change`, `execution`, `adaptive planning` và `hardening` ổn định.
+- `Phase 0: Backbone + Governance`, `Phase 1: SDD Materialization`, `Phase 2: Change Layer`, `Phase 3: Execution Layer`, `Phase 4: Adaptive Planning` và `Phase 5: Hardening` đã materialize baseline.
+- `workflow-authoring-smoke` đã nằm trong CI; hardening hiện tại chuyển sang drift checks, stale checks và semantic lint sâu hơn.
+- Giữ `memory-bank/` phản ánh đúng trạng thái implementation, không để lẫn giữa `DONE`, `PARTIAL` và `target`.
 
 ## Thay Đổi Gần Đây
 
@@ -36,6 +38,24 @@ Trọng tâm hiện tại:
 - Đã đồng bộ lại contract giữa `workflow-chain.md`, `AGENTS.global.md`, `role-aware-workflow.md` và `target-architecture.md`: mô hình đọc theo 6 lớp đã thống nhất, `governance_ref` là field canonical, `governance_status` dùng enum chuẩn uppercase, còn `execution_mode` dùng `agentic|multi_agent` với `sequential_multi_role` chỉ là runtime fallback.
 - Đã materialize Governance Pack ở mức project tại `project-context/`, gồm `constitution`, `project-context`, checklist profile `default|strict|regulated` và `governance-exception-register`.
 - Đã thêm `governance-role-model.md` để chốt authority giữa `po|ba|designer|developer|qc|devops`, tách rõ `step signoff` với `waiver authority`.
+- Đã thêm `governance-decision-model.md` để chốt rule chọn `governance_profile`, state transition cho `governance_status` và trigger mở `governance-exception`.
+- Đã thêm command surface chuẩn bằng `npm` ở root repo và port workflow validators sang Node.js, gồm `validate-workflow.js`, `validate-workflow-artifact-names.js`, `validate-workflow-governance.js`, để workflow tooling không phụ thuộc PowerShell.
+- Đã thêm fixture suite `tests/fixtures/workflow-governance/` với case `pass/fail` cho `default`, `regulated`, `custom`, exception register và `WAIVER_APPROVED` để test governance validator.
+- Đã thêm workflow scaffolder chạy bằng `npm`, gồm `scaffold:workflow` và `scaffold:workflow-step`, để materialize note workflow đúng naming, frontmatter, governance metadata và block chuẩn rồi validate lại ngay sau khi sinh file.
+- Đã thêm `workflow-ci-enforcement.md` để chốt vai trò, scope, job design, trigger và rollout phases cho CI enforcement của workflow tooling trước khi materialize `.github/workflows/`.
+- Đã implement CI phase 1 tại `.github/workflows/workflow-guardrails.yml`; workflow này hiện chạy job `workflow-tooling` và enforce `npm run validate:workflow:fixtures` trên PR, push `main` và manual dispatch.
+- Đã chốt `work-items/` là canonical artifact root cho workflow artifacts thật và thêm `work-items/README.md` làm entrypoint cho directory convention này.
+- Đã implement CI phase 2 trong cùng workflow GitHub Actions; job `workflow-artifacts` hiện validate trực tiếp root `work-items/`, và `sample-workflow-item/` đang là canonical sample đầu tiên trong root này.
+- Đã thêm `implementation-blueprint.md` để tách rõ phần nào đã implementation, phần nào mới ở mức target architecture, và phase nào phải làm tiếp theo.
+- Đã materialize `product-specs/` với template `BRD/SRS`, sample `BRD/SRS` thật cho `sample-sdd-item`, validator `validate-workflow-sdd.js` và CI job `workflow-sdd`; `Phase 1: SDD Materialization` hiện đã có baseline chạy được.
+- Đã materialize `changes/` với sample change package `CHANGE-001`, scaffold `scaffold:change`, validator `validate-workflow-change.js` và CI job `workflow-changes`; `sample-sdd-item` hiện nối qua `change_id` và `spec_delta_refs` tới change package này.
+- Đã materialize execution runtime baseline: metadata `review_mode`, `verification_owner`, runtime artifacts `execution-policy`, `worker-assignment`, `worker-handoff-report`, `merge-report`, validator `validate-workflow-execution.js`, CI job `workflow-execution` và sample canonical `sample-execution-item/`.
+- Đã materialize adaptive planning baseline: metadata `planning_track`, scaffold preset `quick|full|enterprise`, validator `validate-workflow-planning.js`, CI job `workflow-planning` và sample canonical `sample-quick-item/`, `sample-enterprise-item/`.
+- Đã materialize hardening baseline: `run-workflow-authoring-smoke.js`, command `validate:workflow:authoring-smoke`, CI job `workflow-authoring-smoke`, governance authority/state enforcement baseline và fixture authority/gate mới cho validator governance.
+- Đã chốt `workflow-overview-author-edition.md` làm landing overview chính thức cho delivery/onboarding ở góc nhìn tác giả.
+- Đã chốt `workflow-overview.md` làm technical/internal reference cho mechanics, validator, CI, rollout status và các nội dung thuần kỹ thuật hơn.
+- Đã đồng bộ các entrypoint chính để người đọc vào repo thấy ngay thứ tự đọc workflow: author overview trước, technical reference sau, rồi mới tới contract/schema docs.
+- Đã tối ưu landing `README.md` theo hướng ít lặp hơn, nhóm lại command surface và workflow docs theo mục đích sử dụng thay vì để một danh sách reference dài ngay từ đầu.
 
 ## Quyết Định Đang Có Hiệu Lực
 
@@ -71,17 +91,15 @@ Trọng tâm hiện tại:
 
 ## Việc Nên Làm Tiếp Theo
 
-- Giữ `progress.md` cập nhật khi thêm policy, skill, adapter hoặc thay đổi scope.
-- Khi thêm skill mới, cập nhật đồng thời projectbrief.md, systemPatterns.md và progress.md.
-- Khi mở rộng DevOps tiếp theo, nên bổ sung ví dụ end-to-end hoặc template runtime artifact cho docker, swarm, k8s.
-- Khi có thay đổi mục tiêu sản phẩm hoặc lý do tồn tại của repo, cập nhật `productContext.md`.
+- Giữ `progress.md` cập nhật theo phase rollout, không chỉ theo danh sách đã làm rời rạc.
+- Giữ `progress.md` phản ánh đúng việc phase 0-5 đã có baseline, tránh ghi Phase 5 như hạng mục còn treo.
+- Nếu tiếp tục hardening, ưu tiên kế tiếp là stale register checks, drift checks sâu hơn và semantic lint cho evidence/traceability.
+- Chỉ pilot `multi_agent` ở mức artifact/runtime sau khi `SDD` và `change layer` đã có source-of-truth ổn định.
 - Duy trì ví dụ end-to-end đồng bộ với policy, runtime reference và workflow chain khi spec thay đổi.
 - Với `MCP`, tiếp tục chọn server nhỏ có guardrail tốt thay vì cố tạo một integration quá rộng ngay vòng đầu.
-- Nếu bắt đầu hiện thực runner hoặc adapter cho `agentic`/`multi-agent`, cần tách rõ phần nào là spec orchestration và phần nào là runtime behavior.
-- Khi bắt đầu pha mở rộng ngoài Codex, ghi rõ phạm vi nào được port sang Claude trước và phần nào còn giữ riêng cho Codex.
 
 ## Rủi Ro Tài Liệu Hiện Tại
 
 - Có nguy cơ drift giữa `README.md` và `memory-bank/` nếu chỉ sửa một nơi.
 - Repo hiện thiên về policy và docs, nên chất lượng tài liệu chính là chất lượng sản phẩm.
-- Chưa có automation riêng để phát hiện lệch nội dung giữa các tài liệu nguồn.
+- Chưa có drift check sâu để đối chiếu mọi docs nguồn với scaffold, validator và CI ngoài baseline hiện tại.

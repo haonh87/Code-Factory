@@ -15,6 +15,8 @@ Mục tiêu:
 - Exception ảnh hưởng tới `release`, `business_acceptance` hoặc scope `regulated` không nên do một role tự approve một mình.
 - Nếu authority phù hợp chưa hiện diện trong work item, step phải ở trạng thái `BLOCKED` hoặc giữ exception ở `PROPOSED`.
 
+State transition, trigger mở exception và rule chọn profile không nằm ở file này; dùng `governance-decision-model.md`.
+
 ## Vai Trò Governance Cốt Lõi
 
 ### `po`

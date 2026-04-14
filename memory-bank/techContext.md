@@ -35,6 +35,7 @@ Hiện ngoại lệ đầu tiên là `mcp/github-push/package.json`, dùng để
 - `obsidian-cli` hiện chưa nằm trong scope tích hợp.
 - `agentic` và `multi-agent` hiện đã có orchestration spec và runtime reference theo hướng `Codex-first`; vẫn chưa có runtime framework riêng trong repo.
 - MCP GitHub Push dựa trên `git` CLI cục bộ và GitHub REST API; auth dùng `GITHUB_TOKEN`, còn HTTPS push có thể dùng `GIT_ASKPASS` tạm thời.
+- MCP NotebookLM dựa trên launcher Node mỏng trong repo và upstream `notebooklm-mcp-cli` chạy qua `uvx`; auth và NotebookLM behavior vẫn do upstream package quản lý.
 - Trên macOS, `cass` mặc định đọc index và database từ `~/Library/Application Support/com.coding-agent-search.coding-agent-search/`; sandbox hạn chế có thể chặn mở DB dù môi trường local bên ngoài vẫn healthy.
 - MCP Session Search dựa trên `cass` CLI cục bộ, Node.js, `@modelcontextprotocol/sdk` và `zod`; server chỉ expose read-only retrieval trên session history.
 
@@ -46,6 +47,7 @@ Hiện ngoại lệ đầu tiên là `mcp/github-push/package.json`, dùng để
 - Dùng `update-codex-workflow.sh` để cập nhật policy và skill vào môi trường Codex đã cài sẵn trên Linux/macOS.
 - Dùng `notebooklm` qua `uvx --from notebooklm-mcp-cli ...` khi cần research/query corpus lớn; flow này có thể cần auth và network.
 - Dùng `adapters/mcp/install-github-push.ps1` hoặc `.sh` để cài dependency cho MCP GitHub Push.
+- Dùng `adapters/mcp/install-notebooklm.ps1` hoặc `.sh` để đăng ký launcher NotebookLM MCP vào Codex config sau khi `uvx` đã sẵn sàng.
 - Dùng `adapters/mcp/install-session-search.ps1` hoặc `.sh` để cài dependency và đăng ký MCP Session Search vào Codex config.
 - Dùng `cass health`, `cass sessions --current` và `cass search "<query>" --workspace "<path>"` khi cần tra cứu lại local Codex session history theo workspace.
 - Nếu `cass` báo degraded trong sandbox nhưng máy local vẫn có CLI, ưu tiên verify lại ngoài sandbox trước khi chạy flow repair như `cass doctor --fix` hoặc `cass index --full`.
@@ -54,7 +56,8 @@ Hiện ngoại lệ đầu tiên là `mcp/github-push/package.json`, dùng để
 ## Điều Cần Nhớ Khi Chỉnh Sửa Repo
 
 - Khi đổi workflow chain hoặc schema output, phải kiểm tra cả policy, skill orchestration và tài liệu tham chiếu.
-- Khi materialize workflow note có trace execution, có thể dùng metadata `execution_mode` và `execution_roles`.
+- Khi materialize workflow note có trace execution, có thể dùng metadata `execution_mode`, `execution_roles` và `role_signoffs`.
+- Khi work item chạy theo SDD, dùng thêm metadata `sdd_mode`, `spec_refs`, `spec_status` và các block `## Spec Freeze`, `## Spec Change`, `## SDD Traceability`, `## Spec Coverage` theo tài liệu workflow.
 - Khi thêm skill mới, phải kiểm tra nguy cơ trùng tên với skill hiện có vì runtime install dùng tên thư mục cuối cùng; điều này đặc biệt quan trọng sau khi tách DevOps thành nhiều skill nhỏ.
 - Khi thêm MCP server mới, cần khóa rõ `allowed root`, env vars bắt buộc và tool nào được phép gây side effect.
 - Khi sửa tài liệu `.md`, cần kiểm tra lại hiển thị tiếng Việt sau khi lưu.
@@ -66,9 +69,8 @@ Hiện ngoại lệ đầu tiên là `mcp/github-push/package.json`, dùng để
 - `frontend-architecture` có khai báo `openai.yaml` phục vụ implicit invocation.
 - `notebooklm` phụ thuộc vào `notebooklm-mcp-cli` và luồng xác thực của NotebookLM khi dùng CLI/MCP thực tế.
 - `github-push` MCP phụ thuộc `@modelcontextprotocol/sdk`, `zod`, `git`, Node.js và GitHub token khi dùng API hoặc HTTPS push.
+- `notebooklm` MCP launcher phụ thuộc Node.js, `uvx` và upstream `notebooklm-mcp-cli`; bản thân repo không sở hữu tool schema hoặc auth implementation của upstream package.
 - `session-search` MCP phụ thuộc `@modelcontextprotocol/sdk`, `zod`, Node.js và `cass` CLI cục bộ có thể đọc được local session index/database.
-
-
 
 
 

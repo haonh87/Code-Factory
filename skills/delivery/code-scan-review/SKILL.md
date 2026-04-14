@@ -18,7 +18,7 @@ Skill này là bộ điều phối scan ở step 8, dùng 4 lane cố định đ
 
 ## Vị Trí Trong Workflow
 
-- Mặc định dùng ở step 8 `Verify với criteria và chốt Definition of Done`.
+- Mặc định dùng ở `s08` `Verify + DoD`.
 - Không tạo workflow step mới chỉ cho scan code; đây là skill verify chuyên biệt trong chain hiện có.
 - Step 7 `Implement` chỉ nên bàn giao context scan qua `notes_for_testing` hoặc implementation handoff khi cần.
 - Nếu người dùng muốn scan ngay trong lúc coding để self-check, vẫn phải ghi rõ đó là pre-handoff evidence; kết luận chính thức `PASS|FAIL|PARTIAL` thuộc step 8.

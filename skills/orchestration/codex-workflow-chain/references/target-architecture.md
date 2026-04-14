@@ -12,6 +12,7 @@ Trạng thái tài liệu:
 - đây là `target architecture` để review
 - chưa phải bản implementation hoàn tất trong repo
 - dùng làm đầu vào cho các bước rollout tiếp theo
+- rollout cụ thể theo phase, artifact, validator và CI nằm tại `implementation-blueprint.md`
 
 Thời điểm đối chiếu: `2026-04-13`.
 
@@ -70,6 +71,7 @@ Target architecture này dùng mô hình `hybrid governance`:
 | Change Layer | proposal, design, tasks, spec delta, archive | `OpenSpec` |
 | Execution Layer | implementer/reviewer/fixer loop, task execution autonomy | `cc-sdd` |
 | Adaptive Planning | quick/full/enterprise routing, planning depth theo scope | `BMAD-METHOD` |
+| Automation Guardrail | validator, fixture suite, scaffold smoke, PR/push enforcement | repo-native CI design |
 
 ## Nguyên Tắc Cốt Lõi
 
@@ -120,16 +122,16 @@ changes/
       task-status.md
     archive-metadata.md
 
-workflow/
-  <work-item>/
-    <work-item>.s01.restate.md
-    <work-item>.s02.business-goal.md
-    <work-item>.s03.open-questions.md
-    <work-item>.s04.acceptance-criteria.md
-    <work-item>.s05.technical-approach.md
-    <work-item>.s06.task-breakdown.md
-    <work-item>.s07.implementation.md
-    <work-item>.s08.verification.md
+work-items/
+  <work_item_slug>/
+    <work_item_slug>.s01.restate.md
+    <work_item_slug>.s02.business-goal.md
+    <work_item_slug>.s03.open-questions.md
+    <work_item_slug>.s04.acceptance-criteria.md
+    <work_item_slug>.s05.technical-approach.md
+    <work_item_slug>.s06.task-breakdown.md
+    <work_item_slug>.s07.implementation.md
+    <work_item_slug>.s08.verification.md
 ```
 
 ## Ý Nghĩa Từng Vùng Artifact
@@ -139,7 +141,7 @@ workflow/
 | `project-context/` | nơi giữ rule dùng chung của dự án như `constitution`, coding standards, collaboration preference và `quality bar` |
 | `product-specs/` | nơi giữ `BRD/SRS` chính thức sau khi đã review/approve |
 | `changes/` | nơi đóng gói từng thay đổi theo proposal, design, tasks, delta và archive lifecycle |
-| `workflow/` | nơi giữ step note, traceability, role outputs, DoR/DoD evidence và execution topology |
+| `work-items/` | canonical artifact root cho step note, traceability, role outputs, DoR/DoD evidence và execution topology |
 
 ## Planning Track Từ BMAD
 
@@ -188,6 +190,8 @@ Planning track là metadata điều chỉnh độ sâu planning, không tạo wo
 | task execution loop | `cc-sdd` |
 | planning track selection | `BMAD-METHOD` |
 
+CI enforcement cho command surface nội bộ được mô tả riêng tại `workflow-ci-enforcement.md`.
+
 ## Luồng Vận Hành Đích
 
 ```text
@@ -229,7 +233,7 @@ Quy ước đồng bộ:
 |---|---|
 | Product spec vs change | `BRD/SRS` không bị thay bởi `proposal/tasks` |
 | Workflow vs framework | framework ngoài không được tạo workflow cạnh tranh |
-| Change vs execution | `changes/` không thay `workflow/` |
+| Change vs execution | `changes/` không thay `work-items/` |
 | Execution vs governance | execution loop không thay `DoR/DoD` |
 | Governance vs step | governance không được trôi thành tài liệu nền thuần túy; phải đi vào gate hoặc exception của step tương ứng |
 | Planning aid vs rollout truth | `PRD/story` chỉ là planning aid, không thay artifact chính |
@@ -255,5 +259,6 @@ Tài liệu này nên được đọc cùng:
 
 - `references/workflow-chain.md`
 - `references/spec-driven-development.md`
+- `references/implementation-blueprint.md`
 - `references/sdd-merge-strategy.md`
 - `references/execution-runtime.md`

@@ -7,6 +7,14 @@ Tài liệu này bổ sung cho `workflow-chain.md`.
 - Nếu work item chạy theo SDD, `spec-driven-development.md` là nguồn tham chiếu cho spec lifecycle, requirement IDs, spec freeze, spec change và coverage report; runtime không được bypass các gate đó.
 - Ví dụ thực thi cụ thể nằm ở `end-to-end-examples.md`.
 
+Trạng thái rollout hiện tại:
+
+- `Phase 3: Execution Layer` đã materialize baseline
+- repo hiện đã có metadata `review_mode`, `verification_owner`
+- repo hiện đã có runtime artifacts `execution-policy`, `worker-assignment`, `worker-handoff-report`, `merge-report`
+- validator chuẩn là `npm run validate:workflow:execution -- --workflow-root work-items`
+- sample canonical hiện tại là `work-items/sample-execution-item/`
+
 ## Phạm Vi
 
 - Áp dụng cho execution runtime của workflow coding 8 bước.

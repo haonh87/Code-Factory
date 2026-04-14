@@ -1,0 +1,21 @@
+{
+  "name": "ai-agent-ops",
+  "private": true,
+  "scripts": {
+    "scaffold:change": "node scripts/scaffold-change-package.js",
+    "scaffold:workflow": "node scripts/scaffold-workflow.js",
+    "scaffold:workflow-step": "node scripts/scaffold-workflow.js --single-step",
+    "validate:workflow": "node scripts/validate-workflow.js",
+    "validate:workflow:naming": "node scripts/validate-workflow-artifact-names.js",
+    "validate:workflow:governance": "node scripts/validate-workflow-governance.js",
+    "validate:workflow:sdd": "node scripts/validate-workflow-sdd.js",
+    "validate:workflow:change": "node scripts/validate-workflow-change.js",
+    "validate:workflow:execution": "node scripts/validate-workflow-execution.js",
+    "validate:workflow:planning": "node scripts/validate-workflow-planning.js",
+    "validate:workflow:authoring-smoke": "node scripts/run-workflow-authoring-smoke.js",
+    "validate:workflow:fixtures": "node scripts/run-workflow-governance-fixtures.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
