@@ -1,3 +1,10 @@
 tmp-codex-home/tmp-change-smoke/
 tmp-codex-home/tmp-execution-smoke/
 tmp-codex-home/tmp-sdd-smoke/
+.obsidian/
+
+# Local visual working files; not part of the public docs surface.
+docs/workflow-process.canvas
+docs/workflow-work-items.canvas
+docs/workflow-work-items.canvas.png
+docs/workflow-work-items.png

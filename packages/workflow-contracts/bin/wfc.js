@@ -220,7 +220,7 @@ function printHelp() {
       "  version         Print version",
       "  help            Show this help",
       "",
-      "Daily Flow:",
+      "Public v1.0.0 Flow:",
       "  1. wfc init",
       "  2. wfc scaffold --work-item <work-item-slug>",
       "  3. wfc",

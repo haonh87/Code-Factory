@@ -6,6 +6,8 @@ Quickstart chi tiết: [`docs/workflow-contracts-quickstart.md`](../../docs/work
 
 ## CLI
 
+Public release hiện tại của package này là `v1.0.0`.
+
 ```bash
 wfc init
 wfc
@@ -50,6 +52,8 @@ Cheat sheet theo tình huống:
 | Validate execution layer | `wfc exec` |
 | Validate planning layer | `wfc plan` |
 | Tạo change package | `wfc scaffold-change --change-id <CHANGE-ID> --work-item <slug>` |
+
+Nếu bạn đang dùng public release, xem thêm `../../docs/publish-surface.md` để biết đâu là public docs và đâu là internal docs.
 
 ## Config
 

@@ -362,7 +362,7 @@ CI không nên chỉ warning với các rule mechanical ở trên, vì như vậ
 Chỉ enforce:
 
 - `scripts/`
-- `tests/fixtures/workflow-governance/`
+- `packages/workflow-contracts/tests/fixtures/workflow-governance/`
 - docs tham chiếu workflow/governance khi chúng làm hỏng contract tooling
 
 Thực tế phase này chủ yếu chạy `validate:workflow:fixtures`.

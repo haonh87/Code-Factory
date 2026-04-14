@@ -2,18 +2,28 @@
 
 Repository này lưu trữ policy, workflow, skill và adapter cài đặt cho các tác vụ AI agent. Hiện tại repo ưu tiên Codex, nhưng cấu trúc đã được tách nhóm để sau này có thể mở rộng thêm tool hoặc agent khác.
 
-Tính tới `2026-04-14`, workflow backbone và các phase `0-5` trong implementation blueprint đã được materialize ở mức baseline. Trọng tâm còn lại là hardening sâu hơn, semantic lint và mở rộng phạm vi vận hành.
+Public baseline hiện tại là `v1.0.0`: manual authoring backbone, các lane validate chính, `SDD`, `change layer`, `adaptive planning` và execution support theo `agentic|multi_agent`.
+
+Public publish surface nên được hiểu theo tag `v1.0.0` hoặc branch `release/v1.0.0`. Nếu working tree sau này có thêm WIP, hãy ưu tiên trỏ người dùng mới vào các tài liệu public bên dưới.
 
 ## Bắt Đầu Ở Đây
 
-Nguồn sự thật để lưu và phục hồi ngữ cảnh dự án là `memory-bank/`.
+Nếu đang tiếp cận repo lần đầu và muốn dùng đúng bản public:
 
-Nếu đang tiếp cận repo lần đầu, đọc theo thứ tự này:
+1. [`docs/publish-surface.md`](docs/publish-surface.md)
+2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
+3. [`docs/workflow-contracts-quickstart.md`](docs/workflow-contracts-quickstart.md)
+4. [`skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`](skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
+5. [`skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
 
-1. [`memory-bank/projectbrief.md`](memory-bank/projectbrief.md)
-2. [`skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`](skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
-3. [`skills/orchestration/codex-workflow-chain/references/workflow-overview.md`](skills/orchestration/codex-workflow-chain/references/workflow-overview.md)
-4. [`skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
+## Internal Context
+
+Các tài liệu dưới đây là internal hoặc maintainer context, không nên dùng làm public onboarding path:
+
+- [`memory-bank/projectbrief.md`](memory-bank/projectbrief.md)
+- [`memory-bank/activeContext.md`](memory-bank/activeContext.md)
+- [`memory-bank/progress.md`](memory-bank/progress.md)
+- [`skills/orchestration/codex-workflow-chain/references/workflow-overview.md`](skills/orchestration/codex-workflow-chain/references/workflow-overview.md)
 
 ## Workflow Commands Nhanh
 
@@ -38,6 +48,13 @@ Ghi chú:
 
 ## Workflow Docs
 
+### Theo Mục Đích
+
+- Public publish surface cho `v1.0.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public docs cho người mới dùng workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
+- Quickstart cho `wfc`: [`docs/workflow-contracts-quickstart.md`](docs/workflow-contracts-quickstart.md)
+- Source-of-truth về phạm vi version: [`workflow-versioning.md`](skills/orchestration/codex-workflow-chain/references/workflow-versioning.md)
+
 ### Overview Và Contract
 
 - Overview chính thức cho delivery/onboarding: [`workflow-overview-author-edition.md`](skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
@@ -58,10 +75,11 @@ Ghi chú:
 - Governance Pack mức project: [`project-context/README.md`](project-context/README.md)
 - Governance decision model: [`project-context/governance-decision-model.md`](project-context/governance-decision-model.md)
 - Governance role model: [`project-context/governance-role-model.md`](project-context/governance-role-model.md)
+- Versioning và ranh giới `v1.0.0`: [`workflow-versioning.md`](skills/orchestration/codex-workflow-chain/references/workflow-versioning.md)
 - Execution runtime cho `agentic|multi_agent`: [`execution-runtime.md`](skills/orchestration/codex-workflow-chain/references/execution-runtime.md)
 - Adaptive planning cho `quick|full|enterprise`: [`adaptive-planning.md`](skills/orchestration/codex-workflow-chain/references/adaptive-planning.md)
 - CI enforcement cho workflow tooling và artifacts: [`workflow-ci-enforcement.md`](skills/orchestration/codex-workflow-chain/references/workflow-ci-enforcement.md)
-- Fixture suite cho governance validator: [`tests/fixtures/workflow-governance/README.md`](tests/fixtures/workflow-governance/README.md)
+- Fixture suite canonical cho governance validator: [`packages/workflow-contracts/tests/fixtures/workflow-governance/README.md`](packages/workflow-contracts/tests/fixtures/workflow-governance/README.md)
 
 ### Architecture Và Rollout
 
@@ -91,7 +109,8 @@ Tên file workflow không đặt theo cách hiểu cá nhân như `requirements`
 - `skills/delivery/`: skill chia task, implement, testing, DevOps packaging/deploy và review thay đổi dữ liệu hoặc code.
 - `skills/guardrails/`: skill contract, readiness, audit và gate DoR/DoD để khóa chất lượng.
 - `skills/obsidian/`: skill soạn thảo artifact theo hệ Obsidian như note Markdown, Bases và JSON Canvas.
-- `skills/notebooklm/`: skill tích hợp NotebookLM qua CLI/MCP cho các tác vụ research-heavy hoặc corpus lớn.
+- `skills/README.md`: taxonomy và quy tắc đặt nhóm skill cho publish surface.
+- `skills/notebooklm/`: top-level integration skill theo thiết kế, dùng để tích hợp NotebookLM qua CLI/MCP cho các tác vụ research-heavy hoặc corpus lớn.
 - `mcp/github-push/`: MCP server Node để inspect repository, tạo repo GitHub, commit, cấu hình remote và push branch hiện tại.
 - `mcp/notebooklm/`: launcher MCP để Codex gọi upstream `notebooklm-mcp` qua `uvx` cho các tác vụ NotebookLM.
 - `mcp/session-search/`: MCP server Node read-only để tra cứu local coding-agent session history qua `cass`.

@@ -2,7 +2,7 @@ const path = require("path");
 const { validateWorkflowArtifactNames } = require("./validate-workflow-artifact-names");
 const { validateWorkflowGovernance } = require("./validate-workflow-governance");
 
-const fixtureRoot = path.resolve("tests/fixtures/workflow-governance");
+const fixtureRoot = path.resolve(__dirname, "..", "tests", "fixtures", "workflow-governance");
 
 const cases = [
   {

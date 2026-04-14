@@ -2,6 +2,8 @@
 
 Bộ fixture này dùng để test workflow validators qua command chuẩn `npm`.
 
+Đây là fixture root canonical cho governance validator trong package `workflow-contracts`.
+
 Mục tiêu:
 
 - có case `pass` cho các profile `default`, `regulated`, `custom`
@@ -26,20 +28,20 @@ Từ root repo:
 
 ```bash
 npm run validate:workflow -- \
-  --workflow-root tests/fixtures/workflow-governance/valid-default/workflow \
-  --project-root tests/fixtures/workflow-governance
+  --workflow-root packages/workflow-contracts/tests/fixtures/workflow-governance/valid-default/workflow \
+  --project-root packages/workflow-contracts/tests/fixtures/workflow-governance
 ```
 
 ```bash
 npm run validate:workflow -- \
-  --workflow-root tests/fixtures/workflow-governance/valid-regulated-waiver/workflow \
-  --project-root tests/fixtures/workflow-governance
+  --workflow-root packages/workflow-contracts/tests/fixtures/workflow-governance/valid-regulated-waiver/workflow \
+  --project-root packages/workflow-contracts/tests/fixtures/workflow-governance
 ```
 
 ```bash
 npm run validate:workflow -- \
-  --workflow-root tests/fixtures/workflow-governance/invalid-waiver-missing-approval/workflow \
-  --project-root tests/fixtures/workflow-governance
+  --workflow-root packages/workflow-contracts/tests/fixtures/workflow-governance/invalid-waiver-missing-approval/workflow \
+  --project-root packages/workflow-contracts/tests/fixtures/workflow-governance
 ```
 
 Hoặc chạy toàn bộ fixture suite:
@@ -52,3 +54,4 @@ npm run validate:workflow:fixtures
 
 - Fixture suite này ưu tiên test governance validator, không nhằm thay thế full end-to-end workflow examples.
 - Các file note vẫn giữ naming chuẩn `<work_item_slug>.sNN.<step-slug>.md` để có thể dùng chung cho naming validator nếu cần.
+- Root `tests/fixtures/workflow-governance/` ở repo không còn là canonical source để tránh drift hai cây fixture giống nhau.

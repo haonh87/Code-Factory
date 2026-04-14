@@ -53,8 +53,8 @@ Thư mục này là source-of-truth cho `governance layer` ở mức project.
   - tính nhất quán tối thiểu giữa note và `governance-exception-register.md`
 - Chạy fixture suite:
   `npm run validate:workflow:fixtures`
-- Fixture suite cho governance validator:
-  `tests/fixtures/workflow-governance/README.md`
+- Fixture suite canonical cho governance validator:
+  `packages/workflow-contracts/tests/fixtures/workflow-governance/README.md`
 
 Ghi chú:
 

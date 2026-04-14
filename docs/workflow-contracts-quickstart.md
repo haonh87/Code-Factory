@@ -28,7 +28,7 @@ npm -v
 Nếu bạn đang ở chính máy đang phát triển repo `Code-Factory` này:
 
 ```bash
-cd /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/packages/workflow-contracts
+cd <repo-root>/packages/workflow-contracts
 npm link
 ```
 
@@ -160,7 +160,7 @@ npm run validate:workflow
 Nếu source repo đổi và bạn đang dùng `npm link`:
 
 ```bash
-cd /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/packages/workflow-contracts
+cd <repo-root>/packages/workflow-contracts
 npm link
 ```
 
