@@ -1,0 +1,16 @@
+{
+  "bundleName": "codex-workflow-bundle",
+  "bundleVersion": "2.0.0",
+  "codex": {
+    "globalAgentsSource": "policies/codex/AGENTS.global.md",
+    "skillsSourceRoot": "skills",
+    "supportPoliciesSourceRoot": "policies/codex",
+    "supportPoliciesTargetRoot": "policies/codex",
+    "globalAgentsFileName": "AGENTS.global.md",
+    "projectAgentsFileName": "AGENTS.md",
+    "managedSkillsManifestFile": ".codex-workflow-bundle.managed-skills.txt",
+    "legacyManagedSkillsManifestFile": ".codex-workflow-pack.managed-skills.txt",
+    "installStateFile": ".codex-workflow-bundle.install-state.json",
+    "legacyInstallStateFile": ".codex-workflow-pack.install-state.json"
+  }
+}

@@ -4,7 +4,8 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 codex_home="${HOME}/.codex"
 skills_home="${codex_home}/skills"
-managed_skills_manifest="${codex_home}/.codex-workflow-pack.managed-skills.txt"
+managed_skills_manifest="${codex_home}/.codex-workflow-bundle.managed-skills.txt"
+legacy_managed_skills_manifest="${codex_home}/.codex-workflow-pack.managed-skills.txt"
 
 global_agents_src="${repo_root}/policies/codex/AGENTS.global.md"
 global_agents_dest="${codex_home}/AGENTS.global.md"
@@ -31,6 +32,10 @@ if [[ -f "${managed_skills_manifest}" ]]; then
   while IFS= read -r line || [[ -n "${line}" ]]; do
     previous_managed_skill_names+=("${line}")
   done < "${managed_skills_manifest}"
+elif [[ -f "${legacy_managed_skills_manifest}" ]]; then
+  while IFS= read -r line || [[ -n "${line}" ]]; do
+    previous_managed_skill_names+=("${line}")
+  done < "${legacy_managed_skills_manifest}"
 fi
 
 while IFS= read -r line || [[ -n "${line}" ]]; do
@@ -63,5 +68,8 @@ if (( ${#previous_managed_skill_names[@]} > 0 )); then
 fi
 
 printf '%s\n' "${skill_names[@]}" > "${managed_skills_manifest}"
+if [[ -f "${legacy_managed_skills_manifest}" ]]; then
+  rm -f "${legacy_managed_skills_manifest}"
+fi
 echo "Updated managed skills manifest: ${managed_skills_manifest}"
 echo "Done. Restart Codex sessions to load updated global policy and skills."

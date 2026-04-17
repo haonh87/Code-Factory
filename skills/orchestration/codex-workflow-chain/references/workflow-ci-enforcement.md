@@ -53,7 +53,7 @@ CI enforcement chỉ kiểm những gì máy có thể xác nhận rõ ràng.
 CI phải chạy được command chuẩn:
 
 ```bash
-npm run validate:workflow:fixtures
+wfc fixtures
 ```
 
 Mục đích:
@@ -67,7 +67,7 @@ Mục đích:
 Khi repo có workflow artifacts thật, CI phải chạy:
 
 ```bash
-npm run validate:workflow -- --workflow-root work-items --project-root .
+wfc validate --workflow-root work-items --project-root .
 ```
 
 Mục đích:
@@ -83,7 +83,7 @@ Mục đích:
 Khi repo có change package thật, CI phải chạy:
 
 ```bash
-npm run validate:workflow:change -- --workflow-root work-items --project-root .
+wfc change --workflow-root work-items --project-root .
 ```
 
 Mục đích:
@@ -362,7 +362,7 @@ CI không nên chỉ warning với các rule mechanical ở trên, vì như vậ
 Chỉ enforce:
 
 - `scripts/`
-- `tests/fixtures/workflow-governance/`
+- `packages/workflow-bundle/tests/fixtures/workflow-governance/`
 - docs tham chiếu workflow/governance khi chúng làm hỏng contract tooling
 
 Thực tế phase này chủ yếu chạy `validate:workflow:fixtures`.

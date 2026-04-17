@@ -504,10 +504,10 @@ Khuyến nghị dùng vocabulary ổn định:
 - `wfc work-item archive --work-item <slug>`
 - `wfc work-item cancel --work-item <slug> --reason "<reason>"`
 - `wfc protocol --workflow-root work-items --project-root .`
-- `npm run scaffold:change -- --change-id <CHANGE-ID> --work-item <work-item-slug>`
-- `npm run scaffold:workflow -- --work-item <work-item-slug> --planning-track <quick|full|enterprise>`
-- `npm run scaffold:workflow-step -- --work-item <work-item-slug> --step <sNN>`
-- `npm run validate:workflow -- --workflow-root work-items --project-root .`
+- `wfc scaffold-change --change-id <CHANGE-ID> --work-item <work-item-slug>`
+- `wfc scaffold --work-item <work-item-slug> --planning-track <quick|full|enterprise>`
+- `wfc scaffold-step --work-item <work-item-slug> --step <sNN>`
+- `wfc validate --workflow-root work-items --project-root .`
 
 `wfc materialize` ở baseline hiện tại:
 

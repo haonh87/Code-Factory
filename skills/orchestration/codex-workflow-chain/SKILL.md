@@ -26,7 +26,7 @@ Tuân thủ workflow delivery 8 bước cho các tác vụ coding.
 
 ## Quy Tắc Artifact Obsidian
 
-- Artifact chuẩn của workflow doc là note `.md`; nếu một step được materialize thành file thì mặc định file chuẩn là `.md` và phải dùng `obsidian-markdown`.
+- Artifact chuẩn của workflow doc là note `.md`; nếu một step được scaffold thành file thì mặc định file chuẩn là `.md` và phải dùng `obsidian-markdown`.
 - Với artifact `.canvas` dùng cho sơ đồ kiến trúc, flow hoặc task map, áp dụng `json-canvas`.
 - Với artifact `.base` dùng làm index, dashboard hoặc bảng tổng hợp note, áp dụng `obsidian-bases`.
 - `.canvas` và `.base` chỉ là artifact phụ; không thay thế note `.md` làm nguồn sự thật cho quyết định và kết luận.
@@ -37,9 +37,9 @@ Tuân thủ workflow delivery 8 bước cho các tác vụ coding.
 
 - Với note workflow, ưu tiên tách `content_skills` và `artifact_skills` thay vì gộp tất cả vào một field skill chung.
 - `content_skills` ghi các skill tạo nội dung nghiệp vụ hoặc gate chất lượng.
-- `artifact_skills` ghi các skill dùng để materialize note `.md`, `.canvas`, `.base`.
-- Mỗi note workflow materialized nên có `work_item_type`, `workflow_stage`, `upstream_artifacts`, `linked_artifacts`.
-- Mỗi note workflow materialized nên có block `## Traceability` để truy vết business -> readiness -> design -> implementation -> verify.
+- `artifact_skills` ghi các skill dùng để tạo note `.md`, `.canvas`, `.base`.
+- Mỗi note workflow được scaffold nên có `work_item_type`, `workflow_stage`, `upstream_artifacts`, `linked_artifacts`.
+- Mỗi note workflow được scaffold nên có block `## Traceability` để truy vết business -> readiness -> design -> implementation -> verify.
 
 ## Quy Tắc Execution Topology
 
@@ -49,7 +49,7 @@ Tuân thủ workflow delivery 8 bước cho các tác vụ coding.
 - Execution topology luôn phải bám cùng `step-goal-contract`, không được tạo logic điều phối làm lệch goal, scope hoặc gate của step.
 - `governance` là lớp mỏng dùng chung: phần lớn được nhúng vào step contract/gate, phần còn lại nằm ở `constitution`, `project-context`, `checklist` và `exception`.
 - Trong prose có thể viết `multi-agent`, nhưng trong schema và frontmatter dùng `multi_agent`; nếu runtime không hỗ trợ delegation ổn định thì fallback `sequential_multi_role` theo execution policy.
-- Nếu materialize workflow note, nên khai báo `execution_mode`, `execution_roles`, `review_mode`, `verification_owner` và `role_signoffs`; `execution_roles` phản ánh role nghiệp vụ như `po`, `ba`, `designer`, `developer`, `qc`, `devops`, còn `role_signoffs` nên theo dõi tối thiểu `dor`, `approach`, `release`, `business_acceptance`, `dod`. Role vận hành như `coordinator` hoặc `verifier` được trace ở block `## Execution Topology` hoặc runtime artifacts.
+- Nếu scaffold workflow note, nên khai báo `execution_mode`, `execution_roles`, `review_mode`, `verification_owner` và `role_signoffs`; `execution_roles` phản ánh role nghiệp vụ như `po`, `ba`, `designer`, `developer`, `qc`, `devops`, còn `role_signoffs` nên theo dõi tối thiểu `dor`, `approach`, `release`, `business_acceptance`, `dod`. Role vận hành như `coordinator` hoặc `verifier` được trace ở block `## Execution Topology` hoặc runtime artifacts.
 - Nếu work item cần route theo độ sâu planning, nên khai báo `planning_track=quick|full|enterprise` ngay từ lúc scaffold để preset governance/review phù hợp.
 - Nếu step có nhiều role nghiệp vụ cùng tham gia hoặc cần audit handoff/signoff theo role, ưu tiên thêm block `## Role Outputs` dùng schema `role-output-map` trong note chính thay vì tách note riêng quá sớm.
 - Nếu work item chạy theo SDD, khai báo `sdd_mode`, `spec_refs` và `spec_status`; step 4 phải chốt `spec-freeze-gate`, step 5-7 phải dùng spec change protocol khi phát hiện lệch spec, và step 8 phải có `spec-coverage-report`.
@@ -62,13 +62,13 @@ Tuân thủ workflow delivery 8 bước cho các tác vụ coding.
 - Nếu không có chỉ định khác, `governance_ref` mặc định trỏ `project-context/project-context.md`, còn `checklist_refs` lấy từ `project-context/checklists/<governance_profile>.md`.
 - `governance_profile`, `governance_status` và trigger mở `governance-exception` phải theo `project-context/governance-decision-model.md`.
 - `Clarify` phải ghi nhận `governance context` ban đầu trước khi sang `Technical Approach`.
-- `Acceptance + DoR`, `Task Plan` và `Verify + DoD` là ba điểm tự nhiên để materialize `governance checks`.
+- `Acceptance + DoR`, `Task Plan` và `Verify + DoD` là ba điểm tự nhiên để gắn `governance checks`.
 - Nếu implementation hoặc approach đi lệch nguyên tắc chuẩn, phải ghi `governance-exception` hoặc `waiver`, không được ngầm bỏ qua.
 - `governance` chỉ có giá trị khi đi vào gate, evidence và handoff; không nên để nó chỉ nằm ở tài liệu nền.
-- Khi materialize workflow note thành file, ưu tiên scaffold bằng `npm run scaffold:workflow` hoặc `npm run scaffold:workflow-step`; chỉ copy tay template khi thực sự cần tùy biến sâu.
-- Nếu work item có `execution_mode=multi_agent`, chạy thêm `npm run validate:workflow:execution -- --workflow-root work-items` sau khi scaffold hoặc chỉnh tay.
-- Nếu work item dùng `planning_track` khác mặc định hoặc muốn khóa routing rule, chạy thêm `npm run validate:workflow:planning -- --workflow-root work-items`.
-- `work-items/` là canonical artifact root cho workflow artifacts thật; nếu không có chỉ định khác, workflow note materialized nên nằm dưới `work-items/<work_item_slug>/`.
+- Khi tạo workflow note thành file, ưu tiên scaffold bằng `wfc scaffold --work-item <work_item_slug>` hoặc `wfc scaffold-step --work-item <work_item_slug> --step <sNN>`; chỉ copy tay template khi thực sự cần tùy biến sâu. Nếu repo có root scripts tương ứng thì `npm run scaffold:workflow` và `npm run scaffold:workflow-step` là alias hợp lệ.
+- Nếu work item có `execution_mode=multi_agent`, chạy thêm `wfc exec --workflow-root work-items` sau khi scaffold hoặc chỉnh tay. Nếu repo đã map root script thì `npm run validate:workflow:execution -- --workflow-root work-items` là alias tương đương.
+- Nếu work item dùng `planning_track` khác mặc định hoặc muốn khóa routing rule, chạy thêm `wfc plan --workflow-root work-items`. Nếu repo đã map root script thì `npm run validate:workflow:planning -- --workflow-root work-items` là alias tương đương.
+- `work-items/` là canonical artifact root cho workflow artifacts thật; nếu không có chỉ định khác, workflow note được scaffold nên nằm dưới `work-items/<work_item_slug>/`.
 
 ## Chuỗi Cốt Lõi
 
@@ -82,7 +82,7 @@ Tuân thủ workflow delivery 8 bước cho các tác vụ coding.
 - Tách missing input, blocker, assumption, conflict và `governance blocker` cần owner/resolution.
 
 4. Acceptance + DoR
-- Chuyển mục tiêu thành acceptance criteria đo được, chốt readiness, phản ánh yêu cầu `governance` vào checklist và dùng `definition-of-ready-gate` khi materialize.
+- Chuyển mục tiêu thành acceptance criteria đo được, chốt readiness, phản ánh yêu cầu `governance` vào checklist và dùng `definition-of-ready-gate` khi cần khóa gate rõ ràng.
 
 5. Technical Approach
 - Chọn phương án kỹ thuật, trade-off và boundary kiến trúc/UX/DevOps trong các ràng buộc `governance` đang áp dụng.
@@ -94,13 +94,13 @@ Tuân thủ workflow delivery 8 bước cho các tác vụ coding.
 - Thực hiện thay đổi tập trung, đúng phạm vi, đúng approach và không lệch `spec` hoặc `governance` khi chưa được approve.
 
 8. Verify + DoD
-- Đối chiếu kết quả với criteria/spec, kiểm tra mã hóa tiếng Việt cho file văn bản đã đổi, kết luận `governance compliance`, dùng `definition-of-done-gate` khi materialize và nêu rõ nếu không thể chạy kiểm tra.
+- Đối chiếu kết quả với criteria/spec, kiểm tra mã hóa tiếng Việt cho file văn bản đã đổi, kết luận `governance compliance`, dùng `definition-of-done-gate` khi cần khóa kết luận và nêu rõ nếu không thể chạy kiểm tra.
 
 Làn DevOps khi có phạm vi runtime delivery
 - Không tạo step 9; đây là lane chạy xuyên step 5 -> 8.
 - Ở step 5, dùng `deployment-devops` để khóa DevOps scope tổng; dùng thêm `containerization-packaging`, `platform-runtime-deployment`, `ci-cd-release` khi cần khóa sâu từng layer.
 - Ở step 6, tách riêng task build image, compose, manifest, smoke, promotion và rollback khi có.
-- Ở step 7, materialize Dockerfile, compose, manifest hoặc pipeline config trong phạm vi đã chốt.
+- Ở step 7, triển khai Dockerfile, compose, manifest hoặc pipeline config trong phạm vi đã chốt.
 - Ở step 8, kết luận readiness cho packaging hoặc rollout trước khi promote lên `dev`, `uat`, `prod`.
 
 Khi giải thích workflow cho người đọc theo góc business, ưu tiên dùng mẫu:
@@ -121,11 +121,23 @@ Khi giải thích workflow cho người đọc theo góc business, ưu tiên dù
 
 ## Tài Liệu Tham Chiếu
 
-Đọc tài liệu tham chiếu theo 6 lớp chính và 1 bản thiết kế đích:
+Đọc tài liệu tham chiếu theo 3 nhóm:
 
-- `references/workflow-overview-author-edition.md`: bản overview chính thức để giới thiệu workflow ở góc nhìn delivery và tác giả, giải thích workflow là gì, dùng ra sao, role model, `SDD` fit và vì sao nên dùng.
-- `references/workflow-overview.md`: bản tham chiếu nội bộ thiên về mechanics, validator, CI, rollout status và chi tiết kỹ thuật của workflow.
+Public docs:
+
+- `references/workflow-overview-author-edition.md`: bản overview chính thức để giới thiệu workflow ở góc nhìn delivery và tác giả.
+- `references/workflow-versioning.md`: chốt ranh giới public baseline `v1.0.0` và các extension sau đó.
 - `references/workflow-chain.md`: workflow 8 bước, step-skill-artifact mapping, template note và schema workflow.
+- `references/execution-runtime.md`: execution policy, role contract, handoff/merge protocol và cách dùng `agentic|multi_agent` trong baseline.
+
+Extension docs:
+
+- `references/work-item-materialization.md`: protocol authoring trước `scaffold`, dùng để chốt `work_item_slug`, split decision, dedup và `change_strategy`.
+- `references/work-item-protocol.md`: protocol lifecycle ở cấp work item sau materialization, gồm state machine, transition, authority, handoff và command contract.
+
+Maintainer docs:
+
+- `references/workflow-overview.md`: bản tham chiếu nội bộ thiên về mechanics, validator, CI, rollout status và chi tiết kỹ thuật của workflow.
 - `references/role-aware-workflow.md`: overlay role nghiệp vụ, BRD/SRS rollout artifacts, role outputs và cách dùng NotebookLM như corpus retrieval trong quá trình thực thi.
 - `references/spec-driven-development.md`: SDD lifecycle, requirement IDs, spec freeze, spec change protocol, traceability matrix và spec coverage report.
 - `references/sdd-merge-strategy.md`: cách kết hợp workflow hiện tại với `spec-kit`, `OpenSpec`, `cc-sdd` và `BMAD-METHOD` theo từng lớp và từng loại work item.
@@ -134,5 +146,4 @@ Khi giải thích workflow cho người đọc theo góc business, ưu tiên dù
 - `references/workflow-ci-enforcement.md`: CI design cho workflow tooling, fixture suite, workflow artifacts và automation guardrail.
 - `../../../project-context/README.md`: Governance Pack mặc định của repo, gồm `constitution`, `project-context`, checklist profile và exception register.
 - `../../../project-context/governance-decision-model.md`: decision rule cho `governance_profile`, `governance_status` và exception trigger.
-- `references/execution-runtime.md`: execution policy, role contract, handoff/merge protocol, rollout runtime và tích hợp `notebooklm`.
 - `references/end-to-end-examples.md`: ví dụ áp dụng thật cho một flow `agentic` và một flow `multi-agent`.

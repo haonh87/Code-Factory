@@ -9,7 +9,8 @@ $ErrorActionPreference = "Stop"
 
 $codexHome = Join-Path $HOME ".codex"
 $skillsHome = Join-Path $codexHome "skills"
-$managedSkillsManifest = Join-Path $codexHome ".codex-workflow-pack.managed-skills.txt"
+$managedSkillsManifest = Join-Path $codexHome ".codex-workflow-bundle.managed-skills.txt"
+$legacyManagedSkillsManifest = Join-Path $codexHome ".codex-workflow-pack.managed-skills.txt"
 $globalAgentsSource = Join-Path $RepoRoot "policies\codex\AGENTS.global.md"
 $globalAgentsDest = Join-Path $codexHome "AGENTS.global.md"
 $skillsSourceRoot = Join-Path $RepoRoot "skills"
@@ -42,6 +43,11 @@ if (Test-Path $managedSkillsManifest) {
     Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
     Sort-Object -Unique
 }
+elseif (Test-Path $legacyManagedSkillsManifest) {
+  $previousManagedSkillNames = Get-Content -Path $legacyManagedSkillsManifest |
+    Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+    Sort-Object -Unique
+}
 
 foreach ($skillDir in $skillDirs) {
   $skillDest = Join-Path $skillsHome $skillDir.Name
@@ -67,6 +73,9 @@ foreach ($staleSkillName in $previousManagedSkillNames) {
 }
 
 Set-Content -Path $managedSkillsManifest -Value $skillNames -Encoding utf8
+if (Test-Path $legacyManagedSkillsManifest) {
+  Remove-Item -LiteralPath $legacyManagedSkillsManifest -Force
+}
 Write-Host "Updated managed skills manifest: $managedSkillsManifest"
 
 if ($CreateDriveRootLinks) {

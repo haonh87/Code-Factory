@@ -62,10 +62,10 @@ Nếu không thể chạy kiểm tra nào, phải nêu rõ phần bị bỏ qua 
 - `approved_by` của exception hoặc waiver phải theo `project-context/governance-role-model.md`, không suy diễn chỉ từ `role_signoffs`.
 - Nếu có `governance-exception` còn mở quá một step hoặc ảnh hưởng `DoD`, `release`, `business_acceptance`, phải cập nhật thêm `project-context/governance-exception-register.md`.
 - `work-items/` là canonical artifact root cho workflow artifacts thật; khi materialize note workflow vào repo, mặc định đặt dưới `work-items/<work_item_slug>/`.
-- Khi materialize workflow note thành file, ưu tiên scaffold qua `npm run scaffold:workflow` hoặc `npm run scaffold:workflow-step` để giữ naming, frontmatter và governance block đồng nhất ngay từ đầu.
-- Nếu work item chạy `multi_agent`, authoring flow phải chạy thêm `npm run validate:workflow:execution -- --workflow-root work-items`.
-- Nếu work item có `planning_track`, authoring flow nên chạy thêm `npm run validate:workflow:planning -- --workflow-root work-items`.
-- Khi materialize workflow note thành file, nên chạy validator workflow chuẩn qua `npm run validate:workflow -- --workflow-root work-items --project-root <repo-root>` trước khi bàn giao cuối.
+- Khi materialize workflow note thành file, ưu tiên scaffold qua `wfc scaffold --work-item <work_item_slug>` hoặc `wfc scaffold-step --work-item <work_item_slug> --step <sNN>` để giữ naming, frontmatter và governance block đồng nhất ngay từ đầu. Nếu repo có root scripts tương ứng thì `npm run scaffold:workflow` và `npm run scaffold:workflow-step` vẫn là alias hợp lệ.
+- Nếu work item chạy `multi_agent`, authoring flow phải chạy thêm `wfc exec --workflow-root work-items`. Nếu repo đã map root script thì `npm run validate:workflow:execution -- --workflow-root work-items` là alias tương đương.
+- Nếu work item có `planning_track`, authoring flow nên chạy thêm `wfc plan --workflow-root work-items`. Nếu repo đã map root script thì `npm run validate:workflow:planning -- --workflow-root work-items` là alias tương đương.
+- Khi materialize workflow note thành file, nên chạy validator workflow chuẩn qua `wfc validate --workflow-root work-items --project-root <repo-root>` trước khi bàn giao cuối. Nếu repo đã map root script thì `npm run validate:workflow -- --workflow-root work-items --project-root <repo-root>` là alias tương đương.
 
 ## Yêu Cầu Skill
 

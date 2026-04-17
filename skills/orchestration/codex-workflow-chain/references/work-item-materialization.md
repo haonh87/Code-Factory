@@ -24,8 +24,8 @@ Thời điểm đối chiếu: `2026-04-14`.
 
 Kết quả của bước này phải đủ để:
 
-- gọi `npm run scaffold:workflow -- --work-item <work_item_slug>`
-- quyết định có cần `npm run scaffold:change -- --change-id <CHANGE-ID> --work-item <work_item_slug>` hay không
+- gọi `wfc scaffold --work-item <work_item_slug>` hoặc alias repo-local `npm run scaffold:workflow -- --work-item <work_item_slug>`
+- quyết định có cần `wfc scaffold-change --change-id <CHANGE-ID> --work-item <work_item_slug>` hoặc alias repo-local `npm run scaffold:change -- --change-id <CHANGE-ID> --work-item <work_item_slug>` hay không
 - cho phép human hoặc agentic runtime tạo artifact mới mà không trùng scope, trùng slug hoặc gắn sai `change_id`
 
 Lifecycle sau khi quyết định materialization đã được chốt được mô tả tiếp ở `work-item-protocol.md`.

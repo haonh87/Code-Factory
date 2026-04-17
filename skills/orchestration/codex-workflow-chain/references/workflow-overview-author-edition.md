@@ -4,6 +4,8 @@ Tài liệu này là bản overview chính thức để giới thiệu workflow 
 
 Nếu cần bản tham chiếu nội bộ thiên về mechanics, validator, CI, rollout status và chi tiết kỹ thuật hơn, đọc thêm `workflow-overview.md`.
 
+Nếu cần ranh giới rõ giữa `v1.0.0` và các lớp mở rộng sau đó, đọc thêm `workflow-versioning.md`.
+
 Mục tiêu của bản này không phải mô tả toàn bộ kiến trúc theo kiểu reference trước, mà là giúp người đọc trả lời nhanh:
 
 - workflow này là gì
@@ -84,7 +86,7 @@ Khi work item chạy theo `SDD`, `BRD/SRS` không còn là tài liệu để tha
 
 ### 4. AI Có Thể Tham Gia Mạnh Hơn Mà Vẫn Có Guardrail
 
-Workflow hỗ trợ `agentic` và `multi_agent`, nhưng execution luôn bị giữ trong step contract, `governance`, `SDD`, validation và CI enforcement.
+Workflow có execution support theo `agentic` và `multi_agent` ngay từ public baseline `v1.0.0`, nhưng không bắt buộc mọi work item phải bật execution layer. Khi dùng execution layer, nó vẫn bị giữ trong step contract, `governance`, `SDD`, validation và CI enforcement.
 
 ## Workflow Có Những Layer Nào
 
@@ -143,7 +145,7 @@ Nói ngắn:
 | `s04 Acceptance + DoR` | `BA`, `QC`, `PO` | chốt requirement, acceptance criteria, testability, readiness và `Spec Freeze` nếu chạy `SDD` |
 | `s05 Technical Approach` | `Developer` | chọn solution kỹ thuật; `Designer` và `DevOps` bổ sung rule UX/runtime khi scope chạm boundary tương ứng |
 | `s06 Task Plan` | `Developer` | tách task; `QC` thêm verify checkpoint; `DevOps` thêm release/rollout task; `Designer` thêm UX refinement task |
-| `s07 Implement` | `Developer` | materialize code/config/doc; `DevOps` materialize deployment artifact nếu có; `Designer` và `QC` hỗ trợ khi scope cần |
+| `s07 Implement` | `Developer` | triển khai code/config/doc; `DevOps` tạo deployment artifact nếu có; `Designer` và `QC` hỗ trợ khi scope cần |
 | `s08 Verify + DoD` | `QC` | chốt evidence, compliance, `DoD`; `DevOps` chốt release readiness; `PO` chốt `business_acceptance` khi cần |
 
 ### Role Và Governance
@@ -163,26 +165,52 @@ Role không chỉ tạo output. Chúng còn quyết định ai có authority ở
 
 ### Cách Dùng Nhanh
 
-1. Chốt `work_item_slug` ở `s01 Clarify`.
-2. Nếu work item có `change layer`, scaffold change package trước.
+Public baseline `v1.0.0`:
+
+1. Human hoặc coordinator tự chốt `work_item_slug`.
+2. Nếu có `change layer`, scaffold change package trước.
 3. Scaffold workflow vào `work-items/`.
 4. Điền nội dung thật cho từng step.
 5. Chạy validator phù hợp.
-6. Nếu work item chạy theo `SDD`, `change`, `multi_agent` hoặc `planning_track` đặc biệt, chạy thêm validator tương ứng.
+
+Nếu work item dùng execution metadata hoặc runtime artifacts, chạy thêm lane execution.
+
+Extension sau `v1.0.0`:
+
+1. Chạy `Work Item Materialization` để chốt boundary, `work_item_slug`, dedup và `change_strategy`.
+2. Đưa work item vào `Work Item Protocol` để chốt state và authority ở cấp work item.
+3. Nếu `materialization_status=READY` và work item có `change layer`, scaffold change package trước.
+4. Scaffold hoặc auto-scaffold workflow vào `work-items/`.
+5. Human review protocol rồi mới đưa work item vào delivery backbone nếu project bật approval gate.
+
+Chi tiết ranh giới version nằm ở `workflow-versioning.md`. Chi tiết cho lớp mở rộng trước và quanh `scaffold` nằm ở `work-item-materialization.md` và `work-item-protocol.md`.
 
 ### Command Surface Chuẩn
 
 ```bash
-npm run scaffold:change -- --change-id <CHANGE-ID> --work-item <work-item-slug>
-npm run scaffold:workflow -- --work-item <work-item-slug> --planning-track <quick|full|enterprise>
-npm run scaffold:workflow-step -- --work-item <work-item-slug> --step <sNN>
+wfc scaffold-change --change-id <CHANGE-ID> --work-item <work-item-slug>
+wfc scaffold --work-item <work-item-slug> --planning-track <quick|full|enterprise>
+wfc scaffold-step --work-item <work-item-slug> --step <sNN>
 
-npm run validate:workflow -- --workflow-root work-items --project-root .
-npm run validate:workflow:sdd -- --workflow-root work-items --project-root .
-npm run validate:workflow:change -- --workflow-root work-items --project-root .
-npm run validate:workflow:execution -- --workflow-root work-items
-npm run validate:workflow:planning -- --workflow-root work-items
-npm run validate:workflow:authoring-smoke
+wfc validate --workflow-root work-items --project-root .
+wfc sdd --workflow-root work-items --project-root .
+wfc change --workflow-root work-items --project-root .
+wfc plan --workflow-root work-items
+wfc smoke
+```
+
+Nếu work item dùng execution metadata hoặc runtime artifacts, chạy thêm:
+
+```bash
+wfc exec --workflow-root work-items
+```
+
+Lớp mở rộng sau `v1.0.0` có thể dùng thêm:
+
+```bash
+wfc materialize --request "<raw-request>"
+wfc work-item approve --work-item <work-item-slug> --reviewed-by <role>
+wfc protocol
 ```
 
 ### Root Artifact Chuẩn
@@ -222,7 +250,7 @@ Workflow này cố ý tách `step title` và `canonical artifact slug`.
 | `s04 Acceptance + DoR` | Thế nào là làm đúng và đủ sẵn sàng để đi tiếp? | chốt acceptance criteria, readiness, `governance checks`, `Spec Freeze` khi cần | goal đã rõ, các open question trọng yếu đã có hướng xử lý | AC đo được, `DoR`, governance checks, `Spec Freeze` nếu chạy SDD | governance gate, `DoR` gate, SDD validator, checklist profile phù hợp | `s04.acceptance-criteria` |
 | `s05 Technical Approach` | Sẽ giải quyết bằng cách nào mà vẫn bám đúng rule và spec? | chọn solution, trade-off, boundary bị tác động | AC, governance context, system context, frozen spec nếu có | technical approach, option analysis, boundary, architecture detail, `Spec Change` nếu phát hiện gap | governance checks, trace về spec/change, exception rõ nếu lệch chuẩn | `s05.technical-approach` |
 | `s06 Task Plan` | Cần làm những việc gì, theo thứ tự nào và kiểm ở đâu? | bẻ nhỏ thành task có thứ tự, có coverage và checkpoint verify/review | technical approach đã chốt | task breakdown, verification plan, review checkpoints, rollout coverage | planning validator, governance checks, traceability tới AC/spec | `s06.task-breakdown` |
-| `s07 Implement` | Giải pháp đã được materialize đúng phạm vi và đúng contract chưa? | thực hiện thay đổi thật trong code/config/doc | task plan, codebase, execution policy nếu có | code/config/doc changes, implementation notes, runtime artifacts khi cần | execution validator, change validator, spec alignment, exception handling | `s07.implementation` |
+| `s07 Implement` | Giải pháp đã được triển khai đúng phạm vi và đúng contract chưa? | thực hiện thay đổi thật trong code/config/doc | task plan, codebase, execution policy nếu có | code/config/doc changes, implementation notes, runtime artifacts khi cần | execution validator, change validator, spec alignment, exception handling | `s07.implementation` |
 | `s08 Verify + DoD` | Kết quả có thật sự đạt yêu cầu và đủ chất lượng để đóng chưa? | kết luận evidence, compliance, completion, `DoD` | implementation output, AC, spec, checklist, review findings | verification evidence, `DoD`, spec coverage, governance compliance, release/business acceptance input | testing, review, governance validator, `DoD` gate, CI enforcement | `s08.verification` |
 
 ## Input Và Output Được Hiểu Theo Cách Nào
@@ -267,7 +295,7 @@ Validator kiểm workflow theo contract:
 
 ### 3. CI Enforcement Layer
 
-CI hiện đã materialize baseline các job:
+CI hiện đã có sẵn các job baseline:
 
 - `workflow-tooling`
 - `workflow-artifacts`
@@ -280,7 +308,7 @@ CI hiện đã materialize baseline các job:
 Điều này có nghĩa là workflow không chỉ nói “nên làm gì”, mà đã có cơ chế kiểm:
 
 - artifact có đúng contract không
-- governance có được materialize đúng không
+- governance có được áp đúng không
 - work item có đúng spec/change/execution/planning rule không
 - authoring flow có bị drift giữa docs, scaffold và validator hay không
 
@@ -457,7 +485,7 @@ Workflow này được thiết kế trực tiếp để giải quyết các pain
 
 ### 3. Nó Dùng Được Thật
 
-Workflow này đã có baseline materialized:
+Workflow này đã được triển khai thành tooling và CI thật:
 
 - artifact roots
 - scaffold
@@ -480,7 +508,7 @@ Nếu muốn đi sâu hơn sau tài liệu này:
 
 ## Tình Trạng Delivery Hiện Tại
 
-Tới `2026-04-14`, phase `0-5` của implementation blueprint đã được materialize ở mức baseline. Điều này có nghĩa:
+Tới `2026-04-14`, phase `0-5` của implementation blueprint đã được triển khai ở mức public baseline. Điều này có nghĩa:
 
 - `Phase 0: Backbone + Governance`: done
 - `Phase 1: SDD Materialization`: done baseline
@@ -498,6 +526,8 @@ Tới `2026-04-14`, phase `0-5` của implementation blueprint đã được mat
 - quản lý change
 - hỗ trợ execution topology
 - scale theo planning track
+
+Phần public baseline này không bao gồm `Work Item Materialization` và `Work Item Protocol`; hai lớp đó là extension sau `v1.0.0`.
 
 Phần còn lại chủ yếu là:
 

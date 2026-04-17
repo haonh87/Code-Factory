@@ -224,7 +224,7 @@ Ghi chú:
 
 - Mọi step đều đi qua `codex-workflow-chain`.
 - Theo workflow chuẩn hiện tại, mọi step đều có `step-goal-contract`.
-- Nếu step được materialize thành note `.md`, phải cộng thêm `obsidian-markdown` dù cột skill nghiệp vụ không lặp lại điều đó ở mọi dòng.
+- Nếu step được scaffold thành note `.md`, phải cộng thêm `obsidian-markdown` dù cột skill nghiệp vụ không lặp lại điều đó ở mọi dòng.
 - Khi work item phụ thuộc nhiều tài liệu ngoài hoặc corpus lớn, có thể dùng `notebooklm` ở step 1, 3, 5 hoặc khi cần ở step 8; output phải được chuẩn hóa lại vào note `.md` của step.
 
 ## Làn DevOps Và Promotion Giữa Môi Trường
@@ -233,7 +233,7 @@ Làn DevOps không thay workflow 8 bước; nó là một delivery lane chạy x
 
 - Step 5: khóa environment matrix, runtime target và packaging contract.
 - Step 6: tách task build image, compose, manifest, promotion, smoke và rollback.
-- Step 7: materialize artifact thực tế như `Dockerfile`, `compose.yaml`, manifest hoặc pipeline config.
+- Step 7: triển khai artifact thực tế như `Dockerfile`, `compose.yaml`, manifest hoặc pipeline config.
 - Step 8: verify packaging, deploy readiness và release recommendation trước khi promote.
 - Rollout thật lên `dev`, `uat`, `prod` chỉ nên diễn ra sau khi step 8 đã có đủ evidence hoặc đã chấp nhận guard rõ ràng.
 
@@ -246,7 +246,7 @@ Làn DevOps không thay workflow 8 bước; nó là một delivery lane chạy x
 
 ## Phân Loại Work Item
 
-`work_item_type` là metadata bắt buộc khi materialize note workflow để giữ routing nhất quán giữa discovery và delivery.
+`work_item_type` là metadata bắt buộc khi scaffold note workflow để giữ routing nhất quán giữa discovery và delivery.
 
 - `FEATURE`: thêm capability hoặc hành vi mới.
 - `BUG`: sửa hành vi sai so với kỳ vọng hiện có.
@@ -297,7 +297,7 @@ Artifact nền khuyến nghị:
 
 ### Governance Pack Mặc Định Của Repo
 
-Governance Pack của repo đã được materialize tại `project-context/`.
+Governance Pack của repo đã được triển khai tại `project-context/`.
 
 Quy ước dùng ngay:
 
@@ -341,7 +341,7 @@ Chi tiết vận hành đầy đủ cho role, BRD/SRS và NotebookLM retrieval n
 Nguyên tắc chung:
 
 - Vẫn giữ một workflow 8 bước duy nhất; role chỉ là lớp overlay ownership và handoff, không phải workflow riêng.
-- Chỉ materialize output riêng theo role khi role đó thật sự có owner, handoff hoặc signoff cần audit.
+- Chỉ tách output riêng theo role khi role đó thật sự có owner, handoff hoặc signoff cần audit.
 - Nếu không cần artifact riêng, role outputs nên được ghi trong note step chính dưới block `## Role Outputs`.
 - `execution_roles` chỉ liệt kê role thực sự tham gia step; không liệt kê role mặc định cho đủ bộ.
 - `notebooklm` là lớp lưu corpus và tra cứu trong khi thực thi; kết quả query chỉ là input/evidence tạm thời cho PO/BA và phải được chuẩn hóa lại vào artifact chính nếu dùng để ra quyết định.
@@ -386,7 +386,7 @@ Mapping nhanh:
 | `s04` Acceptance + DoR | `ba`, `qc` | `po`; `designer` khi criteria có UX rule; `developer` khi cần check implementability | `SRS` update cho requirement, business rule, acceptance criteria đo được, testability note, DoR decision |
 | `s05` Technical Approach | `developer` | `designer` khi có UX/UI surface; `devops` khi có runtime/release scope; `ba` để trace business rule | technical approach, boundary kiến trúc, UX interaction contract, deployment contract, `SRS` update nếu requirement/constraint đổi |
 | `s06` Task Plan | `developer` | `qc`, `devops`; `designer` khi có track UX refinement | task plan theo track build, verify, release; dependency, handoff, traceability về requirement trong `SRS` |
-| `s07` Implement | `developer` | `devops` khi materialize delivery artifact; `designer` khi có asset/interaction polish; `qc` để chuẩn bị evidence hook | code/config/doc changes, implementation note, packaging/runtime/pipeline artifact trong scope, `SRS` exception/update nếu behavior đổi |
+| `s07` Implement | `developer` | `devops` khi tạo delivery artifact; `designer` khi có asset/interaction polish; `qc` để chuẩn bị evidence hook | code/config/doc changes, implementation note, packaging/runtime/pipeline artifact trong scope, `SRS` exception/update nếu behavior đổi |
 | `s08` Verify + DoD | `qc` | `developer`, `devops`; `po` cho `business_acceptance`; `designer` khi cần review UX outcome | evidence pack, findings, DoD verdict, release readiness, business acceptance decision dựa trên `BRD/SRS` |
 
 ### Owner Mặc Định Cho `role_signoffs`
@@ -408,7 +408,7 @@ Mapping nhanh:
 - `DevOps` nên vào từ `s05` nếu feature có packaging, runtime, promotion hoặc rollback impact; không để release lane xuất hiện muộn ở cuối verify.
 - `Developer` chịu trách nhiệm technical coherence giữa step 5, 6, 7; không chia task khi approach còn mơ hồ.
 - Chỉ tạo artifact riêng theo role khi thật sự có owner và handoff; mặc định nên giữ một note step chính làm nguồn sự thật.
-- `business_spec` nên được materialize rõ bằng `BRD`/`SRS` hoặc section tương đương trong note workflow; `business_acceptance` là signoff xác nhận implementation cuối cùng đáp ứng tập artifact đó.
+- `business_spec` nên được thể hiện rõ bằng `BRD`/`SRS` hoặc section tương đương trong note workflow; `business_acceptance` là signoff xác nhận implementation cuối cùng đáp ứng tập artifact đó.
 - `notebooklm` dùng để lưu corpus và tra cứu trong quá trình thực thi; không coi notebook/query result là output rollout cuối nếu chưa được đưa vào `BRD`, `SRS` hoặc note workflow chính.
 
 ## Quy Tắc Bắt Buộc Cho Artifact Obsidian
@@ -419,7 +419,7 @@ Mapping nhanh:
 
 ## Giải Nghĩa Lớp Obsidian
 
-Luật artifact không thay thế workflow step; nó chỉ quy định cách materialize kết quả của step.
+Luật artifact không thay thế workflow step; nó chỉ quy định cách scaffold và ghi nhận kết quả của step.
 
 - Nếu không lưu step ra file, workflow vẫn có thể chạy như bình thường.
 - Nếu đã lưu step thành tài liệu, `.md` là lựa chọn chuẩn và đi kèm `obsidian-markdown`.
@@ -452,7 +452,7 @@ Một cách nhớ ngắn:
 - `.canvas` chỉ dùng để trực quan hóa cấu trúc, flow, task map hoặc dependency map.
 - `.base` chỉ dùng để tổng hợp, lọc, xem bảng hoặc dashboard từ các note/artifact đã có.
 - Step 7 chỉ dùng Obsidian skill khi thay đổi thực tế chạm vào tài liệu `.md`; không ép tạo note workflow riêng nếu không có giá trị.
-- Trong frontmatter note workflow, tách `content_skills` và `artifact_skills`; không gộp chung để tránh nhầm giữa skill tạo nội dung với skill materialize artifact.
+- Trong frontmatter note workflow, tách `content_skills` và `artifact_skills`; không gộp chung để tránh nhầm giữa skill tạo nội dung với skill tạo artifact.
 - `upstream_artifacts` dùng để khai báo đầu vào trực tiếp; `## Traceability` dùng để nối mạch business -> readiness -> design -> implementation -> verify.
 
 ## Template Output Chuẩn Theo Step
@@ -517,28 +517,35 @@ Một cách nhớ ngắn:
   - `assessment` -> `s03.open-questions.md` nếu đánh giá readiness đầu vào, hoặc `s08.verification.md` nếu đánh giá sau implement.
   - `threshold` -> không tách file riêng; gộp vào `s04.acceptance-criteria.md`.
 - `glossary` -> không phải step file; chỉ là section hoặc note dùng chung ngoài workflow step.
-- Nếu team cần rule ngắn gọn và validator riêng, xem `policies/codex/workflow-artifact-naming.md`, `scripts/validate-workflow-artifact-names.js`, `scripts/validate-workflow-governance.js` hoặc chạy command chuẩn `npm run validate:workflow -- --workflow-root work-items --project-root <repo-root>`.
+- Nếu team cần rule ngắn gọn và validator riêng, xem `policies/codex/workflow-artifact-naming.md`, dùng `wfc naming`, `wfc governance` hoặc chạy command chuẩn `wfc validate --workflow-root work-items --project-root <repo-root>`. Nếu repo đã map root scripts thì `npm run validate:workflow*` là alias tương đương.
 - Nếu cần automation ở mức PR/push thay vì chỉ local validate, xem thêm `workflow-ci-enforcement.md`.
 
 ### Workflow Authoring Chuẩn
 
-Flow khuyến nghị khi materialize workflow note:
+Public baseline `v1.0.0` dùng flow manual scaffold:
 
-1. Nếu work item gắn với một thay đổi đã được tách package, scaffold change package trước:
-   - `npm run scaffold:change -- --change-id <CHANGE-ID> --work-item <work_item_slug>`
-2. Scaffold note bằng command chuẩn:
-   - `npm run scaffold:workflow -- --work-item <work_item_slug> --planning-track <quick|full|enterprise>`
-   - `npm run scaffold:workflow-step -- --work-item <work_item_slug> --step <sNN>`
-3. Điền nội dung thực tế vào các block đã sinh.
-4. Chạy validator:
-   - `npm run validate:workflow -- --workflow-root work-items --project-root <repo-root>`
-   - nếu work item chạy theo SDD, chạy thêm `npm run validate:workflow:sdd -- --workflow-root work-items --project-root <repo-root>`
-   - nếu work item có `change_id`, chạy thêm `npm run validate:workflow:change -- --workflow-root work-items --project-root <repo-root>`
-   - nếu work item có `execution_mode=multi_agent`, chạy thêm `npm run validate:workflow:execution -- --workflow-root work-items`
-   - nếu work item dùng `planning_track` khác mặc định hoặc muốn enforce routing rule, chạy thêm `npm run validate:workflow:planning -- --workflow-root work-items`
+1. Human hoặc coordinator chốt `work_item_slug`.
+2. Nếu work item gắn với một thay đổi đã được tách package, scaffold change package trước:
+   - `wfc scaffold-change --change-id <CHANGE-ID> --work-item <work_item_slug>`
+3. Scaffold note bằng command chuẩn:
+   - `wfc scaffold --work-item <work_item_slug> --planning-track <quick|full|enterprise>`
+   - `wfc scaffold-step --work-item <work_item_slug> --step <sNN>`
+4. Điền nội dung thực tế vào các block đã sinh.
+5. Chạy validator:
+   - `wfc validate --workflow-root work-items --project-root <repo-root>`
+   - nếu work item chạy theo SDD, chạy thêm `wfc sdd --workflow-root work-items --project-root <repo-root>`
+   - nếu work item có `change_id`, chạy thêm `wfc change --workflow-root work-items --project-root <repo-root>`
+   - nếu work item có execution metadata hoặc runtime artifacts, chạy thêm `wfc exec --workflow-root work-items`
+   - nếu work item dùng `planning_track` khác mặc định hoặc muốn enforce routing rule, chạy thêm `wfc plan --workflow-root work-items`
+
+Extension sau `v1.0.0` có thể thêm một gate trước bước 1:
+
+1. Chạy `Work Item Materialization` để chốt `split_decision`, `work_item_slug`, dedup result và `change_strategy`.
+2. Nếu dự án dùng `Work Item Protocol`, chốt `protocol_status`, authority và handoff ở cấp work item trước khi scaffold.
 
 Ghi chú:
 
+- `Work Item Materialization` và `Work Item Protocol` không thuộc public baseline `v1.0.0`; chỉ đọc chúng khi muốn bật extension sau này.
 - `scaffold:workflow` mặc định sinh vào `work-items/<work_item_slug>/` nếu không truyền `--workflow-root`.
 - `work-items/` là canonical artifact root cho workflow artifacts thật của repo.
 - `product-specs/` là root mặc định cho `BRD/SRS` thật khi work item chạy theo SDD.
@@ -548,8 +555,8 @@ Ghi chú:
 - Nếu `execution_mode=multi_agent`, scaffold sẽ tự sinh runtime artifacts cho `s05`, `s06`, `s07` và thêm chúng vào `linked_artifacts` của note chính.
 - Nếu cần `governance_profile=custom`, scaffold phải truyền thêm `--governance-ref` và ít nhất một `--checklist-ref`.
 - `--work-item` hiện là tên CLI ngắn cho `work_item_slug`.
-- `work_item_slug` là định danh của một đơn vị công việc chạy xuyên toàn bộ workflow 8 bước, không phải tên step; nó nên được chốt ở `s01 Clarify` từ user request, ticket hoặc change request.
-- Nếu note thuộc change package đã được materialize, `change_id`, `change_status`, `spec_delta_refs` và `archive_status` phải nhất quán với `changes/<change-id>/`.
+- `work_item_slug` là định danh của một đơn vị công việc chạy xuyên toàn bộ workflow 8 bước, không phải tên step; nó nên được chốt trước khi scaffold từ user request, ticket hoặc change request, rồi được phản ánh lại ở `s01 Clarify`.
+- Nếu note thuộc change package đã được scaffold hoặc liên kết với package có thật, `change_id`, `change_status`, `spec_delta_refs` và `archive_status` phải nhất quán với `changes/<change-id>/`.
 - Nếu step chạy `multi_agent`, `review_mode`, `verification_owner` và `linked_artifacts` phải nhất quán với runtime artifacts tương ứng.
 - Ví dụ: user request "fix login timeout" có thể map thành `work_item_slug=fix-login-timeout`, từ đó tạo ra các file như `fix-login-timeout.s01.restate.md`, `fix-login-timeout.s04.acceptance-criteria.md`, `fix-login-timeout.s08.verification.md`.
 
@@ -620,7 +627,7 @@ Quy tắc:
 - `artifact_kind` của note chuẩn luôn là `primary-note`.
 - `source_of_truth` của note chuẩn luôn là `true`.
 - `sdd_mode` dùng `none` khi work item không chạy theo SDD, `light` khi chỉ cần trace BRD/SRS ở mức gọn, và `strict` khi bắt buộc requirement IDs, spec freeze, spec change protocol và coverage report.
-- `spec_refs` trỏ tới `BRD/SRS` thật nếu đã materialize; để trống khi chỉ dùng section trong note workflow.
+- `spec_refs` trỏ tới `BRD/SRS` thật nếu đã có file thật; để trống khi chỉ dùng section trong note workflow.
 - `spec_status` phản ánh trạng thái spec tại thời điểm note được cập nhật; với SDD strict, step 5-7 không nên đi sâu khi spec vẫn chỉ ở `draft` nếu chưa có accepted assumptions.
 - `planning_track` dùng `quick` cho scope nhỏ/risk thấp, `full` cho baseline thông thường và `enterprise` khi cần review lane, governance và planning depth nặng hơn.
 - `execution_mode` dùng `agentic` khi một agent giữ trọn ownership của step; dùng `multi_agent` khi step được điều phối bởi coordinator và nhiều worker/verifier.
@@ -631,7 +638,7 @@ Quy tắc:
 - `business_spec` là artifact mô tả intent, rule và scope ở phía business; `business_acceptance` là hành động signoff xác nhận implementation đã đáp ứng artifact đó và acceptance criteria liên quan, nên hai lớp này không thay thế nhau.
 - Vai trò execution topology như `coordinator`, `worker`, `verifier` nên nằm trong block `## Execution Topology`, không thay thế `execution_roles` trong frontmatter chính.
 - `content_skills` phải liệt kê đủ skill nghiệp vụ và skill gate đã dùng cho step đó.
-- `artifact_skills` phải liệt kê đủ skill materialize artifact đã dùng cho step đó.
+- `artifact_skills` phải liệt kê đủ skill tạo artifact đã dùng cho step đó.
 - `upstream_artifacts` chỉ liệt kê artifact thực sự được dùng làm đầu vào hoặc tham chiếu quyết định.
 - `linked_artifacts` liệt kê tên file artifact phụ có thật, không để link chết.
 - `tags` nên có tối thiểu `agent-ops` và `workflow/<step-id>`.
