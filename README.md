@@ -2,22 +2,34 @@
 
 Repository này lưu trữ policy, workflow, skill và adapter cài đặt cho các tác vụ AI agent. Hiện tại repo ưu tiên Codex, nhưng cấu trúc đã được tách nhóm để sau này có thể mở rộng thêm tool hoặc agent khác.
 
-Tính tới `2026-04-14`, workflow backbone và các phase `0-5` trong implementation blueprint đã được materialize ở mức baseline. Trọng tâm còn lại là hardening sâu hơn, semantic lint và mở rộng phạm vi vận hành.
+Public baseline hiện tại là `v1.0.0`: manual authoring backbone, các lane validate chính, `SDD`, `change layer`, `adaptive planning` và execution support theo `agentic|multi_agent`. Repo cũng đang chứa một số extension sau `v1.0.0` như `Work Item Materialization` và `Work Item Protocol`. Nếu cần ranh giới version rõ, đọc thêm [`workflow-versioning.md`](skills/orchestration/codex-workflow-chain/references/workflow-versioning.md).
+
+Public publish surface nên được hiểu theo tag `v1.0.0` hoặc branch `release/v1.0.0`. Working tree hiện tại có thể chứa thêm WIP sau `v1.0.0`, nên nếu share cho người mới dùng, ưu tiên trỏ vào tài liệu public ở dưới.
 
 ## Bắt Đầu Ở Đây
 
-Nguồn sự thật để lưu và phục hồi ngữ cảnh dự án là `memory-bank/`.
+Nếu đang tiếp cận repo lần đầu và muốn dùng đúng bản public:
 
-Nếu đang tiếp cận repo lần đầu, đọc theo thứ tự này:
+1. [`docs/publish-surface.md`](docs/publish-surface.md)
+2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
+3. [`docs/workflow-contracts-quickstart.md`](docs/workflow-contracts-quickstart.md)
+4. [`skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`](skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
+5. [`skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
 
-1. [`memory-bank/projectbrief.md`](memory-bank/projectbrief.md)
-2. [`skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`](skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
-3. [`skills/orchestration/codex-workflow-chain/references/workflow-overview.md`](skills/orchestration/codex-workflow-chain/references/workflow-overview.md)
-4. [`skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
+## Internal Context
+
+Các tài liệu dưới đây là internal context hoặc maintainer context, không nên dùng làm public onboarding path:
+
+- [`memory-bank/projectbrief.md`](memory-bank/projectbrief.md)
+- [`memory-bank/activeContext.md`](memory-bank/activeContext.md)
+- [`memory-bank/progress.md`](memory-bank/progress.md)
+- [`skills/orchestration/codex-workflow-chain/references/workflow-overview.md`](skills/orchestration/codex-workflow-chain/references/workflow-overview.md)
 
 ## Workflow Commands Nhanh
 
 Workflow authoring chuẩn dùng cùng một command surface qua `npm`:
+
+Baseline public `v1.0.0`:
 
 - scaffold change package: `npm run scaffold:change -- --change-id <CHANGE-ID> --work-item <work-item-slug>`
 - scaffold cả workflow: `npm run scaffold:workflow -- --work-item <work-item-slug> --planning-track <quick|full|enterprise>`
@@ -25,10 +37,18 @@ Workflow authoring chuẩn dùng cùng một command surface qua `npm`:
 - validate workflow chuẩn: `npm run validate:workflow -- --workflow-root work-items --project-root <repo-root>`
 - validate `SDD`: `npm run validate:workflow:sdd -- --workflow-root work-items --project-root <repo-root>`
 - validate change layer: `npm run validate:workflow:change -- --workflow-root work-items --project-root <repo-root>`
-- validate execution layer: `npm run validate:workflow:execution -- --workflow-root work-items`
+- validate execution layer khi work item có execution metadata/artifacts: `npm run validate:workflow:execution -- --workflow-root work-items`
 - validate adaptive planning: `npm run validate:workflow:planning -- --workflow-root work-items`
 - smoke test `scaffold -> validate`: `npm run validate:workflow:authoring-smoke`
 - chạy fixture suite: `npm run validate:workflow:fixtures`
+
+Extension sau `v1.0.0`:
+
+- materialize raw request thành work item candidate: `npm run materialize:work-item -- --request "<raw-request>"`
+- validate work-item protocol: `npm run validate:workflow:protocol`
+- liệt kê work item trước khi xem detail: `npm run work-item -- list`
+- approve/reject change package do agent materialize: `npm run change-item -- <approve|reject|status> --change-id <CHANGE-ID>`
+- approve/activate work item lifecycle: `npm run work-item -- <action> --work-item <work-item-slug>`
 
 Ghi chú:
 
@@ -37,6 +57,13 @@ Ghi chú:
 - `work-items/` là canonical artifact root cho workflow artifacts thật của repo.
 
 ## Workflow Docs
+
+### Theo Mục Đích
+
+- Public docs cho người mới dùng workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
+- Public publish surface cho `v1.0.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Quickstart cho `wfc`: [`docs/workflow-contracts-quickstart.md`](docs/workflow-contracts-quickstart.md)
+- Source-of-truth về phạm vi version: [`workflow-versioning.md`](skills/orchestration/codex-workflow-chain/references/workflow-versioning.md)
 
 ### Overview Và Contract
 
@@ -58,10 +85,16 @@ Ghi chú:
 - Governance Pack mức project: [`project-context/README.md`](project-context/README.md)
 - Governance decision model: [`project-context/governance-decision-model.md`](project-context/governance-decision-model.md)
 - Governance role model: [`project-context/governance-role-model.md`](project-context/governance-role-model.md)
-- Execution runtime cho `agentic|multi_agent`: [`execution-runtime.md`](skills/orchestration/codex-workflow-chain/references/execution-runtime.md)
+- Versioning và ranh giới `v1.0.0` vs extension sau đó: [`workflow-versioning.md`](skills/orchestration/codex-workflow-chain/references/workflow-versioning.md)
+- Execution runtime cho `agentic|multi_agent`, thuộc baseline public nhưng chỉ cần khi work item dùng execution layer: [`execution-runtime.md`](skills/orchestration/codex-workflow-chain/references/execution-runtime.md)
 - Adaptive planning cho `quick|full|enterprise`: [`adaptive-planning.md`](skills/orchestration/codex-workflow-chain/references/adaptive-planning.md)
 - CI enforcement cho workflow tooling và artifacts: [`workflow-ci-enforcement.md`](skills/orchestration/codex-workflow-chain/references/workflow-ci-enforcement.md)
-- Fixture suite cho governance validator: [`tests/fixtures/workflow-governance/README.md`](tests/fixtures/workflow-governance/README.md)
+- Fixture suite canonical cho governance validator: [`packages/workflow-contracts/tests/fixtures/workflow-governance/README.md`](packages/workflow-contracts/tests/fixtures/workflow-governance/README.md)
+
+### Extension Sau `v1.0.0`
+
+- `Work Item Materialization`: [`work-item-materialization.md`](skills/orchestration/codex-workflow-chain/references/work-item-materialization.md)
+- `Work Item Protocol`: [`work-item-protocol.md`](skills/orchestration/codex-workflow-chain/references/work-item-protocol.md)
 
 ### Architecture Và Rollout
 
@@ -79,9 +112,9 @@ Tên file workflow không đặt theo cách hiểu cá nhân như `requirements`
 
 ## Thành Phần Trong Repository
 
-- `.github/workflows/workflow-guardrails.yml`: GitHub Actions cho CI phase 1-5 baseline, hiện enforce `workflow-tooling`, `workflow-artifacts`, `workflow-sdd`, `workflow-changes`, `workflow-execution`, `workflow-planning`, `workflow-authoring-smoke`.
-- `changes/`: source-of-truth cho change package theo `proposal -> design -> tasks -> spec-delta -> archive`, đã materialize baseline ở phase 2.
-- `product-specs/`: source-of-truth cho `BRD/SRS` khi work item chạy theo SDD; phase 1 đã materialize baseline này.
+- `.github/workflows/workflow-guardrails.yml`: GitHub Actions cho CI baseline public, hiện enforce `workflow-tooling`, `workflow-artifacts`, `workflow-sdd`, `workflow-changes`, `workflow-execution`, `workflow-planning`, `workflow-authoring-smoke`.
+- `changes/`: source-of-truth cho change package theo `proposal -> design -> tasks -> spec-delta -> archive`; đã được triển khai trong baseline public.
+- `product-specs/`: source-of-truth cho `BRD/SRS` khi work item chạy theo SDD; đã được triển khai trong baseline public.
 - `work-items/`: canonical artifact root cho workflow artifacts thật của repo.
 - `policies/codex/AGENTS.global.md`: chính sách workflow toàn cục cho Codex.
 - `project-context/`: Governance Pack mức project, gồm `constitution`, `project-context`, checklist profile và exception register.
@@ -91,7 +124,8 @@ Tên file workflow không đặt theo cách hiểu cá nhân như `requirements`
 - `skills/delivery/`: skill chia task, implement, testing, DevOps packaging/deploy và review thay đổi dữ liệu hoặc code.
 - `skills/guardrails/`: skill contract, readiness, audit và gate DoR/DoD để khóa chất lượng.
 - `skills/obsidian/`: skill soạn thảo artifact theo hệ Obsidian như note Markdown, Bases và JSON Canvas.
-- `skills/notebooklm/`: skill tích hợp NotebookLM qua CLI/MCP cho các tác vụ research-heavy hoặc corpus lớn.
+- `skills/README.md`: taxonomy và quy tắc đặt nhóm skill cho publish surface.
+- `skills/notebooklm/`: top-level integration skill theo thiết kế, dùng để tích hợp NotebookLM qua CLI/MCP cho các tác vụ research-heavy hoặc corpus lớn.
 - `mcp/github-push/`: MCP server Node để inspect repository, tạo repo GitHub, commit, cấu hình remote và push branch hiện tại.
 - `mcp/notebooklm/`: launcher MCP để Codex gọi upstream `notebooklm-mcp` qua `uvx` cho các tác vụ NotebookLM.
 - `mcp/session-search/`: MCP server Node read-only để tra cứu local coding-agent session history qua `cass`.

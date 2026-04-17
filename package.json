@@ -2,6 +2,9 @@
   "name": "ai-agent-ops",
   "private": true,
   "scripts": {
+    "materialize:work-item": "node packages/workflow-contracts/bin/wfc.js materialize",
+    "change-item": "node packages/workflow-contracts/bin/wfc.js change-item",
+    "work-item": "node packages/workflow-contracts/bin/wfc.js work-item",
     "wfc": "node packages/workflow-contracts/bin/wfc.js",
     "scaffold:change": "node packages/workflow-contracts/bin/wfc.js scaffold-change",
     "scaffold:workflow": "node packages/workflow-contracts/bin/wfc.js scaffold",
@@ -13,6 +16,7 @@
     "validate:workflow:change": "node packages/workflow-contracts/bin/wfc.js change",
     "validate:workflow:execution": "node packages/workflow-contracts/bin/wfc.js exec",
     "validate:workflow:planning": "node packages/workflow-contracts/bin/wfc.js plan",
+    "validate:workflow:protocol": "node packages/workflow-contracts/bin/wfc.js protocol",
     "validate:workflow:authoring-smoke": "node packages/workflow-contracts/bin/wfc.js smoke",
     "validate:workflow:fixtures": "node packages/workflow-contracts/bin/wfc.js fixtures"
   },

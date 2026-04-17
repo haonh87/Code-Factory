@@ -92,6 +92,12 @@ Lệnh này sẽ tạo:
 
 ## Tạo Workflow Đầu Tiên
 
+Nếu bạn muốn bám đúng public baseline `v1.0.0`, flow mặc định là manual scaffold. Execution support theo `agentic|multi_agent` đã có ngay trong `v1.0.0`, nhưng chỉ cần validate lane `exec` khi work item thật sự dùng execution metadata/artifacts. `materialize` và `work-item protocol` là extension sau đó.
+
+### Public Baseline `v1.0.0`
+
+Scaffold workflow trực tiếp bằng slug do human chủ động chốt:
+
 ```bash
 wfc scaffold --work-item customer-search
 ```
@@ -99,7 +105,38 @@ wfc scaffold --work-item customer-search
 Kiểm tra:
 
 ```bash
-find work-items/customer-search -type f | sort
+wfc work-item list
+wfc work-item status --work-item customer-search
+```
+
+Nếu work item dùng execution layer:
+
+```bash
+wfc exec
+```
+
+### Extension Sau `v1.0.0`
+
+Nếu muốn đi từ raw request:
+
+```bash
+wfc materialize --request "fix timeout khi user login bang email/password tren web"
+```
+
+Nếu muốn để tool tự scaffold khi request đủ rõ:
+
+```bash
+wfc materialize --request "them dang nhap Google cho customer portal" --auto-scaffold
+```
+
+Nếu work item được agent materialize và có `change_id`, human cần approve cả change package lẫn work item trước khi chuyển vào delivery:
+
+```bash
+wfc change-item approve --change-id CHANGE-001 --reviewed-by po
+wfc work-item list
+wfc work-item status --work-item add-google-oauth-login
+wfc work-item approve --work-item add-google-oauth-login --reviewed-by po
+wfc work-item activate --work-item add-google-oauth-login
 ```
 
 ## Validate Workflow
@@ -119,6 +156,12 @@ wfc exec
 wfc plan
 ```
 
+Nếu dùng extension sau `v1.0.0`:
+
+```bash
+wfc protocol
+```
+
 ## Tạo Change Package
 
 ```bash
@@ -131,7 +174,19 @@ wfc scaffold-change --change-id CHANGE-001 --work-item customer-search
 wfc init
 wfc scaffold --work-item <work-item-slug>
 wfc
-wfc sdd | wfc change | wfc exec | wfc plan
+wfc sdd | wfc change | wfc plan
+```
+
+Flow mở rộng sau `v1.0.0`:
+
+```bash
+wfc materialize --request "<raw-request>"
+wfc change-item approve --change-id <CHANGE-ID> --reviewed-by <role>
+wfc work-item list
+wfc work-item status --work-item <work-item-slug>
+wfc work-item approve --work-item <work-item-slug> --reviewed-by <role>
+wfc work-item activate --work-item <work-item-slug>
+wfc protocol
 ```
 
 ## Gắn Vào package.json Của Repo Dự Án

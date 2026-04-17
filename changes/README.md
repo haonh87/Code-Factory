@@ -32,6 +32,12 @@ Scaffold một change package:
 npm run scaffold:change -- --change-id CHANGE-001 --work-item <work-item-slug>
 ```
 
+Approve change package do agent materialize:
+
+```bash
+npm run change-item -- approve --change-id CHANGE-001 --reviewed-by <role>
+```
+
 Validate change layer:
 
 ```bash

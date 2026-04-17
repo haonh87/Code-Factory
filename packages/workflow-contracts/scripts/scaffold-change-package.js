@@ -6,8 +6,10 @@ const {
   parseCliArgs
 } = require("./workflow-validator-utils");
 const {
+  CHANGE_DECISION_OWNERS,
   CHANGE_ID_PATTERN,
-  REQUIRED_CHANGE_PACKAGE_FILES
+  REQUIRED_CHANGE_PACKAGE_FILES,
+  getDefaultChangeApprovalState
 } = require("./workflow-change-definitions");
 
 function normalizeSingleValue(value) {
@@ -30,6 +32,12 @@ function buildYamlList(key, values) {
   return [key + ":", ...values.map((value) => `  - ${quoteYamlString(value)}`)];
 }
 
+function validateChoice(name, value, allowedValues) {
+  if (!allowedValues.includes(value)) {
+    throw new Error(`Invalid ${name} '${value}'. Allowed values: ${allowedValues.join(", ")}`);
+  }
+}
+
 function buildArtifactContent(changeId, artifactKind, extraLines = []) {
   const lines = [
     "---",
@@ -44,13 +52,30 @@ function buildArtifactContent(changeId, artifactKind, extraLines = []) {
   return lines.join("\n");
 }
 
-function getFileTemplate(changeId, workItemSlug, relativePath) {
+function getFileTemplate(changeId, templateContext, relativePath) {
+  const {
+    workItemSlug,
+    decisionOwner,
+    materializationRef,
+    requestSummary
+  } = templateContext;
   const commonLinks = workItemSlug ? [`linked_work_items:\n  - ${quoteYamlString(workItemSlug)}`] : ["linked_work_items: []"];
+  const approvalDefaults = getDefaultChangeApprovalState(decisionOwner);
 
   switch (relativePath) {
     case "proposal.md":
       return [
-        buildArtifactContent(changeId, "change-proposal", commonLinks),
+        buildArtifactContent(changeId, "change-proposal", [
+          `decision_owner: ${quoteYamlString(decisionOwner)}`,
+          `review_required: ${approvalDefaults.review_required ? "true" : "false"}`,
+          `approval_status: ${approvalDefaults.approval_status}`,
+          `reviewed_by: ${quoteYamlString(approvalDefaults.reviewed_by)}`,
+          `reviewed_at: ${quoteYamlString(approvalDefaults.reviewed_at)}`,
+          `materialization_ref: ${quoteYamlString(materializationRef)}`,
+          `request_summary: ${quoteYamlString(requestSummary)}`,
+          ...buildYamlList("review_notes", approvalDefaults.review_notes),
+          ...commonLinks
+        ]),
         `# Change Proposal - ${changeId}`,
         "",
         "## Summary",
@@ -171,10 +196,20 @@ function scaffoldChangePackage(options) {
   }
 
   const workItemSlug = normalizeSingleValue(args["work-item"]) || "";
+  const decisionOwner = normalizeSingleValue(args["decision-owner"] || "human");
+  validateChoice("decision-owner", decisionOwner, CHANGE_DECISION_OWNERS);
+  const materializationRef = normalizeSingleValue(args["materialization-ref"] || "");
+  const requestSummary = normalizeSingleValue(args["request-summary"] || "");
   const changeRoot = path.resolve(normalizeSingleValue(args["change-root"]) || path.join("changes", changeId));
   const force = Boolean(args.force);
   const errors = [];
   const createdFiles = [];
+  const templateContext = {
+    workItemSlug,
+    decisionOwner,
+    materializationRef,
+    requestSummary
+  };
 
   REQUIRED_CHANGE_PACKAGE_FILES.forEach((relativePath) => {
     const filePath = path.join(changeRoot, relativePath);
@@ -185,7 +220,7 @@ function scaffoldChangePackage(options) {
       return;
     }
 
-    fs.writeFileSync(filePath, getFileTemplate(changeId, workItemSlug, relativePath), "utf8");
+    fs.writeFileSync(filePath, getFileTemplate(changeId, templateContext, relativePath), "utf8");
     createdFiles.push(filePath);
   });
 

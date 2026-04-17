@@ -41,6 +41,11 @@ const commandTable = {
     script: "validate-workflow-planning.js",
     useWorkflowRoot: true
   },
+  protocol: {
+    script: "validate-work-item-protocol.js",
+    useProjectRoot: true,
+    useWorkflowRoot: true
+  },
   fixtures: {
     script: "run-workflow-governance-fixtures.js",
     cwd: packageRoot
@@ -51,6 +56,20 @@ const commandTable = {
   smoke: {
     script: "run-workflow-authoring-smoke.js",
     cwd: packageRoot
+  },
+  materialize: {
+    script: "materialize-work-item.js",
+    useProjectRoot: true,
+    useWorkflowRoot: true
+  },
+  "change-item": {
+    script: "change-item.js",
+    useProjectRoot: true
+  },
+  "work-item": {
+    script: "work-item-protocol.js",
+    useProjectRoot: true,
+    useWorkflowRoot: true
   },
   scaffold: {
     script: "scaffold-workflow.js",
@@ -211,20 +230,34 @@ function printHelp() {
       "  change          Validate change-layer contracts",
       "  exec            Validate execution-layer contracts",
       "  plan            Validate planning-track contracts",
+      "  protocol        Validate work-item protocol + approval gate",
       "  fixtures        Run package governance fixtures",
       "  init            Create minimal workflow-contracts baseline in a repo",
       "  smoke           Run scaffold -> validate smoke suite",
+      "  materialize     Propose or scaffold a work item from a raw request",
+      "  change-item     Manage human approval for change packages",
+      "  work-item       Manage work-item approval and protocol lifecycle",
       "  scaffold        Scaffold workflow notes",
       "  scaffold-step   Scaffold a single workflow step",
       "  scaffold-change Scaffold a change package",
       "  version         Print version",
       "  help            Show this help",
       "",
-      "Daily Flow:",
+      "Public v1.0.0 Flow:",
       "  1. wfc init",
       "  2. wfc scaffold --work-item <work-item-slug>",
       "  3. wfc",
-      "  4. wfc sdd | wfc change | wfc exec | wfc plan",
+      "  4. wfc sdd | wfc change | wfc plan",
+      "  5. if the work item uses execution metadata/artifacts: wfc exec",
+      "",
+      "Extensions After v1.0.0:",
+      "  1. wfc materialize --request \"<raw-request>\"",
+      "  2. wfc change-item approve --change-id <CHANGE-ID> --reviewed-by <role>",
+      "  3. wfc work-item list",
+      "  4. wfc work-item status --work-item <work-item-slug>",
+      "  5. wfc work-item approve --work-item <work-item-slug> --reviewed-by <role>",
+      "  6. wfc work-item activate --work-item <work-item-slug>",
+      "  7. wfc protocol",
       "",
       `Config: optional ${configFileName} in the repo root or any parent directory.`,
       "Defaults: projectRoot='.' and workflowRoot='work-items'."

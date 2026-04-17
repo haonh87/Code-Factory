@@ -13,6 +13,18 @@ function writeFile(filePath, content) {
   fs.writeFileSync(filePath, content, "utf8");
 }
 
+function assertPathExists(targetPath, message) {
+  if (!fs.existsSync(targetPath)) {
+    throw new Error(message || `Expected path to exist: ${targetPath}`);
+  }
+}
+
+function assertContentIncludes(content, expected, message) {
+  if (!content.includes(expected)) {
+    throw new Error(message || `Expected content to include '${expected}'.`);
+  }
+}
+
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -23,6 +35,28 @@ function runNodeScript(repoRoot, scriptRelativePath, args) {
     stdio: "pipe",
     encoding: "utf8"
   });
+}
+
+function runNodeScriptCaptureOutput(repoRoot, scriptRelativePath, args) {
+  return execFileSync(process.execPath, [path.join(repoRoot, scriptRelativePath), ...args], {
+    cwd: repoRoot,
+    stdio: "pipe",
+    encoding: "utf8"
+  });
+}
+
+function runNodeScriptExpectFailure(repoRoot, scriptRelativePath, args, expectedMessage) {
+  try {
+    runNodeScript(repoRoot, scriptRelativePath, args);
+  } catch (error) {
+    const detail = `${error.stderr || ""}\n${error.stdout || ""}\n${error.message || ""}`;
+    if (expectedMessage && !detail.includes(expectedMessage)) {
+      throw new Error(`Expected failure output to include '${expectedMessage}', got: ${detail}`);
+    }
+    return;
+  }
+
+  throw new Error(`Expected ${scriptRelativePath} to fail.`);
 }
 
 function replaceLine(content, pattern, replacement) {
@@ -238,6 +272,7 @@ function validateBaseline(repoRoot, workflowRoot, projectRoot) {
 }
 
 function runCaseBasicFull(repoRoot, projectRoot) {
+  const workflowRootBase = path.join(projectRoot, "work-items");
   const workflowRoot = path.join(projectRoot, "work-items", "smoke-full-item");
   runNodeScript(repoRoot, "scripts/scaffold-workflow.js", [
     "--work-item",
@@ -249,6 +284,16 @@ function runCaseBasicFull(repoRoot, projectRoot) {
   ]);
   validateBaseline(repoRoot, workflowRoot, projectRoot);
   runNodeScript(repoRoot, "scripts/validate-workflow-planning.js", ["--workflow-root", workflowRoot]);
+
+  const listOutput = runNodeScriptCaptureOutput(repoRoot, "scripts/work-item-protocol.js", [
+    "list",
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase
+  ]);
+  assertContentIncludes(listOutput, "smoke-full-item", "Expected listed work item in work-item list output.");
+  assertContentIncludes(listOutput, "bootstrap", "Expected legacy scaffold to appear as bootstrap source.");
 }
 
 function runCaseQuickSingleStep(repoRoot, projectRoot) {
@@ -349,6 +394,203 @@ function runCaseStrictSddChange(repoRoot, projectRoot) {
   ]);
 }
 
+function runCaseMaterializeAutoScaffold(repoRoot, projectRoot) {
+  const workItemSlug = "add-google-oauth-login";
+  const changeId = "CHANGE-001";
+  const workflowRootBase = path.join(projectRoot, "work-items");
+  const workflowRoot = path.join(workflowRootBase, workItemSlug);
+  const reportPath = path.join(workflowRoot, `${workItemSlug}.work-item-report.json`);
+  const s01Path = path.join(workflowRoot, `${workItemSlug}.s01.restate.md`);
+  const changeProposalPath = path.join(projectRoot, "changes", changeId, "proposal.md");
+
+  runNodeScript(repoRoot, "scripts/materialize-work-item.js", [
+    "--request",
+    "Thêm đăng nhập Google cho customer portal",
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--auto-scaffold"
+  ]);
+
+  assertPathExists(workflowRoot, `Expected materialized workflow root: ${workflowRoot}`);
+  assertPathExists(s01Path, `Expected s01 note after materialize: ${s01Path}`);
+  assertPathExists(reportPath, `Expected report JSON after materialize: ${reportPath}`);
+  assertPathExists(changeProposalPath, `Expected change proposal after materialize: ${changeProposalPath}`);
+
+  const s01Content = fs.readFileSync(s01Path, "utf8");
+  assertContentIncludes(s01Content, "## Work Item Materialization", "Expected materialization block in s01.");
+  assertContentIncludes(s01Content, "## Work Item Protocol", "Expected protocol block in s01.");
+  assertContentIncludes(s01Content, 'materialization_status: READY', "Expected READY materialization status in s01.");
+  assertContentIncludes(s01Content, 'protocol_status: MATERIALIZED', "Expected MATERIALIZED protocol status in s01.");
+  assertContentIncludes(s01Content, `change_id: "${changeId}"`, "Expected change_id to be recorded in s01.");
+
+  const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+  if (report.protocol_status !== "MATERIALIZED") {
+    throw new Error(`Expected protocol_status=MATERIALIZED, got '${report.protocol_status}'.`);
+  }
+  if (report.materialization_status !== "READY") {
+    throw new Error(`Expected materialization_status=READY, got '${report.materialization_status}'.`);
+  }
+  if (report.work_item_slug !== workItemSlug) {
+    throw new Error(`Expected work_item_slug='${workItemSlug}', got '${report.work_item_slug}'.`);
+  }
+  if (report.change_id !== changeId) {
+    throw new Error(`Expected change_id='${changeId}', got '${report.change_id}'.`);
+  }
+  if (!Array.isArray(report.audit_events) || !report.audit_events.includes("WORKFLOW_SCAFFOLDED")) {
+    throw new Error("Expected WORKFLOW_SCAFFOLDED audit event in materialize report.");
+  }
+
+  const proposalContent = fs.readFileSync(changeProposalPath, "utf8");
+  assertContentIncludes(
+    proposalContent,
+    `- "${workItemSlug}"`,
+    "Expected linked_work_items to include materialized work item."
+  );
+  assertContentIncludes(
+    proposalContent,
+    "approval_status: PENDING_REVIEW",
+    "Expected pending approval state for agent-created change package."
+  );
+
+  const listOutput = runNodeScriptCaptureOutput(repoRoot, "scripts/work-item-protocol.js", [
+    "list",
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase
+  ]);
+  assertContentIncludes(listOutput, workItemSlug, "Expected materialized work item in list output.");
+  assertContentIncludes(listOutput, "protocol", "Expected protocol-managed work item source in list output.");
+
+  runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
+    "approve",
+    "--work-item",
+    workItemSlug,
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--reviewed-by",
+    "po",
+    "--note",
+    "Approved after human review."
+  ]);
+  runNodeScriptExpectFailure(
+    repoRoot,
+    "scripts/work-item-protocol.js",
+    [
+      "activate",
+      "--work-item",
+      workItemSlug,
+      "--project-root",
+      projectRoot,
+      "--workflow-root",
+      workflowRootBase,
+      "--actor",
+      "coordinator"
+    ],
+    `change '${changeId}' approval_status=PENDING_REVIEW`
+  );
+  runNodeScript(repoRoot, "scripts/change-item.js", [
+    "approve",
+    "--change-id",
+    changeId,
+    "--project-root",
+    projectRoot,
+    "--reviewed-by",
+    "po",
+    "--note",
+    "Approved change package after human review."
+  ]);
+  runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
+    "activate",
+    "--work-item",
+    workItemSlug,
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--actor",
+    "coordinator"
+  ]);
+  runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
+    "block",
+    "--work-item",
+    workItemSlug,
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--actor",
+    "coordinator",
+    "--blocker",
+    "Waiting for security checklist confirmation."
+  ]);
+  runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
+    "resume",
+    "--work-item",
+    workItemSlug,
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--actor",
+    "coordinator"
+  ]);
+  runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
+    "verify",
+    "--work-item",
+    workItemSlug,
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--actor",
+    "qc"
+  ]);
+  runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
+    "close",
+    "--work-item",
+    workItemSlug,
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--actor",
+    "coordinator"
+  ]);
+
+  const updatedReport = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+  if (updatedReport.protocol_status !== "DONE") {
+    throw new Error(`Expected protocol_status=DONE after lifecycle actions, got '${updatedReport.protocol_status}'.`);
+  }
+  if (updatedReport.approval_status !== "APPROVED") {
+    throw new Error(`Expected approval_status=APPROVED after approve action, got '${updatedReport.approval_status}'.`);
+  }
+
+  const updatedS01Content = fs.readFileSync(s01Path, "utf8");
+  assertContentIncludes(updatedS01Content, "approval_status: APPROVED", "Expected approval_status in synced s01 protocol block.");
+  assertContentIncludes(updatedS01Content, "protocol_status: DONE", "Expected DONE protocol status in synced s01 protocol block.");
+
+  validateBaseline(repoRoot, workflowRoot, projectRoot);
+  runNodeScript(repoRoot, "scripts/validate-workflow-planning.js", ["--workflow-root", workflowRoot]);
+  runNodeScript(repoRoot, "scripts/validate-workflow-execution.js", ["--workflow-root", workflowRoot]);
+  runNodeScript(repoRoot, "scripts/validate-workflow-change.js", [
+    "--workflow-root",
+    workflowRoot,
+    "--project-root",
+    projectRoot
+  ]);
+  runNodeScript(repoRoot, "scripts/validate-work-item-protocol.js", [
+    "--workflow-root",
+    workflowRootBase,
+    "--project-root",
+    projectRoot
+  ]);
+}
+
 function main() {
   const args = parseCliArgs(process.argv.slice(2));
   const repoRoot = path.resolve(__dirname, "..");
@@ -358,7 +600,8 @@ function main() {
     { name: "basic-full", run: runCaseBasicFull },
     { name: "quick-single-step", run: runCaseQuickSingleStep },
     { name: "enterprise-multi-agent", run: runCaseEnterpriseMultiAgent },
-    { name: "strict-sdd-change", run: runCaseStrictSddChange }
+    { name: "strict-sdd-change", run: runCaseStrictSddChange },
+    { name: "materialize-auto-scaffold", run: runCaseMaterializeAutoScaffold }
   ];
   const failures = [];
 
