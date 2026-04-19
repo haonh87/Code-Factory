@@ -6,6 +6,7 @@ const {
   getFrontmatterLines,
   getFrontmatterList,
   getFrontmatterNestedList,
+  getFrontmatterNestedValue,
   getFrontmatterValue,
   getMarkdownSectionContent,
   parseCliArgs,
@@ -29,7 +30,13 @@ const allowedRoles = new Set(GOVERNANCE_ROLES);
 const allowedRegisterStatuses = new Set(EXCEPTION_REGISTER_STATUSES);
 const allowedStandardGovernanceRefs = new Set(STANDARD_GOVERNANCE_REFS);
 const expectedChecklistByProfile = CHECKLIST_BY_PROFILE;
-const signoffKeys = ["dor", "approach", "release", "business_acceptance", "dod"];
+const signoffKeys = ["dor", "approach", "task_plan", "release", "business_acceptance", "dod"];
+const requiredFinalizedSignoffByStep = {
+  s04: ["dor"],
+  s05: ["approach"],
+  s06: ["task_plan"],
+  s08: ["dod"]
+};
 const requiredBlocksByStep = {
   s01: ["## Governance Context"],
   s04: ["## Governance Checks"],
@@ -126,6 +133,10 @@ function validateKnownRoles(roles, label, filePath, errors) {
   });
 }
 
+function getGateReviewFieldName(signoffKey, suffix) {
+  return `${signoffKey}_reviewed_${suffix}`;
+}
+
 function isFinalizedNoteStatus(noteStatus) {
   return Boolean(noteStatus) && noteStatus !== "draft";
 }
@@ -205,9 +216,34 @@ function validateWorkflowGovernance(options) {
     const noteStatus = getFrontmatterValue(frontmatterLines, "status") || "draft";
     let checklistRefs = getFrontmatterList(frontmatterLines, "checklist_refs");
     const roleSignoffs = {};
+    const gateReviews = {};
     signoffKeys.forEach((key) => {
       roleSignoffs[key] = getFrontmatterNestedList(frontmatterLines, "role_signoffs", key) || [];
       validateKnownRoles(roleSignoffs[key], `role_signoffs.${key}`, filePath, errors);
+
+      const reviewedByField = getGateReviewFieldName(key, "by");
+      const reviewedAtField = getGateReviewFieldName(key, "at");
+      gateReviews[key] = {
+        reviewedBy: getFrontmatterNestedList(frontmatterLines, "gate_reviews", reviewedByField) || [],
+        reviewedAt: getFrontmatterNestedValue(frontmatterLines, "gate_reviews", reviewedAtField) || ""
+      };
+      validateKnownRoles(gateReviews[key].reviewedBy, `gate_reviews.${reviewedByField}`, filePath, errors);
+
+      if (gateReviews[key].reviewedBy.length > 0 || gateReviews[key].reviewedAt) {
+        if (gateReviews[key].reviewedBy.length < 1) {
+          errors.push(`gate_reviews.${reviewedByField} is required when gate_reviews.${reviewedAtField} is set: ${filePath}`);
+        }
+        if (!gateReviews[key].reviewedAt) {
+          errors.push(`gate_reviews.${reviewedAtField} is required when gate_reviews.${reviewedByField} is set: ${filePath}`);
+        }
+      }
+
+      const unauthorizedReviewers = gateReviews[key].reviewedBy.filter((role) => !roleSignoffs[key].includes(role));
+      if (unauthorizedReviewers.length > 0) {
+        errors.push(
+          `gate_reviews.${reviewedByField} must be a subset of role_signoffs.${key}; got [${unauthorizedReviewers.join(", ")}] in ${filePath}`
+        );
+      }
     });
 
     if (!governanceRef) {
@@ -317,6 +353,23 @@ function validateWorkflowGovernance(options) {
       errors.push(
         `Finalized note status '${noteStatus}' cannot keep governance_status '${governanceStatus}' on ${stepId}: ${filePath}`
       );
+    }
+
+    if (isFinalizedNoteStatus(noteStatus)) {
+      const requiredSignoffs = requiredFinalizedSignoffByStep[stepId] || [];
+      requiredSignoffs.forEach((key) => {
+        const reviewedByField = getGateReviewFieldName(key, "by");
+        const reviewedAtField = getGateReviewFieldName(key, "at");
+        if (roleSignoffs[key].length < 1) {
+          errors.push(`Finalized ${stepId} note requires non-empty role_signoffs.${key}: ${filePath}`);
+        }
+        if (gateReviews[key].reviewedBy.length < 1) {
+          errors.push(`Finalized ${stepId} note requires non-empty gate_reviews.${reviewedByField}: ${filePath}`);
+        }
+        if (!gateReviews[key].reviewedAt) {
+          errors.push(`Finalized ${stepId} note requires non-empty gate_reviews.${reviewedAtField}: ${filePath}`);
+        }
+      });
     }
 
     if (shouldRequireRegister(stepId, governanceProfile, governanceStatus)) {

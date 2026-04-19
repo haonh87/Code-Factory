@@ -1,4 +1,4 @@
-﻿# Active Context
+# Active Context
 
 ## Trạng Thái Làm Việc Hiện Tại
 
@@ -40,7 +40,7 @@ Trọng tâm hiện tại:
 - Đã thêm `governance-role-model.md` để chốt authority giữa `po|ba|designer|developer|qc|devops`, tách rõ `step signoff` với `waiver authority`.
 - Đã thêm `governance-decision-model.md` để chốt rule chọn `governance_profile`, state transition cho `governance_status` và trigger mở `governance-exception`.
 - Đã thêm command surface chuẩn bằng `npm` ở root repo và port workflow validators sang Node.js, gồm `validate-workflow.js`, `validate-workflow-artifact-names.js`, `validate-workflow-governance.js`, để workflow tooling không phụ thuộc PowerShell.
-- Đã thêm fixture suite `tests/fixtures/workflow-governance/` với case `pass/fail` cho `default`, `regulated`, `custom`, exception register và `WAIVER_APPROVED` để test governance validator.
+- Đã thêm fixture suite canonical `packages/workflow-contracts/tests/fixtures/workflow-governance/` với case `pass/fail` cho `default`, `regulated`, `custom`, exception register và `WAIVER_APPROVED` để test governance validator.
 - Đã thêm workflow scaffolder chạy bằng `npm`, gồm `scaffold:workflow` và `scaffold:workflow-step`, để materialize note workflow đúng naming, frontmatter, governance metadata và block chuẩn rồi validate lại ngay sau khi sinh file.
 - Đã thêm `workflow-ci-enforcement.md` để chốt vai trò, scope, job design, trigger và rollout phases cho CI enforcement của workflow tooling trước khi materialize `.github/workflows/`.
 - Đã implement CI phase 1 tại `.github/workflows/workflow-guardrails.yml`; workflow này hiện chạy job `workflow-tooling` và enforce `npm run validate:workflow:fixtures` trên PR, push `main` và manual dispatch.

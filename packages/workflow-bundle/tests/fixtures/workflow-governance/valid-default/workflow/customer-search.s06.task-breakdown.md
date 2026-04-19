@@ -28,10 +28,26 @@ role_signoffs:
   dor: []
   approach:
     - developer
+  task_plan:
+    - developer
   release: []
   business_acceptance: []
   dod:
     - qc
+gate_reviews:
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
+  task_plan_reviewed_by:
+    - developer
+  task_plan_reviewed_at: "2026-04-14T11:00:00Z"
+  release_reviewed_by: []
+  release_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: []
+  dod_reviewed_at: ""
 content_skills:
   - codex-workflow-chain
 artifact_skills:

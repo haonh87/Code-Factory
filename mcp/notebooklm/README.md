@@ -1,4 +1,4 @@
-﻿# NotebookLM MCP
+# NotebookLM MCP
 
 MCP này là launcher mỏng trong repo để Codex gọi upstream `notebooklm-mcp` qua `uvx`, thay vì repo tự re-implement toàn bộ tool surface của NotebookLM.
 Trong repo này, mục đích chính của integration là dùng NotebookLM như lớp lưu corpus tài liệu và query/search ngữ cảnh khi workflow cần, đặc biệt cho các bước brainstorming, requirement framing, spec, design exploration và research-heavy handoff.

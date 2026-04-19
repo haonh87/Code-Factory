@@ -1,4 +1,4 @@
-﻿# Tech Context
+# Tech Context
 
 ## Công Nghệ Và Định Dạng Đang Dùng
 

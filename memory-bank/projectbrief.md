@@ -1,4 +1,4 @@
-﻿# Project Brief
+# Project Brief
 
 Đây là file đầu tiên cần đọc trong `memory-bank/`.
 

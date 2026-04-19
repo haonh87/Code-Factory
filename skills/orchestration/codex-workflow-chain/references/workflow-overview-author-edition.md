@@ -116,12 +116,13 @@ Workflow này là `role-aware workflow`. Điều đó có nghĩa là cùng một
 | Lớp role | Dùng để làm gì | Ví dụ |
 |---|---|---|
 | `execution_roles` | ai đang đóng góp nghiệp vụ thật cho step | `po`, `ba`, `designer`, `developer`, `qc`, `devops` |
-| `role_signoffs` | ai chịu trách nhiệm signoff gate | `dor`, `approach`, `release`, `business_acceptance`, `dod` |
+| `role_signoffs` | ai chịu trách nhiệm signoff gate | `dor`, `approach`, `task_plan`, `release`, `business_acceptance`, `dod` |
 | runtime roles | step đang được vận hành theo topology nào | `coordinator`, `worker`, `tester`, `auditor`, `notebooklm-researcher` |
 
 Nói ngắn:
 
 - `PO/BA/Designer/Developer/QC/DevOps` trả lời câu hỏi: ai đang sở hữu phần quyết định nghiệp vụ nào
+- `gate_reviews` không phải role layer; nó là audit trail ghi human reviewer thực tế và thời điểm review cho gate đã pass
 - `coordinator/worker/verifier` trả lời câu hỏi: step này đang được chạy như thế nào
 
 ### Vai Trò Của Từng Role
@@ -131,7 +132,7 @@ Nói ngắn:
 | `PO` | giữ business intent, scope, trade-off và `business_acceptance` | `s01`, `s02`, `s04`, `s08` | business problem, success target, scope decision, BRD update, business acceptance verdict | `dor`, `business_acceptance` |
 | `BA` | làm rõ requirement, tạo `SRS`, traceability và readiness | `s01`, `s03`, `s04` | requirement brief, open questions, governance blocker, acceptance criteria, SRS update | support `dor` |
 | `Designer` | giữ UX behavior, interaction rule, accessibility baseline | `s01`, `s02`, `s04`, `s05`, `s08` | user flow, UX constraint, UX acceptance note, SRS UX behavior update | `approach` khi có UX surface; support `business_acceptance` |
-| `Developer` | chốt technical approach, task plan, implementation và technical exception | `s05`, `s06`, `s07` | technical approach, architecture boundary, task breakdown, code/config/doc changes | `approach` |
+| `Developer` | chốt technical approach, task plan, implementation và technical exception | `s05`, `s06`, `s07` | technical approach, architecture boundary, task breakdown, code/config/doc changes | `approach`, `task_plan` |
 | `QC` | giữ verify evidence, checklist completeness, `DoD` và release recommendation | `s04`, `s06`, `s08` | test strategy, verification evidence, review findings, DoD verdict | `dod`, `release` |
 | `DevOps` | giữ packaging, runtime, rollout, release control | `s05`, `s06`, `s07`, `s08` | deployment plan, runtime contract, pipeline/release plan, deployment review | `release` |
 
@@ -319,7 +320,7 @@ Workflow này cố ý không trộn `role nghiệp vụ` với `role runtime`.
 | Câu hỏi | Lớp trả lời |
 |---|---|
 | Ai đang chịu trách nhiệm về business, requirement, design, implementation, quality, release? | `execution_roles` |
-| Ai có trách nhiệm signoff `DoR`, `approach`, `release`, `business_acceptance`, `DoD`? | `role_signoffs` |
+| Ai có trách nhiệm signoff `DoR`, `approach`, `task_plan`, `release`, `business_acceptance`, `DoD`? | `role_signoffs` |
 | Step này đang chạy bằng một agent hay nhiều agent? | `execution_mode` |
 | Nếu chạy nhiều agent thì ai điều phối, ai thực thi, ai kiểm chứng? | runtime roles trong `execution topology` |
 

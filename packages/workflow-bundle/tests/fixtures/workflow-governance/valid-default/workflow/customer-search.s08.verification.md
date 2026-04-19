@@ -27,11 +27,26 @@ execution_roles:
 role_signoffs:
   dor: []
   approach: []
+  task_plan: []
   release: []
   business_acceptance:
     - po
   dod:
     - qc
+gate_reviews:
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
+  release_reviewed_by: []
+  release_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
+  dod_reviewed_by:
+    - qc
+  dod_reviewed_at: "2026-04-14T15:00:00Z"
 content_skills:
   - codex-workflow-chain
 artifact_skills:

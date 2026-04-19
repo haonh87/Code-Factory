@@ -29,9 +29,25 @@ role_signoffs:
     - ba
     - qc
   approach: []
+  task_plan: []
   release: []
   business_acceptance: []
   dod: []
+gate_reviews:
+  dor_reviewed_by:
+    - ba
+    - qc
+  dor_reviewed_at: "2026-04-14T09:10:00Z"
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
+  release_reviewed_by: []
+  release_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: []
+  dod_reviewed_at: ""
 content_skills:
   - codex-workflow-chain
 artifact_skills:

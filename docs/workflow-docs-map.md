@@ -28,6 +28,8 @@ Các tài liệu dưới đây vẫn thuộc public surface, nhưng chỉ cần 
 
 - [`../skills/orchestration/codex-workflow-chain/references/execution-runtime.md`](../skills/orchestration/codex-workflow-chain/references/execution-runtime.md)
 - [`../skills/orchestration/codex-workflow-chain/references/adaptive-planning.md`](../skills/orchestration/codex-workflow-chain/references/adaptive-planning.md)
+- [`workflow-keywords-glossary.md`](workflow-keywords-glossary.md)
+- [`workflow-human-review-gates.md`](workflow-human-review-gates.md)
 - [`../skills/orchestration/codex-workflow-chain/references/work-item-materialization.md`](../skills/orchestration/codex-workflow-chain/references/work-item-materialization.md)
 - [`../skills/orchestration/codex-workflow-chain/references/work-item-protocol.md`](../skills/orchestration/codex-workflow-chain/references/work-item-protocol.md)
 - [`../skills/orchestration/codex-workflow-chain/references/spec-driven-development.md`](../skills/orchestration/codex-workflow-chain/references/spec-driven-development.md)
@@ -36,8 +38,11 @@ Quy tắc đọc:
 
 - `execution-runtime` chỉ cần khi work item dùng execution metadata hoặc artifacts.
 - `adaptive-planning` chỉ cần khi dùng planning track ngoài flow quick mặc định.
+- `workflow-keywords-glossary` là chỗ tra cứu ngữ nghĩa các keyword chính của workflow, gate, execution và SDD.
+- `workflow-human-review-gates` là bản tóm tắt gate nào bắt buộc human phải review/pass và flow AI-human khuyến nghị.
 - `work-item-materialization` và `work-item-protocol` là deep dive cho `agent proposes, human approves`.
 - `spec-driven-development` chỉ cần khi repo dùng `BRD` hoặc `SRS` làm source-of-truth chính.
+- comparative hoặc hybrid policy không thuộc public deep-dive trừ khi được promote rõ vào publish surface.
 
 ## Maintainer And Historical Docs
 
@@ -45,6 +50,8 @@ Các tài liệu dưới đây thiên về mechanics, rollout, history hoặc ro
 
 - [`../skills/orchestration/codex-workflow-chain/references/workflow-overview.md`](../skills/orchestration/codex-workflow-chain/references/workflow-overview.md)
 - [`../skills/orchestration/codex-workflow-chain/references/workflow-versioning.md`](../skills/orchestration/codex-workflow-chain/references/workflow-versioning.md)
+- [`hybrid-superpowers-policy.md`](hybrid-superpowers-policy.md)
+- [`hybrid-superpowers-decision-matrix.md`](hybrid-superpowers-decision-matrix.md)
 - [`../skills/orchestration/codex-workflow-chain/references/implementation-blueprint.md`](../skills/orchestration/codex-workflow-chain/references/implementation-blueprint.md)
 - [`../skills/orchestration/codex-workflow-chain/references/target-architecture.md`](../skills/orchestration/codex-workflow-chain/references/target-architecture.md)
 - [`../skills/orchestration/codex-workflow-chain/references/workflow-ci-enforcement.md`](../skills/orchestration/codex-workflow-chain/references/workflow-ci-enforcement.md)
@@ -52,6 +59,11 @@ Các tài liệu dưới đây thiên về mechanics, rollout, history hoặc ro
 - [`../memory-bank/projectbrief.md`](../memory-bank/projectbrief.md)
 - [`../memory-bank/activeContext.md`](../memory-bank/activeContext.md)
 - [`../memory-bank/progress.md`](../memory-bank/progress.md)
+
+Quy tắc đọc:
+
+- `hybrid-superpowers-policy` là policy tham chiếu nội bộ cho mô hình hybrid giữa backbone workflow của repo và execution discipline từ Superpowers.
+- `hybrid-superpowers-decision-matrix` là cheat sheet để quyết định nhanh khi nào bật `TDD`, `worktree`, `subagent` và `review mode`.
 
 ## Excluded Working Assets
 
@@ -77,3 +89,4 @@ Khi viết docs:
 - dùng `agent proposes, human approves` khi mô tả governance model
 - dùng `scaffold` cho việc sinh note hoặc package từ CLI
 - dùng `materialize` cho bước chuyển raw request thành work item candidate
+- nếu cần giải thích keyword theo ngữ cảnh workflow, ưu tiên link `workflow-keywords-glossary.md` thay vì giải thích lại theo nhiều biến thể
