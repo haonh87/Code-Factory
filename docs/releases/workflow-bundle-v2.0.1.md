@@ -4,29 +4,34 @@ Released: `2026-04-20`
 Tag: `v2.0.1`  
 Branch: `release/v2.0.1`
 
-## Summary
+## Changelog
 
-`workflow-bundle v2.0.1` là patch release tiếp theo sau `v2.0.0`.
+`workflow-bundle v2.0.1` là patch release tiếp theo sau `v2.0.0`, tập trung vào hardening và đồng bộ semantics giữa policy, protocol, validator và CLI.
 
-Bản này không đổi public CLI surface chính, nhưng siết mạnh hơn phần `agent proposes, human approves`, đặc biệt ở:
+### Added
 
-- hard-block protocol trước khi vào execution
-- gate `s08` cho `release` và `business_acceptance`
-- evidence có cấu trúc cho các rule thực thi ở `s07`
-- cải thiện CLI/runtime cho `Codex` và `Claude Code`
+- Thêm machine-enforced gate cho `release` và `business_acceptance` ở `s08`.
+- Thêm `Delivery Rule Evidence` ở `s07` để trace `TDD`, `worktree`, review hai tầng và điều kiện delegation.
+- Thêm `workflow-gate-evidence-utils.js` để dùng chung logic gate evidence giữa governance và protocol.
+- Thêm tài liệu audit alignment tại `docs/workflow-rule-checklist-alignment.md`.
+- Thêm release note `v2.0.1` và fixture mới cho `invalid-option-count`, `invalid-s07-rule-evidence`, `s07 implementation`.
 
-## Highlights
+### Changed
 
 - Siết `work-item protocol` để `ACTIVE` chỉ mở khi approval gate, bootstrap gate khi có, và evidence `s04-s06` đã đủ.
 - Loại bỏ đường bypass bằng `decision_owner=human`, `review_required=false` hoặc `approval_status=NOT_REQUIRED` trên protocol-managed item/change.
-- Thêm machine-enforced gate cho `release` và `business_acceptance` ở `s08`.
-- Thêm `Delivery Rule Evidence` ở `s07` để trace `TDD`, `worktree`, review hai tầng và điều kiện delegation.
-- Chuẩn hóa `greenfield|brownfield` rõ hơn trong authoring, protocol và docs.
-- Bổ sung runtime mode `claude` cho `wfc install|update|status|skills`, đồng thời thêm interactive prompt cho `mode/scope`.
-- Đổi default `wfc work-item activate` sang execution step `s07` để khớp semantics của gate mới.
-- Đồng bộ docs, glossary, human review gates và tài liệu audit alignment để giảm drift giữa policy và runtime.
+- Chuẩn hóa `greenfield|brownfield` rõ hơn trong scaffold, protocol, governance validator và docs.
+- Đổi default `wfc work-item activate` sang execution step `s07`.
+- Đồng bộ docs, glossary, human review gates, quickstart, package README và help text theo semantics mới.
 
-## Included In This Release
+### Fixed
+
+- Sửa drift giữa policy “human-controlled gates” và runtime/protocol enforcement.
+- Sửa drift giữa frontmatter/template docs và scaffold thực tế cho `approval_gates`, `role_signoffs`, `gate_reviews`.
+- Sửa command examples để không còn ngầm hiểu “scaffold xong là activate ngay”.
+- Sửa tham chiếu fixture path cũ trong `project-context/README.md`.
+
+## Scope
 
 - Workflow bundle install surface:
   - `wfc install --mode codex|claude --scope global|project|both`
@@ -46,7 +51,7 @@ Bản này không đổi public CLI surface chính, nhưng siết mạnh hơn ph
   - `wfc work-item`
   - `wfc protocol`
 
-## Upgrade Notes
+## Upgrade
 
 Nếu máy đang ở `workflow-bundle@2.0.0`:
 
