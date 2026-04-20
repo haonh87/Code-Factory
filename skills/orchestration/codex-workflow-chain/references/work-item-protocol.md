@@ -46,6 +46,9 @@ Lưu ý quan trọng:
 - với project mới, trước khi materialize work item implementation đầu tiên phải có evidence rằng `Spec`, `Contract` khi có, `Approach` và `Foundation Decision` khi có đã được human pass
 - với `brownfield`, protocol vẫn cho phép materialize/scaffold để authoring, nhưng work item phải khai báo `delivery_context=brownfield` và bám đủ output baseline/impact/regression của backbone trước khi implement
 - nếu chưa có bootstrap evidence, handoff đúng là quay về clarify/spec/approach, không được scaffold rồi hợp thức hóa sau
+- `list` và `status` có thể bootstrap report read-only từ `s01` cũ để quan sát trạng thái legacy scaffold
+- các action mutating như `approve`, `reject`, `activate`, `block`, `resume`, `verify`, `close`, `archive`, `cancel` phải dùng report đã tồn tại; không được tự bootstrap từ `s01`
+- các human gate được coi là trusted chỉ khi có signed receipt ngoài project root; metadata trong note/report không còn đủ để mở gate một mình
 
 ## Phạm Vi
 
@@ -230,6 +233,8 @@ Yêu cầu:
 - nếu có `change_id`, `change package approval` đã `APPROVED`
 - nếu `delivery_context=greenfield`, `bootstrap gate` đã `APPROVED`
 - `s04`, `s05`, `s06` đã có evidence gate đủ để mở execution
+- `granted_write_paths` đã được khai báo để capability control biết implementation path nào được mở ghi
+- trusted signed receipt cho `work-item`, `change` và các gate step bắt buộc đã tồn tại và còn khớp artifact hiện tại
 - handoff vào execution path đã rõ
 
 ### `ACTIVE -> BLOCKED`
@@ -516,13 +521,17 @@ Khuyến nghị dùng vocabulary ổn định:
 - `wfc work-item status --work-item <slug>`
 - `wfc work-item approve --work-item <slug> --reviewed-by <role>`
 - `wfc work-item reject --work-item <slug> --reviewed-by <role> --note "<reason>"`
-- `wfc work-item activate --work-item <slug> --step s07`
+- `wfc gate approve --work-item <slug> --gate <spec|dor|approach|task_plan|bootstrap|dod|...> --reviewed-by <role>`
+- `wfc work-item activate --work-item <slug> --step s07 --write-root <path>`
 - `wfc work-item block --work-item <slug> --blocker "<reason>"`
 - `wfc work-item resume --work-item <slug>`
 - `wfc work-item verify --work-item <slug>`
 - `wfc work-item close --work-item <slug>`
 - `wfc work-item archive --work-item <slug>`
 - `wfc work-item cancel --work-item <slug> --reason "<reason>"`
+- `wfc capability status`
+- `wfc capability sync`
+- `wfc capability check --path <path>`
 - `wfc protocol --workflow-root work-items --project-root .`
 - `wfc scaffold-change --change-id <CHANGE-ID> --work-item <work-item-slug>`
 - `wfc scaffold --work-item <work-item-slug> --planning-track <quick|full|enterprise>`
@@ -537,6 +546,30 @@ Khuyến nghị dùng vocabulary ổn định:
 - nhúng block `Work Item Materialization` và `Work Item Protocol` vào `s01` sau khi scaffold thành công
 - tự đặt `approval_status=PENDING_REVIEW`, buộc human review trước khi vào `ACTIVE`
 - không mở `ACTIVE` chỉ vì scaffold xong; `s04-s06` phải có evidence gate phù hợp trước khi execute
+
+`wfc work-item list|status`:
+
+- có thể bootstrap report read-only từ `s01` nếu work item cũ chưa có `.work-item-report.json`
+- không được sync bootstrap report này ngược lại xuống filesystem
+
+`wfc work-item approve|reject|activate|block|resume|verify|close|archive|cancel`:
+
+- phải dùng `.work-item-report.json` đã tồn tại
+- nếu chỉ có `s01` legacy mà chưa có report, phải materialize lại hoặc tạo report theo flow chính thức trước
+- `activate` và `resume` vào `ACTIVE` ở `s07` phải có ít nhất một `write-root` để capability control mở đúng implementation path
+
+`wfc gate approve|reject|status`:
+
+- dùng để seal trusted receipt cho các gate human review bắt buộc
+- với gate step như `spec`, `dor`, `approach`, `task_plan`, receipt sẽ bám digest của note hiện tại; sửa note sau khi approve sẽ làm receipt stale
+- với `bootstrap`, receipt bám artifact được truyền qua `--ref`
+- lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase
+
+`wfc capability status|sync|check`:
+
+- `status`: xem policy capability control đang coi path nào là authoring roots, protected roots và granted write roots
+- `sync`: áp policy capability control vào quyền ghi filesystem của project
+- `check --path <path>`: kiểm path cụ thể có được phép ghi theo policy hiện tại hay không
 
 ### Target Extension
 
@@ -576,6 +609,7 @@ work_item_slug: ""
 work_item_type: FEATURE|BUG|CHANGE|REFACTOR|RESEARCH
 workflow_root: ""
 current_step: s07
+granted_write_paths: []
 materialization_status: PROPOSED|READY|BLOCKED
 change_strategy: none|reuse_existing|create_new
 change_id: ""

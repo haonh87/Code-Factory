@@ -1,10 +1,23 @@
 const fs = require("fs");
 const path = require("path");
 const { ensureDirectory, parseCliArgs } = require("./workflow-validator-utils");
+const {
+  DEFAULT_ALWAYS_WRITABLE_PATHS,
+  DEFAULT_AUTHORING_ROOTS,
+  DEFAULT_IGNORED_ROOTS,
+  syncCapabilityControl
+} = require("./workflow-capability-control");
 
 const DEFAULT_CONFIG = {
   projectRoot: ".",
-  workflowRoot: "work-items"
+  workflowRoot: "work-items",
+  capabilityControl: {
+    enabled: true,
+    authoringRoots: DEFAULT_AUTHORING_ROOTS,
+    alwaysWritablePaths: DEFAULT_ALWAYS_WRITABLE_PATHS,
+    ignoredRoots: DEFAULT_IGNORED_ROOTS,
+    protectedRoots: []
+  }
 };
 
 function normalizeSingleValue(value) {
@@ -104,6 +117,11 @@ function initWorkflowBundle(options) {
     } else {
       skippedFiles.push(filePath);
     }
+  });
+
+  syncCapabilityControl({
+    projectRoot,
+    workflowRootBase: path.join(projectRoot, DEFAULT_CONFIG.workflowRoot)
   });
 
   return {

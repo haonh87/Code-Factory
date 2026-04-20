@@ -1,8 +1,8 @@
 # AI Agent Ops
 
-Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent. Public release hiện tại là `workflow-bundle v2.0.1`: một workflow bundle cài được cho Codex và Claude Code, cho phép agent chủ động đề xuất `work-item` và `change`, còn human giữ quyền approve ở các gate trước khi delivery tiếp tục.
+Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent. Public release hiện tại là `workflow-bundle v2.0.2`: một workflow bundle cài được cho Codex và Claude Code, cho phép agent chủ động đề xuất `work-item` và `change`, còn human giữ quyền approve ở các gate trước khi delivery tiếp tục.
 
-Khi chia sẻ cho người dùng mới, dùng tag `v2.0.1` hoặc branch `release/v2.0.1` làm canonical public reference thay vì working tree hiện tại.
+Khi chia sẻ cho người dùng mới, dùng tag `v2.0.2` hoặc branch `release/v2.0.2` làm canonical public reference thay vì working tree hiện tại.
 
 ## Requirements
 
@@ -14,7 +14,7 @@ Khi chia sẻ cho người dùng mới, dùng tag `v2.0.1` hoặc branch `releas
 
 ## Bắt Đầu Ở Đây
 
-Nếu đang tiếp cận repo lần đầu và muốn đi đúng public release `v2.0.1`:
+Nếu đang tiếp cận repo lần đầu và muốn đi đúng public release `v2.0.2`:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -35,7 +35,7 @@ Các tài liệu dưới đây là maintainer hoặc historical context, không 
 
 ## Workflow Commands Nhanh
 
-Command surface public của `v2.0.1` dùng `wfc`.
+Command surface public của `v2.0.2` dùng `wfc`.
 
 Install và quản lý workflow bundle:
 
@@ -82,21 +82,28 @@ Agentic proposal flow:
 - xem protocol hoặc status của một work item: `wfc work-item status --work-item <work-item-slug>`
 - approve hoặc reject change package do agent đề xuất: `wfc change-item <approve|reject|status> --change-id <CHANGE-ID>`
 - approve work item trước khi activate: `wfc work-item approve --work-item <work-item-slug> --reviewed-by <role>`
-- activate work item chỉ sau approval + evidence gate `s04-s06`: `wfc work-item activate --work-item <work-item-slug> --step s07`
+- seal trusted human gate receipt trước khi activate: `wfc gate approve --work-item <work-item-slug> --gate <spec|dor|approach|task_plan> --reviewed-by <role>`
+- activate work item chỉ sau approval + evidence gate `s04-s06`: `wfc work-item activate --work-item <work-item-slug> --step s07 --write-root <path>`
+- xem hoặc sync capability control: `wfc capability status` , `wfc capability sync` , `wfc capability check --path <path>`
 
 Ghi chú:
 
 - `--work-item` là tên CLI ngắn cho `work_item_slug`.
 - `work_item_slug` là định danh xuyên suốt 8 bước, ví dụ `fix-login-timeout`, `checkout-recovery`.
+- `wfc work-item list|status` có thể bootstrap report read-only từ `s01` cũ để quan sát legacy scaffold.
+- các action mutating như `approve|activate|verify|close` không được tự bootstrap; chúng yêu cầu `.work-item-report.json` đã tồn tại.
+- `work-item approval`, `change approval` và `gate approval` chỉ được coi là trusted khi có signed receipt ngoài project root; metadata trong note hoặc report không còn đủ để mở gate một mình.
+- lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase.
+- implementation path bị khóa ở mức filesystem cho tới khi work item vào `ACTIVE` ở `s07` và được cấp `write-root`.
 - `work-items/` là canonical artifact root cho workflow artifacts của repo.
-- Approval model của `v2.0.1` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate và step-gate evidence bắt buộc đã có.
+- Approval model của `v2.0.2` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate, trusted signed receipts và step-gate evidence bắt buộc đã có.
 
 ## Workflow Docs
 
 ### Theo Mục Đích
 
 - Public docs cho người mới dùng workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface cho `v2.0.1`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface cho `v2.0.2`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart cho `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README cho cài đặt hoặc publish: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 

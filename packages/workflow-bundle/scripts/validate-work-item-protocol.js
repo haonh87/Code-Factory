@@ -20,6 +20,10 @@ const {
   resolveWorkflowRootBase
 } = require("./work-item-protocol-utils");
 const { getProtocolStepGateErrors } = require("./workflow-gate-evidence-utils");
+const {
+  hasApprovedReceipt,
+  loadTrustedApprovalReceipt
+} = require("./workflow-trusted-approval-utils");
 
 function collectWorkItemDirs(workflowRootBase) {
   if (!fs.existsSync(workflowRootBase)) {
@@ -49,6 +53,7 @@ function validateProtocolBlockSync(s01Content, report, s01Path, errors) {
     `work_item_slug: ${quoteYamlString(report.work_item_slug)}`,
     `delivery_context: ${report.delivery_context}`,
     `current_step: ${quoteYamlString(report.current_step)}`,
+    report.granted_write_paths.length > 0 ? "granted_write_paths:" : "granted_write_paths: []",
     `change_id: ${quoteYamlString(report.change_id)}`,
     `bootstrap_gate_status: ${report.bootstrap_gate_status}`
   ];
@@ -181,6 +186,17 @@ function validateProtocolState(report, context, errors) {
     errors.push(`ACTIVE work item requires current_step in ${reportPath}`);
   }
 
+  report.granted_write_paths.forEach((relativePath) => {
+    const resolvedPath = path.resolve(context.projectRoot, relativePath);
+    if (resolvedPath !== context.projectRoot && !resolvedPath.startsWith(`${context.projectRoot}${path.sep}`)) {
+      errors.push(`granted_write_paths entry '${relativePath}' must stay within project root in ${reportPath}`);
+    }
+  });
+
+  if (report.protocol_status === "ACTIVE" && report.current_step === "s07" && report.granted_write_paths.length < 1) {
+    errors.push(`ACTIVE work item at s07 requires non-empty granted_write_paths in ${reportPath}`);
+  }
+
   if (report.protocol_status === "BLOCKED" && report.blockers.length === 0) {
     errors.push(`BLOCKED work item requires blockers in ${reportPath}`);
   }
@@ -190,6 +206,7 @@ function validateProtocolState(report, context, errors) {
   }
 
   const protocolGateErrors = getProtocolStepGateErrors({
+    projectRoot: context.projectRoot,
     workflowRoot,
     workItemSlug: slug,
     toStatus: report.protocol_status
@@ -197,6 +214,43 @@ function validateProtocolState(report, context, errors) {
   protocolGateErrors.forEach((error) => {
     errors.push(`${error}: ${reportPath}`);
   });
+
+  if (["ACTIVE", "VERIFIED", "DONE", "ARCHIVED"].includes(report.protocol_status)) {
+    const workItemReceipt = loadTrustedApprovalReceipt({
+      projectRoot: context.projectRoot,
+      kind: "work-item",
+      workItemSlug: slug
+    });
+    if (!hasApprovedReceipt(workItemReceipt.receipt, workItemReceipt.approvalRoot)) {
+      errors.push(`Missing trusted work-item approval receipt for ${slug}: ${reportPath}`);
+    }
+
+    if (report.change_id) {
+      const changeReceipt = loadTrustedApprovalReceipt({
+        projectRoot: context.projectRoot,
+        kind: "change",
+        changeId: report.change_id
+      });
+      if (!hasApprovedReceipt(changeReceipt.receipt, changeReceipt.approvalRoot)) {
+        errors.push(`Missing trusted change approval receipt for ${report.change_id}: ${reportPath}`);
+      }
+    }
+  }
+
+  if (
+    report.delivery_context === "greenfield" &&
+    ["ACTIVE", "VERIFIED", "DONE", "ARCHIVED"].includes(report.protocol_status)
+  ) {
+    const bootstrapReceipt = loadTrustedApprovalReceipt({
+      projectRoot: context.projectRoot,
+      kind: "gate",
+      workItemSlug: slug,
+      gate: "bootstrap"
+    });
+    if (!hasApprovedReceipt(bootstrapReceipt.receipt, bootstrapReceipt.approvalRoot)) {
+      errors.push(`Missing trusted bootstrap approval receipt for ${slug}: ${reportPath}`);
+    }
+  }
 
   validateProtocolEvents(report, reportPath, errors);
   validateProtocolBlockSync(s01Content, report, s01Path, errors);
@@ -241,6 +295,7 @@ function validateWorkItemProtocol({ args }) {
     const report = normalizeProtocolReport(rawReport);
     validateProtocolState(report, {
       slug: entry.slug,
+      projectRoot,
       workflowRoot: paths.workflowRoot,
       s01Path: paths.s01Path,
       s01Content,

@@ -1,10 +1,10 @@
 # Workflow Docs Map
 
-Tài liệu này tách rõ đâu là public onboarding path của `workflow-bundle v2.0.1`, đâu là deep-dive docs, và đâu là maintainer context.
+Tài liệu này tách rõ đâu là public onboarding path của `workflow-bundle v2.0.2`, đâu là deep-dive docs, và đâu là maintainer context.
 
 ## Public Onboarding Docs
 
-Đây là bộ nên đọc khi muốn bắt đầu đúng public release `v2.0.1`.
+Đây là bộ nên đọc khi muốn bắt đầu đúng public release `v2.0.2`.
 
 1. [`../README.md`](../README.md)
 2. [`publish-surface.md`](publish-surface.md)
@@ -15,7 +15,7 @@ Tài liệu này tách rõ đâu là public onboarding path của `workflow-bund
 
 Quy tắc đọc:
 
-- `README` trả lời repo này là gì và public promise của `v2.0.1` là gì.
+- `README` trả lời repo này là gì và public promise của `v2.0.2` là gì.
 - `publish-surface` chốt tag hoặc branch canonical và system requirements.
 - `quickstart` trả lời cài `wfc`, cài workflow bundle, init repo và chạy flow đầu tiên như thế nào.
 - package `README` trả lời install, upgrade, command overview và publish mechanics ở mức package.

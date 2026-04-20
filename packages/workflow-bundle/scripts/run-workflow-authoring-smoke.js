@@ -25,6 +25,42 @@ function assertContentIncludes(content, expected, message) {
   }
 }
 
+function assertOwnerWritable(targetPath, expectedWritable, message) {
+  const actualWritable = Boolean(fs.statSync(targetPath).mode & 0o200);
+  if (actualWritable !== expectedWritable) {
+    throw new Error(
+      message ||
+        `Expected owner writable=${expectedWritable ? "true" : "false"} for ${targetPath}, got ${
+          actualWritable ? "true" : "false"
+        }.`
+    );
+  }
+}
+
+function makeTreeOwnerWritable(targetPath) {
+  if (!fs.existsSync(targetPath)) {
+    return;
+  }
+
+  const stat = fs.lstatSync(targetPath);
+  if (stat.isSymbolicLink()) {
+    return;
+  }
+
+  const nextMode = stat.mode | 0o200;
+  if (nextMode !== stat.mode) {
+    fs.chmodSync(targetPath, nextMode);
+  }
+
+  if (!stat.isDirectory()) {
+    return;
+  }
+
+  fs.readdirSync(targetPath, { withFileTypes: true }).forEach((entry) => {
+    makeTreeOwnerWritable(path.join(targetPath, entry.name));
+  });
+}
+
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -337,6 +373,30 @@ function patchMaterializedWorkflowForDone(workflowRoot, workItemSlug) {
   ]);
 }
 
+function sealWorkflowGate(repoRoot, projectRoot, workflowRootBase, workItemSlug, gate, reviewedBy, extraArgs = []) {
+  runNodeScript(repoRoot, "scripts/workflow-gate-review.js", [
+    "approve",
+    "--work-item",
+    workItemSlug,
+    "--gate",
+    gate,
+    "--reviewed-by",
+    reviewedBy,
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    ...extraArgs
+  ]);
+}
+
+function sealActivationGates(repoRoot, projectRoot, workflowRootBase, workItemSlug) {
+  sealWorkflowGate(repoRoot, projectRoot, workflowRootBase, workItemSlug, "spec", "po");
+  sealWorkflowGate(repoRoot, projectRoot, workflowRootBase, workItemSlug, "dor", "po");
+  sealWorkflowGate(repoRoot, projectRoot, workflowRootBase, workItemSlug, "approach", "developer");
+  sealWorkflowGate(repoRoot, projectRoot, workflowRootBase, workItemSlug, "task_plan", "developer");
+}
+
 function validateBaseline(repoRoot, workflowRoot, projectRoot) {
   runNodeScript(repoRoot, "scripts/validate-workflow.js", [
     "--workflow-root",
@@ -388,6 +448,154 @@ function runCaseQuickSingleStep(repoRoot, projectRoot) {
   ]);
   validateBaseline(repoRoot, workflowRoot, projectRoot);
   runNodeScript(repoRoot, "scripts/validate-workflow-planning.js", ["--workflow-root", workflowRoot]);
+}
+
+function runCaseMutatingActionRequiresReport(repoRoot, projectRoot) {
+  const workItemSlug = "legacy-report-required-item";
+  const workflowRootBase = path.join(projectRoot, "work-items");
+  const workflowRoot = path.join(workflowRootBase, workItemSlug);
+  const reportPath = path.join(workflowRoot, `${workItemSlug}.work-item-report.json`);
+
+  runNodeScript(repoRoot, "scripts/scaffold-workflow.js", [
+    "--work-item",
+    workItemSlug,
+    "--workflow-root",
+    workflowRoot,
+    "--project-root",
+    projectRoot
+  ]);
+
+  const statusOutput = runNodeScriptCaptureOutput(repoRoot, "scripts/work-item-protocol.js", [
+    "status",
+    "--work-item",
+    workItemSlug,
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase
+  ]);
+  assertContentIncludes(statusOutput, "protocol_status=MATERIALIZED", "Expected read-only bootstrap status for legacy scaffold.");
+  assertContentIncludes(statusOutput, '"bootstrap_gate_status": "NOT_REQUIRED"', "Expected bootstrap status in read-only report.");
+
+  runNodeScriptExpectFailure(
+    repoRoot,
+    "scripts/work-item-protocol.js",
+    [
+      "approve",
+      "--work-item",
+      workItemSlug,
+      "--project-root",
+      projectRoot,
+      "--workflow-root",
+      workflowRootBase
+    ],
+    `Missing work item report: ${reportPath}`
+  );
+
+  if (fs.existsSync(reportPath)) {
+    throw new Error("Mutating action must not bootstrap and write a new protocol report.");
+  }
+}
+
+function runCaseCapabilityControl(repoRoot, projectRoot) {
+  const workItemSlug = "capability-guard-item";
+  const workflowRootBase = path.join(projectRoot, "work-items");
+  const workflowRoot = path.join(workflowRootBase, workItemSlug);
+  const reportPath = path.join(workflowRoot, `${workItemSlug}.work-item-report.json`);
+  const guardedRoot = path.join(projectRoot, "src");
+  const guardedFile = path.join(guardedRoot, "main.ts");
+
+  writeFile(guardedFile, "export const ready = true;\n");
+
+  runNodeScript(repoRoot, "scripts/materialize-work-item.js", [
+    "--request",
+    "Thêm QR voucher screen cho khách hàng",
+    "--work-item",
+    workItemSlug,
+    "--delivery-context",
+    "brownfield",
+    "--change-strategy",
+    "create_new",
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--auto-scaffold"
+  ]);
+
+  const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+  const changeId = report.change_id;
+  if (!changeId) {
+    throw new Error("Expected change_id to be present for capability control smoke case.");
+  }
+
+  assertOwnerWritable(guardedRoot, false, "Expected implementation root to be locked before ACTIVE.");
+  assertOwnerWritable(guardedFile, false, "Expected implementation file to be locked before ACTIVE.");
+
+  runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
+    "approve",
+    "--work-item",
+    workItemSlug,
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--reviewed-by",
+    "po"
+  ]);
+  runNodeScript(repoRoot, "scripts/change-item.js", [
+    "approve",
+    "--change-id",
+    changeId,
+    "--project-root",
+    projectRoot,
+    "--reviewed-by",
+    "po"
+  ]);
+  patchMaterializedWorkflowForActivation(workflowRoot, workItemSlug);
+  sealActivationGates(repoRoot, projectRoot, workflowRootBase, workItemSlug);
+  runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
+    "activate",
+    "--work-item",
+    workItemSlug,
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--actor",
+    "coordinator",
+    "--write-root",
+    "src"
+  ]);
+
+  assertOwnerWritable(guardedRoot, true, "Expected implementation root to be unlocked at ACTIVE s07.");
+  assertOwnerWritable(guardedFile, true, "Expected implementation file to be unlocked at ACTIVE s07.");
+
+  const capabilityStatus = runNodeScriptCaptureOutput(repoRoot, "scripts/workflow-capability-control.js", [
+    "status",
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase
+  ]);
+  assertContentIncludes(capabilityStatus, '"granted_write_roots": [', "Expected granted write roots in capability status.");
+  assertContentIncludes(capabilityStatus, '"src"', "Expected src write root in capability status.");
+
+  patchMaterializedWorkflowForDone(workflowRoot, workItemSlug);
+  runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
+    "verify",
+    "--work-item",
+    workItemSlug,
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--actor",
+    "qc"
+  ]);
+
+  assertOwnerWritable(guardedRoot, false, "Expected implementation root to be relocked after leaving ACTIVE.");
+  assertOwnerWritable(guardedFile, false, "Expected implementation file to be relocked after leaving ACTIVE.");
 }
 
 function runCaseEnterpriseMultiAgent(repoRoot, projectRoot) {
@@ -482,12 +690,10 @@ function runCaseStrictSddChange(repoRoot, projectRoot) {
 
 function runCaseMaterializeAutoScaffold(repoRoot, projectRoot) {
   const workItemSlug = "add-google-oauth-login";
-  const changeId = "CHANGE-001";
   const workflowRootBase = path.join(projectRoot, "work-items");
   const workflowRoot = path.join(workflowRootBase, workItemSlug);
   const reportPath = path.join(workflowRoot, `${workItemSlug}.work-item-report.json`);
   const s01Path = path.join(workflowRoot, `${workItemSlug}.s01.restate.md`);
-  const changeProposalPath = path.join(projectRoot, "changes", changeId, "proposal.md");
 
   runNodeScript(repoRoot, "scripts/materialize-work-item.js", [
     "--request",
@@ -504,6 +710,10 @@ function runCaseMaterializeAutoScaffold(repoRoot, projectRoot) {
   assertPathExists(workflowRoot, `Expected materialized workflow root: ${workflowRoot}`);
   assertPathExists(s01Path, `Expected s01 note after materialize: ${s01Path}`);
   assertPathExists(reportPath, `Expected report JSON after materialize: ${reportPath}`);
+
+  const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+  const changeId = report.change_id;
+  const changeProposalPath = path.join(projectRoot, "changes", changeId, "proposal.md");
   assertPathExists(changeProposalPath, `Expected change proposal after materialize: ${changeProposalPath}`);
 
   const s01Content = fs.readFileSync(s01Path, "utf8");
@@ -513,7 +723,6 @@ function runCaseMaterializeAutoScaffold(repoRoot, projectRoot) {
   assertContentIncludes(s01Content, 'protocol_status: MATERIALIZED', "Expected MATERIALIZED protocol status in s01.");
   assertContentIncludes(s01Content, `change_id: "${changeId}"`, "Expected change_id to be recorded in s01.");
 
-  const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
   if (report.protocol_status !== "MATERIALIZED") {
     throw new Error(`Expected protocol_status=MATERIALIZED, got '${report.protocol_status}'.`);
   }
@@ -577,7 +786,9 @@ function runCaseMaterializeAutoScaffold(repoRoot, projectRoot) {
       "--workflow-root",
       workflowRootBase,
       "--actor",
-      "coordinator"
+      "coordinator",
+      "--write-root",
+      "src"
     ],
     `change '${changeId}' approval_status=PENDING_REVIEW`
   );
@@ -593,6 +804,7 @@ function runCaseMaterializeAutoScaffold(repoRoot, projectRoot) {
     "Approved change package after human review."
   ]);
   patchMaterializedWorkflowForActivation(workflowRoot, workItemSlug);
+  sealActivationGates(repoRoot, projectRoot, workflowRootBase, workItemSlug);
   runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
     "activate",
     "--work-item",
@@ -602,7 +814,9 @@ function runCaseMaterializeAutoScaffold(repoRoot, projectRoot) {
     "--workflow-root",
     workflowRootBase,
     "--actor",
-    "coordinator"
+    "coordinator",
+    "--write-root",
+    "src"
   ]);
   runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
     "block",
@@ -626,7 +840,9 @@ function runCaseMaterializeAutoScaffold(repoRoot, projectRoot) {
     "--workflow-root",
     workflowRootBase,
     "--actor",
-    "coordinator"
+    "coordinator",
+    "--write-root",
+    "src"
   ]);
   runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
     "verify",
@@ -640,6 +856,7 @@ function runCaseMaterializeAutoScaffold(repoRoot, projectRoot) {
     "qc"
   ]);
   patchMaterializedWorkflowForDone(workflowRoot, workItemSlug);
+  sealWorkflowGate(repoRoot, projectRoot, workflowRootBase, workItemSlug, "dod", "qc");
   runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
     "close",
     "--work-item",
@@ -731,6 +948,11 @@ function runCaseGreenfieldBootstrapPreflight(repoRoot, projectRoot) {
     throw new Error("Greenfield materialize without bootstrap approval must not scaffold workflow root.");
   }
 
+  sealWorkflowGate(repoRoot, projectRoot, workflowRootBase, workItemSlug, "bootstrap", "po", [
+    "--ref",
+    path.relative(projectRoot, bootstrapRef)
+  ]);
+
   runNodeScript(repoRoot, "scripts/materialize-work-item.js", [
     "--request",
     "Tạo landing page marketing cho sản phẩm A",
@@ -744,12 +966,6 @@ function runCaseGreenfieldBootstrapPreflight(repoRoot, projectRoot) {
     projectRoot,
     "--workflow-root",
     workflowRootBase,
-    "--bootstrap-ref",
-    path.relative(projectRoot, bootstrapRef),
-    "--bootstrap-reviewed-by",
-    "po",
-    "--bootstrap-reviewed-at",
-    "2026-04-19T09:00:00Z",
     "--auto-scaffold"
   ]);
 
@@ -777,10 +993,13 @@ function main() {
   const args = parseCliArgs(process.argv.slice(2));
   const repoRoot = path.resolve(__dirname, "..");
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-authoring-smoke-"));
+  const approvalRoot = `${tempRoot}-trusted-approvals`;
   const keepTemp = Boolean(args["keep-temp"]);
   const cases = [
     { name: "basic-full", run: runCaseBasicFull },
     { name: "quick-single-step", run: runCaseQuickSingleStep },
+    { name: "mutating-action-requires-report", run: runCaseMutatingActionRequiresReport },
+    { name: "capability-control", run: runCaseCapabilityControl },
     { name: "enterprise-multi-agent", run: runCaseEnterpriseMultiAgent },
     { name: "strict-sdd-change", run: runCaseStrictSddChange },
     { name: "materialize-auto-scaffold", run: runCaseMaterializeAutoScaffold },
@@ -789,10 +1008,13 @@ function main() {
   const failures = [];
 
   try {
+    process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = approvalRoot;
+    process.env.WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE = "smoke-passphrase";
     seedProjectContext(tempRoot);
 
     cases.forEach((smokeCase) => {
       try {
+        makeTreeOwnerWritable(tempRoot);
         smokeCase.run(repoRoot, tempRoot);
         console.log(`PASS: ${smokeCase.name}`);
       } catch (error) {
@@ -810,7 +1032,11 @@ function main() {
 
     console.log(`OK: workflow authoring smoke passed for ${cases.length} scaffold cases under ${tempRoot}`);
   } finally {
+    delete process.env.WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE;
+    delete process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
+    fs.rmSync(approvalRoot, { recursive: true, force: true });
     if (!keepTemp) {
+      makeTreeOwnerWritable(tempRoot);
       fs.rmSync(tempRoot, { recursive: true, force: true });
     }
   }

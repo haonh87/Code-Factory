@@ -4,6 +4,15 @@ const { formatErrors, parseCliArgs } = require("./workflow-validator-utils");
 const { loadChangeProposalState } = require("./change-item-utils");
 const { CHANGE_APPROVAL_GATE_PASSED } = require("./workflow-change-definitions");
 const {
+  normalizeRelativeProjectPath,
+  syncCapabilityControl
+} = require("./workflow-capability-control");
+const {
+  hasApprovedReceipt,
+  loadTrustedApprovalReceipt,
+  writeTrustedApprovalReceipt
+} = require("./workflow-trusted-approval-utils");
+const {
   APPROVAL_GATE_PASSED,
   BOOTSTRAP_GATE_PASSED,
   buildProtocolEvent,
@@ -69,6 +78,30 @@ function getNoteText(args, fallback = "") {
   return fallback;
 }
 
+function requireReviewedBy(args) {
+  const reviewedBy = normalizeSingleValue(args["reviewed-by"] || "");
+  if (!reviewedBy) {
+    throw new Error("Missing required argument '--reviewed-by'.");
+  }
+  return reviewedBy;
+}
+
+function resolveGrantedWritePaths(reportInput, args, projectRoot, { requireNonEmpty = false } = {}) {
+  const explicitPaths = normalizeArray(args["write-root"]).map((item) =>
+    normalizeRelativeProjectPath(projectRoot, item, "write-root")
+  );
+  const existingPaths = normalizeArray(reportInput.granted_write_paths).map((item) =>
+    normalizeRelativeProjectPath(projectRoot, item, "granted_write_paths")
+  );
+  const grantedWritePaths = explicitPaths.length > 0 ? explicitPaths : existingPaths;
+
+  if (requireNonEmpty && grantedWritePaths.length < 1) {
+    throw new Error("ACTIVE execution requires at least one '--write-root <path>' or existing granted_write_paths.");
+  }
+
+  return grantedWritePaths;
+}
+
 function assertChangeApprovalGate(report, toStatus, projectRoot) {
   if (!APPROVAL_REQUIRED_STATUSES.has(toStatus) || !report.change_id) {
     return;
@@ -87,6 +120,17 @@ function assertChangeApprovalGate(report, toStatus, projectRoot) {
   if (!CHANGE_APPROVAL_GATE_PASSED.has(loadedChange.state.approval_status)) {
     throw new Error(
       `Cannot move work item '${report.work_item_slug}' to ${toStatus} while change '${report.change_id}' approval_status=${loadedChange.state.approval_status}.`
+    );
+  }
+
+  const trustedReceipt = loadTrustedApprovalReceipt({
+    projectRoot,
+    kind: "change",
+    changeId: report.change_id
+  });
+  if (!hasApprovedReceipt(trustedReceipt.receipt, trustedReceipt.approvalRoot)) {
+    throw new Error(
+      `Cannot move work item '${report.work_item_slug}' to ${toStatus} without trusted approval receipt for change '${report.change_id}'.`
     );
   }
 }
@@ -108,10 +152,21 @@ function assertApprovalGate(report, toStatus, projectRoot) {
     );
   }
 
+  const trustedReceipt = loadTrustedApprovalReceipt({
+    projectRoot,
+    kind: "work-item",
+    workItemSlug: report.work_item_slug
+  });
+  if (!hasApprovedReceipt(trustedReceipt.receipt, trustedReceipt.approvalRoot)) {
+    throw new Error(
+      `Cannot move work item '${report.work_item_slug}' to ${toStatus} without trusted work-item approval receipt.`
+    );
+  }
+
   assertChangeApprovalGate(report, toStatus, projectRoot);
 }
 
-function assertBootstrapGate(report, toStatus) {
+function assertBootstrapGate(report, toStatus, projectRoot) {
   if (report.delivery_context !== "greenfield") {
     return;
   }
@@ -123,6 +178,18 @@ function assertBootstrapGate(report, toStatus) {
   if (!BOOTSTRAP_GATE_PASSED.has(report.bootstrap_gate_status)) {
     throw new Error(
       `Cannot move greenfield work item '${report.work_item_slug}' to ${toStatus} while bootstrap_gate_status=${report.bootstrap_gate_status}.`
+    );
+  }
+
+  const trustedReceipt = loadTrustedApprovalReceipt({
+    projectRoot,
+    kind: "gate",
+    workItemSlug: report.work_item_slug,
+    gate: "bootstrap"
+  });
+  if (!hasApprovedReceipt(trustedReceipt.receipt, trustedReceipt.approvalRoot)) {
+    throw new Error(
+      `Cannot move greenfield work item '${report.work_item_slug}' to ${toStatus} without trusted bootstrap approval receipt.`
     );
   }
 }
@@ -137,6 +204,7 @@ function assertStepGateEvidence(report, toStatus, projectRoot) {
     }).workflowRoot;
 
   const errors = getProtocolStepGateErrors({
+    projectRoot,
     workflowRoot: path.resolve(workflowRoot),
     workItemSlug: report.work_item_slug,
     toStatus
@@ -160,6 +228,7 @@ function transitionReport(reportInput, options) {
     handoffTarget,
     blockers,
     requiredActions,
+    grantedWritePaths,
     protocolOwner,
     auditEvent,
     projectRoot
@@ -171,7 +240,7 @@ function transitionReport(reportInput, options) {
   }
 
   assertApprovalGate(report, toStatus, projectRoot);
-  assertBootstrapGate(report, toStatus);
+  assertBootstrapGate(report, toStatus, projectRoot);
   assertStepGateEvidence(report, toStatus, projectRoot);
 
   report.protocol_status = toStatus;
@@ -190,6 +259,10 @@ function transitionReport(reportInput, options) {
 
   if (Array.isArray(requiredActions)) {
     report.required_actions = requiredActions;
+  }
+
+  if (Array.isArray(grantedWritePaths)) {
+    report.granted_write_paths = grantedWritePaths;
   }
 
   if (typeof protocolOwner === "string" && protocolOwner.trim()) {
@@ -215,7 +288,7 @@ function transitionReport(reportInput, options) {
 
 function applyApprove(reportInput, args) {
   const report = normalizeProtocolReport(reportInput);
-  const reviewedBy = normalizeSingleValue(args["reviewed-by"] || args.actor || "human");
+  const reviewedBy = requireReviewedBy(args);
   const reviewedAt = normalizeSingleValue(args["reviewed-at"] || new Date().toISOString());
   const noteText = getNoteText(args, "Human review approved.");
 
@@ -247,7 +320,7 @@ function applyApprove(reportInput, args) {
 
 function applyReject(reportInput, args) {
   const report = normalizeProtocolReport(reportInput);
-  const reviewedBy = normalizeSingleValue(args["reviewed-by"] || args.actor || "human");
+  const reviewedBy = requireReviewedBy(args);
   const reviewedAt = normalizeSingleValue(args["reviewed-at"] || new Date().toISOString());
   const noteText = getNoteText(args, "Human review rejected the current work item state.");
   const handoffTarget = normalizeSingleValue(args["handoff-target"] || "coordinator-rework");
@@ -313,6 +386,7 @@ function applyAction(reportInput, action, args) {
         handoffTarget: normalizeSingleValue(args["handoff-target"] || "step-s07-owner"),
         requiredActions: ["Continue active execution from step 7 onward."],
         protocolOwner: normalizeSingleValue(args["protocol-owner"] || args.actor || ""),
+        grantedWritePaths: resolveGrantedWritePaths(reportInput, args, projectRoot, { requireNonEmpty: true }),
         auditEvent: "WORK_ITEM_ACTIVATED",
         projectRoot
       });
@@ -341,6 +415,7 @@ function applyAction(reportInput, action, args) {
         blockers: [],
         requiredActions: ["Continue active execution from the current step."],
         protocolOwner: normalizeSingleValue(args["protocol-owner"] || ""),
+        grantedWritePaths: resolveGrantedWritePaths(reportInput, args, projectRoot, { requireNonEmpty: true }),
         auditEvent: "WORK_ITEM_RESUMED",
         projectRoot
       });
@@ -407,16 +482,32 @@ function applyAction(reportInput, action, args) {
 
 function printStatus(reportInput) {
   const report = normalizeProtocolReport(reportInput);
+  const trustedReceipt = loadTrustedApprovalReceipt({
+    projectRoot: path.resolve(report.project_root || ""),
+    kind: "work-item",
+    workItemSlug: report.work_item_slug
+  });
   const summary = [
     `OK: work item '${report.work_item_slug}'`,
     `protocol_status=${report.protocol_status}`,
     `approval_status=${report.approval_status}`,
     `current_step=${report.current_step || "<none>"}`,
-    `handoff_target=${report.handoff_target || "<none>"}`
+    `handoff_target=${report.handoff_target || "<none>"}`,
+    `trusted_receipt=${hasApprovedReceipt(trustedReceipt.receipt, trustedReceipt.approvalRoot) ? "APPROVED" : trustedReceipt.receipt ? trustedReceipt.receipt.approval_status : "MISSING"}`
   ].join(" | ");
 
   console.log(summary);
-  console.log(JSON.stringify(report, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        ...report,
+        trusted_receipt_path: trustedReceipt.receiptPath,
+        trusted_receipt: trustedReceipt.receipt
+      },
+      null,
+      2
+    )
+  );
 }
 
 function formatListCell(value, width) {
@@ -531,7 +622,7 @@ function runCli() {
       projectRoot,
       workflowRootBase,
       workItemSlug,
-      allowBootstrap: true
+      allowBootstrap: action === "status"
     });
 
     if (action === "status") {
@@ -548,6 +639,23 @@ function runCli() {
       report: updatedReport,
       reportPath: loaded.reportPath,
       s01Path: loaded.s01Path
+    });
+    if (action === "approve" || action === "reject") {
+      writeTrustedApprovalReceipt({
+        projectRoot,
+        overrideRoot: normalizeSingleValue(args["approval-root"] || ""),
+        kind: "work-item",
+        workItemSlug: updatedReport.work_item_slug,
+        reviewedBy: updatedReport.reviewed_by,
+        reviewedAt: updatedReport.reviewed_at,
+        note: normalizeArray(updatedReport.review_notes).join(" | "),
+        approvalStatus: updatedReport.approval_status,
+        approvalPassphrase: normalizeSingleValue(args["approval-passphrase"] || "")
+      });
+    }
+    syncCapabilityControl({
+      projectRoot,
+      workflowRootBase
     });
     printStatus(updatedReport);
   } catch (error) {

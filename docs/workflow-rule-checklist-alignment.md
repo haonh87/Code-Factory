@@ -24,10 +24,10 @@ Mức đánh giá:
 | Lớp | Trạng thái | Nhận định ngắn |
 |---|---|---|
 | Backbone `s01-s08` | Tốt | step contract, gate và handoff đã rõ hơn trước |
-| Human approval model | Tốt | `approval_gates`, `role_signoffs`, `gate_reviews`, protocol approval đã khớp hơn |
+| Human approval model | Tốt | `approval_gates`, `role_signoffs`, `gate_reviews` và trusted signed receipts đã khớp hơn |
 | Governance checklist | Tốt | checklist không đứng riêng mà bám vào `s04`, `s06`, `s08` |
 | SDD | Tốt | `spec`, `contract`, `foundation`, `spec-change`, `spec-coverage` đã có vai trò rõ |
-| Execution guardrails `s07` | Khá tốt | đã có `Delivery Rule Evidence`, nhưng vẫn còn phụ thuộc người điền đúng evidence |
+| Execution guardrails `s07` | Tốt | `Delivery Rule Evidence` đã đi cùng capability control để khóa implementation path trước `ACTIVE + s07` |
 | Protocol semantics | Tốt | hard-block đã mạnh hơn và `activate` mặc định đã khớp execution gate `s07` |
 | Repo sample coverage | Trung bình | fixture và smoke tốt, nhưng repo commit hiện chưa có protocol-managed work item thật để xem như canonical sample |
 
@@ -41,8 +41,10 @@ Mức đánh giá:
 | `approval_gates` | khai báo gate nào là `required` hay `not_applicable` | governance validator | authority và review timestamp |
 | `role_signoffs` | khai báo role nào có authority signoff | `gate_reviews`, authority model | bằng chứng đã review |
 | `gate_reviews` | ghi reviewer thực tế + thời điểm review | approval gate, audit trail | trách nhiệm authority |
+| `trusted signed receipt` | proof ngoài project root để seal human approval ở `work-item`, `change` và workflow gate | protocol execution gate | authority map trong note |
 | `protocol approval` | chặn state transition ở cấp work item/change | step note gates | quality của nội dung step |
 | `Delivery Rule Evidence` | ép `s07` phải ghi evidence cho TDD/worktree/review/delegation | verify và governance | `DoD` |
+| `capability control` | khóa quyền ghi implementation path ở mức filesystem cho tới khi protocol mở `ACTIVE + s07 + granted_write_paths` | protocol execution gate | trusted human approval |
 | `validator` | kiểm cơ học và semantic tối thiểu | tất cả lớp trên | review nghiệp vụ sâu |
 
 ## Flowchart
@@ -74,21 +76,26 @@ flowchart TD
 
     S04 --> S04C --> S04G --> S05
     S05 --> S05C --> S05G --> S06
-    S06 --> S06C --> S06G --> P1{Protocol check}
+    S06 --> S06C --> S06G --> R1[Trusted Gate Receipts]
 
-    B1 --> P1
-    B2 --> P1
-    G1 --> P1
+    B1 --> R2[Trusted Work Item Receipt]
+    B2 --> R3[Trusted Change Receipt]
+    G1 --> R4[Trusted Bootstrap Receipt]
     BR0 --> P1
+    R1 --> P1
+    R2 --> P1
+    R3 --> P1
+    R4 --> P1
 
-    P1 -->|pass| S07
     P1 -->|fail| BLK[BLOCKED / quay lại step trước]
 
     subgraph Execution Gate
       S07[s07 Implement]
       S07E[Delivery Rule Evidence<br/>TDD<br/>Worktree<br/>Review sớm<br/>Review hai tầng<br/>Subagent independence]
+      S07L[Capability Control<br/>Filesystem write lock<br/>granted_write_paths]
     end
 
+    P1 -->|pass| S07L --> S07
     S07 --> S07E --> S08
 
     subgraph Verify and Closure
@@ -106,11 +113,11 @@ flowchart TD
 
 | Step | Rule chính | Checklist/Evidence bổ trợ | Gate human | Validator/Protocol chặn gì | Đánh giá |
 |---|---|---|---|---|---|
-| `materialization` | không mở item mới tùy hứng; `greenfield` phải có bootstrap logic | materialization report, dedup, change strategy | work item approval, change approval khi có | không cho `ACTIVE` nếu chưa approve | Tốt |
-| `s04` | `Spec`, `Contract`, `DoR` phải pass trước design/implement | `Requirement Baseline`, `Contract Baseline`, `Governance Checks`, checklist profile | `Spec`, `Contract`, `DoR` | governance validator buộc signoff + review metadata | Tốt |
+| `materialization` | không mở item mới tùy hứng; `greenfield` phải có bootstrap logic | materialization report, dedup, change strategy | work item approval, change approval khi có | không cho `ACTIVE` nếu chưa có trusted receipt tương ứng | Tốt |
+| `s04` | `Spec`, `Contract`, `DoR` phải pass trước design/implement | `Requirement Baseline`, `Contract Baseline`, `Governance Checks`, checklist profile | `Spec`, `Contract`, `DoR` | governance validator buộc signoff + review metadata; protocol chỉ tin gate khi có trusted receipt còn khớp artifact | Tốt |
 | `s05` | brainstorming có kỷ luật; chọn giải pháp nhỏ nhất đủ đúng | `Option Analysis`, `Foundation Decision`, `Brownfield Impact Analysis` khi cần | `Approach`, `Foundation` khi áp dụng | governance validator buộc `2-3` options và gate review | Tốt |
 | `s06` | task plan phải execution-oriented | `Verification Path`, dependency, checkpoint, governance checks | `Task Plan` | protocol không cho `ACTIVE` nếu chưa có evidence `s06` | Tốt |
-| `s07` | `TDD`, `worktree`, review sớm, review hai tầng, subagent chỉ cho task độc lập | `Delivery Rule Evidence`, implementation notes, exception/spec-change nếu có | không đóng gate cuối ở step này | governance validator buộc evidence có cấu trúc | Khá tốt |
+| `s07` | `TDD`, `worktree`, review sớm, review hai tầng, subagent chỉ cho task độc lập | `Delivery Rule Evidence`, `granted_write_paths`, capability control, implementation notes, exception/spec-change nếu có | không đóng gate cuối ở step này | governance validator buộc evidence có cấu trúc; protocol + capability control chỉ mở implementation path ở `ACTIVE + s07` | Tốt |
 | `s08` | không tự tuyên bố done; branch/worktree chỉ chốt sau verify | `Governance Checks`, `Spec Coverage`, `UAT`, `Release Summary`, `Business Acceptance Summary`, `DoD` | `UAT`, `Release`, `Business Acceptance`, `DoD` khi required | protocol không cho `DONE` nếu gate `s08` chưa đủ | Tốt |
 
 ## Bảng Chi Tiết Theo Rule Và Checklist
@@ -126,6 +133,7 @@ flowchart TD
 | review để cuối | `review sớm, không đợi cuối` | `review_status`, `review_refs` | ép review diễn ra trong implement |
 | review đúng code nhưng sai spec | `review hai tầng` | `spec_compliance_status`, `code_quality_status` | tách đúng-thứ tự giữa đúng-spec và đẹp-code |
 | lạm dụng subagent | `subagent chỉ cho task độc lập` | `independence_status`, `merge_path`, `verify_path` | biến delegation thành thứ có điều kiện, không phải preference |
+| agent bypass protocol rồi sửa file trực tiếp | `ACTIVE + s07 + granted_write_paths` mới mở quyền ghi implementation path | `capability control`, `write-root`, protocol report | enforcement không còn chỉ dừng ở validator sau-the-fact |
 | đóng item quá sớm | `không tự tuyên bố done` | `DoD`, `UAT/Release/Business Acceptance`, `gate_reviews` | review pass hay test pass cục bộ không đủ để đóng |
 
 ## Chỗ Đã Bổ Trợ Tốt
@@ -145,9 +153,13 @@ Các cụm rule đang bổ trợ tốt nhất:
    - Đây là điểm siết tốt nhất sau đợt chỉnh vừa rồi.
    - `s06` không còn chỉ là doc; nó là gate thực sự của protocol.
 
-4. `s07` execution rules + `Delivery Rule Evidence`
+4. `human gate metadata` + `trusted signed receipts`
+   - `gate_reviews` và `role_signoffs` vẫn là source-of-truth semantic trong note.
+   - trusted receipt mới là proof để protocol mở gate.
+
+5. `s07` execution rules + `Delivery Rule Evidence`
    - Trước đây các rule ở `s07` rất đúng về nguyên tắc nhưng yếu ở enforcement.
-   - Hiện tại chúng đã có block evidence riêng nên ít drift hơn.
+   - Hiện tại chúng đã có block evidence riêng và capability control khóa write path, nên drift khó xảy ra hơn nếu agent đi thẳng vào implement.
 
 5. `s08` + `approval_gates`
    - `DoD`, `UAT`, `Release`, `Business Acceptance` đã được tách rõ vai trò.
@@ -161,6 +173,7 @@ Các điểm còn lại là `tension` hoặc `coverage gap`:
 
 | Mức độ | Vấn đề | Vì sao chưa hoàn hảo | Trạng thái khuyến nghị |
 |---|---|---|---|
+| Medium | capability control vẫn là filesystem policy ở mức user-space | nếu runtime của agent cho phép shell tự do cùng quyền OS user, về lý thuyết agent vẫn có thể thử bypass bằng lệnh hệ thống ngoài workflow CLI | cần host/runtime-level command policy để chặn chmod hoặc direct edit ngoài protocol |
 | Low | repo hiện chưa có protocol-managed work item canonical trong `work-items/` | validator protocol đang pass trên fixture/smoke, nhưng repo commit hiện chủ yếu là legacy-skipped item | nên thêm 1 sample protocol-managed work item chuẩn sau |
 | Low | inheritance giữa `governance_profile` và `checklist_refs` là logic ngầm, không luôn trace đủ ở từng note | đây là chủ đích để tránh lặp ref, nhưng người đọc mới có thể tưởng checklist thiếu | giữ như hiện tại, nhưng doc nên giải thích rõ hơn khi onboarding |
 

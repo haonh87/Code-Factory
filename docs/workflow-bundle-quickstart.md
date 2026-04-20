@@ -1,6 +1,6 @@
 # workflow-bundle Quickstart
 
-Hướng dẫn này tập trung vào public release `workflow-bundle v2.0.1`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, bootstrap một repo mới, và chạy flow `agent proposes, human approves`.
+Hướng dẫn này tập trung vào public release `workflow-bundle v2.0.2`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, bootstrap một repo mới, và chạy flow `agent proposes, human approves`.
 
 ## Mục Tiêu
 
@@ -174,6 +174,10 @@ wfc change-item approve --change-id CHANGE-001 --reviewed-by po
 wfc work-item list
 wfc work-item status --work-item add-google-oauth-login
 wfc work-item approve --work-item add-google-oauth-login --reviewed-by po
+wfc gate approve --work-item add-google-oauth-login --gate spec --reviewed-by po
+wfc gate approve --work-item add-google-oauth-login --gate dor --reviewed-by po
+wfc gate approve --work-item add-google-oauth-login --gate approach --reviewed-by developer
+wfc gate approve --work-item add-google-oauth-login --gate task_plan --reviewed-by developer
 ```
 
 Sau đó hoàn tất authoring và human review cho `s04`, `s05`, `s06`, rồi mới mở execution:
@@ -181,7 +185,7 @@ Sau đó hoàn tất authoring và human review cho `s04`, `s05`, `s06`, rồi m
 ```bash
 wfc governance
 wfc plan
-wfc work-item activate --work-item add-google-oauth-login --step s07
+wfc work-item activate --work-item add-google-oauth-login --step s07 --write-root src --write-root public
 wfc protocol
 ```
 
@@ -191,6 +195,16 @@ wfc protocol
 - nếu có `change_id`, `change package approval` đã `APPROVED`
 - nếu `delivery_context=greenfield`, `bootstrap gate` đã `APPROVED`
 - evidence `s04`, `s05`, `s06` đã đủ theo validator
+- trusted signed receipts cho `work item`, `change` và các gate bắt buộc đã tồn tại
+- có ít nhất một `--write-root` để capability control biết implementation path nào được mở ghi
+
+Ghi chú protocol:
+
+- `wfc work-item list` và `wfc work-item status` có thể bootstrap report read-only từ `s01` cũ để quan sát legacy scaffold.
+- các action mutating như `approve`, `activate`, `verify`, `close` không được tự bootstrap; chúng yêu cầu `.work-item-report.json` đã tồn tại.
+- `change-item approve`, `work-item approve` và `gate approve` sẽ ký receipt vào trusted approval root; nếu receipt không hợp lệ hoặc artifact đổi sau khi approve, `activate` sẽ fail.
+- lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase.
+- implementation path bị khóa ở mức filesystem cho tới khi work item vào `ACTIVE` ở `s07` và được cấp `write-root`.
 
 ## Validate Workflow
 
@@ -239,7 +253,9 @@ wfc change-item approve --change-id <CHANGE-ID> --reviewed-by <role>
 wfc work-item list
 wfc work-item status --work-item <work-item-slug>
 wfc work-item approve --work-item <work-item-slug> --reviewed-by <role>
-wfc work-item activate --work-item <work-item-slug> --step s07
+wfc gate approve --work-item <work-item-slug> --gate <spec|dor|approach|task_plan> --reviewed-by <role>
+wfc work-item activate --work-item <work-item-slug> --step s07 --write-root <path>
+wfc capability status
 wfc protocol
 ```
 

@@ -34,6 +34,7 @@ const {
   getStepDefinition,
   renderStepBody
 } = require("./workflow-step-definitions");
+const { syncCapabilityControl } = require("./workflow-capability-control");
 const { validateWorkflowArtifactNames } = require("./validate-workflow-artifact-names");
 const { validateWorkflowExecution } = require("./validate-workflow-execution");
 const { validateWorkflowGovernance } = require("./validate-workflow-governance");
@@ -390,6 +391,11 @@ function scaffoldWorkflowNotes(options) {
   if (validationErrors.length > 0) {
     throw new Error(formatErrors(validationErrors));
   }
+
+  syncCapabilityControl({
+    projectRoot,
+    workflowRootBase: path.dirname(workflowRoot)
+  });
 
   return {
     createdFiles,

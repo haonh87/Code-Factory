@@ -8,6 +8,11 @@ const {
   getMarkdownSectionContent,
   readUtf8
 } = require("./workflow-validator-utils");
+const {
+  hasApprovedReceipt,
+  loadTrustedApprovalReceipt,
+  resolveGateArtifact
+} = require("./workflow-trusted-approval-utils");
 
 const STEP_NOTE_SLUGS = {
   s01: "restate",
@@ -212,7 +217,7 @@ function loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId }) {
   };
 }
 
-function getMissingGateEvidenceErrors(snapshot, requiredKeys) {
+function getMissingGateEvidenceErrors(snapshot, requiredKeys, context = {}) {
   const errors = [];
 
   if (!snapshot.exists) {
@@ -245,10 +250,50 @@ function getMissingGateEvidenceErrors(snapshot, requiredKeys) {
     errors.push(`spec_status must be approved|frozen before protocol transition: ${snapshot.filePath}`);
   }
 
+  if (context.projectRoot && context.workflowRoot && context.workItemSlug) {
+    requiredKeys.forEach((key) => {
+      const trustedReceipt = loadTrustedApprovalReceipt({
+        projectRoot: context.projectRoot,
+        kind: "gate",
+        workItemSlug: context.workItemSlug,
+        gate: key
+      });
+
+      if (!hasApprovedReceipt(trustedReceipt.receipt, trustedReceipt.approvalRoot)) {
+        errors.push(`Missing trusted approval receipt for gate '${key}' in ${snapshot.filePath}`);
+        return;
+      }
+
+      const artifact = resolveGateArtifact({
+        projectRoot: context.projectRoot,
+        workflowRoot: context.workflowRoot,
+        workItemSlug: context.workItemSlug,
+        gate: key
+      });
+
+      if (trustedReceipt.receipt.artifact_ref !== artifact.artifactRef) {
+        errors.push(`Trusted approval receipt for gate '${key}' points to stale artifact ref in ${snapshot.filePath}`);
+      }
+
+      if (trustedReceipt.receipt.artifact_sha256 !== artifact.artifactSha256) {
+        errors.push(`Trusted approval receipt for gate '${key}' is stale after artifact changed: ${snapshot.filePath}`);
+      }
+
+      if ((snapshot.gateReviews[key] && snapshot.gateReviews[key].reviewedBy.length) > 0) {
+        const unauthorizedReceipt = !snapshot.gateReviews[key].reviewedBy.includes(trustedReceipt.receipt.reviewed_by);
+        if (unauthorizedReceipt) {
+          errors.push(
+            `Trusted approval receipt reviewer '${trustedReceipt.receipt.reviewed_by}' for gate '${key}' must match gate_reviews in ${snapshot.filePath}`
+          );
+        }
+      }
+    });
+  }
+
   return errors;
 }
 
-function getProtocolStepGateErrors({ workflowRoot, workItemSlug, toStatus }) {
+function getProtocolStepGateErrors({ projectRoot, workflowRoot, workItemSlug, toStatus }) {
   const errors = [];
 
   if (!workflowRoot) {
@@ -262,7 +307,13 @@ function getProtocolStepGateErrors({ workflowRoot, workItemSlug, toStatus }) {
         workItemSlug,
         stepId
       });
-      errors.push(...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys(stepId, snapshot.approvalGates)));
+      errors.push(
+        ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys(stepId, snapshot.approvalGates), {
+          projectRoot,
+          workflowRoot,
+          workItemSlug
+        })
+      );
     });
   }
 
@@ -279,7 +330,13 @@ function getProtocolStepGateErrors({ workflowRoot, workItemSlug, toStatus }) {
       workItemSlug,
       stepId: "s08"
     });
-    errors.push(...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys("s08", snapshot.approvalGates)));
+    errors.push(
+      ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys("s08", snapshot.approvalGates), {
+        projectRoot,
+        workflowRoot,
+        workItemSlug
+      })
+    );
   }
 
   return errors;

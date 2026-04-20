@@ -8,7 +8,7 @@ Mục tiêu:
 - giảm tình trạng mỗi tài liệu giải thích một kiểu
 - giúp người đọc hiểu keyword theo đúng ngữ cảnh workflow của repo
 
-Thời điểm đối chiếu: `2026-04-18`.
+Thời điểm đối chiếu: `2026-04-20`.
 
 ## Cách Đọc
 
@@ -45,9 +45,11 @@ Thời điểm đối chiếu: `2026-04-18`.
 | `approval_status` | trạng thái approval của protocol-managed work item/change như `PENDING_REVIEW`, `APPROVED`, `REJECTED` | không phải verdict của step note; `NOT_REQUIRED` chỉ là compatibility enum, không phải đường hợp lệ cho item do protocol quản lý | protocol report |
 | `review_required` | cờ cho biết approval gate của protocol có phải review thật hay không | với protocol-managed work item/change hiện tại không được đặt `false` | protocol report |
 | `delivery_context` | context delivery của work item: `greenfield` hoặc `brownfield` | không phải planning depth như `quick|full|enterprise` | frontmatter workflow |
+| `capability control` | lớp enforcement ở mức filesystem, khóa implementation path cho tới khi protocol mở đúng quyền ghi | không thay cho human approval, review nghiệp vụ hay validator | runtime, protocol, `s07` |
 | `DoD` | `Definition of Done`: verdict cho biết work item đủ evidence để đóng | không phải code review pass | chủ yếu `s08` |
 | `role_signoffs` | map authority cho biết role nào có trách nhiệm signoff từng gate | không phải bằng chứng đã review thực tế | frontmatter workflow |
 | `gate_reviews` | audit trail ghi role reviewer và thời điểm review cho từng gate | không thay `role_signoffs`, cũng không thay `approved_by` của waiver | frontmatter workflow |
+| `trusted approval receipt` | receipt đã ký và được lưu ngoài project root để chứng minh một gate human đã được seal thực sự | không phải metadata trong note/report, cũng không phải comment review thuần | protocol, gate commands |
 | `spec/design before code` | rule cứng: không implement khi `s04-s06` chưa đủ điều kiện | không phải gợi ý hay preference | policy, `s07` gate |
 | `brainstorming có kỷ luật` | rule cứng: không chốt `s05` nếu chưa có so sánh phương án ở mức phù hợp | không phải kéo dài discovery vô hạn | `s05` gate |
 | `planning execution-oriented` | rule cứng: không vào `s07` với task plan còn mơ hồ, còn placeholder hoặc chưa đủ rõ để thi công | không phải chỉ là “có list task là đủ” | `s06` gate |
@@ -78,6 +80,11 @@ Thời điểm đối chiếu: `2026-04-18`.
 | `brownfield` | context delivery khi hệ thống hiện có là baseline đang vận hành và change phải tôn trọng compatibility/regression constraints | không phải cớ để bỏ spec hay bỏ review gate | xuyên `s04-s08` |
 | `task plan` | các task thực thi có thứ tự, phần chạm chính hoặc ownership và verify path | không phải placeholder như “xử lý edge case” | `s06` |
 | `Delivery Rule Evidence` | block evidence có cấu trúc ở `s07` để chốt `TDD`, `worktree`, review hai tầng và điều kiện delegation | không phải ghi chú prose tự do hay changelog chung chung | `s07` |
+| `write-root` | path được cấp khi activate hoặc resume vào `s07` để capability control mở quyền ghi implementation | không phải quyền sửa mọi file trong repo | protocol CLI, `s07` |
+| `granted_write_paths` | danh sách path implementation đã được protocol cấp quyền ghi cho work item đang `ACTIVE` | không phải artifact authoring path hay source-of-truth cho approval | protocol report, capability control |
+| `approval passphrase` | bí mật do human nắm để ký trusted approval receipts | không phải `reviewed_by`, cũng không nên coi là config repo | trusted approval flow |
+| `authoring roots` | các root workflow/artifact vẫn được phép ghi ngay cả khi implementation path đang bị khóa | không phải implementation path hay special bypass cho code | capability control config |
+| `protected roots` | các root bị capability control khóa ghi theo mặc định cho tới khi có grant phù hợp | không phải danh sách cố định cho mọi repo; có thể chịu ảnh hưởng config và cấu trúc project | capability control config |
 | `execution-oriented task plan` | task plan đủ rõ về phần chạm chính, thứ tự hoặc dependency, verify path và checkpoint cần thiết để implementer triển khai mà không phải tự phát minh lại design | không phải kế hoạch mơ hồ ở mức ý tưởng | `s06` |
 | `verify path` | cách kiểm chứng task hoặc change sau khi làm | không phải chỉ một câu “sẽ test” | `s06`, `s08` |
 | `placeholder` | câu mô tả mơ hồ chưa nói rõ chạm đâu, làm gì, kiểm thế nào | không phải task plan hợp lệ | chủ yếu `s06` |
@@ -89,6 +96,7 @@ Khi cần viết ngắn mà vẫn giữ đúng ngữ nghĩa, ưu tiên dùng cá
 
 - `giải pháp nhỏ nhất đủ đúng`: nếu một phương án nhỏ hơn vẫn đạt AC, constraint hiện tại, `governance` liên quan và nhu cầu kiểm chứng chính, phải chọn nó.
 - `planning execution-oriented`: task plan phải đủ rõ về phần chạm chính, thứ tự hoặc dependency, verify path và checkpoint cần thiết để implementer không phải tự phát minh lại design.
+- `capability control`: implementation path chỉ được phép ghi khi work item ở `ACTIVE`, đang ở `s07`, và `granted_write_paths` đã được cấp rõ.
 
 ## Thuật Ngữ Governance
 

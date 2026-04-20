@@ -12,6 +12,11 @@ const {
   normalizeSingleValue,
   syncChangeProposalState
 } = require("./change-item-utils");
+const {
+  hasApprovedReceipt,
+  loadTrustedApprovalReceipt,
+  writeTrustedApprovalReceipt
+} = require("./workflow-trusted-approval-utils");
 
 const SUPPORTED_ACTIONS = new Set(["status", "approve", "reject"]);
 
@@ -41,9 +46,17 @@ function getNoteText(args, fallback = "") {
   return fallback;
 }
 
+function requireReviewedBy(args) {
+  const reviewedBy = normalizeSingleValue(args["reviewed-by"] || "");
+  if (!reviewedBy) {
+    throw new Error("Missing required argument '--reviewed-by'.");
+  }
+  return reviewedBy;
+}
+
 function applyApprove(stateInput, args) {
   const state = normalizeChangeProposalState(stateInput);
-  const reviewedBy = normalizeSingleValue(args["reviewed-by"] || args.actor || "human");
+  const reviewedBy = requireReviewedBy(args);
   const reviewedAt = normalizeSingleValue(args["reviewed-at"] || new Date().toISOString());
   const noteText = getNoteText(args, "Human review approved this change package.");
 
@@ -60,7 +73,7 @@ function applyApprove(stateInput, args) {
 
 function applyReject(stateInput, args) {
   const state = normalizeChangeProposalState(stateInput);
-  const reviewedBy = normalizeSingleValue(args["reviewed-by"] || args.actor || "human");
+  const reviewedBy = requireReviewedBy(args);
   const reviewedAt = normalizeSingleValue(args["reviewed-at"] || new Date().toISOString());
   const noteText = getNoteText(args, "Human review rejected this change package.");
 
@@ -87,17 +100,32 @@ function applyAction(stateInput, action, args) {
 }
 
 function printStatus(changeId, stateInput) {
+  return printStatusWithReceipt(changeId, stateInput, null);
+}
+
+function printStatusWithReceipt(changeId, stateInput, receiptInfo) {
   const state = normalizeChangeProposalState(stateInput);
   const summary = [
     `OK: change '${changeId}'`,
     `status=${state.status}`,
     `approval_status=${state.approval_status}`,
     `decision_owner=${state.decision_owner}`,
-    `review_required=${state.review_required ? "true" : "false"}`
+    `review_required=${state.review_required ? "true" : "false"}`,
+    `trusted_receipt=${receiptInfo && hasApprovedReceipt(receiptInfo.receipt, receiptInfo.approvalRoot) ? "APPROVED" : receiptInfo && receiptInfo.receipt ? receiptInfo.receipt.approval_status : "MISSING"}`
   ].join(" | ");
 
   console.log(summary);
-  console.log(JSON.stringify(state, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        ...state,
+        trusted_receipt_path: receiptInfo ? receiptInfo.receiptPath : "",
+        trusted_receipt: receiptInfo ? receiptInfo.receipt : null
+      },
+      null,
+      2
+    )
+  );
 }
 
 function runCli() {
@@ -117,9 +145,15 @@ function runCli() {
     const loaded = loadChangeProposalState({ projectRoot, changeId });
     validateChoice("decision_owner", loaded.state.decision_owner, CHANGE_DECISION_OWNERS);
     validateChoice("approval_status", loaded.state.approval_status, CHANGE_APPROVAL_STATUSES);
+    const trustedReceipt = loadTrustedApprovalReceipt({
+      projectRoot,
+      overrideRoot: normalizeSingleValue(args["approval-root"] || ""),
+      kind: "change",
+      changeId
+    });
 
     if (action === "status") {
-      printStatus(changeId, loaded.state);
+      printStatusWithReceipt(changeId, loaded.state, trustedReceipt);
       return;
     }
 
@@ -130,7 +164,21 @@ function runCli() {
       body: loaded.body,
       state: updatedState
     });
-    printStatus(changeId, updatedState);
+    const reviewedBy = normalizeSingleValue(updatedState.reviewed_by || "");
+    const reviewedAt = normalizeSingleValue(updatedState.reviewed_at || "");
+    const reviewNote = normalizeArray(updatedState.review_notes).join(" | ");
+    const storedReceipt = writeTrustedApprovalReceipt({
+      projectRoot,
+      overrideRoot: normalizeSingleValue(args["approval-root"] || ""),
+      kind: "change",
+      changeId,
+      reviewedBy,
+      reviewedAt,
+      note: reviewNote,
+      approvalStatus: updatedState.approval_status,
+      approvalPassphrase: normalizeSingleValue(args["approval-passphrase"] || "")
+    });
+    printStatusWithReceipt(changeId, updatedState, storedReceipt);
   } catch (error) {
     const message = error.message.startsWith("ERROR:") ? error.message : formatErrors([error.message]);
     console.error(message);

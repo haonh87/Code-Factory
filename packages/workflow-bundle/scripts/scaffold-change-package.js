@@ -11,6 +11,7 @@ const {
   REQUIRED_CHANGE_PACKAGE_FILES,
   getDefaultChangeApprovalState
 } = require("./workflow-change-definitions");
+const { syncCapabilityControl } = require("./workflow-capability-control");
 
 function normalizeSingleValue(value) {
   if (Array.isArray(value)) {
@@ -201,6 +202,7 @@ function scaffoldChangePackage(options) {
   const materializationRef = normalizeSingleValue(args["materialization-ref"] || "");
   const requestSummary = normalizeSingleValue(args["request-summary"] || "");
   const changeRoot = path.resolve(normalizeSingleValue(args["change-root"]) || path.join("changes", changeId));
+  const projectRoot = path.resolve(normalizeSingleValue(args["project-root"]) || path.join(changeRoot, "..", ".."));
   const force = Boolean(args.force);
   const errors = [];
   const createdFiles = [];
@@ -227,6 +229,11 @@ function scaffoldChangePackage(options) {
   if (errors.length > 0) {
     throw new Error(formatErrors(errors));
   }
+
+  syncCapabilityControl({
+    projectRoot,
+    workflowRootBase: path.join(projectRoot, "work-items")
+  });
 
   return {
     changeRoot,

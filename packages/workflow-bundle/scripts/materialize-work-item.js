@@ -13,6 +13,11 @@ const { CHANGE_ID_PATTERN } = require("./workflow-change-definitions");
 const { GOVERNANCE_PROFILES } = require("./workflow-governance-definitions");
 const { PLANNING_TRACKS } = require("./workflow-planning-definitions");
 const { EXECUTION_MODES } = require("./workflow-execution-definitions");
+const { syncCapabilityControl } = require("./workflow-capability-control");
+const {
+  hasApprovedReceipt,
+  loadTrustedApprovalReceipt
+} = require("./workflow-trusted-approval-utils");
 const { scaffoldWorkflowNotes } = require("./scaffold-workflow");
 const { scaffoldChangePackage } = require("./scaffold-change-package");
 const {
@@ -616,10 +621,10 @@ function inferDeliveryContext(projectRoot, explicitDeliveryContext) {
 }
 
 function buildBootstrapGate({
+  projectRoot,
+  workItemSlug,
   deliveryContext,
-  bootstrapGateRef,
-  bootstrapReviewedBy,
-  bootstrapReviewedAt
+  overrideApprovalRoot
 }) {
   if (deliveryContext !== "greenfield") {
     return {
@@ -632,12 +637,20 @@ function buildBootstrapGate({
     };
   }
 
-  if (bootstrapGateRef && bootstrapReviewedBy && bootstrapReviewedAt) {
+  const trustedReceipt = loadTrustedApprovalReceipt({
+    projectRoot,
+    overrideRoot: overrideApprovalRoot,
+    kind: "gate",
+    workItemSlug,
+    gate: "bootstrap"
+  });
+
+  if (hasApprovedReceipt(trustedReceipt.receipt, trustedReceipt.approvalRoot)) {
     return {
       status: "APPROVED",
-      ref: bootstrapGateRef,
-      reviewedBy: bootstrapReviewedBy,
-      reviewedAt: bootstrapReviewedAt,
+      ref: trustedReceipt.receipt.artifact_ref || "",
+      reviewedBy: trustedReceipt.receipt.reviewed_by || "",
+      reviewedAt: trustedReceipt.receipt.reviewed_at || "",
       blocker: "",
       requiredActions: []
     };
@@ -651,7 +664,7 @@ function buildBootstrapGate({
     blocker: "Greenfield bootstrap gate chưa được human approve; chưa được scaffold work item implementation đầu tiên.",
     requiredActions: [
       "Hoàn tất `Spec`, `Contract` khi có, `Approach` và `Foundation Decision` cho project mới.",
-      "Rerun materialization với `--bootstrap-ref`, `--bootstrap-reviewed-by`, `--bootstrap-reviewed-at` sau khi human approve bootstrap gate."
+      `Rerun materialization sau khi human approve bootstrap gate bằng \`wfc gate approve --work-item ${workItemSlug} --gate bootstrap --ref <path> --reviewed-by <role>\`.`
     ]
   };
 }
@@ -697,7 +710,11 @@ function buildPostMaterializationActions(report, item) {
     actions.push(`wfc change-item approve --change-id ${item.change_id} --reviewed-by <role>`);
   }
   actions.push(`wfc work-item approve --work-item ${item.work_item_slug} --reviewed-by <role>`);
-  actions.push(`wfc work-item activate --work-item ${item.work_item_slug} --step s07`);
+  actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate spec --reviewed-by <role>`);
+  actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate dor --reviewed-by <role>`);
+  actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate approach --reviewed-by <role>`);
+  actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate task_plan --reviewed-by <role>`);
+  actions.push(`wfc work-item activate --work-item ${item.work_item_slug} --step s07 --write-root <path>`);
   return actions;
 }
 
@@ -797,9 +814,7 @@ function analyzeRequest(options) {
     explicitChangeStrategy,
     explicitChangeId,
     explicitDeliveryContext,
-    bootstrapGateRef,
-    bootstrapReviewedBy,
-    bootstrapReviewedAt,
+    overrideApprovalRoot,
     decisionOwner,
     projectRoot,
     workflowRootBase
@@ -863,10 +878,10 @@ function analyzeRequest(options) {
   }
 
   const bootstrapGate = buildBootstrapGate({
+    projectRoot,
+    workItemSlug,
     deliveryContext,
-    bootstrapGateRef,
-    bootstrapReviewedBy,
-    bootstrapReviewedAt
+    overrideApprovalRoot
   });
   if (bootstrapGate.blocker) {
     blockers.push(bootstrapGate.blocker);
@@ -1057,16 +1072,10 @@ function materializeWorkItem(options) {
 
   const decisionOwner = normalizeSingleValue(args["decision-owner"] || "agent");
   validateChoice("decision-owner", decisionOwner, DECISION_OWNERS);
-  const bootstrapGateRef = normalizeSingleValue(args["bootstrap-ref"] || "");
-  const bootstrapReviewedBy = normalizeSingleValue(args["bootstrap-reviewed-by"] || "");
-  const bootstrapReviewedAt = normalizeSingleValue(args["bootstrap-reviewed-at"] || "");
-
-  if (bootstrapGateRef && (!bootstrapReviewedBy || !bootstrapReviewedAt)) {
-    throw new Error("bootstrap approval requires '--bootstrap-ref', '--bootstrap-reviewed-by' and '--bootstrap-reviewed-at' together.");
-  }
-
-  if (!bootstrapGateRef && (bootstrapReviewedBy || bootstrapReviewedAt)) {
-    throw new Error("bootstrap review metadata requires '--bootstrap-ref'.");
+  if (args["bootstrap-ref"] || args["bootstrap-reviewed-by"] || args["bootstrap-reviewed-at"]) {
+    throw new Error(
+      "bootstrap gate no longer accepts self-attested CLI metadata. Use 'wfc gate approve --work-item <slug> --gate bootstrap --ref <path> --reviewed-by <role>' instead."
+    );
   }
 
   const projectRoot = path.resolve(normalizeSingleValue(args["project-root"] || process.cwd()));
@@ -1086,9 +1095,7 @@ function materializeWorkItem(options) {
     explicitDeliveryContext,
     explicitChangeStrategy,
     explicitChangeId,
-    bootstrapGateRef,
-    bootstrapReviewedBy,
-    bootstrapReviewedAt,
+    overrideApprovalRoot: normalizeSingleValue(args["approval-root"] || ""),
     decisionOwner,
     projectRoot,
     workflowRootBase
@@ -1169,6 +1176,11 @@ function materializeWorkItem(options) {
   if (reportPath) {
     writeReportFile(report, reportPath);
   }
+
+  syncCapabilityControl({
+    projectRoot,
+    workflowRootBase
+  });
 
   return {
     report,

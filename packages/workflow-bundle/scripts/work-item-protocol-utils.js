@@ -157,6 +157,7 @@ function normalizeProtocolReport(report) {
     delivery_context: String(report.delivery_context || "brownfield").trim(),
     workflow_root: String(report.workflow_root || "").trim(),
     current_step: String(report.current_step || "").trim(),
+    granted_write_paths: normalizeArray(report.granted_write_paths),
     change_strategy: String(report.change_strategy || "none").trim(),
     change_id: String(report.change_id || "").trim(),
     handoff_target: String(report.handoff_target || "").trim(),
@@ -223,10 +224,10 @@ function buildBootstrapReport({ projectRoot, workflowRootBase, workItemSlug, wor
     blockers: [],
     refs: [path.relative(projectRoot, workflowRootRef)],
     audit_events: ["REPORT_BOOTSTRAPPED"],
-    bootstrap_gate_status: deliveryContext === "greenfield" ? "APPROVED" : "NOT_REQUIRED",
-    bootstrap_gate_ref: deliveryContext === "greenfield" ? path.relative(projectRoot, s01Path) : "",
-    bootstrap_reviewed_by: deliveryContext === "greenfield" ? "human" : "",
-    bootstrap_reviewed_at: deliveryContext === "greenfield" ? new Date().toISOString() : "",
+    bootstrap_gate_status: deliveryContext === "greenfield" ? "PENDING_REVIEW" : "NOT_REQUIRED",
+    bootstrap_gate_ref: "",
+    bootstrap_reviewed_by: "",
+    bootstrap_reviewed_at: "",
     ...approvalDefaults,
     protocol_events: [
       buildProtocolEvent({
@@ -234,7 +235,7 @@ function buildBootstrapReport({ projectRoot, workflowRootBase, workItemSlug, wor
         actor: "system",
         fromStatus: "READY_TO_MATERIALIZE",
         toStatus: "MATERIALIZED",
-        note: "Bootstrapped report from existing scaffold."
+        note: "Bootstrapped read-only report from existing scaffold."
       })
     ]
   });
@@ -288,6 +289,7 @@ function renderProtocolBlock(reportInput) {
     `delivery_context: ${report.delivery_context}`,
     `workflow_root: ${quoteYamlString(report.workflow_root)}`,
     `current_step: ${quoteYamlString(report.current_step)}`,
+    ...buildYamlList("granted_write_paths", report.granted_write_paths),
     `materialization_status: ${report.materialization_status}`,
     `bootstrap_gate_status: ${report.bootstrap_gate_status}`,
     `bootstrap_gate_ref: ${quoteYamlString(report.bootstrap_gate_ref)}`,

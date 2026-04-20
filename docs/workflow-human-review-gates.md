@@ -16,13 +16,14 @@ Nếu chỉ dừng ở mức:
 
 thì workflow đã có kiểm soát, nhưng chưa đủ chặt để đảm bảo AI không tự đẩy delivery đi xa hơn mức human thực sự đã chấp thuận.
 
-Muốn chặt hơn, cần thêm 5 điều:
+Muốn chặt hơn, cần thêm 6 điều:
 
 1. phân định rõ `AI được làm gì` và `human giữ quyền gì`
 2. gate nào làm đổi trạng thái delivery thì phải là `human-controlled gate`
 3. human pass phải dựa trên artifact + evidence + authority rõ
 4. nếu gate human chưa pass thì workflow phải `BLOCKED` hoặc quay lại step trước
 5. với `empty/greenfield project`, phải có lớp `bootstrap gate` trước khi materialize work item implementation đầu tiên
+6. implementation path phải bị khóa ở mức capability control cho tới khi protocol mở `ACTIVE + s07 + write-root`
 
 ## Nguyên Tắc Đọc
 
@@ -30,6 +31,7 @@ Muốn chặt hơn, cần thêm 5 điều:
 - `self review`, `targeted review`, `independent review` trong `s07` không tự động đồng nghĩa `human pass`.
 - `role_signoffs` là lớp authority/signoff của workflow step hoặc work item; nó không tự động thay cho `waiver authority`.
 - `gate_reviews` là lớp audit trail cho biết human nào đã review gate và review lúc nào.
+- `trusted approval receipt` là lớp enforcement cho biết gate đã được human seal bằng signed receipt ngoài project root; gate review metadata một mình không còn đủ để mở execution gate.
 - Nếu gate yêu cầu human pass chưa hoàn tất, work item phải `BLOCKED`, quay lại step trước, hoặc dừng trước khi sang gate tiếp theo.
 - `work item` và `change package` do protocol quản lý luôn phải giữ `review_required=true`; không có đường `NOT_REQUIRED` cho approval gate đang được enforce.
 
@@ -58,12 +60,13 @@ Muốn chặt hơn, cần thêm 5 điều:
   - evidence đủ để reviewer kiểm
   - owner hoặc approver đúng authority
 - Human pass phải explicit:
-  - không suy diễn từ comment, `review pass` kỹ thuật, `test pass` cục bộ, hay việc artifact đã tồn tại
+  - không suy diễn từ comment, `review pass` kỹ thuật, `test pass` cục bộ, việc artifact đã tồn tại, hay chỉ từ metadata trong note
 - Nếu gate human chưa pass:
   - không được sang gate tiếp theo
   - không được activate status hoặc declare `done`
   - phải `BLOCKED` hoặc quay lại step trước
 - `ACTIVE` là execution gate, không còn là authoring gate thuần; với protocol hiện tại, authoring `s01-s06` có thể diễn ra khi work item đã scaffold nhưng chưa `ACTIVE`.
+- implementation path nên được hiểu là bị khóa ở mức capability control cho tới khi work item được `ACTIVE` ở `s07` và có `write-root` đã cấp.
 
 ## Baseline Hiện Có Của Repo
 

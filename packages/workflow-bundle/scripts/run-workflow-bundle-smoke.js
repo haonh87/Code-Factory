@@ -80,8 +80,8 @@ function runCodexModeSmoke({ wfcBin, tempRoot }) {
   );
 
   const stateAfterInstall = readJson(installStatePath);
-  if (stateAfterInstall.installed_bundle_version !== "2.0.1") {
-    throw new Error(`Expected installed_bundle_version=2.0.1, got '${stateAfterInstall.installed_bundle_version}'.`);
+  if (stateAfterInstall.installed_bundle_version !== "2.0.2") {
+    throw new Error(`Expected installed_bundle_version=2.0.2, got '${stateAfterInstall.installed_bundle_version}'.`);
   }
   if (stateAfterInstall.runtime_mode !== "codex") {
     throw new Error(`Expected runtime_mode=codex, got '${stateAfterInstall.runtime_mode}'.`);
@@ -138,7 +138,7 @@ function runCodexModeSmoke({ wfcBin, tempRoot }) {
     tempRoot
   );
   assertContentIncludes(statusJsonOutput, '"runtime_mode": "codex"', "Expected runtime mode in status output.");
-  assertContentIncludes(statusJsonOutput, '"installed_bundle_version": "2.0.1"', "Expected installed version in status output.");
+  assertContentIncludes(statusJsonOutput, '"installed_bundle_version": "2.0.2"', "Expected installed version in status output.");
   assertContentIncludes(
     statusJsonOutput,
     `"project_root": "${projectRoot.replace(/\\/g, "\\\\")}"`,
