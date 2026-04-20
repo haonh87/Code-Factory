@@ -41,6 +41,14 @@ function validateChangeProposalReviewState(changeState, proposalPath, workflowFi
     errors.push(`review_required=true cannot use approval_status=NOT_REQUIRED in ${proposalPath}`);
   }
 
+  if (!changeState.review_required) {
+    errors.push(`review_required must stay true in ${proposalPath}`);
+  }
+
+  if (changeState.approval_status === "NOT_REQUIRED") {
+    errors.push(`approval_status=NOT_REQUIRED is not allowed in ${proposalPath}`);
+  }
+
   if (["APPROVED", "REJECTED"].includes(changeState.approval_status)) {
     if (!changeState.reviewed_by) {
       errors.push(`approval_status=${changeState.approval_status} requires reviewed_by in ${proposalPath}`);
@@ -50,13 +58,8 @@ function validateChangeProposalReviewState(changeState, proposalPath, workflowFi
     }
   }
 
-  if (changeState.decision_owner === "agent" && !changeState.review_required) {
-    errors.push(`decision_owner=agent requires review_required=true in ${proposalPath}`);
-  }
-
   if (
     changeStatus !== "draft" &&
-    changeState.review_required &&
     !CHANGE_APPROVAL_GATE_PASSED.has(changeState.approval_status)
   ) {
     errors.push(

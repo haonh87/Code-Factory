@@ -44,6 +44,16 @@ const cases = [
     name: "invalid-reviewed-gate-pending",
     workflowRoot: path.join(fixtureRoot, "invalid-reviewed-gate-pending", "workflow"),
     expectGovernancePass: false
+  },
+  {
+    name: "invalid-option-count",
+    workflowRoot: path.join(fixtureRoot, "invalid-option-count", "workflow"),
+    expectGovernancePass: false
+  },
+  {
+    name: "invalid-s07-rule-evidence",
+    workflowRoot: path.join(fixtureRoot, "invalid-s07-rule-evidence", "workflow"),
+    expectGovernancePass: false
   }
 ];
 

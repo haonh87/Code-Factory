@@ -83,66 +83,92 @@ function countBundledSkills(skillsRoot) {
   return count;
 }
 
+function bundleRuntimeMode({ repoRoot, packageRoot, sourceManifest, mode }) {
+  const runtimeConfig = sourceManifest[mode];
+  if (!runtimeConfig) {
+    return null;
+  }
+
+  const runtimeRoot = path.join(packageRoot, "runtime", mode);
+  const runtimeSkillsRoot = path.join(runtimeRoot, "skills");
+  const supportPoliciesTargetRoot = runtimeConfig.supportPoliciesTargetRoot || "";
+  const runtimePoliciesRoot = supportPoliciesTargetRoot ? path.join(runtimeRoot, supportPoliciesTargetRoot) : "";
+  const sourceGlobalAgents = path.join(repoRoot, runtimeConfig.globalAgentsSource);
+  const sourceSkillsRoot = path.join(repoRoot, runtimeConfig.skillsSourceRoot);
+  const sourceSupportPoliciesRoot = runtimeConfig.supportPoliciesSourceRoot
+    ? path.join(repoRoot, runtimeConfig.supportPoliciesSourceRoot)
+    : "";
+
+  if (!fs.existsSync(sourceGlobalAgents)) {
+    throw new Error(`Missing source policy for mode '${mode}': ${sourceGlobalAgents}`);
+  }
+  if (!fs.existsSync(sourceSkillsRoot)) {
+    throw new Error(`Missing source skills root for mode '${mode}': ${sourceSkillsRoot}`);
+  }
+  if (sourceSupportPoliciesRoot && !fs.existsSync(sourceSupportPoliciesRoot)) {
+    throw new Error(`Missing support policies root for mode '${mode}': ${sourceSupportPoliciesRoot}`);
+  }
+
+  fs.rmSync(runtimeRoot, { recursive: true, force: true });
+  ensureDirectory(runtimeRoot);
+  if (runtimePoliciesRoot) {
+    ensureDirectory(path.dirname(runtimePoliciesRoot));
+  }
+
+  fs.copyFileSync(sourceGlobalAgents, path.join(runtimeRoot, path.basename(sourceGlobalAgents)));
+  copyDirectory(sourceSkillsRoot, runtimeSkillsRoot);
+  if (runtimePoliciesRoot && sourceSupportPoliciesRoot) {
+    copyDirectoryWithoutFiles(sourceSupportPoliciesRoot, runtimePoliciesRoot, new Set([runtimeConfig.globalAgentsFileName]));
+  }
+
+  return {
+    ...runtimeConfig,
+    globalAgentsSource: `runtime/${mode}/${path.basename(sourceGlobalAgents)}`,
+    skillsSourceRoot: `runtime/${mode}/skills`,
+    supportPoliciesSourceRoot: runtimePoliciesRoot ? `runtime/${mode}/${supportPoliciesTargetRoot}` : ""
+  };
+}
+
 function main() {
   const repoRoot = path.resolve(__dirname, "..", "..", "..");
   const packageRoot = path.resolve(__dirname, "..");
   const sourceManifestPath = resolveManifestPath(repoRoot);
   const packageManifestPath = path.join(packageRoot, BUNDLE_MANIFEST_FILE);
   const legacyPackageManifestPath = path.join(packageRoot, LEGACY_BUNDLE_MANIFEST_FILE);
-  const runtimeCodexRoot = path.join(packageRoot, "runtime", "codex");
-  const runtimeSkillsRoot = path.join(runtimeCodexRoot, "skills");
-  const runtimePoliciesRoot = path.join(runtimeCodexRoot, "policies", "codex");
-
   if (!fs.existsSync(sourceManifestPath)) {
     throw new Error(`Missing root manifest: ${sourceManifestPath}`);
   }
 
   const sourceManifest = loadJson(sourceManifestPath);
-  const sourceGlobalAgents = path.join(repoRoot, sourceManifest.codex.globalAgentsSource);
-  const sourceSkillsRoot = path.join(repoRoot, sourceManifest.codex.skillsSourceRoot);
-  const sourceSupportPoliciesRoot = path.join(repoRoot, sourceManifest.codex.supportPoliciesSourceRoot);
-
-  if (!fs.existsSync(sourceGlobalAgents)) {
-    throw new Error(`Missing source AGENTS policy: ${sourceGlobalAgents}`);
-  }
-  if (!fs.existsSync(sourceSkillsRoot)) {
-    throw new Error(`Missing source skills root: ${sourceSkillsRoot}`);
-  }
-  if (!fs.existsSync(sourceSupportPoliciesRoot)) {
-    throw new Error(`Missing support policies root: ${sourceSupportPoliciesRoot}`);
-  }
-
-  fs.rmSync(runtimeCodexRoot, { recursive: true, force: true });
-  ensureDirectory(runtimeCodexRoot);
-  ensureDirectory(path.dirname(runtimePoliciesRoot));
-
-  fs.copyFileSync(sourceGlobalAgents, path.join(runtimeCodexRoot, path.basename(sourceGlobalAgents)));
-  copyDirectory(sourceSkillsRoot, runtimeSkillsRoot);
-  copyDirectoryWithoutFiles(sourceSupportPoliciesRoot, runtimePoliciesRoot, new Set([sourceManifest.codex.globalAgentsFileName]));
-
   const packageManifest = {
     bundleName: sourceManifest.bundleName || sourceManifest.packName,
-    bundleVersion: sourceManifest.bundleVersion || sourceManifest.packVersion,
-    codex: {
-      ...sourceManifest.codex,
-      globalAgentsSource: `runtime/codex/${path.basename(sourceGlobalAgents)}`,
-      skillsSourceRoot: "runtime/codex/skills",
-      supportPoliciesSourceRoot: "runtime/codex/policies/codex"
-    }
+    bundleVersion: sourceManifest.bundleVersion || sourceManifest.packVersion
   };
+
+  ["codex", "claude"].forEach((mode) => {
+    const bundledRuntime = bundleRuntimeMode({ repoRoot, packageRoot, sourceManifest, mode });
+    if (bundledRuntime) {
+      packageManifest[mode] = bundledRuntime;
+    }
+  });
 
   fs.writeFileSync(packageManifestPath, `${JSON.stringify(packageManifest, null, 2)}\n`, "utf8");
   if (legacyPackageManifestPath !== packageManifestPath) {
     removeFileIfExists(legacyPackageManifestPath);
   }
 
-  const bundledSkillCount = countBundledSkills(runtimeSkillsRoot);
+  const bundledSkillCount = Object.keys(packageManifest)
+    .filter((key) => key === "codex" || key === "claude")
+    .reduce((total, mode) => total + countBundledSkills(path.join(packageRoot, "runtime", mode, "skills")), 0);
 
   console.log(
     [
       "OK: bundled workflow bundle runtime",
       `package_root=${packageRoot}`,
       `bundle_version=${packageManifest.bundleVersion}`,
+      `modes=${Object.keys(packageManifest)
+        .filter((key) => key === "codex" || key === "claude")
+        .join(",")}`,
       `skills=${bundledSkillCount}`,
       `manifest=${packageManifestPath}`
     ].join(" | ")

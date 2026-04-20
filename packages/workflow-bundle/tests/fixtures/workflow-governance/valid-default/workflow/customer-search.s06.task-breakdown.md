@@ -6,6 +6,7 @@ step_id: "s06"
 step_slug: "task-breakdown"
 workflow_stage: delivery
 work_item_type: FEATURE
+delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
@@ -100,6 +101,18 @@ checks:
 blocking_items: []
 owner: "developer"
 next_action: "Sang implement"
+```
+
+## Brownfield Delivery Plan
+```yaml
+regression_checkpoints:
+  - "Search by name vẫn pass"
+  - "Search by email không làm vỡ paging"
+compatibility_checkpoints:
+  - "API query cũ vẫn nhận param tương thích"
+migration_or_backfill_steps: []
+rollback_or_restore_steps:
+  - "Rollback debounce config nếu UI issue"
 ```
 
 ## Traceability

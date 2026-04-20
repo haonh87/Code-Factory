@@ -40,6 +40,7 @@ const { validateWorkflowGovernance } = require("./validate-workflow-governance")
 const { validateWorkflowPlanning } = require("./validate-workflow-planning");
 
 const WORK_ITEM_TYPES = ["FEATURE", "BUG", "CHANGE", "REFACTOR", "RESEARCH"];
+const DELIVERY_CONTEXTS = ["greenfield", "brownfield"];
 const WORK_ITEM_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 function normalizeSingleValue(value) {
@@ -125,6 +126,7 @@ function buildFrontmatter(definition, context) {
     `step_slug: ${quoteYamlString(definition.stepSlug)}`,
     `workflow_stage: ${definition.workflowStage}`,
     `work_item_type: ${context.workItemType}`,
+    `delivery_context: ${context.deliveryContext}`,
     "artifact_role: primary",
     "artifact_kind: primary-note",
     "source_of_truth: true",
@@ -147,20 +149,39 @@ function buildFrontmatter(definition, context) {
     ...buildYamlList("execution_roles", context.executionRoles),
     `review_mode: ${context.reviewMode}`,
     `verification_owner: ${quoteYamlString(context.verificationOwner)}`,
+    "approval_gates:",
+    '  spec: "required"',
+    `  contract: "${context.defaultApprovalGates.contract}"`,
+    `  foundation: "${context.defaultApprovalGates.foundation}"`,
+    '  uat: "not_applicable"',
+    '  release: "not_applicable"',
+    '  business_acceptance: "not_applicable"',
     "role_signoffs:",
+    "  spec: []",
+    "  contract: []",
     "  dor: []",
     "  approach: []",
+    "  foundation: []",
     "  task_plan: []",
+    "  uat: []",
     "  release: []",
     "  business_acceptance: []",
     "  dod: []",
     "gate_reviews:",
+    '  spec_reviewed_by: []',
+    '  spec_reviewed_at: ""',
+    '  contract_reviewed_by: []',
+    '  contract_reviewed_at: ""',
     '  dor_reviewed_by: []',
     '  dor_reviewed_at: ""',
     '  approach_reviewed_by: []',
     '  approach_reviewed_at: ""',
+    '  foundation_reviewed_by: []',
+    '  foundation_reviewed_at: ""',
     '  task_plan_reviewed_by: []',
     '  task_plan_reviewed_at: ""',
+    '  uat_reviewed_by: []',
+    '  uat_reviewed_at: ""',
     '  release_reviewed_by: []',
     '  release_reviewed_at: ""',
     '  business_acceptance_reviewed_by: []',
@@ -199,7 +220,9 @@ function parseContextFromArgs(args) {
   }
 
   const workItemType = normalizeSingleValue(args["work-item-type"] || "FEATURE");
+  const deliveryContext = normalizeSingleValue(args["delivery-context"] || "brownfield");
   const planningTrack = normalizeSingleValue(args["planning-track"] || "full");
+  validateChoice("delivery-context", deliveryContext, DELIVERY_CONTEXTS);
   validateChoice("planning-track", planningTrack, PLANNING_TRACKS);
   const planningDefaults = getPlanningDefaults(planningTrack);
   const governanceProfile = normalizeSingleValue(args["governance-profile"] || planningDefaults.governanceProfile);
@@ -268,6 +291,11 @@ function parseContextFromArgs(args) {
     planningTrack,
     workItemSlug,
     workItemType,
+    deliveryContext,
+    defaultApprovalGates: {
+      contract: "not_applicable",
+      foundation: deliveryContext === "greenfield" ? "required" : "not_applicable"
+    },
     governanceProfile,
     governanceStatus,
     governanceRef: getGovernanceRef(governanceProfile, governanceRef),

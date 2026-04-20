@@ -196,7 +196,7 @@ function scaffoldChangePackage(options) {
   }
 
   const workItemSlug = normalizeSingleValue(args["work-item"]) || "";
-  const decisionOwner = normalizeSingleValue(args["decision-owner"] || "human");
+  const decisionOwner = normalizeSingleValue(args["decision-owner"] || "agent");
   validateChoice("decision-owner", decisionOwner, CHANGE_DECISION_OWNERS);
   const materializationRef = normalizeSingleValue(args["materialization-ref"] || "");
   const requestSummary = normalizeSingleValue(args["request-summary"] || "");

@@ -9,6 +9,7 @@ const LEGACY_MANAGED_SKILLS_MANIFEST_FILE = ".codex-workflow-pack.managed-skills
 const DEFAULT_INSTALL_STATE_FILE = ".codex-workflow-bundle.install-state.json";
 const LEGACY_INSTALL_STATE_FILE = ".codex-workflow-pack.install-state.json";
 const VALID_INSTALL_SCOPES = ["global", "project", "both"];
+const VALID_RUNTIME_MODES = ["codex", "claude"];
 
 function getManifestBundleName(manifest) {
   return String((manifest && (manifest.bundleName || manifest.packName)) || "").trim();
@@ -16,6 +17,18 @@ function getManifestBundleName(manifest) {
 
 function getManifestBundleVersion(manifest) {
   return String((manifest && (manifest.bundleVersion || manifest.packVersion)) || "").trim();
+}
+
+function validateRuntimeMode(mode) {
+  if (!VALID_RUNTIME_MODES.includes(mode)) {
+    throw new Error(`Invalid mode '${mode}'. Allowed values: ${VALID_RUNTIME_MODES.join(", ")}`);
+  }
+}
+
+function resolveRuntimeMode(explicitMode) {
+  const mode = String(explicitMode || "codex").trim().toLowerCase();
+  validateRuntimeMode(mode);
+  return mode;
 }
 
 function normalizeSingleValue(value) {
@@ -130,14 +143,42 @@ function loadBundleManifest(repoRoot) {
   };
 }
 
-function resolveCodexHome(explicitCodexHome) {
-  const value = explicitCodexHome || process.env.CODEX_HOME || path.join(require("os").homedir(), ".codex");
-  return path.resolve(value);
+function getRuntimeConfig(manifest, mode) {
+  const runtimeConfig = manifest?.[mode];
+  if (!runtimeConfig || typeof runtimeConfig !== "object" || Array.isArray(runtimeConfig)) {
+    throw new Error(`Workflow bundle manifest is missing runtime config '${mode}'.`);
+  }
+
+  return runtimeConfig;
 }
 
-function getConfiguredBundleFileNames(codexConfig) {
-  const configuredManagedSkillsManifestFile = String(codexConfig.managedSkillsManifestFile || "").trim();
-  const configuredInstallStateFile = String(codexConfig.installStateFile || "").trim();
+function getDefaultRuntimeHome(mode) {
+  if (mode === "claude") {
+    return path.join(require("os").homedir(), ".claude");
+  }
+
+  return path.join(require("os").homedir(), ".codex");
+}
+
+function resolveRuntimeHome({ mode, explicitRuntimeHome, explicitCodexHome, explicitClaudeHome }) {
+  if (explicitRuntimeHome) {
+    return path.resolve(explicitRuntimeHome);
+  }
+
+  if (mode === "claude") {
+    return path.resolve(explicitClaudeHome || process.env.CLAUDE_HOME || getDefaultRuntimeHome("claude"));
+  }
+
+  return path.resolve(explicitCodexHome || process.env.CODEX_HOME || getDefaultRuntimeHome("codex"));
+}
+
+function resolveCodexHome(explicitCodexHome) {
+  return resolveRuntimeHome({ mode: "codex", explicitCodexHome });
+}
+
+function getConfiguredBundleFileNames(runtimeConfig) {
+  const configuredManagedSkillsManifestFile = String(runtimeConfig.managedSkillsManifestFile || "").trim();
+  const configuredInstallStateFile = String(runtimeConfig.installStateFile || "").trim();
 
   const managedSkillsManifestFile =
     configuredManagedSkillsManifestFile &&
@@ -146,7 +187,7 @@ function getConfiguredBundleFileNames(codexConfig) {
       : DEFAULT_MANAGED_SKILLS_MANIFEST_FILE;
 
   const legacyManagedSkillsManifestFile = String(
-    codexConfig.legacyManagedSkillsManifestFile ||
+    runtimeConfig.legacyManagedSkillsManifestFile ||
       (configuredManagedSkillsManifestFile &&
       configuredManagedSkillsManifestFile !== managedSkillsManifestFile
         ? configuredManagedSkillsManifestFile
@@ -159,7 +200,7 @@ function getConfiguredBundleFileNames(codexConfig) {
       : DEFAULT_INSTALL_STATE_FILE;
 
   const legacyInstallStateFile = String(
-    codexConfig.legacyInstallStateFile ||
+    runtimeConfig.legacyInstallStateFile ||
       (configuredInstallStateFile && configuredInstallStateFile !== installStateFile
         ? configuredInstallStateFile
         : LEGACY_INSTALL_STATE_FILE)
@@ -173,30 +214,32 @@ function getConfiguredBundleFileNames(codexConfig) {
   };
 }
 
-function getBundlePaths({ repoRoot, codexHome, manifest }) {
-  const codexConfig = manifest.codex;
-  const bundleFileNames = getConfiguredBundleFileNames(codexConfig);
-  const globalAgentsSource = path.join(repoRoot, codexConfig.globalAgentsSource);
-  const skillsSourceRoot = path.join(repoRoot, codexConfig.skillsSourceRoot);
-  const supportPoliciesSourceRoot = codexConfig.supportPoliciesSourceRoot
-    ? path.join(repoRoot, codexConfig.supportPoliciesSourceRoot)
+function getBundlePaths({ repoRoot, runtimeHome, manifest, mode }) {
+  const runtimeConfig = getRuntimeConfig(manifest, mode);
+  const bundleFileNames = getConfiguredBundleFileNames(runtimeConfig);
+  const globalAgentsSource = path.join(repoRoot, runtimeConfig.globalAgentsSource);
+  const skillsSourceRoot = path.join(repoRoot, runtimeConfig.skillsSourceRoot);
+  const supportPoliciesSourceRoot = runtimeConfig.supportPoliciesSourceRoot
+    ? path.join(repoRoot, runtimeConfig.supportPoliciesSourceRoot)
     : "";
 
   return {
+    mode,
+    runtimeHome,
     globalAgentsSource,
     skillsSourceRoot,
     supportPoliciesSourceRoot,
-    globalAgentsFileName: codexConfig.globalAgentsFileName,
-    globalAgentsDest: path.join(codexHome, codexConfig.globalAgentsFileName),
-    skillsHome: path.join(codexHome, "skills"),
-    supportPoliciesHome: codexConfig.supportPoliciesTargetRoot
-      ? path.join(codexHome, codexConfig.supportPoliciesTargetRoot)
+    globalAgentsFileName: runtimeConfig.globalAgentsFileName,
+    globalAgentsDest: path.join(runtimeHome, runtimeConfig.globalAgentsFileName),
+    skillsHome: path.join(runtimeHome, "skills"),
+    supportPoliciesHome: runtimeConfig.supportPoliciesTargetRoot
+      ? path.join(runtimeHome, runtimeConfig.supportPoliciesTargetRoot)
       : "",
-    managedSkillsManifestPath: path.join(codexHome, bundleFileNames.managedSkillsManifestFile),
-    legacyManagedSkillsManifestPath: path.join(codexHome, bundleFileNames.legacyManagedSkillsManifestFile),
-    installStatePath: path.join(codexHome, bundleFileNames.installStateFile),
-    legacyInstallStatePath: path.join(codexHome, bundleFileNames.legacyInstallStateFile),
-    projectAgentsFileName: codexConfig.projectAgentsFileName
+    managedSkillsManifestPath: path.join(runtimeHome, bundleFileNames.managedSkillsManifestFile),
+    legacyManagedSkillsManifestPath: path.join(runtimeHome, bundleFileNames.legacyManagedSkillsManifestFile),
+    installStatePath: path.join(runtimeHome, bundleFileNames.installStateFile),
+    legacyInstallStatePath: path.join(runtimeHome, bundleFileNames.legacyInstallStateFile),
+    projectAgentsFileName: runtimeConfig.projectAgentsFileName
   };
 }
 
@@ -301,14 +344,17 @@ function writeManagedSkillsManifest(bundlePaths, managedSkills) {
   }
 }
 
-function getDefaultInstallState({ manifest, repoRoot, codexHome }) {
+function getDefaultInstallState({ manifest, repoRoot, runtimeHome, mode }) {
   const bundleName = getManifestBundleName(manifest);
 
   return {
     bundle_name: bundleName,
     installed_bundle_version: "",
     repo_root: repoRoot,
-    codex_home: codexHome,
+    runtime_mode: mode,
+    runtime_home: runtimeHome,
+    codex_home: mode === "codex" ? runtimeHome : "",
+    claude_home: mode === "claude" ? runtimeHome : "",
     install_scope: "",
     managed_skills: [],
     global_policy: {
@@ -350,12 +396,21 @@ function normalizeInstallState(stateInput, context) {
   const installedBundleVersion = String(
     stateInput.installed_bundle_version || stateInput.installed_pack_version || defaults.installed_bundle_version
   ).trim();
+  const runtimeMode = resolveRuntimeMode(stateInput.runtime_mode || defaults.runtime_mode);
+  const runtimeHome = String(
+    stateInput.runtime_home ||
+      (runtimeMode === "claude" ? stateInput.claude_home : stateInput.codex_home) ||
+      defaults.runtime_home
+  ).trim();
 
   return {
     bundle_name: bundleName,
     installed_bundle_version: installedBundleVersion,
     repo_root: String(stateInput.repo_root || defaults.repo_root).trim(),
-    codex_home: String(stateInput.codex_home || defaults.codex_home).trim(),
+    runtime_mode: runtimeMode,
+    runtime_home: runtimeHome,
+    codex_home: runtimeMode === "codex" ? runtimeHome : String(stateInput.codex_home || "").trim(),
+    claude_home: runtimeMode === "claude" ? runtimeHome : String(stateInput.claude_home || "").trim(),
     install_scope: String(stateInput.install_scope || defaults.install_scope).trim(),
     managed_skills: unique(normalizeArray(stateInput.managed_skills || defaults.managed_skills)).sort((a, b) =>
       a.localeCompare(b)
@@ -373,14 +428,14 @@ function normalizeInstallState(stateInput, context) {
   };
 }
 
-function loadInstallState({ manifest, repoRoot, codexHome, installStatePath, legacyInstallStatePath }) {
+function loadInstallState({ manifest, repoRoot, runtimeHome, mode, installStatePath, legacyInstallStatePath }) {
   const statePath = resolveInputPath(installStatePath, legacyInstallStatePath);
   if (!statePath) {
-    return normalizeInstallState({}, { manifest, repoRoot, codexHome });
+    return normalizeInstallState({}, { manifest, repoRoot, runtimeHome, mode });
   }
 
   const rawState = JSON.parse(readUtf8(statePath));
-  return normalizeInstallState(rawState, { manifest, repoRoot, codexHome });
+  return normalizeInstallState(rawState, { manifest, repoRoot, runtimeHome, mode });
 }
 
 function writeInstallState(bundlePaths, stateInput, context) {
@@ -559,13 +614,17 @@ module.exports = {
   LEGACY_INSTALL_STATE_FILE,
   LEGACY_MANAGED_SKILLS_MANIFEST_FILE,
   VALID_INSTALL_SCOPES,
+  VALID_RUNTIME_MODES,
   assertBundleSources,
   collectSourceSkills,
+  getConfiguredBundleFileNames,
   getBundlePaths,
   getDefaultInstallState,
+  getDefaultRuntimeHome,
   getInstalledSkillDirs,
   getManifestBundleName,
   getManifestBundleVersion,
+  getRuntimeConfig,
   loadBundleManifest,
   loadInstallState,
   mergeProjectTargets,
@@ -575,6 +634,8 @@ module.exports = {
   normalizeSingleValue,
   readManagedSkillsManifest,
   resolveCodexHome,
+  resolveRuntimeHome,
+  resolveRuntimeMode,
   resolveRepoRoot,
   selectSkills,
   syncGlobalPolicy,
@@ -583,6 +644,7 @@ module.exports = {
   syncSkills,
   unique,
   validateInstallScope,
+  validateRuntimeMode,
   writeInstallState,
   writeManagedSkillsManifest
 };

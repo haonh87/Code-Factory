@@ -5,7 +5,9 @@ const { loadChangeProposalState } = require("./change-item-utils");
 const { CHANGE_APPROVAL_GATE_PASSED } = require("./workflow-change-definitions");
 const {
   APPROVAL_GATE_PASSED,
+  BOOTSTRAP_GATE_PASSED,
   buildProtocolEvent,
+  getWorkItemPaths,
   isAllowedProtocolTransition,
   loadProtocolReport,
   normalizeArray,
@@ -14,6 +16,7 @@ const {
   resolveWorkflowRootBase,
   syncProtocolArtifacts
 } = require("./work-item-protocol-utils");
+const { getProtocolStepGateErrors } = require("./workflow-gate-evidence-utils");
 
 const SUPPORTED_ACTIONS = new Set([
   "list",
@@ -75,7 +78,13 @@ function assertChangeApprovalGate(report, toStatus, projectRoot) {
     projectRoot,
     changeId: report.change_id
   });
-  if (loadedChange.state.review_required && !CHANGE_APPROVAL_GATE_PASSED.has(loadedChange.state.approval_status)) {
+  if (!loadedChange.state.review_required) {
+    throw new Error(
+      `Cannot move work item '${report.work_item_slug}' to ${toStatus} while change '${report.change_id}' review_required=false.`
+    );
+  }
+
+  if (!CHANGE_APPROVAL_GATE_PASSED.has(loadedChange.state.approval_status)) {
     throw new Error(
       `Cannot move work item '${report.work_item_slug}' to ${toStatus} while change '${report.change_id}' approval_status=${loadedChange.state.approval_status}.`
     );
@@ -87,13 +96,57 @@ function assertApprovalGate(report, toStatus, projectRoot) {
     return;
   }
 
-  if (report.review_required && !APPROVAL_GATE_PASSED.has(report.approval_status)) {
+  if (!report.review_required) {
+    throw new Error(
+      `Cannot move work item '${report.work_item_slug}' to ${toStatus} while review_required=false.`
+    );
+  }
+
+  if (!APPROVAL_GATE_PASSED.has(report.approval_status)) {
     throw new Error(
       `Cannot move work item '${report.work_item_slug}' to ${toStatus} while approval_status=${report.approval_status}.`
     );
   }
 
   assertChangeApprovalGate(report, toStatus, projectRoot);
+}
+
+function assertBootstrapGate(report, toStatus) {
+  if (report.delivery_context !== "greenfield") {
+    return;
+  }
+
+  if (!["ACTIVE", "VERIFIED", "DONE", "ARCHIVED"].includes(toStatus)) {
+    return;
+  }
+
+  if (!BOOTSTRAP_GATE_PASSED.has(report.bootstrap_gate_status)) {
+    throw new Error(
+      `Cannot move greenfield work item '${report.work_item_slug}' to ${toStatus} while bootstrap_gate_status=${report.bootstrap_gate_status}.`
+    );
+  }
+}
+
+function assertStepGateEvidence(report, toStatus, projectRoot) {
+  const workflowRoot =
+    report.workflow_root ||
+    getWorkItemPaths({
+      projectRoot,
+      workflowRootBase: resolveWorkflowRootBase(projectRoot, ""),
+      workItemSlug: report.work_item_slug
+    }).workflowRoot;
+
+  const errors = getProtocolStepGateErrors({
+    workflowRoot: path.resolve(workflowRoot),
+    workItemSlug: report.work_item_slug,
+    toStatus
+  });
+
+  if (errors.length > 0) {
+    throw new Error(
+      `Cannot move work item '${report.work_item_slug}' to ${toStatus} because step gates are not satisfied:\n- ${errors.join("\n- ")}`
+    );
+  }
 }
 
 function transitionReport(reportInput, options) {
@@ -118,6 +171,8 @@ function transitionReport(reportInput, options) {
   }
 
   assertApprovalGate(report, toStatus, projectRoot);
+  assertBootstrapGate(report, toStatus);
+  assertStepGateEvidence(report, toStatus, projectRoot);
 
   report.protocol_status = toStatus;
 
@@ -253,10 +308,10 @@ function applyAction(reportInput, action, args) {
         action,
         actor: normalizeSingleValue(args.actor || "coordinator"),
         toStatus: "ACTIVE",
-        note: getNoteText(args, "Work item moved into active workflow delivery."),
-        currentStep: normalizeSingleValue(args.step || "s01"),
-        handoffTarget: normalizeSingleValue(args["handoff-target"] || "step-s01-owner"),
-        requiredActions: ["Continue workflow backbone from the current step."],
+        note: getNoteText(args, "Work item moved into active workflow execution."),
+        currentStep: normalizeSingleValue(args.step || "s07"),
+        handoffTarget: normalizeSingleValue(args["handoff-target"] || "step-s07-owner"),
+        requiredActions: ["Continue active execution from step 7 onward."],
         protocolOwner: normalizeSingleValue(args["protocol-owner"] || args.actor || ""),
         auditEvent: "WORK_ITEM_ACTIVATED",
         projectRoot
@@ -267,7 +322,7 @@ function applyAction(reportInput, action, args) {
         actor: normalizeSingleValue(args.actor || "coordinator"),
         toStatus: "BLOCKED",
         note: getNoteText(args, "Work item blocked."),
-        currentStep: normalizeSingleValue(args.step || reportInput.current_step || "s01"),
+        currentStep: normalizeSingleValue(args.step || reportInput.current_step || "s07"),
         handoffTarget: normalizeSingleValue(args["handoff-target"] || "blocker-owner"),
         blockers: normalizeArray(args.blocker),
         requiredActions: ["Resolve blockers before resuming the work item."],
@@ -281,10 +336,10 @@ function applyAction(reportInput, action, args) {
         actor: normalizeSingleValue(args.actor || "coordinator"),
         toStatus: "ACTIVE",
         note: getNoteText(args, "Blockers resolved and work item resumed."),
-        currentStep: normalizeSingleValue(args.step || reportInput.current_step || "s01"),
+        currentStep: normalizeSingleValue(args.step || reportInput.current_step || "s07"),
         handoffTarget: normalizeSingleValue(args["handoff-target"] || "step-owner"),
         blockers: [],
-        requiredActions: ["Continue active delivery from the current step."],
+        requiredActions: ["Continue active execution from the current step."],
         protocolOwner: normalizeSingleValue(args["protocol-owner"] || ""),
         auditEvent: "WORK_ITEM_RESUMED",
         projectRoot

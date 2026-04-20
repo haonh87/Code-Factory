@@ -22,9 +22,10 @@ const {
 } = require("./work-item-protocol-utils");
 
 const WORK_ITEM_TYPES = ["FEATURE", "BUG", "CHANGE", "REFACTOR", "RESEARCH"];
+const DELIVERY_CONTEXTS = ["greenfield", "brownfield"];
 const WORK_ITEM_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const CHANGE_STRATEGIES = ["none", "reuse_existing", "create_new"];
-const DECISION_OWNERS = ["human", "agent", "coordinator"];
+const DECISION_OWNERS = ["agent", "coordinator"];
 
 const STOPWORDS = new Set([
   "a",
@@ -160,6 +161,22 @@ const CHANGE_SIGNAL_TOKENS = new Set([
 ]);
 
 const ACTIVE_CHANGE_STATUSES = new Set(["draft", "approved", "implementing", "verified"]);
+const PROJECT_BASELINE_FILES = [
+  "package.json",
+  "pyproject.toml",
+  "requirements.txt",
+  "go.mod",
+  "Cargo.toml",
+  "composer.json",
+  "pom.xml",
+  "build.gradle",
+  "build.gradle.kts",
+  "Gemfile",
+  "Dockerfile",
+  "compose.yaml",
+  "docker-compose.yml"
+];
+const PROJECT_BASELINE_DIRS = ["src", "app", "services", "backend", "frontend", "api", "server", "client", "web", "packages"];
 
 const PHRASE_REPLACEMENTS = [
   [/\bdang nhap\b/g, "login"],
@@ -570,6 +587,75 @@ function getNextChangeId(changesRoot) {
   return `CHANGE-${String(maxSequence + 1).padStart(3, "0")}`;
 }
 
+function hasProjectImplementationBaseline(projectRoot) {
+  if (PROJECT_BASELINE_FILES.some((fileName) => fs.existsSync(path.join(projectRoot, fileName)))) {
+    return true;
+  }
+
+  return PROJECT_BASELINE_DIRS.some((dirName) => {
+    const dirPath = path.join(projectRoot, dirName);
+    if (!fs.existsSync(dirPath) || !fs.statSync(dirPath).isDirectory()) {
+      return false;
+    }
+
+    const children = fs
+      .readdirSync(dirPath)
+      .filter((entry) => !entry.startsWith("."))
+      .filter((entry) => !["docs", "work-items", "changes", "project-context"].includes(entry));
+
+    return children.length > 0;
+  });
+}
+
+function inferDeliveryContext(projectRoot, explicitDeliveryContext) {
+  if (explicitDeliveryContext) {
+    return explicitDeliveryContext;
+  }
+
+  return hasProjectImplementationBaseline(projectRoot) ? "brownfield" : "greenfield";
+}
+
+function buildBootstrapGate({
+  deliveryContext,
+  bootstrapGateRef,
+  bootstrapReviewedBy,
+  bootstrapReviewedAt
+}) {
+  if (deliveryContext !== "greenfield") {
+    return {
+      status: "NOT_REQUIRED",
+      ref: "",
+      reviewedBy: "",
+      reviewedAt: "",
+      blocker: "",
+      requiredActions: []
+    };
+  }
+
+  if (bootstrapGateRef && bootstrapReviewedBy && bootstrapReviewedAt) {
+    return {
+      status: "APPROVED",
+      ref: bootstrapGateRef,
+      reviewedBy: bootstrapReviewedBy,
+      reviewedAt: bootstrapReviewedAt,
+      blocker: "",
+      requiredActions: []
+    };
+  }
+
+  return {
+    status: "PENDING_REVIEW",
+    ref: "",
+    reviewedBy: "",
+    reviewedAt: "",
+    blocker: "Greenfield bootstrap gate chưa được human approve; chưa được scaffold work item implementation đầu tiên.",
+    requiredActions: [
+      "Hoàn tất `Spec`, `Contract` khi có, `Approach` và `Foundation Decision` cho project mới.",
+      "Rerun materialization với `--bootstrap-ref`, `--bootstrap-reviewed-by`, `--bootstrap-reviewed-at` sau khi human approve bootstrap gate."
+    ]
+  };
+}
+
 function buildScaffoldActions(item, projectRoot) {
   const actions = [];
 
@@ -579,7 +665,8 @@ function buildScaffoldActions(item, projectRoot) {
 
   const workflowActionParts = [
     `npm run scaffold:workflow -- --work-item ${item.work_item_slug}`,
-    `--planning-track ${item.planning_track}`
+    `--planning-track ${item.planning_track}`,
+    `--delivery-context ${item.delivery_context}`
   ];
 
   if (item.change_id) {
@@ -610,7 +697,7 @@ function buildPostMaterializationActions(report, item) {
     actions.push(`wfc change-item approve --change-id ${item.change_id} --reviewed-by <role>`);
   }
   actions.push(`wfc work-item approve --work-item ${item.work_item_slug} --reviewed-by <role>`);
-  actions.push(`wfc work-item activate --work-item ${item.work_item_slug}`);
+  actions.push(`wfc work-item activate --work-item ${item.work_item_slug} --step s07`);
   return actions;
 }
 
@@ -620,11 +707,13 @@ function buildDecisionLog({
   dedupResult,
   changeStrategy,
   planningTrack,
-  governanceProfile
+  governanceProfile,
+  deliveryContext
 }) {
   return [
     `split_decision=${splitDecision}`,
     `work_item_type=${inferredType}`,
+    `delivery_context=${deliveryContext}`,
     `dedup_result=${dedupResult}`,
     `change_strategy=${changeStrategy}`,
     `planning_track=${planningTrack}`,
@@ -666,6 +755,9 @@ function renderMaterializationBlock(report, item) {
     `dedup_result: ${report.dedup_result}`,
     `work_item_slug: ${quoteYamlString(item.work_item_slug)}`,
     `work_item_type: ${item.work_item_type}`,
+    `delivery_context: ${item.delivery_context}`,
+    `bootstrap_gate_status: ${report.bootstrap_gate_status}`,
+    `bootstrap_gate_ref: ${quoteYamlString(report.bootstrap_gate_ref)}`,
     `change_strategy: ${item.change_strategy}`,
     `change_id: ${quoteYamlString(item.change_id)}`,
     ...buildYamlList("decision_reason", report.decision_log),
@@ -704,6 +796,10 @@ function analyzeRequest(options) {
     explicitExecutionMode,
     explicitChangeStrategy,
     explicitChangeId,
+    explicitDeliveryContext,
+    bootstrapGateRef,
+    bootstrapReviewedBy,
+    bootstrapReviewedAt,
     decisionOwner,
     projectRoot,
     workflowRootBase
@@ -716,6 +812,7 @@ function analyzeRequest(options) {
   const planningTrack = inferPlanningTrack(tokens, inferredType, explicitPlanningTrack);
   const governanceProfile = inferGovernanceProfile(tokens, explicitGovernanceProfile);
   const executionMode = inferExecutionMode(explicitExecutionMode);
+  const deliveryContext = inferDeliveryContext(projectRoot, explicitDeliveryContext);
   const coreTokens = unique(tokens.filter((token) => !ACTION_TOKENS.has(token)));
 
   const existingWorkItems = collectExistingWorkItems(workflowRootBase);
@@ -765,6 +862,16 @@ function analyzeRequest(options) {
     blockers.push("change_strategy=reuse_existing nhưng chưa tìm được change package active phù hợp.");
   }
 
+  const bootstrapGate = buildBootstrapGate({
+    deliveryContext,
+    bootstrapGateRef,
+    bootstrapReviewedBy,
+    bootstrapReviewedAt
+  });
+  if (bootstrapGate.blocker) {
+    blockers.push(bootstrapGate.blocker);
+  }
+
   const dedupResult = workItemMatches.exactMatch
     ? "reuse_work_item"
     : changeMatches.exactMatch
@@ -786,6 +893,7 @@ function analyzeRequest(options) {
     in_scope: [],
     out_of_scope: [],
     planning_track: planningTrack,
+    delivery_context: deliveryContext,
     sdd_mode: "none",
     governance_profile: governanceProfile,
     execution_mode: executionMode,
@@ -816,13 +924,15 @@ function analyzeRequest(options) {
     dedupResult,
     changeStrategy,
     planningTrack,
-    governanceProfile
+    governanceProfile,
+    deliveryContext
   });
 
   const requiredActions =
     materializationStatus === "READY"
       ? [...item.scaffold_actions]
       : [
+          ...bootstrapGate.requiredActions,
           "Làm rõ scope để chốt single hay split.",
           "Review existing work-items/changes trước khi scaffold."
         ];
@@ -874,6 +984,7 @@ function analyzeRequest(options) {
     decision_log: decisionLog,
     work_item_slug: item.work_item_slug,
     work_item_type: item.work_item_type,
+    delivery_context: deliveryContext,
     workflow_root: item.work_item_slug ? path.join(workflowRootBase, item.work_item_slug) : "",
     current_step: "",
     change_strategy: item.change_strategy,
@@ -883,6 +994,10 @@ function analyzeRequest(options) {
     blockers: [...blockers],
     refs: item.existing_refs,
     audit_events: auditEvents,
+    bootstrap_gate_status: bootstrapGate.status,
+    bootstrap_gate_ref: bootstrapGate.ref,
+    bootstrap_reviewed_by: bootstrapGate.reviewedBy,
+    bootstrap_reviewed_at: bootstrapGate.reviewedAt,
     ...approvalDefaults,
     protocol_events: protocolEvents
   };
@@ -925,6 +1040,11 @@ function materializeWorkItem(options) {
     validateChoice("execution-mode", explicitExecutionMode, EXECUTION_MODES);
   }
 
+  const explicitDeliveryContext = normalizeSingleValue(args["delivery-context"] || "");
+  if (explicitDeliveryContext) {
+    validateChoice("delivery-context", explicitDeliveryContext, DELIVERY_CONTEXTS);
+  }
+
   const explicitChangeStrategy = normalizeSingleValue(args["change-strategy"] || "");
   if (explicitChangeStrategy) {
     validateChoice("change-strategy", explicitChangeStrategy, CHANGE_STRATEGIES);
@@ -937,6 +1057,17 @@ function materializeWorkItem(options) {
 
   const decisionOwner = normalizeSingleValue(args["decision-owner"] || "agent");
   validateChoice("decision-owner", decisionOwner, DECISION_OWNERS);
+  const bootstrapGateRef = normalizeSingleValue(args["bootstrap-ref"] || "");
+  const bootstrapReviewedBy = normalizeSingleValue(args["bootstrap-reviewed-by"] || "");
+  const bootstrapReviewedAt = normalizeSingleValue(args["bootstrap-reviewed-at"] || "");
+
+  if (bootstrapGateRef && (!bootstrapReviewedBy || !bootstrapReviewedAt)) {
+    throw new Error("bootstrap approval requires '--bootstrap-ref', '--bootstrap-reviewed-by' and '--bootstrap-reviewed-at' together.");
+  }
+
+  if (!bootstrapGateRef && (bootstrapReviewedBy || bootstrapReviewedAt)) {
+    throw new Error("bootstrap review metadata requires '--bootstrap-ref'.");
+  }
 
   const projectRoot = path.resolve(normalizeSingleValue(args["project-root"] || process.cwd()));
   const workflowRootBase = path.resolve(
@@ -952,8 +1083,12 @@ function materializeWorkItem(options) {
     explicitPlanningTrack,
     explicitGovernanceProfile,
     explicitExecutionMode,
+    explicitDeliveryContext,
     explicitChangeStrategy,
     explicitChangeId,
+    bootstrapGateRef,
+    bootstrapReviewedBy,
+    bootstrapReviewedAt,
     decisionOwner,
     projectRoot,
     workflowRootBase
@@ -995,6 +1130,7 @@ function materializeWorkItem(options) {
       args: {
         "work-item": item.work_item_slug,
         "work-item-type": item.work_item_type,
+        "delivery-context": item.delivery_context,
         "planning-track": item.planning_track,
         "governance-profile": item.governance_profile,
         "execution-mode": item.execution_mode,

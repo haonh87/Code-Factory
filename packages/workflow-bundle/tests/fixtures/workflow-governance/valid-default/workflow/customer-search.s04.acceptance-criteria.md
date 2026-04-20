@@ -6,6 +6,7 @@ step_id: "s04"
 step_slug: "acceptance-criteria"
 workflow_stage: discovery
 work_item_type: FEATURE
+delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
@@ -25,24 +26,49 @@ execution_roles:
   - ba
   - po
   - qc
+approval_gates:
+  spec: required
+  contract: required
+  foundation: not_applicable
+  uat: not_applicable
 role_signoffs:
+  spec:
+    - ba
+    - po
+  contract:
+    - developer
+    - designer
   dor:
     - ba
     - qc
   approach: []
+  foundation: []
   task_plan: []
+  uat: []
   release: []
   business_acceptance: []
   dod: []
 gate_reviews:
+  spec_reviewed_by:
+    - ba
+    - po
+  spec_reviewed_at: "2026-04-14T08:45:00Z"
+  contract_reviewed_by:
+    - developer
+    - designer
+  contract_reviewed_at: "2026-04-14T08:50:00Z"
   dor_reviewed_by:
     - ba
     - qc
   dor_reviewed_at: "2026-04-14T09:00:00Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
+  foundation_reviewed_by: []
+  foundation_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
+  uat_reviewed_by: []
+  uat_reviewed_at: ""
   release_reviewed_by: []
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
@@ -69,6 +95,40 @@ step_goal: "Khóa acceptance criteria và DoR cho customer search."
 exit_when:
   - "Acceptance criteria đo được."
   - "DoR đủ để vào Technical Approach."
+```
+
+## Requirement Baseline
+```yaml
+status: APPROVED
+approved_spec_refs:
+  - "product-specs/brd/customer-search.md"
+  - "product-specs/srs/customer-search.md"
+decision_notes:
+  - "Search scope, KPI và non-goals đã được chốt ở baseline spec."
+```
+
+## Contract Baseline
+```yaml
+status: APPROVED
+api_contract_refs:
+  - "contracts/api/customer-search.yaml"
+ux_contract_refs:
+  - "contracts/ux/customer-search.md"
+notes:
+  - "Search input, debounce và empty state đã được human approve."
+```
+
+## Existing System Baseline
+```yaml
+current_behavior_refs:
+  - "screens/customer-list.md"
+impacted_surfaces:
+  - "customer search input"
+  - "customer list API query"
+compatibility_constraints:
+  - "Không làm vỡ search by name hiện có"
+rollback_constraints:
+  - "Có thể rollback về query cũ nếu cần"
 ```
 
 ## Artifact Chính

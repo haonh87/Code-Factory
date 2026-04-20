@@ -431,11 +431,16 @@ Nguyên tắc áp dụng:
 
 - Workflow này vận hành theo model `AI proposes, human approves`.
 - AI được quyền phân tích, draft artifact, propose option, propose approach, propose task plan, implement, chạy test, tổng hợp evidence và nêu recommendation.
+- Quyền `implement` chỉ được mở sau khi các gate human tương ứng đã pass; artifact draft không tự động có nghĩa là gate đã qua.
 - AI không được tự:
   - approve work item hoặc change package
+  - pass `Spec`
+  - pass `Contract`
   - pass `DoR`
   - pass `Approach`
+  - pass `Foundation Decision`
   - pass `Task Plan`
+  - pass `UAT`
   - pass `DoD`
   - pass `Release`
   - pass `Business Acceptance`
@@ -444,10 +449,56 @@ Nguyên tắc áp dụng:
   - artifact nguồn sự thật của step hoặc protocol đã được cập nhật
   - evidence đủ để reviewer kiểm
   - owner hoặc approver đúng authority đã chốt rõ
+- `work item approval` và `change package approval` luôn là human-controlled gate; protocol-managed item không được dùng `review_required=false` hoặc `approval_status=NOT_REQUIRED` để bypass review.
 - Human pass phải explicit; không suy diễn từ comment, `review pass` kỹ thuật, `test pass` cục bộ hoặc việc artifact đã tồn tại.
 - Nếu human-controlled gate chưa pass, workflow phải `BLOCKED`, quay lại step trước, hoặc dừng trước gate tiếp theo; không được đi tiếp chỉ vì AI đánh giá là “đủ tốt”.
-- `role_signoffs` ghi role có authority signoff cho `dor`, `approach`, `task_plan`, `release`, `business_acceptance`, `dod`.
+- `ACTIVE` chỉ hợp lệ khi `work item approval`, `change package approval` khi có, `bootstrap gate` của `greenfield` khi có, và evidence `s04`, `s05`, `s06` đã được human pass.
+- `VERIFIED` chỉ hợp lệ khi `s08` đã có evidence verify.
+- `DONE` chỉ hợp lệ khi `s08` đã pass `DoD`, và nếu scope yêu cầu thì `UAT`, `Release`, `Business Acceptance` cũng đã pass trong `s08`.
+- `approval_gates` ghi gate nào là `required` hoặc `not_applicable` cho work item hoặc step note.
+- `role_signoffs` ghi role có authority signoff cho `spec`, `contract`, `dor`, `approach`, `foundation`, `task_plan`, `uat`, `release`, `business_acceptance`, `dod`.
 - `gate_reviews` ghi human reviewer thực tế và thời điểm review cho từng gate; note finalized ở `s04`, `s05`, `s06`, `s08` phải có reviewer + timestamp cho gate chính của step.
+
+## Rule Cứng: Empty Project / Greenfield Hard Stop
+
+- Nếu project đang ở trạng thái `empty` hoặc `greenfield`, không được nhảy thẳng sang scaffold framework, chọn stack cuối cùng hay implement production code.
+- `empty` hoặc `greenfield` trong workflow này nghĩa là tối thiểu có một trong các dấu hiệu:
+  - repo gần như trống hoặc chưa có source tree thực thi chính
+  - chưa có stack hoặc framework baseline đã được chốt
+  - chưa có runtime/deployment baseline đã được chốt
+  - chưa có artifact source-of-truth đủ để coi quyết định kiến trúc nền đã được approve
+- Trong trạng thái này, AI chỉ được:
+  - clarify yêu cầu, business goal, open questions
+  - draft spec hoặc contract cần thiết
+  - làm `option analysis` cho solution class, stack, runtime hoặc deployment model
+  - propose `technical approach`
+  - propose `task plan`
+  - propose work item hoặc change structure
+- Trong trạng thái này, AI không được tự:
+  - chốt `site tĩnh`, SPA, SSR, backend-first, CMS hoặc framework cụ thể như một quyết định cuối
+  - scaffold app skeleton, dependency tree, build system, Dockerfile, CI/CD hay deploy manifest như thể stack đã approved
+  - implement feature đầu tiên của project như thể foundation decision đã xong
+- Với `empty/greenfield project`, trước `s07 Implement` phải có tối thiểu:
+  - `s04` pass `Spec`
+  - nếu scope chạm `API contract` hoặc `UX contract`, `s04` pass `Contract`
+  - `s04` pass `DoR`
+  - `s05` pass `Approach`
+  - nếu `s05` chứa quyết định nền tảng như solution class, stack, runtime hoặc deployment model, `s05` pass `Foundation Decision`
+  - `s06` pass `Task Plan`
+- Nếu chưa có evidence rõ rằng các gate trên đã được human pass, hành vi đúng là dừng ở `proposal stage`, trình bày option/trade-off/recommendation, rồi chờ human review.
+- `default an toàn` cho `empty/greenfield project` là: không implement; không scaffold; không chốt stack cuối cùng thay cho human.
+- `bootstrap gate` cho project mới phải đi theo thứ tự: `Spec -> Contract nếu có -> Approach -> Foundation nếu có -> work item approval -> Task Plan -> Implement`.
+
+## Rule Cứng: Brownfield Baseline And Delta Discipline
+
+- Mỗi work item phải khai báo `delivery_context: greenfield|brownfield`; không để ngầm ở mức suy diễn sau khi đã materialize note workflow.
+- Với `brownfield`, AI phải coi hệ thống hiện có là baseline đang vận hành; default là thay đổi theo `delta nhỏ nhất đủ đúng`, không tự mở `Foundation Decision` nếu chưa có lý do rõ.
+- Với `brownfield`, trước `s07 Implement`, output tối thiểu phải có:
+  - `s04` có `Existing System Baseline`
+  - `s05` có `Brownfield Impact Analysis`
+  - `s06` có `Brownfield Delivery Plan`
+- Với `brownfield`, `s08` phải có `Regression & Compatibility Summary` trước khi chốt `DoD`.
+- Với `brownfield`, `approval_gates.foundation` chỉ mở khi change thực sự chạm architectural baseline như rewrite boundary, thay stack, thay runtime hoặc thay deployment model.
 
 Artifact nền khuyến nghị:
 
@@ -736,6 +787,7 @@ step_id: "s01"
 step_slug: "restate"
 workflow_stage: discovery
 work_item_type: FEATURE|BUG|CHANGE|REFACTOR|RESEARCH
+delivery_context: greenfield|brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
@@ -760,21 +812,40 @@ execution_roles: []
   # liệt kê các role nghiệp vụ thực sự tham gia step, ưu tiên vocabulary chuẩn như `po`, `ba`, `designer`, `developer`, `qc`, `devops`
 review_mode: self|independent|auto_fix_loop
 verification_owner: ""
+approval_gates:
+  spec: required|not_applicable
+  contract: required|not_applicable
+  foundation: required|not_applicable
+  uat: required|not_applicable
+  release: required|not_applicable
+  business_acceptance: required|not_applicable
 role_signoffs:
+  spec: []
+  contract: []
   dor: []
   approach: []
+  foundation: []
   task_plan: []
+  uat: []
   release: []
   business_acceptance: []
   dod: []
-  # ghi role nào giữ trách nhiệm signoff cho DoR, technical approach, task plan, release readiness, business acceptance và DoD ở mức work item
+  # ghi role nào giữ trách nhiệm signoff cho từng gate human-controlled ở mức work item
 gate_reviews:
+  spec_reviewed_by: []
+  spec_reviewed_at: ""
+  contract_reviewed_by: []
+  contract_reviewed_at: ""
   dor_reviewed_by: []
   dor_reviewed_at: ""
   approach_reviewed_by: []
   approach_reviewed_at: ""
+  foundation_reviewed_by: []
+  foundation_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
+  uat_reviewed_by: []
+  uat_reviewed_at: ""
   release_reviewed_by: []
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
@@ -812,7 +883,7 @@ Quy tắc:
 - `execution_roles` phải phản ánh đúng role nghiệp vụ thực sự đã tham gia vào step; ưu tiên dùng vocabulary chuẩn `po|ba|designer|developer|qc|devops` và chỉ thêm role khác khi thật sự cần.
 - `review_mode` dùng `self` cho self-check thông thường, `independent` khi reviewer tách khỏi worker chính, và `auto_fix_loop` khi verify có vòng fix lặp được ghi nhận rõ.
 - `verification_owner` phải ghi role hoặc owner chịu trách nhiệm kết luận verify; với `review_mode != self` hoặc `execution_mode=multi_agent`, field này không nên để trống.
-- `role_signoffs` ghi rõ role nào giữ trách nhiệm signoff cho `dor`, `approach`, `task_plan`, `release`, `business_acceptance`, `dod`; cho phép để trống khi work item chưa được gán owner, nhưng không được khai báo role không tồn tại.
+- `role_signoffs` ghi rõ role nào giữ trách nhiệm signoff cho `spec`, `contract`, `dor`, `approach`, `foundation`, `task_plan`, `uat`, `release`, `business_acceptance`, `dod`; cho phép để trống khi work item chưa được gán owner, nhưng không được khai báo role không tồn tại.
 - `gate_reviews` ghi ai đã review gate và lúc nào; với note đã finalized ở `s04`, `s05`, `s06`, `s08`, gate chính của step phải có cả `*_reviewed_by` và `*_reviewed_at`.
 - `business_spec` là artifact mô tả intent, rule và scope ở phía business; `business_acceptance` là hành động signoff xác nhận implementation đã đáp ứng artifact đó và acceptance criteria liên quan, nên hai lớp này không thay thế nhau.
 - Vai trò execution topology như `coordinator`, `worker`, `verifier` nên nằm trong block `## Execution Topology`, không thay thế `execution_roles` trong frontmatter chính.
@@ -910,6 +981,7 @@ Ghi chú:
 - Nếu work item dùng `change layer`, các field `change_id`, `change_status`, `spec_delta_refs`, `archive_status` phải được giữ trong frontmatter của từng step note dù ví dụ rút gọn bên dưới không lặp lại toàn bộ phần diễn giải.
 - Nếu work item dùng `multi_agent`, các field `review_mode`, `verification_owner` và runtime artifacts phải được giữ đồng bộ với execution validator dù ví dụ rút gọn bên dưới không lặp lại toàn bộ file runtime.
 - Nếu work item dùng `planning_track` khác `full`, các preset và guardrail của track đó phải được giữ đồng bộ với planning validator dù ví dụ rút gọn bên dưới không lặp lại toàn bộ routing matrix.
+- Nếu dùng template để copy tay, `wfc scaffold` vẫn là canonical source cho frontmatter hiện hành; tối thiểu phải giữ `delivery_context`, `approval_gates`, `role_signoffs`, `gate_reviews` và section bắt buộc theo `greenfield|brownfield`.
 
 ````md
 ```md
@@ -1665,7 +1737,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> Tóm tắt thay đổi thực tế đã làm, giới hạn còn lại và `governance exception` nếu có.
+> Tóm tắt thay đổi thực tế đã làm, evidence cho `TDD/worktree/review/delegation`, giới hạn còn lại và `governance exception` nếu có.
 
 ## Step Contract
 ```yaml
@@ -1680,6 +1752,13 @@ tags:
 ## Implementation Notes
 ```yaml
 # dùng schema `react-web-implementation` khi step 7 chạm React web hoặc Next.js
+```
+
+## Delivery Rule Evidence
+```yaml
+# ghi evidence có cấu trúc cho `behavior_change`, `tdd_status`, `worktree_status`,
+# `review_status`, `spec_compliance_status`, `code_quality_status`,
+# `delegation_mode`, `independence_status`, `merge_path`, `verify_path`
 ```
 
 ## Governance Exceptions
@@ -1788,7 +1867,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Tóm tắt trạng thái PASS|FAIL|PARTIAL, mức độ `governance compliance`, khoảng trống còn lại và kết luận `DoD`.
+> Tóm tắt trạng thái PASS|FAIL|PARTIAL, mức độ `governance compliance`, kết quả `UAT/Release/Business Acceptance` khi có, khoảng trống còn lại và kết luận `DoD`.
 
 ## Step Contract
 ```yaml
@@ -1813,6 +1892,21 @@ tags:
 ## Scan Summary
 ```yaml
 # dùng schema `code-scan-review`
+```
+
+## UAT Summary
+```yaml
+# dùng schema `testing`; bắt buộc khi `approval_gates.uat=required`
+```
+
+## Release Summary
+```yaml
+# dùng schema `testing`; bắt buộc khi `approval_gates.release=required`
+```
+
+## Business Acceptance Summary
+```yaml
+# dùng schema `testing`; bắt buộc khi `approval_gates.business_acceptance=required`
 ```
 
 ## Review Findings
@@ -2090,7 +2184,7 @@ roles:
 Quy tắc:
 
 - `role` phải là tập con của `execution_roles` ở cùng note.
-- `signoffs` chỉ dùng các giá trị `dor`, `approach`, `release`, `business_acceptance`, `dod`.
+- `signoffs` chỉ dùng các giá trị trong `role_signoffs`, tối thiểu gồm `spec`, `contract`, `dor`, `approach`, `foundation`, `task_plan`, `uat`, `release`, `business_acceptance`, `dod`.
 - `inputs` và `outputs` phải mô tả đúng contribution của role trong step, không lặp lại toàn bộ contract chung của step.
 - `upstream_artifacts` và `downstream_artifacts` chỉ link artifact có thật hoặc artifact chuẩn của workflow chain.
 

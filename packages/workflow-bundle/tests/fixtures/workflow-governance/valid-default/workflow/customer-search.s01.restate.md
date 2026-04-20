@@ -6,6 +6,7 @@ step_id: "s01"
 step_slug: "restate"
 workflow_stage: discovery
 work_item_type: FEATURE
+delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true

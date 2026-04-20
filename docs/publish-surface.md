@@ -1,17 +1,19 @@
 # Publish Surface
 
-Tài liệu này chốt public publish surface cho `workflow-bundle v2.0.0`.
+Tài liệu này chốt public publish surface cho `workflow-bundle v2.0.1`.
 
-`v2.0.0` là first public release của workflow này:
-- cài được vào Codex bằng `wfc install|update|status|skills`
+`v2.0.1` là public release hiện tại của workflow này:
+- cài được vào Codex hoặc Claude Code bằng `wfc install|update|status|skills`
 - author workflow bằng `wfc init|scaffold|validate`
 - cho agent chủ động đề xuất `work-item` và `change`
 - nhưng human vẫn giữ quyền approve ở các gate trước khi delivery tiếp tục
 
+`v2.0.0` vẫn là first public release; `v2.0.1` là patch release kế tiếp trên cùng public surface.
+
 ## Canonical Release Refs
 
-- Tag: `v2.0.0`
-- Branch: `release/v2.0.0`
+- Tag: `v2.0.1`
+- Branch: `release/v2.0.1`
 
 Khi chia sẻ workflow này cho người mới dùng, ưu tiên trỏ vào một trong hai ref trên thay vì working tree hiện tại.
 
@@ -19,7 +21,7 @@ Khi chia sẻ workflow này cho người mới dùng, ưu tiên trỏ vào một
 
 - `node >= 18`
 - `npm >= 9`
-- `~/.codex` writable nếu dùng `wfc install|update|skills`
+- `~/.codex` hoặc `~/.claude` writable nếu dùng `wfc install|update|skills`
 - `git` nếu clone source repo thay vì cài từ npm registry
 - `bash` cho adapter Linux/macOS hoặc `PowerShell` cho adapter Windows nếu không dùng CLI trực tiếp
 
@@ -34,9 +36,9 @@ Khi chia sẻ workflow này cho người mới dùng, ưu tiên trỏ vào một
 5. [`../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`](../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
 6. [`../skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](../skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
 
-## Public Promise Of `v2.0.0`
+## Public Promise Of `v2.0.1`
 
-- Installable workflow bundle cho Codex qua `wfc install|update|status|skills`
+- Installable workflow bundle cho Codex và Claude Code qua `wfc install|update|status|skills`
 - Core authoring CLI qua `wfc init`, `wfc scaffold`, `wfc`, `wfc sdd|change|exec|plan`
 - Agentic proposal flow qua `wfc materialize`, `wfc change-item`, `wfc work-item`, `wfc protocol`
 - Human approval gates cho `change` và `work-item`
@@ -45,12 +47,12 @@ Khi chia sẻ workflow này cho người mới dùng, ưu tiên trỏ vào một
 ## Not In The Public Promise
 
 - Delivery hoàn toàn autonomous không cần human approve
-- Support chính thức cho agent runtime ngoài Codex
+- Support runtime ngoài `Codex` và `Claude Code`
 - Bất kỳ compatibility contract nào rộng hơn:
   - legacy config `workflow-contracts.config.json`
   - legacy state `.codex-workflow-pack.*`
 
-Hai lớp legacy trên hiện vẫn được giữ để migration êm hơn, nhưng không nên coi đó là core public story của `v2.0.0`.
+Hai lớp legacy trên hiện vẫn được giữ để migration êm hơn, nhưng không nên coi đó là core public story của `v2.0.1`.
 
 ## Internal Or Maintainer Docs
 
@@ -75,6 +77,6 @@ Các file dưới đây là working assets cục bộ, không phải source-of-t
 
 ## Publish Rule
 
-- nếu nói về public release, dùng ngôn ngữ của `v2.0.0`
+- nếu nói về public release, dùng ngôn ngữ của `v2.0.1`
 - nếu nói về approval model, phải nêu rõ `agent proposes, human approves`
 - không dùng tài liệu internal hoặc memory-bank làm public onboarding path

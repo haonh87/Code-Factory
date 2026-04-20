@@ -6,6 +6,7 @@ step_id: "s05"
 step_slug: "technical-approach"
 workflow_stage: delivery
 work_item_type: FEATURE
+delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
@@ -25,26 +26,47 @@ execution_mode: agentic
 execution_roles:
   - designer
   - developer
+approval_gates:
+  spec: required
+  contract: required
+  foundation: required
+  uat: not_applicable
 role_signoffs:
+  spec: []
+  contract: []
   dor: []
   approach:
     - designer
     - developer
+  foundation:
+    - designer
+    - developer
   task_plan: []
+  uat: []
   release: []
   business_acceptance:
     - po
   dod:
     - qc
 gate_reviews:
+  spec_reviewed_by: []
+  spec_reviewed_at: ""
+  contract_reviewed_by: []
+  contract_reviewed_at: ""
   dor_reviewed_by: []
   dor_reviewed_at: ""
   approach_reviewed_by:
     - designer
     - developer
   approach_reviewed_at: "2026-04-14T10:00:00Z"
+  foundation_reviewed_by:
+    - designer
+    - developer
+  foundation_reviewed_at: "2026-04-14T10:05:00Z"
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
+  uat_reviewed_by: []
+  uat_reviewed_at: ""
   release_reviewed_by: []
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
@@ -79,6 +101,19 @@ options:
 recommended_option: "Tách component mới"
 ```
 
+## Foundation Decision
+```yaml
+status: APPROVED
+solution_class: "frontend-module-refresh"
+selected_stack:
+  - "React"
+  - "existing design system"
+selected_runtime:
+  - "client-rendered web"
+decision_notes:
+  - "Scope này chạm app shell và design-system contract nên vẫn cần human chốt foundation decision."
+```
+
 ## Artifact Chính
 ```yaml
 recommended_approach: "Tách component mới để tránh regression trên flow cũ"
@@ -93,6 +128,18 @@ ui_boundaries:
 accessibility_baseline:
   - "Keyboard focus"
   - "Color contrast"
+```
+
+## Brownfield Impact Analysis
+```yaml
+impacted_modules:
+  - "existing search form"
+  - "result card component"
+compatibility_risks:
+  - "Có thể lệch spacing với theme cũ"
+migration_notes: []
+rollback_notes:
+  - "Giữ component cũ cho tới khi visual QA pass"
 ```
 
 ## Traceability

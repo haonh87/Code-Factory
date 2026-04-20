@@ -6,6 +6,7 @@ step_id: "s05"
 step_slug: "technical-approach"
 workflow_stage: delivery
 work_item_type: CHANGE
+delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
@@ -91,6 +92,19 @@ why: "Giảm risk khi rollback"
 runtime_impact:
   - "Cần window giám sát 30 phút sau cutover"
 rollback_path: "Quay về payment gateway cũ nếu error rate vượt ngưỡng"
+```
+
+## Brownfield Impact Analysis
+```yaml
+impacted_modules:
+  - "payment gateway adapter"
+  - "release runbook"
+compatibility_risks:
+  - "Dual-write window có thể tạo mismatch ngắn hạn"
+migration_notes:
+  - "Cutover trong release window có giám sát"
+rollback_notes:
+  - "Quay về gateway cũ nếu error rate vượt ngưỡng"
 ```
 
 ## Governance Exceptions

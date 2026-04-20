@@ -9,6 +9,8 @@ const {
 const {
   APPROVAL_GATE_PASSED,
   APPROVAL_STATUSES,
+  BOOTSTRAP_GATE_PASSED,
+  BOOTSTRAP_GATE_STATUSES,
   PROTOCOL_STATUSES,
   getWorkItemPaths,
   isAllowedProtocolTransition,
@@ -17,6 +19,7 @@ const {
   quoteYamlString,
   resolveWorkflowRootBase
 } = require("./work-item-protocol-utils");
+const { getProtocolStepGateErrors } = require("./workflow-gate-evidence-utils");
 
 function collectWorkItemDirs(workflowRootBase) {
   if (!fs.existsSync(workflowRootBase)) {
@@ -44,8 +47,10 @@ function validateProtocolBlockSync(s01Content, report, s01Path, errors) {
     `approval_status: ${report.approval_status}`,
     `review_required: ${report.review_required ? "true" : "false"}`,
     `work_item_slug: ${quoteYamlString(report.work_item_slug)}`,
+    `delivery_context: ${report.delivery_context}`,
     `current_step: ${quoteYamlString(report.current_step)}`,
-    `change_id: ${quoteYamlString(report.change_id)}`
+    `change_id: ${quoteYamlString(report.change_id)}`,
+    `bootstrap_gate_status: ${report.bootstrap_gate_status}`
   ];
 
   expectedLines.forEach((expectedLine) => {
@@ -96,6 +101,10 @@ function validateProtocolState(report, context, errors) {
     errors.push(`Invalid approval_status '${report.approval_status}' in ${reportPath}`);
   }
 
+  if (!BOOTSTRAP_GATE_STATUSES.includes(report.bootstrap_gate_status)) {
+    errors.push(`Invalid bootstrap_gate_status '${report.bootstrap_gate_status}' in ${reportPath}`);
+  }
+
   if (report.work_item_slug !== slug) {
     errors.push(`work_item_slug '${report.work_item_slug}' does not match directory '${slug}' in ${reportPath}`);
   }
@@ -119,12 +128,32 @@ function validateProtocolState(report, context, errors) {
     errors.push(`review_required=true cannot use approval_status=NOT_REQUIRED in ${reportPath}`);
   }
 
+  if (!report.review_required) {
+    errors.push(`review_required must stay true for protocol-managed work items: ${reportPath}`);
+  }
+
+  if (report.approval_status === "NOT_REQUIRED") {
+    errors.push(`approval_status=NOT_REQUIRED is not allowed for protocol-managed work items: ${reportPath}`);
+  }
+
   if (["APPROVED", "REJECTED"].includes(report.approval_status)) {
     if (!report.reviewed_by) {
       errors.push(`approval_status=${report.approval_status} requires reviewed_by in ${reportPath}`);
     }
     if (!report.reviewed_at) {
       errors.push(`approval_status=${report.approval_status} requires reviewed_at in ${reportPath}`);
+    }
+  }
+
+  if (report.delivery_context === "greenfield" && report.bootstrap_gate_status === "APPROVED") {
+    if (!report.bootstrap_gate_ref) {
+      errors.push(`greenfield work item requires bootstrap_gate_ref in ${reportPath}`);
+    }
+    if (!report.bootstrap_reviewed_by) {
+      errors.push(`greenfield work item requires bootstrap_reviewed_by in ${reportPath}`);
+    }
+    if (!report.bootstrap_reviewed_at) {
+      errors.push(`greenfield work item requires bootstrap_reviewed_at in ${reportPath}`);
     }
   }
 
@@ -140,6 +169,14 @@ function validateProtocolState(report, context, errors) {
     errors.push(`Rejected work item cannot stay at protocol_status=${report.protocol_status} in ${reportPath}`);
   }
 
+  if (
+    report.delivery_context === "greenfield" &&
+    ["READY_TO_MATERIALIZE", "MATERIALIZED", "ACTIVE", "VERIFIED", "DONE", "ARCHIVED"].includes(report.protocol_status) &&
+    !BOOTSTRAP_GATE_PASSED.has(report.bootstrap_gate_status)
+  ) {
+    errors.push(`bootstrap gate not satisfied for greenfield protocol_status=${report.protocol_status} in ${reportPath}`);
+  }
+
   if (report.protocol_status === "ACTIVE" && !report.current_step) {
     errors.push(`ACTIVE work item requires current_step in ${reportPath}`);
   }
@@ -151,6 +188,15 @@ function validateProtocolState(report, context, errors) {
   if (report.protocol_status === "VERIFIED" && report.current_step !== "s08") {
     errors.push(`VERIFIED work item must use current_step='s08' in ${reportPath}`);
   }
+
+  const protocolGateErrors = getProtocolStepGateErrors({
+    workflowRoot,
+    workItemSlug: slug,
+    toStatus: report.protocol_status
+  });
+  protocolGateErrors.forEach((error) => {
+    errors.push(`${error}: ${reportPath}`);
+  });
 
   validateProtocolEvents(report, reportPath, errors);
   validateProtocolBlockSync(s01Content, report, s01Path, errors);

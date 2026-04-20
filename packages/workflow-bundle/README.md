@@ -1,6 +1,6 @@
 # workflow-bundle
 
-`workflow-bundle` là package CLI của public release `v2.0.0`: cài workflow bundle cho Codex, scaffold hoặc validate workflow, và hỗ trợ flow `agent proposes, human approves` cho `work-item` và `change`.
+`workflow-bundle` là package CLI của public release `v2.0.1`: cài workflow bundle cho Codex hoặc Claude Code, scaffold hoặc validate workflow, và hỗ trợ flow `agent proposes, human approves` cho `work-item` và `change`.
 
 Quickstart chi tiết: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -8,7 +8,7 @@ Quickstart chi tiết: [`docs/workflow-bundle-quickstart.md`](../../docs/workflo
 
 - `node >= 18`
 - `npm >= 9`
-- `~/.codex` writable khi dùng `wfc install|update|skills`
+- `~/.codex` hoặc `~/.claude` writable khi dùng `wfc install|update|skills`
 - `git` nếu clone source repo thay vì cài từ npm registry
 
 ## Install
@@ -37,7 +37,7 @@ npm link
 wfc version
 ```
 
-## What `v2.0.0` Includes
+## What `v2.0.1` Includes
 
 - workflow bundle install surface qua `wfc install|update|status|skills`
 - core authoring CLI qua `wfc init|scaffold|validate`
@@ -48,10 +48,10 @@ wfc version
 
 | Việc cần làm | Lệnh |
 |---|---|
-| Cài workflow bundle vào Codex home hoặc project | `wfc install --scope global|project|both [--project-root <path>]` |
-| Overwrite workflow bundle theo install state đã lưu | `wfc update` |
-| Xem trạng thái và version bundle đã cài | `wfc status` |
-| List, add, remove skill managed của workflow bundle | `wfc skills list|add|remove` |
+| Cài workflow bundle vào Codex hoặc Claude Code home / project | `wfc install --mode codex|claude --scope global|project|both [--project-root <path>]` |
+| Overwrite workflow bundle theo install state đã lưu | `wfc update --mode codex|claude` |
+| Xem trạng thái và version bundle đã cài | `wfc status --mode codex|claude` |
+| List, add, remove skill managed của workflow bundle | `wfc skills list|add|remove --mode codex|claude` |
 | Khởi tạo repo dự án | `wfc init` |
 | Tạo workflow mới thủ công | `wfc scaffold --work-item <slug>` |
 | Tạo một step workflow | `wfc scaffold-step --work-item <slug> --step <sNN>` |
@@ -64,8 +64,18 @@ wfc version
 | Materialize và auto-scaffold | `wfc materialize --request "<raw-request>" --auto-scaffold` |
 | Human approve change package do agent đề xuất | `wfc change-item approve --change-id <CHANGE-ID> --reviewed-by <role>` |
 | Liệt kê hoặc xem detail work item | `wfc work-item list` , `wfc work-item status --work-item <slug>` |
-| Human approve hoặc activate work item | `wfc work-item approve --work-item <slug> --reviewed-by <role>` , `wfc work-item activate --work-item <slug>` |
+| Human approve hoặc activate work item | `wfc work-item approve --work-item <slug> --reviewed-by <role>` , `wfc work-item activate --work-item <slug> --step s07` |
 | Validate work-item protocol | `wfc protocol` |
+
+### Recommended Usage
+
+- `interactive terminal`:
+  - `wfc install`: chạy trực tiếp `wfc install`; CLI sẽ hỏi `mode` và `scope`
+  - nếu chọn `project|both` mà chưa truyền `--project-root`, CLI sẽ hỏi thêm project root
+  - `wfc update`, `wfc status`, `wfc skills list|add|remove`: có thể bỏ `--mode`; CLI sẽ hỏi chọn `mode`
+- `automation/CI/scripts`:
+  - luôn truyền `--mode` tường minh
+  - với `wfc install`, luôn truyền thêm `--scope` tường minh
 
 ## First Flow
 
@@ -85,11 +95,19 @@ Flow agentic:
 ```bash
 wfc materialize --request "them dang nhap Google cho customer portal" --auto-scaffold
 wfc change-item approve --change-id CHANGE-001 --reviewed-by po
-wfc work-item list
 wfc work-item approve --work-item add-google-oauth-login --reviewed-by po
-wfc work-item activate --work-item add-google-oauth-login
+wfc work-item list
+wfc governance
+wfc plan
+wfc work-item activate --work-item add-google-oauth-login --step s07
 wfc protocol
 ```
+
+Ghi chú:
+
+- `wfc work-item activate` không còn chỉ là “đã scaffold thì activate”.
+- Trước `ACTIVE`, work item phải có approval gate đã pass; nếu có `change_id` thì change package cũng phải được approve.
+- `ACTIVE` chỉ mở khi evidence `s04`, `s05`, `s06` đã đủ để runtime cho phép vào execution.
 
 ## Config
 
@@ -157,4 +175,4 @@ cd packages/workflow-bundle
 npm pack
 ```
 
-`prepack` sẽ tự bundle `AGENTS.global.md`, support policy và toàn bộ `runtime/codex/**` trước khi tạo tarball.
+`prepack` sẽ tự bundle support policy và toàn bộ `runtime/codex/**`, `runtime/claude/**` trước khi tạo tarball.

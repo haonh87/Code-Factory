@@ -183,11 +183,16 @@ Diễn giải theo workflow chain hiện tại:
 
 - Workflow này vận hành theo model `AI proposes, human approves`.
 - AI được quyền phân tích, draft artifact, propose option, propose approach, propose task plan, implement, chạy test, tổng hợp evidence và nêu recommendation.
+- Quyền `implement` chỉ được mở sau khi các gate human tương ứng đã pass; AI không được tự suy diễn rằng artifact draft đã đủ để coi như gate đã qua.
 - AI không được tự:
   - approve work item hoặc change package
+  - pass `Spec`
+  - pass `Contract`
   - pass `DoR`
   - pass `Approach`
+  - pass `Foundation Decision`
   - pass `Task Plan`
+  - pass `UAT`
   - pass `DoD`
   - pass `Release`
   - pass `Business Acceptance`
@@ -196,10 +201,56 @@ Diễn giải theo workflow chain hiện tại:
   - artifact nguồn sự thật của step hoặc protocol đã được cập nhật
   - evidence đủ để reviewer kiểm
   - owner hoặc approver đúng authority đã chốt rõ
+- `work item approval` và `change package approval` luôn là human-controlled gate; protocol-managed item không được dùng `review_required=false` hoặc `approval_status=NOT_REQUIRED` để bypass review.
 - Human pass phải explicit; không suy diễn từ comment, `review pass` kỹ thuật, `test pass` cục bộ hoặc việc artifact đã tồn tại.
 - Nếu human-controlled gate chưa pass, workflow phải `BLOCKED`, quay lại step trước, hoặc dừng trước gate tiếp theo; không được đi tiếp chỉ vì AI đánh giá là “đủ tốt”.
-- `role_signoffs` ghi role có authority signoff cho `dor`, `approach`, `task_plan`, `release`, `business_acceptance`, `dod`.
+- `ACTIVE` chỉ hợp lệ khi `work item approval`, `change package approval` khi có, `bootstrap gate` của `greenfield` khi có, và evidence `s04`, `s05`, `s06` đã được human pass.
+- `VERIFIED` chỉ hợp lệ khi `s08` đã có evidence verify.
+- `DONE` chỉ hợp lệ khi `s08` đã pass `DoD`, và nếu scope yêu cầu thì `UAT`, `Release`, `Business Acceptance` cũng đã pass trong `s08`.
+- `approval_gates` ghi gate nào là `required` hoặc `not_applicable` cho work item hoặc step note.
+- `role_signoffs` ghi role có authority signoff cho `spec`, `contract`, `dor`, `approach`, `foundation`, `task_plan`, `uat`, `release`, `business_acceptance`, `dod`.
 - `gate_reviews` ghi human reviewer thực tế và thời điểm review cho từng gate; note finalized ở `s04`, `s05`, `s06`, `s08` phải có reviewer + timestamp cho gate chính của step.
+
+## Rule Cứng: Empty Project / Greenfield Hard Stop
+
+- Nếu project đang ở trạng thái `empty` hoặc `greenfield`, AI không được đi thẳng sang scaffold framework, chọn stack cuối cùng, hay implement production code chỉ vì yêu cầu user nói “hãy làm” hoặc “hãy build”.
+- `empty` hoặc `greenfield` trong workflow này nghĩa là tối thiểu có một trong các dấu hiệu:
+  - repo gần như trống hoặc chưa có source tree thực thi chính
+  - chưa có stack hoặc framework baseline đã được chốt
+  - chưa có runtime/deployment baseline đã được chốt
+  - chưa có artifact source-of-truth đủ để coi quyết định kiến trúc nền đã được approve
+- Trong trạng thái này, AI chỉ được:
+  - clarify yêu cầu, business goal, open questions
+  - draft spec hoặc contract cần thiết
+  - làm `option analysis` cho solution class, stack, runtime hoặc deployment model
+  - propose `technical approach`
+  - propose `task plan`
+  - propose work item hoặc change structure
+- Trong trạng thái này, AI không được tự:
+  - chọn `site tĩnh`, SPA, SSR, backend-first, CMS hoặc framework cụ thể như một quyết định đã chốt
+  - scaffold app skeleton, dependency tree, build system, Dockerfile, CI/CD hay deploy manifest như thể stack đã approved
+  - implement feature đầu tiên của project như thể foundation decision đã xong
+- Với `empty/greenfield project`, trước `s07 Implement` phải có tối thiểu:
+  - `s04` pass `Spec`
+  - nếu scope chạm `API contract` hoặc `UX contract`, `s04` pass `Contract`
+  - `s04` pass `DoR`
+  - `s05` pass `Approach`
+  - nếu `s05` chứa quyết định nền tảng như solution class, stack, runtime hoặc deployment model, `s05` pass `Foundation Decision`
+  - `s06` pass `Task Plan`
+- Nếu AI chưa thấy evidence rõ rằng các gate trên đã được human pass, hành vi đúng là dừng ở `proposal stage`, trình bày option/trade-off/recommendation, rồi chờ human review.
+- `default an toàn` cho `empty/greenfield project` là: không implement; không scaffold; không chọn stack cuối cùng thay cho human.
+- `bootstrap gate` cho project mới phải đi theo thứ tự: `Spec -> Contract nếu có -> Approach -> Foundation nếu có -> work item approval -> Task Plan -> Implement`.
+
+## Rule Cứng: Brownfield Baseline And Delta Discipline
+
+- Mỗi work item phải khai báo `delivery_context: greenfield|brownfield`; không được để ngầm ở mức suy diễn khi đã materialize note workflow.
+- Với `brownfield`, AI phải coi hệ thống hiện có là baseline đang vận hành; default là thay đổi theo `delta nhỏ nhất đủ đúng`, không tự mở `Foundation Decision` nếu chưa có lý do rõ.
+- Với `brownfield`, trước `s07 Implement`, step output phải có tối thiểu:
+  - `s04` có `Existing System Baseline`
+  - `s05` có `Brownfield Impact Analysis`
+  - `s06` có `Brownfield Delivery Plan`
+- Với `brownfield`, `s08` phải có `Regression & Compatibility Summary` trước khi chốt `DoD`.
+- Với `brownfield`, `approval_gates.foundation` chỉ được mở khi change thực sự chạm architectural baseline như rewrite boundary, thay stack, thay runtime hoặc thay deployment model.
 
 Cách đọc nhanh theo ngôn ngữ business:
 - `s01` Clarify: nhận yêu cầu thô và context, trả ra bản hiểu chung, scope ban đầu và `governance context`.
@@ -208,7 +259,7 @@ Cách đọc nhanh theo ngôn ngữ business:
 - `s04` Acceptance + DoR: nhận business goal và câu trả lời, trả ra acceptance criteria đo được, readiness verdict và `governance checks` cho readiness.
 - `s05` Technical Approach: nhận acceptance criteria, trả ra approach nhỏ nhất đủ đúng, boundary bị tác động và `governance exception` nếu có lệch chuẩn.
 - `s06` Task Plan: nhận approach, trả ra task plan nhỏ, có thứ tự, có thể verify và có đủ checkpoint review/governance.
-- `s07` Implement: nhận task plan, trả ra thay đổi thực tế trong code/config/doc, test cho behavior change, `worktree` khi change lớn hoặc rủi ro, review sớm cho phần chính, subagent chỉ khi task độc lập và exception nếu implementation cần lệch chuẩn.
+- `s07` Implement: nhận task plan, trả ra thay đổi thực tế trong code/config/doc, test cho behavior change, `worktree` khi change lớn hoặc rủi ro, review sớm cho phần chính, subagent chỉ khi task độc lập, `Delivery Rule Evidence` cho `TDD/worktree/review/delegation`, và exception nếu implementation cần lệch chuẩn.
 - `s08` Verify + DoD: nhận thay đổi và criteria, trả ra evidence, coverage, mức độ `governance compliance`, verdict cuối cùng về việc work item đã `done` hay chưa, và quyết định chốt `branch/worktree` khi có.
 - Nếu còn bất định về track, capability hoặc gate: quay về `default an toàn`, không tự ý chọn đường rủi ro hơn.
 
@@ -252,7 +303,7 @@ Khi scope là frontend, dùng thêm skill chuyên biệt đúng step: ở step 5
 - Nếu runtime không hỗ trợ delegation ổn định, vẫn phải bám cùng spec nhưng chạy ở chế độ `sequential multi-role`; không được bỏ qua contract, handoff hay audit chỉ vì thiếu sub-agent thật.
 - Khi `multi-agent` hoặc `sequential multi-role` được dùng, `coordinator` là đầu mối duy nhất được kết luận handoff cuối step.
 - Output của worker không được xem là output cuối của step cho tới khi đã merge vào note `.md` nguồn sự thật và đi qua audit/gate tương ứng.
-- Nếu materialize workflow note, nên khai báo `execution_mode`, `execution_roles`, `review_mode`, `verification_owner`, `role_signoffs`, `gate_reviews` và block `## Execution Topology` hoặc runtime artifacts theo tài liệu tham chiếu runtime; `role_signoffs` nên cover tối thiểu `dor`, `approach`, `task_plan`, `release`, `business_acceptance`, `dod`.
+- Nếu materialize workflow note, nên khai báo `execution_mode`, `execution_roles`, `review_mode`, `verification_owner`, `approval_gates`, `role_signoffs`, `gate_reviews` và block `## Execution Topology` hoặc runtime artifacts theo tài liệu tham chiếu runtime; `role_signoffs` nên cover tối thiểu `spec`, `contract`, `dor`, `approach`, `foundation`, `task_plan`, `uat`, `release`, `business_acceptance`, `dod`.
 - Nếu cần route workflow theo độ sâu khác nhau mà vẫn giữ backbone 8 bước, dùng `planning_track=quick|full|enterprise`; không tạo workflow song song mới.
 - Khi nhiều role nghiệp vụ cùng tham gia một step, ưu tiên trace contribution theo block `## Role Outputs` trong note chính trước khi tách artifact riêng cho từng role.
 - Khi work item chạy theo SDD, workflow note nên khai báo `sdd_mode`, `spec_refs` và `spec_status`; step 4 phải xử lý `spec-freeze-gate`, step 5-7 phải dùng `spec-change` khi lệch frozen spec, và step 8 phải có `spec-coverage-report` hoặc lý do bỏ qua rõ ràng.

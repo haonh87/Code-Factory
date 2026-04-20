@@ -1,13 +1,13 @@
 # workflow-bundle Quickstart
 
-Hướng dẫn này tập trung vào public release `workflow-bundle v2.0.0`: cài `wfc`, cài workflow bundle cho Codex, bootstrap một repo mới, và chạy flow `agent proposes, human approves`.
+Hướng dẫn này tập trung vào public release `workflow-bundle v2.0.1`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, bootstrap một repo mới, và chạy flow `agent proposes, human approves`.
 
 ## Mục Tiêu
 
 Sau khi làm xong, bạn sẽ:
 
 - có lệnh `wfc` trên máy
-- cài được workflow bundle vào `~/.codex` hoặc project folder bằng `wfc install`
+- cài được workflow bundle vào `~/.codex`, `~/.claude` hoặc project folder bằng `wfc install`
 - bootstrap được một repo dự án mới bằng `wfc init`
 - scaffold hoặc materialize được workflow đầu tiên
 - validate được workflow bằng `wfc`
@@ -17,7 +17,7 @@ Sau khi làm xong, bạn sẽ:
 - macOS, Linux hoặc Windows
 - `node >= 18`
 - `npm >= 9`
-- `~/.codex` writable hoặc `%USERPROFILE%\.codex` writable
+- `~/.codex` hoặc `~/.claude` writable, hoặc đường dẫn tương đương trên Windows
 - `git` nếu clone source repo thay vì cài từ npm registry
 
 Kiểm tra:
@@ -53,40 +53,63 @@ npm link
 wfc version
 ```
 
-## Cài Workflow Bundle Cho Codex
+## Cài Workflow Bundle
 
-Cài global policy và skills:
+Cài global policy và skills cho Codex:
 
 ```bash
-wfc install --scope global
+wfc install --mode codex --scope global
+```
+
+Nếu không muốn nhớ cờ ngay từ đầu, có thể chạy:
+
+```bash
+wfc install
+```
+
+### Recommended Usage
+
+- `interactive terminal`:
+  - `wfc install`: chạy trực tiếp `wfc install`; CLI sẽ hỏi `mode` và `scope`
+  - nếu chọn `project|both` mà chưa truyền `--project-root`, CLI sẽ hỏi tiếp project root
+  - `wfc update`, `wfc status`, `wfc skills list|add|remove`: có thể bỏ `--mode`; CLI sẽ hỏi chọn `mode`
+- `automation/CI/scripts`:
+  - luôn truyền `--mode` tường minh
+  - với `wfc install`, luôn truyền thêm `--scope` tường minh
+
+Cài global memory/policy và skill references cho Claude Code:
+
+```bash
+wfc install --mode claude --scope global
 ```
 
 Cài vào một project cụ thể:
 
 ```bash
-wfc install --scope project --project-root /path/to/your-project
+wfc install --mode codex --scope project --project-root /path/to/your-project
 ```
 
 Cài cả global lẫn project policy:
 
 ```bash
-wfc install --scope both --project-root /path/to/your-project
+wfc install --mode codex --scope both --project-root /path/to/your-project
 ```
 
 Kiểm tra trạng thái:
 
 ```bash
-wfc status
-wfc skills list
+wfc status --mode codex
+wfc status --mode claude
+wfc skills list --mode codex
 ```
 
 Khi có bản bundle mới, overwrite bundle đã cài theo install state hiện có:
 
 ```bash
-wfc update
+wfc update --mode codex
 ```
 
-`wfc update` cũng sẽ migrate state legacy `.codex-workflow-pack.*` sang `.codex-workflow-bundle.*` nếu máy đã từng cài flow cũ.
+`wfc update` cũng sẽ migrate state legacy `.codex-workflow-pack.*` sang `.codex-workflow-bundle.*` nếu máy đã từng cài flow cũ trong Codex mode.
 
 ## Bootstrap Một Repo Dự Án Mới
 
@@ -151,9 +174,23 @@ wfc change-item approve --change-id CHANGE-001 --reviewed-by po
 wfc work-item list
 wfc work-item status --work-item add-google-oauth-login
 wfc work-item approve --work-item add-google-oauth-login --reviewed-by po
-wfc work-item activate --work-item add-google-oauth-login
+```
+
+Sau đó hoàn tất authoring và human review cho `s04`, `s05`, `s06`, rồi mới mở execution:
+
+```bash
+wfc governance
+wfc plan
+wfc work-item activate --work-item add-google-oauth-login --step s07
 wfc protocol
 ```
+
+`wfc work-item activate` hiện là execution gate. Nó chỉ pass khi:
+
+- `work item approval` đã `APPROVED`
+- nếu có `change_id`, `change package approval` đã `APPROVED`
+- nếu `delivery_context=greenfield`, `bootstrap gate` đã `APPROVED`
+- evidence `s04`, `s05`, `s06` đã đủ theo validator
 
 ## Validate Workflow
 
@@ -202,7 +239,7 @@ wfc change-item approve --change-id <CHANGE-ID> --reviewed-by <role>
 wfc work-item list
 wfc work-item status --work-item <work-item-slug>
 wfc work-item approve --work-item <work-item-slug> --reviewed-by <role>
-wfc work-item activate --work-item <work-item-slug>
+wfc work-item activate --work-item <work-item-slug> --step s07
 wfc protocol
 ```
 

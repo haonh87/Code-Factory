@@ -103,7 +103,7 @@ function splitFrontmatterDocument(filePath) {
 }
 
 function normalizeChangeProposalState(input) {
-  const decisionOwner = String(input.decision_owner || "human").trim() || "human";
+  const decisionOwner = String(input.decision_owner || "agent").trim() || "agent";
   const approvalDefaults = getDefaultChangeApprovalState(decisionOwner);
 
   return {
@@ -145,7 +145,7 @@ function loadChangeProposalState({ projectRoot, changeId }) {
       artifact_kind: getFrontmatterValue(frontmatterLines, "artifact_kind") || "change-proposal",
       status: getFrontmatterValue(frontmatterLines, "status") || "draft",
       linked_work_items: getFrontmatterList(frontmatterLines, "linked_work_items") || [],
-      decision_owner: getFrontmatterValue(frontmatterLines, "decision_owner") || "human",
+      decision_owner: getFrontmatterValue(frontmatterLines, "decision_owner") || "agent",
       review_required: getFrontmatterValue(frontmatterLines, "review_required"),
       approval_status: getFrontmatterValue(frontmatterLines, "approval_status"),
       reviewed_by: getFrontmatterValue(frontmatterLines, "reviewed_by"),

@@ -262,6 +262,81 @@ function patchStrictSddWorkflow(projectRoot, workflowRoot, workItemSlug, changeI
   });
 }
 
+function patchReviewedWorkflowGate(filePath, replacements) {
+  let content = fs.readFileSync(filePath, "utf8");
+  content = replaceLine(content, /^status: draft$/m, "status: reviewed");
+
+  replacements.forEach(({ pattern, replacement }) => {
+    content = replaceLine(content, pattern, replacement);
+  });
+
+  fs.writeFileSync(filePath, content, "utf8");
+}
+
+function patchMaterializedWorkflowForActivation(workflowRoot, workItemSlug) {
+  const s04Path = path.join(workflowRoot, `${workItemSlug}.s04.acceptance-criteria.md`);
+  const s05Path = path.join(workflowRoot, `${workItemSlug}.s05.technical-approach.md`);
+  const s06Path = path.join(workflowRoot, `${workItemSlug}.s06.task-breakdown.md`);
+
+  patchReviewedWorkflowGate(s04Path, [
+    { pattern: /^governance_status: CHECKS_PENDING$/m, replacement: "governance_status: ALIGNED" },
+    { pattern: /^spec_status: draft$/m, replacement: "spec_status: approved" },
+    { pattern: /^  spec: \[\]$/m, replacement: "  spec:\n    - po" },
+    { pattern: /^  dor: \[\]$/m, replacement: "  dor:\n    - po" },
+    { pattern: /^  spec_reviewed_by: \[\]$/m, replacement: '  spec_reviewed_by:\n    - po' },
+    { pattern: /^  spec_reviewed_at: ""$/m, replacement: '  spec_reviewed_at: "2026-04-19T09:10:00Z"' },
+    { pattern: /^  dor_reviewed_by: \[\]$/m, replacement: '  dor_reviewed_by:\n    - po' },
+    { pattern: /^  dor_reviewed_at: ""$/m, replacement: '  dor_reviewed_at: "2026-04-19T09:12:00Z"' }
+  ]);
+
+  let s05Content = fs.readFileSync(s05Path, "utf8");
+  s05Content = replaceLine(s05Content, /^status: draft$/m, "status: reviewed");
+  s05Content = replaceLine(s05Content, /^  approach: \[\]$/m, "  approach:\n    - developer");
+  s05Content = replaceLine(
+    s05Content,
+    /^  approach_reviewed_by: \[\]$/m,
+    '  approach_reviewed_by:\n    - developer'
+  );
+  s05Content = replaceLine(
+    s05Content,
+    /^  approach_reviewed_at: ""$/m,
+    '  approach_reviewed_at: "2026-04-19T09:20:00Z"'
+  );
+  s05Content = replaceYamlSection(s05Content, "## Option Analysis", [
+    "options:",
+    '  - "Giữ login hiện tại và thêm Google OAuth vào auth service"',
+    '  - "Tách auth broker mới chỉ cho Google login"',
+    'recommended_option: "Giữ login hiện tại và thêm Google OAuth vào auth service"',
+    "trade_offs:",
+    '  - "Phương án 1 delta nhỏ hơn, ít mở boundary hơn"',
+    '  - "Phương án 2 cô lập hơn nhưng tăng complexity không cần thiết cho smoke"'
+  ]);
+  fs.writeFileSync(s05Path, s05Content, "utf8");
+
+  patchReviewedWorkflowGate(s06Path, [
+    { pattern: /^  task_plan: \[\]$/m, replacement: "  task_plan:\n    - developer" },
+    {
+      pattern: /^  task_plan_reviewed_by: \[\]$/m,
+      replacement: '  task_plan_reviewed_by:\n    - developer'
+    },
+    {
+      pattern: /^  task_plan_reviewed_at: ""$/m,
+      replacement: '  task_plan_reviewed_at: "2026-04-19T09:30:00Z"'
+    }
+  ]);
+}
+
+function patchMaterializedWorkflowForDone(workflowRoot, workItemSlug) {
+  const s08Path = path.join(workflowRoot, `${workItemSlug}.s08.verification.md`);
+
+  patchReviewedWorkflowGate(s08Path, [
+    { pattern: /^governance_status: CHECKS_PENDING$/m, replacement: "governance_status: ALIGNED" },
+    { pattern: /^  dod: \[\]$/m, replacement: "  dod:\n    - qc" },
+    { pattern: /^  dod_reviewed_by: \[\]$/m, replacement: '  dod_reviewed_by:\n    - qc' },
+    { pattern: /^  dod_reviewed_at: ""$/m, replacement: '  dod_reviewed_at: "2026-04-19T10:00:00Z"' }
+  ]);
+}
+
 function validateBaseline(repoRoot, workflowRoot, projectRoot) {
   runNodeScript(repoRoot, "scripts/validate-workflow.js", [
     "--workflow-root",
@@ -377,6 +452,17 @@ function runCaseStrictSddChange(repoRoot, projectRoot) {
   ]);
 
   patchStrictSddWorkflow(projectRoot, workflowRoot, workItemSlug, changeId);
+  runNodeScript(repoRoot, "scripts/change-item.js", [
+    "approve",
+    "--change-id",
+    changeId,
+    "--project-root",
+    projectRoot,
+    "--reviewed-by",
+    "po",
+    "--note",
+    "Approved change package for strict SDD smoke."
+  ]);
 
   validateBaseline(repoRoot, workflowRoot, projectRoot);
   runNodeScript(repoRoot, "scripts/validate-workflow-planning.js", ["--workflow-root", workflowRoot]);
@@ -406,6 +492,8 @@ function runCaseMaterializeAutoScaffold(repoRoot, projectRoot) {
   runNodeScript(repoRoot, "scripts/materialize-work-item.js", [
     "--request",
     "Thêm đăng nhập Google cho customer portal",
+    "--delivery-context",
+    "brownfield",
     "--project-root",
     projectRoot,
     "--workflow-root",
@@ -504,6 +592,7 @@ function runCaseMaterializeAutoScaffold(repoRoot, projectRoot) {
     "--note",
     "Approved change package after human review."
   ]);
+  patchMaterializedWorkflowForActivation(workflowRoot, workItemSlug);
   runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
     "activate",
     "--work-item",
@@ -550,6 +639,7 @@ function runCaseMaterializeAutoScaffold(repoRoot, projectRoot) {
     "--actor",
     "qc"
   ]);
+  patchMaterializedWorkflowForDone(workflowRoot, workItemSlug);
   runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
     "close",
     "--work-item",
@@ -591,6 +681,98 @@ function runCaseMaterializeAutoScaffold(repoRoot, projectRoot) {
   ]);
 }
 
+function runCaseGreenfieldBootstrapPreflight(repoRoot, projectRoot) {
+  const workItemSlug = "bootstrap-site-foundation";
+  const workflowRootBase = path.join(projectRoot, "work-items");
+  const blockedReportPath = path.join(projectRoot, "tmp", `${workItemSlug}.blocked.json`);
+  const workflowRoot = path.join(workflowRootBase, workItemSlug);
+  const approvedReportPath = path.join(workflowRoot, `${workItemSlug}.work-item-report.json`);
+  const s01Path = path.join(workflowRoot, `${workItemSlug}.s01.restate.md`);
+  const bootstrapRef = path.join(projectRoot, "project-context", "greenfield-bootstrap-approval.md");
+
+  writeFile(
+    bootstrapRef,
+    [
+      "# Greenfield Bootstrap Approval",
+      "",
+      "- Spec: approved",
+      "- Contract: approved",
+      "- Approach: approved",
+      "- Foundation: approved"
+    ].join("\n")
+  );
+
+  runNodeScript(repoRoot, "scripts/materialize-work-item.js", [
+    "--request",
+    "Tạo landing page marketing cho sản phẩm A",
+    "--work-item",
+    workItemSlug,
+    "--work-item-type",
+    "FEATURE",
+    "--delivery-context",
+    "greenfield",
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--output",
+    blockedReportPath,
+    "--auto-scaffold"
+  ]);
+
+  const blockedReport = JSON.parse(fs.readFileSync(blockedReportPath, "utf8"));
+  if (blockedReport.protocol_status !== "PROPOSED") {
+    throw new Error(`Expected greenfield preflight to keep protocol_status=PROPOSED, got '${blockedReport.protocol_status}'.`);
+  }
+  if (blockedReport.bootstrap_gate_status !== "PENDING_REVIEW") {
+    throw new Error(`Expected bootstrap_gate_status=PENDING_REVIEW, got '${blockedReport.bootstrap_gate_status}'.`);
+  }
+  if (fs.existsSync(workflowRoot)) {
+    throw new Error("Greenfield materialize without bootstrap approval must not scaffold workflow root.");
+  }
+
+  runNodeScript(repoRoot, "scripts/materialize-work-item.js", [
+    "--request",
+    "Tạo landing page marketing cho sản phẩm A",
+    "--work-item",
+    workItemSlug,
+    "--work-item-type",
+    "FEATURE",
+    "--delivery-context",
+    "greenfield",
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--bootstrap-ref",
+    path.relative(projectRoot, bootstrapRef),
+    "--bootstrap-reviewed-by",
+    "po",
+    "--bootstrap-reviewed-at",
+    "2026-04-19T09:00:00Z",
+    "--auto-scaffold"
+  ]);
+
+  assertPathExists(workflowRoot, `Expected greenfield workflow root after bootstrap approval: ${workflowRoot}`);
+  assertPathExists(s01Path, `Expected greenfield s01 note after bootstrap approval: ${s01Path}`);
+  assertPathExists(approvedReportPath, `Expected greenfield report after bootstrap approval: ${approvedReportPath}`);
+
+  const approvedReport = JSON.parse(fs.readFileSync(approvedReportPath, "utf8"));
+  if (approvedReport.protocol_status !== "MATERIALIZED") {
+    throw new Error(`Expected approved greenfield protocol_status=MATERIALIZED, got '${approvedReport.protocol_status}'.`);
+  }
+  if (approvedReport.bootstrap_gate_status !== "APPROVED") {
+    throw new Error(`Expected approved greenfield bootstrap_gate_status=APPROVED, got '${approvedReport.bootstrap_gate_status}'.`);
+  }
+  if (approvedReport.delivery_context !== "greenfield") {
+    throw new Error(`Expected greenfield delivery_context, got '${approvedReport.delivery_context}'.`);
+  }
+
+  const s01Content = fs.readFileSync(s01Path, "utf8");
+  assertContentIncludes(s01Content, "delivery_context: greenfield", "Expected delivery_context in greenfield protocol block.");
+  assertContentIncludes(s01Content, "bootstrap_gate_status: APPROVED", "Expected bootstrap gate approval in greenfield protocol block.");
+}
+
 function main() {
   const args = parseCliArgs(process.argv.slice(2));
   const repoRoot = path.resolve(__dirname, "..");
@@ -601,7 +783,8 @@ function main() {
     { name: "quick-single-step", run: runCaseQuickSingleStep },
     { name: "enterprise-multi-agent", run: runCaseEnterpriseMultiAgent },
     { name: "strict-sdd-change", run: runCaseStrictSddChange },
-    { name: "materialize-auto-scaffold", run: runCaseMaterializeAutoScaffold }
+    { name: "materialize-auto-scaffold", run: runCaseMaterializeAutoScaffold },
+    { name: "greenfield-bootstrap-preflight", run: runCaseGreenfieldBootstrapPreflight }
   ];
   const failures = [];
 

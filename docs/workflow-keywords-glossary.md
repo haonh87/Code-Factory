@@ -34,7 +34,17 @@ Thời điểm đối chiếu: `2026-04-18`.
 
 | Keyword | Nghĩa | Không nên hiểu là | Dùng ở đâu |
 |---|---|---|---|
+| `Spec` | gate chốt requirement/spec baseline đã được human approve để dùng làm source-of-truth | không phải chỉ là có file spec draft tồn tại | chủ yếu `s04` |
+| `Contract` | gate chốt `API contract` hoặc `UX contract` đã được human approve hoặc chốt `not_applicable` rõ | không phải chỉ là mock interface sơ bộ | chủ yếu `s04` |
 | `DoR` | `Definition of Ready`: verdict cho biết work item đủ rõ để sang design/planning/implementation | không phải approval cảm tính | chủ yếu `s04` |
+| `Foundation Decision` | gate chốt solution class, stack, runtime hoặc deployment model do human chọn cuối | không phải recommendation của AI | chủ yếu `s05` |
+| `UAT` | `User Acceptance Testing`: gate xác nhận kết quả thực tế khớp approved spec/contract trong scenario người dùng | không phải thay thế cho `DoD` | chủ yếu `s08` |
+| `Release` | gate xác nhận work item đủ điều kiện ship, rollout và rollback theo scope release thực tế | không phải chỉ là release recommendation của kỹ thuật | chủ yếu `s08` |
+| `Business Acceptance` | gate xác nhận outcome cuối khớp business intent đã approved | không phải review kỹ thuật hay UAT thuần | chủ yếu `s08` |
+| `approval_gates` | map chỉ ra gate nào là `required` hoặc `not_applicable` cho từng note/work item | không phải bằng chứng human đã review | frontmatter workflow |
+| `approval_status` | trạng thái approval của protocol-managed work item/change như `PENDING_REVIEW`, `APPROVED`, `REJECTED` | không phải verdict của step note; `NOT_REQUIRED` chỉ là compatibility enum, không phải đường hợp lệ cho item do protocol quản lý | protocol report |
+| `review_required` | cờ cho biết approval gate của protocol có phải review thật hay không | với protocol-managed work item/change hiện tại không được đặt `false` | protocol report |
+| `delivery_context` | context delivery của work item: `greenfield` hoặc `brownfield` | không phải planning depth như `quick|full|enterprise` | frontmatter workflow |
 | `DoD` | `Definition of Done`: verdict cho biết work item đủ evidence để đóng | không phải code review pass | chủ yếu `s08` |
 | `role_signoffs` | map authority cho biết role nào có trách nhiệm signoff từng gate | không phải bằng chứng đã review thực tế | frontmatter workflow |
 | `gate_reviews` | audit trail ghi role reviewer và thời điểm review cho từng gate | không thay `role_signoffs`, cũng không thay `approved_by` của waiver | frontmatter workflow |
@@ -63,10 +73,15 @@ Thời điểm đối chiếu: `2026-04-18`.
 | `task độc lập` | task đủ rõ để giao cho worker riêng, thường có `owned_scope` hoặc `owned_paths` tương đối rời nhau, `merge path` rõ và `verify path` hoặc `verification_owner` rõ | không phải task nhỏ nhưng tightly coupled hoặc vừa khám phá context xong | chủ yếu `s07` |
 | `validation plan` | điều cần kiểm chứng trước hoặc trong implement | không phải full test report | `s05`, `s08` |
 | `technical approach` | hướng kỹ thuật đã chọn để triển khai | không phải danh sách task | `s05` |
+| `foundation decision` | quyết định nền tảng của project như solution class, stack, runtime hoặc deployment model | không phải chi tiết implement nhỏ của một task | chủ yếu `s05` ở `empty/greenfield project` |
+| `bootstrap gate` | lớp gate cấp project trước khi materialize hoặc implement work item đầu tiên ở `empty/greenfield project` | không phải cùng một nghĩa với `work item approval` | intake, materialization, `s04-s05` |
+| `brownfield` | context delivery khi hệ thống hiện có là baseline đang vận hành và change phải tôn trọng compatibility/regression constraints | không phải cớ để bỏ spec hay bỏ review gate | xuyên `s04-s08` |
 | `task plan` | các task thực thi có thứ tự, phần chạm chính hoặc ownership và verify path | không phải placeholder như “xử lý edge case” | `s06` |
+| `Delivery Rule Evidence` | block evidence có cấu trúc ở `s07` để chốt `TDD`, `worktree`, review hai tầng và điều kiện delegation | không phải ghi chú prose tự do hay changelog chung chung | `s07` |
 | `execution-oriented task plan` | task plan đủ rõ về phần chạm chính, thứ tự hoặc dependency, verify path và checkpoint cần thiết để implementer triển khai mà không phải tự phát minh lại design | không phải kế hoạch mơ hồ ở mức ý tưởng | `s06` |
 | `verify path` | cách kiểm chứng task hoặc change sau khi làm | không phải chỉ một câu “sẽ test” | `s06`, `s08` |
 | `placeholder` | câu mô tả mơ hồ chưa nói rõ chạm đâu, làm gì, kiểm thế nào | không phải task plan hợp lệ | chủ yếu `s06` |
+| `empty project` / `greenfield project` | project chưa có baseline stack/runtime đã approved, hoặc repo gần như trống nên các quyết định solution class và stack đều là quyết định nền tảng | không được coi như project bình thường để AI tự chọn stack rồi implement luôn | runtime hard stop |
 
 ## Câu Canonical
 

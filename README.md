@@ -1,20 +1,20 @@
 # AI Agent Ops
 
-Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent. Public release hiện tại là `workflow-bundle v2.0.0`: một workflow bundle cài được cho Codex, cho phép agent chủ động đề xuất `work-item` và `change`, còn human giữ quyền approve ở các gate trước khi delivery tiếp tục.
+Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent. Public release hiện tại là `workflow-bundle v2.0.1`: một workflow bundle cài được cho Codex và Claude Code, cho phép agent chủ động đề xuất `work-item` và `change`, còn human giữ quyền approve ở các gate trước khi delivery tiếp tục.
 
-Khi chia sẻ cho người dùng mới, dùng tag `v2.0.0` hoặc branch `release/v2.0.0` làm canonical public reference thay vì working tree hiện tại.
+Khi chia sẻ cho người dùng mới, dùng tag `v2.0.1` hoặc branch `release/v2.0.1` làm canonical public reference thay vì working tree hiện tại.
 
 ## Requirements
 
 - `node >= 18`
 - `npm >= 9`
-- `~/.codex` writable nếu dùng `wfc install|update|skills`
+- `~/.codex` hoặc `~/.claude` writable nếu dùng `wfc install|update|skills`
 - `git` nếu clone source repo thay vì cài từ npm registry
 - `bash` cho adapter Linux/macOS hoặc `PowerShell` cho adapter Windows
 
 ## Bắt Đầu Ở Đây
 
-Nếu đang tiếp cận repo lần đầu và muốn đi đúng public release `v2.0.0`:
+Nếu đang tiếp cận repo lần đầu và muốn đi đúng public release `v2.0.1`:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -35,16 +35,26 @@ Các tài liệu dưới đây là maintainer hoặc historical context, không 
 
 ## Workflow Commands Nhanh
 
-Command surface public của `v2.0.0` dùng `wfc`.
+Command surface public của `v2.0.1` dùng `wfc`.
 
 Install và quản lý workflow bundle:
 
-- cài workflow bundle vào Codex home: `wfc install --scope global`
-- cài workflow bundle vào project cụ thể: `wfc install --scope project --project-root <repo-root>`
-- cài cả global lẫn project: `wfc install --scope both --project-root <repo-root>`
-- overwrite bundle đã cài theo install state hiện có: `wfc update`
-- xem trạng thái và version bundle đã cài: `wfc status`
-- list, add, remove skill do bundle quản lý: `wfc skills list|add|remove`
+- cài workflow bundle vào Codex home: `wfc install --mode codex --scope global`
+- cài workflow bundle vào Claude Code home: `wfc install --mode claude --scope global`
+- cài workflow bundle vào project cụ thể: `wfc install --mode codex --scope project --project-root <repo-root>`
+- cài cả global lẫn project: `wfc install --mode codex --scope both --project-root <repo-root>`
+- overwrite bundle đã cài theo install state hiện có: `wfc update --mode codex|claude`
+- xem trạng thái và version bundle đã cài: `wfc status --mode codex|claude`
+- list, add, remove skill do bundle quản lý: `wfc skills list|add|remove --mode codex|claude`
+
+Recommended Usage:
+
+- `interactive terminal`:
+  - `wfc install`: chạy trực tiếp `wfc install`; CLI sẽ hỏi `mode` và `scope`
+  - `wfc update`, `wfc status`, `wfc skills list|add|remove`: có thể bỏ `--mode`; CLI sẽ hỏi chọn `mode`
+- `automation/CI/scripts`:
+  - luôn truyền `--mode` tường minh
+  - với `wfc install`, luôn truyền thêm `--scope` tường minh
 
 Authoring và validate:
 
@@ -72,21 +82,21 @@ Agentic proposal flow:
 - xem protocol hoặc status của một work item: `wfc work-item status --work-item <work-item-slug>`
 - approve hoặc reject change package do agent đề xuất: `wfc change-item <approve|reject|status> --change-id <CHANGE-ID>`
 - approve work item trước khi activate: `wfc work-item approve --work-item <work-item-slug> --reviewed-by <role>`
-- activate work item sau approval: `wfc work-item activate --work-item <work-item-slug>`
+- activate work item chỉ sau approval + evidence gate `s04-s06`: `wfc work-item activate --work-item <work-item-slug> --step s07`
 
 Ghi chú:
 
 - `--work-item` là tên CLI ngắn cho `work_item_slug`.
 - `work_item_slug` là định danh xuyên suốt 8 bước, ví dụ `fix-login-timeout`, `checkout-recovery`.
 - `work-items/` là canonical artifact root cho workflow artifacts của repo.
-- Approval model của `v2.0.0` là `agent proposes, human approves`.
+- Approval model của `v2.0.1` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate và step-gate evidence bắt buộc đã có.
 
 ## Workflow Docs
 
 ### Theo Mục Đích
 
 - Public docs cho người mới dùng workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface cho `v2.0.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface cho `v2.0.1`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart cho `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README cho cài đặt hoặc publish: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 
@@ -241,10 +251,12 @@ CLI publish/install mặc định cho workflow bundle:
 
 ```bash
 wfc status
-wfc install --scope global
-wfc install --scope project --project-root /path/to/project
-wfc install --scope both --project-root /path/to/project --skill codex-workflow-chain --skill step-goal-contract
-wfc update
+wfc install --mode codex --scope global
+wfc install --mode claude --scope global
+wfc install --mode codex --scope project --project-root /path/to/project
+wfc install --mode codex --scope both --project-root /path/to/project --skill codex-workflow-chain --skill step-goal-contract
+wfc update --mode codex
+wfc update --mode claude
 wfc skills list
 wfc skills add --skill notebooklm
 wfc skills remove --skill notebooklm
@@ -252,22 +264,24 @@ wfc skills remove --skill notebooklm
 
 Ý nghĩa:
 
-- `global`: cài policy toàn cục vào `~/.codex/AGENTS.global.md` và đồng bộ skill vào `~/.codex/skills`
-- `project`: cài `AGENTS.md` vào thư mục project chỉ định, nhưng vẫn dùng skill runtime trong `~/.codex/skills`
+- `--mode codex`: cài policy toàn cục vào `~/.codex/AGENTS.global.md` và đồng bộ skill vào `~/.codex/skills`
+- `--mode claude`: cài memory/policy vào `~/.claude/CLAUDE.md` và đồng bộ skill reference vào `~/.claude/skills`
+- `project` ở `codex`: cài `AGENTS.md` vào thư mục project chỉ định, nhưng vẫn dùng skill runtime trong `~/.codex/skills`
+- `project` ở `claude`: cài `CLAUDE.md` vào thư mục project chỉ định
 - `both`: cài cả global policy lẫn project policy
-- `update`: overwrite bundle đang cài theo install state đã ghi trong `~/.codex/.codex-workflow-bundle.install-state.json`
+- `update`: overwrite bundle đang cài theo install state của mode tương ứng đã ghi trong runtime home
 - `skills add/remove`: bổ sung hoặc gỡ bớt skill managed mà không cần full reinstall
-- support policy phụ trợ được đồng bộ vào `~/.codex/policies/codex/` để giữ các reference chính trong skill có runtime path ổn định hơn
+- support policy phụ trợ được đồng bộ vào `~/.codex/policies/codex/` hoặc `~/.claude/policies/codex/` để giữ các reference chính trong skill có runtime path ổn định hơn
 
 Ghi chú:
 
 - bundle version hiện được quản lý trong [`workflow-bundle.manifest.json`](workflow-bundle.manifest.json)
 - `wfc status` hiển thị cả `source_bundle_version` và `installed_bundle_version`
 - `wfc version` là version của CLI package
-- install state của workflow bundle được ghi trong `~/.codex/.codex-workflow-bundle.install-state.json`
-- manifest skill managed được ghi trong `~/.codex/.codex-workflow-bundle.managed-skills.txt`
+- install state của workflow bundle được ghi theo mode trong runtime home, ví dụ `~/.codex/.codex-workflow-bundle.install-state.json` hoặc `~/.claude/.claude-workflow-bundle.install-state.json`
+- manifest skill managed được ghi theo mode trong runtime home tương ứng
 - nếu máy còn state cũ `.codex-workflow-pack.*`, `wfc update` sẽ đọc state đó, rewrite sang file `bundle` mới và xóa file legacy
-- current CLI này target `Codex` runtime; chưa cover drive-root link automation của Windows installer cũ
+- current CLI hỗ trợ `Codex` và `Claude Code`; Windows adapter cũ vẫn chỉ phủ flow installer cho Codex
 
 ## Cài Đặt Trên Máy Linux/macOS Hoặc Windows Qua CLI
 
@@ -275,20 +289,20 @@ Khi package đã được publish, cài trực tiếp:
 
 ```bash
 npm install -g workflow-bundle
-wfc install --scope global
+wfc install --mode codex --scope global
 ```
 
 Nếu đang chạy từ source repo và có `node >= 18`, có thể dùng trực tiếp:
 
 ```bash
 cd <repo-local-path>
-node packages/workflow-bundle/bin/wfc.js install --scope global
+node packages/workflow-bundle/bin/wfc.js install --mode codex --scope global
 ```
 
 Hoặc nếu đã `npm link` `wfc`:
 
 ```bash
-wfc install --scope global
+wfc install --mode codex --scope global
 ```
 
 ## Build / Publish Workflow Bundle
@@ -303,8 +317,8 @@ npm pack
 
 Ghi chú:
 
-- `prepack` của `packages/workflow-bundle` sẽ tự bundle `AGENTS.global.md`, support policy và toàn bộ `skills/` vào package trước khi tạo tarball.
-- tarball publish hiện đã chứa `workflow-bundle.manifest.json` và `runtime/codex/**`, nên `wfc install|update|skills` chạy được mà không cần source repo gốc.
+- `prepack` của `packages/workflow-bundle` sẽ tự bundle runtime cho `codex` và `claude`, support policy và toàn bộ `skills/` vào package trước khi tạo tarball.
+- tarball publish hiện đã chứa `workflow-bundle.manifest.json`, `runtime/codex/**` và `runtime/claude/**`, nên `wfc install|update|skills` chạy được mà không cần source repo gốc.
 
 Nếu cần gọi nhanh từ source repo thay vì cài global CLI:
 

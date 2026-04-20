@@ -40,6 +40,13 @@ Mục tiêu của protocol này là:
 - cho phép `agentic` tự mở work item khi đủ điều kiện
 - giữ audit trail nhất quán từ lúc đề xuất tới lúc đóng hoặc archive
 
+Lưu ý quan trọng:
+
+- `work item approval` không thay cho `bootstrap gate` của `empty/greenfield project`
+- với project mới, trước khi materialize work item implementation đầu tiên phải có evidence rằng `Spec`, `Contract` khi có, `Approach` và `Foundation Decision` khi có đã được human pass
+- với `brownfield`, protocol vẫn cho phép materialize/scaffold để authoring, nhưng work item phải khai báo `delivery_context=brownfield` và bám đủ output baseline/impact/regression của backbone trước khi implement
+- nếu chưa có bootstrap evidence, handoff đúng là quay về clarify/spec/approach, không được scaffold rồi hợp thức hóa sau
+
 ## Phạm Vi
 
 Áp dụng cho lifecycle của **một** work item.
@@ -131,8 +138,8 @@ Enum chuẩn:
 
 ### `ACTIVE`
 
-- work item đang được vận hành trong backbone `s01 -> s08`
-- ít nhất `s01` đã có owner hoặc đã bắt đầu được điền nội dung
+- work item đã mở execution path trong backbone `s07 -> s08`
+- gate authoring trước code ở `s04`, `s05`, `s06` đã có evidence phù hợp để runtime cho phép implement
 
 ### `BLOCKED`
 
@@ -147,7 +154,7 @@ Enum chuẩn:
 ### `DONE`
 
 - work item đã đạt `DoD`
-- các signoff bắt buộc đã hoàn tất hoặc được kết luận `NOT_APPLICABLE`
+- các signoff bắt buộc trong `s08` đã hoàn tất; nếu scope yêu cầu thì gồm cả `UAT`, `Release`, `Business Acceptance`
 
 ### `ARCHIVED`
 
@@ -182,7 +189,7 @@ Enum chuẩn:
 ### Transition Không Hợp Lệ
 
 - `INTAKE -> MATERIALIZED` nếu không qua materialization
-- `PROPOSED -> ACTIVE` nếu chưa scaffold
+- `PROPOSED` hoặc `READY_TO_MATERIALIZE` -> `ACTIVE` nếu chưa materialize và chưa có gate evidence bắt buộc
 - `ACTIVE -> DONE` nếu không có `VERIFIED`
 - `DONE -> ACTIVE` trừ khi mở work item mới hoặc có explicit re-open protocol
 - `ARCHIVED -> ACTIVE` bằng cách sửa tay artifact cũ; phải tạo protocol event mới hoặc work item mới
@@ -219,9 +226,11 @@ Yêu cầu:
 
 Yêu cầu:
 
-- `s01` đã được mở để authoring
-- đã có `decision_owner` hoặc `protocol_owner`
-- handoff vào backbone đã rõ
+- `work item approval` đã `APPROVED`
+- nếu có `change_id`, `change package approval` đã `APPROVED`
+- nếu `delivery_context=greenfield`, `bootstrap gate` đã `APPROVED`
+- `s04`, `s05`, `s06` đã có evidence gate đủ để mở execution
+- handoff vào execution path đã rõ
 
 ### `ACTIVE -> BLOCKED`
 
@@ -242,7 +251,7 @@ Yêu cầu:
 
 Yêu cầu:
 
-- `s08` có evidence verify
+- `s08` có evidence verify và source-of-truth đã được cập nhật
 - residual risks đã được ghi minh bạch
 - quality gate kỹ thuật đã hoàn tất hoặc limitation đã được nêu
 
@@ -250,8 +259,8 @@ Yêu cầu:
 
 Yêu cầu:
 
-- `definition-of-done` đã pass
-- `release` và `business_acceptance` đã xong nếu scope yêu cầu
+- `definition-of-done` đã pass trong `s08`
+- `uat`, `release` và `business_acceptance` đã xong trong `s08` nếu scope yêu cầu
 - không còn blocker mở ở cấp work item
 
 ### `DONE -> ARCHIVED`
@@ -295,7 +304,7 @@ Mục tiêu:
 
 Output tối thiểu:
 
-- `current_step=s01`
+- `current_step=s07`
 - `protocol_status=ACTIVE`
 
 ### `block`
@@ -444,7 +453,7 @@ Baseline hiện tại hỗ trợ 2 cách giữ output protocol:
 ```yaml
 protocol_status: INTAKE|PROPOSED|READY_TO_MATERIALIZE|MATERIALIZED|ACTIVE|BLOCKED|VERIFIED|DONE|ARCHIVED|CANCELLED
 approval_status: PENDING_REVIEW|APPROVED|REJECTED|NOT_REQUIRED
-review_required: true|false
+review_required: true
 work_item_slug: ""
 work_item_type: FEATURE|BUG|CHANGE|REFACTOR|RESEARCH
 workflow_root: ""
@@ -452,7 +461,8 @@ current_step: s01|s02|s03|s04|s05|s06|s07|s08|""
 materialization_status: PROPOSED|READY|BLOCKED
 change_strategy: none|reuse_existing|create_new
 change_id: ""
-decision_owner: human|agent|coordinator
+delivery_context: greenfield|brownfield
+decision_owner: agent|coordinator
 protocol_owner: ""
 reviewed_by: ""
 reviewed_at: ""
@@ -463,7 +473,17 @@ review_notes: []
 refs: []
 audit_events: []
 protocol_events: []
+bootstrap_gate_status: PENDING_REVIEW|APPROVED|NOT_REQUIRED
+bootstrap_gate_ref: ""
+bootstrap_reviewed_by: ""
+bootstrap_reviewed_at: ""
 ```
+
+Ghi chú:
+
+- `NOT_REQUIRED` được giữ trong enum để tương thích artifact cũ; protocol-managed work item mới không được dùng giá trị này.
+- `review_required` luôn phải là `true` với work item do protocol quản lý.
+- `decision_owner` là owner của quyết định materialization/protocol do runtime tạo ra, không thay human approval authority.
 
 ## Audit Event Vocabulary
 
@@ -496,7 +516,7 @@ Khuyến nghị dùng vocabulary ổn định:
 - `wfc work-item status --work-item <slug>`
 - `wfc work-item approve --work-item <slug> --reviewed-by <role>`
 - `wfc work-item reject --work-item <slug> --reviewed-by <role> --note "<reason>"`
-- `wfc work-item activate --work-item <slug>`
+- `wfc work-item activate --work-item <slug> --step s07`
 - `wfc work-item block --work-item <slug> --blocker "<reason>"`
 - `wfc work-item resume --work-item <slug>`
 - `wfc work-item verify --work-item <slug>`
@@ -515,7 +535,8 @@ Khuyến nghị dùng vocabulary ổn định:
 - suy ra slug candidate, `change_strategy`, `change_id`, `planning_track`, `governance_profile`
 - hỗ trợ `--auto-scaffold` khi status đạt `READY_TO_MATERIALIZE`
 - nhúng block `Work Item Materialization` và `Work Item Protocol` vào `s01` sau khi scaffold thành công
-- tự đặt `approval_status=PENDING_REVIEW` khi decision owner là `agent`, để human review trước khi vào `ACTIVE`
+- tự đặt `approval_status=PENDING_REVIEW`, buộc human review trước khi vào `ACTIVE`
+- không mở `ACTIVE` chỉ vì scaffold xong; `s04-s06` phải có evidence gate phù hợp trước khi execute
 
 ### Target Extension
 
@@ -537,9 +558,9 @@ Flow khuyến nghị:
 4. scaffold change package nếu cần
 5. scaffold workflow
 6. chuyển `MATERIALIZED`
-7. mở `s01`, ghi block protocol + materialization
+7. author `s01 -> s06`, ghi block protocol + materialization và hoàn tất gate human cần thiết
 8. chuyển `ACTIVE`
-9. đi qua `s01 -> s08`
+9. đi qua `s07 -> s08`
 10. sau `s08`, chuyển `VERIFIED -> DONE`
 11. nếu lifecycle yêu cầu, chuyển `ARCHIVED`
 
@@ -554,11 +575,12 @@ review_required: true
 work_item_slug: ""
 work_item_type: FEATURE|BUG|CHANGE|REFACTOR|RESEARCH
 workflow_root: ""
-current_step: s01
+current_step: s07
 materialization_status: PROPOSED|READY|BLOCKED
 change_strategy: none|reuse_existing|create_new
 change_id: ""
-decision_owner: human|agent|coordinator
+delivery_context: greenfield|brownfield
+decision_owner: agent|coordinator
 protocol_owner: ""
 reviewed_by: ""
 reviewed_at: ""
@@ -567,6 +589,10 @@ required_actions: []
 blockers: []
 review_notes: []
 refs: []
+bootstrap_gate_status: PENDING_REVIEW|APPROVED|NOT_REQUIRED
+bootstrap_gate_ref: ""
+bootstrap_reviewed_by: ""
+bootstrap_reviewed_at: ""
 audit_events:
   - REQUEST_CAPTURED
   - CANDIDATE_PROPOSED

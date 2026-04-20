@@ -54,7 +54,7 @@ Thư mục này là source-of-truth cho `governance layer` ở mức project.
 - Chạy fixture suite:
   `npm run validate:workflow:fixtures`
 - Fixture suite canonical cho governance validator:
-  `packages/workflow-contracts/tests/fixtures/workflow-governance/README.md`
+  `packages/workflow-bundle/tests/fixtures/workflow-governance/README.md`
 
 Ghi chú:
 

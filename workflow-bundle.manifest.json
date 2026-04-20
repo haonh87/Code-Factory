@@ -1,6 +1,6 @@
 {
   "bundleName": "codex-workflow-bundle",
-  "bundleVersion": "2.0.0",
+  "bundleVersion": "2.0.1",
   "codex": {
     "globalAgentsSource": "policies/codex/AGENTS.global.md",
     "skillsSourceRoot": "skills",
@@ -12,5 +12,17 @@
     "legacyManagedSkillsManifestFile": ".codex-workflow-pack.managed-skills.txt",
     "installStateFile": ".codex-workflow-bundle.install-state.json",
     "legacyInstallStateFile": ".codex-workflow-pack.install-state.json"
+  },
+  "claude": {
+    "globalAgentsSource": "policies/codex/AGENTS.global.md",
+    "skillsSourceRoot": "skills",
+    "supportPoliciesSourceRoot": "policies/codex",
+    "supportPoliciesTargetRoot": "policies/codex",
+    "globalAgentsFileName": "CLAUDE.md",
+    "projectAgentsFileName": "CLAUDE.md",
+    "managedSkillsManifestFile": ".claude-workflow-bundle.managed-skills.txt",
+    "legacyManagedSkillsManifestFile": ".claude-workflow-pack.managed-skills.txt",
+    "installStateFile": ".claude-workflow-bundle.install-state.json",
+    "legacyInstallStateFile": ".claude-workflow-pack.install-state.json"
   }
 }

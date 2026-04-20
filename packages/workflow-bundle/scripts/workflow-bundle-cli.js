@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const readline = require("readline/promises");
 const { formatErrors, parseCliArgs } = require("./workflow-validator-utils");
 const {
   assertBundleSources,
@@ -14,7 +15,8 @@ const {
   normalizeArray,
   normalizeSingleValue,
   readManagedSkillsManifest,
-  resolveCodexHome,
+  resolveRuntimeHome,
+  resolveRuntimeMode,
   resolveRepoRoot,
   selectSkills,
   syncGlobalPolicy,
@@ -28,6 +30,8 @@ const {
 
 const SUPPORTED_ACTIONS = new Set(["help", "status", "install", "update", "skills"]);
 const SUPPORTED_SKILL_ACTIONS = new Set(["list", "install", "add", "remove", "delete"]);
+const INSTALL_MODE_OPTIONS = ["codex", "claude"];
+const INSTALL_SCOPE_OPTIONS = ["global", "project", "both"];
 
 function getNowIso() {
   return new Date().toISOString();
@@ -37,18 +41,140 @@ function isHelpToken(value) {
   return value === "help" || value === "--help" || value === "-h";
 }
 
+async function promptForChoice({ label, options }) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  try {
+    console.log(`${label}:`);
+    options.forEach((option, index) => {
+      console.log(`  ${index + 1}. ${option}`);
+    });
+
+    while (true) {
+      const answer = String(await rl.question(`Choose [1-${options.length}]: `)).trim();
+      const numeric = Number.parseInt(answer, 10);
+      if (Number.isInteger(numeric) && numeric >= 1 && numeric <= options.length) {
+        return options[numeric - 1];
+      }
+
+      console.log("Invalid selection. Enter the number of one option above.");
+    }
+  } finally {
+    rl.close();
+  }
+}
+
+async function promptForInput({ label, defaultValue = "" }) {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  try {
+    const promptLabel = defaultValue ? `${label} [${defaultValue}]: ` : `${label}: `;
+    while (true) {
+      const answer = String(await rl.question(promptLabel)).trim();
+      if (answer) {
+        return answer;
+      }
+      if (defaultValue) {
+        return defaultValue;
+      }
+      console.log("Input is required.");
+    }
+  } finally {
+    rl.close();
+  }
+}
+
+function assertInteractivePromptAvailable(actionLabel, missingFieldLabels) {
+  if (process.stdin.isTTY && process.stdout.isTTY) {
+    return;
+  }
+
+  throw new Error(
+    `${actionLabel} requires ${missingFieldLabels.join(" and ")} when not running in an interactive terminal.`
+  );
+}
+
+async function prepareInteractiveInstallArgs(args) {
+  const nextArgs = { ...args };
+  const missingFields = [];
+
+  if (!normalizeSingleValue(nextArgs.mode || "")) {
+    missingFields.push("'--mode <codex|claude>'");
+  }
+  if (!normalizeSingleValue(nextArgs.scope || "")) {
+    missingFields.push("'--scope <global|project|both>'");
+  }
+
+  if (missingFields.length > 0) {
+    assertInteractivePromptAvailable("install", missingFields);
+  }
+
+  if (!normalizeSingleValue(nextArgs.mode || "")) {
+    nextArgs.mode = await promptForChoice({
+      label: "Select runtime mode",
+      options: INSTALL_MODE_OPTIONS
+    });
+  }
+
+  if (!normalizeSingleValue(nextArgs.scope || "")) {
+    nextArgs.scope = await promptForChoice({
+      label: "Select install scope",
+      options: INSTALL_SCOPE_OPTIONS
+    });
+  }
+
+  const scopeValue = normalizeSingleValue(nextArgs.scope || "");
+  const projectRoots = normalizeArray(nextArgs["project-root"]);
+  if ((scopeValue === "project" || scopeValue === "both") && projectRoots.length === 0) {
+    assertInteractivePromptAvailable("install", ["'--project-root <path>'"]);
+    nextArgs["project-root"] = await promptForInput({
+      label: "Project root",
+      defaultValue: process.cwd()
+    });
+  }
+
+  return nextArgs;
+}
+
+async function prepareInteractiveModeArgs(args, actionLabel) {
+  const nextArgs = { ...args };
+  if (normalizeSingleValue(nextArgs.mode || "")) {
+    return nextArgs;
+  }
+
+  assertInteractivePromptAvailable(actionLabel, ["'--mode <codex|claude>'"]);
+  nextArgs.mode = await promptForChoice({
+    label: `Select runtime mode for ${actionLabel}`,
+    options: INSTALL_MODE_OPTIONS
+  });
+  return nextArgs;
+}
+
 function getRuntimeContext(args) {
   const repoRoot = resolveRepoRoot(normalizeSingleValue(args["repo-root"] || ""));
   const { manifest } = loadBundleManifest(repoRoot);
-  const codexHome = resolveCodexHome(normalizeSingleValue(args["codex-home"] || ""));
-  const bundlePaths = getBundlePaths({ repoRoot, codexHome, manifest });
+  const mode = resolveRuntimeMode(normalizeSingleValue(args.mode || ""));
+  const runtimeHome = resolveRuntimeHome({
+    mode,
+    explicitRuntimeHome: normalizeSingleValue(args["runtime-home"] || ""),
+    explicitCodexHome: normalizeSingleValue(args["codex-home"] || ""),
+    explicitClaudeHome: normalizeSingleValue(args["claude-home"] || "")
+  });
+  const bundlePaths = getBundlePaths({ repoRoot, runtimeHome, manifest, mode });
 
   assertBundleSources(bundlePaths);
 
   return {
     repoRoot,
     manifest,
-    codexHome,
+    mode,
+    runtimeHome,
     bundlePaths,
     availableSkills: collectSourceSkills(bundlePaths.skillsSourceRoot)
   };
@@ -60,25 +186,31 @@ function printHelp() {
       "Workflow Bundle CLI",
       "",
       "Usage:",
-      "  wfc install [--scope global|project|both] [--project-root PATH] [--skill NAME] [--exclude-skill NAME]",
-      "  wfc update [--scope global|project|both] [--project-root PATH] [--skill NAME] [--exclude-skill NAME]",
-      "  wfc status [--json]",
-      "  wfc skills list [--json]",
-      "  wfc skills add --skill NAME [--skill NAME]",
-      "  wfc skills remove --skill NAME [--skill NAME]",
+      "  wfc install [--mode codex|claude] [--scope global|project|both] [--project-root PATH] [--skill NAME] [--exclude-skill NAME]",
+      "  wfc update [--mode codex|claude] [--scope global|project|both] [--project-root PATH] [--skill NAME] [--exclude-skill NAME]",
+      "  wfc status [--mode codex|claude] [--json]",
+      "  wfc skills list [--mode codex|claude] [--json]",
+      "  wfc skills add [--mode codex|claude] --skill NAME [--skill NAME]",
+      "  wfc skills remove [--mode codex|claude] --skill NAME [--skill NAME]",
       "",
       "Options:",
       "  --repo-root PATH    Path to the workflow bundle source repo.",
+      "  --mode VALUE        Runtime mode: codex, claude. Install/update/status prompt when omitted in TTY.",
+      "  --runtime-home PATH Override runtime home directly.",
       "  --codex-home PATH   Override Codex home. Default: $CODEX_HOME or ~/.codex",
-      "  --scope VALUE       Install scope: global, project, both. Default install=global.",
-      "  --project-root PATH Install AGENTS.md into a target project root. Repeatable.",
+      "  --claude-home PATH  Override Claude home. Default: $CLAUDE_HOME or ~/.claude",
+      "  --scope VALUE       Install scope: global, project, both. Install prompts when omitted in TTY.",
+      "  --project-root PATH Install AGENTS.md or CLAUDE.md into a target project root. Repeatable.",
       "  --skill NAME        Select or add a skill by runtime flat name. Repeatable.",
       "  --exclude-skill     Exclude a skill during install/update. Repeatable.",
       "  --json              Print JSON output after the summary.",
       "",
       "Notes:",
       "  - 'wfc status' shows both source_bundle_version and installed_bundle_version.",
-      "  - 'wfc update' overwrites the current installed bundle using the recorded install state."
+      "  - 'wfc update' overwrites the current installed bundle using the recorded install state.",
+      "  - 'wfc install' shows numbered choices for mode and scope when they are omitted in an interactive terminal.",
+      "  - 'wfc update', 'wfc status' and 'wfc skills ...' show a numbered choice for mode when '--mode' is omitted in an interactive terminal.",
+      "  - Claude mode installs workflow memory/policy files plus managed skill references under ~/.claude/skills."
     ].join("\n")
   );
 }
@@ -108,8 +240,11 @@ function printStatusSummary(context, installState, jsonOutput) {
     bundle_name: bundleName,
     source_bundle_version: bundleVersion,
     installed_bundle_version: installState.installed_bundle_version,
+    runtime_mode: context.mode,
     repo_root: context.repoRoot,
-    codex_home: context.codexHome,
+    runtime_home: context.runtimeHome,
+    codex_home: context.mode === "codex" ? context.runtimeHome : "",
+    claude_home: context.mode === "claude" ? context.runtimeHome : "",
     install_scope: installState.install_scope,
     global_policy_enabled: installState.global_policy.enabled,
     global_agents_path: installState.global_policy.agents_path,
@@ -125,6 +260,7 @@ function printStatusSummary(context, installState, jsonOutput) {
 
   const summary = [
     `OK: workflow bundle '${bundleName}'`,
+    `mode=${context.mode}`,
     `source_version=${bundleVersion}`,
     `installed_version=${installState.installed_bundle_version || "<none>"}`,
     `managed_skills=${installState.managed_skills.length}`,
@@ -138,7 +274,8 @@ function printStatusSummary(context, installState, jsonOutput) {
 
   console.log(summary);
   console.log(`repo_root=${payload.repo_root}`);
-  console.log(`codex_home=${payload.codex_home}`);
+  console.log(`runtime_mode=${payload.runtime_mode}`);
+  console.log(`runtime_home=${payload.runtime_home}`);
   console.log(`install_scope=${payload.install_scope}`);
   console.log(`global_policy_enabled=${payload.global_policy_enabled ? "true" : "false"}`);
   console.log(`global_agents_path=${payload.global_agents_path || "<none>"}`);
@@ -155,7 +292,8 @@ function applyInstallOrUpdate({ args, action }) {
   const currentState = loadInstallState({
     manifest: context.manifest,
     repoRoot: context.repoRoot,
-    codexHome: context.codexHome,
+    runtimeHome: context.runtimeHome,
+    mode: context.mode,
     installStatePath: context.bundlePaths.installStatePath,
     legacyInstallStatePath: context.bundlePaths.legacyInstallStatePath
   });
@@ -238,7 +376,8 @@ function applyInstallOrUpdate({ args, action }) {
       bundle_name: getManifestBundleName(context.manifest),
       installed_bundle_version: getManifestBundleVersion(context.manifest),
       repo_root: context.repoRoot,
-      codex_home: context.codexHome,
+      runtime_mode: context.mode,
+      runtime_home: context.runtimeHome,
       install_scope: mergeInstallScope(currentState.install_scope, scopeValue),
       managed_skills: selectedSkillNames,
       global_policy: {
@@ -252,7 +391,8 @@ function applyInstallOrUpdate({ args, action }) {
     {
       manifest: context.manifest,
       repoRoot: context.repoRoot,
-      codexHome: context.codexHome
+      runtimeHome: context.runtimeHome,
+      mode: context.mode
     }
   );
 
@@ -270,6 +410,7 @@ function printInstallOrUpdateResult(action, result, jsonOutput) {
   const bundleVersion = getManifestBundleVersion(result.context.manifest);
   const summary = [
     `OK: ${action} workflow bundle '${bundleName}'`,
+    `mode=${result.context.mode}`,
     `bundle_version=${bundleVersion}`,
     `managed_skills=${result.state.managed_skills.length}`,
     `project_targets=${result.state.project_targets.length}`
@@ -278,7 +419,8 @@ function printInstallOrUpdateResult(action, result, jsonOutput) {
   const payload = {
     bundle_name: bundleName,
     bundle_version: bundleVersion,
-    codex_home: result.context.codexHome,
+    runtime_mode: result.context.mode,
+    runtime_home: result.context.runtimeHome,
     install_scope: result.state.install_scope,
     global_policy: result.state.global_policy,
     support_policies_path: result.supportPoliciesPath,
@@ -295,6 +437,7 @@ function printInstallOrUpdateResult(action, result, jsonOutput) {
   }
 
   console.log(summary);
+  console.log(`runtime=${payload.runtime_mode} home=${payload.runtime_home}`);
   console.log(`global_policy=${payload.global_policy.enabled ? payload.global_policy.agents_path : "<disabled>"}`);
   console.log(`support_policies=${payload.support_policies_path || "<none>"}`);
   console.log(`managed_skills=${payload.managed_skills.join(", ") || "<none>"}`);
@@ -309,7 +452,8 @@ function applySkillsAction({ args, action }) {
   const currentState = loadInstallState({
     manifest: context.manifest,
     repoRoot: context.repoRoot,
-    codexHome: context.codexHome,
+    runtimeHome: context.runtimeHome,
+    mode: context.mode,
     installStatePath: context.bundlePaths.installStatePath,
     legacyInstallStatePath: context.bundlePaths.legacyInstallStatePath
   });
@@ -362,14 +506,16 @@ function applySkillsAction({ args, action }) {
       bundle_name: getManifestBundleName(context.manifest),
       installed_bundle_version: currentState.installed_bundle_version || getManifestBundleVersion(context.manifest),
       repo_root: context.repoRoot,
-      codex_home: context.codexHome,
+      runtime_mode: context.mode,
+      runtime_home: context.runtimeHome,
       managed_skills: nextManagedSkills,
       updated_at: getNowIso()
     },
     {
       manifest: context.manifest,
       repoRoot: context.repoRoot,
-      codexHome: context.codexHome
+      runtimeHome: context.runtimeHome,
+      mode: context.mode
     }
   );
 
@@ -430,7 +576,7 @@ function printSkillsResult(result, jsonOutput) {
   console.log(`managed_skills=${result.nextState.managed_skills.join(", ") || "<none>"}`);
 }
 
-function runCli() {
+async function runCli() {
   const action = normalizeSingleValue(process.argv[2] || "help");
   if (!SUPPORTED_ACTIONS.has(action)) {
     console.error(
@@ -444,7 +590,7 @@ function runCli() {
     return;
   }
 
-  const args = parseCliArgs(process.argv.slice(3));
+  let args = parseCliArgs(process.argv.slice(3));
   const jsonOutput = Boolean(args.json);
   if (args.help) {
     printHelp();
@@ -454,11 +600,13 @@ function runCli() {
   try {
     switch (action) {
       case "status": {
+        args = await prepareInteractiveModeArgs(args, "status");
         const context = getRuntimeContext(args);
         const state = loadInstallState({
           manifest: context.manifest,
           repoRoot: context.repoRoot,
-          codexHome: context.codexHome,
+          runtimeHome: context.runtimeHome,
+          mode: context.mode,
           installStatePath: context.bundlePaths.installStatePath,
           legacyInstallStatePath: context.bundlePaths.legacyInstallStatePath
         });
@@ -466,11 +614,13 @@ function runCli() {
         return;
       }
       case "install": {
+        args = await prepareInteractiveInstallArgs(args);
         const result = applyInstallOrUpdate({ args, action: "install" });
         printInstallOrUpdateResult("installed", result, jsonOutput);
         return;
       }
       case "update": {
+        args = await prepareInteractiveModeArgs(args, "update");
         const result = applyInstallOrUpdate({ args, action: "update" });
         printInstallOrUpdateResult("updated", result, jsonOutput);
         return;
@@ -490,11 +640,12 @@ function runCli() {
           printHelp();
           return;
         }
+        const preparedSkillArgs = await prepareInteractiveModeArgs(skillArgs, `skills ${skillAction}`);
         const result = applySkillsAction({
-          args: skillArgs,
+          args: preparedSkillArgs,
           action: skillAction
         });
-        printSkillsResult(result, Boolean(skillArgs.json));
+        printSkillsResult(result, Boolean(preparedSkillArgs.json));
         return;
       }
       default:
@@ -508,11 +659,17 @@ function runCli() {
 }
 
 if (require.main === module) {
-  runCli();
+  runCli().catch((error) => {
+    const message = error.message.startsWith("ERROR:") ? error.message : formatErrors([error.message]);
+    console.error(message);
+    process.exit(1);
+  });
 }
 
 module.exports = {
   applyInstallOrUpdate,
   applySkillsAction,
+  prepareInteractiveInstallArgs,
+  prepareInteractiveModeArgs,
   runCli
 };

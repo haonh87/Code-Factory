@@ -6,6 +6,7 @@ step_id: "s08"
 step_slug: "verification"
 workflow_stage: delivery
 work_item_type: FEATURE
+delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
@@ -24,26 +25,50 @@ execution_mode: agentic
 execution_roles:
   - qc
   - developer
+approval_gates:
+  spec: required
+  contract: required
+  foundation: not_applicable
+  uat: required
+  release: not_applicable
+  business_acceptance: required
 role_signoffs:
+  spec: []
+  contract: []
   dor: []
   approach: []
+  foundation: []
   task_plan: []
+  uat:
+    - po
+    - qc
   release: []
   business_acceptance:
     - po
   dod:
     - qc
 gate_reviews:
+  spec_reviewed_by: []
+  spec_reviewed_at: ""
+  contract_reviewed_by: []
+  contract_reviewed_at: ""
   dor_reviewed_by: []
   dor_reviewed_at: ""
   approach_reviewed_by: []
   approach_reviewed_at: ""
+  foundation_reviewed_by: []
+  foundation_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
+  uat_reviewed_by:
+    - po
+    - qc
+  uat_reviewed_at: "2026-04-14T14:50:00Z"
   release_reviewed_by: []
   release_reviewed_at: ""
-  business_acceptance_reviewed_by: []
-  business_acceptance_reviewed_at: ""
+  business_acceptance_reviewed_by:
+    - po
+  business_acceptance_reviewed_at: "2026-04-14T15:05:00Z"
   dod_reviewed_by:
     - qc
   dod_reviewed_at: "2026-04-14T15:00:00Z"
@@ -90,6 +115,14 @@ owner: "qc"
 next_action: "Đóng DoD"
 ```
 
+## Regression & Compatibility Summary
+```yaml
+regression_status: PASS
+compatibility_status: PASS
+breaking_changes: []
+rollback_readiness: READY
+```
+
 ## Spec Coverage
 ```yaml
 coverage:
@@ -104,6 +137,32 @@ coverage:
 status: PASS
 notes:
   - "Không có issue blocker"
+```
+
+## UAT Summary
+```yaml
+status: PASS
+reviewers:
+  - "po"
+  - "qc"
+notes:
+  - "Scenario search by name và email khớp approved spec và approved contract."
+```
+
+## Release Summary
+```yaml
+status: NOT_APPLICABLE
+reviewers: []
+notes: []
+```
+
+## Business Acceptance Summary
+```yaml
+status: PASS
+reviewers:
+  - "po"
+notes:
+  - "PO xác nhận outcome khớp business intent đã approved."
 ```
 
 ## Audit

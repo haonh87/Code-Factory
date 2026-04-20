@@ -87,12 +87,13 @@ Output chuẩn của bước này nên được giữ dưới dạng `materializ
 
 ```yaml
 materialization_status: PROPOSED|READY|BLOCKED
-decision_owner: human|agent|coordinator
+decision_owner: agent|coordinator
 raw_request_summary: ""
 request_source: ""
 candidate_count: 1
 split_decision: single|split|defer
 dedup_result: no_conflict|reuse_work_item|reuse_change|needs_review
+delivery_context: greenfield|brownfield
 work_items:
   - work_item_slug: ""
     work_item_title: ""
@@ -114,7 +115,18 @@ work_items:
     scaffold_actions: []
     blockers: []
 decision_log: []
+bootstrap_gate_status: PENDING_REVIEW|APPROVED|NOT_REQUIRED
+bootstrap_gate_ref: ""
+bootstrap_reviewed_by: ""
+bootstrap_reviewed_at: ""
 ```
+
+Ghi chú:
+
+- `decision_owner` là owner của quyết định materialization do runtime tạo ra, không phải human approval authority.
+- Với baseline hiện tại, `decision_owner` hợp lệ là `agent` hoặc `coordinator`; human approval được ghi ở gate review riêng.
+- `delivery_context` phải explicit để protocol chọn đúng gate `greenfield` hoặc `brownfield`.
+- `bootstrap_*` chỉ dùng khi work item thuộc `greenfield`; đây là gate cấp project trước khi mở implementation path đầu tiên.
 
 ## Luồng Quyết Định Chuẩn
 
@@ -450,7 +462,9 @@ Flow khuyến nghị:
 3. nếu `change_strategy=create_new`, scaffold change package trước
 4. scaffold workflow
 5. copy quyết định materialization vào `s01 Clarify`
-6. tiếp tục chain `s01 -> s08`
+6. author `s01 -> s06`, lấy human pass cho các gate bắt buộc
+7. chỉ `activate` khi approval gate, bootstrap gate khi có, và evidence `s04-s06` đã sẵn sàng cho execution
+8. tiếp tục `s07 -> s08`
 
 Baseline hiện tại có thể chạy trực tiếp qua:
 
@@ -472,10 +486,11 @@ Khi `s01` đã được scaffold, nên lưu lại một block như sau để aud
 ## Work Item Materialization
 ```yaml
 materialization_status: PROPOSED|READY|BLOCKED
-decision_owner: human|agent|coordinator
+decision_owner: agent|coordinator
 raw_request_summary: ""
 split_decision: single|split|defer
 dedup_result: no_conflict|reuse_work_item|reuse_change|needs_review
+delivery_context: greenfield|brownfield
 work_item_slug: ""
 work_item_type: FEATURE|BUG|CHANGE|REFACTOR|RESEARCH
 change_strategy: none|reuse_existing|create_new
@@ -484,6 +499,10 @@ decision_reason:
   - ""
 existing_refs: []
 blockers: []
+bootstrap_gate_status: PENDING_REVIEW|APPROVED|NOT_REQUIRED
+bootstrap_gate_ref: ""
+bootstrap_reviewed_by: ""
+bootstrap_reviewed_at: ""
 ```
 ````
 

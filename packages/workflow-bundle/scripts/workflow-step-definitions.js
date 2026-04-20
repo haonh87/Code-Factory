@@ -216,6 +216,17 @@ const STEP_DEFINITIONS = [
           "done_when: []",
           'owner: ""'
         ]),
+        yamlSection("## Requirement Baseline", [
+          "status: APPROVED|BLOCKED|PARTIAL",
+          "approved_spec_refs: []",
+          "decision_notes: []"
+        ]),
+        yamlSection("## Contract Baseline", [
+          "status: NOT_APPLICABLE|APPROVED|BLOCKED|PARTIAL",
+          "api_contract_refs: []",
+          "ux_contract_refs: []",
+          "notes: []"
+        ]),
         yamlSection("## Artifact Chính", [
           "acceptance_criteria: []",
           "edge_cases: []",
@@ -237,6 +248,15 @@ const STEP_DEFINITIONS = [
           "notes: []"
         ])
       ];
+
+      if (context.deliveryContext === "brownfield") {
+        sections.splice(3, 0, yamlSection("## Existing System Baseline", [
+          "current_behavior_refs: []",
+          "impacted_surfaces: []",
+          "compatibility_constraints: []",
+          "rollback_constraints: []"
+        ]));
+      }
 
       if (context.sddMode !== "none") {
         sections.push(
@@ -297,6 +317,13 @@ const STEP_DEFINITIONS = [
           'recommended_option: ""',
           "trade_offs: []"
         ]),
+        yamlSection("## Foundation Decision", [
+          "status: NOT_APPLICABLE|APPROVED|BLOCKED|PARTIAL",
+          'solution_class: ""',
+          "selected_stack: []",
+          "selected_runtime: []",
+          "decision_notes: []"
+        ]),
         yamlSection("## Artifact Chính", [
           'recommended_approach: ""',
           'why: ""',
@@ -309,6 +336,17 @@ const STEP_DEFINITIONS = [
           "data_or_runtime_notes: []"
         ])
       ];
+
+      if (context.deliveryContext === "brownfield") {
+        sections.push(
+          yamlSection("## Brownfield Impact Analysis", [
+            "impacted_modules: []",
+            "compatibility_risks: []",
+            "migration_notes: []",
+            "rollback_notes: []"
+          ])
+        );
+      }
 
       sections.push(...buildExecutionContextSectionsIfNeeded("s05", context));
 
@@ -388,6 +426,17 @@ const STEP_DEFINITIONS = [
         ])
       ];
 
+      if (context.deliveryContext === "brownfield") {
+        sections.push(
+          yamlSection("## Brownfield Delivery Plan", [
+            "regression_checkpoints: []",
+            "compatibility_checkpoints: []",
+            "migration_or_backfill_steps: []",
+            "rollback_or_restore_steps: []"
+          ])
+        );
+      }
+
       sections.push(...buildExecutionContextSectionsIfNeeded("s06", context));
 
       if (context.sddMode !== "none") {
@@ -437,6 +486,26 @@ const STEP_DEFINITIONS = [
           "implemented_changes: []",
           "doc_changes: []",
           "operational_notes: []"
+        ]),
+        yamlSection("## Delivery Rule Evidence", [
+          "behavior_change: YES|NO",
+          "tdd_status: DONE|NOT_REQUIRED|EXCEPTION",
+          "tdd_test_refs: []",
+          'tdd_exception_reason: ""',
+          "tdd_alternative_verify_path: []",
+          "change_risk_profile: QUICK_FIX|STANDARD|LARGE_OR_RISKY",
+          "worktree_status: USED|NOT_REQUIRED|SKIPPED_WITH_REASON",
+          "worktree_refs: []",
+          'worktree_reason: ""',
+          "review_status: COMPLETED|PARTIAL|BLOCKED",
+          "review_refs: []",
+          "spec_compliance_status: PASS|FAIL|PARTIAL|NOT_RUN",
+          "code_quality_status: PASS|FAIL|PARTIAL|NOT_RUN",
+          "delegation_mode: agentic|multi_agent|subagent|sequential_multi_role",
+          "independence_status: PASS|FAIL|NOT_APPLICABLE",
+          "independence_refs: []",
+          'merge_path: ""',
+          "verify_path: []"
         ]),
         yamlSection("## Implementation Notes", [
           "framework_notes: []",
@@ -540,6 +609,21 @@ const STEP_DEFINITIONS = [
           "status: PASS|FAIL|PARTIAL",
           "notes: []"
         ]),
+        yamlSection("## UAT Summary", [
+          "status: NOT_APPLICABLE|PASS|FAIL|PARTIAL",
+          "reviewers: []",
+          "notes: []"
+        ]),
+        yamlSection("## Release Summary", [
+          "status: NOT_APPLICABLE|PASS|FAIL|PARTIAL",
+          "reviewers: []",
+          "notes: []"
+        ]),
+        yamlSection("## Business Acceptance Summary", [
+          "status: NOT_APPLICABLE|PASS|FAIL|PARTIAL",
+          "reviewers: []",
+          "notes: []"
+        ]),
         ...buildGovernanceExceptionSectionsIfNeeded(context),
         yamlSection("## Audit", [
           "audit_status: PASS|FAIL|PARTIAL",
@@ -551,6 +635,15 @@ const STEP_DEFINITIONS = [
           "owners: []"
         ])
       );
+
+      if (context.deliveryContext === "brownfield") {
+        sections.splice(3, 0, yamlSection("## Regression & Compatibility Summary", [
+          "regression_status: PASS|FAIL|PARTIAL",
+          "compatibility_status: PASS|FAIL|PARTIAL",
+          "breaking_changes: []",
+          "rollback_readiness: READY|BLOCKED|PARTIAL"
+        ]));
+      }
 
       if (context.sddMode !== "none") {
         sections.push(

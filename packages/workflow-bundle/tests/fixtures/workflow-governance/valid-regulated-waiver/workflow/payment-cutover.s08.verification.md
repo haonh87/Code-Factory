@@ -6,6 +6,7 @@ step_id: "s08"
 step_slug: "verification"
 workflow_stage: delivery
 work_item_type: CHANGE
+delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
@@ -25,6 +26,13 @@ execution_roles:
   - qc
   - devops
   - po
+approval_gates:
+  spec: required
+  contract: not_applicable
+  foundation: not_applicable
+  uat: not_applicable
+  release: required
+  business_acceptance: not_applicable
 role_signoffs:
   dor: []
   approach: []
@@ -42,8 +50,9 @@ gate_reviews:
   approach_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
-  release_reviewed_by: []
-  release_reviewed_at: ""
+  release_reviewed_by:
+    - devops
+  release_reviewed_at: "2026-04-15T08:50:00Z"
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
   dod_reviewed_by:
@@ -107,6 +116,14 @@ review_date: "2026-04-13"
 status: APPROVED
 ```
 
+## Regression & Compatibility Summary
+```yaml
+regression_status: PASS
+compatibility_status: PASS
+breaking_changes: []
+rollback_readiness: READY
+```
+
 ## Spec Coverage
 ```yaml
 coverage:
@@ -119,6 +136,22 @@ coverage:
 status: PASS
 notes:
   - "Waiver đã trace vào register"
+```
+
+## Release Summary
+```yaml
+status: PASS
+reviewers:
+  - "devops"
+notes:
+  - "Release gate pass với waiver còn hiệu lực."
+```
+
+## Business Acceptance Summary
+```yaml
+status: NOT_APPLICABLE
+reviewers: []
+notes: []
 ```
 
 ## Definition of Done

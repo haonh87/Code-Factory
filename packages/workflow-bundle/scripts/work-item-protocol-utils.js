@@ -21,7 +21,9 @@ const PROTOCOL_STATUSES = [
 ];
 
 const APPROVAL_STATUSES = ["PENDING_REVIEW", "APPROVED", "REJECTED", "NOT_REQUIRED"];
-const APPROVAL_GATE_PASSED = new Set(["APPROVED", "NOT_REQUIRED"]);
+const APPROVAL_GATE_PASSED = new Set(["APPROVED"]);
+const BOOTSTRAP_GATE_STATUSES = ["PENDING_REVIEW", "APPROVED", "NOT_REQUIRED"];
+const BOOTSTRAP_GATE_PASSED = new Set(["APPROVED", "NOT_REQUIRED"]);
 
 const PROTOCOL_TRANSITIONS = {
   INTAKE: ["PROPOSED"],
@@ -72,10 +74,9 @@ function buildYamlList(key, values, indent = "") {
 }
 
 function getDefaultApprovalState(decisionOwner) {
-  const reviewRequired = decisionOwner === "agent";
   return {
-    review_required: reviewRequired,
-    approval_status: reviewRequired ? "PENDING_REVIEW" : "NOT_REQUIRED",
+    review_required: true,
+    approval_status: "PENDING_REVIEW",
     reviewed_by: "",
     reviewed_at: "",
     review_notes: []
@@ -153,6 +154,7 @@ function normalizeProtocolReport(report) {
     decision_log: normalizeArray(report.decision_log),
     work_item_slug: String(report.work_item_slug || "").trim(),
     work_item_type: String(report.work_item_type || "FEATURE").trim(),
+    delivery_context: String(report.delivery_context || "brownfield").trim(),
     workflow_root: String(report.workflow_root || "").trim(),
     current_step: String(report.current_step || "").trim(),
     change_strategy: String(report.change_strategy || "none").trim(),
@@ -168,6 +170,10 @@ function normalizeProtocolReport(report) {
     reviewed_by: String(report.reviewed_by || approvalDefaults.reviewed_by).trim(),
     reviewed_at: String(report.reviewed_at || approvalDefaults.reviewed_at).trim(),
     review_notes: normalizeArray(report.review_notes || approvalDefaults.review_notes),
+    bootstrap_gate_status: String(report.bootstrap_gate_status || "NOT_REQUIRED").trim(),
+    bootstrap_gate_ref: String(report.bootstrap_gate_ref || "").trim(),
+    bootstrap_reviewed_by: String(report.bootstrap_reviewed_by || "").trim(),
+    bootstrap_reviewed_at: String(report.bootstrap_reviewed_at || "").trim(),
     protocol_events: (Array.isArray(report.protocol_events) ? report.protocol_events : [])
       .map((entry) => {
         try {
@@ -188,14 +194,15 @@ function buildBootstrapReport({ projectRoot, workflowRootBase, workItemSlug, wor
   }
 
   const workItemType = getFrontmatterValue(frontmatterLines, "work_item_type") || "FEATURE";
+  const deliveryContext = getFrontmatterValue(frontmatterLines, "delivery_context") || "brownfield";
   const changeId = getFrontmatterValue(frontmatterLines, "change_id") || "";
   const workflowRootRef = workflowRoot || getWorkItemPaths({ projectRoot, workflowRootBase, workItemSlug }).workflowRoot;
-  const approvalDefaults = getDefaultApprovalState("human");
+  const approvalDefaults = getDefaultApprovalState("coordinator");
 
   return normalizeProtocolReport({
     materialization_status: "READY",
     protocol_status: "MATERIALIZED",
-    decision_owner: "human",
+    decision_owner: "coordinator",
     protocol_owner: "",
     raw_request_summary: "",
     request_source: "legacy-scaffold",
@@ -206,6 +213,7 @@ function buildBootstrapReport({ projectRoot, workflowRootBase, workItemSlug, wor
     decision_log: ["bootstrap_from_existing_s01=true"],
     work_item_slug: workItemSlug,
     work_item_type: workItemType,
+    delivery_context: deliveryContext,
     workflow_root: workflowRootRef,
     current_step: "s01",
     change_strategy: changeId ? "reuse_existing" : "none",
@@ -215,6 +223,10 @@ function buildBootstrapReport({ projectRoot, workflowRootBase, workItemSlug, wor
     blockers: [],
     refs: [path.relative(projectRoot, workflowRootRef)],
     audit_events: ["REPORT_BOOTSTRAPPED"],
+    bootstrap_gate_status: deliveryContext === "greenfield" ? "APPROVED" : "NOT_REQUIRED",
+    bootstrap_gate_ref: deliveryContext === "greenfield" ? path.relative(projectRoot, s01Path) : "",
+    bootstrap_reviewed_by: deliveryContext === "greenfield" ? "human" : "",
+    bootstrap_reviewed_at: deliveryContext === "greenfield" ? new Date().toISOString() : "",
     ...approvalDefaults,
     protocol_events: [
       buildProtocolEvent({
@@ -273,9 +285,14 @@ function renderProtocolBlock(reportInput) {
     `review_required: ${report.review_required ? "true" : "false"}`,
     `work_item_slug: ${quoteYamlString(report.work_item_slug)}`,
     `work_item_type: ${report.work_item_type}`,
+    `delivery_context: ${report.delivery_context}`,
     `workflow_root: ${quoteYamlString(report.workflow_root)}`,
     `current_step: ${quoteYamlString(report.current_step)}`,
     `materialization_status: ${report.materialization_status}`,
+    `bootstrap_gate_status: ${report.bootstrap_gate_status}`,
+    `bootstrap_gate_ref: ${quoteYamlString(report.bootstrap_gate_ref)}`,
+    `bootstrap_reviewed_by: ${quoteYamlString(report.bootstrap_reviewed_by)}`,
+    `bootstrap_reviewed_at: ${quoteYamlString(report.bootstrap_reviewed_at)}`,
     `change_strategy: ${report.change_strategy}`,
     `change_id: ${quoteYamlString(report.change_id)}`,
     `decision_owner: ${quoteYamlString(report.decision_owner)}`,
@@ -340,6 +357,8 @@ function isAllowedProtocolTransition(fromStatus, toStatus) {
 module.exports = {
   APPROVAL_GATE_PASSED,
   APPROVAL_STATUSES,
+  BOOTSTRAP_GATE_PASSED,
+  BOOTSTRAP_GATE_STATUSES,
   PROTOCOL_STATUSES,
   PROTOCOL_TRANSITIONS,
   buildProtocolEvent,

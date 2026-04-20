@@ -21,6 +21,14 @@ const {
   GOVERNANCE_STATUSES,
   STANDARD_GOVERNANCE_REFS
 } = require("./workflow-governance-definitions");
+const {
+  APPROVAL_GATE_KEYS,
+  SIGNOFF_KEYS,
+  countYamlListItemsInSection,
+  getApprovalGateDefault,
+  getRequiredFinalizedGateKeys,
+  getSectionScalarValue
+} = require("./workflow-gate-evidence-utils");
 
 const filePattern =
   /^(?<work_item_slug>[a-z0-9]+(?:-[a-z0-9]+)*)\.(?<step_id>s0[1-8])\.(?<step_slug>[a-z-]+)\.md$/;
@@ -30,13 +38,8 @@ const allowedRoles = new Set(GOVERNANCE_ROLES);
 const allowedRegisterStatuses = new Set(EXCEPTION_REGISTER_STATUSES);
 const allowedStandardGovernanceRefs = new Set(STANDARD_GOVERNANCE_REFS);
 const expectedChecklistByProfile = CHECKLIST_BY_PROFILE;
-const signoffKeys = ["dor", "approach", "task_plan", "release", "business_acceptance", "dod"];
-const requiredFinalizedSignoffByStep = {
-  s04: ["dor"],
-  s05: ["approach"],
-  s06: ["task_plan"],
-  s08: ["dod"]
-};
+const allowedDeliveryContexts = new Set(["greenfield", "brownfield"]);
+const allowedApprovalGateStates = new Set(["required", "not_applicable"]);
 const requiredBlocksByStep = {
   s01: ["## Governance Context"],
   s04: ["## Governance Checks"],
@@ -47,6 +50,14 @@ const disallowedFinalizedStatusesByStep = {
   s04: new Set(["CHECKS_PENDING", "NOT_APPLICABLE"]),
   s08: new Set(["CHECKS_PENDING", "NOT_APPLICABLE"])
 };
+const allowedBehaviorChangeStates = new Set(["YES", "NO"]);
+const allowedTddStates = new Set(["DONE", "NOT_REQUIRED", "EXCEPTION"]);
+const allowedChangeRiskProfiles = new Set(["QUICK_FIX", "STANDARD", "LARGE_OR_RISKY"]);
+const allowedWorktreeStates = new Set(["USED", "NOT_REQUIRED", "SKIPPED_WITH_REASON"]);
+const allowedReviewStates = new Set(["COMPLETED", "PARTIAL", "BLOCKED"]);
+const allowedReviewVerdicts = new Set(["PASS", "FAIL", "PARTIAL", "NOT_RUN"]);
+const allowedDelegationModes = new Set(["agentic", "multi_agent", "subagent", "sequential_multi_role"]);
+const allowedIndependenceStates = new Set(["PASS", "FAIL", "NOT_APPLICABLE"]);
 
 function hasRequiredBlock(fileContent, blockHeading) {
   const pattern = new RegExp(`^${escapeRegExp(blockHeading)}\\s*$`, "m");
@@ -55,16 +66,6 @@ function hasRequiredBlock(fileContent, blockHeading) {
 
 function getExceptionIds(fileContent) {
   return [...fileContent.matchAll(/^\s*exception_id:\s*["']?([A-Z0-9-]+)["']?\s*$/gm)].map((match) => match[1]);
-}
-
-function getSectionScalarValue(sectionContent, fieldName) {
-  if (!sectionContent) {
-    return "";
-  }
-
-  const pattern = new RegExp(`^\\s*${escapeRegExp(fieldName)}:\\s*["']?([^"']+?)["']?\\s*$`, "m");
-  const match = sectionContent.match(pattern);
-  return match && match[1] ? match[1].trim() : "";
 }
 
 function parseRoleList(value) {
@@ -161,12 +162,17 @@ function escapeRegExp(input) {
   return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+function hasYamlScalarValue(sectionContent, fieldName) {
+  return Boolean(getSectionScalarValue(sectionContent, fieldName));
+}
+
 function validateWorkflowGovernance(options) {
   const workflowRoot = resolveExistingPath(options.workflowRoot, "workflow-root");
   const projectRoot = resolveExistingPath(options.projectRoot || process.cwd(), "project-root");
   const registerPath = path.join(projectRoot, "project-context", "governance-exception-register.md");
   const files = collectFilesRecursive(workflowRoot, new Set([".md"]));
   const errors = [];
+  const workItemDeliveryContextMap = new Map();
   let matchedFiles = 0;
   let registerContent = "";
 
@@ -213,11 +219,37 @@ function validateWorkflowGovernance(options) {
     const governanceRef = getFrontmatterValue(frontmatterLines, "governance_ref");
     const governanceProfile = getFrontmatterValue(frontmatterLines, "governance_profile");
     const governanceStatus = getFrontmatterValue(frontmatterLines, "governance_status");
+    const rawDeliveryContext = getFrontmatterValue(frontmatterLines, "delivery_context");
+    const deliveryContext = rawDeliveryContext || "brownfield";
     const noteStatus = getFrontmatterValue(frontmatterLines, "status") || "draft";
+
+    if (!allowedDeliveryContexts.has(deliveryContext)) {
+      errors.push(`Invalid delivery_context '${deliveryContext}' in ${filePath}`);
+    }
+
+    if (isFinalizedNoteStatus(noteStatus) && !rawDeliveryContext) {
+      errors.push(`Finalized note requires explicit delivery_context: ${filePath}`);
+    }
+
+    const existingDeliveryContext = workItemDeliveryContextMap.get(workItemSlug);
+    if (!existingDeliveryContext) {
+      workItemDeliveryContextMap.set(workItemSlug, deliveryContext);
+    } else if (existingDeliveryContext !== deliveryContext) {
+      errors.push(`Inconsistent delivery_context within work item '${workItemSlug}': ${filePath}`);
+    }
+
     let checklistRefs = getFrontmatterList(frontmatterLines, "checklist_refs");
+    const specStatus = getFrontmatterValue(frontmatterLines, "spec_status") || "draft";
+    const approvalGates = {};
     const roleSignoffs = {};
     const gateReviews = {};
-    signoffKeys.forEach((key) => {
+    APPROVAL_GATE_KEYS.forEach((key) => {
+      approvalGates[key] = getFrontmatterNestedValue(frontmatterLines, "approval_gates", key) || getApprovalGateDefault(key);
+      if (!allowedApprovalGateStates.has(approvalGates[key])) {
+        errors.push(`Invalid approval_gates.${key} '${approvalGates[key]}' in ${filePath}`);
+      }
+    });
+    SIGNOFF_KEYS.forEach((key) => {
       roleSignoffs[key] = getFrontmatterNestedList(frontmatterLines, "role_signoffs", key) || [];
       validateKnownRoles(roleSignoffs[key], `role_signoffs.${key}`, filePath, errors);
 
@@ -356,7 +388,7 @@ function validateWorkflowGovernance(options) {
     }
 
     if (isFinalizedNoteStatus(noteStatus)) {
-      const requiredSignoffs = requiredFinalizedSignoffByStep[stepId] || [];
+      const requiredSignoffs = getRequiredFinalizedGateKeys(stepId, approvalGates);
       requiredSignoffs.forEach((key) => {
         const reviewedByField = getGateReviewFieldName(key, "by");
         const reviewedAtField = getGateReviewFieldName(key, "at");
@@ -370,6 +402,216 @@ function validateWorkflowGovernance(options) {
           errors.push(`Finalized ${stepId} note requires non-empty gate_reviews.${reviewedAtField}: ${filePath}`);
         }
       });
+
+      if (stepId === "s04" && approvalGates.spec === "required") {
+        if (!["approved", "frozen"].includes(specStatus)) {
+          errors.push(`Finalized s04 note with approval_gates.spec=required must use spec_status approved|frozen: ${filePath}`);
+        }
+
+        if (!hasRequiredBlock(content, "## Requirement Baseline")) {
+          errors.push(`Finalized s04 note with approval_gates.spec=required requires '## Requirement Baseline': ${filePath}`);
+        }
+      }
+
+      if (stepId === "s04" && approvalGates.contract === "required" && !hasRequiredBlock(content, "## Contract Baseline")) {
+        errors.push(`Finalized s04 note with approval_gates.contract=required requires '## Contract Baseline': ${filePath}`);
+      }
+
+      if (stepId === "s05") {
+        const optionAnalysisSection = getMarkdownSectionContent(content, "## Option Analysis");
+        const optionCount = countYamlListItemsInSection(optionAnalysisSection, "options");
+        if (optionCount < 2 || optionCount > 3) {
+          errors.push(`Finalized s05 note requires 2-3 options in '## Option Analysis'; got ${optionCount}: ${filePath}`);
+        }
+        if (!hasYamlScalarValue(optionAnalysisSection, "recommended_option")) {
+          errors.push(`Finalized s05 note requires non-empty recommended_option in '## Option Analysis': ${filePath}`);
+        }
+      }
+
+      if (stepId === "s05" && approvalGates.foundation === "required" && !hasRequiredBlock(content, "## Foundation Decision")) {
+        errors.push(`Finalized s05 note with approval_gates.foundation=required requires '## Foundation Decision': ${filePath}`);
+      }
+
+      if (stepId === "s05" && deliveryContext === "greenfield" && approvalGates.foundation !== "required") {
+        errors.push(`Finalized greenfield s05 note requires approval_gates.foundation=required: ${filePath}`);
+      }
+
+      if (stepId === "s08" && approvalGates.uat === "required" && !hasRequiredBlock(content, "## UAT Summary")) {
+        errors.push(`Finalized s08 note with approval_gates.uat=required requires '## UAT Summary': ${filePath}`);
+      }
+
+      if (stepId === "s08" && approvalGates.release === "required" && !hasRequiredBlock(content, "## Release Summary")) {
+        errors.push(`Finalized s08 note with approval_gates.release=required requires '## Release Summary': ${filePath}`);
+      }
+
+      if (
+        stepId === "s08" &&
+        approvalGates.business_acceptance === "required" &&
+        !hasRequiredBlock(content, "## Business Acceptance Summary")
+      ) {
+        errors.push(
+          `Finalized s08 note with approval_gates.business_acceptance=required requires '## Business Acceptance Summary': ${filePath}`
+        );
+      }
+
+      if (deliveryContext === "brownfield") {
+        if (stepId === "s04" && !hasRequiredBlock(content, "## Existing System Baseline")) {
+          errors.push(`Finalized brownfield s04 note requires '## Existing System Baseline': ${filePath}`);
+        }
+        if (stepId === "s05" && !hasRequiredBlock(content, "## Brownfield Impact Analysis")) {
+          errors.push(`Finalized brownfield s05 note requires '## Brownfield Impact Analysis': ${filePath}`);
+        }
+        if (stepId === "s06" && !hasRequiredBlock(content, "## Brownfield Delivery Plan")) {
+          errors.push(`Finalized brownfield s06 note requires '## Brownfield Delivery Plan': ${filePath}`);
+        }
+        if (stepId === "s08" && !hasRequiredBlock(content, "## Regression & Compatibility Summary")) {
+          errors.push(`Finalized brownfield s08 note requires '## Regression & Compatibility Summary': ${filePath}`);
+        }
+      }
+
+      if (stepId === "s07") {
+        if (!hasRequiredBlock(content, "## Delivery Rule Evidence")) {
+          errors.push(`Finalized s07 note requires '## Delivery Rule Evidence': ${filePath}`);
+        } else {
+          const deliveryRuleSection = getMarkdownSectionContent(content, "## Delivery Rule Evidence");
+          const behaviorChange = getSectionScalarValue(deliveryRuleSection, "behavior_change");
+          const tddStatus = getSectionScalarValue(deliveryRuleSection, "tdd_status");
+          const changeRiskProfile = getSectionScalarValue(deliveryRuleSection, "change_risk_profile");
+          const worktreeStatus = getSectionScalarValue(deliveryRuleSection, "worktree_status");
+          const reviewStatus = getSectionScalarValue(deliveryRuleSection, "review_status");
+          const specComplianceStatus = getSectionScalarValue(deliveryRuleSection, "spec_compliance_status");
+          const codeQualityStatus = getSectionScalarValue(deliveryRuleSection, "code_quality_status");
+          const delegationMode = getSectionScalarValue(deliveryRuleSection, "delegation_mode");
+          const independenceStatus = getSectionScalarValue(deliveryRuleSection, "independence_status");
+          const tddTestRefs = countYamlListItemsInSection(deliveryRuleSection, "tdd_test_refs");
+          const tddAlternativeVerifyPath = countYamlListItemsInSection(deliveryRuleSection, "tdd_alternative_verify_path");
+          const worktreeRefs = countYamlListItemsInSection(deliveryRuleSection, "worktree_refs");
+          const reviewRefs = countYamlListItemsInSection(deliveryRuleSection, "review_refs");
+          const independenceRefs = countYamlListItemsInSection(deliveryRuleSection, "independence_refs");
+          const verifyPathCount = countYamlListItemsInSection(deliveryRuleSection, "verify_path");
+          const tddExceptionReason = getSectionScalarValue(deliveryRuleSection, "tdd_exception_reason");
+          const worktreeReason = getSectionScalarValue(deliveryRuleSection, "worktree_reason");
+          const mergePath = getSectionScalarValue(deliveryRuleSection, "merge_path");
+          const executionMode = getFrontmatterValue(frontmatterLines, "execution_mode") || "agentic";
+
+          if (!allowedBehaviorChangeStates.has(behaviorChange)) {
+            errors.push(`Invalid behavior_change '${behaviorChange}' in '## Delivery Rule Evidence': ${filePath}`);
+          }
+
+          if (!allowedTddStates.has(tddStatus)) {
+            errors.push(`Invalid tdd_status '${tddStatus}' in '## Delivery Rule Evidence': ${filePath}`);
+          }
+
+          if (behaviorChange === "YES" && tddStatus === "NOT_REQUIRED") {
+            errors.push(`behavior_change=YES cannot use tdd_status=NOT_REQUIRED in ${filePath}`);
+          }
+
+          if (tddStatus === "DONE" && tddTestRefs < 1) {
+            errors.push(`tdd_status=DONE requires non-empty tdd_test_refs in ${filePath}`);
+          }
+
+          if (tddStatus === "EXCEPTION") {
+            if (!tddExceptionReason) {
+              errors.push(`tdd_status=EXCEPTION requires tdd_exception_reason in ${filePath}`);
+            }
+            if (tddAlternativeVerifyPath < 1) {
+              errors.push(`tdd_status=EXCEPTION requires tdd_alternative_verify_path in ${filePath}`);
+            }
+          }
+
+          if (!allowedChangeRiskProfiles.has(changeRiskProfile)) {
+            errors.push(`Invalid change_risk_profile '${changeRiskProfile}' in '## Delivery Rule Evidence': ${filePath}`);
+          }
+
+          if (!allowedWorktreeStates.has(worktreeStatus)) {
+            errors.push(`Invalid worktree_status '${worktreeStatus}' in '## Delivery Rule Evidence': ${filePath}`);
+          }
+
+          if (changeRiskProfile === "LARGE_OR_RISKY" && worktreeStatus === "NOT_REQUIRED") {
+            errors.push(`change_risk_profile=LARGE_OR_RISKY cannot use worktree_status=NOT_REQUIRED in ${filePath}`);
+          }
+
+          if (worktreeStatus === "USED" && worktreeRefs < 1) {
+            errors.push(`worktree_status=USED requires non-empty worktree_refs in ${filePath}`);
+          }
+
+          if (worktreeStatus === "SKIPPED_WITH_REASON" && !worktreeReason) {
+            errors.push(`worktree_status=SKIPPED_WITH_REASON requires worktree_reason in ${filePath}`);
+          }
+
+          if (!allowedReviewStates.has(reviewStatus)) {
+            errors.push(`Invalid review_status '${reviewStatus}' in '## Delivery Rule Evidence': ${filePath}`);
+          }
+
+          if (!allowedReviewVerdicts.has(specComplianceStatus)) {
+            errors.push(`Invalid spec_compliance_status '${specComplianceStatus}' in '## Delivery Rule Evidence': ${filePath}`);
+          }
+
+          if (!allowedReviewVerdicts.has(codeQualityStatus)) {
+            errors.push(`Invalid code_quality_status '${codeQualityStatus}' in '## Delivery Rule Evidence': ${filePath}`);
+          }
+
+          if (specComplianceStatus === "NOT_RUN") {
+            errors.push(`spec_compliance_status must not be NOT_RUN in finalized s07 note: ${filePath}`);
+          }
+
+          if (reviewStatus === "COMPLETED") {
+            if (codeQualityStatus === "NOT_RUN") {
+              errors.push(`review_status=COMPLETED requires code_quality_status to be executed in ${filePath}`);
+            }
+            if (reviewRefs < 1) {
+              errors.push(`review_status=COMPLETED requires non-empty review_refs in ${filePath}`);
+            }
+          }
+
+          if (reviewStatus === "PARTIAL" && reviewRefs < 1) {
+            errors.push(`review_status=PARTIAL requires non-empty review_refs in ${filePath}`);
+          }
+
+          if (codeQualityStatus !== "NOT_RUN" && specComplianceStatus === "NOT_RUN") {
+            errors.push(`code_quality_status cannot run before spec_compliance_status in ${filePath}`);
+          }
+
+          if (!allowedDelegationModes.has(delegationMode)) {
+            errors.push(`Invalid delegation_mode '${delegationMode}' in '## Delivery Rule Evidence': ${filePath}`);
+          }
+
+          if (!allowedIndependenceStates.has(independenceStatus)) {
+            errors.push(`Invalid independence_status '${independenceStatus}' in '## Delivery Rule Evidence': ${filePath}`);
+          }
+
+          if (executionMode === "multi_agent" && delegationMode !== "multi_agent") {
+            errors.push(`execution_mode=multi_agent requires delegation_mode=multi_agent in ${filePath}`);
+          }
+
+          if (executionMode !== "multi_agent" && delegationMode === "multi_agent") {
+            errors.push(`delegation_mode=multi_agent requires execution_mode=multi_agent in ${filePath}`);
+          }
+
+          if (["multi_agent", "subagent"].includes(delegationMode)) {
+            if (independenceStatus !== "PASS") {
+              errors.push(`delegation_mode=${delegationMode} requires independence_status=PASS in ${filePath}`);
+            }
+            if (independenceRefs < 1) {
+              errors.push(`delegation_mode=${delegationMode} requires non-empty independence_refs in ${filePath}`);
+            }
+            if (!mergePath) {
+              errors.push(`delegation_mode=${delegationMode} requires merge_path in ${filePath}`);
+            }
+            if (verifyPathCount < 1) {
+              errors.push(`delegation_mode=${delegationMode} requires verify_path in ${filePath}`);
+            }
+          }
+
+          if (delegationMode === "sequential_multi_role" && verifyPathCount < 1) {
+            errors.push(`delegation_mode=sequential_multi_role requires verify_path in ${filePath}`);
+          }
+
+          if (delegationMode === "agentic" && independenceStatus === "FAIL") {
+            errors.push(`delegation_mode=agentic cannot use independence_status=FAIL in ${filePath}`);
+          }
+        }
+      }
     }
 
     if (shouldRequireRegister(stepId, governanceProfile, governanceStatus)) {
