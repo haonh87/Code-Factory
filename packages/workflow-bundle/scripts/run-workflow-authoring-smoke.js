@@ -13,6 +13,10 @@ function writeFile(filePath, content) {
   fs.writeFileSync(filePath, content, "utf8");
 }
 
+function writeJson(filePath, value) {
+  writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`);
+}
+
 function assertPathExists(targetPath, message) {
   if (!fs.existsSync(targetPath)) {
     throw new Error(message || `Expected path to exist: ${targetPath}`);
@@ -150,6 +154,25 @@ function seedProjectContext(projectRoot) {
       ""
     ].join("\n")
   );
+}
+
+function seedWorkflowBundleConfig(projectRoot, overrides = {}) {
+  const baseConfig = {
+    projectRoot: ".",
+    workflowRoot: "work-items",
+    protocolControl: {
+      legacyScaffoldPolicy: "allow_readonly"
+    }
+  };
+
+  writeJson(path.join(projectRoot, "workflow-bundle.config.json"), {
+    ...baseConfig,
+    ...overrides,
+    protocolControl: {
+      ...baseConfig.protocolControl,
+      ...(overrides.protocolControl || {})
+    }
+  });
 }
 
 function seedProductSpecs(projectRoot, scopeSlug) {
@@ -475,7 +498,7 @@ function runCaseMutatingActionRequiresReport(repoRoot, projectRoot) {
     workflowRootBase
   ]);
   assertContentIncludes(statusOutput, "protocol_status=MATERIALIZED", "Expected read-only bootstrap status for legacy scaffold.");
-  assertContentIncludes(statusOutput, '"bootstrap_gate_status": "NOT_REQUIRED"', "Expected bootstrap status in read-only report.");
+  assertContentIncludes(statusOutput, '"bootstrap_gate_status": "PENDING_REVIEW"', "Expected greenfield bootstrap status in read-only report.");
 
   runNodeScriptExpectFailure(
     repoRoot,
@@ -495,6 +518,49 @@ function runCaseMutatingActionRequiresReport(repoRoot, projectRoot) {
   if (fs.existsSync(reportPath)) {
     throw new Error("Mutating action must not bootstrap and write a new protocol report.");
   }
+}
+
+function runCaseStrictDefaultBlocksLegacyScaffold(repoRoot, projectRoot) {
+  const strictProjectRoot = path.join(projectRoot, "strict-default-legacy");
+  const workItemSlug = "strict-legacy-item";
+  const workflowRootBase = path.join(strictProjectRoot, "work-items");
+  const workflowRoot = path.join(workflowRootBase, workItemSlug);
+  const s01Path = path.join(workflowRoot, `${workItemSlug}.s01.restate.md`);
+  const s05Path = path.join(workflowRoot, `${workItemSlug}.s05.technical-approach.md`);
+
+  seedProjectContext(strictProjectRoot);
+
+  runNodeScript(repoRoot, "scripts/scaffold-workflow.js", [
+    "--work-item",
+    workItemSlug,
+    "--workflow-root",
+    workflowRoot,
+    "--project-root",
+    strictProjectRoot
+  ]);
+
+  assertContentIncludes(
+    fs.readFileSync(s01Path, "utf8"),
+    "delivery_context: greenfield",
+    "Expected manual scaffold on empty repo to infer delivery_context=greenfield."
+  );
+  assertContentIncludes(
+    fs.readFileSync(s05Path, "utf8"),
+    'foundation: "required"',
+    "Expected greenfield scaffold to require foundation gate by default."
+  );
+
+  runNodeScriptExpectFailure(
+    repoRoot,
+    "scripts/validate-work-item-protocol.js",
+    [
+      "--workflow-root",
+      workflowRootBase,
+      "--project-root",
+      strictProjectRoot
+    ],
+    "Legacy scaffold without protocol report is forbidden"
+  );
 }
 
 function runCaseCapabilityControl(repoRoot, projectRoot) {
@@ -999,6 +1065,7 @@ function main() {
     { name: "basic-full", run: runCaseBasicFull },
     { name: "quick-single-step", run: runCaseQuickSingleStep },
     { name: "mutating-action-requires-report", run: runCaseMutatingActionRequiresReport },
+    { name: "strict-default-blocks-legacy-scaffold", run: runCaseStrictDefaultBlocksLegacyScaffold },
     { name: "capability-control", run: runCaseCapabilityControl },
     { name: "enterprise-multi-agent", run: runCaseEnterpriseMultiAgent },
     { name: "strict-sdd-change", run: runCaseStrictSddChange },
@@ -1011,6 +1078,7 @@ function main() {
     process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = approvalRoot;
     process.env.WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE = "smoke-passphrase";
     seedProjectContext(tempRoot);
+    seedWorkflowBundleConfig(tempRoot);
 
     cases.forEach((smokeCase) => {
       try {

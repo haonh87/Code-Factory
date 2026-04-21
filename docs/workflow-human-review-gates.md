@@ -59,6 +59,7 @@ Muốn chặt hơn, cần thêm 6 điều:
   - artifact step hoặc protocol là source-of-truth
   - evidence đủ để reviewer kiểm
   - owner hoặc approver đúng authority
+- `legacy scaffold` không có `.work-item-report.json` không được mặc định xem là execution-ready; strict default của bundle là `protocolControl.legacyScaffoldPolicy=forbid`.
 - Human pass phải explicit:
   - không suy diễn từ comment, `review pass` kỹ thuật, `test pass` cục bộ, việc artifact đã tồn tại, hay chỉ từ metadata trong note
 - Nếu gate human chưa pass:
@@ -156,6 +157,7 @@ Nếu muốn siết chặt AI-human hơn baseline, nên coi các gate dưới đ
 Nếu project đang trống hoặc chưa có baseline đã approved, phải siết chặt hơn baseline thông thường:
 
 - AI chỉ được dừng ở `proposal stage`, không được tự nhảy sang `implementation stage`.
+- Nếu không truyền `delivery_context` tường minh, tool phải suy theo baseline repo thật; repo trống hoặc chưa có implementation baseline thì mặc định là `greenfield`.
 - `site tĩnh`, SPA, SSR, backend-first, CMS, framework, runtime model, deploy model hoặc CI/CD baseline là `foundation decision`, không phải chi tiết implement nhỏ.
 - `foundation decision` phải được human review explicit ở `s05 Approach pass`.
 - `s06 Task Plan pass` chỉ hợp lệ sau khi `s05` đã chốt xong foundation decision.

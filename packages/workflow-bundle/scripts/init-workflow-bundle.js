@@ -11,6 +11,9 @@ const {
 const DEFAULT_CONFIG = {
   projectRoot: ".",
   workflowRoot: "work-items",
+  protocolControl: {
+    legacyScaffoldPolicy: "forbid"
+  },
   capabilityControl: {
     enabled: true,
     authoringRoots: DEFAULT_AUTHORING_ROOTS,

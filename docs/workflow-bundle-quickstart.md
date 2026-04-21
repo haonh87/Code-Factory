@@ -121,6 +121,7 @@ wfc init
 Lệnh này sẽ tạo:
 
 - `workflow-bundle.config.json`
+  mặc định có `protocolControl.legacyScaffoldPolicy=forbid` để không coi legacy scaffold là execution path hợp lệ
 - `work-items/`
 - `changes/`
 - `product-specs/brd/`
@@ -200,7 +201,7 @@ wfc protocol
 
 Ghi chú protocol:
 
-- `wfc work-item list` và `wfc work-item status` có thể bootstrap report read-only từ `s01` cũ để quan sát legacy scaffold.
+- strict default của repo mới là `protocolControl.legacyScaffoldPolicy=forbid`; chỉ khi project config bật explicit `allow_readonly` thì `wfc work-item list|status` mới nên dùng bootstrap report read-only từ `s01` cũ để quan sát legacy scaffold.
 - các action mutating như `approve`, `activate`, `verify`, `close` không được tự bootstrap; chúng yêu cầu `.work-item-report.json` đã tồn tại.
 - `change-item approve`, `work-item approve` và `gate approve` sẽ ký receipt vào trusted approval root; nếu receipt không hợp lệ hoặc artifact đổi sau khi approve, `activate` sẽ fail.
 - lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase.

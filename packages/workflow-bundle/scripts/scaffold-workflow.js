@@ -39,6 +39,7 @@ const { validateWorkflowArtifactNames } = require("./validate-workflow-artifact-
 const { validateWorkflowExecution } = require("./validate-workflow-execution");
 const { validateWorkflowGovernance } = require("./validate-workflow-governance");
 const { validateWorkflowPlanning } = require("./validate-workflow-planning");
+const { inferDeliveryContext } = require("./work-item-protocol-utils");
 
 const WORK_ITEM_TYPES = ["FEATURE", "BUG", "CHANGE", "REFACTOR", "RESEARCH"];
 const DELIVERY_CONTEXTS = ["greenfield", "brownfield"];
@@ -221,7 +222,8 @@ function parseContextFromArgs(args) {
   }
 
   const workItemType = normalizeSingleValue(args["work-item-type"] || "FEATURE");
-  const deliveryContext = normalizeSingleValue(args["delivery-context"] || "brownfield");
+  const projectRoot = path.resolve(normalizeSingleValue(args["project-root"]) || process.cwd());
+  const deliveryContext = inferDeliveryContext(projectRoot, normalizeSingleValue(args["delivery-context"] || ""));
   const planningTrack = normalizeSingleValue(args["planning-track"] || "full");
   validateChoice("delivery-context", deliveryContext, DELIVERY_CONTEXTS);
   validateChoice("planning-track", planningTrack, PLANNING_TRACKS);

@@ -118,7 +118,7 @@ Ghi chú:
 - `change-item approve`, `work-item approve` và `gate approve` sẽ ghi signed receipt vào trusted approval root ngoài project root; không có receipt hợp lệ thì protocol không mở gate.
 - lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase.
 - implementation path bị khóa ở mức filesystem cho tới khi có `ACTIVE + s07 + granted write roots`.
-- `wfc work-item list|status` có thể bootstrap report read-only từ `s01` cũ để quan sát trạng thái legacy scaffold.
+- strict default của repo mới là `protocolControl.legacyScaffoldPolicy=forbid`; chỉ khi project config bật explicit `allow_readonly` thì `wfc work-item list|status` mới nên dùng bootstrap report read-only từ `s01` cũ để quan sát trạng thái legacy scaffold.
 - các action mutating như `approve|activate|verify|close` không được tự bootstrap; chúng yêu cầu `.work-item-report.json` đã tồn tại.
 
 ## Config
@@ -131,6 +131,9 @@ Ví dụ:
 {
   "projectRoot": ".",
   "workflowRoot": "work-items",
+  "protocolControl": {
+    "legacyScaffoldPolicy": "forbid"
+  },
   "capabilityControl": {
     "enabled": true,
     "authoringRoots": ["work-items", "changes", "product-specs", "project-context", "docs"],
@@ -143,6 +146,7 @@ Ví dụ:
 
 Ý nghĩa nhanh:
 
+- `protocolControl.legacyScaffoldPolicy`: strict default là `forbid`; không coi legacy scaffold như đường delivery hợp lệ trừ khi project bật explicit `allow_readonly`
 - `authoringRoots`: path workflow/artifact luôn được phép ghi
 - `alwaysWritablePaths`: file config bundle luôn được phép cập nhật
 - `protectedRoots`: nếu để trống, capability control sẽ suy ra từ top-level repo root không thuộc `authoringRoots`

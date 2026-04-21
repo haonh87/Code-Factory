@@ -18,6 +18,7 @@ const {
   buildProtocolEvent,
   getWorkItemPaths,
   isAllowedProtocolTransition,
+  loadProtocolControl,
   loadProtocolReport,
   normalizeArray,
   normalizeProtocolReport,
@@ -557,14 +558,14 @@ function printList(entriesInput, workflowRootBase, jsonOutput = false) {
   });
 }
 
-function listWorkItems({ projectRoot, workflowRootBase }) {
+function listWorkItems({ projectRoot, workflowRootBase, protocolControl }) {
   return collectWorkItemDirs(workflowRootBase).map((workItemSlug) => {
     try {
       const loaded = loadProtocolReport({
         projectRoot,
         workflowRootBase,
         workItemSlug,
-        allowBootstrap: true
+        allowBootstrap: protocolControl.legacyScaffoldPolicy === "allow_readonly"
       });
       const report = normalizeProtocolReport(loaded.report);
       return {
@@ -607,11 +608,13 @@ function runCli() {
   try {
     const projectRoot = path.resolve(normalizeSingleValue(args["project-root"] || process.cwd()));
     const workflowRootBase = resolveWorkflowRootBase(projectRoot, normalizeSingleValue(args["workflow-root"] || ""));
+    const protocolControl = loadProtocolControl(projectRoot);
 
     if (action === "list") {
       const entries = listWorkItems({
         projectRoot,
-        workflowRootBase
+        workflowRootBase,
+        protocolControl
       });
       printList(entries, workflowRootBase, Boolean(args.json));
       return;
@@ -622,7 +625,7 @@ function runCli() {
       projectRoot,
       workflowRootBase,
       workItemSlug,
-      allowBootstrap: action === "status"
+      allowBootstrap: action === "status" && protocolControl.legacyScaffoldPolicy === "allow_readonly"
     });
 
     if (action === "status") {

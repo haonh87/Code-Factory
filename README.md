@@ -90,7 +90,7 @@ Ghi chú:
 
 - `--work-item` là tên CLI ngắn cho `work_item_slug`.
 - `work_item_slug` là định danh xuyên suốt 8 bước, ví dụ `fix-login-timeout`, `checkout-recovery`.
-- `wfc work-item list|status` có thể bootstrap report read-only từ `s01` cũ để quan sát legacy scaffold.
+- strict default của repo mới là `protocolControl.legacyScaffoldPolicy=forbid`; chỉ khi project config bật explicit `allow_readonly` thì `wfc work-item list|status` mới nên dùng bootstrap report read-only từ `s01` cũ để quan sát legacy scaffold.
 - các action mutating như `approve|activate|verify|close` không được tự bootstrap; chúng yêu cầu `.work-item-report.json` đã tồn tại.
 - `work-item approval`, `change approval` và `gate approval` chỉ được coi là trusted khi có signed receipt ngoài project root; metadata trong note hoặc report không còn đủ để mở gate một mình.
 - lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase.

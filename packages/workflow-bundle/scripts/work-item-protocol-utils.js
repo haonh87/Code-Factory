@@ -7,6 +7,28 @@ const {
   readUtf8
 } = require("./workflow-validator-utils");
 
+const CONFIG_FILE_NAMES = ["workflow-bundle.config.json", "workflow-contracts.config.json"];
+const PROTOCOL_LEGACY_SCAFFOLD_POLICIES = ["forbid", "allow_readonly"];
+const DEFAULT_PROTOCOL_CONTROL = {
+  legacyScaffoldPolicy: "forbid"
+};
+const PROJECT_BASELINE_FILES = [
+  "package.json",
+  "pyproject.toml",
+  "requirements.txt",
+  "go.mod",
+  "Cargo.toml",
+  "composer.json",
+  "pom.xml",
+  "build.gradle",
+  "build.gradle.kts",
+  "Gemfile",
+  "Dockerfile",
+  "compose.yaml",
+  "docker-compose.yml"
+];
+const PROJECT_BASELINE_DIRS = ["src", "app", "services", "backend", "frontend", "api", "server", "client", "web", "packages"];
+
 const PROTOCOL_STATUSES = [
   "INTAKE",
   "PROPOSED",
@@ -99,6 +121,76 @@ function buildProtocolEvent({
     to_status: String(toStatus || "").trim(),
     note: String(note || "").trim()
   };
+}
+
+function loadWorkflowProjectConfig(projectRoot) {
+  for (const fileName of CONFIG_FILE_NAMES) {
+    const filePath = path.join(projectRoot, fileName);
+    if (!fs.existsSync(filePath)) {
+      continue;
+    }
+
+    const parsed = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      throw new Error(`Config root must be a JSON object: ${filePath}`);
+    }
+
+    return parsed;
+  }
+
+  return {};
+}
+
+function loadProtocolControl(projectRoot) {
+  const rawConfig = loadWorkflowProjectConfig(projectRoot);
+  const protocolControl =
+    rawConfig.protocolControl && typeof rawConfig.protocolControl === "object" && !Array.isArray(rawConfig.protocolControl)
+      ? rawConfig.protocolControl
+      : {};
+  const legacyScaffoldPolicy = String(
+    protocolControl.legacyScaffoldPolicy || DEFAULT_PROTOCOL_CONTROL.legacyScaffoldPolicy
+  )
+    .trim()
+    .toLowerCase();
+
+  if (!PROTOCOL_LEGACY_SCAFFOLD_POLICIES.includes(legacyScaffoldPolicy)) {
+    throw new Error(
+      `Invalid protocolControl.legacyScaffoldPolicy '${legacyScaffoldPolicy}' under ${projectRoot}. ` +
+        `Allowed values: ${PROTOCOL_LEGACY_SCAFFOLD_POLICIES.join(", ")}`
+    );
+  }
+
+  return {
+    legacyScaffoldPolicy
+  };
+}
+
+function hasProjectImplementationBaseline(projectRoot) {
+  if (PROJECT_BASELINE_FILES.some((fileName) => fs.existsSync(path.join(projectRoot, fileName)))) {
+    return true;
+  }
+
+  return PROJECT_BASELINE_DIRS.some((dirName) => {
+    const dirPath = path.join(projectRoot, dirName);
+    if (!fs.existsSync(dirPath) || !fs.statSync(dirPath).isDirectory()) {
+      return false;
+    }
+
+    const children = fs
+      .readdirSync(dirPath)
+      .filter((entry) => !entry.startsWith("."))
+      .filter((entry) => !["docs", "work-items", "changes", "project-context"].includes(entry));
+
+    return children.length > 0;
+  });
+}
+
+function inferDeliveryContext(projectRoot, explicitDeliveryContext) {
+  if (explicitDeliveryContext) {
+    return explicitDeliveryContext;
+  }
+
+  return hasProjectImplementationBaseline(projectRoot) ? "brownfield" : "greenfield";
 }
 
 function resolveWorkflowRootBase(projectRoot, workflowRootBase) {
@@ -361,14 +453,20 @@ module.exports = {
   APPROVAL_STATUSES,
   BOOTSTRAP_GATE_PASSED,
   BOOTSTRAP_GATE_STATUSES,
+  CONFIG_FILE_NAMES,
+  DEFAULT_PROTOCOL_CONTROL,
+  PROTOCOL_LEGACY_SCAFFOLD_POLICIES,
   PROTOCOL_STATUSES,
   PROTOCOL_TRANSITIONS,
   buildProtocolEvent,
   buildYamlList,
   getDefaultApprovalState,
   getWorkItemPaths,
+  hasProjectImplementationBaseline,
+  inferDeliveryContext,
   isAllowedProtocolTransition,
   loadProtocolReport,
+  loadProtocolControl,
   normalizeArray,
   normalizeProtocolReport,
   normalizeSingleValue,

@@ -202,6 +202,8 @@ Diễn giải theo workflow chain hiện tại:
   - evidence đủ để reviewer kiểm
   - owner hoặc approver đúng authority đã chốt rõ
 - `work item approval` và `change package approval` luôn là human-controlled gate; protocol-managed item không được dùng `review_required=false` hoặc `approval_status=NOT_REQUIRED` để bypass review.
+- `legacy scaffold` không có `.work-item-report.json` chỉ được coi là artifact đọc-tham-khảo khi repo hoặc project config cho phép rõ; strict default của bundle là `protocolControl.legacyScaffoldPolicy=forbid`.
+- Không được dùng `legacy scaffold`, note draft hoặc artifact tồn tại sẵn như bằng chứng ngầm rằng execution đã được mở.
 - Human pass phải explicit; không suy diễn từ comment, `review pass` kỹ thuật, `test pass` cục bộ hoặc việc artifact đã tồn tại.
 - Nếu human-controlled gate chưa pass, workflow phải `BLOCKED`, quay lại step trước, hoặc dừng trước gate tiếp theo; không được đi tiếp chỉ vì AI đánh giá là “đủ tốt”.
 - `ACTIVE` chỉ hợp lệ khi `work item approval`, `change package approval` khi có, `bootstrap gate` của `greenfield` khi có, và evidence `s04`, `s05`, `s06` đã được human pass.
@@ -214,6 +216,7 @@ Diễn giải theo workflow chain hiện tại:
 ## Rule Cứng: Empty Project / Greenfield Hard Stop
 
 - Nếu project đang ở trạng thái `empty` hoặc `greenfield`, AI không được đi thẳng sang scaffold framework, chọn stack cuối cùng, hay implement production code chỉ vì yêu cầu user nói “hãy làm” hoặc “hãy build”.
+- Khi `delivery_context` chưa được truyền tường minh, phải suy theo baseline thật của repo: repo trống hoặc chưa có implementation baseline thì mặc định là `greenfield`, không được ngầm coi là `brownfield`.
 - `empty` hoặc `greenfield` trong workflow này nghĩa là tối thiểu có một trong các dấu hiệu:
   - repo gần như trống hoặc chưa có source tree thực thi chính
   - chưa có stack hoặc framework baseline đã được chốt

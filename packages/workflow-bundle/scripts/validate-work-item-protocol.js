@@ -14,6 +14,7 @@ const {
   PROTOCOL_STATUSES,
   getWorkItemPaths,
   isAllowedProtocolTransition,
+  loadProtocolControl,
   normalizeProtocolReport,
   normalizeSingleValue,
   quoteYamlString,
@@ -259,6 +260,7 @@ function validateProtocolState(report, context, errors) {
 function validateWorkItemProtocol({ args }) {
   const projectRoot = path.resolve(normalizeSingleValue(args["project-root"] || process.cwd()));
   const workflowRootBase = resolveWorkflowRootBase(projectRoot, normalizeSingleValue(args["workflow-root"] || ""));
+  const protocolControl = loadProtocolControl(projectRoot);
   const workItemDirs = collectWorkItemDirs(workflowRootBase);
   const errors = [];
   let validatedCount = 0;
@@ -278,8 +280,12 @@ function validateWorkItemProtocol({ args }) {
     if (!hasReport) {
       if (hasProtocolBlock) {
         errors.push(`Missing work-item report for protocol-managed work item '${entry.slug}': ${paths.reportPath}`);
-      } else {
+      } else if (protocolControl.legacyScaffoldPolicy === "allow_readonly") {
         skippedLegacyCount += 1;
+      } else {
+        errors.push(
+          `Legacy scaffold without protocol report is forbidden by protocolControl.legacyScaffoldPolicy=${protocolControl.legacyScaffoldPolicy}: ${paths.workflowRoot}`
+        );
       }
       return;
     }

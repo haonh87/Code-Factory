@@ -23,6 +23,7 @@ const { scaffoldChangePackage } = require("./scaffold-change-package");
 const {
   buildProtocolEvent,
   getDefaultApprovalState,
+  inferDeliveryContext,
   renderProtocolBlock
 } = require("./work-item-protocol-utils");
 
@@ -166,22 +167,6 @@ const CHANGE_SIGNAL_TOKENS = new Set([
 ]);
 
 const ACTIVE_CHANGE_STATUSES = new Set(["draft", "approved", "implementing", "verified"]);
-const PROJECT_BASELINE_FILES = [
-  "package.json",
-  "pyproject.toml",
-  "requirements.txt",
-  "go.mod",
-  "Cargo.toml",
-  "composer.json",
-  "pom.xml",
-  "build.gradle",
-  "build.gradle.kts",
-  "Gemfile",
-  "Dockerfile",
-  "compose.yaml",
-  "docker-compose.yml"
-];
-const PROJECT_BASELINE_DIRS = ["src", "app", "services", "backend", "frontend", "api", "server", "client", "web", "packages"];
 
 const PHRASE_REPLACEMENTS = [
   [/\bdang nhap\b/g, "login"],
@@ -590,34 +575,6 @@ function getNextChangeId(changesRoot) {
     .reduce((max, current) => Math.max(max, current), 0);
 
   return `CHANGE-${String(maxSequence + 1).padStart(3, "0")}`;
-}
-
-function hasProjectImplementationBaseline(projectRoot) {
-  if (PROJECT_BASELINE_FILES.some((fileName) => fs.existsSync(path.join(projectRoot, fileName)))) {
-    return true;
-  }
-
-  return PROJECT_BASELINE_DIRS.some((dirName) => {
-    const dirPath = path.join(projectRoot, dirName);
-    if (!fs.existsSync(dirPath) || !fs.statSync(dirPath).isDirectory()) {
-      return false;
-    }
-
-    const children = fs
-      .readdirSync(dirPath)
-      .filter((entry) => !entry.startsWith("."))
-      .filter((entry) => !["docs", "work-items", "changes", "project-context"].includes(entry));
-
-    return children.length > 0;
-  });
-}
-
-function inferDeliveryContext(projectRoot, explicitDeliveryContext) {
-  if (explicitDeliveryContext) {
-    return explicitDeliveryContext;
-  }
-
-  return hasProjectImplementationBaseline(projectRoot) ? "brownfield" : "greenfield";
 }
 
 function buildBootstrapGate({
