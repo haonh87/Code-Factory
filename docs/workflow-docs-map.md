@@ -50,6 +50,7 @@ Quy tắc đọc:
 
 Các tài liệu dưới đây thiên về mechanics, rollout, history hoặc roadmap:
 
+- [`../skills/orchestration/workflow-governance-router/SKILL.md`](../skills/orchestration/workflow-governance-router/SKILL.md)
 - [`../skills/orchestration/codex-workflow-chain/references/workflow-overview.md`](../skills/orchestration/codex-workflow-chain/references/workflow-overview.md)
 - [`../skills/orchestration/codex-workflow-chain/references/workflow-versioning.md`](../skills/orchestration/codex-workflow-chain/references/workflow-versioning.md)
 - [`hybrid-superpowers-policy.md`](hybrid-superpowers-policy.md)
@@ -64,6 +65,7 @@ Các tài liệu dưới đây thiên về mechanics, rollout, history hoặc ro
 
 Quy tắc đọc:
 
+- `workflow-governance-router` là entrypoint meta-skill của mô hình prompt nhiều khối; nó chốt current step, delivery context và missing gates trước khi step skill chạy.
 - `hybrid-superpowers-policy` là policy tham chiếu nội bộ cho mô hình hybrid giữa backbone workflow của repo và execution discipline từ Superpowers.
 - `hybrid-superpowers-decision-matrix` là cheat sheet để quyết định nhanh khi nào bật `TDD`, `worktree`, `subagent` và `review mode`.
 

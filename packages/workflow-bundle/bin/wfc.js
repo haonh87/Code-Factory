@@ -158,7 +158,7 @@ function loadConfig() {
   const baseDir = configPath ? path.dirname(configPath) : process.cwd();
 
   if (!configPath) {
-    return { baseDir, values: {} };
+    return { baseDir, configPath: "", values: {} };
   }
 
   try {
@@ -169,7 +169,19 @@ function loadConfig() {
       throw new Error("Config root must be a JSON object.");
     }
 
-    return { baseDir, values };
+    const resolvedProjectRoot = resolveConfigPath(baseDir, values.projectRoot, ".");
+    const expectedBundlePath = path.join(resolvedProjectRoot, configFileName);
+    const expectedLegacyPath = path.join(resolvedProjectRoot, legacyConfigFileName);
+    const resolvedConfigPath = path.resolve(configPath);
+
+    if (resolvedConfigPath !== expectedBundlePath && resolvedConfigPath !== expectedLegacyPath) {
+      throw new Error(
+        `Workflow bundle config must live at the declared project root. ` +
+          `Expected '${expectedBundlePath}' or '${expectedLegacyPath}', got '${resolvedConfigPath}'.`
+      );
+    }
+
+    return { baseDir, configPath: resolvedConfigPath, values };
   } catch (error) {
     console.error(`ERROR: failed to read ${configPath}: ${error.message}`);
     process.exit(1);
@@ -304,6 +316,11 @@ function printHelp() {
       " 13. if the work item uses protocol approval flow: wfc protocol",
       " 14. inspect capability guard if needed: wfc capability status",
       "",
+      "Approval Rule:",
+      "  - approve commands stay on CLI, but must be run by a human in an interactive TTY",
+      "  - normal mode rejects --approval-passphrase and WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE",
+      "  - non-interactive approval is reserved for smoke/test fixtures only",
+      "",
       "Bundle Management:",
       "  - wfc install --mode codex|claude --scope global|project|both",
       "  - wfc update --mode codex|claude",
@@ -318,7 +335,7 @@ function printHelp() {
       "    - always pass --mode explicitly",
       "    - for install, also pass --scope explicitly",
       "",
-      `Config: optional ${configFileName} in the repo root or any parent directory.`,
+      `Config: optional ${configFileName} at the project root; CLI discovers that root by searching upward from cwd.`,
       `Legacy config still accepted: ${legacyConfigFileName}.`,
       "Defaults: projectRoot='.' and workflowRoot='work-items'.",
       "Requirements: Node >= 18, npm >= 9, writable ~/.codex or ~/.claude for install/update/skills."

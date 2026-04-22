@@ -4,7 +4,7 @@ Tài liệu này giải thích cấu trúc thư mục `skills/` để publish re
 
 ## Nhóm Chính
 
-- `skills/orchestration/`: host workflow và flow điều phối chính.
+- `skills/orchestration/`: host authority entrypoint, workflow backbone và flow điều phối chính.
 - `skills/analysis/`: skill làm rõ yêu cầu, business intent và technical option.
 - `skills/architecture/`: skill chốt boundary, schema, domain và frontend structure.
 - `skills/delivery/`: skill planning, implementation, testing, review và DevOps delivery.
@@ -20,6 +20,13 @@ Quy tắc:
 - top-level chỉ dùng cho integration skill hoặc tool-facing skill dùng ngang nhiều nhóm
 - skill nghiệp vụ thông thường phải nằm trong một nhóm taxonomy rõ
 - folder cuối cùng của skill phải khớp `name` trong frontmatter của `SKILL.md`
+
+## Quy Ước Cho Orchestration Skills
+
+- `orchestration` có thể chứa nhiều khối, không chỉ một workflow backbone duy nhất.
+- meta-skill entrypoint như `workflow-governance-router` dùng để chốt step, gate và quyền hành động trước.
+- workflow backbone như `codex-workflow-chain` giữ chain `s01 -> s08` và rule governance chi tiết.
+- orchestration skill không thay step skill; nó chỉ route và khóa boundary đúng trước khi step skill chạy.
 
 ## Publish Rules
 

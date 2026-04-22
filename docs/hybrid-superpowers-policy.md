@@ -14,6 +14,24 @@ Nếu cần bản quyết định nhanh để chọn `TDD`, `worktree`, `subagen
 - tránh trộn hai workflow như hai hệ ngang hàng
 - tăng chất lượng implement mà không làm mất `governance`, `DoR`, `DoD`, `SDD` và `work-item protocol`
 
+## Mô Hình Prompt Nhiều Khối
+
+Mô hình hybrid hiện tại nên được triển khai theo nhiều khối prompt, không dồn mọi rule vào một file duy nhất.
+
+- `Authority layer`: `AGENTS.global.md`
+- `Entry router`: skill `workflow-governance-router`
+- `Workflow backbone`: skill `codex-workflow-chain`
+- `Step skills`: các skill trong `analysis`, `architecture`, `delivery`, `guardrails`, `obsidian`
+- `Runtime enforcement`: `workflow-bundle`, validator, capability control và support policies
+
+Quy tắc đọc:
+
+- `Authority layer` chốt rule cứng, conflict resolution và default an toàn.
+- `Entry router` là block phải chạy trước để quyết định current step, delivery context, missing gates và quyền implement.
+- `Workflow backbone` giữ state machine `s01 -> s08`; không cho phép entry router hay step skill tự tạo workflow riêng.
+- `Step skills` chỉ được bật sau khi entry router đã route đúng step.
+- `Runtime enforcement` giữ vai trò evidence và capability control; không thay governance prompt nhưng là lớp cưỡng chế thực thi.
+
 ## Vị Trí Của Tài Liệu Này
 
 Tài liệu này là `supplemental policy`.

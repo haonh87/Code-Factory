@@ -44,6 +44,30 @@ wfc version
 - agentic proposal flow qua `wfc materialize|change-item|work-item|protocol`
 - human approval gates cho change package và work item
 - capability control để khóa implementation path cho tới khi work item vào `ACTIVE` ở `s07`
+- runtime prompt nhiều khối với `AGENTS.global.md` làm authority, `workflow-governance-router` làm entry router và `codex-workflow-chain` làm workflow backbone
+
+## Runtime Model
+
+Sau khi cài bundle, coding task không được đi thẳng vào implement chỉ vì user nói “build”, “fix” hoặc “thêm”.
+
+Runtime hiện tại được hiểu như sau:
+
+- `authority layer`: `AGENTS.global.md`
+- `entry router`: skill `workflow-governance-router`
+- `workflow backbone`: skill `codex-workflow-chain`
+- `step skills`: skill theo từng step của workflow
+
+Với workflow-governed delivery task, agent phải route trước rồi mới hành động. Block trạng thái tối thiểu nên xuất hiện là:
+
+```text
+Current Step: s0X <tên step>
+Workflow Status: ACTIVE | BLOCKED | WAITING_APPROVAL | READY_FOR_REVIEW | VERIFIED
+Delivery Context: greenfield | brownfield
+What I Am Doing Now: <một câu>
+Missing Gates: <danh sách hoặc NONE>
+Next Artifact: <artifact hoặc decision cần tiếp theo>
+Next Human Action: <review/approval cần từ người, hoặc NONE>
+```
 
 ## Command Overview
 
@@ -116,14 +140,16 @@ Ghi chú:
 - Trước `ACTIVE`, work item phải có approval gate đã pass; nếu có `change_id` thì change package cũng phải được approve.
 - `ACTIVE` chỉ mở khi evidence `s04`, `s05`, `s06` đã đủ để runtime cho phép vào execution.
 - `change-item approve`, `work-item approve` và `gate approve` sẽ ghi signed receipt vào trusted approval root ngoài project root; không có receipt hợp lệ thì protocol không mở gate.
-- lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase.
+- các lệnh `approve` vẫn đi qua CLI, nhưng phải do human tự chạy trong interactive TTY; normal mode sẽ reject `--approval-passphrase` và `WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE`.
+- lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase trực tiếp trên TTY đó.
+- non-interactive approval chỉ dành cho smoke/test fixture, không phải operational path.
 - implementation path bị khóa ở mức filesystem cho tới khi có `ACTIVE + s07 + granted write roots`.
 - strict default của repo mới là `protocolControl.legacyScaffoldPolicy=forbid`; chỉ khi project config bật explicit `allow_readonly` thì `wfc work-item list|status` mới nên dùng bootstrap report read-only từ `s01` cũ để quan sát trạng thái legacy scaffold.
 - các action mutating như `approve|activate|verify|close` không được tự bootstrap; chúng yêu cầu `.work-item-report.json` đã tồn tại.
 
 ## Config
 
-CLI sẽ tự tìm `workflow-bundle.config.json` từ thư mục hiện tại đi ngược lên các thư mục cha. Legacy config `workflow-contracts.config.json` vẫn được chấp nhận để migration êm hơn.
+CLI sẽ tìm project root bằng cách đi ngược từ `cwd`, nhưng file config canonical phải nằm ngay tại project root dưới tên `workflow-bundle.config.json`. Legacy config `workflow-contracts.config.json` vẫn được chấp nhận để migration êm hơn.
 
 Ví dụ:
 
@@ -137,7 +163,7 @@ Ví dụ:
   "capabilityControl": {
     "enabled": true,
     "authoringRoots": ["work-items", "changes", "product-specs", "project-context", "docs"],
-    "alwaysWritablePaths": ["workflow-bundle.config.json", "workflow-contracts.config.json"],
+    "alwaysWritablePaths": [],
     "ignoredRoots": [".git", ".codex", ".claude", "node_modules", ".obsidian", ".idea", ".vscode"],
     "protectedRoots": []
   }
@@ -148,7 +174,7 @@ Ví dụ:
 
 - `protocolControl.legacyScaffoldPolicy`: strict default là `forbid`; không coi legacy scaffold như đường delivery hợp lệ trừ khi project bật explicit `allow_readonly`
 - `authoringRoots`: path workflow/artifact luôn được phép ghi
-- `alwaysWritablePaths`: file config bundle luôn được phép cập nhật
+- `alwaysWritablePaths`: path ngoại lệ vẫn được phép ghi; strict default để trống, nên config workflow không còn là bypass writable mặc định
 - `protectedRoots`: nếu để trống, capability control sẽ suy ra từ top-level repo root không thuộc `authoringRoots`
 - implementation path chỉ được mở ghi tạm thời khi `wfc work-item activate|resume --step s07 --write-root <path>` cấp quyền qua `granted_write_paths`
 

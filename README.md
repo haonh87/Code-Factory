@@ -93,7 +93,8 @@ Ghi chú:
 - strict default của repo mới là `protocolControl.legacyScaffoldPolicy=forbid`; chỉ khi project config bật explicit `allow_readonly` thì `wfc work-item list|status` mới nên dùng bootstrap report read-only từ `s01` cũ để quan sát legacy scaffold.
 - các action mutating như `approve|activate|verify|close` không được tự bootstrap; chúng yêu cầu `.work-item-report.json` đã tồn tại.
 - `work-item approval`, `change approval` và `gate approval` chỉ được coi là trusted khi có signed receipt ngoài project root; metadata trong note hoặc report không còn đủ để mở gate một mình.
-- lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase.
+- các lệnh `approve` vẫn dùng CLI nhưng phải do human tự chạy trong interactive TTY; normal mode sẽ reject `--approval-passphrase` và `WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE`.
+- lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase trực tiếp trên TTY đó.
 - implementation path bị khóa ở mức filesystem cho tới khi work item vào `ACTIVE` ở `s07` và được cấp `write-root`.
 - `work-items/` là canonical artifact root cho workflow artifacts của repo.
 - Approval model của `v2.0.2` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate, trusted signed receipts và step-gate evidence bắt buộc đã có.
@@ -159,7 +160,7 @@ Tên file workflow không đặt theo cách hiểu cá nhân như `requirements`
 - `work-items/`: canonical artifact root cho workflow artifacts thật của repo.
 - `policies/codex/AGENTS.global.md`: chính sách workflow toàn cục cho Codex.
 - `project-context/`: Governance Pack mức project, gồm `constitution`, `project-context`, checklist profile và exception register.
-- `skills/orchestration/`: skill điều phối workflow tổng.
+- `skills/orchestration/`: authority entrypoint và workflow backbone; gồm `workflow-governance-router` để route step/gate trước action và `codex-workflow-chain` để giữ chain `s01 -> s08`.
 - `skills/analysis/`: skill phân tích yêu cầu, product thinking và technical approach.
 - `skills/architecture/`: skill kiến trúc domain, frontend và thiết kế dữ liệu.
 - `skills/delivery/`: skill chia task, implement, testing, DevOps packaging/deploy và review thay đổi dữ liệu hoặc code.

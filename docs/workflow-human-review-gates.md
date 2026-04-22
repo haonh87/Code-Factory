@@ -38,6 +38,8 @@ Muốn chặt hơn, cần thêm 6 điều:
 ## Rule Chặt AI-Human
 
 - Workflow này nên vận hành theo model `AI proposes, human approves`.
+- Trước mọi hành động substantive trên task thuộc delivery workflow, AI phải đi qua entry router `workflow-governance-router` để chốt current step, delivery context, missing gates và next human action.
+- `approve` có thể vẫn đi qua `CLI`, nhưng phải là `human-operated CLI`, không phải `agent-accessible approval`.
 - AI được quyền:
   - phân tích, clarify, draft artifact, chuẩn bị option analysis
   - đề xuất technical approach, task plan, review findings và verify recommendation
@@ -62,12 +64,38 @@ Muốn chặt hơn, cần thêm 6 điều:
 - `legacy scaffold` không có `.work-item-report.json` không được mặc định xem là execution-ready; strict default của bundle là `protocolControl.legacyScaffoldPolicy=forbid`.
 - Human pass phải explicit:
   - không suy diễn từ comment, `review pass` kỹ thuật, `test pass` cục bộ, việc artifact đã tồn tại, hay chỉ từ metadata trong note
+- Human pass phải là interactive action:
+  - normal mode không chấp nhận `--approval-passphrase`
+  - normal mode không chấp nhận `WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE`
+  - approve command phải chạy trong human-controlled TTY
+  - non-interactive approval chỉ dành cho smoke/test fixture
 - Nếu gate human chưa pass:
   - không được sang gate tiếp theo
   - không được activate status hoặc declare `done`
   - phải `BLOCKED` hoặc quay lại step trước
 - `ACTIVE` là execution gate, không còn là authoring gate thuần; với protocol hiện tại, authoring `s01-s06` có thể diễn ra khi work item đã scaffold nhưng chưa `ACTIVE`.
 - implementation path nên được hiểu là bị khóa ở mức capability control cho tới khi work item được `ACTIVE` ở `s07` và có `write-root` đã cấp.
+
+## Router-First Status Reporting
+
+Trước khi đi sâu vào authoring hoặc execution của một work item, AI nên báo tối thiểu block trạng thái sau:
+
+```text
+Current Step: s0X <tên step>
+Workflow Status: ACTIVE | BLOCKED | WAITING_APPROVAL | READY_FOR_REVIEW | VERIFIED
+Delivery Context: greenfield | brownfield
+What I Am Doing Now: <một câu>
+Missing Gates: <danh sách hoặc NONE>
+Next Artifact: <artifact hoặc decision cần tiếp theo>
+Next Human Action: <review/approval cần từ người, hoặc NONE>
+```
+
+Quy tắc đọc block này:
+
+- `Current Step` cho biết AI đang đứng ở đâu trong chain `s01 -> s08`, không được ngầm suy diễn.
+- `Workflow Status` phải explicit; nếu còn thiếu gate hoặc blocker trọng yếu thì dùng `BLOCKED` hoặc `WAITING_APPROVAL`.
+- `Missing Gates` là lớp nhìn nhanh để human biết vì sao AI chưa được implement.
+- `Next Human Action` là hành động review hoặc approval cụ thể cần từ người, tránh nhập nhằng giữa review kỹ thuật và gate pass.
 
 ## Baseline Hiện Có Của Repo
 

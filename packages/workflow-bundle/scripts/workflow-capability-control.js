@@ -12,7 +12,7 @@ const {
 
 const CONFIG_FILE_NAMES = ["workflow-bundle.config.json", "workflow-contracts.config.json"];
 const DEFAULT_AUTHORING_ROOTS = ["work-items", "changes", "product-specs", "project-context", "docs"];
-const DEFAULT_ALWAYS_WRITABLE_PATHS = ["workflow-bundle.config.json", "workflow-contracts.config.json"];
+const DEFAULT_ALWAYS_WRITABLE_PATHS = [];
 const DEFAULT_IGNORED_ROOTS = [".git", ".codex", ".claude", "node_modules", ".obsidian", ".idea", ".vscode"];
 const SUPPORTED_ACTIONS = new Set(["status", "sync", "check"]);
 

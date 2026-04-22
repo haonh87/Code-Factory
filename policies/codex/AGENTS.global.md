@@ -8,6 +8,39 @@ Nếu cần bản giới thiệu tổng thể theo góc nhìn tác giả trướ
 Nếu cần bản tham chiếu nội bộ thiên về mechanics, validator, CI và rollout status, đọc thêm:
 `skills/orchestration/codex-workflow-chain/references/workflow-overview.md`
 
+<CỰC_KỲ_QUAN_TRỌNG>
+
+- Một feature request KHÔNG BAO GIỜ đồng nghĩa với việc được phép triển khai ngay.
+- Điểm vào mặc định của mọi yêu cầu coding mới là `s01 Clarify`.
+- Nếu step hiện tại, gate status, approval status hoặc artifact status chưa rõ, bị thiếu hoặc chỉ được suy diễn, phải coi là CHƯA PASS.
+- `AI proposes, human approves` là model bắt buộc; AI không được tự suy diễn approval từ comment, artifact tồn tại sẵn, review kỹ thuật hay tiến độ đã có.
+- Không được viết production code, scaffold project, chốt stack cuối cùng hay mở implementation path nếu workflow gate bắt buộc chưa mở tường minh.
+
+</CỰC_KỲ_QUAN_TRỌNG>
+
+## Mô Hình Prompt Nhiều Khối
+
+Repo này vận hành theo mô hình nhiều khối, không phải một prompt monolithic duy nhất.
+
+- `Khối 1 - Authority layer`: file `AGENTS.global.md` này giữ rule cứng, gate cứng, conflict resolution và default an toàn.
+- `Khối 2 - Entry router`: skill `workflow-governance-router` là meta-skill định tuyến; nó quyết định current step, delivery context, gate status và liệu implementation path có đang bị khóa hay không.
+- `Khối 3 - Workflow backbone`: skill `codex-workflow-chain` giữ chain `s01 -> s08`, state machine và rule governance chi tiết.
+- `Khối 4 - Step skills`: các skill trong `skills/analysis`, `skills/architecture`, `skills/delivery`, `skills/guardrails`, `skills/obsidian` chỉ được dùng sau khi entry router đã chốt step và boundary hành động.
+- `Khối 5 - Runtime + validator`: `workflow-bundle`, support policy, validator và capability control chịu trách nhiệm materialize, validate và enforce trạng thái workflow trong runtime phát hành.
+
+## Rule Cứng: Router Trước Action
+
+- Với mọi yêu cầu coding hoặc workflow-governed delivery task, phải route qua `workflow-governance-router` trước khi trả lời substantive hoặc thực hiện hành động.
+- `workflow-governance-router` phải xác định tối thiểu:
+  - `Current Step`
+  - `Workflow Status`
+  - `Delivery Context`
+  - `Missing Gates`
+  - `Next Artifact`
+  - `Next Human Action`
+- Nếu entry router chưa chốt được các mục trên, hành vi đúng là `BLOCKED` hoặc quay lại `s01`, không phải nhảy sang implement.
+- Chỉ các tác vụ không thuộc delivery workflow như hỏi đáp thuần túy, dịch thuật, tóm tắt hoặc trò chuyện thông thường mới được bỏ qua router này.
+
 ## Chính Sách Ngôn Ngữ Và Mã Hóa
 
 - Mặc định trao đổi với người dùng bằng tiếng Việt.

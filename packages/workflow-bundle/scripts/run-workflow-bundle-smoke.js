@@ -29,6 +29,20 @@ function runNodeScriptCaptureOutput(scriptPath, args, cwd) {
   });
 }
 
+function runNodeScriptExpectFailure(scriptPath, args, cwd, expectedMessage) {
+  try {
+    runNodeScriptCaptureOutput(scriptPath, args, cwd);
+  } catch (error) {
+    const detail = `${error.stderr || ""}\n${error.stdout || ""}\n${error.message || ""}`;
+    if (expectedMessage && !detail.includes(expectedMessage)) {
+      throw new Error(`Expected failure output to include '${expectedMessage}', got: ${detail}`);
+    }
+    return;
+  }
+
+  throw new Error(`Expected ${path.basename(scriptPath)} to fail.`);
+}
+
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
 }
@@ -211,6 +225,32 @@ function runClaudeModeSmoke({ wfcBin, tempRoot }) {
   assertContentIncludes(skillsListOutput, "codex-workflow-chain", "Expected Claude skills list to show source skill.");
 }
 
+function runConfigHardeningSmoke({ wfcBin, tempRoot }) {
+  const projectRoot = path.join(tempRoot, "project-config-hardening");
+  const nestedRoot = path.join(projectRoot, "work-items", "rogue-scope");
+  const rootConfigPath = path.join(projectRoot, "workflow-bundle.config.json");
+  const nestedConfigPath = path.join(nestedRoot, "workflow-bundle.config.json");
+
+  fs.mkdirSync(nestedRoot, { recursive: true });
+  fs.writeFileSync(
+    rootConfigPath,
+    `${JSON.stringify({ projectRoot: ".", workflowRoot: "work-items" }, null, 2)}\n`,
+    "utf8"
+  );
+  fs.writeFileSync(
+    nestedConfigPath,
+    `${JSON.stringify({ projectRoot: "..", workflowRoot: "." }, null, 2)}\n`,
+    "utf8"
+  );
+
+  runNodeScriptExpectFailure(
+    wfcBin,
+    ["validate"],
+    nestedRoot,
+    "Workflow bundle config must live at the declared project root"
+  );
+}
+
 function main() {
   const repoRoot = path.resolve(__dirname, "..", "..", "..");
   const packageRoot = path.join(repoRoot, "packages", "workflow-bundle");
@@ -221,6 +261,7 @@ function main() {
     runNodeScriptCaptureOutput(path.join(packageRoot, "scripts", "sync-workflow-bundle-runtime.js"), [], repoRoot);
     runCodexModeSmoke({ wfcBin, tempRoot });
     runClaudeModeSmoke({ wfcBin, tempRoot });
+    runConfigHardeningSmoke({ wfcBin, tempRoot });
     console.log(`OK: workflow bundle smoke passed under ${tempRoot}`);
   } finally {
     fs.rmSync(tempRoot, { recursive: true, force: true });

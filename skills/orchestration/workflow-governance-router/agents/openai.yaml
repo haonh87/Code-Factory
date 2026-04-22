@@ -1,0 +1,7 @@
+interface:
+  display_name: "Workflow Governance Router"
+  short_description: "Định tuyến step, gate và quyền implement trước khi hành động"
+  default_prompt: "Dùng $workflow-governance-router để xác định current step, delivery context, missing gates và route sang skill workflow phù hợp trước khi làm tiếp."
+
+policy:
+  allow_implicit_invocation: true

@@ -73,21 +73,45 @@ function runNodeScript(repoRoot, scriptRelativePath, args) {
   execFileSync(process.execPath, [path.join(repoRoot, scriptRelativePath), ...args], {
     cwd: repoRoot,
     stdio: "pipe",
-    encoding: "utf8"
+    encoding: "utf8",
+    env: process.env
   });
 }
 
-function runNodeScriptCaptureOutput(repoRoot, scriptRelativePath, args) {
+function buildChildEnv(envOverrides = {}) {
+  const env = { ...process.env };
+  Object.entries(envOverrides).forEach(([key, value]) => {
+    if (value === undefined) {
+      delete env[key];
+      return;
+    }
+
+    env[key] = value;
+  });
+  return env;
+}
+
+function runNodeScriptWithEnv(repoRoot, scriptRelativePath, args, envOverrides = {}) {
+  execFileSync(process.execPath, [path.join(repoRoot, scriptRelativePath), ...args], {
+    cwd: repoRoot,
+    stdio: "pipe",
+    encoding: "utf8",
+    env: buildChildEnv(envOverrides)
+  });
+}
+
+function runNodeScriptCaptureOutput(repoRoot, scriptRelativePath, args, envOverrides = {}) {
   return execFileSync(process.execPath, [path.join(repoRoot, scriptRelativePath), ...args], {
     cwd: repoRoot,
     stdio: "pipe",
-    encoding: "utf8"
+    encoding: "utf8",
+    env: buildChildEnv(envOverrides)
   });
 }
 
-function runNodeScriptExpectFailure(repoRoot, scriptRelativePath, args, expectedMessage) {
+function runNodeScriptExpectFailure(repoRoot, scriptRelativePath, args, expectedMessage, envOverrides = {}) {
   try {
-    runNodeScript(repoRoot, scriptRelativePath, args);
+    runNodeScriptWithEnv(repoRoot, scriptRelativePath, args, envOverrides);
   } catch (error) {
     const detail = `${error.stderr || ""}\n${error.stdout || ""}\n${error.message || ""}`;
     if (expectedMessage && !detail.includes(expectedMessage)) {
@@ -432,6 +456,7 @@ function validateBaseline(repoRoot, workflowRoot, projectRoot) {
 function runCaseBasicFull(repoRoot, projectRoot) {
   const workflowRootBase = path.join(projectRoot, "work-items");
   const workflowRoot = path.join(projectRoot, "work-items", "smoke-full-item");
+  const configPath = path.join(projectRoot, "workflow-bundle.config.json");
   runNodeScript(repoRoot, "scripts/scaffold-workflow.js", [
     "--work-item",
     "smoke-full-item",
@@ -442,6 +467,7 @@ function runCaseBasicFull(repoRoot, projectRoot) {
   ]);
   validateBaseline(repoRoot, workflowRoot, projectRoot);
   runNodeScript(repoRoot, "scripts/validate-workflow-planning.js", ["--workflow-root", workflowRoot]);
+  assertOwnerWritable(configPath, false, "Expected workflow config to be locked after capability sync.");
 
   const listOutput = runNodeScriptCaptureOutput(repoRoot, "scripts/work-item-protocol.js", [
     "list",
@@ -662,6 +688,99 @@ function runCaseCapabilityControl(repoRoot, projectRoot) {
 
   assertOwnerWritable(guardedRoot, false, "Expected implementation root to be relocked after leaving ACTIVE.");
   assertOwnerWritable(guardedFile, false, "Expected implementation file to be relocked after leaving ACTIVE.");
+}
+
+function runCaseApprovalRequiresInteractiveHuman(repoRoot, projectRoot) {
+  const workItemSlug = "approval-tty-item";
+  const workflowRootBase = path.join(projectRoot, "work-items");
+  const bootstrapRef = path.join(projectRoot, "project-context", "approval-bootstrap.md");
+
+  writeFile(bootstrapRef, "# Bootstrap Approval Fixture\n");
+
+  runNodeScript(repoRoot, "scripts/materialize-work-item.js", [
+    "--request",
+    "Thêm gate review cho approval flow",
+    "--work-item",
+    workItemSlug,
+    "--delivery-context",
+    "brownfield",
+    "--change-strategy",
+    "create_new",
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--auto-scaffold"
+  ]);
+
+  const reportPath = path.join(workflowRootBase, workItemSlug, `${workItemSlug}.work-item-report.json`);
+  const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+
+  runNodeScriptExpectFailure(
+    repoRoot,
+    "scripts/work-item-protocol.js",
+    [
+      "approve",
+      "--work-item",
+      workItemSlug,
+      "--project-root",
+      projectRoot,
+      "--workflow-root",
+      workflowRootBase,
+      "--reviewed-by",
+      "po"
+    ],
+    "Non-interactive human approval is disabled in normal mode.",
+    {
+      WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "false"
+    }
+  );
+
+  runNodeScriptExpectFailure(
+    repoRoot,
+    "scripts/change-item.js",
+    [
+      "approve",
+      "--change-id",
+      report.change_id,
+      "--project-root",
+      projectRoot,
+      "--reviewed-by",
+      "po",
+      "--approval-passphrase",
+      "smoke-passphrase"
+    ],
+    "Non-interactive human approval is disabled in normal mode.",
+    {
+      WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "false",
+      WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: ""
+    }
+  );
+
+  runNodeScriptExpectFailure(
+    repoRoot,
+    "scripts/workflow-gate-review.js",
+    [
+      "approve",
+      "--work-item",
+      workItemSlug,
+      "--project-root",
+      projectRoot,
+      "--workflow-root",
+      workflowRootBase,
+      "--gate",
+      "bootstrap",
+      "--reviewed-by",
+      "po",
+      "--ref",
+      path.relative(projectRoot, bootstrapRef)
+    ],
+    "Human approval requires an interactive TTY.",
+    {
+      WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "false",
+      WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: ""
+    }
+  );
 }
 
 function runCaseEnterpriseMultiAgent(repoRoot, projectRoot) {
@@ -1067,6 +1186,7 @@ function main() {
     { name: "mutating-action-requires-report", run: runCaseMutatingActionRequiresReport },
     { name: "strict-default-blocks-legacy-scaffold", run: runCaseStrictDefaultBlocksLegacyScaffold },
     { name: "capability-control", run: runCaseCapabilityControl },
+    { name: "approval-requires-interactive-human", run: runCaseApprovalRequiresInteractiveHuman },
     { name: "enterprise-multi-agent", run: runCaseEnterpriseMultiAgent },
     { name: "strict-sdd-change", run: runCaseStrictSddChange },
     { name: "materialize-auto-scaffold", run: runCaseMaterializeAutoScaffold },
@@ -1076,6 +1196,7 @@ function main() {
 
   try {
     process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = approvalRoot;
+    process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE = "true";
     process.env.WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE = "smoke-passphrase";
     seedProjectContext(tempRoot);
     seedWorkflowBundleConfig(tempRoot);
@@ -1100,6 +1221,7 @@ function main() {
 
     console.log(`OK: workflow authoring smoke passed for ${cases.length} scaffold cases under ${tempRoot}`);
   } finally {
+    delete process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE;
     delete process.env.WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE;
     delete process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
     fs.rmSync(approvalRoot, { recursive: true, force: true });

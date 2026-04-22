@@ -1,0 +1,7 @@
+interface:
+  display_name: "System Design"
+  short_description: "Chốt technical approach DEV-led với boundary, contract và validation plan rõ"
+  default_prompt: "Dùng $system-design để chốt technical approach, boundary, interface change và validation plan trước khi sang task-breakdown-planner."
+
+policy:
+  allow_implicit_invocation: true

@@ -111,6 +111,31 @@ wfc update --mode codex
 
 `wfc update` cũng sẽ migrate state legacy `.codex-workflow-pack.*` sang `.codex-workflow-bundle.*` nếu máy đã từng cài flow cũ trong Codex mode.
 
+## Cách Hiểu Runtime Sau Khi Cài
+
+Sau khi cài bundle, agent không được coi feature request là lệnh implement trực tiếp.
+
+Runtime hiện tại vận hành theo mô hình:
+
+- `authority layer`: `AGENTS.global.md`
+- `entry router`: skill `workflow-governance-router`
+- `workflow backbone`: skill `codex-workflow-chain`
+- `step skills`: skill theo từng step phân tích, thiết kế, planning, implement, verify
+
+Với mọi task thuộc delivery workflow, agent phải route trước rồi mới hành động. Tối thiểu phải báo block trạng thái sau:
+
+```text
+Current Step: s0X <tên step>
+Workflow Status: ACTIVE | BLOCKED | WAITING_APPROVAL | READY_FOR_REVIEW | VERIFIED
+Delivery Context: greenfield | brownfield
+What I Am Doing Now: <một câu>
+Missing Gates: <danh sách hoặc NONE>
+Next Artifact: <artifact hoặc decision cần tiếp theo>
+Next Human Action: <review/approval cần từ người, hoặc NONE>
+```
+
+Nếu còn thiếu gate hoặc còn blocker trọng yếu, agent phải dừng ở `BLOCKED` hoặc `WAITING_APPROVAL`, không được tự đi tiếp sang implement.
+
 ## Bootstrap Một Repo Dự Án Mới
 
 ```bash
@@ -122,6 +147,7 @@ Lệnh này sẽ tạo:
 
 - `workflow-bundle.config.json`
   mặc định có `protocolControl.legacyScaffoldPolicy=forbid` để không coi legacy scaffold là execution path hợp lệ
+  và sẽ bị capability control khóa ghi theo strict default sau khi sync
 - `work-items/`
 - `changes/`
 - `product-specs/brd/`
@@ -204,7 +230,9 @@ Ghi chú protocol:
 - strict default của repo mới là `protocolControl.legacyScaffoldPolicy=forbid`; chỉ khi project config bật explicit `allow_readonly` thì `wfc work-item list|status` mới nên dùng bootstrap report read-only từ `s01` cũ để quan sát legacy scaffold.
 - các action mutating như `approve`, `activate`, `verify`, `close` không được tự bootstrap; chúng yêu cầu `.work-item-report.json` đã tồn tại.
 - `change-item approve`, `work-item approve` và `gate approve` sẽ ký receipt vào trusted approval root; nếu receipt không hợp lệ hoặc artifact đổi sau khi approve, `activate` sẽ fail.
-- lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase.
+- các lệnh `approve` vẫn đi qua CLI, nhưng phải do human tự chạy trong interactive TTY; normal mode sẽ reject `--approval-passphrase` và `WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE`.
+- lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase trực tiếp trên TTY đó.
+- non-interactive approval chỉ dành cho smoke/test fixture, không phải operational path.
 - implementation path bị khóa ở mức filesystem cho tới khi work item vào `ACTIVE` ở `s07` và được cấp `write-root`.
 
 ## Validate Workflow

@@ -32,6 +32,7 @@ const SUPPORTED_RECEIPT_KINDS = new Set(["work-item", "change", "gate"]);
 const APPROVED_RECEIPT_STATUSES = new Set(["APPROVED"]);
 const PRIVATE_KEY_FILE = "approver-private.pem";
 const PUBLIC_KEY_FILE = "approver-public.pem";
+const NONINTERACTIVE_APPROVAL_FIXTURE_ENV = "WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE";
 
 function normalizeSingleValue(value) {
   if (Array.isArray(value)) {
@@ -131,7 +132,7 @@ function getApproverKeyPaths(approvalRoot) {
 
 function promptHiddenInput(promptText) {
   if (!process.stdin.isTTY) {
-    throw new Error("Human approval passphrase is required. Provide --approval-passphrase or run in an interactive TTY.");
+    throw new Error("Human approval requires an interactive TTY. Run the approve command in a human-controlled terminal.");
   }
 
   const stdin = process.stdin;
@@ -174,11 +175,24 @@ function promptHiddenInput(promptText) {
   return value.trim();
 }
 
+function isNonInteractiveApprovalFixtureEnabled() {
+  return String(process.env[NONINTERACTIVE_APPROVAL_FIXTURE_ENV] || "").trim().toLowerCase() === "true";
+}
+
 function resolveApprovalPassphrase(explicitPassphrase = "") {
-  const passphrase =
-    normalizeSingleValue(explicitPassphrase) ||
-    normalizeSingleValue(process.env.WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE || "") ||
-    promptHiddenInput("Enter human approval passphrase: ");
+  const inlinePassphrase = normalizeSingleValue(explicitPassphrase);
+  const envPassphrase = normalizeSingleValue(process.env.WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE || "");
+
+  if (inlinePassphrase || envPassphrase) {
+    if (!isNonInteractiveApprovalFixtureEnabled()) {
+      throw new Error(
+        "Non-interactive human approval is disabled in normal mode. " +
+          "Remove --approval-passphrase and WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE, then run the approve command in a human-controlled TTY."
+      );
+    }
+  }
+
+  const passphrase = inlinePassphrase || envPassphrase || promptHiddenInput("Enter human approval passphrase: ");
 
   if (!passphrase) {
     throw new Error("Missing human approval passphrase.");
