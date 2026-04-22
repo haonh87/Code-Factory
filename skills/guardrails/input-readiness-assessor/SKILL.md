@@ -62,7 +62,7 @@ next_action: ""
 ## Chuẩn Hóa Output Trong Workflow Note
 
 Nếu output của skill này được lưu thành note `.md` trong workflow chain:
-- Dùng template step 3 tại `../codex-workflow-chain/references/workflow-chain.md`.
+- Dùng template step 3 tại `../../orchestration/codex-workflow-chain/references/workflow-chain.md`.
 - Đặt schema YAML của skill này trong block `## Input Readiness`.
 - Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
 - Trạng thái `READY|BLOCKED` trong prose tóm tắt phải khớp với `status` trong block YAML.

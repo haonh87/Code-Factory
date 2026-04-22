@@ -1,7 +1,7 @@
 interface:
   display_name: "Implementation"
-  short_description: "Triển khai DEV-led với TDD, minimal-delta và review sớm"
-  default_prompt: "Dùng $implementation để triển khai theo design và task plan đã chốt, giữ TDD cho behavior change, delta nhỏ nhất đủ đúng và evidence rõ cho verify."
+  short_description: "Triển khai DEV-led với bug repro first, TDD, safe refactor và review sớm"
+  default_prompt: "Dùng $implementation để triển khai theo design và task plan đã chốt, tái hiện bug trước khi vá, giữ TDD cho behavior change, delta nhỏ nhất đủ đúng và evidence rõ cho verify."
 
 policy:
   allow_implicit_invocation: true

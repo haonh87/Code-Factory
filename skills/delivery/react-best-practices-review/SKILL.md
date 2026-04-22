@@ -108,7 +108,7 @@ notes_for_verify: ""
 ## Chuẩn Hóa Output Trong Workflow Note
 
 Nếu output của skill này được lưu thành note `.md` trong workflow chain:
-- Dùng template step 8 tại `../codex-workflow-chain/references/workflow-chain.md`.
+- Dùng template step 8 tại `../../orchestration/codex-workflow-chain/references/workflow-chain.md`.
 - Đặt schema YAML của skill này trong block `## Review Findings`.
 - Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
 - Nếu đã có note từ `frontend-quality-review`, liên kết chéo theo surface hoặc flow thay vì lặp lại cùng một evidence.

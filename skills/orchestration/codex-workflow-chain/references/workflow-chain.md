@@ -2243,13 +2243,20 @@ notes: ""
 
 ```yaml
 goal: ""
+ba_lane:
+  business_goal: ""
+  user_scenarios: []
+  business_rules: []
+  scope_notes: []
+  open_questions: []
+dev_lane:
+  repo_constraints: []
+  technical_risks: []
+  integration_points: []
+  nfr_notes: []
+  baseline_context: ""
 options:
   - name: "Phương án A"
-    summary: ""
-    pros: []
-    cons: []
-    risks: []
-  - name: "Phương án B"
     summary: ""
     pros: []
     cons: []
@@ -2257,6 +2264,41 @@ options:
 recommended_option: ""
 recommendation_reason: ""
 validation_plan: []
+notes_for_next_step: ""
+```
+
+### `system-design`
+
+```yaml
+design_problem: ""
+business_rule_trace: []
+design_options:
+  - name: ""
+    summary: ""
+    pros: []
+    cons: []
+    risks: []
+rejected_options:
+  - name: ""
+    reason: ""
+recommended_design: ""
+recommendation_reason: ""
+component_changes: []
+data_flow: []
+interface_changes: []
+failure_modes:
+  - scenario: ""
+    impact: ""
+    guardrail: ""
+compatibility_impact: []
+rollback_impact: []
+observability_hooks: []
+constraints_applied: []
+validation_plan: []
+specialized_followups:
+  - skill: ""
+    reason: ""
+notes_for_next_step: ""
 ```
 
 ### `domain-architecture`
@@ -2529,14 +2571,58 @@ pipeline_recommendation: READY|READY_WITH_GUARDS|BLOCKED
 notes_for_implementation_or_ops: ""
 ```
 
+### `task-breakdown-planner`
+
+```yaml
+implementation_goal: ""
+ba_lane:
+  acceptance_coverage: []
+  scope_guards: []
+  human_review_points: []
+dev_lane:
+  path_map: []
+  technical_sequence: []
+  tdd_targets: []
+task_breakdown:
+  - id: T1
+    owner_role: developer
+    name: ""
+    objective: ""
+    paths_in_scope: []
+    dependencies: []
+    outputs_expected: []
+    review_checkpoint: ""
+    verification_hint: ""
+dependencies_global: []
+risk_notes: []
+verification_plan: []
+notes_for_implementation: ""
+```
+
 ### `implementation`
 
 ```yaml
 recommended_design: ""
+implementation_mode: FEATURE|BUGFIX|REFACTOR|HARDENING
 tasks_completed: []
+bug_repro_evidence: []
+hypothesis_log:
+  - assumption: ""
+    status: CONFIRMED|REJECTED|OPEN
+    evidence: ""
+debug_experiments:
+  - goal: ""
+    action: ""
+    result: ""
+tdd_evidence:
+  - behavior: ""
+    failing_test: ""
+    passing_test: ""
+safe_refactor_notes: []
 code_changes: []
 doc_changes: []
 config_changes: []
+review_checkpoints: []
 outputs_actual: []
 known_limitations: []
 follow_up_items: []
@@ -2566,6 +2652,10 @@ notes_for_review: ""
 
 ```yaml
 verification_target: ""
+risk_ranked_test_matrix:
+  - risk: ""
+    severity: HIGH|MEDIUM|LOW
+    required_evidence: []
 test_strategy:
   unit_test:
     required: true|false
@@ -2579,6 +2669,11 @@ test_strategy:
   feature_test:
     required: true|false
     rationale: ""
+negative_cases: []
+regression_targets: []
+manual_exploration:
+  flows_checked: []
+  issues_found: []
 criteria_results:
   - criterion: ""
     result: PASS|FAIL|PARTIAL
@@ -2590,6 +2685,7 @@ test_evidence:
   feature_test: []
 commands_run: []
 skipped_checks: []
+release_blockers: []
 status: PASS|FAIL|PARTIAL
 gaps: []
 residual_risks: []

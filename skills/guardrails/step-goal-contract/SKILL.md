@@ -80,7 +80,7 @@ timebox:
 ## Chuẩn Hóa Output Trong Workflow Note
 
 Nếu output của skill này được lưu thành note `.md` trong workflow chain:
-- Dùng block `## Step Contract` trong template step tương ứng tại `../codex-workflow-chain/references/workflow-chain.md`.
+- Dùng block `## Step Contract` trong template step tương ứng tại `../../orchestration/codex-workflow-chain/references/workflow-chain.md`.
 - Block này xuất hiện ở cả 8 step trong workflow chain chuẩn.
 - Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
 - Không chuyển contract sang prose rồi bỏ block YAML; contract chuẩn phải nằm trong block này.

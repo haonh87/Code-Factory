@@ -65,7 +65,7 @@ next_action: ""
 
 Nếu output của skill này được lưu thành note `.md` trong workflow chain:
 - Đặt schema YAML của skill này trong block `## Audit`.
-- Block này thường xuất hiện ở step 3 và step 8 theo template tại `../codex-workflow-chain/references/workflow-chain.md`.
+- Block này thường xuất hiện ở step 3 và step 8 theo template tại `../../orchestration/codex-workflow-chain/references/workflow-chain.md`.
 - Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
 - Kết luận prose `PASS|FAIL|PARTIAL` phải khớp với `status` trong block YAML.
 
