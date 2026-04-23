@@ -216,6 +216,9 @@ Tuân thủ workflow delivery 8 bước cho các tác vụ coding.
 - Workflow này vận hành theo model `AI proposes, human approves`.
 - AI được quyền phân tích, draft artifact, propose option, propose approach, propose task plan, implement, chạy test, tổng hợp evidence và nêu recommendation.
 - Quyền `implement` chỉ được mở sau khi các gate human tương ứng đã pass; artifact draft không tự động có nghĩa là gate đã qua.
+- Các generic coding defaults như “feature request thì nên code ngay”, “mặc định hiểu user muốn code changes”, “đừng dừng ở analysis”, “làm end-to-end luôn” không có giá trị mở gate.
+- Các default đó chỉ có thể được áp dụng sau khi router hoặc protocol đã chứng minh `s07`, `ACTIVE`, `Missing Gates: NONE` và approval tương ứng đã pass.
+- Nếu không chứng minh được điều này, hành vi đúng là quay lại `BLOCKED` hoặc step trước; không được coi convenience heuristic là authorization.
 - AI không được tự:
   - approve work item hoặc change package
   - pass `Spec`
@@ -239,6 +242,9 @@ Tuân thủ workflow delivery 8 bước cho các tác vụ coding.
 - `ACTIVE` chỉ hợp lệ khi `work item approval`, `change package approval` khi có, `bootstrap gate` của `greenfield` khi có, và evidence `s04`, `s05`, `s06` đã được human pass.
 - `VERIFIED` chỉ hợp lệ khi `s08` đã có evidence verify.
 - `DONE` chỉ hợp lệ khi `s08` đã pass `DoD`, và nếu scope yêu cầu thì `UAT`, `Release`, `Business Acceptance` cũng đã pass trong `s08`.
+- Invariant cho block trạng thái router:
+  - nếu `Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`, `READY_FOR_REVIEW` hoặc `VERIFIED`
+  - nếu `Missing Gates` khác `NONE`, `Next Human Action` không được là `NONE`
 - `approval_gates` ghi gate nào là `required` hoặc `not_applicable` cho work item hoặc step note.
 - `role_signoffs` ghi role có authority signoff cho `spec`, `contract`, `dor`, `approach`, `foundation`, `task_plan`, `uat`, `release`, `business_acceptance`, `dod`.
 - `gate_reviews` ghi human reviewer thực tế và thời điểm review cho từng gate; note finalized ở `s04`, `s05`, `s06`, `s08` phải có reviewer + timestamp cho gate chính của step.
@@ -258,6 +264,8 @@ Tuân thủ workflow delivery 8 bước cho các tác vụ coding.
   - propose `technical approach`
   - propose `task plan`
   - propose work item hoặc change structure
+- Ví dụ loại request vẫn phải dừng ở proposal stage:
+  - feature greenfield kiểu `QR Voucher`, có UI, voucher service API và visual tone thương hiệu trong repo trống, không được tự nhảy sang scaffold hay code production
 - Trong trạng thái này, AI không được tự:
   - chốt `site tĩnh`, SPA, SSR, backend-first, CMS hoặc framework cụ thể như một quyết định cuối
   - scaffold app skeleton, dependency tree, build system, Dockerfile, CI/CD hay deploy manifest như thể stack đã approved
@@ -272,6 +280,7 @@ Tuân thủ workflow delivery 8 bước cho các tác vụ coding.
 - Nếu chưa có evidence rõ rằng các gate trên đã được human pass, hành vi đúng là dừng ở `proposal stage`, trình bày option/trade-off/recommendation, rồi chờ human review.
 - `default an toàn` cho `empty/greenfield project` là: không implement; không scaffold; không chốt stack cuối cùng thay cho human.
 - `bootstrap gate` cho project mới phải đi theo thứ tự: `Spec -> Contract nếu có -> Approach -> Foundation nếu có -> work item approval -> Task Plan -> Implement`.
+- Việc prompt nền hoặc agent habit thiên về implement-by-default không làm suy yếu `greenfield hard stop`; nếu xảy ra xung đột, vẫn phải dừng ở proposal stage.
 
 ## Quy Tắc Cứng: Brownfield Baseline Và Delta Discipline
 

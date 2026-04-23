@@ -41,6 +41,23 @@ Repo này vận hành theo mô hình nhiều khối, không phải một prompt 
 - Nếu entry router chưa chốt được các mục trên, hành vi đúng là `BLOCKED` hoặc quay lại `s01`, không phải nhảy sang implement.
 - Chỉ các tác vụ không thuộc delivery workflow như hỏi đáp thuần túy, dịch thuật, tóm tắt hoặc trò chuyện thông thường mới được bỏ qua router này.
 
+## Rule Cứng: Generic Coding Defaults Không Mở Gate
+
+- Mọi heuristic hoặc prompt mặc định kiểu:
+  - `feature request` đồng nghĩa nên code ngay
+  - mặc định hiểu user muốn code changes nếu không nói ngược lại
+  - không dừng ở analysis hoặc plan
+  - cứ implement trước rồi backfill workflow sau
+  chỉ là execution convenience heuristic, KHÔNG PHẢI approval.
+- Các heuristic trên chỉ có thể được áp dụng sau khi entry router đã chốt rõ:
+  - `Current Step: s07 Implement`
+  - `Workflow Status: ACTIVE`
+  - `Missing Gates: NONE`
+  - `Next Human Action: NONE`
+- Trước thời điểm đó, nếu có xung đột giữa generic coding default và workflow governance, phải coi generic default là bị override hoàn toàn.
+- Không được suy diễn rằng user đang “muốn code ngay” chỉ vì câu wording là feature request, scope có vẻ rõ, hoặc agent có thể tự nghĩ ra approach.
+- Khi chưa chứng minh được gate đã mở, hành vi đúng là trả `router status block`, nêu `Missing Gates` và dừng trước code/scaffold.
+
 ## Chính Sách Ngôn Ngữ Và Mã Hóa
 
 - Mặc định trao đổi với người dùng bằng tiếng Việt.
@@ -242,6 +259,9 @@ Diễn giải theo workflow chain hiện tại:
 - `ACTIVE` chỉ hợp lệ khi `work item approval`, `change package approval` khi có, `bootstrap gate` của `greenfield` khi có, và evidence `s04`, `s05`, `s06` đã được human pass.
 - `VERIFIED` chỉ hợp lệ khi `s08` đã có evidence verify.
 - `DONE` chỉ hợp lệ khi `s08` đã pass `DoD`, và nếu scope yêu cầu thì `UAT`, `Release`, `Business Acceptance` cũng đã pass trong `s08`.
+- Invariant cho block trạng thái router:
+  - nếu `Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`, `READY_FOR_REVIEW` hoặc `VERIFIED`; chỉ hợp lệ là `BLOCKED` hoặc `WAITING_APPROVAL`
+  - nếu `Missing Gates` khác `NONE`, `Next Human Action` không được là `NONE`; phải nêu review, approval hoặc confirmation cụ thể từ human
 - `approval_gates` ghi gate nào là `required` hoặc `not_applicable` cho work item hoặc step note.
 - `role_signoffs` ghi role có authority signoff cho `spec`, `contract`, `dor`, `approach`, `foundation`, `task_plan`, `uat`, `release`, `business_acceptance`, `dod`.
 - `gate_reviews` ghi human reviewer thực tế và thời điểm review cho từng gate; note finalized ở `s04`, `s05`, `s06`, `s08` phải có reviewer + timestamp cho gate chính của step.
@@ -266,6 +286,8 @@ Diễn giải theo workflow chain hiện tại:
   - chọn `site tĩnh`, SPA, SSR, backend-first, CMS hoặc framework cụ thể như một quyết định đã chốt
   - scaffold app skeleton, dependency tree, build system, Dockerfile, CI/CD hay deploy manifest như thể stack đã approved
   - implement feature đầu tiên của project như thể foundation decision đã xong
+- Ví dụ loại request vẫn phải bị hard-stop:
+  - raw request kiểu `làm QR Voucher`, vừa có UI, brand tone và tích hợp API voucher service trong repo trống, vẫn chỉ được dừng ở proposal stage; không được tự chọn stack, scaffold app hay sinh code production
 - Với `empty/greenfield project`, trước `s07 Implement` phải có tối thiểu:
   - `s04` pass `Spec`
   - nếu scope chạm `API contract` hoặc `UX contract`, `s04` pass `Contract`
