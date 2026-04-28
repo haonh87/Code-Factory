@@ -49,6 +49,8 @@ Thời điểm đối chiếu: `2026-04-20`.
 | `DoD` | `Definition of Done`: verdict cho biết work item đủ evidence để đóng | không phải code review pass | chủ yếu `s08` |
 | `role_signoffs` | map authority cho biết role nào có trách nhiệm signoff từng gate | không phải bằng chứng đã review thực tế | frontmatter workflow |
 | `gate_reviews` | audit trail ghi role reviewer và thời điểm review cho từng gate | không thay `role_signoffs`, cũng không thay `approved_by` của waiver | frontmatter workflow |
+| `Missing Gates` | danh sách gate hoặc artifact còn thiếu trong block trạng thái router để human thấy vì sao chưa được đi tiếp | không phải cosmetic status text; nếu khác `NONE` thì workflow chưa được coi là execution-ready | router status block, handoff |
+| `Next Human Action` | hành động review, approval hoặc confirmation cụ thể mà human cần làm tiếp theo để mở gate | không phải placeholder; nếu `Missing Gates` khác `NONE` thì không được là `NONE` | router status block, handoff |
 | `trusted approval receipt` | receipt đã ký và được lưu ngoài project root để chứng minh một gate human đã được seal thực sự | không phải metadata trong note/report, cũng không phải comment review thuần | protocol, gate commands |
 | `spec/design before code` | rule cứng: không implement khi `s04-s06` chưa đủ điều kiện | không phải gợi ý hay preference | policy, `s07` gate |
 | `brainstorming có kỷ luật` | rule cứng: không chốt `s05` nếu chưa có so sánh phương án ở mức phù hợp | không phải kéo dài discovery vô hạn | `s05` gate |
@@ -97,6 +99,7 @@ Khi cần viết ngắn mà vẫn giữ đúng ngữ nghĩa, ưu tiên dùng cá
 - `giải pháp nhỏ nhất đủ đúng`: nếu một phương án nhỏ hơn vẫn đạt AC, constraint hiện tại, `governance` liên quan và nhu cầu kiểm chứng chính, phải chọn nó.
 - `planning execution-oriented`: task plan phải đủ rõ về phần chạm chính, thứ tự hoặc dependency, verify path và checkpoint cần thiết để implementer không phải tự phát minh lại design.
 - `capability control`: implementation path chỉ được phép ghi khi work item ở `ACTIVE`, đang ở `s07`, và `granted_write_paths` đã được cấp rõ.
+- `router status consistency`: nếu `Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`, `READY_FOR_REVIEW` hoặc `VERIFIED`, và `Next Human Action` không được là `NONE`.
 
 ## Thuật Ngữ Governance
 

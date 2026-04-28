@@ -1,0 +1,7 @@
+interface:
+  display_name: "Branch Finish Discipline"
+  short_description: "Chốt cleanup hoặc merge branch/worktree sau DoD rõ"
+  default_prompt: "Dùng $branch-finish-discipline để chốt có được cleanup, close hoặc merge branch/worktree chưa, dựa trên verify và DoD thực tế."
+
+policy:
+  allow_implicit_invocation: true

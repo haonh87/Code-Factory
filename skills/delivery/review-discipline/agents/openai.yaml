@@ -1,0 +1,7 @@
+interface:
+  display_name: "Review Discipline"
+  short_description: "Tổ chức review sớm theo spec rồi code quality"
+  default_prompt: "Dùng $review-discipline để lên plan review sớm theo batch, giữ thứ tự spec compliance rồi code quality và chốt finding trước verify."
+
+policy:
+  allow_implicit_invocation: true

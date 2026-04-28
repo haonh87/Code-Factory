@@ -54,6 +54,9 @@ gate_reviews:
 content_skills:
   - "codex-workflow-chain"
   - "implementation"
+  - "worktree-discipline"
+  - "review-discipline"
+  - "delegation-discipline"
   - "step-goal-contract"
 artifact_skills:
   - "obsidian-markdown"

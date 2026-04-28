@@ -99,7 +99,7 @@ notes_for_next_step: ""
 
 Nếu output của skill này được lưu thành note `.md` trong workflow chain:
 
-- Dùng template step 5 tại `../../orchestration/codex-workflow-chain/references/workflow-chain.md`.
+- Dùng template step 5 tại `../codex-workflow-chain/references/workflow-chain.md`.
 - Đặt schema YAML của skill này trong block `## Option Analysis`.
 - Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
 - `notes_for_next_step` phải nêu rõ đã đủ để sang `system-design` hay còn blocker nào phải quay lại `s03`.

@@ -132,7 +132,7 @@ notes_for_review: ""
 ## Chuẩn Hóa Output Trong Workflow Note
 
 Nếu output của skill này được lưu thành note `.md` trong workflow chain:
-- Dùng template step 8 tại `../../orchestration/codex-workflow-chain/references/workflow-chain.md`.
+- Dùng template step 8 tại `../codex-workflow-chain/references/workflow-chain.md`.
 - Đặt schema YAML của skill này trong block `## Artifact Chính`.
 - Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
 - Kết luận `PASS|FAIL|PARTIAL` trong callout `summary` phải khớp với `status` trong block YAML.

@@ -110,7 +110,7 @@ notes_for_next_step: ""
 ## Chuẩn Hóa Output Trong Workflow Note
 
 Nếu output của skill này được lưu thành note `.md` trong workflow chain:
-- Dùng template step 5 tại `../../orchestration/codex-workflow-chain/references/workflow-chain.md`.
+- Dùng template step 5 tại `../codex-workflow-chain/references/workflow-chain.md`.
 - Đặt schema YAML của skill này trong block `## Architecture Details`.
 - Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
 - Dùng skill này song song hoặc ngay trước `frontend-architecture` khi bài toán vừa cần screen behavior vừa cần source-code boundary.

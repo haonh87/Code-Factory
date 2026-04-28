@@ -27,12 +27,16 @@
 - `ci-cd-release`: skill khóa pipeline CI/CD, registry, tagging, promotion flow, approval control và release guard.
 - `task-breakdown-planner`: skill chia thiết kế thành các task nhỏ để thực thi.
 - `implementation`: skill triển khai thay đổi thực tế trong codebase.
+- `worktree-discipline`: skill chốt khi nào phải dùng `worktree`, cách cô lập workspace và guard cleanup cho change lớn hoặc rủi ro.
+- `review-discipline`: skill tổ chức review sớm trong `s07` theo thứ tự `spec compliance -> code quality`.
+- `delegation-discipline`: skill chốt có được delegation hay không và khóa `owned_scope`, `merge path`, `verify path` cho task độc lập.
 - `react-web-implementation`: skill triển khai React web hoặc Next.js với server/client split, data fetching, state placement và loading path rõ ràng.
 - `testing`: skill verify theo acceptance criteria và quality gates, với chiến lược rõ giữa unit test, integration/database test và feature test.
 - `code-scan-review`: skill quét code ở step 8 verify để kiểm tra syntax, static analysis, security scan và performance heuristic; chi tiết từng ngôn ngữ được tách trong reference của skill.
 - `frontend-quality-review`: skill rà soát screen-level quality của frontend ở mức accessibility, responsive layout, interaction feedback và UX heuristic.
 - `react-best-practices-review`: skill rà soát render/data boundary, effect hygiene, state placement và performance heuristic đặc thù của React web hoặc Next.js.
 - `database-change-review`: skill rà soát migration safety, compatibility, query risk và release recommendation cho thay đổi database.
+- `branch-finish-discipline`: skill chốt cleanup, close hoặc merge branch/worktree chỉ sau khi verify và `DoD` đã đủ.
 - `step-goal-contract`: skill chốt contract cho từng step trước khi thực thi.
 - `input-readiness-assessor`: skill đánh giá mức sẵn sàng đầu vào (`READY|BLOCKED`).
 - `step-goal-auditor`: skill kiểm định output thực tế so với contract của step.
@@ -148,8 +152,8 @@ Luật tối thiểu cho `multi-agent`:
 | `task-breakdown-planner` | Agent chính tự chia task và kiểm tra dependency | `planner` worker tạo plan, `dependency-reviewer` kiểm tra đường găng |
 | `deployment-devops` | Agent chính tự khóa scope DevOps tổng, environment matrix và hướng phối hợp giữa packaging, runtime, release | Worker kiểu `platform-architect`, `release-planner` hoặc `deployment-reviewer` cung cấp plan tổng và evidence cho coordinator |
 | `containerization-packaging`, `platform-runtime-deployment`, `ci-cd-release` | Agent chính tự khóa contract sâu theo từng layer packaging, runtime hoặc pipeline/release | Specialist worker kiểu `image-packager`, `platform-architect` hoặc `release-engineer` sở hữu output DevOps theo layer |
-| `implementation`, `react-web-implementation` | Agent chính tự sửa code trong phạm vi nhỏ hoặc vừa, có thể gọi sâu framework-specific guidance khi cần | Nhiều `builder` worker chia theo module hoặc path ownership; frontend builder có thể sở hữu riêng boundary React |
-| `testing`, `code-scan-review`, `frontend-quality-review`, `react-best-practices-review`, `database-change-review` | Agent chính tự verify và ghi evidence | Verifier worker tách riêng theo loại kiểm định hoặc framework review |
+| `implementation`, `worktree-discipline`, `review-discipline`, `delegation-discipline`, `react-web-implementation` | Agent chính tự sửa code hoặc chốt execution discipline trong phạm vi nhỏ hoặc vừa, có thể gọi sâu framework-specific guidance khi cần | Nhiều `builder` worker chia theo module hoặc path ownership; frontend builder có thể sở hữu riêng boundary React; coordinator có thể dùng output discipline để khóa workspace, review và delegation |
+| `testing`, `code-scan-review`, `frontend-quality-review`, `react-best-practices-review`, `database-change-review`, `branch-finish-discipline` | Agent chính tự verify, ghi evidence và chốt closeout discipline sau verify | Verifier worker tách riêng theo loại kiểm định hoặc framework review; closeout owner dùng `branch-finish-discipline` để khóa cleanup/merge timing |
 | `notebooklm` | Agent chính tự dùng để tóm lược/query corpus lớn khi step có nhiều nguồn ngoài | Worker kiểu `notebooklm-researcher` gom insight từ notebook rồi handoff về coordinator; output chỉ là context phụ |
 | `step-goal-contract`, `input-readiness-assessor`, `step-goal-auditor`, `definition-of-ready-gate`, `definition-of-done-gate` | Guardrail nội bộ của cùng agent | Lớp contract/audit chung cho coordinator và worker; không thuộc ownership riêng của business skill |
 
@@ -455,6 +459,9 @@ Nguyên tắc áp dụng:
 - `ACTIVE` chỉ hợp lệ khi `work item approval`, `change package approval` khi có, `bootstrap gate` của `greenfield` khi có, và evidence `s04`, `s05`, `s06` đã được human pass.
 - `VERIFIED` chỉ hợp lệ khi `s08` đã có evidence verify.
 - `DONE` chỉ hợp lệ khi `s08` đã pass `DoD`, và nếu scope yêu cầu thì `UAT`, `Release`, `Business Acceptance` cũng đã pass trong `s08`.
+- Invariant cho block trạng thái router:
+  - nếu `Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`, `READY_FOR_REVIEW` hoặc `VERIFIED`
+  - nếu `Missing Gates` khác `NONE`, `Next Human Action` không được là `NONE`
 - `approval_gates` ghi gate nào là `required` hoặc `not_applicable` cho work item hoặc step note.
 - `role_signoffs` ghi role có authority signoff cho `spec`, `contract`, `dor`, `approach`, `foundation`, `task_plan`, `uat`, `release`, `business_acceptance`, `dod`.
 - `gate_reviews` ghi human reviewer thực tế và thời điểm review cho từng gate; note finalized ở `s04`, `s05`, `s06`, `s08` phải có reviewer + timestamp cho gate chính của step.
@@ -474,6 +481,8 @@ Nguyên tắc áp dụng:
   - propose `technical approach`
   - propose `task plan`
   - propose work item hoặc change structure
+- Ví dụ loại request vẫn phải dừng ở proposal stage:
+  - feature greenfield kiểu `QR Voucher`, có UI, voucher service API và visual tone thương hiệu trong repo trống, không được tự nhảy sang scaffold hay code production
 - Trong trạng thái này, AI không được tự:
   - chốt `site tĩnh`, SPA, SSR, backend-first, CMS hoặc framework cụ thể như một quyết định cuối
   - scaffold app skeleton, dependency tree, build system, Dockerfile, CI/CD hay deploy manifest như thể stack đã approved
@@ -928,8 +937,8 @@ Quy tắc:
 | `s04` Acceptance + DoR | `<work_item_slug>.s04.acceptance-criteria.md` | `## Step Contract`, `## Artifact Chính`, `## Governance Checks`, `## Definition of Ready`, `## Spec Freeze` khi SDD, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, artifact step 4, `governance-checklist`, `definition-of-ready-gate`, `srs-spec`, `spec-freeze-gate` khi SDD |
 | `s05` Technical Approach | `<work_item_slug>.s05.technical-approach.md` | `## Step Contract`, `## Option Analysis`, `## Artifact Chính`, `## Architecture Details`, `## Governance Exceptions` khi có, `## Spec Change` khi có, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `brainstorming`, `system-design`, `governance-exception` khi có, `spec-change` khi có, `domain-architecture` hoặc `frontend-architecture` hoặc `frontend-experience-design` hoặc `database-design` hoặc `deployment-devops` hoặc `containerization-packaging` hoặc `platform-runtime-deployment` hoặc `ci-cd-release` khi có |
 | `s06` Task Plan | `<work_item_slug>.s06.task-breakdown.md` | `## Step Contract`, `## Artifact Chính`, `## Verification Plan`, `## Governance Checks`, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `task-breakdown-planner`, `governance-checklist`, `spec-traceability-matrix` khi SDD |
-| `s07` Implement | `<work_item_slug>.s07.implementation.md` nếu có note | `## Step Contract`, `## Artifact Chính`, `## Implementation Notes` khi có, `## Governance Exceptions` khi có, `## Spec Change` khi có, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `implementation`, `react-web-implementation` khi có, `governance-exception` khi có, `spec-change` khi có |
-| `s08` Verify + DoD | `<work_item_slug>.s08.verification.md` | `## Step Contract`, `## Artifact Chính`, `## Governance Checks`, `## Spec Coverage`, `## Scan Summary`, `## Review Findings` khi có, `## Database Review` khi có, `## Deployment Review` khi có, `## Governance Exceptions` khi có, `## Audit`, `## Definition of Done`, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `testing`, `governance-checklist`, `spec-coverage-report` khi SDD, `code-scan-review`, `frontend-quality-review` khi có, `react-best-practices-review` khi có, `database-change-review` khi có, `governance-exception` khi có, `deployment-devops` hoặc `containerization-packaging` hoặc `platform-runtime-deployment` hoặc `ci-cd-release` khi có, `step-goal-auditor`, `definition-of-done-gate` |
+| `s07` Implement | `<work_item_slug>.s07.implementation.md` nếu có note | `## Step Contract`, `## Artifact Chính`, `## Implementation Notes` khi có, `## Governance Exceptions` khi có, `## Spec Change` khi có, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `implementation`, `worktree-discipline` khi có, `review-discipline` khi có, `delegation-discipline` khi có, `react-web-implementation` khi có, `governance-exception` khi có, `spec-change` khi có |
+| `s08` Verify + DoD | `<work_item_slug>.s08.verification.md` | `## Step Contract`, `## Artifact Chính`, `## Governance Checks`, `## Spec Coverage`, `## Scan Summary`, `## Review Findings` khi có, `## Database Review` khi có, `## Deployment Review` khi có, `## Governance Exceptions` khi có, `## Audit`, `## Definition of Done`, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `testing`, `governance-checklist`, `spec-coverage-report` khi SDD, `code-scan-review`, `frontend-quality-review` khi có, `react-best-practices-review` khi có, `database-change-review` khi có, `branch-finish-discipline` khi có closeout branch/worktree, `governance-exception` khi có, `deployment-devops` hoặc `containerization-packaging` hoặc `platform-runtime-deployment` hoặc `ci-cd-release` khi có, `step-goal-auditor`, `definition-of-done-gate` |
 
 Ghi chú:
 - `artifact step 1`, `artifact step 3`, `artifact step 4` là schema tối giản ở workflow level, không thay cho schema chi tiết của skill nếu team muốn lưu chi tiết hơn.
@@ -961,10 +970,14 @@ Ghi chú:
 | 6 | `task-breakdown-spec` | `## Artifact Chính` | schema `task-breakdown-planner` |
 | 6 khi chạy SDD | `spec-traceability-matrix` | `## SDD Traceability` | requirement refs -> AC refs -> task refs -> test refs |
 | 7 | `implementation-spec` | `## Artifact Chính` | schema `implementation` |
+| 7 khi cần chốt cô lập workspace | `worktree-plan` | `## Implementation Notes` | schema `worktree-discipline` |
+| 7 khi cần review sớm trong implement | `review-plan` | `## Implementation Notes` | schema `review-discipline` |
+| 7 khi cân nhắc hoặc bật delegation | `delegation-plan` | `## Implementation Notes` | schema `delegation-discipline` |
 | 7 khi cần framework-specific handoff | `implementation-notes` | `## Implementation Notes` | schema `react-web-implementation` khi stack là React web hoặc Next.js |
 | 8 | `verification-spec` | `## Artifact Chính`, `## Scan Summary`, `## Review Findings`, `## Database Review`, `## Deployment Review`, `## Audit` | schema `testing`; cộng thêm schema scan/review/audit khi có |
 | 8 khi chạy SDD | `spec-coverage-report` | `## Spec Coverage` | requirement refs -> AC refs -> task refs -> test refs -> `PASS|FAIL|PARTIAL|UNTESTED` |
 | 8 khi scope có packaging hoặc rollout | `deployment-review` | `## Deployment Review` | schema `deployment-devops` và có thể cộng thêm `containerization-packaging`, `platform-runtime-deployment`, `ci-cd-release` |
+| 8 khi có branch/worktree cần chốt | `branch-finish-check` | `## Audit` | schema `branch-finish-discipline` |
 | 8 | `definition-of-done` | `## Definition of Done` | schema `definition-of-done-gate` |
 
 Quy tắc:
@@ -1717,6 +1730,9 @@ gate_reviews:
 content_skills:
   - codex-workflow-chain
   - implementation
+  - worktree-discipline
+  - review-discipline
+  - delegation-discipline
   - step-goal-contract
   # thêm `react-web-implementation` khi stack là React web hoặc Next.js
   # thêm `deployment-devops` khi cần chốt DevOps tổng
@@ -1751,6 +1767,8 @@ tags:
 
 ## Implementation Notes
 ```yaml
+# dùng schema `worktree-discipline`, `review-discipline`, `delegation-discipline`
+# khi step 7 cần khóa execution discipline
 # dùng schema `react-web-implementation` khi step 7 chạm React web hoặc Next.js
 ```
 
@@ -1842,6 +1860,7 @@ content_skills:
   - codex-workflow-chain
   - testing
   - code-scan-review
+  - branch-finish-discipline
   - step-goal-contract
   - step-goal-auditor
   - definition-of-done-gate
@@ -1933,6 +1952,7 @@ tags:
 ## Audit
 ```yaml
 # dùng schema `step-goal-auditor`
+# cộng thêm `branch-finish-discipline` khi step 8 cần chốt cleanup hoặc merge branch/worktree
 ```
 
 ## Definition of Done
@@ -2599,6 +2619,73 @@ verification_plan: []
 notes_for_implementation: ""
 ```
 
+### `worktree-discipline`
+
+```yaml
+worktree_target: ""
+planning_track: quick|full|enterprise
+risk_signals: []
+worktree_decision: REQUIRED|RECOMMENDED|OPTIONAL|NOT_NEEDED
+decision_reason: []
+isolation_strategy:
+  branch_name: ""
+  worktree_path: ""
+  owned_paths: []
+  expected_duration: ""
+execution_guards: []
+skip_reason: ""
+cleanup_preconditions: []
+notes_for_implementation: ""
+```
+
+### `review-discipline`
+
+```yaml
+review_target: ""
+planning_track: quick|full|enterprise
+review_mode: SELF|TARGETED|INDEPENDENT
+review_order:
+  - SPEC_COMPLIANCE
+  - CODE_QUALITY
+review_batches:
+  - batch: ""
+    scope: []
+    trigger: ""
+    reviewer_role: ""
+required_checks:
+  spec_compliance: []
+  code_quality: []
+finding_policy:
+  blocker_threshold: ""
+  reopen_conditions: []
+handoff_to_verify: []
+notes_for_implementation_or_verify: ""
+```
+
+### `delegation-discipline`
+
+```yaml
+delegation_target: ""
+planning_track: quick|full|enterprise
+execution_mode_recommendation: AGENTIC|SUBAGENT|MULTI_AGENT|SEQUENTIAL_MULTI_ROLE
+independence_checks:
+  owned_scope_clear: PASS|FAIL
+  owned_paths_clear: PASS|FAIL
+  merge_path_clear: PASS|FAIL
+  verify_path_clear: PASS|FAIL
+worker_assignments:
+  - role: ""
+    task: ""
+    owned_scope: []
+    owned_paths: []
+    outputs_expected: []
+merge_strategy: []
+verify_strategy: []
+blocked_reasons: []
+coordination_guards: []
+notes_for_execution: ""
+```
+
 ### `implementation`
 
 ```yaml
@@ -2691,6 +2778,26 @@ gaps: []
 residual_risks: []
 recommendation: ""
 notes_for_review: ""
+```
+
+### `branch-finish-discipline`
+
+```yaml
+finish_target: ""
+workspace_kind: BRANCH|WORKTREE|BOTH
+verify_inputs: []
+finish_gate_checks:
+  verify_complete: PASS|FAIL|PENDING
+  dod_complete: PASS|FAIL|PENDING
+  findings_closed: PASS|FAIL|PENDING
+  exceptions_resolved: PASS|FAIL|PENDING
+allowed_actions: []
+blocked_actions: []
+cleanup_sequence: []
+merge_conditions: []
+residual_risks: []
+final_recommendation: CLEANUP_ALLOWED|MERGE_ALLOWED|HOLD_OPEN
+notes_for_closeout: ""
 ```
 
 ### `code-scan-review`

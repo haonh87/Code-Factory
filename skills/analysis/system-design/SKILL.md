@@ -97,7 +97,7 @@ notes_for_next_step: ""
 
 Nếu output của skill này được lưu thành note `.md` trong workflow chain:
 
-- Dùng template step 5 tại `../../orchestration/codex-workflow-chain/references/workflow-chain.md`.
+- Dùng template step 5 tại `../codex-workflow-chain/references/workflow-chain.md`.
 - Đặt schema YAML của skill này trong block `## Artifact Chính`.
 - Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
 - Nếu có follow-up chuyên biệt, ghi ở `## Architecture Details` hoặc artifact phụ được link từ note chuẩn.

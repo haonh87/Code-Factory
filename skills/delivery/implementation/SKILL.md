@@ -85,7 +85,7 @@ notes_for_testing: ""
 
 Nếu output của skill này được lưu thành note `.md` trong workflow chain:
 
-- Dùng template step 7 tại `../../orchestration/codex-workflow-chain/references/workflow-chain.md`.
+- Dùng template step 7 tại `../codex-workflow-chain/references/workflow-chain.md`.
 - Đặt schema YAML của skill này trong block `## Artifact Chính`.
 - Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
 - Nếu có exception, deviation hoặc handoff đặc biệt, ghi thêm ở prose section nhưng không thay block YAML.

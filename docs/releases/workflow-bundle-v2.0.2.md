@@ -15,6 +15,7 @@ Branch: `release/v2.0.2`
 - Thêm `workflow-trusted-approval-utils.js` để tạo và verify trusted signed receipts ngoài project root.
 - Thêm `workflow-gate-review.js` và command `wfc gate approve|reject|status` cho trusted human approval ở các gate workflow.
 - Thêm smoke case `capability-control` để kiểm lock/unlock implementation path thật.
+- Thêm regression smoke `greenfield-qr-voucher-proposal` để chặn raw feature request greenfield có UI + API + brand tone đi thẳng sang scaffold hoặc code.
 
 ### Changed
 
@@ -29,6 +30,7 @@ Branch: `release/v2.0.2`
 - Sửa gap giữa `human-controlled gates` và runtime enforcement khi agent không chỉ đi qua validator mà còn sửa implementation path trực tiếp.
 - Sửa footgun bootstrap legacy và mutating action bootstrap report.
 - Sửa gap “AI tự khai reviewed_by là đủ” bằng signed receipts gắn với artifact digest.
+- Sửa drift semantic ở block trạng thái router: nếu còn `Missing Gates` thì không được báo `ACTIVE` và `Next Human Action` không được là `NONE`.
 
 ## Scope
 

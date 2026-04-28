@@ -58,6 +58,7 @@ function runCodexModeSmoke({ wfcBin, tempRoot }) {
   const projectAgentsPath = path.join(projectRoot, "AGENTS.md");
   const skillsHome = path.join(codexHome, "skills");
   const supportPoliciesPath = path.join(codexHome, "policies", "codex", "workflow-artifact-naming.md");
+  const codexWorkflowChainPath = path.join(skillsHome, "codex-workflow-chain", "SKILL.md");
 
   runNodeScriptCaptureOutput(
     wfcBin,
@@ -85,6 +86,7 @@ function runCodexModeSmoke({ wfcBin, tempRoot }) {
   assertPathExists(path.join(skillsHome, "step-goal-contract"), "Expected selected skill to be installed.");
   assertPathMissing(path.join(skillsHome, "notebooklm"), "Expected unselected skill to remain absent.");
   assertPathExists(supportPoliciesPath, "Expected support policies to be installed.");
+  assertPathExists(codexWorkflowChainPath, "Expected codex-workflow-chain skill file to be installed.");
   assertPathExists(installStatePath, "Expected bundle install state to be written.");
   assertPathExists(managedSkillsManifestPath, "Expected bundle managed skills manifest to be written.");
   assertPathMissing(legacyInstallStatePath, "Expected legacy install state path to stay absent after install.");
@@ -162,6 +164,30 @@ function runCodexModeSmoke({ wfcBin, tempRoot }) {
     statusJsonOutput,
     `"support_policies_path": "${path.join(codexHome, "policies", "codex").replace(/\\/g, "\\\\")}"`,
     "Expected support policies path in status output."
+  );
+
+  const globalAgentsContent = fs.readFileSync(globalAgentsPath, "utf8");
+  assertContentIncludes(
+    globalAgentsContent,
+    "`Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`",
+    "Expected installed global AGENTS to hard-stop contradictory router status."
+  );
+  assertContentIncludes(
+    globalAgentsContent,
+    "`Next Human Action` không được là `NONE`",
+    "Expected installed global AGENTS to forbid NONE next action when gates are missing."
+  );
+
+  const codexWorkflowChainContent = fs.readFileSync(codexWorkflowChainPath, "utf8");
+  assertContentIncludes(
+    codexWorkflowChainContent,
+    "`Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`",
+    "Expected installed codex-workflow-chain skill to hard-stop contradictory router status."
+  );
+  assertContentIncludes(
+    codexWorkflowChainContent,
+    "`QR Voucher`",
+    "Expected installed codex-workflow-chain skill to retain the greenfield QR Voucher hard-stop example."
   );
 }
 

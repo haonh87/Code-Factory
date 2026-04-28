@@ -1,0 +1,7 @@
+interface:
+  display_name: "Delegation Discipline"
+  short_description: "Chỉ delegation cho task độc lập có merge và verify rõ"
+  default_prompt: "Dùng $delegation-discipline để quyết định có được delegation không, chốt owned scope, merge path và verify path trước khi tách worker."
+
+policy:
+  allow_implicit_invocation: true

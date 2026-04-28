@@ -76,7 +76,7 @@ notes_for_next_step: ""
 
 Nếu output của skill này được lưu thành note `.md` trong workflow chain:
 - Khi skill này là artifact requirement-analysis đầy đủ, ưu tiên đặt schema YAML trong block `## Requirement Analysis Spec`; nếu template step không có block riêng thì đặt trong `## Artifact Chính`.
-- Trong workflow mặc định, cách dùng này phù hợp nhất với step 1 tại `../../orchestration/codex-workflow-chain/references/workflow-chain.md`.
+- Trong workflow mặc định, cách dùng này phù hợp nhất với step 1 tại `../codex-workflow-chain/references/workflow-chain.md`.
 - Nếu step khác chỉ cần schema rút gọn ở mức workflow, ưu tiên theo template step tương ứng; không đổi nghĩa field gốc khi cần artifact requirement-analysis đầy đủ.
 - Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
 

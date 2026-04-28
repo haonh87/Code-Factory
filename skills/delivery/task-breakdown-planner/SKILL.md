@@ -91,7 +91,7 @@ notes_for_implementation: ""
 
 Nếu output của skill này được lưu thành note `.md` trong workflow chain:
 
-- Dùng template step 6 tại `../../orchestration/codex-workflow-chain/references/workflow-chain.md`.
+- Dùng template step 6 tại `../codex-workflow-chain/references/workflow-chain.md`.
 - Đặt schema YAML của skill này trong block `## Artifact Chính`.
 - Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
 - `verification_plan` và rollout note có thể tóm tắt thêm ở section prose, nhưng không thay block YAML.

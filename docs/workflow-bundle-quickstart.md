@@ -136,6 +136,12 @@ Next Human Action: <review/approval cần từ người, hoặc NONE>
 
 Nếu còn thiếu gate hoặc còn blocker trọng yếu, agent phải dừng ở `BLOCKED` hoặc `WAITING_APPROVAL`, không được tự đi tiếp sang implement.
 
+Consistency rule:
+
+- nếu `Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`, `READY_FOR_REVIEW` hoặc `VERIFIED`
+- nếu `Missing Gates` khác `NONE`, `Next Human Action` không được là `NONE`
+- request greenfield kiểu `QR Voucher + voucher service API + tone brand` trong repo trống phải dừng ở `proposal stage`, không được auto-scaffold
+
 ## Bootstrap Một Repo Dự Án Mới
 
 ```bash

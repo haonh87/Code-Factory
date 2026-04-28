@@ -79,7 +79,7 @@ evidence: []
 ## Chuẩn Hóa Output Trong Workflow Note
 
 Nếu output của skill này được lưu thành note `.md` trong workflow chain:
-- Dùng template step 8 tại `../../orchestration/codex-workflow-chain/references/workflow-chain.md`.
+- Dùng template step 8 tại `../codex-workflow-chain/references/workflow-chain.md`.
 - Đặt schema YAML của skill này trong block `## Database Review`.
 - Chỉ tạo block này khi thay đổi thực sự chạm schema, query, migration, retention hoặc rollback concern của database.
 - Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.

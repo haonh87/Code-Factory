@@ -46,6 +46,7 @@ content_skills:
   - "codex-workflow-chain"
   - "testing"
   - "code-scan-review"
+  - "branch-finish-discipline"
   - "step-goal-contract"
   - "step-goal-auditor"
   - "definition-of-done-gate"

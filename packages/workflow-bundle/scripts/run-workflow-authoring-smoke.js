@@ -1174,6 +1174,57 @@ function runCaseGreenfieldBootstrapPreflight(repoRoot, projectRoot) {
   assertContentIncludes(s01Content, "bootstrap_gate_status: APPROVED", "Expected bootstrap gate approval in greenfield protocol block.");
 }
 
+function runCaseGreenfieldQrVoucherProposal(repoRoot, projectRoot) {
+  const workItemSlug = "qr-voucher-surface";
+  const workflowRootBase = path.join(projectRoot, "work-items");
+  const outputPath = path.join(projectRoot, "tmp", `${workItemSlug}.proposal.json`);
+  const workflowRoot = path.join(workflowRootBase, workItemSlug);
+
+  runNodeScript(repoRoot, "scripts/materialize-work-item.js", [
+    "--request",
+    "Tôi muốn làm hệ thống QR Voucher, hiển thị thông tin voucher như Mã QR, tên chiến dịch, mã voucher, thông tin điều kiện sử dụng, thời gian sử dụng. Tích hợp API với voucher service. Tông màu vàng của Golden Gate Group Vietnam",
+    "--work-item",
+    workItemSlug,
+    "--delivery-context",
+    "greenfield",
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--output",
+    outputPath,
+    "--auto-scaffold"
+  ]);
+
+  assertPathExists(outputPath, `Expected QR Voucher materialization report: ${outputPath}`);
+  if (fs.existsSync(workflowRoot)) {
+    throw new Error("Greenfield QR Voucher request must not scaffold workflow root before bootstrap approval.");
+  }
+
+  const report = JSON.parse(fs.readFileSync(outputPath, "utf8"));
+  if (report.materialization_status !== "PROPOSED") {
+    throw new Error(`Expected QR Voucher materialization_status=PROPOSED, got '${report.materialization_status}'.`);
+  }
+  if (report.protocol_status !== "PROPOSED") {
+    throw new Error(`Expected QR Voucher protocol_status=PROPOSED, got '${report.protocol_status}'.`);
+  }
+  if (report.delivery_context !== "greenfield") {
+    throw new Error(`Expected QR Voucher delivery_context=greenfield, got '${report.delivery_context}'.`);
+  }
+  if (report.bootstrap_gate_status !== "PENDING_REVIEW") {
+    throw new Error(`Expected QR Voucher bootstrap_gate_status=PENDING_REVIEW, got '${report.bootstrap_gate_status}'.`);
+  }
+  if (!Array.isArray(report.blockers) || !report.blockers.some((item) => item.includes("Greenfield bootstrap gate"))) {
+    throw new Error("Expected QR Voucher proposal to include greenfield bootstrap blocker.");
+  }
+  if (!Array.isArray(report.required_actions) || !report.required_actions.some((item) => item.includes("Foundation Decision"))) {
+    throw new Error("Expected QR Voucher proposal to require human review for foundation-sensitive artifacts.");
+  }
+  if (report.handoff_target !== "human-clarify") {
+    throw new Error(`Expected QR Voucher handoff_target=human-clarify, got '${report.handoff_target}'.`);
+  }
+}
+
 function main() {
   const args = parseCliArgs(process.argv.slice(2));
   const repoRoot = path.resolve(__dirname, "..");
@@ -1190,7 +1241,8 @@ function main() {
     { name: "enterprise-multi-agent", run: runCaseEnterpriseMultiAgent },
     { name: "strict-sdd-change", run: runCaseStrictSddChange },
     { name: "materialize-auto-scaffold", run: runCaseMaterializeAutoScaffold },
-    { name: "greenfield-bootstrap-preflight", run: runCaseGreenfieldBootstrapPreflight }
+    { name: "greenfield-bootstrap-preflight", run: runCaseGreenfieldBootstrapPreflight },
+    { name: "greenfield-qr-voucher-proposal", run: runCaseGreenfieldQrVoucherProposal }
   ];
   const failures = [];
 

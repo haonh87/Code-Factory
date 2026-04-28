@@ -18,6 +18,7 @@ Thời điểm đối chiếu: `2026-04-20`.
 - không còn thấy `hard conflict` lớn giữa `spec/design before code`, `human-controlled gates`, `greenfield hard stop`, `brownfield baseline`, `TDD`, `worktree`, `review`, `DoD`
 - phần mạnh nhất hiện tại là chuỗi `rule cứng -> source-of-truth artifact -> gate review -> validator/protocol`
 - phần còn yếu không nằm ở nguyên tắc, mà ở một vài chỗ `semantics` hoặc `coverage` chưa kín hoàn toàn
+- sau đợt siết mới, đã có thêm invariant để chặn block trạng thái mâu thuẫn kiểu còn `Missing Gates` mà vẫn báo `ACTIVE` hoặc `Next Human Action: NONE`
 
 Mức đánh giá:
 
@@ -119,6 +120,13 @@ flowchart TD
 | `s06` | task plan phải execution-oriented | `Verification Path`, dependency, checkpoint, governance checks | `Task Plan` | protocol không cho `ACTIVE` nếu chưa có evidence `s06` | Tốt |
 | `s07` | `TDD`, `worktree`, review sớm, review hai tầng, subagent chỉ cho task độc lập | `Delivery Rule Evidence`, `granted_write_paths`, capability control, implementation notes, exception/spec-change nếu có | không đóng gate cuối ở step này | governance validator buộc evidence có cấu trúc; protocol + capability control chỉ mở implementation path ở `ACTIVE + s07` | Tốt |
 | `s08` | không tự tuyên bố done; branch/worktree chỉ chốt sau verify | `Governance Checks`, `Spec Coverage`, `UAT`, `Release Summary`, `Business Acceptance Summary`, `DoD` | `UAT`, `Release`, `Business Acceptance`, `DoD` khi required | protocol không cho `DONE` nếu gate `s08` chưa đủ | Tốt |
+
+## Consistency Guard
+
+- Block trạng thái router giờ phải nhất quán ngữ nghĩa:
+  - nếu `Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`, `READY_FOR_REVIEW` hoặc `VERIFIED`
+  - nếu `Missing Gates` khác `NONE`, `Next Human Action` không được là `NONE`
+- Regression smoke hiện có case greenfield `QR Voucher + voucher service API + tone brand` để bảo đảm raw feature request trong repo trống chỉ dừng ở `proposal stage`.
 
 ## Bảng Chi Tiết Theo Rule Và Checklist
 

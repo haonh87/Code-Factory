@@ -470,7 +470,14 @@ const STEP_DEFINITIONS = [
     stepSlug: "implementation",
     title: "Implement",
     workflowStage: "delivery",
-    contentSkills: ["codex-workflow-chain", "implementation", "step-goal-contract"],
+    contentSkills: [
+      "codex-workflow-chain",
+      "implementation",
+      "worktree-discipline",
+      "review-discipline",
+      "delegation-discipline",
+      "step-goal-contract"
+    ],
     artifactSkills: ["obsidian-markdown"],
     summary: "Tóm tắt thay đổi đã implement, giới hạn còn lại và note cho verify.",
     buildSections(context) {
@@ -564,6 +571,7 @@ const STEP_DEFINITIONS = [
       "codex-workflow-chain",
       "testing",
       "code-scan-review",
+      "branch-finish-discipline",
       "step-goal-contract",
       "step-goal-auditor",
       "definition-of-done-gate"

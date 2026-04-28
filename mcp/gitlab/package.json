@@ -1,0 +1,19 @@
+{
+  "name": "@code-factory/gitlab-mcp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MCP server for inspecting, pulling, and pushing an existing GitLab repository",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test",
+    "check": "node --test && node --check src/core.js && node --check src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "latest",
+    "zod": "^3.25.0"
+  }
+}

@@ -69,6 +69,12 @@ Next Artifact: <artifact hoặc decision cần tiếp theo>
 Next Human Action: <review/approval cần từ người, hoặc NONE>
 ```
 
+Quy tắc đọc block này:
+
+- nếu `Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`, `READY_FOR_REVIEW` hoặc `VERIFIED`; chỉ hợp lệ là `BLOCKED` hoặc `WAITING_APPROVAL`
+- nếu `Missing Gates` khác `NONE`, `Next Human Action` không được là `NONE`
+- raw feature request greenfield kiểu `QR Voucher + voucher service API + tone brand` trong repo trống phải dừng ở `proposal stage`, không được tự scaffold hay code
+
 ## Command Overview
 
 | Việc cần làm | Lệnh |
