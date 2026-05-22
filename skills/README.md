@@ -8,7 +8,7 @@ Tài liệu này giải thích cấu trúc thư mục `skills/` để publish re
 - `skills/analysis/`: skill làm rõ yêu cầu, business intent và technical option.
 - `skills/architecture/`: skill chốt boundary, schema, domain và frontend structure.
 - `skills/delivery/`: skill planning, implementation, testing, review và DevOps delivery.
-- `skills/guardrails/`: skill contract, readiness, audit và quality gate.
+- `skills/guardrails/`: skill contract, readiness, audit, quality gate và behavioral guardrail cho coding agent.
 - `skills/obsidian/`: skill materialize artifact theo Obsidian Markdown, Bases và Canvas.
 
 ## Top-Level Integration Skills
