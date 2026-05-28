@@ -1,4 +1,4 @@
-﻿---
+---
 name: deployment-devops
 description: Điều phối DevOps end-to-end từ local đến dev, uat, prod bằng cách chọn và kết hợp các skill packaging, runtime deployment và CI/CD release. Dùng khi cần chốt hướng DevOps tổng thể, phân rã phạm vi giữa Dockerfile hoặc compose, runtime deploy trên Docker hoặc Swarm hoặc Kubernetes, và pipeline hoặc promotion hoặc rollback control cho release.
 ---

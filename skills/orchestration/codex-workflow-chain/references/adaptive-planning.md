@@ -49,15 +49,15 @@ Tài liệu này materialize `Phase 4: Adaptive Planning` theo hướng `BMAD-in
 Scaffold theo track:
 
 ```bash
-npm run scaffold:workflow -- --work-item <work-item-slug> --planning-track quick
-npm run scaffold:workflow -- --work-item <work-item-slug> --planning-track full
-npm run scaffold:workflow -- --work-item <work-item-slug> --planning-track enterprise
+wfc scaffold --work-item <work-item-slug> --planning-track quick
+wfc scaffold --work-item <work-item-slug> --planning-track full
+wfc scaffold --work-item <work-item-slug> --planning-track enterprise
 ```
 
 Validate planning:
 
 ```bash
-npm run validate:workflow:planning -- --workflow-root work-items
+wfc plan --workflow-root work-items
 ```
 
 ## Sample Canonical

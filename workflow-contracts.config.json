@@ -1,4 +1,7 @@
 {
   "projectRoot": ".",
-  "workflowRoot": "work-items"
+  "workflowRoot": "work-items",
+  "protocolControl": {
+    "legacyScaffoldPolicy": "allow_readonly"
+  }
 }

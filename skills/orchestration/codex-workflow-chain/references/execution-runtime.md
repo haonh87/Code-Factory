@@ -1,5 +1,11 @@
 # Tài Liệu Tham Chiếu Execution Runtime
 
+Lưu ý versioning:
+
+- tài liệu này thuộc public baseline `v1.0.0`
+- `v1.0.0` có execution support theo `agentic|multi_agent`, nhưng không bắt buộc mọi work item phải bật execution layer
+- ranh giới version chính thức nằm ở `workflow-versioning.md`
+
 Tài liệu này bổ sung cho `workflow-chain.md`.
 
 - `workflow-chain.md` trả lời: step nào, skill nào, artifact nào, gate nào.
@@ -7,12 +13,12 @@ Tài liệu này bổ sung cho `workflow-chain.md`.
 - Nếu work item chạy theo SDD, `spec-driven-development.md` là nguồn tham chiếu cho spec lifecycle, requirement IDs, spec freeze, spec change và coverage report; runtime không được bypass các gate đó.
 - Ví dụ thực thi cụ thể nằm ở `end-to-end-examples.md`.
 
-Trạng thái rollout hiện tại:
+Trạng thái rollout hiện tại trong repo:
 
-- `Phase 3: Execution Layer` đã materialize baseline
+- execution runtime đã có sẵn trong baseline public
 - repo hiện đã có metadata `review_mode`, `verification_owner`
 - repo hiện đã có runtime artifacts `execution-policy`, `worker-assignment`, `worker-handoff-report`, `merge-report`
-- validator chuẩn là `npm run validate:workflow:execution -- --workflow-root work-items`
+- validator chuẩn là `wfc exec --workflow-root work-items`; nếu repo đã map root script thì `npm run validate:workflow:execution -- --workflow-root work-items` là alias tương đương
 - sample canonical hiện tại là `work-items/sample-execution-item/`
 
 ## Phạm Vi
@@ -23,7 +29,9 @@ Trạng thái rollout hiện tại:
 
 ## Nguyên Tắc Runtime
 
-- Mặc định mọi step bắt đầu ở `execution_mode=agentic`.
+- Trong baseline này, khi không có lý do rõ để chia nhiều ownership, chọn `execution_mode=agentic`.
+- lifecycle ở cấp work item không nằm trong execution runtime. Nếu dự án bật `Work Item Protocol` ở bản sau, runtime phải tôn trọng state machine của protocol đó.
+- Trong public baseline `v1.0.0`, tạo work item vẫn theo flow manual scaffold; execution runtime không tự mở work item mới.
 - Chỉ nâng lên `multi_agent` khi step contract đã đủ rõ và có lợi ích phối hợp thực sự.
 - `step-goal-contract` là contract gốc; execution runtime không được đổi goal, scope, done criteria của step.
 - `step-goal-auditor`, `definition-of-ready-gate`, `definition-of-done-gate` vẫn là guardrail bắt buộc khi step yêu cầu.

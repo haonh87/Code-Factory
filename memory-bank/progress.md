@@ -1,4 +1,4 @@
-﻿# Progress
+# Progress
 
 ## Trạng Thái Hiện Tại
 
@@ -51,7 +51,7 @@ Vấn đề quan trọng cần giữ rõ:
 - Đã có thêm governance role model để xác định authority cho `governance-exception`, `waiver` và approval theo role, thay vì suy diễn từ step owner hoặc `role_signoffs`.
 - Đã có thêm governance decision model để chuẩn hóa profile selection, status transition và exception trigger cho workflow.
 - Đã có workflow validators chạy bằng Node.js và command surface chuẩn qua `npm`, nên local flow và CI sau này có thể dùng cùng một entrypoint thay vì phụ thuộc PowerShell.
-- Đã có fixture suite `tests/fixtures/workflow-governance/` để kiểm thử thủ công hoặc CI cho governance validator với cả case pass và fail có chủ đích.
+- Đã có fixture suite canonical `packages/workflow-contracts/tests/fixtures/workflow-governance/` để kiểm thử thủ công hoặc CI cho governance validator với cả case pass và fail có chủ đích.
 - Đã có workflow authoring chuẩn qua `npm`, gồm scaffold cho cả workflow hoặc từng step, giúp giảm copy tay template và giữ naming/frontmatter/governance block đồng nhất từ đầu.
 - Đã có thêm CI design cho workflow tooling và workflow artifacts, chốt phase rollout `tooling -> artifacts -> authoring smoke` trước khi implement GitHub Actions thật.
 - Đã implement GitHub Actions phase 1 tại `.github/workflows/workflow-guardrails.yml`, làm nền cho enforcement qua fixture suite trước khi mở rộng sang artifact thật.

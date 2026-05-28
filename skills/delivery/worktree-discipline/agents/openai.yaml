@@ -1,0 +1,7 @@
+interface:
+  display_name: "Worktree Discipline"
+  short_description: "Quyết định dùng worktree và cô lập workspace an toàn"
+  default_prompt: "Dùng $worktree-discipline để quyết định có cần worktree không, chốt isolation strategy và guard cho change lớn hoặc rủi ro."
+
+policy:
+  allow_implicit_invocation: true

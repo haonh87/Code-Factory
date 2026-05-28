@@ -25,13 +25,28 @@ execution_roles: []
 role_signoffs:
   dor: []
   approach: []
+  task_plan: []
   release: []
   business_acceptance: []
   dod: []
+gate_reviews:
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
+  release_reviewed_by: []
+  release_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: []
+  dod_reviewed_at: ""
 content_skills:
   - "codex-workflow-chain"
   - "testing"
   - "code-scan-review"
+  - "branch-finish-discipline"
   - "step-goal-contract"
   - "step-goal-auditor"
   - "definition-of-done-gate"

@@ -1,30 +1,41 @@
 ---
 name: implementation
-description: Triển khai thay đổi phần mềm theo thiết kế và task breakdown đã chốt. Dùng khi cần viết code, sửa lỗi, refactor, cập nhật config hoặc tài liệu liên quan, với mục tiêu tạo outputs thực tế đúng phạm vi, đúng convention và bám sát acceptance criteria.
+description: Triển khai thay đổi theo hướng DEV-led, kế thừa discipline mạnh của Superpowers như bug repro first, hypothesis-driven debugging, TDD, minimal-delta, safe refactor, review sớm và no-done-before-verify, nhưng vẫn bám governance, task plan và traceability của repo. Dùng khi s04-s06 đã đủ điều kiện và implementation path đã được mở.
 ---
 
 # Implementation
 
-Triển khai thay đổi thực tế trong codebase theo hướng đã chốt.
+Triển khai thay đổi thực tế trong codebase theo design và task plan đã chốt, với trọng tâm là thay đổi nhỏ nhất đủ đúng và evidence rõ cho bước verify.
 
-## Mục Tiêu
+<HARD-GATE>
+Không được bắt đầu implement nếu `DoR`, `Approach`, `Task Plan` hoặc implementation gate chưa đủ điều kiện.
 
-- Biến technical approach và task breakdown thành thay đổi thực tế trong hệ thống.
-- Giữ phạm vi chỉnh sửa tập trung, đúng mục tiêu và đúng convention hiện có.
-- Tạo ra output rõ ràng để bước verify có thể kiểm tra được.
+Nếu thay đổi là `behavior change`, không được viết production code trước failing test, trừ khi có lý do rõ và fallback verification path đã được ghi nhận.
+
+Nếu là bug fix, không được “fix theo trực giác” khi chưa có `bug_repro_evidence` hoặc ít nhất một `hypothesis_log` + `debug_experiments` đủ đọc.
+
+Không được tự tuyên bố `done` trong skill này; verdict hoàn tất chỉ hợp lệ ở bước verify.
+</HARD-GATE>
 
 ## Khi Sử Dụng
 
-- Khi yêu cầu đã có thiết kế kỹ thuật đủ rõ để bắt đầu sửa code.
-- Khi cần thêm feature, sửa bug, refactor hoặc chỉnh config/doc đi kèm, gồm Dockerfile, compose hoặc manifest khi thuộc phạm vi.
-- Khi stack là React web hoặc Next.js và thay đổi chạm hook, context, server/client split, data fetching hoặc loading path, phối hợp thêm `react-web-implementation`.
+- Khi s04-s06 đã đủ điều kiện để đi vào triển khai.
+- Khi cần thêm feature, sửa bug, refactor hoặc chỉnh config/doc đi kèm trong phạm vi đã approve.
+- Khi stack là React web hoặc Next.js và thay đổi chạm server/client split, data fetching, context hoặc loading path, phối hợp thêm `react-web-implementation`.
 
 ## Không Thuộc Phạm Vi
 
-- Không tự thay đổi mục tiêu business hoặc acceptance criteria đã chốt.
-- Không tự đổi kiến trúc lớn nếu chưa phản hồi lại bước thiết kế.
-- Không bỏ qua quality gates khi đã biết cần verify.
-- Không thay thế guidance React-specific ở mức server/client split, state/context placement hoặc effect usage; dùng `react-web-implementation` khi stack là React web hoặc Next.js.
+- Không tự đổi business goal hoặc acceptance criteria.
+- Không tự đổi technical approach lớn mà không phản hồi lại bước design.
+- Không bỏ qua TDD cho behavior change chỉ vì muốn đi nhanh.
+- Không sửa bug kiểu “đoán nguyên nhân rồi patch luôn” mà không để lại evidence debug.
+- Không thay testing hoặc DoD cuối cùng.
+
+## Vai Trò Mặc Định
+
+- `developer` là owner chính của skill này.
+- `ba` không phải role thi công chính; nếu business rule đang mơ hồ, phải phản hồi hoặc quay lại step phù hợp thay vì tự diễn giải.
+- `qc`, `devops`, `designer` có thể tham gia review/evidence hook theo scope, nhưng skill này vẫn là `DEV-led`.
 
 ## Đầu Vào Tối Thiểu
 
@@ -33,8 +44,10 @@ Triển khai thay đổi thực tế trong codebase theo hướng đã chốt.
 - `coding_conventions`
 - `files_in_scope`
 - `constraints`
+- `delivery_context`
+- `change_type`
 
-Nếu chưa biết chính xác files hoặc modules bị ảnh hưởng, phải làm rõ trước khi sửa hàng loạt.
+Nếu chưa biết file hoặc module chạm chính, phải làm rõ trước khi sửa hàng loạt.
 
 ## Đầu Ra Bắt Buộc
 
@@ -42,61 +55,82 @@ Xuất artifact YAML theo schema sau:
 
 ```yaml
 recommended_design: ""
+implementation_mode: FEATURE|BUGFIX|REFACTOR|HARDENING
 tasks_completed: []
+bug_repro_evidence: []
+hypothesis_log:
+  - assumption: ""
+    status: CONFIRMED|REJECTED|OPEN
+    evidence: ""
+debug_experiments:
+  - goal: ""
+    action: ""
+    result: ""
+tdd_evidence:
+  - behavior: ""
+    failing_test: ""
+    passing_test: ""
+safe_refactor_notes: []
 code_changes: []
 doc_changes: []
 config_changes: []
+review_checkpoints: []
 outputs_actual: []
 known_limitations: []
 follow_up_items: []
 notes_for_testing: ""
 ```
 
-## Ý Nghĩa Từng Output
-
-- `tasks_completed`: các task đã thực hiện xong.
-- `code_changes`: thay đổi code chính.
-- `doc_changes`: thay đổi tài liệu liên quan.
-- `config_changes`: thay đổi cấu hình hoặc môi trường, gồm cả artifact deploy khi phù hợp.
-- `outputs_actual`: danh sách artifact thực tế tạo ra hoặc chỉnh sửa.
-- `known_limitations`: giới hạn còn lại sau implement.
-- `follow_up_items`: việc nên làm tiếp nhưng chưa thuộc phạm vi hiện tại.
-- `notes_for_testing`: thông tin cần bàn giao cho bước verify/testing.
-
 ## Chuẩn Hóa Output Trong Workflow Note
 
 Nếu output của skill này được lưu thành note `.md` trong workflow chain:
+
 - Dùng template step 7 tại `../codex-workflow-chain/references/workflow-chain.md`.
 - Đặt schema YAML của skill này trong block `## Artifact Chính`.
 - Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
-- Step 7 chỉ tạo note khi thực sự có `doc_changes`, cần handoff riêng, hoặc người dùng yêu cầu artifact doc.
+- Nếu có exception, deviation hoặc handoff đặc biệt, ghi thêm ở prose section nhưng không thay block YAML.
 
-## Luồng Thực Thi
+## Quy Trình Bắt Buộc
 
-1. Đối chiếu thiết kế với task breakdown.
-2. Chọn thứ tự triển khai ít rủi ro nhất.
-3. Sửa code/tài liệu/config trong phạm vi cần thiết.
-4. Ghi lại rõ `code_changes`, `doc_changes`, `config_changes`.
-5. Tổng hợp `outputs_actual`, `known_limitations`, `follow_up_items`.
-6. Chuẩn bị `notes_for_testing` cho bước verify.
+1. Đối chiếu design với task breakdown và gate hiện có.
+2. Chốt `implementation_mode` là `FEATURE`, `BUGFIX`, `REFACTOR` hoặc `HARDENING`.
+3. Nếu là `BUGFIX`, tái hiện lỗi trước hoặc thu thập `bug_repro_evidence` tương đương đủ đọc.
+4. Tạo `hypothesis_log`; mỗi giả thuyết phải có bằng chứng xác nhận, bác bỏ hoặc để mở.
+5. Chạy `debug_experiments` nhỏ nhất đủ để giảm bất định trước khi sửa.
+6. Với behavior change, đi theo chu kỳ `test fail -> code tối thiểu -> test pass -> refactor`.
+7. Giữ delta nhỏ nhất đủ đúng; không mở rộng scope tùy hứng.
+8. Nếu cần refactor, ghi `safe_refactor_notes` và giữ guard test quanh vùng chạm.
+9. Review sớm cho phần logic/contract rủi ro, không dồn hết sang cuối.
+10. Ghi rõ `code_changes`, `doc_changes`, `config_changes`.
+11. Thu thập `bug_repro_evidence`, `hypothesis_log`, `debug_experiments`, `tdd_evidence`, `review_checkpoints`, `outputs_actual`.
+12. Ghi `known_limitations`, `follow_up_items` và `notes_for_testing`.
 
 ## Quy Tắc Chất Lượng
 
-- Mặc định viết và trao đổi bằng tiếng Việt; code theo convention của project.
-- Tài liệu văn bản phải lưu UTF-8 và giữ đúng dấu tiếng Việt.
-- Chỉ chỉnh sửa ngoài phạm vi khi có lý do kỹ thuật bắt buộc và phải nêu rõ.
 - Ưu tiên thay đổi nhỏ, tập trung, dễ review.
-- Không tạo thêm complexity nếu không có giá trị rõ ràng.
+- Với bug fix, ưu tiên `repro -> hypothesis -> experiment -> patch` thay vì sửa thẳng theo linh cảm.
+- Nếu strict TDD bị chặn bởi legacy hoặc harness, phải ghi rõ lý do trong `notes_for_testing` hoặc `known_limitations`.
+- Không đổi thiết kế ngầm trong lúc code; nếu design không khả thi, quay lại bước design.
+- Không dùng “sẽ verify sau” để né evidence hook trong implementation.
+- Nếu không tái hiện được bug, phải ghi rõ mức tin cậy thấp hơn thay vì diễn đạt như fix chắc chắn.
+- Mặc định viết và trao đổi bằng tiếng Việt có dấu; code theo convention của project.
+- File văn bản phải lưu UTF-8.
 
 ## Luật Ra Quyết Định
 
-- Nếu phát hiện design hiện tại không khả thi, dừng và phản hồi lại thay vì lách bằng workaround mơ hồ.
-- Nếu phải đổi hành vi ngoài scope để giữ tính đúng đắn, phải ghi vào `follow_up_items` hoặc báo lại người dùng.
-- Nếu có giới hạn chưa giải quyết được trong lượt này, phải ghi vào `known_limitations`.
-- Nếu scope có deploy artifact, ghi rõ file nào là Dockerfile, compose, manifest hoặc pipeline config trong `config_changes` hoặc `outputs_actual`.
+- Nếu phát hiện design không khả thi, dừng và phản hồi lại thay vì workaround mơ hồ.
+- Nếu phải đổi hành vi ngoài scope để giữ tính đúng đắn, ghi rõ vào `follow_up_items` và báo lại.
+- Nếu change lớn hoặc rủi ro, ưu tiên workspace cô lập hoặc execution mode phù hợp theo workflow.
+- Nếu bug fix không có `bug_repro_evidence`, ít nhất phải có `hypothesis_log` và `debug_experiments` đủ để người khác review đường suy luận.
+- Nếu refactor chạm behavior, phải có guard test hoặc `tdd_evidence` trước khi coi đó là safe refactor.
+- Nếu scope chạm deploy artifact, ghi rõ Dockerfile, compose, manifest hoặc pipeline config trong `config_changes` hoặc `outputs_actual`.
+- Không coi local progress, code xong hoặc test cục bộ là `done`.
 
 ## Điều Kiện Hoàn Tất
 
-- Có `outputs_actual` khớp với mục tiêu implementation.
-- Có ghi nhận đầy đủ `code_changes`, `doc_changes`, `config_changes`.
+- Có `outputs_actual` khớp với scope implement.
+- Có `code_changes`, `doc_changes`, `config_changes` được ghi nhận rõ.
+- Có `bug_repro_evidence` hoặc `hypothesis_log` + `debug_experiments` khi scope là bug fix hoặc hardening.
+- Có `tdd_evidence` cho behavior change hoặc có lý do rõ nếu không áp dụng strict TDD.
+- Có `safe_refactor_notes` nếu đã refactor trong lúc triển khai.
 - Có `notes_for_testing` đủ để bước verify thực thi ngay.

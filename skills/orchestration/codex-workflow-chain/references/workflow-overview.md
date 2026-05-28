@@ -11,6 +11,8 @@ Mục tiêu của bản này là làm rõ:
 
 Nếu cần bản overview chính thức để giới thiệu workflow ở góc nhìn delivery và tác giả, đọc `workflow-overview-author-edition.md`.
 
+Nếu cần chốt ranh giới `v1.0.0` và các extension sau đó, đọc thêm `workflow-versioning.md`.
+
 Thời điểm đối chiếu: `2026-04-14`.
 
 ## Phạm Vi Technical Reference
@@ -28,7 +30,7 @@ Clarify
 -> Verify + DoD
 ```
 
-Trong file này, trọng tâm không phải product narrative mà là cách workflow được materialize thành:
+Trong file này, trọng tâm không phải product narrative mà là cách workflow được triển khai thành:
 
 - layer và artifact có thể kiểm chứng
 - rule và metadata có thể validate
@@ -44,7 +46,25 @@ Trong file này, trọng tâm không phải product narrative mà là cách work
 
 ## Workflow Có Gì
 
-Workflow hiện tại đã materialize baseline theo implementation blueprint:
+Repo hiện tại chứa public baseline `v1.0.0` và thêm một số extension sau đó.
+
+Nếu nói riêng về public baseline `v1.0.0`, phạm vi là:
+
+- `backbone` 8 bước
+- `governance layer`
+- `SDD layer`
+- `change layer`
+- `execution layer`
+- `adaptive planning`
+- manual scaffold + validator
+
+Các lớp dưới đây có thể tồn tại trong repo nhưng không thuộc public baseline `v1.0.0`:
+
+- `Work Item Materialization`
+- `Work Item Protocol`
+- approval gate và lifecycle ở cấp work item
+
+Nhìn ở mặt bằng repo hiện tại, các capability đã có sẵn gồm:
 
 - `backbone` 8 bước
 - `governance layer`
@@ -244,7 +264,7 @@ BRD-###
 | `s04 Acceptance + DoR` | chốt acceptance criteria, readiness và `Spec Freeze` | goal + answers cho open questions | AC đo được, DoR, governance checks, spec freeze nếu có | governance validator, DoR gate, SDD validator |
 | `s05 Technical Approach` | chọn solution và boundary kỹ thuật phù hợp | AC, governance, system context, frozen spec | recommended approach, trade-off, boundary, spec change nếu có | governance checks, trace về spec/change |
 | `s06 Task Plan` | bẻ nhỏ thành task có thứ tự và coverage | technical approach | task plan, review/verify checkpoints, rollout coverage | planning validator, traceability, governance checks |
-| `s07 Implement` | materialize thay đổi thật | task plan, codebase, rules đã chốt | code/config/doc changes, runtime artifacts nếu có | execution validator, change validator, spec alignment |
+| `s07 Implement` | triển khai thay đổi thật | task plan, codebase, rules đã chốt | code/config/doc changes, runtime artifacts nếu có | execution validator, change validator, spec alignment |
 | `s08 Verify + DoD` | kết luận evidence, completion, compliance | implementation output, AC, spec, checklist | verification evidence, DoD, spec coverage, compliance verdict | testing/review, governance validator, DoD gate, CI |
 
 ## Mục Tiêu, Input Và Output Của Mỗi Bước
@@ -327,14 +347,22 @@ Workflow có 4 lớp validation:
 
 ### 1. Template Và Authoring
 
+Baseline `v1.0.0`:
+
 - scaffold workflow
 - scaffold step
 - scaffold change package
 
 Mục tiêu:
 
+- giữ flow manual đơn giản và dễ rollout
 - giảm lỗi copy tay
 - sinh file đúng naming, frontmatter, block schema ngay từ đầu
+
+Extension sau `v1.0.0`:
+
+- work item materialization
+- work item protocol
 
 ### 2. Validator Theo Layer
 
@@ -424,7 +452,7 @@ Kết quả:
 - `execution_mode`
 - `review_mode`
 - runtime artifacts
-- `multi_agent` baseline
+- `multi_agent` support trong baseline public
 
 ### Từ `BMAD-METHOD`
 

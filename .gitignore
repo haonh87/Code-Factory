@@ -8,3 +8,7 @@ docs/workflow-process.canvas
 docs/workflow-work-items.canvas
 docs/workflow-work-items.canvas.png
 docs/workflow-work-items.png
+packages/workflow-bundle/runtime/
+packages/workflow-bundle/workflow-bundle.manifest.json
+packages/workflow-bundle/workflow-pack.manifest.json
+packages/workflow-bundle/*.tgz

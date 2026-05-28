@@ -2,6 +2,15 @@
 change_id: "CHANGE-001"
 artifact_kind: "change-proposal"
 status: approved
+decision_owner: "agent"
+review_required: true
+approval_status: APPROVED
+reviewed_by: "po"
+reviewed_at: "2026-04-19T10:10:00Z"
+materialization_ref: ""
+request_summary: ""
+review_notes:
+  - "Approved source-of-truth change package."
 linked_work_items:
   - "sample-sdd-item"
 ---

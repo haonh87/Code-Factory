@@ -1,0 +1,7 @@
+interface:
+  display_name: "Brainstorming"
+  short_description: "Khóa option analysis trước technical approach với BA/DEV lanes"
+  default_prompt: "Dùng $brainstorming để làm rõ mục tiêu, business rule, constraint và so sánh 2-3 phương án trước khi sang system-design."
+
+policy:
+  allow_implicit_invocation: true

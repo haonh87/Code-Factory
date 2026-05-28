@@ -38,7 +38,7 @@ product-specs/
 Command validator hiện có:
 
 ```bash
-npm run validate:workflow:sdd -- --workflow-root work-items --project-root .
+wfc sdd --workflow-root work-items --project-root .
 ```
 
 ## Spec Lifecycle

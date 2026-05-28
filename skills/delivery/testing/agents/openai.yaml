@@ -1,0 +1,7 @@
+interface:
+  display_name: "Testing"
+  short_description: "Verify risk-ranked với negative cases, regression targets và release blockers rõ"
+  default_prompt: "Dùng $testing để lập risk-ranked test matrix, chạy đúng tầng test, cover negative cases và regression targets, rồi kết luận bằng evidence cùng release blockers rõ ràng."
+
+policy:
+  allow_implicit_invocation: true

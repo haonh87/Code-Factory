@@ -1,4 +1,4 @@
-﻿# Session Search MCP
+# Session Search MCP
 
 MCP server này bọc `cass` thành một capability read-only để agent tra cứu local session history theo workspace.
 

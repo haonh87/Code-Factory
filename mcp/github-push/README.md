@@ -1,4 +1,4 @@
-﻿# GitHub Push MCP
+# GitHub Push MCP
 
 MCP server này giúp agent xử lý luồng `inspect -> commit -> create repo -> configure remote -> push` cho GitHub mà không cần `gh`.
 

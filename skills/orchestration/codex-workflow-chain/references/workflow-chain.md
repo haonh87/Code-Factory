@@ -27,12 +27,16 @@
 - `ci-cd-release`: skill khóa pipeline CI/CD, registry, tagging, promotion flow, approval control và release guard.
 - `task-breakdown-planner`: skill chia thiết kế thành các task nhỏ để thực thi.
 - `implementation`: skill triển khai thay đổi thực tế trong codebase.
+- `worktree-discipline`: skill chốt khi nào phải dùng `worktree`, cách cô lập workspace và guard cleanup cho change lớn hoặc rủi ro.
+- `review-discipline`: skill tổ chức review sớm trong `s07` theo thứ tự `spec compliance -> code quality`.
+- `delegation-discipline`: skill chốt có được delegation hay không và khóa `owned_scope`, `merge path`, `verify path` cho task độc lập.
 - `react-web-implementation`: skill triển khai React web hoặc Next.js với server/client split, data fetching, state placement và loading path rõ ràng.
 - `testing`: skill verify theo acceptance criteria và quality gates, với chiến lược rõ giữa unit test, integration/database test và feature test.
 - `code-scan-review`: skill quét code ở step 8 verify để kiểm tra syntax, static analysis, security scan và performance heuristic; chi tiết từng ngôn ngữ được tách trong reference của skill.
 - `frontend-quality-review`: skill rà soát screen-level quality của frontend ở mức accessibility, responsive layout, interaction feedback và UX heuristic.
 - `react-best-practices-review`: skill rà soát render/data boundary, effect hygiene, state placement và performance heuristic đặc thù của React web hoặc Next.js.
 - `database-change-review`: skill rà soát migration safety, compatibility, query risk và release recommendation cho thay đổi database.
+- `branch-finish-discipline`: skill chốt cleanup, close hoặc merge branch/worktree chỉ sau khi verify và `DoD` đã đủ.
 - `step-goal-contract`: skill chốt contract cho từng step trước khi thực thi.
 - `input-readiness-assessor`: skill đánh giá mức sẵn sàng đầu vào (`READY|BLOCKED`).
 - `step-goal-auditor`: skill kiểm định output thực tế so với contract của step.
@@ -148,8 +152,8 @@ Luật tối thiểu cho `multi-agent`:
 | `task-breakdown-planner` | Agent chính tự chia task và kiểm tra dependency | `planner` worker tạo plan, `dependency-reviewer` kiểm tra đường găng |
 | `deployment-devops` | Agent chính tự khóa scope DevOps tổng, environment matrix và hướng phối hợp giữa packaging, runtime, release | Worker kiểu `platform-architect`, `release-planner` hoặc `deployment-reviewer` cung cấp plan tổng và evidence cho coordinator |
 | `containerization-packaging`, `platform-runtime-deployment`, `ci-cd-release` | Agent chính tự khóa contract sâu theo từng layer packaging, runtime hoặc pipeline/release | Specialist worker kiểu `image-packager`, `platform-architect` hoặc `release-engineer` sở hữu output DevOps theo layer |
-| `implementation`, `react-web-implementation` | Agent chính tự sửa code trong phạm vi nhỏ hoặc vừa, có thể gọi sâu framework-specific guidance khi cần | Nhiều `builder` worker chia theo module hoặc path ownership; frontend builder có thể sở hữu riêng boundary React |
-| `testing`, `code-scan-review`, `frontend-quality-review`, `react-best-practices-review`, `database-change-review` | Agent chính tự verify và ghi evidence | Verifier worker tách riêng theo loại kiểm định hoặc framework review |
+| `implementation`, `worktree-discipline`, `review-discipline`, `delegation-discipline`, `react-web-implementation` | Agent chính tự sửa code hoặc chốt execution discipline trong phạm vi nhỏ hoặc vừa, có thể gọi sâu framework-specific guidance khi cần | Nhiều `builder` worker chia theo module hoặc path ownership; frontend builder có thể sở hữu riêng boundary React; coordinator có thể dùng output discipline để khóa workspace, review và delegation |
+| `testing`, `code-scan-review`, `frontend-quality-review`, `react-best-practices-review`, `database-change-review`, `branch-finish-discipline` | Agent chính tự verify, ghi evidence và chốt closeout discipline sau verify | Verifier worker tách riêng theo loại kiểm định hoặc framework review; closeout owner dùng `branch-finish-discipline` để khóa cleanup/merge timing |
 | `notebooklm` | Agent chính tự dùng để tóm lược/query corpus lớn khi step có nhiều nguồn ngoài | Worker kiểu `notebooklm-researcher` gom insight từ notebook rồi handoff về coordinator; output chỉ là context phụ |
 | `step-goal-contract`, `input-readiness-assessor`, `step-goal-auditor`, `definition-of-ready-gate`, `definition-of-done-gate` | Guardrail nội bộ của cùng agent | Lớp contract/audit chung cho coordinator và worker; không thuộc ownership riêng của business skill |
 
@@ -224,7 +228,7 @@ Ghi chú:
 
 - Mọi step đều đi qua `codex-workflow-chain`.
 - Theo workflow chuẩn hiện tại, mọi step đều có `step-goal-contract`.
-- Nếu step được materialize thành note `.md`, phải cộng thêm `obsidian-markdown` dù cột skill nghiệp vụ không lặp lại điều đó ở mọi dòng.
+- Nếu step được scaffold thành note `.md`, phải cộng thêm `obsidian-markdown` dù cột skill nghiệp vụ không lặp lại điều đó ở mọi dòng.
 - Khi work item phụ thuộc nhiều tài liệu ngoài hoặc corpus lớn, có thể dùng `notebooklm` ở step 1, 3, 5 hoặc khi cần ở step 8; output phải được chuẩn hóa lại vào note `.md` của step.
 
 ## Làn DevOps Và Promotion Giữa Môi Trường
@@ -233,7 +237,7 @@ Làn DevOps không thay workflow 8 bước; nó là một delivery lane chạy x
 
 - Step 5: khóa environment matrix, runtime target và packaging contract.
 - Step 6: tách task build image, compose, manifest, promotion, smoke và rollback.
-- Step 7: materialize artifact thực tế như `Dockerfile`, `compose.yaml`, manifest hoặc pipeline config.
+- Step 7: triển khai artifact thực tế như `Dockerfile`, `compose.yaml`, manifest hoặc pipeline config.
 - Step 8: verify packaging, deploy readiness và release recommendation trước khi promote.
 - Rollout thật lên `dev`, `uat`, `prod` chỉ nên diễn ra sau khi step 8 đã có đủ evidence hoặc đã chấp nhận guard rõ ràng.
 
@@ -246,7 +250,7 @@ Làn DevOps không thay workflow 8 bước; nó là một delivery lane chạy x
 
 ## Phân Loại Work Item
 
-`work_item_type` là metadata bắt buộc khi materialize note workflow để giữ routing nhất quán giữa discovery và delivery.
+`work_item_type` là metadata bắt buộc khi scaffold note workflow để giữ routing nhất quán giữa discovery và delivery.
 
 - `FEATURE`: thêm capability hoặc hành vi mới.
 - `BUG`: sửa hành vi sai so với kỳ vọng hiện có.
@@ -267,10 +271,10 @@ Quy ước:
 | `s02` | Business Goal | Chốt mục tiêu business, KPI, scope boundary, non-goals và mức độ phù hợp với các nguyên tắc nền | `business-goal-spec`, `brd-spec` khi SDD | Goal, KPI/success metric, scope và phần không làm đã rõ; xung đột với `governance` nếu có đã được ghi nhận |
 | `s03` | Open Questions | Gom missing input, conflict, blocker, `governance gap` và gap `BRD/SRS` | `readiness-spec`, `input-readiness-report`, `step-audit`; decision log `BRD/SRS`; `governance-context` update khi cần | `READY` hoặc mọi blocker trọng yếu, kể cả `governance blocker`, đều có owner/resolution rõ |
 | `s04` | Acceptance + DoR | Chốt requirement/AC, testability, readiness, `governance alignment` và spec freeze khi SDD | `acceptance-criteria-spec`, `definition-of-ready`, `governance-checklist` khi cần, `srs-spec`, `spec-freeze-gate` khi SDD | AC đo được; DoR ready; `governance checks` đạt hoặc đã có waiver/owner rõ; spec `approved|frozen` hoặc có lý do chưa freeze rõ |
-| `s05` | Technical Approach | Chọn approach, trade-off và boundary kỹ thuật/UX/DevOps trong các ràng buộc `governance` đang áp dụng | `option-analysis-spec`, `technical-approach-spec`, `architecture-detail-spec`; `governance-exception` khi có lệch chuẩn; `spec-change` khi có gap | Approach trace được về requirement/AC; không vi phạm `governance` hoặc đã ghi rõ `exception/waiver`; spec gap không bị bỏ qua |
-| `s06` | Task Plan | Lập task plan build/verify/release có traceability, checkpoint review và coverage cho các yêu cầu `governance` liên quan | `task-breakdown-spec`, `governance-checklist` khi cần, `spec-traceability-matrix` khi SDD | Task đủ nhỏ, có thứ tự, có coverage cho requirement in-scope và các task review/verify/governance cần thiết |
-| `s07` | Implement | Thực thi đúng approach, frozen spec, change đã approve và các rule `governance` đã chốt | Code/config/doc changes, `implementation-spec`, `implementation-notes`; `governance-exception` khi cần; `spec-change` khi cần | Output đáp ứng contract; không có spec drift hoặc `governance drift` chưa được ghi nhận/approve |
-| `s08` | Verify + DoD | Kiểm chứng evidence, coverage, `governance compliance`, DoD, release và business acceptance khi cần | `verification-spec`, `governance-checklist` khi cần, `spec-coverage-report`, review reports, `definition-of-done`, `governance-exception` khi còn điểm lệch mở | Coverage/evidence rõ; DoD kết luận rõ; mức độ tuân thủ `governance` minh bạch; gap còn lại có owner/next action |
+| `s05` | Technical Approach | Chọn approach, trade-off và boundary kỹ thuật/UX/DevOps trong các ràng buộc `governance` đang áp dụng | `option-analysis-spec`, `technical-approach-spec`, `architecture-detail-spec`; `governance-exception` khi có lệch chuẩn; `spec-change` khi có gap | Đã có `option analysis` ở mức phù hợp và hướng khuyến nghị rõ; phương án khuyến nghị là giải pháp nhỏ nhất đủ đúng trong scope hiện tại; approach trace được về requirement/AC; không vi phạm `governance` hoặc đã ghi rõ `exception/waiver`; spec gap không bị bỏ qua |
+| `s06` | Task Plan | Lập task plan build/verify/release có traceability, checkpoint review và coverage cho các yêu cầu `governance` liên quan | `task-breakdown-spec`, `governance-checklist` khi cần, `spec-traceability-matrix` khi SDD | Task đủ nhỏ, có thứ tự, có coverage cho requirement in-scope và các task review/verify/governance cần thiết; task plan đủ rõ để implementer không phải tự phát minh lại design |
+| `s07` | Implement | Thực thi đúng approach, frozen spec, change đã approve và các rule `governance` đã chốt | Code/config/doc changes, `implementation-spec`, `implementation-notes`; `governance-exception` khi cần; `spec-change` khi cần | `s04-s06` đã đủ điều kiện tối thiểu; behavior change dùng `TDD` hoặc có lý do cùng `verify path` thay thế rõ; change lớn hoặc rủi ro dùng `worktree` hoặc có lý do rõ nếu bỏ qua; phần chính hoặc batch/task rủi ro đã được review trong `s07` theo thứ tự `spec compliance -> code quality`; `subagent` chỉ dùng cho task độc lập hoặc có fallback rõ; output đáp ứng contract; không có spec drift hoặc `governance drift` chưa được ghi nhận/approve |
+| `s08` | Verify + DoD | Kiểm chứng evidence, coverage, `governance compliance`, DoD, release và business acceptance khi cần | `verification-spec`, `governance-checklist` khi cần, `spec-coverage-report`, review reports, `definition-of-done`, `governance-exception` khi còn điểm lệch mở | Coverage/evidence rõ; DoD kết luận rõ; chỉ step này mới được tuyên bố `done`; nếu có `branch/worktree`, quyết định chốt chỉ hợp lệ sau verdict `s08`; mức độ tuân thủ `governance` minh bạch; gap còn lại có owner/next action |
 
 ## Lớp Governance
 
@@ -286,6 +290,225 @@ Nguyên tắc áp dụng:
 - `Implement` không được âm thầm đi lệch nguyên tắc; mọi lệch chuẩn phải được ghi bằng `governance-exception` hoặc `waiver`.
 - `Verify + DoD` phải kết luận rõ mức độ `governance compliance`, không chỉ kết luận feature pass.
 
+## Rule Cứng: Spec/Design Trước Code
+
+- `s07 Implement` không được bắt đầu nếu `s04`, `s05` hoặc `s06` chưa đủ điều kiện tối thiểu.
+- Điều kiện tối thiểu để bắt đầu code production:
+  - `s04` đã có acceptance criteria đo được và `DoR` rõ.
+  - `s05` đã có technical approach đủ để khóa boundary bị tác động và validation plan.
+  - `s06` đã có task plan đủ để biết thứ tự thực hiện và verify path.
+- `planning_track=quick` chỉ cho phép rút gọn chi tiết authoring; không cho phép bỏ hẳn `s05` hoặc `s06`.
+- Khi work item chạy theo `SDD`, code chỉ được bắt đầu khi `spec` ở trạng thái `approved|frozen`, trừ khi đã có `spec-change` hoặc `governance-exception` hợp lệ.
+- Nếu có tình huống khẩn cấp phải rút ngắn authoring trước code, deviation phải được ghi bằng exception hoặc waiver; không được code trước rồi backfill artifact như thể chưa từng lệch quy trình.
+
+## Rule Cứng: Brainstorming Có Kỷ Luật
+
+- Trước khi chốt `s05 Technical Approach`, phải có `option analysis` ở mức phù hợp với độ phức tạp của work item.
+- Mức tối thiểu của `option analysis`:
+  - mục tiêu cần giải quyết đã rõ
+  - có phương án để so sánh
+  - có 1 hướng khuyến nghị với lý do rõ
+  - có điều cần kiểm chứng trước hoặc trong implement
+- Nếu bài toán có nhiều hướng xử lý hợp lý, phải nêu ít nhất 2 phương án.
+- Nếu bài toán có một hướng gần như hiển nhiên, vẫn phải nêu ít nhất 1 hướng thay thế hoặc hướng bị loại để chứng minh đã so sánh.
+- `planning_track=quick` chỉ cho phép rút gọn chi tiết của `option analysis`; không cho phép bỏ hẳn phần so sánh phương án.
+- Nếu chưa đủ dữ liệu để brainstorm nghiêm túc, phải đẩy blocker hoặc assumption về `s03 Open Questions` thay vì ép chọn approach.
+
+## Rule Cứng: Ưu Tiên Giải Pháp Nhỏ Nhất Đủ Đúng
+
+- Ở `s05 Technical Approach`, nếu một phương án nhỏ hơn vẫn đạt acceptance criteria, constraint hiện tại, `governance` liên quan và nhu cầu kiểm chứng chính, phải ưu tiên phương án đó.
+- Không được mở thêm abstraction, layer, service, framework, schema split, queue, cache hoặc config surface mới chỉ vì nhu cầu giả định trong tương lai.
+- Nếu chọn phương án lớn hơn, `technical approach` phải nêu rõ vì sao phương án nhỏ hơn không đủ:
+  - không đạt acceptance criteria hoặc quality constraint hiện tại
+  - không đạt yêu cầu an toàn, vận hành hoặc `governance`
+  - requirement in-scope buộc phải mở boundary lớn hơn ngay bây giờ
+- `planning_track=quick` mặc định ưu tiên delta nhỏ nhất trên đường đi hiện có; không rewrite hoặc redesign boundary nếu chưa có lý do cụ thể.
+- `Giải pháp nhỏ nhất đủ đúng` không có nghĩa là làm tạm bợ hoặc cắt bớt test, verify, review, docs hay `governance`.
+
+## Rule Cứng: Planning Execution-Oriented
+
+- Trước khi bắt đầu `s07 Implement`, `s06 Task Plan` phải đủ rõ để triển khai mà không cần tự phát minh lại design.
+- Mức tối thiểu của `execution-oriented task plan`:
+  - nêu rõ `owned_scope` hoặc file/path chính sẽ tạo hoặc sửa khi có thể xác định
+  - có thứ tự thực hiện hoặc dependency rõ
+  - có `verify path` đủ dùng cho từng task hoặc từng batch
+  - có checkpoint review hoặc governance khi scope cần
+- Không được viết task plan kiểu placeholder như `xử lý edge case`, `thêm validation phù hợp`, `viết test`, `sửa phần liên quan` nếu không nêu rõ sẽ chạm đâu và kiểm thế nào.
+- `planning_track=quick` chỉ cho phép rút gọn chi tiết của task plan; không cho phép bỏ hẳn phần chạm chính hoặc cách verify chính.
+- Nếu task plan vẫn buộc implementer phải tự suy diễn lại approach, phải quay lại `s05` hoặc viết lại `s06` trước khi code.
+
+## Rule Cứng: TDD Cho Behavior Change
+
+- Ở `s07 Implement`, nếu change tạo hoặc sửa `behavior change`, phải đi theo `TDD`.
+- `behavior change` trong workflow này bao gồm:
+  - sửa bug behavior
+  - thêm feature behavior production
+  - đổi validation rule hoặc contract
+  - refactor có regression risk đáng kể
+- Chu kỳ tối thiểu của `TDD`:
+  - viết test cho behavior mong muốn hoặc bug cần tái hiện
+  - chạy để thấy test fail đúng lý do
+  - viết code tối thiểu để pass
+  - chạy lại test để xác nhận pass
+- `TDD` không bắt buộc cho `docs-only`, rename, format, metadata-only hoặc artifact workflow không tác động behavior production.
+- Nếu strict `TDD` bị chặn bởi legacy, harness hoặc môi trường test, phải ghi rõ lý do và `verify path` thay thế trong implementation note; không được viết xong code rồi thêm test sau mà vẫn gọi đó là `TDD`.
+
+## Rule Cứng: Worktree Cho Change Lớn Hoặc Rủi Ro
+
+- Ở `s07 Implement`, phải dùng `worktree` khi change thuộc nhóm `change lớn hoặc rủi ro`.
+- `change lớn hoặc rủi ro` trong workflow này bao gồm tối thiểu:
+  - `planning_track=enterprise`
+  - implementation kéo dài hơn một session
+  - chạm nhiều boundary hoặc nhiều file với conflict risk đáng kể
+  - merge risk, branch risk hoặc release risk cao
+- Với `planning_track=full`, nếu change không còn là quick fix, mặc định nên dùng `worktree`.
+- Có thể bỏ qua `worktree` cho bug nhỏ, quick fix, ít file, xong trong một session và conflict risk thấp.
+- Nếu change đã thuộc nhóm nên hoặc phải dùng `worktree` mà vẫn không dùng, implementation note phải nêu rõ lý do.
+- `worktree` là lớp cô lập workspace; không thay cho review, verify hay `DoD`.
+
+## Rule Cứng: Review Sớm, Không Đợi Cuối
+
+- Ở `s07 Implement`, không được dồn toàn bộ review sang `s08 Verify + DoD`.
+- Review phải diễn ra sớm theo batch, task rủi ro hoặc phần logic/contract quan trọng ngay trong `s07`.
+- Mức tối thiểu:
+  - `quick`: có ít nhất một lượt review cho phần implement trước khi rời `s07`
+  - `full`: có `targeted review` theo batch hoặc task rủi ro
+  - `enterprise`: có `independent review` cho các phần chính trong `s07`
+- Thứ tự review mặc định:
+  - `spec compliance`
+  - `code quality`
+- Review sớm không thay cho `testing`, `verify` hay `DoD`; `s08` vẫn là nơi kết luận cuối cùng.
+
+## Rule Cứng: Review Hai Tầng
+
+- Mọi review diễn ra trong `s07 Implement` phải kiểm `spec compliance` trước, rồi mới tới `code quality`.
+- `spec compliance` phải trả lời tối thiểu:
+  - change có đúng acceptance criteria, approach, spec và scope đã chốt không
+  - có lệch `governance` hoặc spec drift chưa được ghi nhận không
+- Chỉ sau khi `spec compliance` đã pass hoặc đã có exception rõ mới được chuyển sang `code quality`.
+- Với `planning_track=enterprise` hoặc phần logic/contract chính, review hai tầng phải được thể hiện thành hai bước rõ ràng, không gộp mơ hồ.
+- Với `quick` và `full`, có thể review trong cùng một lượt, nhưng verdict vẫn phải theo thứ tự `spec compliance -> code quality`.
+- `code quality` không thay cho `spec compliance`; code sạch nhưng lệch spec vẫn là fail.
+
+## Rule Cứng: Subagent Chỉ Cho Task Độc Lập
+
+- Ở `s07 Implement`, chỉ được bật `subagent` hoặc `multi_agent` khi task thuộc nhóm `task độc lập`.
+- `task độc lập` trong workflow này phải thỏa tối thiểu:
+  - `s06 Task Plan` đã đủ rõ để giao việc
+  - `owned_scope` hoặc `owned_paths` tương đối rời nhau
+  - `merge path` hoặc handoff path rõ
+  - `verify path` hoặc `verification_owner` rõ
+- Không bật `subagent` cho task nhỏ nhưng tightly coupled, task vừa khám phá context xong, task có ownership chồng lấn mạnh hoặc task chưa có đường verify rõ.
+- `agentic` vẫn là mode mặc định; nếu chưa đạt điều kiện của `task độc lập`, phải fallback về `agentic` hoặc `sequential_multi_role`.
+- `subagent` không được bypass `review`, `testing`, `verify` hay `DoD`.
+
+## Rule Cứng: Không Tự Tuyên Bố Done
+
+- Không agent, worker hay implementer nào được tuyên bố `done` trước khi `s08 Verify + DoD` có verdict `DoD` rõ.
+- `review pass`, `test pass` cục bộ, `code xong`, `merge xong` hoặc `worktree` đã sạch không tương đương `DoD`.
+- Với `multi_agent` hoặc `subagent`, chỉ được tổng hợp evidence trong `s07`; verdict hoàn tất chỉ hợp lệ khi `s08` kết luận.
+- Nếu còn check bị bỏ qua, exception còn mở, gap chưa có owner rõ hoặc evidence chưa đủ, chỉ được báo `PARTIAL` hoặc chưa hoàn tất; không được báo `done`.
+- `DoD` là gate đóng work item ở mức delivery, không phải trạng thái cảm tính của implementer.
+
+## Rule Cứng: Branch/Worktree Chỉ Chốt Sau Verify
+
+- Khi work item dùng `branch` hoặc `worktree`, quyết định `cleanup`, `close`, `remove` hoặc `merge` chỉ hợp lệ sau khi `s08 Verify + DoD` có verdict `DoD` rõ.
+- `branch` sạch, `worktree` sạch, diff đã review hoặc code đã merge cục bộ không phải evidence để chốt branch/worktree sớm.
+- Nếu verify còn pending, finding còn mở, exception còn mở hoặc evidence chưa đủ, branch/worktree phải giữ trạng thái đang chờ; không được coi là sẵn sàng chốt.
+- Với `multi_agent` hoặc nhiều `worktree`, chỉ được hợp nhất hoặc dọn sau khi `verify path` và handoff path đã kết thúc ở `s08`.
+- Rule này chỉ siết thời điểm chốt branch/worktree; không thay cho branch strategy của repo.
+
+## Rule Mặc Định: Default An Toàn
+
+- Khi chưa đủ chắc chắn để chọn `planning_track`, capability hoặc mức can thiệp, phải chọn fallback an toàn hơn thay vì tối ưu hóa sớm.
+- `default an toàn` của workflow này:
+  - không chắc `planning_track` nào: chọn `full`
+  - không chắc gate đã qua chưa: coi như chưa qua gate và quay lại step tương ứng
+  - không chắc có cần `subagent`: không dùng
+  - không chắc có cần mở boundary, abstraction hoặc service mới: không mở nếu đường hiện có vẫn đủ đáp ứng
+  - không chắc có cần `worktree`: dùng nếu change có dấu hiệu của `change lớn hoặc rủi ro`
+  - không chắc có cần `TDD`: dùng nếu behavior production bị tác động
+  - không chắc review mức nào: bắt đầu bằng `targeted review`
+- `default an toàn` không cho phép bỏ qua rule cứng; nó chỉ quyết định hướng fallback khi còn bất định sau khi đã đọc context.
+
+## Rule Cứng: Human-Controlled Gates
+
+- Workflow này vận hành theo model `AI proposes, human approves`.
+- AI được quyền phân tích, draft artifact, propose option, propose approach, propose task plan, implement, chạy test, tổng hợp evidence và nêu recommendation.
+- Quyền `implement` chỉ được mở sau khi các gate human tương ứng đã pass; artifact draft không tự động có nghĩa là gate đã qua.
+- AI không được tự:
+  - approve work item hoặc change package
+  - pass `Spec`
+  - pass `Contract`
+  - pass `DoR`
+  - pass `Approach`
+  - pass `Foundation Decision`
+  - pass `Task Plan`
+  - pass `UAT`
+  - pass `DoD`
+  - pass `Release`
+  - pass `Business Acceptance`
+  - approve `governance-exception` hoặc `waiver` nếu authority thuộc human role khác
+- Mọi human-controlled gate chỉ được xem là pass khi đồng thời có:
+  - artifact nguồn sự thật của step hoặc protocol đã được cập nhật
+  - evidence đủ để reviewer kiểm
+  - owner hoặc approver đúng authority đã chốt rõ
+- `work item approval` và `change package approval` luôn là human-controlled gate; protocol-managed item không được dùng `review_required=false` hoặc `approval_status=NOT_REQUIRED` để bypass review.
+- Human pass phải explicit; không suy diễn từ comment, `review pass` kỹ thuật, `test pass` cục bộ hoặc việc artifact đã tồn tại.
+- Nếu human-controlled gate chưa pass, workflow phải `BLOCKED`, quay lại step trước, hoặc dừng trước gate tiếp theo; không được đi tiếp chỉ vì AI đánh giá là “đủ tốt”.
+- `ACTIVE` chỉ hợp lệ khi `work item approval`, `change package approval` khi có, `bootstrap gate` của `greenfield` khi có, và evidence `s04`, `s05`, `s06` đã được human pass.
+- `VERIFIED` chỉ hợp lệ khi `s08` đã có evidence verify.
+- `DONE` chỉ hợp lệ khi `s08` đã pass `DoD`, và nếu scope yêu cầu thì `UAT`, `Release`, `Business Acceptance` cũng đã pass trong `s08`.
+- Invariant cho block trạng thái router:
+  - nếu `Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`, `READY_FOR_REVIEW` hoặc `VERIFIED`
+  - nếu `Missing Gates` khác `NONE`, `Next Human Action` không được là `NONE`
+- `approval_gates` ghi gate nào là `required` hoặc `not_applicable` cho work item hoặc step note.
+- `role_signoffs` ghi role có authority signoff cho `spec`, `contract`, `dor`, `approach`, `foundation`, `task_plan`, `uat`, `release`, `business_acceptance`, `dod`.
+- `gate_reviews` ghi human reviewer thực tế và thời điểm review cho từng gate; note finalized ở `s04`, `s05`, `s06`, `s08` phải có reviewer + timestamp cho gate chính của step.
+
+## Rule Cứng: Empty Project / Greenfield Hard Stop
+
+- Nếu project đang ở trạng thái `empty` hoặc `greenfield`, không được nhảy thẳng sang scaffold framework, chọn stack cuối cùng hay implement production code.
+- `empty` hoặc `greenfield` trong workflow này nghĩa là tối thiểu có một trong các dấu hiệu:
+  - repo gần như trống hoặc chưa có source tree thực thi chính
+  - chưa có stack hoặc framework baseline đã được chốt
+  - chưa có runtime/deployment baseline đã được chốt
+  - chưa có artifact source-of-truth đủ để coi quyết định kiến trúc nền đã được approve
+- Trong trạng thái này, AI chỉ được:
+  - clarify yêu cầu, business goal, open questions
+  - draft spec hoặc contract cần thiết
+  - làm `option analysis` cho solution class, stack, runtime hoặc deployment model
+  - propose `technical approach`
+  - propose `task plan`
+  - propose work item hoặc change structure
+- Ví dụ loại request vẫn phải dừng ở proposal stage:
+  - feature greenfield kiểu `QR Voucher`, có UI, voucher service API và visual tone thương hiệu trong repo trống, không được tự nhảy sang scaffold hay code production
+- Trong trạng thái này, AI không được tự:
+  - chốt `site tĩnh`, SPA, SSR, backend-first, CMS hoặc framework cụ thể như một quyết định cuối
+  - scaffold app skeleton, dependency tree, build system, Dockerfile, CI/CD hay deploy manifest như thể stack đã approved
+  - implement feature đầu tiên của project như thể foundation decision đã xong
+- Với `empty/greenfield project`, trước `s07 Implement` phải có tối thiểu:
+  - `s04` pass `Spec`
+  - nếu scope chạm `API contract` hoặc `UX contract`, `s04` pass `Contract`
+  - `s04` pass `DoR`
+  - `s05` pass `Approach`
+  - nếu `s05` chứa quyết định nền tảng như solution class, stack, runtime hoặc deployment model, `s05` pass `Foundation Decision`
+  - `s06` pass `Task Plan`
+- Nếu chưa có evidence rõ rằng các gate trên đã được human pass, hành vi đúng là dừng ở `proposal stage`, trình bày option/trade-off/recommendation, rồi chờ human review.
+- `default an toàn` cho `empty/greenfield project` là: không implement; không scaffold; không chốt stack cuối cùng thay cho human.
+- `bootstrap gate` cho project mới phải đi theo thứ tự: `Spec -> Contract nếu có -> Approach -> Foundation nếu có -> work item approval -> Task Plan -> Implement`.
+
+## Rule Cứng: Brownfield Baseline And Delta Discipline
+
+- Mỗi work item phải khai báo `delivery_context: greenfield|brownfield`; không để ngầm ở mức suy diễn sau khi đã materialize note workflow.
+- Với `brownfield`, AI phải coi hệ thống hiện có là baseline đang vận hành; default là thay đổi theo `delta nhỏ nhất đủ đúng`, không tự mở `Foundation Decision` nếu chưa có lý do rõ.
+- Với `brownfield`, trước `s07 Implement`, output tối thiểu phải có:
+  - `s04` có `Existing System Baseline`
+  - `s05` có `Brownfield Impact Analysis`
+  - `s06` có `Brownfield Delivery Plan`
+- Với `brownfield`, `s08` phải có `Regression & Compatibility Summary` trước khi chốt `DoD`.
+- Với `brownfield`, `approval_gates.foundation` chỉ mở khi change thực sự chạm architectural baseline như rewrite boundary, thay stack, thay runtime hoặc thay deployment model.
+
 Artifact nền khuyến nghị:
 
 - `project-context/constitution.md`: nguyên tắc nền của dự án hoặc team.
@@ -297,7 +520,7 @@ Artifact nền khuyến nghị:
 
 ### Governance Pack Mặc Định Của Repo
 
-Governance Pack của repo đã được materialize tại `project-context/`.
+Governance Pack của repo đã được triển khai tại `project-context/`.
 
 Quy ước dùng ngay:
 
@@ -341,7 +564,7 @@ Chi tiết vận hành đầy đủ cho role, BRD/SRS và NotebookLM retrieval n
 Nguyên tắc chung:
 
 - Vẫn giữ một workflow 8 bước duy nhất; role chỉ là lớp overlay ownership và handoff, không phải workflow riêng.
-- Chỉ materialize output riêng theo role khi role đó thật sự có owner, handoff hoặc signoff cần audit.
+- Chỉ tách output riêng theo role khi role đó thật sự có owner, handoff hoặc signoff cần audit.
 - Nếu không cần artifact riêng, role outputs nên được ghi trong note step chính dưới block `## Role Outputs`.
 - `execution_roles` chỉ liệt kê role thực sự tham gia step; không liệt kê role mặc định cho đủ bộ.
 - `notebooklm` là lớp lưu corpus và tra cứu trong khi thực thi; kết quả query chỉ là input/evidence tạm thời cho PO/BA và phải được chuẩn hóa lại vào artifact chính nếu dùng để ra quyết định.
@@ -386,7 +609,7 @@ Mapping nhanh:
 | `s04` Acceptance + DoR | `ba`, `qc` | `po`; `designer` khi criteria có UX rule; `developer` khi cần check implementability | `SRS` update cho requirement, business rule, acceptance criteria đo được, testability note, DoR decision |
 | `s05` Technical Approach | `developer` | `designer` khi có UX/UI surface; `devops` khi có runtime/release scope; `ba` để trace business rule | technical approach, boundary kiến trúc, UX interaction contract, deployment contract, `SRS` update nếu requirement/constraint đổi |
 | `s06` Task Plan | `developer` | `qc`, `devops`; `designer` khi có track UX refinement | task plan theo track build, verify, release; dependency, handoff, traceability về requirement trong `SRS` |
-| `s07` Implement | `developer` | `devops` khi materialize delivery artifact; `designer` khi có asset/interaction polish; `qc` để chuẩn bị evidence hook | code/config/doc changes, implementation note, packaging/runtime/pipeline artifact trong scope, `SRS` exception/update nếu behavior đổi |
+| `s07` Implement | `developer` | `devops` khi tạo delivery artifact; `designer` khi có asset/interaction polish; `qc` để chuẩn bị evidence hook | code/config/doc changes, implementation note, packaging/runtime/pipeline artifact trong scope, `SRS` exception/update nếu behavior đổi |
 | `s08` Verify + DoD | `qc` | `developer`, `devops`; `po` cho `business_acceptance`; `designer` khi cần review UX outcome | evidence pack, findings, DoD verdict, release readiness, business acceptance decision dựa trên `BRD/SRS` |
 
 ### Owner Mặc Định Cho `role_signoffs`
@@ -395,6 +618,7 @@ Mapping nhanh:
 |---|---|---|
 | `dor` | `po`, `ba` | Thêm `designer` khi scope phụ thuộc UX/UI để được xem là ready; thêm `qc` khi testability là rủi ro chính |
 | `approach` | `developer` | Thêm `designer` khi technical approach có interaction hoặc visual contract; thêm `devops` khi approach chạm runtime, pipeline hoặc rollout |
+| `task_plan` | `developer` | Thêm `qc` khi verify coverage là rủi ro chính; thêm `devops` khi plan có release hoặc rollout lane quan trọng |
 | `release` | `qc`, `devops` | Thêm `developer` khi chưa có lane DevOps riêng hoặc release risk nằm ở migration/code path |
 | `business_acceptance` | `po` | `ba` và `designer` chỉ nên đóng vai trò review/support, không thay PO chốt acceptance cuối nếu PO tồn tại |
 | `dod` | `qc` | `developer` hoặc `devops` cung cấp remediation evidence nhưng không thay ownership verify cuối |
@@ -408,7 +632,7 @@ Mapping nhanh:
 - `DevOps` nên vào từ `s05` nếu feature có packaging, runtime, promotion hoặc rollback impact; không để release lane xuất hiện muộn ở cuối verify.
 - `Developer` chịu trách nhiệm technical coherence giữa step 5, 6, 7; không chia task khi approach còn mơ hồ.
 - Chỉ tạo artifact riêng theo role khi thật sự có owner và handoff; mặc định nên giữ một note step chính làm nguồn sự thật.
-- `business_spec` nên được materialize rõ bằng `BRD`/`SRS` hoặc section tương đương trong note workflow; `business_acceptance` là signoff xác nhận implementation cuối cùng đáp ứng tập artifact đó.
+- `business_spec` nên được thể hiện rõ bằng `BRD`/`SRS` hoặc section tương đương trong note workflow; `business_acceptance` là signoff xác nhận implementation cuối cùng đáp ứng tập artifact đó.
 - `notebooklm` dùng để lưu corpus và tra cứu trong quá trình thực thi; không coi notebook/query result là output rollout cuối nếu chưa được đưa vào `BRD`, `SRS` hoặc note workflow chính.
 
 ## Quy Tắc Bắt Buộc Cho Artifact Obsidian
@@ -419,7 +643,7 @@ Mapping nhanh:
 
 ## Giải Nghĩa Lớp Obsidian
 
-Luật artifact không thay thế workflow step; nó chỉ quy định cách materialize kết quả của step.
+Luật artifact không thay thế workflow step; nó chỉ quy định cách scaffold và ghi nhận kết quả của step.
 
 - Nếu không lưu step ra file, workflow vẫn có thể chạy như bình thường.
 - Nếu đã lưu step thành tài liệu, `.md` là lựa chọn chuẩn và đi kèm `obsidian-markdown`.
@@ -452,7 +676,7 @@ Một cách nhớ ngắn:
 - `.canvas` chỉ dùng để trực quan hóa cấu trúc, flow, task map hoặc dependency map.
 - `.base` chỉ dùng để tổng hợp, lọc, xem bảng hoặc dashboard từ các note/artifact đã có.
 - Step 7 chỉ dùng Obsidian skill khi thay đổi thực tế chạm vào tài liệu `.md`; không ép tạo note workflow riêng nếu không có giá trị.
-- Trong frontmatter note workflow, tách `content_skills` và `artifact_skills`; không gộp chung để tránh nhầm giữa skill tạo nội dung với skill materialize artifact.
+- Trong frontmatter note workflow, tách `content_skills` và `artifact_skills`; không gộp chung để tránh nhầm giữa skill tạo nội dung với skill tạo artifact.
 - `upstream_artifacts` dùng để khai báo đầu vào trực tiếp; `## Traceability` dùng để nối mạch business -> readiness -> design -> implementation -> verify.
 
 ## Template Output Chuẩn Theo Step
@@ -517,28 +741,35 @@ Một cách nhớ ngắn:
   - `assessment` -> `s03.open-questions.md` nếu đánh giá readiness đầu vào, hoặc `s08.verification.md` nếu đánh giá sau implement.
   - `threshold` -> không tách file riêng; gộp vào `s04.acceptance-criteria.md`.
 - `glossary` -> không phải step file; chỉ là section hoặc note dùng chung ngoài workflow step.
-- Nếu team cần rule ngắn gọn và validator riêng, xem `policies/codex/workflow-artifact-naming.md`, `scripts/validate-workflow-artifact-names.js`, `scripts/validate-workflow-governance.js` hoặc chạy command chuẩn `npm run validate:workflow -- --workflow-root work-items --project-root <repo-root>`.
+- Nếu team cần rule ngắn gọn và validator riêng, xem `policies/codex/workflow-artifact-naming.md`, dùng `wfc naming`, `wfc governance` hoặc chạy command chuẩn `wfc validate --workflow-root work-items --project-root <repo-root>`. Nếu repo đã map root scripts thì `npm run validate:workflow*` là alias tương đương.
 - Nếu cần automation ở mức PR/push thay vì chỉ local validate, xem thêm `workflow-ci-enforcement.md`.
 
 ### Workflow Authoring Chuẩn
 
-Flow khuyến nghị khi materialize workflow note:
+Public baseline `v1.0.0` dùng flow manual scaffold:
 
-1. Nếu work item gắn với một thay đổi đã được tách package, scaffold change package trước:
-   - `npm run scaffold:change -- --change-id <CHANGE-ID> --work-item <work_item_slug>`
-2. Scaffold note bằng command chuẩn:
-   - `npm run scaffold:workflow -- --work-item <work_item_slug> --planning-track <quick|full|enterprise>`
-   - `npm run scaffold:workflow-step -- --work-item <work_item_slug> --step <sNN>`
-3. Điền nội dung thực tế vào các block đã sinh.
-4. Chạy validator:
-   - `npm run validate:workflow -- --workflow-root work-items --project-root <repo-root>`
-   - nếu work item chạy theo SDD, chạy thêm `npm run validate:workflow:sdd -- --workflow-root work-items --project-root <repo-root>`
-   - nếu work item có `change_id`, chạy thêm `npm run validate:workflow:change -- --workflow-root work-items --project-root <repo-root>`
-   - nếu work item có `execution_mode=multi_agent`, chạy thêm `npm run validate:workflow:execution -- --workflow-root work-items`
-   - nếu work item dùng `planning_track` khác mặc định hoặc muốn enforce routing rule, chạy thêm `npm run validate:workflow:planning -- --workflow-root work-items`
+1. Human hoặc coordinator chốt `work_item_slug`.
+2. Nếu work item gắn với một thay đổi đã được tách package, scaffold change package trước:
+   - `wfc scaffold-change --change-id <CHANGE-ID> --work-item <work_item_slug>`
+3. Scaffold note bằng command chuẩn:
+   - `wfc scaffold --work-item <work_item_slug> --planning-track <quick|full|enterprise>`
+   - `wfc scaffold-step --work-item <work_item_slug> --step <sNN>`
+4. Điền nội dung thực tế vào các block đã sinh.
+5. Chạy validator:
+   - `wfc validate --workflow-root work-items --project-root <repo-root>`
+   - nếu work item chạy theo SDD, chạy thêm `wfc sdd --workflow-root work-items --project-root <repo-root>`
+   - nếu work item có `change_id`, chạy thêm `wfc change --workflow-root work-items --project-root <repo-root>`
+   - nếu work item có execution metadata hoặc runtime artifacts, chạy thêm `wfc exec --workflow-root work-items`
+   - nếu work item dùng `planning_track` khác mặc định hoặc muốn enforce routing rule, chạy thêm `wfc plan --workflow-root work-items`
+
+Extension sau `v1.0.0` có thể thêm một gate trước bước 1:
+
+1. Chạy `Work Item Materialization` để chốt `split_decision`, `work_item_slug`, dedup result và `change_strategy`.
+2. Nếu dự án dùng `Work Item Protocol`, chốt `protocol_status`, authority và handoff ở cấp work item trước khi scaffold.
 
 Ghi chú:
 
+- `Work Item Materialization` và `Work Item Protocol` không thuộc public baseline `v1.0.0`; chỉ đọc chúng khi muốn bật extension sau này.
 - `scaffold:workflow` mặc định sinh vào `work-items/<work_item_slug>/` nếu không truyền `--workflow-root`.
 - `work-items/` là canonical artifact root cho workflow artifacts thật của repo.
 - `product-specs/` là root mặc định cho `BRD/SRS` thật khi work item chạy theo SDD.
@@ -548,8 +779,8 @@ Ghi chú:
 - Nếu `execution_mode=multi_agent`, scaffold sẽ tự sinh runtime artifacts cho `s05`, `s06`, `s07` và thêm chúng vào `linked_artifacts` của note chính.
 - Nếu cần `governance_profile=custom`, scaffold phải truyền thêm `--governance-ref` và ít nhất một `--checklist-ref`.
 - `--work-item` hiện là tên CLI ngắn cho `work_item_slug`.
-- `work_item_slug` là định danh của một đơn vị công việc chạy xuyên toàn bộ workflow 8 bước, không phải tên step; nó nên được chốt ở `s01 Clarify` từ user request, ticket hoặc change request.
-- Nếu note thuộc change package đã được materialize, `change_id`, `change_status`, `spec_delta_refs` và `archive_status` phải nhất quán với `changes/<change-id>/`.
+- `work_item_slug` là định danh của một đơn vị công việc chạy xuyên toàn bộ workflow 8 bước, không phải tên step; nó nên được chốt trước khi scaffold từ user request, ticket hoặc change request, rồi được phản ánh lại ở `s01 Clarify`.
+- Nếu note thuộc change package đã được scaffold hoặc liên kết với package có thật, `change_id`, `change_status`, `spec_delta_refs` và `archive_status` phải nhất quán với `changes/<change-id>/`.
 - Nếu step chạy `multi_agent`, `review_mode`, `verification_owner` và `linked_artifacts` phải nhất quán với runtime artifacts tương ứng.
 - Ví dụ: user request "fix login timeout" có thể map thành `work_item_slug=fix-login-timeout`, từ đó tạo ra các file như `fix-login-timeout.s01.restate.md`, `fix-login-timeout.s04.acceptance-criteria.md`, `fix-login-timeout.s08.verification.md`.
 
@@ -565,6 +796,7 @@ step_id: "s01"
 step_slug: "restate"
 workflow_stage: discovery
 work_item_type: FEATURE|BUG|CHANGE|REFACTOR|RESEARCH
+delivery_context: greenfield|brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
@@ -589,13 +821,46 @@ execution_roles: []
   # liệt kê các role nghiệp vụ thực sự tham gia step, ưu tiên vocabulary chuẩn như `po`, `ba`, `designer`, `developer`, `qc`, `devops`
 review_mode: self|independent|auto_fix_loop
 verification_owner: ""
+approval_gates:
+  spec: required|not_applicable
+  contract: required|not_applicable
+  foundation: required|not_applicable
+  uat: required|not_applicable
+  release: required|not_applicable
+  business_acceptance: required|not_applicable
 role_signoffs:
+  spec: []
+  contract: []
   dor: []
   approach: []
+  foundation: []
+  task_plan: []
+  uat: []
   release: []
   business_acceptance: []
   dod: []
-  # ghi role nào giữ trách nhiệm signoff cho DoR, technical approach, release readiness, business acceptance và DoD ở mức work item
+  # ghi role nào giữ trách nhiệm signoff cho từng gate human-controlled ở mức work item
+gate_reviews:
+  spec_reviewed_by: []
+  spec_reviewed_at: ""
+  contract_reviewed_by: []
+  contract_reviewed_at: ""
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
+  foundation_reviewed_by: []
+  foundation_reviewed_at: ""
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
+  uat_reviewed_by: []
+  uat_reviewed_at: ""
+  release_reviewed_by: []
+  release_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: []
+  dod_reviewed_at: ""
 content_skills:
   - codex-workflow-chain
   # thêm skill nghiệp vụ và skill gate thực tế đã dùng cho step
@@ -620,18 +885,19 @@ Quy tắc:
 - `artifact_kind` của note chuẩn luôn là `primary-note`.
 - `source_of_truth` của note chuẩn luôn là `true`.
 - `sdd_mode` dùng `none` khi work item không chạy theo SDD, `light` khi chỉ cần trace BRD/SRS ở mức gọn, và `strict` khi bắt buộc requirement IDs, spec freeze, spec change protocol và coverage report.
-- `spec_refs` trỏ tới `BRD/SRS` thật nếu đã materialize; để trống khi chỉ dùng section trong note workflow.
+- `spec_refs` trỏ tới `BRD/SRS` thật nếu đã có file thật; để trống khi chỉ dùng section trong note workflow.
 - `spec_status` phản ánh trạng thái spec tại thời điểm note được cập nhật; với SDD strict, step 5-7 không nên đi sâu khi spec vẫn chỉ ở `draft` nếu chưa có accepted assumptions.
 - `planning_track` dùng `quick` cho scope nhỏ/risk thấp, `full` cho baseline thông thường và `enterprise` khi cần review lane, governance và planning depth nặng hơn.
 - `execution_mode` dùng `agentic` khi một agent giữ trọn ownership của step; dùng `multi_agent` khi step được điều phối bởi coordinator và nhiều worker/verifier.
 - `execution_roles` phải phản ánh đúng role nghiệp vụ thực sự đã tham gia vào step; ưu tiên dùng vocabulary chuẩn `po|ba|designer|developer|qc|devops` và chỉ thêm role khác khi thật sự cần.
 - `review_mode` dùng `self` cho self-check thông thường, `independent` khi reviewer tách khỏi worker chính, và `auto_fix_loop` khi verify có vòng fix lặp được ghi nhận rõ.
 - `verification_owner` phải ghi role hoặc owner chịu trách nhiệm kết luận verify; với `review_mode != self` hoặc `execution_mode=multi_agent`, field này không nên để trống.
-- `role_signoffs` ghi rõ role nào giữ trách nhiệm signoff cho `dor`, `approach`, `release`, `business_acceptance`, `dod`; cho phép để trống khi work item chưa được gán owner, nhưng không được khai báo role không tồn tại.
+- `role_signoffs` ghi rõ role nào giữ trách nhiệm signoff cho `spec`, `contract`, `dor`, `approach`, `foundation`, `task_plan`, `uat`, `release`, `business_acceptance`, `dod`; cho phép để trống khi work item chưa được gán owner, nhưng không được khai báo role không tồn tại.
+- `gate_reviews` ghi ai đã review gate và lúc nào; với note đã finalized ở `s04`, `s05`, `s06`, `s08`, gate chính của step phải có cả `*_reviewed_by` và `*_reviewed_at`.
 - `business_spec` là artifact mô tả intent, rule và scope ở phía business; `business_acceptance` là hành động signoff xác nhận implementation đã đáp ứng artifact đó và acceptance criteria liên quan, nên hai lớp này không thay thế nhau.
 - Vai trò execution topology như `coordinator`, `worker`, `verifier` nên nằm trong block `## Execution Topology`, không thay thế `execution_roles` trong frontmatter chính.
 - `content_skills` phải liệt kê đủ skill nghiệp vụ và skill gate đã dùng cho step đó.
-- `artifact_skills` phải liệt kê đủ skill materialize artifact đã dùng cho step đó.
+- `artifact_skills` phải liệt kê đủ skill tạo artifact đã dùng cho step đó.
 - `upstream_artifacts` chỉ liệt kê artifact thực sự được dùng làm đầu vào hoặc tham chiếu quyết định.
 - `linked_artifacts` liệt kê tên file artifact phụ có thật, không để link chết.
 - `tags` nên có tối thiểu `agent-ops` và `workflow/<step-id>`.
@@ -671,8 +937,8 @@ Quy tắc:
 | `s04` Acceptance + DoR | `<work_item_slug>.s04.acceptance-criteria.md` | `## Step Contract`, `## Artifact Chính`, `## Governance Checks`, `## Definition of Ready`, `## Spec Freeze` khi SDD, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, artifact step 4, `governance-checklist`, `definition-of-ready-gate`, `srs-spec`, `spec-freeze-gate` khi SDD |
 | `s05` Technical Approach | `<work_item_slug>.s05.technical-approach.md` | `## Step Contract`, `## Option Analysis`, `## Artifact Chính`, `## Architecture Details`, `## Governance Exceptions` khi có, `## Spec Change` khi có, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `brainstorming`, `system-design`, `governance-exception` khi có, `spec-change` khi có, `domain-architecture` hoặc `frontend-architecture` hoặc `frontend-experience-design` hoặc `database-design` hoặc `deployment-devops` hoặc `containerization-packaging` hoặc `platform-runtime-deployment` hoặc `ci-cd-release` khi có |
 | `s06` Task Plan | `<work_item_slug>.s06.task-breakdown.md` | `## Step Contract`, `## Artifact Chính`, `## Verification Plan`, `## Governance Checks`, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `task-breakdown-planner`, `governance-checklist`, `spec-traceability-matrix` khi SDD |
-| `s07` Implement | `<work_item_slug>.s07.implementation.md` nếu có note | `## Step Contract`, `## Artifact Chính`, `## Implementation Notes` khi có, `## Governance Exceptions` khi có, `## Spec Change` khi có, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `implementation`, `react-web-implementation` khi có, `governance-exception` khi có, `spec-change` khi có |
-| `s08` Verify + DoD | `<work_item_slug>.s08.verification.md` | `## Step Contract`, `## Artifact Chính`, `## Governance Checks`, `## Spec Coverage`, `## Scan Summary`, `## Review Findings` khi có, `## Database Review` khi có, `## Deployment Review` khi có, `## Governance Exceptions` khi có, `## Audit`, `## Definition of Done`, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `testing`, `governance-checklist`, `spec-coverage-report` khi SDD, `code-scan-review`, `frontend-quality-review` khi có, `react-best-practices-review` khi có, `database-change-review` khi có, `governance-exception` khi có, `deployment-devops` hoặc `containerization-packaging` hoặc `platform-runtime-deployment` hoặc `ci-cd-release` khi có, `step-goal-auditor`, `definition-of-done-gate` |
+| `s07` Implement | `<work_item_slug>.s07.implementation.md` nếu có note | `## Step Contract`, `## Artifact Chính`, `## Implementation Notes` khi có, `## Governance Exceptions` khi có, `## Spec Change` khi có, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `implementation`, `worktree-discipline` khi có, `review-discipline` khi có, `delegation-discipline` khi có, `react-web-implementation` khi có, `governance-exception` khi có, `spec-change` khi có |
+| `s08` Verify + DoD | `<work_item_slug>.s08.verification.md` | `## Step Contract`, `## Artifact Chính`, `## Governance Checks`, `## Spec Coverage`, `## Scan Summary`, `## Review Findings` khi có, `## Database Review` khi có, `## Deployment Review` khi có, `## Governance Exceptions` khi có, `## Audit`, `## Definition of Done`, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `testing`, `governance-checklist`, `spec-coverage-report` khi SDD, `code-scan-review`, `frontend-quality-review` khi có, `react-best-practices-review` khi có, `database-change-review` khi có, `branch-finish-discipline` khi có closeout branch/worktree, `governance-exception` khi có, `deployment-devops` hoặc `containerization-packaging` hoặc `platform-runtime-deployment` hoặc `ci-cd-release` khi có, `step-goal-auditor`, `definition-of-done-gate` |
 
 Ghi chú:
 - `artifact step 1`, `artifact step 3`, `artifact step 4` là schema tối giản ở workflow level, không thay cho schema chi tiết của skill nếu team muốn lưu chi tiết hơn.
@@ -704,10 +970,14 @@ Ghi chú:
 | 6 | `task-breakdown-spec` | `## Artifact Chính` | schema `task-breakdown-planner` |
 | 6 khi chạy SDD | `spec-traceability-matrix` | `## SDD Traceability` | requirement refs -> AC refs -> task refs -> test refs |
 | 7 | `implementation-spec` | `## Artifact Chính` | schema `implementation` |
+| 7 khi cần chốt cô lập workspace | `worktree-plan` | `## Implementation Notes` | schema `worktree-discipline` |
+| 7 khi cần review sớm trong implement | `review-plan` | `## Implementation Notes` | schema `review-discipline` |
+| 7 khi cân nhắc hoặc bật delegation | `delegation-plan` | `## Implementation Notes` | schema `delegation-discipline` |
 | 7 khi cần framework-specific handoff | `implementation-notes` | `## Implementation Notes` | schema `react-web-implementation` khi stack là React web hoặc Next.js |
 | 8 | `verification-spec` | `## Artifact Chính`, `## Scan Summary`, `## Review Findings`, `## Database Review`, `## Deployment Review`, `## Audit` | schema `testing`; cộng thêm schema scan/review/audit khi có |
 | 8 khi chạy SDD | `spec-coverage-report` | `## Spec Coverage` | requirement refs -> AC refs -> task refs -> test refs -> `PASS|FAIL|PARTIAL|UNTESTED` |
 | 8 khi scope có packaging hoặc rollout | `deployment-review` | `## Deployment Review` | schema `deployment-devops` và có thể cộng thêm `containerization-packaging`, `platform-runtime-deployment`, `ci-cd-release` |
+| 8 khi có branch/worktree cần chốt | `branch-finish-check` | `## Audit` | schema `branch-finish-discipline` |
 | 8 | `definition-of-done` | `## Definition of Done` | schema `definition-of-done-gate` |
 
 Quy tắc:
@@ -724,6 +994,7 @@ Ghi chú:
 - Nếu work item dùng `change layer`, các field `change_id`, `change_status`, `spec_delta_refs`, `archive_status` phải được giữ trong frontmatter của từng step note dù ví dụ rút gọn bên dưới không lặp lại toàn bộ phần diễn giải.
 - Nếu work item dùng `multi_agent`, các field `review_mode`, `verification_owner` và runtime artifacts phải được giữ đồng bộ với execution validator dù ví dụ rút gọn bên dưới không lặp lại toàn bộ file runtime.
 - Nếu work item dùng `planning_track` khác `full`, các preset và guardrail của track đó phải được giữ đồng bộ với planning validator dù ví dụ rút gọn bên dưới không lặp lại toàn bộ routing matrix.
+- Nếu dùng template để copy tay, `wfc scaffold` vẫn là canonical source cho frontmatter hiện hành; tối thiểu phải giữ `delivery_context`, `approval_gates`, `role_signoffs`, `gate_reviews` và section bắt buộc theo `greenfield|brownfield`.
 
 ````md
 ```md
@@ -755,9 +1026,23 @@ execution_roles: []
 role_signoffs:
   dor: []
   approach: []
+  task_plan: []
   release: []
   business_acceptance: []
   dod: []
+gate_reviews:
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
+  release_reviewed_by: []
+  release_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: []
+  dod_reviewed_at: ""
 content_skills:
   - codex-workflow-chain
   - requirement-analysis
@@ -854,9 +1139,23 @@ execution_roles: []
 role_signoffs:
   dor: []
   approach: []
+  task_plan: []
   release: []
   business_acceptance: []
   dod: []
+gate_reviews:
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
+  release_reviewed_by: []
+  release_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: []
+  dod_reviewed_at: ""
 content_skills:
   - codex-workflow-chain
   - product-thinking
@@ -930,9 +1229,23 @@ execution_roles: []
 role_signoffs:
   dor: []
   approach: []
+  task_plan: []
   release: []
   business_acceptance: []
   dod: []
+gate_reviews:
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
+  release_reviewed_by: []
+  release_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: []
+  dod_reviewed_at: ""
 content_skills:
   - codex-workflow-chain
   - requirement-analysis
@@ -1026,9 +1339,23 @@ execution_roles: []
 role_signoffs:
   dor: []
   approach: []
+  task_plan: []
   release: []
   business_acceptance: []
   dod: []
+gate_reviews:
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
+  release_reviewed_by: []
+  release_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: []
+  dod_reviewed_at: ""
 content_skills:
   - codex-workflow-chain
   - requirement-analysis
@@ -1129,9 +1456,23 @@ execution_roles: []
 role_signoffs:
   dor: []
   approach: []
+  task_plan: []
   release: []
   business_acceptance: []
   dod: []
+gate_reviews:
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
+  release_reviewed_by: []
+  release_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: []
+  dod_reviewed_at: ""
 content_skills:
   - codex-workflow-chain
   - system-design
@@ -1253,9 +1594,23 @@ execution_roles: []
 role_signoffs:
   dor: []
   approach: []
+  task_plan: []
   release: []
   business_acceptance: []
   dod: []
+gate_reviews:
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
+  release_reviewed_by: []
+  release_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: []
+  dod_reviewed_at: ""
 content_skills:
   - codex-workflow-chain
   - task-breakdown-planner
@@ -1355,12 +1710,29 @@ execution_roles: []
 role_signoffs:
   dor: []
   approach: []
+  task_plan: []
   release: []
   business_acceptance: []
   dod: []
+gate_reviews:
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
+  release_reviewed_by: []
+  release_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: []
+  dod_reviewed_at: ""
 content_skills:
   - codex-workflow-chain
   - implementation
+  - worktree-discipline
+  - review-discipline
+  - delegation-discipline
   - step-goal-contract
   # thêm `react-web-implementation` khi stack là React web hoặc Next.js
   # thêm `deployment-devops` khi cần chốt DevOps tổng
@@ -1381,7 +1753,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> Tóm tắt thay đổi thực tế đã làm, giới hạn còn lại và `governance exception` nếu có.
+> Tóm tắt thay đổi thực tế đã làm, evidence cho `TDD/worktree/review/delegation`, giới hạn còn lại và `governance exception` nếu có.
 
 ## Step Contract
 ```yaml
@@ -1395,7 +1767,16 @@ tags:
 
 ## Implementation Notes
 ```yaml
+# dùng schema `worktree-discipline`, `review-discipline`, `delegation-discipline`
+# khi step 7 cần khóa execution discipline
 # dùng schema `react-web-implementation` khi step 7 chạm React web hoặc Next.js
+```
+
+## Delivery Rule Evidence
+```yaml
+# ghi evidence có cấu trúc cho `behavior_change`, `tdd_status`, `worktree_status`,
+# `review_status`, `spec_compliance_status`, `code_quality_status`,
+# `delegation_mode`, `independence_status`, `merge_path`, `verify_path`
 ```
 
 ## Governance Exceptions
@@ -1458,13 +1839,28 @@ execution_roles: []
 role_signoffs:
   dor: []
   approach: []
+  task_plan: []
   release: []
   business_acceptance: []
   dod: []
+gate_reviews:
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
+  release_reviewed_by: []
+  release_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: []
+  dod_reviewed_at: ""
 content_skills:
   - codex-workflow-chain
   - testing
   - code-scan-review
+  - branch-finish-discipline
   - step-goal-contract
   - step-goal-auditor
   - definition-of-done-gate
@@ -1490,7 +1886,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Tóm tắt trạng thái PASS|FAIL|PARTIAL, mức độ `governance compliance`, khoảng trống còn lại và kết luận `DoD`.
+> Tóm tắt trạng thái PASS|FAIL|PARTIAL, mức độ `governance compliance`, kết quả `UAT/Release/Business Acceptance` khi có, khoảng trống còn lại và kết luận `DoD`.
 
 ## Step Contract
 ```yaml
@@ -1517,6 +1913,21 @@ tags:
 # dùng schema `code-scan-review`
 ```
 
+## UAT Summary
+```yaml
+# dùng schema `testing`; bắt buộc khi `approval_gates.uat=required`
+```
+
+## Release Summary
+```yaml
+# dùng schema `testing`; bắt buộc khi `approval_gates.release=required`
+```
+
+## Business Acceptance Summary
+```yaml
+# dùng schema `testing`; bắt buộc khi `approval_gates.business_acceptance=required`
+```
+
 ## Review Findings
 ```yaml
 # dùng schema `frontend-quality-review` hoặc `react-best-practices-review` khi step có review frontend hoặc React
@@ -1541,6 +1952,7 @@ tags:
 ## Audit
 ```yaml
 # dùng schema `step-goal-auditor`
+# cộng thêm `branch-finish-discipline` khi step 8 cần chốt cleanup hoặc merge branch/worktree
 ```
 
 ## Definition of Done
@@ -1792,7 +2204,7 @@ roles:
 Quy tắc:
 
 - `role` phải là tập con của `execution_roles` ở cùng note.
-- `signoffs` chỉ dùng các giá trị `dor`, `approach`, `release`, `business_acceptance`, `dod`.
+- `signoffs` chỉ dùng các giá trị trong `role_signoffs`, tối thiểu gồm `spec`, `contract`, `dor`, `approach`, `foundation`, `task_plan`, `uat`, `release`, `business_acceptance`, `dod`.
 - `inputs` và `outputs` phải mô tả đúng contribution của role trong step, không lặp lại toàn bộ contract chung của step.
 - `upstream_artifacts` và `downstream_artifacts` chỉ link artifact có thật hoặc artifact chuẩn của workflow chain.
 
@@ -1851,13 +2263,20 @@ notes: ""
 
 ```yaml
 goal: ""
+ba_lane:
+  business_goal: ""
+  user_scenarios: []
+  business_rules: []
+  scope_notes: []
+  open_questions: []
+dev_lane:
+  repo_constraints: []
+  technical_risks: []
+  integration_points: []
+  nfr_notes: []
+  baseline_context: ""
 options:
   - name: "Phương án A"
-    summary: ""
-    pros: []
-    cons: []
-    risks: []
-  - name: "Phương án B"
     summary: ""
     pros: []
     cons: []
@@ -1865,6 +2284,41 @@ options:
 recommended_option: ""
 recommendation_reason: ""
 validation_plan: []
+notes_for_next_step: ""
+```
+
+### `system-design`
+
+```yaml
+design_problem: ""
+business_rule_trace: []
+design_options:
+  - name: ""
+    summary: ""
+    pros: []
+    cons: []
+    risks: []
+rejected_options:
+  - name: ""
+    reason: ""
+recommended_design: ""
+recommendation_reason: ""
+component_changes: []
+data_flow: []
+interface_changes: []
+failure_modes:
+  - scenario: ""
+    impact: ""
+    guardrail: ""
+compatibility_impact: []
+rollback_impact: []
+observability_hooks: []
+constraints_applied: []
+validation_plan: []
+specialized_followups:
+  - skill: ""
+    reason: ""
+notes_for_next_step: ""
 ```
 
 ### `domain-architecture`
@@ -2137,14 +2591,125 @@ pipeline_recommendation: READY|READY_WITH_GUARDS|BLOCKED
 notes_for_implementation_or_ops: ""
 ```
 
+### `task-breakdown-planner`
+
+```yaml
+implementation_goal: ""
+ba_lane:
+  acceptance_coverage: []
+  scope_guards: []
+  human_review_points: []
+dev_lane:
+  path_map: []
+  technical_sequence: []
+  tdd_targets: []
+task_breakdown:
+  - id: T1
+    owner_role: developer
+    name: ""
+    objective: ""
+    paths_in_scope: []
+    dependencies: []
+    outputs_expected: []
+    review_checkpoint: ""
+    verification_hint: ""
+dependencies_global: []
+risk_notes: []
+verification_plan: []
+notes_for_implementation: ""
+```
+
+### `worktree-discipline`
+
+```yaml
+worktree_target: ""
+planning_track: quick|full|enterprise
+risk_signals: []
+worktree_decision: REQUIRED|RECOMMENDED|OPTIONAL|NOT_NEEDED
+decision_reason: []
+isolation_strategy:
+  branch_name: ""
+  worktree_path: ""
+  owned_paths: []
+  expected_duration: ""
+execution_guards: []
+skip_reason: ""
+cleanup_preconditions: []
+notes_for_implementation: ""
+```
+
+### `review-discipline`
+
+```yaml
+review_target: ""
+planning_track: quick|full|enterprise
+review_mode: SELF|TARGETED|INDEPENDENT
+review_order:
+  - SPEC_COMPLIANCE
+  - CODE_QUALITY
+review_batches:
+  - batch: ""
+    scope: []
+    trigger: ""
+    reviewer_role: ""
+required_checks:
+  spec_compliance: []
+  code_quality: []
+finding_policy:
+  blocker_threshold: ""
+  reopen_conditions: []
+handoff_to_verify: []
+notes_for_implementation_or_verify: ""
+```
+
+### `delegation-discipline`
+
+```yaml
+delegation_target: ""
+planning_track: quick|full|enterprise
+execution_mode_recommendation: AGENTIC|SUBAGENT|MULTI_AGENT|SEQUENTIAL_MULTI_ROLE
+independence_checks:
+  owned_scope_clear: PASS|FAIL
+  owned_paths_clear: PASS|FAIL
+  merge_path_clear: PASS|FAIL
+  verify_path_clear: PASS|FAIL
+worker_assignments:
+  - role: ""
+    task: ""
+    owned_scope: []
+    owned_paths: []
+    outputs_expected: []
+merge_strategy: []
+verify_strategy: []
+blocked_reasons: []
+coordination_guards: []
+notes_for_execution: ""
+```
+
 ### `implementation`
 
 ```yaml
 recommended_design: ""
+implementation_mode: FEATURE|BUGFIX|REFACTOR|HARDENING
 tasks_completed: []
+bug_repro_evidence: []
+hypothesis_log:
+  - assumption: ""
+    status: CONFIRMED|REJECTED|OPEN
+    evidence: ""
+debug_experiments:
+  - goal: ""
+    action: ""
+    result: ""
+tdd_evidence:
+  - behavior: ""
+    failing_test: ""
+    passing_test: ""
+safe_refactor_notes: []
 code_changes: []
 doc_changes: []
 config_changes: []
+review_checkpoints: []
 outputs_actual: []
 known_limitations: []
 follow_up_items: []
@@ -2174,6 +2739,10 @@ notes_for_review: ""
 
 ```yaml
 verification_target: ""
+risk_ranked_test_matrix:
+  - risk: ""
+    severity: HIGH|MEDIUM|LOW
+    required_evidence: []
 test_strategy:
   unit_test:
     required: true|false
@@ -2187,6 +2756,11 @@ test_strategy:
   feature_test:
     required: true|false
     rationale: ""
+negative_cases: []
+regression_targets: []
+manual_exploration:
+  flows_checked: []
+  issues_found: []
 criteria_results:
   - criterion: ""
     result: PASS|FAIL|PARTIAL
@@ -2198,11 +2772,32 @@ test_evidence:
   feature_test: []
 commands_run: []
 skipped_checks: []
+release_blockers: []
 status: PASS|FAIL|PARTIAL
 gaps: []
 residual_risks: []
 recommendation: ""
 notes_for_review: ""
+```
+
+### `branch-finish-discipline`
+
+```yaml
+finish_target: ""
+workspace_kind: BRANCH|WORKTREE|BOTH
+verify_inputs: []
+finish_gate_checks:
+  verify_complete: PASS|FAIL|PENDING
+  dod_complete: PASS|FAIL|PENDING
+  findings_closed: PASS|FAIL|PENDING
+  exceptions_resolved: PASS|FAIL|PENDING
+allowed_actions: []
+blocked_actions: []
+cleanup_sequence: []
+merge_conditions: []
+residual_risks: []
+final_recommendation: CLEANUP_ALLOWED|MERGE_ALLOWED|HOLD_OPEN
+notes_for_closeout: ""
 ```
 
 ### `code-scan-review`

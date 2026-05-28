@@ -1,0 +1,7 @@
+interface:
+  display_name: "Task Breakdown Planner"
+  short_description: "Chia task execution-oriented với BA/DEV lanes và verify path rõ"
+  default_prompt: "Dùng $task-breakdown-planner để chuyển technical approach thành task plan có ownership, path chạm chính, verify path và không placeholder."
+
+policy:
+  allow_implicit_invocation: true

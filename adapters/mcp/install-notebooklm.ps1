@@ -1,4 +1,4 @@
-﻿param(
+param(
   [string]$RepoRoot = (Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $PSCommandPath))),
   [string]$CodexHome = (Join-Path $HOME ".codex"),
   [string]$UvxBin

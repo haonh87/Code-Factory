@@ -1,4 +1,4 @@
-﻿# System Patterns
+# System Patterns
 
 ## Kiến Trúc Repository
 
