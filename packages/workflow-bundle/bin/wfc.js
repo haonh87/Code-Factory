@@ -119,6 +119,9 @@ const commandTable = {
     script: "scaffold-change-package.js",
     useProjectRoot: true,
     scaffoldChange: true
+  },
+  "version-bump": {
+    script: "bump-version.js"
   }
 };
 
@@ -296,9 +299,10 @@ function printHelp() {
       "  scaffold-step   Scaffold a single workflow step",
       "  scaffold-change Scaffold a change package",
       "  version         Print version",
+      "  version bump    Bump bundle version across all files",
       "  help            Show this help",
       "",
-      "Public v2.0.2 Flow:",
+      "Public v2.1.1 Flow:",
       "  1. wfc install --mode codex --scope global",
       "  2. wfc init",
       "  3. choose one:",
@@ -356,6 +360,10 @@ function resolveCommand(input) {
   }
 
   if (input === "version" || input === "--version" || input === "-v") {
+    const subCommand = process.argv[3];
+    if (subCommand === "bump") {
+      return { name: "version-bump", args: process.argv.slice(4) };
+    }
     return { name: "version", args: [] };
   }
 

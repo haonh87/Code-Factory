@@ -1,6 +1,6 @@
 # workflow-bundle
 
-`workflow-bundle` là package CLI của public release `v2.0.2`: cài workflow bundle cho Codex hoặc Claude Code, scaffold hoặc validate workflow, và hỗ trợ flow `agent proposes, human approves` cho `work-item` và `change`.
+`workflow-bundle` là package CLI của public release `v2.1.1`: cài workflow bundle cho Codex hoặc Claude Code, scaffold hoặc validate workflow, và hỗ trợ flow `agent proposes, human approves` cho `work-item` và `change`.
 
 Quickstart chi tiết: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -37,7 +37,7 @@ npm link
 wfc version
 ```
 
-## What `v2.0.2` Includes
+## What `v2.1.1` Includes
 
 - workflow bundle install surface qua `wfc install|update|status|skills`
 - core authoring CLI qua `wfc init|scaffold|validate`

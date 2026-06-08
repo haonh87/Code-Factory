@@ -24,7 +24,8 @@
     "validate:workflow:protocol": "node packages/workflow-bundle/bin/wfc.js protocol",
     "validate:workflow:authoring-smoke": "node packages/workflow-bundle/bin/wfc.js smoke",
     "validate:workflow:bundle-smoke": "node packages/workflow-bundle/bin/wfc.js bundle-smoke",
-    "validate:workflow:fixtures": "node packages/workflow-bundle/bin/wfc.js fixtures"
+    "validate:workflow:fixtures": "node packages/workflow-bundle/bin/wfc.js fixtures",
+    "bump-version": "node packages/workflow-bundle/bin/wfc.js version bump"
   },
   "engines": {
     "node": ">=18",

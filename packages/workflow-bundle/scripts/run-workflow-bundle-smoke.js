@@ -47,7 +47,7 @@ function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
 }
 
-function runCodexModeSmoke({ wfcBin, tempRoot }) {
+function runCodexModeSmoke({ wfcBin, tempRoot, repoRoot }) {
   const codexHome = path.join(tempRoot, ".codex");
   const projectRoot = path.join(tempRoot, "project-a");
   const installStatePath = path.join(codexHome, ".codex-workflow-bundle.install-state.json");
@@ -96,8 +96,9 @@ function runCodexModeSmoke({ wfcBin, tempRoot }) {
   );
 
   const stateAfterInstall = readJson(installStatePath);
-  if (stateAfterInstall.installed_bundle_version !== "2.0.2") {
-    throw new Error(`Expected installed_bundle_version=2.0.2, got '${stateAfterInstall.installed_bundle_version}'.`);
+  const expectedVersion = readJson(path.join(repoRoot, "workflow-bundle.manifest.json")).bundleVersion;
+  if (stateAfterInstall.installed_bundle_version !== expectedVersion) {
+    throw new Error(`Expected installed_bundle_version=${expectedVersion}, got '${stateAfterInstall.installed_bundle_version}'.`);
   }
   if (stateAfterInstall.runtime_mode !== "codex") {
     throw new Error(`Expected runtime_mode=codex, got '${stateAfterInstall.runtime_mode}'.`);
@@ -154,7 +155,7 @@ function runCodexModeSmoke({ wfcBin, tempRoot }) {
     tempRoot
   );
   assertContentIncludes(statusJsonOutput, '"runtime_mode": "codex"', "Expected runtime mode in status output.");
-  assertContentIncludes(statusJsonOutput, '"installed_bundle_version": "2.0.2"', "Expected installed version in status output.");
+  assertContentIncludes(statusJsonOutput, `"installed_bundle_version": "${expectedVersion}"`, "Expected installed version in status output.");
   assertContentIncludes(
     statusJsonOutput,
     `"project_root": "${projectRoot.replace(/\\/g, "\\\\")}"`,
@@ -285,7 +286,7 @@ function main() {
 
   try {
     runNodeScriptCaptureOutput(path.join(packageRoot, "scripts", "sync-workflow-bundle-runtime.js"), [], repoRoot);
-    runCodexModeSmoke({ wfcBin, tempRoot });
+    runCodexModeSmoke({ wfcBin, tempRoot, repoRoot });
     runClaudeModeSmoke({ wfcBin, tempRoot });
     runConfigHardeningSmoke({ wfcBin, tempRoot });
     console.log(`OK: workflow bundle smoke passed under ${tempRoot}`);
