@@ -12,3 +12,22 @@ packages/workflow-bundle/runtime/
 packages/workflow-bundle/workflow-bundle.manifest.json
 packages/workflow-bundle/workflow-pack.manifest.json
 packages/workflow-bundle/*.tgz
+
+# Claude Code harness runtime state (local, never committed)
+.claude/session-state.json
+.claude/tdd-session-state.json
+.claude/compact-state.json
+
+# Personal / scratch files (not part of public surface)
+/Booking.md
+/Daily.md
+
+# Private harness config (per-user, not for community release)
+.claude/instincts.yaml
+.claude/settings.json
+scripts/.claude/
+scripts/hooks/
+
+# Working assets — research, plans, scratch translations (not public surface)
+docs/plans/
+docs/research/
