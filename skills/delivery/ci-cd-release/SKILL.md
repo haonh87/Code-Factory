@@ -1,33 +1,36 @@
 ---
+language: en
 name: ci-cd-release
-description: Thiết kế và chuẩn hóa pipeline CI/CD, artifact flow và release promotion giữa local, dev, uat, prod. Dùng khi cần chốt build pipeline, quality gate, image registry, tagging strategy, promotion flow, approval control, release checklist, rollback control hoặc map quy trình cho GitHub Actions, GitLab CI, Jenkins, Azure DevOps hay nền tương đương.
+description: Design and standardize CI/CD pipelines, artifact flow, and release promotion across local, dev, uat, prod. Use when you need to lock build pipelines, quality gates, image registries, tagging strategy, promotion flow, approval controls, release checklists, rollback controls, or map the process for GitHub Actions, GitLab CI, Jenkins, Azure DevOps, or equivalent platforms.
 ---
 
 # CI/CD Release
 
-Chốt pipeline và control cho luồng build, verify, publish, promote và release.
+> Vietnamese: SKILL.vi.md
 
-## Mục Tiêu
+Lock the pipeline and controls for the build, verify, publish, promote, and release flow.
 
-- Chuẩn hóa quality gate từ build đến release.
-- Chốt tagging strategy và artifact immutability.
-- Mô tả rõ promotion giữa `dev`, `uat`, `prod`.
-- Chốt approval, rollout control, rollback control và release evidence.
+## Goal
 
-## Khi Sử Dụng
+- Standardize quality gates from build to release.
+- Lock the tagging strategy and artifact immutability.
+- Describe promotion across `dev`, `uat`, `prod` clearly.
+- Lock approval, rollout controls, rollback controls, and release evidence.
 
-- Khi cần thiết kế hoặc sửa pipeline CI/CD.
-- Khi cần quyết định registry, tagging, provenance hoặc promotion strategy.
-- Khi cần map release control vào GitHub Actions, GitLab CI, Jenkins, Azure DevOps hoặc công cụ tương đương.
-- Khi cần tách pre-merge, pre-release và post-deploy gate.
+## When To Use
 
-## Không Thuộc Phạm Vi
+- When you need to design or fix a CI/CD pipeline.
+- When you need to decide registry, tagging, provenance, or promotion strategy.
+- When you need to map release controls onto GitHub Actions, GitLab CI, Jenkins, Azure DevOps, or equivalent tools.
+- When you need to separate pre-merge, pre-release, and post-deploy gates.
 
-- Không chọn pattern Dockerfile theo ngôn ngữ; việc đó thuộc `containerization-packaging`.
-- Không chọn topology runtime; việc đó thuộc `platform-runtime-deployment`.
-- Không thay thế verify kỹ thuật thực tế trên codebase.
+## Out Of Scope
 
-## Đầu Vào Tối Thiểu
+- Does not choose the Dockerfile pattern by language; that belongs to `containerization-packaging`.
+- Does not choose the runtime topology; that belongs to `platform-runtime-deployment`.
+- Does not replace real technical verification on the codebase.
+
+## Minimum Input
 
 - `source_control_context`
 - `artifact_contract`
@@ -35,9 +38,9 @@ Chốt pipeline và control cho luồng build, verify, publish, promote và rele
 - `environment_promotion_targets`
 - `release_constraints`
 
-## Đầu Ra Bắt Buộc
+## Required Output
 
-Xuất artifact YAML theo schema sau:
+Emit a YAML artifact using the following schema:
 
 ```yaml
 pipeline_scope: ""
@@ -68,21 +71,21 @@ pipeline_recommendation: READY|READY_WITH_GUARDS|BLOCKED
 notes_for_implementation_or_ops: ""
 ```
 
-## Quy Tắc Chính
+## Main Rules
 
-- Tag release phải bất biến; không dùng `latest` làm source of truth.
-- Promotion nên đi trên cùng artifact contract đã build và verify.
-- Approval và rollout control của `prod` phải được ghi rõ, không để “manual” mơ hồ.
-- Pre-merge gate và pre-release gate là hai tầng khác nhau; không gộp nếu rủi ro khác nhau.
+- Release tags must be immutable; do not use `latest` as the source of truth.
+- Promotion should run on the same artifact contract that was built and verified.
+- Approval and rollout controls for `prod` must be recorded clearly, not left as vague "manual".
+- Pre-merge gates and pre-release gates are two different tiers; do not merge them if the risks differ.
 
-## Tài Liệu Tham Chiếu
+## Reference Docs
 
-- `references/pipeline-stages.md`: cấu trúc pipeline, build, test, publish.
+- `references/pipeline-stages.md`: pipeline structure, build, test, publish.
 - `references/promotion-controls.md`: tagging, promotion, approval, rollback, release checklist.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Có `build_and_verify` rõ.
-- Có `artifact_flow` và `promotion_flow` rõ.
-- Có `approval_controls`, `release_controls`, `rollback_controls`.
-- Có `pipeline_recommendation` và `pipeline_risks`.
+- A clear `build_and_verify`.
+- A clear `artifact_flow` and `promotion_flow`.
+- `approval_controls`, `release_controls`, `rollback_controls`.
+- A `pipeline_recommendation` and `pipeline_risks`.

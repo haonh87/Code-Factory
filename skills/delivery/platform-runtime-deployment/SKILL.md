@@ -1,33 +1,36 @@
 ---
+language: en
 name: platform-runtime-deployment
-description: Thiết kế và chuẩn hóa runtime deploy cho các môi trường dev, uat, prod trên Docker, Docker Swarm hoặc Kubernetes. Dùng khi cần chốt deployment unit, networking, config/secrets, storage, scaling, ingress, rollout/rollback strategy, observability guard hoặc deployment topology theo workload và mức độ stateful.
+description: Design and standardize runtime deployment for dev, uat, prod environments on Docker, Docker Swarm, or Kubernetes. Use when you need to lock deployment units, networking, config/secrets, storage, scaling, ingress, rollout/rollback strategy, observability guards, or deployment topology by workload and statefulness level.
 ---
 
 # Platform Runtime Deployment
 
-Chốt topology và guard vận hành cho runtime deploy theo platform đích.
+> Vietnamese: SKILL.vi.md
 
-## Mục Tiêu
+Lock the topology and operational guards for runtime deployment by target platform.
 
-- Chọn runtime deploy phù hợp giữa `docker`, `swarm`, `k8s`.
-- Chốt deployment unit, networking, config/secrets, storage và scaling strategy.
-- Xác định rollout, rollback và observability guard cho từng môi trường.
-- Phân biệt rõ workload stateless và stateful ở mức runtime.
+## Goal
 
-## Khi Sử Dụng
+- Choose the right runtime deployment among `docker`, `swarm`, `k8s`.
+- Lock deployment units, networking, config/secrets, storage, and scaling strategy.
+- Determine rollout, rollback, and observability guards for each environment.
+- Clearly distinguish stateless and stateful workloads at the runtime level.
 
-- Khi cần map `dev`, `uat`, `prod` sang runtime cụ thể.
-- Khi cần chuẩn hóa manifest/stack/deployment topology.
-- Khi cần chốt ingress, service discovery, secret source, volume hoặc autoscaling.
-- Khi rollout phụ thuộc mạnh vào stateful concern, health policy hoặc workload behavior.
+## When To Use
 
-## Không Thuộc Phạm Vi
+- When you need to map `dev`, `uat`, `prod` to a concrete runtime.
+- When you need to standardize manifests/stacks/deployment topology.
+- When you need to lock ingress, service discovery, secret sources, volumes, or autoscaling.
+- When rollout depends heavily on stateful concerns, health policies, or workload behavior.
 
-- Không quyết định cách đóng gói artifact theo ngôn ngữ; việc đó thuộc `containerization-packaging`.
-- Không thiết kế pipeline build/promote/approval; việc đó thuộc `ci-cd-release`.
-- Không thay thế execution rollout thật trên hạ tầng.
+## Out Of Scope
 
-## Đầu Vào Tối Thiểu
+- Does not decide how to package artifacts by language; that belongs to `containerization-packaging`.
+- Does not design the build/promote/approval pipeline; that belongs to `ci-cd-release`.
+- Does not replace real execution rollout on infrastructure.
+
+## Minimum Input
 
 - `environment_targets`
 - `workload_profile`
@@ -35,9 +38,9 @@ Chốt topology và guard vận hành cho runtime deploy theo platform đích.
 - `network_requirements`
 - `operational_constraints`
 
-## Đầu Ra Bắt Buộc
+## Required Output
 
-Xuất artifact YAML theo schema sau:
+Emit a YAML artifact using the following schema:
 
 ```yaml
 deployment_scope: ""
@@ -70,20 +73,20 @@ runtime_recommendation: READY|READY_WITH_GUARDS|BLOCKED
 notes_for_implementation_or_ops: ""
 ```
 
-## Quy Tắc Chính
+## Main Rules
 
-- `uat` nên bám topology gần `prod` nhất có thể nếu mục tiêu là kiểm chứng release.
-- Runtime khác nhau giữa `uat` và `prod` phải được giải thích rõ.
-- Workload stateful phải có `storage_strategy`, `rollback_steps` và guard dữ liệu.
-- Không dùng cùng một pattern cho `docker`, `swarm`, `k8s` nếu platform semantics khác nhau.
+- `uat` should follow a topology as close to `prod` as possible if the goal is release verification.
+- Different runtimes between `uat` and `prod` must be explained clearly.
+- Stateful workloads must have a `storage_strategy`, `rollback_steps`, and data guards.
+- Do not use the same pattern for `docker`, `swarm`, `k8s` if the platform semantics differ.
 
-## Tài Liệu Tham Chiếu
+## Reference Docs
 
-- `references/runtime-platforms.md`: pattern theo Docker, Swarm, Kubernetes.
-- `references/stateful-networking.md`: guard cho storage, networking, ingress, secrets, scaling.
+- `references/runtime-platforms.md`: patterns for Docker, Swarm, Kubernetes.
+- `references/stateful-networking.md`: guards for storage, networking, ingress, secrets, scaling.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Có `runtime_matrix` cho mọi môi trường trong phạm vi.
-- Có `rollout_and_rollback` đủ rõ cho môi trường đích.
-- Có `operational_policies` và `platform_risks`.
+- A `runtime_matrix` for every environment in scope.
+- A `rollout_and_rollback` clear enough for the target environment.
+- `operational_policies` and `platform_risks`.

@@ -1,30 +1,36 @@
-# Promotion Và Release Controls
+---
+language: en
+---
+
+# Promotion And Release Controls
+
+> Vietnamese: promotion-controls.vi.md
 
 ## Tagging
 
-- Dùng tag bất biến theo commit SHA, build number hoặc semantic version.
-- Có thể có tag tiện thao tác như `dev` hoặc `stable`, nhưng không dùng làm source of truth duy nhất.
+- Use immutable tags based on commit SHA, build number, or semantic version.
+- Convenience tags like `dev` or `stable` may exist, but do not use them as the only source of truth.
 
 ## Promotion
 
-- `local -> dev`: mục tiêu xác nhận artifact build và deploy được.
-- `dev -> uat`: mục tiêu xác nhận artifact đủ ổn định cho kiểm chứng gần production.
-- `uat -> prod`: mục tiêu release có kiểm soát, có approval và rollback path.
+- `local -> dev`: goal is to confirm the artifact builds and deploys.
+- `dev -> uat`: goal is to confirm the artifact is stable enough for near-production verification.
+- `uat -> prod`: goal is a controlled release with approval and a rollback path.
 
 ## Approval
 
-- Approval nên gắn với môi trường và mức rủi ro, đặc biệt cho `prod`.
-- Nếu approval là manual, ghi rõ ai chịu trách nhiệm và điều kiện cần thấy trước khi approve.
+- Approval should be tied to environment and risk level, especially for `prod`.
+- If approval is manual, record who is responsible and what conditions must be seen before approving.
 
 ## Rollback
 
-- Rollback phải trỏ về artifact đã biết tốt.
-- Nếu có migration hoặc thay đổi stateful, ghi rõ rollback control ở tầng app và tầng data.
+- Rollback must point to a known-good artifact.
+- If there is a migration or stateful change, record the rollback control at both the app layer and the data layer.
 
 ## Evidence
 
 - Build log
 - Test/scan result
-- Artifact digest hoặc image tag bất biến
+- Artifact digest or immutable image tag
 - Deploy result
-- Post-deploy smoke hoặc health evidence
+- Post-deploy smoke or health evidence
