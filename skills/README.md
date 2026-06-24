@@ -1,35 +1,41 @@
+---
+language: en
+---
+
 # Skills Taxonomy
 
-Tài liệu này giải thích cấu trúc thư mục `skills/` để publish repo rõ ràng hơn.
+> Vietnamese: README.vi.md
 
-## Nhóm Chính
+This document explains the `skills/` directory structure so the repo is clearer to publish.
 
-- `skills/orchestration/`: host authority entrypoint, workflow backbone và flow điều phối chính.
-- `skills/analysis/`: skill làm rõ yêu cầu, business intent và technical option.
-- `skills/architecture/`: skill chốt boundary, schema, domain và frontend structure.
-- `skills/delivery/`: skill planning, implementation, testing, review và DevOps delivery.
-- `skills/guardrails/`: skill contract, readiness, audit, quality gate và behavioral guardrail cho coding agent.
-- `skills/obsidian/`: skill materialize artifact theo Obsidian Markdown, Bases và Canvas.
+## Main Groups
+
+- `skills/orchestration/`: hosts the authority entrypoint, the workflow backbone and the main coordination flow.
+- `skills/analysis/`: skills that clarify requirements, business intent and technical options.
+- `skills/architecture/`: skills that lock boundaries, schema, domain and frontend structure.
+- `skills/delivery/`: skills for planning, implementation, testing, review and DevOps delivery.
+- `skills/guardrails/`: skills for contract, readiness, audit, quality gates and behavioral guardrails for a coding agent.
+- `skills/obsidian/`: skills that materialize artifacts as Obsidian Markdown, Bases and Canvas.
 
 ## Top-Level Integration Skills
 
-- `skills/notebooklm/`: integration skill theo thiết kế, đứng top-level vì nó là external tool capability dùng xuyên nhiều phase, không thuộc riêng `analysis`, `delivery` hay `guardrails`.
+- `skills/notebooklm/`: an integration skill by design, top-level because it is an external tool capability used across many phases, not belonging solely to `analysis`, `delivery` or `guardrails`.
 
-Quy tắc:
+Rules:
 
-- top-level chỉ dùng cho integration skill hoặc tool-facing skill dùng ngang nhiều nhóm
-- skill nghiệp vụ thông thường phải nằm trong một nhóm taxonomy rõ
-- folder cuối cùng của skill phải khớp `name` trong frontmatter của `SKILL.md`
+- top-level is only for integration skills or tool-facing skills used across multiple groups
+- ordinary business skills must live inside a clear taxonomy group
+- the final folder of a skill must match the `name` in the `SKILL.md` frontmatter
 
-## Quy Ước Cho Orchestration Skills
+## Conventions For Orchestration Skills
 
-- `orchestration` có thể chứa nhiều khối, không chỉ một workflow backbone duy nhất.
-- meta-skill entrypoint như `workflow-governance-router` dùng để chốt step, gate và quyền hành động trước.
-- workflow backbone như `codex-workflow-chain` giữ chain `s01 -> s08` và rule governance chi tiết.
-- orchestration skill không thay step skill; nó chỉ route và khóa boundary đúng trước khi step skill chạy.
+- `orchestration` can hold multiple blocks, not just a single workflow backbone.
+- a meta-skill entrypoint such as `workflow-governance-router` is used to lock the step, gates and action rights first.
+- a workflow backbone such as `codex-workflow-chain` keeps the `s01 -> s08` chain and detailed governance rules.
+- an orchestration skill does not replace step skills; it only routes and locks the right boundary before step skills run.
 
 ## Publish Rules
 
-- dùng `orchestration/codex-workflow-chain/SKILL.md` làm shape chuẩn cho skill docs
-- không tạo hai skill trùng `name`
-- nếu một skill là external integration, mô tả rõ điều đó trong `description` hoặc README nhóm
+- use `orchestration/codex-workflow-chain/SKILL.md` as the standard shape for skill docs
+- do not create two skills with the same `name`
+- if a skill is an external integration, state that clearly in its `description` or the group README
