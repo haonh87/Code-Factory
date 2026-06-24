@@ -1,35 +1,38 @@
 ---
+language: en
 name: delegation-discipline
-description: Quyết định có được delegation hoặc subagent không, rồi chốt `owned_scope`, `owned_paths`, `merge path` và `verify path` cho task độc lập. Dùng sau `s06 Task Plan` khi muốn song song hóa nhưng vẫn phải giữ ownership rõ và không bypass review/verify.
+description: Decide whether delegation or a subagent is allowed, then lock `owned_scope`, `owned_paths`, `merge path`, and `verify path` for independent tasks. Use after `s06 Task Plan` when you want to parallelize but must still keep ownership clear and not bypass review/verify.
 ---
 
 # Delegation Discipline
 
-Chốt xem execution nên giữ `agentic`, nâng lên `subagent` hoặc `multi_agent`, hay fallback `sequential_multi_role`, dựa trên mức độc lập thật sự của task.
+> Vietnamese: SKILL.vi.md
+
+Decide whether execution should stay `agentic`, move up to `subagent` or `multi_agent`, or fall back to `sequential_multi_role`, based on the true independence of the task.
 
 <HARD-GATE>
-Không được dùng skill này trước khi `s06 Task Plan` đủ rõ.
+Do not use this skill before `s06 Task Plan` is clear enough.
 
-Không được bật delegation chỉ vì muốn song song hóa.
+Do not enable delegation just because you want to parallelize.
 
-Nếu một trong các điều kiện `owned_scope`, `owned_paths`, `merge_path` hoặc `verify_path` chưa rõ, recommendation không được là `SUBAGENT` hoặc `MULTI_AGENT`.
+If any of `owned_scope`, `owned_paths`, `merge_path`, or `verify_path` is unclear, the recommendation must not be `SUBAGENT` or `MULTI_AGENT`.
 </HARD-GATE>
 
-## Khi Sử Dụng
+## When To Use
 
-- Khi muốn tách worker hoặc subagent cho một phần implementation hoặc verify.
-- Khi scope chạm nhiều module nhưng có thể tách ownership rõ.
-- Khi cần quyết định `agentic`, `subagent`, `multi_agent` hay `sequential_multi_role` ở `s07-s08`.
-- Khi nghi ngờ task có chồng lấn ownership hoặc handoff path chưa rõ.
+- When you want to split a worker or subagent for part of implementation or verify.
+- When the scope touches many modules but ownership can be split clearly.
+- When you need to decide `agentic`, `subagent`, `multi_agent`, or `sequential_multi_role` at `s07-s08`.
+- When you suspect the task has ownership overlap or an unclear handoff path.
 
-## Không Thuộc Phạm Vi
+## Out Of Scope
 
-- Không thay `task-breakdown-planner`; skill này dùng đầu vào từ task plan chứ không tự lập plan mới.
-- Không thay `review-discipline` hay `testing`.
-- Không thay governance của runtime orchestrator.
-- Không tự spawn worker hay subagent; skill này chỉ chốt decision và guard.
+- Does not replace `task-breakdown-planner`; this skill uses the task plan as input and does not create a new plan.
+- Does not replace `review-discipline` or `testing`.
+- Does not replace the runtime orchestrator's governance.
+- Does not spawn workers or subagents on its own; this skill only locks the decision and guards.
 
-## Đầu Vào Tối Thiểu
+## Minimum Input
 
 - `delegation_target`
 - `planning_track`
@@ -38,16 +41,16 @@ Nếu một trong các điều kiện `owned_scope`, `owned_paths`, `merge_path`
 - `repo_context`
 - `constraints`
 
-`candidate_tasks` nên nêu ít nhất:
+`candidate_tasks` should state at least:
 
-- task hoặc batch nào có thể tách
-- `owned_scope` dự kiến
-- `owned_paths` dự kiến
-- merge path và verify path dự kiến
+- which task or batch can be split
+- the expected `owned_scope`
+- the expected `owned_paths`
+- the expected merge path and verify path
 
-## Đầu Ra Bắt Buộc
+## Required Output
 
-Xuất artifact YAML theo schema sau:
+Emit a YAML artifact using the following schema:
 
 ```yaml
 delegation_target: ""
@@ -71,44 +74,44 @@ coordination_guards: []
 notes_for_execution: ""
 ```
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalizing Output In A Workflow Note
 
-Nếu output của skill này được lưu thành note `.md` trong workflow chain:
+If this skill's output is saved as a `.md` note in the workflow chain:
 
-- Dùng template step 7 tại `../codex-workflow-chain/references/workflow-chain.md`.
-- Đặt schema YAML của skill này trong block `## Implementation Notes`.
-- Nếu note có block hoặc frontmatter về execution topology, có thể link chéo từ đó thay vì lặp lại prose.
+- Use the step 7 template in `../codex-workflow-chain/references/workflow-chain.md`.
+- Place this skill's YAML schema in the `## Implementation Notes` block.
+- If the note has a block or frontmatter about execution topology, you may cross-link from there instead of repeating the prose.
 
-## Quy Trình Bắt Buộc
+## Required Process
 
-1. Đọc `task_plan` và xác định `candidate_tasks` có thể tách.
-2. Chạy `independence_checks` cho từng hướng delegation.
-3. Nếu bất kỳ check nào fail, fallback về `AGENTIC` hoặc `SEQUENTIAL_MULTI_ROLE`.
-4. Chỉ tạo `worker_assignments` khi task thật sự độc lập.
-5. Ghi `merge_strategy` và `verify_strategy` trước khi chốt recommendation.
-6. Ghi `coordination_guards` để tránh drift, conflict hoặc verify gap.
+1. Read the `task_plan` and identify the `candidate_tasks` that can be split.
+2. Run `independence_checks` for each delegation direction.
+3. If any check fails, fall back to `AGENTIC` or `SEQUENTIAL_MULTI_ROLE`.
+4. Only create `worker_assignments` when the task is truly independent.
+5. Record `merge_strategy` and `verify_strategy` before closing the recommendation.
+6. Record `coordination_guards` to prevent drift, conflict, or verify gaps.
 
-## Quy Tắc Chất Lượng
+## Quality Rules
 
-- `quick` mặc định nghiêng về `AGENTIC`.
-- `SUBAGENT` và `MULTI_AGENT` không được dùng khi `owned_paths` chồng lấn mạnh.
-- `worker_assignments` không được mơ hồ kiểu “xử lý phần còn lại”.
-- `verify_strategy` phải đủ để biết ai chịu trách nhiệm kết luận evidence cuối.
-- Mặc định viết và trao đổi bằng tiếng Việt có dấu.
-- File văn bản phải lưu UTF-8.
+- `quick` defaults toward `AGENTIC`.
+- `SUBAGENT` and `MULTI_AGENT` must not be used when `owned_paths` overlap strongly.
+- `worker_assignments` must not be vague like "handle the rest".
+- `verify_strategy` must be enough to know who is responsible for concluding the final evidence.
+- Default to writing and communicating in English.
+- Text files must be stored as UTF-8.
 
-## Luật Ra Quyết Định
+## Decision Rule
 
-- `AGENTIC` là default an toàn khi task nhỏ hoặc tightly coupled.
-- `SUBAGENT` phù hợp khi chỉ có một lane hoặc một worker độc lập cần tách ra, nhưng merge path và verify path đã rõ.
-- `SEQUENTIAL_MULTI_ROLE` phù hợp khi cần nhiều góc nhìn nhưng chưa đủ điều kiện cho worker song song.
-- `MULTI_AGENT` chỉ phù hợp khi có từ hai lane `task độc lập` trở lên, với `owned_scope` hoặc `owned_paths` tương đối rời nhau, `merge_path` rõ và `verify_path` rõ.
-- Nếu verification owner chưa rõ, recommendation không được là `SUBAGENT` hoặc `MULTI_AGENT`.
-- Nếu task vừa khám phá context xong mà boundary chưa ổn định, giữ `AGENTIC`.
+- `AGENTIC` is the safe default when the task is small or tightly coupled.
+- `SUBAGENT` fits when there is only one lane or one independent worker to split out, but the merge path and verify path are clear.
+- `SEQUENTIAL_MULTI_ROLE` fits when you need multiple perspectives but do not yet meet the conditions for parallel workers.
+- `MULTI_AGENT` only fits when there are two or more `independent task` lanes, with reasonably disjoint `owned_scope` or `owned_paths`, a clear `merge_path`, and a clear `verify_path`.
+- If the verification owner is unclear, the recommendation must not be `SUBAGENT` or `MULTI_AGENT`.
+- If the task just finished exploring context and the boundary is not stable, keep `AGENTIC`.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Có `execution_mode_recommendation` rõ ràng.
-- Có `independence_checks` với verdict đọc được.
-- Có `worker_assignments`, `merge_strategy`, `verify_strategy` khi recommendation không phải `AGENTIC`.
-- Có `blocked_reasons` hoặc `coordination_guards` đủ để người triển khai quyết định bước tiếp.
+- A clear `execution_mode_recommendation`.
+- `independence_checks` with a readable verdict.
+- `worker_assignments`, `merge_strategy`, `verify_strategy` when the recommendation is not `AGENTIC`.
+- `blocked_reasons` or `coordination_guards` sufficient for the implementer to decide the next step.
