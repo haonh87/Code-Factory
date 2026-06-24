@@ -66,7 +66,7 @@ tags:
 # Step 1 - Clarify
 
 > [!summary]
-> Tóm tắt yêu cầu, phạm vi ban đầu, ràng buộc và governance context mở đầu.
+> Summarize the request, initial scope, constraints and the opening governance context.
 
 ## Step Contract
 ```yaml
@@ -86,7 +86,7 @@ prohibited_actions: []
 open_governance_questions: []
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 raw_request: ""
 restated_request: ""
@@ -111,6 +111,6 @@ next_step: ""
 ```
 
 ## Handoff
-- Điều đã rõ:
-- Điều còn cần theo dõi:
-- Điều kiện sang step 2:
+- What is clear:
+- What still needs tracking:
+- Conditions to move to step 2:
