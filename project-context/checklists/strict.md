@@ -1,39 +1,43 @@
+---
+language: en
+---
+
 # Governance Checklist Profile: `strict`
 
-Profile này kế thừa toàn bộ `default` và thêm các kiểm tra chặt hơn.
+This profile inherits all of `default` and adds stricter checks.
 
-## Khi Dùng
+## When To Use
 
-- change đụng nhiều boundary hoặc nhiều owner
+- change touches many boundaries or many owners
 - migration, data compatibility, external integration
-- packaging/runtime/release impact đáng kể
-- rollback cost cao hoặc khó sửa nóng
+- significant packaging/runtime/release impact
+- high rollback cost or hard to fix hot
 
-## Kiểm Tra Bổ Sung So Với `default`
+## Additional Checks Over `default`
 
 ### Acceptance + DoR
 
-- reviewer coverage đã được chỉ rõ theo boundary chính
-- backward compatibility hoặc migration assumption đã được ghi rõ
-- release impact và rollback expectation đã được nhận diện trước khi implement
+- reviewer coverage has been specified per main boundary
+- backward compatibility or migration assumptions have been recorded
+- release impact and rollback expectations have been identified before implementation
 
 ### Technical Approach
 
-- trade-off đã chỉ ra vì sao approach được chọn vẫn chấp nhận được theo `governance`
-- nếu có lệch chuẩn, `governance-exception` đã có owner và mitigation trước khi step đóng
+- the trade-off states why the chosen approach is still acceptable per `governance`
+- if there is a deviation, the `governance-exception` has an owner and mitigation before the step closes
 
 ### Task Plan
 
-- plan có task riêng cho migration, verify compatibility hoặc rollout khi scope yêu cầu
-- task review không bị gộp ngầm vào build task nếu boundary đủ lớn để tách
+- the plan has dedicated tasks for migration, compatibility verify or rollout when scope requires it
+- review tasks are not implicitly merged into the build task when the boundary is large enough to split
 
 ### Verify + DoD
 
-- evidence có đủ cho release decision, không chỉ đủ cho local correctness
-- rollback path hoặc remediation path đã được nêu nếu release risk còn mở
-- exception còn mở phải có trạng thái rõ và owner rõ
+- evidence is enough for the release decision, not only for local correctness
+- a rollback path or remediation path is stated if release risk is still open
+- an open exception has a clear status and a clear owner
 
-## Cách Materialize
+## How To Materialize
 
 - `checklist_name`: `strict`
-- `checklist_refs`: trỏ file này, và có thể giữ thêm `default.md` nếu muốn trace rõ profile kế thừa
+- `checklist_refs`: point to this file, and may also keep `default.md` if you want to trace the inherited profile clearly

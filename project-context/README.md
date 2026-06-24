@@ -1,61 +1,65 @@
+---
+language: en
+---
+
 # Governance Pack
 
-Thư mục này là source-of-truth cho `governance layer` ở mức project.
+This directory is the source of truth for the `governance layer` at the project level.
 
-## Thành Phần
+## Components
 
-- `constitution.md`: các nguyên tắc nền bắt buộc phải tôn trọng trong workflow.
-- `project-context.md`: bối cảnh đang có hiệu lực của repo, default profile, rule chọn checklist và các shortcut bị cấm.
-- `governance-role-model.md`: authority model cho role, signoff, exception và waiver.
-- `governance-decision-model.md`: rule chọn profile, status transition, exception trigger và rule update register.
-- `checklists/default.md`: checklist mặc định cho phần lớn work item.
-- `checklists/strict.md`: checklist tăng cường cho change có nhiều rủi ro hoặc nhiều boundary.
-- `checklists/regulated.md`: checklist tăng cường thêm cho scope có yêu cầu audit, approval hoặc compliance chặt.
-- `governance-exception-register.md`: register theo dõi `governance-exception` hoặc `waiver` đang mở và lịch sử xử lý.
+- `constitution.md`: the foundational principles that must be respected in the workflow.
+- `project-context.md`: the repo's context currently in effect, the default profile, the checklist selection rules and the forbidden shortcuts.
+- `governance-role-model.md`: the authority model for roles, sign-offs, exceptions and waivers.
+- `governance-decision-model.md`: the rules for choosing a profile, status transitions, exception triggers and the rule to update the register.
+- `checklists/default.md`: the default checklist for most work items.
+- `checklists/strict.md`: the strengthened checklist for changes with more risk or more boundaries.
+- `checklists/regulated.md`: the further strengthened checklist for scope that needs audit, approval or tight compliance.
+- `governance-exception-register.md`: the register tracking open `governance-exception` or `waiver` and the handling history.
 
-## Cách Dùng Trong Workflow
+## How To Use In The Workflow
 
 - `governance_ref`:
-  mặc định trỏ `project-context/project-context.md`.
+  by default points to `project-context/project-context.md`.
 - `governance_profile`:
-  dùng một trong `default|strict|regulated|custom`.
+  use one of `default|strict|regulated|custom`.
 - `checklist_refs`:
-  trỏ tới một hoặc nhiều checklist trong `project-context/checklists/`.
+  point to one or more checklists in `project-context/checklists/`.
 - `governance_status`:
-  đánh giá theo `governance-decision-model.md`, không tự đặt theo cảm giác.
+  assess per `governance-decision-model.md`, do not set it by feeling.
 - approval authority:
-  tra theo `governance-role-model.md`, không suy diễn chỉ từ `role_signoffs`.
+  look it up in `governance-role-model.md`, do not infer it only from `role_signoffs`.
 - `governance-exception`:
-  phải xuất hiện trong note step liên quan, đồng thời được ghi vào `governance-exception-register.md` nếu exception còn mở hoặc cần audit xuyên step.
+  must appear in the related step note, and at the same time be recorded in `governance-exception-register.md` if the exception stays open or needs audit across steps.
 
-## Chọn Profile
+## Choosing A Profile
 
-| Profile | Khi dùng |
+| Profile | When to use |
 |---|---|
-| `default` | feature hoặc bug thông thường, scope vừa phải, không có migration/runtime/release risk đáng kể |
-| `strict` | change đụng nhiều boundary, migration, release path, external integration, data change hoặc rollback risk |
-| `regulated` | scope cần audit trail, approval chain, evidence retention hoặc compliance/control chặt hơn bình thường |
-| `custom` | khi project hoặc work item có rule riêng; vẫn nên kế thừa ít nhất một profile nền |
+| `default` | ordinary feature or bug, medium scope, no significant migration/runtime/release risk |
+| `strict` | change touches many boundaries, migration, release path, external integration, data change or rollback risk |
+| `regulated` | scope needs audit trail, approval chain, evidence retention or tighter compliance/control than usual |
+| `custom` | when the project or work item has its own rules; still inherit at least one base profile |
 
-## Quy Ước Tối Thiểu
+## Minimum Conventions
 
-- Không tạo workflow governance riêng.
-- Không dùng checklist profile như source-of-truth thay cho note step.
-- Không đóng `DoR`, `DoD`, `release` hoặc `business_acceptance` nếu requirement governance còn đang mở mà không có owner hoặc waiver rõ.
+- Do not create a separate governance workflow.
+- Do not use a checklist profile as the source of truth in place of the step note.
+- Do not close `DoR`, `DoD`, `release` or `business_acceptance` if a governance requirement is still open without a clear owner or waiver.
 
 ## Validator
 
-- Command chuẩn:
+- Standard command:
   `npm run validate:workflow -- --workflow-root work-items --project-root <repo-root>`
-- Governance validator hiện đã enforce thêm:
-  - authority tối thiểu cho `approved_by`
-  - gate/state rule cho `governance_status` ở `s04` và `s08` khi note đã qua `draft`
-  - tính nhất quán tối thiểu giữa note và `governance-exception-register.md`
-- Chạy fixture suite:
+- The governance validator now also enforces:
+  - minimum authority for `approved_by`
+  - gate/state rules for `governance_status` at `s04` and `s08` once a note passes `draft`
+  - minimum consistency between the note and `governance-exception-register.md`
+- Run the fixture suite:
   `npm run validate:workflow:fixtures`
-- Fixture suite canonical cho governance validator:
+- Canonical fixture suite for the governance validator:
   `packages/workflow-bundle/tests/fixtures/workflow-governance/README.md`
 
-Ghi chú:
+Notes:
 
-- `work-items/` là canonical artifact root cho workflow artifacts thật của repo.
+- `work-items/` is the canonical artifact root for the repo's real workflow artifacts.
