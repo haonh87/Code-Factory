@@ -1,129 +1,135 @@
+---
+language: en
+---
+
 # Workflow CI Enforcement Design
 
-Tài liệu này mô tả bản thiết kế cho `CI enforcement` của workflow tooling trong repo.
+> Vietnamese: workflow-ci-enforcement.vi.md
 
-Thời điểm đối chiếu: `2026-04-13`.
+This document describes the design for `CI enforcement` of workflow tooling in the repo.
 
-Trạng thái:
+Cross-reference date: `2026-04-13`.
 
-- đây là tài liệu `design + trạng thái hiện hành`
-- phase 1 đã materialize tại `.github/workflows/workflow-guardrails.yml`
-- phase 2 đã materialize trong cùng workflow file với job `workflow-artifacts`
-- `workflow-sdd` đã được materialize như CI job riêng cho `BRD/SRS`, `Spec Freeze`, `SDD Traceability` và `Spec Coverage`
-- `workflow-changes` đã được materialize như CI job riêng cho `change_id`, `spec_delta_refs`, `archive_status` và change package root `changes/`
-- `workflow-execution` đã được materialize như CI job riêng cho `multi_agent`, runtime artifacts và `review_mode`
-- `workflow-planning` đã được materialize như CI job riêng cho `planning_track` và routing presets `quick|full|enterprise`
-- `workflow-authoring-smoke` đã được materialize như CI job riêng cho flow `scaffold -> validate`
-- governance validator hiện đã enforce baseline cho authority/state và register consistency, không chỉ block/metadata cơ bản
-- mục tiêu là chốt rõ CI phải làm gì, không làm gì, chạy lệnh nào và fail ở đâu
+Status:
 
-## Mục Tiêu
+- this is a `design + current-state` document
+- phase 1 is materialized at `.github/workflows/workflow-guardrails.yml`
+- phase 2 is materialized in the same workflow file with the `workflow-artifacts` job
+- `workflow-sdd` is materialized as a dedicated CI job for `BRD/SRS`, `Spec Freeze`, `SDD Traceability`, and `Spec Coverage`
+- `workflow-changes` is materialized as a dedicated CI job for `change_id`, `spec_delta_refs`, `archive_status`, and the change package root `changes/`
+- `workflow-execution` is materialized as a dedicated CI job for `multi_agent`, runtime artifacts, and `review_mode`
+- `workflow-planning` is materialized as a dedicated CI job for `planning_track` and the routing presets `quick|full|enterprise`
+- `workflow-authoring-smoke` is materialized as a dedicated CI job for the `scaffold -> validate` flow
+- the governance validator now enforces a baseline for authority/state and register consistency, not just basic block/metadata checks
+- the goal is to pin clearly what CI must do, must not do, which commands it runs, and where it fails
 
-- biến workflow tooling từ "docs + command local" thành "chuẩn được enforce tự động"
-- dùng đúng command surface hiện có qua `npm`
-- kiểm được `naming`, `governance`, fixture suite và workflow artifacts thật khi đã materialize
-- kiểm được cả contract `SDD` khi repo có `product-specs/` và work item `sdd_mode=light|strict`
-- kiểm được cả contract `change layer` khi repo có `changes/` và work item gắn `change_id`
-- kiểm được cả contract `execution layer` khi repo có runtime artifacts và work item gắn `execution_mode=multi_agent`
-- kiểm được cả contract `adaptive planning` khi repo có `planning_track`
-- không tạo thêm workflow business mới ngoài backbone 8 bước
-- `work-items/` là canonical artifact root cho workflow artifacts thật từ phase 2 trở đi
+## Goals
 
-## Vai Trò Của CI Enforcement
+- turn workflow tooling from "docs + local command" into "a standard that is enforced automatically"
+- use the existing command surface via `npm`
+- check `naming`, `governance`, the fixture suite, and real workflow artifacts once materialized
+- check the `SDD` contract when the repo has `product-specs/` and a work item with `sdd_mode=light|strict`
+- check the `change layer` contract when the repo has `changes/` and a work item with a `change_id`
+- check the `execution layer` contract when the repo has runtime artifacts and a work item with `execution_mode=multi_agent`
+- check the `adaptive planning` contract when the repo has a `planning_track`
+- do not create a new business workflow beyond the eight-step backbone
+- `work-items/` is the canonical artifact root for real workflow artifacts from phase 2 onward
 
-Trong repo này:
+## The Role Of CI Enforcement
 
-- workflow backbone `s01 -> s08` quyết định step, gate, signoff, handoff
-- `CI enforcement` là lớp vận hành tự động để kiểm artifact workflow có tuân thủ contract hay không
+In this repo:
 
-CI enforcement không thay:
+- the `s01 -> s08` workflow backbone decides steps, gates, signoffs, and handoffs
+- `CI enforcement` is the automated operational layer that checks whether workflow artifacts comply with the contract
+
+CI enforcement does not replace:
 
 - `DoR`
 - `DoD`
-- `release signoff`
+- release signoff
 - `business_acceptance`
-- judgment của `po|ba|designer|developer|qc|devops`
+- the judgment of `po|ba|designer|developer|qc|devops`
 
-CI enforcement chỉ kiểm những gì máy có thể xác nhận rõ ràng.
+CI enforcement only checks what a machine can clearly confirm.
 
-## Những Gì CI Phải Enforce
+## What CI Must Enforce
 
 ### 1. Workflow Tooling Baseline
 
-CI phải chạy được command chuẩn:
+CI must run the standard command:
 
 ```bash
 wfc fixtures
 ```
 
-Mục đích:
+Purpose:
 
-- bảo vệ validator khỏi regression
-- bảo vệ fixture suite khỏi drift
-- xác nhận `pass cases` vẫn pass và `expected fail cases` vẫn fail
+- protect the validator from regression
+- protect the fixture suite from drift
+- confirm that `pass cases` still pass and `expected fail cases` still fail
 
 ### 2. Workflow Artifact Contract
 
-Khi repo có workflow artifacts thật, CI phải chạy:
+When the repo has real workflow artifacts, CI must run:
 
 ```bash
 wfc validate --workflow-root work-items --project-root .
 ```
 
-Mục đích:
+Purpose:
 
-- kiểm filename theo step contract
-- kiểm frontmatter bắt buộc
-- kiểm `governance_ref`, `governance_profile`, `governance_status`, `checklist_refs`
-- kiểm block governance theo step
-- kiểm exception hoặc waiver và register khi cần
+- check filenames against the step contract
+- check required frontmatter
+- check `governance_ref`, `governance_profile`, `governance_status`, `checklist_refs`
+- check per-step governance blocks
+- check exceptions or waivers and the register when needed
 
 ### 3. Change Layer Contract
 
-Khi repo có change package thật, CI phải chạy:
+When the repo has a real change package, CI must run:
 
 ```bash
 wfc change --workflow-root work-items --project-root .
 ```
 
-Mục đích:
+Purpose:
 
-- kiểm `change_id`, `change_status`, `archive_status`
-- kiểm `spec_delta_refs` trỏ tới delta thật
-- kiểm change package root `changes/<change-id>/`
-- kiểm `proposal`, `design`, `tasks`, `spec-delta`, `archive-metadata` có đủ và khớp `change_id`
+- check `change_id`, `change_status`, `archive_status`
+- check that `spec_delta_refs` point to a real delta
+- check the change package root `changes/<change-id>/`
+- check that `proposal`, `design`, `tasks`, `spec-delta`, and `archive-metadata` are present and match `change_id`
 
 ### 4. Authoring Flow Integrity
 
-CI phải đảm bảo các artifact được scaffold hoặc author bằng tay vẫn pass cùng một command chuẩn.
+CI must ensure that artifacts scaffolded or hand-authored still pass the same standard command.
 
-Điều này giữ flow:
+This keeps the flow:
 
 ```text
 scaffold -> edit -> validate -> review
 ```
 
-không bị lệch giữa local và CI.
+from drifting between local and CI.
 
-## Những Gì CI Không Nên Enforce
+## What CI Should Not Enforce
 
-CI không nên tự quyết:
+CI should not decide:
 
-- business goal có đủ mạnh hay không
-- technical approach có tối ưu hay không
-- acceptance criteria có hợp ý stakeholder hay không
-- residual risk có chấp nhận được về mặt business hay không
+- whether the business goal is strong enough
+- whether the technical approach is optimal
+- whether the acceptance criteria match stakeholder intent
+- whether residual risk is acceptable from a business perspective
 
-Lý do:
+Reason:
 
-- đây là judgment layer
-- phải do role owner và signoff owner kết luận
+- these are the judgment layer
+- they must be concluded by the role owner and the signoff owner
 
-## Command Surface Chuẩn
+## Standard Command Surface
 
-CI chỉ nên gọi command chuẩn qua `npm`.
+CI should only call the standard commands via `npm`.
 
-Danh sách command hiện có:
+Current command list:
 
 - `npm run scaffold:change`
 - `npm run scaffold:workflow`
@@ -137,190 +143,190 @@ Danh sách command hiện có:
 - `npm run validate:workflow:planning`
 - `npm run validate:workflow:fixtures`
 
-Nguyên tắc:
+Principles:
 
-- không gọi PowerShell validator làm runtime chính
-- không để local và CI dùng hai command surface khác nhau
-- `npm` là entrypoint duy nhất cho workflow tooling
+- do not call the PowerShell validator as the main runtime
+- do not let local and CI use two different command surfaces
+- `npm` is the single entrypoint for workflow tooling
 
-## Thiết Kế Job
+## Job Design
 
 ### Job 1. `workflow-tooling`
 
-Mục tiêu:
+Goal:
 
-- kiểm bản thân workflow tooling
+- check workflow tooling itself
 
-Lệnh tối thiểu:
+Minimum command:
 
 ```bash
 npm run validate:workflow:fixtures
 ```
 
-Pass khi:
+Passes when:
 
-- toàn bộ `valid-*` fixtures pass
-- toàn bộ `invalid-*` fixtures fail đúng kỳ vọng
+- all `valid-*` fixtures pass
+- all `invalid-*` fixtures fail as expected
 
-Fail khi:
+Fails when:
 
-- validator logic đổi sai
-- fixture bị hỏng
-- naming/governance contract drift
+- validator logic changes incorrectly
+- a fixture is broken
+- naming/governance contract drift occurs
 
 ### Job 2. `workflow-artifacts`
 
-Mục tiêu:
+Goal:
 
-- kiểm workflow artifacts thật của repo
+- check the repo's real workflow artifacts
 
-Điều kiện bật:
+Enable condition:
 
-- repo đã chốt `work-items/` là canonical artifact root và bắt đầu materialize workflow artifacts thật vào đó
+- the repo has pinned `work-items/` as the canonical artifact root and started materializing real workflow artifacts there
 
-Lệnh tối thiểu:
+Minimum command:
 
 ```bash
 npm run validate:workflow -- --workflow-root work-items --project-root .
 ```
 
-Pass khi:
+Passes when:
 
-- artifact naming đúng
-- frontmatter đúng contract
-- governance metadata và block pass validator
+- artifact naming is correct
+- frontmatter matches the contract
+- governance metadata and blocks pass the validator
 
-Fail khi:
+Fails when:
 
-- artifact mới tạo sai naming
-- note thiếu frontmatter
-- governance chưa được materialize đúng rule
+- a newly created artifact has wrong naming
+- a note lacks frontmatter
+- governance is not materialized per the rule
 
 ### Job 3. `workflow-sdd`
 
-Mục tiêu:
+Goal:
 
-- kiểm `BRD/SRS` và contract `SDD` trên các work item có `sdd_mode`
+- check `BRD/SRS` and the `SDD` contract on work items with `sdd_mode`
 
-Lệnh tối thiểu:
+Minimum command:
 
 ```bash
 npm run validate:workflow:sdd -- --workflow-root work-items --project-root .
 ```
 
-Pass khi:
+Passes when:
 
-- `spec_refs.brd` và `spec_refs.srs` trỏ tới product specs thật
-- `spec_status` hợp lệ
-- các block `Spec Freeze`, `SDD Traceability`, `Spec Coverage` có mặt đúng step
-- sample SDD canonical pass validator
+- `spec_refs.brd` and `spec_refs.srs` point to real product specs
+- `spec_status` is valid
+- the `Spec Freeze`, `SDD Traceability`, and `Spec Coverage` blocks are present on the right steps
+- the canonical SDD sample passes the validator
 
-Fail khi:
+Fails when:
 
-- work item SDD trỏ tới spec không tồn tại
-- `BRD/SRS` không có ID hoặc metadata tối thiểu
-- step 4 hoặc step 8 thiếu block SDD bắt buộc
+- an SDD work item points to a non-existent spec
+- `BRD/SRS` lacks IDs or minimum metadata
+- step 4 or step 8 is missing a required SDD block
 
 ### Job 4. `workflow-changes`
 
-Mục tiêu:
+Goal:
 
-- kiểm change package và liên kết từ work item sang `changes/`
+- check the change package and the link from the work item to `changes/`
 
-Lệnh tối thiểu:
+Minimum command:
 
 ```bash
 npm run validate:workflow:change -- --workflow-root work-items --project-root .
 ```
 
-Pass khi:
+Passes when:
 
-- work item có `change_id` trỏ tới package có thật
-- `spec_delta_refs` tồn tại
-- archive readiness không mâu thuẫn giữa note workflow và change package
+- the work item has a `change_id` pointing to a real package
+- `spec_delta_refs` exist
+- archive readiness is not contradictory between the workflow note and the change package
 
-Fail khi:
+Fails when:
 
-- thiếu file bắt buộc trong change package
-- `change_id` sai pattern hoặc không có root tương ứng
-- `verified` change vẫn để `archive_status=not_ready`
+- a required file is missing in the change package
+- `change_id` has the wrong pattern or no corresponding root
+- a `verified` change still has `archive_status=not_ready`
 
 ### Job 5. `workflow-execution`
 
-Mục tiêu:
+Goal:
 
-- kiểm `multi_agent` runtime contract và runtime artifacts thật
+- check the `multi_agent` runtime contract and real runtime artifacts
 
-Lệnh tối thiểu:
+Minimum command:
 
 ```bash
 npm run validate:workflow:execution -- --workflow-root work-items
 ```
 
-Pass khi:
+Passes when:
 
-- `multi_agent` chỉ xuất hiện trên step được rollout
-- `review_mode` và `verification_owner` hợp lệ
-- runtime artifacts bắt buộc tồn tại và link lại từ note chính
+- `multi_agent` only appears on rolled-out steps
+- `review_mode` and `verification_owner` are valid
+- required runtime artifacts exist and link back from the main note
 
-Fail khi:
+Fails when:
 
-- thiếu `execution-policy`, `worker-assignment`, `worker-handoff-report` hoặc `merge-report`
-- `multi_agent` không có execution roles hoặc verification owner
-- step 8 dùng `multi_agent` nhưng vẫn để `review_mode=self`
+- `execution-policy`, `worker-assignment`, `worker-handoff-report`, or `merge-report` is missing
+- `multi_agent` has no execution roles or verification owner
+- step 8 uses `multi_agent` but still has `review_mode=self`
 
 ### Job 6. `workflow-planning`
 
-Mục tiêu:
+Goal:
 
-- kiểm `planning_track` và routing preset `quick|full|enterprise`
+- check `planning_track` and the `quick|full|enterprise` routing preset
 
-Lệnh tối thiểu:
+Minimum command:
 
 ```bash
 npm run validate:workflow:planning -- --workflow-root work-items
 ```
 
-Pass khi:
+Passes when:
 
-- `planning_track` hợp lệ và nhất quán trong từng work item
-- `quick` không tự leo lên ceremony nặng
-- `enterprise` có governance/review lane phù hợp ở step delivery
+- `planning_track` is valid and consistent within each work item
+- `quick` does not escalate into heavy ceremony
+- `enterprise` has the governance/review lane appropriate at delivery steps
 
-Fail khi:
+Fails when:
 
-- cùng một work item có nhiều `planning_track`
-- `quick` dùng `multi_agent` hoặc `review_mode=self` bị lệch rule
-- `enterprise` vẫn để governance hoặc review lane quá nhẹ
+- a single work item has multiple `planning_track` values
+- `quick` uses `multi_agent` or `review_mode=self` in a way that breaks the rule
+- `enterprise` still has governance or review lanes that are too light
 
 ### Job 7. `workflow-authoring-smoke`
 
-Job này đã được materialize ở phase hardening sau khi contract của scaffold ổn định qua `change`, `execution` và `planning`.
+This job was materialized in the hardening phase after the scaffold contract stabilized across `change`, `execution`, and `planning`.
 
-Mục tiêu:
+Goal:
 
-- bảo vệ scaffolder
+- protect the scaffolder
 
-Ví dụ flow smoke:
+Sample smoke flow:
 
-1. dựng temp project root tối giản
-2. scaffold các case đại diện:
+1. stand up a minimal temp project root
+2. scaffold representative cases:
    - full baseline
    - quick single-step
    - enterprise multi-agent
    - strict SDD + change
-3. chạy validator tương ứng trên output của từng case
+3. run the matching validator on each case's output
 
-Mục tiêu:
+Goals:
 
-- xác nhận template scaffold luôn sinh ra output hợp lệ ngay từ đầu
-- bắt regression khi scaffold, validator hoặc default preset bị lệch nhau
+- confirm the scaffold template always produces valid output from the start
+- catch regressions when scaffold, validator, or default presets drift apart
 
 ## Trigger Design
 
 ### Pull Request
 
-Bản implement hiện tại chạy:
+The current implementation runs:
 
 - `workflow-tooling`
 - `workflow-artifacts`
@@ -330,110 +336,110 @@ Bản implement hiện tại chạy:
 - `workflow-planning`
 - `workflow-authoring-smoke`
 
-Vai trò:
+Role:
 
-- chặn drift trước khi merge
+- block drift before merge
 
-### Push Vào `main`
+### Push To `main`
 
-Bản implement hiện tại chạy lại `workflow-tooling`, `workflow-artifacts`, `workflow-sdd`, `workflow-changes`, `workflow-execution`, `workflow-planning` và `workflow-authoring-smoke` để bảo vệ branch chính.
+The current implementation reruns `workflow-tooling`, `workflow-artifacts`, `workflow-sdd`, `workflow-changes`, `workflow-execution`, `workflow-planning`, and `workflow-authoring-smoke` to protect the main branch.
 
 ### Manual Dispatch
 
-Nên có về sau để:
+Should be added later to:
 
-- rerun CI khi chỉ muốn audit workflow tooling
-- hỗ trợ migration hoặc cleanup artifact cũ
+- rerun CI when you only want to audit workflow tooling
+- support migration or cleanup of old artifacts
 
 ## Fail Policy
 
-CI nên fail cứng khi:
+CI should fail hard when:
 
-- fixture suite fail
-- validator script fail
-- workflow artifact thật fail contract
+- the fixture suite fails
+- a validator script fails
+- a real workflow artifact fails the contract
 
-CI không nên chỉ warning với các rule mechanical ở trên, vì như vậy enforcement mất tác dụng.
+CI should not merely warn on the mechanical rules above, because that defeats the purpose of enforcement.
 
 ## Path Scope Design
 
 ### Phase 1
 
-Chỉ enforce:
+Only enforce:
 
 - `scripts/`
 - `packages/workflow-bundle/tests/fixtures/workflow-governance/`
-- docs tham chiếu workflow/governance khi chúng làm hỏng contract tooling
+- workflow/governance reference docs when they break the tooling contract
 
-Thực tế phase này chủ yếu chạy `validate:workflow:fixtures`.
+In practice this phase mostly runs `validate:workflow:fixtures`.
 
 ### Phase 2
 
-Bật thêm artifact thật:
+Turn on real artifacts as well:
 
 - `work-items/`
 
 ### Phase 3
 
-Có thể tối ưu theo changed paths:
+Optionally optimize by changed paths:
 
-- nếu chỉ đổi workflow tooling hoặc fixture thì chạy `workflow-tooling`
-- nếu đổi artifact thật thì chạy thêm `workflow-artifacts`
-- nếu đổi `product-specs/` thì chạy thêm `workflow-sdd`
-- nếu đổi `changes/` hoặc work item có `change_id` thì chạy thêm `workflow-changes`
-- nếu đổi runtime artifacts hoặc work item có `execution_mode=multi_agent` thì chạy thêm `workflow-execution`
-- nếu đổi `planning_track`, routing doc hoặc sample planning items thì chạy thêm `workflow-planning`
+- if only workflow tooling or fixtures changed, run `workflow-tooling`
+- if real artifacts changed, also run `workflow-artifacts`
+- if `product-specs/` changed, also run `workflow-sdd`
+- if `changes/` or a work item with `change_id` changed, also run `workflow-changes`
+- if runtime artifacts or a work item with `execution_mode=multi_agent` changed, also run `workflow-execution`
+- if `planning_track`, the routing doc, or sample planning items changed, also run `workflow-planning`
 
-Ở giai đoạn hiện tại, chưa cần tối ưu sớm; ưu tiên đơn giản và ổn định.
+At the current stage, early optimization is not needed; prioritize simplicity and stability.
 
 ## Dependency Design
 
-CI chỉ cần:
+CI only needs:
 
 - `node`
 - `npm`
 
-Không nên phụ thuộc:
+It should not depend on:
 
 - `pwsh`
-- tool cục bộ riêng theo OS
+- OS-specific local tooling
 
-Lý do:
+Reason:
 
-- repo đã thống nhất workflow tooling qua Node/npm
-- giảm khác biệt giữa macOS, Linux, Windows và CI runner
+- the repo has unified workflow tooling through Node/npm
+- this reduces differences between macOS, Linux, Windows, and the CI runner
 
-## Mapping Với Workflow Hiện Tại
+## Mapping To The Current Workflow
 
-| Thành phần | Vai trò |
+| Component | Role |
 |---|---|
-| `s01-s08` | business workflow backbone |
-| `governance pack` | rule source-of-truth |
-| `scaffold` | authoring entrypoint |
-| `validate` | local guardrail |
-| `CI enforcement` | tự động hóa guardrail trong PR/push |
+| `s01-s08` | the business workflow backbone |
+| `governance pack` | the rule source-of-truth |
+| `scaffold` | the authoring entrypoint |
+| `validate` | the local guardrail |
+| `CI enforcement` | automating the guardrail in PR/push |
 
-Nói ngắn:
+In short:
 
-- `scaffold` giúp tạo đúng từ đầu
-- `validate` giúp kiểm local
-- `CI enforcement` giúp không ai bỏ qua bước kiểm đó khi merge
+- `scaffold` helps create it correctly from the start
+- `validate` helps check locally
+- `CI enforcement` ensures no one skips that check on merge
 
-## Thiết Kế Rollout
+## Rollout Design
 
 ### Phase A. Tooling CI
 
-Chỉ bật:
+Turn on only:
 
 - `workflow-tooling`
 
-Mục tiêu:
+Goal:
 
-- ổn định validator + fixture suite trước
+- stabilize the validator + fixture suite first
 
 ### Phase B. Artifact CI
 
-Sau khi có thư mục artifact thật, bật thêm:
+Once a real artifact directory exists, also turn on:
 
 - `workflow-artifacts`
 - `workflow-sdd`
@@ -441,70 +447,70 @@ Sau khi có thư mục artifact thật, bật thêm:
 - `workflow-execution`
 - `workflow-planning`
 
-Mục tiêu:
+Goal:
 
-- enforce contract trên output thật của workflow, `BRD/SRS` và change package
+- enforce the contract on the workflow's real output, `BRD/SRS`, and change packages
 
 ### Phase C. Authoring Smoke
 
-Sau khi scaffolder ổn định, thêm:
+Once the scaffolder is stable, add:
 
 - `workflow-authoring-smoke`
 
-Mục tiêu:
+Goal:
 
-- ngăn regression ở template/generator
+- prevent regressions in the template/generator
 
-## Thiết Kế File CI Khuyến Nghị
+## Recommended CI File Design
 
-File CI phase 1 hiện tại là:
+The current phase-1 CI file is:
 
 ```text
 .github/workflows/workflow-guardrails.yml
 ```
 
-Tên này phản ánh đúng vai trò:
+This name reflects the role correctly:
 
-- không phải release pipeline
-- không phải app CI chung
-- mà là guardrail cho workflow tooling và workflow artifacts
+- it is not a release pipeline
+- it is not general app CI
+- it is a guardrail for workflow tooling and workflow artifacts
 
-## Definition Of Done Cho CI Enforcement
+## Definition Of Done For CI Enforcement
 
-Phase 1 được xem là đủ khi:
+Phase 1 is considered sufficient when:
 
-- có workflow file CI thật
-- CI chạy được `npm run validate:workflow:fixtures`
-- branch chính bị fail nếu fixture suite fail
-- docs trỏ về đúng command và đúng CI scope
+- a real CI workflow file exists
+- CI can run `npm run validate:workflow:fixtures`
+- the main branch fails if the fixture suite fails
+- docs point to the correct command and the correct CI scope
 
-Phase 2 được xem là đủ khi:
+Phase 2 is considered sufficient when:
 
-- validate được cả artifact workflow thật dưới `work-items/`
-- local flow và CI flow dùng cùng một command surface
+- real workflow artifacts under `work-items/` can be validated
+- the local flow and the CI flow use the same command surface
 
-Baseline change-layer được xem là đủ khi:
+The baseline change layer is considered sufficient when:
 
-- validate được cả change package thật dưới `changes/`
-- `work-items/`, `product-specs/` và `changes/` nối được với nhau qua `change_id` và `spec_delta_refs`
+- real change packages under `changes/` can be validated
+- `work-items/`, `product-specs/`, and `changes/` connect via `change_id` and `spec_delta_refs`
 
-Baseline execution-layer được xem là đủ khi:
+The baseline execution layer is considered sufficient when:
 
-- validate được runtime artifacts thật dưới `work-items/`
-- có ít nhất một sample `multi_agent` canonical pass validator
-- `review_mode` và `verification_owner` được dùng thật ở step 8
+- real runtime artifacts under `work-items/` can be validated
+- at least one canonical `multi_agent` sample passes the validator
+- `review_mode` and `verification_owner` are actually used at step 8
 
-Baseline adaptive-planning được xem là đủ khi:
+The baseline adaptive planning is considered sufficient when:
 
-- có sample `quick` và `enterprise` canonical
-- `planning_track` được scaffold và validate được
-- CI bắt được lệch routing preset trước khi merge
+- canonical `quick` and `enterprise` samples exist
+- `planning_track` can be scaffolded and validated
+- CI catches a routing-preset mismatch before merge
 
-## Kết Luận
+## Conclusion
 
-CI enforcement trong repo này nên được hiểu là:
+CI enforcement in this repo should be understood as:
 
-- một lớp `automation guardrail`
-- dùng chung command `npm`
-- bảo vệ `validator`, `fixture`, `scaffold` và workflow artifacts thật
-- không thay thế judgment, signoff hay business gate của workflow backbone
+- an `automation guardrail` layer
+- using the shared `npm` command
+- protecting the `validator`, `fixture`, `scaffold`, and real workflow artifacts
+- not replacing the judgment, signoff, or business gate of the workflow backbone
