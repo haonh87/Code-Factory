@@ -1,40 +1,43 @@
 ---
+language: en
 name: definition-of-ready-gate
-description: Chốt Definition of Ready ở mức work item trước khi chuyển từ discovery sang design và implementation planning. Dùng khi cần xác nhận yêu cầu đã đủ rõ, scope đã đủ khóa, acceptance criteria đã testable và phần còn mơ hồ không còn chặn delivery.
+description: Pin the Definition of Ready at the work-item level before moving from discovery to design and implementation planning. Use when you need to confirm that requirements are clear enough, scope is sufficiently locked, acceptance criteria are testable, and the remaining ambiguity no longer blocks delivery.
 ---
 
 # Definition of Ready Gate
 
-Chốt trạng thái sẵn sàng của work item trước khi chuyển hẳn sang technical approach, chia task và implementation.
+> Vietnamese: SKILL.vi.md
 
-## Mục Tiêu
+Pin the readiness status of a work item before fully moving into the technical approach, task breakdown, and implementation.
 
-- Tạo gate ở mức work item, không chỉ ở mức từng step riêng lẻ.
-- Xác nhận discovery hiện tại đã đủ cho developer đi tiếp mà không suy diễn mù.
-- Ghi rõ blocker, assumption được chấp nhận và hành động cần làm nếu chưa READY.
+## Goal
 
-## Khi Sử Dụng
+- Create a gate at the work-item level, not only at the level of each individual step.
+- Confirm that the current discovery is sufficient for the developer to proceed without blind inference.
+- Record blockers, accepted assumptions, and the action needed when it is not yet READY.
 
-- Ở cuối step 4 của workflow chain hiện tại.
-- Sau khi đã có restatement, business goal, open questions/readiness report và acceptance criteria.
-- Trước khi chuyển sang technical approach hoặc task breakdown.
+## When To Use
 
-## Không Thuộc Phạm Vi
+- At the end of step 4 of the current workflow chain.
+- After the restatement, business goal, open-questions/readiness report, and acceptance criteria are available.
+- Before moving into the technical approach or task breakdown.
 
-- Không thay thế `input-readiness-assessor` ở mức step input.
-- Không thay thế `step-goal-auditor` ở mức audit contract của step.
-- Không chốt technical approach thay cho step 5.
+## Out Of Scope
 
-## Đầu Vào Tối Thiểu
+- Does not replace `input-readiness-assessor` at the step-input level.
+- Does not replace `step-goal-auditor` at the level of auditing the step contract.
+- Does not pin the technical approach in place of step 5.
 
-- Artifact step 1 với restatement và discovery framing.
-- Artifact step 2 với business goal.
-- Artifact step 3 với readiness và open questions.
-- Artifact step 4 với acceptance criteria.
+## Minimum Input
 
-## Đầu Ra Bắt Buộc
+- The step 1 artifact with the restatement and discovery framing.
+- The step 2 artifact with the business goal.
+- The step 3 artifact with readiness and open questions.
+- The step 4 artifact with acceptance criteria.
 
-Xuất artifact YAML theo schema sau:
+## Required Output
+
+Emit a YAML artifact using the following schema:
 
 ```yaml
 work_item_slug: ""
@@ -53,29 +56,29 @@ residual_risks: []
 next_action: ""
 ```
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalizing Output In A Workflow Note
 
-Nếu output của skill này được lưu thành note `.md` trong workflow chain:
-- Dùng template step 4 tại `../codex-workflow-chain/references/workflow-chain.md`.
-- Đặt schema YAML của skill này trong block `## Definition of Ready`.
-- Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
+If this skill's output is saved as a `.md` note in the workflow chain:
+- Use the step 4 template in `../codex-workflow-chain/references/workflow-chain.md`.
+- Place this skill's YAML schema in the `## Definition of Ready` block.
+- Keep the field names in the schema unchanged; do not rename fields when writing them into the note.
 
-## Luồng Đánh Giá
+## Evaluation Flow
 
-1. Đọc lại artifact từ step 1 đến step 4.
-2. Kiểm tra work item đã có `work_item_type` và restatement rõ chưa.
-3. Kiểm tra business goal và scope đã đủ rõ để quyết định hướng kỹ thuật hay chưa.
-4. Kiểm tra open questions còn lại có còn chặn delivery hay không.
-5. Kiểm tra acceptance criteria đã đo được và có định hướng verify sơ bộ hay chưa.
-6. Kết luận `READY` hoặc `BLOCKED`, nêu `blocking_gaps` và `next_action`.
+1. Re-read the artifacts from step 1 through step 4.
+2. Check whether the work item has a `work_item_type` and a clear restatement.
+3. Check whether the business goal and scope are clear enough to decide the technical direction.
+4. Check whether the remaining open questions still block delivery.
+5. Check whether the acceptance criteria are measurable and have a preliminary verification direction.
+6. Conclude `READY` or `BLOCKED`, stating `blocking_gaps` and `next_action`.
 
-## Quy Tắc Ra Quyết Định
+## Decision Rule
 
-- `READY` khi mọi check bắt buộc đều đạt và không còn blocker chặn delivery.
-- `BLOCKED` khi thiếu thông tin cốt lõi về mục tiêu, scope, dependency hoặc acceptance criteria.
+- `READY` when every mandatory check passes and no blocker still blocks delivery.
+- `BLOCKED` when core information about the goal, scope, dependencies, or acceptance criteria is missing.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Có kết luận `READY|BLOCKED` rõ ràng.
-- Có `blocking_gaps` khi chưa READY.
-- Có `next_action` đủ cụ thể để chuyển sang step tiếp theo hoặc quay lại step trước.
+- A clear `READY|BLOCKED` conclusion.
+- `blocking_gaps` when not READY.
+- A `next_action` specific enough to move to the next step or go back to the previous step.

@@ -1,39 +1,42 @@
 ---
+language: en
 name: definition-of-done-gate
-description: Chốt Definition of Done ở mức work item sau khi verify kỹ thuật. Dùng khi cần xác nhận acceptance criteria đã có evidence, implementation đã được ghi nhận, verify đã đủ và truy vết business -> design -> code -> verify đã hoàn chỉnh trước khi đóng technical work.
+description: Pin the Definition of Done at the work-item level after technical verification. Use when you need to confirm that acceptance criteria have evidence, implementation is recorded, verification is sufficient, and the traceability chain business -> design -> code -> verify is complete before closing out the technical work.
 ---
 
 # Definition of Done Gate
 
-Chốt trạng thái hoàn tất của technical work item sau khi implementation và verify đã chạy xong.
+> Vietnamese: SKILL.vi.md
 
-## Mục Tiêu
+Pin the completion status of a technical work item after implementation and verification have run.
 
-- Tạo gate ở mức work item thay vì chỉ dừng ở test result của step verify.
-- Xác nhận thay đổi đã đủ bằng chứng để xem là xong về mặt technical workflow.
-- Ghi rõ gap, residual risk và follow-up item nếu chưa thể xem là DONE.
+## Goal
 
-## Khi Sử Dụng
+- Create a gate at the work-item level instead of stopping only at the test result of the verify step.
+- Confirm the change has enough evidence to be considered done from the technical-workflow perspective.
+- Record gaps, residual risks, and follow-up items when it cannot yet be considered DONE.
 
-- Ở cuối step 8 của workflow chain hiện tại.
-- Sau khi đã có verification report, scan summary, audit và bằng chứng implementation.
+## When To Use
 
-## Không Thuộc Phạm Vi
+- At the end of step 8 of the current workflow chain.
+- After the verification report, scan summary, audit, and implementation evidence are available.
 
-- Không thay thế `testing` ở mức chiến lược test và evidence verify.
-- Không thay thế `step-goal-auditor` ở mức audit step contract.
-- Không thay thế việc thực thi rollout hoặc release thật trên môi trường đích; gate này chỉ khóa mức sẵn sàng và bằng chứng.
+## Out Of Scope
 
-## Đầu Vào Tối Thiểu
+- Does not replace `testing` at the level of test strategy and verification evidence.
+- Does not replace `step-goal-auditor` at the level of auditing the step contract.
+- Does not replace the actual rollout or release execution on the target environment; this gate only locks readiness and evidence.
 
-- Acceptance criteria đã chốt.
-- Artifact implementation hoặc outputs actual.
-- Verification report, scan summary và audit step 8.
-- Traceability từ business -> design -> code -> verify.
+## Minimum Input
 
-## Đầu Ra Bắt Buộc
+- Pinned acceptance criteria.
+- The implementation artifact or actual outputs.
+- The verification report, scan summary, and step 8 audit.
+- Traceability from business -> design -> code -> verify.
 
-Xuất artifact YAML theo schema sau:
+## Required Output
+
+Emit a YAML artifact using the following schema:
 
 ```yaml
 work_item_slug: ""
@@ -51,31 +54,31 @@ follow_up_items: []
 next_action: ""
 ```
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalizing Output In A Workflow Note
 
-Nếu output của skill này được lưu thành note `.md` trong workflow chain:
-- Dùng template step 8 tại `../codex-workflow-chain/references/workflow-chain.md`.
-- Đặt schema YAML của skill này trong block `## Definition of Done`.
-- Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
+If this skill's output is saved as a `.md` note in the workflow chain:
+- Use the step 8 template in `../codex-workflow-chain/references/workflow-chain.md`.
+- Place this skill's YAML schema in the `## Definition of Done` block.
+- Keep the field names in the schema unchanged; do not rename fields when writing them into the note.
 
-## Luồng Đánh Giá
+## Evaluation Flow
 
-1. Đối chiếu acceptance criteria với verification evidence.
-2. Kiểm tra implementation đã được ghi nhận đủ để truy vết.
-3. Kiểm tra các verify bắt buộc đã chạy hoặc đã có lý do skip hợp lệ, bao gồm deployment review nếu work item có scope packaging hoặc rollout.
-4. Kiểm tra scan code quality đã hoàn tất hoặc có biện minh rõ.
-5. Kiểm tra traceability đã nối đủ business -> design -> code -> verify hay chưa.
-6. Kiểm tra residual risk và follow-up item đã được ghi rõ hay chưa.
-7. Kết luận `DONE`, `PARTIAL` hoặc `BLOCKED`.
+1. Compare acceptance criteria against the verification evidence.
+2. Check that the implementation is recorded well enough to be traceable.
+3. Check that the mandatory verifications have run or have a valid skip reason, including the deployment review when the work item has packaging or rollout scope.
+4. Check that the code-quality scan is complete or has a clear justification.
+5. Check whether the traceability chain business -> design -> code -> verify is fully connected.
+6. Check whether residual risks and follow-up items are clearly recorded.
+7. Conclude `DONE`, `PARTIAL`, or `BLOCKED`.
 
-## Quy Tắc Ra Quyết Định
+## Decision Rule
 
-- `DONE` khi mọi check bắt buộc đạt và không còn gap blocker.
-- `PARTIAL` khi xong phần lớn nhưng còn gap không chặn việc đóng technical work ngay.
-- `BLOCKED` khi thiếu evidence quan trọng, thiếu traceability hoặc verify chưa đủ.
+- `DONE` when every mandatory check passes and no blocking gap remains.
+- `PARTIAL` when most of the work is done but a non-blocking gap remains that does not prevent closing the technical work now.
+- `BLOCKED` when important evidence is missing, traceability is incomplete, or verification is insufficient.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Có kết luận `DONE|PARTIAL|BLOCKED` rõ ràng.
-- Có `gaps` và `next_action` nếu chưa DONE.
-- Có `follow_up_items` khi còn việc ngoài phạm vi hiện tại.
+- A clear `DONE|PARTIAL|BLOCKED` conclusion.
+- `gaps` and `next_action` when not DONE.
+- `follow_up_items` when there is work outside the current scope.
