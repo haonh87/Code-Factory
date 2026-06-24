@@ -1,145 +1,151 @@
+---
+language: en
+---
+
 # Role-Aware Workflow Reference
 
-Tài liệu này mô tả cách overlay role nghiệp vụ lên workflow 8 bước mà không tách thành nhiều workflow riêng.
+> Vietnamese: role-aware-workflow.vi.md
 
-## Nguyên Tắc
+This document describes how to overlay business roles onto the eight-step workflow without splitting it into several separate workflows.
 
-- Workflow 8 bước vẫn là xương sống duy nhất cho một work item.
-- Role chỉ bổ sung ownership, input/output theo chuyên môn và signoff.
-- `BRD` và `SRS` là output rollout/source-of-truth của quy trình phát triển sản phẩm.
-- `NotebookLM` là lớp lưu corpus và truy hồi tài liệu trong lúc thực thi, không phải output rollout.
-- Kết luận lấy từ NotebookLM chỉ có giá trị điều hành khi đã được chuẩn hóa lại vào `BRD`, `SRS` hoặc note workflow chính.
-- Note workflow `.md` của từng step vẫn là nơi trace contract, role output, handoff và evidence của step.
-- `governance` là lớp mỏng dùng chung; role output phải phản ánh `governance context`, `governance checks` hoặc `governance-exception` ở đúng step liên quan, không để tách rời khỏi workflow note.
-- Authority cho `waiver` hoặc `approved_by` không được suy ra chỉ từ `role_signoffs`; phải theo `project-context/governance-role-model.md`.
-- Khi work item chạy theo SDD, dùng thêm `spec-driven-development.md` để quản lý lifecycle, requirement IDs, spec freeze, spec change và coverage report.
+## Principles
+
+- The eight-step workflow remains the single backbone for a work item.
+- A role only adds ownership, domain-specific input/output, and signoff.
+- `BRD` and `SRS` are the rollout/source-of-truth output of the product development process.
+- `NotebookLM` is a corpus storage and document-retrieval layer during execution, not a rollout output.
+- Conclusions drawn from NotebookLM are only operationally valid once normalized back into `BRD`, `SRS`, or the main workflow note.
+- The `.md` workflow note of each step remains where the step's contract, role output, handoff, and evidence are traced.
+- `governance` is a thin shared layer; role output must reflect `governance context`, `governance checks`, or `governance-exception` at the relevant step, not be detached from the workflow note.
+- Authority for a `waiver` or `approved_by` must not be inferred only from `role_signoffs`; it must follow `project-context/governance-role-model.md`.
+- When a work item runs under SDD, also use `spec-driven-development.md` to manage lifecycle, requirement IDs, spec freeze, spec change, and the coverage report.
 
 ## Artifact Model
 
-| Artifact | Vai trò | Owner | Ghi chú |
+| Artifact | Role | Owner | Notes |
 |---|---|---|---|
-| `BRD` | Business rollout output | `po`, `ba` support | Lưu business context, stakeholder, problem, goal, KPI, scope, out-of-scope, business rule, assumption, decision log và `BRD-*` IDs khi chạy SDD. |
-| `SRS` | Requirement rollout output | `ba`, các role delivery review | Lưu functional requirement, NFR, UX/system behavior, acceptance criteria, traceability, dependency, constraint và `SRS-*` IDs khi chạy SDD. |
-| NotebookLM notebook | Corpus storage/retrieval | role đang research, thường là `ba` hoặc `po` | Lưu và truy vấn source phụ như meeting note, ticket, policy, research, requirement cũ. Không dùng làm source-of-truth cuối. |
-| Workflow step note | Execution trace | role primary của step hoặc coordinator | Lưu contract, role outputs, topology, traceability và handoff cho step hiện tại. |
+| `BRD` | Business rollout output | `po`, `ba` support | Holds business context, stakeholders, problem, goal, KPI, scope, out-of-scope, business rules, assumptions, decision log, and `BRD-*` IDs when running SDD. |
+| `SRS` | Requirement rollout output | `ba`, delivery-role review | Holds functional requirements, NFRs, UX/system behavior, acceptance criteria, traceability, dependencies, constraints, and `SRS-*` IDs when running SDD. |
+| NotebookLM notebook | Corpus storage/retrieval | the role doing research, usually `ba` or `po` | Stores and queries supporting sources such as meeting notes, tickets, policies, research, old requirements. Not used as the final source of truth. |
+| Workflow step note | Execution trace | the step's primary role or coordinator | Holds the contract, role outputs, topology, traceability, and handoff for the current step. |
 
-Nếu cần materialize file riêng cho work item, dùng tên rõ theo `work_item_slug`:
+If you need to materialize a separate file for a work item, use a clear name keyed by `work_item_slug`:
 
 ```text
 <work_item_slug>.brd.md
 <work_item_slug>.srs.md
 ```
 
-Không tạo `BRD/SRS` nếu scope nhỏ và note workflow đã đủ; khi tạo, phải link từ step note bằng `linked_artifacts`.
+Do not create `BRD/SRS` if the scope is small and the workflow note is enough; when you do create them, link them from the step note via `linked_artifacts`.
 
 ## Role Cards
 
 ### `po`
 
-Input thường dùng:
+Common inputs:
 
 - vision, roadmap, stakeholder priority
-- KPI, scope boundary, business constraint
-- BRD draft hoặc historical decision
-- NotebookLM query result khi cần đối chiếu tài liệu/stakeholder context
+- KPI, scope boundary, business constraints
+- BRD draft or historical decisions
+- NotebookLM query results when cross-referencing documents/stakeholder context
 
-Output chính:
+Main outputs:
 
-- business problem và success target
+- business problem and success target
 - business scope decision
 - BRD section/update
-- governance alignment hoặc decision về scope/non-goal khi có rule nền cần chốt
+- governance alignment or a decision on scope/non-goals when a foundational rule needs pinning
 - business acceptance verdict
 
-Skill đi kèm:
+Accompanying skills:
 
 - `product-thinking`
 - `requirement-analysis`
 - `step-goal-contract`
-- `notebooklm` khi cần truy hồi corpus phụ trợ
+- `notebooklm` when supporting corpus retrieval is needed
 
-Signoff mặc định:
+Default signoff:
 
 - `dor`
 - `business_acceptance`
 
 ### `ba`
 
-Input thường dùng:
+Common inputs:
 
 - stakeholder notes, business rules, as-is flow
 - glossary, existing docs, policy/compliance context
 - NotebookLM/project search results
-- BRD hoặc decision log upstream
+- upstream BRD or decision log
 
-Output chính:
+Main outputs:
 
 - SRS section/update
 - requirement brief
-- open questions và missing inputs
-- governance context cho requirement hoặc governance blocker cần owner/resolution
+- open questions and missing inputs
+- governance context for requirements, or a governance blocker needing an owner/resolution
 - clarified business rules
-- acceptance criteria và traceability
+- acceptance criteria and traceability
 
-Skill đi kèm:
+Accompanying skills:
 
 - `requirement-analysis`
 - `product-thinking`
 - `step-goal-contract`
 - `input-readiness-assessor`
-- `notebooklm` khi cần truy hồi corpus phụ trợ
+- `notebooklm` when supporting corpus retrieval is needed
 
-Signoff mặc định:
+Default signoff:
 
 - support `dor`
 
 ### `designer`
 
-Input thường dùng:
+Common inputs:
 
-- user journey, screen context, interaction need
-- brand/UI constraint, content constraint
-- accessibility baseline, device/platform constraint
-- BRD/SRS rule liên quan đến UX outcome
+- user journey, screen context, interaction needs
+- brand/UI constraints, content constraints
+- accessibility baseline, device/platform constraints
+- BRD/SRS rules related to the UX outcome
 
-Output chính:
+Main outputs:
 
-- user flow hoặc screen behavior
-- interaction/visual constraint
-- UX/accessibility rule cần được phản ánh vào governance checks khi scope chạm UI
+- user flow or screen behavior
+- interaction/visual constraints
+- UX/accessibility rules to reflect in governance checks when the scope touches UI
 - UX acceptance note
-- SRS UX behavior update khi cần
+- SRS UX behavior update when needed
 
-Skill đi kèm:
+Accompanying skills:
 
 - `frontend-experience-design`
 - `product-thinking`
 - `requirement-analysis`
 - `brainstorming`
 
-Signoff mặc định:
+Default signoff:
 
-- `approach` khi scope có UX surface
+- `approach` when the scope has a UX surface
 - support `business_acceptance`
 
 ### `developer`
 
-Input thường dùng:
+Common inputs:
 
 - DoR, acceptance criteria, SRS
 - codebase context, conventions, technical constraints
-- NFR, architecture boundary, deployment constraint khi có
+- NFRs, architecture boundaries, deployment constraints when present
 
-Output chính:
+Main outputs:
 
 - technical approach
-- architecture boundary hoặc design decision
+- architecture boundary or design decision
 - task breakdown
-- governance-exception khi approach hoặc implementation cần lệch nguyên tắc chuẩn
+- governance-exception when the approach or implementation must deviate from a standard rule
 - code/config/doc changes
-- implementation note hoặc SRS exception khi behavior đổi
+- implementation note or SRS exception when behavior changes
 
-Skill đi kèm:
+Accompanying skills:
 
 - `system-design`
 - `domain-architecture`
@@ -147,30 +153,30 @@ Skill đi kèm:
 - `database-design`
 - `task-breakdown-planner`
 - `implementation`
-- `react-web-implementation` khi stack là React web hoặc Next.js
+- `react-web-implementation` when the stack is React web or Next.js
 
-Signoff mặc định:
+Default signoff:
 
 - `approach`
 
 ### `qc`
 
-Input thường dùng:
+Common inputs:
 
 - SRS, acceptance criteria, business rules
 - changed scope, changed files, environment matrix
 - known risks, testability constraints
 
-Output chính:
+Main outputs:
 
-- test strategy hoặc scenario matrix
+- test strategy or scenario matrix
 - verification evidence
-- governance checklist evidence và compliance verdict ở step verify
-- defect list hoặc review findings
+- governance checklist evidence and a compliance verdict at the verify step
+- defect list or review findings
 - DoD verdict
-- release recommendation khi cần
+- release recommendation when needed
 
-Skill đi kèm:
+Accompanying skills:
 
 - `testing`
 - `code-scan-review`
@@ -179,56 +185,56 @@ Skill đi kèm:
 - `database-change-review`
 - `definition-of-done-gate`
 
-Signoff mặc định:
+Default signoff:
 
 - `dod`
 - `release`
 
 ### `devops`
 
-Input thường dùng:
+Common inputs:
 
 - runtime target, environment matrix
 - secrets/network/storage constraints
-- packaging requirement
-- promotion and rollback requirement
+- packaging requirements
+- promotion and rollback requirements
 
-Output chính:
+Main outputs:
 
 - deployment plan
 - packaging/runtime contract
 - pipeline/release plan
-- runtime hoặc release governance checks khi scope chạm rollout
-- rollout note và rollback note
+- runtime or release governance checks when the scope touches rollout
+- rollout note and rollback note
 - deployment review
 
-Skill đi kèm:
+Accompanying skills:
 
 - `deployment-devops`
 - `containerization-packaging`
 - `platform-runtime-deployment`
 - `ci-cd-release`
 
-Signoff mặc định:
+Default signoff:
 
 - `release`
 
 ## Step Mapping
 
-| Step | BRD/SRS output | Role outputs bắt buộc khi có role | Governance theo role | NotebookLM usage |
+| Step | BRD/SRS output | Required role outputs when the role is present | Governance by role | NotebookLM usage |
 |---|---|---|---|---|
-| `s01` Clarify | tạo khung `BRD` ban đầu | `po`: problem/scope draft; `ba`: restatement và context; `designer`: UX context nếu có | `po` và `ba` ghi `governance context` ban đầu; `designer` bổ sung UX/accessibility rule nếu có | query nguồn yêu cầu, meeting note, ticket hoặc corpus dự án để tránh restate sai |
-| `s02` Business Goal | cập nhật `BRD` với goal, KPI, out-of-scope | `po`: business goal và priority; `ba`: rule/context support; `designer`: UX objective nếu có | `po` chốt goal và non-goal không vi phạm nguyên tắc nền hoặc ghi rõ trade-off | query benchmark, user context hoặc decision cũ nếu business goal phụ thuộc tài liệu |
-| `s03` Open Questions | cập nhật decision log hoặc open questions cho `BRD/SRS` | `ba`: missing inputs/conflicts; role khác: câu hỏi theo boundary của mình | `ba` gom `governance blocker` hoặc policy gap; role khác nêu blocker theo boundary chuyên môn | search NotebookLM/project docs để gom evidence, nhưng không đóng câu hỏi nếu chưa ghi kết luận vào note/BRD/SRS |
-| `s04` Acceptance + DoR | tạo/cập nhật `SRS` với requirement, rule, AC, DoR | `ba`: requirement/AC; `qc`: testability; `po`: DoR/scope; `designer`: UX AC; `developer`: implementability | `ba`, `qc`, `po` chốt `governance checks` cho readiness; `designer` và `developer` bổ sung UX/implementability constraints cần được kiểm | query policy, requirement cũ, scenario cũ để tăng coverage AC |
-| `s05` Technical Approach | dùng `SRS` làm input; cập nhật nếu requirement/constraint đổi | `developer`: approach; `designer`: UX interaction contract; `devops`: runtime/release contract; `ba`: business-rule trace | `developer` ghi `governance-exception` nếu approach lệch chuẩn; `designer` và `devops` bổ sung boundary rule cho UX/runtime/release | query technical notes hoặc design rationale cũ nếu có corpus liên quan |
-| `s06` Task Plan | trace task về requirement/AC trong `SRS` | `developer`: build tasks; `qc`: verify tasks; `devops`: release tasks; `designer`: UX refinement tasks | `developer`, `qc`, `devops` bảo đảm task plan có coverage cho review, verify, release và `governance checks` | thường không cần, trừ khi task phụ thuộc tài liệu dự án lớn |
-| `s07` Implement | ghi `SRS` exception/update nếu behavior đổi | `developer`: implementation note; `devops`: deployment artifact; `designer`: interaction polish; `qc`: evidence hook | `developer` hoặc `devops` phải ghi `governance-exception` nếu implementation lệch chuẩn; `qc` bảo đảm evidence hook đủ cho verify | thường không dùng, trừ khi cần tra cứu quyết định cũ trong lúc implement |
-| `s08` Verify + DoD | verify theo `SRS`, business acceptance dựa trên `BRD/SRS` | `qc`: evidence/DoD; `devops`: release readiness; `developer`: remediation; `po`: business acceptance; `designer`: UX outcome review | `qc` tổng hợp `governance checks`; `devops` chốt release governance; `po` nhìn `business_acceptance` khi còn waiver hoặc risk mở | query corpus khi cần đối chiếu requirement cũ hoặc evidence ngoài repo |
+| `s01` Clarify | create the initial `BRD` frame | `po`: problem/scope draft; `ba`: restatement and context; `designer`: UX context if any | `po` and `ba` record initial `governance context`; `designer` adds UX/accessibility rules if any | query request sources, meeting notes, tickets, or project corpora to avoid restating incorrectly |
+| `s02` Business Goal | update `BRD` with goal, KPI, out-of-scope | `po`: business goal and priority; `ba`: rule/context support; `designer`: UX objective if any | `po` pins goals and non-goals without violating foundational principles, or records the trade-off explicitly | query benchmarks, user context, or old decisions if the business goal depends on documents |
+| `s03` Open Questions | update the decision log or open questions for `BRD/SRS` | `ba`: missing inputs/conflicts; other roles: questions within their own boundary | `ba` collects `governance blocker` or policy gaps; other roles surface blockers within their domain | search NotebookLM/project docs to gather evidence, but do not close a question until the conclusion is recorded in the note/BRD/SRS |
+| `s04` Acceptance + DoR | create/update `SRS` with requirements, rules, ACs, DoR | `ba`: requirement/AC; `qc`: testability; `po`: DoR/scope; `designer`: UX AC; `developer`: implementability | `ba`, `qc`, `po` pin `governance checks` for readiness; `designer` and `developer` add UX/implementability constraints to check | query policy, old requirements, old scenarios to increase AC coverage |
+| `s05` Technical Approach | use `SRS` as input; update it if requirements/constraints change | `developer`: approach; `designer`: UX interaction contract; `devops`: runtime/release contract; `ba`: business-rule trace | `developer` records a `governance-exception` if the approach deviates; `designer` and `devops` add boundary rules for UX/runtime/release | query technical notes or old design rationale if a relevant corpus exists |
+| `s06` Task Plan | trace tasks to requirement/AC in `SRS` | `developer`: build tasks; `qc`: verify tasks; `devops`: release tasks; `designer`: UX refinement tasks | `developer`, `qc`, `devops` ensure the task plan covers review, verify, release, and `governance checks` | usually not needed, unless tasks depend on large project documents |
+| `s07` Implement | record an `SRS` exception/update if behavior changes | `developer`: implementation note; `devops`: deployment artifact; `designer`: interaction polish; `qc`: evidence hook | `developer` or `devops` must record a `governance-exception` if implementation deviates; `qc` ensures the evidence hook is sufficient for verify | usually not used, except to look up old decisions during implementation |
+| `s08` Verify + DoD | verify against `SRS`; business acceptance based on `BRD/SRS` | `qc`: evidence/DoD; `devops`: release readiness; `developer`: remediation; `po`: business acceptance; `designer`: UX outcome review | `qc` aggregates `governance checks`; `devops` closes release governance; `po` looks at `business_acceptance` when waivers or risks are still open | query the corpus when cross-referencing old requirements or evidence outside the repo |
 
 ## Role Outputs Block
 
-Dùng block này trong note step khi có nhiều role cùng tham gia hoặc cần trace signoff theo role:
+Use this block in a step note when multiple roles participate or signoff must be traced by role:
 
 ````md
 ## Role Outputs
@@ -237,9 +243,9 @@ roles:
   - role: po
     involvement: approve
     inputs:
-      - "<BRD section hoặc stakeholder input đã dùng>"
+      - "<BRD section or stakeholder input used>"
     outputs:
-      - "<scope/business decision đã chốt>"
+      - "<scope/business decision pinned>"
     skills:
       - product-thinking
     signoffs:
@@ -252,29 +258,29 @@ roles:
 ```
 ````
 
-Quy tắc:
+Rules:
 
-- `role` phải nằm trong `execution_roles` của note.
-- `signoffs` chỉ dùng `dor`, `approach`, `release`, `business_acceptance`, `dod`.
-- `signoffs` không tự động đồng nghĩa với waiver authority; nếu có `approved_by`, authority phải theo `project-context/governance-role-model.md`.
-- Nếu output đến từ NotebookLM query, ghi nó là `input` hoặc `evidence`, rồi link kết luận đã chuẩn hóa trong `BRD/SRS`.
-- Không dùng block này để copy lại toàn bộ output chung của step.
+- `role` must be in the note's `execution_roles`.
+- `signoffs` only use `dor`, `approach`, `release`, `business_acceptance`, `dod`.
+- `signoffs` do not automatically imply waiver authority; if there is an `approved_by`, authority must follow `project-context/governance-role-model.md`.
+- If an output comes from a NotebookLM query, record it as `input` or `evidence`, then link the normalized conclusion in `BRD/SRS`.
+- Do not use this block to copy back the entire common output of the step.
 
 ## Governance Authority
 
-Khi cần xác định ai được approve exception hoặc waiver:
+When you need to determine who may approve an exception or waiver:
 
-- xem `project-context/governance-role-model.md`
-- không tự suy diễn từ việc role đó là primary owner của step
-- không tự suy diễn từ việc role đó đang giữ `dor|approach|release|business_acceptance|dod`
+- see `project-context/governance-role-model.md`
+- do not infer it from that role being the primary owner of the step
+- do not infer it from that role currently holding `dor|approach|release|business_acceptance|dod`
 
-## Traceability Tối Thiểu
+## Minimum Traceability
 
-Một work item có `BRD/SRS` nên trace được chuỗi sau:
+A work item with `BRD/SRS` should be able to trace the following chain:
 
 ```text
 NotebookLM/project docs evidence
--> BRD decision hoặc SRS requirement
+-> BRD decision or SRS requirement
 -> acceptance criteria
 -> technical approach
 -> task
@@ -283,4 +289,4 @@ NotebookLM/project docs evidence
 -> business_acceptance/release decision
 ```
 
-Nếu một quyết định chỉ tồn tại trong NotebookLM query result và không xuất hiện trong `BRD`, `SRS` hoặc note workflow, quyết định đó chưa được xem là part of record.
+If a decision exists only in a NotebookLM query result and does not appear in `BRD`, `SRS`, or the workflow note, that decision is not yet considered part of the record.
