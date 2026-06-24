@@ -10,12 +10,12 @@ linked_work_items:
 
 ## Design
 ```yaml
-summary: "Đẩy workspace filter xuống query path read-only và giữ fallback hành vi cũ khi input trống."
+summary: "Push the workspace filter down the read-only query path and keep the old behavior as fallback when the input is empty."
 technical_changes:
-  - "thêm workspace filter optional vào request parsing"
-  - "apply filter ở query layer"
+  - "add an optional workspace filter to request parsing"
+  - "apply the filter at the query layer"
 ux_or_runtime_changes:
-  - "path invalid phải trả lỗi rõ nghĩa"
+  - "an invalid path must return a clear error"
 risk_notes:
-  - "normalize path sai có thể làm miss kết quả"
+  - "a wrong path normalization can cause missed results"
 ```

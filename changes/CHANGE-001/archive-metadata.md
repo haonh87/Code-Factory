@@ -16,5 +16,5 @@ verified_by:
 business_acceptance: READY
 release_status: READY
 notes:
-  - "sample change package đủ điều kiện archive khi cần"
+  - "the sample change package is ready to archive when needed"
 ```
