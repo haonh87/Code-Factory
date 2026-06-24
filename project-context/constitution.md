@@ -1,67 +1,71 @@
+---
+language: en
+---
+
 # Constitution
 
-Tài liệu này định nghĩa các nguyên tắc nền của workflow cho repo `AI Agent Ops / Code-Factory`.
+This document defines the foundational principles of the workflow for the `AI Agent Ops / Code-Factory` repo.
 
-## Phạm Vi
+## Scope
 
-- Áp dụng cho workflow coding 8 bước.
-- Áp dụng cho policy, skill, MCP, adapter và tài liệu vận hành trong repo này.
-- Áp dụng cho mọi `governance_profile`, trừ khi có `waiver` hợp lệ được ghi nhận rõ.
+- Applies to the 8-step coding workflow.
+- Applies to policy, skills, MCP, adapters and operational documentation in this repo.
+- Applies to every `governance_profile`, unless a valid `waiver` is clearly recorded.
 
-## Các Nguyên Tắc Nền
+## Foundational Principles
 
 ### `GOV-01` Backbone First
 
-- Mọi work item phải đi qua backbone `Clarify -> Business Goal -> Open Questions -> Acceptance + DoR -> Technical Approach -> Task Plan -> Implement -> Verify + DoD`.
-- Không tạo workflow song song để né gate chính.
+- Every work item must go through the backbone `Clarify -> Business Goal -> Open Questions -> Acceptance + DoR -> Technical Approach -> Task Plan -> Implement -> Verify + DoD`.
+- Do not create parallel workflows to bypass the main gates.
 
-### `GOV-02` Source Of Truth Rõ Ràng
+### `GOV-02` Clear Source Of Truth
 
-- Note step `.md` là source-of-truth của execution trace.
-- `BRD/SRS` là source-of-truth của rollout spec khi work item chạy theo SDD.
-- `project-context/` là source-of-truth cho lớp governance ở mức project.
+- The step `.md` note is the source of truth for the execution trace.
+- `BRD/SRS` is the source of truth for the rollout spec when a work item runs under SDD.
+- `project-context/` is the source of truth for the governance layer at the project level.
 
-### `GOV-03` Clarify Trước Khi Commit Giải Pháp
+### `GOV-03` Clarify Before Committing To A Solution
 
-- Không đẩy nhanh sang `Technical Approach` khi chưa rõ intent, scope, assumption và blocker trọng yếu.
-- `governance context` phải được ghi nhận trước khi solution đi sâu.
+- Do not push ahead to `Technical Approach` before intent, scope, assumptions and key blockers are clear.
+- `governance context` must be recorded before the solution goes deep.
 
-### `GOV-04` Traceability Xuyên Delivery
+### `GOV-04` Traceability Across Delivery
 
-- Requirement, acceptance, task, implementation và verify phải trace được xuyên step khi scope đủ lớn.
-- Nếu dùng NotebookLM, project search hoặc corpus ngoài repo, kết luận phải được chuẩn hóa lại vào artifact chính.
+- Requirement, acceptance, task, implementation and verify must be traceable across steps when scope is large enough.
+- If NotebookLM, project search or corpora outside the repo are used, conclusions must be normalized back into the main artifact.
 
-### `GOV-05` Exception Và Waiver Phải Explicit
+### `GOV-05` Exceptions And Waivers Must Be Explicit
 
-- Không được âm thầm đi lệch nguyên tắc nền.
-- Mọi `governance-exception` hoặc `waiver` phải có lý do, impact, mitigation, owner và trạng thái rõ.
+- Do not silently deviate from a foundational principle.
+- Every `governance-exception` or `waiver` must have a clear reason, impact, mitigation, owner and status.
 
-### `GOV-06` Evidence Trước Khi Kết Luận Done
+### `GOV-06` Evidence Before Concluding Done
 
-- `DoD`, `release` và `business_acceptance` chỉ được chốt khi evidence đủ rõ hoặc limitation đã được nêu minh bạch.
-- Nếu không chạy được kiểm tra cần thiết, phải nêu rõ phần bỏ qua và lý do.
+- `DoD`, `release` and `business_acceptance` may only be locked when evidence is clear enough or the limitation is stated transparently.
+- If a required check cannot be run, the skipped part and the reason must be stated clearly.
 
-### `GOV-07` Đồng Bộ Docs, Policy Và Runtime Reality
+### `GOV-07` Keep Docs, Policy And Runtime Reality In Sync
 
-- Không để workflow docs, policy và template note drift quá xa nhau.
-- Khi contract hoặc metadata thay đổi, phải cập nhật các entrypoint chính cùng lúc.
+- Do not let workflow docs, policy and note templates drift too far from each other.
+- When a contract or metadata changes, the main entrypoints must be updated at the same time.
 
-### `GOV-08` Kiểm Soát Secrets, Environment Và Side Effect
+### `GOV-08` Control Secrets, Environment And Side Effects
 
-- Không commit secrets hoặc ghi secret vào docs/template.
-- Với change có side effect runtime hoặc release, phải làm rõ boundary môi trường, rollback path và owner.
+- Do not commit secrets or write secrets into docs/templates.
+- For a change with runtime or release side effects, the environment boundary, rollback path and owner must be made clear.
 
-## Rule Cho Waiver
+## Rule For A Waiver
 
-Một `waiver` chỉ được xem là hợp lệ khi có đủ:
+A `waiver` is only valid when it has all of:
 
 - `principle_ref`
 - `reason`
 - `impact`
 - `mitigation`
 - `approved_by`
-- `review_date` hoặc điều kiện hết hiệu lực
+- `review_date` or an expiry condition
 
-Nếu thiếu một trong các trường trên, coi như exception chưa được approve.
+If any of these fields is missing, the exception is treated as not approved.
 
-Authority để xác định `approved_by` phải theo `project-context/governance-role-model.md`, không được tự suy diễn chỉ từ role đang edit note hoặc role signoff của step.
+The authority to determine `approved_by` must follow `project-context/governance-role-model.md`; it must not be inferred solely from the role editing the note or the step's role sign-off.
