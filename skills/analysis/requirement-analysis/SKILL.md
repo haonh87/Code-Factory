@@ -1,44 +1,47 @@
 ---
 name: requirement-analysis
-description: Phân tích và chuẩn hóa yêu cầu cho tác vụ phát triển phần mềm trước khi thiết kế hoặc triển khai. Dùng khi nhận feature request, bug report, change request, task mới hoặc yêu cầu còn mơ hồ; tạo restated request, phạm vi, câu hỏi mở, giả định và acceptance criteria draft để chuyển sang product thinking, system design hoặc implementation planning.
+language: en
+description: Analyze and normalize requirements for software development tasks before design or implementation. Use when receiving a feature request, bug report, change request, new task, or vague request; produces a restated request, scope, open questions, assumptions, and a draft of acceptance criteria to hand off to product thinking, system design, or implementation planning.
 ---
 
 # Requirement Analysis
 
-Phân tích yêu cầu để biến đầu bài thô thành đầu bài có thể hiểu, có phạm vi rõ ràng và có thể kiểm chứng.
+> Vietnamese: SKILL.vi.md
 
-## Mục Tiêu
+Requirement analysis turns a rough brief into one that is understandable, clearly scoped, and verifiable.
 
-- Diễn giải lại yêu cầu theo cách ngắn gọn, đúng ý và tránh hiểu sai.
-- Chốt phạm vi làm và không làm ở mức đủ để chuyển sang bước tiếp theo.
-- Tách rõ phần còn mơ hồ, thông tin còn thiếu và giả định đang dùng.
-- Tạo bản nháp acceptance criteria để các bước sau có cơ sở kiểm chứng.
+## Objectives
 
-## Khi Sử Dụng
+- Restate the request concisely, faithfully, and without ambiguity.
+- Pin down what is in scope and out of scope well enough to move to the next step.
+- Separate the parts that remain vague, the information still missing, and the assumptions currently in use.
+- Draft acceptance criteria so later steps have a basis for verification.
 
-- Khi vừa nhận yêu cầu mới từ người dùng, stakeholder, ticket hoặc tài liệu.
-- Khi yêu cầu hiện tại còn mơ hồ, thiếu phạm vi, thiếu tiêu chí hoàn thành.
-- Khi cần phân biệt rõ bug, feature mới, refactor hay thay đổi hành vi.
-- Khi cần chuyển từ ngôn ngữ business sang ngôn ngữ đủ rõ cho technical workflow.
+## When to Use
 
-## Không Thuộc Phạm Vi
+- When a new request arrives from a user, stakeholder, ticket, or document.
+- When the current request is vague, lacks scope, or lacks completion criteria.
+- When you need to distinguish clearly between a bug, a new feature, a refactor, or a behavior change.
+- When you need to move from business language to language clear enough for the technical workflow.
 
-- Không chọn kiến trúc hoặc technical approach chi tiết.
-- Không estimate effort chi tiết hoặc chia task thực thi.
-- Không trực tiếp sửa code, trừ khi người dùng chỉ yêu cầu tóm tắt/phân tích trong bối cảnh thay đổi đã rõ.
-- Không tự ý suy diễn để lấp khoảng trống cho thông tin quan trọng.
+## Out of Scope
 
-## Đầu Vào Tối Thiểu
+- Choosing architecture or a detailed technical approach.
+- Detailed effort estimation or splitting execution tasks.
+- Directly modifying code, unless the user only asks for a summary/analysis in a context where the change is already clear.
+- Filling gaps in important information by inference.
 
-- `raw_request`: yêu cầu gốc từ người dùng hoặc ticket.
-- `context_sources`: các nguồn context đang có như chat, issue, tài liệu, hình ảnh, code liên quan.
-- `known_constraints`: ràng buộc đã biết về business, kỹ thuật, bảo mật, deadline hoặc phạm vi.
+## Minimum Inputs
 
-Nếu thiếu `raw_request` hoặc không xác định được vấn đề chính cần giải quyết, dừng và yêu cầu làm rõ.
+- `raw_request`: the original request from the user or ticket.
+- `context_sources`: available context sources such as chat, issue, documents, images, related code.
+- `known_constraints`: known constraints around business, technology, security, deadlines, or scope.
 
-## Đầu Ra Bắt Buộc
+If `raw_request` is missing or the core problem to solve cannot be identified, stop and ask for clarification.
 
-Xuất artifact YAML theo schema sau:
+## Required Output
+
+Emit a YAML artifact using the following schema:
 
 ```yaml
 raw_request: ""
@@ -58,115 +61,115 @@ acceptance_criteria_draft:
 notes_for_next_step: ""
 ```
 
-## Ý Nghĩa Từng Output
+## Meaning of Each Output
 
-- `restated_request`: diễn giải lại yêu cầu theo cách rõ, ngắn và kiểm tra được.
-- `request_type`: phân loại yêu cầu để chọn workflow tiếp theo phù hợp.
-- `business_context`: lý do tồn tại của yêu cầu ở mức business hoặc user problem.
-- `scope_in`: phần phải xử lý trong phạm vi hiện tại.
-- `scope_out`: phần không thuộc phạm vi để tránh trượt scope.
-- `open_questions`: các điểm mơ hồ chưa thể quyết định.
-- `assumptions`: các giả định tạm dùng, phải nói rõ để không ngầm hiểu.
-- `dependencies`: hệ thống, team, API, dữ liệu hoặc quyết định bên ngoài ảnh hưởng tới yêu cầu.
-- `risks_initial`: rủi ro nhìn thấy sớm từ góc độ requirement.
-- `acceptance_criteria_draft`: bản nháp tiêu chí chấp nhận, sẽ hoàn thiện ở step chuyên trách.
-- `notes_for_next_step`: ghi chú để bàn giao sang `product-thinking`, `system-design` hoặc `task planning`.
+- `restated_request`: a clear, concise, and checkable restatement of the request.
+- `request_type`: classification of the request to select the appropriate next workflow.
+- `business_context`: the reason the request exists at the business or user-problem level.
+- `scope_in`: the parts that must be handled in the current scope.
+- `scope_out`: the parts that are not in scope, to prevent scope creep.
+- `open_questions`: ambiguous points that cannot yet be decided.
+- `assumptions`: assumptions temporarily in use, stated explicitly so they are not implied.
+- `dependencies`: systems, teams, APIs, data, or external decisions that affect the request.
+- `risks_initial`: risks seen early from the requirement perspective.
+- `acceptance_criteria_draft`: a draft of acceptance criteria, to be finalized in the dedicated step.
+- `notes_for_next_step`: notes for handing off to `product-thinking`, `system-design`, or `task planning`.
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalizing Output in a Workflow Note
 
-Nếu output của skill này được lưu thành note `.md` trong workflow chain:
-- Khi skill này là artifact requirement-analysis đầy đủ, ưu tiên đặt schema YAML trong block `## Requirement Analysis Spec`; nếu template step không có block riêng thì đặt trong `## Artifact Chính`.
-- Trong workflow mặc định, cách dùng này phù hợp nhất với step 1 tại `../codex-workflow-chain/references/workflow-chain.md`.
-- Nếu step khác chỉ cần schema rút gọn ở mức workflow, ưu tiên theo template step tương ứng; không đổi nghĩa field gốc khi cần artifact requirement-analysis đầy đủ.
-- Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
+If this skill's output is saved as a `.md` note within the workflow chain:
+- When this skill serves as the full requirement-analysis artifact, prefer placing the YAML schema in the `## Requirement Analysis Spec` block; if the step template has no dedicated block, place it under `## Main Artifact`.
+- In the default workflow, this usage fits best with step 1 at `../codex-workflow-chain/references/workflow-chain.md`.
+- If a different step only needs a reduced workflow-level schema, follow the corresponding step template; do not change the meaning of the original fields when the full requirement-analysis artifact is needed.
+- Keep the field names in the schema; do not rename fields when writing them into the note.
 
-## Spec Phát Sinh Và Contract
+## Generated Spec and Contract
 
-- Spec chuẩn do skill này sinh ra là `requirement-analysis-spec`.
-- Nếu input trọng tâm là ticket, issue, BRD, chat log hoặc tài liệu hiện có, skill này vẫn sinh cùng một `requirement-analysis-spec`; không tạo format riêng cho từng loại tài liệu.
-- Nếu lưu artifact đầy đủ trong workflow note, đặt spec này trong block `## Requirement Analysis Spec` hoặc `## Artifact Chính` tùy template step đang dùng.
-- Contract tối thiểu của `requirement-analysis-spec` là:
-  - có `restated_request`
-  - có `request_type`
-  - có `scope_in` và `scope_out`
-  - có `open_questions` hoặc nêu rõ không còn câu hỏi mở
-  - có `assumptions`
-  - có `acceptance_criteria_draft` ở mức sơ bộ
-- Khi workflow step chỉ cần schema rút gọn để chuyển bước, note step vẫn có thể dùng artifact workflow-level; nhưng nếu cần truy vết phân tích tài liệu đầy đủ thì phải sinh `requirement-analysis-spec` theo đúng schema của skill này.
+- The standard spec produced by this skill is `requirement-analysis-spec`.
+- If the input focus is a ticket, issue, BRD, chat log, or existing document, this skill still produces the same `requirement-analysis-spec`; it does not create a separate format for each document type.
+- If the full artifact is stored in a workflow note, place this spec in the `## Requirement Analysis Spec` or `## Main Artifact` block depending on the step template in use.
+- The minimum contract of `requirement-analysis-spec` is:
+  - it has `restated_request`
+  - it has `request_type`
+  - it has `scope_in` and `scope_out`
+  - it has `open_questions`, or states explicitly that there are no open questions
+  - it has `assumptions`
+  - it has an `acceptance_criteria_draft` at a preliminary level
+- When a workflow step only needs a reduced schema to transition between steps, the step note may use the workflow-level artifact; but if full document-analysis traceability is needed, it must generate `requirement-analysis-spec` according to this skill's schema.
 
-## Luồng Thực Thi
+## Execution Flow
 
-1. Đọc kỹ yêu cầu gốc và xác định vấn đề cốt lõi.
-2. Restate yêu cầu bằng ngôn ngữ rõ ràng, bỏ mơ hồ và từ chung chung.
-3. Phân loại yêu cầu là feature, bug, change, refactor hay research.
-4. Tách phạm vi `scope_in` và `scope_out`.
-5. Liệt kê phần còn thiếu thông tin vào `open_questions`.
-6. Nêu rõ các `assumptions` đang tạm dùng.
-7. Viết `acceptance_criteria_draft` ở mức có thể kiểm chứng sơ bộ.
-8. Ghi lại phụ thuộc, rủi ro ban đầu và ghi chú bàn giao.
+1. Read the original request carefully and identify the core problem.
+2. Restate the request in clear language, removing ambiguity and vague wording.
+3. Classify the request as feature, bug, change, refactor, or research.
+4. Separate `scope_in` and `scope_out`.
+5. List the missing information under `open_questions`.
+6. State the `assumptions` currently in use.
+7. Write `acceptance_criteria_draft` at a preliminarily verifiable level.
+8. Record dependencies, initial risks, and handoff notes.
 
-## Quy Tắc Chất Lượng
+## Quality Rules
 
-- Mặc định viết và trao đổi bằng tiếng Việt.
-- Nội dung tài liệu phải lưu UTF-8 và không được làm hỏng dấu tiếng Việt.
-- Không dùng từ mơ hồ như “tối ưu”, “đầy đủ”, “ổn định” nếu không có nghĩa đo được.
-- Mỗi mục trong `scope_out` phải đủ rõ để chặn hiểu nhầm.
-- Mỗi `acceptance_criteria_draft` phải có khả năng được verify sau này.
-- Nếu yêu cầu có nhiều cách hiểu, phải nêu ra thay vì chọn ngầm một cách hiểu.
+- Default to writing and communicating in English.
+- Document content must be stored as UTF-8 and must not corrupt text, including Vietnamese diacritics in `*.vi.md` supplement files.
+- Do not use vague terms such as "optimal," "complete," or "stable" unless they carry a measurable meaning.
+- Each item in `scope_out` must be clear enough to prevent misunderstandings.
+- Each `acceptance_criteria_draft` must be verifiable later.
+- If a request can be interpreted in multiple ways, state them instead of silently picking one interpretation.
 
-## Luật Ra Quyết Định
+## Decision Rules
 
-- Nếu yêu cầu còn thiếu dữ liệu quan trọng, ưu tiên ghi `open_questions` thay vì tự chốt.
-- Nếu yêu cầu chứa nhiều mục tiêu trộn lẫn, tách chúng thành nhiều scope hoặc nhiều task.
-- Nếu phát hiện yêu cầu thực chất là bug nhưng đang mô tả như feature, phải ghi rõ.
-- Nếu có xung đột giữa yêu cầu mới và hành vi hiện tại của hệ thống, ghi vào `risks_initial`.
+- If the request is missing important data, prefer recording `open_questions` over deciding unilaterally.
+- If the request mixes multiple objectives, split them into multiple scopes or multiple tasks.
+- If a request is actually a bug but is described as a feature, state so explicitly.
+- If there is a conflict between the new request and the current behavior of the system, record it under `risks_initial`.
 
-## Điều Kiện Hoàn Tất
+## Completion Criteria
 
-- Có `restated_request` rõ ràng và không mâu thuẫn với yêu cầu gốc.
-- Có `scope_in` và `scope_out` đủ để bước sau không bị trượt phạm vi.
-- Các điểm mơ hồ quan trọng đã được đưa vào `open_questions`.
-- Có `acceptance_criteria_draft` ở mức đủ để chuyển sang bước refinement tiếp theo.
+- There is a clear `restated_request` that does not contradict the original request.
+- There are `scope_in` and `scope_out` sufficient to keep the next step from slipping scope.
+- Important ambiguities have been captured in `open_questions`.
+- There is an `acceptance_criteria_draft` sufficient to move on to the next refinement step.
 
-## Bàn Giao Cho Step Tiếp Theo
+## Handoff to the Next Step
 
-- Nếu cần chốt giá trị user/business: chuyển sang `product-thinking`.
-- Nếu cần đề xuất hướng kỹ thuật: chuyển sang `system-design`.
-- Nếu yêu cầu đã đủ rõ để lập kế hoạch: chuyển sang bước viết acceptance criteria chính thức hoặc chia task.
+- If user/business value needs to be pinned down: hand off to `product-thinking`.
+- If a technical direction needs to be proposed: hand off to `system-design`.
+- If the request is clear enough to plan: hand off to the step that writes the formal acceptance criteria or splits the work into tasks.
 
-## Ví Dụ Ngắn
+## Short Example
 
-Yêu cầu gốc:
-- “Làm chức năng cho phép người dùng đăng nhập trên hệ thống.”
+Original request:
+- "Add a feature that lets users log in to the system."
 
-Artifact mong đợi:
+Expected artifact:
 
 ```yaml
-raw_request: "Làm chức năng cho phép người dùng đăng nhập trên hệ thống."
-restated_request: "Cho phép người dùng đăng nhập bằng thông tin xác thực hợp lệ để truy cập vào hệ thống."
+raw_request: "Add a feature that lets users log in to the system."
+restated_request: "Allow users to log in with valid credentials to access the system."
 request_type: FEATURE
-business_context: "Người dùng cần xác thực trước khi sử dụng các chức năng cá nhân hóa."
+business_context: "Users need to authenticate before using personalization features."
 scope_in:
-  - "Luồng đăng nhập thành công và thất bại"
-  - "Thông báo lỗi khi sai thông tin xác thực"
+  - "Successful and failed login flows"
+  - "Error messaging when credentials are incorrect"
 scope_out:
-  - "Đăng nhập mạng xã hội"
-  - "Quên mật khẩu"
+  - "Social login"
+  - "Password recovery"
 open_questions:
-  - "Sử dụng session hay JWT?"
-  - "Có yêu cầu khóa tài khoản khi nhập sai nhiều lần không?"
+  - "Use session or JWT?"
+  - "Is account lockout required after repeated failed attempts?"
 assumptions:
-  - "Hệ thống đã có bảng user và cơ chế lưu mật khẩu an toàn"
+  - "The system already has a user table and a safe password storage mechanism"
 dependencies:
-  - "Dịch vụ user hiện tại"
+  - "Existing user service"
 risks_initial:
-  - "Thiếu policy bảo mật cho rate limit và lockout"
+  - "No security policy for rate limiting and lockout"
 acceptance_criteria_draft:
   - id: AC1
-    description: "Người dùng đăng nhập thành công khi cung cấp thông tin hợp lệ"
+    description: "User logs in successfully when providing valid credentials"
     measurable: true
   - id: AC2
-    description: "Người dùng nhận thông báo lỗi phù hợp khi cung cấp thông tin không hợp lệ"
+    description: "User receives an appropriate error message when providing invalid credentials"
     measurable: true
-notes_for_next_step: "Cần chốt technical approach cho session/JWT và policy bảo mật."
+notes_for_next_step: "Need to pin down the technical approach for session/JWT and the security policy."
 ```

@@ -1,73 +1,76 @@
 ---
 name: brainstorming
-description: Khám phá và chốt hướng giải pháp trước technical approach bằng style đối thoại có kỷ luật kiểu Superpowers, với BA lane và DEV lane rõ ràng. Dùng khi yêu cầu còn mơ hồ, có nhiều hướng xử lý, hoặc cần khóa mục tiêu, business rule, constraint và option analysis trước khi sang system-design.
+language: en
+description: Explore and lock down a solution direction before technical approach using a disciplined, Superpowers-style dialogue with clear BA lane and DEV lane. Use when the request is ambiguous, there are multiple viable approaches, or you need to lock goals, business rules, constraints and option analysis before moving to system-design.
 ---
 
 # Brainstorming
 
-Biến một yêu cầu còn mơ hồ thành `option analysis` đã được trình bày rõ, có khuyến nghị và sẵn sàng chuyển sang `system-design`.
+> Vietnamese: SKILL.vi.md
+
+Turn an ambiguous request into a clearly presented `option analysis` with a recommendation, ready to move to `system-design`.
 
 <HARD-GATE>
-Không được invoke skill implement, không được viết code production, không được scaffold project, và không được coi feature request là authorization để code trực tiếp.
+Must not invoke the implement skill, must not write production code, must not scaffold a project, and must not treat a feature request as authorization to code directly.
 
-Đầu ra của skill này là `option analysis` đã được trình bày và được người dùng chốt, không phải technical approach cuối cùng.
+The output of this skill is a presented `option analysis` confirmed by the user, not the final technical approach.
 </HARD-GATE>
 
-## Khi Sử Dụng
+## When to Use
 
-- Khi yêu cầu còn mơ hồ hoặc mới ở mức ý tưởng.
-- Khi cần làm rõ mục tiêu, business rule, constraint hoặc success criteria trước khi thiết kế kỹ thuật.
-- Khi có từ hai hướng giải quyết trở lên hoặc có nguy cơ chốt approach theo cảm tính.
-- Khi cần ép agent dừng lại để hỏi và so sánh phương án trước khi vào `system-design`.
+- When the request is still ambiguous or only at the idea stage.
+- When you need to clarify goals, business rules, constraints or success criteria before technical design.
+- When there are two or more viable directions, or a risk of locking the approach on intuition alone.
+- When you need to force the agent to pause, ask questions, and compare options before entering `system-design`.
 
-## Không Thuộc Phạm Vi
+## Out of Scope
 
-- Không thay `system-design` để khóa boundary kỹ thuật cuối cùng.
-- Không thay `task-breakdown-planner` để lập kế hoạch thực thi.
-- Không thay `implementation` để viết code.
-- Không dùng để hợp thức hóa việc “code trước, phân tích sau”.
+- Does not replace `system-design` for locking the final technical boundary.
+- Does not replace `task-breakdown-planner` for execution planning.
+- Does not replace `implementation` for writing code.
+- Does not legitimize "code first, analyze later".
 
-## Đầu Vào Tối Thiểu
+## Minimum Input
 
-- restated request hoặc raw request đủ để hiểu bài toán
-- context repo hoặc sản phẩm hiện có nếu liên quan
-- constraint đã biết
-- tín hiệu ban đầu về user value hoặc business goal
+- A restated request or raw request sufficient to understand the problem
+- Relevant repo or existing-product context, if applicable
+- Known constraints
+- Initial signal of user value or business goal
 
-Nếu chưa rõ bài toán ở mức tối thiểu, phải hỏi để làm rõ thay vì brainstorm giả định.
+If the problem is not clear at a minimum level, ask clarifying questions instead of brainstorming on assumptions.
 
-## BA Lane Và DEV Lane
+## BA Lane and DEV Lane
 
 ### BA lane
 
-Tập trung vào:
+Focus on:
 
 - business goal
-- actor hoặc user scenario chính
+- primary actor or user scenario
 - business rule
-- scope và non-goal
-- acceptance direction ở mức business
-- open question đang chặn việc chốt hướng
+- scope and non-goal
+- acceptance direction at the business level
+- open questions blocking the choice of direction
 
 ### DEV lane
 
-Tập trung vào:
+Focus on:
 
-- repo context và baseline hiện có
+- repo context and existing baseline
 - technical constraint, NFR, dependency
 - integration point, data touchpoint, contract risk
-- implementation risk và validation direction
-- dấu hiệu `greenfield|brownfield`
+- implementation risk and validation direction
+- `greenfield|brownfield` signal
 
-Rule:
+Rules:
 
-- Mặc định bắt đầu bằng `BA lane` nếu bài toán chưa rõ mục tiêu hoặc user value.
-- Nếu blocker đầu tiên là technical feasibility hoặc baseline repo, được phép bắt đầu bằng `DEV lane`.
-- Dù lane nào dẫn trước, phải khóa đủ cả góc nhìn business lẫn technical trước khi khuyến nghị phương án.
+- Default to starting with the `BA lane` when the goal or user value is unclear.
+- If the first blocker is technical feasibility or the repo baseline, you may start with the `DEV lane`.
+- Whichever lane leads, you must lock both the business and technical perspectives before recommending an option.
 
-## Đầu Ra Bắt Buộc
+## Required Output
 
-Xuất artifact YAML theo schema sau:
+Produce a YAML artifact using the following schema:
 
 ```yaml
 goal: ""
@@ -84,7 +87,7 @@ dev_lane:
   nfr_notes: []
   baseline_context: ""
 options:
-  - name: "Phương án A"
+  - name: "Option A"
     summary: ""
     pros: []
     cons: []
@@ -95,47 +98,47 @@ validation_plan: []
 notes_for_next_step: ""
 ```
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalize Output in the Workflow Note
 
-Nếu output của skill này được lưu thành note `.md` trong workflow chain:
+If the output of this skill is saved as a `.md` note in the workflow chain:
 
-- Dùng template step 5 tại `../codex-workflow-chain/references/workflow-chain.md`.
-- Đặt schema YAML của skill này trong block `## Option Analysis`.
-- Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
-- `notes_for_next_step` phải nêu rõ đã đủ để sang `system-design` hay còn blocker nào phải quay lại `s03`.
+- Use the step 5 template at `../codex-workflow-chain/references/workflow-chain.md`.
+- Place this skill's YAML schema inside the `## Option Analysis` block.
+- Keep the field names in the schema; do not rename fields when writing them into the note.
+- `notes_for_next_step` must state clearly whether it is ready to move to `system-design` or whether any blocker requires going back to `s03`.
 
-## Quy Trình Bắt Buộc
+## Required Process
 
-1. Đọc context hiện có của repo và artifact liên quan.
-2. Xác định lane nào cần dẫn trước: `BA lane` hay `DEV lane`.
-3. Hỏi một câu một lần; không dồn nhiều câu hỏi trong cùng một lượt.
-4. Làm rõ đủ mục tiêu, rule và constraint để có thể so sánh phương án nghiêm túc.
-5. Đề xuất ít nhất 2 phương án nếu bài toán có nhiều hướng hợp lý.
-6. Nếu bài toán gần như hiển nhiên, vẫn phải nêu ít nhất 1 hướng thay thế hoặc hướng bị loại.
-7. Khuyến nghị `giải pháp nhỏ nhất đủ đúng` thay vì phương án lớn chỉ vì dự phòng tương lai.
-8. Trình bày `recommended_option`, `recommendation_reason` và `validation_plan`.
-9. Chốt `notes_for_next_step` để bàn giao sang `system-design`.
+1. Read the repo's existing context and related artifacts.
+2. Determine which lane should lead: `BA lane` or `DEV lane`.
+3. Ask one question at a time; do not batch multiple questions in a single turn.
+4. Clarify enough of the goals, rules and constraints to compare options seriously.
+5. Propose at least 2 options when the problem has multiple reasonable directions.
+6. If the problem is nearly obvious, still state at least 1 alternative or ruled-out direction.
+7. Recommend the `smallest sufficient solution` rather than a larger option purely for future-proofing.
+8. Present `recommended_option`, `recommendation_reason` and `validation_plan`.
+9. Lock `notes_for_next_step` to hand off to `system-design`.
 
-## Quy Tắc Chất Lượng
+## Quality Rules
 
-- Không được coi “việc này đơn giản” là lý do bỏ qua so sánh phương án.
-- Không được chọn phương án chỉ vì quen tay hoặc tiện code hơn.
-- Không được để `DEV lane` nuốt mất business intent của `BA lane`.
-- Không được để `BA lane` né technical constraint đã biết.
-- Mặc định trao đổi và tài liệu bằng tiếng Việt có dấu.
-- File văn bản phải lưu UTF-8.
+- Must not treat "this is simple" as a reason to skip comparing options.
+- Must not pick an option just because it is familiar or easier to code.
+- Must not let the `DEV lane` swallow the business intent of the `BA lane`.
+- Must not let the `BA lane` dodge known technical constraints.
+- Default to Vietnamese (with diacritics) for conversation and documentation.
+- Text files must be saved as UTF-8.
 
-## Luật Ra Quyết Định
+## Decision Rules
 
-- Nếu request chạm nhiều subsystem độc lập, phải đề xuất tách thành nhiều work item trước khi brainstorm sâu.
-- Nếu chưa đủ dữ liệu để khuyến nghị nghiêm túc, phải phản ánh rõ trong `open_questions` hoặc `validation_plan`.
-- Nếu repo đang `greenfield`, phải nêu rõ decision nào là `foundation-sensitive` để bước `system-design` chốt.
-- Nếu repo là `brownfield`, phải ưu tiên delta nhỏ nhất trên đường đi hiện có.
+- If the request touches multiple independent subsystems, propose splitting into multiple work items before deep brainstorming.
+- If there is not enough data for a serious recommendation, reflect this clearly in `open_questions` or `validation_plan`.
+- If the repo is `greenfield`, state clearly which decisions are `foundation-sensitive` for `system-design` to lock.
+- If the repo is `brownfield`, prefer the smallest delta on the existing path.
 
-## Điều Kiện Hoàn Tất
+## Completion Criteria
 
-- Có đủ `BA lane` và `DEV lane` ở mức phục vụ chốt hướng.
-- Có ít nhất 2 phương án hoặc 1 phương án chính + 1 hướng bị loại.
-- Có `recommended_option` và `recommendation_reason` rõ ràng.
-- Có `validation_plan`.
-- Có `notes_for_next_step` đủ để sang `system-design`.
+- Enough of both `BA lane` and `DEV lane` to support locking the direction.
+- At least 2 options, or 1 primary option plus 1 ruled-out direction.
+- A clear `recommended_option` and `recommendation_reason`.
+- A `validation_plan`.
+- `notes_for_next_step` sufficient to move to `system-design`.

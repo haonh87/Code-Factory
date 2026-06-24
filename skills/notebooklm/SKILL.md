@@ -1,6 +1,7 @@
 ---
 name: notebooklm
 description: Use Google NotebookLM through notebooklm-mcp-cli.
+language: en
 ---
 
 # NotebookLM Tools
