@@ -1,32 +1,35 @@
 ---
+language: en
 name: task-breakdown-planner
-description: Chuyển technical approach thành execution-oriented plan theo tinh thần Superpowers writing-plans, với BA lane và DEV lane rõ ràng. Dùng khi đã có hướng kỹ thuật được chọn và cần kế hoạch đủ cụ thể để thi công an toàn, có ownership, path chạm chính, verify path và không placeholder.
+description: Turn a technical approach into an execution-oriented plan in the spirit of Superpowers writing-plans, with a clear BA lane and DEV lane. Use it when a technical direction has been chosen and a plan specific enough to execute safely is needed, with ownership, main touch paths, a verify path and no placeholders.
 ---
 
 # Task Breakdown Planner
 
-Biến technical approach đã chốt thành task plan có thể thực thi ngay mà không buộc implementer phải tự phát minh lại design trong lúc code.
+> Vietnamese: SKILL.vi.md
+
+Turn the locked technical approach into a task plan that can be executed immediately without forcing the implementer to reinvent the design while coding.
 
 <HARD-GATE>
-Không được dùng skill này để hợp thức hóa việc nhảy thẳng sang implement khi `s05 Technical Approach` chưa đủ rõ.
+Do not use this skill to legitimize jumping straight to implement when `s05 Technical Approach` is not clear enough.
 
-Plan draft không đồng nghĩa với `Task Plan pass`; plan vẫn phải qua human review hoặc gate review theo workflow.
+A plan draft is not the same as `Task Plan pass`; the plan still must go through human review or gate review per the workflow.
 </HARD-GATE>
 
-## Khi Sử Dụng
+## When To Use
 
-- Sau khi đã có `recommended_design` hoặc technical approach đủ rõ.
-- Trước khi bước vào `implementation`.
-- Khi thay đổi đủ lớn để cần tách task, dependency, review checkpoint và verify path.
+- After a `recommended_design` or technical approach is clear enough.
+- Before entering `implementation`.
+- When the change is large enough to need splitting tasks, dependencies, review checkpoints and a verify path.
 
-## Không Thuộc Phạm Vi
+## Out Of Scope
 
-- Không redesign lại kiến trúc.
-- Không trực tiếp sửa code production.
-- Không thay testing cuối cùng.
-- Không tạo plan placeholder kiểu “làm phần còn lại”.
+- Does not redesign the architecture.
+- Does not directly edit production code.
+- Does not replace final testing.
+- Does not create placeholder plans like "do the rest".
 
-## Đầu Vào Tối Thiểu
+## Minimum Input
 
 - `recommended_design`
 - `acceptance_criteria`
@@ -34,32 +37,32 @@ Plan draft không đồng nghĩa với `Task Plan pass`; plan vẫn phải qua h
 - `repo_context`
 - `delivery_context`
 
-Nếu chưa có path, module hoặc boundary chạm chính, phải phản ánh lại thay vì lập kế hoạch mơ hồ.
+If the main paths, modules or boundaries to touch are not yet known, reflect that back instead of planning vaguely.
 
-## BA Lane Và DEV Lane
+## BA Lane And DEV Lane
 
 ### BA lane
 
-Tập trung vào:
+Focus on:
 
-- trace task về acceptance criteria và business rule
-- scope guard, non-goal, dependency business
-- human review point cần có trước khi đi tiếp
-- tình huống cần business clarification hoặc contract clarification
+- tracing tasks back to acceptance criteria and business rules
+- scope guards, non-goals, business dependencies
+- the human review points needed before continuing
+- situations needing business clarification or contract clarification
 
 ### DEV lane
 
-Tập trung vào:
+Focus on:
 
-- file hoặc module sẽ chạm
-- owned scope và dependency order
-- verify path cho từng task hoặc batch
-- TDD target cho behavior change
-- review checkpoint kỹ thuật hoặc governance
+- files or modules to touch
+- owned scope and dependency order
+- verify path for each task or batch
+- TDD targets for behavior changes
+- technical or governance review checkpoints
 
-## Đầu Ra Bắt Buộc
+## Required Output
 
-Xuất artifact YAML theo schema sau:
+Emit a YAML artifact per the following schema:
 
 ```yaml
 implementation_goal: ""
@@ -87,47 +90,47 @@ verification_plan: []
 notes_for_implementation: ""
 ```
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalize Output In Workflow Note
 
-Nếu output của skill này được lưu thành note `.md` trong workflow chain:
+If this skill's output is saved as a `.md` note in the workflow chain:
 
-- Dùng template step 6 tại `../codex-workflow-chain/references/workflow-chain.md`.
-- Đặt schema YAML của skill này trong block `## Artifact Chính`.
-- Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
-- `verification_plan` và rollout note có thể tóm tắt thêm ở section prose, nhưng không thay block YAML.
+- Use the step 6 template at `../codex-workflow-chain/references/workflow-chain.md`.
+- Place this skill's YAML schema in the `## Main Artifact` block.
+- Keep field names in the schema verbatim; do not rename fields when writing into the note.
+- `verification_plan` and rollout notes can be summarized further in a prose section, but do not replace the YAML block.
 
-## Quy Trình Bắt Buộc
+## Mandatory Process
 
-1. Đọc lại technical approach, acceptance criteria và constraint.
-2. Lập `path_map` trước khi chia task.
-3. Dùng `BA lane` để kiểm coverage của acceptance criteria và scope guard.
-4. Dùng `DEV lane` để xác định owned scope, dependency chain, TDD target và verify path.
-5. Chia task đủ nhỏ để review và verify riêng.
-6. Với behavior change, ghi rõ task hoặc batch nào phải đi theo `test fail -> code -> test pass`.
-7. Gắn `review_checkpoint` cho task rủi ro, task chạm contract, hoặc task chạm governance/release.
-8. Quét lại plan để loại mọi placeholder.
-9. Bàn giao sang `implementation`.
+1. Re-read the technical approach, acceptance criteria and constraints.
+2. Build the `path_map` before splitting tasks.
+3. Use the `BA lane` to check acceptance criteria coverage and scope guards.
+4. Use the `DEV lane` to determine owned scope, dependency chain, TDD targets and verify path.
+5. Split tasks small enough to review and verify separately.
+6. For behavior changes, record which task or batch must follow `test fail -> code -> test pass`.
+7. Attach a `review_checkpoint` to risky tasks, contract-touching tasks, or governance/release-touching tasks.
+8. Scan the plan again to remove every placeholder.
+9. Hand off to `implementation`.
 
-## Quy Tắc Chất Lượng
+## Quality Rules
 
-- Không chấp nhận placeholder như `xử lý edge case`, `thêm validation`, `viết test`, `sửa phần liên quan` nếu không nói rõ chạm đâu và kiểm thế nào.
-- Mỗi task phải có `objective`, `paths_in_scope`, `outputs_expected` và `verification_hint`.
-- `BA lane` phải bảo đảm acceptance criteria không bị rơi mất trong lúc chia task.
-- `DEV lane` phải bảo đảm implementer không phải đoán lại path hoặc dependency.
-- Mặc định trao đổi và tài liệu bằng tiếng Việt có dấu.
-- File văn bản phải lưu UTF-8.
+- Do not accept placeholders like `handle edge case`, `add validation`, `write test`, `fix the related part` without stating what is touched and how it is checked.
+- Each task must have an `objective`, `paths_in_scope`, `outputs_expected` and `verification_hint`.
+- The `BA lane` must ensure acceptance criteria are not lost while splitting tasks.
+- The `DEV lane` must ensure the implementer does not have to guess paths or dependencies again.
+- Default to communicating and documenting in English.
+- Text files must be stored as UTF-8.
 
-## Luật Ra Quyết Định
+## Decision Rules
 
-- Nếu một task quá lớn để verify riêng, phải tách tiếp.
-- Nếu có dependency chặn toàn bộ implementation, đẩy lên sớm.
-- Nếu có phần chỉ là nice-to-have, đưa ra ngoài plan chính.
-- Nếu scope chạm release, deploy, migration hoặc rollback, phải tách checkpoint tương ứng thay vì giấu trong task chung.
-- Không bắt buộc nhét full code block vào plan như Superpowers; ở repo này ưu tiên plan đủ thực thi, rõ ownership và verify path.
+- If a task is too large to verify separately, split it further.
+- If a dependency blocks all implementation, push it earlier.
+- If a part is only nice-to-have, move it out of the main plan.
+- If scope touches release, deploy, migration or rollback, split the corresponding checkpoint instead of hiding it inside a shared task.
+- This repo does not require stuffing full code blocks into the plan like Superpowers; here, prefer a plan that is executable enough, with clear ownership and verify path.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Có `BA lane` và `DEV lane` đủ để handoff không mơ hồ.
-- Có `task_breakdown` đủ rõ để implement bắt đầu an toàn.
-- Có `verification_plan` và `risk_notes`.
-- Có `notes_for_implementation` đủ để bước implement không phải suy diễn lại design.
+- `BA lane` and `DEV lane` are enough for an unambiguous handoff.
+- `task_breakdown` is clear enough for implementation to start safely.
+- `verification_plan` and `risk_notes` exist.
+- `notes_for_implementation` is enough that the implement step does not have to re-infer the design.
