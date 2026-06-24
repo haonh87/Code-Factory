@@ -197,7 +197,7 @@ wfc exec
 If you want to start from a raw request:
 
 ```bash
-wfc materialize --request "fix timeout khi user login bang email/password tren web"
+wfc materialize --request "fix timeout when a user logs in with email/password on the web"
 ```
 
 If you want the tool to scaffold automatically when the request is clear enough:

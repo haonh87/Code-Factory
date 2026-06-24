@@ -475,7 +475,7 @@ This name reflects the role correctly:
 - it is not general app CI
 - it is a guardrail for workflow tooling and workflow artifacts
 
-## Definition Of Done For CI Enforcement
+## Definition of Done for CI Enforcement
 
 Phase 1 is considered sufficient when:
 
