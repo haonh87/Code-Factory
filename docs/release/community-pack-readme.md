@@ -1,5 +1,5 @@
 ---
-title: Code-Factory — Community Release Overview (English)
+title: Code-Factory — Community Release Overview
 date: 2026-06-23
 status: proposal
 language: en
@@ -9,6 +9,8 @@ canonical_release: workflow-bundle v2.1.1
 ---
 
 # Code-Factory
+
+> Vietnamese: community-pack-readme.vi.md
 
 > **The Charter for Governed AI Delivery.**
 >

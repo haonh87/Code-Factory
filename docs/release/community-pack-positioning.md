@@ -1,6 +1,7 @@
 ---
 title: Community Pack Positioning — Code-Factory public release
 date: 2026-06-23
+language: en
 status: proposal
 decision_owner: human (brand gate)
 current_release: workflow-bundle v2.1.1
@@ -8,117 +9,119 @@ current_release: workflow-bundle v2.1.1
 
 # Community Pack Positioning — Proposal
 
-> Đây là **proposal** (AI proposes, human approves). Việc chốt tên / tagline / định vị cho public release là **human-controlled brand gate** — mình chỉ đề xuất, không tự chốt.
-> Sau khi human chốt, mới mở work item public-release và đi `s04→s05→s06→s07`.
+> Vietnamese: community-pack-positioning.vi.md
 
-## 1. Linh hồn sản phẩm (soul)
+> This is a **proposal** (AI proposes, human approves). Locking the name / tagline / positioning for the public release is a **human-controlled brand gate** — I only propose, I do not lock it unilaterally.
+> After the human locks it, the `public-release` work item is opened and the chain runs `s04→s05→s06→s07`.
 
-Code-Factory không phải **bộ skill** hay **spec template** — nó là **governed delivery runtime**:
+## 1. Product soul
 
-- Chuỗi 8 bước `s01 Clarify → s08 Verify + DoD` với state machine.
-- `AI proposes, human approves` ở **mọi gate** (Spec, Contract, DoR, Approach, Foundation, Task Plan, UAT, DoD, Release, Business Acceptance).
-- **Enforce** bằng `wfc` CLI + hooks + validator — không phải khuyến khích agent tự tuân thủ.
-- Overlay: governance, SDD, role signoff, DevOps lane (container → platform → CI/CD), brownfield/greenfield discipline.
+Code-Factory is not a **skill pack** or a **spec template** — it is a **governed delivery runtime**:
 
-→ **Moat = governance runtime**. Skill copy được, validator + human-gate thì không.
+- An eight-step chain `s01 Clarify → s08 Verify + DoD` with a state machine.
+- `AI proposes, human approves` at **every gate** (Spec, Contract, DoR, Approach, Foundation, Task Plan, UAT, DoD, Release, Business Acceptance).
+- **Enforced** by the `wfc` CLI + hooks + a validator — not a recommendation the agent follows voluntarily.
+- Overlays: governance, SDD, role sign-off, DevOps lanes (container → platform → CI/CD), brownfield/greenfield discipline.
 
-## 2. Bảng so sánh định vị (public-facing)
+→ **The moat is the governance runtime.** Skills can be copied; a validator plus human-controlled gates cannot.
 
-| Khía cạnh | superpowers | spec-driven (spec-kit) | **Code-Factory** |
-|-----------|-------------|------------------------|------------------|
-| Bản chất | skill pack nâng capability | workflow spec→plan→tasks→code | governed delivery chain + validator runtime |
-| Ép buộc | suggest (agent tự tuân) | structure (spec làm SOT) | **enforce** (`wfc` + hooks + state machine) |
-| Con người | đề xuất, agent quyết | spec | **human-controlled gate tường minh** |
-| Độ nặng | nhẹ | trung | nặng (governance, role signoff, SDD, DevOps lane) |
-| Phù hợp | cá nhân muốn agent giỏi hơn | team cần spec kỷ luật | team cần AI code **có kiểm soát, có audit** |
+## 2. Positioning comparison (public-facing)
 
-## 3. Đề xuất tên + tagline (3 combo, chọn 1)
+| Aspect | superpowers | spec-driven (spec-kit) | **Code-Factory** |
+|--------|-------------|------------------------|------------------|
+| Essence | skill pack that raises capability | workflow spec→plan→tasks→code | governed delivery chain + validator runtime |
+| Enforcement | suggested (agent self-complies) | structural (spec is the SOT) | **enforced** (`wfc` + hooks + state machine) |
+| Human role | advisory; the agent decides | the spec | **explicit human-controlled gates** |
+| Weight | light | medium | heavy (governance, role sign-off, SDD, DevOps lanes) |
+| Best for | individuals wanting a more capable agent | teams wanting disciplined specs | teams wanting AI-produced code that is **controlled and auditable** |
 
-### Combo A — Giữ Code-Factory, thêm Charter làm tagline (khuyến nghị)
+## 3. Name + tagline proposals (3 combos, pick one)
+
+### Combo A — Keep Code-Factory, add Charter as tagline (recommended)
 - **Repo:** `Code-Factory`
-- **Pack công cộng:** `code-factory` (npm), CLI `wfc`
+- **Public pack:** `code-factory` (npm), CLI `wfc`
 - **Tagline:** *"Code-Factory — The Charter for Governed AI Delivery"*
-- **1-liner:** *"AI proposes. Human approves. Code ships."*
-- ✅ Giữ brand nội bộ, tận dụng `wfc` đã quen.
-- ⚠️ "code-factory" phổ biến trên GitHub/npm → SEO khó; cần disambig bằng tagline "Charter".
+- **One-liner:** *"AI proposes. Human approves. Code ships."*
+- ✅ Keeps the internal brand, reuses the familiar `wfc`.
+- ⚠️ "code-factory" is common on GitHub/npm → SEO is harder; disambiguate with the "Charter" tagline.
 
-### Combo B — Tách tên riêng "Charter" cho pack công cộng
-- **Repo nguồn:** `Code-Factory` (internal)
-- **Pack công cộng:** `charter` / `charter-cli` (npm), CLI `wfc`
+### Combo B — Spin out the proper name "Charter" for the public pack
+- **Source repo:** `Code-Factory` (internal)
+- **Public pack:** `charter` / `charter-cli` (npm), CLI `wfc`
 - **Tagline:** *"Charter — governed delivery for AI coding agents"*
-- ✅ Ownable hơn "code-factory"; "charter" nối tiếp khái niệm `constitution` + `project-context` đã có.
-- ⚠️ "charter" cũng có đụng — cần check npm/USPTO; có thể phải `charter-cli` hoặc `charterflow`.
+- ✅ More ownable than "code-factory"; "charter" continues the existing `constitution` + `project-context` concepts.
+- ⚠️ "charter" also collides — check npm/USPTO; may need `charter-cli` or `charterflow`.
 
-### Combo C — Tên thủ công/craft (Forge family)
-- **Pack công cộng:** `forge` / `agentforge` / `smithy`
+### Combo C — Craft/workshop name (Forge family)
+- **Public pack:** `forge` / `agentforge` / `smithy`
 - **Tagline:** *"Forge — ship AI code with discipline"*
-- ✅ Ngắn, gợi "xưởng đúc có khuôn", dễ nhớ.
-- ⚠️ Đụng nhiều: Atlassian Forge, GitForge, Google Anvil → rủi ro cao nhất trong 3 combo.
+- ✅ Short, evokes "a mold-casting workshop", memorable.
+- ⚠️ Many collisions: Atlassian Forge, GitForge, Google Anvil → highest risk of the three combos.
 
-**Khuyến nghị:** **Combo A** cho giai đoạn đầu (rủi ro thấp nhất, tận dụng asset), chuyển sang **Combo B** khi muốn owns brand riêng sau khi kiểm trademark xong.
+**Recommendation:** **Combo A** for the early stage (lowest risk, reuses assets), switch to **Combo B** when you want to own a distinct brand after a trademark check.
 
-## 4. Elevator pitch (dùng mọi nơi)
+## 4. Elevator pitch (use everywhere)
 
-> Code-Factory là một **governed delivery workflow** cho AI coding agent: chuỗi 8 bước từ Clarify → Verify + DoD, mỗi gate do **human kiểm duyệt** và **enforce bằng CLI `wfc` + hooks** — không phải bộ skill khuyến khích, mà là runtime bắt agent tuân kỷ luật trước khi chạm production code.
+> Code-Factory is a **governed delivery workflow** for AI coding agents: an eight-step chain from Clarify → Verify + DoD, where every gate is **human-controlled** and **enforced by the `wfc` CLI + hooks** — not a skill pack that recommends, but a runtime that forces the agent to follow discipline before it touches production code.
 
-## 5. Narrative arc (câu chuyện định vị)
+## 5. Narrative arc
 
-> "Superpowers cho agent **năng lực**. Spec-driven cho agent **cấu trúc**. Code-Factory cho agent **kỷ luật** — và kỷ luật là thứ duy nhất agent không tự có."
+> "Superpowers give the agent **capability**. Spec-driven gives it **structure**. Code-Factory gives it **discipline** — and discipline is the one thing an agent will not produce on its own."
 
-## 6. Cấu trúc README hero (public repo)
+## 6. README hero structure (public repo)
 
-1. **Hook 1 dòng:** *"Stop your AI agent from shipping unreviewed code."*
-2. **Vấn đề (3 gạch đầu dòng):**
-   - Agent đi đường ngắn nhất, tự tuyên bố `done`.
-   - Bỏ test/spec/review → production risk.
-   - Không audit trail cho ai approve cái gì.
-3. **Khác biệt:** bảng so sánh mục 2.
-4. **Quick start (3 lệnh):**
+1. **One-line hook:** *"Stop your AI agent from shipping unreviewed code."*
+2. **The problem (three bullets):**
+   - The agent takes the shortest path and self-declares `done`.
+   - It skips tests/spec/review → production risk.
+   - There is no audit trail of who approved what.
+3. **The difference:** the comparison table in section 2.
+4. **Quick start (three commands):**
    ```bash
    npx wfc install --mode claude --scope global
    wfc init
    wfc scaffold --work-item my-first-feature
    ```
-5. **Proof:** screenshot luồng gate, ví dụ work-item materialized, badge `v2.1.1`, "36 managed skills, 8-step chain, human-controlled gates".
-6. **Starter vs Full pack:** (xem mục 7).
+5. **Proof:** gate-flow screenshot, a materialized work-item example, the `v2.1.1` badge, "36 managed skills, 8-step chain, human-controlled gates".
+6. **Starter vs Full pack:** (see section 7).
 
-## 7. Cấu trúc pack cho cộng đồng (tier)
+## 7. Community pack tiers
 
-| Tier | Nội dung | Dành cho |
-|------|----------|----------|
-| **Starter** | `wfc` + chain 8 step + 3 skill cốt (clarify, approach, DoD) | cá nhân / dự án mới |
-| **Standard** | + governance overlay + TDD/review discipline + instincts | team nhỏ |
-| **Full** | + SDD overlay + DevOps lane + role signoff + strict profile | team enterprise / regulated |
+| Tier | Contents | For |
+|------|----------|-----|
+| **Starter** | `wfc` + the 8-step chain + three core skills (clarify, approach, DoD) | individuals / greenfield projects |
+| **Standard** | + governance overlay + TDD/review discipline + instincts | small teams |
+| **Full** | + SDD overlay + DevOps lanes + role sign-off + strict profile | enterprise / regulated teams |
 
-- Tách rõ **prescriptive vs optional** — người mới bật Starter, mature team bật `strict` profile (`CF_HOOK_PROFILE=strict`).
-- Document rõ `CF_HOOK_PROFILE=minimal|standard|strict` để onboarding không bị "ngợp" governance nặng.
+- Clearly separate **prescriptive vs optional** — newcomers enable Starter, mature teams enable the `strict` profile (`CF_HOOK_PROFILE=strict`).
+- Document `CF_HOOK_PROFILE=minimal|standard|strict` so onboarding is not overwhelmed by heavy governance.
 
-## 8. Kênh launch
+## 8. Launch channels
 
 - **GitHub:** repo + topic tags `ai-agent`, `agent-ops`, `llm-workflow`, `claude-code`, `codex`, `spec-driven`, `governance`, `ai-coding`.
-- **Blog bài cột sống:** *"Why superpowers isn't enough: the case for governed AI delivery"* — so sánh tư tưởng, không bôi nhọ.
-- **Demo video 3 phút:** 1 feature request → agent cố implement → gate chặn → human approve → ship.
-- **Listing:** Awesome Claude Code, Awesome Codex, Trendshift, Product Hunt.
-- **MCP/skill marketplace:** publish như plugin (plugin marketplace pattern như `addyosmani/agent-skills`).
+- **Anchor blog post:** *"Why superpowers isn't enough: the case for governed AI delivery"* — compare philosophies, do not disparage.
+- **Three-minute demo video:** one feature request → the agent tries to implement → the gate blocks → the human approves → ship.
+- **Listings:** Awesome Claude Code, Awesome Codex, Trendshift, Product Hunt.
+- **MCP/skill marketplace:** publish as a plugin (the plugin marketplace pattern used by `addyosmani/agent-skills`).
 
-## 9. Lưu ý pháp lý / trademark (phải check trước khi chốt)
+## 9. Legal / trademark notes (check before locking)
 
-- [ ] Check `github.com/topics/<tên>` + search GitHub toàn văn.
-- [ ] Check npm registry `<tên>` và `<tên>-cli`.
-- [ ] Check USPTO / EUIPO trademark database.
-- [ ] Google `"<tên>" ai workflow` / `"<tên>" agent`.
-- [ ] Đánh giá đụng: "code-factory" (cao), "charter" (trung), "forge" (rất cao).
-- [ ] Tên lệnh không dấu tiếng Việt, pronounceable quốc tế (`wfc`, `charter` OK).
-- [ ] Tách **repo name** (Code-Factory) vs **pack name** (charter/code-factory) vs **CLI** (`wfc`) — không bắt buộc cùng tên.
+- [ ] Check `github.com/topics/<name>` + a full GitHub text search.
+- [ ] Check the npm registry for `<name>` and `<name>-cli`.
+- [ ] Check the USPTO / EUIPO trademark databases.
+- [ ] Google `"<name>" ai workflow` / `"<name>" agent`.
+- [ ] Rate collision risk: "code-factory" (high), "charter" (medium), "forge" (very high).
+- [ ] Command names must be accent-free and internationally pronounceable (`wfc`, `charter` are fine).
+- [ ] Distinguish **repo name** (Code-Factory) vs **pack name** (charter/code-factory) vs **CLI** (`wfc`) — they need not match.
 
-## 10. Bước tiếp theo (Next Human Action)
+## 10. Next human action
 
-1. Human review proposal này, **chốt 1 combo tên + tagline** (Combo A / B / C).
-2. Chạy checklist trademark mục 9.
-3. Mở work item `community-pack-release` qua `wfc scaffold --work-item community-pack-release`.
-4. Đi `s04 Acceptance + DoR` → `s05 Technical Approach` (packaging, npm publish surface, README hero) → `s06 Task Plan` → `s07 Implement` → `s08 Verify + DoD`.
-5. `s08` phải có release readiness + handoff sang lane deploy (publish npm + GitHub release).
+1. The human reviews this proposal and **locks one name + tagline combo** (A / B / C).
+2. Run the trademark checklist in section 9.
+3. Open the `community-pack-release` work item via `wfc scaffold --work-item community-pack-release`.
+4. Run `s04 Acceptance + DoR` → `s05 Technical Approach` (packaging, npm publish surface, README hero) → `s06 Task Plan` → `s07 Implement` → `s08 Verify + DoD`.
+5. `s08` must cover release readiness + handoff to the deploy lane (npm publish + GitHub release).
 
 ## Traceability
 - soul (governance runtime) ← moat (enforce vs suggest) ← positioning table ← naming combo → README hero → launch.
-- governance: brand gate là human-controlled; proposal này chưa mở implementation path.
+- governance: the brand gate is human-controlled; this proposal does not open an implementation path.

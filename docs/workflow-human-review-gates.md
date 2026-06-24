@@ -1,51 +1,57 @@
-# Human Review Gates Trong Workflow
+---
+language: en
+---
 
-Tài liệu này chốt rõ:
+# Human Review Gates in the Workflow
 
-- gate nào trong workflow hiện tại đã có `human review/pass` ở mức source-of-truth
-- gate nào nên được nâng thành bắt buộc nếu muốn mô hình `AI proposes, human approves` chặt hơn
-- flow AI-human nên đi như thế nào để tránh agent tự vượt gate
+> Vietnamese: workflow-human-review-gates.vi.md
 
-## Kết Luận Trước
+This document defines precisely:
 
-Nếu chỉ dừng ở mức:
+- which gates in the current workflow already have `human review/pass` at source-of-truth level
+- which gates should be made mandatory if a stricter `AI proposes, human approves` model is desired
+- how the AI-human flow should run to keep the agent from bypassing gates on its own
 
-- AI draft artifact
-- human review khi thấy cần
-- `DoR` và `DoD` có owner
+## Up-Front Conclusion
 
-thì workflow đã có kiểm soát, nhưng chưa đủ chặt để đảm bảo AI không tự đẩy delivery đi xa hơn mức human thực sự đã chấp thuận.
+If you stop at:
 
-Muốn chặt hơn, cần thêm 6 điều:
+- AI drafts artifacts
+- human reviews when deemed necessary
+- `DoR` and `DoD` have owners
 
-1. phân định rõ `AI được làm gì` và `human giữ quyền gì`
-2. gate nào làm đổi trạng thái delivery thì phải là `human-controlled gate`
-3. human pass phải dựa trên artifact + evidence + authority rõ
-4. nếu gate human chưa pass thì workflow phải `BLOCKED` hoặc quay lại step trước
-5. với `empty/greenfield project`, phải có lớp `bootstrap gate` trước khi materialize work item implementation đầu tiên
-6. implementation path phải bị khóa ở mức capability control cho tới khi protocol mở `ACTIVE + s07 + write-root`
+then the workflow is controlled, but not strict enough to guarantee that AI will not push delivery further than the human has actually approved.
 
-## Nguyên Tắc Đọc
+To tighten further, six things are required:
 
-- `human review/pass` nghĩa là một role người thật có authority đã review và chốt gate tương ứng.
-- `self review`, `targeted review`, `independent review` trong `s07` không tự động đồng nghĩa `human pass`.
-- `role_signoffs` là lớp authority/signoff của workflow step hoặc work item; nó không tự động thay cho `waiver authority`.
-- `gate_reviews` là lớp audit trail cho biết human nào đã review gate và review lúc nào.
-- `trusted approval receipt` là lớp enforcement cho biết gate đã được human seal bằng signed receipt ngoài project root; gate review metadata một mình không còn đủ để mở execution gate.
-- Nếu gate yêu cầu human pass chưa hoàn tất, work item phải `BLOCKED`, quay lại step trước, hoặc dừng trước khi sang gate tiếp theo.
-- `work item` và `change package` do protocol quản lý luôn phải giữ `review_required=true`; không có đường `NOT_REQUIRED` cho approval gate đang được enforce.
+1. a clear separation of `what AI may do` and `what authority humans retain`
+2. any gate that changes delivery state must be a `human-controlled gate`
+3. a human pass must be based on artifact + evidence + clear authority
+4. if a human gate has not passed, the workflow must be `BLOCKED` or return to the previous step
+5. for `empty/greenfield projects`, a `bootstrap gate` layer must exist before materializing the first work item implementation
+6. the implementation path must be locked at the capability-control level until the protocol opens `ACTIVE + s07 + write-root`
 
-## Rule Chặt AI-Human
+## Reading Principles
 
-- Workflow này nên vận hành theo model `AI proposes, human approves`.
-- Trước mọi hành động substantive trên task thuộc delivery workflow, AI phải đi qua entry router `workflow-governance-router` để chốt current step, delivery context, missing gates và next human action.
-- `approve` có thể vẫn đi qua `CLI`, nhưng phải là `human-operated CLI`, không phải `agent-accessible approval`.
-- AI được quyền:
-  - phân tích, clarify, draft artifact, chuẩn bị option analysis
-  - đề xuất technical approach, task plan, review findings và verify recommendation
-  - implement, chạy test, tổng hợp evidence, nêu recommendation
-- AI không được tự:
-  - approve work item hoặc change package
+- `human review/pass` means a real-person role with the requisite authority has reviewed and closed the corresponding gate.
+- `self review`, `targeted review`, and `independent review` in `s07` do not automatically imply `human pass`.
+- `role_signoffs` is the authority/sign-off layer of a workflow step or work item; it does not automatically replace `waiver authority`.
+- `gate_reviews` is the audit-trail layer showing which human reviewed which gate and when.
+- `trusted approval receipt` is the enforcement layer showing that a gate has been sealed by a human with a signed receipt outside the project root; gate-review metadata alone is no longer sufficient to open an execution gate.
+- If a gate that requires a human pass has not been completed, the work item must be `BLOCKED`, return to the previous step, or stop before advancing to the next gate.
+- `work item` and `change package` managed by the protocol must always keep `review_required=true`; there is no `NOT_REQUIRED` path for an approval gate that is being enforced.
+
+## Strict AI-Human Rules
+
+- This workflow should operate on the `AI proposes, human approves` model.
+- Before any substantive action on a task in the delivery workflow, AI must go through the entry router `workflow-governance-router` to pin down the current step, delivery context, missing gates, and next human action.
+- `approve` may still go through the `CLI`, but it must be a `human-operated CLI`, not an `agent-accessible approval`.
+- AI is allowed to:
+  - analyze, clarify, draft artifacts, prepare option analysis
+  - propose technical approach, task plan, review findings, and verify recommendation
+  - implement, run tests, aggregate evidence, and state a recommendation
+- AI must not, on its own:
+  - approve a work item or change package
   - pass `Spec`
   - pass `Contract`
   - pass `DoR`
@@ -56,208 +62,208 @@ Muốn chặt hơn, cần thêm 6 điều:
   - pass `DoD`
   - pass `Release`
   - pass `Business Acceptance`
-  - approve `exception` hoặc `waiver` nếu authority thuộc human role khác
-- Mọi human-controlled gate phải có đủ:
-  - artifact step hoặc protocol là source-of-truth
-  - evidence đủ để reviewer kiểm
-  - owner hoặc approver đúng authority
-- `legacy scaffold` không có `.work-item-report.json` không được mặc định xem là execution-ready; strict default của bundle là `protocolControl.legacyScaffoldPolicy=forbid`.
-- Human pass phải explicit:
-  - không suy diễn từ comment, `review pass` kỹ thuật, `test pass` cục bộ, việc artifact đã tồn tại, hay chỉ từ metadata trong note
-- Human pass phải là interactive action:
-  - normal mode không chấp nhận `--approval-passphrase`
-  - normal mode không chấp nhận `WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE`
-  - approve command phải chạy trong human-controlled TTY
-  - non-interactive approval chỉ dành cho smoke/test fixture
-- Nếu gate human chưa pass:
-  - không được sang gate tiếp theo
-  - không được activate status hoặc declare `done`
-  - phải `BLOCKED` hoặc quay lại step trước
-- `ACTIVE` là execution gate, không còn là authoring gate thuần; với protocol hiện tại, authoring `s01-s06` có thể diễn ra khi work item đã scaffold nhưng chưa `ACTIVE`.
-- implementation path nên được hiểu là bị khóa ở mức capability control cho tới khi work item được `ACTIVE` ở `s07` và có `write-root` đã cấp.
-- các generic coding defaults như “feature request => code”, “mặc định user muốn code changes”, “không dừng ở analysis” hoặc “end-to-end by default” không phải gate approval; nếu còn `Missing Gates`, AI phải trả status block và dừng trước code/scaffold.
+  - approve an `exception` or `waiver` when authority belongs to a different human role
+- Every human-controlled gate must have:
+  - the step or protocol artifact as source-of-truth
+  - sufficient evidence for the reviewer to inspect
+  - an owner or approver with the correct authority
+- `legacy scaffold` without a `.work-item-report.json` must not be treated as execution-ready by default; the bundle's strict default is `protocolControl.legacyScaffoldPolicy=forbid`.
+- A human pass must be explicit:
+  - it must not be inferred from a comment, a technical `review pass`, a local `test pass`, the mere existence of an artifact, or metadata in a note
+- A human pass must be an interactive action:
+  - normal mode must not accept `--approval-passphrase`
+  - normal mode must not accept `WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE`
+  - the approve command must run in a human-controlled TTY
+  - non-interactive approval is reserved for smoke/test fixtures
+- If a human gate has not passed:
+  - do not advance to the next gate
+  - do not activate status or declare `done`
+  - must be `BLOCKED` or return to the previous step
+- `ACTIVE` is an execution gate, no longer purely an authoring gate; under the current protocol, authoring for `s01-s06` may occur while a work item is scaffolded but not yet `ACTIVE`.
+- The implementation path should be treated as locked at the capability-control level until the work item is `ACTIVE` at `s07` and a `write-root` has been granted.
+- Generic coding defaults such as "feature request => code", "user wants code changes by default", "do not stop at analysis", or "end-to-end by default" are not gate approvals; if `Missing Gates` remain, AI must return a status block and stop before code/scaffold.
 
 ## Router-First Status Reporting
 
-Trước khi đi sâu vào authoring hoặc execution của một work item, AI nên báo tối thiểu block trạng thái sau:
+Before diving into authoring or execution of a work item, AI should report at minimum the following status block:
 
 ```text
-Current Step: s0X <tên step>
+Current Step: s0X <step name>
 Workflow Status: ACTIVE | BLOCKED | WAITING_APPROVAL | READY_FOR_REVIEW | VERIFIED
 Delivery Context: greenfield | brownfield
-What I Am Doing Now: <một câu>
-Missing Gates: <danh sách hoặc NONE>
-Next Artifact: <artifact hoặc decision cần tiếp theo>
-Next Human Action: <review/approval cần từ người, hoặc NONE>
+What I Am Doing Now: <one sentence>
+Missing Gates: <list or NONE>
+Next Artifact: <next artifact or decision needed>
+Next Human Action: <review/approval needed from a human, or NONE>
 ```
 
-Quy tắc đọc block này:
+Rules for reading this block:
 
-- `Current Step` cho biết AI đang đứng ở đâu trong chain `s01 -> s08`, không được ngầm suy diễn.
-- `Workflow Status` phải explicit; nếu còn thiếu gate hoặc blocker trọng yếu thì dùng `BLOCKED` hoặc `WAITING_APPROVAL`.
-- `Missing Gates` là lớp nhìn nhanh để human biết vì sao AI chưa được implement.
-- `Next Human Action` là hành động review hoặc approval cụ thể cần từ người, tránh nhập nhằng giữa review kỹ thuật và gate pass.
-- nếu `Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`, `READY_FOR_REVIEW` hoặc `VERIFIED`.
-- nếu `Missing Gates` khác `NONE`, `Next Human Action` không được là `NONE`.
+- `Current Step` indicates where AI stands in the `s01 -> s08` chain; it must not be implicitly inferred.
+- `Workflow Status` must be explicit; if a gate or significant blocker is still missing, use `BLOCKED` or `WAITING_APPROVAL`.
+- `Missing Gates` is the quick-view layer showing humans why AI is not yet allowed to implement.
+- `Next Human Action` is the specific review, approval, or confirmation action required from a human, avoiding ambiguity between technical review and a gate pass.
+- if `Missing Gates` is not `NONE`, `Workflow Status` must not be `ACTIVE`, `READY_FOR_REVIEW`, or `VERIFIED`.
+- if `Missing Gates` is not `NONE`, `Next Human Action` must not be `NONE`.
 
-## Baseline Hiện Có Của Repo
+## Existing Repo Baseline
 
-Đây là các gate đã có source-of-truth rõ trong repo hiện tại:
+These are the gates that already have a clear source-of-truth in the current repo:
 
-| Gate | Vị trí | Human owner mặc định | Trạng thái |
+| Gate | Location | Default human owner | Status |
 |---|---|---|---|
-| `spec` | `s04 Acceptance + DoR` | `po`, `ba` | bắt buộc |
-| `contract` | `s04 Acceptance + DoR` khi scope chạm `API contract` hoặc `UX contract` | `designer`, `developer`; thêm `po` khi contract chạm business rule | bắt buộc nếu scope yêu cầu |
-| `work item approval` | trước `ACTIVE` | reviewer được chỉ định qua `wfc work-item approve --reviewed-by <role>` | bắt buộc; protocol-managed item luôn `review_required=true` |
-| `dor` | `s04 Acceptance + DoR` | `po`, `ba` | bắt buộc |
-| `approach` | `s05 Technical Approach` | `developer` | có owner signoff rõ |
-| `foundation` | `s05 Technical Approach` khi scope chạm `solution class`, `stack`, `runtime`, `deployment model` | `developer`; thêm `designer`/`devops` tùy surface | bắt buộc nếu scope yêu cầu |
-| `task_plan` | `s06 Task Plan` | `developer`; thêm `qc`/`devops` khi verify hoặc release impact đáng kể | bắt buộc |
-| `uat` | `s08 Verify + DoD` khi scope cần `UAT` hoặc business scenario validation | `qc`, `po`; thêm `designer` khi UX validation là gate chính | bắt buộc nếu scope yêu cầu |
-| `dod` | `s08 Verify + DoD` | `qc` | bắt buộc |
-| `release` | `s08 Verify + DoD` khi scope chạm release | `qc`, `devops` | bắt buộc nếu scope yêu cầu |
-| `business_acceptance` | `s08 Verify + DoD` khi scope chạm business acceptance | `po` | bắt buộc nếu scope yêu cầu |
-| `exception/waiver approval` | bất kỳ step nào có lệch chuẩn | theo `governance-role-model` | bắt buộc nếu có exception |
+| `spec` | `s04 Acceptance + DoR` | `po`, `ba` | required |
+| `contract` | `s04 Acceptance + DoR` when scope touches `API contract` or `UX contract` | `designer`, `developer`; add `po` when the contract touches a business rule | required if scope demands it |
+| `work item approval` | before `ACTIVE` | reviewer designated via `wfc work-item approve --reviewed-by <role>` | required; protocol-managed items are always `review_required=true` |
+| `dor` | `s04 Acceptance + DoR` | `po`, `ba` | required |
+| `approach` | `s05 Technical Approach` | `developer` | clear owner sign-off |
+| `foundation` | `s05 Technical Approach` when scope touches `solution class`, `stack`, `runtime`, `deployment model` | `developer`; add `designer`/`devops` depending on surface | required if scope demands it |
+| `task_plan` | `s06 Task Plan` | `developer`; add `qc`/`devops` when verify or release impact is significant | required |
+| `uat` | `s08 Verify + DoD` when scope needs `UAT` or business-scenario validation | `qc`, `po`; add `designer` when UX validation is the main gate | required if scope demands it |
+| `dod` | `s08 Verify + DoD` | `qc` | required |
+| `release` | `s08 Verify + DoD` when scope touches release | `qc`, `devops` | required if scope demands it |
+| `business_acceptance` | `s08 Verify + DoD` when scope touches business acceptance | `po` | required if scope demands it |
+| `exception/waiver approval` | any step with a deviation | per `governance-role-model` | required if an exception exists |
 
-## Chế Độ Chặt AI-Human Khuyến Nghị
+## Recommended Strict AI-Human Regime
 
-Nếu muốn siết chặt AI-human hơn baseline, nên coi các gate dưới đây là `MUST human pass`:
+If you want AI-human tighter than the baseline, treat the gates below as `MUST human pass`:
 
-| Gate | Step hoặc state | Human owner mặc định | Khi nào được đi tiếp |
+| Gate | Step or state | Default human owner | When you may proceed |
 |---|---|---|---|
-| `Spec pass` | `s04` | `po`, `ba` | chỉ sau khi requirement/spec baseline đã được human approve |
-| `Contract pass` | `s04` khi scope chạm `API contract` hoặc `UX contract` | `designer`, `developer`; thêm `po` khi contract chạm business rule | chỉ sau khi contract baseline đã được human approve hoặc chốt `not_applicable` rõ |
-| `work item approval` | `MATERIALIZED -> ACTIVE` | reviewer được chỉ định | chỉ sau khi work item đã được approve; `ACTIVE` chỉ mở khi step-gate evidence cần thiết cũng đã sẵn sàng |
-| `DoR pass` | `s04` | `po`, `ba`; thêm `qc` khi testability là risk chính; thêm `designer` khi UX rule quyết định readiness | chỉ sau khi requirement, AC, readiness và governance checks đã rõ |
-| `Approach pass` | `s05` | `developer`; thêm `designer` hoặc `devops` khi scope chạm UX/runtime/release | chỉ sau khi `2-3` options, trade-off và recommendation đã được human chốt |
-| `Foundation pass` | `s05` khi scope chạm `solution class`, `stack`, `runtime`, `deployment model` | `developer`; thêm `designer`/`devops` khi cần | chỉ sau khi human chọn foundation decision cuối |
-| `Task Plan pass` | `s06` | `developer`; thêm `qc`/`devops` khi verify hoặc release impact đáng kể | chỉ sau khi task plan đủ execution-oriented và không còn placeholder |
-| `UAT pass` | `s08` khi scope yêu cầu | `qc`, `po`; thêm `designer` khi UX validation là gate chính | chỉ sau khi kết quả verify/UAT đối chiếu đúng approved spec và contract |
-| `DoD pass` | `s08` | `qc` | chỉ sau khi evidence, checklist, review findings và residual risk đã được kết luận |
-| `Release pass` | `s08` | `qc`, `devops` | chỉ khi scope có packaging/runtime/release lane |
-| `Business Acceptance pass` | `s08` | `po` | chỉ khi scope cần business signoff cuối |
-| `Exception/Waiver pass` | step phát sinh lệch chuẩn | theo authority matrix | chỉ sau khi authority đúng đã approve |
+| `Spec pass` | `s04` | `po`, `ba` | only after the requirement/spec baseline has been human-approved |
+| `Contract pass` | `s04` when scope touches `API contract` or `UX contract` | `designer`, `developer`; add `po` when the contract touches a business rule | only after the contract baseline has been human-approved or explicitly marked `not_applicable` |
+| `work item approval` | `MATERIALIZED -> ACTIVE` | designated reviewer | only after the work item has been approved; `ACTIVE` opens only when the required step-gate evidence is also ready |
+| `DoR pass` | `s04` | `po`, `ba`; add `qc` when testability is the main risk; add `designer` when a UX rule drives readiness | only after requirement, AC, readiness, and governance checks are clear |
+| `Approach pass` | `s05` | `developer`; add `designer` or `devops` when scope touches UX/runtime/release | only after `2-3` options, trade-offs, and a recommendation have been human-approved |
+| `Foundation pass` | `s05` when scope touches `solution class`, `stack`, `runtime`, `deployment model` | `developer`; add `designer`/`devops` as needed | only after a human selects the final foundation decision |
+| `Task Plan pass` | `s06` | `developer`; add `qc`/`devops` when verify or release impact is significant | only after the task plan is execution-oriented and free of placeholders |
+| `UAT pass` | `s08` when scope requires it | `qc`, `po`; add `designer` when UX validation is the main gate | only after verify/UAT results match the approved spec and contract |
+| `DoD pass` | `s08` | `qc` | only after evidence, checklist, review findings, and residual risk have been concluded |
+| `Release pass` | `s08` | `qc`, `devops` | only when scope has a packaging/runtime/release lane |
+| `Business Acceptance pass` | `s08` | `po` | only when scope needs a final business sign-off |
+| `Exception/Waiver pass` | the step where the deviation arises | per the authority matrix | only after the correct authority has approved |
 
-## Cách Hiểu Thực Dụng
+## Practical Interpretation
 
-Để AI và human không nhập nhằng trách nhiệm, nên hiểu như sau:
+To keep AI and human roles from blurring, understand it as follows:
 
-- AI được quyền phân tích, đề xuất, draft artifact, chuẩn bị evidence, review kỹ thuật và nêu recommendation.
-- Human giữ quyền pass hoặc fail các gate làm thay đổi trạng thái delivery.
-- AI không được tự coi `review pass`, `test pass`, `spec đủ rõ`, `task plan đủ rõ` hay `done`.
-- Human pass ở đây là quyền đóng gate, không phải chỉ để lại comment tham khảo.
+- AI may analyze, propose, draft artifacts, prepare evidence, perform technical review, and state recommendations.
+- Humans retain the right to pass or fail the gates that change delivery state.
+- AI must not self-declare `review pass`, `test pass`, `spec clear enough`, `task plan clear enough`, or `done`.
+- A human pass here is the authority to close a gate, not just a comment for reference.
 
-## Contract Output Trước Mỗi Gate
+## Contract Output Before Each Gate
 
-| Gate | AI phải giao | Human phải kiểm | Chỉ được pass khi |
+| Gate | AI must deliver | Human must check | Pass allowed when |
 |---|---|---|---|
-| `Spec pass` | requirement/spec baseline, scope, non-goals, approved spec refs hoặc baseline note | spec có đủ rõ, đúng business intent, đủ traceable để làm source-of-truth không | `Spec` được chốt rõ |
-| `Contract pass` | API contract draft, UX contract draft, interaction rule, N/A note nếu không áp dụng | contract có đúng expectation, boundary và behavior user-facing không | `Contract` được chốt rõ hoặc `not_applicable` được human xác nhận |
-| `work item approval` | materialization report, scope draft, slug, change strategy | work item có nên mở không, có trùng không, có đúng boundary không | human reviewer approve work item hoặc change |
-| `DoR pass` | AC đo được, open questions đã xử lý, governance checks, readiness note | requirement đã đủ rõ chưa, testability đã đủ chưa, còn blocker business/governance không | `DoR` được chốt rõ |
-| `Approach pass` | `2-3` phương án, trade-off, recommendation, technical approach draft, boundary, exception nếu có | hướng này có đúng scope, đủ nhỏ, đủ đúng, và recommendation có đáng chọn không | `Approach` được chốt rõ |
-| `Foundation pass` | solution class, stack, runtime, deployment model đã khuyến nghị | foundation decision cuối có đúng target system và constraint không | human chọn foundation decision cuối |
-| `Task Plan pass` | task plan execution-oriented, verify path, dependency, checkpoint | plan có đủ rõ để thi công và review không, còn placeholder không | reviewer của `s06` chốt plan đủ thi công |
-| `UAT pass` | verify summary, scenario evidence, approved-spec comparison, contract comparison | kết quả thực tế có đúng approved spec và approved contract không | `UAT` được kết luận |
-| `DoD pass` | evidence pack, review findings, test summary, residual risks, compliance verdict | evidence có đủ mạnh không, findings đã đóng chưa, residual risk có chấp nhận được không | `DoD` được kết luận |
-| `Release pass` | rollout note, smoke/rollback plan, release evidence | có đủ điều kiện ship và rollback không | `release` được kết luận |
-| `Business Acceptance pass` | outcome so với `BRD/SRS`, user/business impact note | kết quả có đúng business intent không | `business_acceptance` được kết luận |
-| `Exception/Waiver pass` | exception artifact, lý do, impact, mitigation, owner | authority đúng chưa, mitigation đủ chưa, có cần co-approver không | `approved_by` hợp lệ và state được chốt |
+| `Spec pass` | requirement/spec baseline, scope, non-goals, approved spec refs or baseline note | is the spec clear, aligned with business intent, and traceable enough to serve as source-of-truth? | `Spec` is explicitly closed |
+| `Contract pass` | API contract draft, UX contract draft, interaction rule, N/A note if not applicable | does the contract match user-facing expectations, boundaries, and behavior? | `Contract` is explicitly closed or `not_applicable` is confirmed by a human |
+| `work item approval` | materialization report, scope draft, slug, change strategy | should the work item open, is it a duplicate, is the boundary correct? | human reviewer approves the work item or change |
+| `DoR pass` | measurable AC, resolved open questions, governance checks, readiness note | is the requirement clear enough, is testability sufficient, are there business/governance blockers? | `DoR` is explicitly closed |
+| `Approach pass` | `2-3` options, trade-offs, recommendation, technical approach draft, boundary, exception if any | is this direction on-scope, small enough, correct enough, and is the recommendation worth choosing? | `Approach` is explicitly closed |
+| `Foundation pass` | recommended solution class, stack, runtime, deployment model | does the final foundation decision fit the target system and constraints? | a human selects the final foundation decision |
+| `Task Plan pass` | execution-oriented task plan, verify path, dependencies, checkpoints | is the plan clear enough to execute and review, are there placeholders? | the `s06` reviewer confirms the plan is executable |
+| `UAT pass` | verify summary, scenario evidence, approved-spec comparison, contract comparison | do the actual results match the approved spec and approved contract? | `UAT` is concluded |
+| `DoD pass` | evidence pack, review findings, test summary, residual risks, compliance verdict | is the evidence strong, are findings closed, is residual risk acceptable? | `DoD` is concluded |
+| `Release pass` | rollout note, smoke/rollback plan, release evidence | are there enough conditions to ship and roll back? | `release` is concluded |
+| `Business Acceptance pass` | outcome vs `BRD/SRS`, user/business impact note | does the result match business intent? | `business_acceptance` is concluded |
+| `Exception/Waiver pass` | exception artifact, reason, impact, mitigation, owner | is the authority correct, is mitigation sufficient, is a co-approver needed? | `approved_by` is valid and the state is closed |
 
-## Cách Ghi Nhận Gate
+## How a Gate Is Recorded
 
-- `work item approval` được ghi qua protocol command như `wfc work-item approve`.
-- `spec`, `contract`, `dor`, `approach`, `foundation`, `task_plan`, `uat`, `release`, `business_acceptance`, `dod` nên trace owner qua `role_signoffs`.
-- Human pass của từng gate nên trace trực tiếp qua `gate_reviews`, tối thiểu gồm `*_reviewed_by` và `*_reviewed_at`.
-- `exception/waiver approval` phải dùng artifact `governance-exception` với `approved_by` đúng authority.
+- `work item approval` is recorded via a protocol command such as `wfc work-item approve`.
+- `spec`, `contract`, `dor`, `approach`, `foundation`, `task_plan`, `uat`, `release`, `business_acceptance`, `dod` should trace the owner via `role_signoffs`.
+- The human pass for each gate should be traced directly via `gate_reviews`, at minimum including `*_reviewed_by` and `*_reviewed_at`.
+- `exception/waiver approval` must use a `governance-exception` artifact with `approved_by` matching the correct authority.
 
-## Gate Bắt Buộc Theo Step
+## Required Gates per Step
 
-| Step | AI làm gì | Human phải pass gì |
+| Step | What AI does | What a human must pass |
 |---|---|---|
-| `materialization` | đề xuất work item hoặc change package | approve work item hoặc change trước khi activate; `ACTIVE` chỉ mở sau approval + evidence `s04-s06` |
-| `s01-s03` | clarify, business goal, open questions, gom blocker | chưa có gate pass chính thức, nhưng nếu context còn mơ hồ thì không được đẩy sang gate sau |
-| `s04` | draft requirement/spec baseline, contract baseline khi có, AC, DoR, governance checks | pass `Spec`; nếu áp dụng thì pass `Contract`; pass `DoR` |
-| `s05` | draft `2-3` options, technical approach, boundary, foundation decision khi có | pass `Approach`; nếu áp dụng thì pass `Foundation` |
-| `s06` | draft task plan, verify path, checkpoint | pass `Task Plan` |
-| `s07` | implement, test, review sớm, chuẩn bị evidence | không đóng gate delivery cuối ở step này |
-| `s08` | tổng hợp evidence, verify, UAT draft khi có, DoD draft, release recommendation | nếu áp dụng thì pass `UAT`; pass `Release`; pass `Business Acceptance`; pass `DoD` |
+| `materialization` | propose work item or change package | approve work item or change before activation; `ACTIVE` opens only after approval + evidence for `s04-s06` |
+| `s01-s03` | clarify, business goal, open questions, gather blockers | no formal gate pass yet, but if context remains vague you must not push to later gates |
+| `s04` | draft requirement/spec baseline, contract baseline if any, AC, DoR, governance checks | pass `Spec`; if applicable, pass `Contract`; pass `DoR` |
+| `s05` | draft `2-3` options, technical approach, boundary, foundation decision if any | pass `Approach`; if applicable, pass `Foundation` |
+| `s06` | draft task plan, verify path, checkpoints | pass `Task Plan` |
+| `s07` | implement, test, review early, prepare evidence | do not close the final delivery gate at this step |
+| `s08` | aggregate evidence, verify, UAT draft if any, DoD draft, release recommendation | if applicable, pass `UAT`; pass `Release`; pass `Business Acceptance`; pass `DoD` |
 
-## Rule Riêng Cho Empty Project / Greenfield
+## Rules Specific to Empty Project / Greenfield
 
-Nếu project đang trống hoặc chưa có baseline đã approved, phải siết chặt hơn baseline thông thường:
+If the project is empty or has no approved baseline, you must tighten beyond the usual baseline:
 
-- AI chỉ được dừng ở `proposal stage`, không được tự nhảy sang `implementation stage`.
-- Nếu không truyền `delivery_context` tường minh, tool phải suy theo baseline repo thật; repo trống hoặc chưa có implementation baseline thì mặc định là `greenfield`.
-- `site tĩnh`, SPA, SSR, backend-first, CMS, framework, runtime model, deploy model hoặc CI/CD baseline là `foundation decision`, không phải chi tiết implement nhỏ.
-- `foundation decision` phải được human review explicit ở `s05 Approach pass`.
-- `s06 Task Plan pass` chỉ hợp lệ sau khi `s05` đã chốt xong foundation decision.
-- Chưa có `Approach pass` và `Task Plan pass` thì không được scaffold framework, dependency tree, Dockerfile, CI/CD hay code production đầu tiên.
-- Request greenfield kiểu `QR Voucher`, vừa có UI, voucher service API và visual tone thương hiệu, vẫn chỉ được dừng ở `proposal stage`; không được tự chọn stack, scaffold app hay sinh code.
+- AI may only stop at the `proposal stage`; it must not jump to the `implementation stage` on its own.
+- If `delivery_context` is not passed explicitly, the tool must infer from the repo's actual baseline; an empty repo or one with no implementation baseline defaults to `greenfield`.
+- `static site`, SPA, SSR, backend-first, CMS, framework, runtime model, deploy model, or CI/CD baseline are `foundation decision`s, not minor implementation details.
+- A `foundation decision` must be explicitly human-reviewed at `s05 Approach pass`.
+- `s06 Task Plan pass` is valid only after `s05` has closed the foundation decision.
+- Without `Approach pass` and `Task Plan pass`, you must not scaffold a framework, dependency tree, Dockerfile, CI/CD, or the first production code.
+- A greenfield request such as `QR Voucher`, with UI, a voucher service API, and a brand visual tone, must still stop at the `proposal stage`; it must not select a stack, scaffold an app, or generate code on its own.
 
-Flow chặt cho `empty/greenfield project` nên hiểu là:
+The strict flow for `empty/greenfield projects` should be understood as:
 
 1. raw request
 2. requirement/spec draft
 3. human pass `Spec`
-4. API contract hoặc UX contract draft
-5. human pass `Contract` hoặc chốt `not_applicable`
-6. option analysis cho solution class hoặc stack
+4. API contract or UX contract draft
+5. human pass `Contract` or mark `not_applicable`
+6. option analysis for solution class or stack
 7. human pass `Approach`
-8. nếu có foundation decision thì human pass `Foundation`
-9. task plan hoặc work-item breakdown
+8. if a foundation decision exists, human pass `Foundation`
+9. task plan or work-item breakdown
 10. human pass `Task Plan`
-11. mới được materialize work item implementation đầu tiên hoặc implement
+11. only then may you materialize the first work item implementation or implement
 
-## Rule Riêng Cho Brownfield
+## Rules Specific to Brownfield
 
-Nếu project đã có baseline vận hành, phải siết theo hướng khác `greenfield`:
+If the project already has a running baseline, tighten along a different axis than `greenfield`:
 
-- `delivery_context=brownfield` nghĩa là hệ thống hiện có là baseline, không được cư xử như repo trống.
-- `Foundation Decision` không phải gate mặc định của `brownfield`; chỉ mở khi change thực sự chạm architectural baseline.
-- `brownfield` phải có output riêng theo step:
+- `delivery_context=brownfield` means the existing system is the baseline; do not behave as if the repo is empty.
+- `Foundation Decision` is not a default gate for `brownfield`; it opens only when a change actually touches the architectural baseline.
+- `brownfield` must have its own per-step output:
   - `s04`: `Existing System Baseline`
   - `s05`: `Brownfield Impact Analysis`
   - `s06`: `Brownfield Delivery Plan`
   - `s08`: `Regression & Compatibility Summary`
-- verify và UAT của `brownfield` phải đối chiếu cả approved spec lẫn tác động lên baseline hiện có.
+- `brownfield` verify and UAT must compare against both the approved spec and the impact on the existing baseline.
 
-Flow chặt cho `brownfield` nên hiểu là:
+The strict flow for `brownfield` should be understood as:
 
 1. raw request
 2. requirement/spec draft + existing system baseline
 3. human pass `Spec`
-4. contract draft nếu change chạm `API contract` hoặc `UX contract`
-5. human pass `Contract` hoặc chốt `not_applicable`
-6. option analysis cho delta trên đường đi hiện có
+4. contract draft if the change touches `API contract` or `UX contract`
+5. human pass `Contract` or mark `not_applicable`
+6. option analysis for the smallest delta on the existing path
 7. human pass `Approach`
-8. chỉ pass `Foundation` nếu change thật sự chạm baseline kiến trúc
+8. pass `Foundation` only if the change truly touches the architectural baseline
 9. task plan + regression/compatibility checkpoints
 10. human pass `Task Plan`
 11. implement
-12. verify regression/compatibility, UAT nếu có, rồi mới `DoD`
+12. verify regression/compatibility, UAT if any, then `DoD`
 
-## Authority Mặc Định Theo Gate
+## Default Authority per Gate
 
-| Gate | Owner mặc định | Mở rộng thường gặp |
+| Gate | Default owner | Common extensions |
 |---|---|---|
-| `spec` | `po`, `ba` | `designer` khi UX outcome là baseline chính |
-| `contract` | `designer`, `developer` | `po` khi contract chạm business rule; `qc` khi testability là gate chính |
-| `dor` | `po`, `ba` | `designer` khi UX là readiness gate; `qc` khi testability là risk chính |
-| `approach` | `developer` | `designer` khi chạm interaction/visual contract; `devops` khi chạm runtime/pipeline/rollout |
-| `foundation` | `developer` | `designer` khi solution class chạm UX shell; `devops` khi runtime/deploy là decision chính |
-| `task plan pass` | `developer` | `qc` khi verify coverage là risk; `devops` khi release/deploy task là critical |
-| `uat` | `qc`, `po` | `designer` khi UX acceptance là gate chính |
-| `dod` | `qc` | `developer` hoặc `devops` chỉ hỗ trợ evidence/remediation, không thay owner verify cuối |
-| `release` | `qc`, `devops` | `developer` khi risk nằm ở migration/code path |
-| `business_acceptance` | `po` | `ba` và `designer` chỉ review/support |
+| `spec` | `po`, `ba` | `designer` when UX outcome is the main baseline |
+| `contract` | `designer`, `developer` | `po` when the contract touches a business rule; `qc` when testability is the main gate |
+| `dor` | `po`, `ba` | `designer` when UX is the readiness gate; `qc` when testability is the main risk |
+| `approach` | `developer` | `designer` when it touches an interaction/visual contract; `devops` when it touches runtime/pipeline/rollout |
+| `foundation` | `developer` | `designer` when solution class touches the UX shell; `devops` when runtime/deploy is the main decision |
+| `task plan pass` | `developer` | `qc` when verify coverage is a risk; `devops` when release/deploy task is critical |
+| `uat` | `qc`, `po` | `designer` when UX acceptance is the main gate |
+| `dod` | `qc` | `developer` or `devops` only support evidence/remediation; they do not replace the final verify owner |
+| `release` | `qc`, `devops` | `developer` when risk lies in migration/code path |
+| `business_acceptance` | `po` | `ba` and `designer` only review/support |
 | `waiver business` | `po` | `ba` |
-| `waiver technical` | `developer` | `qc`; thêm `po` nếu có business trade-off |
-| `waiver runtime/release` | `devops` | `qc`; thêm `developer` nếu code path liên quan |
+| `waiver technical` | `developer` | `qc`; add `po` if there is a business trade-off |
+| `waiver runtime/release` | `devops` | `qc`; add `developer` if the code path is involved |
 
 ## Flowchart
 
-Flow dưới đây là bản `strict AI-human gate` khuyến nghị:
+The flow below is the recommended `strict AI-human gate` version:
 
 ```mermaid
 flowchart TD
@@ -315,23 +321,23 @@ flowchart TD
     BC --> BD[Archive and cleanup branch or worktree]
 ```
 
-## Kết Luận Ngắn
+## Short Conclusion
 
-Nếu anh muốn AI-human thật chặt, canonical gate nên là:
+If you want AI-human to be truly strict, the canonical gates should be:
 
 1. `Spec pass`
-2. `Contract pass` khi scope yêu cầu
+2. `Contract pass` when scope requires it
 3. `Approach pass`
-4. `Foundation pass` khi scope yêu cầu
+4. `Foundation pass` when scope requires it
 5. `work item approval`
 6. `Task Plan pass`
-7. `UAT pass` khi scope yêu cầu
+7. `UAT pass` when scope requires it
 8. `DoD pass`
-9. `Release pass` khi scope yêu cầu
-10. `Business Acceptance pass` khi scope yêu cầu
-11. `Exception/Waiver approval` ngay khi phát sinh lệch chuẩn
+9. `Release pass` when scope requires it
+10. `Business Acceptance pass` when scope requires it
+11. `Exception/Waiver approval` as soon as a deviation arises
 
-## Nguồn Tham Chiếu
+## References
 
 - `README.md`
 - `skills/orchestration/codex-workflow-chain/references/work-item-protocol.md`

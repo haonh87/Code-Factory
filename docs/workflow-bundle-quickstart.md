@@ -1,35 +1,41 @@
+---
+language: en
+---
+
 # workflow-bundle Quickstart
 
-Hướng dẫn này tập trung vào public release `workflow-bundle v2.1.1`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, bootstrap một repo mới, và chạy flow `agent proposes, human approves`.
+> Vietnamese: workflow-bundle-quickstart.vi.md
 
-## Mục Tiêu
+This guide focuses on the public release `workflow-bundle v2.1.1`: install `wfc`, install the workflow bundle for Codex or Claude Code, bootstrap a new repo, and run the `agent proposes, human approves` flow.
 
-Sau khi làm xong, bạn sẽ:
+## Objectives
 
-- có lệnh `wfc` trên máy
-- cài được workflow bundle vào `~/.codex`, `~/.claude` hoặc project folder bằng `wfc install`
-- bootstrap được một repo dự án mới bằng `wfc init`
-- scaffold hoặc materialize được workflow đầu tiên
-- validate được workflow bằng `wfc`
+When you are done, you will:
+
+- have the `wfc` command on your machine
+- be able to install the workflow bundle into `~/.codex`, `~/.claude`, or a project folder with `wfc install`
+- be able to bootstrap a new project repo with `wfc init`
+- be able to scaffold or materialize your first workflow
+- be able to validate a workflow with `wfc`
 
 ## Requirements
 
-- macOS, Linux hoặc Windows
+- macOS, Linux, or Windows
 - `node >= 18`
 - `npm >= 9`
-- `~/.codex` hoặc `~/.claude` writable, hoặc đường dẫn tương đương trên Windows
-- `git` nếu clone source repo thay vì cài từ npm registry
+- `~/.codex` or `~/.claude` writable, or the equivalent path on Windows
+- `git` when cloning the source repo instead of installing from the npm registry
 
-Kiểm tra:
+Check:
 
 ```bash
 node -v
 npm -v
 ```
 
-## Cài CLI `wfc`
+## Install The `wfc` CLI
 
-Cách chuẩn sau khi package đã publish:
+The standard way once the package is published:
 
 ```bash
 npm install -g workflow-bundle
@@ -37,7 +43,7 @@ wfc help
 wfc version
 ```
 
-Nếu đang nâng từ CLI cũ `workflow-contracts`:
+If upgrading from the old `workflow-contracts` CLI:
 
 ```bash
 npm uninstall -g workflow-contracts
@@ -45,7 +51,7 @@ npm install -g workflow-bundle
 wfc version
 ```
 
-Nếu đang phát triển trực tiếp từ source repo này:
+If developing directly from this source repo:
 
 ```bash
 cd /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/packages/workflow-bundle
@@ -53,15 +59,15 @@ npm link
 wfc version
 ```
 
-## Cài Workflow Bundle
+## Install The Workflow Bundle
 
-Cài global policy và skills cho Codex:
+Install global policy and skills for Codex:
 
 ```bash
 wfc install --mode codex --scope global
 ```
 
-Nếu không muốn nhớ cờ ngay từ đầu, có thể chạy:
+If you do not want to remember flags up front, you can run:
 
 ```bash
 wfc install
@@ -70,32 +76,32 @@ wfc install
 ### Recommended Usage
 
 - `interactive terminal`:
-  - `wfc install`: chạy trực tiếp `wfc install`; CLI sẽ hỏi `mode` và `scope`
-  - nếu chọn `project|both` mà chưa truyền `--project-root`, CLI sẽ hỏi tiếp project root
-  - `wfc update`, `wfc status`, `wfc skills list|add|remove`: có thể bỏ `--mode`; CLI sẽ hỏi chọn `mode`
+  - `wfc install`: run `wfc install` directly; the CLI will ask for `mode` and `scope`
+  - if you pick `project|both` without passing `--project-root`, the CLI will ask for the project root
+  - `wfc update`, `wfc status`, `wfc skills list|add|remove`: you can omit `--mode`; the CLI will ask you to choose a `mode`
 - `automation/CI/scripts`:
-  - luôn truyền `--mode` tường minh
-  - với `wfc install`, luôn truyền thêm `--scope` tường minh
+  - always pass `--mode` explicitly
+  - with `wfc install`, always pass `--scope` explicitly
 
-Cài global memory/policy và skill references cho Claude Code:
+Install global memory/policy and skill references for Claude Code:
 
 ```bash
 wfc install --mode claude --scope global
 ```
 
-Cài vào một project cụ thể:
+Install into a specific project:
 
 ```bash
 wfc install --mode codex --scope project --project-root /path/to/your-project
 ```
 
-Cài cả global lẫn project policy:
+Install both global and project policy:
 
 ```bash
 wfc install --mode codex --scope both --project-root /path/to/your-project
 ```
 
-Kiểm tra trạng thái:
+Check status:
 
 ```bash
 wfc status --mode codex
@@ -103,57 +109,57 @@ wfc status --mode claude
 wfc skills list --mode codex
 ```
 
-Khi có bản bundle mới, overwrite bundle đã cài theo install state hiện có:
+When a new bundle version is out, overwrite the installed bundle according to the current install state:
 
 ```bash
 wfc update --mode codex
 ```
 
-`wfc update` cũng sẽ migrate state legacy `.codex-workflow-pack.*` sang `.codex-workflow-bundle.*` nếu máy đã từng cài flow cũ trong Codex mode.
+`wfc update` will also migrate legacy state `.codex-workflow-pack.*` to `.codex-workflow-bundle.*` if the machine previously had the old flow installed in Codex mode.
 
-## Cách Hiểu Runtime Sau Khi Cài
+## Understanding The Runtime After Install
 
-Sau khi cài bundle, agent không được coi feature request là lệnh implement trực tiếp.
+After the bundle is installed, the agent must not treat a feature request as a direct implement command.
 
-Runtime hiện tại vận hành theo mô hình:
+The current runtime operates on the following model:
 
 - `authority layer`: `AGENTS.global.md`
 - `entry router`: skill `workflow-governance-router`
 - `workflow backbone`: skill `codex-workflow-chain`
-- `step skills`: skill theo từng step phân tích, thiết kế, planning, implement, verify
+- `step skills`: per-step skills for analysis, design, planning, implement, and verify
 
-Với mọi task thuộc delivery workflow, agent phải route trước rồi mới hành động. Tối thiểu phải báo block trạng thái sau:
+For any task in the delivery workflow, the agent must route first, then act. At minimum it must report the following status block:
 
 ```text
-Current Step: s0X <tên step>
+Current Step: s0X <step name>
 Workflow Status: ACTIVE | BLOCKED | WAITING_APPROVAL | READY_FOR_REVIEW | VERIFIED
 Delivery Context: greenfield | brownfield
-What I Am Doing Now: <một câu>
-Missing Gates: <danh sách hoặc NONE>
-Next Artifact: <artifact hoặc decision cần tiếp theo>
-Next Human Action: <review/approval cần từ người, hoặc NONE>
+What I Am Doing Now: <one sentence>
+Missing Gates: <list or NONE>
+Next Artifact: <next artifact or decision needed>
+Next Human Action: <review/approval needed from a human, or NONE>
 ```
 
-Nếu còn thiếu gate hoặc còn blocker trọng yếu, agent phải dừng ở `BLOCKED` hoặc `WAITING_APPROVAL`, không được tự đi tiếp sang implement.
+If a gate is still missing or a material blocker remains, the agent must stop at `BLOCKED` or `WAITING_APPROVAL` and must not proceed to implement on its own.
 
 Consistency rule:
 
-- nếu `Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`, `READY_FOR_REVIEW` hoặc `VERIFIED`
-- nếu `Missing Gates` khác `NONE`, `Next Human Action` không được là `NONE`
-- request greenfield kiểu `QR Voucher + voucher service API + tone brand` trong repo trống phải dừng ở `proposal stage`, không được auto-scaffold
+- if `Missing Gates` is not `NONE`, `Workflow Status` must not be `ACTIVE`, `READY_FOR_REVIEW`, or `VERIFIED`
+- if `Missing Gates` is not `NONE`, `Next Human Action` must not be `NONE`
+- a greenfield request like `QR Voucher + voucher service API + tone brand` in an empty repo must stop at `proposal stage` and must not auto-scaffold
 
-## Bootstrap Một Repo Dự Án Mới
+## Bootstrap A New Project Repo
 
 ```bash
 cd /path/to/your-project
 wfc init
 ```
 
-Lệnh này sẽ tạo:
+This command creates:
 
 - `workflow-bundle.config.json`
-  mặc định có `protocolControl.legacyScaffoldPolicy=forbid` để không coi legacy scaffold là execution path hợp lệ
-  và sẽ bị capability control khóa ghi theo strict default sau khi sync
+  with `protocolControl.legacyScaffoldPolicy=forbid` by default so legacy scaffold is not treated as a valid execution path
+  and will be write-locked by capability control under the strict default after sync
 - `work-items/`
 - `changes/`
 - `product-specs/brd/`
@@ -168,7 +174,7 @@ Lệnh này sẽ tạo:
 
 ## Flow 1: Manual Scaffold
 
-Flow ngắn nhất để bắt đầu một work item do human chủ động chốt:
+The shortest flow to start a work item that the human proactively pins:
 
 ```bash
 wfc scaffold --work-item customer-search
@@ -180,27 +186,27 @@ wfc change
 wfc plan
 ```
 
-Nếu work item dùng execution metadata hoặc artifacts:
+If the work item uses execution metadata or artifacts:
 
 ```bash
 wfc exec
 ```
 
-## Flow 2: Agentic Proposal Với Human Approval
+## Flow 2: Agentic Proposal With Human Approval
 
-Nếu muốn đi từ raw request:
+If you want to start from a raw request:
 
 ```bash
 wfc materialize --request "fix timeout khi user login bang email/password tren web"
 ```
 
-Nếu muốn để tool tự scaffold khi request đủ rõ:
+If you want the tool to scaffold automatically when the request is clear enough:
 
 ```bash
 wfc materialize --request "them dang nhap Google cho customer portal" --auto-scaffold
 ```
 
-Nếu work item được agent materialize và có `change_id`, human cần approve cả change package lẫn work item trước khi delivery tiếp tục:
+If the work item was materialized by the agent and has a `change_id`, the human must approve both the change package and the work item before delivery continues:
 
 ```bash
 wfc change-item approve --change-id CHANGE-001 --reviewed-by po
@@ -213,7 +219,7 @@ wfc gate approve --work-item add-google-oauth-login --gate approach --reviewed-b
 wfc gate approve --work-item add-google-oauth-login --gate task_plan --reviewed-by developer
 ```
 
-Sau đó hoàn tất authoring và human review cho `s04`, `s05`, `s06`, rồi mới mở execution:
+Then complete authoring and human review for `s04`, `s05`, and `s06` before opening execution:
 
 ```bash
 wfc governance
@@ -222,34 +228,34 @@ wfc work-item activate --work-item add-google-oauth-login --step s07 --write-roo
 wfc protocol
 ```
 
-`wfc work-item activate` hiện là execution gate. Nó chỉ pass khi:
+`wfc work-item activate` is the execution gate. It only passes when:
 
-- `work item approval` đã `APPROVED`
-- nếu có `change_id`, `change package approval` đã `APPROVED`
-- nếu `delivery_context=greenfield`, `bootstrap gate` đã `APPROVED`
-- evidence `s04`, `s05`, `s06` đã đủ theo validator
-- trusted signed receipts cho `work item`, `change` và các gate bắt buộc đã tồn tại
-- có ít nhất một `--write-root` để capability control biết implementation path nào được mở ghi
+- `work item approval` is `APPROVED`
+- if there is a `change_id`, `change package approval` is `APPROVED`
+- if `delivery_context=greenfield`, the `bootstrap gate` is `APPROVED`
+- evidence for `s04`, `s05`, `s06` is sufficient per the validator
+- trusted signed receipts for the `work item`, `change`, and the mandatory gates exist
+- at least one `--write-root` is provided so capability control knows which implementation path is open for writing
 
-Ghi chú protocol:
+Protocol notes:
 
-- strict default của repo mới là `protocolControl.legacyScaffoldPolicy=forbid`; chỉ khi project config bật explicit `allow_readonly` thì `wfc work-item list|status` mới nên dùng bootstrap report read-only từ `s01` cũ để quan sát legacy scaffold.
-- các action mutating như `approve`, `activate`, `verify`, `close` không được tự bootstrap; chúng yêu cầu `.work-item-report.json` đã tồn tại.
-- `change-item approve`, `work-item approve` và `gate approve` sẽ ký receipt vào trusted approval root; nếu receipt không hợp lệ hoặc artifact đổi sau khi approve, `activate` sẽ fail.
-- các lệnh `approve` vẫn đi qua CLI, nhưng phải do human tự chạy trong interactive TTY; normal mode sẽ reject `--approval-passphrase` và `WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE`.
-- lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase trực tiếp trên TTY đó.
-- non-interactive approval chỉ dành cho smoke/test fixture, không phải operational path.
-- implementation path bị khóa ở mức filesystem cho tới khi work item vào `ACTIVE` ở `s07` và được cấp `write-root`.
+- the strict default for a new repo is `protocolControl.legacyScaffoldPolicy=forbid`; only when the project config explicitly enables `allow_readonly` should `wfc work-item list|status` use a read-only bootstrap report from the old `s01` to observe legacy scaffold.
+- mutating actions such as `approve`, `activate`, `verify`, and `close` must not bootstrap themselves; they require `.work-item-report.json` to already exist.
+- `change-item approve`, `work-item approve`, and `gate approve` sign a receipt into the trusted approval root; if the receipt is invalid or an artifact changes after approval, `activate` will fail.
+- the `approve` commands still go through the CLI, but must be run by a human in an interactive TTY; normal mode will reject `--approval-passphrase` and `WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE`.
+- the first approval in a trusted approval root will create an approver keypair and require the human to enter the approval passphrase directly in that TTY.
+- non-interactive approval is only for smoke/test fixtures, not the operational path.
+- the implementation path is locked at the filesystem level until the work item reaches `ACTIVE` at `s07` and is granted a `write-root`.
 
 ## Validate Workflow
 
-Validate workflow chuẩn:
+Standard workflow validation:
 
 ```bash
 wfc
 ```
 
-Các lane bổ sung khi cần:
+Additional lanes when needed:
 
 ```bash
 wfc naming
@@ -261,15 +267,15 @@ wfc plan
 wfc protocol
 ```
 
-## Tạo Change Package Thủ Công
+## Create A Change Package Manually
 
 ```bash
 wfc scaffold-change --change-id CHANGE-001 --work-item customer-search
 ```
 
-## Luồng Dùng Hằng Ngày
+## Everyday Flow
 
-Flow manual:
+Manual flow:
 
 ```bash
 wfc init
@@ -280,7 +286,7 @@ wfc change
 wfc plan
 ```
 
-Flow agentic:
+Agentic flow:
 
 ```bash
 wfc materialize --request "<raw-request>" --auto-scaffold
@@ -294,7 +300,7 @@ wfc capability status
 wfc protocol
 ```
 
-## Gắn Vào `package.json` Của Repo Dự Án
+## Wire Into The Project `package.json`
 
 ```json
 {
@@ -312,21 +318,21 @@ wfc protocol
 }
 ```
 
-Sau đó chạy:
+Then run:
 
 ```bash
 npm run validate:workflow
 ```
 
-## Khi Nào Cần Cập Nhật `wfc`
+## When To Update `wfc`
 
-Nếu đã cài package publish:
+If you installed the published package:
 
 ```bash
 npm install -g workflow-bundle@latest
 ```
 
-Nếu đang dùng `npm link` từ source repo:
+If you are using `npm link` from the source repo:
 
 ```bash
 cd /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/packages/workflow-bundle
