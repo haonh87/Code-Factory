@@ -1,54 +1,57 @@
 ---
+language: en
 name: code-scan-review
-description: Quét code ở step Verify theo 4 lane cố định gồm syntax, static analysis, security và performance heuristic. Dùng khi cần scan diff hoặc module bị tác động theo hướng wrapper-first, evidence-based, có false-positive policy rõ và chọn đúng reference theo ngôn ngữ như PHP, TypeScript/JavaScript, Python, Go và Java.
+description: Scan code at the Verify step across 4 fixed lanes: syntax, static analysis, security, and performance heuristics. Use when you need to scan a diff or affected module in a wrapper-first, evidence-based way with a clear false-positive policy, and pick the right reference by language such as PHP, TypeScript/JavaScript, Python, Go, and Java.
 ---
 
 # Code Scan Review
 
-Quét code theo stack hiện tại để phát hiện lỗi cú pháp, vấn đề static analysis, rủi ro bảo mật và dấu hiệu performance risk trước khi chốt verify.
-Skill này là bộ điều phối scan ở step 8, dùng 4 lane cố định để giữ kết quả nhất quán giữa nhiều ngôn ngữ và nhiều project.
+> Vietnamese: SKILL.vi.md
 
-## Mục Tiêu
+Scan code against the current stack to catch syntax errors, static analysis issues, security risks, and performance risk signals before closing verify.
+This skill is the scan coordinator at step 8, using 4 fixed lanes to keep results consistent across many languages and projects.
 
-- Chọn đúng tool scan theo ngôn ngữ và stack hiện tại.
-- Kiểm tra syntax và static analysis trước khi kết luận thay đổi an toàn ở mức code quality.
-- Chạy security scan tĩnh bằng tool phù hợp nếu có.
-- Ghi nhận performance risk ở mức heuristic, không ngụy tạo benchmark runtime.
-- Tạo báo cáo scan đủ rõ để bước `Verify` và `Review` dùng tiếp.
+## Goal
 
-## Vị Trí Trong Workflow
+- Choose the right scan tool for the current language and stack.
+- Check syntax and static analysis before concluding a change is safe at the code-quality level.
+- Run a static security scan with a fitting tool when available.
+- Record performance risks at the heuristic level; do not fabricate runtime benchmarks.
+- Produce a scan report clear enough for the `Verify` and `Review` steps to use next.
 
-- Mặc định dùng ở `s08` `Verify + DoD`.
-- Không tạo workflow step mới chỉ cho scan code; đây là skill verify chuyên biệt trong chain hiện có.
-- Step 7 `Implement` chỉ nên bàn giao context scan qua `notes_for_testing` hoặc implementation handoff khi cần.
-- Nếu người dùng muốn scan ngay trong lúc coding để self-check, vẫn phải ghi rõ đó là pre-handoff evidence; kết luận chính thức `PASS|FAIL|PARTIAL` thuộc step 8.
+## Position In The Workflow
 
-## Triết Lý Scan
+- Used by default at `s08` `Verify + DoD`.
+- Does not create a new workflow step just for code scanning; this is a specialized verify skill within the existing chain.
+- Step 7 `Implement` should only hand off scan context via `notes_for_testing` or an implementation handoff when needed.
+- If the user wants to scan during coding for self-check, still record clearly that it is pre-handoff evidence; the formal `PASS|FAIL|PARTIAL` conclusion belongs to step 8.
 
-- Mặc định `diff-aware`: ưu tiên `changed_files` hoặc `affected_modules`, chỉ quét full repo khi người dùng yêu cầu hoặc risk bắt buộc.
-- `wrapper-first`: ưu tiên script, task runner, composer script, workspace command hoặc build wrapper đã có trong project trước khi gọi raw tool.
-- `evidence-based`: mọi kết luận phải có command, scope, finding hoặc lý do skip rõ ràng.
-- `explicit-skip`: nếu tool không có sẵn hoặc môi trường không cho chạy, ghi `SKIP` và nêu rõ lỗ hổng verify còn lại.
-- `false-positive-aware`: đặc biệt với security lane, finding bị dismiss phải có lý do cụ thể thay vì biến mất khỏi output.
-- Không giả độ chắc chắn: benchmark, profiling hoặc security assessment thủ công chuyên sâu không được trá hình thành output của skill này.
+## Scan Philosophy
 
-## Khi Sử Dụng
+- Default to `diff-aware`: prefer `changed_files` or `affected_modules`; only scan the full repo when the user asks or risk forces it.
+- `wrapper-first`: prefer an existing script, task runner, composer script, workspace command, or build wrapper in the project before calling a raw tool.
+- `evidence-based`: every conclusion must have a command, scope, finding, or a clear skip reason.
+- `explicit-skip`: if a tool is unavailable or the environment cannot run it, record `SKIP` and state the remaining verify gap.
+- `false-positive-aware`: especially in the security lane, a dismissed finding must have a specific reason instead of vanishing from the output.
+- Do not fake certainty: benchmarks, profiling, or deep manual security assessment must not be disguised as output of this skill.
 
-- Sau khi implementation hoàn thành và trước khi bàn giao cuối.
-- Khi thay đổi có chạm logic backend, framework, query, template hoặc dependency nhạy cảm.
-- Khi cần chọn tool theo ngôn ngữ thay vì dùng một checklist scan cố định cho mọi stack.
-- Khi cần tách rõ test behavior và scan code quality/security.
+## When To Use
 
-## Không Thuộc Phạm Vi
+- After implementation is done and before final handoff.
+- When the change touches backend logic, framework, queries, templates, or sensitive dependencies.
+- When you need to pick tools by language instead of one fixed scan checklist for every stack.
+- When you need to separate test behavior from code quality/security scanning.
 
-- Không thay thế unit test, integration test hay feature test.
-- Không thay thế benchmark hiệu năng hoặc profiling runtime.
-- Không thay thế penetration test hoặc security assessment thủ công chuyên sâu.
-- Không thay thế review frontend ở mức accessibility, responsive layout, interaction feedback hoặc visual consistency; dùng `frontend-quality-review` khi scope chạm surface UI.
-- Không thay thế review React-specific ở mức data fetching, effect hygiene, state placement hoặc render stability; dùng `react-best-practices-review` khi stack là React web hoặc Next.js.
-- Không tự cài tool mới nếu chưa có trong môi trường và chưa được yêu cầu rõ.
+## Out Of Scope
 
-## Đầu Vào Tối Thiểu
+- Does not replace unit, integration, or feature tests.
+- Does not replace performance benchmarks or runtime profiling.
+- Does not replace penetration testing or deep manual security assessment.
+- Does not replace frontend review at the accessibility, responsive layout, interaction feedback, or visual consistency level; use `frontend-quality-review` when the scope touches the UI surface.
+- Does not replace React-specific review at the data fetching, effect hygiene, state placement, or render stability level; use `react-best-practices-review` when the stack is React web or Next.js.
+- Does not install a new tool on its own if it is not in the environment and not clearly requested.
+
+## Minimum Input
 
 - `scan_target`
 - `changed_files`
@@ -58,59 +61,59 @@ Skill này là bộ điều phối scan ở step 8, dùng 4 lane cố định đ
 - `constraints`
 - `risk_focus`
 
-`risk_focus` nên nêu ít nhất:
-- có cần ưu tiên syntax hay không
-- có thay đổi phần nhạy cảm về security hay không
-- có nghi ngờ performance regression ở query, loop, serialization, allocation hoặc I/O hay không
+`risk_focus` should state at least:
+- whether syntax should be prioritized
+- whether there is a change to a security-sensitive part
+- whether there is suspected performance regression in queries, loops, serialization, allocation, or I/O
 
-Nếu không xác định được `language_stack`, phải suy ra từ file thay đổi hoặc nêu rõ chưa đủ dữ liệu.
-Nếu chưa có `changed_files`, phải suy ra từ diff hoặc nêu rõ vì sao phải fallback sang `AFFECTED_MODULES` hoặc `FULL_REPO`.
+If `language_stack` cannot be determined, infer it from the changed files or state clearly that there is not enough data.
+If there are no `changed_files`, infer them from the diff or state clearly why you must fall back to `AFFECTED_MODULES` or `FULL_REPO`.
 
-## Bốn Lane Cố Định
+## Four Fixed Lanes
 
 ### 1. `syntax`
 
-- Mục tiêu: chặn lỗi parse, compile hoặc syntax-invalid sớm nhất.
-- Tính chất: lane blocker; syntax fail thường kéo `overall_status` về `FAIL`.
-- Ưu tiên tool parser hoặc compiler native của ngôn ngữ, hoặc wrapper project đã có.
-- Output lane này phải ghi rõ command, scope đã cover, evidence và `blocker_files` nếu có.
+- Goal: block parse, compile, or syntax-invalid errors as early as possible.
+- Nature: a blocker lane; a syntax fail usually pulls `overall_status` to `FAIL`.
+- Prefer the language's native parser or compiler, or an existing project wrapper.
+- This lane's output must record the command, covered scope, evidence, and `blocker_files` if any.
 
 ### 2. `static_analysis`
 
-- Mục tiêu: bắt lỗi semantic như type issue, nullability, API misuse, unreachable path hoặc rule violation.
-- Tính chất: lane correctness ở mức code semantics.
-- Ưu tiên wrapper của project và config hiện có như `phpstan.neon`, eslint config, mypy config hoặc task build tương đương.
-- Nếu project có baseline hoặc technical debt cũ, phải tách rõ finding mới trong diff với nợ cũ; baseline không phải lý do để bỏ qua blocker mới.
+- Goal: catch semantic errors such as type issues, nullability, API misuse, unreachable paths, or rule violations.
+- Nature: a correctness lane at the code-semantics level.
+- Prefer the project's wrapper and existing config such as `phpstan.neon`, eslint config, mypy config, or an equivalent build task.
+- If the project has a baseline or old technical debt, clearly separate new findings in the diff from old debt; a baseline is not a reason to skip a new blocker.
 
 ### 3. `security`
 
-- Mục tiêu: tìm pattern rủi ro trên phần code thay đổi, đặc biệt ở auth, permission, file handling, SQL, command execution, deserialization hoặc secrets.
-- Tính chất: lane risk-focused, phải `diff-aware` và có false-positive policy rõ.
-- Ưu tiên tool-backed scan như `semgrep` hoặc scanner tương đương; review tay chỉ là bổ sung, không được giả là scanner deterministic.
-- Mọi finding security nên có ít nhất `severity`, `confidence`, `category`, `evidence`, `recommendation` và nếu dismiss thì có `false_positive_reason`.
+- Goal: find risk patterns in the changed code, especially in auth, permissions, file handling, SQL, command execution, deserialization, or secrets.
+- Nature: a risk-focused lane that must be `diff-aware` with a clear false-positive policy.
+- Prefer tool-backed scanning such as `semgrep` or an equivalent scanner; manual review is only a supplement and must not pretend to be a deterministic scanner.
+- Every security finding should have at least `severity`, `confidence`, `category`, `evidence`, `recommendation`, and if dismissed a `false_positive_reason`.
 
 ### 4. `performance_heuristic`
 
-- Mục tiêu: phát hiện performance risk theo pattern code như N+1, query trong loop, blocking I/O trên hot path, render churn hoặc object churn lớn.
-- Tính chất: lane advisory nhưng bắt buộc phải hiện diện; không dùng lane này để ngụy tạo benchmark.
-- Nếu không có tool performance tự động, vẫn phải rà heuristic và ghi lại `expected_impact`, `confidence`, `trigger_condition`.
-- Lane này thường kéo `PARTIAL` hoặc remediation note, hiếm khi tự nó kéo `FAIL` trừ khi risk quá rõ và chạm critical path.
+- Goal: detect performance risks by code pattern such as N+1, queries in loops, blocking I/O on hot paths, render churn, or large object churn.
+- Nature: an advisory lane but mandatory to be present; do not use this lane to fabricate benchmarks.
+- If there is no automatic performance tool, still review heuristics and record `expected_impact`, `confidence`, `trigger_condition`.
+- This lane usually pulls `PARTIAL` or a remediation note; it rarely pulls `FAIL` on its own unless the risk is very clear and touches a critical path.
 
-## Chọn Reference Theo Ngôn Ngữ
+## Choosing The Reference By Language
 
-- Xác định `language_stack` từ `changed_files`, build path và context project.
-- Chỉ đọc reference liên quan trực tiếp với thay đổi hiện tại:
+- Determine `language_stack` from `changed_files`, the build path, and the project context.
+- Only read the reference directly related to the current change:
   - `PHP`: `references/php.md`
   - `TypeScript/JavaScript`: `references/typescript-javascript.md`
   - `Python`: `references/python.md`
   - `Go`: `references/go.md`
   - `Java`: `references/java.md`
-- Với repo nhiều ngôn ngữ, chỉ load reference cho ngôn ngữ có trong `changed_files` hoặc build path bị tác động.
-- Nếu tool trong reference không có sẵn, ghi vào `skipped_scans`, chọn fallback gần nhất và nêu rõ độ tin cậy giảm ở đâu.
+- For a multi-language repo, only load the reference for a language present in `changed_files` or the affected build path.
+- If a tool in the reference is unavailable, record it in `skipped_scans`, pick the nearest fallback, and state clearly where reliability drops.
 
-## Đầu Ra Bắt Buộc
+## Required Output
 
-Xuất artifact YAML theo schema sau:
+Emit a YAML artifact using the following schema:
 
 ```yaml
 scan_target: ""
@@ -167,70 +170,70 @@ remediation_actions: []
 notes_for_verify: ""
 ```
 
-## Ý Nghĩa Từng Output
+## Meaning Of Each Output
 
-- `scan_target`: phạm vi code được quét.
-- `scan_scope`: chế độ quét thực tế, danh sách file đổi và module bị tác động.
-- `language_stack`: ngôn ngữ hoặc framework chính liên quan tới thay đổi.
-- `available_scan_tools`: tool thực sự có trong môi trường hoặc project path hiện tại.
-- `false_positive_policy`: cách xử lý finding bị dismiss, đặc biệt ở security lane.
-- `scan_plan`: các scan sẽ chạy theo từng nhóm mục tiêu.
-- `syntax_scan_results`: kết quả kiểm tra cú pháp.
-- `static_analysis_results`: kết quả phân tích tĩnh, config đã dùng và blocker mới trong diff.
-- `security_scan_results`: kết quả security scan tĩnh với severity, confidence và lý do dismiss khi có.
-- `performance_heuristic_results`: cảnh báo performance ở mức heuristic dựa trên pattern code cùng impact dự kiến.
-- `skipped_scans`: scan không chạy được và lý do.
-- `overall_status`: kết luận tổng thể cho bước scan code.
-- `remediation_actions`: hành động cần làm trước khi release hoặc review.
-- `notes_for_verify`: ghi chú bàn giao sang `testing`, `database-change-review` hoặc `step-goal-auditor`.
+- `scan_target`: the code scope being scanned.
+- `scan_scope`: the actual scan mode, the changed file list, and the affected modules.
+- `language_stack`: the main language or framework related to the change.
+- `available_scan_tools`: tools actually present in the environment or current project path.
+- `false_positive_policy`: how dismissed findings are handled, especially in the security lane.
+- `scan_plan`: the scans to run by each goal group.
+- `syntax_scan_results`: syntax check results.
+- `static_analysis_results`: static analysis results, the config used, and new blockers in the diff.
+- `security_scan_results`: static security scan results with severity, confidence, and a dismiss reason when present.
+- `performance_heuristic_results`: performance warnings at the heuristic level based on code patterns with expected impact.
+- `skipped_scans`: scans that could not run and the reason.
+- `overall_status`: the overall conclusion for the code scan step.
+- `remediation_actions`: actions needed before release or review.
+- `notes_for_verify`: handoff notes to `testing`, `database-change-review`, or `step-goal-auditor`.
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalizing Output In A Workflow Note
 
-Nếu output của skill này được lưu thành note `.md` trong workflow chain:
-- Dùng template step 8 tại `../codex-workflow-chain/references/workflow-chain.md`.
-- Đặt schema YAML của skill này trong block `## Scan Summary`.
-- Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
-- Không chuyển finding chuẩn sang prose rời rạc rồi bỏ block YAML; block `## Scan Summary` là nguồn sự thật cho kết quả scan.
+If this skill's output is saved as a `.md` note in the workflow chain:
+- Use the step 8 template in `../codex-workflow-chain/references/workflow-chain.md`.
+- Place this skill's YAML schema in the `## Scan Summary` block.
+- Keep the field names in the schema unchanged; do not rename fields when writing them into the note.
+- Do not move standard findings into loose prose and drop the YAML block; the `## Scan Summary` block is the source of truth for scan results.
 
-## Luồng Thực Thi
+## Execution Flow
 
-1. Xác định `scan_scope`; mặc định là `DIFF_ONLY`.
-2. Suy ra `language_stack` từ `changed_files`, build path và context project.
-3. Mở đúng reference theo ngôn ngữ thay vì đọc toàn bộ biến thể.
-4. Chọn `scan_plan` theo nguyên tắc `wrapper-first`, config hiện có của project và tool khả dụng trong môi trường.
-5. Chạy lane `syntax` trước để chặn lỗi thô.
-6. Chạy lane `static_analysis` với config hoặc baseline hiện có nếu project dùng.
-7. Chạy lane `security` theo hướng `diff-aware`, ghi finding theo severity và confidence, đồng thời dismiss false positive có lý do.
-8. Chạy lane `performance_heuristic` ở mức pattern-based review, không giả benchmark.
-9. Ghi đầy đủ kết quả vào từng lane và `skipped_scans`.
-10. Kết luận `overall_status` và liệt kê `remediation_actions`.
+1. Determine `scan_scope`; default to `DIFF_ONLY`.
+2. Infer `language_stack` from `changed_files`, the build path, and the project context.
+3. Open the right reference by language instead of reading every variant.
+4. Choose a `scan_plan` by the `wrapper-first` principle, the project's existing config, and the tools available in the environment.
+5. Run the `syntax` lane first to block raw errors.
+6. Run the `static_analysis` lane with existing config or baseline if the project uses one.
+7. Run the `security` lane in a `diff-aware` way, record findings by severity and confidence, and dismiss false positives with a reason.
+8. Run the `performance_heuristic` lane at the pattern-based review level; do not fake benchmarks.
+9. Record all results in each lane and in `skipped_scans`.
+10. Conclude `overall_status` and list `remediation_actions`.
 
-## Quy Tắc Chất Lượng
+## Quality Rules
 
-- Mặc định viết và trao đổi bằng tiếng Việt.
-- Mặc định chỉ scan `changed_files` hoặc `affected_modules`; quét full repo cần có lý do rõ.
-- Ưu tiên wrapper, script và config sẵn có của project trước raw tool.
-- Không đánh dấu `PASS` nếu static analysis hoặc security scan quan trọng bị bỏ qua mà không có lý do rõ.
-- Không gọi `performance heuristic` là chứng minh hiệu năng.
-- Nếu tool không có sẵn, phải ghi `SKIP` và nêu cụ thể tên tool thiếu.
-- Nếu scan chỉ chạy ở mức self-check trong step implement, không được coi đó là kết luận verify cuối.
-- Nếu finding security bị dismiss, phải ghi `false_positive_reason`; không được xóa finding khỏi báo cáo mà không có lý do.
-- Nếu project có baseline static analysis, phải tách rõ blocker mới trong diff với debt cũ.
-- Nếu thay đổi chạm code nhạy cảm về auth, permission, file handling, SQL, command execution hoặc serialization, luôn ưu tiên security scan.
-- Tài liệu phải lưu UTF-8 và giữ nguyên tiếng Việt có dấu.
+- Default to writing and communicating in English.
+- Default to scanning only `changed_files` or `affected_modules`; a full-repo scan needs a clear reason.
+- Prefer the project's existing wrappers, scripts, and config over raw tools.
+- Do not mark `PASS` if an important static analysis or security scan was skipped without a clear reason.
+- Do not call `performance heuristic` a proof of performance.
+- If a tool is unavailable, record `SKIP` and state the missing tool name specifically.
+- If a scan only ran as a self-check in the implement step, do not treat it as the final verify conclusion.
+- If a security finding is dismissed, record a `false_positive_reason`; do not remove the finding from the report without a reason.
+- If the project has a static analysis baseline, clearly separate new blockers in the diff from old debt.
+- If the change touches security-sensitive code such as auth, permissions, file handling, SQL, command execution, or serialization, always prioritize the security scan.
+- Store documents as UTF-8 and preserve accented characters in `*.vi.md` supplement files.
 
-## Luật Ra Quyết Định
+## Decision Rule
 
-- `PASS` khi syntax bắt buộc đều đạt, static analysis không còn blocker mới, security lane đã cover phần nhạy cảm cần thiết và không còn finding `HIGH` chưa xử lý.
-- `PARTIAL` khi phần lớn scan đạt nhưng còn lane bị skip hợp lệ, còn finding mức trung bình chưa chặn release ngay hoặc performance heuristic nêu risk đáng kể cần follow-up.
-- `FAIL` khi syntax fail, static analysis có blocker mới, security finding nghiêm trọng chưa xử lý hoặc security lane bị bỏ qua trong scope nhạy cảm mà không có biện minh mạnh.
-- Nếu không có tool performance tự động, dùng `performance_heuristic_results` để ghi rõ risk thay vì bỏ qua im lặng.
-- Nếu thay đổi chỉ là business logic thuần không chạm persistence, performance heuristic có thể tối giản nhưng vẫn phải nêu rõ đã rà gì.
+- `PASS` when mandatory syntax passes, static analysis has no new blockers, the security lane has covered the needed sensitive parts, and no unhandled `HIGH` finding remains.
+- `PARTIAL` when most scans pass but a lane was legitimately skipped, medium findings remain that do not block release right away, or the performance heuristic notes a notable risk needing follow-up.
+- `FAIL` when syntax fails, static analysis has a new blocker, a serious security finding is unhandled, or the security lane was skipped in a sensitive scope without a strong justification.
+- If there is no automatic performance tool, use `performance_heuristic_results` to record the risk clearly instead of skipping silently.
+- If the change is pure business logic that does not touch persistence, the performance heuristic may be minimal but must still state what was reviewed.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Có `scan_plan` và `overall_status` rõ ràng.
-- Có `scan_scope`, `available_scan_tools` và `false_positive_policy` rõ ràng.
-- Có kết quả cho syntax, static analysis và security scan ở mức phù hợp với stack.
-- Có `performance_heuristic_results` hoặc lý do hợp lệ để tối giản.
-- Có `remediation_actions` cho mọi finding chưa đóng.
+- A clear `scan_plan` and `overall_status`.
+- A clear `scan_scope`, `available_scan_tools`, and `false_positive_policy`.
+- Results for syntax, static analysis, and security scanning at a level fitting the stack.
+- `performance_heuristic_results` or a valid reason to minimize it.
+- `remediation_actions` for every unclosed finding.

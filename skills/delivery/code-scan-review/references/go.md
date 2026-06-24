@@ -1,29 +1,35 @@
+---
+language: en
+---
+
 # Go
 
-Dùng reference này khi thay đổi chạm Go service, CLI, worker hoặc library.
+> Vietnamese: go.vi.md
 
-## Thứ Tự Ưu Tiên
+Use this reference when the change touches a Go service, CLI, worker, or library.
 
-1. Syntax và static baseline
-- Ưu tiên `go test ./...` cho package liên quan nếu môi trường cho phép.
-- Chạy `go vet ./...` cho static check cơ bản.
+## Priority Order
 
-2. Static analysis bổ sung
-- Nếu project đã có `golangci-lint`, ưu tiên wrapper đó thay vì tự ghép nhiều tool rời.
+1. Syntax and static baseline
+- Prefer `go test ./...` for the related package if the environment allows.
+- Run `go vet ./...` for a basic static check.
+
+2. Additional static analysis
+- If the project already has `golangci-lint`, prefer that wrapper instead of stitching many loose tools together.
 
 3. Security scan
-- Ưu tiên `semgrep`.
+- Prefer `semgrep`.
 
 4. Performance heuristic
-- Rà allocation không cần thiết, copy struct lớn trong loop, goroutine leak, blocking I/O trên hot path, context propagation thiếu, lock contention tiềm ẩn.
+- Review unnecessary allocations, large struct copies in loops, goroutine leaks, blocking I/O on hot paths, missing context propagation, and potential lock contention.
 
-## Heuristic Bắt Buộc Khi Scope Đồng Thời Hoặc I/O
+## Mandatory Heuristics When Scope Has Concurrency Or I/O
 
-- `context.Context` có được truyền xuyên request chain hay không.
-- Channel hoặc goroutine có đường thoát rõ hay không.
-- HTTP, DB, queue call có timeout hoặc cancellation path hay không.
+- Is `context.Context` propagated through the request chain?
+- Do channels or goroutines have a clear exit path?
+- Do HTTP, DB, or queue calls have a timeout or cancellation path?
 
 ## Fallback
 
-- Nếu `go vet` hoặc lint chuyên sâu không chạy được, vẫn ghi rõ package đã cover và phần bị bỏ qua.
-- Không gọi benchmark là đã làm nếu chưa có benchmark thật.
+- If `go vet` or deep lint cannot run, still record clearly which packages were covered and which parts were skipped.
+- Do not claim a benchmark was done when there is no real benchmark.
