@@ -68,7 +68,7 @@ tags:
 # Step 4 - Acceptance + DoR
 
 > [!summary]
-> Tóm tắt acceptance criteria, edge case, DoR và governance checks cho readiness.
+> Summarize the acceptance criteria, edge cases, DoR and governance checks for readiness.
 
 ## Step Contract
 ```yaml
@@ -79,7 +79,7 @@ done_when: []
 owner: ""
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 acceptance_criteria: []
 edge_cases: []
@@ -112,6 +112,6 @@ next_step: ""
 ```
 
 ## Handoff
-- Criteria bắt buộc:
-- Edge case phải giữ:
-- Điều kiện sang step 5:
+- Mandatory criteria:
+- Edge case to preserve:
+- Conditions to move to step 5:

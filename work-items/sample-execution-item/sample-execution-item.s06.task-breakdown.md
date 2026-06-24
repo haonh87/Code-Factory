@@ -69,32 +69,32 @@ tags:
 # Step 6 - Task Plan
 
 > [!summary]
-> Tóm tắt task plan, dependency, verify checkpoints và review checkpoints.
+> Summarize the task plan, dependencies, verify checkpoints and review checkpoints.
 
 ## Step Contract
 ```yaml
-step_goal: "Tách task đủ nhỏ để nhiều worker thực hiện song song nhưng vẫn merge được an toàn."
+step_goal: "Split tasks small enough that several workers can run in parallel but still merge safely."
 input_summary:
-  - "technical approach đã chốt"
-  - "execution policy đã có coordinator và verification owner"
+  - "technical approach locked"
+  - "execution policy has a coordinator and a verification owner"
 output_summary:
   - "task breakdown"
   - "worker assignment seed"
 done_when:
-  - "task split rõ boundary"
-  - "verify path map được về step 8"
+  - "the task split has clear boundaries"
+  - "the verify path maps to step 8"
 owner: "coordinator"
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 tasks:
-  - "TASK-EXEC-001: chốt backend callback implementation scope"
-  - "TASK-EXEC-002: chốt frontend login state/update scope"
-  - "TASK-EXEC-003: chuẩn bị verification checklist và evidence refs"
+  - "TASK-EXEC-001: lock the backend callback implementation scope"
+  - "TASK-EXEC-002: lock the frontend login state/update scope"
+  - "TASK-EXEC-003: prepare the verification checklist and evidence refs"
 dependencies:
-  - "provider constraints từ step 5"
-  - "role ownership không được overlap path lõi"
+  - "provider constraints from step 5"
+  - "role ownership must not overlap on the core path"
 handoff_points:
   - "planner -> backend-builder"
   - "planner -> frontend-builder"
@@ -102,20 +102,20 @@ handoff_points:
 ```
 
 ## Verification Plan
-- Check bắt buộc: evidence cho login happy path, callback path và fallback path.
-- Risk note: worker có thể đụng cùng auth module nếu split không đủ kỹ.
-- Rollout note nếu có: chưa có release artifact riêng; giữ ở mức sample runtime contract.
+- Mandatory check: evidence for the login happy path, the callback path and the fallback path.
+- Risk note: workers can collide on the same auth module if the split is not fine enough.
+- Rollout note if any: no separate release artifact; keep it at the sample runtime contract level.
 
 ## Governance Checks
 ```yaml
 checklist_applied:
   - "project-context/checklists/default.md"
 checks:
-  - "execution runtime không bypass workflow note làm source of truth"
-  - "verification owner tách khỏi builder chính"
+  - "the execution runtime does not bypass the workflow note as the source of truth"
+  - "the verification owner is separated from the main builder"
 blocking_items: []
 owner: "coordinator"
-next_action: "phát assignment cho step 7"
+next_action: "issue the assignment for step 7"
 ```
 
 ## Execution Runtime
@@ -135,6 +135,6 @@ next_step: "sample-execution-item.s07.implementation.md"
 ```
 
 ## Handoff
-- Task thực hiện trước: backend callback boundary, frontend login boundary, verify checklist.
-- Phụ thuộc chặn: chưa có.
-- Điều kiện sang step 7: mọi worker phải có owned_scope và done_when rõ.
+- Tasks to do first: backend callback boundary, frontend login boundary, verify checklist.
+- Blocking dependencies: none yet.
+- Conditions to move to step 7: every worker must have a clear owned_scope and done_when.

@@ -70,7 +70,7 @@ tags:
 # Step 4 - Acceptance + DoR
 
 > [!summary]
-> Tóm tắt acceptance criteria, edge case, DoR và governance checks cho readiness.
+> Summarize the acceptance criteria, edge cases, DoR and governance checks for readiness.
 
 ## Step Contract
 ```yaml
@@ -81,22 +81,22 @@ done_when: []
 owner: ""
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 acceptance_criteria:
-  - "AC-001: request nhận workspace filter hợp lệ"
-  - "AC-002: chỉ trả session thuộc workspace được yêu cầu"
-  - "AC-003: không truyền workspace filter thì output shape không đổi"
-  - "AC-004: workspace path không hợp lệ trả lỗi rõ nghĩa"
+  - "AC-001: the request accepts a valid workspace filter"
+  - "AC-002: only sessions that belong to the requested workspace are returned"
+  - "AC-003: when no workspace filter is passed, the output shape does not change"
+  - "AC-004: an invalid workspace path returns a clear error"
 edge_cases:
-  - "workspace path normalize về empty string"
-  - "workspace không có session nào"
+  - "the workspace path normalizes to an empty string"
+  - "the workspace has no sessions"
 out_of_scope:
-  - "repair hoặc reindex cass"
+  - "repair or reindex cass"
 done_when:
-  - "AC-001 tới AC-004 có owner verify rõ"
+  - "AC-001 through AC-004 have a clear owner for verify"
 behavioral_invariants:
-  - "read-only contract giữ nguyên"
+  - "the read-only contract is preserved"
 ```
 
 ## Governance Checks
@@ -104,11 +104,11 @@ behavioral_invariants:
 checklist_applied:
   - "project-context/checklists/default.md"
 checks:
-  - "governance context đã được phản ánh vào AC và SRS"
-  - "backward compatibility được materialize thành SRS-NFR-001"
+  - "the governance context has been reflected into the AC and SRS"
+  - "backward compatibility is materialized as SRS-NFR-001"
 blocking_items: []
 owner: "ba"
-next_action: "đóng DoR và freeze spec"
+next_action: "close DoR and freeze the spec"
 ```
 
 ## Definition of Ready
@@ -120,7 +120,7 @@ owners:
   - "ba"
   - "qc"
 notes:
-  - "SRS đã frozen cho sample này"
+  - "the SRS is frozen for this sample"
 ```
 
 ## Spec Freeze
@@ -134,7 +134,7 @@ requirement_ids:
   - SRS-NFR-001
   - SRS-UX-001
 accepted_assumptions:
-  - "workspace filter là optional input"
+  - "the workspace filter is an optional input"
 blockers: []
 ```
 
@@ -155,6 +155,6 @@ next_step: "sample-sdd-item.s05.technical-approach.md"
 ```
 
 ## Handoff
-- Criteria bắt buộc: AC-001 tới AC-004.
-- Edge case phải giữ: workspace invalid và workspace empty result.
-- Điều kiện sang step 5: spec frozen, DoR READY, traceability đã có ID.
+- Mandatory criteria: AC-001 through AC-004.
+- Edge case to preserve: invalid workspace and empty workspace result.
+- Conditions to move to step 5: spec frozen, DoR READY, traceability has IDs.

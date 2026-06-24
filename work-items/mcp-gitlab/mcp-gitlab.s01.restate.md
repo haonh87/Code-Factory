@@ -86,24 +86,24 @@ tags:
 # Step 1 - Clarify
 
 > [!summary]
-> Tóm tắt yêu cầu, phạm vi ban đầu, ràng buộc và governance context mở đầu.
+> Summarize the request, initial scope, constraints and the opening governance context.
 
 ## Step Contract
 ```yaml
-step_goal: "Chốt lại yêu cầu MCP GitLab ở mức đủ rõ để không hiểu nhầm scope trước khi sang business goal và open questions."
+step_goal: "Restate the MCP GitLab request clearly enough to avoid scope misunderstanding before moving to the business goal and open questions."
 input_summary:
-  - "User muốn tạo MCP cho git workflow với GitLab self-hosted tại gitlab.ggg.com.vn"
-  - "Scope đã được thu hẹp: chỉ pull và push trên repository đã tồn tại"
-  - "Không tạo mới repository GitLab"
-  - "Đã chốt dùng repo zereight/gitlab-mcp làm chuẩn cho lane GitLab"
+  - "The user wants to create an MCP for the git workflow with GitLab self-hosted at gitlab.ggg.com.vn"
+  - "The scope has been narrowed: only pull and push on existing repositories"
+  - "Do not create new GitLab repositories"
+  - "It has been locked to use the zereight/gitlab-mcp repo as the standard for the GitLab lane"
 output_summary:
-  - "Yêu cầu được restate rõ theo context brownfield"
-  - "Phạm vi draft in/out được khóa ở mức MVP"
-  - "Provider target, host và runtime chuẩn được phản ánh vào work item"
-  - "Các câu hỏi mở quan trọng được tách sang step 3"
+  - "The request is restated clearly against the brownfield context"
+  - "The draft in/out scope is locked at the MVP level"
+  - "The provider target, host and runtime standard are reflected into the work item"
+  - "The important open questions are moved to step 3"
 done_when:
-  - "Không còn hiểu nhầm rằng phase 1 phải tạo project GitLab"
-  - "Scope MVP không lẫn sang merge request, CI/CD hay admin workflow"
+  - "There is no longer a misunderstanding that phase 1 must create a GitLab project"
+  - "The MVP scope does not bleed into merge requests, CI/CD or admin workflow"
 owner: "developer"
 ```
 
@@ -111,8 +111,8 @@ owner: "developer"
 ```yaml
 governance_ref: "project-context/project-context.md"
 applicable_principles:
-  - "Router trước action"
-  - "Spec/design trước code"
+  - "Router before action"
+  - "Spec/design before code"
   - "AI proposes, human approves"
 required_reviews:
   - "spec"
@@ -120,68 +120,68 @@ required_reviews:
   - "approach"
   - "task_plan"
 prohibited_actions:
-  - "Không implement MCP server trước khi chốt spec, DoR, approach và task plan"
-  - "Không mở scope sang create repo, merge request hoặc CI/CD khi chưa được approve"
+  - "Do not implement the MCP server before the spec, DoR, approach and task plan are locked"
+  - "Do not expand the scope to repo creation, merge requests or CI/CD before it is approved"
 open_governance_questions:
-  - "Workflow artifact nên ghi provider/host/runtime ở field riêng hay decision notes chuẩn"
+  - "Should the workflow artifact record provider/host/runtime in dedicated fields or as standard decision notes"
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
-raw_request: "Tôi muốn tạo mcp cho phần git workflow với gitlab có domain gitlab.ggg.com.vn. Không, tôi chỉ cần pull, push code trên repo đã tồn tại. Không thực hiện tạo mới repo gitlab"
-restated_request: "Chuẩn hóa lane GitLab của workflow bằng cách dùng repo zereight/gitlab-mcp làm chuẩn MCP GitLab cho self-hosted host https://gitlab.ggg.com.vn, đồng thời đáp ứng nhu cầu phase 1 là inspect, pull và push trên repository đã tồn tại."
+raw_request: "I want to create an mcp for the git workflow part with gitlab whose domain is gitlab.ggg.com.vn. No, I only need to pull and push code on existing repos. Do not create new gitlab repos."
+restated_request: "Standardize the GitLab lane of the workflow by using the zereight/gitlab-mcp repo as the standard GitLab MCP for the self-hosted host https://gitlab.ggg.com.vn, while meeting the phase 1 need to inspect, pull and push on existing repositories."
 request_type: FEATURE
-user_problem_initial: "Agent hiện có lane GitHub rõ hơn GitLab, trong khi GitLab self-hosted nội bộ cần một runtime chuẩn và rule workflow rõ ràng để không phải suy diễn giữa GitHub và GitLab."
-business_context_initial: "Repo này đang chuẩn hóa MCP và workflow theo hướng Codex-first, nên cần chốt chuẩn GitLab runtime, host và rule phân biệt provider trước khi đi vào technical approach."
+user_problem_initial: "The agent currently has a clearer GitHub lane than GitLab, while the internal self-hosted GitLab needs a standard runtime and clear workflow rules so it does not have to infer between GitHub and GitLab."
+business_context_initial: "This repo is standardizing MCP and the workflow in a Codex-first direction, so the GitLab runtime, host and provider-distinction rules must be locked before moving to the technical approach."
 scope_draft:
   in:
-    - "dùng zereight/gitlab-mcp làm chuẩn runtime/reference cho lane GitLab"
-    - "xác định cách đáp ứng inspect, pull, push cho repository GitLab đã tồn tại"
-    - "ghi rõ rule workflow để phân biệt GitLab và GitHub khi scope chạm provider-specific MCP, auth hoặc host"
-    - "Codex integration/config cho runtime GitLab đã chọn"
+    - "use zereight/gitlab-mcp as the standard runtime/reference for the GitLab lane"
+    - "identify how to support inspect, pull and push for an existing GitLab repository"
+    - "record the workflow rule that distinguishes GitLab and GitHub when the scope touches provider-specific MCP, auth or host"
+    - "Codex integration/config for the chosen GitLab runtime"
   out:
-    - "tạo mới GitLab project hoặc repository"
+    - "create a new GitLab project or repository"
     - "merge request workflow"
-    - "branch protection, admin settings hoặc project provisioning"
+    - "branch protection, admin settings or project provisioning"
     - "GitLab CI/CD pipeline management"
-    - "viết lại một GitLab MCP mới từ đầu nếu repo chuẩn hiện có dùng được hoặc chỉ cần wrapper mỏng"
+    - "rewrite a new GitLab MCP from scratch if the standard repo works or only needs a thin wrapper"
 constraints_initial:
-  - "GitLab host cố định là https://gitlab.ggg.com.vn"
-  - "Workflow phải chỉ rõ provider target thay vì suy diễn GitLab/GitHub từ ngữ cảnh"
-  - "GitHub lane hiện có không được bị ảnh hưởng bởi quyết định của lane GitLab"
-  - "Không hỗ trợ destructive git actions như force push hoặc rewrite history trong phase 1"
+  - "The GitLab host is fixed at https://gitlab.ggg.com.vn"
+  - "The workflow must state the provider target explicitly instead of inferring GitLab/GitHub from context"
+  - "The existing GitHub lane must not be affected by the GitLab lane decision"
+  - "No destructive git actions such as force push or history rewrite are supported in phase 1"
 assumptions_initial:
-  - "Repository GitLab đích đã tồn tại sẵn"
-  - "zereight/gitlab-mcp là chuẩn GitLab runtime/reference đã được user chốt"
-  - "GitLab lane sẽ cần khai báo rõ provider target, host và runtime trong artifact"
-  - "Có sẵn ít nhất một cơ chế auth hợp lệ để làm việc với GitLab nội bộ"
+  - "The target GitLab repository already exists"
+  - "zereight/gitlab-mcp is the GitLab runtime/reference standard locked by the user"
+  - "The GitLab lane will need to state the provider target, host and runtime explicitly in the artifact"
+  - "At least one valid auth mechanism is available to work with the internal GitLab"
 open_questions_initial:
-  - "Repo chuẩn zereight/gitlab-mcp sẽ được dùng trực tiếp hay cần wrapper mỏng để khớp local git workflow phase 1"
-  - "Behavior khi local working tree dirty trước pull sẽ được xử lý thế nào"
+  - "Will the zereight/gitlab-mcp standard repo be used directly, or does it need a thin wrapper to fit the phase 1 local git workflow"
+  - "How will the behavior be handled when the local working tree is dirty before a pull"
 dependencies_initial:
-  - "Git CLI trên máy chạy MCP"
-  - "Kết nối tới GitLab self-hosted tại gitlab.ggg.com.vn"
-  - "Credential GitLab nội bộ theo cơ chế auth được chọn"
-  - "Repo chuẩn https://github.com/zereight/gitlab-mcp"
+  - "Git CLI on the machine running the MCP"
+  - "Connectivity to the self-hosted GitLab at gitlab.ggg.com.vn"
+  - "Internal GitLab credentials via the chosen auth mechanism"
+  - "The standard repo https://github.com/zereight/gitlab-mcp"
 risks_initial:
-  - "Repo chuẩn zereight/gitlab-mcp thiên về GitLab platform/API nên có thể cần quyết định adopt trực tiếp hay wrap thêm cho local pull/push workflow"
-  - "Nếu không ghi explicit provider target, workflow dễ drift giữa GitHub và GitLab"
-  - "Nếu mở rộng scope quá sớm sang MR hoặc create repo, work item sẽ mất focus"
-notes_for_step_2: "Business goal nên chốt rõ GitLab lane dùng zereight/gitlab-mcp làm chuẩn, đồng thời provider distinction là explicit rule của workflow."
+  - "The zereight/gitlab-mcp standard repo leans toward the GitLab platform/API, so a decision may be needed whether to adopt it directly or add a wrapper for the local pull/push workflow"
+  - "If the provider target is not recorded explicitly, the workflow can drift between GitHub and GitLab"
+  - "If the scope expands too early into MR or repo creation, the work item loses focus"
+notes_for_step_2: "The business goal should lock clearly that the GitLab lane uses zereight/gitlab-mcp as the standard, and that the provider distinction is an explicit rule of the workflow."
 ```
 
 ## Traceability
 ```yaml
 source_inputs:
-  - "chat: yêu cầu tạo MCP cho GitLab self-hosted"
-  - "chat: scope phase 1 chỉ pull/push trên repo đã tồn tại"
-  - "chat: quyết định dùng repo zereight/gitlab-mcp làm chuẩn cho GitLab"
+  - "chat: request to create an MCP for self-hosted GitLab"
+  - "chat: phase 1 scope is only pull/push on existing repos"
+  - "chat: decision to use zereight/gitlab-mcp as the GitLab standard"
   - "https://github.com/zereight/gitlab-mcp"
   - "mcp/github-push/README.md"
 next_step: "mcp-gitlab.s02.business-goal.md"
 ```
 
 ## Handoff
-- Điều đã rõ: phase 1 không tạo repo GitLab mới, GitLab lane dùng zereight/gitlab-mcp làm chuẩn, và provider distinction phải explicit.
-- Điều còn cần theo dõi: có cần wrapper mỏng quanh runtime chuẩn để khớp inspect/pull/push local workflow hay không.
-- Điều kiện sang step 2: business goal phải khóa rõ giá trị của standard runtime và non-goals.
+- What is clear: phase 1 does not create new GitLab repos, the GitLab lane uses zereight/gitlab-mcp as the standard, and the provider distinction must be explicit.
+- What still needs tracking: whether a thin wrapper around the standard runtime is needed to fit the local inspect/pull/push workflow.
+- Conditions to move to step 2: the business goal must lock the value of the standard runtime and the non-goals.

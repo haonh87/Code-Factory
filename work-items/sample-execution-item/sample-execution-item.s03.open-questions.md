@@ -68,7 +68,7 @@ tags:
 # Step 3 - Open Questions
 
 > [!summary]
-> Tóm tắt câu hỏi mở, missing input, conflict và readiness verdict.
+> Summarize the open questions, missing input, conflicts and the readiness verdict.
 
 ## Step Contract
 ```yaml
@@ -79,7 +79,7 @@ done_when: []
 owner: ""
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 open_questions: []
 missing_inputs: []
@@ -107,5 +107,5 @@ next_step: ""
 ```
 
 ## Handoff
-- Trạng thái readiness:
-- Điều cần làm để sang step 4:
+- Readiness status:
+- What to do to move to step 4:
