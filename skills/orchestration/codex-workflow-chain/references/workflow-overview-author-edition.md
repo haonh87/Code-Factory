@@ -1,26 +1,32 @@
+---
+language: en
+---
+
 # Workflow Overview: Author Edition
 
-Tài liệu này là bản overview chính thức để giới thiệu workflow ở góc nhìn delivery và tác giả.
+> Vietnamese: workflow-overview-author-edition.vi.md
 
-Nếu cần bản tham chiếu nội bộ thiên về mechanics, validator, CI, rollout status và chi tiết kỹ thuật hơn, đọc thêm `workflow-overview.md`.
+This document is the official overview that introduces the workflow from a delivery and author perspective.
 
-Nếu cần ranh giới rõ giữa `v1.0.0` và các lớp mở rộng sau đó, đọc thêm `workflow-versioning.md`.
+If you need the internal reference that leans toward mechanics, validator, CI, rollout status, and more technical detail, read `workflow-overview.md` instead.
 
-Mục tiêu của bản này không phải mô tả toàn bộ kiến trúc theo kiểu reference trước, mà là giúp người đọc trả lời nhanh:
+If you need the clear boundary between `v1.0.0` and the extension layers that came after, read `workflow-versioning.md`.
 
-- workflow này là gì
-- workflow này giải quyết pain gì
-- workflow này dùng như thế nào
-- role nào đóng vai trò gì trong workflow
-- mỗi bước đang làm gì, nhận gì, trả gì
-- workflow đang đáp ứng `SDD` ra sao
-- workflow này kết hợp các toolkit ngoài như thế nào để hoàn thiện
+The goal of this document is not to describe the entire architecture in a reference style, but to help a reader answer quickly:
 
-Thời điểm đối chiếu: `2026-04-14`.
+- what this workflow is
+- what pain this workflow solves
+- how to use this workflow
+- which role plays which part in the workflow
+- what each step is doing, what it receives, what it returns
+- how the workflow supports `SDD`
+- how this workflow combines with external toolkits to complete itself
 
-## Workflow Này Là Gì
+Cross-reference date: `2026-04-14`.
 
-Đây là một workflow delivery 8 bước cho phát triển phần mềm có AI hỗ trợ:
+## What This Workflow Is
+
+This is an eight-step delivery workflow for AI-assisted software development:
 
 ```text
 Clarify
@@ -33,76 +39,76 @@ Clarify
 -> Verify + DoD
 ```
 
-Workflow này được thiết kế cho một vấn đề rất cụ thể:
+This workflow is designed for a very specific problem:
 
-- team có nhiều role nhưng thiếu một chain bàn giao chung
-- AI có thể giúp làm nhanh hơn, nhưng dễ làm trôi scope, trôi spec và bỏ qua gate
-- delivery thường có code, docs, review, verify và release, nhưng thiếu một backbone thống nhất để nối các phần đó lại
+- the team has many roles but lacks a shared handoff chain
+- AI can help move faster, but it easily erodes scope, erodes spec, and skips gates
+- delivery usually involves code, docs, review, verify, and release, but lacks a unified backbone to connect those parts
 
-Workflow này giải quyết vấn đề đó bằng một backbone duy nhất. Mọi lớp như `governance`, `SDD`, `change layer`, `execution topology` và `adaptive planning` đều bám vào cùng backbone, thay vì tạo thêm workflow song song.
+This workflow solves that problem with a single backbone. Every layer such as `governance`, `SDD`, `change layer`, `execution topology`, and `adaptive planning` attaches to the same backbone instead of creating parallel workflows.
 
-Nói ngắn:
+In short:
 
-- đây không chỉ là workflow để coding
-- đây là một `delivery operating model` cho AI-assisted product delivery
+- this is not only a workflow for coding
+- this is a `delivery operating model` for AI-assisted product delivery
 
-## Workflow Này Dành Cho Ai
+## Who This Workflow Is For
 
-Workflow này phù hợp khi:
+This workflow fits when:
 
-- cần đi từ yêu cầu thô tới output có thể audit
-- muốn dùng AI nhưng không muốn AI bypass scope, gate và spec
-- có nhiều role cùng tham gia như `PO`, `BA`, `Designer`, `Developer`, `QC`, `DevOps`
-- cần một chain thống nhất từ discovery tới implementation và verification
-- muốn `BRD/SRS`, change package, execution artifact và CI guardrail cùng nằm trong một hệ
+- you need to go from a raw request to an auditable output
+- you want to use AI without letting AI bypass scope, gates, and spec
+- many roles participate together such as `PO`, `BA`, `Designer`, `Developer`, `QC`, `DevOps`
+- you need a unified chain from discovery to implementation and verification
+- you want `BRD/SRS`, change packages, execution artifacts, and CI guardrails to live in one system
 
-Workflow này không tối ưu nếu mục tiêu chỉ là:
+This workflow is not optimal if the goal is only:
 
-- ghi nhanh vài note cá nhân
-- xử lý một lệnh terminal rất nhỏ không cần traceability
-- làm prototype throwaway không cần gate, signoff hay review
+- jotting down a few personal notes
+- running a very small terminal command that needs no traceability
+- building a throwaway prototype with no gates, signoffs, or reviews
 
-## Workflow Này Mang Tới Điều Gì
+## What This Workflow Brings
 
-### 1. Một Backbone Chung Cho Toàn Bộ Delivery
+### 1. A Shared Backbone For The Entire Delivery
 
-Mọi work item đều đi cùng một chain từ `Clarify` tới `Verify + DoD`. Điều này giúp cả business, design, engineering và QA nhìn cùng một luồng thay vì mỗi role có một quy trình riêng.
+Every work item runs through the same chain from `Clarify` to `Verify + DoD`. This lets business, design, engineering, and QA look at the same flow instead of each role having its own process.
 
-### 2. Delivery Có Thể Audit
+### 2. Auditable Delivery
 
-Workflow không chỉ hỏi "đã làm xong chưa", mà ép phải trả lời:
+The workflow does not only ask "is it done yet"; it forces you to answer:
 
-- đang giải quyết vấn đề gì
-- vì sao việc này đáng làm
-- requirement nào đang in-scope
-- cách làm nào đã được chọn và vì sao
-- task nào cover requirement nào
-- verify dựa trên evidence nào
-- kết quả đã đạt `DoD`, `release readiness`, `business_acceptance` hay chưa
+- what problem is being solved
+- why this work is worth doing
+- which requirements are in scope
+- which approach was chosen and why
+- which tasks cover which requirements
+- what evidence the verification relies on
+- whether the result has reached `DoD`, `release readiness`, and `business_acceptance`
 
-### 3. Spec Điều Khiển Delivery
+### 3. Spec Drives Delivery
 
-Khi work item chạy theo `SDD`, `BRD/SRS` không còn là tài liệu để tham khảo. Chúng trở thành source-of-truth để điều khiển design, task plan, implementation và verification.
+When a work item runs under `SDD`, `BRD/SRS` are no longer reference documents. They become the source-of-truth that drives design, task plan, implementation, and verification.
 
-### 4. AI Có Thể Tham Gia Mạnh Hơn Mà Vẫn Có Guardrail
+### 4. AI Can Participate More Strongly While Still Having Guardrails
 
-Workflow có execution support theo `agentic` và `multi_agent` ngay từ public baseline `v1.0.0`, nhưng không bắt buộc mọi work item phải bật execution layer. Khi dùng execution layer, nó vẫn bị giữ trong step contract, `governance`, `SDD`, validation và CI enforcement.
+The workflow has execution support for `agentic` and `multi_agent` from the public baseline `v1.0.0`, but it does not force every work item to turn on the execution layer. When the execution layer is used, it is still kept inside the step contract, `governance`, `SDD`, validation, and CI enforcement.
 
-## Workflow Có Những Layer Nào
+## What Layers The Workflow Has
 
-| Layer | Vai trò | Người dùng nhận được gì |
+| Layer | Role | What the user gets |
 |---|---|---|
-| `backbone` | chain 8 bước từ yêu cầu tới `DoD` | một luồng delivery duy nhất |
-| `governance` | rule, checklist, exception, authority | quality bar và guardrail rõ ràng |
-| `SDD` | `BRD/SRS`, spec freeze, spec change, coverage | spec điều khiển delivery thay vì đứng ngoài |
-| `change layer` | `proposal -> design -> tasks -> spec-delta -> archive` | tách rõ source-of-truth của sản phẩm và của thay đổi |
-| `execution layer` | `agentic|multi_agent`, runtime artifact, review mode | vận hành linh hoạt theo scope nhưng không mất kiểm soát |
-| `adaptive planning` | `quick|full|enterprise` | cùng một workflow nhưng scale được theo độ phức tạp |
-| `automation guardrail` | scaffold, validator, fixture, CI | workflow chạy được thật, không chỉ là docs |
+| `backbone` | the eight-step chain from request to `DoD` | a single delivery flow |
+| `governance` | rules, checklists, exceptions, authority | a clear quality bar and guardrails |
+| `SDD` | `BRD/SRS`, spec freeze, spec change, coverage | spec drives delivery instead of standing outside it |
+| `change layer` | `proposal -> design -> tasks -> spec-delta -> archive` | a clear split between the product source-of-truth and the change source-of-truth |
+| `execution layer` | `agentic|multi_agent`, runtime artifacts, review mode | flexible operation by scope without losing control |
+| `adaptive planning` | `quick|full|enterprise` | the same workflow but able to scale by complexity |
+| `automation guardrail` | scaffold, validator, fixtures, CI | the workflow runs for real, not just as docs |
 
-## Role Model Trong Workflow
+## Role Model In The Workflow
 
-Workflow này là `role-aware workflow`. Điều đó có nghĩa là cùng một backbone 8 bước vẫn giữ được ownership theo chuyên môn của:
+This workflow is a `role-aware workflow`. That means the same eight-step backbone still preserves ownership by specialty for:
 
 - `PO`
 - `BA`
@@ -111,82 +117,82 @@ Workflow này là `role-aware workflow`. Điều đó có nghĩa là cùng một
 - `QC`
 - `DevOps`
 
-Điểm quan trọng là phải tách 3 lớp vai trò khác nhau:
+The important point is to separate three different role layers:
 
-| Lớp role | Dùng để làm gì | Ví dụ |
+| Role layer | What it is used for | Example |
 |---|---|---|
-| `execution_roles` | ai đang đóng góp nghiệp vụ thật cho step | `po`, `ba`, `designer`, `developer`, `qc`, `devops` |
-| `role_signoffs` | ai chịu trách nhiệm signoff gate | `dor`, `approach`, `task_plan`, `release`, `business_acceptance`, `dod` |
-| runtime roles | step đang được vận hành theo topology nào | `coordinator`, `worker`, `tester`, `auditor`, `notebooklm-researcher` |
+| `execution_roles` | who is actually contributing business work to the step | `po`, `ba`, `designer`, `developer`, `qc`, `devops` |
+| `role_signoffs` | who is responsible for signing off a gate | `dor`, `approach`, `task_plan`, `release`, `business_acceptance`, `dod` |
+| runtime roles | which topology the step is running under | `coordinator`, `worker`, `tester`, `auditor`, `notebooklm-researcher` |
 
-Nói ngắn:
+In short:
 
-- `PO/BA/Designer/Developer/QC/DevOps` trả lời câu hỏi: ai đang sở hữu phần quyết định nghiệp vụ nào
-- `gate_reviews` không phải role layer; nó là audit trail ghi human reviewer thực tế và thời điểm review cho gate đã pass
-- `coordinator/worker/verifier` trả lời câu hỏi: step này đang được chạy như thế nào
+- `PO/BA/Designer/Developer/QC/DevOps` answer: who owns which business decision
+- `gate_reviews` is not a role layer; it is the audit trail that records the actual human reviewer and the review time for a gate that has passed
+- `coordinator/worker/verifier` answer: how is this step being run
 
-### Vai Trò Của Từng Role
+### The Role Of Each Role
 
-| Role | Vai trò chính trong workflow | Step nổi bật | Output điển hình | Signoff mặc định |
+| Role | Main role in the workflow | Notable steps | Typical output | Default signoff |
 |---|---|---|---|---|
-| `PO` | giữ business intent, scope, trade-off và `business_acceptance` | `s01`, `s02`, `s04`, `s08` | business problem, success target, scope decision, BRD update, business acceptance verdict | `dor`, `business_acceptance` |
-| `BA` | làm rõ requirement, tạo `SRS`, traceability và readiness | `s01`, `s03`, `s04` | requirement brief, open questions, governance blocker, acceptance criteria, SRS update | support `dor` |
-| `Designer` | giữ UX behavior, interaction rule, accessibility baseline | `s01`, `s02`, `s04`, `s05`, `s08` | user flow, UX constraint, UX acceptance note, SRS UX behavior update | `approach` khi có UX surface; support `business_acceptance` |
-| `Developer` | chốt technical approach, task plan, implementation và technical exception | `s05`, `s06`, `s07` | technical approach, architecture boundary, task breakdown, code/config/doc changes | `approach`, `task_plan` |
-| `QC` | giữ verify evidence, checklist completeness, `DoD` và release recommendation | `s04`, `s06`, `s08` | test strategy, verification evidence, review findings, DoD verdict | `dod`, `release` |
-| `DevOps` | giữ packaging, runtime, rollout, release control | `s05`, `s06`, `s07`, `s08` | deployment plan, runtime contract, pipeline/release plan, deployment review | `release` |
+| `PO` | holds business intent, scope, trade-offs, and `business_acceptance` | `s01`, `s02`, `s04`, `s08` | business problem, success target, scope decision, BRD update, business acceptance verdict | `dor`, `business_acceptance` |
+| `BA` | clarifies requirements, creates `SRS`, traceability, and readiness | `s01`, `s03`, `s04` | requirement brief, open questions, governance blocker, acceptance criteria, SRS update | support `dor` |
+| `Designer` | holds UX behavior, interaction rules, accessibility baseline | `s01`, `s02`, `s04`, `s05`, `s08` | user flow, UX constraint, UX acceptance note, SRS UX behavior update | `approach` when there is a UX surface; support `business_acceptance` |
+| `Developer` | pins the technical approach, task plan, implementation, and technical exceptions | `s05`, `s06`, `s07` | technical approach, architecture boundary, task breakdown, code/config/doc changes | `approach`, `task_plan` |
+| `QC` | holds verify evidence, checklist completeness, `DoD`, and release recommendation | `s04`, `s06`, `s08` | test strategy, verification evidence, review findings, DoD verdict | `dod`, `release` |
+| `DevOps` | holds packaging, runtime, rollout, and release control | `s05`, `s06`, `s07`, `s08` | deployment plan, runtime contract, pipeline/release plan, deployment review | `release` |
 
-### Role Map Theo Step
+### Role Map By Step
 
-| Step | Role dẫn dắt | Vai trò của role ở step đó |
+| Step | Lead role | The role's part at that step |
 |---|---|---|
-| `s01 Clarify` | `PO`, `BA` | chốt bản hiểu chung, scope draft, context và khung `BRD` ban đầu |
-| `s02 Business Goal` | `PO` | chốt mục tiêu business, KPI, non-goals và business priority |
-| `s03 Open Questions` | `BA` | gom missing input, conflict, policy gap, governance blocker và owner cần xử lý |
-| `s04 Acceptance + DoR` | `BA`, `QC`, `PO` | chốt requirement, acceptance criteria, testability, readiness và `Spec Freeze` nếu chạy `SDD` |
-| `s05 Technical Approach` | `Developer` | chọn solution kỹ thuật; `Designer` và `DevOps` bổ sung rule UX/runtime khi scope chạm boundary tương ứng |
-| `s06 Task Plan` | `Developer` | tách task; `QC` thêm verify checkpoint; `DevOps` thêm release/rollout task; `Designer` thêm UX refinement task |
-| `s07 Implement` | `Developer` | triển khai code/config/doc; `DevOps` tạo deployment artifact nếu có; `Designer` và `QC` hỗ trợ khi scope cần |
-| `s08 Verify + DoD` | `QC` | chốt evidence, compliance, `DoD`; `DevOps` chốt release readiness; `PO` chốt `business_acceptance` khi cần |
+| `s01 Clarify` | `PO`, `BA` | pin the shared understanding, scope draft, context, and the initial `BRD` frame |
+| `s02 Business Goal` | `PO` | pin the business goal, KPI, non-goals, and business priority |
+| `s03 Open Questions` | `BA` | gather missing input, conflicts, policy gaps, governance blockers, and owners that need resolution |
+| `s04 Acceptance + DoR` | `BA`, `QC`, `PO` | pin requirements, acceptance criteria, testability, readiness, and `Spec Freeze` if running `SDD` |
+| `s05 Technical Approach` | `Developer` | choose the technical solution; `Designer` and `DevOps` add UX/runtime rules when the scope touches the corresponding boundary |
+| `s06 Task Plan` | `Developer` | split tasks; `QC` adds verify checkpoints; `DevOps` adds release/rollout tasks; `Designer` adds UX refinement tasks |
+| `s07 Implement` | `Developer` | implement code/config/doc; `DevOps` creates deployment artifacts if any; `Designer` and `QC` support when the scope needs it |
+| `s08 Verify + DoD` | `QC` | pin evidence, compliance, `DoD`; `DevOps` pins release readiness; `PO` pins `business_acceptance` when needed |
 
-### Role Và Governance
+### Role And Governance
 
-Role không chỉ tạo output. Chúng còn quyết định ai có authority ở đâu.
+Roles do not only produce output. They also decide who has authority where.
 
-- `PO` giữ business scope, trade-off và `business_acceptance`
-- `BA` giữ requirement clarity, policy gap và traceability
-- `Designer` giữ UX/accessibility rule
-- `Developer` giữ technical approach và technical exception
-- `QC` giữ verify evidence, checklist completeness và `DoD`
-- `DevOps` giữ runtime/release gate
+- `PO` holds business scope, trade-offs, and `business_acceptance`
+- `BA` holds requirement clarity, policy gaps, and traceability
+- `Designer` holds UX/accessibility rules
+- `Developer` holds the technical approach and technical exceptions
+- `QC` holds verify evidence, checklist completeness, and `DoD`
+- `DevOps` holds the runtime/release gate
 
-`role_signoffs` không tự động đồng nghĩa với quyền approve `waiver`. Khi có `governance-exception`, authority phải theo governance role model, không suy ra chỉ từ người đang làm step.
+`role_signoffs` does not automatically mean the right to approve a `waiver`. When there is a `governance-exception`, authority must follow the governance role model, not be inferred only from whoever is doing the step.
 
-## Cách Dùng Workflow Này
+## How To Use This Workflow
 
-### Cách Dùng Nhanh
+### Quick Usage
 
 Public baseline `v1.0.0`:
 
-1. Human hoặc coordinator tự chốt `work_item_slug`.
-2. Nếu có `change layer`, scaffold change package trước.
-3. Scaffold workflow vào `work-items/`.
-4. Điền nội dung thật cho từng step.
-5. Chạy validator phù hợp.
+1. The human or coordinator pins the `work_item_slug`.
+2. If there is a `change layer`, scaffold the change package first.
+3. Scaffold the workflow into `work-items/`.
+4. Fill in real content for each step.
+5. Run the appropriate validator.
 
-Nếu work item dùng execution metadata hoặc runtime artifacts, chạy thêm lane execution.
+If the work item uses execution metadata or runtime artifacts, also run the execution lane.
 
-Extension sau `v1.0.0`:
+Extension after `v1.0.0`:
 
-1. Chạy `Work Item Materialization` để chốt boundary, `work_item_slug`, dedup và `change_strategy`.
-2. Đưa work item vào `Work Item Protocol` để chốt state và authority ở cấp work item.
-3. Nếu `materialization_status=READY` và work item có `change layer`, scaffold change package trước.
-4. Scaffold hoặc auto-scaffold workflow vào `work-items/`.
-5. Human review protocol rồi mới đưa work item vào delivery backbone nếu project bật approval gate.
+1. Run `Work Item Materialization` to pin the boundary, `work_item_slug`, dedup, and `change_strategy`.
+2. Bring the work item into `Work Item Protocol` to pin state and authority at the work-item level.
+3. If `materialization_status=READY` and the work item has a `change layer`, scaffold the change package first.
+4. Scaffold or auto-scaffold the workflow into `work-items/`.
+5. Human review of the protocol happens before the work item enters the delivery backbone if the project turns on the approval gate.
 
-Chi tiết ranh giới version nằm ở `workflow-versioning.md`. Chi tiết cho lớp mở rộng trước và quanh `scaffold` nằm ở `work-item-materialization.md` và `work-item-protocol.md`.
+The version boundary details are in `workflow-versioning.md`. Details for the extension layer before and around `scaffold` are in `work-item-materialization.md` and `work-item-protocol.md`.
 
-### Command Surface Chuẩn
+### Standard Command Surface
 
 ```bash
 wfc scaffold-change --change-id <CHANGE-ID> --work-item <work-item-slug>
@@ -200,13 +206,13 @@ wfc plan --workflow-root work-items
 wfc smoke
 ```
 
-Nếu work item dùng execution metadata hoặc runtime artifacts, chạy thêm:
+If the work item uses execution metadata or runtime artifacts, also run:
 
 ```bash
 wfc exec --workflow-root work-items
 ```
 
-Lớp mở rộng sau `v1.0.0` có thể dùng thêm:
+The extension after `v1.0.0` may also use:
 
 ```bash
 wfc materialize --request "<raw-request>"
@@ -214,77 +220,77 @@ wfc work-item approve --work-item <work-item-slug> --reviewed-by <role>
 wfc protocol
 ```
 
-### Root Artifact Chuẩn
+### Standard Artifact Roots
 
-| Root | Vai trò |
+| Root | Role |
 |---|---|
-| `work-items/` | canonical artifact root cho execution trace của workflow |
-| `product-specs/` | source-of-truth cho `BRD/SRS` khi work item chạy theo `SDD` |
-| `changes/` | source-of-truth cho package thay đổi |
-| `project-context/` | governance pack mặc định của project |
+| `work-items/` | canonical artifact root for the workflow execution trace |
+| `product-specs/` | source-of-truth for `BRD/SRS` when a work item runs under `SDD` |
+| `changes/` | source-of-truth for change packages |
+| `project-context/` | the default governance pack of the project |
 
-## Step Title Và Canonical Artifact
+## Step Title And Canonical Artifact
 
-Workflow này cố ý tách `step title` và `canonical artifact slug`.
+This workflow deliberately separates `step title` and `canonical artifact slug`.
 
-- `step title` trả lời: bước này dùng để làm gì
-- `canonical artifact` trả lời: file chính của bước này tên gì
+- `step title` answers: what is this step for
+- `canonical artifact` answers: what is the main file of this step named
 
-| Step title | Canonical artifact slug | File chuẩn | Ý nghĩa |
+| Step title | Canonical artifact slug | Standard file | Meaning |
 |---|---|---|---|
-| `Clarify` | `restate` | `<work_item_slug>.s01.restate.md` | artifact chính là bản hiểu lại yêu cầu |
-| `Business Goal` | `business-goal` | `<work_item_slug>.s02.business-goal.md` | artifact chính là business goal note |
-| `Open Questions` | `open-questions` | `<work_item_slug>.s03.open-questions.md` | artifact chính là các điểm còn mở |
-| `Acceptance + DoR` | `acceptance-criteria` | `<work_item_slug>.s04.acceptance-criteria.md` | step chốt cả acceptance và readiness, nhưng file chính là acceptance criteria |
-| `Technical Approach` | `technical-approach` | `<work_item_slug>.s05.technical-approach.md` | artifact chính là technical approach note |
-| `Task Plan` | `task-breakdown` | `<work_item_slug>.s06.task-breakdown.md` | step là planning, file chính là breakdown thành task |
-| `Implement` | `implementation` | `<work_item_slug>.s07.implementation.md` | artifact chính là implementation note |
-| `Verify + DoD` | `verification` | `<work_item_slug>.s08.verification.md` | step chốt verify và `DoD`, nhưng file chính là verification note |
+| `Clarify` | `restate` | `<work_item_slug>.s01.restate.md` | the main artifact is the restated request |
+| `Business Goal` | `business-goal` | `<work_item_slug>.s02.business-goal.md` | the main artifact is the business goal note |
+| `Open Questions` | `open-questions` | `<work_item_slug>.s03.open-questions.md` | the main artifact is the list of open points |
+| `Acceptance + DoR` | `acceptance-criteria` | `<work_item_slug>.s04.acceptance-criteria.md` | the step pins both acceptance and readiness, but the main file is the acceptance criteria |
+| `Technical Approach` | `technical-approach` | `<work_item_slug>.s05.technical-approach.md` | the main artifact is the technical approach note |
+| `Task Plan` | `task-breakdown` | `<work_item_slug>.s06.task-breakdown.md` | the step is planning, the main file is the breakdown into tasks |
+| `Implement` | `implementation` | `<work_item_slug>.s07.implementation.md` | the main artifact is the implementation note |
+| `Verify + DoD` | `verification` | `<work_item_slug>.s08.verification.md` | the step pins verify and `DoD`, but the main file is the verification note |
 
-## 8 Bước Được Vận Hành Ra Sao
+## How The 8 Steps Run
 
-| Step | Luận điểm bước phải trả lời | Mục tiêu | Input chính | Output chính | Gate và cách validate | Canonical artifact |
+| Step | The point the step must answer | Goal | Main input | Main output | Gates and how to validate | Canonical artifact |
 |---|---|---|---|---|---|---|
-| `s01 Clarify` | Chúng ta đang được yêu cầu giải quyết việc gì, dưới ràng buộc nào? | làm rõ yêu cầu, scope draft, constraint, `governance context` ban đầu | raw request, ticket, context ban đầu | restated request, scope draft, assumptions, initial risks, governance context | required block, naming/frontmatter, governance context hiện diện khi cần | `s01.restate` |
-| `s02 Business Goal` | Vì sao việc này đáng làm và kết quả mong muốn là gì? | chốt giá trị business, KPI, non-goals | yêu cầu đã clarify | business goal, success metrics, non-goals, business scope | contract completeness, traceability với `s03-s04` | `s02.business-goal` |
-| `s03 Open Questions` | Còn thiếu gì để không làm sai hoặc làm lệch nguyên tắc? | lộ blocker, conflict, missing input, readiness gap | business goal và context hiện có | open questions, readiness verdict, blocker owner, governance blocker nếu có | readiness/audit block, owner rõ, blocker được phân loại | `s03.open-questions` |
-| `s04 Acceptance + DoR` | Thế nào là làm đúng và đủ sẵn sàng để đi tiếp? | chốt acceptance criteria, readiness, `governance checks`, `Spec Freeze` khi cần | goal đã rõ, các open question trọng yếu đã có hướng xử lý | AC đo được, `DoR`, governance checks, `Spec Freeze` nếu chạy SDD | governance gate, `DoR` gate, SDD validator, checklist profile phù hợp | `s04.acceptance-criteria` |
-| `s05 Technical Approach` | Sẽ giải quyết bằng cách nào mà vẫn bám đúng rule và spec? | chọn solution, trade-off, boundary bị tác động | AC, governance context, system context, frozen spec nếu có | technical approach, option analysis, boundary, architecture detail, `Spec Change` nếu phát hiện gap | governance checks, trace về spec/change, exception rõ nếu lệch chuẩn | `s05.technical-approach` |
-| `s06 Task Plan` | Cần làm những việc gì, theo thứ tự nào và kiểm ở đâu? | bẻ nhỏ thành task có thứ tự, có coverage và checkpoint verify/review | technical approach đã chốt | task breakdown, verification plan, review checkpoints, rollout coverage | planning validator, governance checks, traceability tới AC/spec | `s06.task-breakdown` |
-| `s07 Implement` | Giải pháp đã được triển khai đúng phạm vi và đúng contract chưa? | thực hiện thay đổi thật trong code/config/doc | task plan, codebase, execution policy nếu có | code/config/doc changes, implementation notes, runtime artifacts khi cần | execution validator, change validator, spec alignment, exception handling | `s07.implementation` |
-| `s08 Verify + DoD` | Kết quả có thật sự đạt yêu cầu và đủ chất lượng để đóng chưa? | kết luận evidence, compliance, completion, `DoD` | implementation output, AC, spec, checklist, review findings | verification evidence, `DoD`, spec coverage, governance compliance, release/business acceptance input | testing, review, governance validator, `DoD` gate, CI enforcement | `s08.verification` |
+| `s01 Clarify` | What are we asked to solve, and under which constraints? | clarify the request, scope draft, constraints, initial `governance context` | raw request, ticket, initial context | restated request, scope draft, assumptions, initial risks, governance context | required block, naming/frontmatter, governance context present when needed | `s01.restate` |
+| `s02 Business Goal` | Why is this worth doing and what is the expected outcome? | pin business value, KPI, non-goals | the clarified request | business goal, success metrics, non-goals, business scope | contract completeness, traceability with `s03-s04` | `s02.business-goal` |
+| `s03 Open Questions` | What is still missing so we do not do it wrong or drift from the rules? | surface blockers, conflicts, missing input, readiness gaps | business goal and current context | open questions, readiness verdict, blocker owners, governance blockers if any | readiness/audit block, clear owners, blockers classified | `s03.open-questions` |
+| `s04 Acceptance + DoR` | What does "done right" mean, and are we ready enough to continue? | pin acceptance criteria, readiness, `governance checks`, `Spec Freeze` when needed | the goal is clear, key open questions have a handling direction | measurable AC, `DoR`, governance checks, `Spec Freeze` if running SDD | governance gate, `DoR` gate, SDD validator, matching checklist profile | `s04.acceptance-criteria` |
+| `s05 Technical Approach` | How will we solve it while staying true to the rules and spec? | choose the solution, trade-offs, impacted boundaries | AC, governance context, system context, frozen spec if any | technical approach, option analysis, boundaries, architecture detail, `Spec Change` if a gap is found | governance checks, trace to spec/change, clear exception if deviating | `s05.technical-approach` |
+| `s06 Task Plan` | What work needs doing, in what order, and where do we verify? | break it into ordered tasks with coverage and verify/review checkpoints | the pinned technical approach | task breakdown, verification plan, review checkpoints, rollout coverage | planning validator, governance checks, traceability to AC/spec | `s06.task-breakdown` |
+| `s07 Implement` | Has the solution been implemented in the right scope and per the contract? | make real changes in code/config/doc | task plan, codebase, execution policy if any | code/config/doc changes, implementation notes, runtime artifacts when needed | execution validator, change validator, spec alignment, exception handling | `s07.implementation` |
+| `s08 Verify + DoD` | Does the result truly meet the requirements and is it high-quality enough to close? | conclude evidence, compliance, completion, `DoD` | implementation output, AC, spec, checklist, review findings | verification evidence, `DoD`, spec coverage, governance compliance, release/business acceptance input | testing, review, governance validator, `DoD` gate, CI enforcement | `s08.verification` |
 
-## Input Và Output Được Hiểu Theo Cách Nào
+## How Input And Output Are Understood
 
-Workflow này dùng một nguyên tắc rất thực dụng:
+This workflow uses a very pragmatic principle:
 
-- `Input` là thông tin hoặc quyết định mà bước hiện tại cần nhận để có thể bắt đầu an toàn
-- `Output` là thứ bước đó phải bàn giao cho bước sau hoặc stakeholder
-- `Output` phải được mô tả bằng giá trị business trước, tên artifact chỉ dùng để trace
+- `Input` is the information or decision the current step needs to receive in order to start safely
+- `Output` is what the step must hand off to the next step or to a stakeholder
+- `Output` must be described by business value first; the artifact name is only used for tracing
 
-Điều này giúp workflow không bị rơi vào tình trạng:
+This keeps the workflow from falling into:
 
-- có file nhưng không có handoff rõ ràng
-- có artifact nhưng không nói được nó phục vụ quyết định gì
-- có code nhưng không rõ đang cover requirement nào
+- having files but no clear handoff
+- having artifacts but not being able to say which decision they serve
+- having code but not knowing which requirement it covers
 
-## Workflow Validate Output Và Quy Trình Xử Lý Như Thế Nào
+## How The Workflow Validates Output And Process
 
-Workflow validate ở 3 lớp:
+The workflow validates at three layers:
 
 ### 1. Authoring Layer
 
-Scaffolder ép note được sinh đúng:
+The scaffolder forces notes to be generated correctly:
 
 - naming
 - frontmatter
 - governance metadata
 - step blocks
-- optional blocks cho `SDD`, `change`, `execution`, `planning`
+- optional blocks for `SDD`, `change`, `execution`, `planning`
 
 ### 2. Validation Layer
 
-Validator kiểm workflow theo contract:
+The validator checks the workflow against the contract:
 
 - `validate:workflow`
 - `validate:workflow:sdd`
@@ -296,7 +302,7 @@ Validator kiểm workflow theo contract:
 
 ### 3. CI Enforcement Layer
 
-CI hiện đã có sẵn các job baseline:
+CI already has the baseline jobs:
 
 - `workflow-tooling`
 - `workflow-artifacts`
@@ -306,61 +312,61 @@ CI hiện đã có sẵn các job baseline:
 - `workflow-planning`
 - `workflow-authoring-smoke`
 
-Điều này có nghĩa là workflow không chỉ nói “nên làm gì”, mà đã có cơ chế kiểm:
+This means the workflow does not only say "what should be done"; it already has a checking mechanism:
 
-- artifact có đúng contract không
-- governance có được áp đúng không
-- work item có đúng spec/change/execution/planning rule không
-- authoring flow có bị drift giữa docs, scaffold và validator hay không
+- whether artifacts match the contract
+- whether governance is applied correctly
+- whether the work item follows the spec/change/execution/planning rules
+- whether the authoring flow drifts between docs, scaffold, and validator
 
-## Role Model Và Execution Topology Gắn Với Nhau Ra Sao
+## How Role Model And Execution Topology Connect
 
-Workflow này cố ý không trộn `role nghiệp vụ` với `role runtime`.
+This workflow deliberately does not mix `business roles` with `runtime roles`.
 
-| Câu hỏi | Lớp trả lời |
+| Question | The layer that answers |
 |---|---|
-| Ai đang chịu trách nhiệm về business, requirement, design, implementation, quality, release? | `execution_roles` |
-| Ai có trách nhiệm signoff `DoR`, `approach`, `task_plan`, `release`, `business_acceptance`, `DoD`? | `role_signoffs` |
-| Step này đang chạy bằng một agent hay nhiều agent? | `execution_mode` |
-| Nếu chạy nhiều agent thì ai điều phối, ai thực thi, ai kiểm chứng? | runtime roles trong `execution topology` |
+| Who is responsible for business, requirements, design, implementation, quality, release? | `execution_roles` |
+| Who has the signoff duty for `DoR`, `approach`, `task_plan`, `release`, `business_acceptance`, `DoD`? | `role_signoffs` |
+| Is this step running with one agent or many agents? | `execution_mode` |
+| If running many agents, who coordinates, who executes, who verifies? | runtime roles in `execution topology` |
 
-Ví dụ:
+Example:
 
-- Một step có thể có `execution_roles = [ba, qc, developer]`
-- nhưng runtime vẫn chỉ là `agentic`
-- hoặc một step có thể có `execution_roles = [developer, qc, devops]`
-- và runtime là `multi_agent` với `coordinator + builder + tester`
+- a step can have `execution_roles = [ba, qc, developer]`
+- but the runtime is still just `agentic`
+- or a step can have `execution_roles = [developer, qc, devops]`
+- and the runtime is `multi_agent` with `coordinator + builder + tester`
 
-Điểm quan trọng là:
+The important points:
 
-- role nghiệp vụ giữ ownership và signoff
-- runtime role giữ cách vận hành
-- hai lớp này bổ sung cho nhau, không thay thế nhau
+- business roles hold ownership and signoff
+- runtime roles hold how things run
+- these two layers complement each other; they do not replace each other
 
-## Workflow Đáp Ứng SDD Như Thế Nào
+## How The Workflow Supports SDD
 
-Workflow này không tạo workflow riêng cho `SDD`. Thay vào đó, `SDD` được gắn vào cùng backbone 8 bước.
+This workflow does not create a separate workflow for `SDD`. Instead, `SDD` is attached to the same eight-step backbone.
 
-### Claim Cốt Lõi
+### Core Claim
 
-Khi một work item chạy theo `SDD`, workflow buộc:
+When a work item runs under `SDD`, the workflow forces:
 
-- `BRD` khóa bài toán business
-- `SRS` khóa requirement hệ thống
-- step 4 chốt `Spec Freeze`
-- step 5-7 mở `Spec Change` nếu lệch frozen spec
-- step 8 chốt `Spec Coverage`
+- `BRD` to lock the business problem
+- `SRS` to lock the system requirements
+- step 4 to pin `Spec Freeze`
+- steps 5-7 to open `Spec Change` if the frozen spec drifts
+- step 8 to conclude `Spec Coverage`
 
-Điều này biến spec từ tài liệu tham khảo thành cơ chế điều khiển delivery.
+This turns spec from a reference document into a delivery control mechanism.
 
-### Mapping Theo Bước
+### Mapping By Step
 
-| Step | Vai trò với `SDD` |
+| Step | Role with `SDD` |
 |---|---|
-| `s01-s02` | hình thành hoặc cập nhật `BRD` |
-| `s03-s04` | hình thành hoặc cập nhật `SRS`, map acceptance và freeze spec |
-| `s05-s07` | mọi design/task/implementation phải trace về requirement; nếu lệch thì mở `Spec Change` |
-| `s08` | kết luận `Spec Coverage` theo `PASS|FAIL|PARTIAL|UNTESTED` |
+| `s01-s02` | form or update `BRD` |
+| `s03-s04` | form or update `SRS`, map acceptance, and freeze spec |
+| `s05-s07` | every design/task/implementation must trace to requirements; if it drifts, open `Spec Change` |
+| `s08` | conclude `Spec Coverage` as `PASS|FAIL|PARTIAL|UNTESTED` |
 
 ### Lifecycle
 
@@ -370,7 +376,7 @@ draft -> reviewed -> approved -> frozen -> implemented -> verified -> accepted
 
 ### Traceability
 
-Workflow trace tối thiểu chuỗi:
+The workflow traces at minimum the chain:
 
 ```text
 BRD-###
@@ -381,85 +387,85 @@ BRD-###
 -> PASS|FAIL|PARTIAL|UNTESTED
 ```
 
-Điều này giúp workflow không rơi vào ba tình huống thường gặp:
+This keeps the workflow from falling into three common situations:
 
-- spec chỉ tồn tại để tham khảo
-- code thay đổi behavior nhưng không cập nhật spec
-- verification không map ngược về requirement
+- spec only exists for reference
+- code changes behavior but does not update spec
+- verification does not map back to requirements
 
 ### Source-of-Truth
 
-| Artifact | Vai trò |
+| Artifact | Role |
 |---|---|
-| `product-specs/brd/` | source-of-truth cho business problem, goal, KPI, scope, business rules |
-| `product-specs/srs/` | source-of-truth cho requirement, NFR, UX/system behavior và acceptance mapping |
-| `work-items/` | execution trace của work item |
-| `changes/` | package thay đổi đang được đề xuất hoặc thực thi |
+| `product-specs/brd/` | source-of-truth for business problem, goal, KPI, scope, business rules |
+| `product-specs/srs/` | source-of-truth for requirements, NFRs, UX/system behavior, and acceptance mapping |
+| `work-items/` | execution trace of the work item |
+| `changes/` | change packages being proposed or executed |
 
-## Workflow Kết Hợp Với Các Toolkit Ngoài Như Thế Nào
+## How The Workflow Combines With External Toolkits
 
-Workflow này không copy nguyên framework nào. Nó dùng backbone nội bộ làm host workflow, rồi chỉ mượn phần mạnh nhất của từng toolkit.
+This workflow does not copy any framework wholesale. It uses the internal backbone as the host workflow and only borrows the strongest part of each toolkit.
 
-### Từ `spec-kit`
+### From `spec-kit`
 
-Workflow mượn:
+The workflow borrows:
 
 - `constitution`
 - checklist discipline
 - `clarify/analyze` mindset
 - governance-first delivery
 
-Kết quả trong workflow hiện tại:
+Result in the current workflow:
 
 - `project-context/`
 - `constitution`
-- governance checks trong step
-- quality bar, exception handling và authority model rõ hơn
+- governance checks inside steps
+- a clearer quality bar, exception handling, and authority model
 
-### Từ `OpenSpec`
+### From `OpenSpec`
 
-Workflow mượn:
+The workflow borrows:
 
-- change-centric model
-- package `proposal -> design -> tasks -> spec-delta -> archive`
+- the change-centric model
+- the `proposal -> design -> tasks -> spec-delta -> archive` package
 
-Kết quả trong workflow hiện tại:
+Result in the current workflow:
 
 - `changes/`
 - `change_id`
 - `spec_delta_refs`
 - `archive_status`
 
-### Từ `cc-sdd`
+### From `cc-sdd`
 
-Workflow mượn:
+The workflow borrows:
 
-- execution loop `requirements -> design -> tasks -> implementation`
-- implementer/reviewer/fixer mindset
-- runtime artifact và multi-agent contract
+- the `requirements -> design -> tasks -> implementation` execution loop
+- the implementer/reviewer/fixer mindset
+- runtime artifacts and the multi-agent contract
 
-Kết quả trong workflow hiện tại:
+Result in the current workflow:
 
 - `execution_mode`
 - `review_mode`
 - `verification_owner`
-- runtime artifacts cho `execution-policy`, `worker-assignment`, `worker-handoff-report`, `merge-report`
+- runtime artifacts for `execution-policy`, `worker-assignment`, `worker-handoff-report`, `merge-report`
 
-### Từ `BMAD-METHOD`
+### From `BMAD-METHOD`
 
-Workflow mượn:
+The workflow borrows:
 
 - `quick|full|enterprise`
 - role-aware planning depth
 - scale-adaptive routing
 
-Kết quả trong workflow hiện tại:
+Result in the current workflow:
 
 - `planning_track`
-- cùng một backbone nhưng độ sâu planning khác nhau
-- workflow vẫn giữ một chain duy nhất thay vì tách nhiều flow riêng
+- the same backbone but different planning depth
+- the workflow still keeps a single chain instead of splitting into several flows
 
-Kết quả cuối cùng cho người dùng không phải là “đang dùng nhiều framework”, mà là một workflow duy nhất nhưng có đủ:
+The final result for the user is not "using many frameworks", but a single workflow that still has enough:
 
 - governance
 - spec
@@ -467,26 +473,26 @@ Kết quả cuối cùng cho người dùng không phải là “đang dùng nhi
 - execution
 - planning depth
 
-## Vì Sao Nên Dùng Workflow Này
+## Why You Should Use This Workflow
 
-### 1. Nó Giải Quyết Đúng Pain Của AI-Assisted Delivery
+### 1. It Solves The Right Pain Of AI-Assisted Delivery
 
-Phần khó nhất của AI-assisted delivery không phải viết thêm code, mà là giữ cho:
+The hardest part of AI-assisted delivery is not writing more code, but keeping:
 
-- scope không trôi
-- spec không bị bypass
-- handoff không mơ hồ
-- verification không cảm tính
+- scope from eroding
+- spec from being bypassed
+- handoffs from being vague
+- verification from being subjective
 
-Workflow này được thiết kế trực tiếp để giải quyết các pain đó.
+This workflow is designed directly to solve those pains.
 
-### 2. Nó Không Đánh Đổi Giữa Nhanh Và Chặt
+### 2. It Does Not Trade Off Fast Versus Strict
 
-`quick|full|enterprise` cho phép cùng một backbone phục vụ nhiều mức độ phức tạp khác nhau, thay vì hoặc quá nhẹ hoặc quá nặng.
+`quick|full|enterprise` lets the same backbone serve many complexity levels, instead of being either too light or too heavy.
 
-### 3. Nó Dùng Được Thật
+### 3. It Is Usable For Real
 
-Workflow này đã được triển khai thành tooling và CI thật:
+This workflow has been implemented as real tooling and CI:
 
 - artifact roots
 - scaffold
@@ -494,22 +500,22 @@ Workflow này đã được triển khai thành tooling và CI thật:
 - fixtures
 - CI jobs
 
-Nghĩa là đây không còn là một bộ ý tưởng trên giấy.
+That means this is no longer a set of ideas on paper.
 
-## Cách Đọc Tài Liệu Sau Overview
+## How To Read Documents After This Overview
 
-Nếu muốn đi sâu hơn sau tài liệu này:
+If you want to go deeper after this document:
 
-- đọc `workflow-chain.md` để xem template, naming, schema và block chi tiết
-- đọc `role-aware-workflow.md` để xem role card, role outputs và role map theo step
-- đọc `spec-driven-development.md` để xem lifecycle `SDD`
-- đọc `target-architecture.md` để hiểu các layer của workflow
-- đọc `implementation-blueprint.md` để xem workflow đã rollout tới đâu
-- đọc `workflow-ci-enforcement.md` để hiểu CI guardrail
+- read `workflow-chain.md` to see templates, naming, schemas, and block detail
+- read `role-aware-workflow.md` to see role cards, role outputs, and the role map by step
+- read `spec-driven-development.md` to see the `SDD` lifecycle
+- read `target-architecture.md` to understand the layers of the workflow
+- read `implementation-blueprint.md` to see how far the workflow has rolled out
+- read `workflow-ci-enforcement.md` to understand the CI guardrail
 
-## Tình Trạng Delivery Hiện Tại
+## Current Delivery Status
 
-Tới `2026-04-14`, phase `0-5` của implementation blueprint đã được triển khai ở mức public baseline. Điều này có nghĩa:
+As of `2026-04-14`, phases `0-5` of the implementation blueprint have been rolled out at the public baseline level. This means:
 
 - `Phase 0: Backbone + Governance`: done
 - `Phase 1: SDD Materialization`: done baseline
@@ -518,22 +524,22 @@ Tới `2026-04-14`, phase `0-5` của implementation blueprint đã được tri
 - `Phase 4: Adaptive Planning`: done baseline
 - `Phase 5: Hardening`: done baseline
 
-Điều đó có nghĩa là workflow hiện đã đủ để:
+That means the workflow is already enough to:
 
-- authoring
+- author
 - validate
 - CI enforce
-- chạy theo `SDD`
-- quản lý change
-- hỗ trợ execution topology
-- scale theo planning track
+- run under `SDD`
+- manage changes
+- support execution topology
+- scale by planning track
 
-Phần public baseline này không bao gồm `Work Item Materialization` và `Work Item Protocol`; hai lớp đó là extension sau `v1.0.0`.
+This public baseline does not include `Work Item Materialization` and `Work Item Protocol`; those two layers are extensions after `v1.0.0`.
 
-Phần còn lại chủ yếu là:
+What remains is mostly:
 
 - stale exception checks
-- drift checks sâu hơn
-- semantic lint sâu hơn cho evidence và traceability
+- deeper drift checks
+- deeper semantic lint for evidence and traceability
 
-Đây là lý do workflow có thể được giới thiệu như một sản phẩm đang vận hành được, thay vì một design proposal.
+This is why the workflow can be introduced as a product that is already operable, rather than a design proposal.
