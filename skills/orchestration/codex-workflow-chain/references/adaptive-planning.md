@@ -1,52 +1,58 @@
+---
+language: en
+---
+
 # Adaptive Planning
 
-Tài liệu này materialize `Phase 4: Adaptive Planning` theo hướng `BMAD-inspired routing`, nhưng vẫn giữ workflow backbone 8 bước là trục duy nhất.
+> Vietnamese: adaptive-planning.vi.md
 
-## Mục Tiêu
+This document materializes `Phase 4: Adaptive Planning` along a `BMAD-inspired routing` direction, while keeping the eight-step workflow backbone as the single axis.
 
-- thêm `planning_track` vào workflow note
-- route độ sâu authoring theo `quick|full|enterprise`
-- giữ cùng một workflow backbone, không sinh workflow song song
-- dùng validator và CI để khóa planning preset
+## Goals
+
+- add `planning_track` to the workflow note
+- route authoring depth by `quick|full|enterprise`
+- keep one workflow backbone; do not spawn parallel workflows
+- use the validator and CI to lock the planning preset
 
 ## Planning Track
 
-| Track | Khi dùng | Preset mặc định |
+| Track | When to use | Default preset |
 |---|---|---|
-| `quick` | bug nhỏ, change nhỏ, scope hẹp, một boundary chính | `governance_profile=default`, `execution_mode=agentic`, `review_mode=self`, `sdd_mode=none` |
-| `full` | feature/change thông thường, cần đủ discovery + delivery | `governance_profile=default`, `execution_mode=agentic`, `review_mode=self`, `sdd_mode=none` |
-| `enterprise` | scope có nhiều role, review lane nặng, compliance/runtime risk cao | `governance_profile=strict`, `execution_mode=agentic`, `review_mode=independent`, `verification_owner=auditor`, `sdd_mode=none` |
+| `quick` | small bug, small change, narrow scope, one main boundary | `governance_profile=default`, `execution_mode=agentic`, `review_mode=self`, `sdd_mode=none` |
+| `full` | ordinary feature/change that needs full discovery + delivery | `governance_profile=default`, `execution_mode=agentic`, `review_mode=self`, `sdd_mode=none` |
+| `enterprise` | scope with many roles, a heavy review lane, high compliance/runtime risk | `governance_profile=strict`, `execution_mode=agentic`, `review_mode=independent`, `verification_owner=auditor`, `sdd_mode=none` |
 
 ## Routing Matrix
 
-| Tín hiệu | Track khuyến nghị |
+| Signal | Recommended track |
 |---|---|
-| một boundary, low risk, không cần review tách biệt | `quick` |
-| nhiều requirement nhưng chưa tới mức compliance-heavy | `full` |
-| nhiều role signoff, release risk cao, verify phải độc lập | `enterprise` |
+| one boundary, low risk, no separate review needed | `quick` |
+| many requirements but not yet compliance-heavy | `full` |
+| many role signoffs, high release risk, verification must be independent | `enterprise` |
 
-## Rule Baseline Được Enforce
+## Rule Baseline Enforced
 
 ### `quick`
 
-- `execution_mode` phải là `agentic`
-- `review_mode` phải là `self`
-- `sdd_mode` không được là `strict`
+- `execution_mode` must be `agentic`
+- `review_mode` must be `self`
+- `sdd_mode` must not be `strict`
 
 ### `full`
 
-- là baseline mặc định
-- không thêm guardrail riêng ở phase này ngoài contract chung
+- is the default baseline
+- no additional guardrails in this phase beyond the common contract
 
 ### `enterprise`
 
-- `governance_profile` không được là `default`
-- step delivery `s05-s08` không được để `review_mode=self`
-- step delivery `s05-s08` phải có `verification_owner`
+- `governance_profile` must not be `default`
+- delivery steps `s05-s08` must not use `review_mode=self`
+- delivery steps `s05-s08` must have a `verification_owner`
 
-## Command Chuẩn
+## Standard Commands
 
-Scaffold theo track:
+Scaffold by track:
 
 ```bash
 wfc scaffold --work-item <work-item-slug> --planning-track quick
@@ -60,8 +66,8 @@ Validate planning:
 wfc plan --workflow-root work-items
 ```
 
-## Sample Canonical
+## Canonical Samples
 
 - `work-items/sample-quick-item/`
 - `work-items/sample-enterprise-item/`
-- các work item cũ chưa có `planning_track` hiện được validator xem như `full` để giữ backward compatibility trong rollout phase này
+- older work items without `planning_track` are currently treated by the validator as `full` to preserve backward compatibility during this rollout phase

@@ -1,47 +1,53 @@
+---
+language: en
+---
+
 # Workflow Versioning
 
-Tài liệu này chốt ranh giới giữa public baseline `v1.0.0` và các extension sau đó.
+> Vietnamese: workflow-versioning.vi.md
 
-Thời điểm đối chiếu: `2026-04-14`.
+This document pins the boundary between the public baseline `v1.0.0` and the extensions that follow it.
 
-## Câu Chốt
+Cross-reference date: `2026-04-14`.
 
-- `v1.0.0` = manual scaffold backbone + validator lanes + execution support có sẵn
-- extension sau `v1.0.0` = `Work Item Materialization`, `Work Item Protocol` và lifecycle/approval ở cấp work item
+## Bottom Line
+
+- `v1.0.0` = manual scaffold backbone + validator lanes + built-in execution support
+- post-`v1.0.0` extensions = `Work Item Materialization`, `Work Item Protocol`, and work-item-level lifecycle/approval
 
 ## Public Baseline `v1.0.0`
 
-Đây là release public đầu tiên và là câu chuyện mặc định khi onboarding người dùng mới.
+This is the first public release and the default story when onboarding new users.
 
-### Bao Gồm
+### Includes
 
-- workflow backbone `s01 -> s08`
-- `work-items/` là canonical artifact root
-- scaffold workflow bằng `work_item_slug` do human hoặc coordinator chốt trước
-- scaffold change package bằng `change_id` do human hoặc coordinator chốt trước
-- governance layer
-- `SDD` layer
-- change layer
-- execution support theo `agentic|multi_agent`
-- adaptive planning theo `quick|full|enterprise`
-- validator cho naming, governance, `SDD`, change, execution, planning
-- authoring smoke cho luồng `scaffold -> validate`
+- the `s01 -> s08` workflow backbone
+- `work-items/` as the canonical artifact root
+- workflow scaffolding by a `work_item_slug` locked by a human or coordinator
+- change package scaffolding by a `change_id` locked by a human or coordinator
+- the governance layer
+- the `SDD` layer
+- the change layer
+- execution support via `agentic|multi_agent`
+- adaptive planning via `quick|full|enterprise`
+- validators for naming, governance, `SDD`, change, execution, and planning
+- authoring smoke for the `scaffold -> validate` flow
 
-### Không Bao Gồm
+### Does Not Include
 
 - `Work Item Materialization`
 - `Work Item Protocol`
-- auto-derive `work_item_slug` từ raw request
-- approval gate ở cấp work item
-- lifecycle command như `work-item approve|activate|close`
+- auto-deriving `work_item_slug` from a raw request
+- approval gates at the work-item level
+- lifecycle commands such as `work-item approve|activate|close`
 
-### Quan Trọng
+### Important
 
-- execution support thuộc phạm vi `v1.0.0`
-- execution support không có nghĩa mọi work item đều phải bật `agentic` hoặc `multi_agent`
-- baseline mặc định vẫn là flow manual scaffold
+- execution support is in scope for `v1.0.0`
+- execution support does not mean every work item must turn on `agentic` or `multi_agent`
+- the default baseline is still the manual scaffold flow
 
-### Command Surface Khuyến Nghị
+### Recommended Command Surface
 
 ```bash
 wfc init
@@ -54,30 +60,30 @@ wfc exec
 wfc plan
 ```
 
-### Cách Vận Hành
+### How It Operates
 
-- human nhận raw request
-- human hoặc coordinator chốt `work_item_slug`
-- nếu cần change package thì scaffold change trước
-- scaffold workflow
-- điền nội dung `s01 -> s08`
-- chạy validator phù hợp với layer đang bật
+- a human receives the raw request
+- a human or coordinator locks the `work_item_slug`
+- if a change package is needed, scaffold the change first
+- scaffold the workflow
+- fill in the `s01 -> s08` content
+- run the validator matching the active layer
 
-## Extension Sau `v1.0.0`
+## Extensions After `v1.0.0`
 
-Các lớp sau không thuộc public baseline.
+The following layers are not part of the public baseline.
 
 - `Work Item Materialization`
 - `Work Item Protocol`
-- approval gate và lifecycle command ở cấp work item
+- approval gates and lifecycle commands at the work-item level
 
-### Mục Đích
+### Purpose
 
-- giảm thao tác manual trước `scaffold`
-- cho phép agent đề xuất hoặc tạo work item có kiểm soát
-- tăng khả năng audit ở cấp work item lifecycle
+- reduce manual steps before `scaffold`
+- let the agent propose or create a work item in a controlled way
+- increase auditability at the work-item lifecycle level
 
-### Command Surface Mở Rộng
+### Extended Command Surface
 
 ```bash
 wfc materialize --request "<raw-request>"
@@ -88,26 +94,26 @@ wfc work-item activate --work-item <work-item-slug>
 wfc protocol
 ```
 
-## Trạng Thái Repo
+## Repo State
 
-Repo hiện tại có thể chứa cả baseline `v1.0.0` và code/docs của extension sau đó.
+The current repo may contain both the `v1.0.0` baseline and the code/docs of the extensions that follow.
 
-Điều đó không có nghĩa:
+That does not mean:
 
-- mọi team phải dùng extension ngay
-- onboarding nên bắt đầu từ extension
-- `agentic` bị xem là post-`v1.0.0`
+- every team must use the extensions immediately
+- onboarding should start from the extensions
+- `agentic` is considered post-`v1.0.0`
 
-## Quy Tắc Giao Tiếp
+## Communication Rules
 
-Khi viết doc, quickstart hoặc help:
+When writing docs, quickstarts, or help text:
 
-- nếu nói `v1.0.0`, mặc định kể flow manual `scaffold -> validate`
-- có thể nhắc `agentic|multi_agent` như execution support thuộc baseline
-- nếu nhắc `materialize`, `work-item protocol` hoặc approval lifecycle, phải ghi rõ đó là extension sau `v1.0.0`
+- if you mention `v1.0.0`, default to the manual `scaffold -> validate` flow
+- you may mention `agentic|multi_agent` as execution support within the baseline
+- if you mention `materialize`, the `work-item protocol`, or the approval lifecycle, you must state clearly that these are extensions after `v1.0.0`
 
-## Quy Tắc Vocabulary
+## Vocabulary Rules
 
-- dùng `scaffold` cho việc sinh note hoặc package
-- dùng `implemented` hoặc `available` cho capability đã có trong repo
-- chỉ dùng `materialize` cho extension `Work Item Materialization`
+- use `scaffold` for generating a note or package
+- use `implemented` or `available` for a capability already present in the repo
+- use `materialize` only for the `Work Item Materialization` extension
