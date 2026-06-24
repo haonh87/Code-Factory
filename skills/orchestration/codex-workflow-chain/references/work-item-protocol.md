@@ -1,88 +1,94 @@
+---
+language: en
+---
+
 # Work Item Protocol
 
-Lưu ý versioning:
+> Vietnamese: work-item-protocol.vi.md
 
-- tài liệu này thuộc lớp mở rộng `post-v1`
-- `baseline v1` không yêu cầu `Work Item Protocol`
-- trong `baseline v1`, lifecycle ở cấp work item được theo dõi chủ yếu qua note workflow, validator artifact và review thủ công
-- ranh giới version chính thức nằm ở `workflow-versioning.md`
+Versioning notes:
 
-Tài liệu này định nghĩa protocol vận hành của một `work item` sau khi đã có quyết định materialization.
+- this document belongs to the `post-v1` extension layer
+- `baseline v1` does not require `Work Item Protocol`
+- in `baseline v1`, the work-item-level lifecycle is tracked mainly through the workflow note, the artifact validator, and manual review
+- the official version boundary lives in `workflow-versioning.md`
 
-Nếu `work-item-materialization.md` trả lời câu hỏi:
+This document defines the operating protocol of a `work item` after the materialization decision has been made.
 
-- có nên mở work item mới không
-- slug là gì
-- có cần `change layer` không
+If `work-item-materialization.md` answers the questions:
 
-thì tài liệu này trả lời:
+- whether to open a new work item
+- what the slug is
+- whether a `change layer` is needed
 
-- work item đang ở trạng thái nào
-- ai được phép đổi trạng thái đó
-- cần handoff hoặc evidence gì để đi tiếp
-- command hoặc action nào tương ứng với từng trạng thái
+then this document answers:
 
-Thời điểm đối chiếu: `2026-04-14`.
+- what state the work item is in
+- who is allowed to change that state
+- what handoff or evidence is needed to continue
+- which command or action corresponds to each state
 
-## Mục Tiêu
+Cross-reference date: `2026-04-14`.
 
-`Work Item Protocol` là contract ở lớp vận hành nằm giữa:
+## Goal
 
-- raw request và materialization
-- scaffold và workflow backbone `s01 -> s08`
-- change lifecycle trong `changes/`
-- authority của human, coordinator và agentic runtime
+`Work Item Protocol` is the contract at the operating layer between:
 
-Mục tiêu của protocol này là:
+- the raw request and materialization
+- scaffold and the `s01 -> s08` workflow backbone
+- the change lifecycle in `changes/`
+- the authority of the human, the coordinator, and the agentic runtime
 
-- chặn việc mở work item mới một cách ngẫu hứng
-- chặn việc scaffold xong nhưng không rõ ownership, state hoặc handoff
-- cho phép `agentic` tự mở work item khi đủ điều kiện
-- giữ audit trail nhất quán từ lúc đề xuất tới lúc đóng hoặc archive
+The goal of this protocol is to:
 
-Lưu ý quan trọng:
+- stop new work items from being opened arbitrarily
+- stop scaffolding without clear ownership, state, or handoff
+- allow `agentic` to open a work item on its own when conditions are met
+- keep a consistent audit trail from proposal to close or archive
 
-- `work item approval` không thay cho `bootstrap gate` của `empty/greenfield project`
-- với project mới, trước khi materialize work item implementation đầu tiên phải có evidence rằng `Spec`, `Contract` khi có, `Approach` và `Foundation Decision` khi có đã được human pass
-- với `brownfield`, protocol vẫn cho phép materialize/scaffold để authoring, nhưng work item phải khai báo `delivery_context=brownfield` và bám đủ output baseline/impact/regression của backbone trước khi implement
-- nếu chưa có bootstrap evidence, handoff đúng là quay về clarify/spec/approach, không được scaffold rồi hợp thức hóa sau
-- `list` và `status` có thể bootstrap report read-only từ `s01` cũ để quan sát trạng thái legacy scaffold
-- các action mutating như `approve`, `reject`, `activate`, `block`, `resume`, `verify`, `close`, `archive`, `cancel` phải dùng report đã tồn tại; không được tự bootstrap từ `s01`
-- các human gate được coi là trusted chỉ khi có signed receipt ngoài project root; metadata trong note/report không còn đủ để mở gate một mình
+Important notes:
 
-## Phạm Vi
+- `work item approval` does not replace the `bootstrap gate` of an `empty/greenfield project`
+- for a new project, before materializing the first implementation work item, there must be evidence that `Spec`, `Contract` when present, `Approach`, and `Foundation Decision` when present have been human-passed
+- for `brownfield`, the protocol still allows materialize/scaffold for authoring, but the work item must declare `delivery_context=brownfield` and follow enough of the backbone's baseline/impact/regression output before implementing
+- if there is no bootstrap evidence yet, the correct handoff is to go back to clarify/spec/approach, not to scaffold and legitimize afterward
+- `list` and `status` may bootstrap a read-only report from old `s01` to observe the state of legacy scaffolding
+- mutating actions such as `approve`, `reject`, `activate`, `block`, `resume`, `verify`, `close`, `archive`, `cancel` must use an already-existing report; they must not bootstrap from `s01` on their own
+- human gates are considered trusted only when there is a signed receipt outside the project root; metadata in a note/report is no longer enough to open a gate on its own
 
-Áp dụng cho lifecycle của **một** work item.
+## Scope
 
-Không áp dụng cho:
+Applies to the lifecycle of **one** work item.
 
-- initiative, epic hoặc portfolio nhiều work item
-- state của riêng từng step trong `s01 -> s08`
-- state riêng của `change package`
+Does not apply to:
 
-Protocol này không tạo step mới.
+- an initiative, epic, or portfolio of many work items
+- the state of each individual step in `s01 -> s08`
+- the separate state of a `change package`
 
-- `Materialization` vẫn là gate trước `scaffold`
-- `Workflow backbone` vẫn là chain delivery chính
-- `Execution runtime` vẫn là cách từng step được chạy
+This protocol does not create a new step.
 
-## Mối Quan Hệ Với Các Tài Liệu Khác
+- `Materialization` remains the gate before `scaffold`
+- the `Workflow backbone` remains the main delivery chain
+- the `Execution runtime` remains how each step is run
 
-- `work-item-materialization.md`: chốt boundary, slug, dedup, `change_strategy`
-- `workflow-chain.md`: quy định step, artifact, gate và handoff của `s01 -> s08`
-- `execution-runtime.md`: quy định `agentic|multi_agent` ở cấp step
-- `spec-driven-development.md`: govern lifecycle của `BRD/SRS` khi có `SDD`
-- `changes/README.md`: govern lifecycle của `change package`
+## Relationship With Other Documents
 
-Một câu ngắn để nhớ:
+- `work-item-materialization.md`: pins boundary, slug, dedup, `change_strategy`
+- `workflow-chain.md`: governs the steps, artifacts, gates, and handoffs of `s01 -> s08`
+- `execution-runtime.md`: governs `agentic|multi_agent` at the step level
+- `spec-driven-development.md`: governs the lifecycle of `BRD/SRS` when `SDD` applies
+- `changes/README.md`: governs the lifecycle of a change package
 
-- `Materialization` mở cửa
-- `Work Item Protocol` giữ trạng thái
-- `Workflow Chain` làm delivery
+A short line to remember:
 
-## Thực Thể Cốt Lõi
+- `Materialization` opens the door
+- `Work Item Protocol` holds the state
+- `Workflow Chain` does the delivery
 
-Một work item theo protocol này gồm các thành phần logic sau:
+## Core Entities
+
+A work item under this protocol consists of the following logical parts:
 
 - `raw_request`
 - `materialization_report`
@@ -97,9 +103,9 @@ Một work item theo protocol này gồm các thành phần logic sau:
 
 ## Protocol Status
 
-`protocol_status` là state ở cấp work item, không phải state của step.
+`protocol_status` is the state at the work-item level, not the state of a step.
 
-Enum chuẩn:
+Standard enum:
 
 - `INTAKE`
 - `PROPOSED`
@@ -112,67 +118,67 @@ Enum chuẩn:
 - `ARCHIVED`
 - `CANCELLED`
 
-## Ý Nghĩa Từng Status
+## Meaning Of Each Status
 
 ### `INTAKE`
 
-- mới nhận raw request
-- chưa có slug ổn định
-- chưa được quyền scaffold
+- the raw request has just been received
+- no stable slug yet
+- not yet allowed to scaffold
 
 ### `PROPOSED`
 
-- đã có candidate work item hoặc candidate split
-- materialization chưa đủ chắc để scaffold
-- có thể cần human confirm hoặc clarify thêm
+- there is a candidate work item or a candidate split
+- materialization is not solid enough to scaffold
+- may need human confirmation or further clarification
 
 ### `READY_TO_MATERIALIZE`
 
 - `materialization_status=READY`
-- dedup đã rõ
-- `change_strategy` đã rõ
-- đủ điều kiện gọi command scaffold
+- dedup is clear
+- `change_strategy` is clear
+- conditions to call the scaffold command are met
 
 ### `MATERIALIZED`
 
-- change package cần thiết đã được scaffold hoặc reuse xong
-- workflow artifact root cho work item đã được tạo
-- frontmatter/naming ban đầu đã tồn tại
+- the required change package has been scaffolded or reused
+- the workflow artifact root for the work item has been created
+- the initial frontmatter/naming exists
 
 ### `ACTIVE`
 
-- work item đã mở execution path trong backbone `s07 -> s08`
-- gate authoring trước code ở `s04`, `s05`, `s06` đã có evidence phù hợp để runtime cho phép implement
+- the work item has opened an execution path in the `s07 -> s08` backbone
+- the pre-code authoring gates at `s04`, `s05`, `s06` have the right evidence for the runtime to allow implementation
 
 ### `BLOCKED`
 
-- work item có blocker chặn tiến độ
-- blocker có thể đến từ input, governance, spec, authority, tool hoặc change package
+- the work item has a blocker stopping progress
+- the blocker may come from input, governance, spec, authority, tooling, or the change package
 
 ### `VERIFIED`
 
-- `s08` đã có verification evidence đủ để kết luận kỹ thuật
-- chưa đồng nghĩa `DONE` nếu còn signoff hoặc release/business acceptance
+- `s08` has enough verification evidence to conclude technically
+- not the same as `DONE` if signoffs or release/business acceptance remain
 
 ### `DONE`
 
-- work item đã đạt `DoD`
-- các signoff bắt buộc trong `s08` đã hoàn tất; nếu scope yêu cầu thì gồm cả `UAT`, `Release`, `Business Acceptance`
+- the work item has reached `DoD`
+- the required signoffs in `s08` are complete; if the scope requires it, this includes `UAT`, `Release`, and `Business Acceptance`
 
 ### `ARCHIVED`
 
-- nếu có change package, `archive_status=archived`
-- nếu không có change package, work item được đóng và không còn action delivery mở
+- if there is a change package, `archive_status=archived`
+- if there is no change package, the work item is closed and has no open delivery action
 
 ### `CANCELLED`
 
-- work item bị hủy có chủ đích
-- không tiếp tục chain delivery hiện tại
-- phải có lý do và ref thay thế nếu bị supersede
+- the work item is intentionally canceled
+- it does not continue the current delivery chain
+- it must have a reason and a replacement ref if superseded
 
-## Transition Chuẩn
+## Standard Transitions
 
-### Transition Hợp Lệ
+### Valid Transitions
 
 - `INTAKE -> PROPOSED`
 - `PROPOSED -> READY_TO_MATERIALIZE`
@@ -189,136 +195,136 @@ Enum chuẩn:
 - `ACTIVE -> CANCELLED`
 - `BLOCKED -> CANCELLED`
 
-### Transition Không Hợp Lệ
+### Invalid Transitions
 
-- `INTAKE -> MATERIALIZED` nếu không qua materialization
-- `PROPOSED` hoặc `READY_TO_MATERIALIZE` -> `ACTIVE` nếu chưa materialize và chưa có gate evidence bắt buộc
-- `ACTIVE -> DONE` nếu không có `VERIFIED`
-- `DONE -> ACTIVE` trừ khi mở work item mới hoặc có explicit re-open protocol
-- `ARCHIVED -> ACTIVE` bằng cách sửa tay artifact cũ; phải tạo protocol event mới hoặc work item mới
+- `INTAKE -> MATERIALIZED` without going through materialization
+- `PROPOSED` or `READY_TO_MATERIALIZE` -> `ACTIVE` without materializing and without the required gate evidence
+- `ACTIVE -> DONE` without `VERIFIED`
+- `DONE -> ACTIVE` unless opening a new work item or via an explicit re-open protocol
+- `ARCHIVED -> ACTIVE` by hand-editing an old artifact; a new protocol event or a new work item must be created instead
 
-## Điều Kiện Cho Mỗi Transition
+## Conditions For Each Transition
 
 ### `INTAKE -> PROPOSED`
 
-Yêu cầu:
+Requires:
 
-- có `raw_request`
-- có tóm tắt request tối thiểu
-- đã xác định candidate đầu tiên hoặc quyết định `defer/split`
+- a `raw_request`
+- a minimum request summary
+- a first candidate or a `defer/split` decision has been made
 
 ### `PROPOSED -> READY_TO_MATERIALIZE`
 
-Yêu cầu:
+Requires:
 
 - `materialization_status=READY`
-- `work_item_slug` đã pass naming rule
-- `dedup_result` không còn mơ hồ
-- `change_strategy` đã kết luận
-- không còn blocker ở mức authoring
+- `work_item_slug` passes the naming rule
+- `dedup_result` is no longer ambiguous
+- `change_strategy` is concluded
+- no authoring-level blocker remains
 
 ### `READY_TO_MATERIALIZE -> MATERIALIZED`
 
-Yêu cầu:
+Requires:
 
-- command scaffold cần thiết đã chạy thành công
-- nếu `change_strategy=create_new`, change package phải tồn tại trước hoặc trong cùng transaction logic
-- validator baseline tối thiểu không fail ở mức naming/frontmatter ban đầu
+- the required scaffold command has run successfully
+- if `change_strategy=create_new`, the change package must exist before or within the same logical transaction
+- the minimum baseline validator does not fail at the initial naming/frontmatter level
 
 ### `MATERIALIZED -> ACTIVE`
 
-Yêu cầu:
+Requires:
 
-- `work item approval` đã `APPROVED`
-- nếu có `change_id`, `change package approval` đã `APPROVED`
-- nếu `delivery_context=greenfield`, `bootstrap gate` đã `APPROVED`
-- `s04`, `s05`, `s06` đã có evidence gate đủ để mở execution
-- `granted_write_paths` đã được khai báo để capability control biết implementation path nào được mở ghi
-- trusted signed receipt cho `work-item`, `change` và các gate step bắt buộc đã tồn tại và còn khớp artifact hiện tại
-- handoff vào execution path đã rõ
+- `work item approval` is `APPROVED`
+- if there is a `change_id`, `change package approval` is `APPROVED`
+- if `delivery_context=greenfield`, the `bootstrap gate` is `APPROVED`
+- `s04`, `s05`, `s06` have enough gate evidence to open execution
+- `granted_write_paths` has been declared so capability control knows which implementation path is open for writing
+- a trusted signed receipt for `work-item`, `change`, and the required step gates exists and still matches the current artifact
+- the handoff into the execution path is clear
 
 ### `ACTIVE -> BLOCKED`
 
-Yêu cầu:
+Requires:
 
-- blocker được mô tả rõ
-- owner hoặc action để gỡ blocker được ghi lại
-- nếu blocker là governance/spec/change, phải có ref tương ứng
+- the blocker is clearly described
+- the owner or the action to clear the blocker is recorded
+- if the blocker is governance/spec/change, the corresponding ref is present
 
 ### `BLOCKED -> ACTIVE`
 
-Yêu cầu:
+Requires:
 
-- blocker đã được giải quyết hoặc accepted assumption đã được ghi rõ
-- handoff quay lại step owner rõ
+- the blocker has been resolved or an accepted assumption has been recorded
+- the handoff back to the step owner is clear
 
 ### `ACTIVE -> VERIFIED`
 
-Yêu cầu:
+Requires:
 
-- `s08` có evidence verify và source-of-truth đã được cập nhật
-- residual risks đã được ghi minh bạch
-- quality gate kỹ thuật đã hoàn tất hoặc limitation đã được nêu
+- `s08` has verify evidence and the source-of-truth has been updated
+- residual risks are recorded transparently
+- the technical quality gate is complete or the limitation is stated
 
 ### `VERIFIED -> DONE`
 
-Yêu cầu:
+Requires:
 
-- `definition-of-done` đã pass trong `s08`
-- `uat`, `release` và `business_acceptance` đã xong trong `s08` nếu scope yêu cầu
-- không còn blocker mở ở cấp work item
+- `definition-of-done` has passed in `s08`
+- `uat`, `release`, and `business_acceptance` are done in `s08` if the scope requires
+- no open blocker at the work-item level
 
 ### `DONE -> ARCHIVED`
 
-Yêu cầu:
+Requires:
 
-- nếu có `change_id`, archive lifecycle của change package đã hoàn tất
-- nếu không có `change_id`, work item được kết luận đóng và không còn pending delivery
+- if there is a `change_id`, the change package archive lifecycle is complete
+- if there is no `change_id`, the work item is concluded as closed with no pending delivery
 
 ## Operation Protocol
 
 ### `propose`
 
-Mục tiêu:
+Goal:
 
-- biến raw request thành candidate work item
+- turn a raw request into a candidate work item
 
-Output tối thiểu:
+Minimum output:
 
 - `materialization_report`
 - `protocol_status=PROPOSED`
 
 ### `materialize`
 
-Mục tiêu:
+Goal:
 
-- khóa `work_item_slug`
-- khóa `change_strategy`
-- scaffold artifact ban đầu
+- lock the `work_item_slug`
+- lock the `change_strategy`
+- scaffold the initial artifacts
 
-Output tối thiểu:
+Minimum output:
 
 - `workflow_root`
 - `protocol_status=MATERIALIZED`
 
 ### `activate`
 
-Mục tiêu:
+Goal:
 
-- handoff work item đã scaffold vào backbone `s01`
+- hand off the scaffolded work item into the backbone at `s01`
 
-Output tối thiểu:
+Minimum output:
 
 - `current_step=s07`
 - `protocol_status=ACTIVE`
 
 ### `block`
 
-Mục tiêu:
+Goal:
 
-- dừng tiến độ một cách explicit, không để state ngầm
+- stop progress explicitly, not via an implicit state
 
-Output tối thiểu:
+Minimum output:
 
 - `blockers`
 - `handoff_target`
@@ -326,118 +332,118 @@ Output tối thiểu:
 
 ### `resume`
 
-Mục tiêu:
+Goal:
 
-- quay lại `ACTIVE` sau khi blocker được gỡ
+- return to `ACTIVE` after the blocker is cleared
 
 ### `verify`
 
-Mục tiêu:
+Goal:
 
-- kết luận technical verification ở cấp work item
+- conclude the technical verification at the work-item level
 
-Output tối thiểu:
+Minimum output:
 
 - `current_step=s08`
 - `protocol_status=VERIFIED`
 
 ### `close`
 
-Mục tiêu:
+Goal:
 
-- đóng work item sau khi `VERIFIED`
+- close the work item after `VERIFIED`
 
-Output tối thiểu:
+Minimum output:
 
 - `protocol_status=DONE`
 
 ### `archive`
 
-Mục tiêu:
+Goal:
 
-- kết thúc lifecycle của work item
+- end the lifecycle of the work item
 
-Output tối thiểu:
+Minimum output:
 
 - `protocol_status=ARCHIVED`
 
 ### `cancel`
 
-Mục tiêu:
+Goal:
 
-- hủy work item có chủ đích
+- intentionally cancel the work item
 
-Output tối thiểu:
+Minimum output:
 
 - `protocol_status=CANCELLED`
 - `reason`
-- `superseded_by` nếu có
+- `superseded_by` if any
 
 ### `split`
 
-`split` là operation đặc biệt, không phải status.
+`split` is a special operation, not a status.
 
 Rule:
 
-- ưu tiên split ở `PROPOSED` hoặc `READY_TO_MATERIALIZE`
-- nếu split sau `MATERIALIZED`, parent phải ghi rõ giữ residual scope hay bị supersede
-- nếu parent không còn scope thực thi, parent nên chuyển `CANCELLED`
+- prefer splitting at `PROPOSED` or `READY_TO_MATERIALIZE`
+- if splitting after `MATERIALIZED`, the parent must clearly state whether it keeps residual scope or is superseded
+- if the parent has no executable scope left, the parent should move to `CANCELLED`
 
 ## Authority Model
 
 ### Human
 
-Có authority mặc định để:
+Has default authority to:
 
-- approve hoặc reject candidate work item
-- yêu cầu split, merge logic hoặc cancel
-- quyết định initiative mơ hồ có được auto-scaffold hay không
+- approve or reject a candidate work item
+- request a split, a merge logic, or a cancel
+- decide whether a vague initiative may be auto-scaffolded
 
 ### Coordinator
 
-Có authority để:
+Has authority to:
 
-- vận hành protocol trong flow delivery
-- chuyển `MATERIALIZED -> ACTIVE`
-- chuyển `ACTIVE <-> BLOCKED`
-- đề xuất `DONE` hoặc `CANCELLED`
+- run the protocol within the delivery flow
+- move `MATERIALIZED -> ACTIVE`
+- move `ACTIVE <-> BLOCKED`
+- propose `DONE` or `CANCELLED`
 
-Coordinator không tự override governance authority hoặc business acceptance authority.
+The coordinator does not override governance authority or business acceptance authority on its own.
 
 ### Agentic
 
-Chỉ được tự:
+May only do the following on its own:
 
 - `propose`
 - `materialize`
-- scaffold work item mới
+- scaffold a new work item
 
-khi đồng thời thỏa:
+when all of the following hold at the same time:
 
 - `materialization_status=READY`
 - `protocol_status=READY_TO_MATERIALIZE`
-- không có ambiguity về `reuse_work_item` hoặc `reuse_change`
-- command scaffold suy ra được đầy đủ
+- there is no ambiguity about `reuse_work_item` or `reuse_change`
+- the scaffold command is fully derivable
 
-Agentic không được tự:
+Agentic must not on its own:
 
-- split initiative mơ hồ thành nhiều item nếu chưa có rule rõ
-- reuse hoặc reopen work item archived mà không có human/coordinator decision
-- mark `DONE` hoặc `ARCHIVED` chỉ dựa vào scaffold hay code changes
+- split a vague initiative into many items without a clear rule
+- reuse or reopen an archived work item without a human/coordinator decision
+- mark `DONE` or `ARCHIVED` based only on scaffolding or code changes
 
 ## Handoff Protocol
 
-### Handoff Bắt Buộc Ở Cấp Work Item
+### Required Handoffs At The Work-Item Level
 
 - `materialization -> scaffold`
 - `MATERIALIZED -> s01 Clarify`
-- `BLOCKED -> owner giải blocker`
+- `BLOCKED -> blocker owner`
 - `VERIFIED -> signoff owners`
 - `DONE -> archive lifecycle`
 
-### Handoff Payload Tối Thiểu
+### Minimum Handoff Payload
 
-Mỗi handoff nên có:
+Each handoff should have:
 
 - `protocol_status`
 - `work_item_slug`
@@ -448,12 +454,12 @@ Mỗi handoff nên có:
 - `handoff_target`
 - `refs`
 
-## Output Contract Chuẩn
+## Standard Output Contract
 
-Baseline hiện tại hỗ trợ 2 cách giữ output protocol:
+The current baseline supports two ways to keep protocol output:
 
-- JSON report, mặc định được ghi vào `<workflow_root>/<work_item_slug>.work-item-report.json` khi chạy `wfc materialize --auto-scaffold`
-- block `## Work Item Protocol` trong `s01` để audit ngay trong note workflow
+- a JSON report, by default written to `<workflow_root>/<work_item_slug>.work-item-report.json` when running `wfc materialize --auto-scaffold`
+- a `## Work Item Protocol` block in `s01` to audit directly inside the workflow note
 
 ```yaml
 protocol_status: INTAKE|PROPOSED|READY_TO_MATERIALIZE|MATERIALIZED|ACTIVE|BLOCKED|VERIFIED|DONE|ARCHIVED|CANCELLED
@@ -484,15 +490,15 @@ bootstrap_reviewed_by: ""
 bootstrap_reviewed_at: ""
 ```
 
-Ghi chú:
+Notes:
 
-- `NOT_REQUIRED` được giữ trong enum để tương thích artifact cũ; protocol-managed work item mới không được dùng giá trị này.
-- `review_required` luôn phải là `true` với work item do protocol quản lý.
-- `decision_owner` là owner của quyết định materialization/protocol do runtime tạo ra, không thay human approval authority.
+- `NOT_REQUIRED` is kept in the enum for compatibility with old artifacts; a new protocol-managed work item must not use this value.
+- `review_required` must always be `true` for a protocol-managed work item.
+- `decision_owner` is the owner of the materialization/protocol decision produced by the runtime; it does not replace human approval authority.
 
 ## Audit Event Vocabulary
 
-Khuyến nghị dùng vocabulary ổn định:
+A stable vocabulary is recommended:
 
 - `REQUEST_CAPTURED`
 - `CANDIDATE_PROPOSED`
@@ -515,7 +521,7 @@ Khuyến nghị dùng vocabulary ổn định:
 
 ## Command Surface Mapping
 
-### Baseline Hiện Có
+### Current Baseline
 
 - `wfc materialize --request "<raw-request>"`
 - `wfc work-item status --work-item <slug>`
@@ -538,66 +544,66 @@ Khuyến nghị dùng vocabulary ổn định:
 - `wfc scaffold-step --work-item <work-item-slug> --step <sNN>`
 - `wfc validate --workflow-root work-items --project-root .`
 
-`wfc materialize` ở baseline hiện tại:
+`wfc materialize` in the current baseline:
 
-- sinh materialization + protocol report ở dạng JSON
-- suy ra slug candidate, `change_strategy`, `change_id`, `planning_track`, `governance_profile`
-- hỗ trợ `--auto-scaffold` khi status đạt `READY_TO_MATERIALIZE`
-- nhúng block `Work Item Materialization` và `Work Item Protocol` vào `s01` sau khi scaffold thành công
-- tự đặt `approval_status=PENDING_REVIEW`, buộc human review trước khi vào `ACTIVE`
-- không mở `ACTIVE` chỉ vì scaffold xong; `s04-s06` phải có evidence gate phù hợp trước khi execute
+- generates the materialization + protocol report as JSON
+- derives the candidate slug, `change_strategy`, `change_id`, `planning_track`, `governance_profile`
+- supports `--auto-scaffold` when the status reaches `READY_TO_MATERIALIZE`
+- embeds the `Work Item Materialization` and `Work Item Protocol` blocks into `s01` after scaffolding succeeds
+- sets `approval_status=PENDING_REVIEW` on its own, forcing human review before `ACTIVE`
+- does not open `ACTIVE` just because scaffolding finished; `s04-s06` must have the right gate evidence before execution
 
 `wfc work-item list|status`:
 
-- có thể bootstrap report read-only từ `s01` nếu work item cũ chưa có `.work-item-report.json`
-- không được sync bootstrap report này ngược lại xuống filesystem
+- may bootstrap a read-only report from `s01` if an old work item has no `.work-item-report.json`
+- must not sync this bootstrap report back to the filesystem
 
 `wfc work-item approve|reject|activate|block|resume|verify|close|archive|cancel`:
 
-- phải dùng `.work-item-report.json` đã tồn tại
-- nếu chỉ có `s01` legacy mà chưa có report, phải materialize lại hoặc tạo report theo flow chính thức trước
-- `activate` và `resume` vào `ACTIVE` ở `s07` phải có ít nhất một `write-root` để capability control mở đúng implementation path
+- must use an existing `.work-item-report.json`
+- if there is only a legacy `s01` and no report yet, it must re-materialize or create the report via the official flow first
+- `activate` and `resume` into `ACTIVE` at `s07` must have at least one `write-root` so capability control opens the correct implementation path
 
 `wfc gate approve|reject|status`:
 
-- dùng để seal trusted receipt cho các gate human review bắt buộc
-- với gate step như `spec`, `dor`, `approach`, `task_plan`, receipt sẽ bám digest của note hiện tại; sửa note sau khi approve sẽ làm receipt stale
-- với `bootstrap`, receipt bám artifact được truyền qua `--ref`
-- lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase
+- used to seal a trusted receipt for the required human review gates
+- for step gates such as `spec`, `dor`, `approach`, `task_plan`, the receipt pins the digest of the current note; editing the note after approval makes the receipt stale
+- for `bootstrap`, the receipt pins the artifact passed via `--ref`
+- the first approval in a trusted approval root creates an approver keypair and asks the human to enter an approval passphrase
 
 `wfc capability status|sync|check`:
 
-- `status`: xem policy capability control đang coi path nào là authoring roots, protected roots và granted write roots
-- `sync`: áp policy capability control vào quyền ghi filesystem của project
-- `check --path <path>`: kiểm path cụ thể có được phép ghi theo policy hiện tại hay không
+- `status`: see which paths capability control treats as authoring roots, protected roots, and granted write roots
+- `sync`: apply the capability control policy to the project's filesystem write permissions
+- `check --path <path>`: check whether a specific path may be written under the current policy
 
 ### Target Extension
 
-Các command sau vẫn là target contract tiếp theo:
+The following commands are still the next target contract:
 
 - `wfc work-item split --work-item <slug>`
 - `wfc work-item reopen --work-item <slug>`
 - `wfc work-item list`
 
-Nếu implement sau này, các command này phải bám đúng enum và transition trong tài liệu này, không tự invent state mới.
+If implemented later, these commands must follow the enum and transitions in this document; they must not invent new states on their own.
 
-## Tích Hợp Với Workflow Hiện Tại
+## Integration With The Current Workflow
 
-Flow khuyến nghị:
+Recommended flow:
 
 1. `INTAKE`
-2. chạy `Work Item Materialization`
-3. nếu đã đủ, chuyển `READY_TO_MATERIALIZE`
-4. scaffold change package nếu cần
-5. scaffold workflow
-6. chuyển `MATERIALIZED`
-7. author `s01 -> s06`, ghi block protocol + materialization và hoàn tất gate human cần thiết
-8. chuyển `ACTIVE`
-9. đi qua `s07 -> s08`
-10. sau `s08`, chuyển `VERIFIED -> DONE`
-11. nếu lifecycle yêu cầu, chuyển `ARCHIVED`
+2. run `Work Item Materialization`
+3. if ready, move to `READY_TO_MATERIALIZE`
+4. scaffold the change package if needed
+5. scaffold the workflow
+6. move to `MATERIALIZED`
+7. author `s01 -> s06`, recording the protocol + materialization block and completing the required human gates
+8. move to `ACTIVE`
+9. go through `s07 -> s08`
+10. after `s08`, move `VERIFIED -> DONE`
+11. if the lifecycle requires it, move to `ARCHIVED`
 
-## Block Audit Khuyến Nghị Trong `s01`
+## Recommended Audit Block In `s01`
 
 ````md
 ## Work Item Protocol
@@ -636,19 +642,19 @@ audit_events:
 ```
 ````
 
-Block này không thay `## Step Contract`.
+This block does not replace `## Step Contract`.
 
-Nó chỉ giữ lifecycle state ở cấp work item.
+It only keeps the lifecycle state at the work-item level.
 
-## Ví Dụ
+## Examples
 
-### Ví Dụ 1. Request Mơ Hồ
+### Example 1. Vague Request
 
 Input:
 
-- `Tôi muốn làm chức năng đăng nhập`
+- `I want to build a login feature`
 
-Protocol khuyến nghị:
+Recommended protocol:
 
 ```yaml
 protocol_status: PROPOSED
@@ -657,23 +663,23 @@ work_item_slug: "user-login"
 change_strategy: create_new
 required_actions:
   - "clarify login scope"
-  - "confirm split hay single work item"
+  - "confirm split or single work item"
 blockers:
-  - "scope chưa rõ email/password hay social login"
+  - "scope not clear whether email/password or social login"
 ```
 
-Ý nghĩa:
+Meaning:
 
-- có candidate
-- chưa được scaffold
+- there is a candidate
+- it has not been scaffolded
 
-### Ví Dụ 2. Bug Rõ Ràng
+### Example 2. Clear Bug
 
 Input:
 
-- `Fix timeout khi user login bằng email/password trên web`
+- `Fix timeout when a user logs in with email/password on web`
 
-Protocol khuyến nghị:
+Recommended protocol:
 
 ```yaml
 protocol_status: READY_TO_MATERIALIZE
@@ -689,7 +695,7 @@ audit_events:
   - DEDUP_CONFIRMED
 ```
 
-Sau khi scaffold xong:
+After scaffolding:
 
 ```yaml
 protocol_status: MATERIALIZED
@@ -698,14 +704,14 @@ audit_events:
   - WORKFLOW_SCAFFOLDED
 ```
 
-## Kết Luận
+## Conclusion
 
-`Work Item Materialization` giúp quyết định có mở work item hay không.
+`Work Item Materialization` helps decide whether to open a work item.
 
-`Work Item Protocol` giúp quản lý work item đó sau khi quyết định đã được đưa ra.
+`Work Item Protocol` helps manage that work item after the decision has been made.
 
-Khi hai lớp này đi cùng nhau:
+When these two layers work together:
 
-- `agentic` có thể tự mở work item một cách có kiểm soát
-- scaffold không còn là hành vi rời rạc
-- state, authority và handoff của work item trở nên audit được
+- `agentic` can open a work item on its own in a controlled way
+- scaffold is no longer an isolated action
+- the state, authority, and handoff of a work item become auditable
