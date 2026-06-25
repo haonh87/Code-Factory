@@ -54,7 +54,7 @@ wfc version
 Nếu đang phát triển trực tiếp từ source repo này:
 
 ```bash
-cd /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/packages/workflow-bundle
+cd packages/workflow-bundle
 npm link
 wfc version
 ```
@@ -335,6 +335,6 @@ npm install -g workflow-bundle@latest
 Nếu đang dùng `npm link` từ source repo:
 
 ```bash
-cd /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/packages/workflow-bundle
+cd packages/workflow-bundle
 npm link
 ```

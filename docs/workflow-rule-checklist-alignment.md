@@ -212,13 +212,13 @@ If you want it tighter after this pass, the order should be:
 
 ## Reference Sources
 
-- [AGENTS.global.md](/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/policies/codex/AGENTS.global.md:1)
-- [SKILL.md](/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/skills/orchestration/codex-workflow-chain/SKILL.md:1)
-- [workflow-chain.md](/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/skills/orchestration/codex-workflow-chain/references/workflow-chain.md:1)
-- [workflow-human-review-gates.md](/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/docs/workflow-human-review-gates.md:1)
-- [workflow-keywords-glossary.md](/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/docs/workflow-keywords-glossary.md:1)
-- [work-item-materialization.md](/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/skills/orchestration/codex-workflow-chain/references/work-item-materialization.md:1)
-- [work-item-protocol.md](/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/skills/orchestration/codex-workflow-chain/references/work-item-protocol.md:1)
-- [project-context/README.md](/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/project-context/README.md:1)
-- [governance-decision-model.md](/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/project-context/governance-decision-model.md:1)
-- [governance-role-model.md](/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/project-context/governance-role-model.md:1)
+- [AGENTS.global.md](../policies/codex/AGENTS.global.md)
+- [SKILL.md](../skills/orchestration/codex-workflow-chain/SKILL.md)
+- [workflow-chain.md](../skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
+- [workflow-human-review-gates.md](workflow-human-review-gates.md)
+- [workflow-keywords-glossary.md](workflow-keywords-glossary.md)
+- [work-item-materialization.md](../skills/orchestration/codex-workflow-chain/references/work-item-materialization.md)
+- [work-item-protocol.md](../skills/orchestration/codex-workflow-chain/references/work-item-protocol.md)
+- [project-context/README.md](../project-context/README.md)
+- [governance-decision-model.md](../project-context/governance-decision-model.md)
+- [governance-role-model.md](../project-context/governance-role-model.md)

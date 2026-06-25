@@ -106,7 +106,7 @@ Input:
 
 ```json
 {
-  "workspacePath": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory",
+  "workspacePath": "~/workspaces/Code-Factory",
   "limit": 10
 }
 ```
@@ -118,7 +118,7 @@ Input:
 ```json
 {
   "query": "cass",
-  "workspacePath": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory",
+  "workspacePath": "~/workspaces/Code-Factory",
   "limit": 5,
   "mode": "lexical",
   "maxContentLength": 300,
@@ -132,7 +132,7 @@ Input:
 
 ```json
 {
-  "sessionPath": "/Users/haonguyen87/.codex/sessions/2026/04/08/rollout-2026-04-08T15-14-57-019d6c28-a89a-7f32-84e8-754079bf7a46.jsonl",
+  "sessionPath": "~/.codex/sessions/2026/04/08/rollout-<session-id>.jsonl",
   "lineNumber": 3,
   "contextLines": 2,
   "maxLineLength": 1200
@@ -145,7 +145,7 @@ Input:
 
 ```json
 {
-  "sessionPath": "/Users/haonguyen87/.codex/sessions/2026/04/08/rollout-2026-04-08T15-14-57-019d6c28-a89a-7f32-84e8-754079bf7a46.jsonl",
+  "sessionPath": "~/.codex/sessions/2026/04/08/rollout-<session-id>.jsonl",
   "limit": 5
 }
 ```

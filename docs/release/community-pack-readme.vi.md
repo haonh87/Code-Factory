@@ -190,7 +190,7 @@ Tham chiếu chuẩn cho onboarding: tag `v2.1.1`, branch `release/v2.1.1`.
 
 - **Public release hiện tại:** `workflow-bundle v2.1.1`.
 - **Skill managed:** 36, trải qua analysis, architecture, delivery, guardrails, orchestration, và Obsidian.
-- **Chủ đề roadmap:** adapter rộng hơn, security scanning cho skill chặt hơn (xem `docs/research/trending-ai-github-2026-06.md`), và đường onboarding Starter gọn hơn.
+- **Chủ đề roadmap:** adapter rộng hơn, security scanning cho skill chặt hơn, và đường onboarding Starter gọn hơn.
 
 ---
 

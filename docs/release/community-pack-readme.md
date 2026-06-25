@@ -190,7 +190,7 @@ Canonical references for onboarding: tag `v2.1.1`, branch `release/v2.1.1`.
 
 - **Current public release:** `workflow-bundle v2.1.1`.
 - **Managed skills:** 36, across analysis, architecture, delivery, guardrails, orchestration, and Obsidian.
-- **Roadmap themes:** broader adapter support, hardened security scanning for skills (see `docs/research/trending-ai-github-2026-06.md`), and a leaner Starter onboarding path.
+- **Roadmap themes:** broader adapter support, hardened security scanning for skills, and a leaner Starter onboarding path.
 
 ---
 

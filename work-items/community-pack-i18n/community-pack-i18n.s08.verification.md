@@ -100,7 +100,7 @@ step_goal: "Verify the full i18n EN migration + cleanup combo against acceptance
 input_summary:
   - "s05 Technical Approach (Tiered EN migration, Option B, human-approved)"
   - "s06 Task Plan (T1-T7 across 4 tiers + authority flip)"
-  - "s07 implementation: 26 commits on worktree-release-combo-a"
+  - "s07 implementation: 26 implementation commits on worktree-release-combo-a (through DoD 2026-06-24); follow-up cleanup/i18n/review-fix commits added after DoD per human-directed review (see git log for the exact count)"
 output_summary:
   - "69 EN-active files across docs/workflow-ref/skills/project-context/authority"
   - "60 VI supplement files preserved (not deleted)"
@@ -206,7 +206,7 @@ owners:
 upstream:
   - "s01 restate -> s02 business-goal -> s03 open-questions -> s04 acceptance"
   - "s05 technical-approach (Option B tiered, human-approved) -> s06 task-plan (T1-T7)"
-  - "s07 implementation (26 commits) -> s08 verification (this note)"
+  - "s07 implementation (26 implementation commits through DoD + follow-up review-fix commits) -> s08 verification (this note)"
 next_step: "Finalize branch/worktree (merge worktree-release-combo-a to main or keep for the community release lane)"
 ```
 

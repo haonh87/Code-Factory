@@ -54,7 +54,7 @@ wfc version
 If developing directly from this source repo:
 
 ```bash
-cd /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/packages/workflow-bundle
+cd packages/workflow-bundle
 npm link
 wfc version
 ```
@@ -335,6 +335,6 @@ npm install -g workflow-bundle@latest
 If you are using `npm link` from the source repo:
 
 ```bash
-cd /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/packages/workflow-bundle
+cd packages/workflow-bundle
 npm link
 ```
