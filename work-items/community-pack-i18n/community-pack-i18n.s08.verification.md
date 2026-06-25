@@ -195,7 +195,6 @@ status: DONE
 residual_risks:
   - "EN is now operative governance baseline; future hard-rule edits need glossary + two-tier review"
   - "VI hard-rule wording only in git history (no project-context .vi.md sibling)"
-  - "work-items/community-pack-i18n note dir still untracked (Stage 0 scaffold)"
   - "branch/worktree not yet finalized (merge to main pending human decision)"
 owners:
   - "developer (semantic baseline)"
@@ -208,12 +207,12 @@ upstream:
   - "s01 restate -> s02 business-goal -> s03 open-questions -> s04 acceptance"
   - "s05 technical-approach (Option B tiered, human-approved) -> s06 task-plan (T1-T7)"
   - "s07 implementation (26 commits) -> s08 verification (this note)"
-next_step: "Finalize branch/worktree (merge to main or keep for community release lane) and decide on work-item note commit"
+next_step: "Finalize branch/worktree (merge worktree-release-combo-a to main or keep for the community release lane)"
 ```
 
 ## Handoff
-- Overall status: DONE (DoD human-passed 2026-06-24)
-- Residual risks: EN operative baseline drift (mitigated by glossary + two-tier review on future edits); untracked note dir; branch not merged
+- Overall status: DONE (DoD human-passed 2026-06-24); work-item notes committed (commit 9d8c5aa)
+- Residual risks: EN operative baseline drift (mitigated by glossary + two-tier review on future edits); branch not merged
 - Recommendation: merge `worktree-release-combo-a` to `main` (or designated release branch), then remove worktree
 - Release recommendation if any: N/A (no packaging/runtime); community release handled in separate lane
-- Next action: human decides branch finalization + work-item note commit
+- Next action: human decides branch finalization
