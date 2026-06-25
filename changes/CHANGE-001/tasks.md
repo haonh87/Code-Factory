@@ -11,9 +11,9 @@ linked_work_items:
 ## Tasks
 ```yaml
 tasks:
-  - "TASK-001: thêm workspace filter vào query flow"
-  - "TASK-002: giữ backward compatibility cho request không có filter"
-  - "TASK-003: thêm test cho invalid workspace path"
+  - "TASK-001: add the workspace filter to the query flow"
+  - "TASK-002: keep backward compatibility for a request without a filter"
+  - "TASK-003: add a test for an invalid workspace path"
 dependencies:
   - "SRS frozen"
 verification_tasks:

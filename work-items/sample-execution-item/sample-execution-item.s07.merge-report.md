@@ -17,9 +17,9 @@ verification_owner: "auditor"
 # Step 7 - Merge Report
 
 > [!summary]
-> Ghi lại output đã merge, conflict đã xử lý và readiness cho audit cuối step.
+> Record the merged output, handled conflicts and readiness for the final step audit.
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 step_id: s07
 execution_mode: multi_agent
@@ -29,12 +29,12 @@ merged_assignments:
   - "S07-FRONTEND-001"
 rejected_assignments: []
 conflicts_resolved:
-  - "chuẩn hóa boundary giữa callback handler và login state update"
+  - "normalize the boundary between the callback handler and the login state update"
 source_of_truth_updated: true
 final_artifacts:
   - "sample-execution-item.s07.implementation.md"
 residual_risks:
-  - "cần verify fallback path ở step 8"
+  - "the fallback path must be verified in step 8"
 ready_for_audit: true
 ```
 

@@ -20,8 +20,8 @@ linked_work_items:
 ## Summary
 ```yaml
 problem: ""
-intent: "Đóng gói thay đổi workspace-aware session search dưới dạng change package để trace từ spec tới rollout."
-change_scope: "Bổ sung workspace filter optional và giữ backward compatibility."
+intent: "Package the workspace-aware session search change as a change package to trace from spec to rollout."
+change_scope: "Add an optional workspace filter and keep backward compatibility."
 impact_areas:
   - "session-search query flow"
   - "BRD/SRS traceability"

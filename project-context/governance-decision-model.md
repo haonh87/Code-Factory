@@ -1,118 +1,122 @@
+---
+language: en
+---
+
 # Governance Decision Model
 
-Tài liệu này định nghĩa cách ra quyết định cho `governance layer`.
+This document defines how decisions are made for the `governance layer`.
 
-Mục tiêu:
+Goals:
 
-- thống nhất cách chọn `governance_profile`
-- thống nhất cách cập nhật `governance_status`
-- thống nhất khi nào phải mở `governance-exception`
-- giảm tình trạng mỗi agent hoặc mỗi role tự hiểu governance theo cách riêng
+- unify how `governance_profile` is chosen
+- unify how `governance_status` is updated
+- unify when a `governance-exception` must be opened
+- reduce the situation where each agent or role interprets governance in its own way
 
-## Nguyên Tắc Quyết Định
+## Decision Principles
 
-- Mọi work item phải có `governance_profile`; không để trống.
-- `governance_status` phải phản ánh trạng thái thật của step hiện tại, không dùng như nhãn trang trí.
-- Nếu phát hiện lệch chuẩn nhưng vẫn muốn đi tiếp, phải ghi `governance-exception` hoặc `waiver`; không được chỉ ghi trong prose.
-- Khi có nhiều tín hiệu khác nhau, ưu tiên profile và state nghiêm ngặt hơn:
-  - `regulated` ưu tiên hơn `strict`
-  - `strict` ưu tiên hơn `default`
-  - `BLOCKED` ưu tiên hơn `CHECKS_PENDING`
-  - `EXCEPTION_RECORDED` hoặc `WAIVER_APPROVED` ưu tiên hơn `ALIGNED`
+- Every work item must have a `governance_profile`; it must not be left empty.
+- `governance_status` must reflect the real state of the current step, not be used as decoration.
+- If a deviation is found but you still want to proceed, a `governance-exception` or `waiver` must be recorded; it must not only be written in prose.
+- When there are mixed signals, prefer the stricter profile and state:
+  - `regulated` takes precedence over `strict`
+  - `strict` takes precedence over `default`
+  - `BLOCKED` takes precedence over `CHECKS_PENDING`
+  - `EXCEPTION_RECORDED` or `WAIVER_APPROVED` takes precedence over `ALIGNED`
 
-## Thứ Tự Ra Quyết Định
+## Decision Order
 
-Khi materialize hoặc cập nhật note workflow, dùng thứ tự sau:
+When materializing or updating a workflow note, use the following order:
 
-1. Xác định `governance_ref`
-2. Chọn `governance_profile`
-3. Gắn `checklist_refs`
-4. Đánh giá `governance_status`
-5. Nếu có lệch chuẩn, tạo `governance-exception`
-6. Nếu exception còn mở và thỏa điều kiện audit, cập nhật thêm register
+1. Determine `governance_ref`
+2. Choose `governance_profile`
+3. Attach `checklist_refs`
+4. Assess `governance_status`
+5. If there is a deviation, create a `governance-exception`
+6. If the exception stays open and meets the audit condition, also update the register
 
-## Rule Cho `governance_ref`
+## Rule For `governance_ref`
 
-- Mặc định:
+- Default:
   - `project-context/project-context.md`
-- Chỉ trỏ thẳng `constitution.md` khi step cần nhấn mạnh nguyên tắc nền hơn bối cảnh vận hành.
-- Với `custom`, có thể trỏ tới note governance riêng của work item, nhưng vẫn phải trace về ít nhất một nguồn trong `project-context/`.
+- Only point directly at `constitution.md` when the step needs to emphasize foundational principles over operational context.
+- With `custom`, you may point to a work item's own governance note, but it must still trace back to at least one source inside `project-context/`.
 
-## Rule Chọn `governance_profile`
+## Rule For Choosing `governance_profile`
 
 ### Precedence
 
-Chọn theo thứ tự:
+Choose in this order:
 
 1. `custom`
 2. `regulated`
 3. `strict`
 4. `default`
 
-### Khi Dùng `default`
+### When To Use `default`
 
-Dùng `default` khi đồng thời thỏa các điều kiện sau:
+Use `default` when all of the following conditions hold at the same time:
 
-- scope nhỏ hoặc vừa
-- không có migration, compatibility hoặc rollback risk đáng kể
-- không có packaging/runtime/release impact đáng kể
-- không cần approval chain hoặc audit trail đặc biệt
-- không có external integration hoặc data impact phức tạp
+- scope is small or medium
+- no significant migration, compatibility or rollback risk
+- no significant packaging/runtime/release impact
+- no special approval chain or audit trail needed
+- no complex external integration or data impact
 
-### Khi Dùng `strict`
+### When To Use `strict`
 
-Dùng `strict` nếu có ít nhất một tín hiệu sau mà chưa cần `regulated`:
+Use `strict` if at least one of the following signals is present and `regulated` is not yet needed:
 
-- change đụng nhiều boundary hoặc nhiều role signoff
-- có migration, compatibility risk hoặc rollback risk
-- có packaging/runtime/release impact
-- có external integration hoặc stateful data impact
-- cần reviewer coverage chặt hơn bình thường
-- technical approach có trade-off khiến verify hoặc rollout khó hơn mức thường lệ
+- the change touches many boundaries or many role sign-offs
+- there is migration, compatibility risk or rollback risk
+- there is packaging/runtime/release impact
+- there is external integration or stateful data impact
+- reviewer coverage tighter than usual is needed
+- the technical approach has trade-offs that make verify or rollout harder than usual
 
-### Khi Dùng `regulated`
+### When To Use `regulated`
 
-Dùng `regulated` nếu có ít nhất một tín hiệu sau:
+Use `regulated` if at least one of the following signals is present:
 
-- cần audit trail rõ
-- cần approval chain hoặc waiver approval chặt
-- cần giữ exception, evidence hoặc decision log xuyên nhiều step
-- có rule policy/compliance/control ngoài delivery lane thông thường
-- exception chạm đồng thời `release` và `business_acceptance`
+- a clear audit trail is needed
+- a tight approval chain or waiver approval is needed
+- exceptions, evidence or decision logs must be kept across many steps
+- there are policy/compliance/control rules outside the usual delivery lane
+- an exception touches both `release` and `business_acceptance`
 
-### Khi Dùng `custom`
+### When To Use `custom`
 
-Dùng `custom` khi:
+Use `custom` when:
 
-- project hoặc work item có governance note riêng
-- cần checklist chuyên biệt ngoài `default|strict|regulated`
+- the project or work item has its own governance note
+- a specialized checklist outside `default|strict|regulated` is needed
 
-Rule cho `custom`:
+Rules for `custom`:
 
-- phải chỉ ra base profile đang kế thừa từ profile nào
-- không được dùng `custom` để làm nhẹ rule một cách mơ hồ
-- vẫn phải có `checklist_refs` rõ
+- it must state which base profile it inherits from
+- `custom` must not be used to loosely weaken rules
+- it must still have clear `checklist_refs`
 
-## Rule Gắn `checklist_refs`
+## Rule For Attaching `checklist_refs`
 
 - `default`:
-  - tối thiểu trỏ `project-context/checklists/default.md`
+  - at minimum point to `project-context/checklists/default.md`
 - `strict`:
-  - tối thiểu trỏ `project-context/checklists/strict.md`
+  - at minimum point to `project-context/checklists/strict.md`
 - `regulated`:
-  - tối thiểu trỏ `project-context/checklists/regulated.md`
+  - at minimum point to `project-context/checklists/regulated.md`
 - `custom`:
-  - phải trỏ ít nhất một checklist base và một ref custom nếu có
+  - must point to at least one base checklist and one custom ref if present
 
-Ghi chú:
+Notes:
 
-- `strict.md` được hiểu là kế thừa `default`
-- `regulated.md` được hiểu là kế thừa `strict` và `default`
-- không bắt buộc lặp lại ref base profile nếu team không cần trace tường minh ở mức file
+- `strict.md` is understood to inherit `default`
+- `regulated.md` is understood to inherit `strict` and `default`
+- repeating the base profile ref is not required if the team does not need explicit file-level tracing
 
-## State Model Cho `governance_status`
+## State Model For `governance_status`
 
-Enum chuẩn:
+Standard enum:
 
 - `CHECKS_PENDING`
 - `ALIGNED`
@@ -121,168 +125,168 @@ Enum chuẩn:
 - `BLOCKED`
 - `NOT_APPLICABLE`
 
-### Ý Nghĩa Trạng Thái
+### Meaning Of Each State
 
 #### `CHECKS_PENDING`
 
-Dùng khi:
+Use when:
 
-- governance context hoặc checklist chưa được đánh giá xong
-- step mới mở và chưa đủ thông tin để kết luận aligned hay blocked
+- governance context or checklist has not been fully evaluated
+- the step just opened and there is not enough information to conclude aligned or blocked
 
-Không nên giữ trạng thái này quá lâu sau các gate chính.
+This state should not be kept for long after the main gates.
 
 #### `ALIGNED`
 
-Dùng khi:
+Use when:
 
-- rule áp dụng đã được kiểm
-- checklist cần thiết đã pass hoặc được justify
-- không có exception đang mở cho step đó
+- the applicable rules have been checked
+- the needed checklists have passed or been justified
+- there is no open exception for that step
 
 #### `EXCEPTION_RECORDED`
 
-Dùng khi:
+Use when:
 
-- đã có lệch chuẩn được ghi nhận
-- exception chưa được authority đúng approve
-- hoặc đã ghi exception nhưng mitigation còn mở
+- a deviation has been recorded
+- the exception has not yet been approved by the right authority
+- or the exception is recorded but mitigation is still open
 
 #### `WAIVER_APPROVED`
 
-Dùng khi:
+Use when:
 
-- exception đã được approve đúng authority
-- step vẫn còn đang vận hành dưới điều kiện waiver hoặc accepted deviation
+- the exception has been approved by the right authority
+- the step is still operating under waiver conditions or an accepted deviation
 
-Nếu mitigation xong và không còn lệch chuẩn mở, có thể chuyển lại `ALIGNED`.
+If mitigation is done and no deviation is open, it may move back to `ALIGNED`.
 
 #### `BLOCKED`
 
-Dùng khi:
+Use when:
 
-- thiếu authority phù hợp
-- thiếu evidence hoặc checklist cần thiết mà không thể justify
-- có governance blocker ngăn step chuyển tiếp hoặc đóng gate
+- a suitable authority is missing
+- required evidence or checklist is missing and cannot be justified
+- a governance blocker prevents the step from transitioning or closing the gate
 
 #### `NOT_APPLICABLE`
 
-Chỉ dùng khi governance thật sự không tạo ra decision, gate hay evidence có ý nghĩa cho step hiện tại.
+Only use when governance genuinely produces no meaningful decision, gate or evidence for the current step.
 
-Trong workflow sản phẩm thông thường, trạng thái này nên hiếm.
+In ordinary product workflows, this state should be rare.
 
-## State Transition Chuẩn
+## Standard State Transition
 
-### Luồng Chính
+### Main Flow
 
 - `CHECKS_PENDING -> ALIGNED`
-  khi checks đã hoàn tất và không có exception mở
+  when checks are complete and no exception is open
 - `CHECKS_PENDING -> EXCEPTION_RECORDED`
-  khi phát hiện lệch chuẩn cần ghi nhận
+  when a deviation is found and needs to be recorded
 - `CHECKS_PENDING -> BLOCKED`
-  khi thiếu context, checklist hoặc authority mà chưa thể đi tiếp
+  when context, checklist or authority is missing and the step cannot proceed
 - `ALIGNED -> EXCEPTION_RECORDED`
-  khi phát hiện lệch chuẩn sau khi step đã từng aligned
+  when a deviation is found after the step was previously aligned
 - `EXCEPTION_RECORDED -> WAIVER_APPROVED`
-  khi authority đúng đã approve
+  when the right authority has approved
 - `EXCEPTION_RECORDED -> BLOCKED`
-  khi exception chạm gate nhưng chưa có approval hoặc mitigation đủ
+  when the exception touches a gate but there is no approval or enough mitigation yet
 - `WAIVER_APPROVED -> ALIGNED`
-  khi mitigation hoàn tất và không còn accepted deviation đang mở
+  when mitigation is complete and no accepted deviation is open
 - `BLOCKED -> CHECKS_PENDING`
-  khi blocker được gỡ nhưng checks cần chạy lại
+  when the blocker is removed but checks need to run again
 
-### Luật Cấm
+### Forbidden Transitions
 
-- không nhảy trực tiếp `CHECKS_PENDING -> WAIVER_APPROVED`
-- không dùng `ALIGNED` khi exception còn mở nhưng chưa resolve hoặc chưa approve
-- không dùng `NOT_APPLICABLE` để né việc đánh giá governance
+- do not jump directly `CHECKS_PENDING -> WAIVER_APPROVED`
+- do not use `ALIGNED` when an exception is still open but not resolved or approved
+- do not use `NOT_APPLICABLE` to dodge governance evaluation
 
-## Rule Theo Gate
+## Rule By Gate
 
-### Trước Khi Qua `s04 Acceptance + DoR`
+### Before Passing `s04 Acceptance + DoR`
 
-`governance_status` của step hiện tại không nên còn `CHECKS_PENDING` nếu:
+The `governance_status` of the current step should not still be `CHECKS_PENDING` if:
 
-- acceptance đã được chốt
-- work item chuẩn bị sang approach hoặc task planning
+- acceptance has been locked
+- the work item is about to move to approach or task planning
 
-Khi exit `s04`, trạng thái chấp nhận được thường là:
+When exiting `s04`, the accepted states are usually:
 
 - `ALIGNED`
 - `WAIVER_APPROVED`
 - `BLOCKED`
 
-### Trước Khi Qua `s06 Task Plan`
+### Before Passing `s06 Task Plan`
 
-Nếu task plan chưa cover review, verify, release hoặc mitigation cần thiết, dùng:
+If the task plan does not yet cover review, verify, release or the needed mitigation, use:
 
-- `CHECKS_PENDING` nếu còn đang hoàn thiện trong step
-- `BLOCKED` nếu chưa thể đi tiếp
+- `CHECKS_PENDING` if still being completed within the step
+- `BLOCKED` if the step cannot proceed
 
-### Khi Đóng `s08 Verify + DoD`
+### When Closing `s08 Verify + DoD`
 
-Nếu work item được xem là xong:
+If the work item is considered done:
 
-- ưu tiên `ALIGNED`
-- hoặc `WAIVER_APPROVED` nếu có accepted deviation còn hiệu lực
+- prefer `ALIGNED`
+- or `WAIVER_APPROVED` if an accepted deviation is still in effect
 
-Nếu không thể kết luận done do governance gap:
+If done cannot be concluded due to a governance gap:
 
-- dùng `BLOCKED`
+- use `BLOCKED`
 
-## Trigger Bắt Buộc Mở `governance-exception`
+## Triggers That Mandate Opening A `governance-exception`
 
-Phải tạo `governance-exception` khi có một trong các trường hợp sau:
+A `governance-exception` must be created when any of the following holds:
 
-- cố ý đi lệch `constitution`, `project-context` hoặc checklist profile
-- chấp nhận trade-off làm giảm guard thông thường để đi tiếp
-- muốn proceed dù review hoặc evidence chuẩn chưa đủ
-- behavior, approach hoặc release path đi ngoài baseline đã chốt
-- mitigation bị defer sang step sau nhưng step hiện tại vẫn muốn đóng
+- intentionally deviating from `constitution`, `project-context` or a checklist profile
+- accepting a trade-off that weakens the usual guard to proceed
+- wanting to proceed even though standard review or evidence is not enough
+- behavior, approach or release path goes outside the locked baseline
+- mitigation is deferred to a later step but the current step still wants to close
 
-## Khi Chưa Cần Mở `governance-exception`
+## When A `governance-exception` Is Not Yet Needed
 
-Chưa cần mở exception nếu:
+An exception is not yet needed if:
 
-- mới chỉ là câu hỏi mở hoặc policy gap chưa có decision
-- đây là blocker đang được xử lý và chưa có quyết định chấp nhận lệch chuẩn
-- deviation đã được sửa trọn trong cùng step trước khi ảnh hưởng gate hoặc handoff
+- it is only an open question or a policy gap with no decision yet
+- it is a blocker being handled and there is no decision to accept a deviation
+- the deviation was fully fixed within the same step before affecting a gate or handoff
 
-Trong các trường hợp này, ưu tiên:
+In these cases, prefer:
 
 - `governance blocker`
 - `open question`
-- `CHECKS_PENDING` hoặc `BLOCKED`
+- `CHECKS_PENDING` or `BLOCKED`
 
-## Khi Phải Cập Nhật Exception Register
+## When The Exception Register Must Be Updated
 
-Phải thêm vào `governance-exception-register.md` nếu:
+You must add to `governance-exception-register.md` if:
 
-- exception còn mở quá một step
-- exception chạm `release`
-- exception chạm `business_acceptance`
+- the exception stays open for more than one step
+- the exception touches `release`
+- the exception touches `business_acceptance`
 - `governance_profile=regulated`
-- cần audit lại lịch sử approval hoặc mitigation
+- the approval or mitigation history needs to be audited
 
-## Mapping Nhanh Theo Step
+## Quick Mapping By Step
 
-| Step | Quyết định governance tối thiểu |
+| Step | Minimum governance decision |
 |---|---|
-| `s01 Clarify` | chọn `governance_ref`, profile sơ bộ, status thường là `CHECKS_PENDING` hoặc `ALIGNED` |
-| `s02 Business Goal` | xác nhận goal có kéo profile lên mức cao hơn không |
-| `s03 Open Questions` | nếu có blocker thì chuyển `BLOCKED`; nếu chỉ đang làm rõ thì giữ `CHECKS_PENDING` |
-| `s04 Acceptance + DoR` | phải chốt profile, checklist và không nên để gate ở trạng thái mơ hồ |
-| `s05 Technical Approach` | nếu cần lệch chuẩn, mở `governance-exception` ngay tại đây |
-| `s06 Task Plan` | bảo đảm plan cover checks, mitigation và reviewer coverage |
-| `s07 Implement` | nếu phát sinh deviation mới, cập nhật exception và status ngay trong step |
-| `s08 Verify + DoD` | kết luận `ALIGNED`, `WAIVER_APPROVED` hoặc `BLOCKED` một cách minh bạch |
+| `s01 Clarify` | choose `governance_ref`, a preliminary profile, status usually `CHECKS_PENDING` or `ALIGNED` |
+| `s02 Business Goal` | confirm whether the goal raises the profile to a higher level |
+| `s03 Open Questions` | if there is a blocker, move to `BLOCKED`; if only clarifying, keep `CHECKS_PENDING` |
+| `s04 Acceptance + DoR` | must lock profile, checklist and should not leave the gate in a vague state |
+| `s05 Technical Approach` | if a deviation is needed, open the `governance-exception` right here |
+| `s06 Task Plan` | ensure the plan covers checks, mitigation and reviewer coverage |
+| `s07 Implement` | if a new deviation arises, update the exception and status within the step |
+| `s08 Verify + DoD` | conclude `ALIGNED`, `WAIVER_APPROVED` or `BLOCKED` transparently |
 
-## Quy Tắc Cho Validator Sau Này
+## Rule For The Validator Later
 
-Decision model này là nguồn để validator kiểm ít nhất các điều sau:
+This decision model is the source the validator checks at least the following:
 
-- note workflow không được thiếu `governance_profile`
-- `checklist_refs` phải khớp profile đang chọn
-- `governance_status` không được nằm ở state bị cấm theo gate hiện tại
-- nếu có `governance-exception`, authority và register phải khớp rule
+- the workflow note must not be missing `governance_profile`
+- `checklist_refs` must match the chosen profile
+- `governance_status` must not be in a state forbidden for the current gate
+- if there is a `governance-exception`, the authority and register must match the rules

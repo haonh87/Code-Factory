@@ -1,82 +1,88 @@
+---
+language: en
+---
+
 # Hybrid Policy: Codex Workflow Chain + Superpowers
 
-Tài liệu này định nghĩa chính sách hybrid giữa workflow backbone của repo và execution discipline của `obra/superpowers`.
+> Vietnamese: hybrid-superpowers-policy.vi.md
 
-Thời điểm đối chiếu: `2026-04-18`.
+This document defines the hybrid policy between the repo's workflow backbone and the execution discipline of `obra/superpowers`.
 
-Nếu cần bản quyết định nhanh để chọn `TDD`, `worktree`, `subagent` và `review mode`, đọc thêm:
+Reference date: `2026-04-18`.
+
+For a quick decision on whether to enable `TDD`, `worktree`, `subagent`, and `review mode`, see:
 - `docs/hybrid-superpowers-decision-matrix.md`
 
-## Mục Tiêu
+## Objectives
 
-- giữ `codex-workflow-chain` làm source-of-truth cho delivery
-- mượn các phần mạnh nhất của Superpowers ở tầng execution
-- tránh trộn hai workflow như hai hệ ngang hàng
-- tăng chất lượng implement mà không làm mất `governance`, `DoR`, `DoD`, `SDD` và `work-item protocol`
+- Keep `codex-workflow-chain` as the source of truth for delivery.
+- Borrow the strongest parts of Superpowers at the execution layer.
+- Avoid mixing the two workflows as peer systems.
+- Raise implementation quality without losing `governance`, `DoR`, `DoD`, `SDD`, and the `work-item protocol`.
 
-## Mô Hình Prompt Nhiều Khối
+## Multi-Block Prompt Model
 
-Mô hình hybrid hiện tại nên được triển khai theo nhiều khối prompt, không dồn mọi rule vào một file duy nhất.
+The current hybrid model should be deployed as multiple prompt blocks, not by cramming every rule into a single file.
 
 - `Authority layer`: `AGENTS.global.md`
 - `Entry router`: skill `workflow-governance-router`
 - `Workflow backbone`: skill `codex-workflow-chain`
-- `Step skills`: các skill trong `analysis`, `architecture`, `delivery`, `guardrails`, `obsidian`
-- `Runtime enforcement`: `workflow-bundle`, validator, capability control và support policies
+- `Step skills`: skills in `analysis`, `architecture`, `delivery`, `guardrails`, `obsidian`
+- `Runtime enforcement`: `workflow-bundle`, validator, capability control, and support policies
 
-Quy tắc đọc:
+Reading rules:
 
-- `Authority layer` chốt rule cứng, conflict resolution và default an toàn.
-- `Entry router` là block phải chạy trước để quyết định current step, delivery context, missing gates và quyền implement.
-- `Workflow backbone` giữ state machine `s01 -> s08`; không cho phép entry router hay step skill tự tạo workflow riêng.
-- `Step skills` chỉ được bật sau khi entry router đã route đúng step.
-- `Runtime enforcement` giữ vai trò evidence và capability control; không thay governance prompt nhưng là lớp cưỡng chế thực thi.
+- `Authority layer` fixes hard rules, conflict resolution, and safe defaults.
+- `Entry router` is the block that must run first to decide the current step, delivery context, missing gates, and implementation permission.
+- `Workflow backbone` holds the `s01 -> s08` state machine; the entry router and step skills are not allowed to create their own workflows.
+- `Step skills` may only be activated after the entry router has routed to the correct step.
+- `Runtime enforcement` carries the evidence and capability-control role; it does not replace the governance prompt but is the enforcement layer.
 
-## Vị Trí Của Tài Liệu Này
+## Position Of This Document
 
-Tài liệu này là `supplemental policy`.
+This document is `supplemental policy`.
 
-- không thay `policies/codex/AGENTS.global.md`
-- không thay `skills/orchestration/codex-workflow-chain/references/workflow-chain.md`
-- không thay `project-context/` hoặc `work-item protocol`
-- chỉ trả lời câu hỏi: khi dùng workflow của repo, thì phần nào của Superpowers được phép bật, bật ở step nào, và ở mức nào
+- It does not replace `policies/codex/AGENTS.global.md`.
+- It does not replace `skills/orchestration/codex-workflow-chain/references/workflow-chain.md`.
+- It does not replace `project-context/` or the `work-item protocol`.
+- It answers one question only: when using the repo's workflow, which parts of Superpowers may be enabled, at which step, and at what level.
 
-## Rule Nền
+## Foundational Rules
 
-1. Workflow chính luôn là:
+1. The primary workflow is always:
    `s01 Clarify -> s02 Business Goal -> s03 Open Questions -> s04 Acceptance + DoR -> s05 Technical Approach -> s06 Task Plan -> s07 Implement -> s08 Verify + DoD`
-2. `Superpowers` chỉ được dùng như `execution pack`, không được thay backbone 8 bước.
-3. Không được dùng `Superpowers` để bypass `s04` hoặc `s08`.
-4. `Spec/design before code` là gate cứng:
-   không được vào `s07` trước khi `s04`, `s05`, `s06` đã đủ điều kiện.
-5. `Brainstorming có kỷ luật` là gate chất lượng của `s05`:
-   không được chốt approach nếu chưa có `option analysis` ở mức phù hợp.
-6. `Ưu tiên giải pháp nhỏ nhất đủ đúng` là rule chọn approach của `s05`:
-   nếu một phương án nhỏ hơn đã là `giải pháp nhỏ nhất đủ đúng`, không chọn phương án lớn hơn chỉ vì nhu cầu giả định.
-7. `Planning execution-oriented` là gate chất lượng của `s06`:
-   không được vào implement với task plan còn mơ hồ hoặc đầy placeholder.
-8. `TDD cho behavior change` là rule thực thi của `s07`:
-   bug fix, feature behavior, validation rule, contract change và refactor có regression risk phải ưu tiên test trước rồi mới code.
-9. `Worktree cho change lớn hoặc rủi ro` là rule cô lập workspace của `s07`:
-   `enterprise`, change kéo dài, nhiều boundary/file hoặc risk cao phải ưu tiên tách workspace.
-10. `Review sớm, không đợi cuối` là rule review của `s07`:
-   review cho batch/task rủi ro hoặc phần quan trọng phải diễn ra trong implement, không được dồn hết sang `s08`.
-11. `Review hai tầng` là rule thứ tự review của `s07`:
-   review phải kiểm `spec compliance` trước, rồi mới tới `code quality`.
-12. `Subagent chỉ cho task độc lập` là rule delegation của `s07`:
-   chỉ tách worker khi task plan, ownership, merge path và verify path đủ rõ.
-13. `Không tự tuyên bố done` là rule kết luận của `s08`:
-   chưa có verdict `DoD` thì chưa được coi là hoàn tất, dù implementation hay review đã xong.
-14. `Branch/worktree chỉ chốt sau verify` là rule kết thúc execution của `s08`:
-   cleanup, close, remove hoặc merge chỉ hợp lệ sau verdict `DoD` rõ ở `s08`.
-15. `Default an toàn` là rule fallback của workflow:
-   khi chưa đủ chắc chắn, chọn `full`, không bật `subagent` bừa, không mở boundary mới bừa và không coi gate là đã qua.
-16. `governance`, `SDD`, `work-item protocol`, `planning_track` và `verification_owner` vẫn theo rule của repo này.
-17. Nếu có xung đột giữa policy này và policy nền của repo, ưu tiên policy nền của repo.
+2. `Superpowers` may only be used as an `execution pack`; it must not replace the eight-step backbone.
+3. `Superpowers` must not be used to bypass `s04` or `s08`.
+4. `Spec/Design Before Code` is a hard gate:
+   you must not enter `s07` before `s04`, `s05`, and `s06` are sufficiently qualified.
+5. `Disciplined Brainstorming` is the quality gate of `s05`:
+   you must not lock an approach without `option analysis` at an appropriate level.
+6. `Prefer the Smallest Sufficient Solution` is the approach-selection rule of `s05`:
+   if a smaller option is already the `smallest sufficient solution`, do not pick a larger option solely for hypothetical needs.
+7. `Execution-Oriented Planning` is the quality gate of `s06`:
+   you must not enter implementation with a task plan that is still vague or full of placeholders.
+8. `TDD for Behavior Change` is the execution rule of `s07`:
+   bug fixes, feature behavior, validation rules, contract changes, and refactors with material regression risk must prioritize tests before code.
+9. `Worktree for Large or Risky Changes` is the workspace-isolation rule of `s07`:
+   `enterprise`, long-running changes, many boundaries/files, or high risk must prefer a separated workspace.
+10. `Review Early, Don't Wait Until the End` is the review rule of `s07`:
+   review for risky batches/tasks or important parts must happen during implementation, not be pushed entirely to `s08`.
+11. `Two-Tier Review` is the review-order rule of `s07`:
+   review must check `spec compliance` first, then `code quality`.
+12. `Subagents Only for Independent Tasks` is the delegation rule of `s07`:
+   only spin up a worker when the task plan, ownership, merge path, and verify path are clear enough.
+13. `Do Not Self-Declare Done` is the conclusion rule of `s08`:
+   without a `DoD` verdict, the work is not complete, even if implementation or review is finished.
+14. `Branch/Worktree Finalized Only After Verify` is the execution-closure rule of `s08`:
+   cleanup, close, remove, or merge is only valid after a clear `DoD` verdict in `s08`.
+15. `Safe Default` is the fallback rule of the workflow:
+   when not sufficiently confident, choose `full`, do not enable `subagent` carelessly, do not open new boundaries carelessly, and do not treat a gate as already passed.
+16. `governance`, `SDD`, `work-item protocol`, `planning_track`, and `verification_owner` still follow this repo's rules.
+17. If there is a conflict between this policy and the repo's foundational policy, the repo's foundational policy wins.
 
-## Thành Phần Được Import Từ Superpowers
+## Components Imported From Superpowers
 
-Các phần dưới đây được phép dùng trong mô hình hybrid:
+The following parts may be used in the hybrid model:
 
 - `brainstorming`
 - `writing-plans`
@@ -86,435 +92,435 @@ Các phần dưới đây được phép dùng trong mô hình hybrid:
 - `requesting-code-review`
 - `finishing-a-development-branch`
 
-Các phần này được hiểu như sau:
+These parts are understood as follows:
 
-- `brainstorming`: pattern đặt câu hỏi và ép rõ solution trước khi code
-- `writing-plans`: pattern viết task plan execution-oriented
-- `using-git-worktrees`: pattern cô lập workspace cho change có rủi ro hoặc thời lượng dài
-- `test-driven-development`: pattern `Red -> Green -> Refactor`
-- `subagent-driven-development`: pattern giao worker theo task độc lập
-- `requesting-code-review`: pattern review sớm, review nhiều vòng
-- `finishing-a-development-branch`: pattern chốt branch sau verify
+- `brainstorming`: a pattern of asking questions and forcing clarity on the solution before coding
+- `writing-plans`: a pattern for writing an execution-oriented task plan
+- `using-git-worktrees`: a pattern for isolating the workspace for risky or long-running changes
+- `test-driven-development`: the `Red -> Green -> Refactor` pattern
+- `subagent-driven-development`: a pattern for delegating workers by independent task
+- `requesting-code-review`: a pattern for early, multi-round review
+- `finishing-a-development-branch`: a pattern for closing a branch after verify
 
-## Phần Không Import Nguyên Xi
+## Parts Not Imported Verbatim
 
-Các rule dưới đây không được bê nguyên từ Superpowers:
+The following rules must not be imported verbatim from Superpowers:
 
-- không biến `brainstorming` thành workflow thay cho `s01-s05`
-- không bắt mọi work item phải dùng `worktree`
-- không bắt mọi task đều phải có subagent riêng
-- không áp `TDD` như luật tuyệt đối cho `docs-only`, `config-only` hoặc change không tạo behavior production
-- không thay `DoD` bằng việc review pass
+- Do not turn `brainstorming` into a workflow that replaces `s01-s05`.
+- Do not require every work item to use a `worktree`.
+- Do not require every task to have its own subagent.
+- Do not apply `TDD` as an absolute rule for `docs-only`, `config-only`, or changes that produce no production behavior.
+- Do not replace `DoD` with a review pass.
 
-## Ma Trận Hybrid Theo Planning Track
+## Hybrid Matrix By Planning Track
 
 | Track | Brainstorming style | Writing-plans style | Worktree | TDD | Subagent per task | Review mode |
 |---|---|---|---|---|---|---|
-| `quick` | `lightweight` | `lightweight` | `optional` | `required` cho behavior change | `off` mặc định | `self` + ít nhất 1 review trước khi rời `s07` |
-| `full` | `standard` | `standard` | `recommended` | `required` cho behavior change | `optional` khi task độc lập | review theo batch hoặc task rủi ro |
-| `enterprise` | `standard` | `strict` | `mandatory` | `required` cho behavior change | `conditional` nhưng phải có ownership rõ | `independent` và verify owner rõ |
+| `quick` | `lightweight` | `lightweight` | `optional` | `required` for behavior change | `off` by default | `self` + at least 1 review before leaving `s07` |
+| `full` | `standard` | `standard` | `recommended` | `required` for behavior change | `optional` when task is independent | review by batch or risky task |
+| `enterprise` | `standard` | `strict` | `mandatory` | `required` for behavior change | `conditional` but with clear ownership | `independent` and a clear verify owner |
 
-Quy tắc đọc bảng:
+How to read the table:
 
-- `lightweight`: áp dụng tinh thần, không mở pha riêng hoặc artifact riêng nếu không cần
-- `standard`: áp dụng rõ ở step tương ứng và phản ánh vào artifact của step
-- `strict`: áp dụng như gate bắt buộc trước khi sang step sau
-- `conditional`: chỉ bật khi thỏa entry condition của execution runtime
+- `lightweight`: apply the spirit; do not open a separate phase or artifact unless needed
+- `standard`: apply clearly at the corresponding step and reflect it in the step's artifact
+- `strict`: apply as a mandatory gate before moving to the next step
+- `conditional`: enable only when the execution-runtime entry condition is met
 
-## Gate Vào Code
+## Gate Into Code
 
-Muốn bắt đầu `s07 Implement`, tối thiểu phải thỏa cả 3 điều kiện:
+To begin `s07 Implement`, at minimum all three conditions must hold:
 
-- `s04` có acceptance criteria đo được và `DoR` rõ
-- `s05` có technical approach đủ khóa boundary và validation plan
-- `s06` có task plan đủ để biết thứ tự thực hiện và verify path
+- `s04` has measurable acceptance criteria and a clear `DoR`
+- `s05` has a technical approach sufficient to lock boundaries and a validation plan
+- `s06` has a task plan sufficient to know the execution order and verify path
 
-Rule theo track:
+Rule by track:
 
-- `quick`: cho phép artifact ngắn hơn, nhưng không được bỏ `s05` hoặc `s06`
-- `full`: phải có design và task plan viết rõ trong artifact step tương ứng
-- `enterprise`: xem đây là gate cứng; nếu thiếu một trong ba, execution phải bị chặn
+- `quick`: shorter artifacts are allowed, but `s05` or `s06` must not be skipped
+- `full`: the design and task plan must be written clearly in the corresponding step artifacts
+- `enterprise`: treat this as a hard gate; if any of the three is missing, execution must be blocked
 
-Rule theo SDD:
+Rule under SDD:
 
-- nếu work item chạy theo `SDD`, code chỉ được bắt đầu khi `spec` ở trạng thái `approved|frozen`
-- nếu behavior cần lệch spec, phải mở `spec-change` hoặc `governance-exception` trước khi implement
+- if the work item runs under `SDD`, code may only start when `spec` is in `approved|frozen` state
+- if the behavior must deviate from spec, open a `spec-change` or `governance-exception` before implementing
 
 Exception path:
 
-- chỉ dùng khi có lý do khẩn cấp thật
-- phải ghi exception hoặc waiver đúng rule của repo
-- không được bỏ qua im lặng rồi backfill tài liệu như thể chưa từng lệch chuẩn
+- use only when there is a genuine emergency
+- record the exception or waiver per the repo's rules
+- do not silently skip and then backfill documentation as if there had been no deviation
 
-## Gate Của Brainstorming
+## Brainstorming Gate
 
-Muốn chốt `s05 Technical Approach`, tối thiểu phải thỏa:
+To lock `s05 Technical Approach`, at minimum:
 
-- mục tiêu cần giải quyết đã rõ
-- đã có `option analysis` ở mức phù hợp
-- đã có 1 hướng khuyến nghị, và đó là giải pháp nhỏ nhất đủ đúng trong scope hiện tại
-- đã nêu điều cần kiểm chứng trước hoặc trong implement
+- the objective to solve is clear
+- `option analysis` at an appropriate level exists
+- one recommended direction exists, and it is the smallest sufficient solution within the current scope
+- what needs to be verified before or during implementation is stated
 
-Rule theo track:
+Rule by track:
 
-- `quick`: cho phép brainstorming ngắn, nhưng vẫn phải nêu ít nhất 1 hướng thay thế hoặc hướng bị loại
-- `full`: nên có ít nhất 2 phương án rõ ràng nếu bài toán không hiển nhiên
-- `enterprise`: xem brainstorming là gate cứng của `s05`; thiếu `option analysis` thì không chốt approach
+- `quick`: short brainstorming is allowed, but at least one alternative or discarded direction must be stated
+- `full`: there should be at least two clear options if the problem is not trivial
+- `enterprise`: treat brainstorming as a hard gate of `s05`; without `option analysis`, do not lock the approach
 
-Nếu chưa đủ dữ liệu:
+If data is insufficient:
 
-- quay lại `s03 Open Questions`
-- không ép chọn approach chỉ để đi tiếp
-- không mở rộng design chỉ vì nhu cầu giả định trong tương lai
+- return to `s03 Open Questions`
+- do not force an approach just to keep moving
+- do not expand the design solely for hypothetical future needs
 
-## Gate Của Task Plan
+## Task Plan Gate
 
-Muốn bắt đầu `s07 Implement`, `s06 Task Plan` tối thiểu phải thỏa:
+To begin `s07 Implement`, `s06 Task Plan` must at minimum:
 
-- đã nêu phần chạm chính hoặc `owned_scope`
-- đã có thứ tự thực hiện hoặc dependency rõ
-- đã có `verify path` đủ dùng cho từng task hoặc từng batch
-- đã có checkpoint review hoặc governance khi scope yêu cầu
+- state the main touchpoints or `owned_scope`
+- have a clear execution order or dependency
+- have a `verify path` sufficient for each task or batch
+- have a review or governance checkpoint when the scope requires it
 
-Rule theo track:
+Rule by track:
 
-- `quick`: task plan có thể ngắn, nhưng vẫn phải nêu phần chạm chính hoặc `owned_scope`, thứ tự ngắn và cách verify chính; thêm checkpoint review/governance nếu scope yêu cầu
-- `full`: nên có file/path chính hoặc `owned_scope`, task nhỏ, rõ thứ tự hoặc dependency và `verify path` rõ
-- `enterprise`: xem task plan execution-oriented là gate cứng; thiếu phần chạm chính, thứ tự/dependency, `verify path` hoặc checkpoint bắt buộc thì không vào implement
+- `quick`: the task plan may be short, but it must still state the main touchpoints or `owned_scope`, a short order, and the main verify method; add a review/governance checkpoint if the scope requires it
+- `full`: there should be main files/paths or `owned_scope`, small tasks, clear order/dependency, and a clear `verify path`
+- `enterprise`: treat the execution-oriented task plan as a hard gate; missing main touchpoints, order/dependency, `verify path`, or a required checkpoint means implementation is blocked
 
-Không chấp nhận placeholder như:
+Placeholders such as the following are not accepted:
 
-- `xử lý edge case`
-- `thêm validation phù hợp`
-- `viết test`
-- `sửa phần liên quan`
+- `handle edge cases`
+- `add appropriate validation`
+- `write tests`
+- `fix the related part`
 
-nếu không nói rõ sẽ chạm đâu và kiểm thế nào
+unless they state exactly what will be touched and how it will be verified
 
-## Ma Trận Hybrid Theo Loại Work Item
+## Hybrid Matrix By Work Item Type
 
-| `work_item_type` | TDD | Worktree | Review sớm | Subagent |
+| `work_item_type` | TDD | Worktree | Early review | Subagent |
 |---|---|---|---|---|
-| `BUG` | `required` nếu fix behavior | `optional` cho quick, `recommended` cho full, `mandatory` cho enterprise | `required` | `optional` |
-| `FEATURE` | `required` nếu thêm behavior production | `recommended` | `required` | `optional` hoặc `conditional` |
-| `CHANGE` | `required` nếu đổi contract hoặc behavior | `recommended` | `required` | `optional` |
-| `REFACTOR` | `required` nếu có regression risk đáng kể | `optional` hoặc `recommended` tùy scope | `required` | `optional` |
-| `RESEARCH` | `not_required` | `not_required` trừ khi có prototype riêng | `optional` | `off` mặc định |
+| `BUG` | `required` if fixing behavior | `optional` for quick, `recommended` for full, `mandatory` for enterprise | `required` | `optional` |
+| `FEATURE` | `required` if adding production behavior | `recommended` | `required` | `optional` or `conditional` |
+| `CHANGE` | `required` if changing contract or behavior | `recommended` | `required` | `optional` |
+| `REFACTOR` | `required` if material regression risk | `optional` or `recommended` depending on scope | `required` | `optional` |
+| `RESEARCH` | `not_required` | `not_required` unless a separate prototype exists | `optional` | `off` by default |
 
-## Policy Theo Step
+## Policy By Step
 
 ### `s01 Clarify`
 
-Mục tiêu hybrid:
+Hybrid objective:
 
-- dùng cách hỏi của `brainstorming` để ép rõ yêu cầu, scope và constraint
-- không mở design dài dòng nếu request rất nhỏ
+- use `brainstorming`-style questioning to force clarity on requirements, scope, and constraints
+- do not open a long design if the request is very small
 
-Rule:
+Rules:
 
-- `MUST`: làm rõ yêu cầu theo style hỏi-vặn của `brainstorming`
-- `MUST NOT`: viết code hoặc mở implement path ở step này
-- `SHOULD`: ghi rõ boundary nào chưa rõ và cần chuyển sang `s03`
+- `MUST`: clarify requirements in the probing-question style of `brainstorming`
+- `MUST NOT`: write code or open an implementation path at this step
+- `SHOULD`: record which boundaries are still unclear and should move to `s03`
 
 ### `s02 Business Goal`
 
-Mục tiêu hybrid:
+Hybrid objective:
 
-- giữ business intent ngắn, dễ duyệt
-- tránh để discussion kỹ thuật nuốt mất mục tiêu business
+- keep the business intent short and easy to approve
+- prevent technical discussion from swallowing the business objective
 
-Rule:
+Rules:
 
-- `MUST`: chốt giá trị người dùng, success metric và non-goals
-- `SHOULD`: trình bày ngắn, đọc nhanh, dễ approve
-- `MUST NOT`: biến step này thành technical approach
+- `MUST`: lock user value, success metrics, and non-goals
+- `SHOULD`: present it short, quick to read, easy to approve
+- `MUST NOT`: turn this step into a technical approach
 
 ### `s03 Open Questions`
 
-Mục tiêu hybrid:
+Hybrid objective:
 
-- dùng tinh thần `brainstorming` để bóc blocker thật
-- không cho phép agent đoán phần chưa rõ
+- use the spirit of `brainstorming` to surface real blockers
+- do not allow the agent to guess unclear parts
 
-Rule:
+Rules:
 
-- `MUST`: mỗi open question trọng yếu phải có owner hoặc hướng xử lý
-- `MUST`: policy gap hoặc governance blocker phải được nêu rõ
-- `MUST NOT`: sang `s05` nếu blocker trọng yếu chưa có owner hoặc assumption được chấp nhận
+- `MUST`: every material open question must have an owner or a path to resolution
+- `MUST`: policy gaps or governance blockers must be stated clearly
+- `MUST NOT`: proceed to `s05` if a material blocker has no owner or if an assumption has been accepted
 
 ### `s04 Acceptance + DoR`
 
-Đây là gate quan trọng nhất trong mô hình hybrid.
+This is the most important gate in the hybrid model.
 
-Rule:
+Rules:
 
-- `MUST`: chốt acceptance criteria đo được
-- `MUST`: chốt `DoR`
-- `MUST`: phản ánh `governance checks` và `spec-freeze` nếu có `SDD`
-- `MUST NOT`: vào `s07` khi `s04` chưa ra verdict `DoR` rõ
-- `MUST NOT`: coi `s04` là đủ để code nếu `s05` và `s06` chưa có artifact tối thiểu
+- `MUST`: lock measurable acceptance criteria
+- `MUST`: lock `DoR`
+- `MUST`: reflect `governance checks` and `spec-freeze` when `SDD` applies
+- `MUST NOT`: enter `s07` before `s04` has produced a clear `DoR` verdict
+- `MUST NOT`: treat `s04` as sufficient to code if `s05` and `s06` do not have minimum artifacts
 
 Hybrid import:
 
-- dùng tinh thần Superpowers là `spec/design must be approved before code`
-- nhưng gate chính thức vẫn là `DoR` của workflow này, không phải chỉ là một lần user nói "go"
+- use the Superpowers spirit that `spec/design must be approved before code`
+- but the formal gate is the `DoR` of this workflow, not merely a single user "go"
 
 ### `s05 Technical Approach`
 
-Mục tiêu hybrid:
+Hybrid objective:
 
-- mượn `brainstorming` để so option và giữ `YAGNI/DRY`
-- không over-engineer trước `s06`
+- borrow `brainstorming` to compare options and uphold `YAGNI/DRY`
+- do not over-engineer before `s06`
 
-Rule:
+Rules:
 
-- `MUST`: nêu option và trade-off khi có hơn một hướng hợp lý
-- `MUST`: chốt boundary bị tác động và validation plan
-- `MUST`: ưu tiên giải pháp nhỏ nhất đủ đúng trong scope hiện tại; nếu chọn phương án lớn hơn, nêu rõ vì sao phương án nhỏ hơn không đủ
-- `MUST NOT`: nhảy sang code chi tiết production ở step này
-- `MUST`: để lại design đủ rõ để `s06` chia task và `s07` implement mà không phải tự đoán
-- `MUST NOT`: chốt approach chỉ theo cảm tính hoặc “quen tay”
-- `MUST NOT`: mở abstraction hoặc boundary mới chỉ để đón trước nhu cầu giả định
-- `MUST`: nếu hướng làm gần như hiển nhiên, vẫn phải nêu ít nhất 1 hướng thay thế hoặc hướng bị loại ở mức ngắn gọn
+- `MUST`: state options and trade-offs when more than one reasonable direction exists
+- `MUST`: lock impacted boundaries and a validation plan
+- `MUST`: prefer the smallest sufficient solution within the current scope; if a larger option is chosen, state clearly why the smaller one is insufficient
+- `MUST NOT`: jump into detailed production code at this step
+- `MUST`: leave the design clear enough that `s06` can split tasks and `s07` can implement without guessing
+- `MUST NOT`: lock an approach based on feeling or "muscle memory"
+- `MUST NOT`: open a new abstraction or boundary merely to anticipate hypothetical needs
+- `MUST`: even when the direction is nearly obvious, state at least one alternative or discarded direction briefly
 
 ### `s06 Task Plan`
 
-Đây là step import mạnh nhất từ `writing-plans`.
+This is the step with the strongest import from `writing-plans`.
 
-Rule nền:
+Foundational rules:
 
-- `MUST`: task trace được về requirement hoặc AC
-- `MUST`: nêu phần chạm chính hoặc `owned_scope` khi có thể xác định
-- `MUST`: có thứ tự thực hiện hoặc dependency rõ
-- `MUST`: có verify path
-- `MUST`: có checkpoint review khi scope cần
-- `MUST`: đủ rõ để `s07` không cần tự phát minh lại design
-- `MUST NOT`: dùng placeholder mà implementer phải tự đoán lại hành động cụ thể
+- `MUST`: tasks are traceable to a requirement or AC
+- `MUST`: state the main touchpoints or `owned_scope` when determinable
+- `MUST`: have a clear execution order or dependency
+- `MUST`: have a verify path
+- `MUST`: have a review checkpoint when the scope requires it
+- `MUST`: be clear enough that `s07` does not need to reinvent the design
+- `MUST NOT`: use placeholders that force the implementer to guess concrete actions
 
-Rule hybrid:
+Hybrid rules:
 
 - `quick`:
-  plan có thể ngắn nhưng vẫn phải nêu phần chạm chính hoặc `owned_scope`, thứ tự ngắn và cách verify chính
+  the plan may be short but must still state the main touchpoints or `owned_scope`, a short order, and the main verify method
 - `full`:
-  task nên nhỏ, rõ file/path chính hoặc `owned_scope`, rõ thứ tự/dependency và rõ verify path
+  tasks should be small, with main files/paths or `owned_scope`, clear order/dependency, and a clear verify path
 - `enterprise`:
-  task plan phải execution-oriented, rõ ownership, rõ thứ tự/dependency, rõ verify owner và rõ review checkpoint
+  the task plan must be execution-oriented, with clear ownership, clear order/dependency, a clear verify owner, and clear review checkpoints
 
-Khi dùng `writing-plans` style:
+When using the `writing-plans` style:
 
-- `SHOULD`: nêu file tạo mới và file sửa
-- `SHOULD`: nêu command verify chính
-- `SHOULD`: chia task thành đơn vị đủ nhỏ để review được
-- `MUST NOT`: viết plan kiểu placeholder như `thêm validate phù hợp`, `xử lý edge case`, `viết test`
+- `SHOULD`: state new files and modified files
+- `SHOULD`: state the main verify commands
+- `SHOULD`: split tasks into units small enough to review
+- `MUST NOT`: write placeholder plans such as `add appropriate validation`, `handle edge cases`, `write tests`
 
 ### `s07 Implement`
 
-Đây là step import mạnh nhất từ Superpowers execution pack.
+This is the step with the strongest import from the Superpowers execution pack.
 
-Entry gate của `s07`:
+Entry gate of `s07`:
 
-- `MUST`: chỉ bắt đầu khi `s04`, `s05`, `s06` đã có output tối thiểu theo rule ở trên
-- `MUST NOT`: dùng lý do "change nhỏ" để bỏ qua hoàn toàn design hoặc task plan
-- `MAY`: giữ design và task plan rất ngắn cho `quick`, nhưng vẫn phải hiện diện và đủ dùng
+- `MUST`: only begin once `s04`, `s05`, `s06` have the minimum outputs per the rules above
+- `MUST NOT`: use "small change" as a reason to skip design or task plan entirely
+- `MAY`: keep design and task plan very short for `quick`, but they must be present and sufficient
 
-Các capability có thể bật:
+Capabilities that may be enabled:
 
 - `using-git-worktrees`
 - `test-driven-development`
 - `subagent-driven-development`
 - `requesting-code-review`
 
-#### Rule Worktree
+#### Worktree Rule
 
-- `enterprise`: `MUST` dùng `worktree`
-- `full`: `SHOULD` dùng `worktree` cho `change lớn hoặc rủi ro`
-- `quick`: `MAY` bỏ qua `worktree` nếu change nhỏ, ít file, xong trong một session và conflict risk thấp
-- nếu change đã thuộc nhóm nên hoặc phải dùng `worktree` mà vẫn không dùng, implementation note phải nêu rõ lý do
-- `worktree` không thay cho review, verify hay `DoD`
+- `enterprise`: `MUST` use a `worktree`
+- `full`: `SHOULD` use a `worktree` for `large or risky changes`
+- `quick`: `MAY` skip `worktree` if the change is small, few files, done in one session, and low conflict risk
+- if a change falls into the should-or-must `worktree` category and a `worktree` is still not used, the implementation note must state the reason
+- `worktree` does not replace review, verify, or `DoD`
 
-#### Rule TDD
+#### TDD Rule
 
-`TDD` là rule bắt buộc khi:
+`TDD` is mandatory when:
 
-- thêm feature behavior production
-- sửa bug behavior
-- đổi contract hoặc validation rule
-- refactor có regression risk đáng kể
+- adding production feature behavior
+- fixing a behavior bug
+- changing a contract or validation rule
+- refactoring with material regression risk
 
-`TDD` không bắt buộc khi:
+`TDD` is not required when:
 
-- chỉ sửa docs
-- chỉ rename hoặc reformat không đổi behavior
-- chỉ thay metadata hoặc artifact workflow
+- only editing docs
+- only renaming or reformatting without behavior change
+- only changing metadata or workflow artifacts
 
-Nếu strict `TDD` bị chặn bởi legacy, harness hoặc môi trường test, implementation note phải nêu lý do và `verify path` thay thế.
+If strict `TDD` is blocked by legacy, harness, or the test environment, the implementation note must state the reason and an alternative `verify path`.
 
-#### Rule Subagent
+#### Subagent Rule
 
-- chỉ bật `subagent-driven-development` sau khi đã có `s06` đủ rõ
-- chỉ bật cho `task độc lập`
-- `task độc lập` tối thiểu phải có `owned_scope` hoặc `owned_paths` tương đối rời nhau, `merge path` rõ và `verify path` hoặc `verification_owner` rõ
-- không bật cho task nhỏ, tightly coupled, vừa khám phá context xong hoặc chồng lấn ownership mạnh
+- only enable `subagent-driven-development` after `s06` is sufficiently clear
+- only enable for `independent tasks`
+- an `independent task` must at minimum have a relatively separate `owned_scope` or `owned_paths`, a clear `merge path`, and a clear `verify path` or `verification_owner`
+- do not enable for small, tightly coupled tasks, tasks that just finished exploring context, or tasks with strongly overlapping ownership
 
-#### Rule Review Trong `s07`
+#### Review Rule Within `s07`
 
-- `quick`: có ít nhất một lượt review cho phần implement trước khi rời `s07`
-- `full`: review sớm sau mỗi batch logic hoặc task rủi ro, không đợi dồn sang `s08`
-- `enterprise`: review sớm hai tầng cho các phần chính trong `s07`
+- `quick`: at least one review pass of the implementation before leaving `s07`
+- `full`: early review after each logic batch or risky task, do not push it all to `s08`
+- `enterprise`: early two-tier review for the main parts within `s07`
 
-Thứ tự review bắt buộc:
+Mandatory review order:
 
 1. `spec compliance`
 2. `code quality`
 
-Không được coi `review` là thay thế cho `testing`.
+`review` must not be treated as a substitute for `testing`.
 
 ### `s08 Verify + DoD`
 
-Mục tiêu hybrid:
+Hybrid objective:
 
-- giữ `DoD` và `governance compliance` của repo
-- mượn tinh thần `finishing-a-development-branch` để chỉ đóng khi evidence đủ
+- keep the repo's `DoD` and `governance compliance`
+- borrow the spirit of `finishing-a-development-branch` to close only when evidence is sufficient
 
-Rule:
+Rules:
 
-- `MUST`: đối chiếu implementation với AC, spec, checklist và review findings
-- `MUST`: nêu rõ test nào đã chạy, scan nào đã chạy, review nào đã qua
-- `MUST`: kết luận `DoD` rõ ràng
-- `MUST`: chỉ tuyên bố `done` sau khi `DoD` đã được kết luận
-- `MUST`: nếu dùng `branch` hoặc `worktree`, chỉ chốt `cleanup`, `close`, `remove` hoặc `merge` sau khi `s08` có verdict `DoD` rõ
-- `MUST NOT`: tự tuyên bố `done` chỉ vì `review pass`, `test pass` cục bộ, `code xong`, `merge xong` hoặc `worktree` đã sạch
-- `MUST NOT`: coi `branch` sạch, `worktree` sạch hoặc diff đã review là tín hiệu đủ để chốt sớm
-- `enterprise`: cần verify owner hoặc audit path độc lập
+- `MUST`: compare the implementation against AC, spec, checklist, and review findings
+- `MUST`: state which tests ran, which scans ran, which reviews passed
+- `MUST`: conclude `DoD` clearly
+- `MUST`: declare `done` only after `DoD` has been concluded
+- `MUST`: if using a `branch` or `worktree`, only finalize `cleanup`, `close`, `remove`, or `merge` after `s08` has a clear `DoD` verdict
+- `MUST NOT`: self-declare `done` merely because of `review pass`, local `test pass`, `code done`, `merge done`, or a clean `worktree`
+- `MUST NOT`: treat a clean `branch`, clean `worktree`, or reviewed diff as sufficient signal to finalize early
+- `enterprise`: requires an independent verify owner or audit path
 
-## Default An Toàn
+## Safe Default
 
-- nếu không chắc `planning_track` nào: chọn `full`
-- nếu không chắc gate đã qua chưa: coi như chưa qua gate
-- nếu không chắc có cần `subagent`: không dùng
-- nếu không chắc có cần mở boundary, abstraction hoặc service mới: không mở nếu đường hiện có vẫn đủ đáp ứng
-- nếu không chắc có cần `worktree`: dùng nếu change có dấu hiệu của `change lớn hoặc rủi ro`
-- nếu không chắc có cần `TDD`: dùng nếu behavior production bị tác động
-- nếu không chắc review mức nào: bắt đầu bằng `targeted review`
-- `default an toàn` là fallback rule, không phải lý do để bỏ qua `DoR`, `DoD`, `review`, `verify` hay `governance`
+- if unsure which `planning_track`: choose `full`
+- if unsure whether a gate has passed: treat it as not passed
+- if unsure whether a `subagent` is needed: do not use one
+- if unsure whether to open a new boundary, abstraction, or service: do not open one if the existing path still meets the need
+- if unsure whether a `worktree` is needed: use one if the change shows signs of being a `large or risky change`
+- if unsure whether `TDD` is needed: use it if production behavior is affected
+- if unsure which review level: start with `targeted review`
+- `safe default` is a fallback rule, not a reason to skip `DoR`, `DoD`, `review`, `verify`, or `governance`
 
-## Rule TDD Chi Tiết
+## Detailed TDD Rule
 
-Chu kỳ chuẩn:
+Standard cycle:
 
-1. viết test cho behavior cần có
-2. chạy để thấy test fail đúng lý do
-3. viết code tối thiểu để pass
-4. chạy lại test để thấy pass
-5. refactor khi cần
+1. write the test for the desired behavior
+2. run it to see the test fail for the right reason
+3. write the minimum code to pass
+4. run the test again to see it pass
+5. refactor as needed
 
-Rule áp dụng:
+Application rules:
 
-- `MUST`: với bug fix, test phải tái hiện bug trước khi fix
-- `MUST`: với feature behavior, test phải mô tả behavior mong muốn trước khi implement
-- `MUST`: với validation rule hoặc contract change, test phải khóa behavior hoặc contract mong muốn trước khi implement
-- `MUST`: với refactor có regression risk đáng kể, test phải khóa behavior cần giữ trước khi đổi cấu trúc
-- `MUST`: nếu strict `TDD` bị chặn, implementation note phải nêu lý do và `verify path` thay thế
-- `SHOULD`: dùng test gần behavior thật, tránh mock quá mức
-- `MUST NOT`: viết xong production code rồi mới thêm test mà vẫn gọi đó là `TDD`
+- `MUST`: for a bug fix, the test must reproduce the bug before the fix
+- `MUST`: for feature behavior, the test must describe the desired behavior before implementation
+- `MUST`: for a validation rule or contract change, the test must lock the desired behavior or contract before implementation
+- `MUST`: for a refactor with material regression risk, the test must lock the behavior to preserve before changing structure
+- `MUST`: if strict `TDD` is blocked, the implementation note must state the reason and an alternative `verify path`
+- `SHOULD`: use tests close to real behavior; avoid over-mocking
+- `MUST NOT`: write production code first and add tests later while still calling it `TDD`
 
-## Rule Review Chi Tiết
+## Detailed Review Rule
 
-Review được chia thành 3 mức:
+Review is split into three levels:
 
-- `self review`: implementer tự kiểm trước khi handoff
-- `targeted review`: review cho task hoặc batch cụ thể
-- `independent review`: review bởi owner khác hoặc verification owner
+- `self review`: the implementer checks their own work before handoff
+- `targeted review`: review for a specific task or batch
+- `independent review`: review by a different owner or the verification owner
 
-Mapping theo track:
+Mapping by track:
 
-- `quick`: `self review` + final targeted review khi cần
-- `full`: `self review` + targeted review theo batch hoặc task rủi ro
-- `enterprise`: `self review` + independent review cho các phần chính
+- `quick`: `self review` + final targeted review when needed
+- `full`: `self review` + targeted review by batch or risky task
+- `enterprise`: `self review` + independent review for the main parts
 
-Rule chốt:
+Closing rules:
 
-- không dồn toàn bộ review sang `s08`
-- review sớm ưu tiên cho batch, task rủi ro và phần logic/contract quan trọng
-- mọi review trong `s07` phải đi theo thứ tự `spec compliance -> code quality`
-- `s08` vẫn là step kết luận verify cuối, không phải nơi thay thế toàn bộ review bị bỏ qua trong `s07`
+- do not push all review to `s08`
+- early review prioritizes batches, risky tasks, and important logic/contract parts
+- every review within `s07` must follow the order `spec compliance -> code quality`
+- `s08` is still the final verify-conclusion step, not a place to replace all review skipped in `s07`
 
-Mức nghiêm trọng:
+Severity levels:
 
-- `critical`: phải fix trước khi đi tiếp
-- `important`: phải fix hoặc có chấp thuận rõ trước khi đi tiếp
-- `minor`: có thể note lại nhưng không được che giấu
+- `critical`: must fix before continuing
+- `important`: must fix or have explicit approval before continuing
+- `minor`: may be noted but must not be hidden
 
-## Rule Subagent Và Execution Topology
+## Subagent And Execution Topology Rule
 
-`Superpowers` thiên về `fresh subagent per task`.
-Hybrid policy này không mặc định như vậy.
+`Superpowers` leans toward `fresh subagent per task`.
+This hybrid policy does not default to that.
 
-Rule:
+Rules:
 
-- `agentic` vẫn là mode mặc định
-- chỉ nâng lên `multi_agent` hoặc pattern subagent theo task khi task là `task độc lập`
-- nếu không đạt các điều kiện trên, fallback về `agentic` hoặc `sequential_multi_role`
+- `agentic` is still the default mode
+- only escalate to `multi_agent` or a per-task subagent pattern when the task is an `independent task`
+- if the conditions above are not met, fall back to `agentic` or `sequential_multi_role`
 
-## Rule Command Và Artifact
+## Command And Artifact Rule
 
-Policy này không tạo command mới.
+This policy creates no new commands.
 
-Source-of-truth artifact vẫn là:
+The source-of-truth artifacts remain:
 
 - `work-items/`
 - `changes/`
 - `product-specs/`
 - `project-context/`
 
-Nếu dùng pattern từ Superpowers:
+When using patterns from Superpowers:
 
-- mọi kết luận chính thức vẫn phải quay về artifact chuẩn của workflow hiện tại
-- không dùng `docs/superpowers/...` làm nguồn sự thật chính trong repo này
+- every formal conclusion must still return to the current workflow's standard artifacts
+- `docs/superpowers/...` must not be used as the primary source of truth in this repo
 
-## Rule Cấm
+## Prohibited Rules
 
-- không bypass `s04` để vào implement
-- không bypass `s08` để tự tuyên bố done
-- không dùng `review passed` thay cho `DoD`
-- không dùng `TDD` như khẩu hiệu nếu không có test fail trước
-- không bật subagent chỉ vì muốn song song hóa
-- không để rule của Superpowers ghi đè `governance`, `work-item protocol` hoặc `planning_track`
+- do not bypass `s04` to enter implementation
+- do not bypass `s08` to self-declare done
+- do not use `review passed` in place of `DoD`
+- do not use `TDD` as a slogan when there is no failing test first
+- do not enable subagents merely to parallelize
+- do not let Superpowers rules override `governance`, `work-item protocol`, or `planning_track`
 
-## Preset Khuyến Nghị
+## Recommended Presets
 
 ### Preset `quick`
 
-- giữ backbone của repo
-- mượn `brainstorming` nhẹ ở `s01-s05`
-- mượn `TDD` ở `s07` nếu change có behavior
-- có ít nhất một lượt review trong `s07`
-- không mặc định dùng worktree hoặc subagent
+- keep the repo backbone
+- borrow light `brainstorming` at `s01-s05`
+- borrow `TDD` at `s07` if the change has behavior
+- at least one review pass within `s07`
+- do not default to worktree or subagent
 
 ### Preset `full`
 
-- giữ backbone của repo
-- dùng `writing-plans` rõ hơn ở `s06`
-- dùng `TDD` ở `s07` cho behavior change
-- review theo batch hoặc task rủi ro
-- dùng `worktree` khi change lớn hoặc rủi ro
+- keep the repo backbone
+- use `writing-plans` more explicitly at `s06`
+- use `TDD` at `s07` for behavior change
+- review by batch or risky task
+- use `worktree` when the change is large or risky
 
 ### Preset `enterprise`
 
-- giữ nguyên governance/protocol/signoff của repo
-- dùng `writing-plans` strict ở `s06`
-- worktree là mặc định
-- review độc lập ở `s07-s08`
-- chỉ bật subagent khi task là `task độc lập`
+- keep the repo's governance/protocol/sign-off intact
+- use `writing-plans` strict at `s06`
+- worktree is the default
+- independent review at `s07-s08`
+- only enable subagents when the task is an `independent task`
 
-## Công Thức Nhớ Nhanh
+## Quick Mnemonics
 
-- repo này giữ `backbone + governance + source-of-truth`
-- Superpowers tăng lực ở `planning + implementation + review discipline`
-- `DoR` quyết định khi nào được code
-- `DoD` quyết định khi nào được đóng
+- this repo keeps `backbone + governance + source-of-truth`
+- Superpowers adds power at `planning + implementation + review discipline`
+- `DoR` decides when code is allowed
+- `DoD` decides when the work can close
 
-## Tài Liệu Liên Quan
+## Related Documents
 
 - `policies/codex/AGENTS.global.md`
 - `docs/hybrid-superpowers-decision-matrix.md`

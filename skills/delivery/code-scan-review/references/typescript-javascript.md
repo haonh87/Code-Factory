@@ -1,31 +1,37 @@
+---
+language: en
+---
+
 # TypeScript/JavaScript
 
-Dùng reference này khi thay đổi chạm TypeScript, JavaScript, Node.js, frontend bundle hoặc script automation JS/TS.
+> Vietnamese: typescript-javascript.vi.md
 
-## Thứ Tự Ưu Tiên
+Use this reference when the change touches TypeScript, JavaScript, Node.js, a frontend bundle, or JS/TS automation scripts.
 
-1. Syntax hoặc type
-- TypeScript: ưu tiên `tsc --noEmit` hoặc script project tương đương.
-- JavaScript thuần: dùng `node --check` cho file hoặc entry phù hợp nếu project không có typecheck.
+## Priority Order
+
+1. Syntax or type
+- TypeScript: prefer `tsc --noEmit` or an equivalent project script.
+- Plain JavaScript: use `node --check` for a fitting file or entry if the project has no typecheck.
 
 2. Static analysis
-- Ưu tiên `eslint` qua script project nếu có.
-- Nếu repo có nhiều package, chạy đúng workspace hoặc package bị tác động thay vì lint toàn monorepo vô điều kiện.
+- Prefer `eslint` via a project script if present.
+- If the repo has many packages, run the affected workspace or package instead of unconditionally linting the whole monorepo.
 
 3. Security scan
-- Ưu tiên `semgrep`.
-- Dependency audit là track riêng; không tự trộn vào skill này trừ khi thay đổi chạm dependency hoặc policy project yêu cầu.
+- Prefer `semgrep`.
+- Dependency audit is a separate track; do not mix it into this skill unless the change touches dependencies or the project policy requires it.
 
 4. Performance heuristic
-- Rà render loop nặng, object clone lớn, network call lặp, synchronous I/O trên hot path, serialize hoặc parse dữ liệu lớn, cache miss do scope state sai.
+- Review heavy render loops, large object clones, repeated network calls, synchronous I/O on hot paths, large serialize or parse operations, and cache misses from wrong scoped state.
 
-## Heuristic Bắt Buộc Khi Scope Frontend
+## Mandatory Heuristics When Scope Is Frontend
 
-- React hoặc Next.js: render churn, effect phụ thuộc sai, state đặt quá cao, list rendering thiếu key ổn định.
-- Client bundle: import nặng trong path nóng, library lớn bị kéo vào client không cần thiết.
-- Form hoặc API call: debounce thiếu, retry gây bão request, race condition khi update state.
+- React or Next.js: render churn, wrong effect dependencies, state placed too high, list rendering missing stable keys.
+- Client bundle: heavy imports on hot paths, large libraries pulled into the client unnecessarily.
+- Forms or API calls: missing debounce, retries causing request storms, race conditions when updating state.
 
 ## Fallback
 
-- Nếu không có `eslint`, vẫn chạy typecheck hoặc syntax check phù hợp và ghi rõ lỗ hổng verify còn lại.
-- Không coi build pass là bằng chứng đã cover lint hoặc static analysis.
+- If there is no `eslint`, still run a fitting typecheck or syntax check and record the remaining verify gap.
+- Do not treat a build pass as evidence of having covered lint or static analysis.

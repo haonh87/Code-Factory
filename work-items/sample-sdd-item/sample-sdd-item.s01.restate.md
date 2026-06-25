@@ -67,7 +67,7 @@ tags:
 # Step 1 - Clarify
 
 > [!summary]
-> Tóm tắt yêu cầu, phạm vi ban đầu, ràng buộc và governance context mở đầu.
+> Summarize the request, initial scope, constraints and the opening governance context.
 
 ## Step Contract
 ```yaml
@@ -87,31 +87,31 @@ prohibited_actions: []
 open_governance_questions: []
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 raw_request: "Add workspace-aware session search sample feature."
-restated_request: "Bổ sung workspace filter cho flow session search và giữ behavior mặc định hiện có."
+restated_request: "Add a workspace filter to the session search flow and keep the existing default behavior."
 request_type: FEATURE
-user_problem_initial: "Người dùng phải tự lọc kết quả session theo workspace nên mất thời gian và dễ nhầm."
-business_context_initial: "Repo cần sample SDD có BRD/SRS thật để chứng minh traceability end-to-end."
+user_problem_initial: "Users have to filter session results by workspace manually, so it costs time and is error-prone."
+business_context_initial: "The repo needs an SDD sample with a real BRD/SRS to demonstrate end-to-end traceability."
 scope_draft:
   in:
-    - "thêm workspace filter vào flow search"
-    - "giữ trace từ BRD/SRS tới verify"
+    - "add a workspace filter to the search flow"
+    - "keep the trace from BRD/SRS to verify"
   out:
-    - "migration dữ liệu session"
-    - "thay đổi schema storage của cass"
+    - "session data migration"
+    - "changing the cass storage schema"
 constraints_initial:
-  - "không phá backward compatibility khi không truyền workspace filter"
+  - "do not break backward compatibility when no workspace filter is passed"
 assumptions_initial:
-  - "workspace path được normalize trước khi query"
+  - "the workspace path is normalized before the query"
 open_questions_initial:
-  - "hành vi khi path không hợp lệ phải rõ ở SRS"
+  - "the behavior for an invalid path must be clear in the SRS"
 dependencies_initial:
   - "cass read-only query layer"
 risks_initial:
-  - "normalize path sai có thể làm miss kết quả"
-notes_for_step_2: "Business Goal phải chốt compatibility là rule bắt buộc."
+  - "a wrong path normalization can cause missed results"
+notes_for_step_2: "The Business Goal must lock compatibility as a mandatory rule."
 ```
 
 ## SDD Traceability
@@ -131,6 +131,6 @@ next_step: "sample-sdd-item.s02.business-goal.md"
 ```
 
 ## Handoff
-- Điều đã rõ: cần filter kết quả theo workspace và phải giữ backward compatibility.
-- Điều còn cần theo dõi: rule validate path và thông điệp lỗi khi path không hợp lệ.
-- Điều kiện sang step 2: chốt business goal, KPI và non-goals trong BRD.
+- What is clear: a workspace filter is needed and backward compatibility must be preserved.
+- What still needs tracking: the path validation rule and the error message for an invalid path.
+- Conditions to move to step 2: lock the business goal, KPI and non-goals in the BRD.

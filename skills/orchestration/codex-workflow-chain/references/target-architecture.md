@@ -1,32 +1,38 @@
-# Target Architecture Cho Workflow Backbone
+---
+language: en
+---
 
-Tài liệu này mô tả kiến trúc đích để hoàn thiện workflow hiện tại của repo, với nguyên tắc:
+# Target Architecture For The Workflow Backbone
 
-- workflow hiện tại là `backbone`
-- các framework ngoài chỉ là lớp bổ trợ
-- không tạo workflow song song
-- không thay source-of-truth hiện có bằng artifact của framework ngoài
+> Vietnamese: target-architecture.vi.md
 
-Trạng thái tài liệu:
+This document describes the target architecture for completing the repo's current workflow, with these principles:
 
-- đây là `target architecture` để review
-- chưa phải bản implementation hoàn tất trong repo
-- dùng làm đầu vào cho các bước rollout tiếp theo
-- rollout cụ thể theo phase, artifact, validator và CI nằm tại `implementation-blueprint.md`
+- the current workflow is the `backbone`
+- external frameworks are only a supporting layer
+- do not create parallel workflows
+- do not replace the existing source-of-truth with an external framework's artifacts
 
-Thời điểm đối chiếu: `2026-04-13`.
+Document status:
 
-## Mục Tiêu
+- this is a `target architecture` for review
+- it is not yet a completed implementation in the repo
+- it is input for the next rollout steps
+- the concrete rollout by phase, artifact, validator, and CI lives in `implementation-blueprint.md`
 
-- Giữ workflow 8 bước hiện tại làm `host workflow`
-- Bổ sung lớp governance, change management, execution và adaptive planning
-- Không biến `governance` thành step riêng; ưu tiên nhúng vào step contract/gate của backbone
-- Tách rõ `source-of-truth`, `change`, `execution trace`, `archive`
-- Tăng khả năng mở rộng cho cả `FEATURE`, `CHANGE`, `BUG`, `REFACTOR`, `RESEARCH`
+Cross-reference date: `2026-04-13`.
+
+## Goals
+
+- Keep the current eight-step workflow as the `host workflow`
+- Add governance, change management, execution, and adaptive planning layers
+- Do not turn `governance` into a separate step; prefer embedding it into the backbone's step contract/gate
+- Separate clearly `source-of-truth`, `change`, `execution trace`, and `archive`
+- Increase extensibility for `FEATURE`, `CHANGE`, `BUG`, `REFACTOR`, and `RESEARCH`
 
 ## Backbone
 
-Workflow backbone giữ nguyên:
+The workflow backbone stays:
 
 ```text
 Clarify
@@ -39,60 +45,60 @@ Clarify
 -> Verify + DoD
 ```
 
-Workflow này vẫn là nơi quyết định:
+This workflow still decides:
 
-- gate
-- signoff
-- handoff
+- gates
+- signoffs
+- handoffs
 - release readiness
 - business acceptance
 
-## Mô Hình Governance Hybrid
+## Hybrid Governance Model
 
-Target architecture này dùng mô hình `hybrid governance`:
+This target architecture uses a `hybrid governance` model:
 
-- khoảng `70-80%` governance được nhúng trực tiếp vào step contract, gate, handoff và evidence của từng step
-- khoảng `20-30%` nằm ở layer mỏng dùng chung như `constitution`, `project-context`, `governance-checklist`, `governance-exception`
+- about `70-80%` of governance is embedded directly into each step's step contract, gate, handoff, and evidence
+- about `20-30%` sits in a thin shared layer such as `constitution`, `project-context`, `governance-checklist`, `governance-exception`
 
-Điều này có nghĩa là:
+This means:
 
-- không tạo `governance step`
-- không tạo workflow governance riêng
-- không để governance chỉ nằm ở tài liệu nền mà không đi vào gate của workflow thật
-- mọi lệch chuẩn phải xuất hiện trong `governance-exception`, không được ngầm bỏ qua
+- do not create a `governance step`
+- do not create a separate governance workflow
+- do not leave governance only in foundational documents without entering the real workflow gates
+- every deviation must appear in `governance-exception`; it must not be silently bypassed
 
-## Lớp Kiến Trúc
+## Architecture Layers
 
-| Lớp | Vai trò | Nguồn chính |
+| Layer | Role | Main source |
 |---|---|---|
-| Backbone | step, gate, signoff, handoff, evidence flow | workflow hiện tại |
-| Governance | `constitution`, `project-context`, `checklist`, `quality bar` và các rule dùng chung | `spec-kit` |
-| Product Spec | `BRD`, `SRS`, traceability, rollout truth | workflow hiện tại |
+| Backbone | step, gate, signoff, handoff, evidence flow | current workflow |
+| Governance | `constitution`, `project-context`, `checklist`, `quality bar`, and shared rules | `spec-kit` |
+| Product Spec | `BRD`, `SRS`, traceability, rollout truth | current workflow |
 | Change Layer | proposal, design, tasks, spec delta, archive | `OpenSpec` |
 | Execution Layer | implementer/reviewer/fixer loop, task execution autonomy | `cc-sdd` |
-| Adaptive Planning | quick/full/enterprise routing, planning depth theo scope | `BMAD-METHOD` |
+| Adaptive Planning | quick/full/enterprise routing, planning depth by scope | `BMAD-METHOD` |
 | Automation Guardrail | validator, fixture suite, scaffold smoke, PR/push enforcement | repo-native CI design |
 
-## Nguyên Tắc Cốt Lõi
+## Core Principles
 
-- `BRD` và `SRS` là source-of-truth của sản phẩm.
-- `changes/` là source-of-truth của thay đổi đang đề xuất hoặc đang rollout.
-- note `s01...s08` là execution trace và evidence.
-- `governance_ref` là field canonical để trỏ tới governance source đang áp dụng; thông thường nó trỏ tới `constitution` hoặc `project-context`.
-- `DoR`, `DoD`, `release`, `business_acceptance` chỉ do backbone workflow quyết định.
-- execution loop không được bypass business gate.
-- planning artifact kiểu `PRD/story` chỉ được dùng để bổ trợ planning, không thay `BRD/SRS`.
+- `BRD` and `SRS` are the product source-of-truth.
+- `changes/` is the source-of-truth for a change being proposed or rolled out.
+- `s01...s08` notes are the execution trace and evidence.
+- `governance_ref` is the canonical field pointing to the governance source in effect; it usually points to `constitution` or `project-context`.
+- `DoR`, `DoD`, `release`, and `business_acceptance` are decided only by the backbone workflow.
+- the execution loop must not bypass a business gate.
+- planning artifacts like `PRD/story` are only for planning support; they do not replace `BRD/SRS`.
 
 ## Framework Contributions
 
-| Framework | Vai trò trong target architecture | Không được làm |
+| Framework | Role in the target architecture | Must not do |
 |---|---|---|
-| `spec-kit` | governance layer: `constitution`, `checklist`, `clarify/analyze` mindset | thay workflow backbone |
-| `OpenSpec` | change layer: `specs/` vs `changes/`, proposal/apply/archive, spec delta | thay `BRD/SRS` bằng OpenSpec spec folders |
-| `cc-sdd` | execution layer: `requirements -> design -> tasks -> implementation`, reviewer loop | quyết định thay `DoR/DoD` |
-| `BMAD-METHOD` | adaptive planning: `quick/full/enterprise`, role-aware agile planning, story-centric implementation | thay toàn bộ role/artifact hiện tại bằng BMAD roles/artifacts |
+| `spec-kit` | governance layer: `constitution`, `checklist`, `clarify/analyze` mindset | replace the workflow backbone |
+| `OpenSpec` | change layer: `specs/` vs `changes/`, proposal/apply/archive, spec delta | replace `BRD/SRS` with OpenSpec spec folders |
+| `cc-sdd` | execution layer: `requirements -> design -> tasks -> implementation`, reviewer loop | decide in place of `DoR/DoD` |
+| `BMAD-METHOD` | adaptive planning: `quick/full/enterprise`, role-aware agile planning, story-centric implementation | replace all current roles/artifacts with BMAD roles/artifacts |
 
-## Artifact Model Đích
+## Target Artifact Model
 
 ```text
 project-context/
@@ -134,128 +140,128 @@ work-items/
     <work_item_slug>.s08.verification.md
 ```
 
-## Ý Nghĩa Từng Vùng Artifact
+## Meaning Of Each Artifact Zone
 
-| Vùng | Vai trò |
+| Zone | Role |
 |---|---|
-| `project-context/` | nơi giữ rule dùng chung của dự án như `constitution`, coding standards, collaboration preference và `quality bar` |
-| `product-specs/` | nơi giữ `BRD/SRS` chính thức sau khi đã review/approve |
-| `changes/` | nơi đóng gói từng thay đổi theo proposal, design, tasks, delta và archive lifecycle |
-| `work-items/` | canonical artifact root cho step note, traceability, role outputs, DoR/DoD evidence và execution topology |
+| `project-context/` | holds project-wide shared rules such as `constitution`, coding standards, collaboration preferences, and `quality bar` |
+| `product-specs/` | holds formal `BRD/SRS` after review/approval |
+| `changes/` | packages each change by proposal, design, tasks, delta, and archive lifecycle |
+| `work-items/` | canonical artifact root for step notes, traceability, role outputs, DoR/DoD evidence, and execution topology |
 
-## Planning Track Từ BMAD
+## Planning Track From BMAD
 
-| Track | Khi dùng | Tác động lên workflow backbone |
+| Track | When to use | Impact on the workflow backbone |
 |---|---|---|
-| `quick` | bug nhỏ, change nhỏ, scope rõ | rút gọn chiều sâu `s01-s06`, nhưng vẫn giữ verify/evidence ở `s08` |
-| `full` | feature vừa hoặc lớn | chạy đủ 8 bước với `BRD/SRS`, design và task plan đầy đủ |
-| `enterprise` | có security/devops/compliance/release phức tạp | tăng chiều sâu `s04-s08`, thêm review/signoff lane và planning artifact bổ sung |
+| `quick` | small bug, small change, clear scope | condense the depth of `s01-s06`, but keep verify/evidence at `s08` |
+| `full` | medium or large feature | run all eight steps with `BRD/SRS`, design, and a full task plan |
+| `enterprise` | complex security/devops/compliance/release | deepen `s04-s08`, add a review/signoff lane and supplementary planning artifacts |
 
-Planning track là metadata điều chỉnh độ sâu planning, không tạo workflow mới.
+A planning track is metadata that adjusts planning depth; it does not create a new workflow.
 
-## Mapping Nguồn Ngoài Vào Từng Step
+## Mapping External Sources Onto Each Step
 
-| Step | Backbone owner | Lớp bổ sung chính |
+| Step | Backbone owner | Main added layer |
 |---|---|---|
-| `s01 Clarify` | workflow hiện tại | `spec-kit clarify`, `BMAD project-context`, `OpenSpec` proposal intent; ghi `governance context` ban đầu |
-| `s02 Business Goal` | workflow hiện tại | `BMAD` role collaboration mindset, `spec-kit` goal/checklist discipline; chốt alignment cơ bản với nguyên tắc nền |
-| `s03 Open Questions` | workflow hiện tại | `spec-kit analyze/checklist`, `OpenSpec` proposal refinement; làm lộ `governance blocker` nếu có |
-| `s04 Acceptance + DoR` | workflow hiện tại | gate trung tâm; khóa `DoR`, `spec-freeze`, reviewer coverage và `governance checks` cho readiness |
-| `s05 Technical Approach` | workflow hiện tại | `OpenSpec design`, `cc-sdd` design contract, `BMAD` planning depth; ghi `governance exception` khi lệch chuẩn |
-| `s06 Task Plan` | workflow hiện tại | `cc-sdd requirements -> design -> tasks`, `BMAD` story slicing; bảo đảm coverage cho review/verify/governance |
-| `s07 Implement` | workflow hiện tại | `cc-sdd` implementer/reviewer/fixer loop, `BMAD quick-dev/story-centric loop`; không đi lệch rule mà không ghi exception |
-| `s08 Verify + DoD` | workflow hiện tại | `spec-kit` checklist, `cc-sdd` independent review, `OpenSpec archive` readiness; kết luận rõ `governance compliance` |
+| `s01 Clarify` | current workflow | `spec-kit clarify`, `BMAD project-context`, `OpenSpec` proposal intent; record initial `governance context` |
+| `s02 Business Goal` | current workflow | `BMAD` role collaboration mindset, `spec-kit` goal/checklist discipline; pin basic alignment with foundational principles |
+| `s03 Open Questions` | current workflow | `spec-kit analyze/checklist`, `OpenSpec` proposal refinement; surface any `governance blocker` |
+| `s04 Acceptance + DoR` | current workflow | central gate; pin `DoR`, `spec-freeze`, reviewer coverage, and `governance checks` for readiness |
+| `s05 Technical Approach` | current workflow | `OpenSpec design`, `cc-sdd` design contract, `BMAD` planning depth; record a `governance exception` when deviating |
+| `s06 Task Plan` | current workflow | `cc-sdd requirements -> design -> tasks`, `BMAD` story slicing; ensure coverage for review/verify/governance |
+| `s07 Implement` | current workflow | `cc-sdd` implementer/reviewer/fixer loop, `BMAD quick-dev/story-centric loop`; do not drift off-rule without recording an exception |
+| `s08 Verify + DoD` | current workflow | `spec-kit` checklist, `cc-sdd` independent review, `OpenSpec archive` readiness; clearly conclude `governance compliance` |
 
 ## Role Architecture
 
-| Role hiện tại | Giữ nguyên | Mượn thêm từ framework ngoài |
+| Current role | Keep | Borrow from external frameworks |
 |---|---|---|
-| `po` | owner business value, scope, acceptance | PM mindset từ `BMAD`, checklist discipline từ `spec-kit` |
-| `ba` | owner requirement, rule, traceability | analyst exploration từ `BMAD`, clarify/analyze mindset từ `spec-kit` |
-| `designer` | owner UX/interaction/experience rule | UX planning depth từ `BMAD` |
-| `developer` | owner approach, task, implementation coherence | execution contract từ `cc-sdd`, story slicing từ `BMAD` |
-| `qc` | owner verify, evidence, DoD | checklist/analyze từ `spec-kit`, test-architect mindset từ `BMAD` |
-| `devops` | owner packaging/runtime/release contract | enterprise planning depth từ `BMAD` |
+| `po` | owns business value, scope, acceptance | PM mindset from `BMAD`, checklist discipline from `spec-kit` |
+| `ba` | owns requirements, rules, traceability | analyst exploration from `BMAD`, clarify/analyze mindset from `spec-kit` |
+| `designer` | owns UX/interaction/experience rules | UX planning depth from `BMAD` |
+| `developer` | owns approach, tasks, implementation coherence | execution contract from `cc-sdd`, story slicing from `BMAD` |
+| `qc` | owns verification, evidence, DoD | checklist/analyze from `spec-kit`, test-architect mindset from `BMAD` |
+| `devops` | owns packaging/runtime/release contract | enterprise planning depth from `BMAD` |
 
-## Command Và Skill Architecture
+## Command And Skill Architecture
 
-- chỉ nên có một command surface nội bộ cho repo
-- command nội bộ có thể bọc behavior của nhiều framework, nhưng không expose nguyên 4 bộ command
-- command/skill mapping khuyến nghị:
+- keep a single internal command surface for the repo
+- internal commands may wrap the behavior of several frameworks, but do not expose all four raw command sets
+- recommended command/skill mapping:
 
-| Hành vi | Nguồn cảm hứng chính |
+| Behavior | Main inspiration source |
 |---|---|
 | governance command | `spec-kit` |
 | change proposal/apply/archive | `OpenSpec` |
 | task execution loop | `cc-sdd` |
 | planning track selection | `BMAD-METHOD` |
 
-CI enforcement cho command surface nội bộ được mô tả riêng tại `workflow-ci-enforcement.md`.
+CI enforcement for the internal command surface is described separately in `workflow-ci-enforcement.md`.
 
-## Luồng Vận Hành Đích
+## Target Operating Flow
 
 ```text
-1. Chọn planning track: quick/full/enterprise
-2. Nạp project-context hoặc constitution
-3. Tạo hoặc cập nhật BRD/SRS context
-4. Tạo change package trong changes/<change-id>/
-5. Chạy workflow backbone 8 bước
-6. Ở s07-s08 dùng execution loop kiểu cc-sdd
-7. Verify xong thì sync spec delta vào BRD/SRS
-8. Chỉ archive khi DoD + release + business_acceptance rõ
+1. Choose a planning track: quick/full/enterprise
+2. Load project-context or constitution
+3. Create or update BRD/SRS context
+4. Create a change package in changes/<change-id>/
+5. Run the eight-step workflow backbone
+6. At s07-s08 use the cc-sdd-style execution loop
+7. After verify, sync the spec delta into BRD/SRS
+8. Archive only when DoD + release + business_acceptance are clear
 ```
 
-## Metadata Nên Có Trong Target Model
+## Metadata To Have In The Target Model
 
-| Metadata | Vai trò |
+| Metadata | Role |
 |---|---|
-| `planning_track: quick|full|enterprise` | điều chỉnh độ sâu planning |
-| `governance_ref` | field canonical, link tới `constitution` hoặc `project-context` dùng cho work item hoặc step |
-| `governance_profile` | mức độ governance áp dụng: `default`, `strict`, `regulated`, `custom` |
-| `governance_status` | dùng enum chuẩn: `ALIGNED|CHECKS_PENDING|EXCEPTION_RECORDED|WAIVER_APPROVED|BLOCKED|NOT_APPLICABLE` |
-| `checklist_refs` | link tới checklist hoặc review pack liên quan |
-| `change_id` | nối backbone workflow với change package |
+| `planning_track: quick|full|enterprise` | adjusts planning depth |
+| `governance_ref` | canonical field linking to the `constitution` or `project-context` used by the work item or step |
+| `governance_profile` | governance level applied: `default`, `strict`, `regulated`, `custom` |
+| `governance_status` | standard enum: `ALIGNED|CHECKS_PENDING|EXCEPTION_RECORDED|WAIVER_APPROVED|BLOCKED|NOT_APPLICABLE` |
+| `checklist_refs` | links to the relevant checklist or review pack |
+| `change_id` | connects the backbone workflow to a change package |
 | `change_status` | draft, approved, implementing, verified, archived |
-| `spec_delta_refs` | link tới phần delta của `BRD/SRS` |
-| `archive_status` | chưa archive, ready_to_archive, archived |
-| `execution_mode` | dùng enum note-level: `agentic|multi_agent`; nếu runtime cần fallback thì theo `sequential_multi_role` trong execution policy |
-| `review_mode` | dùng enum thống nhất: `self|independent|auto_fix_loop` |
+| `spec_delta_refs` | links to the `BRD/SRS` delta portion |
+| `archive_status` | not archived, ready_to_archive, archived |
+| `execution_mode` | note-level enum: `agentic|multi_agent`; if the runtime needs a fallback, use `sequential_multi_role` in the execution policy |
+| `review_mode` | unified enum: `self|independent|auto_fix_loop` |
 
-Quy ước đồng bộ:
+Synchronization conventions:
 
-- Trong prose có thể viết `multi-agent`, nhưng trong schema và frontmatter dùng `multi_agent`.
-- `sequential_multi_role` là runtime fallback, không phải execution mode mặc định của note frontmatter.
-- Governance Pack mức project đã được materialize ở `project-context/`; `governance_ref` mặc định nên trỏ `project-context/project-context.md`.
+- In prose you may write `multi-agent`, but in schemas and frontmatter use `multi_agent`.
+- `sequential_multi_role` is a runtime fallback, not the default execution mode of a note's frontmatter.
+- The project-level Governance Pack has been materialized at `project-context/`; the default `governance_ref` should point to `project-context/project-context.md`.
 
-## Boundary Cần Giữ Rất Chặt
+## Boundaries To Keep Very Tight
 
-| Boundary | Quy tắc |
+| Boundary | Rule |
 |---|---|
-| Product spec vs change | `BRD/SRS` không bị thay bởi `proposal/tasks` |
-| Workflow vs framework | framework ngoài không được tạo workflow cạnh tranh |
-| Change vs execution | `changes/` không thay `work-items/` |
-| Execution vs governance | execution loop không thay `DoR/DoD` |
-| Governance vs step | governance không được trôi thành tài liệu nền thuần túy; phải đi vào gate hoặc exception của step tương ứng |
-| Planning aid vs rollout truth | `PRD/story` chỉ là planning aid, không thay artifact chính |
+| Product spec vs change | `BRD/SRS` is not replaced by `proposal/tasks` |
+| Workflow vs framework | external frameworks must not create a competing workflow |
+| Change vs execution | `changes/` does not replace `work-items/` |
+| Execution vs governance | the execution loop does not replace `DoR/DoD` |
+| Governance vs step | governance must not drift into pure foundational docs; it must enter the gate or exception of the relevant step |
+| Planning aid vs rollout truth | `PRD/story` is only a planning aid, not a replacement for the main artifact |
 
-## Điều Chưa Nên Làm Ngay
+## What Not To Do Yet
 
-- chưa nên import nguyên command set của bất kỳ framework nào
-- chưa nên rename role hiện tại theo BMAD
-- chưa nên đổi `BRD/SRS` sang naming scheme của framework ngoài
-- chưa nên archive/change-sync automation khi change protocol chưa ổn định
+- do not import any framework's raw command set wholesale
+- do not rename current roles to BMAD
+- do not switch `BRD/SRS` to an external framework's naming scheme
+- do not add archive/change-sync automation while the change protocol is not yet stable
 
-## Kết Luận
+## Conclusion
 
-Target architecture khuyến nghị cho repo này là:
+The recommended target architecture for this repo is:
 
-- workflow hiện tại làm `backbone`
-- `spec-kit` làm `governance layer`
-- `OpenSpec` làm `change layer`
-- `cc-sdd` làm `execution layer`
-- `BMAD-METHOD` làm `adaptive planning layer`
+- the current workflow as the `backbone`
+- `spec-kit` as the `governance layer`
+- `OpenSpec` as the `change layer`
+- `cc-sdd` as the `execution layer`
+- `BMAD-METHOD` as the `adaptive planning layer`
 
-Tài liệu này nên được đọc cùng:
+Read this document together with:
 
 - `references/workflow-chain.md`
 - `references/spec-driven-development.md`

@@ -1,29 +1,35 @@
+---
+language: en
+---
+
 # Python
 
-Dùng reference này khi `language_stack` có Python, script automation, backend service hoặc notebook/script được version trong repo.
+> Vietnamese: python.vi.md
 
-## Thứ Tự Ưu Tiên
+Use this reference when `language_stack` has Python, automation scripts, a backend service, or a notebook/script versioned in the repo.
+
+## Priority Order
 
 1. Syntax
-- Ưu tiên `python -m py_compile` cho file hoặc module bị thay đổi.
+- Prefer `python -m py_compile` for the changed file or module.
 
 2. Static analysis
-- Ưu tiên `ruff`.
-- Dùng `mypy` khi project có type hint và cấu hình tương ứng.
+- Prefer `ruff`.
+- Use `mypy` when the project has type hints and a matching config.
 
 3. Security scan
-- Ưu tiên `semgrep`.
+- Prefer `semgrep`.
 
 4. Performance heuristic
-- Rà query trong loop, list hoặc dict materialization lớn, sync I/O trên request path, JSON hoặc pickle serialize lặp, pandas operation kéo toàn bảng khi không cần.
+- Review queries in loops, large list or dict materialization, sync I/O on the request path, repeated JSON or pickle serialization, and pandas operations pulling a whole table when not needed.
 
-## Heuristic Bắt Buộc Khi Scope Nhạy Cảm
+## Mandatory Heuristics When Scope Is Sensitive
 
-- File hoặc subprocess: `subprocess`, path người dùng nhập, shell injection, temp file handling.
-- Web input: deserialization, template injection, auth bypass, permission check thiếu.
-- Data path: ORM query trong loop, batch size không giới hạn, đọc toàn bộ file vào memory.
+- Files or subprocess: `subprocess`, user-supplied paths, shell injection, temp file handling.
+- Web input: deserialization, template injection, auth bypass, missing permission checks.
+- Data path: ORM queries in loops, unbounded batch sizes, reading an entire file into memory.
 
 ## Fallback
 
-- Nếu không có `ruff` hoặc `mypy`, vẫn chạy syntax check và ghi rõ static analysis nào bị thiếu.
-- Không coi unit test pass là thay thế cho type/static scan.
+- If there is no `ruff` or `mypy`, still run a syntax check and record clearly which static analysis is missing.
+- Do not treat a unit test pass as a replacement for type/static scanning.

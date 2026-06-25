@@ -86,49 +86,49 @@ tags:
 # Step 2 - Business Goal
 
 > [!summary]
-> Tóm tắt user problem, business outcome, success metric và non-goals.
+> Summarize the user problem, business outcome, success metric and non-goals.
 
 ## Step Contract
 ```yaml
-step_goal: "Khóa giá trị business và user value của MCP GitLab phase 1 trước khi chốt acceptance criteria."
+step_goal: "Lock the business value and user value of the MCP GitLab phase 1 before locking the acceptance criteria."
 input_summary:
-  - "Yêu cầu đã được restate ở step 1"
-  - "User đã xác nhận phase 1 chỉ tập trung inspect + pull + push"
-  - "User đã chốt dùng zereight/gitlab-mcp làm chuẩn cho lane GitLab"
-  - "Auth ưu tiên SSH và pull mặc định ff-only"
+  - "The request was restated in step 1"
+  - "The user confirmed that phase 1 focuses on inspect + pull + push only"
+  - "The user locked zereight/gitlab-mcp as the standard for the GitLab lane"
+  - "Auth prefers SSH and the default pull is ff-only"
 output_summary:
-  - "User problem và business goal rõ ràng"
-  - "Success metrics, standard runtime và non-goals đủ để khóa scope"
+  - "The user problem and the business goal are clear"
+  - "The success metrics, standard runtime and non-goals are enough to lock the scope"
 done_when:
-  - "Không còn hiểu nhầm phase 1 là full GitLab lifecycle"
-  - "Non-goals đủ rõ để chặn create repo, MR và CI/CD"
+  - "There is no longer a misunderstanding that phase 1 is the full GitLab lifecycle"
+  - "The non-goals are clear enough to block repo creation, MR and CI/CD"
 owner: "developer"
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
-user_problem: "Workflow hiện chưa có lane GitLab chuẩn hóa tương đương mức rõ ràng của lane GitHub, nên agent dễ phải suy diễn sai provider, auth và runtime khi làm việc với GitLab self-hosted."
-business_goal: "Chuẩn hóa lane GitLab trên workflow bằng cách dùng zereight/gitlab-mcp làm chuẩn runtime/reference cho gitlab.ggg.com.vn, đồng thời vẫn đạt được nhu cầu phase 1 là inspect, pull và push trên repository đã tồn tại."
+user_problem: "The workflow does not yet have a standardized GitLab lane on par with the clarity of the GitHub lane, so the agent has to infer the wrong provider, auth and runtime when working with self-hosted GitLab."
+business_goal: "Standardize the GitLab lane on the workflow by using zereight/gitlab-mcp as the standard runtime/reference for gitlab.ggg.com.vn, while still meeting the phase 1 need to inspect, pull and push on existing repositories."
 success_metrics:
-  - "Lane GitLab có runtime chuẩn được gọi tên rõ thay vì tự viết mới hoặc suy diễn từ lane GitHub"
-  - "Workflow artifact chỉ rõ provider target=gitlab, host và runtime chuẩn khi scope chạm provider-specific MCP"
-  - "Phase 1 vẫn đáp ứng inspect, pull và push cho repository GitLab đã tồn tại mà không kéo scope sang project lifecycle khác"
+  - "The GitLab lane has a named standard runtime instead of being written from scratch or inferred from the GitHub lane"
+  - "The workflow artifact states the provider target=gitlab, the host and the standard runtime when the scope touches a provider-specific MCP"
+  - "Phase 1 still supports inspect, pull and push for an existing GitLab repository without dragging the scope into another project lifecycle"
 non_goals:
-  - "Tạo mới GitLab repository hoặc project"
-  - "Quản lý merge request"
-  - "Quản lý GitLab CI/CD hoặc project settings"
-  - "Thiết kế full Git provider abstraction cho nhiều nền tảng trong phase 1"
-  - "Xây một GitLab MCP mới từ đầu nếu standard runtime hiện có đủ hoặc chỉ cần wrapper mỏng"
+  - "Create a new GitLab repository or project"
+  - "Manage merge requests"
+  - "Manage GitLab CI/CD or project settings"
+  - "Design a full Git provider abstraction for multiple platforms in phase 1"
+  - "Build a new GitLab MCP from scratch if the standard runtime is enough or only needs a thin wrapper"
 constraints:
-  - "GitLab host mục tiêu là gitlab.ggg.com.vn"
-  - "Auth phase 1 ưu tiên SSH"
-  - "Pull mặc định là ff-only"
-  - "MVP chỉ gồm inspect, pull, push"
-  - "Provider distinction GitHub/GitLab phải explicit trong workflow artifact khi scope chạm runtime/auth/host riêng"
+  - "The target GitLab host is gitlab.ggg.com.vn"
+  - "Phase 1 auth prefers SSH"
+  - "The default pull is ff-only"
+  - "The MVP only includes inspect, pull and push"
+  - "The GitHub/GitLab provider distinction must be explicit in the workflow artifact when the scope touches a separate runtime/auth/host"
 assumptions:
-  - "Repository GitLab đích đã tồn tại và team đã có quyền truy cập phù hợp"
-  - "Máy chạy MCP có Git CLI và SSH credential dùng được với GitLab nội bộ"
-  - "zereight/gitlab-mcp có thể được dùng trực tiếp hoặc làm chuẩn để wrap mà không cần redesign lane GitLab từ đầu"
+  - "The target GitLab repository already exists and the team has the right access"
+  - "The machine running the MCP has a Git CLI and SSH credentials that work with the internal GitLab"
+  - "zereight/gitlab-mcp can be used directly or as a standard to wrap without redesigning the GitLab lane from scratch"
 ```
 
 ## Traceability
@@ -139,6 +139,6 @@ next_step: "mcp-gitlab.s03.open-questions.md"
 ```
 
 ## Handoff
-- User problem đã chốt: thiếu MCP GitLab self-hosted tối thiểu cho repo nội bộ đã tồn tại.
-- Non-goals: create repo, merge request, CI/CD và admin workflow không thuộc phase 1.
-- Điều kiện sang step 3: xác nhận các quyết định còn lại không còn blocker cho step 4.
+- User problem locked: a minimal self-hosted GitLab MCP is missing for existing internal repos.
+- Non-goals: repo creation, merge requests, CI/CD and admin workflow are not part of phase 1.
+- Conditions to move to step 3: confirm the remaining decisions are no longer a blocker for step 4.

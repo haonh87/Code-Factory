@@ -63,7 +63,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Tóm tắt kết quả verify, governance compliance, residual risk và kết luận DoD.
+> Summarize the verify results, governance compliance, residual risk and the DoD conclusion.
 
 ## Step Contract
 ```yaml
@@ -74,7 +74,7 @@ done_when: []
 owner: ""
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 verification_scope: []
 evidence_refs: []
@@ -119,5 +119,5 @@ next_step: ""
 - Overall status:
 - Residual risks:
 - Recommendation:
-- Release recommendation khi có:
+- Release recommendation if any:
 - Next action:

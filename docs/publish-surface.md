@@ -1,33 +1,39 @@
+---
+language: en
+---
+
 # Publish Surface
 
-Tài liệu này chốt public publish surface cho `workflow-bundle v2.1.1`.
+> Vietnamese: publish-surface.vi.md
 
-`v2.1.1` là public release hiện tại của workflow này:
-- cài được vào Codex hoặc Claude Code bằng `wfc install|update|status|skills`
-- author workflow bằng `wfc init|scaffold|validate`
-- cho agent chủ động đề xuất `work-item` và `change`
-- nhưng human vẫn giữ quyền approve ở các gate trước khi delivery tiếp tục
+This document pins the public publish surface for `workflow-bundle v2.1.1`.
 
-`v2.0.0` vẫn là first public release; `v2.1.1` là patch release kế tiếp trên cùng public surface.
+`v2.1.1` is the current public release of this workflow:
+- installable into Codex or Claude Code via `wfc install|update|status|skills`
+- author workflows with `wfc init|scaffold|validate`
+- lets the agent proactively propose `work-item` and `change`
+- but the human still holds approval authority at each gate before delivery continues
+
+`v2.0.0` remains the first public release; `v2.1.1` is the next patch release on the same public surface.
 
 ## Canonical Release Refs
 
 - Tag: `v2.1.1`
 - Branch: `release/v2.1.1`
 
-Khi chia sẻ workflow này cho người mới dùng, ưu tiên trỏ vào một trong hai ref trên thay vì working tree hiện tại.
+When sharing this workflow with new users, prefer pointing to one of the two refs above rather than the current working tree.
 
 ## System Requirements
 
 - `node >= 18`
 - `npm >= 9`
-- `~/.codex` hoặc `~/.claude` writable nếu dùng `wfc install|update|skills`
-- `git` nếu clone source repo thay vì cài từ npm registry
-- `bash` cho adapter Linux/macOS hoặc `PowerShell` cho adapter Windows nếu không dùng CLI trực tiếp
+- `~/.codex` or `~/.claude` writable when using `wfc install|update|skills`
+- `git` when cloning the source repo instead of installing from the npm registry
+- `bash` for the Linux/macOS adapter or `PowerShell` for the Windows adapter when not using the CLI directly
 
 ## Public Docs
 
-Đây là bộ tài liệu nên dùng để public onboarding:
+This is the document set to use for public onboarding:
 
 1. [`../README.md`](../README.md)
 2. [`workflow-docs-map.md`](workflow-docs-map.md)
@@ -38,26 +44,26 @@ Khi chia sẻ workflow này cho người mới dùng, ưu tiên trỏ vào một
 
 ## Public Promise Of `v2.1.1`
 
-- Installable workflow bundle cho Codex và Claude Code qua `wfc install|update|status|skills`
-- Core authoring CLI qua `wfc init`, `wfc scaffold`, `wfc`, `wfc sdd|change|exec|plan`
-- Agentic proposal flow qua `wfc materialize`, `wfc change-item`, `wfc work-item`, `wfc protocol`
-- Human approval gates cho `change`, `work-item` và workflow gate receipts
-- Trusted signed receipts ngoài project root cho các gate human bắt buộc
-- Migration từ state legacy `.codex-workflow-pack.*` sang `.codex-workflow-bundle.*`
+- Installable workflow bundle for Codex and Claude Code via `wfc install|update|status|skills`
+- Core authoring CLI via `wfc init`, `wfc scaffold`, `wfc`, `wfc sdd|change|exec|plan`
+- Agentic proposal flow via `wfc materialize`, `wfc change-item`, `wfc work-item`, `wfc protocol`
+- Human approval gates for `change`, `work-item`, and workflow gate receipts
+- Trusted signed receipts outside the project root for the mandatory human gates
+- Migration from legacy state `.codex-workflow-pack.*` to `.codex-workflow-bundle.*`
 
 ## Not In The Public Promise
 
-- Delivery hoàn toàn autonomous không cần human approve
-- Support runtime ngoài `Codex` và `Claude Code`
-- Bất kỳ compatibility contract nào rộng hơn:
+- Fully autonomous delivery with no human approval
+- Support for runtimes other than `Codex` and `Claude Code`
+- Any compatibility contract broader than:
   - legacy config `workflow-contracts.config.json`
   - legacy state `.codex-workflow-pack.*`
 
-Hai lớp legacy trên hiện vẫn được giữ để migration êm hơn, nhưng không nên coi đó là core public story của `v2.1.1`.
+The two legacy layers above are still kept to make migration smoother, but they should not be treated as the core public story of `v2.1.1`.
 
 ## Internal Or Maintainer Docs
 
-Các tài liệu dưới đây không nên là entrypoint khi publish public:
+The documents below should not be the entry point when publishing publicly:
 
 - `memory-bank/`
 - `skills/orchestration/codex-workflow-chain/references/workflow-overview.md`
@@ -68,7 +74,7 @@ Các tài liệu dưới đây không nên là entrypoint khi publish public:
 
 ## Excluded Working Assets
 
-Các file dưới đây là working assets cục bộ, không phải source-of-truth:
+The files below are local working assets, not source-of-truth:
 
 - `.obsidian/`
 - `docs/workflow-process.canvas`
@@ -78,6 +84,6 @@ Các file dưới đây là working assets cục bộ, không phải source-of-t
 
 ## Publish Rule
 
-- nếu nói về public release, dùng ngôn ngữ của `v2.1.1`
-- nếu nói về approval model, phải nêu rõ `agent proposes, human approves`
-- không dùng tài liệu internal hoặc memory-bank làm public onboarding path
+- when talking about the public release, use the language of `v2.1.1`
+- when talking about the approval model, state clearly `agent proposes, human approves`
+- do not use internal docs or memory-bank as the public onboarding path

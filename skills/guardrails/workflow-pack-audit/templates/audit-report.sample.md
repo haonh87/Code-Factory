@@ -1,4 +1,5 @@
 ---
+language: en
 title: Workflow Pack Audit Report Sample
 tags:
   - audit/workflow-pack
@@ -9,13 +10,13 @@ status: template
 # Workflow Pack Audit Report Sample
 
 > [!info]
-> Mẫu này minh họa một `audit report` hoàn chỉnh cho workflow pack sau khi thêm lớp skill frontend/React và skill audit.
+> This sample illustrates a complete `audit report` for the workflow pack after adding the frontend/React skill layer and the audit skill.
 
 ## Audit Context
 
 - Repo root: `d:/workspaces/RnD/AI/Code-Factory`
 - Audit date: `2026-04-01`
-- Audit scope: toàn bộ `skills/` và `skills/orchestration/codex-workflow-chain/references/workflow-chain.md`
+- Audit scope: the whole `skills/` tree and `skills/orchestration/codex-workflow-chain/references/workflow-chain.md`
 - Script used: `skills/guardrails/workflow-pack-audit/scripts/audit-workflow-pack.ps1`
 
 ## Audit YAML

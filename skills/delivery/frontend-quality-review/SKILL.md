@@ -1,36 +1,39 @@
 ---
+language: en
 name: frontend-quality-review
-description: Rà soát thay đổi frontend ở mức accessibility, responsive layout, interaction feedback, form behavior, navigation clarity, motion và performance heuristic trước khi bàn giao. Dùng khi review PR frontend, verify UI flow sau implement, hoặc khi `testing` và `code-scan-review` chưa đủ để kết luận chất lượng screen-level của một thay đổi.
+description: Review frontend changes at the level of accessibility, responsive layout, interaction feedback, form behavior, navigation clarity, motion and performance heuristic before handoff. Use it when reviewing frontend PRs, verifying UI flows after implementation, or when `testing` and `code-scan-review` are not enough to conclude screen-level quality of a change.
 ---
 
 # Frontend Quality Review
 
-Rà soát chất lượng frontend ở mức trải nghiệm người dùng và heuristic kỹ thuật trước khi bàn giao.
+> Vietnamese: SKILL.vi.md
 
-## Mục Tiêu
+Review frontend quality at the level of user experience and technical heuristic before handoff.
 
-- Đánh giá chất lượng frontend ngoài phạm vi test behavior thuần và static scan thuần.
-- Phát hiện vấn đề ở accessibility, responsive layout, interaction feedback, form behavior, navigation và performance heuristic.
-- Ghi rõ finding theo mức độ nghiêm trọng, surface bị ảnh hưởng và hướng xử lý.
-- Kết luận mức sẵn sàng bàn giao của thay đổi frontend với evidence đủ rõ.
+## Goal
 
-## Khi Sử Dụng
+- Assess frontend quality beyond pure behavior testing and pure static scanning.
+- Surface problems in accessibility, responsive layout, interaction feedback, form behavior, navigation and performance heuristic.
+- Record findings with severity, affected surface and handling direction.
+- Conclude the handoff readiness of a frontend change with clear enough evidence.
 
-- Sau khi implementation frontend đã xong một phạm vi đủ để review screen-level quality.
-- Khi PR thay đổi page, screen, form, component interaction, navigation, modal, drawer, chart hoặc responsive layout.
-- Khi `testing` đã cover behavior nhưng vẫn cần kết luận thêm về accessibility, clarity, usability hoặc frontend performance heuristic.
-- Khi `code-scan-review` đã xong nhưng chưa đủ để nói UI thực sự ổn ở mức người dùng.
-- Khi stack là React hoặc Next.js và cần tách riêng review screen-level quality với review React render/data boundary, phối hợp thêm `react-best-practices-review`.
+## When To Use
 
-## Không Thuộc Phạm Vi
+- After frontend implementation has reached a scope large enough to review screen-level quality.
+- When a PR changes a page, screen, form, component interaction, navigation, modal, drawer, chart or responsive layout.
+- When `testing` already covers behavior but a conclusion is still needed on accessibility, clarity, usability or frontend performance heuristic.
+- When `code-scan-review` is done but not enough to say the UI actually works well at the user level.
+- When the stack is React or Next.js and screen-level quality review must be separated from React render/data boundary review, combine with `react-best-practices-review`.
 
-- Không thay thế `testing` cho behavior correctness hoặc acceptance criteria ở mức hệ thống.
-- Không thay thế `code-scan-review` cho syntax, static analysis hoặc security scan.
-- Không thay thế benchmark, profiling runtime sâu hoặc performance lab có số đo chuẩn hóa.
-- Không thay thế review React-specific ở mức server/client split, effect hygiene, state placement hoặc render stability; dùng `react-best-practices-review` khi stack là React web hoặc Next.js.
-- Không tự kết luận visual identity đúng brand nếu không có brand input rõ ràng.
+## Out Of Scope
 
-## Đầu Vào Tối Thiểu
+- Does not replace `testing` for behavior correctness or system-level acceptance criteria.
+- Does not replace `code-scan-review` for syntax, static analysis or security scan.
+- Does not replace benchmarking, deep runtime profiling or a performance lab with standardized measurements.
+- Does not replace React-specific review at the level of server/client split, effect hygiene, state placement or render stability; use `react-best-practices-review` when the stack is React web or Next.js.
+- Does not self-conclude that visual identity matches brand without clear brand input.
+
+## Minimum Input
 
 - `acceptance_criteria`
 - `review_scope`
@@ -39,16 +42,16 @@ Rà soát chất lượng frontend ở mức trải nghiệm người dùng và 
 - `available_checks`
 - `constraints`
 
-`available_checks` nên nêu ít nhất:
-- browser hoặc môi trường review có chạy được hay không
-- có Storybook, Playwright, screenshot diff, Lighthouse hoặc manual QA hay không
-- có giới hạn gì về thiết bị, viewport hoặc dữ liệu seed hay không
+`available_checks` should state at least:
+- whether a browser or review environment can actually run
+- whether Storybook, Playwright, screenshot diff, Lighthouse or manual QA is available
+- any limits on devices, viewports or seed data
 
-Nếu không xác định được `changed_surfaces`, phải suy ra từ thay đổi hoặc nêu rõ phạm vi review còn thiếu.
+If `changed_surfaces` cannot be determined, infer it from the change or state clearly which review scope is still missing.
 
-## Đầu Ra Bắt Buộc
+## Required Output
 
-Xuất artifact YAML theo schema sau:
+Emit a YAML artifact per the following schema:
 
 ```yaml
 review_target: ""
@@ -83,64 +86,64 @@ handoff_recommendation: ""
 notes_for_review: ""
 ```
 
-## Ý Nghĩa Từng Output
+## Meaning Of Each Output
 
-- `review_target`: mô tả thay đổi frontend đang được review.
-- `review_scope`: surface, device và flow quan trọng phải được rà.
-- `quality_gates`: nhóm chất lượng nào là bắt buộc trong review hiện tại.
-- `findings`: vấn đề cụ thể kèm mức độ, surface bị ảnh hưởng, bằng chứng và hướng sửa.
-- `criteria_results`: đối chiếu acceptance criteria với bằng chứng ở mức screen-level.
-- `checks_run`: các check thủ công hoặc tự động đã chạy.
-- `checks_skipped`: check chưa chạy và lý do.
-- `overall_status`: kết luận tổng thể của review frontend.
-- `residual_risks`: rủi ro còn lại dù đã review.
-- `handoff_recommendation`: khuyến nghị trước khi merge, demo hoặc bàn giao.
-- `notes_for_review`: ghi chú bàn giao sang review cuối, `testing` hoặc `step-goal-auditor`.
+- `review_target`: describes the frontend change being reviewed.
+- `review_scope`: surfaces, devices and critical flows that must be checked.
+- `quality_gates`: which quality groups are mandatory in the current review.
+- `findings`: specific problems with severity, affected surface, evidence and fix direction.
+- `criteria_results`: compares acceptance criteria with screen-level evidence.
+- `checks_run`: manual or automated checks that were run.
+- `checks_skipped`: checks not run and why.
+- `overall_status`: overall conclusion of the frontend review.
+- `residual_risks`: risks remaining despite the review.
+- `handoff_recommendation`: recommendation before merge, demo or handoff.
+- `notes_for_review`: handoff notes for the final review, `testing` or `step-goal-auditor`.
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalize Output In Workflow Note
 
-Nếu output của skill này được lưu thành note `.md` trong workflow chain:
-- Dùng template step 8 tại `../codex-workflow-chain/references/workflow-chain.md`.
-- Đặt schema YAML của skill này trong block `## Artifact Chính` hoặc `## Review Findings` nếu note đã có block verify khác.
-- Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
-- Nếu đã có note từ `testing` hoặc `code-scan-review`, liên kết chéo thay vì lặp lại evidence.
+If this skill's output is saved as a `.md` note in the workflow chain:
+- Use the step 8 template at `../codex-workflow-chain/references/workflow-chain.md`.
+- Place this skill's YAML schema in the `## Main Artifact` block, or in `## Review Findings` if the note already has another verify block.
+- Keep field names in the schema verbatim; do not rename fields when writing into the note.
+- If a note already exists from `testing` or `code-scan-review`, cross-link instead of repeating evidence.
 
-## Luồng Thực Thi
+## Execution Flow
 
-1. Xác định `review_target`, `review_scope` và `quality_gates` bắt buộc.
-2. Liệt kê `changed_surfaces`, viewport và device cần rà.
-3. Rà accessibility ở mức semantics, keyboard flow, focus handling, label, contrast và touch target nếu thuộc phạm vi.
-4. Rà responsive layout ở mức overflow, wrapping, sticky area, spacing, density và readability theo viewport chính.
-5. Rà interaction feedback ở mức loading, empty, error, success, disabled, validation và recovery path.
-6. Rà navigation clarity cho route change, breadcrumb, modal/drawer transition, back path hoặc step progression nếu có.
-7. Rà performance heuristic cho list lớn, chart, media, rerender nóng, hydration cost hoặc network-heavy surface nếu có dấu hiệu rủi ro.
-8. Ghi `findings` với severity, evidence và recommendation cụ thể.
-9. Đối chiếu lại acceptance criteria trong `criteria_results`.
-10. Kết luận `overall_status`, `residual_risks` và `handoff_recommendation`.
+1. Determine `review_target`, `review_scope` and the mandatory `quality_gates`.
+2. List `changed_surfaces`, viewports and devices to check.
+3. Review accessibility at the level of semantics, keyboard flow, focus handling, labels, contrast and touch targets when in scope.
+4. Review responsive layout at the level of overflow, wrapping, sticky areas, spacing, density and readability across main viewports.
+5. Review interaction feedback at the level of loading, empty, error, success, disabled, validation and recovery paths.
+6. Review navigation clarity for route changes, breadcrumbs, modal/drawer transitions, back paths or step progression when present.
+7. Review performance heuristic for large lists, charts, media, hot rerenders, hydration cost or network-heavy surfaces when risk signals exist.
+8. Record `findings` with severity, evidence and specific recommendation.
+9. Reconcile acceptance criteria in `criteria_results`.
+10. Conclude `overall_status`, `residual_risks` and `handoff_recommendation`.
 
-## Quy Tắc Chất Lượng
+## Quality Rules
 
-- Mặc định viết và trao đổi bằng tiếng Việt.
-- Không đánh dấu `PASS` nếu chưa có evidence cho surface hoặc flow chính.
-- Không coi static analysis pass là bằng chứng đủ cho chất lượng frontend.
-- Nếu không chạy được browser/manual check, phải ghi rõ giới hạn vào `checks_skipped`.
-- Modal, drawer, popover và flow đổi route phải có focus handling hoặc navigation rule rõ ràng; nếu không, mặc định là review risk.
-- Form không chỉ cần validate đúng; còn phải có feedback, recovery path và thông điệp đủ rõ để người dùng sửa.
-- Tài liệu phải lưu UTF-8 và giữ nguyên tiếng Việt có dấu.
+- Default to writing and communicating in English.
+- Do not mark `PASS` without evidence for a primary surface or flow.
+- Do not treat a static analysis pass as sufficient evidence for frontend quality.
+- If a browser or manual check cannot run, record the limit clearly in `checks_skipped`.
+- Modals, drawers, popovers and route-changing flows must have clear focus handling or navigation rules; otherwise treat them as a review risk by default.
+- Forms must not only validate correctly; they must also provide feedback, a recovery path and messages clear enough for the user to fix the input.
+- Store documents as UTF-8 and preserve accented characters in `*.vi.md` supplement files.
 
-## Luật Ra Quyết Định
+## Decision Rules
 
-- `HIGH` khi vấn đề chặn task chính, làm hỏng keyboard/screen-reader flow, gây collapse layout ở viewport chính, làm mất dữ liệu nhập hoặc gây hiểu sai hành động quan trọng.
-- `MEDIUM` khi vấn đề chưa chặn task chính nhưng làm giảm clarity, tăng friction hoặc tăng nguy cơ thao tác sai.
-- `LOW` khi vấn đề chủ yếu là polish, consistency hoặc readability nhẹ.
-- `PASS` khi các quality gate bắt buộc đều đạt và không còn finding `HIGH`.
-- `PARTIAL` khi functionality đạt nhưng còn finding `MEDIUM` hoặc còn check quan trọng chưa chạy.
-- `FAIL` khi còn finding `HIGH` hoặc thiếu evidence cho flow/surface cốt lõi.
-- Nếu thay đổi nặng về logic hoặc data correctness, dùng thêm `testing`; nếu thay đổi nặng về static quality/security, dùng thêm `code-scan-review`; nếu thay đổi nặng về render/data boundary của React, dùng thêm `react-best-practices-review`.
+- `HIGH` when a problem blocks the main task, breaks keyboard/screen-reader flow, collapses layout on a main viewport, loses entered data or misleads a key action.
+- `MEDIUM` when a problem does not block the main task but reduces clarity, increases friction or raises the chance of wrong actions.
+- `LOW` when a problem is mostly polish, consistency or mild readability.
+- `PASS` when all mandatory quality gates are met and no `HIGH` finding remains.
+- `PARTIAL` when functionality is met but `MEDIUM` findings remain or an important check has not run.
+- `FAIL` when a `HIGH` finding remains or evidence is missing for a core flow/surface.
+- If the change is heavy on logic or data correctness, add `testing`; if heavy on static quality/security, add `code-scan-review`; if heavy on React render/data boundary, add `react-best-practices-review`.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Có `quality_gates` và `findings` đủ rõ cho phạm vi review.
-- Có `criteria_results`, `checks_run` và `checks_skipped` với evidence cụ thể.
-- Có `overall_status` và `handoff_recommendation` đủ để quyết định merge hoặc bàn giao.
-- Có `residual_risks` cho mọi điểm chưa đóng hoàn toàn.
+- `quality_gates` and `findings` are clear enough for the review scope.
+- `criteria_results`, `checks_run` and `checks_skipped` carry specific evidence.
+- `overall_status` and `handoff_recommendation` are enough to decide merge or handoff.
+- `residual_risks` cover every point not fully closed.

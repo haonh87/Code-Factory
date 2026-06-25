@@ -62,7 +62,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> Tóm tắt thay đổi đã implement, giới hạn còn lại và note cho verify.
+> Summarize the implemented change, remaining limits and notes for verify.
 
 ## Step Contract
 ```yaml
@@ -73,7 +73,7 @@ done_when: []
 owner: ""
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 implemented_changes: []
 doc_changes: []
@@ -96,4 +96,4 @@ next_step: ""
 - Outputs actual:
 - Known limitations:
 - Notes for testing:
-- Notes for deployment khi có:
+- Notes for deployment if any:

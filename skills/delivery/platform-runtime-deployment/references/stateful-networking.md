@@ -1,30 +1,36 @@
-# Stateful, Networking Và Guard Vận Hành
+---
+language: en
+---
+
+# Stateful, Networking, And Operational Guards
+
+> Vietnamese: stateful-networking.vi.md
 
 ## Stateful Workload
 
-- Chốt rõ volume, retention, backup hoặc snapshot trước rollout quan trọng.
-- Rollback app và rollback data không được xem là cùng một việc.
-- Nếu state migration không đảo ngược được, tăng mức guard và release recommendation.
+- Lock volume, retention, backup, or snapshot clearly before an important rollout.
+- App rollback and data rollback are not the same thing.
+- If state migration is irreversible, raise the guard level and the release recommendation.
 
 ## Networking
 
-- Liệt kê entrypoint, internal service communication và dependency network cần thiết.
-- Chốt ingress strategy, TLS termination và service discovery ở đúng layer platform.
-- Không để routing hoặc port mapping mơ hồ ở production-like environment.
+- List the entrypoint, internal service communication, and required dependency networks.
+- Lock ingress strategy, TLS termination, and service discovery at the right platform layer.
+- Do not leave routing or port mapping vague in a production-like environment.
 
-## Config Và Secrets
+## Config And Secrets
 
-- Config và secret phải tách khỏi image.
-- Nêu rõ source như env file, secret manager, Swarm secret, K8s Secret hay external secret operator.
-- Không commit secret thật vào repo.
+- Config and secrets must be separated from the image.
+- State the source clearly: env file, secret manager, Swarm secret, K8s Secret, or an external secret operator.
+- Do not commit real secrets into the repo.
 
-## Scaling Và Disruption
+## Scaling And Disruption
 
-- Workload stateless có thể scale ngang nếu contract cho phép.
-- Workload stateful cần rule rõ về replica, leader election hoặc partition tolerance.
-- Nêu rõ readiness, liveness và disruption control nếu rollout có rủi ro ảnh hưởng traffic.
+- Stateless workloads can scale horizontally if the contract allows.
+- Stateful workloads need clear rules on replicas, leader election, or partition tolerance.
+- State readiness, liveness, and disruption controls clearly if rollout risks affecting traffic.
 
 ## Observability
 
-- Sau deploy phải có post-check đủ mạnh: health, log, metric, queue lag hoặc business smoke.
-- Nếu chưa có observability tối thiểu, release recommendation không nên là `READY`.
+- After deploy there must be a strong enough post-check: health, log, metric, queue lag, or business smoke.
+- If there is no minimum observability, the release recommendation should not be `READY`.

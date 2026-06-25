@@ -1,36 +1,39 @@
 ---
+language: en
 name: frontend-experience-design
-description: Thiết kế frontend experience ở mức screen, section, component, interaction pattern, UI state, responsive behavior, accessibility baseline, motion rule và visual direction trước khi code. Dùng khi cần chuyển business goal và acceptance criteria thành blueprint cho layout, information hierarchy, form behavior, loading/empty/error/success state, navigation pattern, design system constraint hoặc handoff cho `frontend-architecture`, `implementation` và `testing`.
+description: Design a frontend experience at the screen, section, component, interaction pattern, UI state, responsive behavior, accessibility baseline, motion rule, and visual direction level before coding. Use when you need to turn a business goal and acceptance criteria into a blueprint for layout, information hierarchy, form behavior, loading/empty/error/success states, navigation patterns, design system constraints, or handoff to `frontend-architecture`, `implementation`, and `testing`.
 ---
 
 # Frontend Experience Design
 
-Thiết kế trải nghiệm frontend ở mức surface và interaction để chốt cách màn hình hoạt động trước khi triển khai.
+> Vietnamese: SKILL.vi.md
 
-## Mục Tiêu
+Design the frontend experience at the surface and interaction level to lock how screens work before implementation.
 
-- Chuyển business goal và acceptance criteria thành quyết định rõ ở mức screen, state và interaction.
-- Chốt layout, information hierarchy, hành vi responsive và feedback rule cho từng surface quan trọng.
-- Chốt loading, empty, error, success và blocked state thay vì chỉ mô tả happy path.
-- Thiết lập accessibility baseline, motion rule và performance guard đủ rõ để implementation không đoán mò.
-- Tạo handoff rõ cho `frontend-architecture`, `task-breakdown-planner`, `implementation`, `react-web-implementation` và `frontend-quality-review`.
+## Goal
 
-## Khi Sử Dụng
+- Turn the business goal and acceptance criteria into clear decisions at the screen, state, and interaction level.
+- Lock layout, information hierarchy, responsive behavior, and feedback rules for each important surface.
+- Lock loading, empty, error, success, and blocked states instead of describing only the happy path.
+- Set an accessibility baseline, motion rules, and performance guards clear enough that implementation does not guess.
+- Produce a clear handoff for `frontend-architecture`, `task-breakdown-planner`, `implementation`, `react-web-implementation`, and `frontend-quality-review`.
 
-- Khi có page, screen, route hoặc flow mới cần định hình cách UI hoạt động trước khi code.
-- Khi acceptance criteria đủ cho chức năng nhưng chưa đủ rõ cho layout, state UI, feedback, form behavior hoặc navigation.
-- Khi cùng một frontend surface phải chạy tốt trên nhiều breakpoint hoặc loại thiết bị.
-- Khi cần chốt visual direction ở mức sử dụng được cho delivery, nhưng chưa cần hoặc chưa có full design file.
-- Khi cần tránh việc implement xong mới phát hiện thiếu empty state, loading state, keyboard flow hoặc responsive rule.
+## When To Use
 
-## Không Thuộc Phạm Vi
+- When a new page, screen, route, or flow needs its UI behavior shaped before coding.
+- When acceptance criteria are enough for functionality but not clear enough for layout, UI state, feedback, form behavior, or navigation.
+- When the same frontend surface must work well across many breakpoints or device types.
+- When you need to lock a visual direction usable for delivery, but do not yet need or have a full design file.
+- When you need to avoid discovering missing empty states, loading states, keyboard flows, or responsive rules only after implementation.
 
-- Không thay thế `frontend-architecture` cho module boundary, route ownership, state ownership hoặc import boundary.
-- Không tự bịa brand guideline, palette hoặc visual identity nếu đầu vào chưa có.
-- Không trực tiếp viết code production hoặc tạo pixel-perfect mockup.
-- Không thay thế user research, usability test hoặc product decision ở mức business.
+## Out Of Scope
 
-## Đầu Vào Tối Thiểu
+- Does not replace `frontend-architecture` for module boundaries, route ownership, state ownership, or import boundaries.
+- Does not invent brand guidelines, palettes, or visual identity when the input does not have them.
+- Does not directly write production code or create pixel-perfect mockups.
+- Does not replace user research, usability testing, or business-level product decisions.
+
+## Minimum Input
 
 - `business_goal`
 - `acceptance_criteria`
@@ -39,17 +42,17 @@ Thiết kế trải nghiệm frontend ở mức surface và interaction để ch
 - `current_ui_context`
 - `design_constraints`
 
-`design_constraints` nên nêu ít nhất:
-- design system hoặc component library đang dùng
-- brand/tone nếu đã có
-- device mix hoặc breakpoint quan trọng
-- accessibility hoặc performance constraint đáng chú ý
+`design_constraints` should state at least:
+- the design system or component library in use
+- brand/tone if available
+- the device mix or important breakpoints
+- notable accessibility or performance constraints
 
-Nếu chưa có `frontend_surfaces` hoặc chưa xác định user outcome chính, dừng và yêu cầu làm rõ thêm.
+If `frontend_surfaces` are missing or the main user outcome is not determined, stop and ask for more clarification.
 
-## Đầu Ra Bắt Buộc
+## Required Output
 
-Xuất artifact YAML theo schema sau:
+Emit a YAML artifact using the following schema:
 
 ```yaml
 experience_target: ""
@@ -92,65 +95,65 @@ validation_checks: []
 notes_for_next_step: ""
 ```
 
-## Ý Nghĩa Từng Output
+## Meaning Of Each Output
 
-- `experience_target`: mô tả surface hoặc flow đang được thiết kế trải nghiệm.
-- `primary_user_outcomes`: kết quả người dùng phải đạt được khi tương tác với surface này.
-- `frontend_surfaces`: danh sách surface quan trọng và mức độ ưu tiên.
-- `interaction_model`: quy tắc điều hướng, hành động chính/phụ và feedback rule của trải nghiệm.
-- `surface_states`: cách từng surface xử lý loading, empty, error, success và blocked state.
-- `layout_rules`: nguyên tắc hierarchy, responsive và mật độ thông tin.
-- `visual_rules`: tone, emphasis, màu, typography và motion ở mức đủ để handoff.
-- `accessibility_baseline`: chuẩn tối thiểu về keyboard, screen reader, contrast và touch target.
-- `performance_guards`: các guard cần giữ ngay từ thiết kế để tránh UI chậm hoặc giật.
-- `design_system_hooks`: token, component, pattern hoặc constraint cần reuse từ design system hiện có.
-- `validation_checks`: checklist để `implementation`, `react-web-implementation` và `frontend-quality-review` verify về sau.
-- `notes_for_next_step`: ghi chú bàn giao sang `frontend-architecture`, `implementation`, `react-web-implementation` hoặc `testing`.
+- `experience_target`: the surface or flow whose experience is being designed.
+- `primary_user_outcomes`: the outcomes users must reach when interacting with this surface.
+- `frontend_surfaces`: the list of important surfaces and their priority.
+- `interaction_model`: navigation rules, primary/secondary actions, and feedback rules of the experience.
+- `surface_states`: how each surface handles loading, empty, error, success, and blocked states.
+- `layout_rules`: hierarchy, responsive, and information density principles.
+- `visual_rules`: tone, emphasis, color, typography, and motion at a level sufficient for handoff.
+- `accessibility_baseline`: the minimum standard for keyboard, screen reader, contrast, and touch targets.
+- `performance_guards`: guards to keep from design onward to avoid slow or janky UI.
+- `design_system_hooks`: tokens, components, patterns, or constraints to reuse from the existing design system.
+- `validation_checks`: a checklist for `implementation`, `react-web-implementation`, and `frontend-quality-review` to verify later.
+- `notes_for_next_step`: handoff notes to `frontend-architecture`, `implementation`, `react-web-implementation`, or `testing`.
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalizing Output In A Workflow Note
 
-Nếu output của skill này được lưu thành note `.md` trong workflow chain:
-- Dùng template step 5 tại `../codex-workflow-chain/references/workflow-chain.md`.
-- Đặt schema YAML của skill này trong block `## Architecture Details`.
-- Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
-- Dùng skill này song song hoặc ngay trước `frontend-architecture` khi bài toán vừa cần screen behavior vừa cần source-code boundary.
+If this skill's output is saved as a `.md` note in the workflow chain:
+- Use the step 5 template in `../codex-workflow-chain/references/workflow-chain.md`.
+- Place this skill's YAML schema in the `## Architecture Details` block.
+- Keep the field names in the schema unchanged; do not rename fields when writing them into the note.
+- Use this skill alongside or right before `frontend-architecture` when the problem needs both screen behavior and source-code boundaries.
 
-## Luồng Thực Thi
+## Execution Flow
 
-1. Xác định `experience_target`, `primary_user_outcomes` và danh sách `frontend_surfaces`.
-2. Gắn từng surface với hành động chính, hành động phụ và điểm feedback quan trọng.
-3. Viết `interaction_model` đủ rõ để implementation biết luồng vào, luồng ra và quy tắc điều hướng.
-4. Chốt `surface_states` cho mọi surface ưu tiên `CORE`; không bỏ qua loading, empty hoặc error state.
-5. Viết `layout_rules` cho hierarchy, responsive behavior và density rule theo ngữ cảnh sử dụng.
-6. Viết `visual_rules` ở mức constraint có thể thực thi, không mô tả mơ hồ kiểu "trông hiện đại hơn".
-7. Ghi `accessibility_baseline` và `performance_guards` như quality floor bắt buộc.
-8. Liệt kê `design_system_hooks` để tái sử dụng component, token hoặc pattern có sẵn.
-9. Chốt `validation_checks` và `notes_for_next_step` cho bước implement và review.
+1. Identify the `experience_target`, `primary_user_outcomes`, and the list of `frontend_surfaces`.
+2. Attach each surface to its primary actions, secondary actions, and important feedback points.
+3. Write the `interaction_model` clearly enough that implementation knows the entry flow, exit flow, and navigation rules.
+4. Lock `surface_states` for every `CORE` surface; do not skip loading, empty, or error states.
+5. Write `layout_rules` for hierarchy, responsive behavior, and density rules by usage context.
+6. Write `visual_rules` at an enforceable constraint level, not vague descriptions like "look more modern".
+7. Record `accessibility_baseline` and `performance_guards` as a mandatory quality floor.
+8. List `design_system_hooks` to reuse existing components, tokens, or patterns.
+9. Lock `validation_checks` and `notes_for_next_step` for the implement and review steps.
 
-## Quy Tắc Chất Lượng
+## Quality Rules
 
-- Mặc định viết và trao đổi bằng tiếng Việt.
-- Mỗi surface ưu tiên `CORE` phải có loading, empty, error và blocked handling rõ ràng, trừ khi có lý do chính đáng.
-- Không dùng mô tả mơ hồ như "responsive tốt" hoặc "UX mượt hơn"; phải nêu rule cụ thể theo breakpoint, density hoặc interaction.
-- Motion chỉ dùng để định hướng, phản hồi hoặc chuyển ngữ cảnh; không thêm motion chỉ để trang trí.
-- Không hy sinh task clarity chỉ để đạt visual effect.
-- Nếu chưa có brand/tone rõ ràng, ưu tiên neutral, readable và task-first thay vì bịa phong cách.
-- Tài liệu phải lưu UTF-8 và giữ nguyên tiếng Việt có dấu.
+- Default to writing and communicating in English.
+- Each `CORE` surface must have clear loading, empty, error, and blocked handling, unless there is a good reason.
+- Do not use vague descriptions like "good responsive" or "smoother UX"; state concrete rules by breakpoint, density, or interaction.
+- Motion is only used to orient, give feedback, or change context; do not add motion only for decoration.
+- Do not sacrifice task clarity just to achieve a visual effect.
+- If there is no clear brand/tone, prefer neutral, readable, and task-first over inventing a style.
+- Store documents as UTF-8 and preserve accented characters in `*.vi.md` supplement files.
 
-## Luật Ra Quyết Định
+## Decision Rule
 
-- Ưu tiên một `primary_action` rõ ràng cho mỗi viewport hoặc surface chính.
-- Dùng progressive disclosure cho hành động phụ thay vì nhồi nhiều CTA cùng cấp.
-- Nếu surface là data-heavy và tần suất dùng cao, có thể tăng density; nếu flow hiếm hoặc nhiều rủi ro, ưu tiên clarity hơn density.
-- Nếu có list lớn, chart nặng hoặc media lớn, ghi `performance_guards` ngay từ đầu thay vì chờ đến lúc optimize.
-- Nếu form có khả năng fail hoặc cần xác nhận, phải ghi rõ feedback rule và recovery path.
-- Nếu layout khác nhau đáng kể giữa mobile và desktop, phải mô tả rõ quy tắc chuyển cấu trúc chứ không chỉ nêu breakpoint.
-- Nếu bài toán đòi hỏi module ownership, import boundary hoặc state ownership, chuyển tiếp sang `frontend-architecture`.
-- Nếu stack là React web hoặc Next.js và trải nghiệm phụ thuộc rõ vào server/client split, loading path hoặc data-fetching placement, bàn giao tiếp sang `react-web-implementation`.
+- Prefer one clear `primary_action` for each viewport or main surface.
+- Use progressive disclosure for secondary actions instead of packing many same-level CTAs.
+- If a surface is data-heavy and used often, density may increase; if a flow is rare or risky, prefer clarity over density.
+- If there are large lists, heavy charts, or large media, record `performance_guards` from the start instead of waiting to optimize.
+- If a form can fail or needs confirmation, record the feedback rule and recovery path clearly.
+- If the layout differs meaningfully between mobile and desktop, describe the structure change rule, not just the breakpoint.
+- If the problem needs module ownership, import boundaries, or state ownership, hand off to `frontend-architecture`.
+- If the stack is React web or Next.js and the experience clearly depends on server/client split, loading path, or data-fetching placement, hand off to `react-web-implementation`.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Có `interaction_model` và `surface_states` đủ rõ để implement không đoán.
-- Có `layout_rules`, `visual_rules` và `accessibility_baseline` đủ để team review chung một chuẩn.
-- Có `performance_guards` cho những surface có nguy cơ nặng.
-- Có `validation_checks` và `notes_for_next_step` đủ để bàn giao sang delivery.
+- An `interaction_model` and `surface_states` clear enough that implementation does not guess.
+- `layout_rules`, `visual_rules`, and `accessibility_baseline` sufficient for the team to review against one standard.
+- `performance_guards` for surfaces at risk of being heavy.
+- `validation_checks` and `notes_for_next_step` sufficient to hand off to delivery.

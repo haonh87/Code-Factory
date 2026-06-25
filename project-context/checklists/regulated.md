@@ -1,38 +1,42 @@
+---
+language: en
+---
+
 # Governance Checklist Profile: `regulated`
 
-Profile này kế thừa toàn bộ `strict` và thêm các kiểm tra cho scope cần audit hoặc approval chặt.
+This profile inherits all of `strict` and adds checks for scope that needs audit or tight approval.
 
-## Khi Dùng
+## When To Use
 
-- cần audit trail rõ hơn bình thường
-- cần approval chain hoặc waiver approval rõ
-- cần giữ evidence, decision log hoặc exception xuyên nhiều step
-- có policy/compliance/control ngoài delivery lane thông thường
+- a clearer audit trail than usual is needed
+- a clear approval chain or waiver approval is needed
+- evidence, decision logs or exceptions must be kept across many steps
+- there are policy/compliance/control rules outside the usual delivery lane
 
-## Kiểm Tra Bổ Sung So Với `strict`
+## Additional Checks Over `strict`
 
-### Clarify Và Open Questions
+### Clarify And Open Questions
 
-- nguồn rule hoặc policy ngoài repo đã được nêu rõ trong evidence hoặc reference
-- owner phê duyệt hoặc review authority đã được xác định
+- the source of the rule or policy outside the repo has been stated clearly in evidence or a reference
+- the approving owner or review authority has been identified
 
 ### Acceptance + DoR
 
-- acceptance, review scope và evidence expectation đã được mô tả đủ để audit lại
-- không để assumption quan trọng chỉ tồn tại ở chat log
+- acceptance, review scope and evidence expectations are described well enough to audit
+- important assumptions do not live only in a chat log
 
-### Technical Approach Và Implement
+### Technical Approach And Implement
 
-- mọi lệch chuẩn phải có `governance-exception` hoặc `waiver` ID rõ
-- exception không được xem là approved nếu thiếu `approved_by` hoặc `review_date`
+- every deviation has a clear `governance-exception` or `waiver` ID
+- an exception is not considered approved if `approved_by` or `review_date` is missing
 
 ### Verify + DoD
 
-- evidence đủ để audit lại decision chính
-- release hoặc business acceptance phải nêu rõ residual risk và waiver còn mở nếu có
-- exception register đã được cập nhật trước khi step 8 đóng
+- evidence is enough to audit the main decisions
+- release or business acceptance must state residual risk and any open waiver
+- the exception register has been updated before step 8 closes
 
-## Cách Materialize
+## How To Materialize
 
 - `checklist_name`: `regulated`
-- `checklist_refs`: trỏ file này; có thể cộng thêm checklist chuyên ngành của work item nếu cần
+- `checklist_refs`: point to this file; you may add the work item's specialized checklist if needed

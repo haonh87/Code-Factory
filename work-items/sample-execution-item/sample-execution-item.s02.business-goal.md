@@ -65,7 +65,7 @@ tags:
 # Step 2 - Business Goal
 
 > [!summary]
-> Tóm tắt user problem, business outcome, success metric và non-goals.
+> Summarize the user problem, business outcome, success metric and non-goals.
 
 ## Step Contract
 ```yaml
@@ -76,7 +76,7 @@ done_when: []
 owner: ""
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 user_problem: ""
 business_goal: ""
@@ -93,6 +93,6 @@ next_step: ""
 ```
 
 ## Handoff
-- User problem đã chốt:
+- User problem locked:
 - Non-goals:
-- Điều kiện sang step 3:
+- Conditions to move to step 3:

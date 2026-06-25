@@ -1,36 +1,39 @@
 ---
+language: en
 name: deployment-devops
-description: Điều phối DevOps end-to-end từ local đến dev, uat, prod bằng cách chọn và kết hợp các skill packaging, runtime deployment và CI/CD release. Dùng khi cần chốt hướng DevOps tổng thể, phân rã phạm vi giữa Dockerfile hoặc compose, runtime deploy trên Docker hoặc Swarm hoặc Kubernetes, và pipeline hoặc promotion hoặc rollback control cho release.
+description: Coordinate DevOps end-to-end from local to dev, uat, prod by selecting and combining the packaging, runtime deployment, and CI/CD release skills. Use when you need to lock the overall DevOps direction, split scope between Dockerfile or compose, runtime deploy on Docker or Swarm or Kubernetes, and pipeline or promotion or rollback controls for release.
 ---
 
 # Deployment DevOps
 
-Điều phối hướng DevOps tổng thể để application có thể được đóng gói, triển khai và promote nhất quán từ local đến các môi trường đích.
+> Vietnamese: SKILL.vi.md
 
-## Mục Tiêu
+Coordinate the overall DevOps direction so the application can be packaged, deployed, and promoted consistently from local to the target environments.
 
-- Chốt DevOps scope tổng thể ở mức work item.
-- Buộc local có baseline chạy chuẩn bằng container khi scope yêu cầu.
-- Chọn đúng skill chuyên trách cho packaging, runtime deploy và pipeline release.
-- Gắn kết lại environment matrix, promotion flow, rollout strategy, rollback strategy và release readiness.
-- Tạo handoff rõ cho step design, task breakdown, implement và verify.
+## Goal
 
-## Khi Sử Dụng
+- Lock the overall DevOps scope at the work-item level.
+- Force local to have a standard containerized baseline when the scope requires it.
+- Choose the right specialized skill for packaging, runtime deploy, and pipeline release.
+- Tie together the environment matrix, promotion flow, rollout strategy, rollback strategy, and release readiness.
+- Produce a clear handoff for the design, task breakdown, implement, and verify steps.
 
-- Khi người dùng yêu cầu “làm DevOps” ở mức tổng thể chứ chưa tách rõ layer.
-- Khi cần xác định phạm vi nào thuộc packaging, layer nào thuộc runtime deploy, layer nào thuộc CI/CD release.
-- Khi work item vừa có local container, vừa có deploy runtime, vừa có promotion hoặc approval flow.
-- Khi step verify cần kết luận release readiness tổng thể thay vì chỉ một mảng hẹp.
+## When To Use
 
-## Không Thuộc Phạm Vi
+- When the user asks to "do DevOps" at an overall level without splitting layers clearly.
+- When you need to determine which scope belongs to packaging, which layer to runtime deploy, and which to CI/CD release.
+- When a work item has both local containers, runtime deploy, and a promotion or approval flow.
+- When the verify step needs to conclude overall release readiness instead of only one narrow area.
 
-- Không thay thế `implementation` cho việc viết file thực tế trong codebase.
-- Không thay thế `testing` cho unit, integration, database hoặc feature test.
-- Không tự áp đặt nền tảng hạ tầng nếu project chưa có ràng buộc đủ rõ.
-- Không thay thế các skill chuyên trách khi bài toán đã rõ layer cần xử lý.
-- Không xem production rollout là an toàn chỉ vì manifest, compose hoặc pipeline đã tồn tại.
+## Out Of Scope
 
-## Đầu Vào Tối Thiểu
+- Does not replace `implementation` for writing the real files in the codebase.
+- Does not replace `testing` for unit, integration, database, or feature tests.
+- Does not impose an infrastructure platform if the project lacks clear constraints.
+- Does not replace the specialized skills when the layer to handle is already clear.
+- Does not treat a production rollout as safe just because a manifest, compose, or pipeline already exists.
+
+## Minimum Input
 
 - `recommended_design`
 - `acceptance_criteria`
@@ -39,9 +42,9 @@ description: Điều phối DevOps end-to-end từ local đến dev, uat, prod b
 - `delivery_targets`
 - `operational_context`
 
-## Đầu Ra Bắt Buộc
+## Required Output
 
-Xuất artifact YAML theo schema sau:
+Emit a YAML artifact using the following schema:
 
 ```yaml
 deployment_scope: ""
@@ -60,53 +63,53 @@ release_recommendation: READY|READY_WITH_GUARDS|BLOCKED
 notes_for_implementation_or_release: ""
 ```
 
-## Ý Nghĩa Từng Output
+## Meaning Of Each Output
 
-- `deployment_scope`: mô tả phần DevOps đang được xử lý ở mức tổng.
-- `devops_objectives`: mục tiêu DevOps chính của work item.
-- `environment_matrix`: map từng môi trường với concern chính và runtime target dự kiến.
-- `specialized_followups`: skill chuyên trách cần gọi tiếp.
-- `cross_cutting_guards`: guard áp dụng xuyên packaging, runtime và release.
-- `evidence_or_gaps`: bằng chứng hiện có hoặc khoảng trống chặn release.
-- `release_recommendation`: kết luận cuối về mức sẵn sàng.
-- `notes_for_implementation_or_release`: handoff cho step implement hoặc execution release.
+- `deployment_scope`: the DevOps part being handled at an overall level.
+- `devops_objectives`: the main DevOps objectives of the work item.
+- `environment_matrix`: maps each environment to its main concerns and expected runtime target.
+- `specialized_followups`: the specialized skills to call next.
+- `cross_cutting_guards`: guards applied across packaging, runtime, and release.
+- `evidence_or_gaps`: existing evidence or gaps that block release.
+- `release_recommendation`: the final readiness conclusion.
+- `notes_for_implementation_or_release`: handoff for the implement step or execution release.
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalizing Output In A Workflow Note
 
-- Nếu deployment chỉ là một phần của step 5, dùng skill này để khóa scope DevOps tổng rồi link sang note phụ của skill chuyên trách nếu cần.
-- Ở step 6, dùng output của skill này để quyết định task nào thuộc packaging, task nào thuộc runtime, task nào thuộc pipeline.
-- Ở step 8, khi scope có packaging hoặc rollout, có thể đặt schema của skill này làm block tổng quan cho `## Deployment Review`, kèm các schema chi tiết liên quan nếu cần.
-- Nếu materialize thành note `.md` riêng, dùng `obsidian-markdown` và link từ step tương ứng thay vì thay thế note workflow chính.
+- If deployment is only part of step 5, use this skill to lock the overall DevOps scope and link to a sub-note of the specialized skill if needed.
+- At step 6, use this skill's output to decide which task belongs to packaging, which to runtime, and which to pipeline.
+- At step 8, when the scope has packaging or rollout, you may place this skill's schema as the overview block for `## Deployment Review`, with related detailed schemas as needed.
+- If materializing a separate `.md` note, use `obsidian-markdown` and link from the matching step instead of replacing the main workflow note.
 
-## Luồng Thực Thi
+## Execution Flow
 
-1. Xác định môi trường nào thực sự thuộc phạm vi: `local`, `dev`, `uat`, `prod`.
-2. Tách concern theo 3 lớp: packaging, runtime deploy, CI/CD release.
-3. Gọi đúng skill chuyên trách cho từng lớp cần khóa sâu.
-4. Tổng hợp environment matrix, promotion flow và guard vận hành xuyên suốt.
-5. Kết luận `READY`, `READY_WITH_GUARDS` hoặc `BLOCKED`.
+1. Determine which environments are truly in scope: `local`, `dev`, `uat`, `prod`.
+2. Split concerns by 3 layers: packaging, runtime deploy, CI/CD release.
+3. Call the right specialized skill for each layer that needs deep locking.
+4. Aggregate the environment matrix, promotion flow, and operational guards across the whole.
+5. Conclude `READY`, `READY_WITH_GUARDS`, or `BLOCKED`.
 
-## Quy Tắc Môi Trường
+## Environment Rules
 
-- `local` bắt buộc có baseline container hóa nếu work item yêu cầu chạy bằng container.
-- `dev` nên ưu tiên rollout nhanh, quan sát được và dễ reset.
-- `uat` phải bám cùng artifact contract với `prod` khi release flow cần kiểm chứng gần production.
-- `prod` phải có rollout strategy, rollback strategy và verification sau deploy rõ ràng.
-- Không bake secrets hoặc giá trị môi trường đặc thù vào image.
-- Không tạo build riêng cho từng môi trường nếu không có lý do compliance rất rõ.
+- `local` must have a containerized baseline if the work item requires running by container.
+- `dev` should favor fast, observable, easy-to-reset rollouts.
+- `uat` must follow the same artifact contract as `prod` when the release flow needs near-production verification.
+- `prod` must have a clear rollout strategy, rollback strategy, and post-deploy verification.
+- Do not bake secrets or environment-specific values into the image.
+- Do not create a separate build per environment without a very clear compliance reason.
 
-## Tài Liệu Tham Chiếu
+## Reference Docs
 
-Đọc đúng file cần thiết:
+Read the right file as needed:
 
-- `references/devops-skill-map.md`: khi cần chọn skill chuyên trách phù hợp.
-- `../containerization-packaging/SKILL.md`: khi cần khóa packaging theo ngôn ngữ và workload.
-- `../platform-runtime-deployment/SKILL.md`: khi cần khóa runtime deploy theo platform.
-- `../ci-cd-release/SKILL.md`: khi cần khóa pipeline, tagging, promotion và approval.
+- `references/devops-skill-map.md`: when you need to choose the right specialized skill.
+- `../containerization-packaging/SKILL.md`: when you need to lock packaging by language and workload.
+- `../platform-runtime-deployment/SKILL.md`: when you need to lock runtime deploy by platform.
+- `../ci-cd-release/SKILL.md`: when you need to lock pipeline, tagging, promotion, and approval.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Có `environment_matrix` đầy đủ cho mọi môi trường trong phạm vi.
-- Có `specialized_followups` rõ và không chồng lấn mơ hồ.
-- Có `cross_cutting_guards` đủ để step sau triển khai và verify.
-- Có `release_recommendation` rõ ràng và nêu được các `evidence_or_gaps`.
+- A complete `environment_matrix` for every environment in scope.
+- Clear `specialized_followups` with no vague overlap.
+- `cross_cutting_guards` sufficient for the next step to implement and verify.
+- A clear `release_recommendation` that states the `evidence_or_gaps`.

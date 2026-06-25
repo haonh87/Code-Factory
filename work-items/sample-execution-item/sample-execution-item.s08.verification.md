@@ -72,25 +72,25 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Tóm tắt kết quả verify, governance compliance, residual risk và kết luận DoD.
+> Summarize the verify results, governance compliance, residual risk and the DoD conclusion.
 
 ## Step Contract
 ```yaml
-step_goal: "Kiểm execution output, evidence và residual risk bằng review owner độc lập."
+step_goal: "Check the execution output, evidence and residual risk with an independent review owner."
 input_summary:
-  - "implementation note đã merge"
+  - "implementation note merged"
   - "worker handoff report"
   - "merge report"
 output_summary:
   - "verification verdict"
   - "DoD recommendation"
 done_when:
-  - "review_mode independent có evidence rõ"
-  - "DoD verdict kết luận được"
+  - "review_mode independent has clear evidence"
+  - "the DoD verdict can be concluded"
 owner: "auditor"
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 verification_scope:
   - "callback boundary"
@@ -107,11 +107,11 @@ summary_verdict: PASS
 checklist_applied:
   - "project-context/checklists/default.md"
 checks:
-  - "review owner độc lập với builder chính"
-  - "source of truth vẫn nằm ở primary step note"
+  - "the review owner is independent from the main builder"
+  - "the source of truth stays in the primary step note"
 blocking_items: []
 owner: "auditor"
-next_action: "kết luận DoD cho sample execution runtime"
+next_action: "conclude the DoD for the sample execution runtime"
 ```
 
 ## Review Mode
@@ -128,21 +128,21 @@ fallback_mode: auto_fix_loop
 ```yaml
 status: PASS
 notes:
-  - "sample này không có code scan thật; review tập trung vào runtime contract"
+  - "this sample has no real code scan; the review focuses on the runtime contract"
 ```
 
 ## Audit
 ```yaml
 audit_status: PASS
 notes:
-  - "execution artifacts đủ để trace coordinator, worker và merge path"
+  - "execution artifacts are enough to trace the coordinator, worker and merge path"
 ```
 
 ## Definition of Done
 ```yaml
 status: DONE
 residual_risks:
-  - "sample chưa có runner orchestration thật"
+  - "the sample has no real runner orchestration"
 owners:
   - "coordinator"
   - "auditor"
@@ -158,8 +158,8 @@ next_step: ""
 ```
 
 ## Handoff
-- Overall status: PASS, execution runtime baseline đủ để làm canonical sample cho phase 3.
-- Residual risks: chưa có runner orchestration end-to-end.
-- Recommendation: dùng sample này làm chuẩn cho multi_agent artifact contract.
-- Release recommendation khi có: không áp dụng.
-- Next action: rollout phase 4 sau khi phase 3 được review.
+- Overall status: PASS, the execution runtime baseline is enough to be the canonical sample for phase 3.
+- Residual risks: no end-to-end runner orchestration yet.
+- Recommendation: use this sample as the standard for the multi_agent artifact contract.
+- Release recommendation if any: not applicable.
+- Next action: roll out phase 4 after phase 3 is reviewed.

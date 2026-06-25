@@ -1,53 +1,56 @@
 ---
+language: en
 name: workflow-pack-audit
-description: Audit một workflow pack hoặc skill pack trong repo local để phát hiện drift giữa skill, workflow-chain, frontmatter, runtime flat-layout, schema, template block và cross-reference. Dùng khi vừa thêm hoặc sửa skill, workflow reference, script, adapter hoặc trước khi publish/cập nhật gói workflow cho Codex.
+description: Audit a workflow pack or skill pack in the local repo to detect drift across skills, the workflow-chain, frontmatter, the runtime flat-layout, schemas, template blocks, and cross-references. Use after adding or editing a skill, workflow reference, script, or adapter, or before publishing/updating the workflow pack for Codex.
 ---
 
 # Workflow Pack Audit
 
-Audit tính nhất quán của workflow pack theo hai lớp: kiểm tra cơ học bằng script và rà soát ngữ nghĩa bằng checklist.
+> Vietnamese: SKILL.vi.md
 
-## Mục Tiêu
+Audit the consistency of a workflow pack on two layers: mechanical checks via a script and a semantic review via a checklist.
 
-- Phát hiện drift giữa folder skill, frontmatter, workflow-chain, template block và schema tham chiếu.
-- Kiểm tra an toàn cho runtime flat-layout của Codex, nhất là uniqueness của skill name.
-- Phát hiện mismatch giữa skill mới thêm và vị trí của nó trong step mapping hoặc workflow template.
-- Tạo báo cáo audit đủ rõ để quyết định có thể bàn giao hoặc publish workflow pack hay chưa.
+## Goal
 
-## Khi Sử Dụng
+- Detect drift across the skill folder, frontmatter, the workflow-chain, template blocks, and reference schemas.
+- Safety-check the Codex runtime flat-layout, especially skill-name uniqueness.
+- Detect mismatches between a newly added skill and its place in the step mapping or workflow template.
+- Produce an audit report clear enough to decide whether the workflow pack can be handed off or published.
 
-- Sau khi thêm mới hoặc sửa skill trong `skills/`.
-- Sau khi sửa `workflow-chain.md`, template step, schema block hoặc runtime reference.
-- Trước khi cài global hoặc publish phiên bản workflow pack mới.
-- Khi nghi ngờ repo có drift giữa skill docs, workflow docs và layout runtime của Codex.
+## When To Use
 
-## Không Thuộc Phạm Vi
+- After adding or editing a skill in `skills/`.
+- After editing `workflow-chain.md`, a step template, a schema block, or a runtime reference.
+- Before installing globally or publishing a new version of the workflow pack.
+- When the repo is suspected of drift between skill docs, workflow docs, and the Codex runtime layout.
 
-- Không thay thế `step-goal-auditor` cho audit một work item cụ thể.
-- Không thay thế test hành vi của app hoặc MCP server.
-- Không thay thế review thủ công về nội dung business hoặc technical correctness sâu.
-- Không tự sửa hàng loạt ngoài phạm vi audit nếu chưa có quyết định rõ.
+## Out Of Scope
 
-## Đầu Vào Tối Thiểu
+- Does not replace `step-goal-auditor` for auditing a specific work item.
+- Does not replace app or MCP-server behavior testing.
+- Does not replace a manual review of deep business or technical-correctness content.
+- Does not bulk-fix things outside the audit scope without a clear decision.
+
+## Minimum Input
 
 - `repo_root`
 - `audit_scope`
-- `recent_changes` nếu có
+- `recent_changes` if any
 
-`audit_scope` nên nêu ít nhất:
-- audit toàn repo hay chỉ một nhóm skill
-- có vừa thêm skill mới hay không
-- có sửa `workflow-chain` hoặc template step hay không
+`audit_scope` should state at least:
+- whether the audit covers the whole repo or only one skill group
+- whether a new skill was just added
+- whether `workflow-chain` or a step template was edited
 
-## Tài Nguyên Kèm Theo
+## Companion Resources
 
-- Chạy script `scripts/audit-workflow-pack.ps1` trước để lấy deterministic checks.
-- Sau đó đọc `references/checklist.md` và rà các mục semantic còn lại cho vùng vừa thay đổi.
-- Nếu cần note mẫu để ghi kết quả audit, dùng `templates/audit-report.sample.md`.
+- Run the script `scripts/audit-workflow-pack.ps1` first to get deterministic checks.
+- Then read `references/checklist.md` and review the remaining semantic items for the area just changed.
+- If you need a sample note to record the audit result, use `templates/audit-report.sample.md`.
 
-## Đầu Ra Bắt Buộc
+## Required Output
 
-Xuất artifact YAML theo schema sau:
+Emit a YAML artifact using the following schema:
 
 ```yaml
 audit_scope: ""
@@ -66,42 +69,42 @@ follow_up_actions: []
 notes: ""
 ```
 
-## Ý Nghĩa Từng Output
+## Meaning Of Each Output
 
-- `audit_scope`: phạm vi repo hoặc nhóm skill đang được audit.
-- `checks`: kết quả của từng check cơ học hoặc semantic.
-- `findings`: drift hoặc mismatch cụ thể kèm đường dẫn và hướng xử lý.
-- `overall_status`: kết luận tổng thể của audit.
-- `follow_up_actions`: việc cần làm trước khi cài global, merge hoặc publish.
-- `notes`: giới hạn hoặc ghi chú thêm của đợt audit.
+- `audit_scope`: the repo area or skill group being audited.
+- `checks`: the result of each mechanical or semantic check.
+- `findings`: specific drift or mismatches with paths and handling direction.
+- `overall_status`: the overall conclusion of the audit.
+- `follow_up_actions`: work to do before installing globally, merging, or publishing.
+- `notes`: limitations or extra notes for this audit pass.
 
-## Chuẩn Hóa Output
+## Normalizing Output
 
-- Nếu audit được lưu thành note `.md`, dùng `obsidian-markdown`.
-- Giữ block YAML của audit làm nguồn sự thật, không tách findings ra prose rời rồi bỏ mất schema.
-- Khi audit chạm workflow pack này, path tham chiếu phải bám layout runtime phẳng của Codex.
+- If the audit is saved as a `.md` note, use `obsidian-markdown`.
+- Keep the audit YAML block as the source of truth; do not split findings into loose prose and lose the schema.
+- When the audit touches this workflow pack, reference paths must follow the Codex flat runtime layout.
 
-## Luồng Thực Thi
+## Execution Flow
 
-1. Chạy `scripts/audit-workflow-pack.ps1 -RepoRoot <repo_root>` để lấy deterministic checks.
-2. Tải `references/checklist.md` và rà các mục semantic cho vùng vừa thay đổi.
-3. Tập hợp `checks` từ script và bổ sung `findings` cho các drift không kiểm được bằng script.
-4. Kết luận `overall_status`:
-   - `PASS` nếu không có `FAIL`
-   - `PARTIAL` nếu chỉ còn `WARN` hoặc semantic gap nhẹ
-   - `FAIL` nếu có mismatch blocker
-5. Ghi `follow_up_actions` rõ ràng trước khi bàn giao.
+1. Run `scripts/audit-workflow-pack.ps1 -RepoRoot <repo_root>` to get deterministic checks.
+2. Load `references/checklist.md` and review the semantic items for the area just changed.
+3. Collect `checks` from the script and add `findings` for drift the script cannot catch.
+4. Conclude `overall_status`:
+   - `PASS` if there is no `FAIL`
+   - `PARTIAL` if only `WARN` or minor semantic gaps remain
+   - `FAIL` if there is a blocking mismatch
+5. Record clear `follow_up_actions` before handoff.
 
-## Quy Tắc Chất Lượng
+## Quality Rules
 
-- Mặc định báo cáo bằng tiếng Việt.
-- Mọi kết luận phải chỉ ra path hoặc marker cụ thể.
-- Không gắn `PASS` nếu chỉ mới grep tên skill mà chưa kiểm tra template/schema tương ứng.
-- Nếu script pass nhưng checklist semantic fail, kết luận không được là `PASS`.
-- Tài liệu văn bản phải lưu UTF-8 và giữ nguyên tiếng Việt có dấu.
+- Default to writing and communicating in English.
+- Every conclusion must point to a specific path or marker.
+- Do not mark `PASS` if you only grepped the skill name without checking the matching template/schema.
+- If the script passes but the semantic checklist fails, the conclusion must not be `PASS`.
+- Text files must be stored as UTF-8 and preserve accented characters in `*.vi.md` supplement files.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Đã chạy script audit cơ học.
-- Đã rà checklist semantic cho vùng thay đổi.
-- Có `overall_status` và `follow_up_actions` đủ rõ để người maintain quyết định bước tiếp theo.
+- The mechanical audit script has run.
+- The semantic checklist has been reviewed for the changed area.
+- An `overall_status` and `follow_up_actions` clear enough for the maintainer to decide the next step.

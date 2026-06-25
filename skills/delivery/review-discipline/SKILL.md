@@ -1,35 +1,38 @@
 ---
+language: en
 name: review-discipline
-description: Tổ chức review sớm trong `s07 Implement` theo thứ tự `spec compliance -> code quality`, theo batch hoặc task rủi ro, rồi chốt handoff sang verify. Dùng khi implementation chạm logic, contract, diff khó đọc, nhiều batch hoặc release risk không nên dồn review về cuối.
+description: Organize early review inside `s07 Implement` in the order `spec compliance -> code quality`, by batch or risky task, then lock the handoff to verify. Use it when implementation touches logic, contracts, hard-to-read diffs, many batches or release risk where review should not be pushed to the end.
 ---
 
 # Review Discipline
 
-Điều phối review sớm trong `s07` để lỗi và drift được phát hiện trước khi bước sang `s08 Verify + DoD`.
+> Vietnamese: SKILL.vi.md
+
+Coordinate early review inside `s07` so errors and drift surface before stepping into `s08 Verify + DoD`.
 
 <HARD-GATE>
-Không được dồn toàn bộ review sang `s08`.
+Do not push all review to `s08`.
 
-Không được review `code quality` trước khi chốt `spec compliance`.
+Do not review `code quality` before locking `spec compliance`.
 
-Skill này điều phối thời điểm, thứ tự và scope review; nó không thay `testing`, `code-scan-review`, `frontend-quality-review` hay `react-best-practices-review`.
+This skill coordinates the timing, order and scope of review; it does not replace `testing`, `code-scan-review`, `frontend-quality-review` or `react-best-practices-review`.
 </HARD-GATE>
 
-## Khi Sử Dụng
+## When To Use
 
-- Khi implementation có batch logic, contract hoặc integration quan trọng.
-- Khi diff dài, nhiều file, khó đọc hoặc có risk cao.
-- Khi `planning_track=full|enterprise`.
-- Khi cần chốt reviewer, review batch và blocker rule trước verify.
+- When implementation has important batches of logic, contracts or integration.
+- When the diff is long, spans many files, is hard to read or carries high risk.
+- When `planning_track=full|enterprise`.
+- When reviewer, review batches and blocker rules must be locked before verify.
 
-## Không Thuộc Phạm Vi
+## Out Of Scope
 
-- Không thay `testing` cho verify hành vi.
-- Không thay các review chuyên biệt như `frontend-quality-review`, `react-best-practices-review`, `database-change-review`.
-- Không tự hợp thức hóa merge chỉ vì review pass.
-- Không thay `branch-finish-discipline`.
+- Does not replace `testing` for behavior verification.
+- Does not replace specialized reviews such as `frontend-quality-review`, `react-best-practices-review`, `database-change-review`.
+- Does not self-legitimize a merge just because review passed.
+- Does not replace `branch-finish-discipline`.
 
-## Đầu Vào Tối Thiểu
+## Minimum Input
 
 - `review_target`
 - `planning_track`
@@ -38,16 +41,16 @@ Skill này điều phối thời điểm, thứ tự và scope review; nó khôn
 - `available_reviewers`
 - `constraints`
 
-`risk_signals` nên nêu ít nhất:
+`risk_signals` should state at least:
 
-- có logic hoặc contract quan trọng hay không
-- có batch nào rủi ro cao cần review sớm không
-- có diff khó đọc hoặc nhiều file không
-- có requirement nào dễ lệch spec không
+- whether there is important logic or contracts
+- whether any high-risk batch needs early review
+- whether the diff is hard to read or spans many files
+- whether any requirement is easy to drift from spec
 
-## Đầu Ra Bắt Buộc
+## Required Output
 
-Xuất artifact YAML theo schema sau:
+Emit a YAML artifact per the following schema:
 
 ```yaml
 review_target: ""
@@ -71,43 +74,43 @@ handoff_to_verify: []
 notes_for_implementation_or_verify: ""
 ```
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalize Output In Workflow Note
 
-Nếu output của skill này được lưu thành note `.md` trong workflow chain:
+If this skill's output is saved as a `.md` note in the workflow chain:
 
-- Dùng template step 7 tại `../codex-workflow-chain/references/workflow-chain.md`.
-- Đặt schema YAML của skill này trong block `## Implementation Notes`.
-- Nếu step đã tạo review artifact riêng ở `s08`, liên kết chéo thay vì lặp finding đầy đủ.
+- Use the step 7 template at `../codex-workflow-chain/references/workflow-chain.md`.
+- Place this skill's YAML schema in the `## Implementation Notes` block.
+- If the step already created a separate review artifact at `s08`, cross-link instead of repeating full findings.
 
-## Quy Trình Bắt Buộc
+## Mandatory Process
 
-1. Xác định `review_target` và batch hoặc task rủi ro cần review sớm.
-2. Chọn `review_mode` theo `planning_track` và risk thực tế.
-3. Khóa `review_order` theo thứ tự `SPEC_COMPLIANCE -> CODE_QUALITY`.
-4. Chia `review_batches` đủ nhỏ để reviewer đọc được và phản hồi sớm.
-5. Ghi `required_checks` cho từng lane review.
-6. Chốt `finding_policy` để biết finding nào chặn verify.
-7. Chuẩn bị `handoff_to_verify` cho bước `s08`.
+1. Determine `review_target` and the batch or risky task that needs early review.
+2. Choose `review_mode` based on `planning_track` and actual risk.
+3. Lock `review_order` in the sequence `SPEC_COMPLIANCE -> CODE_QUALITY`.
+4. Split `review_batches` small enough for a reviewer to read and respond early.
+5. Record `required_checks` for each review lane.
+6. Lock `finding_policy` so it is clear which findings block verify.
+7. Prepare `handoff_to_verify` for the `s08` step.
 
-## Quy Tắc Chất Lượng
+## Quality Rules
 
-- `quick` vẫn phải có ít nhất một lượt review trước khi rời `s07`.
-- `full` và `enterprise` không được để `review_batches` trống nếu có risk trung bình hoặc cao.
-- `INDEPENDENT` nên dùng khi review owner tách khỏi implementer hoặc release risk cao.
-- `finding_policy.blocker_threshold` phải explicit; không dùng wording mơ hồ.
-- Mặc định viết và trao đổi bằng tiếng Việt có dấu.
-- File văn bản phải lưu UTF-8.
+- `quick` still must have at least one review pass before leaving `s07`.
+- `full` and `enterprise` must not leave `review_batches` empty when there is medium or high risk.
+- `INDEPENDENT` should be used when the review owner is separate from the implementer or release risk is high.
+- `finding_policy.blocker_threshold` must be explicit; do not use vague wording.
+- Default to writing and communicating in English.
+- Text files must be stored as UTF-8.
 
-## Luật Ra Quyết Định
+## Decision Rules
 
-- `SELF` chỉ phù hợp với scope nhỏ, risk thấp và vẫn phải theo đúng `review_order`.
-- `TARGETED` phù hợp cho `full`, hoặc `quick` có batch logic/contract rõ.
-- `INDEPENDENT` phù hợp với `enterprise`, diff quan trọng, release risk cao hoặc reviewer owner tách biệt.
-- Nếu có logic/contract quan trọng, `review_batches` phải tách phần đó ra thay vì trộn vào batch lớn.
-- Nếu finding chạm spec hoặc requirement, phải quay lại `spec compliance` trước khi tranh luận `code quality`.
+- `SELF` only fits small scope, low risk, and still must follow the correct `review_order`.
+- `TARGETED` fits `full`, or `quick` with a clear logic/contract batch.
+- `INDEPENDENT` fits `enterprise`, important diffs, high release risk or a separate review owner.
+- If there is important logic/contracts, `review_batches` must split that part out instead of mixing it into a large batch.
+- If a finding touches spec or requirements, return to `spec compliance` before debating `code quality`.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Có `review_mode`, `review_order` và `review_batches` rõ ràng.
-- Có `required_checks` và `finding_policy` đủ để review vận hành được.
-- Có `handoff_to_verify` để `s08` nhận đúng context.
+- `review_mode`, `review_order` and `review_batches` are clear.
+- `required_checks` and `finding_policy` are enough for review to operate.
+- `handoff_to_verify` lets `s08` receive the correct context.

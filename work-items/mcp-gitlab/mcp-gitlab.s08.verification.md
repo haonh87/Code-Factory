@@ -101,7 +101,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Tóm tắt kết quả verify, governance compliance, residual risk và kết luận DoD.
+> Summarize the verify results, governance compliance, residual risk and the DoD conclusion.
 
 ## Step Contract
 ```yaml
@@ -121,7 +121,7 @@ done_when:
 owner: "developer"
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 verification_scope:
   - "mcp/gitlab core behavior and MCP entrypoint"

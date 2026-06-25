@@ -1,27 +1,33 @@
-# Ví Dụ End-To-End Workflow
+---
+language: en
+---
 
-Tài liệu này minh họa cách áp dụng `workflow-chain.md` và `execution-runtime.md` vào tình huống thực tế.
+# End-To-End Workflow Examples
 
-- Ví dụ A: work item nhỏ, một ownership boundary chính, chạy `agentic`.
-- Ví dụ B: feature có nhiều boundary và tài liệu ngoài, chạy `multi-agent` từ step 5 trở đi và có dùng `notebooklm` như supporting research skill.
-- Ví dụ C: `CHANGE` có migration/backfill/index rollout, chạy `multi-agent` theo kiểu database-heavy.
+> Vietnamese: end-to-end-examples.vi.md
 
-## Cách Đọc Ví Dụ
+This document illustrates how to apply `workflow-chain.md` and `execution-runtime.md` to real situations.
 
-- Mỗi ví dụ đều đi qua đủ 8 step.
-- Không phải step nào cũng phải materialize thành file trong thực tế, nhưng ví dụ này giả định có note workflow để dễ trace.
-- Note `.md` của từng step vẫn là source of truth; output từ worker hoặc `notebooklm` chỉ là input phụ cho note đó.
+- Example A: a small work item, one main ownership boundary, running `agentic`.
+- Example B: a feature with many boundaries and external documents, running `multi-agent` from step 5 onward and using `notebooklm` as a supporting research skill.
+- Example C: a `CHANGE` with migration/backfill/index rollout, running `multi-agent` in a database-heavy style.
 
-## Ví Dụ A: `BUG` Nhỏ Chạy `agentic`
+## How To Read The Examples
 
-### Bối Cảnh
+- Each example goes through all eight steps.
+- Not every step has to materialize into a file in practice, but this example assumes a workflow note exists for traceability.
+- The `.md` note of each step remains the source of truth; output from a worker or `notebooklm` is only supporting input to that note.
+
+## Example A: A Small `BUG` Running `agentic`
+
+### Context
 
 - `work_item_slug`: `fix-profile-phone-validation`
 - `work_item_type`: `BUG`
-- Mô tả ngắn: form cập nhật hồ sơ chấp nhận số điện thoại Việt Nam có dấu cách hoặc tiền tố `+84` sai cách, khiến user hợp lệ vẫn lưu thất bại.
-- Lý do chọn `agentic`: chỉ chạm một boundary chính là validation + formatter trong cùng module profile; context nhỏ; verify có thể do cùng một agent thực hiện an toàn.
+- Short description: the profile update form accepts Vietnamese phone numbers with spaces or a `+84` prefix incorrectly, so valid users still fail to save.
+- Reason for `agentic`: it touches only one main boundary — validation + formatter within the same profile module; small context; verification can be done safely by the same agent.
 
-### Artifact Mẫu
+### Sample Artifacts
 
 - `fix-profile-phone-validation.s01.restate.md`
 - `fix-profile-phone-validation.s02.business-goal.md`
@@ -32,43 +38,43 @@ Tài liệu này minh họa cách áp dụng `workflow-chain.md` và `execution-
 - `fix-profile-phone-validation.s07.implementation.md`
 - `fix-profile-phone-validation.s08.verification.md`
 
-### Chuỗi 8 Step
+### The Eight-Step Chain
 
-| Step | Skill chính | Execution | Output mẫu |
+| Step | Main skill | Execution | Sample output |
 |---|---|---|---|
-| `s01` Clarify | `requirement-analysis`, `product-thinking` | `agentic` | Chốt đây là `BUG`, phạm vi là validation profile form, risk là đổi behavior nhập liệu ngoài ý muốn |
-| `s02` Business Goal | `product-thinking` | `agentic` | Mục tiêu là user nhập số hợp lệ theo chuẩn VN không bị chặn sai; không đổi luồng xác thực hay dữ liệu lịch sử |
-| `s03` Open Questions | `requirement-analysis`, `input-readiness-assessor`, `step-goal-auditor` | `agentic` | Chốt cần hỗ trợ các format nào, backend hay frontend đang reject, có migration dữ liệu không |
-| `s04` Acceptance + DoR | `requirement-analysis`, `definition-of-ready-gate` | `agentic` | Criteria ví dụ: `0901234567`, `090 123 4567`, `+84901234567` đều pass; input thiếu số vẫn fail; DoR=`READY` |
-| `s05` Technical Approach | `brainstorming`, `system-design` | `agentic` | Chọn normalize input ở shared validation util, không rải rule riêng ở nhiều component |
-| `s06` Task Plan | `task-breakdown-planner` | `agentic` | Task 1 sửa util normalize; Task 2 update test; Task 3 verify regression trên profile form |
-| `s07` Implement | `implementation` | `agentic` | Sửa util validator/formatter, cập nhật unit test và note implementation |
-| `s08` Verify + DoD | `testing`, `code-scan-review`, `step-goal-auditor`, `definition-of-done-gate` | `agentic` | Chạy unit test + lint + audit; xác nhận evidence đủ để đóng DoD |
+| `s01` Clarify | `requirement-analysis`, `product-thinking` | `agentic` | Pins this as a `BUG`; scope is profile form validation; risk is unintentionally changing input behavior |
+| `s02` Business Goal | `product-thinking` | `agentic` | Goal: users entering a valid VN number are not wrongly blocked; do not change the auth flow or historical data |
+| `s03` Open Questions | `requirement-analysis`, `input-readiness-assessor`, `step-goal-auditor` | `agentic` | Pins which formats to support, whether backend or frontend is rejecting, whether data migration is needed |
+| `s04` Acceptance + DoR | `requirement-analysis`, `definition-of-ready-gate` | `agentic` | Sample criteria: `0901234567`, `090 123 4567`, `+84901234567` all pass; input missing digits still fails; DoR=`READY` |
+| `s05` Technical Approach | `brainstorming`, `system-design` | `agentic` | Choose to normalize input in a shared validation util, not scatter private rules across components |
+| `s06` Task Plan | `task-breakdown-planner` | `agentic` | Task 1 fix normalize util; Task 2 update tests; Task 3 verify regression on the profile form |
+| `s07` Implement | `implementation` | `agentic` | Fix the validator/formatter util, update unit tests, update the implementation note |
+| `s08` Verify + DoD | `testing`, `code-scan-review`, `step-goal-auditor`, `definition-of-done-gate` | `agentic` | Run unit tests + lint + audit; confirm evidence is enough to close DoD |
 
-### Delivery Narrative Mẫu
+### Sample Delivery Narrative
 
-- Step 5 không cần `multi-agent` vì không có nhiều module hoặc ownership boundary.
-- Step 7 chỉ có một builder logic là chính agent đang làm việc.
-- Step 8 không cần tách tester riêng vì verify path ngắn, risk thấp và evidence đủ rõ.
-- Nếu trong Step 3 phát hiện validator nằm ở nhiều service hoặc nhiều app shell khác nhau, ví dụ này sẽ không còn phù hợp với `agentic` và phải re-evaluate mode.
+- Step 5 does not need `multi-agent` because there are not many modules or ownership boundaries.
+- Step 7 has only one logic builder: the agent itself.
+- Step 8 does not need a separate tester because the verify path is short, risk is low, and evidence is clear.
+- If Step 3 finds the validator lives across multiple services or app shells, this example no longer fits `agentic` and the mode must be re-evaluated.
 
-## Ví Dụ B: `FEATURE` Vừa/Lớn Chạy `multi-agent`
+## Example B: A Medium/Large `FEATURE` Running `multi-agent`
 
-### Bối Cảnh
+### Context
 
 - `work_item_slug`: `add-google-oauth-login`
 - `work_item_type`: `FEATURE`
-- Mô tả ngắn: thêm đăng nhập Google cho customer portal nhưng vẫn giữ email/password hiện có.
+- Short description: add Google login to the customer portal while keeping the existing email/password flow.
 - Complexity signals: `multi_boundary`, `large_context`, `separate_verification`, `tool_specialization`.
-- Vì sao phù hợp `multi-agent`: chạm frontend login UI, backend auth flow, security rule, callback config và verify integration; đồng thời có tài liệu ngoài từ Google cần đọc có cấu trúc.
+- Why `multi-agent` fits: it touches the frontend login UI, backend auth flow, security rules, callback config, and integration verification; it also has external Google docs that need structured reading.
 
 ### Execution Policy Snapshot
 
 ```yaml
 execution_mode: multi_agent
 selection_reason:
-  - "Feature chạm nhiều backend/frontend/security boundary"
-  - "Có external docs cần research trước khi chốt design"
+  - "Feature touches many backend/frontend/security boundaries"
+  - "External docs need research before design is pinned"
 complexity_signals:
   - multi_boundary
   - large_context
@@ -83,10 +89,10 @@ external_research:
   notebooklm: OPTIONAL
   expected_outputs:
     - notebooklm-research-capture
-notes: "Chỉ bật multi-agent từ step 5 trở đi; step 1-4 vẫn giữ agentic để khóa scope trước."
+notes: "Turn on multi-agent only from step 5 onward; steps 1-4 stay agentic to lock scope first."
 ```
 
-### Worker Assignment Snapshot Cho Step 5
+### Worker Assignment Snapshot For Step 5
 
 ```yaml
 assignment_id: "s05-design-pack"
@@ -95,42 +101,42 @@ shared_contract_ref: "add-google-oauth-login.s05.technical-approach#step-contrac
 role: "coordinator"
 owned_scope:
   - "merge option analysis"
-  - "chốt recommendation"
+  - "pin recommendation"
 owned_paths: []
 skills:
   - codex-workflow-chain
   - system-design
 inputs:
-  - "acceptance criteria đã chốt"
-  - "security constraints hiện có"
+  - "pinned acceptance criteria"
+  - "current security constraints"
 done_when:
-  - "có technical approach được chọn"
-  - "có backend/frontend boundary rõ"
+  - "a technical approach is chosen"
+  - "backend/frontend boundaries are clear"
 depends_on: []
 status: READY
 handoff_format: worker-handoff-report
 ```
 
-### Vai Trò Tham Gia Theo Step
+### Roles By Step
 
-| Step | Mode | Vai trò chính | Output mẫu |
+| Step | Mode | Main roles | Sample output |
 |---|---|---|---|
-| `s01` Clarify | `agentic` | `coordinator` | Chốt scope: thêm provider mới, không thay account migration |
-| `s02` Business Goal | `agentic` | `coordinator` | Chốt mục tiêu: giảm friction login, không làm yếu security policy |
-| `s03` Open Questions | `agentic` + có thể dùng `notebooklm` | `coordinator`, optional `notebooklm-researcher` | Gom câu hỏi về callback URL, session model, account linking, compliance |
-| `s04` Acceptance + DoR | `agentic` | `coordinator` | Criteria: user mới đăng nhập Google tạo account đúng rule; user cũ có thể link hoặc reject đúng policy; DoR=`READY` |
-| `s05` Technical Approach | `multi-agent` | `coordinator`, `notebooklm-researcher`, `backend-architect`, `frontend-architect` | Chốt OAuth callback flow, token exchange, UI state và risk map |
-| `s06` Task Plan | `multi-agent` | `coordinator`, `planner`, `dependency-reviewer` | Tách task backend auth, frontend CTA/state, config/secret, verify plan |
+| `s01` Clarify | `agentic` | `coordinator` | Pin scope: add a new provider, no account migration change |
+| `s02` Business Goal | `agentic` | `coordinator` | Pin goal: reduce login friction, do not weaken the security policy |
+| `s03` Open Questions | `agentic` + optional `notebooklm` | `coordinator`, optional `notebooklm-researcher` | Collect questions on callback URL, session model, account linking, compliance |
+| `s04` Acceptance + DoR | `agentic` | `coordinator` | Criteria: a new user logging in with Google creates an account per the rules; an existing user can link or reject per policy; DoR=`READY` |
+| `s05` Technical Approach | `multi-agent` | `coordinator`, `notebooklm-researcher`, `backend-architect`, `frontend-architect` | Pin OAuth callback flow, token exchange, UI state, and risk map |
+| `s06` Task Plan | `multi-agent` | `coordinator`, `planner`, `dependency-reviewer` | Split tasks for backend auth, frontend CTA/state, config/secret, verify plan |
 | `s07` Implement | `multi-agent` | `coordinator`, `backend-builder`, `frontend-builder`, `doc-owner` | Backend auth provider + callback + UI login button + docs/config changes |
-| `s08` Verify + DoD | `multi-agent` | `coordinator`, `tester`, `scan-reviewer`, `auditor` | Integration evidence, code scan, security notes, final audit và DoD |
+| `s08` Verify + DoD | `multi-agent` | `coordinator`, `tester`, `scan-reviewer`, `auditor` | Integration evidence, code scan, security notes, final audit and DoD |
 
-### Handoff Report Mẫu Từ `notebooklm-researcher`
+### Sample Handoff Report From `notebooklm-researcher`
 
 ```yaml
 assignment_id: "s05-notebooklm-google-oauth"
 role: "notebooklm-researcher"
 status: HANDOFF
-summary: "Đã tổng hợp callback constraints, consent screen notes và provider flow từ corpus docs Google + internal auth notes."
+summary: "Summarized callback constraints, consent-screen notes, and provider flow from the Google docs corpus + internal auth notes."
 outputs_produced:
   - notebooklm-research-capture
 artifact_refs:
@@ -141,33 +147,33 @@ evidence:
   - "Notebook query: Account linking constraints"
 external_tools_used:
   - tool: "notebooklm"
-    purpose: "Tóm lược provider docs và internal auth notes"
+    purpose: "Summarize provider docs and internal auth notes"
     refs:
       - "google-oauth-notebook"
 open_issues:
-  - "Cần product quyết định auto-link hay explicit link với email trùng"
-recommended_next_action: "Coordinator chuyển issue này vào option analysis và acceptance criteria refinement nếu còn blocker"
+  - "Product must decide auto-link vs explicit link for matching emails"
+recommended_next_action: "Coordinator moves this issue into option analysis and AC refinement if it still blocks"
 ```
 
-### Delivery Narrative Mẫu
+### Sample Delivery Narrative
 
-- Step 1-4 vẫn giữ `agentic` để không tốn chi phí phối hợp quá sớm khi scope còn mơ hồ.
-- `notebooklm` chỉ hỗ trợ ở step 3 và step 5 để đọc corpus lớn; mọi kết luận vẫn phải chốt vào note step.
-- Step 5 là điểm đầu hợp lý để bật `multi-agent` vì bắt đầu xuất hiện nhiều boundary song song.
-- Step 7 chia builder theo `owned_paths` hoặc module boundary; nếu hai builder phải cùng sửa một auth module lõi, coordinator phải giảm song song hoặc fallback `sequential multi-role`.
-- Step 8 tách `tester`, `scan-reviewer`, `auditor` để tránh bias “người code tự xác nhận xong”.
+- Steps 1-4 stay `agentic` to avoid paying coordination cost too early while scope is still vague.
+- `notebooklm` only supports step 3 and step 5 for reading large corpora; every conclusion must still be pinned in the step note.
+- Step 5 is the first sensible point to turn on `multi-agent` because parallel boundaries start to appear.
+- Step 7 splits builders by `owned_paths` or module boundary; if two builders must edit the same core auth module, the coordinator must reduce parallelism or fall back to `sequential multi-role`.
+- Step 8 separates `tester`, `scan-reviewer`, and `auditor` to avoid the bias of "the coder self-confirms completion".
 
-## Ví Dụ C: `CHANGE` Database-Heavy Chạy `multi-agent`
+## Example C: A Database-Heavy `CHANGE` Running `multi-agent`
 
-### Bối Cảnh
+### Context
 
 - `work_item_slug`: `normalize-customer-phone-index`
 - `work_item_type`: `CHANGE`
-- Mô tả ngắn: thêm cột `normalized_phone` và rollout unique index cho bảng customer để hỗ trợ search/dedup theo số điện thoại chuẩn hóa, nhưng không làm hỏng luồng ghi hiện có.
+- Short description: add a `normalized_phone` column and roll out a unique index on the customer table to support search/dedup by a normalized phone, without breaking the existing write path.
 - Complexity signals: `multi_boundary`, `parallelizable_work`, `separate_verification`, `tool_specialization`.
-- Vì sao phù hợp `multi-agent`: change này chạm application write path, schema migration, backfill dữ liệu cũ, index rollout và review release safety; cần tách người implement với người review database.
+- Why `multi-agent` fits: this change touches the application write path, schema migration, legacy data backfill, index rollout, and release-safety review; the database implementer and the database reviewer must be separated.
 
-### Artifact Mẫu
+### Sample Artifacts
 
 - `normalize-customer-phone-index.s01.restate.md`
 - `normalize-customer-phone-index.s02.business-goal.md`
@@ -178,20 +184,20 @@ recommended_next_action: "Coordinator chuyển issue này vào option analysis v
 - `normalize-customer-phone-index.s07.implementation.md`
 - `normalize-customer-phone-index.s08.verification.md`
 
-### Chuỗi 8 Step
+### The Eight-Step Chain
 
-| Step | Mode | Vai trò chính | Output mẫu |
+| Step | Mode | Main roles | Sample output |
 |---|---|---|---|
-| `s01` Clarify | `agentic` | `coordinator` | Chốt đây là `CHANGE`, không phải feature mới; phạm vi là chuẩn hóa phone và hỗ trợ lookup/dedup an toàn |
-| `s02` Business Goal | `agentic` | `coordinator` | Chốt mục tiêu là tìm kiếm và chống trùng chính xác hơn, không làm gián đoạn create/update customer hiện có |
-| `s03` Open Questions | `agentic` | `coordinator` | Xác định dữ liệu cũ bẩn ở mức nào, có bản ghi trùng sau normalize không, rollback window ra sao |
-| `s04` Acceptance + DoR | `agentic` | `coordinator` | Criteria: write path mới luôn sinh `normalized_phone`; dữ liệu cũ được backfill; unique index chỉ bật khi dữ liệu sạch; DoR=`READY` |
-| `s05` Technical Approach | `multi-agent` | `coordinator`, `backend-architect`, `data-architect` | Chọn rollout `expand-contract`: thêm cột nullable, dual-write, backfill, validate dữ liệu, rồi mới tạo unique index |
-| `s06` Task Plan | `multi-agent` | `coordinator`, `planner`, `migration-owner`, `dependency-reviewer` | Tách task schema add, app dual-write, backfill job, dữ liệu trùng cần xử lý, verify plan, rollout guards |
-| `s07` Implement | `multi-agent` | `coordinator`, `app-builder`, `migration-owner`, `backfill-owner` | Tạo migration thêm cột, cập nhật service dual-write, viết backfill command/job, thêm logging/guard cho rollout |
-| `s08` Verify + DoD | `multi-agent` | `coordinator`, `tester`, `database-reviewer`, `auditor` | Chạy test app path, kiểm tra backfill dry-run, review migration safety, chốt release recommendation và DoD |
+| `s01` Clarify | `agentic` | `coordinator` | Pin this as a `CHANGE`, not a new feature; scope is normalizing phone and supporting safe lookup/dedup |
+| `s02` Business Goal | `agentic` | `coordinator` | Pin goal: more accurate search and dedup, without disrupting the existing customer create/update |
+| `s03` Open Questions | `agentic` | `coordinator` | Determine how dirty legacy data is, whether duplicates appear after normalize, and the rollback window |
+| `s04` Acceptance + DoR | `agentic` | `coordinator` | Criteria: the new write path always produces `normalized_phone`; legacy data is backfilled; the unique index turns on only when data is clean; DoR=`READY` |
+| `s05` Technical Approach | `multi-agent` | `coordinator`, `backend-architect`, `data-architect` | Choose an `expand-contract` rollout: add a nullable column, dual-write, backfill, validate, then create the unique index |
+| `s06` Task Plan | `multi-agent` | `coordinator`, `planner`, `migration-owner`, `dependency-reviewer` | Split tasks for schema add, app dual-write, backfill job, duplicate handling, verify plan, rollout guards |
+| `s07` Implement | `multi-agent` | `coordinator`, `app-builder`, `migration-owner`, `backfill-owner` | Create the column-adding migration, update the dual-write service, write the backfill command/job, add rollout logging/guards |
+| `s08` Verify + DoD | `multi-agent` | `coordinator`, `tester`, `database-reviewer`, `auditor` | Run app-path tests, check the backfill dry-run, review migration safety, pin the release recommendation and DoD |
 
-### Database Review Snapshot Cho Step 8
+### Database Review Snapshot For Step 8
 
 ```yaml
 review_scope:
@@ -238,19 +244,19 @@ evidence:
   - "staging verification logs"
 ```
 
-### Delivery Narrative Mẫu
+### Sample Delivery Narrative
 
-- Step 1-4 vẫn nên giữ `agentic` để khóa đúng bản chất đây là `CHANGE` có dữ liệu legacy, không phải chỉ thêm cột rồi xong.
-- Step 5 bắt đầu cần `multi-agent` vì đã tách rõ boundary giữa app write path và data rollout path.
-- `migration-owner` chỉ sở hữu migration/index/backfill mechanics; `app-builder` sở hữu dual-write và read-path tương thích.
-- Step 7 không nên để hai worker cùng sửa một migration file hoặc cùng chỉnh một service write-path nếu chưa có ownership rõ; coordinator phải tách path hoặc chuyển về `sequential multi-role`.
-- Step 8 bắt buộc có `database-reviewer`, vì đây là case mà release recommendation quan trọng gần ngang với test application.
+- Steps 1-4 should stay `agentic` to correctly pin that this is a `CHANGE` with legacy data, not just "add a column and done."
+- Step 5 starts needing `multi-agent` because the boundary between the app write path and the data rollout path is now clear.
+- The `migration-owner` owns only the migration/index/backfill mechanics; the `app-builder` owns the dual-write and the compatible read path.
+- In Step 7, two workers must not edit the same migration file or the same write-path service without clear ownership; the coordinator must split paths or fall back to `sequential multi-role`.
+- Step 8 must include a `database-reviewer`, because here the release recommendation is nearly as important as the application tests.
 
-## Kết Luận Rút Ra Từ 3 Ví Dụ
+## Conclusions From The Three Examples
 
-- `agentic` là lựa chọn mặc định cho work item nhỏ hoặc vừa, một boundary chính, verify ngắn.
-- `multi-agent` nên bật muộn, thường từ step 5 trở đi, sau khi `DoR` đã khóa phạm vi đủ rõ.
-- `notebooklm` có giá trị khi step có external corpus lớn, nhưng nó không thay cho decision artifact hay verify trên codebase.
-- Với change database-heavy, `database-design` ở step 5 và `database-change-review` ở step 8 gần như là cặp skill mặc định.
-- Rollout kiểu `expand-contract` là mẫu an toàn khi phải thêm cột, dual-write, backfill rồi mới khóa constraint hoặc unique index.
-- Nếu chưa xác định rõ `coordinator`, `verification owner`, `owned_scope` và `merge strategy`, chưa nên bật `multi-agent`.
+- `agentic` is the default choice for small or medium work items with one main boundary and a short verify path.
+- `multi-agent` should be turned on late, usually from step 5 onward, after `DoR` has locked the scope clearly enough.
+- `notebooklm` is valuable when a step has a large external corpus, but it does not replace the decision artifact or verification on the codebase.
+- For a database-heavy change, `database-design` at step 5 and `database-change-review` at step 8 are effectively the default skill pair.
+- An `expand-contract` rollout is the safe pattern when you must add a column, dual-write, backfill, and only then lock a constraint or unique index.
+- If `coordinator`, `verification owner`, `owned_scope`, and `merge strategy` are not yet clear, do not turn on `multi-agent`.

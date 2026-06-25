@@ -17,14 +17,14 @@ verification_owner: "auditor"
 # Step 7 - Worker Handoff Report
 
 > [!summary]
-> Ghi lại handoff từ worker về coordinator cùng evidence và open issues.
+> Record the handoff from the worker to the coordinator with evidence and open issues.
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 assignment_id: "S07-BACKEND-001"
 role: "backend-builder"
 status: HANDOFF
-summary: "Đã hoàn tất callback boundary và trả evidence để coordinator merge."
+summary: "Completed the callback boundary and returned evidence for the coordinator to merge."
 outputs_produced:
   - "callback boundary implementation summary"
 artifact_refs:
@@ -33,15 +33,15 @@ code_refs:
   - "auth/callback/*"
 evidence:
   - "integration test capture"
-  - "review note cho callback ownership"
+  - "review note for callback ownership"
 external_tools_used:
   - tool: "notebooklm"
-    purpose: "tham chiếu nhanh constraint của provider docs"
+    purpose: "quick reference for the provider docs constraints"
     refs:
       - "provider-constraint-summary"
 open_issues:
-  - "cần auditor xác nhận callback fallback path"
-recommended_next_action: "Coordinator merge cùng frontend output rồi chuyển sang verify."
+  - "the auditor must confirm the callback fallback path"
+recommended_next_action: "Coordinator merges with the frontend output then moves to verify."
 ```
 
 ## Links

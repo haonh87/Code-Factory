@@ -71,7 +71,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Tóm tắt kết quả verify, governance compliance, residual risk và kết luận DoD.
+> Summarize the verify results, governance compliance, residual risk and the DoD conclusion.
 
 ## Step Contract
 ```yaml
@@ -82,11 +82,11 @@ done_when: []
 owner: ""
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 verification_scope:
-  - "AC-001 tới AC-004"
-  - "backward compatibility khi workspace filter trống"
+  - "AC-001 through AC-004"
+  - "backward compatibility when the workspace filter is empty"
 evidence_refs:
   - "TEST-001"
   - "TEST-002"
@@ -100,11 +100,11 @@ summary_verdict: PASS
 checklist_applied:
   - "project-context/checklists/default.md"
 checks:
-  - "governance context đã được phản ánh tới verify verdict"
-  - "không còn exception mở"
+  - "the governance context has been reflected up to the verify verdict"
+  - "no open exception remains"
 blocking_items: []
 owner: "qc"
-next_action: "chốt DoD và business acceptance readiness"
+next_action: "close DoD and the business acceptance readiness"
 ```
 
 ## Spec Coverage
@@ -115,28 +115,28 @@ coverage:
     task_refs: [TASK-001]
     test_refs: [TEST-001]
     status: PASS
-    evidence: "workspace filter được parse và apply"
+    evidence: "the workspace filter is parsed and applied"
     gaps: []
   - requirement_id: SRS-FR-002
     acceptance_refs: [AC-002]
     task_refs: [TASK-001]
     test_refs: [TEST-002]
     status: PASS
-    evidence: "kết quả chỉ chứa session thuộc workspace yêu cầu"
+    evidence: "the result only contains sessions that belong to the requested workspace"
     gaps: []
   - requirement_id: SRS-NFR-001
     acceptance_refs: [AC-003]
     task_refs: [TASK-002]
     test_refs: [TEST-003]
     status: PASS
-    evidence: "behavior giữ tương thích khi filter trống"
+    evidence: "behavior stays compatible when the filter is empty"
     gaps: []
   - requirement_id: SRS-UX-001
     acceptance_refs: [AC-004]
     task_refs: [TASK-003]
     test_refs: [TEST-004]
     status: PASS
-    evidence: "path invalid trả lỗi rõ nghĩa"
+    evidence: "an invalid path returns a clear error"
     gaps: []
 status: PASS
 ```
@@ -145,14 +145,14 @@ status: PASS
 ```yaml
 status: PASS
 notes:
-  - "không có issue blocker từ code scan trong sample"
+  - "no blocker issue from the code scan in the sample"
 ```
 
 ## Audit
 ```yaml
 audit_status: PASS
 notes:
-  - "traceability BRD/SRS -> AC -> TASK -> TEST đầy đủ cho sample"
+  - "the BRD/SRS -> AC -> TASK -> TEST traceability is complete for the sample"
 ```
 
 ## Definition of Done
@@ -182,8 +182,8 @@ next_step: ""
 ```
 
 ## Handoff
-- Overall status: PASS, DoD đạt.
-- Residual risks: không có risk mở trọng yếu trong sample.
-- Recommendation: có thể dùng work item này làm canonical SDD sample cho validator và CI.
-- Release recommendation khi có: READY.
-- Next action: giữ sample đồng bộ khi contract SDD thay đổi.
+- Overall status: PASS, DoD reached.
+- Residual risks: no material open risk in the sample.
+- Recommendation: this work item can be used as the canonical SDD sample for the validator and CI.
+- Release recommendation if any: READY.
+- Next action: keep the sample in sync when the SDD contract changes.

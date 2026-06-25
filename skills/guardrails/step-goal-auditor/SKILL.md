@@ -1,39 +1,42 @@
 ---
+language: en
 name: step-goal-auditor
-description: Kiểm định output thực tế của từng bước workflow coding so với Step Goal Contract. Dùng ở cuối mỗi step để đánh giá PASS, FAIL hoặc PARTIAL, ghi bằng chứng, chỉ ra khoảng trống và quyết định có được chuyển bước tiếp theo hay không.
+description: Audit the actual output of each coding-workflow step against the Step Goal Contract. Use at the end of each step to assess PASS, FAIL, or PARTIAL, record evidence, point out gaps, and decide whether the next step is allowed to proceed.
 ---
 
 # Step Goal Auditor
 
-Đánh giá mức độ đạt mục tiêu của step dựa trên contract đã chốt.
+> Vietnamese: SKILL.vi.md
 
-## Mục Tiêu
+Assess how well a step met its goal based on the pinned contract.
 
-- Kiểm tra xem output thực tế có khớp với contract của step hay không.
-- Tạo kết luận có bằng chứng thay vì đánh giá cảm tính.
-- Chỉ ra khoảng trống, vi phạm constraint và rủi ro còn mở trước khi chuyển bước.
+## Goal
 
-## Khi Sử Dụng
+- Check whether the actual output matches the step's contract.
+- Produce an evidence-based conclusion instead of a subjective judgment.
+- Point out gaps, constraint violations, and open risks before moving to the next step.
 
-- Ở cuối mỗi step có contract rõ ràng.
-- Khi cần quyết định có được chuyển sang step tiếp theo hay không.
-- Khi cần tổng hợp bằng chứng trước review hoặc handoff.
+## When To Use
 
-## Không Thuộc Phạm Vi
+- At the end of each step that has a clear contract.
+- When deciding whether the next step is allowed to proceed.
+- When consolidating evidence before a review or handoff.
 
-- Không định nghĩa lại goal của step.
-- Không thay thế testing chi tiết; audit dùng kết quả verify làm evidence.
-- Không che giấu gaps hoặc tự hợp thức hóa một step chưa đạt.
+## Out Of Scope
 
-## Đầu Vào Tối Thiểu
+- Does not redefine the step's goal.
+- Does not replace detailed testing; the audit uses verification results as evidence.
+- Does not hide gaps or self-legitimize a step that did not pass.
 
-- Step Goal Contract của step hiện tại.
-- Artifact thực tế tạo ra trong step.
-- Log kiểm tra (test, lint, build, encoding) nếu có.
+## Minimum Input
 
-## Đầu Ra Bắt Buộc
+- The Step Goal Contract of the current step.
+- The actual artifact produced in the step.
+- Check logs (test, lint, build, encoding) if any.
 
-Xuất artifact YAML theo schema sau:
+## Required Output
+
+Emit a YAML artifact using the following schema:
 
 ```yaml
 step: ""
@@ -51,60 +54,60 @@ risk_level: LOW|MEDIUM|HIGH
 next_action: ""
 ```
 
-## Ý Nghĩa Từng Output
+## Meaning Of Each Output
 
-- `checks`: kết quả theo từng tiêu chí `done_when`.
-- `constraint_violations`: vi phạm hard constraint nếu có.
-- `unmitigated_high_risks`: rủi ro HIGH chưa có xử lý hợp lệ.
-- `timebox_breach`: step có vượt timebox hay không.
-- `gaps`: phần chưa đạt hoặc chưa có bằng chứng.
-- `risk_level`: mức rủi ro tổng thể sau audit.
-- `next_action`: hành động cần làm trước khi chuyển bước.
+- `checks`: results per `done_when` criterion.
+- `constraint_violations`: hard-constraint violations if any.
+- `unmitigated_high_risks`: HIGH risks without a valid handling plan.
+- `timebox_breach`: whether the step exceeded its timebox.
+- `gaps`: parts not met or without evidence.
+- `risk_level`: the overall risk level after the audit.
+- `next_action`: the action needed before moving to the next step.
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalizing Output In A Workflow Note
 
-Nếu output của skill này được lưu thành note `.md` trong workflow chain:
-- Đặt schema YAML của skill này trong block `## Audit`.
-- Block này thường xuất hiện ở step 3 và step 8 theo template tại `../codex-workflow-chain/references/workflow-chain.md`.
-- Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
-- Kết luận prose `PASS|FAIL|PARTIAL` phải khớp với `status` trong block YAML.
+If this skill's output is saved as a `.md` note in the workflow chain:
+- Place this skill's YAML schema in the `## Audit` block.
+- This block usually appears in step 3 and step 8 per the template in `../codex-workflow-chain/references/workflow-chain.md`.
+- Keep the field names in the schema unchanged; do not rename fields when writing them into the note.
+- The `PASS|FAIL|PARTIAL` prose conclusion must match the `status` in the YAML block.
 
-## Luồng Đánh Giá
+## Evaluation Flow
 
-1. Tải contract và tách danh sách `done_when`.
-2. Ánh xạ từng tiêu chí với bằng chứng thực tế.
-3. Ghi `PASS/FAIL` cho từng tiêu chí.
-4. Đối chiếu `hard_constraints` với bằng chứng để phát hiện vi phạm.
-5. Rà soát rủi ro `severity=HIGH` xem đã có `mitigation` và `owner` thực thi hay chưa.
-6. Kiểm tra vi phạm `timebox` và ghi bằng chứng.
-7. Tổng hợp `gaps`, mức rủi ro và hành động khắc phục.
-8. Kết luận trạng thái tổng thể.
+1. Load the contract and extract the `done_when` list.
+2. Map each criterion to the actual evidence.
+3. Record `PASS/FAIL` for each criterion.
+4. Compare `hard_constraints` against the evidence to detect violations.
+5. Review `severity=HIGH` risks to see whether they have a `mitigation` and an executing `owner`.
+6. Check `timebox` breaches and record evidence.
+7. Consolidate `gaps`, the risk level, and the remediation action.
+8. Conclude the overall status.
 
-## Quy Tắc Chấm Trạng Thái
+## Status Rule
 
-- `PASS` khi:
-  - Tất cả tiêu chí `done_when` bắt buộc đều đạt và có bằng chứng.
-  - Không có `constraint_violations`.
-  - Không còn `unmitigated_high_risks`.
+- `PASS` when:
+  - All mandatory `done_when` criteria are met with evidence.
+  - There are no `constraint_violations`.
+  - No `unmitigated_high_risks` remain.
 
-- `PARTIAL` khi:
-  - Có phần đạt nhưng còn thiếu tiêu chí không nghiêm trọng.
-  - Hoặc có `timebox_breach` đã được giải thích và chấp nhận.
+- `PARTIAL` when:
+  - Part is met but a non-critical criterion is still missing.
+  - Or there is a `timebox_breach` that is explained and accepted.
 
-- `FAIL` khi:
-  - Thiếu tiêu chí bắt buộc.
-  - Có vi phạm `hard_constraints`.
-  - Còn rủi ro `HIGH` chưa có phương án xử lý hợp lệ.
+- `FAIL` when:
+  - A mandatory criterion is missing.
+  - There are `hard_constraints` violations.
+  - A `HIGH` risk still has no valid handling plan.
 
-## Quy Tắc Chất Lượng
+## Quality Rules
 
-- Mặc định báo cáo bằng tiếng Việt.
-- Mọi kết luận phải có evidence, không dùng nhận xét cảm tính.
-- Không gắn `PASS` khi chưa đủ dữ liệu chứng minh.
-- Nếu có check bị skip, phải phản ánh vào `gaps` hoặc `next_action`.
+- Default to writing and communicating in English.
+- Every conclusion must have evidence; do not use subjective impressions.
+- Do not mark `PASS` when there is not enough data to prove it.
+- If a check was skipped, reflect it in `gaps` or `next_action`.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Báo cáo audit đầy đủ theo schema.
-- Trạng thái và bằng chứng rõ ràng, truy vết được.
-- Đã kết luận rõ có được chuyển bước tiếp theo hay không.
+- A complete audit report following the schema.
+- A clear status and evidence, traceable.
+- A clear conclusion on whether the next step is allowed to proceed.

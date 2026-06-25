@@ -1,47 +1,50 @@
 ---
+language: en
 name: database-design
-description: Thiết kế mô hình dữ liệu cho hệ thống backend hoặc service nghiệp vụ. Dùng khi cần chốt entity, table, relationship, ownership, constraint, index, retention, audit và các quyết định schema trung lập ngôn ngữ trước khi chia task hoặc implement.
+description: Design a data model for a backend system or business service. Use when you need to lock entities, tables, relationships, ownership, constraints, indexes, retention, audit, and language-neutral schema decisions before splitting tasks or implementing.
 ---
 
 # Database Design
 
-Thiết kế mô hình dữ liệu và các quyết định schema cốt lõi để hỗ trợ domain, truy vấn chính và vòng đời dữ liệu.
+> Vietnamese: SKILL.vi.md
 
-## Mục Tiêu
+Design the data model and core schema decisions to support the domain, the main queries, and the data lifecycle.
 
-- Chuyển domain model và use case thành mô hình dữ liệu rõ ràng.
-- Chốt table/entity, relationship, ownership và constraint quan trọng.
-- Chốt index cơ bản dựa trên query pattern chính.
-- Thiết kế retention, archive, purge và audit ở mức đủ để implement an toàn.
-- Tạo artifact thiết kế để `task-breakdown-planner`, `implementation` và `database-change-review` dùng tiếp.
+## Goal
 
-## Khi Sử Dụng
+- Turn the domain model and use cases into a clear data model.
+- Lock tables/entities, relationships, ownership, and important constraints.
+- Lock basic indexes based on the main query patterns.
+- Design retention, archive, purge, and audit at a level sufficient to implement safely.
+- Produce a design artifact for `task-breakdown-planner`, `implementation`, and `database-change-review` to use next.
 
-- Khi feature mới thêm dữ liệu mới hoặc thay đổi dữ liệu hiện có.
-- Khi cần thiết kế schema cho service, module hoặc bounded context mới.
-- Khi phải quyết định ownership dữ liệu, read/write pattern hoặc vòng đời dữ liệu.
-- Khi có nguy cơ lệch giữa business invariant và schema hiện tại.
+## When To Use
 
-## Không Thuộc Phạm Vi
+- When a new feature adds new data or changes existing data.
+- When you need to design a schema for a new service, module, or bounded context.
+- When you must decide data ownership, read/write patterns, or the data lifecycle.
+- When there is a risk of drift between a business invariant and the current schema.
 
-- Không viết migration cụ thể hoặc kế hoạch rollout chi tiết.
-- Không review an toàn triển khai của migration trên môi trường thật.
-- Không tối ưu truy vấn ở mức benchmark chi tiết sau khi code đã chạy.
-- Không ràng buộc vào ORM, framework hay ngôn ngữ cụ thể.
+## Out Of Scope
 
-## Đầu Vào Tối Thiểu
+- Does not write a concrete migration or a detailed rollout plan.
+- Does not review the safety of running a migration on a real environment.
+- Does not do detailed benchmark-level query optimization after the code is running.
+- Does not bind to a specific ORM, framework, or language.
 
-- `business_goal`: mục tiêu business của feature hoặc domain change.
-- `acceptance_criteria`: tiêu chí chức năng và dữ liệu cần đáp ứng.
-- `domain_modules`: module hoặc bounded context liên quan.
-- `query_patterns`: các luồng đọc/ghi chính, filter, sort, join hoặc report quan trọng.
-- `data_constraints`: yêu cầu về uniqueness, integrity, compliance, retention, audit.
+## Minimum Input
 
-Nếu chưa có `query_patterns` hoặc chưa xác định rõ ownership dữ liệu, dừng và yêu cầu làm rõ.
+- `business_goal`: the business goal of the feature or domain change.
+- `acceptance_criteria`: the functional and data criteria to meet.
+- `domain_modules`: the modules or bounded contexts involved.
+- `query_patterns`: the main read/write flows, filters, sorts, joins, or important reports.
+- `data_constraints`: requirements for uniqueness, integrity, compliance, retention, audit.
 
-## Đầu Ra Bắt Buộc
+If `query_patterns` are missing or data ownership is not clear, stop and ask for clarification.
 
-Xuất artifact YAML theo schema sau:
+## Required Output
+
+Emit a YAML artifact using the following schema:
 
 ```yaml
 data_model:
@@ -79,57 +82,57 @@ design_risks: []
 notes_for_next_step: ""
 ```
 
-## Ý Nghĩa Từng Output
+## Meaning Of Each Output
 
-- `data_model`: mô hình khái niệm giữa entity, aggregate và trách nhiệm dữ liệu.
-- `tables`: danh sách bảng hoặc logical store cần có cùng owner cụ thể.
-- `relationships`: quan hệ dữ liệu và quy tắc ownership giữa các bảng.
-- `constraints`: các ràng buộc integrity cần được enforce.
-- `indexes`: index cơ bản gắn với query pattern thực tế.
-- `read_write_patterns`: khác biệt giữa luồng ghi và luồng đọc để tránh schema lệch mục đích.
-- `retention_rules`: thời gian giữ dữ liệu, archive và purge theo loại dữ liệu.
-- `audit_rules`: lịch sử thay đổi, log nghiệp vụ hoặc yêu cầu truy vết.
-- `design_risks`: các rủi ro về scale, consistency, coupling hoặc retention.
-- `notes_for_next_step`: ghi chú để chia task hoặc review thay đổi dữ liệu.
+- `data_model`: the conceptual model across entities, aggregates, and data responsibilities.
+- `tables`: the list of tables or logical stores needed, each with a concrete owner.
+- `relationships`: data relationships and ownership rules between tables.
+- `constraints`: the integrity constraints to enforce.
+- `indexes`: basic indexes tied to actual query patterns.
+- `read_write_patterns`: the difference between write flows and read flows to avoid a schema that drifts from its purpose.
+- `retention_rules`: how long data is kept, archived, and purged by data class.
+- `audit_rules`: change history, business logs, or traceability requirements.
+- `design_risks`: risks around scale, consistency, coupling, or retention.
+- `notes_for_next_step`: notes for splitting tasks or reviewing the data change.
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalizing Output In A Workflow Note
 
-Nếu output của skill này được lưu thành note `.md` trong workflow chain:
-- Dùng template step 5 tại `../codex-workflow-chain/references/workflow-chain.md`.
-- Đặt schema YAML của skill này trong block `## Architecture Details`.
-- Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
-- Chỉ ghi block này khi bài toán thực sự cần khóa schema, ownership, relation, retention hoặc audit rule.
+If this skill's output is saved as a `.md` note in the workflow chain:
+- Use the step 5 template in `../codex-workflow-chain/references/workflow-chain.md`.
+- Place this skill's YAML schema in the `## Architecture Details` block.
+- Keep the field names in the schema unchanged; do not rename fields when writing them into the note.
+- Only write this block when the problem truly needs to lock schema, ownership, relation, retention, or audit rules.
 
-## Luồng Thực Thi
+## Execution Flow
 
-1. Xác định entity, aggregate và ownership từ domain boundary đã chốt.
-2. Liệt kê query pattern chính cho write, read và reporting.
-3. Thiết kế `tables` và `relationships` theo domain và ownership.
-4. Chốt `constraints` để bảo vệ invariant ở mức database khi phù hợp.
-5. Chọn `indexes` tối thiểu theo query pattern quan trọng nhất.
-6. Thiết kế `retention_rules` và `audit_rules` cho vòng đời dữ liệu.
-7. Ghi `design_risks` cho các điểm có thể ảnh hưởng scale, consistency hoặc migration.
+1. Identify entities, aggregates, and ownership from the locked domain boundary.
+2. List the main query patterns for write, read, and reporting.
+3. Design `tables` and `relationships` from the domain and ownership.
+4. Lock `constraints` to protect invariants at the database level when appropriate.
+5. Choose the minimum `indexes` for the most important query patterns.
+6. Design `retention_rules` and `audit_rules` for the data lifecycle.
+7. Record `design_risks` for points that may affect scale, consistency, or migration.
 
-## Quy Tắc Chất Lượng
+## Quality Rules
 
-- Mỗi bảng phải có owner rõ trong `owner_module`.
-- Không thiết kế quan hệ chéo domain vô tội vạ chỉ để tiện join.
-- Không thêm index nếu không gắn với query pattern cụ thể.
-- Không coi retention là việc xử lý sau; phải chốt ngay trong design nếu dữ liệu có vòng đời rõ.
-- Nếu business invariant quan trọng, phải nêu rõ enforce ở domain, database hay cả hai.
-- Tài liệu phải lưu UTF-8 và giữ nguyên tiếng Việt có dấu.
+- Each table must have a clear owner in `owner_module`.
+- Do not design cross-domain relationships indiscriminately just for convenient joins.
+- Do not add an index unless it is tied to a concrete query pattern.
+- Do not treat retention as an afterthought; lock it in the design if the data has a clear lifecycle.
+- If a business invariant is important, state clearly whether it is enforced at the domain, the database, or both.
+- Store documents as UTF-8 and preserve accented characters in `*.vi.md` supplement files.
 
-## Luật Ra Quyết Định
+## Decision Rule
 
-- Ưu tiên ownership theo domain/module trước khi tối ưu theo technical convenience.
-- Giữ transaction boundary càng gần aggregate càng tốt.
-- Nếu write model và read model có mục tiêu khác nhau rõ rệt, ghi rõ trong `read_write_patterns` thay vì ép vào một schema mơ hồ.
-- Nếu dữ liệu cần purge hoặc archive theo compliance, bắt buộc có `retention_rules`.
-- Nếu rủi ro performance chưa chắc chắn, ghi vào `design_risks` để chuyển sang `database-change-review` hoặc `query-performance` ở bước verify.
+- Prefer ownership by domain/module before optimizing for technical convenience.
+- Keep the transaction boundary as close to the aggregate as possible.
+- If the write model and read model have clearly different goals, record it in `read_write_patterns` instead of forcing one vague schema.
+- If data must be purged or archived for compliance, `retention_rules` are mandatory.
+- If a performance risk is uncertain, record it in `design_risks` to pass to `database-change-review` or `query-performance` at the verify step.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Có `tables`, `relationships`, `constraints` và `indexes` ở mức đủ để implement.
-- Có `owner_module` cho từng bảng hoặc logical store chính.
-- Có `retention_rules` và `audit_rules` nếu dữ liệu không phải dạng ephemeral.
-- Có `design_risks` và `notes_for_next_step` đủ để chia task hoặc review rollout.
+- `tables`, `relationships`, `constraints`, and `indexes` at a level sufficient to implement.
+- An `owner_module` for each main table or logical store.
+- `retention_rules` and `audit_rules` if the data is not ephemeral.
+- `design_risks` and `notes_for_next_step` clear enough to split tasks or review rollout.

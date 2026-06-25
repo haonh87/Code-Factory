@@ -15,5 +15,5 @@ task_status:
   - "TASK-002: DONE"
   - "TASK-003: DONE"
 blocking_items: []
-next_action: "chờ archive sau business acceptance"
+next_action: "wait for archive after business acceptance"
 ```

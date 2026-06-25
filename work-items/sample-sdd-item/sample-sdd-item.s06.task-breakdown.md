@@ -67,7 +67,7 @@ tags:
 # Step 6 - Task Plan
 
 > [!summary]
-> Tóm tắt task plan, dependency, verify checkpoints và review checkpoints.
+> Summarize the task plan, dependencies, verify checkpoints and review checkpoints.
 
 ## Step Contract
 ```yaml
@@ -78,32 +78,32 @@ done_when: []
 owner: ""
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 tasks:
-  - "TASK-001: thêm workspace filter vào request parsing và query path"
-  - "TASK-002: giữ backward compatibility khi filter trống"
-  - "TASK-003: thêm test và evidence cho invalid workspace path"
+  - "TASK-001: add the workspace filter to request parsing and the query path"
+  - "TASK-002: keep backward compatibility when the filter is empty"
+  - "TASK-003: add tests and evidence for an invalid workspace path"
 dependencies:
   - "SRS frozen"
 handoff_points:
-  - "developer -> qc sau khi xong TASK-001 và TASK-002"
+  - "developer -> qc after TASK-001 and TASK-002 are done"
 ```
 
 ## Verification Plan
-- Check bắt buộc: verify AC-001 tới AC-004.
-- Risk note: path normalize sai có thể làm miss kết quả.
-- Rollout note nếu có: không có migration hoặc promotion guard đặc biệt.
+- Mandatory check: verify AC-001 through AC-004.
+- Risk note: a wrong path normalization can cause missed results.
+- Rollout note if any: no special migration or promotion guard.
 
 ## Governance Checks
 ```yaml
 checklist_applied:
   - "project-context/checklists/default.md"
 checks:
-  - "task plan đã cover build, verify và compatibility check"
+  - "the task plan covers build, verify and the compatibility check"
 blocking_items: []
 owner: "developer"
-next_action: "thực hiện TASK-001 tới TASK-003"
+next_action: "execute TASK-001 through TASK-003"
 ```
 
 ## SDD Traceability
@@ -122,6 +122,6 @@ next_step: "sample-sdd-item.s07.implementation.md"
 ```
 
 ## Handoff
-- Task thực hiện trước: TASK-001 rồi TASK-002 và TASK-003.
-- Phụ thuộc chặn: SRS phải giữ frozen.
-- Điều kiện sang step 7: code change và test hook đủ cho verify.
+- Tasks to do first: TASK-001, then TASK-002 and TASK-003.
+- Blocking dependencies: the SRS must stay frozen.
+- Conditions to move to step 7: the code change and test hook are enough for verify.

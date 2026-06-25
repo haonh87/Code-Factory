@@ -1,10 +1,16 @@
+---
+language: en
+---
+
 # Workflow Docs Map
 
-Tài liệu này tách rõ đâu là public onboarding path của `workflow-bundle v2.1.1`, đâu là deep-dive docs, và đâu là maintainer context.
+> Vietnamese: workflow-docs-map.vi.md
+
+This document separates the public onboarding path of `workflow-bundle v2.1.1` from the deep-dive docs and the maintainer context.
 
 ## Public Onboarding Docs
 
-Đây là bộ nên đọc khi muốn bắt đầu đúng public release `v2.1.1`.
+This is the set to read when starting with the `v2.1.1` public release.
 
 1. [`../README.md`](../README.md)
 2. [`publish-surface.md`](publish-surface.md)
@@ -13,18 +19,18 @@ Tài liệu này tách rõ đâu là public onboarding path của `workflow-bund
 5. [`../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`](../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
 6. [`../skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](../skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
 
-Quy tắc đọc:
+Reading guide:
 
-- `README` trả lời repo này là gì và public promise của `v2.1.1` là gì.
-- `publish-surface` chốt tag hoặc branch canonical và system requirements.
-- `quickstart` trả lời cài `wfc`, cài workflow bundle, init repo và chạy flow đầu tiên như thế nào.
-- package `README` trả lời install, upgrade, command overview và publish mechanics ở mức package.
-- `workflow-overview-author-edition` giải thích workflow ở góc nhìn delivery.
-- `workflow-chain` là contract và naming source-of-truth.
+- `README` answers what this repo is and what the public promise of `v2.1.1` is.
+- `publish-surface` pins the canonical tag or branch and the system requirements.
+- `quickstart` answers how to install `wfc`, install the workflow bundle, init a repo, and run the first flow.
+- the package `README` covers install, upgrade, command overview, and publish mechanics at the package level.
+- `workflow-overview-author-edition` explains the workflow from a delivery perspective.
+- `workflow-chain` is the contract and naming source-of-truth.
 
 ## Public Deep-Dive Docs
 
-Các tài liệu dưới đây vẫn thuộc public surface, nhưng chỉ cần đọc khi đi sâu vào một capability cụ thể:
+The documents below are still part of the public surface, but are only needed when going deeper into a specific capability:
 
 - [`../skills/orchestration/codex-workflow-chain/references/execution-runtime.md`](../skills/orchestration/codex-workflow-chain/references/execution-runtime.md)
 - [`../skills/orchestration/codex-workflow-chain/references/adaptive-planning.md`](../skills/orchestration/codex-workflow-chain/references/adaptive-planning.md)
@@ -35,20 +41,20 @@ Các tài liệu dưới đây vẫn thuộc public surface, nhưng chỉ cần 
 - [`../skills/orchestration/codex-workflow-chain/references/work-item-protocol.md`](../skills/orchestration/codex-workflow-chain/references/work-item-protocol.md)
 - [`../skills/orchestration/codex-workflow-chain/references/spec-driven-development.md`](../skills/orchestration/codex-workflow-chain/references/spec-driven-development.md)
 
-Quy tắc đọc:
+Reading guide:
 
-- `execution-runtime` chỉ cần khi work item dùng execution metadata hoặc artifacts.
-- `adaptive-planning` chỉ cần khi dùng planning track ngoài flow quick mặc định.
-- `workflow-keywords-glossary` là chỗ tra cứu ngữ nghĩa các keyword chính của workflow, gate, execution và SDD.
-- `workflow-human-review-gates` là bản tóm tắt gate nào bắt buộc human phải review/pass và flow AI-human khuyến nghị.
-- `workflow-rule-checklist-alignment` là bản audit ngữ nghĩa xem rule, checklist, gate và validator đang bổ trợ nhau ra sao, kèm flowchart và residual gaps.
-- `work-item-materialization` và `work-item-protocol` là deep dive cho `agent proposes, human approves`.
-- `spec-driven-development` chỉ cần khi repo dùng `BRD` hoặc `SRS` làm source-of-truth chính.
-- comparative hoặc hybrid policy không thuộc public deep-dive trừ khi được promote rõ vào publish surface.
+- `execution-runtime` is only needed when a work item uses execution metadata or artifacts.
+- `adaptive-planning` is only needed when using a planning track other than the default quick flow.
+- `workflow-keywords-glossary` is the reference for the semantics of the main workflow, gate, execution, and SDD keywords.
+- `workflow-human-review-gates` is a summary of which gates require human review/pass and the recommended AI-human flow.
+- `workflow-rule-checklist-alignment` is a semantic audit of how rules, checklists, gates, and validators support each other, with a flowchart and residual gaps.
+- `work-item-materialization` and `work-item-protocol` are deep dives for `agent proposes, human approves`.
+- `spec-driven-development` is only needed when the repo uses `BRD` or `SRS` as the primary source-of-truth.
+- comparative or hybrid policies are not public deep-dive unless explicitly promoted into the publish surface.
 
 ## Maintainer And Historical Docs
 
-Các tài liệu dưới đây thiên về mechanics, rollout, history hoặc roadmap:
+The documents below are oriented toward mechanics, rollout, history, or roadmap:
 
 - [`../skills/orchestration/workflow-governance-router/SKILL.md`](../skills/orchestration/workflow-governance-router/SKILL.md)
 - [`../skills/orchestration/codex-workflow-chain/references/workflow-overview.md`](../skills/orchestration/codex-workflow-chain/references/workflow-overview.md)
@@ -63,15 +69,15 @@ Các tài liệu dưới đây thiên về mechanics, rollout, history hoặc ro
 - [`../memory-bank/activeContext.md`](../memory-bank/activeContext.md)
 - [`../memory-bank/progress.md`](../memory-bank/progress.md)
 
-Quy tắc đọc:
+Reading guide:
 
-- `workflow-governance-router` là entrypoint meta-skill của mô hình prompt nhiều khối; nó chốt current step, delivery context và missing gates trước khi step skill chạy.
-- `hybrid-superpowers-policy` là policy tham chiếu nội bộ cho mô hình hybrid giữa backbone workflow của repo và execution discipline từ Superpowers.
-- `hybrid-superpowers-decision-matrix` là cheat sheet để quyết định nhanh khi nào bật `TDD`, `worktree`, `subagent` và `review mode`.
+- `workflow-governance-router` is the meta-skill entrypoint of the multi-block prompt model; it pins the current step, delivery context, and missing gates before step skills run.
+- `hybrid-superpowers-policy` is the internal reference policy for the hybrid model between the repo workflow backbone and the execution discipline from Superpowers.
+- `hybrid-superpowers-decision-matrix` is a cheat sheet for deciding quickly when to enable `TDD`, `worktree`, `subagent`, and `review mode`.
 
 ## Excluded Working Assets
 
-Các file dưới đây không thuộc public docs surface và được xem là working files cục bộ:
+The files below are not part of the public docs surface and are treated as local working files:
 
 - `.obsidian/`
 - `docs/workflow-process.canvas`
@@ -79,18 +85,18 @@ Các file dưới đây không thuộc public docs surface và được xem là 
 - `docs/workflow-work-items.canvas.png`
 - `docs/workflow-work-items.png`
 
-Quy tắc:
+Rules:
 
-- không dùng các file này làm source-of-truth cho workflow
-- không trỏ onboarding public tới các file này
-- nếu cần publish diagram thật, tạo bản docs canonical riêng rồi link từ `README` hoặc docs map
+- do not use these files as the source-of-truth for the workflow
+- do not point public onboarding at these files
+- if a real diagram must be published, create a separate canonical docs version and link it from `README` or the docs map
 
 ## Vocabulary
 
-Khi viết docs:
+When writing docs:
 
-- dùng `workflow bundle` làm tên artifact publishable
-- dùng `agent proposes, human approves` khi mô tả governance model
-- dùng `scaffold` cho việc sinh note hoặc package từ CLI
-- dùng `materialize` cho bước chuyển raw request thành work item candidate
-- nếu cần giải thích keyword theo ngữ cảnh workflow, ưu tiên link `workflow-keywords-glossary.md` thay vì giải thích lại theo nhiều biến thể
+- use `workflow bundle` as the publishable artifact name
+- use `agent proposes, human approves` when describing the governance model
+- use `scaffold` for generating a note or package from the CLI
+- use `materialize` for the step that turns a raw request into a work item candidate
+- if a keyword needs to be explained in the workflow context, prefer linking `workflow-keywords-glossary.md` over re-explaining it in many variants

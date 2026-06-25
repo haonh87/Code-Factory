@@ -1,89 +1,95 @@
+---
+language: en
+---
+
 # Work Item Materialization
 
-Lưu ý versioning:
+> Vietnamese: work-item-materialization.vi.md
 
-- tài liệu này thuộc lớp mở rộng `post-v1`
-- `baseline v1` không yêu cầu `Work Item Materialization`
-- trong `baseline v1`, human hoặc coordinator chốt `work_item_slug` thủ công trước khi scaffold
-- ranh giới version chính thức nằm ở `workflow-versioning.md`
+Versioning notes:
 
-Tài liệu này materialize lớp authoring nằm trước `scaffold`.
+- this document belongs to the `post-v1` extension layer
+- `baseline v1` does not require `Work Item Materialization`
+- in `baseline v1`, the human or coordinator pins the `work_item_slug` manually before scaffolding
+- the official version boundary lives in `workflow-versioning.md`
 
-Nó trả lời 4 câu hỏi mà repo hiện đã giả định nhưng chưa khóa thành protocol riêng:
+This document materializes the authoring layer that sits before `scaffold`.
 
-- raw request này có nên tạo `work item` mới không
-- nếu có thì là 1 item hay nhiều item
-- `work_item_slug` nên là gì
-- có cần `change layer` hay không, và nếu cần thì `reuse` hay `create-new`
+It answers four questions that the repo currently assumes but has not yet locked into a dedicated protocol:
 
-Thời điểm đối chiếu: `2026-04-14`.
+- whether this raw request should create a new `work item`
+- if yes, whether it is one item or multiple items
+- what the `work_item_slug` should be
+- whether a `change layer` is needed, and if so, whether to `reuse` or `create-new`
 
-## Mục Tiêu
+Cross-reference date: `2026-04-14`.
 
-`Work Item Materialization` là bước chuyển từ yêu cầu thô sang quyết định authoring có thể thi hành.
+## Goal
 
-Kết quả của bước này phải đủ để:
+`Work Item Materialization` is the step that turns a raw request into an actionable authoring decision.
 
-- gọi `wfc scaffold --work-item <work_item_slug>` hoặc alias repo-local `npm run scaffold:workflow -- --work-item <work_item_slug>`
-- quyết định có cần `wfc scaffold-change --change-id <CHANGE-ID> --work-item <work_item_slug>` hoặc alias repo-local `npm run scaffold:change -- --change-id <CHANGE-ID> --work-item <work_item_slug>` hay không
-- cho phép human hoặc agentic runtime tạo artifact mới mà không trùng scope, trùng slug hoặc gắn sai `change_id`
+The output of this step must be enough to:
 
-Lifecycle sau khi quyết định materialization đã được chốt được mô tả tiếp ở `work-item-protocol.md`.
+- call `wfc scaffold --work-item <work_item_slug>` or the repo-local alias `npm run scaffold:workflow -- --work-item <work_item_slug>`
+- decide whether `wfc scaffold-change --change-id <CHANGE-ID> --work-item <work_item_slug>` or the repo-local alias `npm run scaffold:change -- --change-id <CHANGE-ID> --work-item <work_item_slug>` is needed
+- let the human or agentic runtime create new artifacts without duplicating scope, duplicating slugs, or attaching the wrong `change_id`
 
-Tài liệu này không thay `s01 Clarify`.
+The lifecycle after the materialization decision is pinned is described further in `work-item-protocol.md`.
 
-- `Materialization` chốt đơn vị authoring và naming.
-- `s01 Clarify` chốt bản hiểu chung, scope draft và governance context bên trong work item đã được materialize.
+This document does not replace `s01 Clarify`.
 
-## Phạm Vi
+- `Materialization` pins the authoring unit and naming.
+- `s01 Clarify` pins the shared understanding, scope draft, and governance context inside the work item that has been materialized.
 
-Áp dụng khi:
+## Scope
 
-- nhận user request, ticket, incident, bug report, change request hoặc initiative mới
-- cần quyết định có scaffold work item mới không
-- cần nối workflow backbone với `changes/`
-- muốn tăng autonomy cho `agentic` trước khi cho agent tự scaffold
+Apply when:
 
-Không áp dụng khi:
+- receiving a user request, ticket, incident, bug report, change request, or new initiative
+- needing to decide whether to scaffold a new work item
+- needing to connect the workflow backbone to `changes/`
+- wanting to increase autonomy for `agentic` before letting the agent scaffold on its own
 
-- chỉ cập nhật nội dung cho work item đã tồn tại và scope không đổi
-- chỉ chạy lại validator hoặc sửa artifact naming
-- chỉ thêm note phụ không thuộc workflow backbone
+Do not apply when:
 
-## Kết Quả Bắt Buộc
+- only updating content for an existing work item whose scope is unchanged
+- only rerunning the validator or fixing artifact naming
+- only adding a side note that is not part of the workflow backbone
 
-Một lần materialization phải trả lời rõ:
+## Required Output
 
-1. `single`, `split` hay `defer`
-2. `work_item_type` là gì
-3. `work_item_slug` là gì
-4. có conflict với `work-items/` hoặc `changes/` hiện có không
-5. `change_strategy` là `none`, `reuse_existing` hay `create_new`
-6. có được phép auto-scaffold hay cần human confirm
+One pass of materialization must clearly answer:
 
-## Input Tối Thiểu
+1. `single`, `split`, or `defer`
+2. what `work_item_type` is
+3. what `work_item_slug` is
+4. whether there is a conflict with existing `work-items/` or `changes/`
+5. whether `change_strategy` is `none`, `reuse_existing`, or `create_new`
+6. whether auto-scaffold is allowed or human confirmation is needed
 
-### Bắt Buộc
+## Minimum Input
 
-- `raw_request`: mô tả yêu cầu thô
-- `request_source`: user chat, ticket, incident, change request hoặc doc ref
-- `project_context_ref`: tối thiểu `project-context/project-context.md`
-- `existing_work_items`: danh sách hoặc kết quả search trong `work-items/`
-- `existing_changes`: danh sách hoặc kết quả search trong `changes/`
+### Required
 
-### Khuyến Nghị
+- `raw_request`: the raw request description
+- `request_source`: user chat, ticket, incident, change request, or doc ref
+- `project_context_ref`: at minimum `project-context/project-context.md`
+- `existing_work_items`: a list or search result inside `work-items/`
+- `existing_changes`: a list or search result inside `changes/`
 
-- `product_spec_refs`: `BRD/SRS` liên quan nếu đã có
-- `release_context`: release window hoặc initiative hiện tại nếu có
-- `governance_profile_hint`: `default|strict|regulated|custom` nếu đã biết
-- `owner_hint`: role hoặc team sẽ dẫn dắt
-- `environment_scope`: web, mobile, backend, data, runtime nếu đã rõ
+### Recommended
 
-Nếu thiếu `raw_request`, `existing_work_items` hoặc `existing_changes`, không được kết luận `READY`.
+- `product_spec_refs`: related `BRD/SRS` if already present
+- `release_context`: current release window or initiative if any
+- `governance_profile_hint`: `default|strict|regulated|custom` if already known
+- `owner_hint`: the role or team that will lead
+- `environment_scope`: web, mobile, backend, data, runtime if already clear
+
+If `raw_request`, `existing_work_items`, or `existing_changes` is missing, you must not conclude `READY`.
 
 ## Output Contract
 
-Output chuẩn của bước này nên được giữ dưới dạng `materialization report` logic, dù runtime có lưu thành artifact riêng hay nhúng vào `s01`.
+The standard output of this step should be kept as a logical `materialization report`, whether the runtime persists it as a separate artifact or embeds it into `s01`.
 
 ```yaml
 materialization_status: PROPOSED|READY|BLOCKED
@@ -121,129 +127,129 @@ bootstrap_reviewed_by: ""
 bootstrap_reviewed_at: ""
 ```
 
-Ghi chú:
+Notes:
 
-- `decision_owner` là owner của quyết định materialization do runtime tạo ra, không phải human approval authority.
-- Với baseline hiện tại, `decision_owner` hợp lệ là `agent` hoặc `coordinator`; human approval được ghi ở gate review riêng.
-- `delivery_context` phải explicit để protocol chọn đúng gate `greenfield` hoặc `brownfield`.
-- `bootstrap_*` chỉ dùng khi work item thuộc `greenfield`; đây là gate cấp project trước khi mở implementation path đầu tiên.
+- `decision_owner` is the owner of the materialization decision produced by the runtime, not the human approval authority.
+- For the current baseline, valid `decision_owner` values are `agent` or `coordinator`; human approval is recorded in a separate gate review.
+- `delivery_context` must be explicit so the protocol can pick the right `greenfield` or `brownfield` gate.
+- `bootstrap_*` is only used when the work item is `greenfield`; this is a project-level gate before opening the first implementation path.
 
-## Luồng Quyết Định Chuẩn
+## Standard Decision Flow
 
-### Bước 1. Chuẩn Hóa Request
+### Step 1. Normalize The Request
 
-Rút từ yêu cầu thô ra tối thiểu:
+Extract from the raw request at minimum:
 
-- vấn đề hoặc nhu cầu chính
-- outcome mong muốn
-- actor hoặc bối cảnh sử dụng
-- constraint đã biết
-- tín hiệu về urgency, release hoặc governance
+- the main problem or need
+- the desired outcome
+- the actor or usage context
+- known constraints
+- signals about urgency, release, or governance
 
-Nếu raw request chỉ là một chủ đề quá rộng như `làm auth`, `nâng cấp billing`, `làm dashboard`, kết quả mặc định là `PROPOSED` hoặc `BLOCKED`, không auto-scaffold ngay.
+If the raw request is only a very broad topic such as `do auth`, `upgrade billing`, `build dashboard`, the default result is `PROPOSED` or `BLOCKED`, not auto-scaffold immediately.
 
-### Bước 2. Chốt Boundary Của Work Item
+### Step 2. Pin The Work Item Boundary
 
-Một request được coi là đủ tốt cho **một** work item khi đồng thời có:
+A request is considered good enough for **one** work item when it simultaneously has:
 
-- một primary outcome đủ rõ
-- một acceptance envelope tương đối thống nhất
-- một ownership boundary chính
-- một planning track hợp lý cho toàn bộ scope
-- một nhịp change/release đủ thống nhất
+- one clear primary outcome
+- a relatively unified acceptance envelope
+- one main ownership boundary
+- one planning track that fits the whole scope
+- a unified change/release cadence
 
-Nếu một request chứa nhiều outcome độc lập, phải `split`.
+If a request contains multiple independent outcomes, you must `split`.
 
-### Bước 3. Chọn `work_item_type`
+### Step 3. Choose `work_item_type`
 
-Dùng rule ưu tiên sau:
+Use the following priority rule:
 
-- `BUG`: khôi phục behavior đúng, không chủ đích thay outcome sản phẩm
-- `FEATURE`: thêm capability mới cho user hoặc operator
-- `CHANGE`: thay đổi có lifecycle rollout/change management rõ, thường chạm dữ liệu, contract, migration, cutover hoặc release control
-- `REFACTOR`: cải tổ cấu trúc kỹ thuật nhưng giữ `behavioral_invariants`
-- `RESEARCH`: khám phá, so sánh, spike, chưa cam kết implementation path ngay
+- `BUG`: restore correct behavior, not intentionally changing the product outcome
+- `FEATURE`: add a new capability for users or operators
+- `CHANGE`: a change with a clear rollout/change-management lifecycle, usually touching data, contracts, migration, cutover, or release control
+- `REFACTOR`: restructure the technical design while preserving `behavioral_invariants`
+- `RESEARCH`: exploration, comparison, spike, not yet committing to an implementation path
 
-Nếu request vừa có research vừa có implementation, mặc định tách:
+If a request has both research and implementation, default to splitting:
 
-- `research-...` cho discovery
-- work item implementation riêng khi scope đã rõ
+- `research-...` for discovery
+- a separate implementation work item once the scope is clear
 
-### Bước 4. Sinh `work_item_slug`
+### Step 4. Generate `work_item_slug`
 
-Sinh slug từ đơn vị delivery đã chốt, không sinh trực tiếp từ câu người dùng theo kiểu máy móc.
+Generate the slug from the pinned delivery unit, not mechanically from the user's sentence.
 
-### Bước 5. Kiểm Tra Trùng Và Collision
+### Step 5. Check For Duplication And Collision
 
-Phải search tối thiểu:
+You must search at minimum:
 
 - `work-items/<slug>/`
-- các work item có từ khóa gần nghĩa
-- `changes/` đang active có `linked_work_items` hoặc scope gần trùng
+- work items with near-synonym keywords
+- active `changes/` that have `linked_work_items` or a closely matching scope
 
-### Bước 6. Quyết Định `change_strategy`
+### Step 6. Decide `change_strategy`
 
-Kết luận một trong ba giá trị:
+Conclude one of three values:
 
 - `none`
 - `reuse_existing`
 - `create_new`
 
-### Bước 7. Chốt Authority
+### Step 7. Pin Authority
 
-Kết luận:
+Conclude:
 
-- `READY`: được scaffold tự động
-- `PROPOSED`: đã có candidate nhưng cần human confirm hoặc clarify thêm
-- `BLOCKED`: chưa đủ input để tạo artifact mới an toàn
+- `READY`: may scaffold automatically
+- `PROPOSED`: there is a candidate but human confirmation or further clarification is needed
+- `BLOCKED`: not enough input to create a new artifact safely
 
-## Rule Chốt Một Hay Nhiều Work Item
+## Rule For One Or Many Work Items
 
-### Giữ Một Work Item Khi
+### Keep One Work Item When
 
-- chỉ có một outcome chính mà stakeholder sẽ nhìn như một kết quả hoàn chỉnh
-- acceptance criteria dự kiến vẫn cùng một nhóm
-- cùng một `planning_track`
-- cùng một `governance_profile` hoặc chênh lệch không đáng kể
-- cùng một release/change cadence
+- there is only one main outcome that a stakeholder will see as a complete result
+- the expected acceptance criteria still belong to one group
+- the same `planning_track`
+- the same `governance_profile` or an insignificant difference
+- the same release/change cadence
 
-### Bắt Buộc Tách Nhiều Work Item Khi
+### Must Split Into Multiple Work Items When
 
-- có hơn một outcome business độc lập
-- một phần là `RESEARCH`, phần còn lại là implementation
-- một phần có thể ship độc lập, phần còn lại phải chờ design/spec/change riêng
-- governance profile khác nhau rõ rệt
-- một phần chỉ là bug fix nhanh, phần còn lại là initiative lớn
-- một phần cần `change layer`, phần còn lại không cần
+- there is more than one independent business outcome
+- one part is `RESEARCH`, the rest is implementation
+- one part can ship independently, the rest must wait for separate design/spec/change
+- the governance profiles clearly differ
+- one part is only a quick bug fix, the rest is a large initiative
+- one part needs a `change layer`, the rest does not
 
-### Không Tách Chỉ Vì
+### Do Not Split Just Because
 
-- chạm nhiều file
-- chạm frontend và backend nhưng vẫn phục vụ một outcome duy nhất
-- có nhiều task kỹ thuật nhưng cùng một acceptance envelope
+- it touches many files
+- it touches frontend and backend but still serves one outcome
+- there are many technical tasks but the same acceptance envelope
 
-## Rule Sinh `work_item_slug`
+## Rule For Generating `work_item_slug`
 
-### Mục Tiêu Của Slug
+### Goal Of The Slug
 
-Slug phải:
+The slug must:
 
-- ổn định trong suốt `s01 -> s08`
-- phản ánh outcome hoặc change intent chính
-- đọc được bởi human
-- suy ra được artifact path và search query một cách dễ dàng
+- be stable throughout `s01 -> s08`
+- reflect the main outcome or change intent
+- be readable by humans
+- easily derive artifact paths and search queries
 
-### Pattern Bắt Buộc
+### Required Pattern
 
 - `kebab-case`
-- chỉ gồm `[a-z0-9-]`
-- tương thích regex hiện tại của tooling
+- only `[a-z0-9-]`
+- compatible with the current tooling regex
 
-### Dạng Đặt Tên Khuyến Nghị
+### Recommended Naming Shape
 
-Ưu tiên `verb-object` hoặc `verb-domain-object`.
+Prefer `verb-object` or `verb-domain-object`.
 
-Ví dụ tốt:
+Good examples:
 
 - `user-login`
 - `fix-login-timeout`
@@ -252,7 +258,7 @@ Ví dụ tốt:
 - `refactor-auth-session-store`
 - `research-oauth-provider-options`
 
-Ví dụ xấu:
+Bad examples:
 
 - `task-123`
 - `new-feature`
@@ -260,227 +266,227 @@ Ví dụ xấu:
 - `auth-v2`
 - `issue-fix`
 
-### Rule Chi Tiết
+### Detailed Rules
 
-- ưu tiên 2-6 token
-- giữ domain noun quan trọng như `login`, `oauth`, `customer`, `session`, `billing`
-- nếu cần phân biệt boundary, thêm qualifier có nghĩa như `web`, `api`, `mobile`, `migration`
-- tránh token rỗng ý nghĩa như `task`, `feature`, `issue`, `ticket`, `new`, `final`, `v2`
-- không dùng tên step hoặc tên artifact như `clarify`, `design`, `implementation`
-- không encode chi tiết tạm thời hoặc solution quá hẹp nếu scope business rộng hơn
+- prefer 2-6 tokens
+- keep the important domain noun such as `login`, `oauth`, `customer`, `session`, `billing`
+- if you need to distinguish a boundary, add a meaningful qualifier such as `web`, `api`, `mobile`, `migration`
+- avoid empty-meaning tokens such as `task`, `feature`, `issue`, `ticket`, `new`, `final`, `v2`
+- do not use step names or artifact names such as `clarify`, `design`, `implementation`
+- do not encode temporary detail or an overly narrow solution if the business scope is wider
 
-### Rule Theo `work_item_type`
+### Rule By `work_item_type`
 
-- `FEATURE`: ưu tiên `add-`, `enable-`, `support-`, hoặc noun-based outcome nếu tự nhiên hơn như `user-login`
-- `BUG`: ưu tiên `fix-`, `prevent-`, `restore-`
-- `CHANGE`: ưu tiên `migrate-`, `normalize-`, `retire-`, `reindex-`, `cutover-`
-- `REFACTOR`: ưu tiên `refactor-`, `extract-`, `consolidate-`
-- `RESEARCH`: ưu tiên `research-`, `evaluate-`, `spike-`
+- `FEATURE`: prefer `add-`, `enable-`, `support-`, or a noun-based outcome if more natural such as `user-login`
+- `BUG`: prefer `fix-`, `prevent-`, `restore-`
+- `CHANGE`: prefer `migrate-`, `normalize-`, `retire-`, `reindex-`, `cutover-`
+- `REFACTOR`: prefer `refactor-`, `extract-`, `consolidate-`
+- `RESEARCH`: prefer `research-`, `evaluate-`, `spike-`
 
-### Rule Collision
+### Collision Rule
 
-Nếu slug candidate đã tồn tại:
+If the candidate slug already exists:
 
-- cùng scope và chỉ là tiếp tục delivery: reuse work item hiện có, không tạo slug mới
-- khác scope nhưng cùng noun lõi: thêm qualifier có nghĩa
-- chỉ dùng suffix số như `-2` khi không còn qualifier business nào hợp lý
+- same scope and only continuing delivery: reuse the existing work item, do not create a new slug
+- different scope but the same core noun: add a meaningful qualifier
+- only use a numeric suffix such as `-2` when no reasonable business qualifier remains
 
-Ví dụ:
+Example:
 
-- `user-login` đã tồn tại và scope mới là login Google riêng: dùng `add-google-oauth-login`, không dùng `user-login-2`
-- `billing-export` đã tồn tại cho CSV, scope mới là PDF: dùng `billing-export-pdf`
+- `user-login` already exists and the new scope is a separate Google login: use `add-google-oauth-login`, not `user-login-2`
+- `billing-export` already exists for CSV, the new scope is PDF: use `billing-export-pdf`
 
-## Rule Kiểm Tra Trùng Và Reuse
+## Rule For Dedup And Reuse
 
-### Search Tối Thiểu
+### Minimum Search
 
-- exact slug match trong `work-items/`
-- semantic-near match theo keyword chính của request
-- change package active trong `changes/` có cùng outcome hoặc cùng release intent
+- exact slug match in `work-items/`
+- semantic-near match by the main keyword of the request
+- active change packages in `changes/` with the same outcome or the same release intent
 
-### Kết Luận Dedup
+### Dedup Conclusion
 
-- `no_conflict`: không thấy scope active nào trùng đáng kể
-- `reuse_work_item`: scope mới thực chất là tiếp tục work item đang mở
-- `reuse_change`: work item mới nên gắn vào change package đang active
-- `needs_review`: có hơn một candidate hợp lý hoặc scope chồng lấn chưa đủ rõ
+- `no_conflict`: no active scope with a meaningful overlap found
+- `reuse_work_item`: the new scope is actually a continuation of an open work item
+- `reuse_change`: the new work item should attach to an active change package
+- `needs_review`: there is more than one reasonable candidate or the scope overlap is not clear enough
 
-### Tín Hiệu Phải Review Thủ Công
+### Signals That Require Manual Review
 
-- exact slug đã tồn tại nhưng artifact đang ở trạng thái chưa rõ scope hiện tại
-- có nhiều work item cùng chia sẻ noun chính như `login`, `auth`, `session`
-- có change package đang `approved` hoặc `implementing` với scope gần giống
-- request mới có vẻ là sub-scope của initiative đang mở nhưng chưa rõ nên merge hay tách
+- the exact slug already exists but the artifact's current scope is unclear
+- there are several work items sharing the same main noun such as `login`, `auth`, `session`
+- there is a change package that is `approved` or `implementing` with a very similar scope
+- the new request looks like a sub-scope of an open initiative but it is not clear whether to merge or split
 
-## Rule Quyết Định `change_strategy`
+## Rule For Deciding `change_strategy`
 
-### Dùng `none` Khi
+### Use `none` When
 
-- bug fix hoặc refactor cục bộ không làm đổi truth của `BRD/SRS`
-- không cần package `proposal -> design -> tasks -> spec-delta -> archive`
-- không có migration, cutover, rollout governance hoặc external contract change đáng kể
+- a local bug fix or refactor does not change the truth of `BRD/SRS`
+- no `proposal -> design -> tasks -> spec-delta -> archive` package is needed
+- there is no significant migration, cutover, rollout governance, or external contract change
 
-### Dùng `reuse_existing` Khi
+### Use `reuse_existing` When
 
-- đã có change package active phù hợp với scope
-- status của change package là `draft`, `approved` hoặc `implementing`
-- work item mới chỉ là phần delivery tiếp theo của cùng change intent
-- archive lifecycle của work item mới phải đi cùng package đó
+- there is already an active change package that fits the scope
+- the change package status is `draft`, `approved`, or `implementing`
+- the new work item is only the next delivery part of the same change intent
+- the archive lifecycle of the new work item must go with that package
 
-### Dùng `create_new` Khi
+### Use `create_new` When
 
-- đây là một thay đổi có release intent hoặc approval path riêng
-- cần `spec_delta`
-- không có active change package phù hợp để reuse
-- package cũ đã `archived`
-- package cũ đã `verified` nhưng scope mới là wave tiếp theo, không nên mở rộng ngầm
+- this is a change with its own release intent or approval path
+- a `spec_delta` is needed
+- there is no suitable active change package to reuse
+- the old package is already `archived`
+- the old package is `verified` but the new scope is the next wave, and should not be silently expanded
 
-### Tín Hiệu Mạnh Cho `create_new`
+### Strong Signals For `create_new`
 
-- thêm hoặc đổi capability ở mức cần trace sản phẩm-thay đổi rõ
+- adding or changing a capability at a level that needs a clear product-change trace
 - migration/backfill/index/cutover
-- thay đổi API contract, policy, compliance hoặc release sequencing
-- business muốn review/approve change như một package riêng
+- changing an API contract, policy, compliance, or release sequencing
+- the business wants to review/approve the change as a separate package
 
-## Rule Sinh `change_id`
+## Rule For Generating `change_id`
 
-Tooling hiện chỉ validate pattern uppercase token, nhưng canonical strategy nên hẹp hơn cho authoring:
+The tooling currently only validates an uppercase token pattern, but the canonical authoring strategy should be narrower:
 
-- dùng dạng `CHANGE-NNN`
-- `NNN` zero-pad tối thiểu 3 chữ số
-- lấy số kế tiếp bằng cách scan `changes/CHANGE-*`
+- use the `CHANGE-NNN` form
+- `NNN` is zero-padded to at least 3 digits
+- get the next number by scanning `changes/CHANGE-*`
 
-Ví dụ:
+Example:
 
-- đã có `CHANGE-001`
-- package mới tiếp theo là `CHANGE-002`
+- `CHANGE-001` already exists
+- the next new package is `CHANGE-002`
 
-Không tạo `change_id` mới khi:
+Do not create a new `change_id` when:
 
 - `change_strategy=none`
 - `change_strategy=reuse_existing`
 
-Nếu repo sau này cần prefix khác như `INCIDENT-` hoặc `RFC-`, policy riêng phải override tài liệu này thay vì để agent tự invent.
+If the repo later needs a different prefix such as `INCIDENT-` or `RFC-`, a separate policy must override this document instead of letting the agent invent it.
 
-## Planning Và Governance Preset
+## Planning And Governance Preset
 
-Materialization nên chốt preset đủ dùng cho scaffold đầu tiên.
+Materialization should pin a preset that is enough for the first scaffold.
 
 ### `planning_track`
 
-- `quick`: bug fix hoặc scope nhỏ, risk thấp, một boundary chính
-- `full`: mặc định cho feature/change thông thường
-- `enterprise`: scope lớn, nhiều signoff, nhiều risk, nhiều boundary hoặc release lane nặng
+- `quick`: a bug fix or small scope, low risk, one main boundary
+- `full`: the default for a normal feature/change
+- `enterprise`: large scope, many signoffs, many risks, many boundaries, or a heavy release lane
 
 ### `execution_mode`
 
-- mặc định `agentic`
-- chỉ chọn `multi_agent` ngay từ materialization khi complexity signal đã rất rõ và ownership boundary đủ tách bạch
+- default `agentic`
+- only choose `multi_agent` from materialization when the complexity signal is already clear and the ownership boundary is cleanly separable
 
 ### `governance_profile`
 
-- `default`: mặc định
-- `strict`: scope nhạy cảm hơn bình thường
-- `regulated`: dữ liệu, compliance, regulated release
-- `custom`: chỉ khi project đã có custom governance refs thật
+- `default`: the default
+- `strict`: a more sensitive scope than usual
+- `regulated`: data, compliance, regulated release
+- `custom`: only when the project already has real custom governance refs
 
-## Authority Gate Cho Agentic
+## Authority Gate For Agentic
 
-### Agent Được Auto-Scaffold Khi
+### Agent May Auto-Scaffold When
 
-- `split_decision=single` hoặc split đã rõ ràng và từng item đều rõ
+- `split_decision=single` or the split is already clear and every item is clear
 - `materialization_status=READY`
-- `dedup_result=no_conflict` hoặc `reuse_change` không mơ hồ
-- slug pass naming rules và không collision chưa xử lý
-- `change_strategy` rõ
-- `planning_track` và `governance_profile` đủ chắc để scaffold preset đầu tiên
+- `dedup_result=no_conflict` or an unambiguous `reuse_change`
+- the slug passes the naming rules and has no unresolved collision
+- `change_strategy` is clear
+- `planning_track` and `governance_profile` are solid enough for the first scaffold preset
 
-### Agent Chỉ Được Đề Xuất, Chưa Được Scaffold Khi
+### Agent May Only Propose, Not Scaffold Yet, When
 
-- request còn nhiều cách hiểu hợp lý
-- chưa rõ nên 1 item hay nhiều item
-- chưa rõ `reuse_existing` hay `create_new`
-- thấy hơn một candidate work item hoặc change package active
-- scope là initiative rộng kiểu `làm chức năng đăng nhập`, `làm auth`, `cải thiện billing`
+- the request still has many reasonable interpretations
+- it is not clear whether it is one item or many
+- it is not clear whether to `reuse_existing` or `create_new`
+- there is more than one candidate work item or active change package
+- the scope is a broad initiative like `build the login feature`, `do auth`, `improve billing`
 
-### Agent Phải Chặn Và Xin Thêm Input Khi
+### Agent Must Block And Ask For More Input When
 
-- không có raw request đủ nghĩa
-- không search được `work-items/` hoặc `changes/`
-- scope mơ hồ đến mức slug chỉ còn là phỏng đoán
-- có regulated/custom governance mà authority chưa rõ
-- request chạm change package đã `archived`
+- there is no meaningful raw request
+- `work-items/` or `changes/` cannot be searched
+- the scope is so vague that the slug is only a guess
+- there is regulated/custom governance but the authority is unclear
+- the request touches a change package that is already `archived`
 
-## Checklist Vận Hành
+## Operational Checklist
 
-### Checklist Input
+### Input Checklist
 
-- đã có tóm tắt request một câu rõ nghĩa chưa
-- đã biết đây là outcome mong muốn hay chỉ là chủ đề mơ hồ chưa
-- đã search `work-items/` theo noun chính chưa
-- đã search `changes/` theo noun chính hoặc release intent chưa
-- đã nhìn `project-context/` để hiểu governance baseline chưa
+- is there a clear one-sentence summary of the request
+- is it known whether this is a desired outcome or only a vague topic
+- has `work-items/` been searched by the main noun
+- has `changes/` been searched by the main noun or release intent
+- has `project-context/` been reviewed to understand the governance baseline
 
-### Checklist Boundary
+### Boundary Checklist
 
-- item này có đúng một primary outcome không
-- acceptance criteria dự kiến có cùng một nhóm không
-- có cần tách `research` khỏi implementation không
-- một phần của scope có thể ship độc lập không
-- change/release cadence có đồng nhất không
+- does this item have exactly one primary outcome
+- do the expected acceptance criteria belong to one group
+- does `research` need to be split from implementation
+- can part of the scope ship independently
+- is the change/release cadence uniform
 
-### Checklist Slug
+### Slug Checklist
 
-- slug đã theo `kebab-case` chưa
-- slug có dùng noun domain thật thay vì token rỗng không
-- slug có ổn định nếu implementation detail đổi không
-- slug có phân biệt đủ với item gần giống đang tồn tại không
-- slug có tránh suffix số không cần thiết không
+- is the slug `kebab-case`
+- does the slug use a real domain noun instead of empty tokens
+- is the slug stable if the implementation detail changes
+- is the slug distinct enough from an existing similar item
+- does the slug avoid unnecessary numeric suffixes
 
-### Checklist Change
+### Change Checklist
 
-- scope này có cần trace `spec_delta` không
-- có active change package nào phù hợp để reuse không
-- package candidate có đang ở status cho phép reuse không
-- đây có phải wave/change intent mới không
-- `change_id` đã được chọn theo canonical strategy chưa
+- does this scope need a `spec_delta` trace
+- is there an active change package that fits to reuse
+- is the candidate package in a status that allows reuse
+- is this a new wave/change intent
+- has `change_id` been chosen per the canonical strategy
 
-### Checklist Autonomy
+### Autonomy Checklist
 
-- status có phải `READY` không
-- dedup result có phải `no_conflict` hoặc `reuse_change` rõ ràng không
-- có blocker nào buộc human quyết định không
-- scaffold command đã suy ra đủ chưa
-- agent có thể giải thích vì sao chọn slug/change trong 3-5 dòng không
+- is the status `READY`
+- is the dedup result `no_conflict` or a clear `reuse_change`
+- is there any blocker that forces a human decision
+- is the scaffold command fully derivable
+- can the agent explain why it chose the slug/change in 3-5 lines
 
-## Tích Hợp Vào Workflow Hiện Tại
+## Integration Into The Current Workflow
 
-Flow khuyến nghị:
+Recommended flow:
 
-1. chạy `Work Item Materialization`
-2. nếu đủ điều kiện, chuyển protocol status sang `READY_TO_MATERIALIZE`
-3. nếu `change_strategy=create_new`, scaffold change package trước
-4. scaffold workflow
-5. copy quyết định materialization vào `s01 Clarify`
-6. author `s01 -> s06`, lấy human pass cho các gate bắt buộc
-7. chỉ `activate` khi approval gate, bootstrap gate khi có, và evidence `s04-s06` đã sẵn sàng cho execution
-8. tiếp tục `s07 -> s08`
+1. run `Work Item Materialization`
+2. if conditions are met, move the protocol status to `READY_TO_MATERIALIZE`
+3. if `change_strategy=create_new`, scaffold the change package first
+4. scaffold the workflow
+5. copy the materialization decision into `s01 Clarify`
+6. author `s01 -> s06`, getting human pass for the required gates
+7. only `activate` when the approval gate, the bootstrap gate when present, and the `s04-s06` evidence are ready for execution
+8. continue `s07 -> s08`
 
-Baseline hiện tại có thể chạy trực tiếp qua:
+The current baseline can run directly through:
 
 ```bash
 wfc materialize --request "<raw-request>"
 wfc materialize --request "<raw-request>" --auto-scaffold
 ```
 
-Khi chạy `--auto-scaffold`, tooling hiện sẽ:
+When running `--auto-scaffold`, the tooling will:
 
-- scaffold change package nếu `change_strategy=create_new`
-- scaffold workflow notes
-- chèn block `Work Item Materialization` và `Work Item Protocol` vào `s01`
-- ghi JSON report vào `<workflow_root>/<work_item_slug>.work-item-report.json`
+- scaffold the change package if `change_strategy=create_new`
+- scaffold the workflow notes
+- insert the `Work Item Materialization` and `Work Item Protocol` blocks into `s01`
+- write a JSON report to `<workflow_root>/<work_item_slug>.work-item-report.json`
 
-Khi `s01` đã được scaffold, nên lưu lại một block như sau để audit:
+When `s01` has been scaffolded, you should keep a block like the following for audit:
 
 ````md
 ## Work Item Materialization
@@ -506,19 +512,19 @@ bootstrap_reviewed_at: ""
 ```
 ````
 
-Block này không thay `## Step Contract`.
+This block does not replace `## Step Contract`.
 
-Nó chỉ giữ audit trail cho quyết định authoring ban đầu.
+It only keeps the audit trail for the initial authoring decision.
 
-## Ví Dụ
+## Examples
 
-### Ví Dụ 1. Request Mơ Hồ
+### Example 1. Vague Request
 
 Input:
 
-- `Tôi muốn làm chức năng đăng nhập`
+- `I want to build a login feature`
 
-Kết luận khuyến nghị:
+Recommended conclusion:
 
 ```yaml
 materialization_status: PROPOSED
@@ -530,22 +536,22 @@ work_items:
     change_strategy: create_new
     change_id: "CHANGE-002"
     blockers:
-      - "Chưa rõ email/password hay social login"
-      - "Chưa rõ forgot password, MFA, session policy có thuộc scope không"
+      - "Not clear whether email/password or social login"
+      - "Not clear whether forgot password, MFA, session policy are in scope"
 ```
 
-Ý nghĩa:
+Meaning:
 
-- có thể đề xuất `user-login` làm candidate đầu tiên
-- chưa nên auto-scaffold nếu agent chưa có thêm context
+- `user-login` can be proposed as the first candidate
+- do not auto-scaffold unless the agent has more context
 
-### Ví Dụ 2. Bug Rõ Ràng
+### Example 2. Clear Bug
 
 Input:
 
-- `Fix timeout khi user login bằng email/password trên web`
+- `Fix timeout when a user logs in with email/password on web`
 
-Kết luận khuyến nghị:
+Recommended conclusion:
 
 ```yaml
 materialization_status: READY
@@ -561,13 +567,13 @@ work_items:
       - "npm run scaffold:workflow -- --work-item fix-login-timeout --planning-track quick"
 ```
 
-### Ví Dụ 3. Feature Có Change Layer
+### Example 3. Feature With A Change Layer
 
 Input:
 
-- `Thêm đăng nhập Google cho customer portal`
+- `Add Google login for the customer portal`
 
-Kết luận khuyến nghị:
+Recommended conclusion:
 
 ```yaml
 materialization_status: READY
@@ -585,18 +591,18 @@ work_items:
       - "npm run scaffold:workflow -- --work-item add-google-oauth-login --planning-track full --change-id CHANGE-002"
 ```
 
-## Kết Luận
+## Conclusion
 
-`Work Item Materialization` là gate authoring trước `scaffold`.
+`Work Item Materialization` is the authoring gate before `scaffold`.
 
-Nếu không có lớp này:
+Without this layer:
 
-- `agentic` chỉ mới tự chạy step
-- chưa thể tự mở work item mới một cách an toàn
+- `agentic` can only run steps on its own
+- it cannot yet open a new work item safely
 
-Nếu lớp này được giữ thành protocol rõ:
+If this layer is kept as a clear protocol:
 
-- slug được chốt có lý do
-- change decision có evidence
-- dedup được kiểm trước khi sinh artifact
-- scaffold có thể được tự động hóa mà không làm trôi governance của authoring
+- the slug is pinned with a reason
+- the change decision has evidence
+- dedup is checked before generating artifacts
+- scaffold can be automated without eroding the governance of authoring

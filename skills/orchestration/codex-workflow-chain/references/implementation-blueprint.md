@@ -1,55 +1,61 @@
-# Implementation Blueprint Cho Workflow Backbone
+---
+language: en
+---
 
-Tài liệu này chuyển `target-architecture.md` thành rollout plan có thể triển khai.
+# Implementation Blueprint For The Workflow Backbone
 
-Mục tiêu:
+> Vietnamese: implementation-blueprint.vi.md
 
-- cho biết lớp nào đã materialize
-- cho biết lớp nào mới ở mức reference
-- chốt thứ tự rollout để workflow tiến tới trạng thái đáp ứng `SDD` và các layer đã thống nhất
-- giúp kiểm soát scope, artifact, validator, CI và done criteria theo từng phase
+This document turns `target-architecture.md` into a deployable rollout plan.
 
-Thời điểm đối chiếu: `2026-04-13`.
+Goals:
 
-## Cách Đọc
+- state which layers are materialized
+- state which layers are only at reference level
+- pin the rollout order so the workflow reaches a state that supports `SDD` and the agreed layers
+- help control scope, artifacts, validators, CI, and done criteria per phase
 
-- `DONE`: đã materialize ở mức sử dụng thật trong repo
-- `PARTIAL`: đã có contract/reference hoặc metadata nền, nhưng chưa có full artifact + validator + CI tương ứng
-- `NOT STARTED`: mới ở mức target architecture hoặc merge strategy
+Cross-reference date: `2026-04-13`.
 
-## Bảng Trạng Thái Hiện Tại
+## How To Read
 
-| Lớp | Trạng thái | Đã có | Còn thiếu |
+- `DONE`: materialized at real-use level in the repo
+- `PARTIAL`: a contract/reference or foundational metadata exists, but not the full artifact + validator + CI
+- `NOT STARTED`: only at the target architecture or merge-strategy level
+
+## Current Status Table
+
+| Layer | Status | Has | Missing |
 |---|---|---|---|
-| Backbone workflow | `DONE` | workflow 8 bước, naming, frontmatter, step contract, `work-items/` canonical root | hardening thêm theo phase sau |
-| Governance layer | `DONE` baseline | `project-context/`, `constitution`, checklist, role model, decision model, validator, scaffold, fixture, authority/state enforcement baseline và CI phase 1-2 | semantic lint và stale register checks sâu hơn |
-| SDD layer | `DONE` baseline | `product-specs/`, template `BRD/SRS`, `sdd_mode`, `spec_refs`, `spec_status`, sample strict work item, validator SDD, CI SDD | hardening thêm cho fixture SDD và semantic lint sâu hơn |
-| Change layer | `DONE` baseline | `changes/`, sample change package, metadata `change_*`, scaffold change, validator change, CI change | hardening thêm cho archive lifecycle, delta semantics và fixture sâu hơn |
-| Execution layer | `DONE` baseline | `execution_mode`, `review_mode`, execution runtime reference, runtime artifacts thật, sample `multi_agent`, validator execution, CI execution | hardening thêm cho multi-worker depth, escalation flow và runner semantics |
-| Adaptive planning | `DONE` baseline | `planning_track`, routing matrix, scaffold preset, validator planning, CI planning, sample quick/enterprise | hardening thêm cho semantic routing và depth-specific lint |
-| Automation guardrail | `DONE` baseline | `npm` command surface, Node validators, fixture suite, CI jobs cho artifact/governance/SDD/change/execution/planning và authoring smoke | drift checks sâu hơn, semantic lint sâu hơn |
+| Backbone workflow | `DONE` | eight-step workflow, naming, frontmatter, step contract, `work-items/` canonical root | further hardening in later phases |
+| Governance layer | `DONE` baseline | `project-context/`, `constitution`, checklists, role model, decision model, validator, scaffold, fixtures, authority/state enforcement baseline, and CI phases 1-2 | deeper semantic lint and stale-register checks |
+| SDD layer | `DONE` baseline | `product-specs/`, `BRD/SRS` template, `sdd_mode`, `spec_refs`, `spec_status`, a strict sample work item, SDD validator, SDD CI | further hardening for SDD fixtures and deeper semantic lint |
+| Change layer | `DONE` baseline | `changes/`, a sample change package, `change_*` metadata, change scaffold, change validator, change CI | further hardening for archive lifecycle, delta semantics, and deeper fixtures |
+| Execution layer | `DONE` baseline | `execution_mode`, `review_mode`, execution runtime reference, real runtime artifacts, a `multi_agent` sample, execution validator, execution CI | further hardening for multi-worker depth, escalation flow, and runner semantics |
+| Adaptive planning | `DONE` baseline | `planning_track`, routing matrix, scaffold preset, planning validator, planning CI, quick/enterprise samples | further hardening for semantic routing and depth-specific lint |
+| Automation guardrail | `DONE` baseline | `npm` command surface, Node validators, fixture suite, CI jobs for artifact/governance/SDD/change/execution/planning, and authoring smoke | deeper drift checks, deeper semantic lint |
 
-## Nguyên Tắc Rollout
+## Rollout Principles
 
-- workflow backbone là trục xương sống duy nhất
-- không rollout layer mới nếu layer trước đó chưa có source-of-truth rõ
-- validator chỉ được thêm sau khi contract đã chốt
-- CI chỉ enforce thứ đã có local command ổn định
-- không dùng framework ngoài để thay artifact chính của repo
+- the workflow backbone is the single spine
+- do not roll out a new layer if the prior layer has no clear source-of-truth
+- a validator is only added after the contract is pinned
+- CI only enforces what already has a stable local command
+- do not use an external framework to replace the repo's main artifact
 
-## Phase 0. Backbone Và Governance
+## Phase 0. Backbone And Governance
 
-### Mục tiêu
+### Goal
 
-- ổn định workflow 8 bước
-- materialize governance thành rule thật, không chỉ là prose
-- tạo command surface chuẩn và CI nền cho workflow artifacts
+- stabilize the eight-step workflow
+- materialize governance as real rules, not just prose
+- create the standard command surface and foundational CI for workflow artifacts
 
-### Trạng thái
+### Status
 
 `DONE`
 
-### Artifact/source-of-truth
+### Artifacts / source-of-truth
 
 - `work-items/`
 - `project-context/constitution.md`
@@ -59,7 +65,7 @@ Thời điểm đối chiếu: `2026-04-13`.
 - `project-context/checklists/*.md`
 - `project-context/governance-exception-register.md`
 
-### Tooling/validator
+### Tooling / validators
 
 - `scripts/scaffold-workflow.js`
 - `scripts/validate-workflow.js`
@@ -75,89 +81,89 @@ Thời điểm đối chiếu: `2026-04-13`.
 
 ### Done criteria
 
-- scaffold và validate workflow chạy qua `npm`
-- governance metadata/block được enforce
-- `work-items/` được validate trong CI
-- có sample canonical work item
+- scaffold and validate workflow run via `npm`
+- governance metadata/blocks are enforced
+- `work-items/` is validated in CI
+- a canonical sample work item exists
 
 ## Phase 1. SDD Materialization
 
-### Mục tiêu
+### Goal
 
-- biến `SDD` từ layer contract thành artifact thật có thể vận hành
-- đưa `BRD/SRS` thành source-of-truth chính thức cho work item chạy theo spec-driven delivery
+- turn `SDD` from a contract layer into a real, operable artifact
+- make `BRD/SRS` the official source-of-truth for spec-driven delivery work items
 
-### Framework/source
+### Framework / source
 
-- repo-native workflow backbone
-- tư duy `spec-kit` cho quality/spec discipline
+- the repo-native workflow backbone
+- `spec-kit` thinking for quality/spec discipline
 
-### Trạng thái
+### Status
 
 `DONE`
 
-### Artifact cần materialize
+### Artifacts to materialize
 
 - `product-specs/brd/<scope>.md`
 - `product-specs/srs/<scope>.md`
-- template `BRD`
-- template `SRS`
-- ít nhất một work item `sdd_mode=strict`
+- the `BRD` template
+- the `SRS` template
+- at least one work item with `sdd_mode=strict`
 
-### Metadata/schema cần thêm hoặc chốt
+### Metadata / schema to add or pin
 
 - `spec_refs.brd`
 - `spec_refs.srs`
 - `spec_status`
-- requirement IDs như `BRD-*`, `SRS-FR-*`, `SRS-NFR-*`, `SRS-UX-*`
+- requirement IDs such as `BRD-*`, `SRS-FR-*`, `SRS-NFR-*`, `SRS-UX-*`
 
-### Tích hợp vào workflow
+### Integration into the workflow
 
-- `s01-s02`: tạo hoặc cập nhật `BRD`
-- `s03-s04`: tạo hoặc cập nhật `SRS`
-- `s04`: chốt `Spec Freeze`
-- `s05-s07`: dùng `Spec Change` khi phát hiện gap sau freeze
+- `s01-s02`: create or update `BRD`
+- `s03-s04`: create or update `SRS`
+- `s04`: pin `Spec Freeze`
+- `s05-s07`: use `Spec Change` when a gap is found after freeze
 - `s06`: materialize `SDD Traceability`
 - `s08`: materialize `Spec Coverage`
 
-### Tooling đã materialize
+### Tooling materialized
 
 - `scripts/validate-workflow-sdd.js`
 - `npm run validate:workflow:sdd`
-- sample strict work item tại `work-items/sample-sdd-item/`
+- a strict sample work item at `work-items/sample-sdd-item/`
 
-### CI đã materialize
+### CI materialized
 
 - Job `workflow-sdd`
 
 ### Done criteria
 
-- có `product-specs/` thật trong repo
-- `BRD/SRS` liên kết được từ `work-items/`
-- requirement IDs hợp lệ
-- `Spec Freeze` không bị bypass ở `s04`
-- `Spec Coverage` kết luận được ở `s08`
+- a real `product-specs/` exists in the repo
+- `BRD/SRS` can be linked from `work-items/`
+- requirement IDs are valid
+- `Spec Freeze` is not bypassed at `s04`
+- `Spec Coverage` can be concluded at `s08`
 
-### Phụ thuộc
+### Depends on
 
-- Phase 0 hoàn tất
+- Phase 0 complete
 
 ## Phase 2. Change Layer
 
-### Mục tiêu
+### Goal
 
-- materialize lớp `OpenSpec-style change management`
-- tách rõ current truth của spec với package của thay đổi
+- materialize the `OpenSpec-style change management` layer
+- clearly separate the current spec truth from the change package
 
-### Framework/source
+### Framework / source
 
 - `OpenSpec`
 
-### Trạng thái
+### Status
 
 `DONE` baseline
 
-### Artifact cần materialize
+### Artifacts to materialize
 
 - `changes/<change-id>/proposal.md`
 - `changes/<change-id>/design.md`
@@ -167,237 +173,237 @@ Thời điểm đối chiếu: `2026-04-13`.
 - `changes/<change-id>/execution/task-status.md`
 - `changes/<change-id>/archive-metadata.md`
 
-### Metadata/schema cần thêm hoặc chốt
+### Metadata / schema to add or pin
 
 - `change_id`
 - `change_status`
 - `spec_delta_refs`
 - `archive_status`
 
-### Tích hợp vào workflow
+### Integration into the workflow
 
-- `s01-s03`: xác định intent/change scope
-- `s05`: `design.md` và `spec-delta` làm input
-- `s06`: `tasks.md` phải trace được về `change_id`
-- `s08`: kết luận `ready_to_archive` hay chưa
+- `s01-s03`: determine the intent/change scope
+- `s05`: `design.md` and `spec-delta` as input
+- `s06`: `tasks.md` must trace to `change_id`
+- `s08`: conclude `ready_to_archive` or not
 
-### Tooling đã materialize
+### Tooling materialized
 
 - `scripts/scaffold-change-package.js`
 - `scripts/validate-workflow-change.js`
 - `npm run scaffold:change`
 - `npm run validate:workflow:change`
 
-### CI đã materialize
+### CI materialized
 
 - Job `workflow-changes`
 
 ### Done criteria baseline
 
-- ít nhất một change package đầy đủ
-- `work-items/` và `changes/` nối được qua `change_id`
-- `spec_delta_refs` trỏ được về delta thật
-- archive readiness được phản ánh nhất quán ở note và change package
+- at least one complete change package
+- `work-items/` and `changes/` connect via `change_id`
+- `spec_delta_refs` point to a real delta
+- archive readiness is reflected consistently in the note and the change package
 
-### Phụ thuộc
+### Depends on
 
-- Phase 1 nên hoàn tất trước để có `BRD/SRS` thật
+- Phase 1 should complete first so a real `BRD/SRS` exists
 
 ## Phase 3. Execution Layer
 
-### Mục tiêu
+### Goal
 
-- biến `execution runtime` từ reference thành runtime contract có artifact thật
-- chuẩn bị cho rollout `cc-sdd` kiểu implementer/reviewer/fixer mà không phá backbone
+- turn the `execution runtime` from a reference into a runtime contract with real artifacts
+- prepare for a `cc-sdd`-style implementer/reviewer/fixer rollout without breaking the backbone
 
-### Framework/source
+### Framework / source
 
 - `cc-sdd`
 
-### Trạng thái
+### Status
 
 `DONE` baseline
 
-### Artifact cần materialize
+### Artifacts to materialize
 
 - `execution-policy`
 - `worker-assignment`
 - `worker-handoff-report`
 - `merge-report`
-- `execution-escalation` khi cần
+- `execution-escalation` when needed
 
-### Metadata/schema cần thêm hoặc chốt
+### Metadata / schema to add or pin
 
 - `review_mode`
 - `execution_roles`
 - `verification_owner`
-- điều kiện vào `multi_agent`
+- entry conditions for `multi_agent`
 
-### Tích hợp vào workflow
+### Integration into the workflow
 
-- `s05`: có thể thêm `execution-policy`
-- `s06`: chia assignment nếu `multi_agent`
-- `s07`: worker handoff và merge report
-- `s08`: independent review hoặc `auto_fix_loop`
+- `s05`: may add `execution-policy`
+- `s06`: split assignments if `multi_agent`
+- `s07`: worker handoff and merge report
+- `s08`: independent review or `auto_fix_loop`
 
-### Tooling đã materialize
+### Tooling materialized
 
 - `scripts/validate-workflow-execution.js`
 - `npm run validate:workflow:execution`
-- sample `multi_agent` work item
+- a `multi_agent` sample work item
 
-### CI đã materialize
+### CI materialized
 
 - Job `workflow-execution`
 
 ### Done criteria baseline
 
-- có ít nhất một work item chạy `multi_agent`
-- `execution-policy` và `merge-report` hợp lệ
-- `review_mode` được dùng thật ở `s08`
+- at least one work item runs `multi_agent`
+- `execution-policy` and `merge-report` are valid
+- `review_mode` is actually used at `s08`
 
-### Phụ thuộc
+### Depends on
 
-- Phase 1 ổn định
-- Phase 2 có thể làm song song phần cuối nếu change package đã rõ
+- Phase 1 stable
+- Phase 2 can run the tail in parallel once the change package is clear
 
 ## Phase 4. Adaptive Planning
 
-### Mục tiêu
+### Goal
 
-- materialize lớp `BMAD` ở mức routing và planning depth
-- giữ một backbone duy nhất nhưng thay đổi độ sâu artifact/gate theo scope
+- materialize the `BMAD` layer at routing and planning-depth level
+- keep one backbone but vary artifact/gate depth by scope
 
-### Framework/source
+### Framework / source
 
 - `BMAD-METHOD`
 
-### Trạng thái
+### Status
 
 `DONE` baseline
 
-### Metadata/schema cần thêm hoặc chốt
+### Metadata / schema to add or pin
 
 - `planning_track: quick|full|enterprise`
 
-### Artifact và rule cần materialize
+### Artifacts and rules to materialize
 
-- routing matrix theo `work_item_type`, boundary count, release/runtime risk, governance profile
-- scaffold preset cho từng track
-- sample `quick`, `full`, `enterprise`
+- a routing matrix by `work_item_type`, boundary count, release/runtime risk, and governance profile
+- a scaffold preset for each track
+- `quick`, `full`, `enterprise` samples
 
-### Tích hợp vào workflow
+### Integration into the workflow
 
-- `quick`: rút gọn depth `s01-s06`
-- `full`: chạy đầy đủ `BRD/SRS`
-- `enterprise`: tăng review/signoff lane và evidence ở `s04-s08`
+- `quick`: condense the depth of `s01-s06`
+- `full`: run the full `BRD/SRS`
+- `enterprise`: add review/signoff lanes and evidence at `s04-s08`
 
-### Tooling đã materialize
+### Tooling materialized
 
 - `scripts/validate-workflow-planning.js`
 - `npm run validate:workflow:planning`
 
-### CI đã materialize
+### CI materialized
 
 - Job `workflow-planning`
 
 ### Done criteria baseline
 
-- scaffold chọn được planning track
-- validator bắt được artifact depth không khớp track
-- cùng một workflow backbone nhưng `quick/full/enterprise` cho ra chiều sâu khác nhau đúng rule
+- scaffold can pick a planning track
+- the validator catches artifact depth that does not match the track
+- one workflow backbone produces different depth under `quick/full/enterprise` per the rule
 
-### Phụ thuộc
+### Depends on
 
-- Phase 1 nên hoàn tất trước
-- Phase 3 nên có execution/runtime metadata cơ bản
+- Phase 1 should complete first
+- Phase 3 should have basic execution/runtime metadata
 
 ## Phase 5. Hardening
 
-### Mục tiêu
+### Goal
 
-- khóa chất lượng dài hạn
-- giảm drift giữa docs, scaffold, validator và CI
+- lock long-term quality
+- reduce drift across docs, scaffold, validators, and CI
 
-### Trạng thái
+### Status
 
 `DONE` baseline
 
-### Hạng mục đã materialize baseline
+### Items materialized at baseline
 
 - CI phase 3 `workflow-authoring-smoke`
-- authority enforcement sâu cho `approved_by`
-- state/gate enforcement sâu cho `governance_status`
-- fixture regression cho authority/state rule mới
+- deeper authority enforcement for `approved_by`
+- deeper state/gate enforcement for `governance_status`
+- regression fixtures for the new authority/state rules
 
-### Hạng mục còn lại
+### Remaining items
 
-- stale `governance-exception` checks sâu hơn
-- drift checks giữa docs/reference/scaffold/validator khi cần
-- semantic lint sâu hơn cho evidence và traceability
+- deeper stale `governance-exception` checks
+- drift checks across docs/reference/scaffold/validator when needed
+- deeper semantic lint for evidence and traceability
 
-### Quyết Định Rollout
+### Rollout Decision
 
-- `workflow-authoring-smoke` đã được implement sau khi `change`, `execution` và `planning` ổn định baseline.
-- Hardening hiện tại khóa drift ở mức mechanical trước; semantic lint sâu hơn là phase sau.
+- `workflow-authoring-smoke` was implemented after `change`, `execution`, and `planning` stabilized at baseline.
+- Current hardening locks drift at the mechanical level first; deeper semantic lint is a later phase.
 
-### Tooling đã materialize baseline
+### Tooling materialized at baseline
 
-- smoke script cho `scaffold -> validate`
-- validator rule sâu hơn cho governance authority/state
-- fixture fail cases cho authority/state rule mới
+- a smoke script for `scaffold -> validate`
+- deeper validator rules for governance authority/state
+- fixture fail cases for the new authority/state rules
 
-### CI đã materialize baseline
+### CI materialized at baseline
 
 - Job `workflow-authoring-smoke`
-- optional drift check jobs
+- optional drift-check jobs
 
 ### Done criteria
 
-- scaffold regression bị bắt trong CI
-- governance exception/waiver không bị bỏ quên
-- contract drift giữa docs và tooling giảm xuống mức chấp nhận được
+- scaffold regressions are caught in CI
+- governance exceptions/waivers are not forgotten
+- contract drift between docs and tooling drops to an acceptable level
 
-## Command Surface Đích
+## Target Command Surface
 
-| Command | Vai trò | Phase |
+| Command | Role | Phase |
 |---|---|---|
-| `npm run scaffold:workflow` | scaffold workflow backbone | 0 |
-| `npm run scaffold:workflow-step` | scaffold từng step | 0 |
+| `npm run scaffold:workflow` | scaffold the workflow backbone | 0 |
+| `npm run scaffold:workflow-step` | scaffold each step | 0 |
 | `npm run validate:workflow` | naming + governance + canonical root validation | 0 |
-| `npm run validate:workflow:fixtures` | regression suite cho governance tooling | 0 |
+| `npm run validate:workflow:fixtures` | regression suite for governance tooling | 0 |
 | `npm run validate:workflow:sdd` | validate `BRD/SRS`, freeze, traceability, coverage | 1 |
-| `npm run scaffold:change` | tạo change package | 2 |
-| `npm run validate:workflow:change` | validate change package và link sang work item/spec | 2 |
-| `npm run validate:workflow:execution` | validate execution runtime contract | 3 |
-| `npm run validate:workflow:planning` | validate planning track | 4 |
-| `npm run validate:workflow:authoring-smoke` | smoke test `scaffold -> validate` qua các case đại diện | 5 |
+| `npm run scaffold:change` | create a change package | 2 |
+| `npm run validate:workflow:change` | validate a change package and its link to a work item/spec | 2 |
+| `npm run validate:workflow:execution` | validate the execution runtime contract | 3 |
+| `npm run validate:workflow:planning` | validate the planning track | 4 |
+| `npm run validate:workflow:authoring-smoke` | smoke test `scaffold -> validate` across representative cases | 5 |
 
-## Control Board Theo Phase
+## Control Board By Phase
 
-| Phase | Tên | Mức ưu tiên hiện tại | Trạng thái hiện tại |
+| Phase | Name | Current priority | Current status |
 |---|---|---|---|
-| 0 | Backbone + Governance | đã xong | `DONE` |
-| 1 | SDD Materialization | đã xong baseline | `DONE` |
-| 2 | Change Layer | đã xong baseline | `DONE` |
-| 3 | Execution Layer | đã xong baseline | `DONE` |
-| 4 | Adaptive Planning | đã xong baseline | `DONE` |
-| 5 | Hardening | đã xong baseline | `DONE` |
+| 0 | Backbone + Governance | done | `DONE` |
+| 1 | SDD Materialization | baseline done | `DONE` |
+| 2 | Change Layer | baseline done | `DONE` |
+| 3 | Execution Layer | baseline done | `DONE` |
+| 4 | Adaptive Planning | baseline done | `DONE` |
+| 5 | Hardening | baseline done | `DONE` |
 
-## Kết Luận Điều Hành
+## Operational Conclusion
 
-Nếu mục tiêu là đưa workflow hiện tại đáp ứng target architecture và kiểm soát được roadmap:
+If the goal is to bring the current workflow to the target architecture and control the roadmap:
 
-- đừng làm thêm governance trước
-- `Phase 1: SDD Materialization` đã có baseline thật trong repo
-- `Phase 2: Change Layer` cũng đã có baseline thật trong repo
-- `Phase 3: Execution Layer` cũng đã có baseline thật trong repo
-- `Phase 4: Adaptive Planning` cũng đã có baseline thật trong repo
-- `Phase 5: Hardening` đã có baseline thật trong repo
-- `workflow-authoring-smoke` đã nằm trong CI và authoring flow đã được smoke test end-to-end
-- chỉ sau khi spec và change layer ổn định mới nên tăng autonomy ở execution layer
+- do not add more governance first
+- `Phase 1: SDD Materialization` has a real baseline in the repo
+- `Phase 2: Change Layer` also has a real baseline in the repo
+- `Phase 3: Execution Layer` also has a real baseline in the repo
+- `Phase 4: Adaptive Planning` also has a real baseline in the repo
+- `Phase 5: Hardening` has a real baseline in the repo
+- `workflow-authoring-smoke` is in CI and the authoring flow is smoke-tested end-to-end
+- only after the spec and change layers are stable should autonomy increase at the execution layer
 
-Tài liệu nên đọc cùng:
+Read this document together with:
 
 - `references/target-architecture.md`
 - `references/spec-driven-development.md`

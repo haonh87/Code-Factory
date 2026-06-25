@@ -67,7 +67,7 @@ tags:
 # Step 2 - Business Goal
 
 > [!summary]
-> Tóm tắt user problem, business outcome, success metric và non-goals.
+> Summarize the user problem, business outcome, success metric and non-goals.
 
 ## Step Contract
 ```yaml
@@ -78,20 +78,20 @@ done_when: []
 owner: ""
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
-user_problem: "Role vận hành cần giới hạn search result theo workspace để review local Codex sessions chính xác hơn."
-business_goal: "Cho phép search theo workspace mà không làm đổi behavior mặc định của flow hiện tại."
+user_problem: "The operator role needs to constrain search results by workspace to review local Codex sessions more accurately."
+business_goal: "Allow search by workspace without changing the default behavior of the current flow."
 success_metrics:
-  - "role review tìm đúng session theo workspace mà không lọc tay"
-  - "request không có workspace filter vẫn cho output tương thích ngược"
+  - "the review role finds the right session by workspace without manual filtering"
+  - "a request without a workspace filter still produces a backward-compatible output"
 non_goals:
-  - "không thay schema session"
-  - "không thêm quyền write hoặc repair vào flow read-only"
+  - "do not change the session schema"
+  - "do not add write or repair rights to the read-only flow"
 constraints:
-  - "giữ mcp/session-search ở phạm vi read-only"
+  - "keep mcp/session-search in the read-only scope"
 assumptions:
-  - "workspace filter là optional input"
+  - "the workspace filter is an optional input"
 ```
 
 ## SDD Traceability
@@ -111,6 +111,6 @@ next_step: "sample-sdd-item.s03.open-questions.md"
 ```
 
 ## Handoff
-- User problem đã chốt: cần filter kết quả theo workspace để giảm nhiễu.
-- Non-goals: không đụng schema cass, không mở write flow.
-- Điều kiện sang step 3: resolve input gap để BRD/SRS đủ rõ cho AC và freeze.
+- User problem locked: filter results by workspace to reduce noise.
+- Non-goals: do not touch the cass schema, do not open a write flow.
+- Conditions to move to step 3: resolve the input gap so the BRD/SRS is clear enough for AC and freeze.

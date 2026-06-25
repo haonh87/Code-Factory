@@ -1,21 +1,27 @@
+---
+language: en
+---
+
 # Pipeline Stages
 
-## Tầng Chính
+> Vietnamese: pipeline-stages.vi.md
 
-- `pre-merge`: lint, test, static analysis, build hoặc type check đủ để chặn lỗi sớm.
-- `build-publish`: build artifact, image hoặc package và publish lên registry/repository.
-- `pre-release`: verify artifact, policy gate, security hoặc approval cần thiết trước promote.
-- `post-deploy`: smoke, health, log, metric hoặc business check ngắn hạn.
+## Main Tiers
+
+- `pre-merge`: lint, test, static analysis, build or type check enough to block errors early.
+- `build-publish`: build the artifact, image, or package and publish it to a registry/repository.
+- `pre-release`: verify the artifact, run policy gates, security or approval checks needed before promotion.
+- `post-deploy`: short-term smoke, health, log, metric, or business checks.
 
 ## Tool Mapping
 
-- GitHub Actions: workflow theo event, reusable workflow cho build/release khi cần.
-- GitLab CI: stage/job với environment và protected branch/tag control.
-- Jenkins: pipeline script hoặc shared library, chú ý credential management.
-- Azure DevOps: pipeline + environment approval + release control.
+- GitHub Actions: event-driven workflows, reusable workflows for build/release when needed.
+- GitLab CI: stages/jobs with environment and protected branch/tag controls.
+- Jenkins: pipeline scripts or shared libraries, mind credential management.
+- Azure DevOps: pipelines + environment approval + release controls.
 
-## Rule Chung
+## Common Rules
 
-- Dùng cache có chủ đích; không cache thứ làm sai artifact reproducibility.
-- Giữ artifact publish tách khỏi deploy step nếu team cần promote cùng artifact giữa môi trường.
-- Nếu pipeline sửa file runtime artifact, phải chỉ rõ ownership và versioning.
+- Use caching intentionally; do not cache things that break artifact reproducibility.
+- Keep artifact publish separate from the deploy step if the team needs to promote the same artifact across environments.
+- If the pipeline modifies runtime artifact files, state the ownership and versioning clearly.

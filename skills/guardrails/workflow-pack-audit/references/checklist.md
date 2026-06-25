@@ -1,59 +1,65 @@
+---
+language: en
+---
+
 # Workflow Pack Audit Checklist
 
-## 1. Skill Folder Và Frontmatter
+> Vietnamese: checklist.vi.md
 
-- Tên folder skill phải khớp `name` trong frontmatter.
-- `description` phải nêu rõ trigger, không chỉ mô tả chung chung.
-- Không được có 2 skill trùng `name` vì runtime Codex cài theo layout phẳng `~/.codex/skills/<skill-name>`.
-- Nếu skill mới là skill người dùng có khả năng gọi trực tiếp nhiều lần, nên có `agents/openai.yaml`.
+## 1. Skill Folder And Frontmatter
+
+- The skill folder name must match `name` in the frontmatter.
+- `description` must state the trigger clearly, not just give a vague description.
+- There must not be two skills with the same `name`, because the Codex runtime installs via a flat layout `~/.codex/skills/<skill-name>`.
+- If a new skill is one a user is likely to call directly many times, it should have `agents/openai.yaml`.
 
 ## 2. Workflow-Chain Mapping
 
-- Nếu skill tác động step 5, 7 hoặc 8, phải có mặt trong step table tương ứng ở `workflow-chain.md`.
-- Nếu step table nhắc một block mới như `## Review Findings` hoặc `## Implementation Notes`, template step tương ứng cũng phải có block đó.
-- Nếu template nhắc schema của một skill, mục `### \`<skill-name>\`` cũng phải tồn tại trong phần schema catalog.
+- If a skill affects step 5, 7, or 8, it must appear in the matching step table in `workflow-chain.md`.
+- If the step table mentions a new block such as `## Review Findings` or `## Implementation Notes`, the matching step template must also have that block.
+- If a template references a skill's schema, the `### \`<skill-name>\`` entry must also exist in the schema catalog section.
 
-## 3. Template Và Schema
+## 3. Template And Schema
 
 - Step 5:
-  - Skill design/frontend specialized phải đi vào `## Architecture Details`.
+  - A specialized design/frontend skill must go into `## Architecture Details`.
 - Step 7:
-  - Skill implement specialized phải không thay thế `## Artifact Chính`; nếu cần, đi vào `## Implementation Notes`.
+  - A specialized implement skill must not replace `## Main Artifact`; if needed, it goes into `## Implementation Notes`.
 - Step 8:
-  - Skill review specialized phải dùng `## Review Findings` hoặc block review tương đương, không đẩy vào `## Scan Summary`.
+  - A specialized review skill must use `## Review Findings` or an equivalent review block, not push into `## Scan Summary`.
 
-## 4. Boundary Giữa Các Skill
+## 4. Boundary Between Skills
 
-- `frontend-experience-design` phải rõ là design trước khi code.
-- `frontend-architecture` phải rõ là source-code boundary và ownership.
-- `react-web-implementation` phải rõ là guidance step 7.
-- `frontend-quality-review` phải rõ là screen-level UX/accessibility/responsive review.
-- `react-best-practices-review` phải rõ là React render/data boundary review.
-- Nếu hai skill gần nhau về phạm vi, ít nhất một trong hai phải có mục `Không Thuộc Phạm Vi` hoặc decision rule để phân vai.
+- `frontend-experience-design` must be clearly a design-before-code skill.
+- `frontend-architecture` must be clearly a source-code boundary and ownership skill.
+- `react-web-implementation` must be clearly a step 7 guidance skill.
+- `frontend-quality-review` must be clearly a screen-level UX/accessibility/responsive review.
+- `react-best-practices-review` must be clearly a React render/data boundary review.
+- If two skills are close in scope, at least one of the two must have an `Out Of Scope` section or a decision rule to separate the roles.
 
-## 5. Cross-Reference Và Runtime Layout
+## 5. Cross-Reference And Runtime Layout
 
-- Mọi path tham chiếu chéo giữa skill phải đúng với layout runtime phẳng sau khi cài global.
-- Không dùng path chỉ đúng trong cấu trúc nhóm của repo nếu runtime thực tế không còn giữ grouping đó.
-- Nếu skill nhắc `references/...` hoặc `scripts/...`, file tương ứng phải tồn tại thật.
+- Every cross-reference path between skills must be correct for the flat runtime layout after a global install.
+- Do not use a path that is only correct in the repo's group structure if the real runtime no longer keeps that grouping.
+- If a skill references `references/...` or `scripts/...`, the corresponding file must actually exist.
 
-## 6. Script Và Check Tự Động
+## 6. Script And Automatic Checks
 
-- Script audit nên bắt được ít nhất:
-  - frontmatter hợp lệ
+- The audit script should catch at least:
+  - valid frontmatter
   - folder name match
   - unique skill name
-  - workflow-chain tồn tại
-  - các marker/template/schema cốt lõi tồn tại
-- Những gì script chưa bắt được phải nằm trong checklist semantic này.
+  - workflow-chain existence
+  - core marker/template/schema existence
+- What the script cannot catch must live in this semantic checklist.
 
-## 7. README Và Tài Liệu Repo
+## 7. README And Repo Documentation
 
-- Nếu skill mới làm thay đổi cách maintain repo, cân nhắc bổ sung vào README hoặc note vận hành.
-- Không bắt buộc liệt kê mọi skill trong README, nhưng README không được mâu thuẫn với runtime model hiện tại.
+- If a new skill changes how the repo is maintained, consider adding it to the README or an operations note.
+- It is not required to list every skill in the README, but the README must not contradict the current runtime model.
 
-## 8. Kết Luận Audit
+## 8. Audit Conclusion
 
-- `PASS`: không có mismatch blocker, không còn drift template/schema quan trọng.
-- `PARTIAL`: repo chạy được nhưng còn warning hoặc semantic gap nhỏ.
-- `FAIL`: có conflict runtime, thiếu schema/block bắt buộc, hoặc trigger/boundary mâu thuẫn rõ.
+- `PASS`: no blocking mismatch, no important template/schema drift remaining.
+- `PARTIAL`: the repo runs but warnings or minor semantic gaps remain.
+- `FAIL`: there is a runtime conflict, a mandatory schema/block is missing, or the trigger/boundary clearly contradicts.

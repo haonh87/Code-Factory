@@ -1,92 +1,95 @@
 ---
 name: karpathy-coding-discipline
-description: 4 nguyên tắc hành vi cho coding agent, dựa trên quan sát Karpathy về lỗi LLM phổ biến: giả định ngầm, over-engineer, sửa lân cận, không verify. Chạy xuyên suốt mọi step, bổ trợ guardrails và delivery skill, không thay workflow chain hay approval gate.
+description: Four behavioral principles for coding agents, based on Karpathy's observations of common LLM failures -- silent assumptions, over-engineering, editing adjacent code, and skipping verification. Runs across every step, supplements guardrails and delivery skills, and does not replace the workflow chain or approval gates.
+language: en
 ---
 
 # Karpathy Coding Discipline
 
-4 nguyên tắc hành vi giảm lỗi phổ biến khi coding agent làm việc.
+> Vietnamese: SKILL.vi.md
 
-## Nguồn Gốc
+Four behavioral principles that reduce common failures when a coding agent does work.
 
-Dựa trên quan sát Karpathy về lỗi hệ thống của LLM coding agent:
-1. **Giả định ngầm** — chọn 1 cách hiểu rồi chạy, không kiểm lại.
-2. **Over-engineer** — viết 1000 dòng khi 100 dòng đủ.
-3. **Sửa lân cận** — thay đổi code, comment, format không liên quan task.
-4. **Không verify** — code xong không kiểm kết quả đúng intent không.
+## Origin
 
-## Bốn Nguyên Tắc
+Based on Karpathy's observations of systematic failures in LLM coding agents:
+1. **Silent assumptions** -- picking one interpretation and running with it, without checking back.
+2. **Over-engineering** -- writing 1000 lines when 100 would do.
+3. **Editing adjacent code** -- changing unrelated code, comments, or formatting.
+4. **No verification** -- finishing the code without checking whether the result matches the intent.
 
-### 1. Think Before Coding — Không giả định ngầm, không giấu điều chưa hiểu
+## The Four Principles
 
-- Nêu assumption tường minh trước khi implement.
-- Nhiều cách hiểu → trình bày các lựa chọn, không chọn ngầm.
-- Tồn tại cách đơn giản hơn → nói ra, đề xuất.
-- Không rõ yêu cầu → dừng hỏi, không đoán rồi chạy.
+### 1. Think Before Coding -- No silent assumptions, no hiding what you don't understand
 
-### 2. Simplicity First — Code tối thiểu giải quyết vấn đề, không speculation
+- State assumptions explicitly before implementing.
+- Multiple interpretations exist -> lay out the options; do not pick one silently.
+- A simpler approach exists -> say so and propose it.
+- Requirements unclear -> stop and ask; do not guess and run.
 
-- Không thêm feature không yêu cầu.
-- Không tạo abstraction cho code dùng 1 lần.
-- Không thêm flexibility hay configurability không cần.
-- Không xử lý error cho scenario không thể xảy ra.
-- 200 dòng có thể là 50 → viết lại.
-- Tiêu chuẩn: "Senior engineer bảo overcomplicated không?" → có thì đơn giản hóa.
+### 2. Simplicity First -- Minimal code that solves the problem, no speculation
 
-### 3. Surgical Changes — Chỉ chạm thứ phải chạm, chỉ dọn mess của mình
+- Do not add features that were not requested.
+- Do not create abstractions for one-time-use code.
+- Do not add flexibility or configurability that is not needed.
+- Do not handle errors for scenarios that cannot occur.
+- 200 lines that could be 50 -> rewrite.
+- Standard: "Would a senior engineer call this overcomplicated?" -> if yes, simplify.
 
-- Không cải thiện code, comment hay format lân cận.
-- Không refactor code đang chạy nếu không liên quan task.
-- Match style hiện có, kể khi mình sẽ chọn khác.
-- Dead code không liên quan → nêu ra, không xóa.
-- Orphan do thay đổi của mình → xóa (import, variable, function).
-- Mọi dòng thay đổi phải truy về yêu cầu của user.
+### 3. Surgical Changes -- Touch only what must be touched, clean up only your own mess
 
-### 4. Goal-Driven Execution — Xác định success criteria, loop đến khi verify
+- Do not improve adjacent code, comments, or formatting.
+- Do not refactor working code that is unrelated to the task.
+- Match the existing style, even when you would choose differently.
+- Unrelated dead code -> flag it; do not delete it.
+- Orphans caused by your own change -> delete (imports, variables, functions).
+- Every changed line must trace back to the user's request.
 
-- Biến task thành mục tiêu đo được:
-  - Thêm validation → viết test cho input không hợp lệ, pass test.
-  - Sửa bug → viết test tái hiện bug, pass test.
-- Task nhiều bước → nêu kế hoạch ngắn + verify step từng bước.
-- Success criteria rõ → agent loop độc lập, không cần hỏi lại user.
-- **Khác `step-goal-contract`**: Goal-Driven là behavioral lens — agent tự đặt success criteria cho từng task. Step-goal-contract là process gate — contract YAML cho cả step.
+### 4. Goal-Driven Execution -- Define success criteria, loop until verified
 
-## Khi Sử Dụng
+- Turn the task into a measurable goal:
+  - Add validation -> write a test for invalid input, pass the test.
+  - Fix a bug -> write a test that reproduces the bug (bug repro first), pass the test.
+- Multi-step task -> state a short plan plus a per-step verify.
+- Clear success criteria -> the agent can loop independently without re-asking the user.
+- **Difference from `step-goal-contract`**: Goal-Driven is a behavioral lens -- the agent sets its own success criteria per task. step-goal-contract is a process gate -- a YAML contract for the entire step.
 
-- Xuyên suốt mọi step — không chỉ s07, mà cả s01 clarify, s04 approach, s05 technical approach, s06 task plan.
-- Khi agent có dấu hiệu over-engineer hoặc sửa lân cận trong diff.
-- Khi cần behavioral guardrail bên cạnh workflow gate.
-- Khi review diff và phát hiện agent vi phạm một trong bốn nguyên tắc.
+## When to Use
 
-## Không Thuộc Phạm Vi
+- Across every step -- not only s07, but also s01 clarify, s04 approach, s05 technical approach, s06 task plan.
+- When the agent shows signs of over-engineering or editing adjacent code in the diff.
+- When a behavioral guardrail is needed alongside the workflow gate.
+- When reviewing a diff and the agent violates one of the four principles.
 
-- Không thay `codex-workflow-chain` hay step skill.
-- Không thay `step-goal-contract` — skill đó khóa contract step (YAML schema), skill này khóa hành vi agent khi làm việc trong step.
-- Không thay `review-discipline` — skill đó điều phối thời điểm review, skill này cung cấp tiêu chí behavioral cho nội dung review.
-- Không thay `definition-of-done-gate` — skill đó khóa verdict hoàn tất work item, skill này chỉ cung cấp success criteria ở mức hành vi.
-- Không bypass workflow gate — bổ trợ, không thay approval.
+## Out of Scope
 
-## Tương Tác Với Skill Khác
+- Does not replace `codex-workflow-chain` or the step skills.
+- Does not replace `step-goal-contract` -- that skill locks the step contract (YAML schema); this skill locks agent behavior while working inside the step.
+- Does not replace `review-discipline` -- that skill coordinates when to review; this skill provides behavioral criteria for the review content.
+- Does not replace `definition-of-done-gate` -- that skill locks the work item completion verdict; this skill only provides behavioral-level success criteria.
+- Does not bypass workflow gates -- it supplements, it does not replace approval.
 
-| Skill | Quan hệ |
+## Interaction With Other Skills
+
+| Skill | Relationship |
 |---|---|
-| `step-goal-contract` | Contract khóa WHAT (mục tiêu step), karpathy khóa HOW (hành vi agent khi làm). Không trùng lặp. |
-| `review-discipline` | Discipline điều phối KHI NÀO review, karpathy cung cấp NỘI DUNG review (surgical, simplicity). Bổ trợ. |
-| `implementation` | Implementation quy trình CÁCH triển khai, karpathy bổ trợ hành vi KHI triển khai (surgical, minimal delta). Song hành. |
-| `definition-of-done-gate` | DoD khóa verdict HOÀN TẤT work item, karpathy cung cấp success criteria ỨNG VIÊN trong từng task. Khác cấp. |
+| `step-goal-contract` | Contract locks WHAT (step goal); karpathy locks HOW (agent behavior while doing). No overlap. |
+| `review-discipline` | Discipline coordinates WHEN to review; karpathy provides the review CONTENT (surgical, simplicity). Supplemental. |
+| `implementation` | Implementation defines HOW to deliver; karpathy supplements behavior WHILE delivering (surgical, minimal delta). Companion. |
+| `definition-of-done-gate` | DoD locks the work item COMPLETION verdict; karpathy provides CANDIDATE success criteria per task. Different level. |
 
 ## Trade-off
 
-Thiên về **thận trọng hơn tốc độ**. Task hiển nhiên (sửa typo, one-liner) → dùng phán đoán, không áp dụng full rigor.
+Leans toward **caution over speed**. Obvious tasks (typo fix, one-liner) -> use judgment; do not apply full rigor.
 
-## Đo Lường Hiệu Quả
+## Measuring Effectiveness
 
-Nguyên tắc đang hoạt động nếu:
-- Diff ít thay đổi không liên quan task.
-- Ít rewrite do overcomplication.
-- Clarifying questions xuất hiện **trước** implement, không phải sau khi sai.
+The principles are working if:
+- Diffs contain few changes unrelated to the task.
+- Few rewrites due to overcomplication.
+- Clarifying questions appear **before** implementing, not after going wrong.
 
-## Tham Chiếu
+## References
 
 - [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills)
-- Gốc: Andrej Karpathy's post về LLM coding pitfalls (January 2026)
+- Source: Andrej Karpathy's post on LLM coding pitfalls (January 2026)

@@ -17,17 +17,17 @@ verification_owner: "auditor"
 # Step 6 - Worker Assignment
 
 > [!summary]
-> Ghi lại phân công worker, owned scope và done_when cho execution runtime.
+> Record the worker assignment, owned scope and done_when for the execution runtime.
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 assignment_id: "S06-ASSIGN-001"
 step_id: s06
 shared_contract_ref: "sample-execution-item.s06.task-breakdown.md#step-contract"
 role: "planner"
 owned_scope:
-  - "chia task frontend/backend/review"
-  - "khóa dependency và handoff point"
+  - "split tasks into frontend/backend/review"
+  - "lock dependencies and handoff points"
 owned_paths:
   - "docs/workflow runtime artifacts"
 skills:
@@ -37,8 +37,8 @@ inputs:
   - "sample-execution-item.s05.technical-approach.md"
   - "sample-execution-item.s05.execution-policy.md"
 done_when:
-  - "có task split rõ boundary"
-  - "có verify checkpoint cho step 8"
+  - "a task split with clear boundaries exists"
+  - "a verify checkpoint for step 8 exists"
 depends_on: []
 status: READY
 handoff_format: worker-handoff-report

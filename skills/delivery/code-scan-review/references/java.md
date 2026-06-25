@@ -1,30 +1,36 @@
+---
+language: en
+---
+
 # Java
 
-Dùng reference này khi thay đổi chạm Java service, library hoặc ứng dụng chạy bằng Gradle hoặc Maven.
+> Vietnamese: java.vi.md
 
-## Thứ Tự Ưu Tiên
+Use this reference when the change touches a Java service, library, or an app running on Gradle or Maven.
+
+## Priority Order
 
 1. Build-tool wrapper
-- Gradle: ưu tiên `./gradlew check` hoặc task verify của project.
-- Maven: ưu tiên `./mvnw test`, `./mvnw verify` hoặc lifecycle tương đương của project.
+- Gradle: prefer `./gradlew check` or the project's verify task.
+- Maven: prefer `./mvnw test`, `./mvnw verify`, or the project's equivalent lifecycle.
 
 2. Static analysis
-- Ưu tiên wrapper hoặc plugin đã có trong project thay vì tự suy diễn tool rời.
+- Prefer an existing wrapper or plugin in the project instead of inferring loose tools.
 
 3. Security scan
-- Ưu tiên `semgrep`.
+- Prefer `semgrep`.
 
 4. Performance heuristic
-- Rà N+1 ORM, object churn, collection scan lớn, blocking I/O trên request path, transaction scope quá rộng, serialization hoặc mapping lặp.
+- Review ORM N+1, object churn, large collection scans, blocking I/O on the request path, overly wide transaction scope, and repeated serialization or mapping.
 
-## Heuristic Bắt Buộc Khi Scope Spring hoặc ORM
+## Mandatory Heuristics When Scope Is Spring Or ORM
 
-- Repository call trong loop.
-- Lazy loading gây query ngoài ý muốn.
-- Transaction boundary không khớp với use case.
-- Validation, auth hoặc exception mapping có làm lộ behavior không mong muốn.
+- Repository calls inside loops.
+- Lazy loading causing unintended queries.
+- Transaction boundaries not matching the use case.
+- Validation, auth, or exception mapping exposing unwanted behavior.
 
 ## Fallback
 
-- Nếu project không có wrapper hoặc môi trường không chạy được full check, ghi rõ build tool nào thiếu và phần nào chỉ được rà ở mức heuristic.
-- Không coi compile pass là đã cover static analysis.
+- If the project has no wrapper or the environment cannot run a full check, record clearly which build tool is missing and which parts were only reviewed at the heuristic level.
+- Do not treat a compile pass as having covered static analysis.

@@ -1,36 +1,36 @@
 # GitHub Push MCP
 
-MCP server này giúp agent xử lý luồng `inspect -> commit -> create repo -> configure remote -> push` cho GitHub mà không cần `gh`.
+This MCP server helps an agent handle the `inspect -> commit -> create repo -> configure remote -> push` flow for GitHub without needing `gh`.
 
 ## Capability
 
-- Kiểm tra trạng thái Git repository trong workspace được cho phép.
-- Tạo repository mới trên GitHub qua REST API.
-- Gắn hoặc cập nhật `origin` sang remote GitHub.
-- Commit toàn bộ thay đổi hiện tại bằng `git add -A`.
-- Push branch hiện tại lên GitHub, có hỗ trợ `dryRun`.
-- Chạy một lệnh tổng hợp `publish_repository_to_github` khi muốn đi trọn luồng publish.
+- Check the Git repository status inside an allowed workspace.
+- Create a new repository on GitHub via the REST API.
+- Attach or update `origin` to a GitHub remote.
+- Commit all current changes with `git add -A`.
+- Push the current branch to GitHub, with `dryRun` support.
+- Run a single composite `publish_repository_to_github` command when you want the full publish flow.
 
 ## Guardrail
 
-- Chỉ thao tác trong `GITHUB_PUSH_ALLOWED_ROOT` hoặc `cwd` của MCP server.
-- Không hỗ trợ `--force`, xóa branch, rewrite history, hoặc push tag hàng loạt.
-- Với HTTPS GitHub push, nếu có `GITHUB_TOKEN` thì server sẽ dùng `GIT_ASKPASS` tạm thời thay vì ghi token vào remote URL.
-- Nếu muốn dùng SSH hoặc credential helper có sẵn, không cần `GITHUB_TOKEN` cho bước `git push`.
+- It only operates inside `GITHUB_PUSH_ALLOWED_ROOT` or the `cwd` of the MCP server.
+- It does not support `--force`, branch deletion, history rewrite, or batch tag push.
+- For HTTPS GitHub push, if `GITHUB_TOKEN` is present, the server uses a temporary `GIT_ASKPASS` instead of writing the token into the remote URL.
+- If you want to use SSH or an existing credential helper, `GITHUB_TOKEN` is not needed for the `git push` step.
 
 ## Environment
 
 | Variable | Required | Purpose |
 |---|---|---|
-| `GITHUB_PUSH_ALLOWED_ROOT` | Khuyến nghị | Giới hạn thư mục repo được phép thao tác |
-| `GITHUB_TOKEN` | Bắt buộc cho `create_github_repository`; tùy chọn cho `git push` | Gọi GitHub REST API và hỗ trợ HTTPS push |
-| `GITHUB_USERNAME` | Bắt buộc nếu dùng `GITHUB_TOKEN` để HTTPS push | Trả lời prompt username cho Git |
+| `GITHUB_PUSH_ALLOWED_ROOT` | Recommended | Constrain the repo directory that may be touched |
+| `GITHUB_TOKEN` | Required for `create_github_repository`; optional for `git push` | Call the GitHub REST API and support HTTPS push |
+| `GITHUB_USERNAME` | Required if `GITHUB_TOKEN` is used for HTTPS push | Answer the Git username prompt |
 
-Ghi chú:
+Notes:
 
-- Nếu dùng PAT cho HTTPS Git operations, GitHub yêu cầu nhập `username` và dùng token thay cho password.
-- Nếu tạo private repo bằng PAT classic, token cần đủ quyền `repo`. Với public repo, `public_repo` là mức tối thiểu.
-- Với fine-grained token, cần quyền tạo repository hoặc quyền ghi phù hợp trên repository đích.
+- If you use a PAT for HTTPS Git operations, GitHub requires a `username` and uses the token instead of a password.
+- If you create a private repo with a classic PAT, the token needs enough `repo` scope. For a public repo, `public_repo` is the minimum.
+- With a fine-grained token, you need the permission to create a repository or the appropriate write permission on the target repository.
 
 ## Install
 
@@ -39,50 +39,50 @@ cd mcp/github-push
 npm install
 ```
 
-Hoặc dùng adapter:
+Or use the adapter:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File adapters/mcp/install-github-push.ps1
 ```
 
-Adapter này sẽ:
-- cài dependency cho `mcp/github-push`
-- render template [`codex-config.toml.template`](codex-config.toml.template) vào `~/.codex/config.toml`
-- đặt `GITHUB_PUSH_ALLOWED_ROOT` mặc định là thư mục cha của repo hiện tại
-- forward `GITHUB_TOKEN` và `GITHUB_USERNAME` từ shell environment thay vì ghi secret thẳng vào config
+This adapter will:
+- install dependencies for `mcp/github-push`
+- render the [`codex-config.toml.template`](codex-config.toml.template) into `~/.codex/config.toml`
+- set `GITHUB_PUSH_ALLOWED_ROOT` to the parent directory of the current repo by default
+- forward `GITHUB_TOKEN` and `GITHUB_USERNAME` from the shell environment instead of writing the secret directly into the config
 
-Có thể override allowed root:
+You can override the allowed root:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File adapters/mcp/install-github-push.ps1 -AllowedRoot "D:/workspaces/RnD/AI"
 ```
 
-### Configure Credentials Trên Windows
+### Configure Credentials On Windows
 
-Để dùng `create_github_repository` hoặc HTTPS push mà không ghi secret vào repo hay `~/.codex/config.toml`, dùng credential adapter:
+To use `create_github_repository` or HTTPS push without writing a secret into the repo or `~/.codex/config.toml`, use the credential adapter:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File adapters/mcp/configure-github-push-credentials.ps1 -GitHubUsername "your-github-username"
 ```
 
-Script sẽ prompt token bằng `Read-Host -AsSecureString`, lưu vào Windows `User` environment variables và nạp luôn cho session PowerShell hiện tại.
+The script will prompt for the token with `Read-Host -AsSecureString`, store it in the Windows `User` environment variables, and load it into the current PowerShell session.
 
-Một số lệnh hữu ích:
+Some useful commands:
 
 ```powershell
-# Chỉ lưu cho session hiện tại
+# Only save for the current session
 powershell -ExecutionPolicy Bypass -File adapters/mcp/configure-github-push-credentials.ps1 -GitHubUsername "your-github-username" -Scope Process
 
-# Kiểm tra đã có biến môi trường hay chưa
+# Check whether the environment variables already exist
 powershell -ExecutionPolicy Bypass -File adapters/mcp/configure-github-push-credentials.ps1 -ShowStatus
 
-# Xóa credential đã lưu ở User scope
+# Clear the saved credential at User scope
 powershell -ExecutionPolicy Bypass -File adapters/mcp/configure-github-push-credentials.ps1 -Clear -Scope User
 ```
 
-Ghi chú:
-- Tránh truyền token trực tiếp trên command line nếu không cần, vì shell history có thể lưu lại.
-- Nếu dùng SSH remote hoặc credential helper có sẵn, bạn có thể không cần `GITHUB_TOKEN` cho bước `git push`.
+Notes:
+- Avoid passing the token directly on the command line unless needed, because the shell history may keep it.
+- If you use an SSH remote or an existing credential helper, you may not need `GITHUB_TOKEN` for the `git push` step.
 
 ## Run
 
@@ -93,7 +93,7 @@ node src/index.js
 
 ## Codex Config Template
 
-Template được commit sẵn tại [`codex-config.toml.template`](codex-config.toml.template). Installer sẽ thay các placeholder máy-local rồi ghi block này vào `~/.codex/config.toml`.
+The template is committed at [`codex-config.toml.template`](codex-config.toml.template). The installer replaces the machine-local placeholders and writes this block into `~/.codex/config.toml`.
 
 ```toml
 [mcp_servers.{{SERVER_NAME}}]
@@ -104,12 +104,12 @@ env = { GITHUB_PUSH_ALLOWED_ROOT = "{{ALLOWED_ROOT}}" }
 env_vars = ["GITHUB_TOKEN", "GITHUB_USERNAME"]
 ```
 
-Ghi chú:
-- `SERVER_NAME`, `ENTRY_POINT`, `MCP_ROOT` và `ALLOWED_ROOT` được installer render theo máy hiện tại.
-- `GITHUB_TOKEN` chỉ bắt buộc khi gọi GitHub API hoặc HTTPS push.
-- `GITHUB_USERNAME` chỉ cần khi dùng `GITHUB_TOKEN` để HTTPS push.
-- Nếu dùng SSH hoặc credential helper sẵn có, không cần lưu token trong config.
-- Secret không được replace vào file template; runtime chỉ forward qua `env_vars`.
+Notes:
+- `SERVER_NAME`, `ENTRY_POINT`, `MCP_ROOT` and `ALLOWED_ROOT` are rendered by the installer for the current machine.
+- `GITHUB_TOKEN` is only required when calling the GitHub API or HTTPS push.
+- `GITHUB_USERNAME` is only needed when using `GITHUB_TOKEN` for HTTPS push.
+- If you use SSH or an existing credential helper, you do not need to store the token in the config.
+- The secret is not replaced into the template file; the runtime only forwards it via `env_vars`.
 
 ## Tool List
 
@@ -198,4 +198,4 @@ Input:
 4. `configure_remote`
 5. `push_current_branch`
 
-Hoặc dùng một lần `publish_repository_to_github` nếu muốn server làm trọn luồng.
+Or run `publish_repository_to_github` once if you want the server to do the full flow.

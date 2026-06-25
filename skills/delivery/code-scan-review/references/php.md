@@ -1,33 +1,39 @@
+---
+language: en
+---
+
 # PHP
 
-Dùng reference này khi `language_stack` có PHP hoặc framework PHP như Laravel, Symfony, Magento, WordPress plugin hoặc service thuần PHP.
+> Vietnamese: php.vi.md
 
-## Thứ Tự Ưu Tiên
+Use this reference when `language_stack` has PHP or a PHP framework such as Laravel, Symfony, Magento, a WordPress plugin, or a pure PHP service.
+
+## Priority Order
 
 1. Syntax
-- Ưu tiên `php -l` cho file PHP thay đổi hoặc path liên quan.
+- Prefer `php -l` for the changed PHP files or the related path.
 
 2. Static analysis
-- Ưu tiên wrapper của project nếu có như `composer phpstan`.
-- Nếu không có wrapper, ưu tiên `vendor/bin/phpstan analyse`.
-- Nếu project có `phpstan.neon`, `phpstan.neon.dist` hoặc `phpstan-baseline.neon`, dùng cấu hình hiện có thay vì tự đoán tham số.
+- Prefer the project's wrapper if present, such as `composer phpstan`.
+- If there is no wrapper, prefer `vendor/bin/phpstan analyse`.
+- If the project has `phpstan.neon`, `phpstan.neon.dist`, or `phpstan-baseline.neon`, use the existing config instead of guessing parameters.
 
 3. Security scan
-- Ưu tiên `semgrep` nếu có trong môi trường hoặc repo.
-- Nếu không có, ghi `SKIP` thay vì thay bằng review tay rồi gọi là security scan.
+- Prefer `semgrep` if available in the environment or repo.
+- If not available, record `SKIP` instead of replacing it with a manual review and calling it a security scan.
 
 4. Performance heuristic
-- Rà query trong loop, N+1 ORM, eager loading thiếu, collection materialize lớn, serialization hoặc hydration nặng.
+- Review queries in loops, ORM N+1, missing eager loading, large collection materialization, and heavy serialization or hydration.
 
-## Heuristic Bắt Buộc Khi Scope Nhạy Cảm
+## Mandatory Heuristics When Scope Is Sensitive
 
-- Auth hoặc permission: guard, policy, middleware, role mapping, bypass qua default branch.
-- File handling: upload validation, mime/extension mismatch, path traversal, tên file người dùng nhập.
-- SQL hoặc query builder: raw SQL, binding thiếu, filter động, pagination hoặc eager loading sai.
-- Command execution hoặc queue job: shell invocation, unserialize, dynamic class resolution, payload từ input ngoài.
+- Auth or permissions: guards, policies, middleware, role mapping, bypass via a default branch.
+- File handling: upload validation, mime/extension mismatch, path traversal, user-supplied file names.
+- SQL or query builder: raw SQL, missing bindings, dynamic filters, wrong pagination or eager loading.
+- Command execution or queue jobs: shell invocation, unserialize, dynamic class resolution, payloads from external input.
 
 ## Fallback
 
-- Nếu không có `phpstan`, tối thiểu vẫn chạy `php -l` và ghi rõ static analysis bị thiếu.
-- Nếu repo dùng Laravel và có Larastan, ưu tiên tool/config hiện có của project thay vì gọi `phpstan` trần.
-- Không gọi test suite là thay thế cho static analysis.
+- If there is no `phpstan`, at minimum still run `php -l` and record clearly that static analysis is missing.
+- If the repo uses Laravel and has Larastan, prefer the project's existing tool/config over calling bare `phpstan`.
+- Do not call a test suite a replacement for static analysis.

@@ -1,205 +1,211 @@
-# Tài Liệu Tham Chiếu Execution Runtime
+---
+language: en
+---
 
-Lưu ý versioning:
+# Execution Runtime Reference
 
-- tài liệu này thuộc public baseline `v1.0.0`
-- `v1.0.0` có execution support theo `agentic|multi_agent`, nhưng không bắt buộc mọi work item phải bật execution layer
-- ranh giới version chính thức nằm ở `workflow-versioning.md`
+> Vietnamese: execution-runtime.vi.md
 
-Tài liệu này bổ sung cho `workflow-chain.md`.
+Versioning notes:
 
-- `workflow-chain.md` trả lời: step nào, skill nào, artifact nào, gate nào.
-- Tài liệu này trả lời: chọn `agentic` hay `multi-agent`, chia role ra sao, handoff thế nào, merge thế nào và fallback thế nào để chạy thực tế theo hướng `Codex-first`.
-- Nếu work item chạy theo SDD, `spec-driven-development.md` là nguồn tham chiếu cho spec lifecycle, requirement IDs, spec freeze, spec change và coverage report; runtime không được bypass các gate đó.
-- Ví dụ thực thi cụ thể nằm ở `end-to-end-examples.md`.
+- this document belongs to the public baseline `v1.0.0`
+- `v1.0.0` has execution support via `agentic|multi_agent`, but it does not require every work item to turn on the execution layer
+- the official version boundary lives in `workflow-versioning.md`
 
-Trạng thái rollout hiện tại trong repo:
+This document supplements `workflow-chain.md`.
 
-- execution runtime đã có sẵn trong baseline public
-- repo hiện đã có metadata `review_mode`, `verification_owner`
-- repo hiện đã có runtime artifacts `execution-policy`, `worker-assignment`, `worker-handoff-report`, `merge-report`
-- validator chuẩn là `wfc exec --workflow-root work-items`; nếu repo đã map root script thì `npm run validate:workflow:execution -- --workflow-root work-items` là alias tương đương
-- sample canonical hiện tại là `work-items/sample-execution-item/`
+- `workflow-chain.md` answers: which step, which skill, which artifact, which gate.
+- This document answers: choose `agentic` or `multi-agent`, how to split roles, how to hand off, how to merge, and how to fall back, to actually run in a `Codex-first` direction.
+- If a work item runs under SDD, `spec-driven-development.md` is the reference for the spec lifecycle, requirement IDs, spec freeze, spec change, and the coverage report; the runtime must not bypass those gates.
+- Concrete execution examples live in `end-to-end-examples.md`.
 
-## Phạm Vi
+Current rollout state in the repo:
 
-- Áp dụng cho execution runtime của workflow coding 8 bước.
-- Ưu tiên Codex trước; giữ cấu trúc đủ trung lập để sau này port sang Claude hoặc agent runtime khác.
-- `NotebookLM` là skill tích hợp tool ngoài để nghiên cứu/tóm lược corpus lớn; không thay thế note `.md` nguồn sự thật.
+- the execution runtime is already in the public baseline
+- the repo already has the `review_mode` and `verification_owner` metadata
+- the repo already has the `execution-policy`, `worker-assignment`, `worker-handoff-report`, and `merge-report` runtime artifacts
+- the standard validator is `wfc exec --workflow-root work-items`; if the repo has mapped a root script, `npm run validate:workflow:execution -- --workflow-root work-items` is the equivalent alias
+- the current canonical sample is `work-items/sample-execution-item/`
 
-## Nguyên Tắc Runtime
+## Scope
 
-- Trong baseline này, khi không có lý do rõ để chia nhiều ownership, chọn `execution_mode=agentic`.
-- lifecycle ở cấp work item không nằm trong execution runtime. Nếu dự án bật `Work Item Protocol` ở bản sau, runtime phải tôn trọng state machine của protocol đó.
-- Trong public baseline `v1.0.0`, tạo work item vẫn theo flow manual scaffold; execution runtime không tự mở work item mới.
-- Chỉ nâng lên `multi_agent` khi step contract đã đủ rõ và có lợi ích phối hợp thực sự.
-- `step-goal-contract` là contract gốc; execution runtime không được đổi goal, scope, done criteria của step.
-- `step-goal-auditor`, `definition-of-ready-gate`, `definition-of-done-gate` vẫn là guardrail bắt buộc khi step yêu cầu.
-- Note `.md` chính của step là nơi duy nhất được xem là nguồn sự thật cho kết luận của step.
-- Output từ `notebooklm` chỉ là context phụ trợ; mọi kết luận chính thức phải được chốt lại vào note `.md` hoặc artifact workflow chuẩn.
-- Khi `sdd_mode` khác `none`, coordinator hoặc agent chính phải giữ trace từ `BRD/SRS` sang approach, task, implementation và verification; không đóng step nếu spec gap bị bỏ qua.
+- Applies to the execution runtime of the eight-step coding workflow.
+- Prefer Codex first; keep the structure neutral enough to later port to Claude or another agent runtime.
+- `NotebookLM` is an external-tool integration skill for researching/summarizing large corpora; it does not replace the `.md` note as source of truth.
 
-## Chính Sách Chọn Execution Mode Theo Codex-First
+## Runtime Principles
 
-### Cửa Vào `agentic`
+- In this baseline, when there is no clear reason to split ownership, choose `execution_mode=agentic`.
+- The work-item-level lifecycle does not live in the execution runtime. If a project turns on `Work Item Protocol` in a later version, the runtime must respect that protocol's state machine.
+- In the public baseline `v1.0.0`, creating a work item still follows the manual scaffold flow; the execution runtime does not open a new work item on its own.
+- Only escalate to `multi_agent` when the step contract is clear enough and there is a real coordination benefit.
+- `step-goal-contract` is the root contract; the execution runtime must not change the step's goal, scope, or done criteria.
+- `step-goal-auditor`, `definition-of-ready-gate`, and `definition-of-done-gate` remain mandatory guardrails when the step requires them.
+- The main `.md` note of a step is the only place considered the source of truth for the step's conclusion.
+- Output from `notebooklm` is only supporting context; every official conclusion must be pinned back into the `.md` note or a standard workflow artifact.
+- When `sdd_mode` is not `none`, the coordinator or main agent must keep the trace from `BRD/SRS` to approach, tasks, implementation, and verification; the step must not close if a spec gap is left unaddressed.
 
-Dùng `agentic` khi thỏa phần lớn các điều kiện sau:
+## Execution Mode Selection Policy, Codex-First
 
-- Step chỉ có một ownership boundary chính.
-- Context đủ nhỏ để một agent giữ được sự nhất quán.
-- Không cần song song hóa để giảm thời gian hoặc giảm tải ngữ cảnh.
-- Verify của step không cần tách người làm và người kiểm chứng.
+### Gate Into `agentic`
 
-### Cửa Vào `multi_agent`
+Use `agentic` when most of the following hold:
 
-Chỉ dùng `multi_agent` khi đồng thời thỏa cả 2 nhóm điều kiện dưới đây.
+- The step has only one main ownership boundary.
+- The context is small enough for one agent to stay consistent.
+- Parallelization is not needed to save time or reduce context load.
+- The step's verification does not need to separate the doer from the checker.
 
-Nhóm 1, readiness tối thiểu:
+### Gate Into `multi_agent`
 
-- Đã có `step-goal-contract` ổn định cho step.
-- Đã xác định được `coordinator_role`.
-- Đã xác định được `verification_owner` hoặc cách audit cuối step.
-- Đã có `merge_strategy` cho output cuối.
-- Đã chia được `owned_scope` hoặc `owned_paths` tương đối rời nhau.
+Use `multi_agent` only when both groups of conditions below hold at the same time.
 
-Nhóm 2, complexity signal:
+Group 1, minimum readiness:
 
-- `multi_boundary`: step đụng nhiều backend/frontend/data boundary.
-- `parallelizable_work`: có nhiều phần việc độc lập có thể làm song song.
-- `large_context`: số lượng nguồn hoặc code area quá lớn với một agent.
-- `separate_verification`: cần tách execution với review/verify để giảm bias.
-- `tool_specialization`: có role phải dùng tool ngoài hoặc skill chuyên biệt như `notebooklm`, `database-change-review`.
+- A stable `step-goal-contract` exists for the step.
+- A `coordinator_role` is identified.
+- A `verification_owner` or an end-of-step audit path is identified.
+- A `merge_strategy` for the final output exists.
+- `owned_scope` or `owned_paths` can be split into relatively disjoint parts.
 
-### Parallel Budget Mặc Định
+Group 2, complexity signals:
 
-Để rollout an toàn trên Codex trước, dùng budget bảo thủ:
+- `multi_boundary`: the step touches many backend/frontend/data boundaries.
+- `parallelizable_work`: there are several independent pieces of work that can run in parallel.
+- `large_context`: the number of sources or code areas is too large for one agent.
+- `separate_verification`: execution must be separated from review/verify to reduce bias.
+- `tool_specialization`: a role must use an external tool or a specialized skill such as `notebooklm`, `database-change-review`.
 
-- Step 1-4: `coordinator + tối đa 2 worker`.
-- Step 5-6: `coordinator + tối đa 3 worker`.
-- Step 7-8: `coordinator + tối đa 4 worker` khi ownership rõ và verify path tách bạch.
+### Default Parallel Budget
 
-Nếu chưa chứng minh được lợi ích song song, giảm về `agentic` hoặc `sequential multi-role`.
+To roll out safely on Codex first, use a conservative budget:
+
+- Steps 1-4: `coordinator + at most 2 workers`.
+- Steps 5-6: `coordinator + at most 3 workers`.
+- Steps 7-8: `coordinator + at most 4 workers` when ownership is clear and the verify path is separate.
+
+If the parallel benefit is not proven, reduce to `agentic` or `sequential multi-role`.
 
 ### Fallback Rules
 
-- Nếu `owned_paths` chồng lấn nhiều, fallback về `agentic` hoặc `sequential multi-role`.
-- Nếu worker trả output thiếu evidence, coordinator không merge; worker phải làm lại hoặc escalation.
-- Nếu external tool như `NotebookLM` unavailable do auth/network, fallback về đọc tay hoặc flow research khác và ghi rõ limitation.
-- Nếu final audit không thể xác nhận traceability hoặc quality gate, step không được đóng dù partial outputs đã có.
+- If `owned_paths` overlap heavily, fall back to `agentic` or `sequential multi-role`.
+- If a worker returns output without evidence, the coordinator does not merge; the worker must redo or escalate.
+- If an external tool such as `NotebookLM` is unavailable due to auth/network, fall back to manual reading or another research flow and record the limitation.
+- If the final audit cannot confirm traceability or a quality gate, the step must not close even if partial outputs exist.
 
-## Role Contract Chuẩn
+## Standard Role Contract
 
 ### `coordinator`
 
-- Mục tiêu: khóa shared contract, chia việc, gom output, chốt handoff cuối step.
-- Sở hữu: `execution_policy`, `worker_assignment`, `merge_report`, note `.md` nguồn sự thật.
-- Không được: giao việc mà không có `owned_scope` rõ; merge output thiếu evidence; bỏ qua final audit.
-- Input tối thiểu: `step-goal-contract`, upstream artifacts, execution mode đã chọn.
-- Output bắt buộc: assignment rõ, merge report, handoff rõ cho step sau hoặc blocker.
+- Goal: lock the shared contract, split work, collect output, pin the end-of-step handoff.
+- Owns: `execution_policy`, `worker_assignment`, `merge_report`, the source-of-truth `.md` note.
+- Must not: assign work without a clear `owned_scope`; merge output lacking evidence; skip the final audit.
+- Minimum input: `step-goal-contract`, upstream artifacts, the chosen execution mode.
+- Required output: clear assignments, a merge report, a clear handoff to the next step or a blocker.
 
 ### `analyst`
 
-- Mục tiêu: bóc tách requirement, business goal, open questions, acceptance criteria draft.
-- Sở hữu: phần phân tích nội dung ở step 1-4 hoặc input phân tích cho step 5.
-- Không được: tự chốt approach kỹ thuật hoặc đóng step nếu không phải coordinator.
-- Skill thường dùng: `requirement-analysis`, `product-thinking`.
+- Goal: break down requirements, business goals, open questions, and draft acceptance criteria.
+- Owns: the content analysis in steps 1-4, or analysis input for step 5.
+- Must not: pin a technical approach or close a step unless it is the coordinator.
+- Common skills: `requirement-analysis`, `product-thinking`.
 
 ### `architect`
 
-- Mục tiêu: chốt option analysis, architecture detail và boundary bị tác động.
-- Sở hữu: phần thiết kế ở step 5 và input cho step 6.
-- Không được: lấn sang implementation path ngoài scope design đã giao.
-- Skill thường dùng: `brainstorming`, `system-design`, `domain-architecture`, `frontend-architecture`, `database-design`.
+- Goal: pin the option analysis, architecture detail, and impacted boundaries.
+- Owns: the design in step 5 and input for step 6.
+- Must not: drift into the implementation path outside the assigned design scope.
+- Common skills: `brainstorming`, `system-design`, `domain-architecture`, `frontend-architecture`, `database-design`.
 
 ### `builder`
 
-- Mục tiêu: thực thi code/config/doc trong boundary được giao.
-- Sở hữu: `owned_paths`, `owned_scope`, implementation evidence.
-- Không được: sửa path ngoài ownership nếu chưa được reassignment; tự merge vào output cuối của step.
-- Skill thường dùng: `implementation`.
+- Goal: execute code/config/doc within the assigned boundary.
+- Owns: `owned_paths`, `owned_scope`, implementation evidence.
+- Must not: edit paths outside ownership without reassignment; self-merge into the step's final output.
+- Common skills: `implementation`.
 
 ### `tester`
 
-- Mục tiêu: chạy verify và thu thập evidence test/scan/review.
-- Sở hữu: verification evidence theo assignment.
-- Không được: tự kết luận DoD cuối step nếu không phải verification owner/coordinator.
-- Skill thường dùng: `testing`, `code-scan-review`, `database-change-review`.
+- Goal: run verification and collect test/scan/review evidence.
+- Owns: verification evidence per assignment.
+- Must not: conclude the step's final DoD unless it is the verification owner/coordinator.
+- Common skills: `testing`, `code-scan-review`, `database-change-review`.
 
 ### `auditor`
 
-- Mục tiêu: đối chiếu output cuối với contract và gate.
-- Sở hữu: audit verdict, gap list, recommendation.
-- Không được: viết lại output nghiệp vụ thay cho coordinator hoặc worker.
-- Skill thường dùng: `step-goal-auditor`, `definition-of-ready-gate`, `definition-of-done-gate`.
+- Goal: compare the final output against the contract and gates.
+- Owns: the audit verdict, gap list, recommendation.
+- Must not: rewrite the business output in place of the coordinator or a worker.
+- Common skills: `step-goal-auditor`, `definition-of-ready-gate`, `definition-of-done-gate`.
 
 ### `notebooklm-researcher`
 
-- Mục tiêu: dùng `notebooklm` để đọc/tóm lược corpus lớn, nhiều nguồn ngoài hoặc knowledge notebook.
-- Sở hữu: notebook/query/output nghiên cứu, không sở hữu kết luận cuối của step.
-- Không được: coi output NotebookLM là source of truth; mọi kết luận phải được chuẩn hóa lại trong artifact workflow.
-- Step thường áp dụng: step 1, 3, 5 và khi cần ở step 8.
-- Skill thường dùng: `notebooklm`.
+- Goal: use `notebooklm` to read/summarize large corpora, many external sources, or a knowledge notebook.
+- Owns: the research notebook/query/output, not the step's final conclusion.
+- Must not: treat NotebookLM output as the source of truth; every conclusion must be normalized back into a workflow artifact.
+- Common steps: step 1, 3, 5, and when needed at step 8.
+- Common skills: `notebooklm`.
 
 ## Handoff Protocol
 
-### Luật Chung
+### General Rules
 
-- Mọi assignment phải trỏ về cùng một `shared_contract_ref`.
-- Worker chỉ được handoff về `coordinator`, không handoff trực tiếp sang step tiếp theo.
-- Handoff phải có `status`, `summary`, `outputs_produced` và `evidence`.
-- Coordinator chỉ merge output khi `done_when` của assignment đã được đối chiếu tối thiểu.
-- Nếu worker dùng tool ngoài như `NotebookLM`, phải log lại nguồn, notebook hoặc query liên quan.
-- Final audit luôn chạy trên output đã merge, không audit từng mảnh rời như thể đó là output cuối step.
+- Every assignment must point to the same `shared_contract_ref`.
+- A worker may only hand off to the `coordinator`, not directly to the next step.
+- A handoff must have `status`, `summary`, `outputs_produced`, and `evidence`.
+- The coordinator only merges output once the assignment's `done_when` has been compared at minimum.
+- If a worker uses an external tool such as `NotebookLM`, the related source, notebook, or query must be logged.
+- The final audit always runs on merged output, not on separate fragments as if they were the step's final output.
 
-### Trạng Thái Assignment
+### Assignment States
 
-- `PLANNED`: đã xác định assignment nhưng chưa phát cho worker.
-- `READY`: input cho assignment đã đủ.
-- `IN_PROGRESS`: worker đang xử lý.
-- `HANDOFF`: worker đã trả output về coordinator.
-- `MERGED`: coordinator đã nhận và tích hợp output.
-- `BLOCKED`: assignment bị chặn bởi input, tool, conflict hoặc constraint.
-- `CANCELLED`: assignment bị hủy do replan hoặc fallback.
+- `PLANNED`: the assignment is defined but not yet dispatched to a worker.
+- `READY`: inputs for the assignment are sufficient.
+- `IN_PROGRESS`: the worker is processing.
+- `HANDOFF`: the worker has returned output to the coordinator.
+- `MERGED`: the coordinator has accepted and integrated the output.
+- `BLOCKED`: the assignment is blocked by input, tool, conflict, or constraint.
+- `CANCELLED`: the assignment is canceled due to replan or fallback.
 
-## Tích Hợp `NotebookLM` Trong Workflow
+## `NotebookLM` Integration In The Workflow
 
-`NotebookLM` là optional integration skill, không phải gate bắt buộc.
+`NotebookLM` is an optional integration skill, not a mandatory gate.
 
-Dùng `NotebookLM` khi có ít nhất một tín hiệu sau:
+Use `NotebookLM` when at least one of these signals is present:
 
-- Có trên 3 nguồn tài liệu dài cần tổng hợp nhanh.
-- Cần query lặp lại trên cùng một corpus.
-- Cần bóc tách insight từ tài liệu ngoài codebase như spec, research, docs hoặc transcripts.
+- More than 3 long documents need to be summarized quickly.
+- Repeated querying of the same corpus is needed.
+- Insights must be extracted from documents outside the codebase such as specs, research, docs, or transcripts.
 
-Không dùng `NotebookLM` để:
+Do not use `NotebookLM` to:
 
-- Thay cho `step-goal-contract`.
-- Thay cho quyết định cuối trong note workflow.
-- Thay cho verify kỹ thuật trực tiếp trên codebase.
+- Replace `step-goal-contract`.
+- Replace the final decision in the workflow note.
+- Replace direct technical verification on the codebase.
 
-Mẫu áp dụng theo step:
+Sample usage by step:
 
-- Step 1: hỗ trợ restate khi user cung cấp nhiều tài liệu nguồn.
-- Step 3: gom open questions từ corpus lớn.
-- Step 5: tổng hợp design constraints hoặc comparative research.
-- Step 8: chỉ dùng để tổng hợp tài liệu release/compliance ngoài codebase nếu thật sự cần.
+- Step 1: support restating when the user provides many source documents.
+- Step 3: gather open questions from a large corpus.
+- Step 5: summarize design constraints or comparative research.
+- Step 8: only use it to summarize release/compliance documents outside the codebase if truly needed.
 
 ## Codex-First Runtime Behavior
 
-- Nếu runtime Codex hỗ trợ delegation/sub-agent, `coordinator` có thể phát assignment song song theo budget ở trên.
-- Nếu runtime không hỗ trợ sub-agent hoặc tool delegation ổn định, vẫn dùng cùng spec này nhưng chạy ở chế độ `sequential multi-role`: một agent lần lượt đóng các role khác nhau và ghi lại handoff như thể là nhiều agent logic.
-- `multi_agent` không được bật chỉ vì user nói “hãy song song hóa”; coordinator vẫn phải kiểm tra entry conditions.
-- Coordinator phải cập nhật note `.md` ít nhất ở 3 checkpoint: chọn execution mode, phát assignments, hoàn tất merge.
-- Với step 7 và step 8, nếu verify owner chưa rõ thì không bật `multi_agent`.
+- If the Codex runtime supports delegation/sub-agents, the `coordinator` may dispatch assignments in parallel within the budget above.
+- If the runtime does not support sub-agents or stable delegation tooling, keep the same spec but run in `sequential multi-role` mode: one agent plays the different roles in turn and records handoffs as if there were several logical agents.
+- `multi_agent` must not be turned on just because the user says "parallelize"; the coordinator must still check the entry conditions.
+- The coordinator must update the `.md` note at at least 3 checkpoints: choosing execution mode, dispatching assignments, completing the merge.
+- For step 7 and step 8, if the verify owner is not yet clear, do not turn on `multi_agent`.
 
-## Lộ Trình Rollout Khuyến Nghị
+## Recommended Rollout Path
 
-1. Phase 1: bật `execution_mode`, `execution_roles`, `execution_policy` cho mọi step nhưng giữ runtime thực tế chủ yếu là `agentic`.
-2. Phase 2: pilot `multi_agent` cho step 5, 7 và 8 trên work item đủ lớn.
-3. Phase 3: thêm `notebooklm-researcher` cho các work item research-heavy hoặc nhiều tài liệu ngoài.
-4. Phase 4: sau khi Codex ổn định, tách phần trung lập runtime để port sang Claude.
+1. Phase 1: turn on `execution_mode`, `execution_roles`, and `execution_policy` for every step, but keep the actual runtime mostly `agentic`.
+2. Phase 2: pilot `multi_agent` for steps 5, 7, and 8 on sufficiently large work items.
+3. Phase 3: add a `notebooklm-researcher` for research-heavy work items or those with many external documents.
+4. Phase 4: after Codex is stable, separate the runtime-neutral part to port to Claude.
 
-## Mẫu Output Theo Runtime
+## Runtime Output Templates
 
 ### `execution-policy`
 

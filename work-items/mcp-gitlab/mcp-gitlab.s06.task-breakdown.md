@@ -93,97 +93,97 @@ tags:
 # Step 6 - Task Plan
 
 > [!summary]
-> Tóm tắt task plan, dependency, verify checkpoints và review checkpoints.
+> Summarize the task plan, dependencies, verify checkpoints and review checkpoints.
 
 ## Step Contract
 ```yaml
-step_goal: "Chuyển approach đã được approve thành task plan đủ cụ thể để implement lane GitLab theo hướng thin wrapper mà không làm mơ hồ path, verify path hay scope guard."
+step_goal: "Turn the approved approach into a task plan concrete enough to implement the GitLab lane as a thin wrapper without blurring the path, the verify path or the scope guard."
 input_summary:
-  - "Step 5 đã được approve ngày 2026-04-23"
-  - "Phase 1 chỉ gồm inspect repository, pull current branch và push current branch"
-  - "Lane GitLab dùng zereight/gitlab-mcp làm standard runtime/reference"
-  - "GitHub lane hiện có phải giữ nguyên behavior"
+  - "Step 5 was approved on 2026-04-23"
+  - "Phase 1 only includes inspect repository, pull current branch and push current branch"
+  - "The GitLab lane uses zereight/gitlab-mcp as the standard runtime/reference"
+  - "The existing GitHub lane must keep its behavior unchanged"
 output_summary:
-  - "BA lane map acceptance criteria sang task và scope guard"
-  - "DEV lane map path, dependency order và TDD targets"
-  - "Task breakdown có ownership, review checkpoint và verification hint"
+  - "A BA lane maps the acceptance criteria to tasks and scope guards"
+  - "A DEV lane maps paths, dependency order and TDD targets"
+  - "A task breakdown with ownership, review checkpoints and verification hints"
 done_when:
-  - "Không còn placeholder kiểu 'làm phần còn lại'"
-  - "Mỗi task có objective, paths_in_scope, outputs_expected và verification_hint"
-  - "Có verify path rõ cho SSH, ff-only, dirty tree, missing upstream và lane isolation"
+  - "No placeholder like 'do the rest' remains"
+  - "Every task has an objective, paths_in_scope, outputs_expected and a verification_hint"
+  - "A clear verify path exists for SSH, ff-only, dirty tree, missing upstream and lane isolation"
 owner: "developer"
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
-implementation_goal: "Ship lane GitLab phase 1 dưới dạng MCP wrapper/integration mỏng cho inspect, pull và push trên repository GitLab đã tồn tại, đồng thời giữ explicit provider distinction và không làm đổi behavior của lane GitHub."
+implementation_goal: "Ship the GitLab lane phase 1 as a thin MCP wrapper/integration for inspect, pull and push on an existing GitLab repository, while keeping an explicit provider distinction and not changing the GitHub lane behavior."
 ba_lane:
   acceptance_coverage:
-    - "AC1 + AC2 được cover bởi T1 và T3 qua package/config naming, provider metadata và host/runtime wiring explicit"
-    - "AC3 + AC4 + AC5 được cover bởi T2 và T4 qua tool surface inspect/pull/push, SSH-first và ff-only guardrails"
-    - "AC6 được cover bởi T3 và T5 qua installer/config registration và smoke check"
-    - "AC7 được cover bởi T1, T4 và T5 qua lane isolation rule, read-only reference với github-push và regression checks"
+    - "AC1 + AC2 are covered by T1 and T3 through package/config naming, explicit provider metadata and host/runtime wiring"
+    - "AC3 + AC4 + AC5 are covered by T2 and T4 through the inspect/pull/push tool surface, SSH-first and ff-only guardrails"
+    - "AC6 is covered by T3 and T5 through installer/config registration and a smoke check"
+    - "AC7 is covered by T1, T4 and T5 through the lane isolation rule, the read-only reference to github-push and regression checks"
   scope_guards:
-    - "Không thêm create repository, merge request, pipeline hay project-settings flow"
-    - "Không mở HTTPS + PAT trong phase 1 nếu không có blocker delivery thực tế"
-    - "Không sửa tool surface hoặc contract của github-push hiện có"
-    - "Không cho phép pull tự merge hoặc rebase; default phải là ff-only"
+    - "Do not add a create repository, merge request, pipeline or project-settings flow"
+    - "Do not open HTTPS + PAT in phase 1 unless there is a real delivery blocker"
+    - "Do not change the tool surface or contract of the existing github-push"
+    - "Do not let a pull auto-merge or rebase; the default must be ff-only"
   human_review_points:
-    - "Approve task plan trước khi mở step 7 implement"
-    - "Review naming cuối cùng cho package/server/config của lane GitLab nếu khác mặc định `mcp/gitlab` và server `gitlab`"
-    - "Review fail-fast behavior cho dirty working tree và diverged branch trước khi coi implementation là complete"
+    - "Approve the task plan before opening the step 7 implementation"
+    - "Review the final naming for the GitLab lane package/server/config if it differs from the default `mcp/gitlab` package and the `gitlab` server"
+    - "Review the fail-fast behavior for a dirty working tree and a diverged branch before the implementation is considered complete"
 dev_lane:
   path_map:
-    - "New package lane GitLab: mcp/gitlab/package.json, mcp/gitlab/codex-config.toml.template, mcp/gitlab/src/index.js, mcp/gitlab/src/core.js, mcp/gitlab/README.md, mcp/gitlab/test/core.test.js"
+    - "New GitLab lane package: mcp/gitlab/package.json, mcp/gitlab/codex-config.toml.template, mcp/gitlab/src/index.js, mcp/gitlab/src/core.js, mcp/gitlab/README.md, mcp/gitlab/test/core.test.js"
     - "Installer/config wiring: adapters/mcp/install-gitlab.sh, adapters/mcp/install-gitlab.ps1"
     - "Read-only reference baseline: mcp/github-push/src/core.js, mcp/github-push/src/index.js, mcp/github-push/README.md, adapters/mcp/install-github-push.sh"
     - "Workflow evidence only: work-items/mcp-gitlab/*"
   technical_sequence:
-    - "T1 chốt package boundary, server name, config template và explicit provider/host metadata"
-    - "T2 implement core wrapper tools và local git guardrails trong src/core.js + src/index.js"
-    - "T3 wire installer/config cho Codex và đảm bảo lane GitHub không bị overwrite"
-    - "T4 thêm tests + docs cho success path và failure path"
-    - "T5 chạy package checks, workflow validation và smoke check trên repo GitLab đã tồn tại nếu environment cho phép"
+    - "T1 locks the package boundary, the server name, the config template and the explicit provider/host metadata"
+    - "T2 implements the core wrapper tools and the local git guardrails in src/core.js + src/index.js"
+    - "T3 wires the installer/config for Codex and ensures the GitHub lane is not overwritten"
+    - "T4 adds tests + docs for the success path and the failure path"
+    - "T5 runs the package checks, the workflow validation and a smoke check on an existing GitLab repository if the environment allows it"
   tdd_targets:
-    - "T2/T4: pull_current_branch fail khi dirty working tree"
-    - "T2/T4: pull_current_branch fail khi branch diverged và không ff-only được"
-    - "T2/T4: push_current_branch fail rõ khi thiếu upstream hoặc auth SSH lỗi"
-    - "T2/T4: inspect_repository chỉ báo metadata trong allowed root và reject path ngoài boundary"
+    - "T2/T4: pull_current_branch fails when the working tree is dirty"
+    - "T2/T4: pull_current_branch fails when the branch diverged and ff-only is not possible"
+    - "T2/T4: push_current_branch fails clearly when the upstream is missing or SSH auth fails"
+    - "T2/T4: inspect_repository only reports metadata within the allowed root and rejects a path outside the boundary"
 task_breakdown:
   - id: T1
     owner_role: developer
-    name: "Scaffold lane GitLab và khóa boundary config"
-    objective: "Tạo skeleton `mcp/gitlab` theo pattern hiện có, chốt naming ngắn gọn và config template explicit cho provider GitLab, host self-hosted và allowed root."
+    name: "Scaffold the GitLab lane and lock the config boundary"
+    objective: "Create the `mcp/gitlab` skeleton following the existing pattern, lock the short naming and an explicit config template for the GitLab provider, the self-hosted host and the allowed root."
     paths_in_scope:
       - "mcp/gitlab/package.json"
       - "mcp/gitlab/codex-config.toml.template"
       - "mcp/gitlab/README.md"
     dependencies: []
     outputs_expected:
-      - "Package MCP mới cho lane GitLab với script start/test/check"
-      - "Config template có server name, entry point, allowed root và host GitLab explicit"
-      - "README nêu rõ standard runtime/reference là zereight/gitlab-mcp và scope phase 1 chỉ local inspect/pull/push"
-    review_checkpoint: "Review boundary sau khi scaffold để chắc package mới không kéo scope sang GitLab platform API."
-    verification_hint: "So sánh với pattern `mcp/github-push` và kiểm tra config template không ghi đè lane GitHub."
+      - "A new MCP package for the GitLab lane with start/test/check scripts"
+      - "A config template with the server name, entry point, allowed root and an explicit GitLab host"
+      - "A README stating that the standard runtime/reference is zereight/gitlab-mcp and that phase 1 scope is only local inspect/pull/push"
+    review_checkpoint: "Review the boundary after scaffolding to make sure the new package does not drag the scope into the GitLab platform API."
+    verification_hint: "Compare against the `mcp/github-push` pattern and check that the config template does not overwrite the GitHub lane."
   - id: T2
     owner_role: developer
-    name: "Implement core wrapper tools và guardrails local git"
-    objective: "Expose đúng ba tool `inspect_repository`, `pull_current_branch`, `push_current_branch` với guardrails SSH-first, ff-only và explicit failure cho dirty tree, missing upstream, path ngoài allowed root."
+    name: "Implement the core wrapper tools and the local git guardrails"
+    objective: "Expose exactly three tools `inspect_repository`, `pull_current_branch`, `push_current_branch` with SSH-first, ff-only guardrails and explicit failure for a dirty tree, missing upstream and a path outside the allowed root."
     paths_in_scope:
       - "mcp/gitlab/src/core.js"
       - "mcp/gitlab/src/index.js"
     dependencies:
       - "T1"
     outputs_expected:
-      - "Core helpers cho inspect/pull/push của repository GitLab đã tồn tại"
-      - "Validation cho current branch, upstream tracking, allowed root và GitLab host expectation"
-      - "Failure message rõ cho dirty working tree, diverged branch, auth fail và missing upstream"
-    review_checkpoint: "Review sớm sau khi hoàn tất contract tool surface và guardrail, trước khi sang installer."
-    verification_hint: "Đi theo TDD cho các behavior change chính: fail trước với dirty tree/diverged branch rồi pass sau khi implement."
+      - "Core helpers for inspect/pull/push of an existing GitLab repository"
+      - "Validation for the current branch, upstream tracking, the allowed root and the expected GitLab host"
+      - "Clear failure messages for a dirty working tree, a diverged branch, an auth failure and a missing upstream"
+    review_checkpoint: "Early review after the tool surface contract and the guardrails are done, before moving to the installer."
+    verification_hint: "Follow TDD for the main behavior changes: fail first on a dirty tree/diverged branch, then pass after the implementation."
   - id: T3
     owner_role: developer
-    name: "Wire installer và Codex integration cho lane GitLab"
-    objective: "Đăng ký MCP GitLab vào Codex config bằng installer shell/PowerShell theo pattern repo hiện có, nhưng giữ managed block tách biệt với `github-push`."
+    name: "Wire the installer and the Codex integration for the GitLab lane"
+    objective: "Register the GitLab MCP into the Codex config with a shell/PowerShell installer following the existing repo pattern, but keep a managed block separate from `github-push`."
     paths_in_scope:
       - "adapters/mcp/install-gitlab.sh"
       - "adapters/mcp/install-gitlab.ps1"
@@ -192,15 +192,15 @@ task_breakdown:
       - "T1"
       - "T2"
     outputs_expected:
-      - "Installer shell và PowerShell cho lane GitLab"
-      - "Managed config block riêng cho server GitLab"
-      - "Không đụng credential helper GitHub vì phase 1 là SSH-first"
-    review_checkpoint: "Review config merge logic để tránh overwrite hoặc remove block của lane GitHub."
-    verification_hint: "Dry-run bằng file config tạm hoặc inspection logic để chắc managed block của GitLab độc lập."
+      - "Shell and PowerShell installers for the GitLab lane"
+      - "A separate managed config block for the GitLab server"
+      - "No touch on the GitHub credential helper because phase 1 is SSH-first"
+    review_checkpoint: "Review the config merge logic to avoid overwriting or removing the GitHub lane block."
+    verification_hint: "Dry-run with a temp config file or inspect the logic to make sure the GitLab managed block is independent."
   - id: T4
     owner_role: developer
-    name: "Bổ sung test và tài liệu vận hành"
-    objective: "Bao phủ success/failure path cho inspect/pull/push và viết hướng dẫn cài đặt, boundary, non-goal và expected error behavior."
+    name: "Add tests and operational docs"
+    objective: "Cover the success/failure path for inspect/pull/push and write the install guide, the boundary, the non-goals and the expected error behavior."
     paths_in_scope:
       - "mcp/gitlab/test/core.test.js"
       - "mcp/gitlab/README.md"
@@ -209,77 +209,77 @@ task_breakdown:
       - "T2"
       - "T3"
     outputs_expected:
-      - "Test cases cho dirty tree, missing upstream, diverged branch, allowed root và lane isolation"
-      - "README mô tả SSH-first setup, ff-only pull, self-hosted host và rollback cách gỡ config"
-      - "Package lock phản ánh dependency thực tế nếu có package mới"
-    review_checkpoint: "Review coverage đủ cho edge cases trong acceptance criteria trước khi chuyển verify."
-    verification_hint: "Chạy `npm test` và `npm run check` trong `mcp/gitlab`."
+      - "Test cases for a dirty tree, missing upstream, a diverged branch, the allowed root and lane isolation"
+      - "A README describing SSH-first setup, ff-only pull, the self-hosted host and the rollback by removing the config"
+      - "A package lock reflecting the real dependency if a new package is added"
+    review_checkpoint: "Review that the coverage is enough for the edge cases in the acceptance criteria before moving to verify."
+    verification_hint: "Run `npm test` and `npm run check` inside `mcp/gitlab`."
   - id: T5
     owner_role: developer
-    name: "Thực hiện smoke check và gom evidence handoff"
-    objective: "Chạy verify tối thiểu cho package mới và gom evidence lane isolation để handoff sang step 8."
+    name: "Run the smoke check and collect the handoff evidence"
+    objective: "Run the minimum verify for the new package and collect the lane isolation evidence to hand off to step 8."
     paths_in_scope:
       - "work-items/mcp-gitlab/mcp-gitlab.s07.implementation.md"
       - "work-items/mcp-gitlab/mcp-gitlab.s08.verification.md"
     dependencies:
       - "T4"
     outputs_expected:
-      - "Evidence check cho package GitLab và workflow validator"
-      - "Ghi nhận rõ những gì đã được smoke test và residual risk còn lại"
-      - "Checklist rằng github-push không bị thay contract hay config"
-    review_checkpoint: "Review evidence completeness trước khi đóng implementation batch."
-    verification_hint: "Chạy package check, workflow validator và nếu môi trường cho phép thì smoke trên một repository GitLab SSH đã tồn tại."
+      - "Evidence check for the GitLab package and the workflow validator"
+      - "A clear record of what was smoke tested and the residual risk left"
+      - "A checklist that github-push had no contract or config change"
+    review_checkpoint: "Review the evidence completeness before closing the implementation batch."
+    verification_hint: "Run the package check, the workflow validator and, if the environment allows, a smoke run on an existing GitLab SSH repository."
 dependencies_global:
-  - "T1 phải xong trước khi implement tool surface để tránh drift naming/config"
-  - "T2 là dependency chặn cho test và installer vì contract tool phải ổn định trước"
-  - "T3 và T4 phải xong trước T5 để smoke có đủ package + config + docs"
+  - "T1 must be done before the tool surface is implemented to avoid naming/config drift"
+  - "T2 is the blocking dependency for tests and the installer because the tool contract must be stable first"
+  - "T3 and T4 must be done before T5 so the smoke run has enough package + config + docs"
 risk_notes:
-  - "Nguy cơ wrapper phình thành runtime riêng nếu T2 thêm capability ngoài inspect/pull/push"
-  - "Nguy cơ overwrite config lane GitHub nếu T3 không tách managed block chuẩn"
-  - "Nguy cơ mismatch standard runtime/reference nếu README/config không nói rõ zereight/gitlab-mcp chỉ là chuẩn lane GitLab"
-  - "Nguy cơ false confidence nếu chỉ test happy path mà bỏ qua dirty tree, diverged branch và missing upstream"
+  - "Risk that the wrapper grows into a separate runtime if T2 adds capability beyond inspect/pull/push"
+  - "Risk of overwriting the GitHub lane config if T3 does not separate the managed block properly"
+  - "Risk of a mismatch with the standard runtime/reference if the README/config does not state clearly that zereight/gitlab-mcp is only the GitLab lane standard"
+  - "Risk of false confidence if only the happy path is tested and the dirty tree, diverged branch and missing upstream are skipped"
 verification_plan:
-  - "Workflow note vẫn phải pass `npm run validate:workflow -- --workflow-root work-items/mcp-gitlab --project-root .`"
-  - "Package mới phải pass `npm test` và `npm run check` trong `mcp/gitlab`"
-  - "Installer logic phải được kiểm rằng chỉ thêm hoặc cập nhật block GitLab, không xóa block GitHub"
-  - "Nếu có repo GitLab SSH sẵn trong allowed root, chạy smoke `inspect -> pull ff-only -> push` theo branch hiện tại"
-  - "Nếu không có môi trường smoke thật, phải ghi rõ residual risk về SSH/auth/network ở step 8"
-notes_for_implementation: "Giữ implementation nhỏ nhất: tham chiếu pattern `github-push`, nhưng không copy toàn bộ logic GitHub sang GitLab. Wrapper chỉ phục vụ local git workflow phase 1; mọi capability GitLab platform/API khác giữ ngoài scope."
+  - "The workflow note must still pass `npm run validate:workflow -- --workflow-root work-items/mcp-gitlab --project-root .`"
+  - "The new package must pass `npm test` and `npm run check` inside `mcp/gitlab`"
+  - "The installer logic must be checked to only add or update the GitLab block, not delete the GitHub block"
+  - "If an SSH GitLab repo is available in the allowed root, run the smoke `inspect -> pull ff-only -> push` on the current branch"
+  - "If no real smoke environment is available, the residual risk on SSH/auth/network must be recorded clearly in step 8"
+notes_for_implementation: "Keep the implementation minimal: reference the `github-push` pattern, but do not copy all the GitHub logic into GitLab. The wrapper only serves the phase 1 local git workflow; any other GitLab platform/API capability stays out of scope."
 ```
 
 ## Verification Plan
-- Check bắt buộc: workflow validator cho work item, `npm test`, `npm run check`, installer block isolation và smoke path `inspect -> pull ff-only -> push` nếu có repo SSH thật.
-- Risk note: SSH/auth và remote reachability có thể không chứng minh hết bằng unit test; nếu không smoke thật được thì phải giữ residual risk rõ ở step 8.
-- Rollout note nếu có: rollout chỉ là thêm lane GitLab mới; rollback bằng cách gỡ config/installer của lane này mà không đụng GitHub lane.
+- Mandatory check: the workflow validator for the work item, `npm test`, `npm run check`, the installer block isolation and the smoke path `inspect -> pull ff-only -> push` if a real SSH repo exists.
+- Risk note: SSH/auth and remote reachability may not be fully provable by a unit test; if a real smoke run is not possible, keep the residual risk clear in step 8.
+- Rollout note if any: the rollout only adds a new GitLab lane; the rollback removes this lane's config/installer without touching the GitHub lane.
 
 ## Governance Checks
 ```yaml
 checklist_applied:
   - "project-context/checklists/strict.md"
 checks:
-  - "Step 5 đã được approve và materialize thành task plan có ownership rõ"
-  - "Path map đã tách rõ path mới của lane GitLab và path read-only của lane GitHub"
-  - "Verify path đã bao phủ SSH-first, ff-only, dirty tree, diverged branch và missing upstream"
-  - "Task plan giữ non-goals rõ, không mở rộng sang create repo, MR hay CI/CD"
+  - "Step 5 was approved and materialized into a task plan with clear ownership"
+  - "The path map clearly separates the new GitLab lane paths from the read-only GitHub lane paths"
+  - "The verify path covers SSH-first, ff-only, dirty tree, diverged branch and missing upstream"
+  - "The task plan keeps the non-goals clear and does not expand into repo creation, MR or CI/CD"
 blocking_items: []
 owner: "developer"
-next_action: "Chờ human review/approve task plan trước khi mở step 7 implementation."
+next_action: "Wait for the human to review/approve the task plan before opening the step 7 implementation."
 ```
 
 ## Brownfield Delivery Plan
 ```yaml
 regression_checkpoints:
-  - "Xác nhận `mcp/github-push/*` không bị sửa ngoài phạm vi tham chiếu"
-  - "Xác nhận installer GitLab không xóa hoặc overwrite block `github-push` trong Codex config"
+  - "Confirm `mcp/github-push/*` was not changed outside the reference scope"
+  - "Confirm the GitLab installer does not delete or overwrite the `github-push` block in the Codex config"
 compatibility_checkpoints:
-  - "Provider distinction GitLab/GitHub explicit trong config và docs"
-  - "Tool surface GitLab chỉ là inspect/pull/push cho repo đã tồn tại"
-  - "Pull mặc định vẫn ff-only và fail-fast khi diverged"
+  - "The GitLab/GitHub provider distinction is explicit in config and docs"
+  - "The GitLab tool surface is only inspect/pull/push for an existing repo"
+  - "The default pull is still ff-only and fail-fast when diverged"
 migration_or_backfill_steps: []
 rollback_or_restore_steps:
-  - "Gỡ block server GitLab khỏi Codex config"
-  - "Bỏ package và installer lane GitLab nếu rollout không đạt"
-  - "Không cần rollback dữ liệu hay repository state migration"
+  - "Remove the GitLab server block from the Codex config"
+  - "Drop the GitLab lane package and installer if the rollout does not pass"
+  - "No data or repository-state migration rollback is needed"
 ```
 
 ## Traceability
@@ -291,6 +291,6 @@ next_step: "mcp-gitlab.s07.implementation.md"
 ```
 
 ## Handoff
-- Task thực hiện trước: T1 để khóa naming/config boundary, rồi T2 để ổn định tool contract trước installer và test.
-- Phụ thuộc chặn: chưa có blocker kỹ thuật mới; gate còn thiếu là human approval cho task plan.
-- Điều kiện sang step 7: approve `s06`, sau đó implement theo đúng order T1 -> T2 -> T3 -> T4 -> T5 và không vượt khỏi scope `inspect + pull + push`.
+- Tasks to do first: T1 to lock the naming/config boundary, then T2 to stabilize the tool contract before the installer and the tests.
+- Blocking dependencies: no new technical blocker; the missing gate is the human approval of the task plan.
+- Conditions to move to step 7: approve `s06`, then implement in the order T1 -> T2 -> T3 -> T4 -> T5 and do not go beyond the `inspect + pull + push` scope.

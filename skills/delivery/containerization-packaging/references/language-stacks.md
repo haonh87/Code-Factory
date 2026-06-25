@@ -1,40 +1,46 @@
-# Packaging Theo Language Stack
+---
+language: en
+---
+
+# Packaging By Language Stack
+
+> Vietnamese: language-stacks.vi.md
 
 ## Node.js
 
-- Ưu tiên multi-stage khi có bước build TypeScript, Next.js, NestJS, Vite hoặc bundler.
-- Dùng lock file nhất quán với package manager thật (`package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`).
-- Tách `npm ci` hoặc tương đương khỏi bước copy source để tận dụng cache.
-- Với app build ra thư mục `dist` hoặc `.next`, runtime stage chỉ copy artifact cần thiết.
-- Nếu dùng Prisma, native module hoặc node-gyp, chú ý khác biệt giữa build image và runtime image.
+- Prefer multi-stage when there is a TypeScript, Next.js, NestJS, Vite, or bundler build step.
+- Use a lock file consistent with the real package manager (`package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`).
+- Separate `npm ci` or equivalent from the source copy step to leverage cache.
+- For apps that build into a `dist` or `.next` directory, the runtime stage copies only the needed artifact.
+- If using Prisma, native modules, or node-gyp, mind the difference between the build image and the runtime image.
 
 ## Python
 
-- Chốt rõ dùng `pip`, `poetry`, `pipenv` hay `uv`.
-- Nếu có build wheel hoặc dependency native, tách stage build và runtime.
-- Với web API, chốt server thật như `gunicorn`, `uvicorn`, `hypercorn`.
-- Với worker hoặc cron, command runtime thường khác web entrypoint; không ép chung một entrypoint nếu không phù hợp.
+- Lock clearly whether you use `pip`, `poetry`, `pipenv`, or `uv`.
+- If there are wheel builds or native dependencies, separate the build and runtime stages.
+- For a web API, lock the real server such as `gunicorn`, `uvicorn`, `hypercorn`.
+- For a worker or cron, the runtime command usually differs from the web entrypoint; do not force one entrypoint if it does not fit.
 
 ## Java
 
-- Tách stage build (`maven` hoặc `gradle`) khỏi runtime JRE/JDK tối thiểu.
-- Chốt rõ artifact là `jar`, `war` hay native image.
-- Nếu app cần tuning JVM, ghi rõ qua env hoặc command, không hard-code mơ hồ.
-- Với Spring Boot fat jar, runtime stage thường chỉ cần artifact cuối và JRE.
+- Separate the build stage (`maven` or `gradle`) from the minimal runtime JRE/JDK.
+- Lock clearly whether the artifact is a `jar`, `war`, or native image.
+- If the app needs JVM tuning, state it via env or command; do not hard-code it vaguely.
+- For a Spring Boot fat jar, the runtime stage usually only needs the final artifact and a JRE.
 
 ## .NET
 
-- Dùng stage `sdk` để publish và stage `aspnet` hoặc runtime phù hợp để chạy.
-- Chốt target framework và artifact `publish`.
-- Nếu có nhiều project trong solution, copy csproj trước để tận dụng restore cache.
+- Use an `sdk` stage to publish and an `aspnet` or matching runtime stage to run.
+- Lock the target framework and the `publish` artifact.
+- If the solution has many projects, copy the csproj files first to leverage restore cache.
 
 ## Go
 
-- Thường phù hợp multi-stage với binary build ở stage đầu và image tối thiểu ở stage sau.
-- Chốt rõ có cần CGO hay không.
-- Nếu binary tĩnh đủ điều kiện, runtime stage có thể rất nhỏ.
+- Usually fits a multi-stage build with the binary built in the first stage and a minimal image in the later stage.
+- Lock clearly whether CGO is needed.
+- If the static binary qualifies, the runtime stage can be very small.
 
 ## PHP
 
-- Chốt rõ runtime là `php-fpm`, Apache hay CLI worker.
-- Nếu dùng Composer, tách stage install dependency và runtime.
+- Lock clearly whether the runtime is `php-fpm`, Apache, or a CLI worker.
+- If using Composer, separate the dependency install stage from runtime.

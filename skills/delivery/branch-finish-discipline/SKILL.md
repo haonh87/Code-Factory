@@ -1,35 +1,38 @@
 ---
+language: en
 name: branch-finish-discipline
-description: Chốt có được cleanup, close, remove hoặc merge branch/worktree chưa, dựa trên verify, `DoD` và finding mở. Dùng ở `s08 Verify + DoD` hoặc sau verify khi work item có branch/worktree cần đóng an toàn.
+description: Decide whether a branch/worktree may be cleaned up, closed, removed, or merged, based on verify, `DoD`, and open findings. Use at `s08 Verify + DoD` or after verify when a work item has a branch/worktree that needs safe closure.
 ---
 
 # Branch Finish Discipline
 
-Chốt rule closeout cho branch hoặc worktree sau verify, để không cleanup hoặc merge sớm chỉ vì workspace đã sạch.
+> Vietnamese: SKILL.vi.md
+
+Lock the closeout rule for a branch or worktree after verify, so you do not clean up or merge early just because the workspace is clean.
 
 <HARD-GATE>
-Không được cleanup, close, remove hoặc merge branch/worktree trước khi `s08 Verify + DoD` có verdict đủ rõ.
+Do not clean up, close, remove, or merge a branch/worktree before `s08 Verify + DoD` has a clear enough verdict.
 
-`review pass`, `test pass` cục bộ, diff sạch hoặc worktree sạch không phải bằng chứng đủ để chốt closeout.
+Local `review pass`, `test pass`, a clean diff, or a clean worktree is not sufficient evidence to close out.
 
-Nếu còn finding mở, exception mở hoặc evidence chưa đủ, recommendation phải giữ trạng thái `HOLD_OPEN`.
+If findings are still open, exceptions are still open, or evidence is insufficient, the recommendation must keep a `HOLD_OPEN` state.
 </HARD-GATE>
 
-## Khi Sử Dụng
+## When To Use
 
-- Khi work item dùng branch hoặc worktree riêng.
-- Khi verify đã gần xong và cần quyết định cleanup hoặc merge.
-- Khi có nhiều worktree hoặc nhiều nhánh cần chốt theo thứ tự an toàn.
-- Khi cần chốt precondition closeout cho release-sensitive change.
+- When a work item uses a dedicated branch or worktree.
+- When verify is nearly done and you need to decide cleanup or merge.
+- When there are multiple worktrees or branches to close in a safe order.
+- When you need to lock closeout preconditions for a release-sensitive change.
 
-## Không Thuộc Phạm Vi
+## Out Of Scope
 
-- Không thay `testing` hoặc `definition-of-done-gate`.
-- Không thay branch strategy của repo.
-- Không tự chạy lệnh `git merge`, `git worktree remove` hoặc cleanup destructive nếu chưa được yêu cầu.
-- Không dùng để hợp thức hóa closeout sớm.
+- Does not replace `testing` or `definition-of-done-gate`.
+- Does not replace the repo's branch strategy.
+- Does not run `git merge`, `git worktree remove`, or destructive cleanup on its own unless requested.
+- Is not used to legitimize early closeout.
 
-## Đầu Vào Tối Thiểu
+## Minimum Input
 
 - `finish_target`
 - `workspace_context`
@@ -38,15 +41,15 @@ Nếu còn finding mở, exception mở hoặc evidence chưa đủ, recommendat
 - `open_findings`
 - `constraints`
 
-`workspace_context` nên nêu ít nhất:
+`workspace_context` should state at least:
 
-- đang dùng `branch`, `worktree` hay cả hai
-- path hoặc branch name liên quan
-- có nhiều workspace cần dọn theo thứ tự hay không
+- whether `branch`, `worktree`, or both are in use
+- the related path or branch name
+- whether there are multiple workspaces to clean up in order
 
-## Đầu Ra Bắt Buộc
+## Required Output
 
-Xuất artifact YAML theo schema sau:
+Emit a YAML artifact using the following schema:
 
 ```yaml
 finish_target: ""
@@ -66,41 +69,41 @@ final_recommendation: CLEANUP_ALLOWED|MERGE_ALLOWED|HOLD_OPEN
 notes_for_closeout: ""
 ```
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalizing Output In A Workflow Note
 
-Nếu output của skill này được lưu thành note `.md` trong workflow chain:
+If this skill's output is saved as a `.md` note in the workflow chain:
 
-- Dùng template step 8 tại `../codex-workflow-chain/references/workflow-chain.md`.
-- Đặt schema YAML của skill này trong block `## Audit`.
-- Nếu closeout ảnh hưởng verdict cuối, liên kết thêm sang `## Definition of Done`.
+- Use the step 8 template in `../codex-workflow-chain/references/workflow-chain.md`.
+- Place this skill's YAML schema in the `## Audit` block.
+- If closeout affects the final verdict, also link to `## Definition of Done`.
 
-## Quy Trình Bắt Buộc
+## Required Process
 
-1. Đọc `verify_status`, `dod_status`, `open_findings` và `workspace_context`.
-2. Đánh giá `finish_gate_checks`.
-3. Tách rõ `allowed_actions` và `blocked_actions`.
-4. Nếu cleanup hoặc merge được phép, ghi `cleanup_sequence` và `merge_conditions`.
-5. Nếu chưa được phép, ghi `residual_risks` và `notes_for_closeout` đủ rõ để giữ workspace mở đúng lý do.
+1. Read `verify_status`, `dod_status`, `open_findings`, and `workspace_context`.
+2. Evaluate `finish_gate_checks`.
+3. Separate `allowed_actions` and `blocked_actions` clearly.
+4. If cleanup or merge is allowed, record `cleanup_sequence` and `merge_conditions`.
+5. If not allowed yet, record `residual_risks` and `notes_for_closeout` clearly enough to keep the workspace open for the right reason.
 
-## Quy Tắc Chất Lượng
+## Quality Rules
 
-- `final_recommendation` không được là `MERGE_ALLOWED` khi `dod_complete != PASS`.
-- `blocked_actions` không được để trống khi recommendation là `HOLD_OPEN`.
-- Nếu có nhiều workspace, `cleanup_sequence` phải nêu thứ tự.
-- Nếu verify chưa hoàn tất hoặc finding còn mở, không dùng wording mập mờ như “có thể cân nhắc merge”.
-- Mặc định viết và trao đổi bằng tiếng Việt có dấu.
-- File văn bản phải lưu UTF-8.
+- `final_recommendation` must not be `MERGE_ALLOWED` when `dod_complete != PASS`.
+- `blocked_actions` must not be empty when the recommendation is `HOLD_OPEN`.
+- If there are multiple workspaces, `cleanup_sequence` must state the order.
+- If verify is incomplete or findings are still open, do not use vague wording like "merge can be considered".
+- Default to writing and communicating in English.
+- Text files must be stored as UTF-8.
 
-## Luật Ra Quyết Định
+## Decision Rule
 
-- `HOLD_OPEN` là default khi `verify_complete`, `dod_complete`, `findings_closed` hoặc `exceptions_resolved` chưa pass.
-- `CLEANUP_ALLOWED` phù hợp khi workspace có thể dọn nhưng merge hoặc close cuối còn phụ thuộc điều kiện khác của repo.
-- `MERGE_ALLOWED` chỉ phù hợp khi verify và `DoD` đã đủ, finding đã đóng và không còn exception mở.
-- Nếu dùng nhiều worktree hoặc multi-agent handoff, closeout chỉ hợp lệ sau khi `verify path` và `handoff path` đã kết thúc rõ.
+- `HOLD_OPEN` is the default when `verify_complete`, `dod_complete`, `findings_closed`, or `exceptions_resolved` has not passed.
+- `CLEANUP_ALLOWED` fits when the workspace can be cleaned up but the final merge or close still depends on other repo conditions.
+- `MERGE_ALLOWED` only fits when verify and `DoD` are sufficient, findings are closed, and no exceptions are open.
+- If using multiple worktrees or multi-agent handoff, closeout is only valid after the `verify path` and `handoff path` have clearly ended.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Có `finish_gate_checks` với verdict đọc được.
-- Có `allowed_actions`, `blocked_actions` và `final_recommendation` rõ ràng.
-- Có `cleanup_sequence` hoặc `merge_conditions` khi closeout được phép.
-- Có `residual_risks` và `notes_for_closeout` khi phải giữ workspace mở.
+- `finish_gate_checks` with a readable verdict.
+- Clear `allowed_actions`, `blocked_actions`, and `final_recommendation`.
+- `cleanup_sequence` or `merge_conditions` when closeout is allowed.
+- `residual_risks` and `notes_for_closeout` when the workspace must stay open.

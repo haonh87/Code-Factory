@@ -6,30 +6,30 @@ Branch: `release/v2.0.1`
 
 ## Changelog
 
-`workflow-bundle v2.0.1` là patch release tiếp theo sau `v2.0.0`, tập trung vào hardening và đồng bộ semantics giữa policy, protocol, validator và CLI.
+`workflow-bundle v2.0.1` is the patch release after `v2.0.0`, focused on hardening and syncing semantics across policy, protocol, validator and CLI.
 
 ### Added
 
-- Thêm machine-enforced gate cho `release` và `business_acceptance` ở `s08`.
-- Thêm `Delivery Rule Evidence` ở `s07` để trace `TDD`, `worktree`, review hai tầng và điều kiện delegation.
-- Thêm `workflow-gate-evidence-utils.js` để dùng chung logic gate evidence giữa governance và protocol.
-- Thêm tài liệu audit alignment tại `docs/workflow-rule-checklist-alignment.md`.
-- Thêm release note `v2.0.1` và fixture mới cho `invalid-option-count`, `invalid-s07-rule-evidence`, `s07 implementation`.
+- Add a machine-enforced gate for `release` and `business_acceptance` at `s08`.
+- Add `Delivery Rule Evidence` at `s07` to trace `TDD`, `worktree`, two-tier review and the delegation conditions.
+- Add `workflow-gate-evidence-utils.js` to share gate-evidence logic across governance and protocol.
+- Add audit alignment documentation at `docs/workflow-rule-checklist-alignment.md`.
+- Add the `v2.0.1` release note and new fixtures for `invalid-option-count`, `invalid-s07-rule-evidence`, `s07 implementation`.
 
 ### Changed
 
-- Siết `work-item protocol` để `ACTIVE` chỉ mở khi approval gate, bootstrap gate khi có, và evidence `s04-s06` đã đủ.
-- Loại bỏ đường bypass bằng `decision_owner=human`, `review_required=false` hoặc `approval_status=NOT_REQUIRED` trên protocol-managed item/change.
-- Chuẩn hóa `greenfield|brownfield` rõ hơn trong scaffold, protocol, governance validator và docs.
-- Đổi default `wfc work-item activate` sang execution step `s07`.
-- Đồng bộ docs, glossary, human review gates, quickstart, package README và help text theo semantics mới.
+- Tighten the `work-item protocol` so `ACTIVE` only opens when the approval gate, the bootstrap gate when present, and the `s04-s06` evidence are sufficient.
+- Remove the bypass path via `decision_owner=human`, `review_required=false` or `approval_status=NOT_REQUIRED` on a protocol-managed item/change.
+- Standardize `greenfield|brownfield` more clearly in the scaffold, protocol, governance validator and docs.
+- Change the default `wfc work-item activate` to the execution step `s07`.
+- Sync docs, glossary, human review gates, quickstart, package README and help text to the new semantics.
 
 ### Fixed
 
-- Sửa drift giữa policy “human-controlled gates” và runtime/protocol enforcement.
-- Sửa drift giữa frontmatter/template docs và scaffold thực tế cho `approval_gates`, `role_signoffs`, `gate_reviews`.
-- Sửa command examples để không còn ngầm hiểu “scaffold xong là activate ngay”.
-- Sửa tham chiếu fixture path cũ trong `project-context/README.md`.
+- Fix the drift between the "human-controlled gates" policy and the runtime/protocol enforcement.
+- Fix the drift between frontmatter/template docs and the actual scaffold for `approval_gates`, `role_signoffs`, `gate_reviews`.
+- Fix command examples so they no longer imply "scaffold then activate immediately".
+- Fix the old fixture path reference in `project-context/README.md`.
 
 ## Scope
 
@@ -53,7 +53,7 @@ Branch: `release/v2.0.1`
 
 ## Upgrade
 
-Nếu máy đang ở `workflow-bundle@2.0.0`:
+If the machine is on `workflow-bundle@2.0.0`:
 
 ```bash
 npm install -g workflow-bundle@2.0.1
@@ -62,7 +62,7 @@ wfc update --mode codex
 wfc update --mode claude
 ```
 
-Nếu đang dùng source repo:
+If using the source repo:
 
 ```bash
 cd packages/workflow-bundle
@@ -73,7 +73,7 @@ wfc version
 
 ## Verification
 
-Các checks đã chạy cho release này:
+The checks run for this release:
 
 - `git diff --check`
 - `node packages/workflow-bundle/scripts/validate-workflow-governance.js --workflow-root work-items --project-root .`
@@ -82,13 +82,13 @@ Các checks đã chạy cho release này:
 - `cd packages/workflow-bundle && node scripts/run-workflow-governance-fixtures.js`
 - `cd packages/workflow-bundle && node scripts/run-workflow-authoring-smoke.js`
 
-Kết quả:
+Results:
 
-- governance validator pass
-- protocol validator pass
-- change validator pass
-- governance fixtures pass
-- authoring smoke pass
+- governance validator passed
+- protocol validator passed
+- change validator passed
+- governance fixtures passed
+- authoring smoke passed
 
 ## Public Docs
 
@@ -99,5 +99,5 @@ Kết quả:
 
 ## Notes
 
-- `v2.0.0` vẫn là first public release.
-- `v2.0.1` là patch release tập trung vào hardening, clarity và CLI/runtime consistency.
+- `v2.0.0` is still the first public release.
+- `v2.0.1` is a patch release focused on hardening, clarity and CLI/runtime consistency.

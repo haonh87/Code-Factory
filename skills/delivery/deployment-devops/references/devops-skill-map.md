@@ -1,16 +1,22 @@
+---
+language: en
+---
+
 # DevOps Skill Map
 
-## Khi Dùng `deployment-devops`
+> Vietnamese: devops-skill-map.vi.md
 
-Dùng skill này khi cần nhìn DevOps theo bức tranh tổng:
+## When To Use `deployment-devops`
 
-- work item chạm nhiều môi trường
-- vừa có packaging vừa có runtime deploy vừa có pipeline/release
-- chưa rõ nên tách concern theo layer nào
+Use this skill when you need to look at DevOps as a whole picture:
 
-## Khi Dùng `containerization-packaging`
+- the work item touches many environments
+- there is packaging, runtime deploy, and pipeline/release at once
+- it is not clear which layer to split concerns by
 
-Dùng khi trọng tâm là:
+## When To Use `containerization-packaging`
+
+Use when the focus is:
 
 - `Dockerfile`
 - `.dockerignore`
@@ -19,36 +25,36 @@ Dùng khi trọng tâm là:
 - build stage
 - entrypoint
 - healthcheck
-- packaging theo Node.js, Python, Java, .NET, Go, PHP
+- packaging by Node.js, Python, Java, .NET, Go, PHP
 
-## Khi Dùng `platform-runtime-deployment`
+## When To Use `platform-runtime-deployment`
 
-Dùng khi trọng tâm là:
+Use when the focus is:
 
-- Docker hay Swarm hay Kubernetes
+- Docker vs Swarm vs Kubernetes
 - deployment unit
 - ingress
 - secrets/config
 - volume
 - scaling
-- stateful concern
-- rollout/rollback trên runtime
+- stateful concerns
+- rollout/rollback at the runtime level
 
-## Khi Dùng `ci-cd-release`
+## When To Use `ci-cd-release`
 
-Dùng khi trọng tâm là:
+Use when the focus is:
 
-- pipeline CI/CD
+- CI/CD pipeline
 - registry
 - tagging
 - artifact immutability
 - promotion flow
 - approval
 - release gate
-- rollback control ở mức pipeline/release
+- rollback control at the pipeline/release level
 
-## Rule Phối Hợp
+## Coordination Rule
 
-- Nếu chỉ có một concern nổi bật, gọi thẳng skill chuyên trách tương ứng.
-- Nếu concern chồng lên nhau hoặc user nói “làm DevOps tổng thể”, bắt đầu bằng `deployment-devops`.
-- `deployment-devops` không thay thế 3 skill chuyên trách; nó dùng để định tuyến và tổng hợp.
+- If only one concern stands out, call the matching specialized skill directly.
+- If concerns overlap or the user says "do overall DevOps", start with `deployment-devops`.
+- `deployment-devops` does not replace the 3 specialized skills; it is used to route and aggregate.
