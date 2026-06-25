@@ -198,7 +198,7 @@ Canonical references for onboarding: tag `v2.1.1`, branch `release/v2.1.1`.
 
 Contributions are welcome. Skills should be **specific** (actionable steps, not vague advice), **verifiable** (clear exit criteria with evidence requirements), **battle-tested** (based on real workflows), and **minimal** (only what is needed to guide the agent).
 
-See the repository for `LICENSE`, `CONTRIBUTING`, and the governance role model for sign-off authority.
+See [`LICENSE`](../../LICENSE) (MIT) and [`CONTRIBUTING`](../../CONTRIBUTING.md) for contribution terms, and the governance role model ([`project-context/governance-role-model.md`](../../project-context/governance-role-model.md)) for sign-off authority.
 
 ---
 

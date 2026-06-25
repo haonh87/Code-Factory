@@ -198,7 +198,7 @@ Tham chiếu chuẩn cho onboarding: tag `v2.1.1`, branch `release/v2.1.1`.
 
 Hoan nghênh đóng góp. Skill nên **specific** (action step cụ thể, không lời khuyên chung chung), **verifiable** (exit criteria rõ kèm yêu cầu evidence), **battle-tested** (dựa workflow thực), và **minimal** (chỉ đủ để dẫn agent).
 
-Xem repo để biết `LICENSE`, `CONTRIBUTING`, và governance role model cho signoff authority.
+Xem [`LICENSE`](../../LICENSE) (MIT) và [`CONTRIBUTING`](../../CONTRIBUTING.md) cho điều kiện đóng góp, và governance role model ([`project-context/governance-role-model.md`](../../project-context/governance-role-model.md)) cho signoff authority.
 
 ---
 

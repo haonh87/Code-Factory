@@ -21,6 +21,7 @@ packages/workflow-bundle/*.tgz
 # Personal / scratch files (not part of public surface)
 /Booking.md
 /Daily.md
+memory-bank/
 
 # Private harness config (per-user, not for community release)
 .claude/instincts.yaml
