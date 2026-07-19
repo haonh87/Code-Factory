@@ -93,56 +93,83 @@ tags:
 
 ## Step Contract
 ```yaml
-step_goal: ""
-input_summary: []
-output_summary: []
-done_when: []
-owner: ""
+step_goal: "Thi công T-1..T-5 theo task plan approved; T-6 (AC-2) chờ human restart; ghi evidence cho s08."
+input_summary:
+  - "s06 approved (Task Plan passed 2026-07-19): T-1..T-6"
+output_summary:
+  - "Commit 51ff5e7: .mcp.json + .gitignore + docs/codebase-memory.md + CLAUDE.md pointer"
+  - "Evidence per-task + Delivery Rule Evidence"
+done_when:
+  - "T-1..T-5 verify path pass; T-6 bàn giao human restart"
+owner: "claude (implement) -> human (restart cho T-6, review s08 DoD)"
 ```
 
 ## Artifact Chính
 ```yaml
-implemented_changes: []
-doc_changes: []
-operational_notes: []
+implemented_changes:
+  - "T-1: .mcp.json command -> ${CLAUDE_PROJECT_DIR:-.}/node_modules/.bin/codebase-memory-mcp (DONE, V-1 PASS)"
+  - "T-2: mô phỏng thiếu binary -> ✘ Failed non-fatal -> khôi phục ✓ (DONE, AC-3 evidence)"
+  - "T-3: docs/codebase-memory.md mới + 1 dòng pointer .claude/CLAUDE.md (DONE)"
+  - "T-4: gỡ guard /.mcp.json khỏi .gitignore, track .mcp.json + docs (DONE, AC-1/AC-4 PASS)"
+  - "T-5: commit 51ff5e7 + rollback rehearsal trong worktree tạm (DONE, AC-7 PASS)"
+doc_changes:
+  - "docs/codebase-memory.md (mới): setup 3 lệnh, approval, opt-out, limitation, rollback"
+  - ".claude/CLAUDE.md: +1 dòng mục MCP Servers"
+operational_notes:
+  - "Hiệu lực với teammate khi pull + restart; per-user approval prompt lần đầu"
 ```
 
 ## Delivery Rule Evidence
 ```yaml
-behavior_change: YES|NO
-tdd_status: DONE|NOT_REQUIRED|EXCEPTION
+behavior_change: NO
+tdd_status: NOT_REQUIRED
 tdd_test_refs: []
 tdd_exception_reason: ""
-tdd_alternative_verify_path: []
-change_risk_profile: QUICK_FIX|STANDARD|LARGE_OR_RISKY
-worktree_status: USED|NOT_REQUIRED|SKIPPED_WITH_REASON
+tdd_alternative_verify_path:
+  - "Config + docs, không behavior production; verify = per-task verify path (claude mcp list, wfc validate, grep, dry-run lệnh docs, revert rehearsal)"
+change_risk_profile: STANDARD
+worktree_status: NOT_REQUIRED
 worktree_refs: []
-worktree_reason: ""
-review_status: COMPLETED|PARTIAL|BLOCKED
-review_refs: []
-spec_compliance_status: PASS|FAIL|PARTIAL|NOT_RUN
-code_quality_status: PASS|FAIL|PARTIAL|NOT_RUN
-delegation_mode: agentic|multi_agent|subagent|sequential_multi_role
-independence_status: PASS|FAIL|NOT_APPLICABLE
+worktree_reason: >-
+  4 file chạm, 1 session, conflict risk thấp, rollback 1 revert (chốt ở s06). Riêng rollback
+  rehearsal T-5 DÙNG worktree tạm (scratchpad) để không đụng thay đổi unstaged ngoài scope
+  trong cây làm việc chính; đã remove sạch sau rehearsal.
+review_status: DONE
+review_refs:
+  - "T-4 review 2 tầng (2026-07-19): spec compliance lượt 1 FAIL — staged .gitignore lẫn 3 dòng .claude/*-state.json ngoài scope (thuộc việc session-persistence hooks); FIX: reset + re-stage chỉ hunk rollout qua git apply --cached. Lượt 2 PASS: diff đúng 4 surface OPT-A -> code quality PASS (JSON hợp lệ, lệnh docs đã dry-run, comment gitignore nhất quán)"
+spec_compliance_status: PASS
+code_quality_status: PASS
+delegation_mode: agentic
+independence_status: NOT_APPLICABLE
 independence_refs: []
-merge_path: ""
-verify_path: []
+merge_path: "Commit thẳng main (convention repo), 1 commit revertable 51ff5e7"
+verify_path:
+  - "T-1: claude mcp list -> ✔ Connected với portable path (V-1)"
+  - "T-2: path sai -> ✘ Failed to connect, lệnh không crash; khôi phục -> ✔; MCP tool session hiện tại vẫn trả kết quả (index_status ready)"
+  - "T-3: UTF-8 OK; lệnh index dry-run exit clean (4831 nodes); limitation đối chiếu research note"
+  - "T-4: wfc validate 68+64 trước/sau khớp; grep .mcp.json không /Users/|$HOME; JSON parse OK"
+  - "T-5: revert --no-commit trong worktree tạm: guard khôi phục dòng /.mcp.json, .mcp.json+docs rời index, wfc validate PASS; worktree removed"
 ```
 
 ## Implementation Notes
 ```yaml
-framework_notes: []
-known_limitations: []
+framework_notes:
+  - "claude mcp list là proxy verify không cần restart session: exercise expansion + connect thật"
+  - "Sandbox chặn ghi .mcp.json qua shell (PermissionError) — dùng Edit/Write tool; ghi nhận cho instinct tương lai"
+  - "Index tự refresh incremental khi query (4740 -> 4831 nodes theo HEAD mới) — giảm nhẹ R3 nhưng guidance re-index vẫn giữ"
+known_limitations:
+  - "AC-5 dry-run trên máy đã có binary — chưa test máy fresh 100% (residual cho s08)"
+  - "AC-2 full cần restart session (T-6, human action)"
 ```
 
 ## Traceability
 ```yaml
-upstream: []
-next_step: ""
+upstream:
+  - "codebase-memory-team-rollout.s06.task-breakdown.md (approved)"
+next_step: "T-6: human restart session -> AC-2 re-verify -> s08 Verify + DoD"
 ```
 
 ## Handoff
-- Outputs actual:
-- Known limitations:
-- Notes for testing:
-- Notes for deployment khi có:
+- Outputs actual: commit 51ff5e7 (4 file); T-1..T-5 DONE với verify path pass đầy đủ.
+- AC scoreboard tạm cho s08: AC-1 ✓, AC-2 PENDING (T-6 chờ restart), AC-3 HARD ✓ (mô phỏng; xác nhận thêm ở T-6), AC-4 HARD ✓, AC-5 ✓ (residual: chưa test máy fresh), AC-6 ✓, AC-7 HARD ✓ (rehearsed).
+- Next human action: restart session (có thể gặp approval prompt do config đổi) -> Claude verify AC-2 -> s08 chốt DoD.
