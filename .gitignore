@@ -2,6 +2,9 @@ tmp-codex-home/tmp-change-smoke/
 tmp-codex-home/tmp-execution-smoke/
 tmp-codex-home/tmp-sdd-smoke/
 .obsidian/
+.claude/session-state.json
+.claude/tdd-session-state.json
+.claude/compact-state.json
 
 # Local visual working files; not part of the public docs surface.
 docs/workflow-process.canvas
