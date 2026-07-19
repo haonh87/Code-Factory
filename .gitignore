@@ -13,8 +13,6 @@ packages/workflow-bundle/workflow-bundle.manifest.json
 packages/workflow-bundle/workflow-pack.manifest.json
 packages/workflow-bundle/*.tgz
 
-# codebase-memory-mcp trial (work-item codebase-memory-mcp-trial, OPT-B)
-# Local graph index + binary snapshot, không commit (OQ-4 chốt .gitignore)
+# codebase-memory-mcp: local graph index + binary snapshot, không commit
+# (.mcp.json đã commit chung — work-item codebase-memory-team-rollout)
 .codebase-memory/
-# MCP config trial cục bộ, không commit chung (T-3)
-/.mcp.json

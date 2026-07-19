@@ -56,3 +56,4 @@ Public release: `workflow-bundle v2.1.1`.
 - `github-push`: push repository lên GitHub
 - `gitlab`: inspect/pull/push GitLab repository
 - `session-search`: search local session history qua `cass`
+- `codebase-memory`: graph-based code intelligence (call graph, impact analysis) — setup + giới hạn: `docs/codebase-memory.md`
