@@ -90,30 +90,50 @@ tags:
 
 ## Step Contract
 ```yaml
-step_goal: ""
-input_summary: []
-output_summary: []
-done_when: []
-owner: ""
+step_goal: "Chốt user problem, business goal, success metrics và non-goals cho adopt hooks + instincts."
+input_summary:
+  - "s01 confirmed 2026-07-20; điều tra 2026-07-20: 5 hook script sạch (không path máy), tdd-enforce đã tracked, 4 hook còn lại + settings.json + instincts.yaml untracked"
+output_summary:
+  - "business_goal + SM đo được + non_goals"
+done_when:
+  - "SM đo được ở s08; non_goals rõ"
+owner: "claude (draft) -> human (review cùng Spec gate s04)"
 ```
 
 ## Artifact Chính
 ```yaml
-user_problem: ""
-business_goal: ""
-success_metrics: []
-non_goals: []
-constraints: []
-assumptions: []
+user_problem: >-
+  Hạ tầng hooks + instincts đang commit DỞ DANG: tdd-enforce.sh đã tracked nhưng 4 hook,
+  settings.json và instincts.yaml chưa — teammate pull về có CLAUDE.md mô tả hệ thống
+  không tồn tại, hook config trỏ script thiếu, instincts không nhân rộng.
+business_goal: >-
+  Teammate pull repo là có đủ bộ hooks + instincts hoạt động đúng như CLAUDE.md mô tả,
+  với quyền kiểm soát rõ (profile/opt-out), không leak nội dung máy cá nhân.
+success_metrics:
+  - "SM-1: git ls-files chứa đủ 5 hook scripts + settings.json + instincts.yaml; settings.json không trỏ script nào thiếu"
+  - "SM-2: Không file commit nào chứa path đặc thù máy hoặc session state cá nhân (grep /Users/ sạch)"
+  - "SM-3: Hooks degrade êm trên máy thiếu dependency: mọi hook exit 0 khi lỗi nội bộ (trừ tdd-enforce exit 2 đúng design khi block)"
+  - "SM-4: CF_HOOK_PROFILE=minimal tắt được TDD hooks thật (test bằng env var); opt-out documented"
+  - "SM-5: wfc validate PASS trước/sau; behavior hooks không đổi (adopt as-is, không refactor)"
+non_goals:
+  - "Viết hook mới / đổi behavior hook hiện có (trừ fix nhỏ đã phát hiện: thêm exit 0 cuối load-workflow-context.sh)"
+  - "Đưa hooks vào workflow-bundle publish surface"
+  - "Chốt default profile khác strict (nếu muốn đổi default là decision riêng ở s05)"
+constraints:
+  - "Kế thừa s01: non-blocking, wfc validate gate"
+  - "Blocker phải dọn trước commit: scripts/.claude/ junk (có path máy), .claude/worktrees/ chưa ignore"
+assumptions:
+  - "Teammate có node + bash (hooks chỉ cần 2 thứ này, đã xác minh)"
 ```
 
 ## Traceability
 ```yaml
-upstream: []
-next_step: ""
+upstream:
+  - "claude-hooks-instincts-adoption.s01.restate.md"
+next_step: "s03 Open Questions"
 ```
 
 ## Handoff
-- User problem đã chốt:
-- Non-goals:
-- Điều kiện sang step 3:
+- User problem đã chốt: commit dở dang + reference gãy.
+- Non-goals: không refactor behavior, không publish vào bundle.
+- Điều kiện sang step 3: human review cùng Spec gate s04.

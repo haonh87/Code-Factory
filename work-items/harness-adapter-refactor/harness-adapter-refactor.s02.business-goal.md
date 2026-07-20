@@ -90,30 +90,51 @@ tags:
 
 ## Step Contract
 ```yaml
-step_goal: ""
-input_summary: []
-output_summary: []
-done_when: []
-owner: ""
+step_goal: "Chốt user problem, business goal, success metrics và non-goals cho hoàn tất harness-adapter."
+input_summary:
+  - "s01 confirmed 2026-07-20; điều tra WIP 2026-07-20: utils đã implement đủ hàm adapter, 2 adapter đúng schema, backward compat giữ; THIẾU test, manifest root vẫn legacy (new-format path chưa từng chạy), 1 bug precedence"
+output_summary:
+  - "business_goal + SM đo được + non_goals"
+done_when:
+  - "SM đo được ở s08; non_goals rõ"
+owner: "claude (draft) -> human (review cùng Spec gate s04)"
 ```
 
 ## Artifact Chính
 ```yaml
-user_problem: ""
-business_goal: ""
-success_metrics: []
-non_goals: []
-constraints: []
-assumptions: []
+user_problem: >-
+  Thêm harness mới hiện phải sửa code hardcode ["codex","claude"]; WIP adapter-registry đã
+  viết phần lớn nhưng treo trong working tree: không test, new-format manifest chưa từng được
+  kích hoạt, có bug precedence, và chặn mọi commit khác vào packages/workflow-bundle.
+business_goal: >-
+  wfc hỗ trợ harness qua adapter registry có test đầy đủ: thêm harness mới = thêm 1 thư mục
+  adapters/<id>/adapter.json, không sửa code; hành vi hiện tại của người dùng bundle
+  (install/update/sync codex+claude) không đổi.
+success_metrics:
+  - "SM-1: Unit test cover các hàm adapter mới (loadAdapter, listAvailableHarnesses, detectActiveHarness, getRuntimeConfigFromAdapter) + fallback legacy — chạy pass trong npm test"
+  - "SM-2: Bug precedence normalizeInstallState có test tái hiện fail trước khi fix, pass sau khi fix (TDD)"
+  - "SM-3: wfc bundle-smoke PASS với cả manifest legacy (hiện tại) và manifest new-format (fixture hoặc migrate thật — theo scope s04/s05 chốt)"
+  - "SM-4: Không caller ngoài package bị đổi interface (shims + bin/wfc.js hoạt động nguyên trạng)"
+  - "SM-5: wfc validate PASS; skill file giữ nguyên executable bit sau sync (guard side-effect chmod)"
+non_goals:
+  - "Thêm adapter cho harness thứ ba thực tế (Gemini/Zed...) — chỉ chứng minh bằng test fixture"
+  - "Thực thi H-track (H1-H4) trong sdd-light plan — đó là governance layer riêng, đang pending human approval"
+  - "Publish v2.2.0 (thuộc release lane)"
+constraints:
+  - "TDD bắt buộc (behavior change wfc); worktree riêng khi implement (chạm nhiều file, đụng release branch)"
+  - "Backward compat legacy manifest là bất khả xâm phạm"
+assumptions:
+  - "WIP hiện tại giữ làm base (chất lượng đủ), viết test bọc trước khi sửa tiếp — xác nhận ở s05"
 ```
 
 ## Traceability
 ```yaml
-upstream: []
-next_step: ""
+upstream:
+  - "harness-adapter-refactor.s01.restate.md"
+next_step: "s03 Open Questions"
 ```
 
 ## Handoff
-- User problem đã chốt:
-- Non-goals:
-- Điều kiện sang step 3:
+- User problem đã chốt: hardcode harness + WIP treo không test.
+- Non-goals: không harness mới thật, không H-track, không publish.
+- Điều kiện sang step 3: human review cùng Spec gate s04.
