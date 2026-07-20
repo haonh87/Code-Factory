@@ -1,18 +1,6 @@
 {
   "bundleName": "codex-workflow-bundle",
   "bundleVersion": "2.2.1",
-  "codex": {
-    "globalAgentsSource": "runtime/codex/AGENTS.global.md",
-    "skillsSourceRoot": "runtime/codex/skills",
-    "supportPoliciesSourceRoot": "runtime/codex/policies/codex",
-    "supportPoliciesTargetRoot": "policies/codex",
-    "globalAgentsFileName": "AGENTS.global.md",
-    "projectAgentsFileName": "AGENTS.md",
-    "managedSkillsManifestFile": ".codex-workflow-bundle.managed-skills.txt",
-    "legacyManagedSkillsManifestFile": ".codex-workflow-pack.managed-skills.txt",
-    "installStateFile": ".codex-workflow-bundle.install-state.json",
-    "legacyInstallStateFile": ".codex-workflow-pack.install-state.json"
-  },
   "claude": {
     "globalAgentsSource": "runtime/claude/AGENTS.global.md",
     "skillsSourceRoot": "runtime/claude/skills",
@@ -24,5 +12,17 @@
     "legacyManagedSkillsManifestFile": ".claude-workflow-pack.managed-skills.txt",
     "installStateFile": ".claude-workflow-bundle.install-state.json",
     "legacyInstallStateFile": ".claude-workflow-pack.install-state.json"
+  },
+  "codex": {
+    "globalAgentsSource": "runtime/codex/AGENTS.global.md",
+    "skillsSourceRoot": "runtime/codex/skills",
+    "supportPoliciesSourceRoot": "runtime/codex/policies/codex",
+    "supportPoliciesTargetRoot": "policies/codex",
+    "globalAgentsFileName": "AGENTS.global.md",
+    "projectAgentsFileName": "AGENTS.md",
+    "managedSkillsManifestFile": ".codex-workflow-bundle.managed-skills.txt",
+    "legacyManagedSkillsManifestFile": ".codex-workflow-pack.managed-skills.txt",
+    "installStateFile": ".codex-workflow-bundle.install-state.json",
+    "legacyInstallStateFile": ".codex-workflow-pack.install-state.json"
   }
 }
