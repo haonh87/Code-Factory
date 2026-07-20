@@ -1,7 +1,7 @@
 # workflow-bundle v2.2.0
 
-Released: `DRAFT — chưa tag` (scope đóng 2026-07-20, chờ Release gate)
-Tag: `v2.2.0` (sẽ tag khi human pass Release gate)
+Released: `2026-07-20`
+Tag: `v2.2.0`
 Branch: `release/v2.2.0`
 
 ## Changelog
@@ -52,5 +52,5 @@ Branch: `release/v2.2.0`
 ## Notes
 
 - `v2.1.1` là previous release.
-- `v2.2.0` là current release — scope đã đóng, chờ tag.
-- Release gate (tag + publish) là human-controlled gate — chỉ tag sau khi human pass Release.
+- `v2.2.0` là current release — tagged, merged vào `main`.
+- Release gate passed bởi human (devops), 2026-07-20.
