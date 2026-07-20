@@ -480,6 +480,65 @@ function runCaseBasicFull(repoRoot, projectRoot) {
   assertContentIncludes(listOutput, "bootstrap", "Expected legacy scaffold to appear as bootstrap source.");
 }
 
+// Golden Light baseline (plan v5 T1, AC-02/AC-03): scaffold sdd_mode=light phải
+// tạo đúng 3 workflow note (s01/s04/s06), không s02/s03/s05/s07/s08, và nằm trong
+// artifact/line budget đo trên artifact THẬT (không phải hằng số tự khớp).
+function runCaseLightGoldenBudget(repoRoot, projectRoot) {
+  const { SDD_LIGHT_BUDGET } = require(path.join(repoRoot, "scripts", "workflow-sdd-definitions.js"));
+  const workflowRoot = path.join(projectRoot, "work-items", "smoke-light-item");
+  runNodeScript(repoRoot, "scripts/scaffold-workflow.js", [
+    "--work-item",
+    "smoke-light-item",
+    "--planning-track",
+    "quick",
+    "--sdd-mode",
+    "light",
+    "--delivery-context",
+    "brownfield",
+    "--workflow-root",
+    workflowRoot,
+    "--project-root",
+    projectRoot
+  ]);
+
+  const mdFiles = fs
+    .readdirSync(workflowRoot)
+    .filter((name) => name.endsWith(".md"))
+    .sort();
+  const expectedInitialNotes = [
+    "smoke-light-item.s01.restate.md",
+    "smoke-light-item.s04.acceptance-criteria.md",
+    "smoke-light-item.s06.task-breakdown.md"
+  ];
+  if (JSON.stringify(mdFiles) !== JSON.stringify(expectedInitialNotes)) {
+    throw new Error(
+      `Light golden baseline drift: expected exactly ${JSON.stringify(expectedInitialNotes)}, got ${JSON.stringify(mdFiles)}.`
+    );
+  }
+  if (mdFiles.length > SDD_LIGHT_BUDGET.initialArtifact.noCr) {
+    throw new Error(
+      `Light initial artifact count ${mdFiles.length} exceeds budget ${SDD_LIGHT_BUDGET.initialArtifact.noCr}.`
+    );
+  }
+
+  const totalLines = mdFiles.reduce(
+    (sum, name) => sum + fs.readFileSync(path.join(workflowRoot, name), "utf8").split("\n").length,
+    0
+  );
+  if (totalLines > SDD_LIGHT_BUDGET.initialWorkflowLines) {
+    throw new Error(
+      `Light initial scaffold ${totalLines} lines exceeds budget ${SDD_LIGHT_BUDGET.initialWorkflowLines}.`
+    );
+  }
+
+  const s01Content = fs.readFileSync(path.join(workflowRoot, expectedInitialNotes[0]), "utf8");
+  assertContentIncludes(s01Content, "sdd_mode: light", "Light golden s01 must declare sdd_mode: light.");
+  assertContentIncludes(s01Content, "card:", "Light golden s01 must reference spec_refs.card.");
+
+  validateBaseline(repoRoot, workflowRoot, projectRoot);
+  runNodeScript(repoRoot, "scripts/validate-workflow-planning.js", ["--workflow-root", workflowRoot]);
+}
+
 function runCaseQuickSingleStep(repoRoot, projectRoot) {
   const workflowRoot = path.join(projectRoot, "work-items", "smoke-quick-item");
   runNodeScript(repoRoot, "scripts/scaffold-workflow.js", [
@@ -1233,6 +1292,7 @@ function main() {
   const keepTemp = Boolean(args["keep-temp"]);
   const cases = [
     { name: "basic-full", run: runCaseBasicFull },
+    { name: "light-golden-budget", run: runCaseLightGoldenBudget },
     { name: "quick-single-step", run: runCaseQuickSingleStep },
     { name: "mutating-action-requires-report", run: runCaseMutatingActionRequiresReport },
     { name: "strict-default-blocks-legacy-scaffold", run: runCaseStrictDefaultBlocksLegacyScaffold },
@@ -1289,5 +1349,7 @@ if (require.main === module) {
 }
 
 module.exports = {
-  main
+  main,
+  runCaseLightGoldenBudget,
+  seedProjectContext
 };

@@ -72,8 +72,16 @@ function readFileSha256(filePath) {
   return sha256(fs.readFileSync(filePath));
 }
 
-function getGateStepId(gate) {
+// Gate host map theo profile (plan v5 §3 Gate Host Contract).
+// Light không có note s05; gate `approach` được host tại s06 cùng task_plan.
+// Các gate khác giữ mapping mặc định. sddMode không truyền -> mặc định non-light.
+function getGateStepId(gate, sddMode) {
   const normalizedGate = String(gate || "").trim();
+
+  if (sddMode === "light" && normalizedGate === "approach") {
+    return "s06";
+  }
+
   const stepId = GATE_TO_STEP_ID[normalizedGate];
   if (!stepId) {
     throw new Error(`Unsupported workflow gate '${normalizedGate}'.`);
@@ -310,8 +318,8 @@ function buildReceiptPath({ projectRoot, approvalRoot, kind, workItemSlug, chang
   }
 }
 
-function resolveGateArtifact({ projectRoot, workflowRoot, workItemSlug, gate, ref }) {
-  const stepId = getGateStepId(gate);
+function resolveGateArtifact({ projectRoot, workflowRoot, workItemSlug, gate, ref, sddMode }) {
+  const stepId = getGateStepId(gate, sddMode);
   let artifactPath = "";
 
   if (gate === "bootstrap") {
@@ -377,7 +385,8 @@ function writeTrustedApprovalReceipt({
   approvalStatus,
   artifactRef,
   artifactSha256,
-  approvalPassphrase
+  approvalPassphrase,
+  resolvedPassphrase
 }) {
   const normalizedStatus = String(approvalStatus || "").trim().toUpperCase();
   const { approvalRoot } = resolveTrustedApprovalRoot({ projectRoot, overrideRoot });
@@ -407,7 +416,9 @@ function writeTrustedApprovalReceipt({
     artifact_sha256: artifactSha256 || "",
     recorded_at: new Date().toISOString()
   };
-  const passphrase = resolveApprovalPassphrase(approvalPassphrase);
+  // resolvedPassphrase (tuỳ chọn) cho batch sealing: caller đã resolve passphrase
+  // đúng rule qua resolveApprovalPassphrase, truyền thẳng để tránh prompt nhiều lần.
+  const passphrase = resolvedPassphrase || resolveApprovalPassphrase(approvalPassphrase);
   const { signature } = signReceiptPayload({
     approvalRoot,
     payload,

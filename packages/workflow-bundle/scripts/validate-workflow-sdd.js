@@ -6,20 +6,30 @@ const {
   getFrontmatterNestedValue,
   getFrontmatterValue,
   getMarkdownSectionContent,
+  normalizeYamlScalar,
   parseCliArgs,
   readUtf8,
   resolveExistingPath
 } = require("./workflow-validator-utils");
+
+function escapeRegExp(input) {
+  return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 const {
   REQUIRED_SDD_BLOCKS_BY_STEP,
   SDD_MODES,
   SPEC_STATUSES
 } = require("./workflow-sdd-definitions");
+const { isCanonicalCrId } = require("./workflow-change-definitions");
 
 const filePattern =
   /^(?<work_item_slug>[a-z0-9]+(?:-[a-z0-9]+)*)\.(?<step_id>s0[1-8])\.(?<step_slug>[a-z-]+)\.md$/;
 const allowedSddModes = new Set(SDD_MODES);
 const allowedSpecStatuses = new Set(SPEC_STATUSES);
+const PROVENANCE_BASELINE = "BASELINE";
+// Freeze decision (plan §4, AC-04): draft = chưa freeze; FROZEN = đã chốt.
+// FROZEN bắt buộc decided_at (freeze là decision có thời điểm, không phải cờ mềm).
+const allowedFreezeStatuses = new Set(["draft", "FROZEN"]);
 
 function hasSectionContent(sectionContent, pattern) {
   return Boolean(sectionContent && pattern.test(sectionContent));
@@ -105,6 +115,229 @@ function validateStrictSectionContent(stepId, filePath, content, errors) {
   }
 }
 
+// --- Spec Card (Light) semantic validation (plan v5 §4, F-05) ---
+// Light dùng một source-of-truth Spec Card thay BRD/SRS riêng. Validator kiểm
+// REQ/AC mapping, provenance (BASELINE|CR-###), freeze authority và no-duplicate.
+
+function extractYamlFence(sectionContent) {
+  if (!sectionContent) {
+    return "";
+  }
+  const match = sectionContent.match(/```ya?ml\n([\s\S]*?)\n```/);
+  return match ? match[1] : "";
+}
+
+function parseScalarFromYaml(yamlText, key) {
+  if (!yamlText) {
+    return null;
+  }
+  const pattern = new RegExp(`^\\s*${escapeRegExp(key)}:\\s*(.+?)\\s*$`, "m");
+  const match = yamlText.match(pattern);
+  return match ? normalizeYamlScalar(match[1]) : null;
+}
+
+// Parse một YAML list-of-objects block dạng:
+//   <listKey>:
+//     - id: REQ-001
+//       field: value
+// Trả về mảng object { id, ...fields }. Không phụ thuộc thư viện YAML.
+function parseYamlListOfObjects(yamlText, listKey) {
+  if (!yamlText) {
+    return [];
+  }
+  const lines = yamlText.split(/\r?\n/);
+  const items = [];
+  let inList = false;
+  let currentItem = null;
+  const startPattern = new RegExp(`^${escapeRegExp(listKey)}:\\s*$`);
+
+  const finalize = () => {
+    if (currentItem) {
+      items.push(currentItem);
+      currentItem = null;
+    }
+  };
+
+  for (const line of lines) {
+    if (!inList) {
+      if (startPattern.test(line)) {
+        inList = true;
+      }
+      continue;
+    }
+
+    const itemMatch = line.match(/^\s{2,}-\s+([\w-]+):\s*(.*)$/);
+    if (itemMatch) {
+      finalize();
+      currentItem = {};
+      currentItem[itemMatch[1]] = normalizeYamlScalar(itemMatch[2]);
+      continue;
+    }
+
+    const fieldMatch = line.match(/^\s{4,}([\w-]+):\s*(.*)$/);
+    if (fieldMatch && currentItem) {
+      currentItem[fieldMatch[1]] = normalizeYamlScalar(fieldMatch[2]);
+      continue;
+    }
+
+    if (/^\s*$/.test(line) || /^\s*#/.test(line)) {
+      continue;
+    }
+
+    if (/^\S/.test(line)) {
+      inList = false;
+      finalize();
+    }
+  }
+
+  finalize();
+  return items;
+}
+
+function isTruthyFlag(value) {
+  return value === "true" || value === true;
+}
+
+function validateSpecCard(cardPath, sourceFile, errors) {
+  const content = readUtf8(cardPath);
+  const frontmatterLines = getFrontmatterLines(cardPath);
+
+  if (!frontmatterLines) {
+    errors.push(`Spec Card missing or invalid frontmatter: ${cardPath} (from ${sourceFile})`);
+    return;
+  }
+
+  const specType = getFrontmatterValue(frontmatterLines, "spec_type");
+  if (specType !== "SPEC_CARD") {
+    errors.push(`Spec Card must declare spec_type 'SPEC_CARD' in ${cardPath} (from ${sourceFile})`);
+  }
+
+  const specStatus = getFrontmatterValue(frontmatterLines, "spec_status");
+  if (!specStatus || !allowedSpecStatuses.has(specStatus)) {
+    errors.push(`Spec Card has invalid spec_status '${specStatus || ""}' in ${cardPath} (from ${sourceFile})`);
+  }
+
+  // Identity (plan §4): spec_version là bắt buộc — atomic bump ở CR ACCEPTED
+  // so sánh trực tiếp với trường này, thiếu nó thì provenance chain đứt.
+  const specVersion = getFrontmatterValue(frontmatterLines, "spec_version");
+  if (!specVersion) {
+    errors.push(`Spec Card missing spec_version in ${cardPath} (from ${sourceFile})`);
+  }
+
+  const reqYaml = extractYamlFence(getMarkdownSectionContent(content, "## Requirements"));
+  const acYaml = extractYamlFence(getMarkdownSectionContent(content, "## Acceptance Criteria"));
+  const freezeYaml = extractYamlFence(getMarkdownSectionContent(content, "## Spec Freeze"));
+
+  const requirements = parseYamlListOfObjects(reqYaml, "requirements");
+  const acceptanceCriteria = parseYamlListOfObjects(acYaml, "acceptance_criteria");
+
+  if (requirements.length === 0) {
+    errors.push(`Spec Card requires at least one requirement in '## Requirements': ${cardPath} (from ${sourceFile})`);
+  }
+  if (acceptanceCriteria.length === 0) {
+    errors.push(`Spec Card requires at least one acceptance criterion in '## Acceptance Criteria': ${cardPath} (from ${sourceFile})`);
+  }
+
+  const reqIds = new Set();
+  requirements.forEach((req) => {
+    const id = req.id;
+    if (!id) {
+      errors.push(`Spec Card has a requirement missing id in ${cardPath} (from ${sourceFile})`);
+      return;
+    }
+    if (reqIds.has(id)) {
+      errors.push(`Spec Card duplicate requirement id '${id}' in ${cardPath} (from ${sourceFile})`);
+    } else {
+      reqIds.add(id);
+    }
+
+    const provenance = req.provenance;
+    if (!provenance) {
+      errors.push(`Spec Card requirement '${id}' missing provenance (origin) in ${cardPath} (from ${sourceFile})`);
+    } else if (provenance !== PROVENANCE_BASELINE && !isCanonicalCrId(provenance)) {
+      errors.push(`Spec Card requirement '${id}' has invalid provenance '${provenance}' in ${cardPath} (from ${sourceFile})`);
+    }
+
+    const crRequired = isTruthyFlag(req.cr_required);
+    if (crRequired && !(provenance && isCanonicalCrId(provenance))) {
+      errors.push(`Spec Card requirement '${id}' requires CR but provenance is not a CR reference in ${cardPath} (from ${sourceFile})`);
+    }
+  });
+
+  const acIds = new Set();
+  const coveredReqs = new Set();
+  acceptanceCriteria.forEach((ac) => {
+    const id = ac.id;
+    if (!id) {
+      errors.push(`Spec Card has an acceptance criterion missing id in ${cardPath} (from ${sourceFile})`);
+      return;
+    }
+    if (acIds.has(id)) {
+      errors.push(`Spec Card duplicate acceptance criteria id '${id}' in ${cardPath} (from ${sourceFile})`);
+    } else {
+      acIds.add(id);
+    }
+
+    const requirement = ac.requirement;
+    if (!requirement) {
+      errors.push(`Spec Card acceptance criteria '${id}' missing requirement mapping in ${cardPath} (from ${sourceFile})`);
+      return;
+    }
+    if (!reqIds.has(requirement)) {
+      errors.push(`Spec Card acceptance criteria '${id}' maps to unknown requirement '${requirement}' in ${cardPath} (from ${sourceFile})`);
+    } else {
+      coveredReqs.add(requirement);
+    }
+  });
+
+  // No-duplicate-trace / full mapping: mỗi requirement phải có ít nhất một AC.
+  requirements.forEach((req) => {
+    if (req.id && !coveredReqs.has(req.id)) {
+      errors.push(`Spec Card requirement '${req.id}' has no acceptance criteria mapping in ${cardPath} (from ${sourceFile})`);
+    }
+  });
+
+  const authority = parseScalarFromYaml(freezeYaml, "authority");
+  if (!authority) {
+    errors.push(`Spec Card missing freeze authority in '## Spec Freeze': ${cardPath} (from ${sourceFile})`);
+  }
+
+  // Freeze decision (AC-04): status bắt buộc và phải là draft|FROZEN; FROZEN
+  // phải có decided_at (thời điểm chốt là một phần của decision).
+  const freezeStatus = parseScalarFromYaml(freezeYaml, "status");
+  if (!freezeStatus || !allowedFreezeStatuses.has(freezeStatus)) {
+    errors.push(
+      `Spec Card has invalid freeze status '${freezeStatus || ""}' in '## Spec Freeze' (expected draft|FROZEN): ${cardPath} (from ${sourceFile})`
+    );
+  } else if (freezeStatus === "FROZEN") {
+    const decidedAt = parseScalarFromYaml(freezeYaml, "decided_at");
+    if (!decidedAt) {
+      errors.push(`Spec Card freeze status FROZEN requires decided_at in '## Spec Freeze': ${cardPath} (from ${sourceFile})`);
+    }
+  }
+
+  // Assumptions/open decisions (plan §4): mỗi item phải có owner rõ.
+  const assumptionsYaml = extractYamlFence(
+    getMarkdownSectionContent(content, "## Assumptions And Open Decisions")
+  );
+  const assumptions = parseYamlListOfObjects(assumptionsYaml, "assumptions");
+  const openDecisions = parseYamlListOfObjects(assumptionsYaml, "open_decisions");
+  assumptions.forEach((item) => {
+    if (!item.owner) {
+      errors.push(
+        `Spec Card assumption '${item.id || "(no id)"}' missing owner in ${cardPath} (from ${sourceFile})`
+      );
+    }
+  });
+  openDecisions.forEach((item) => {
+    if (!item.owner) {
+      errors.push(
+        `Spec Card open decision '${item.id || "(no id)"}' missing owner in ${cardPath} (from ${sourceFile})`
+      );
+    }
+  });
+}
+
 function validateWorkflowSdd(options) {
   const workflowRoot = resolveExistingPath(options.workflowRoot, "workflow-root");
   const projectRoot = resolveExistingPath(options.projectRoot || process.cwd(), "project-root");
@@ -145,8 +378,7 @@ function validateWorkflowSdd(options) {
     const stepId = match.groups.step_id;
     const content = readUtf8(filePath);
     const specStatus = getFrontmatterValue(frontmatterLines, "spec_status");
-    const brdRef = getFrontmatterNestedValue(frontmatterLines, "spec_refs", "brd");
-    const srsRef = getFrontmatterNestedValue(frontmatterLines, "spec_refs", "srs");
+    const lightMode = sddMode === "light";
     const strictMode = sddMode === "strict";
 
     if (!specStatus) {
@@ -162,6 +394,18 @@ function validateWorkflowSdd(options) {
       }
     });
 
+    if (lightMode) {
+      // Light dùng spec_refs.card (Spec Card); brd/srs không bắt buộc.
+      const cardRef = getFrontmatterNestedValue(frontmatterLines, "spec_refs", "card");
+      const cardPath = resolveSpecPath(projectRoot, cardRef, "card", filePath, errors);
+      if (cardPath) {
+        validateSpecCard(cardPath, filePath, errors);
+      }
+      continue;
+    }
+
+    const brdRef = getFrontmatterNestedValue(frontmatterLines, "spec_refs", "brd");
+    const srsRef = getFrontmatterNestedValue(frontmatterLines, "spec_refs", "srs");
     const brdPath = resolveSpecPath(projectRoot, brdRef, "brd", filePath, errors);
     const srsPath = resolveSpecPath(projectRoot, srsRef, "srs", filePath, errors);
 
@@ -212,5 +456,9 @@ if (require.main === module) {
 }
 
 module.exports = {
-  validateWorkflowSdd
+  validateWorkflowSdd,
+  validateSpecCard,
+  parseYamlListOfObjects,
+  parseScalarFromYaml,
+  extractYamlFence
 };
