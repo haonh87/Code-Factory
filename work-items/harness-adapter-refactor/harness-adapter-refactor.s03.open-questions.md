@@ -135,10 +135,13 @@ open_questions:
       code đã viết sẵn trong Delivery Rule Evidence s07.
     owner: "human xác nhận ở s05"
 findings_extra:
-  - "BUG (phải fix trong scope): normalizeInstallState — '(context.repoRoot || context.manifest) ? getDefaultRepoRoot() : process.cwd()' do precedence, bỏ qua context.repoRoot thật"
-  - "RISK: detectActiveHarness trả null/throw khi máy có cả ~/.codex và ~/.claude mà không truyền --mode — cần test + quyết hành vi"
-  - "RISK: copyDirectory chmod đệ quy 755/644 xóa executable bit của skill file nếu có — cần guard/test (SM-5)"
-  - "LEAD: .claude/worktrees/sdd-light-t1 (dirty) chứa workflow-bundle-utils.test.js + sync-workflow-bundle-runtime.test.js — có thể salvage làm test base thay vì viết từ 0; cần đối chiếu trước"
+  - "BUG CONFIRMED (2026-07-20, verbatim workflow-bundle-utils.js:634): 'context.repoRoot || context.manifest ? getDefaultRepoRoot() : process.cwd()' — precedence nuốt context.repoRoot thật; phải fix trong scope (AC-2)"
+  - "RISK CONFIRMED nhưng behavior hiện tại chấp nhận được: detectActiveHarness trên máy có cả ~/.codex + ~/.claude, non-TTY -> throw với message rõ ('Specify --mode <harness>') — AC-6 chỉ cần test khóa hành vi, không cần đổi code"
+  - "RISK HẠ XUỐNG LOW (đo thật): 0 skill file trong skills/ có executable bit -> chmod đệ quy 755/644 không phá gì với nội dung hiện tại; AC-5 giữ ở mức chốt-hành-vi + test, không phải blocker"
+derisk_evidence_2026_07_20:
+  - "sdd-light-t1 test files KHÔNG phải adapter test (cover schema-version readers) -> không salvage nội dung được"
+  - "NHƯNG xác lập test style chuẩn của repo: plain assert + console + exit 1, chạy qua run-all.js, không framework — test mới của work item này PHẢI theo style đó"
+  - "MERGE RISK MỚI: sdd-light-t1 chứa cả bộ test/ 24 file + sửa package.json/wfc.js chưa commit — work item này thêm file test vào cùng thư mục -> phối hợp merge với sdd-light khi cả 2 land (ghi vào s06 dependency)"
 scope_fork_for_human:
   - "SCOPE-A (minimal): giữ manifest root legacy; new-format chỉ test bằng fixture; ship adapter registry cho list/detect/home-resolution như WIP đang dùng thật"
   - "SCOPE-B (full): migrate manifest root sang content+harnesses, kích hoạt new-format end-to-end, giữ legacy làm fallback được test"

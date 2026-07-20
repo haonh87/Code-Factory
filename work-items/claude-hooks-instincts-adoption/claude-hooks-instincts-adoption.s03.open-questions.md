@@ -139,6 +139,11 @@ findings_extra:
   - "BLOCKER 1: scripts/.claude/tdd-session-state.json junk — xóa + ignore"
   - "BLOCKER 2: .claude/worktrees/ chưa gitignore — thêm ignore trước khi add .claude/"
   - "MINOR: load-workflow-context.sh thiếu exit 0 tường minh cuối file — fix 1 dòng cho nhất quán"
+derisk_evidence_2026_07_20:
+  - "CONFIRMED degrade-êm (chạy thật): cả 4 hook exit 0 với stdin rỗng VÀ JSON hỏng"
+  - "CONFIRMED profile controls: CF_HOOK_PROFILE=minimal -> tdd-track/tdd-track-write/tdd-enforce đều exit 0 sớm"
+  - "CONFIRMED tdd-enforce đúng design: production file thiếu test -> exit 2; file exempt (docs/*.md) -> exit 0"
+  - "Hệ quả: AC-3/AC-4 của s04 đã có pre-evidence, s07 chỉ cần lặp lại làm evidence chính thức"
 ```
 
 ## Input Readiness
