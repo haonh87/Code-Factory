@@ -1,0 +1,39 @@
+# Project-level instincts for Code-Factory
+# Behavioral trigger-action patterns learned from sessions.
+# Format: id, trigger, action, domain, source, added
+
+instincts:
+  - id: chmod-after-copyfile
+    trigger: "using fs.copyFileSync for runtime or config files in sync scripts"
+    action: "always chmodSync dest to 0o644 after copy — source policy files may be read-only and copyFileSync preserves permissions"
+    domain: code-style
+    source: bug-fix
+    added: "2026-06-07"
+
+  - id: parse-wfc-status-json
+    trigger: "parsing output from wfc status --json"
+    action: "wfc status --json outputs a summary line followed by a JSON block — extract only lines starting with '{' before parsing"
+    domain: debugging
+    source: bug-fix
+    added: "2026-06-07"
+
+  - id: find-project-root-from-hooks
+    trigger: "determining project root from scripts/hooks/ directory"
+    action: "cd dirname upward in a loop searching for workflow-bundle.manifest.json or package.json — do NOT use cd .. from script dir, it resolves to scripts/ not project root"
+    domain: debugging
+    source: bug-fix
+    added: "2026-06-07"
+
+  - id: temp-file-for-json-in-hooks
+    trigger: "processing JSON in shell hook scripts with inline node"
+    action: "write stdin to a temp file first, then read with fs.readFileSync — shell variable substitution breaks on special characters and empty strings"
+    domain: code-style
+    source: bug-fix
+    added: "2026-06-07"
+
+  - id: smoke-test-version-bump
+    trigger: "bumping bundleVersion in manifest"
+    action: "also update version assertion in run-workflow-bundle-smoke.js — smoke test checks the version string directly"
+    domain: release
+    source: bug-fix
+    added: "2026-06-07"

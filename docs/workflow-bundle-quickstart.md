@@ -1,6 +1,6 @@
 # workflow-bundle Quickstart
 
-Hướng dẫn này tập trung vào public release `workflow-bundle v2.2.0`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, bootstrap một repo mới, và chạy flow `agent proposes, human approves`.
+Hướng dẫn này tập trung vào public release `workflow-bundle v2.2.1`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, bootstrap một repo mới, và chạy flow `agent proposes, human approves`.
 
 ## Mục Tiêu
 

@@ -23,3 +23,7 @@ packages/workflow-bundle/*.tgz
 # codebase-memory-mcp: local graph index + binary snapshot, không commit
 # (.mcp.json đã commit chung — work-item codebase-memory-team-rollout)
 .codebase-memory/
+
+# Hook session state rơi rớt ngoài .claude/ root + worktrees cá nhân
+scripts/.claude/
+.claude/worktrees/

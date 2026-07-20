@@ -1,6 +1,6 @@
 {
   "bundleName": "codex-workflow-bundle",
-  "bundleVersion": "2.2.0",
+  "bundleVersion": "2.2.1",
   "claude": {
     "globalAgentsSource": "runtime/claude/AGENTS.global.md",
     "skillsSourceRoot": "runtime/claude/skills",

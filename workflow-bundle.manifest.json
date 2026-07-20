@@ -1,6 +1,6 @@
 {
   "bundleName": "codex-workflow-bundle",
-  "bundleVersion": "2.2.0",
+  "bundleVersion": "2.2.1",
   "codex": {
     "globalAgentsSource": "policies/codex/AGENTS.global.md",
     "skillsSourceRoot": "skills",
