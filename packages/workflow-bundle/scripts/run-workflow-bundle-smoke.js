@@ -3,6 +3,10 @@ const os = require("os");
 const path = require("path");
 const { execFileSync } = require("child_process");
 
+const ROUTER_HARDSTOP_SNIPPET = "if `Missing Gates` is not `NONE`, `Workflow Status` must not be `ACTIVE`";
+const NEXT_HUMAN_ACTION_SNIPPET = "`Next Human Action` must not be `NONE`";
+const QR_VOUCHER_SNIPPET = "`QR Voucher`";
+
 function assertPathExists(targetPath, message) {
   if (!fs.existsSync(targetPath)) {
     throw new Error(message || `Expected path to exist: ${targetPath}`);
@@ -170,24 +174,24 @@ function runCodexModeSmoke({ wfcBin, tempRoot, repoRoot }) {
   const globalAgentsContent = fs.readFileSync(globalAgentsPath, "utf8");
   assertContentIncludes(
     globalAgentsContent,
-    "`Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`",
+    ROUTER_HARDSTOP_SNIPPET,
     "Expected installed global AGENTS to hard-stop contradictory router status."
   );
   assertContentIncludes(
     globalAgentsContent,
-    "`Next Human Action` không được là `NONE`",
+    NEXT_HUMAN_ACTION_SNIPPET,
     "Expected installed global AGENTS to forbid NONE next action when gates are missing."
   );
 
   const codexWorkflowChainContent = fs.readFileSync(codexWorkflowChainPath, "utf8");
   assertContentIncludes(
     codexWorkflowChainContent,
-    "`Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`",
+    ROUTER_HARDSTOP_SNIPPET,
     "Expected installed codex-workflow-chain skill to hard-stop contradictory router status."
   );
   assertContentIncludes(
     codexWorkflowChainContent,
-    "`QR Voucher`",
+    QR_VOUCHER_SNIPPET,
     "Expected installed codex-workflow-chain skill to retain the greenfield QR Voucher hard-stop example."
   );
 }
@@ -303,3 +307,9 @@ if (require.main === module) {
     process.exit(1);
   }
 }
+
+module.exports = {
+  ROUTER_HARDSTOP_SNIPPET,
+  NEXT_HUMAN_ACTION_SNIPPET,
+  QR_VOUCHER_SNIPPET
+};
