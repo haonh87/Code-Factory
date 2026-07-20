@@ -11,7 +11,6 @@ Branch: `release/v2.2.0`
 ### Added
 
 - (planned) Harness adapter: manifest format mới `content + harnesses`, sync runtime theo adapter (`adapters/<harness>/adapter.json`) — work item `harness-adapter-refactor`
-- (planned) Session-persistence hooks + instincts adoption — work item `claude-hooks-instincts-adoption`
 
 ### Changed
 
@@ -23,7 +22,8 @@ Branch: `release/v2.2.0`
 
 ## Scope
 
-- Integration branch cho 2 work item planned ở trên; mỗi work item vẫn đi đủ chain s01-s08 riêng trước khi merge vào branch này.
+- Integration branch cho work item harness-adapter-refactor (đi đủ chain s01-s08 trước khi merge).
+- claude-hooks-instincts-adoption chuyển sang release/v2.2.1 (nối tiếp branch này).
 - Không gồm: codebase-memory MCP rollout (repo-level config, đã vào main trực tiếp, không thuộc bundle surface).
 
 ## Verification
