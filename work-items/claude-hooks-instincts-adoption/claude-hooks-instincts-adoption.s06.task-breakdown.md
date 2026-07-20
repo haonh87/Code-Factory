@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles: []
@@ -43,7 +43,8 @@ role_signoffs:
   dor: []
   approach: []
   foundation: []
-  task_plan: []
+  task_plan:
+    - "developer"
   uat: []
   release: []
   business_acceptance: []
@@ -59,8 +60,9 @@ gate_reviews:
   approach_reviewed_at: ""
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  task_plan_reviewed_by:
+    - "developer"
+  task_plan_reviewed_at: "2026-07-20"
   uat_reviewed_by: []
   uat_reviewed_at: ""
   release_reviewed_by: []
