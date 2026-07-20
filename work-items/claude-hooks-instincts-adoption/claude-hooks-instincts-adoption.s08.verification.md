@@ -35,7 +35,7 @@ approval_gates:
   contract: "not_applicable"
   foundation: "not_applicable"
   uat: "not_applicable"
-  release: "not_applicable"
+  release: "required"
   business_acceptance: "not_applicable"
 role_signoffs:
   spec: []
@@ -45,7 +45,8 @@ role_signoffs:
   foundation: []
   task_plan: []
   uat: []
-  release: []
+  release:
+    - "devops"
   business_acceptance: []
   dod:
     - "qc"
@@ -65,8 +66,9 @@ gate_reviews:
   task_plan_reviewed_at: ""
   uat_reviewed_by: []
   uat_reviewed_at: ""
-  release_reviewed_by: []
-  release_reviewed_at: ""
+  release_reviewed_by:
+    - "devops"
+  release_reviewed_at: "2026-07-20"
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
   dod_reviewed_by:
@@ -164,10 +166,13 @@ notes: []
 
 ## Release Summary
 ```yaml
-status: PARTIAL
-reviewers: []
+status: PASS
+reviewers:
+  - "devops"
 notes:
-  - "Đã land vào release/v2.2.1; tag/publish là release-lane action riêng"
+  - "Tagged v2.2.1 (annotated, 2026-07-20) trên release/v2.2.1; merged --no-ff vào main (commit b2ea362)"
+  - "Merge-base verify: v2.2.1 là ancestor thật của main; degrade matrix 5 hook exit 0 chạy lại trên main sau merge; wfc validate PASS"
+  - "Release gate passed bởi human (devops), 2026-07-20"
 ```
 
 ## Business Acceptance Summary
@@ -199,12 +204,11 @@ owners:
 ```yaml
 upstream:
   - "claude-hooks-instincts-adoption.s07.implementation.md"
-next_step: "Work item DONE (2026-07-20). Follow-up: release lane chốt tag v2.2.1; theo dõi ma sát TDD strict sau rollout."
+next_step: "Work item DONE và RELEASED (2026-07-20). Follow-up: theo dõi ma sát TDD strict sau rollout."
 ```
 
 ## Handoff
-- Overall status: DONE — DoD passed bởi human (qc/po) 2026-07-20. 6/6 AC PASS (3 HARD pass).
+- Overall status: DONE + RELEASED — DoD passed (qc/po) và Release gate passed (devops), cả 2 ngày 2026-07-20. 6/6 AC PASS (3 HARD pass).
 - Residual: máy fresh/thiếu node chưa test thật; ma sát strict theo dõi sau rollout.
-- Recommendation: pass DoD; release lane chốt changelog + tag v2.2.1 sau v2.2.0.
-- Release recommendation khi có: v2.2.1 đủ scope — sẵn sàng Release gate sau khi v2.2.0 tag.
-- Next action: không còn action bắt buộc. Release lane: chốt changelog + tag v2.2.1 khi anh muốn (sau v2.2.0).
+- Release: tagged `v2.2.1` (annotated, sau `v2.2.0`), merged --no-ff vào `main` (commit `b2ea362`); verify sau merge PASS (degrade matrix 5 hook, wfc validate).
+- Next action: không còn action bắt buộc.

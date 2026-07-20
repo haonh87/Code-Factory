@@ -32,10 +32,10 @@ review_mode: self
 verification_owner: ""
 approval_gates:
   spec: "required"
-  contract: "not_applicable"
+  contract: "required"
   foundation: "not_applicable"
   uat: "not_applicable"
-  release: "not_applicable"
+  release: "required"
   business_acceptance: "not_applicable"
 role_signoffs:
   spec: []
@@ -45,7 +45,8 @@ role_signoffs:
   foundation: []
   task_plan: []
   uat: []
-  release: []
+  release:
+    - "devops"
   business_acceptance: []
   dod:
     - "qc"
@@ -65,8 +66,9 @@ gate_reviews:
   task_plan_reviewed_at: ""
   uat_reviewed_by: []
   uat_reviewed_at: ""
-  release_reviewed_by: []
-  release_reviewed_at: ""
+  release_reviewed_by:
+    - "devops"
+  release_reviewed_at: "2026-07-20"
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
   dod_reviewed_by:
@@ -164,10 +166,13 @@ notes: []
 
 ## Release Summary
 ```yaml
-status: PARTIAL
-reviewers: []
+status: PASS
+reviewers:
+  - "devops"
 notes:
-  - "Đã land vào release/v2.2.0 (integration target đúng kế hoạch); tag/publish v2.2.0 là release-lane action riêng, chưa thuộc DoD work item này"
+  - "Tagged v2.2.0 (annotated, 2026-07-20) trên release/v2.2.0; merged --no-ff vào main (commit 2f9f079)"
+  - "Merge-base verify: v2.2.0 là ancestor thật của main; smoke + test suite + wfc validate PASS trên main sau merge"
+  - "Release gate passed bởi human (devops), 2026-07-20"
 ```
 
 ## Business Acceptance Summary
@@ -199,12 +204,11 @@ owners:
 ```yaml
 upstream:
   - "harness-adapter-refactor.s07.implementation.md"
-next_step: "Work item DONE (2026-07-20). Follow-up: release lane chốt tag v2.2.0; SCOPE-B (new-format end-to-end) là work item tương lai."
+next_step: "Work item DONE và RELEASED (2026-07-20). Follow-up: SCOPE-B (new-format end-to-end) là work item tương lai."
 ```
 
 ## Handoff
-- Overall status: DONE — DoD passed bởi human (qc/po) 2026-07-20. 7/7 AC PASS (3 HARD pass).
+- Overall status: DONE + RELEASED — DoD passed (qc/po) và Release gate passed (devops), cả 2 ngày 2026-07-20. 7/7 AC PASS (3 HARD pass).
 - Residual: SCOPE-B tương lai; test-file merge coordination với sdd-light.
-- Recommendation: pass DoD; sau đó release lane chốt changelog + tag v2.2.0.
-- Release recommendation khi có: v2.2.0 đủ scope (chỉ chứa work item này) — sẵn sàng cho Release gate khi anh muốn tag.
-- Next action: không còn action bắt buộc. Release lane: chốt changelog + tag v2.2.0 khi anh muốn.
+- Release: tagged `v2.2.0` (annotated), merged --no-ff vào `main` (commit `2f9f079`); verify sau merge PASS (smoke, test suite, wfc validate).
+- Next action: không còn action bắt buộc.
