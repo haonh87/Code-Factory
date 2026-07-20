@@ -8,7 +8,7 @@ Tài liệu này chốt public publish surface cho `workflow-bundle v2.2.0`.
 - cho agent chủ động đề xuất `work-item` và `change`
 - nhưng human vẫn giữ quyền approve ở các gate trước khi delivery tiếp tục
 
-`v2.0.0` vẫn là first public release; `v2.2.0` là patch release kế tiếp trên cùng public surface.
+`v2.0.0` vẫn là first public release; `v2.2.0` là bản kế tiếp trên cùng public surface, không phá vỡ tương thích ngược — bổ sung harness adapter registry (additive; manifest legacy giữ nguyên).
 
 ## Canonical Release Refs
 
