@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles: []
@@ -47,7 +47,9 @@ role_signoffs:
   uat: []
   release: []
   business_acceptance: []
-  dod: []
+  dod:
+    - "qc"
+    - "po"
 gate_reviews:
   spec_reviewed_by: []
   spec_reviewed_at: ""
@@ -67,8 +69,10 @@ gate_reviews:
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by:
+    - "qc"
+    - "po"
+  dod_reviewed_at: "2026-07-20"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -182,7 +186,8 @@ notes:
 
 ## Definition of Done
 ```yaml
-status: PARTIAL
+status: DONE
+dod_passed_by: "human (qc/po), 2026-07-20 — residual risks accepted"
 residual_risks:
   - "New-format manifest chỉ fixture-tested — kích hoạt end-to-end là SCOPE-B (work item tương lai)"
   - "sdd-light-t1 land sau sẽ phải merge nội dung 2 file test trùng tên (đã lường, coordination ghi s06/s07)"
@@ -194,12 +199,12 @@ owners:
 ```yaml
 upstream:
   - "harness-adapter-refactor.s07.implementation.md"
-next_step: "Human pass DoD -> đóng work item; tag v2.2.0 thuộc release lane"
+next_step: "Work item DONE (2026-07-20). Follow-up: release lane chốt tag v2.2.0; SCOPE-B (new-format end-to-end) là work item tương lai."
 ```
 
 ## Handoff
-- Overall status: 7/7 AC PASS (3 HARD pass), verification verdict PASS — chờ human pass DoD.
+- Overall status: DONE — DoD passed bởi human (qc/po) 2026-07-20. 7/7 AC PASS (3 HARD pass).
 - Residual: SCOPE-B tương lai; test-file merge coordination với sdd-light.
 - Recommendation: pass DoD; sau đó release lane chốt changelog + tag v2.2.0.
 - Release recommendation khi có: v2.2.0 đủ scope (chỉ chứa work item này) — sẵn sàng cho Release gate khi anh muốn tag.
-- Next action: human chốt DoD.
+- Next action: không còn action bắt buộc. Release lane: chốt changelog + tag v2.2.0 khi anh muốn.

@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles: []
@@ -47,7 +47,9 @@ role_signoffs:
   uat: []
   release: []
   business_acceptance: []
-  dod: []
+  dod:
+    - "qc"
+    - "po"
 gate_reviews:
   spec_reviewed_by: []
   spec_reviewed_at: ""
@@ -67,8 +69,10 @@ gate_reviews:
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by:
+    - "qc"
+    - "po"
+  dod_reviewed_at: "2026-07-20"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -182,7 +186,8 @@ notes:
 
 ## Definition of Done
 ```yaml
-status: PARTIAL
+status: DONE
+dod_passed_by: "human (qc/po), 2026-07-20 — residual risks accepted"
 residual_risks:
   - "Máy thiếu node chưa test thật (mitigation: Claude Code bỏ qua hook lỗi — hành vi platform đã biết; teammate đầu tiên là verify thực tế)"
   - "Ma sát TDD strict với teammate mới — theo dõi sau rollout, đổi default là work item riêng nếu cần (data-driven)"
@@ -194,12 +199,12 @@ owners:
 ```yaml
 upstream:
   - "claude-hooks-instincts-adoption.s07.implementation.md"
-next_step: "Human pass DoD -> đóng work item; tag v2.2.1 thuộc release lane"
+next_step: "Work item DONE (2026-07-20). Follow-up: release lane chốt tag v2.2.1; theo dõi ma sát TDD strict sau rollout."
 ```
 
 ## Handoff
-- Overall status: 6/6 AC PASS (3 HARD pass), verification verdict PASS — chờ human pass DoD.
+- Overall status: DONE — DoD passed bởi human (qc/po) 2026-07-20. 6/6 AC PASS (3 HARD pass).
 - Residual: máy fresh/thiếu node chưa test thật; ma sát strict theo dõi sau rollout.
 - Recommendation: pass DoD; release lane chốt changelog + tag v2.2.1 sau v2.2.0.
 - Release recommendation khi có: v2.2.1 đủ scope — sẵn sàng Release gate sau khi v2.2.0 tag.
-- Next action: human chốt DoD.
+- Next action: không còn action bắt buộc. Release lane: chốt changelog + tag v2.2.1 khi anh muốn (sau v2.2.0).
