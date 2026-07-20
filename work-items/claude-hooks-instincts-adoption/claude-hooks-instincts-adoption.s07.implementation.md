@@ -93,56 +93,75 @@ tags:
 
 ## Step Contract
 ```yaml
-step_goal: ""
-input_summary: []
-output_summary: []
-done_when: []
-owner: ""
+step_goal: "Thi công T-1..T-5 theo task plan approved; evidence cho s08."
+input_summary:
+  - "s06 approved (Task Plan passed 2026-07-20)"
+output_summary:
+  - "Commit aafcab1 trên release/v2.2.1 (6 file + gitignore); main junk đã dọn"
+done_when:
+  - "T-1..T-5 verify path pass"
+owner: "claude (implement) -> human (s08 DoD)"
 ```
 
 ## Artifact Chính
 ```yaml
-implemented_changes: []
-doc_changes: []
-operational_notes: []
+implemented_changes:
+  - "T-1: xóa scripts/.claude/ junk ở main; copy 6 file untracked sang worktree release-v2-2-1, cmp khớp 100%, exec bits giữ (DONE)"
+  - "T-2: +exit 0 tường minh cuối load-workflow-context.sh (chạy lại exit 0); gitignore +scripts/.claude/ +.claude/worktrees/ (check-ignore pass) (DONE)"
+  - "T-3: commit aafcab1 — AC-2 HARD grep /Users/ staged diff = 0; AC-1 đủ 5 script settings.json trỏ tới; review 2 tầng PASS (DONE)"
+  - "T-4: degrade matrix 5 hook × (empty, broken-json) = exit 0 toàn bộ; profile matrix minimal/standard=0, strict block=2, disabled-list=0; wfc validate 68+64 worktree (DONE)"
+  - "T-5: rollback rehearsal worktree tạm — revert sạch, 6 file rời tracking, tdd-enforce pre-existing giữ, validate PASS trạng thái revert (DONE)"
+doc_changes:
+  - "s07 note này"
+operational_notes:
+  - "Main worktree không đổi hành vi (hooks untracked vẫn chạy như cũ cho tới khi release/v2.2.1 merge về main)"
 ```
 
 ## Delivery Rule Evidence
 ```yaml
-behavior_change: YES|NO
-tdd_status: DONE|NOT_REQUIRED|EXCEPTION
+behavior_change: NO
+tdd_status: NOT_REQUIRED
 tdd_test_refs: []
 tdd_exception_reason: ""
-tdd_alternative_verify_path: []
-change_risk_profile: QUICK_FIX|STANDARD|LARGE_OR_RISKY
-worktree_status: USED|NOT_REQUIRED|SKIPPED_WITH_REASON
-worktree_refs: []
-worktree_reason: ""
-review_status: COMPLETED|PARTIAL|BLOCKED
-review_refs: []
-spec_compliance_status: PASS|FAIL|PARTIAL|NOT_RUN
-code_quality_status: PASS|FAIL|PARTIAL|NOT_RUN
-delegation_mode: agentic|multi_agent|subagent|sequential_multi_role
-independence_status: PASS|FAIL|NOT_APPLICABLE
+tdd_alternative_verify_path:
+  - "Adopt-as-is + 1 dòng defensive fix; verify = degrade matrix + profile matrix chạy thật (bảng exit codes ở trên)"
+change_risk_profile: STANDARD
+worktree_status: USED
+worktree_refs:
+  - ".claude/worktrees/release-v2-2-1 (workspace commit, main không đụng)"
+worktree_reason: "Theo s06: commit trên release/v2.2.1, cô lập khỏi main"
+review_status: DONE
+review_refs:
+  - "T-3 review 2 tầng (2026-07-20): spec compliance PASS (đúng 7 file staged theo OPT-A, adopt-as-is, 0 path máy, junk đã dọn trước) -> code quality PASS (exec bits 555 giữ, settings.json parse OK, gitignore đúng phạm vi)"
+spec_compliance_status: PASS
+code_quality_status: PASS
+delegation_mode: agentic
+independence_status: NOT_APPLICABLE
 independence_refs: []
-merge_path: ""
-verify_path: []
+merge_path: "Commit thẳng release/v2.2.1 (aafcab1), revertable 1 commit (rehearsed)"
+verify_path:
+  - "T-3: grep /Users/ = 0; 5/5 script tồn tại theo settings.json"
+  - "T-4: bảng exit codes — 5 hook degrade exit 0; tdd-enforce: minimal=0 standard=0 strict=2(block) disabled=0"
+  - "T-5: revert rehearsal + validate PASS"
 ```
 
 ## Implementation Notes
 ```yaml
-framework_notes: []
-known_limitations: []
+framework_notes:
+  - "Copy bằng cp -p giữ mode 555; load-workflow-context.sh chmod tạm u+w để append rồi trả lại 555"
+known_limitations:
+  - "Chưa test trên máy thiếu node (mitigation: Claude Code bỏ qua hook lỗi, đã ghi edge case s04; residual cho s08)"
+  - "Hiệu lực team chỉ sau khi release/v2.2.1 merge về main + teammate pull"
 ```
 
 ## Traceability
 ```yaml
-upstream: []
-next_step: ""
+upstream:
+  - "claude-hooks-instincts-adoption.s06.task-breakdown.md (approved)"
+next_step: "s08 Verify + DoD"
 ```
 
 ## Handoff
-- Outputs actual:
-- Known limitations:
-- Notes for testing:
-- Notes for deployment khi có:
+- Outputs actual: commit aafcab1 trên release/v2.2.1; main junk sạch.
+- AC scoreboard tạm: AC-1 ✓, AC-2 HARD ✓, AC-3 HARD ✓ (matrix), AC-4 ✓ (matrix), AC-5 HARD ✓ (validate), AC-6 ✓ (exit-0 fix).
+- Next: s08 verify + DoD (human).
