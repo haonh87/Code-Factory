@@ -93,23 +93,23 @@ tags:
 # Step 4 - Acceptance + DoR
 
 > [!summary]
-> Tóm tắt acceptance criteria, edge case, DoR và governance checks cho readiness.
+> Summarize the acceptance criteria, edge cases, DoR and governance checks for readiness.
 
 ## Step Contract
 ```yaml
-step_goal: "Chuyển discovery đã được chốt thành acceptance criteria đo được và kết luận DoR ở mức đủ để sang technical approach."
+step_goal: "Turn the locked discovery into measurable acceptance criteria and a DoR conclusion that is enough to move to the technical approach."
 input_summary:
-  - "Step 1 đã restate scope phase 1 cho GitLab self-hosted"
-  - "Step 2 đã khóa business goal và non-goals"
-  - "User đã chốt auth SSH, pull ff-only và MVP inspect + pull + push"
-  - "User đã chốt dùng zereight/gitlab-mcp làm chuẩn cho lane GitLab"
+  - "Step 1 restated the phase 1 scope for self-hosted GitLab"
+  - "Step 2 locked the business goal and the non-goals"
+  - "The user locked SSH auth, ff-only pull and an MVP of inspect + pull + push"
+  - "The user locked zereight/gitlab-mcp as the standard for the GitLab lane"
 output_summary:
-  - "Acceptance criteria đo được cho phase 1"
-  - "Brownfield baseline và compatibility constraints"
-  - "DoR verdict để chuyển sang step 5"
+  - "Measurable acceptance criteria for phase 1"
+  - "The brownfield baseline and compatibility constraints"
+  - "A DoR verdict to move to step 5"
 done_when:
-  - "Criteria đủ rõ để thiết kế technical approach mà không tự suy diễn scope"
-  - "Các blocker discovery còn lại không còn chặn design"
+  - "The criteria are clear enough to design the technical approach without inferring the scope"
+  - "No remaining discovery blocker blocks the design"
 owner: "developer"
 ```
 
@@ -121,11 +121,11 @@ approved_spec_refs:
   - "mcp-gitlab.s02.business-goal.md"
   - "mcp-gitlab.s03.open-questions.md"
 decision_notes:
-  - "Phase 1 chỉ áp dụng cho repository GitLab đã tồn tại"
-  - "MVP tool surface là inspect + pull + push"
-  - "Auth ưu tiên SSH và pull mặc định ff-only"
-  - "GitLab standard runtime/reference là zereight/gitlab-mcp"
-  - "Workflow phải ghi explicit provider target và host khi chạm provider-specific MCP"
+  - "Phase 1 only applies to an existing GitLab repository"
+  - "The MVP tool surface is inspect + pull + push"
+  - "Auth prefers SSH and the default pull is ff-only"
+  - "The GitLab standard runtime/reference is zereight/gitlab-mcp"
+  - "The workflow must record the explicit provider target and host when it touches a provider-specific MCP"
 ```
 
 ## Contract Baseline
@@ -134,7 +134,7 @@ status: NOT_APPLICABLE
 api_contract_refs: []
 ux_contract_refs: []
 notes:
-  - "Phase 1 chưa mở API contract hay UX contract riêng; cách fit tool surface với runtime chuẩn sẽ được chốt ở step 5"
+  - "Phase 1 does not open a separate API contract or UX contract; how to fit the tool surface to the standard runtime will be locked in step 5"
 ```
 
 ## Existing System Baseline
@@ -146,63 +146,63 @@ current_behavior_refs:
   - "adapters/mcp/install-github-push.sh"
   - "https://github.com/zereight/gitlab-mcp"
 impacted_surfaces:
-  - "workflow artifact của lane GitLab"
-  - "Codex MCP config/integration cho runtime GitLab chuẩn"
-  - "nếu cần, wrapper mỏng hoặc adapter repo-local quanh standard runtime"
+  - "the workflow artifact of the GitLab lane"
+  - "the Codex MCP config/integration for the standard GitLab runtime"
+  - "if needed, a thin wrapper or repo-local adapter around the standard runtime"
 compatibility_constraints:
-  - "Không làm thay đổi behavior của github-push MCP hiện có"
-  - "Provider distinction GitHub/GitLab phải explicit, không được suy diễn"
-  - "Guardrail và boundary của lane GitLab không được làm hỏng lane GitHub hiện có"
-  - "Không tự động merge hoặc rebase khi pull; mặc định ff-only"
+  - "Do not change the behavior of the existing github-push MCP"
+  - "The GitHub/GitLab provider distinction must be explicit, not inferred"
+  - "The guardrails and boundaries of the GitLab lane must not break the existing GitHub lane"
+  - "Do not automatically merge or rebase on pull; the default is ff-only"
 rollback_constraints:
-  - "Có thể rollback bằng cách gỡ config/integration của lane GitLab mà không ảnh hưởng MCP GitHub hiện có"
+  - "Can roll back by removing the GitLab lane config/integration without affecting the existing GitHub MCP"
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 acceptance_criteria:
   - id: AC1
-    description: "Lane GitLab của work item này dùng zereight/gitlab-mcp làm standard runtime/reference cho self-hosted host gitlab.ggg.com.vn."
+    description: "The GitLab lane of this work item uses zereight/gitlab-mcp as the standard runtime/reference for the self-hosted host gitlab.ggg.com.vn."
     measurable: true
   - id: AC2
-    description: "Workflow artifact chỉ rõ provider target là GitLab, host GitLab và runtime chuẩn; không suy diễn từ context."
+    description: "The workflow artifact states clearly that the provider target is GitLab, the GitLab host and the standard runtime; it does not infer from context."
     measurable: true
   - id: AC3
-    description: "Giải pháp phase 1 đáp ứng inspect repository, pull current branch và push current branch cho repository GitLab đã tồn tại."
+    description: "The phase 1 solution supports inspect repository, pull current branch and push current branch for an existing GitLab repository."
     measurable: true
   - id: AC4
-    description: "Pull mặc định dùng fast-forward only; nếu branch state không cho phép ff-only thì tool phải fail rõ thay vì tự merge hoặc rebase."
+    description: "The default pull uses fast-forward only; if the branch state does not allow ff-only, the tool must fail clearly instead of auto-merging or rebasing."
     measurable: true
   - id: AC5
-    description: "Auth phase 1 ưu tiên SSH và không yêu cầu flow tạo mới repository GitLab."
+    description: "Phase 1 auth prefers SSH and does not require a flow to create a new GitLab repository."
     measurable: true
   - id: AC6
-    description: "Có Codex integration/config cho lane GitLab theo standard runtime đã chọn."
+    description: "A Codex integration/config exists for the GitLab lane per the chosen standard runtime."
     measurable: true
   - id: AC7
-    description: "Quyết định của lane GitLab không làm thay đổi behavior hoặc contract của lane GitHub hiện có."
+    description: "The GitLab lane decision does not change the behavior or the contract of the existing GitHub lane."
     measurable: true
 edge_cases:
-  - "Repo local có thay đổi chưa commit trước khi pull"
-  - "Remote GitLab không truy cập được hoặc auth SSH thất bại"
-  - "Branch hiện tại không có upstream phù hợp để pull/push"
-  - "Pull không ff-only được do local và remote diverged"
-  - "Standard runtime cần wrapper hoặc adapter bổ sung để khớp local git workflow"
+  - "The local repo has uncommitted changes before a pull"
+  - "The GitLab remote is unreachable or SSH auth fails"
+  - "The current branch has no suitable upstream to pull/push"
+  - "A pull cannot be ff-only because the local and remote have diverged"
+  - "The standard runtime needs an extra wrapper or adapter to fit the local git workflow"
 out_of_scope:
-  - "Tạo project/repository GitLab mới"
-  - "Merge request lifecycle"
-  - "GitLab CI/CD hoặc project settings"
-  - "HTTPS + PAT support nếu không thật sự cần trong phase 1"
-  - "Xây GitLab MCP mới từ đầu nếu standard runtime hiện có đủ hoặc chỉ cần wrapper mỏng"
+  - "Create a new GitLab project/repository"
+  - "The merge request lifecycle"
+  - "GitLab CI/CD or project settings"
+  - "HTTPS + PAT support if not really needed in phase 1"
+  - "Build a new GitLab MCP from scratch if the standard runtime is enough or only needs a thin wrapper"
 done_when:
-  - "Acceptance criteria có thể map trực tiếp sang test/verification path"
-  - "Brownfield compatibility constraints đã được ghi rõ"
-  - "Không còn blocker discovery trọng yếu chặn technical approach"
+  - "The acceptance criteria can map directly to a test/verification path"
+  - "The brownfield compatibility constraints are recorded clearly"
+  - "No material discovery blocker remains for the technical approach"
 behavioral_invariants:
-  - "Không force push và không rewrite history"
-  - "Không ngầm suy luận provider GitHub/GitLab"
-  - "Không làm thay đổi workflow hoặc config của github-push MCP hiện có"
-  - "Không tự merge hoặc rebase trong pull mặc định"
+  - "No force push and no history rewrite"
+  - "Do not implicitly infer the GitHub/GitLab provider"
+  - "Do not change the workflow or config of the existing github-push MCP"
+  - "Do not auto-merge or rebase in the default pull"
 ```
 
 ## Governance Checks
@@ -210,13 +210,13 @@ behavioral_invariants:
 checklist_applied:
   - "project-context/checklists/strict.md"
 checks:
-  - "Đã nâng profile strict vì scope chạm external integration"
-  - "Đã khóa non-goals để tránh trượt sang create repo và MR flow"
-  - "Đã phản ánh quyết định dùng zereight/gitlab-mcp làm chuẩn cho lane GitLab"
-  - "Đã ghi rule explicit provider distinction ở mức artifact"
+  - "Raised to the strict profile because the scope touches an external integration"
+  - "Locked the non-goals to avoid slipping into repo creation and the MR flow"
+  - "Reflected the decision to use zereight/gitlab-mcp as the standard for the GitLab lane"
+  - "Recorded the explicit provider distinction rule at the artifact level"
 blocking_items: []
 owner: "developer"
-next_action: "Spec và DoR đã được requester approve ngày 2026-04-23; chuyển sang step 5 để chốt technical approach."
+next_action: "The spec and DoR were approved by the requester on 2026-04-23; move to step 5 to lock the technical approach."
 ```
 
 ## Definition of Ready
@@ -226,10 +226,10 @@ blockers: []
 owners:
   - "po/developer review gate owners"
 notes:
-  - "Restated request đã rõ và scope đã khóa"
-  - "Provider target, host và standard runtime đã được user chốt"
-  - "Conflict còn lại là bài toán technical-fit cho step 5, không chặn design"
-  - "Requester đã approve step 4 ngày 2026-04-23; work item sẵn sàng sang technical approach"
+  - "The restated request is clear and the scope is locked"
+  - "The provider target, host and standard runtime have been locked by the user"
+  - "The remaining conflict is a technical-fit problem for step 5 and does not block the design"
+  - "The requester approved step 4 on 2026-04-23; the work item is ready for the technical approach"
 ```
 
 ## Traceability
@@ -242,6 +242,6 @@ next_step: "mcp-gitlab.s05.technical-approach.md"
 ```
 
 ## Handoff
-- Criteria bắt buộc: standard runtime là zereight/gitlab-mcp, provider distinction explicit, inspect + pull + push cho repo GitLab đã tồn tại, SSH-first, ff-only pull.
-- Edge case phải giữ: local dirty state, upstream thiếu, auth fail, diverged branch không ff-only được và bài toán adopt-vs-wrap quanh standard runtime.
-- Điều kiện sang step 5: đã đạt; tiếp theo phải chọn approach nhỏ nhất đúng mục tiêu giữa direct-use và thin-wrapper quanh standard runtime.
+- Mandatory criteria: the standard runtime is zereight/gitlab-mcp, the provider distinction is explicit, inspect + pull + push for an existing GitLab repo, SSH-first, ff-only pull.
+- Edge case to preserve: local dirty state, missing upstream, auth failure, a diverged branch that cannot be ff-only, and the adopt-vs-wrap problem around the standard runtime.
+- Conditions to move to step 5: met; next, pick the smallest approach that fits the goal between direct-use and a thin wrapper around the standard runtime.

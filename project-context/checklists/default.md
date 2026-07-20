@@ -1,41 +1,45 @@
+---
+language: en
+---
+
 # Governance Checklist Profile: `default`
 
-Đây là checklist mặc định cho phần lớn work item.
+This is the default checklist for most work items.
 
-## Khi Dùng
+## When To Use
 
-- bug, feature hoặc change thông thường
-- scope không có yêu cầu audit đặc biệt
-- không có migration hoặc release risk quá lớn
+- ordinary bug, feature or change
+- scope has no special audit requirement
+- no migration or release risk that is too large
 
-## Checklist Gợi Ý
+## Suggested Checklist
 
-### Clarify Và Open Questions
+### Clarify And Open Questions
 
-- intent, scope boundary và non-goals đã đủ rõ
-- `governance context` đã được ghi nhận trong step note khi có rule liên quan
-- blocker hoặc `governance blocker` còn lại đều có owner hoặc resolution path
+- intent, scope boundary and non-goals are clear enough
+- `governance context` has been recorded in the step note when a related rule exists
+- any remaining blocker or `governance blocker` has an owner or a resolution path
 
 ### Acceptance + DoR
 
-- acceptance criteria đo được và có thể verify
-- role signoff cần thiết đã được nhận diện
-- requirement hoặc rule nền đã được phản ánh vào `SRS` hoặc note workflow nếu cần
+- acceptance criteria are measurable and verifiable
+- the needed role sign-offs have been identified
+- requirements or foundational rules have been reflected into `SRS` or the workflow note when needed
 
 ### Task Plan
 
-- task plan có coverage cho build, verify và docs trong phạm vi thật sự cần
-- nếu scope chạm release hoặc rollout, đã có task kiểm tra tối thiểu cho packaging/runtime/release
-- nếu thấy khả năng lệch chuẩn, đã xác định trước cách ghi `governance-exception`
+- the task plan covers build, verify and docs for the scope that is genuinely needed
+- if scope touches release or rollout, there is at least a minimal task for packaging/runtime/release checks
+- if a deviation seems possible, the way to record a `governance-exception` has been determined in advance
 
 ### Verify + DoD
 
-- evidence đạt/chưa đạt đã được ghi rõ
-- docs/spec liên quan đã được sync nếu behavior thay đổi
-- gap còn lại có owner và next action
+- pass/not-pass evidence has been recorded clearly
+- related docs/spec have been synced if behavior changed
+- remaining gaps have an owner and a next action
 
-## Cách Materialize
+## How To Materialize
 
 - `checklist_name`: `default`
-- `checklist_refs`: trỏ file này
-- chỉ copy các check thực sự áp dụng vào block `## Governance Checks` của step
+- `checklist_refs`: point to this file
+- only copy the checks that actually apply into the step's `## Governance Checks` block

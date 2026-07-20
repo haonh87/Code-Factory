@@ -1,22 +1,26 @@
+---
+language: en
+---
+
 # Governance Exception Register
 
-Register này dùng để theo dõi `governance-exception` hoặc `waiver` còn mở, hoặc cần audit xuyên nhiều step.
+This register is used to track `governance-exception` or `waiver` still open, or that needs audit across many steps.
 
-## Khi Nào Phải Ghi Vào Register
+## When An Entry Must Be Added To The Register
 
-- exception còn mở sau step đang xử lý
-- exception ảnh hưởng tới `DoD`, `release` hoặc `business_acceptance`
-- exception cần được theo dõi qua nhiều step hoặc nhiều role
-- work item chạy profile `regulated`
+- the exception stays open past the step being handled
+- the exception affects `DoD`, `release` or `business_acceptance`
+- the exception must be tracked across many steps or many roles
+- the work item runs profile `regulated`
 
-## Quy Trình Tối Thiểu
+## Minimum Process
 
-1. Ghi `governance-exception` trong note step liên quan.
-2. Thêm một dòng vào register này.
-3. Xác định `approved_by` theo `governance-role-model.md`.
-4. Cập nhật trạng thái khi mitigation hoàn tất, waiver được approve hoặc exception được đóng.
+1. Record the `governance-exception` in the related step note.
+2. Add a row to this register.
+3. Determine `approved_by` per `governance-role-model.md`.
+4. Update the status when mitigation is complete, the waiver is approved or the exception is closed.
 
-## Template Nhanh
+## Quick Template
 
 ```yaml
 exception_id: GOV-EX-001
@@ -37,4 +41,4 @@ notes: ""
 
 | Exception ID | Work Item | Step | Principle | Owner | Status | Review Date | Notes |
 |---|---|---|---|---|---|---|---|
-| _none_ |  |  |  |  |  |  | Chưa có exception đang mở ở mức project |
+| _none_ |  |  |  |  |  |  | No open project-level exceptions |

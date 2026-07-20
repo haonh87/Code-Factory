@@ -29,24 +29,24 @@ dependency_refs: []
 ```yaml
 functional_requirements:
   - id: SRS-FR-001
-    description: "Flow search phải chấp nhận workspace filter dạng path chuẩn hóa."
+    description: "The search flow must accept a workspace filter as a normalized path."
     source_refs: [BRD-001]
     acceptance_refs: [AC-001]
   - id: SRS-FR-002
-    description: "Kết quả trả về chỉ gồm session thuộc workspace được yêu cầu."
+    description: "The returned results must only contain sessions that belong to the requested workspace."
     source_refs: [BRD-001, BRD-002]
     acceptance_refs: [AC-002]
 non_functional_requirements:
   - id: SRS-NFR-001
     category: compatibility
-    description: "Khi không có workspace filter, hành vi và output shape phải tương thích với flow hiện tại."
+    description: "When no workspace filter is present, the behavior and output shape must be compatible with the current flow."
     acceptance_refs: [AC-003]
 ux_system_behavior:
   - id: SRS-UX-001
-    description: "Nếu workspace path không hợp lệ, hệ thống phải trả về thông báo lỗi rõ nghĩa để role vận hành biết cách sửa input."
+    description: "If the workspace path is invalid, the system must return a clear error message so the operator role knows how to fix the input."
     acceptance_refs: [AC-004]
 constraints:
-  - "Không thay đổi schema session hiện có"
+  - "Do not change the existing session schema"
 dependencies:
   - "cass read-only query layer"
 open_questions: []

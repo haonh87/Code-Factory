@@ -93,24 +93,24 @@ tags:
 # Step 5 - Technical Approach
 
 > [!summary]
-> Tóm tắt option được khuyến nghị, trade-off và boundary kỹ thuật cần giữ.
+> Summarize the recommended option, trade-offs and the technical boundary to preserve.
 
 ## Step Contract
 ```yaml
-step_goal: "Chọn technical approach nhỏ nhất nhưng đủ đúng cho lane GitLab, dùng zereight/gitlab-mcp làm chuẩn mà vẫn khớp nhu cầu inspect/pull/push trên repository đã tồn tại."
+step_goal: "Pick the smallest technical approach that is still correct for the GitLab lane, using zereight/gitlab-mcp as the standard while still fitting the inspect/pull/push need on an existing repository."
 input_summary:
-  - "Acceptance criteria đã được requester approve ở step 4 ngày 2026-04-23"
-  - "Lane GitLab phải explicit provider target, host và runtime chuẩn"
-  - "Scope phase 1 chỉ gồm inspect repository, pull current branch và push current branch"
-  - "Auth ưu tiên SSH và pull mặc định ff-only"
+  - "The acceptance criteria were approved by the requester in step 4 on 2026-04-23"
+  - "The GitLab lane must state the provider target, host and standard runtime explicitly"
+  - "Phase 1 scope is only inspect repository, pull current branch and push current branch"
+  - "Auth prefers SSH and the default pull is ff-only"
 output_summary:
-  - "So sánh option direct-use, thin-wrapper và build-from-scratch"
-  - "Approach được khuyến nghị cho phase 1"
-  - "Boundary kỹ thuật để giữ lane GitHub không bị ảnh hưởng"
+  - "A comparison of the direct-use, thin-wrapper and build-from-scratch options"
+  - "The approach recommended for phase 1"
+  - "The technical boundary to keep the GitHub lane unaffected"
 done_when:
-  - "Có option được chọn kèm trade-off rõ ràng"
-  - "Boundary và compatibility risk đủ cụ thể để sang task plan"
-  - "Không còn ambiguity trọng yếu về hướng kỹ thuật phase 1"
+  - "A chosen option with clear trade-offs exists"
+  - "The boundary and compatibility risk are concrete enough to move to the task plan"
+  - "No material ambiguity remains about the phase 1 technical direction"
 owner: "developer"
 ```
 
@@ -118,45 +118,45 @@ owner: "developer"
 ```yaml
 options:
   - id: OPT1
-    name: "Dùng zereight/gitlab-mcp trực tiếp"
-    summary: "Adopt runtime chuẩn as-is và map nhu cầu phase 1 vào tool surface sẵn có của repo tham chiếu."
+    name: "Use zereight/gitlab-mcp directly"
+    summary: "Adopt the standard runtime as-is and map the phase 1 need onto the existing tool surface of the reference repo."
     pros:
-      - "Bám sát tối đa quyết định dùng standard runtime/reference"
-      - "Tận dụng cấu hình self-hosted GitLab đã được thiết kế sẵn"
-      - "Giảm chi phí tạo thêm lớp adapter trong repo này"
+      - "Stays as close as possible to the decision to use a standard runtime/reference"
+      - "Reuses the self-hosted GitLab configuration that is already designed in"
+      - "Reduces the cost of adding another adapter layer in this repo"
     cons:
-      - "Repo tham chiếu thiên về GitLab platform/API workflow hơn local git inspect/pull/push"
-      - "Khó giữ tool surface phase 1 tối giản nếu dùng nguyên trạng"
-      - "Risk cao về mismatch giữa acceptance criteria và hành vi thực tế"
+      - "The reference repo leans toward the GitLab platform/API workflow rather than local git inspect/pull/push"
+      - "Hard to keep the phase 1 tool surface minimal if used as-is"
+      - "Higher risk of a mismatch between the acceptance criteria and the actual behavior"
     fit_verdict: "PARTIAL"
   - id: OPT2
-    name: "Dùng zereight/gitlab-mcp làm chuẩn, thêm thin wrapper cho local git workflow"
-    summary: "Giữ standard runtime/reference cho lane GitLab nhưng thêm lớp adapter mỏng để expose đúng inspect/pull/push cho repository đã tồn tại."
+    name: "Use zereight/gitlab-mcp as the standard, add a thin wrapper for the local git workflow"
+    summary: "Keep the standard runtime/reference for the GitLab lane but add a thin adapter layer to expose inspect/pull/push correctly for an existing repository."
     pros:
-      - "Tôn trọng quyết định dùng standard runtime/reference"
-      - "Khớp trực tiếp acceptance criteria phase 1 cho repo-local workflow"
-      - "Cho phép giữ provider distinction explicit và cô lập lane GitHub"
-      - "Dễ rollback bằng cách gỡ lane GitLab mà không chạm GitHub lane"
+      - "Respects the decision to use a standard runtime/reference"
+      - "Maps directly to the phase 1 acceptance criteria for the repo-local workflow"
+      - "Lets the provider distinction stay explicit and isolates the GitHub lane"
+      - "Easy to roll back by removing the GitLab lane without touching the GitHub lane"
     cons:
-      - "Phát sinh thêm một lớp tích hợp cần bảo trì"
-      - "Cần discipline để wrapper không phình thành runtime mới"
+      - "Adds one integration layer that needs maintenance"
+      - "Needs discipline so the wrapper does not grow into a new runtime"
     fit_verdict: "BEST_FIT"
   - id: OPT3
-    name: "Xây MCP GitLab mới từ đầu"
-    summary: "Thiết kế runtime GitLab riêng cho repo này chỉ để phục vụ inspect/pull/push."
+    name: "Build a new GitLab MCP from scratch"
+    summary: "Design a separate GitLab runtime for this repo only to serve inspect/pull/push."
     pros:
-      - "Tool surface có thể tối ưu tuyệt đối cho nhu cầu phase 1"
-      - "Toàn quyền kiểm soát behavior local git workflow"
+      - "The tool surface can be optimized absolutely for the phase 1 need"
+      - "Full control over the local git workflow behavior"
     cons:
-      - "Đi ngược quyết định lấy zereight/gitlab-mcp làm chuẩn"
-      - "Tăng maintenance cost và duplicate capability"
-      - "Không cần thiết khi phase 1 còn nhỏ"
+      - "Goes against the decision to take zereight/gitlab-mcp as the standard"
+      - "Raises the maintenance cost and duplicates capability"
+      - "Unnecessary while phase 1 is still small"
     fit_verdict: "REJECT"
 recommended_option: "OPT2"
 trade_offs:
-  - "Chấp nhận một lớp wrapper mỏng để đổi lấy fit tốt hơn cho local git workflow"
-  - "Không dùng trực tiếp tool surface rộng của runtime chuẩn trong phase 1 để tránh scope drift"
-  - "Giữ chuẩn GitLab ở mức runtime/reference và config, không biến wrapper thành implementation thay thế hoàn toàn"
+  - "Accept a thin wrapper layer in exchange for a better fit for the local git workflow"
+  - "Do not use the broad tool surface of the standard runtime directly in phase 1 to avoid scope drift"
+  - "Keep the GitLab standard at the runtime/reference and config level; do not let the wrapper become a full replacement implementation"
 ```
 
 ## Foundation Decision
@@ -164,65 +164,65 @@ trade_offs:
 status: NOT_APPLICABLE
 solution_class: "brownfield MCP lane extension"
 selected_stack:
-  - "Node.js MCP tooling đang có trong repo"
-  - "Git CLI local cho inspect/pull/push"
+  - "Node.js MCP tooling already present in the repo"
+  - "Local Git CLI for inspect/pull/push"
 selected_runtime:
-  - "zereight/gitlab-mcp làm standard runtime/reference cho GitLab lane"
+  - "zereight/gitlab-mcp as the standard runtime/reference for the GitLab lane"
 decision_notes:
-  - "Đây là quyết định approach ở mức work item, không phải foundation gate mới cho toàn repo"
-  - "Lane GitHub hiện có giữ nguyên; lane GitLab được bổ sung độc lập"
-  - "GitLab self-hosted host được cố định theo artifact thay vì suy diễn từ context"
+  - "This is a work-item-level approach decision, not a new foundation gate for the whole repo"
+  - "The existing GitHub lane is unchanged; the GitLab lane is added independently"
+  - "The self-hosted GitLab host is fixed in the artifact instead of inferred from context"
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
-recommended_approach: "Dùng zereight/gitlab-mcp làm standard runtime/reference cho lane GitLab, đồng thời tạo thin wrapper/integration layer trong repo này để expose đúng inspect_repository, pull_current_branch và push_current_branch cho repository GitLab đã tồn tại."
-why: "Đây là phương án nhỏ nhất vẫn giữ được cả hai mục tiêu: tuân thủ chuẩn GitLab mà user chọn và đáp ứng chính xác local git workflow phase 1."
+recommended_approach: "Use zereight/gitlab-mcp as the standard runtime/reference for the GitLab lane, and create a thin wrapper/integration layer in this repo to expose inspect_repository, pull_current_branch and push_current_branch correctly for an existing GitLab repository."
+why: "This is the smallest option that still keeps both goals: follow the GitLab standard chosen by the user and meet the phase 1 local git workflow exactly."
 boundaries:
-  - "Workflow artifact phải luôn ghi rõ git_provider_target=gitlab, gitlab_host=gitlab.ggg.com.vn và runtime chuẩn tương ứng"
-  - "Wrapper chỉ được bao phủ inspect/pull/push và guardrail liên quan; không mở rộng sang create repo, MR hay CI/CD"
-  - "Pull mặc định là ff-only; nếu không ff-only được thì fail rõ"
-  - "Auth phase 1 ưu tiên SSH; không mở HTTPS + PAT nếu chưa có lý do delivery"
-  - "Không sửa contract hoặc behavior của github-push lane hiện có"
+  - "The workflow artifact must always record git_provider_target=gitlab, gitlab_host=gitlab.ggg.com.vn and the corresponding standard runtime"
+  - "The wrapper only covers inspect/pull/push and the related guardrails; it does not expand to repo creation, MR or CI/CD"
+  - "The default pull is ff-only; if ff-only is not possible, fail clearly"
+  - "Phase 1 auth prefers SSH; do not open HTTPS + PAT without a delivery reason"
+  - "Do not change the contract or behavior of the existing github-push lane"
 risk_notes:
-  - "Nếu wrapper dày lên, repo sẽ vô tình duy trì thêm một GitLab runtime thứ hai"
-  - "Nếu dùng runtime chuẩn trực tiếp mà không adapter, acceptance criteria phase 1 có thể không map sạch sang tool behavior"
-  - "Provider routing phải explicit; nếu không GitHub/GitLab lane dễ bị dùng sai runtime"
+  - "If the wrapper grows thick, the repo will accidentally maintain a second GitLab runtime"
+  - "If the standard runtime is used directly without an adapter, the phase 1 acceptance criteria may not map cleanly to the tool behavior"
+  - "Provider routing must be explicit; otherwise the GitHub/GitLab lane can easily use the wrong runtime"
 ```
 
 ## Architecture Details
 ```yaml
 domain_boundaries:
-  - "Workflow governance lane: quyết định provider target và runtime lane ngay từ artifact"
-  - "GitHub lane: tiếp tục dùng github-push MCP hiện có, không thay đổi"
-  - "GitLab lane: chuẩn GitLab dựa trên zereight/gitlab-mcp và thin wrapper phase 1"
+  - "Workflow governance lane: the provider target and the runtime lane are decided in the artifact upfront"
+  - "GitHub lane: continues to use the existing github-push MCP, unchanged"
+  - "GitLab lane: the GitLab standard based on zereight/gitlab-mcp and the phase 1 thin wrapper"
 integration_points:
-  - "Codex MCP config cho runtime GitLab"
-  - "Adapter/wrapper local trong repo để map inspect/pull/push vào local git workflow"
-  - "Git remote SSH tới GitLab self-hosted gitlab.ggg.com.vn"
+  - "Codex MCP config for the GitLab runtime"
+  - "A local adapter/wrapper in the repo to map inspect/pull/push onto the local git workflow"
+  - "SSH Git remote to the self-hosted GitLab at gitlab.ggg.com.vn"
 data_or_runtime_notes:
-  - "Base host cho lane GitLab là gitlab.ggg.com.vn; API/runtime config phải explicit"
-  - "Branch operation chỉ áp dụng cho repository đã tồn tại và branch hiện tại"
-  - "Pull behavior mặc định fast-forward only để tránh merge/rebase ngầm"
-  - "Dirty working tree, missing upstream và auth failure phải được fail-fast với message rõ"
+  - "The base host for the GitLab lane is gitlab.ggg.com.vn; the API/runtime config must be explicit"
+  - "Branch operations only apply to an existing repository and the current branch"
+  - "The default pull behavior is fast-forward only to avoid implicit merge/rebase"
+  - "A dirty working tree, missing upstream and auth failure must fail fast with a clear message"
 ```
 
 ## Brownfield Impact Analysis
 ```yaml
 impacted_modules:
   - "work-items/mcp-gitlab/*"
-  - "MCP integration/config cho lane GitLab"
-  - "nếu cần, adapter module mới cho GitLab local workflow"
+  - "MCP integration/config for the GitLab lane"
+  - "if needed, a new adapter module for the GitLab local workflow"
 compatibility_risks:
-  - "Provider distinction không đủ explicit sẽ làm agent chọn sai lane GitHub/GitLab"
-  - "Wrapper implement quá rộng sẽ drift khỏi standard runtime/reference"
-  - "SSH/pull ff-only handling không rõ sẽ làm behavior khác acceptance criteria"
+  - "If the provider distinction is not explicit enough, the agent picks the wrong GitHub/GitLab lane"
+  - "If the wrapper is implemented too broadly, it drifts from the standard runtime/reference"
+  - "If SSH/ff-only handling is unclear, the behavior differs from the acceptance criteria"
 migration_notes:
-  - "Không có data migration hay repository migration trong phase 1"
-  - "Adoption path chỉ thêm lane GitLab song song lane GitHub hiện có"
+  - "No data migration or repository migration in phase 1"
+  - "The adoption path only adds the GitLab lane alongside the existing GitHub lane"
 rollback_notes:
-  - "Có thể rollback bằng cách gỡ config và wrapper lane GitLab"
-  - "Rollback không được yêu cầu thay đổi hay revert github-push MCP"
+  - "Can roll back by removing the GitLab lane config and wrapper"
+  - "Rollback must not require any change to or revert of the github-push MCP"
 ```
 
 ## Traceability
@@ -235,7 +235,7 @@ next_step: "mcp-gitlab.s06.task-breakdown.md"
 ```
 
 ## Handoff
-- Recommended option: OPT2, dùng zereight/gitlab-mcp làm chuẩn và thêm thin wrapper cho inspect/pull/push.
-- Trade-off chấp nhận: thêm một lớp tích hợp mỏng để đổi lấy fit đúng cho phase 1 và giữ lane GitHub không bị ảnh hưởng.
-- Điều kiện sang step 6: task plan phải chỉ ra owned paths, config touch points, verify path cho SSH/ff-only/error cases và guard không drift sang GitHub lane.
-- Deployment note khi có: phase 1 chủ yếu là config/integration và local workflow wiring; không có migration dữ liệu.
+- Recommended option: OPT2, use zereight/gitlab-mcp as the standard and add a thin wrapper for inspect/pull/push.
+- Accepted trade-off: add a thin integration layer in exchange for a correct fit for phase 1 and an unaffected GitHub lane.
+- Conditions to move to step 6: the task plan must show owned paths, config touch points, the verify path for SSH/ff-only/error cases and a guard against drifting into the GitHub lane.
+- Deployment note if any: phase 1 is mostly config/integration and local workflow wiring; there is no data migration.

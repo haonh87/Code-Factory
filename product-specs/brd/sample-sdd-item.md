@@ -31,25 +31,25 @@ stakeholders:
   - "po"
   - "ba"
   - "developer"
-problem_statement: "Người dùng cần giới hạn kết quả tra cứu session theo workspace để giảm nhiễu khi review history."
+problem_statement: "Users need to constrain session search results by workspace to reduce noise when reviewing history."
 business_goals:
   - id: BRD-001
-    description: "Cho phép tra cứu session theo workspace mà không phá behavior mặc định hiện có."
-    kpi_refs: ["giảm thời gian lọc session bằng tay"]
+    description: "Allow searching sessions by workspace without breaking the existing default behavior."
+    kpi_refs: ["reduce manual session filtering time"]
 scope:
   in:
-    - "bổ sung workspace filter vào flow tra cứu session"
-    - "giữ trace rõ từ business goal sang requirement và verify"
+    - "add a workspace filter to the session search flow"
+    - "keep a clear trace from business goal to requirement to verify"
   out:
-    - "thay đổi schema lưu session"
-    - "thay đổi permission model của cass"
+    - "changing the session storage schema"
+    - "changing the cass permission model"
 business_rules:
   - id: BRD-002
-    rule: "Nếu không truyền workspace filter thì hành vi phải giữ tương thích ngược."
+    rule: "If no workspace filter is passed, the behavior must stay backward compatible."
 assumptions:
-  - "workspace được biểu diễn bằng path chuẩn hóa"
+  - "workspace is represented by a normalized path"
 decision_log:
-  - "Ưu tiên thay đổi nhỏ, không mở migration"
+  - "Prefer a small change, do not open a migration"
 acceptance_notes:
-  - "PO chấp nhận nếu search theo workspace trả đúng tập kết quả mong muốn và fallback giữ nguyên"
+  - "PO accepts if search by workspace returns the correct expected result set and the fallback stays unchanged"
 ```

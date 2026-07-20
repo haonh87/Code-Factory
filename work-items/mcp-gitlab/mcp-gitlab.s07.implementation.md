@@ -98,7 +98,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> Tóm tắt thay đổi đã implement, giới hạn còn lại và note cho verify.
+> Summarize the implemented change, remaining limits and notes for verify.
 
 ## Step Contract
 ```yaml
@@ -118,7 +118,7 @@ done_when:
 owner: "developer"
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 implemented_changes:
   - "Added new MCP package under mcp/gitlab with package.json, codex config template, stdio entrypoint, and core git helpers"

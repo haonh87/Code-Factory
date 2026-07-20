@@ -67,7 +67,7 @@ tags:
 # Step 5 - Technical Approach
 
 > [!summary]
-> Tóm tắt option được khuyến nghị, trade-off và boundary kỹ thuật cần giữ.
+> Summarize the recommended option, trade-offs and the technical boundary to preserve.
 
 ## Step Contract
 ```yaml
@@ -85,7 +85,7 @@ recommended_option: ""
 trade_offs: []
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 recommended_approach: ""
 why: ""
@@ -108,6 +108,6 @@ next_step: ""
 
 ## Handoff
 - Recommended option:
-- Trade-off chấp nhận:
-- Điều kiện sang step 6:
-- Deployment note khi có:
+- Accepted trade-off:
+- Conditions to move to step 6:
+- Deployment note if any:

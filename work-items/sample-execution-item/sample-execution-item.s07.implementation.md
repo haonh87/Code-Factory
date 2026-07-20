@@ -73,40 +73,40 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> Tóm tắt thay đổi đã implement, giới hạn còn lại và note cho verify.
+> Summarize the implemented change, remaining limits and notes for verify.
 
 ## Step Contract
 ```yaml
-step_goal: "Thực thi thay đổi theo owned scope và trả evidence đủ cho merge + audit."
+step_goal: "Execute the change per owned scope and return enough evidence for merge + audit."
 input_summary:
-  - "task breakdown và worker assignment"
-  - "technical approach và execution policy"
+  - "task breakdown and worker assignment"
+  - "technical approach and execution policy"
 output_summary:
   - "implemented changes"
   - "merge report"
 done_when:
-  - "có handoff report từ worker"
-  - "coordinator merge xong và sẵn sàng cho audit"
+  - "a handoff report from the worker exists"
+  - "the coordinator has merged and is ready for audit"
 owner: "coordinator"
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 implemented_changes:
-  - "backend callback flow đã được implement theo owned scope"
-  - "frontend login state đã được cập nhật và tách path rõ"
+  - "the backend callback flow is implemented per owned scope"
+  - "the frontend login state is updated and its path is clearly separated"
 doc_changes:
-  - "cập nhật execution runtime artifacts cho step 7"
+  - "update the execution runtime artifacts for step 7"
 operational_notes:
-  - "chưa phát sinh release artifact riêng"
+  - "no separate release artifact yet"
 ```
 
 ## Implementation Notes
 ```yaml
 framework_notes:
-  - "sample này mô tả runtime contract, không kèm code path thật"
+  - "this sample describes the runtime contract and does not ship a real code path"
 known_limitations:
-  - "chưa materialize worker assignment thành nhiều file riêng theo từng worker"
+  - "the worker assignment is not yet materialized into a separate file per worker"
 ```
 
 ## Execution Runtime
@@ -128,7 +128,7 @@ next_step: "sample-execution-item.s08.verification.md"
 ```
 
 ## Handoff
-- Outputs actual: handoff report của builder và merge report của coordinator.
-- Known limitations: sample chỉ giữ một handoff report canonical để minh họa contract.
-- Notes for testing: verify owner phải kiểm evidence trước khi chốt audit.
-- Notes for deployment khi có: chưa có deployment review riêng.
+- Outputs actual: the builder handoff report and the coordinator merge report.
+- Known limitations: the sample keeps only one canonical handoff report to illustrate the contract.
+- Notes for testing: the verify owner must check the evidence before closing the audit.
+- Notes for deployment if any: no separate deployment review yet.

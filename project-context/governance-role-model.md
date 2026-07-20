@@ -1,210 +1,214 @@
+---
+language: en
+---
+
 # Governance Role Model
 
-Tài liệu này định nghĩa role model cho `governance layer` của workflow.
+This document defines the role model for the `governance layer` of the workflow.
 
-Mục tiêu:
+Goals:
 
-- làm rõ role nào sở hữu loại quyết định governance nào
-- tách bạch giữa `step signoff` và `waiver authority`
-- tránh việc approve `governance-exception` theo cảm tính
+- make clear which role owns which kind of governance decision
+- separate `step sign-off` from `waiver authority`
+- avoid approving a `governance-exception` by feeling
 
-## Nguyên Tắc
+## Principles
 
-- `role_signoffs` của workflow note không tự động đồng nghĩa với quyền approve `waiver`.
-- Role phát hiện exception có trách nhiệm ghi nhận exception, nhưng không luôn có quyền tự approve.
-- Exception ảnh hưởng tới `release`, `business_acceptance` hoặc scope `regulated` không nên do một role tự approve một mình.
-- Nếu authority phù hợp chưa hiện diện trong work item, step phải ở trạng thái `BLOCKED` hoặc giữ exception ở `PROPOSED`.
+- `role_signoffs` of a workflow note do not automatically mean the right to approve a `waiver`.
+- The role that discovers an exception is responsible for recording it, but does not always have the right to approve it.
+- An exception affecting `release`, `business_acceptance` or `regulated` scope should not be approved by a single role alone.
+- If the suitable authority is not present in the work item, the step must be in `BLOCKED` state or keep the exception at `PROPOSED`.
 
-State transition, trigger mở exception và rule chọn profile không nằm ở file này; dùng `governance-decision-model.md`.
+State transitions, triggers for opening an exception and rules for choosing a profile do not live in this file; use `governance-decision-model.md`.
 
-## Vai Trò Governance Cốt Lõi
+## Core Governance Roles
 
 ### `po`
 
-Phạm vi authority:
+Authority scope:
 
 - business scope
 - non-goals
-- stakeholder trade-off
+- stakeholder trade-offs
 - business acceptance risk
 
-Được quyền:
+Allowed to:
 
-- xác nhận escalation khi `governance_profile` tăng vì ảnh hưởng business/scope/cost
-- approve exception hoặc waiver có bản chất business hoặc product trade-off
-- chặn `business_acceptance` khi residual risk không chấp nhận được
+- confirm escalation when `governance_profile` rises because of business/scope/cost impact
+- approve an exception or waiver that is essentially a business or product trade-off
+- block `business_acceptance` when residual risk is not acceptable
 
-Không nên tự quyết một mình:
+Should not decide alone:
 
-- technical exception thuần kiến trúc
-- release/runtime exception thuần vận hành
+- a purely architectural technical exception
+- a purely operational release/runtime exception
 
 ### `ba`
 
-Phạm vi authority:
+Authority scope:
 
 - requirement clarity
-- policy gap
-- traceability giữa context, `BRD`, `SRS` và workflow note
+- policy gaps
+- traceability between context, `BRD`, `SRS` and the workflow note
 
-Được quyền:
+Allowed to:
 
-- đề xuất `governance_profile`
-- đánh dấu `governance blocker`
-- chốt completeness của `governance context` ở phía requirement/business rule
+- propose `governance_profile`
+- flag a `governance blocker`
+- lock the completeness of `governance context` on the requirement/business-rule side
 
-Không nên tự quyết một mình:
+Should not decide alone:
 
-- approve waiver cuối cùng khi exception có ảnh hưởng business, technical hoặc release đáng kể
+- final waiver approval when the exception has significant business, technical or release impact
 
 ### `designer`
 
-Phạm vi authority:
+Authority scope:
 
-- UX rule
+- UX rules
 - accessibility baseline
-- interaction/visual constraint
+- interaction/visual constraints
 
-Được quyền:
+Allowed to:
 
-- yêu cầu nâng governance khi scope chạm accessibility hoặc UX outcome quan trọng
-- approve ngoại lệ UX nhỏ nếu không làm thay đổi business intent và không tạo release risk
+- request raising governance when scope touches accessibility or an important UX outcome
+- approve a minor UX exception if it does not change business intent and creates no release risk
 
-Không nên tự quyết một mình:
+Should not decide alone:
 
-- waiver có ảnh hưởng release, data, security, business acceptance
+- a waiver with release, data, security or business-acceptance impact
 
 ### `developer`
 
-Phạm vi authority:
+Authority scope:
 
 - technical approach
-- code path chính
+- main code path
 - architecture boundary
-- migration/data compatibility ở mức implementation
+- migration/data compatibility at the implementation level
 
-Được quyền:
+Allowed to:
 
-- chốt `approach`
-- đề xuất và trong một số trường hợp approve technical exception
-- yêu cầu nâng `governance_profile` khi phát hiện complexity hoặc compatibility risk
+- lock `approach`
+- propose and, in some cases, approve a technical exception
+- request raising `governance_profile` when complexity or compatibility risk is found
 
-Không nên tự quyết một mình:
+Should not decide alone:
 
-- waiver ảnh hưởng trực tiếp `release`
-- waiver có business trade-off đáng kể
-- waiver `regulated` không có reviewer độc lập
+- a waiver directly affecting `release`
+- a waiver with significant business trade-off
+- a `regulated` waiver without an independent reviewer
 
 ### `qc`
 
-Phạm vi authority:
+Authority scope:
 
 - verify evidence
 - checklist completeness
 - DoD readiness
-- release recommendation từ góc nhìn kiểm chứng
+- release recommendation from a verification perspective
 
-Được quyền:
+Allowed to:
 
-- chặn `DoD` khi evidence hoặc checklist chưa đủ
-- yêu cầu giữ exception ở trạng thái mở nếu mitigation chưa được kiểm chứng
-- yêu cầu reviewer coverage tăng thêm
+- block `DoD` when evidence or checklist is not enough
+- request keeping an exception open if mitigation has not been verified
+- request increased reviewer coverage
 
-Không nên tự quyết một mình:
+Should not decide alone:
 
-- approve business trade-off
-- approve technical direction nếu chưa có owner kỹ thuật
+- approve a business trade-off
+- approve a technical direction when there is no technical owner
 
 ### `devops`
 
-Phạm vi authority:
+Authority scope:
 
 - runtime deploy
 - release gate
 - rollback path
 - promotion control
 
-Được quyền:
+Allowed to:
 
-- approve waiver hoặc exception về runtime/release khi scope nằm trong lane DevOps
-- chặn `release` khi rollout/rollback/evidence chưa đủ
-- yêu cầu nâng `governance_profile` khi scope có packaging/runtime/promotion risk
+- approve a runtime/release waiver or exception when scope is inside the DevOps lane
+- block `release` when rollout/rollback/evidence is not enough
+- request raising `governance_profile` when scope has packaging/runtime/promotion risk
 
-Không nên tự quyết một mình:
+Should not decide alone:
 
-- business waiver
-- requirement/policy waiver không có `po` hoặc `ba`
+- a business waiver
+- a requirement/policy waiver without `po` or `ba`
 
-## Ma Trận Quyết Định Governance
+## Governance Decision Matrix
 
-| Quyết định | Primary owner | Reviewer hoặc co-approver tối thiểu | Ghi chú |
+| Decision | Primary owner | Minimum reviewer or co-approver | Notes |
 |---|---|---|---|
-| ghi `governance context` ban đầu | `ba` | `po`; `designer`/`developer`/`devops` khi có boundary tương ứng | thường xảy ra ở `s01-s03` |
-| chọn `governance_profile` ban đầu | `ba` đề xuất | `po`; `developer` hoặc `devops` nếu có technical/release risk | không nên để trống profile |
-| nâng profile từ `default` lên `strict` | role phát hiện risk, thường là `developer` hoặc `devops` | `ba`; `po` nếu ảnh hưởng scope/time/cost | escalation được ưu tiên hơn de-escalation |
-| nâng profile lên `regulated` | `po` hoặc role phát hiện yêu cầu audit/compliance | `ba` + role domain liên quan | cần authority rõ trước khi tiếp tục |
-| chốt `governance checks` cho `DoR` | `ba`, `qc` | `po`; `designer`/`developer` khi có rule chuyên biệt | thường ở `s04` |
-| chốt `governance checks` cho `Task Plan` | `developer` | `qc`, `devops` khi có verify/release impact | thường ở `s06` |
-| chốt `governance compliance` ở verify | `qc` | `devops` khi scope chạm release; `po` nếu còn risk business mở | thường ở `s08` |
-| đề xuất `governance-exception` | role phát hiện lệch chuẩn | role owner của domain liên quan | phát hiện ở đâu, ghi ở step đó |
-| approve `waiver` business | `po` | `ba` | áp cho scope, KPI, non-goal, business trade-off |
-| approve `waiver` UX/accessibility | `designer` | `qc`; `po` nếu ảnh hưởng business intent | không dùng cho release/runtime risk |
-| approve `waiver` technical/architecture | `developer` | `qc`; `po` nếu ảnh hưởng scope/business | không đủ nếu exception chạm release |
-| approve `waiver` runtime/release | `devops` | `qc`; `developer` nếu có code/migration impact | áp cho rollout, rollback, promotion, runtime control |
+| record initial `governance context` | `ba` | `po`; `designer`/`developer`/`devops` when there is a corresponding boundary | usually occurs at `s01-s03` |
+| choose initial `governance_profile` | `ba` proposes | `po`; `developer` or `devops` if there is technical/release risk | profile should not be left empty |
+| raise profile from `default` to `strict` | the role finding the risk, usually `developer` or `devops` | `ba`; `po` if scope/time/cost is affected | escalation is preferred over de-escalation |
+| raise profile to `regulated` | `po` or the role finding the audit/compliance need | `ba` + the relevant domain role | clear authority is needed before continuing |
+| lock `governance checks` for `DoR` | `ba`, `qc` | `po`; `designer`/`developer` for specific rules | usually at `s04` |
+| lock `governance checks` for `Task Plan` | `developer` | `qc`, `devops` when there is verify/release impact | usually at `s06` |
+| lock `governance compliance` at verify | `qc` | `devops` when scope touches release; `po` if business risk is still open | usually at `s08` |
+| propose `governance-exception` | the role finding the deviation | the domain owner of the related area | found wherever, recorded in that step |
+| approve `waiver` business | `po` | `ba` | applies to scope, KPI, non-goals, business trade-off |
+| approve `waiver` UX/accessibility | `designer` | `qc`; `po` if it affects business intent | not for release/runtime risk |
+| approve `waiver` technical/architecture | `developer` | `qc`; `po` if it affects scope/business | not enough if the exception touches release |
+| approve `waiver` runtime/release | `devops` | `qc`; `developer` if there is code/migration impact | applies to rollout, rollback, promotion, runtime control |
 
-## Ma Trận Authority Theo Loại Exception
+## Authority Matrix By Exception Type
 
-| Loại exception | Người đề xuất thường gặp | Approver chính | Reviewer bắt buộc | Khi nào cần escalation thêm |
+| Exception type | Usual proposer | Main approver | Required reviewer | When further escalation is needed |
 |---|---|---|---|---|
-| business scope hoặc non-goal | `po`, `ba` | `po` | `ba` | khi kéo theo technical/release risk lớn |
-| requirement clarity hoặc policy gap | `ba` | `po` | `ba` | khi gap chặn `DoR` hoặc ảnh hưởng nhiều role |
-| UX/accessibility | `designer` | `designer` | `qc` | khi tác động KPI, compliance hoặc release |
-| technical approach hoặc architecture | `developer` | `developer` | `qc` | khi ảnh hưởng `release`, `business_acceptance` hoặc `regulated` |
-| data change, migration, compatibility | `developer` | `developer` | `qc`; `devops` nếu rollout impact | khi rollback khó hoặc promote rủi ro cao |
-| runtime deploy hoặc release control | `devops` | `devops` | `qc`; `developer` nếu code path liên quan | khi business risk mở hoặc profile `regulated` |
-| cross-cutting nhiều domain | role phát hiện đầu tiên | owner domain chịu ảnh hưởng lớn nhất | ít nhất 2 role gồm `qc` và 1 domain owner khác | luôn cần nếu chạm `regulated`, `release` hoặc `business_acceptance` |
+| business scope or non-goal | `po`, `ba` | `po` | `ba` | when it brings large technical/release risk |
+| requirement clarity or policy gap | `ba` | `po` | `ba` | when the gap blocks `DoR` or affects many roles |
+| UX/accessibility | `designer` | `designer` | `qc` | when it affects KPI, compliance or release |
+| technical approach or architecture | `developer` | `developer` | `qc` | when it affects `release`, `business_acceptance` or `regulated` |
+| data change, migration, compatibility | `developer` | `developer` | `qc`; `devops` if rollout impact | when rollback is hard or promotion is risky |
+| runtime deploy or release control | `devops` | `devops` | `qc`; `developer` if the code path is involved | when business risk is open or profile is `regulated` |
+| cross-cutting many domains | the role finding it first | the domain owner with the largest impact | at least 2 roles including `qc` and one other domain owner | always needed if it touches `regulated`, `release` or `business_acceptance` |
 
-## Rule Bổ Sung Cho `regulated`
+## Additional Rule For `regulated`
 
-Khi `governance_profile=regulated`:
+When `governance_profile=regulated`:
 
-- không role nào được là sole approver cho exception của chính mình
-- phải có ít nhất 2 vai trò tham gia approval:
+- no role may be the sole approver of its own exception
+- at least 2 roles must participate in approval:
   - 1 domain owner
-  - 1 reviewer độc lập như `qc`, hoặc `po` nếu rủi ro nằm ở business
-- exception còn mở phải được ghi vào `governance-exception-register.md`
+  - 1 independent reviewer such as `qc`, or `po` if the risk is on the business side
+- an open exception must be recorded in `governance-exception-register.md`
 
-## Rule Bổ Sung Cho `release` Và `business_acceptance`
+## Additional Rule For `release` And `business_acceptance`
 
-- Exception ảnh hưởng `release` không được xem là đóng nếu thiếu `devops` hoặc `qc`.
-- Exception ảnh hưởng `business_acceptance` không được xem là đóng nếu thiếu `po`.
-- Nếu cùng một exception chạm cả `release` và `business_acceptance`, cần ít nhất:
+- An exception affecting `release` is not considered closed without `devops` or `qc`.
+- An exception affecting `business_acceptance` is not considered closed without `po`.
+- If the same exception touches both `release` and `business_acceptance`, at least:
   - `po`
   - `qc`
-  - `devops` hoặc `developer` tùy miền rủi ro chính
+  - `devops` or `developer` depending on the main risk domain
 
-## Mapping Nhanh Theo Step
+## Quick Mapping By Step
 
-| Step | Governance owner mặc định | Điều cần chốt |
+| Step | Default governance owner | What to lock |
 |---|---|---|
-| `s01 Clarify` | `ba`, `po` | `governance context`, rule nền, profile đề xuất |
-| `s02 Business Goal` | `po` | alignment với business scope, non-goals, trade-off |
+| `s01 Clarify` | `ba`, `po` | `governance context`, foundational rules, proposed profile |
+| `s02 Business Goal` | `po` | alignment with business scope, non-goals, trade-off |
 | `s03 Open Questions` | `ba` | `governance blocker`, policy gap, owner resolution |
 | `s04 Acceptance + DoR` | `ba`, `qc` | readiness checks, reviewer coverage, domain constraints |
 | `s05 Technical Approach` | `developer` | technical exception, boundary rule, waiver need |
-| `s06 Task Plan` | `developer` | coverage cho review, verify, release và mitigation task |
-| `s07 Implement` | `developer`; `devops` nếu runtime/release scope | exception phát sinh và evidence hook |
-| `s08 Verify + DoD` | `qc`; `devops` khi có release | compliance verdict, residual risk, release/business acceptance impact |
+| `s06 Task Plan` | `developer` | coverage for review, verify, release and mitigation tasks |
+| `s07 Implement` | `developer`; `devops` if runtime/release scope | exception arising and evidence hook |
+| `s08 Verify + DoD` | `qc`; `devops` when there is release | compliance verdict, residual risk, release/business-acceptance impact |
 
-## Nguyên Tắc Phân Biệt
+## Distinction Principle
 
-- `signoff owner` là người chịu trách nhiệm đóng gate của step.
-- `waiver approver` là người có authority chấp nhận lệch chuẩn.
-- Hai vai trò này có thể trùng, nhưng không được mặc định xem là luôn trùng.
+- The `signoff owner` is responsible for closing the step's gate.
+- The `waiver approver` has the authority to accept a deviation.
+- These two roles can coincide, but must not be assumed to always coincide.
 
-## Hành Động Tối Thiểu Khi Có Exception
+## Minimum Action When There Is An Exception
 
-1. Role phát hiện lệch chuẩn ghi `governance-exception` trong step note.
-2. Xác định approver theo ma trận ở tài liệu này.
-3. Nếu exception còn mở quá một step hoặc chạm `release`, `business_acceptance`, `regulated`, cập nhật thêm `governance-exception-register.md`.
-4. Không chuyển `governance_status` sang `WAIVER_APPROVED` nếu authority chưa đúng theo role model này.
+1. The role finding the deviation records the `governance-exception` in the step note.
+2. Determine the approver using the matrix in this document.
+3. If the exception stays open for more than one step or touches `release`, `business_acceptance`, `regulated`, also update `governance-exception-register.md`.
+4. Do not move `governance_status` to `WAIVER_APPROVED` if the authority does not match this role model.

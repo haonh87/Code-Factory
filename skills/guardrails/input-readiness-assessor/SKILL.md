@@ -1,41 +1,44 @@
 ---
+language: en
 name: input-readiness-assessor
-description: Đánh giá mức độ sẵn sàng đầu vào trước khi thực thi một bước trong workflow coding. Dùng khi cần xác nhận dữ liệu đầu vào đủ, đúng, nhất quán và có thể kiểm chứng để quyết định READY hoặc BLOCKED, kèm báo cáo input-readiness-report.
+description: Assess input readiness before executing a step in the coding workflow. Use when you need to confirm that the input data is sufficient, correct, consistent, and verifiable, in order to decide READY or BLOCKED, with an input-readiness-report.
 ---
 
 # Input Readiness Assessor
 
-Đánh giá mức độ sẵn sàng của đầu vào trước khi bắt đầu thực thi step.
+> Vietnamese: SKILL.vi.md
 
-## Mục Tiêu
+Assess the readiness of the inputs before starting to execute a step.
 
-- Ngăn triển khai khi thiếu hoặc sai dữ liệu đầu vào.
-- Chuẩn hóa quyết định chuyển bước bằng trạng thái `READY` hoặc `BLOCKED`.
-- Xuất báo cáo có thể truy vết để phục vụ kiểm định và bàn giao.
+## Goal
 
-## Khi Sử Dụng
+- Prevent execution when input data is missing or wrong.
+- Standardize the step-transition decision with a `READY` or `BLOCKED` status.
+- Produce a traceable report to support auditing and handoff.
 
-- Khi một step cần xác nhận đủ dữ liệu để bắt đầu an toàn.
-- Khi còn câu hỏi mở, dependency chưa rõ hoặc nhiều nguồn context mâu thuẫn.
-- Khi cần quyết định có được phép chuyển sang implementation hay không.
+## When To Use
 
-## Không Thuộc Phạm Vi
+- When a step needs to confirm it has enough data to start safely.
+- When open questions remain, dependencies are unclear, or multiple context sources conflict.
+- When deciding whether implementation is allowed to proceed.
 
-- Không tự bù input bắt buộc bằng suy đoán.
-- Không thay thế bước requirement analysis hoặc product thinking.
-- Không chấm PASS/FAIL cuối cùng cho toàn bộ step; đó là trách nhiệm của `step-goal-auditor`.
+## Out Of Scope
 
-## Đầu Vào Tối Thiểu
+- Does not fill in mandatory inputs by guessing.
+- Does not replace the requirement-analysis or product-thinking step.
+- Does not give the final PASS/FAIL for the whole step; that is the responsibility of `step-goal-auditor`.
 
-- `inputs_required` từ Step Goal Contract.
-- Dữ liệu đầu vào thực tế hiện có.
-- Ràng buộc kỹ thuật, chất lượng liên quan đến step hiện tại.
+## Minimum Input
 
-Nếu không xác định được `inputs_required`, phải phản hồi rằng contract của step chưa đủ để đánh giá readiness.
+- `inputs_required` from the Step Goal Contract.
+- The actual input data currently available.
+- The technical and quality constraints relevant to the current step.
 
-## Đầu Ra Bắt Buộc
+If `inputs_required` cannot be determined, respond that the step contract is insufficient to assess readiness.
 
-Xuất artifact YAML theo schema sau:
+## Required Output
+
+Emit a YAML artifact using the following schema:
 
 ```yaml
 step: ""
@@ -49,54 +52,54 @@ risk_level: LOW|MEDIUM|HIGH
 next_action: ""
 ```
 
-## Ý Nghĩa Từng Output
+## Meaning Of Each Output
 
-- `available_inputs`: đầu vào đang có và có thể dùng được.
-- `missing_inputs`: đầu vào bắt buộc còn thiếu.
-- `invalid_inputs`: đầu vào có nhưng không hợp lệ hoặc không đáng tin.
-- `conflicts`: xung đột giữa các nguồn thông tin.
-- `assumptions`: giả định tạm thời đang dùng.
-- `risk_level`: mức rủi ro của trạng thái readiness hiện tại.
-- `next_action`: hành động cụ thể để chuyển step tiếp theo.
+- `available_inputs`: inputs that are present and usable.
+- `missing_inputs`: mandatory inputs that are still missing.
+- `invalid_inputs`: inputs that are present but not valid or not trustworthy.
+- `conflicts`: contradictions between information sources.
+- `assumptions`: temporary assumptions currently in use.
+- `risk_level`: the risk level of the current readiness state.
+- `next_action`: the concrete action to move to the next step.
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalizing Output In A Workflow Note
 
-Nếu output của skill này được lưu thành note `.md` trong workflow chain:
-- Dùng template step 3 tại `../codex-workflow-chain/references/workflow-chain.md`.
-- Đặt schema YAML của skill này trong block `## Input Readiness`.
-- Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
-- Trạng thái `READY|BLOCKED` trong prose tóm tắt phải khớp với `status` trong block YAML.
+If this skill's output is saved as a `.md` note in the workflow chain:
+- Use the step 3 template in `../codex-workflow-chain/references/workflow-chain.md`.
+- Place this skill's YAML schema in the `## Input Readiness` block.
+- Keep the field names in the schema unchanged; do not rename fields when writing them into the note.
+- The `READY|BLOCKED` status in the prose summary must match the `status` in the YAML block.
 
-## Luồng Đánh Giá
+## Evaluation Flow
 
-1. Liệt kê danh sách `inputs_required`.
-2. Đối chiếu từng input với dữ liệu thực tế.
-3. Kiểm tra tính hợp lệ: định dạng, phiên bản, độ tin cậy nguồn.
-4. Kiểm tra mâu thuẫn giữa các input.
-5. Ghi giả định nếu có thông tin chưa thể xác nhận ngay.
-6. Xuất `status` và `next_action` rõ ràng.
+1. List the `inputs_required`.
+2. Compare each input against the actual data.
+3. Check validity: format, version, source reliability.
+4. Check for contradictions between inputs.
+5. Record assumptions when information cannot be confirmed immediately.
+6. Emit a clear `status` and `next_action`.
 
-## Quy Tắc Ra Quyết Định
+## Decision Rule
 
-- `READY` khi:
-  - Không còn `missing_inputs` bắt buộc.
-  - Không có `invalid_inputs` ở mức nghiêm trọng.
-  - Không có xung đột chưa xử lý.
+- `READY` when:
+  - No mandatory `missing_inputs` remain.
+  - No severe `invalid_inputs`.
+  - No unresolved conflicts.
 
-- `BLOCKED` khi:
-  - Thiếu input bắt buộc.
-  - Có input không hợp lệ ảnh hưởng trực tiếp đến thực thi.
-  - Có xung đột dữ liệu chưa được làm rõ.
+- `BLOCKED` when:
+  - A mandatory input is missing.
+  - An invalid input directly affects execution.
+  - A data conflict has not been clarified.
 
-## Quy Tắc Chất Lượng
+## Quality Rules
 
-- Không phỏng đoán để lấp chỗ trống cho input bắt buộc.
-- Mỗi kết luận phải có bằng chứng hoặc chỉ rõ giả định.
-- Mặc định báo cáo bằng tiếng Việt và lưu UTF-8.
-- Nếu có nhiều nguồn input, phải ưu tiên nguồn có độ tin cậy cao hơn và ghi rõ.
+- Do not guess to fill gaps for mandatory inputs.
+- Every conclusion must have evidence or state the assumption explicitly.
+- Default to writing and communicating in English; store as UTF-8.
+- When there are multiple input sources, prefer the more reliable source and state this clearly.
 
-## Điều Kiện Hoàn Tất
+## Completion Conditions
 
-- Có `input-readiness-report` đầy đủ theo schema.
-- Trạng thái cuối cùng (`READY` hoặc `BLOCKED`) rõ ràng.
-- `next_action` đủ cụ thể để bước tiếp theo thực thi ngay.
+- A complete `input-readiness-report` following the schema.
+- A clear final status (`READY` or `BLOCKED`).
+- A `next_action` specific enough for the next step to execute immediately.

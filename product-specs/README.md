@@ -1,8 +1,8 @@
 # Product Specs
 
-Thư mục này là source-of-truth cho `BRD/SRS` khi work item chạy theo `SDD`.
+This directory is the source of truth for `BRD/SRS` when a work item runs under `SDD`.
 
-## Cấu Trúc
+## Structure
 
 ```text
 product-specs/
@@ -15,16 +15,16 @@ product-specs/
     srs.template.md
 ```
 
-## Quy Ước
+## Conventions
 
-- `brd/` giữ business truth ở mức rollout.
-- `srs/` giữ requirement truth ở mức rollout.
-- `work-items/` chỉ giữ execution trace; không thay `BRD/SRS`.
-- nếu work item có `sdd_mode=light|strict`, `spec_refs.brd` và `spec_refs.srs` nên trỏ về artifact thật trong thư mục này.
+- `brd/` holds the rollout-level business truth.
+- `srs/` holds the rollout-level requirement truth.
+- `work-items/` only holds the execution trace; it does not replace `BRD/SRS`.
+- if a work item has `sdd_mode=light|strict`, `spec_refs.brd` and `spec_refs.srs` should point to the real artifact in this directory.
 
 ## Sample
 
 - `brd/sample-sdd-item.md`
 - `srs/sample-sdd-item.md`
 
-Hai file này là sample `SDD` đầu tiên để validator và CI phase 1 có artifact thật để kiểm.
+These two files are the first `SDD` sample so the validator and CI phase 1 have a real artifact to check.

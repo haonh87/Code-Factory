@@ -1,34 +1,34 @@
 # NotebookLM MCP
 
-MCP này là launcher mỏng trong repo để Codex gọi upstream `notebooklm-mcp` qua `uvx`, thay vì repo tự re-implement toàn bộ tool surface của NotebookLM.
-Trong repo này, mục đích chính của integration là dùng NotebookLM như lớp lưu corpus tài liệu và query/search ngữ cảnh khi workflow cần, đặc biệt cho các bước brainstorming, requirement framing, spec, design exploration và research-heavy handoff.
-Trong workflow phát triển sản phẩm của repo này, `BRD` và `SRS` mới là output rollout/source-of-truth; NotebookLM chỉ hỗ trợ lưu trữ và truy hồi tài liệu trong lúc thực thi, sau đó kết luận phải được chuẩn hóa lại vào artifact chính.
+This MCP is a thin launcher in the repo so Codex can call the upstream `notebooklm-mcp` via `uvx`, instead of the repo re-implementing the full NotebookLM tool surface.
+In this repo, the main purpose of the integration is to use NotebookLM as a document corpus storage and context query/search layer when the workflow needs it, especially for brainstorming, requirement framing, spec, design exploration and research-heavy handoff.
+In this repo's product development workflow, `BRD` and `SRS` are the rollout/source-of-truth output; NotebookLM only supports storing and retrieving documents during execution, and the conclusion must then be normalized back into the main artifact.
 
-Upstream package hiện gộp cả CLI `nlm` và MCP server `notebooklm-mcp` trong cùng một gói `notebooklm-mcp-cli`. Theo README upstream đang public ngày `2026-04-09`, package này cung cấp MCP server với 35 tools và chính upstream khuyến nghị dùng `uvx --from notebooklm-mcp-cli notebooklm-mcp` cho flow không cần cài global.
+The upstream package bundles both the `nlm` CLI and the `notebooklm-mcp` MCP server in one package `notebooklm-mcp-cli`. Per the upstream README public on `2026-04-09`, this package provides an MCP server with 35 tools, and upstream recommends using `uvx --from notebooklm-mcp-cli notebooklm-mcp` for a flow that does not need a global install.
 
 ## Capability
 
-- Đăng ký NotebookLM MCP vào Codex theo config được repo quản lý.
-- Giữ server implementation trong repo ở mức launcher mỏng, còn toàn bộ tool contract và behavior do upstream `notebooklm-mcp-cli` cung cấp.
-- Cho phép Codex dùng NotebookLM cho list notebook, create notebook, add source, query notebook, research và các capability khác của upstream MCP.
-- Với workflow của repo này, subset ưu tiên là `notebook_list`, `notebook_create`, `source_add`, `notebook_query`, `research_start` và các thao tác liên quan đến corpus retrieval.
+- Register the NotebookLM MCP into Codex with a repo-managed config.
+- Keep the server implementation in the repo as a thin launcher, while the full tool contract and behavior come from the upstream `notebooklm-mcp-cli`.
+- Let Codex use NotebookLM for listing notebooks, creating notebooks, adding sources, querying notebooks, research and other upstream MCP capabilities.
+- For this repo's workflow, the priority subset is `notebook_list`, `notebook_create`, `source_add`, `notebook_query`, `research_start` and the operations related to corpus retrieval.
 
 ## Guardrail
 
-- Repo này không mirror lại 35 tools của upstream thành wrapper riêng; launcher chỉ chuyển stdio sang upstream `notebooklm-mcp`.
-- Upstream MCP có surface khá rộng và side-effectful: nó có thể tạo notebook, thêm nguồn, khởi chạy research, tạo artifact studio và share notebook. Chỉ bật khi thực sự cần dùng NotebookLM để tránh tốn context và tránh tool side effect ngoài ý muốn.
-- Với AI KIT workflow hiện tại, hãy ưu tiên NotebookLM như kho tài liệu phụ trợ và lớp truy hồi tri thức; không dùng nó làm source of truth thay cho note workflow `.md`.
-- Không dùng notebook hoặc kết quả query làm output rollout cuối cho requirement; nếu nội dung ảnh hưởng scope, rule hoặc acceptance criteria, ghi lại vào `BRD`, `SRS` hoặc note workflow chính.
-- Các luồng media/studio/share/download của upstream không phải ưu tiên mặc định cho repo này; chỉ dùng khi người dùng yêu cầu rõ.
-- Upstream README cũng lưu ý integration này dựa trên internal APIs của NotebookLM và auth dùng cookie/browser session. Xem nó như integration research/tooling, không phải source of truth cho workflow notes trong repo.
+- This repo does not mirror the 35 upstream tools into a separate wrapper; the launcher only forwards stdio to the upstream `notebooklm-mcp`.
+- The upstream MCP has a wide and side-effectful surface: it can create notebooks, add sources, start research, create studio artifacts and share notebooks. Only enable it when you really need NotebookLM, to avoid wasting context and unwanted tool side effects.
+- For the current AI KIT workflow, prefer NotebookLM as an auxiliary document store and a knowledge retrieval layer; do not use it as the source of truth in place of the `.md` workflow note.
+- Do not use a notebook or query result as the final rollout output for a requirement; if the content affects scope, rules or acceptance criteria, record it in `BRD`, `SRS` or the main workflow note.
+- The upstream media/studio/share/download flows are not a default priority for this repo; only use them when the user clearly requests it.
+- The upstream README also notes that this integration relies on NotebookLM internal APIs and auth via cookie/browser session. Treat it as a research/tooling integration, not a source of truth for workflow notes in the repo.
 
 ## Requirement
 
 - Node.js `>=20`
-- `uvx` có sẵn trong PATH, hoặc đặt `NOTEBOOKLM_MCP_UVX_BIN`
-- Auth NotebookLM đã được chuẩn bị qua upstream CLI
+- `uvx` available in PATH, or set `NOTEBOOKLM_MCP_UVX_BIN`
+- NotebookLM auth prepared via the upstream CLI
 
-Repo này không tự cài `uv` hoặc `uvx` cho bạn. Hãy kiểm tra trước:
+This repo does not install `uv` or `uvx` for you. Check first:
 
 ```bash
 uvx --version
@@ -36,19 +36,19 @@ uvx --version
 
 ## Authentication
 
-Làm auth bằng upstream CLI:
+Authenticate with the upstream CLI:
 
 ```bash
 uvx --from notebooklm-mcp-cli nlm login
 ```
 
-Kiểm tra auth đã còn hợp lệ chưa:
+Check whether auth is still valid:
 
 ```bash
 uvx --from notebooklm-mcp-cli nlm login --check
 ```
 
-Nếu muốn giữ nhiều profile hoặc đổi account đã lưu:
+To keep multiple profiles or switch a saved account:
 
 ```bash
 uvx --from notebooklm-mcp-cli nlm login --profile work
@@ -56,42 +56,42 @@ uvx --from notebooklm-mcp-cli nlm login switch work
 uvx --from notebooklm-mcp-cli nlm login profile list
 ```
 
-Khi cần chẩn đoán:
+When you need diagnostics:
 
 ```bash
 uvx --from notebooklm-mcp-cli nlm doctor
 ```
 
-Ghi chú:
+Notes:
 
-- Upstream README mô tả auth flow dựa trên browser login và cookie extraction.
-- Theo CLI upstream hiện tại ngày `2026-04-09`, auth nằm dưới `nlm login ...`, không còn ở `nlm auth ...`.
-- Trong flow bình thường, bạn chỉ cần login một lần rồi tái dùng profile đã lưu; chỉ cần login lại khi session hết hạn hoặc khi đổi account.
-- Nếu bạn chỉ cài MCP mà chưa login, server sẽ khởi chạy nhưng các tool NotebookLM có thể fail ở runtime.
+- The upstream README describes an auth flow based on browser login and cookie extraction.
+- Per the upstream CLI as of `2026-04-09`, auth lives under `nlm login ...`, no longer under `nlm auth ...`.
+- In the normal flow, you only need to log in once and then reuse the saved profile; only log in again when the session expires or when you change account.
+- If you only install the MCP without logging in, the server will start but the NotebookLM tools may fail at runtime.
 
 ## Install
 
-Không cần `npm install` dependency ngoài vì launcher chỉ dùng Node built-in.
+No external `npm install` dependency is needed because the launcher only uses Node built-ins.
 
-Đăng ký MCP vào Codex config:
+Register the MCP into the Codex config:
 
 ```bash
 bash adapters/mcp/install-notebooklm.sh
 ```
 
-Trên Windows:
+On Windows:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File adapters/mcp/install-notebooklm.ps1
 ```
 
-Adapter này sẽ:
+This adapter will:
 
-- kiểm tra `node` và `uvx`
-- render template [`codex-config.toml.template`](codex-config.toml.template) vào `~/.codex/config.toml`
-- ghim path `uvx` vào env `NOTEBOOKLM_MCP_UVX_BIN` để runtime không phụ thuộc vào PATH thay đổi
+- check `node` and `uvx`
+- render the [`codex-config.toml.template`](codex-config.toml.template) into `~/.codex/config.toml`
+- pin the `uvx` path into the `NOTEBOOKLM_MCP_UVX_BIN` env so the runtime does not depend on PATH changes
 
-Nếu `uvx` ở path khác với auto-detection, có thể override:
+If `uvx` is at a path different from auto-detection, you can override it:
 
 ```bash
 bash adapters/mcp/install-notebooklm.sh --uvx-bin /custom/path/uvx
@@ -104,7 +104,7 @@ cd mcp/notebooklm
 node src/index.js
 ```
 
-Launcher sẽ spawn:
+The launcher will spawn:
 
 ```bash
 uvx --from notebooklm-mcp-cli notebooklm-mcp
@@ -112,7 +112,7 @@ uvx --from notebooklm-mcp-cli notebooklm-mcp
 
 ## Codex Config Template
 
-Template được commit sẵn tại [`codex-config.toml.template`](codex-config.toml.template). Installer sẽ render các placeholder máy-local rồi ghi block này vào `~/.codex/config.toml`.
+The template is committed at [`codex-config.toml.template`](codex-config.toml.template). The installer renders the machine-local placeholders and writes this block into `~/.codex/config.toml`.
 
 ```toml
 [mcp_servers.{{SERVER_NAME}}]
@@ -124,27 +124,27 @@ env = { NOTEBOOKLM_MCP_UVX_BIN = "{{UVX_BIN}}" }
 
 ## Tool Surface
 
-Repo này không định nghĩa lại schema từng tool NotebookLM. Tool surface được giữ theo upstream `notebooklm-mcp`.
+This repo does not redefine the schema of each NotebookLM tool. The tool surface is kept as the upstream `notebooklm-mcp`.
 
-Các nhóm capability chính upstream đang công bố gồm:
+The main capability groups upstream currently announces include:
 
 - notebook list/create/query
-- source add/sync từ URL, text, Drive hoặc file
+- source add/sync from URL, text, Drive or file
 - studio create, slides revise, artifact download
 - research, batch, cross-notebook query, pipeline, tag
-- notebook share và các luồng setup hoặc doctor qua CLI
+- notebook share and the setup or doctor flows via the CLI
 
-Trong repo này, nhóm tool nên được ưu tiên theo thứ tự:
+In this repo, the tool groups should be prioritized in this order:
 
 1. notebook create/list/query
-2. source add hoặc sync để materialize corpus
-3. research khi cần gom nguồn ngoài codebase
-4. Các capability khác chỉ khi task thật sự đòi hỏi
+2. source add or sync to materialize the corpus
+3. research when you need to gather sources outside the codebase
+4. other capabilities only when the task really requires them
 
 ## Suggested Flow
 
-1. Cài `uv`/`uvx` và bảo đảm `uvx --version` chạy được.
-2. Chạy `uvx --from notebooklm-mcp-cli nlm login`.
-3. Chạy installer `adapters/mcp/install-notebooklm.sh` hoặc `.ps1`.
-4. Dùng `uvx --from notebooklm-mcp-cli nlm login --check` để xác nhận auth trước khi bật MCP trong workflow.
-5. Mở session Codex mới rồi chỉ bật MCP này khi thực sự cần NotebookLM.
+1. Install `uv`/`uvx` and make sure `uvx --version` runs.
+2. Run `uvx --from notebooklm-mcp-cli nlm login`.
+3. Run the installer `adapters/mcp/install-notebooklm.sh` or `.ps1`.
+4. Use `uvx --from notebooklm-mcp-cli nlm login --check` to confirm auth before enabling the MCP in the workflow.
+5. Open a new Codex session and only enable this MCP when you really need NotebookLM.

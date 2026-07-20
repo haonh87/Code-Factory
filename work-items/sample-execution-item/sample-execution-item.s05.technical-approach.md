@@ -70,45 +70,45 @@ tags:
 # Step 5 - Technical Approach
 
 > [!summary]
-> Tóm tắt option được khuyến nghị, trade-off và boundary kỹ thuật cần giữ.
+> Summarize the recommended option, trade-offs and the technical boundary to preserve.
 
 ## Step Contract
 ```yaml
-step_goal: "Chốt technical approach và execution strategy cho feature có nhiều auth/frontend boundary."
+step_goal: "Lock the technical approach and the execution strategy for a feature with several auth/frontend boundaries."
 input_summary:
-  - "Acceptance criteria đã khóa ở step 4"
-  - "Risk chính là conflict giữa UI login flow và backend callback flow"
+  - "acceptance criteria locked in step 4"
+  - "the main risk is the conflict between the UI login flow and the backend callback flow"
 output_summary:
   - "recommended technical approach"
-  - "execution policy cho multi_agent"
+  - "execution policy for multi_agent"
 done_when:
-  - "có boundary kỹ thuật rõ"
-  - "có execution policy dùng được cho step 6-8"
+  - "a clear technical boundary exists"
+  - "an execution policy that works for step 6-8 exists"
 owner: "coordinator"
 ```
 
 ## Option Analysis
 ```yaml
 options:
-  - "agentic một agent giữ trọn design và rollout"
-  - "multi_agent tách research, architecture và verification ownership"
-recommended_option: "multi_agent từ step 5 trở đi"
+  - "agentic with one agent holding the whole design and rollout"
+  - "multi_agent splitting research, architecture and verification ownership"
+recommended_option: "multi_agent from step 5 onward"
 trade_offs:
-  - "tăng coordination overhead nhưng giảm bias ở verify"
-  - "yêu cầu owned scope rõ giữa design và verification"
+  - "more coordination overhead but less verify bias"
+  - "requires clear owned scope between design and verification"
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
-recommended_approach: "Tách coordinator, architect và notebooklm-researcher cho design/auth constraint; giữ note step làm source of truth."
-why: "Feature chạm auth UI, callback flow và external provider docs nên một agent dễ quá tải context."
+recommended_approach: "Split coordinator, architect and notebooklm-researcher for design/auth constraints; keep the step note as the source of truth."
+why: "The feature touches auth UI, the callback flow and external provider docs, so one agent can easily overload its context."
 boundaries:
   - "frontend login entry point"
   - "backend auth callback flow"
   - "external provider constraints"
 risk_notes:
-  - "owned_paths phải tách rõ trước step 7"
-  - "review owner không được trùng worker chính"
+  - "owned_paths must be clearly separated before step 7"
+  - "the review owner must not be the same as the main worker"
 ```
 
 ## Architecture Details
@@ -120,8 +120,8 @@ integration_points:
   - "OAuth provider redirect/callback"
   - "session creation flow"
 data_or_runtime_notes:
-  - "không mở migration trong sample này"
-  - "runtime fallback là sequential_multi_role nếu worker scope chồng lấn"
+  - "no migration is opened in this sample"
+  - "the runtime fallback is sequential_multi_role if worker scopes overlap"
 ```
 
 ## Execution Runtime
@@ -141,7 +141,7 @@ next_step: "sample-execution-item.s06.task-breakdown.md"
 ```
 
 ## Handoff
-- Recommended option: multi_agent với coordinator + architect + notebooklm-researcher.
-- Trade-off chấp nhận: thêm coordination nhưng giữ được verify owner độc lập.
-- Điều kiện sang step 6: task split phải map được về boundary frontend/backend/research.
-- Deployment note khi có: chưa có deployment artifact riêng ở sample này.
+- Recommended option: multi_agent with coordinator + architect + notebooklm-researcher.
+- Accepted trade-off: more coordination but an independent verify owner is preserved.
+- Conditions to move to step 6: the task split must map to the frontend/backend/research boundaries.
+- Deployment note if any: no separate deployment artifact in this sample yet.

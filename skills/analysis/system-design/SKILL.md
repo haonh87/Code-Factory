@@ -1,42 +1,45 @@
 ---
 name: system-design
-description: Chốt technical approach theo hướng DEV-led, kế thừa option thinking, failure modeling, compatibility, rollback và observability discipline từ Superpowers nhưng vẫn giữ governance, traceability và architecture follow-up của repo. Dùng khi đã có business goal và acceptance criteria, cần khóa boundary, contract, data flow và validation plan trước implementation.
+description: Locks the technical approach in a DEV-led direction, inheriting option thinking, failure modeling, compatibility, rollback, and observability discipline from Superpowers while preserving the repo's governance, traceability, and architecture follow-up. Use when a business goal and acceptance criteria already exist and you need to lock boundary, contract, data flow, and validation plan before implementation.
+language: en
 ---
 
 # System Design
 
-Chốt technical approach đủ rõ để chuyển sang task planning mà không phải tự đoán lại boundary trong lúc triển khai.
+> Vietnamese: SKILL.vi.md
+
+Lock in a technical approach clear enough to move on to task planning without having to re-infer the boundary during implementation.
 
 <HARD-GATE>
-Không được viết code production, không được scaffold project, và không được dùng skill này để backfill design sau khi đã implement.
+Must not write production code, must not scaffold a project, and must not use this skill to backfill design after implementation has already happened.
 
-Nếu option analysis chưa đủ, hoặc yêu cầu còn thiếu context quan trọng, phải quay lại `brainstorming` hoặc step trước thay vì ép chốt approach.
+If the option analysis is insufficient, or the request lacks important context, return to `brainstorming` or the previous step instead of forcing the approach to close.
 
-Hotfix hoặc change gấp không phải lý do để bỏ qua `failure_modes`, `compatibility_impact`, `rollback_impact` hay `observability_hooks`; chỉ được rút gọn ở mức tối thiểu đủ an toàn.
+A hotfix or urgent change is not a reason to skip `failure_modes`, `compatibility_impact`, `rollback_impact`, or `observability_hooks`; they may only be trimmed to the minimum safe level.
 </HARD-GATE>
 
-## Khi Sử Dụng
+## When to Use
 
-- Khi đã có business goal và acceptance criteria ở mức dùng được.
-- Khi cần chọn technical approach giữa nhiều hướng kỹ thuật.
-- Khi thay đổi chạm API, dữ liệu, data flow, integration hoặc component boundary.
-- Khi thay đổi có compatibility risk, rollback risk hoặc cần quan sát production behavior sau rollout.
-- Khi cần quyết định có nên gọi thêm skill kiến trúc chuyên biệt hay không.
+- When a usable business goal and acceptance criteria already exist.
+- When you need to choose a technical approach among several technical directions.
+- When the change touches API, data, data flow, integration, or component boundary.
+- When the change carries compatibility risk, rollback risk, or requires observing production behavior after rollout.
+- When you need to decide whether to bring in a specialized architecture skill.
 
-## Không Thuộc Phạm Vi
+## Out of Scope
 
-- Không thay requirement analysis hoặc product thinking.
-- Không thay task planning.
-- Không trực tiếp sửa code production.
-- Không né specialized skill khi boundary chuyên biệt cần khóa sâu.
+- Does not replace requirement analysis or product thinking.
+- Does not replace task planning.
+- Does not directly edit production code.
+- Does not avoid specialized skills when a specialized boundary needs deeper locking.
 
-## Vai Trò Mặc Định
+## Default Roles
 
-- `developer` là owner chính của skill này.
-- `ba` là vai trò support để giữ business-rule trace, scope guard và contract expectation.
-- Nếu scope chạm UX, data hoặc runtime sâu, kéo thêm skill chuyên biệt tương ứng thay vì cố nhồi tất cả vào một note chung.
+- `developer` is the primary owner of this skill.
+- `ba` is the supporting role, keeping business-rule trace, scope guard, and contract expectation.
+- If the scope touches UX, data, or deep runtime, pull in the corresponding specialized skill instead of cramming everything into one shared note.
 
-## Đầu Vào Tối Thiểu
+## Minimum Inputs
 
 - `business_goal`
 - `acceptance_criteria`
@@ -44,22 +47,22 @@ Hotfix hoặc change gấp không phải lý do để bỏ qua `failure_modes`, 
 - `tech_constraints`
 - `nfr_constraints`
 - `delivery_context`
-- `option_analysis` hoặc quyết định brainstorming trước đó nếu có
+- `option_analysis` or prior brainstorming decisions, if any
 
-Nếu thiếu acceptance criteria hoặc chưa rõ constraint chính, phải phản ánh ra trước khi chốt thiết kế.
+If acceptance criteria are missing or the main constraints are unclear, surface that before locking the design.
 
-## Technical Lane Bắt Buộc
+## Mandatory Technical Lane
 
-Ngoài boundary và contract, technical lane của repo này phải khóa thêm 4 góc nhìn sau:
+Beyond boundary and contract, this repo's technical lane must also lock the following four perspectives:
 
-- `failure_modes`: hỏng theo cách nào, tác động gì và guardrail nào chặn trước.
-- `compatibility_impact`: API, schema, consumer, migration order hoặc behavior cũ có bị ảnh hưởng không.
-- `rollback_impact`: rollback bằng cách nào, rollback bị chặn ở đâu, có cần roll-forward-only không.
-- `observability_hooks`: log, metric, trace, alert hoặc smoke signal nào giúp biết change đang chạy đúng.
+- `failure_modes`: how it fails, what the impact is, and which guardrail blocks it ahead of time.
+- `compatibility_impact`: whether API, schema, consumer, migration order, or legacy behavior are affected.
+- `rollback_impact`: how to roll back, where rollback is blocked, and whether roll-forward-only is required.
+- `observability_hooks`: which log, metric, trace, alert, or smoke signal confirms the change is running correctly.
 
-## Đầu Ra Bắt Buộc
+## Required Output
 
-Xuất artifact YAML theo schema sau:
+Emit a YAML artifact using the following schema:
 
 ```yaml
 design_problem: ""
@@ -93,60 +96,60 @@ specialized_followups:
 notes_for_next_step: ""
 ```
 
-## Chuẩn Hóa Output Trong Workflow Note
+## Normalizing Output in the Workflow Note
 
-Nếu output của skill này được lưu thành note `.md` trong workflow chain:
+If this skill's output is persisted as a `.md` note in the workflow chain:
 
-- Dùng template step 5 tại `../codex-workflow-chain/references/workflow-chain.md`.
-- Đặt schema YAML của skill này trong block `## Artifact Chính`.
-- Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
-- Nếu có follow-up chuyên biệt, ghi ở `## Architecture Details` hoặc artifact phụ được link từ note chuẩn.
+- Use the step 5 template at `../codex-workflow-chain/references/workflow-chain.md`.
+- Place this skill's YAML schema inside the `## Main Artifact` block.
+- Keep the field names in the schema unchanged; do not rename fields when writing them into the note.
+- If there are specialized follow-ups, record them under `## Architecture Details` or in a subsidiary artifact linked from the canonical note.
 
-## Quy Trình Bắt Buộc
+## Mandatory Process
 
-1. Restate `design_problem` từ goal, AC và baseline repo.
-2. Đọc lại `option analysis`; nếu còn yếu, quay lại `brainstorming`.
-3. Đề xuất ít nhất 2 phương án nếu bài toán có nhiều hướng hợp lý.
-4. Nếu hướng làm gần như hiển nhiên, vẫn phải nêu ít nhất 1 hướng thay thế hoặc hướng bị loại.
-5. Áp dụng rule `giải pháp nhỏ nhất đủ đúng`.
-6. Chọn `recommended_design` và nêu `recommendation_reason`.
-7. Ghi `rejected_options` để làm rõ vì sao không chọn hướng còn lại.
-8. Liệt kê `component_changes`, `data_flow`, `interface_changes`.
-9. Mô hình hóa `failure_modes`, `compatibility_impact`, `rollback_impact`, `observability_hooks`.
-10. Ghi `business_rule_trace` để đảm bảo design không đi lệch requirement gốc.
-11. Nếu chạm boundary sâu, mở `specialized_followups` tương ứng.
-12. Ghi `validation_plan` và `notes_for_next_step` để bàn giao sang `task-breakdown-planner`.
+1. Restate `design_problem` from the goal, AC, and repo baseline.
+2. Re-read the `option analysis`; if it is still weak, return to `brainstorming`.
+3. Propose at least 2 options if the problem has multiple reasonable directions.
+4. If the direction is nearly obvious, still state at least 1 alternative or rejected direction.
+5. Apply the `smallest sufficient solution` rule.
+6. Choose the `recommended_design` and state the `recommendation_reason`.
+7. Record `rejected_options` to clarify why the remaining directions were not chosen.
+8. Enumerate `component_changes`, `data_flow`, and `interface_changes`.
+9. Model `failure_modes`, `compatibility_impact`, `rollback_impact`, and `observability_hooks`.
+10. Record `business_rule_trace` to ensure the design does not drift from the original requirement.
+11. If it touches a deep boundary, open the corresponding `specialized_followups`.
+12. Record `validation_plan` and `notes_for_next_step` to hand off to `task-breakdown-planner`.
 
-## Quy Tắc Chất Lượng
+## Quality Rules
 
-- Không chốt approach chỉ vì quen tay.
-- Không mở thêm abstraction, service, framework hoặc boundary mới chỉ để “phòng khi sau này cần”.
-- Nếu chọn phương án lớn hơn, phải nêu rõ vì sao phương án nhỏ hơn không đủ.
-- `business_rule_trace` không được bỏ trống khi scope có rule business, contract hoặc acceptance quan trọng.
-- Nếu scope chạm contract công khai, `compatibility_impact` không được để trống.
-- Nếu scope có rollout thật, `rollback_impact` và `observability_hooks` không được để trống.
-- Mặc định viết và trao đổi bằng tiếng Việt có dấu.
-- File văn bản phải lưu UTF-8.
+- Do not lock an approach just because it is familiar.
+- Do not introduce new abstraction, service, framework, or boundary "in case it is needed later."
+- If a larger option is chosen, state clearly why the smaller option is insufficient.
+- `business_rule_trace` must not be empty when the scope involves important business rules, contracts, or acceptance.
+- If the scope touches a public contract, `compatibility_impact` must not be left empty.
+- If the scope involves a real rollout, `rollback_impact` and `observability_hooks` must not be left empty.
+- Default writing and exchange in Vietnamese with diacritics.
+- Text files must be saved as UTF-8.
 
-## Luật Ra Quyết Định
+## Decision Rules
 
-- Ưu tiên phương án đạt acceptance criteria với độ phức tạp phù hợp.
-- Nếu có phương án nhanh hơn nhưng tăng rủi ro vận hành hoặc compatibility, phải nêu rõ.
-- Nếu thay đổi liên quan interface công khai, phải đưa vào `interface_changes`.
-- Nếu thay đổi chạm dữ liệu, schema hoặc consumer cũ, phải mô tả explicit `compatibility_impact`.
-- Nếu rollout không rollback sạch được, phải ghi rõ `rollback_impact` theo hướng roll-forward-only thay vì giả có rollback.
-- Nếu production behavior không có tín hiệu quan sát đủ nhanh, phải thêm `observability_hooks` trước khi coi design là sẵn sàng.
-- Nếu trọng tâm là backend domain boundary, dùng `domain-architecture`.
-- Nếu trọng tâm là frontend module, route ownership, state ownership hoặc import boundary, dùng `frontend-architecture`.
-- Nếu trọng tâm là screen behavior, interaction, responsive rule hoặc visual constraint, dùng `frontend-experience-design`.
-- Nếu trọng tâm là schema, query pattern hoặc migration safety, dùng `database-design`.
-- Nếu trọng tâm là packaging, runtime deploy hoặc release flow, dùng `deployment-devops`, `containerization-packaging`, `platform-runtime-deployment` hoặc `ci-cd-release` theo nhu cầu.
+- Prefer the option that meets acceptance criteria with appropriate complexity.
+- If a faster option increases operational or compatibility risk, state it clearly.
+- If a change concerns a public interface, it must go into `interface_changes`.
+- If a change touches legacy data, schema, or consumers, describe an explicit `compatibility_impact`.
+- If the rollout cannot be cleanly rolled back, record `rollback_impact` as roll-forward-only instead of assuming a rollback exists.
+- If production behavior has no observable signal fast enough, add `observability_hooks` before considering the design ready.
+- If the focus is a backend domain boundary, use `domain-architecture`.
+- If the focus is a frontend module, route ownership, state ownership, or import boundary, use `frontend-architecture`.
+- If the focus is screen behavior, interaction, responsive rules, or visual constraints, use `frontend-experience-design`.
+- If the focus is schema, query patterns, or migration safety, use `database-design`.
+- If the focus is packaging, runtime deploy, or release flow, use `deployment-devops`, `containerization-packaging`, `platform-runtime-deployment`, or `ci-cd-release` as needed.
 
-## Điều Kiện Hoàn Tất
+## Completion Criteria
 
-- Có `recommended_design` và `recommendation_reason` rõ ràng.
-- Có `component_changes`, `data_flow` và `interface_changes` đủ dùng cho planning.
-- Có `failure_modes`, `compatibility_impact`, `rollback_impact`, `observability_hooks` ở mức phù hợp với scope.
-- Có `business_rule_trace`.
-- Có `validation_plan`.
-- Có `specialized_followups` khi boundary cần khóa sâu hơn.
+- A clear `recommended_design` and `recommendation_reason`.
+- `component_changes`, `data_flow`, and `interface_changes` sufficient for planning.
+- `failure_modes`, `compatibility_impact`, `rollback_impact`, and `observability_hooks` at a level appropriate to the scope.
+- A `business_rule_trace`.
+- A `validation_plan`.
+- `specialized_followups` when the boundary needs deeper locking.

@@ -1,31 +1,37 @@
-# Packaging Theo Workload
+---
+language: en
+---
+
+# Packaging By Workload
+
+> Vietnamese: workload-profiles.vi.md
 
 ## web_api
 
-- Cần `exposed_ports`, `healthcheck` và startup command phục vụ traffic.
-- Nếu app phụ thuộc migration, không trộn migration chạy tự động vào startup nếu có thể gây downtime.
+- Needs `exposed_ports`, a `healthcheck`, and a startup command that serves traffic.
+- If the app depends on migrations, do not mix auto-running migrations into startup if it can cause downtime.
 
 ## worker
 
-- Chốt rõ queue backend, concurrency model và graceful shutdown behavior.
-- Worker không nhất thiết expose port; tránh copy nguyên pattern từ web API.
+- Lock clearly the queue backend, concurrency model, and graceful shutdown behavior.
+- A worker does not necessarily expose a port; avoid copying the web API pattern wholesale.
 
 ## cron
 
-- Chốt rõ scheduler nằm trong container hay do platform orchestration kích hoạt.
-- Nếu dùng cron kiểu sidecar hoặc platform job, đừng giả lập bằng vòng lặp sleep mơ hồ.
+- Lock clearly whether the scheduler lives inside the container or is triggered by platform orchestration.
+- If using a sidecar-style cron or a platform job, do not fake it with a vague sleep loop.
 
 ## frontend_static
 
-- Chốt artifact build và static server phù hợp.
-- Nếu app chỉ là static asset, runtime image nên tối giản; không kéo nguyên toolchain vào runtime.
+- Lock the build artifact and a fitting static server.
+- If the app is only static assets, the runtime image should be minimal; do not pull the whole toolchain into runtime.
 
 ## monolith
 
-- Liệt kê rõ process chính và process phụ cần tách.
-- Nếu một image phải phục vụ nhiều role, dùng command hoặc profile rõ ràng; không làm entrypoint quá thông minh.
+- List clearly the main process and any auxiliary processes that need separating.
+- If one image must serve multiple roles, use a clear command or profile; do not make the entrypoint too clever.
 
 ## microservice
 
-- Giữ image và compose service gọn theo một bounded responsibility.
-- Phụ trợ local chỉ khai báo những gì service thật sự cần để boot hoặc verify.
+- Keep the image and compose service slim around one bounded responsibility.
+- Declare only the local helpers the service truly needs to boot or verify.

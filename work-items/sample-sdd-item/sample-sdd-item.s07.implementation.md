@@ -70,7 +70,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> Tóm tắt thay đổi đã implement, giới hạn còn lại và note cho verify.
+> Summarize the implemented change, remaining limits and notes for verify.
 
 ## Step Contract
 ```yaml
@@ -81,23 +81,23 @@ done_when: []
 owner: ""
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 implemented_changes:
-  - "thêm optional workspace filter vào flow query"
-  - "giữ fallback path cũ khi workspace filter trống"
+  - "add an optional workspace filter to the query flow"
+  - "keep the old fallback path when the workspace filter is empty"
 doc_changes:
-  - "cập nhật note implementation và verify scope"
+  - "update the implementation note and verify scope"
 operational_notes:
-  - "không cần migration"
+  - "no migration needed"
 ```
 
 ## Implementation Notes
 ```yaml
 framework_notes:
-  - "path được normalize trước khi query"
+  - "the path is normalized before the query"
 known_limitations:
-  - "sample này chưa triển khai runner runtime riêng"
+  - "this sample does not run its own runtime runner"
 ```
 
 ## Spec Change
@@ -108,8 +108,8 @@ impact_area: technical
 current_spec_refs:
   - "SRS-FR-001"
   - "SRS-FR-002"
-problem: "Không phát sinh spec gap mới trong implementation sample."
-proposed_change: "Không cập nhật BRD/SRS ở vòng này."
+problem: "No new spec gap arose in the implementation sample."
+proposed_change: "Do not update the BRD/SRS in this round."
 decision: DEFERRED
 decision_owner: "developer"
 updated_artifacts: []
@@ -132,7 +132,7 @@ next_step: "sample-sdd-item.s08.verification.md"
 ```
 
 ## Handoff
-- Outputs actual: workspace filter flow, compatibility guard và error handling.
-- Known limitations: sample chưa có runtime adapter riêng cho multi-agent.
-- Notes for testing: cần chứng minh AC-001 tới AC-004 bằng evidence rõ.
-- Notes for deployment khi có: release impact thấp, không migration.
+- Outputs actual: workspace filter flow, compatibility guard and error handling.
+- Known limitations: the sample has no separate runtime adapter for multi-agent.
+- Notes for testing: AC-001 through AC-004 must be proven with clear evidence.
+- Notes for deployment if any: low release impact, no migration.

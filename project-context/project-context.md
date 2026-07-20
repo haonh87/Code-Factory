@@ -1,12 +1,16 @@
+---
+language: en
+---
+
 # Project Context
 
-Tài liệu này mô tả `governance context` đang có hiệu lực cho repo tại thời điểm hiện tại.
+This document describes the `governance context` currently in effect for the repo.
 
-## Định Danh
+## Identity
 
 - Project: `AI Agent Ops / Code-Factory`
-- Mục tiêu hiện tại: chuẩn hóa workflow, skills, MCP và orchestration theo hướng `Codex-first`
-- Governance source nền:
+- Current goal: standardize workflows, skills, MCP and orchestration toward a `Codex-first` direction
+- Foundational governance sources:
   - `project-context/constitution.md`
   - `project-context/governance-decision-model.md`
   - `project-context/governance-role-model.md`
@@ -16,62 +20,62 @@ Tài liệu này mô tả `governance context` đang có hiệu lực cho repo t
 
 ## Default Governance Setup
 
-- `governance_ref` mặc định:
+- Default `governance_ref`:
   - `project-context/project-context.md`
-- `governance_profile` mặc định:
+- Default `governance_profile`:
   - `default`
-- `checklist_refs` mặc định:
+- Default `checklist_refs`:
   - `project-context/checklists/default.md`
 
-## Khi Nào Nâng Profile
+## When To Raise The Profile
 
-Chuyển sang `strict` khi có một hoặc nhiều tín hiệu sau:
+Move to `strict` when one or more of the following signals are present:
 
-- change đụng nhiều boundary hoặc nhiều role signoff
-- có migration, compatibility risk hoặc rollback risk
-- có packaging/runtime/release impact
-- có external integration hoặc stateful data impact
-- cần reviewer coverage chặt hơn bình thường
+- the change touches many boundaries or many role sign-offs
+- there is migration, compatibility risk or rollback risk
+- there is packaging/runtime/release impact
+- there is external integration or stateful data impact
+- reviewer coverage tighter than usual is needed
 
-Chuyển sang `regulated` khi có một hoặc nhiều tín hiệu sau:
+Move to `regulated` when one or more of the following signals are present:
 
-- cần audit trail hoặc approval chain rõ
-- phải lưu evidence hoặc exception xuyên nhiều step
-- có policy/compliance/control ngoài team delivery thông thường
+- a clear audit trail or approval chain is needed
+- evidence or exceptions must be kept across many steps
+- there are policy/compliance/control rules outside the usual delivery team
 
-## Required Reviews Theo Scope
+## Required Reviews By Scope
 
-| Scope tín hiệu | Review hoặc owner tối thiểu nên có |
+| Signal scope | Minimum review or owner to have |
 |---|---|
-| business rule đổi đáng kể | `po`, `ba` |
-| UX/UI hoặc accessibility outcome | `designer`, `qc` |
-| technical approach hoặc code path chính | `developer` |
-| data change, migration hoặc compatibility | `developer`, `qc` |
+| significant business-rule change | `po`, `ba` |
+| UX/UI or accessibility outcome | `designer`, `qc` |
+| technical approach or main code path | `developer` |
+| data change, migration or compatibility | `developer`, `qc` |
 | packaging, runtime, release, rollback | `devops`, `qc` |
 
-## Shortcut Bị Cấm
+## Forbidden Shortcuts
 
-- Bỏ qua `Clarify` hoặc `Acceptance + DoR` chỉ để đi nhanh sang code.
-- Để kết luận chính thức chỉ nằm trong NotebookLM, search result hoặc chat log mà không chuẩn hóa vào artifact nguồn sự thật.
-- Đổi behavior ngoài spec mà không ghi `spec-change` hoặc `governance-exception` khi cần.
-- Đóng `DoD` hoặc `release` khi evidence vẫn thiếu mà không nói rõ limitation.
-- Tạo workflow song song làm lệch backbone 8 bước.
-- Silent rename step, slug hoặc artifact naming chuẩn mà không cập nhật policy và reference đồng thời.
+- Skipping `Clarify` or `Acceptance + DoR` just to go fast to code.
+- Leaving an official conclusion only in NotebookLM, search results or a chat log without normalizing it into the source-of-truth artifact.
+- Changing behavior outside the spec without recording a `spec-change` or `governance-exception` when needed.
+- Closing `DoD` or `release` when evidence is still missing without stating the limitation.
+- Creating a parallel workflow that bends the 8-step backbone.
+- Silently renaming a step, slug or standard artifact naming without updating policy and references at the same time.
 
-## Cách Điền Metadata Trong Note Workflow
+## How To Fill Metadata In A Workflow Note
 
 - `governance_ref`:
-  thường trỏ `project-context/project-context.md`; chỉ trỏ thẳng `constitution.md` khi step cần nhấn mạnh nguyên tắc nền hơn bối cảnh vận hành.
+  usually points to `project-context/project-context.md`; only point directly at `constitution.md` when the step needs to emphasize foundational principles over operational context.
 - `governance_profile`:
-  chọn `default`, `strict`, `regulated` hoặc `custom` theo `governance-decision-model.md`.
+  choose `default`, `strict`, `regulated` or `custom` per `governance-decision-model.md`.
 - `checklist_refs`:
-  trỏ tới checklist profile đang áp dụng; có thể cộng thêm checklist riêng của work item theo rule trong `governance-decision-model.md`.
+  point to the checklist profile being applied; you may add a work item's own checklist per the rules in `governance-decision-model.md`.
 - `governance_status`:
-  dùng enum chuẩn `ALIGNED|CHECKS_PENDING|EXCEPTION_RECORDED|WAIVER_APPROVED|BLOCKED|NOT_APPLICABLE` theo state model trong `governance-decision-model.md`.
+  use the standard enum `ALIGNED|CHECKS_PENDING|EXCEPTION_RECORDED|WAIVER_APPROVED|BLOCKED|NOT_APPLICABLE` per the state model in `governance-decision-model.md`.
 
-## Ghi Chú Vận Hành
+## Operational Notes
 
-- Nếu scope chỉ là change nhỏ, vẫn nên dùng profile `default` thay vì để trống.
-- Nếu có `governance-exception` còn mở tới step 8, phải ghi thêm vào `project-context/governance-exception-register.md`.
-- `approved_by` của waiver hoặc exception phải theo authority trong `project-context/governance-role-model.md`.
-- Trigger mở `governance-exception` và điều kiện cập nhật register phải theo `project-context/governance-decision-model.md`.
+- If the scope is only a small change, still use the `default` profile instead of leaving it empty.
+- If a `governance-exception` stays open into step 8, add it to `project-context/governance-exception-register.md`.
+- `approved_by` for a waiver or exception must follow the authority in `project-context/governance-role-model.md`.
+- The trigger to open a `governance-exception` and the conditions to update the register must follow `project-context/governance-decision-model.md`.

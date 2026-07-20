@@ -1,187 +1,193 @@
-# Từ Điển Thuật Ngữ Workflow
+---
+language: en
+---
 
-Tài liệu này giải thích ngữ nghĩa của các keyword chính trong workflow hiện tại.
+# Workflow Keyword Glossary
 
-Mục tiêu:
+> Vietnamese: workflow-keywords-glossary.vi.md
 
-- có một chỗ tra cứu tập trung cho keyword và thuật ngữ hay lặp lại
-- giảm tình trạng mỗi tài liệu giải thích một kiểu
-- giúp người đọc hiểu keyword theo đúng ngữ cảnh workflow của repo
+This document explains the semantics of the key keywords in the current workflow.
 
-Thời điểm đối chiếu: `2026-04-20`.
+Goals:
 
-## Cách Đọc
+- provide one centralized place to look up recurring keywords and terms
+- reduce the situation where every document explains a term differently
+- help readers understand keywords in the correct context of this repo's workflow
 
-- Mỗi keyword được giải thích theo 3 ý:
-  - `nghĩa`: keyword này dùng để chỉ điều gì
-  - `không nên hiểu là`: ranh giới để tránh hiểu sai
-  - `dùng ở đâu`: vị trí keyword thường xuất hiện trong workflow
+Cross-reference date: `2026-04-20`.
 
-## Thuật Ngữ Backbone
+## How To Read
 
-| Keyword | Nghĩa | Không nên hiểu là | Dùng ở đâu |
+- Each keyword is explained across three facets:
+  - `meaning`: what the keyword denotes
+  - `not to be understood as`: the boundary that prevents misreading
+  - `used where`: where the keyword typically appears in the workflow
+
+## Backbone Terms
+
+| Keyword | Meaning | Not to be understood as | Used where |
 |---|---|---|---|
-| `Clarify` | bước làm rõ yêu cầu, scope draft, context, risk ban đầu | không phải bước code hay design chi tiết | `s01` |
-| `Business Goal` | bước chốt giá trị business, KPI, non-goals | không phải technical approach | `s02` |
-| `Open Questions` | bước gom blocker, assumption, conflict, missing input | không phải nơi ép chọn giải pháp khi còn thiếu dữ liệu | `s03` |
-| `Acceptance + DoR` | bước chốt acceptance criteria và readiness | không phải chỉ là checklist hình thức | `s04` |
-| `Technical Approach` | bước chốt hướng kỹ thuật sẽ làm | không phải brainstorming thô, cũng không phải implementation | `s05` |
-| `Task Plan` | bước bẻ approach thành task có thứ tự và verify path | không phải danh sách việc mơ hồ kiểu TODO | `s06` |
-| `Implement` | bước tạo thay đổi thật trong code/config/doc | không được bắt đầu khi design chưa đủ điều kiện | `s07` |
-| `Verify + DoD` | bước kết luận evidence, compliance và completion | không phải chỉ là “test pass là xong” | `s08` |
+| `Clarify` | the step that clarifies requirements, drafts scope, gathers context and initial risk | not a coding or detailed design step | `s01` |
+| `Business Goal` | the step that pins business value, KPIs, and non-goals | not a technical approach | `s02` |
+| `Open Questions` | the step that collects blockers, assumptions, conflicts, and missing input | not the place to force a solution when data is still missing | `s03` |
+| `Acceptance + DoR` | the step that pins acceptance criteria and readiness | not just a formal checklist | `s04` |
+| `Technical Approach` | the step that pins the technical direction to take | not raw brainstorming, and not implementation | `s05` |
+| `Task Plan` | the step that breaks the approach into ordered tasks with a verify path | not a vague TODO-style list | `s06` |
+| `Implement` | the step that produces real changes in code/config/doc | must not begin before design meets its preconditions | `s07` |
+| `Verify + DoD` | the step that concludes evidence, compliance, and completion | not just "a test pass means done" | `s08` |
 
-## Thuật Ngữ Gate
+## Gate Terms
 
-| Keyword | Nghĩa | Không nên hiểu là | Dùng ở đâu |
+| Keyword | Meaning | Not to be understood as | Used where |
 |---|---|---|---|
-| `Spec` | gate chốt requirement/spec baseline đã được human approve để dùng làm source-of-truth | không phải chỉ là có file spec draft tồn tại | chủ yếu `s04` |
-| `Contract` | gate chốt `API contract` hoặc `UX contract` đã được human approve hoặc chốt `not_applicable` rõ | không phải chỉ là mock interface sơ bộ | chủ yếu `s04` |
-| `DoR` | `Definition of Ready`: verdict cho biết work item đủ rõ để sang design/planning/implementation | không phải approval cảm tính | chủ yếu `s04` |
-| `Foundation Decision` | gate chốt solution class, stack, runtime hoặc deployment model do human chọn cuối | không phải recommendation của AI | chủ yếu `s05` |
-| `UAT` | `User Acceptance Testing`: gate xác nhận kết quả thực tế khớp approved spec/contract trong scenario người dùng | không phải thay thế cho `DoD` | chủ yếu `s08` |
-| `Release` | gate xác nhận work item đủ điều kiện ship, rollout và rollback theo scope release thực tế | không phải chỉ là release recommendation của kỹ thuật | chủ yếu `s08` |
-| `Business Acceptance` | gate xác nhận outcome cuối khớp business intent đã approved | không phải review kỹ thuật hay UAT thuần | chủ yếu `s08` |
-| `approval_gates` | map chỉ ra gate nào là `required` hoặc `not_applicable` cho từng note/work item | không phải bằng chứng human đã review | frontmatter workflow |
-| `approval_status` | trạng thái approval của protocol-managed work item/change như `PENDING_REVIEW`, `APPROVED`, `REJECTED` | không phải verdict của step note; `NOT_REQUIRED` chỉ là compatibility enum, không phải đường hợp lệ cho item do protocol quản lý | protocol report |
-| `review_required` | cờ cho biết approval gate của protocol có phải review thật hay không | với protocol-managed work item/change hiện tại không được đặt `false` | protocol report |
-| `delivery_context` | context delivery của work item: `greenfield` hoặc `brownfield` | không phải planning depth như `quick|full|enterprise` | frontmatter workflow |
-| `capability control` | lớp enforcement ở mức filesystem, khóa implementation path cho tới khi protocol mở đúng quyền ghi | không thay cho human approval, review nghiệp vụ hay validator | runtime, protocol, `s07` |
-| `DoD` | `Definition of Done`: verdict cho biết work item đủ evidence để đóng | không phải code review pass | chủ yếu `s08` |
-| `role_signoffs` | map authority cho biết role nào có trách nhiệm signoff từng gate | không phải bằng chứng đã review thực tế | frontmatter workflow |
-| `gate_reviews` | audit trail ghi role reviewer và thời điểm review cho từng gate | không thay `role_signoffs`, cũng không thay `approved_by` của waiver | frontmatter workflow |
-| `Missing Gates` | danh sách gate hoặc artifact còn thiếu trong block trạng thái router để human thấy vì sao chưa được đi tiếp | không phải cosmetic status text; nếu khác `NONE` thì workflow chưa được coi là execution-ready | router status block, handoff |
-| `Next Human Action` | hành động review, approval hoặc confirmation cụ thể mà human cần làm tiếp theo để mở gate | không phải placeholder; nếu `Missing Gates` khác `NONE` thì không được là `NONE` | router status block, handoff |
-| `trusted approval receipt` | receipt đã ký và được lưu ngoài project root để chứng minh một gate human đã được seal thực sự | không phải metadata trong note/report, cũng không phải comment review thuần | protocol, gate commands |
-| `spec/design before code` | rule cứng: không implement khi `s04-s06` chưa đủ điều kiện | không phải gợi ý hay preference | policy, `s07` gate |
-| `brainstorming có kỷ luật` | rule cứng: không chốt `s05` nếu chưa có so sánh phương án ở mức phù hợp | không phải kéo dài discovery vô hạn | `s05` gate |
-| `planning execution-oriented` | rule cứng: không vào `s07` với task plan còn mơ hồ, còn placeholder hoặc chưa đủ rõ để thi công | không phải chỉ là “có list task là đủ” | `s06` gate |
-| `TDD cho behavior change` | rule cứng: change tác động behavior phải ưu tiên test trước rồi mới code | không phải chỉ là “có test là đủ” | `s07` gate |
-| `worktree cho change lớn hoặc rủi ro` | rule cô lập workspace: change lớn hoặc risk cao phải ưu tiên tách workspace riêng trước khi implement | không phải bắt buộc cho mọi quick fix | `s07` gate |
-| `review sớm, không đợi cuối` | rule review: review cho batch/task rủi ro hoặc phần quan trọng phải diễn ra trong `s07` | không phải đợi tới `s08` mới review toàn bộ diff | `s07` gate |
-| `review hai tầng` | rule thứ tự review: phải kiểm `spec compliance` trước, rồi mới tới `code quality` | không phải review code thuần túy mà bỏ qua việc có đúng spec hay không | `s07` gate |
-| `subagent chỉ cho task độc lập` | rule delegation: chỉ tách worker khi task đủ độc lập để giao việc, merge và verify mà không gây conflict hoặc drift | không phải cứ muốn song song hóa là được bật | `s07` gate |
-| `không tự tuyên bố done` | rule kết luận: chỉ `s08` với verdict `DoD` rõ mới được coi work item là hoàn tất | không phải code merge xong, test pass cục bộ hay review pass là xong | `s08` gate |
-| `branch/worktree chỉ chốt sau verify` | rule kết thúc execution: `cleanup`, `close`, `remove` hoặc `merge` chỉ hợp lệ sau khi `s08` có verdict `DoD` rõ | không phải thấy branch/worktree sạch là được chốt sớm | `s08` gate |
-| `default an toàn` | rule fallback: khi chưa đủ chắc chắn, chọn hướng bảo thủ hơn như `full`, không bật `subagent` bừa, không mở boundary mới bừa và không coi gate là đã qua | không phải cớ để trì hoãn vô hạn hoặc bỏ qua rule cứng | xuyên step |
-| `verification_owner` | người hoặc role chịu trách nhiệm verify cuối | không đồng nghĩa người đó phải code | execution runtime, `s08` |
+| `Spec` | the gate that pins a human-approved requirement/spec baseline to serve as the source of truth | not merely the existence of a spec draft file | mostly `s04` |
+| `Contract` | the gate that pins a human-approved `API contract` or `UX contract`, or an explicit `not_applicable` ruling | not a preliminary interface mock | mostly `s04` |
+| `DoR` | `Definition of Ready`: the verdict stating the work item is clear enough to move into design/planning/implementation | not a gut-feel approval | mostly `s04` |
+| `Foundation Decision` | the gate that pins the solution class, stack, runtime, or deployment model that a human selects as final | not an AI recommendation | mostly `s05` |
+| `UAT` | `User Acceptance Testing`: the gate confirming the actual result matches the approved spec/contract in a user-facing scenario | not a replacement for `DoD` | mostly `s08` |
+| `Release` | the gate confirming the work item is ready to ship, roll out, and roll back per the actual release scope | not merely a technical release recommendation | mostly `s08` |
+| `Business Acceptance` | the gate confirming the final outcome matches the approved business intent | not a technical review or pure UAT | mostly `s08` |
+| `approval_gates` | the map indicating which gate is `required` or `not_applicable` for each note/work item | not evidence that a human reviewed | workflow frontmatter |
+| `approval_status` | the approval state of a protocol-managed work item/change, such as `PENDING_REVIEW`, `APPROVED`, `REJECTED` | not the verdict of a step note; `NOT_REQUIRED` is only a compatibility enum, not a valid path for a protocol-managed item | protocol report |
+| `review_required` | the flag indicating whether the protocol's approval gate is a genuine review | for a protocol-managed work item/change it must not be set to `false` at present | protocol report |
+| `delivery_context` | the delivery context of a work item: `greenfield` or `brownfield` | not a planning depth such as `quick|full|enterprise` | workflow frontmatter |
+| `capability control` | the filesystem-level enforcement layer that locks the implementation path until the protocol grants the correct write permission | not a substitute for human approval, business review, or the validator | runtime, protocol, `s07` |
+| `DoD` | `Definition of Done`: the verdict stating the work item has enough evidence to close | not a code review pass | mostly `s08` |
+| `role_signoffs` | the authority map stating which role is responsible for signing off each gate | not evidence of an actual review | workflow frontmatter |
+| `gate_reviews` | the audit trail recording the reviewer role and review time for each gate | not a replacement for `role_signoffs`, nor for a waiver's `approved_by` | workflow frontmatter |
+| `Missing Gates` | the list of gates or artifacts still missing in the router status block, so a human can see why the workflow may not proceed | not cosmetic status text; if it differs from `NONE` the workflow is not considered execution-ready | router status block, handoff |
+| `Next Human Action` | the specific review, approval, or confirmation action a human must take next to open the gate | not a placeholder; if `Missing Gates` differs from `NONE` it must not be `NONE` | router status block, handoff |
+| `trusted approval receipt` | a signed receipt stored outside the project root proving a human gate has been genuinely sealed | not metadata inside a note/report, and not a plain review comment | protocol, gate commands |
+| `spec/design before code` | hard rule: no implementation until `s04-s06` meet their preconditions | not a hint or a preference | policy, `s07` gate |
+| `brainstorming with discipline` | hard rule: do not pin `s05` without option comparison at a level suited to the work item | not a license to extend discovery indefinitely | `s05` gate |
+| `planning execution-oriented` | hard rule: do not enter `s07` with a task plan that is still vague, full of placeholders, or unclear enough to execute | not just "having a task list is enough" | `s06` gate |
+| `TDD for behavior change` | hard rule: a change that touches behavior must prefer test-first, then code | not just "having tests is enough" | `s07` gate |
+| `worktree for large or risky change` | workspace-isolation rule: large or high-risk change must prefer a separate workspace before implementing | not mandatory for every quick fix | `s07` gate |
+| `early review, not deferred to the end` | review rule: review of risky batches/tasks or critical parts must occur within `s07` | not waiting until `s08` to review the entire diff | `s07` gate |
+| `two-tier review` | review-ordering rule: check `spec compliance` first, then `code quality` | not a pure code review that ignores whether the spec is met | `s07` gate |
+| `subagent only for independent tasks` | delegation rule: only split workers when the task is independent enough to assign, merge, and verify without conflict or drift | not "parallelize whenever you feel like it" | `s07` gate |
+| `no premature done declaration` | conclusion rule: only `s08` with a clear `DoD` verdict may consider the work item complete | not "code merged, local test pass, or review pass means done" | `s08` gate |
+| `branch/worktree closed only after verify` | execution-closing rule: `cleanup`, `close`, `remove`, or `merge` is only valid after `s08` has a clear `DoD` verdict | not "a clean branch/worktree means it can be closed early" | `s08` gate |
+| `safe default` | fallback rule: when not certain, choose the more conservative direction (e.g. `full`), do not spin up a `subagent` casually, do not open new boundaries casually, and do not assume a gate has passed | not an excuse to delay indefinitely or to bypass hard rules | across steps |
+| `verification_owner` | the person or role responsible for the final verification | does not imply that person must code | execution runtime, `s08` |
 
-## Thuật Ngữ Thiết Kế Và Lập Kế Hoạch
+## Design And Planning Terms
 
-| Keyword | Nghĩa | Không nên hiểu là | Dùng ở đâu |
+| Keyword | Meaning | Not to be understood as | Used where |
 |---|---|---|---|
-| `option analysis` | phần so sánh phương án trước khi chốt approach | không phải technical approach cuối cùng | `s05`, brainstorming |
-| `recommended option` | phương án được khuyến nghị sau khi so sánh | không phải “ý thích cá nhân” | `option analysis` |
-| `giải pháp nhỏ nhất đủ đúng` | phương án nhỏ nhất vẫn đạt AC, constraint hiện tại, `governance` liên quan và nhu cầu kiểm chứng chính | không phải giải pháp tạm bợ hoặc cắt bớt quality gate | `s05` |
-| `behavior change` | thay đổi làm đổi behavior observable của hệ thống như bug fix, feature behavior, validation rule, contract change hoặc refactor có regression risk đáng kể | không phải docs-only, format-only hay metadata-only | chủ yếu `s07` |
-| `change lớn hoặc rủi ro` | change nên dùng `worktree`, thường có một trong các dấu hiệu: `enterprise`, kéo dài hơn một session, chạm nhiều boundary/file với conflict risk đáng kể, hoặc merge/branch/release risk cao | không phải mọi change ở `full` đều tự động thuộc nhóm này | chủ yếu `s07` |
-| `task độc lập` | task đủ rõ để giao cho worker riêng, thường có `owned_scope` hoặc `owned_paths` tương đối rời nhau, `merge path` rõ và `verify path` hoặc `verification_owner` rõ | không phải task nhỏ nhưng tightly coupled hoặc vừa khám phá context xong | chủ yếu `s07` |
-| `validation plan` | điều cần kiểm chứng trước hoặc trong implement | không phải full test report | `s05`, `s08` |
-| `technical approach` | hướng kỹ thuật đã chọn để triển khai | không phải danh sách task | `s05` |
-| `foundation decision` | quyết định nền tảng của project như solution class, stack, runtime hoặc deployment model | không phải chi tiết implement nhỏ của một task | chủ yếu `s05` ở `empty/greenfield project` |
-| `bootstrap gate` | lớp gate cấp project trước khi materialize hoặc implement work item đầu tiên ở `empty/greenfield project` | không phải cùng một nghĩa với `work item approval` | intake, materialization, `s04-s05` |
-| `brownfield` | context delivery khi hệ thống hiện có là baseline đang vận hành và change phải tôn trọng compatibility/regression constraints | không phải cớ để bỏ spec hay bỏ review gate | xuyên `s04-s08` |
-| `task plan` | các task thực thi có thứ tự, phần chạm chính hoặc ownership và verify path | không phải placeholder như “xử lý edge case” | `s06` |
-| `Delivery Rule Evidence` | block evidence có cấu trúc ở `s07` để chốt `TDD`, `worktree`, review hai tầng và điều kiện delegation | không phải ghi chú prose tự do hay changelog chung chung | `s07` |
-| `write-root` | path được cấp khi activate hoặc resume vào `s07` để capability control mở quyền ghi implementation | không phải quyền sửa mọi file trong repo | protocol CLI, `s07` |
-| `granted_write_paths` | danh sách path implementation đã được protocol cấp quyền ghi cho work item đang `ACTIVE` | không phải artifact authoring path hay source-of-truth cho approval | protocol report, capability control |
-| `approval passphrase` | bí mật do human nắm để ký trusted approval receipts | không phải `reviewed_by`, cũng không nên coi là config repo | trusted approval flow |
-| `authoring roots` | các root workflow/artifact vẫn được phép ghi ngay cả khi implementation path đang bị khóa | không phải implementation path hay special bypass cho code | capability control config |
-| `protected roots` | các root bị capability control khóa ghi theo mặc định cho tới khi có grant phù hợp | không phải danh sách cố định cho mọi repo; có thể chịu ảnh hưởng config và cấu trúc project | capability control config |
-| `execution-oriented task plan` | task plan đủ rõ về phần chạm chính, thứ tự hoặc dependency, verify path và checkpoint cần thiết để implementer triển khai mà không phải tự phát minh lại design | không phải kế hoạch mơ hồ ở mức ý tưởng | `s06` |
-| `verify path` | cách kiểm chứng task hoặc change sau khi làm | không phải chỉ một câu “sẽ test” | `s06`, `s08` |
-| `placeholder` | câu mô tả mơ hồ chưa nói rõ chạm đâu, làm gì, kiểm thế nào | không phải task plan hợp lệ | chủ yếu `s06` |
-| `empty project` / `greenfield project` | project chưa có baseline stack/runtime đã approved, hoặc repo gần như trống nên các quyết định solution class và stack đều là quyết định nền tảng | không được coi như project bình thường để AI tự chọn stack rồi implement luôn | runtime hard stop |
+| `option analysis` | the option comparison done before pinning an approach | not the final technical approach | `s05`, brainstorming |
+| `recommended option` | the option recommended after comparison | not "personal preference" | `option analysis` |
+| `smallest sufficient solution` | the smallest option that still meets the ACs, current constraints, relevant `governance`, and the key verification need | not a shoddy solution or one that cuts quality gates | `s05` |
+| `behavior change` | a change that alters the observable behavior of the system, such as a bug fix, feature behavior, validation rule, contract change, or a refactor with significant regression risk | not docs-only, format-only, or metadata-only | mostly `s07` |
+| `large or risky change` | a change that should use a `worktree`, typically with one of: `enterprise`, lasting more than one session, touching many boundaries/files with significant conflict risk, or high merge/branch/release risk | not every `full` change automatically belongs to this group | mostly `s07` |
+| `independent task` | a task clear enough to assign to a separate worker, typically with relatively disjoint `owned_scope` or `owned_paths`, a clear `merge path`, and a clear `verify path` or `verification_owner` | not a small but tightly coupled task, or one whose context was just discovered | mostly `s07` |
+| `validation plan` | what must be verified before or during implementation | not a full test report | `s05`, `s08` |
+| `technical approach` | the chosen technical direction for delivery | not a task list | `s05` |
+| `foundation decision` | a project's foundational decision such as solution class, stack, runtime, or deployment model | not a small implementation detail of one task | mostly `s05` in `empty/greenfield project` |
+| `bootstrap gate` | the project-level gate layer before materializing or implementing the first work item in an `empty/greenfield project` | not the same meaning as `work item approval` | intake, materialization, `s04-s05` |
+| `brownfield` | the delivery context where the existing system is a running baseline and the change must respect compatibility/regression constraints | not an excuse to drop the spec or skip review gates | across `s04-s08` |
+| `task plan` | ordered execution tasks with the main touch points or ownership and a verify path | not a placeholder like "handle edge cases" | `s06` |
+| `Delivery Rule Evidence` | the structured evidence block at `s07` that pins `TDD`, `worktree`, two-tier review, and delegation conditions | not freeform prose notes or a generic changelog | `s07` |
+| `write-root` | the path granted when activating or resuming into `s07` so capability control opens write permission for implementation | not permission to edit any file in the repo | protocol CLI, `s07` |
+| `granted_write_paths` | the list of implementation paths the protocol has granted write permission to for an `ACTIVE` work item | not the authoring path or the source of truth for approval | protocol report, capability control |
+| `approval passphrase` | a secret held by a human to sign trusted approval receipts | not `reviewed_by`, and should not be treated as repo config | trusted approval flow |
+| `authoring roots` | workflow/artifact roots that remain writable even when the implementation path is locked | not the implementation path, nor a special bypass for code | capability control config |
+| `protected roots` | roots that capability control locks for writing by default until a suitable grant exists | not a fixed list for every repo; may be affected by config and project structure | capability control config |
+| `execution-oriented task plan` | a task plan clear enough on main touch points, order or dependencies, verify path, and required checkpoints that the implementer can deliver without reinventing the design | not a vague idea-level plan | `s06` |
+| `verify path` | how to verify a task or change after the work | not just a sentence saying "will test" | `s06`, `s08` |
+| `placeholder` | a vague description that does not state what it touches, what it does, or how it is verified | not a valid task plan | mostly `s06` |
+| `empty project` / `greenfield project` | a project with no approved stack/runtime baseline, or a nearly empty repo, so solution-class and stack decisions are foundation decisions | must not be treated as a normal project where the AI picks a stack and implements right away | runtime hard stop |
 
-## Câu Canonical
+## Canonical Sentences
 
-Khi cần viết ngắn mà vẫn giữ đúng ngữ nghĩa, ưu tiên dùng các câu sau:
+When you need to write briefly while preserving semantics, prefer the following sentences:
 
-- `giải pháp nhỏ nhất đủ đúng`: nếu một phương án nhỏ hơn vẫn đạt AC, constraint hiện tại, `governance` liên quan và nhu cầu kiểm chứng chính, phải chọn nó.
-- `planning execution-oriented`: task plan phải đủ rõ về phần chạm chính, thứ tự hoặc dependency, verify path và checkpoint cần thiết để implementer không phải tự phát minh lại design.
-- `capability control`: implementation path chỉ được phép ghi khi work item ở `ACTIVE`, đang ở `s07`, và `granted_write_paths` đã được cấp rõ.
-- `router status consistency`: nếu `Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`, `READY_FOR_REVIEW` hoặc `VERIFIED`, và `Next Human Action` không được là `NONE`.
+- `smallest sufficient solution`: if a smaller option still meets the ACs, current constraints, relevant `governance`, and the key verification need, you must choose it.
+- `planning execution-oriented`: the task plan must be clear enough on main touch points, order or dependencies, verify path, and required checkpoints that the implementer does not reinvent the design.
+- `capability control`: the implementation path may only be written when the work item is `ACTIVE`, is at `s07`, and `granted_write_paths` has been granted explicitly.
+- `router status consistency`: if `Missing Gates` differs from `NONE`, `Workflow Status` must not be `ACTIVE`, `READY_FOR_REVIEW`, or `VERIFIED`, and `Next Human Action` must not be `NONE`.
 
-## Thuật Ngữ Governance
+## Governance Terms
 
-| Keyword | Nghĩa | Không nên hiểu là | Dùng ở đâu |
+| Keyword | Meaning | Not to be understood as | Used where |
 |---|---|---|---|
-| `governance` | lớp rule/checklist/authority dùng chung cho workflow | không phải workflow riêng | xuyên suốt |
-| `governance context` | bối cảnh rule, constraint, authority có liên quan đến work item | không phải đoạn văn mô tả chung chung | `s01`, `s03` |
-| `governance checks` | các check cần qua trước khi chuyển gate | không phải phần trang trí trong note | `s04`, `s06`, `s08` |
-| `governance-exception` | deviation được ghi nhận chính thức khi đi lệch rule | không phải note prose rải rác | `s05`, `s07`, `s08` |
-| `waiver` | chấp thuận có authority cho một deviation hoặc rule bypass có kiểm soát | không phải tự quyết định của agent | governance |
-| `governance_profile` | mức governance áp dụng như `default`, `strict`, `regulated` | không phải tag tùy hứng | note metadata |
+| `governance` | the shared rule/checklist/authority layer for the workflow | not the workflow itself | throughout |
+| `governance context` | the rule, constraint, and authority context relevant to a work item | not a generic descriptive paragraph | `s01`, `s03` |
+| `governance checks` | the checks that must pass before advancing a gate | not decoration inside a note | `s04`, `s06`, `s08` |
+| `governance-exception` | a formally recorded deviation when going off-rule | not scattered prose in notes | `s05`, `s07`, `s08` |
+| `waiver` | an authoritative approval for a controlled deviation or rule bypass | not a self-decision by the agent | governance |
+| `governance_profile` | the governance level applied, such as `default`, `strict`, `regulated` | not an arbitrary tag | note metadata |
 
-## Thuật Ngữ SDD
+## SDD Terms
 
-| Keyword | Nghĩa | Không nên hiểu là | Dùng ở đâu |
+| Keyword | Meaning | Not to be understood as | Used where |
 |---|---|---|---|
-| `SDD` | `Spec Driven Development`: spec điều khiển design, code và verify | không phải chỉ là viết spec cho có | toàn workflow khi bật |
-| `spec_refs` | reference tới spec nguồn như `BRD` hoặc `SRS` | không phải link tham khảo tùy ý | note metadata |
-| `spec_status` | trạng thái hiện tại của spec như `approved`, `frozen` | không phải status của code | note metadata |
-| `approved` | spec đã được review và chấp nhận để dùng | chưa chắc đã khóa thay đổi | SDD |
-| `frozen` | spec được khóa để implementation bám theo | không có nghĩa là không bao giờ đổi nữa | SDD |
-| `spec-change` | thay đổi chính thức lên spec khi implementation cần lệch | không phải sửa code trước rồi update spec sau | `s05-s07` |
-| `spec-coverage-report` | báo cáo mapping giữa requirement/spec và evidence verify | không phải changelog | `s08` |
+| `SDD` | `Spec Driven Development`: the spec drives design, code, and verification | not merely writing a spec for form's sake | throughout when enabled |
+| `spec_refs` | reference to the source spec such as `BRD` or `SRS` | not an arbitrary reference link | note metadata |
+| `spec_status` | the current state of the spec, such as `approved`, `frozen` | not the status of the code | note metadata |
+| `approved` | the spec has been reviewed and accepted for use | does not necessarily lock changes | SDD |
+| `frozen` | the spec is locked so implementation follows it | does not mean it can never change | SDD |
+| `spec-change` | a formal change to the spec when implementation needs to deviate | not "edit code first, update spec later" | `s05-s07` |
+| `spec-coverage-report` | a report mapping requirement/spec to verify evidence | not a changelog | `s08` |
 
-## Thuật Ngữ Execution
+## Execution Terms
 
-| Keyword | Nghĩa | Không nên hiểu là | Dùng ở đâu |
+| Keyword | Meaning | Not to be understood as | Used where |
 |---|---|---|---|
-| `agentic` | một agent giữ trọn ownership của step | không có nghĩa là không cần gate | execution mode |
-| `multi_agent` | nhiều role hoặc worker cùng chạy quanh một step | không phải mặc định cho mọi task | execution mode |
-| `sequential_multi_role` | fallback khi không có sub-agent thật nhưng vẫn bám cùng role contract | không phải bỏ execution protocol | runtime fallback |
-| `review_mode=self` | implementer tự review là chính | không thay independent review khi policy yêu cầu | execution metadata |
-| `spec compliance` | lớp review xác nhận change có đúng AC, approach, spec, scope và không có drift chưa được ghi nhận | không phải code-style review | execution metadata |
-| `targeted review` | review tập trung vào batch, task rủi ro hoặc phần logic/contract cụ thể | không phải review toàn bộ diff theo kiểu cuối kỳ | execution metadata |
-| `code quality` | lớp review đánh giá chất lượng kỹ thuật sau khi đã xác nhận đúng spec | không phải bước thay thế `spec compliance` | execution metadata |
-| `review_mode=independent` | review phải tách khỏi implementer | không đồng nghĩa nhiều người phải code | execution metadata |
-| `owned_scope` | phần trách nhiệm logic mà worker được giao | không phải toàn bộ work item | worker assignment |
-| `owned_paths` | file/path ownership của worker | không phải quyền sửa mọi file liên quan | worker assignment |
-| `merge path` | cách nhập lại output của worker vào flow chính mà không gây conflict hoặc drift | không phải chỉ là “sẽ merge sau” chung chung | execution metadata |
-| `worktree` | workspace tách biệt dùng cho implementation để giảm conflict, giữ branch sạch và cô lập change lớn hoặc risk cao | không phải thay thế cho review, verify hoặc `DoD` | chủ yếu `s07` |
-| `TDD` | viết test trước để điều khiển implement theo chu kỳ `Red -> Green -> Refactor` | không phải viết code xong rồi thêm test sau | chủ yếu `s07` |
+| `agentic` | a single agent holds full ownership of the step | does not mean no gates are needed | execution mode |
+| `multi_agent` | multiple roles or workers run around one step | not the default for every task | execution mode |
+| `sequential_multi_role` | the fallback when there is no real sub-agent but the same role contract is still followed | not abandoning the execution protocol | runtime fallback |
+| `review_mode=self` | the implementer reviews themselves | not a replacement for independent review when policy requires it | execution metadata |
+| `spec compliance` | the review layer confirming the change correctly meets ACs, approach, spec, scope, and has no unrecorded drift | not a code-style review | execution metadata |
+| `targeted review` | review focused on a batch, risky task, or specific logic/contract area | not a full-diff end-of-cycle review | execution metadata |
+| `code quality` | the review layer that evaluates technical quality after spec correctness is confirmed | not a step that replaces `spec compliance` | execution metadata |
+| `review_mode=independent` | the review must be separate from the implementer | does not imply multiple people must code | execution metadata |
+| `owned_scope` | the logical responsibility area assigned to a worker | not the entire work item | worker assignment |
+| `owned_paths` | a worker's file/path ownership | not permission to edit every related file | worker assignment |
+| `merge path` | how a worker's output is brought back into the main flow without conflict or drift | not just a vague "will merge later" | execution metadata |
+| `worktree` | a separate workspace used for implementation to reduce conflict, keep the branch clean, and isolate large or high-risk change | not a replacement for review, verify, or `DoD` | mostly `s07` |
+| `TDD` | write tests first to drive implementation through a `Red -> Green -> Refactor` cycle | not writing code first and adding tests afterward | mostly `s07` |
 
-## Thuật Ngữ Planning Track
+## Planning Track Terms
 
-| Keyword | Nghĩa | Không nên hiểu là | Dùng ở đâu |
+| Keyword | Meaning | Not to be understood as | Used where |
 |---|---|---|---|
-| `planning_track` | mức sâu của authoring và review | không phải workflow khác | scaffold, metadata |
-| `quick` | change nhỏ, một boundary chính, authoring rút gọn | không cho phép bỏ design/task plan | planning track |
-| `full` | baseline mặc định cho feature/change thông thường | không mặc định enterprise-level review | planning track |
-| `enterprise` | scope nhiều boundary, review hoặc release risk cao | không chỉ là “task to” | planning track |
+| `planning_track` | the depth of authoring and review | not a different workflow | scaffold, metadata |
+| `quick` | small change, one main boundary, condensed authoring | does not permit skipping design/task plan | planning track |
+| `full` | the default baseline for ordinary features/changes | not enterprise-level review by default | planning track |
+| `enterprise` | scope across many boundaries, or high review/release risk | not just "a big task" | planning track |
 
-## Thuật Ngữ Artifact
+## Artifact Terms
 
-| Keyword | Nghĩa | Không nên hiểu là | Dùng ở đâu |
+| Keyword | Meaning | Not to be understood as | Used where |
 |---|---|---|---|
-| `source-of-truth` | artifact chính dùng để chốt quyết định hoặc kết luận | không phải mọi note tham khảo | `work-items/`, `product-specs/`, `changes/` |
-| `work-items/` | root chuẩn cho workflow artifacts của work item | không phải chỗ lưu mọi note tạp | repo root |
-| `change package` | gói artifact theo `proposal -> design -> tasks -> spec-delta -> archive` | không phải workflow step | `changes/` |
-| `canonical artifact` | file chuẩn đại diện cho step | không phải filename tự đặt theo ý nghĩa cá nhân | workflow naming |
-| `option-analysis-spec` | spec sinh ra từ brainstorming/option analysis | không thay `technical-approach-spec` | `s05` |
+| `source-of-truth` | the canonical artifact used to pin a decision or conclusion | not every reference note | `work-items/`, `product-specs/`, `changes/` |
+| `work-items/` | the canonical root for a work item's workflow artifacts | not a place to dump miscellaneous notes | repo root |
+| `change package` | an artifact package following `proposal -> design -> tasks -> spec-delta -> archive` | not a workflow step | `changes/` |
+| `canonical artifact` | the standard file representing a step | not a self-named filename based on personal meaning | workflow naming |
+| `option-analysis-spec` | the spec produced from brainstorming/option analysis | not a replacement for `technical-approach-spec` | `s05` |
 
-## Phân Biệt Nhanh
+## Quick Disambiguation
 
-| Cặp keyword | Phân biệt ngắn |
+| Keyword pair | Short distinction |
 |---|---|
-| `option analysis` vs `technical approach` | `option analysis` là so sánh để chọn; `technical approach` là hướng đã chọn |
-| `task plan` vs `execution-oriented task plan` | `task plan` là kế hoạch task; `execution-oriented task plan` là task plan đã đủ rõ để triển khai thật |
-| `DoR` vs `DoD` | `DoR` trả lời “đủ sẵn sàng để làm chưa”; `DoD` trả lời “đủ evidence để đóng chưa” |
-| `governance-exception` vs `waiver` | `exception` là deviation được ghi nhận; `waiver` là chấp thuận có authority cho deviation đó |
-| `approved` vs `frozen` | `approved` là spec được chấp nhận; `frozen` là spec đã khóa để implement bám theo |
-| `agentic` vs `multi_agent` | `agentic` là một owner chính; `multi_agent` là nhiều ownership cùng tham gia theo protocol |
+| `option analysis` vs `technical approach` | `option analysis` compares to choose; `technical approach` is the chosen direction |
+| `task plan` vs `execution-oriented task plan` | `task plan` is the task plan; `execution-oriented task plan` is a task plan clear enough to execute for real |
+| `DoR` vs `DoD` | `DoR` answers "is it ready enough to work on"; `DoD` answers "is there enough evidence to close" |
+| `governance-exception` vs `waiver` | an `exception` is a recorded deviation; a `waiver` is the authoritative approval of that deviation |
+| `approved` vs `frozen` | `approved` means the spec is accepted; `frozen` means the spec is locked for implementation to follow |
+| `agentic` vs `multi_agent` | `agentic` has one main owner; `multi_agent` has multiple ownerships participating under a protocol |
 
-## Keyword Ưu Tiên Dùng Nhất
+## Priority Keywords
 
-Khi viết docs mới, ưu tiên dùng các keyword sau để tránh drift ngữ nghĩa:
+When writing new docs, prefer the following keywords to avoid semantic drift:
 
 - `option analysis`
 - `planning execution-oriented`
-- `giải pháp nhỏ nhất đủ đúng`
+- `smallest sufficient solution`
 - `technical approach`
 - `task plan`
-- `default an toàn`
+- `safe default`
 - `DoR`
 - `DoD`
 - `governance checks`
@@ -191,7 +197,7 @@ Khi viết docs mới, ưu tiên dùng các keyword sau để tránh drift ngữ
 - `agentic|multi_agent`
 - `planning_track`
 
-## Tài Liệu Liên Quan
+## Related Documents
 
 - `policies/codex/AGENTS.global.md`
 - `skills/orchestration/codex-workflow-chain/SKILL.md`

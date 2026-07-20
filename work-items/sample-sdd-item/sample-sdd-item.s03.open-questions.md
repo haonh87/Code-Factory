@@ -70,7 +70,7 @@ tags:
 # Step 3 - Open Questions
 
 > [!summary]
-> Tóm tắt câu hỏi mở, missing input, conflict và readiness verdict.
+> Summarize the open questions, missing input, conflicts and the readiness verdict.
 
 ## Step Contract
 ```yaml
@@ -81,14 +81,14 @@ done_when: []
 owner: ""
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 open_questions:
-  - "có cần reject path không normalize được hay chỉ trả empty result"
+  - "should a path that cannot be normalized be rejected, or should it return an empty result"
 missing_inputs: []
 conflicts: []
 assumptions:
-  - "path invalid sẽ trả lỗi rõ nghĩa thay vì silent fallback"
+  - "an invalid path returns a clear error instead of a silent fallback"
 ```
 
 ## Input Readiness
@@ -96,14 +96,14 @@ assumptions:
 status: READY
 blocking_items: []
 owner_actions:
-  - "ba cập nhật SRS-UX-001 cho lỗi path invalid"
+  - "ba updates SRS-UX-001 for the invalid path error"
 ```
 
 ## Audit
 ```yaml
 audit_status: PASS
 notes:
-  - "không còn blocker chặn DoR"
+  - "no blocker left for DoR"
 ```
 
 ## SDD Traceability
@@ -123,5 +123,5 @@ next_step: "sample-sdd-item.s04.acceptance-criteria.md"
 ```
 
 ## Handoff
-- Trạng thái readiness: READY.
-- Điều cần làm để sang step 4: chốt AC, SRS và spec freeze.
+- Readiness status: READY.
+- What to do to move to step 4: lock the AC, the SRS and the spec freeze.

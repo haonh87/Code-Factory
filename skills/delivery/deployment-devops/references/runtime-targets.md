@@ -1,38 +1,44 @@
+---
+language: en
+---
+
 # Runtime Targets
 
-## Bất Biến Xuyên Môi Trường
+> Vietnamese: runtime-targets.vi.md
 
-- Cùng một image contract nên được promote từ `dev` sang `uat` và `prod`.
-- Khác biệt môi trường nằm ở config, secrets, replica, resource, ingress và guard vận hành.
-- Health check phải tồn tại ở mức phù hợp với runtime đích.
-- Rollout và rollback phải được mô tả theo đúng deployment unit của runtime.
+## Cross-Environment Immutability
 
-## Ma Trận Runtime
+- The same image contract should be promoted from `dev` to `uat` and `prod`.
+- Environment differences live in config, secrets, replicas, resources, ingress, and operational guards.
+- A health check must exist at a level fitting the target runtime.
+- Rollout and rollback must be described by the runtime's actual deployment unit.
 
-| Runtime | Khi phù hợp | Deployment unit thường gặp | Cấu hình và secrets | Rollout / rollback |
+## Runtime Matrix
+
+| Runtime | When it fits | Common deployment unit | Config and secrets | Rollout / rollback |
 |---|---|---|---|---|
-| `docker` | Máy đơn, môi trường đơn giản, service ít | container hoặc compose project | env file, mounted file, secret manager ngoài nếu có | recreate hoặc script có kiểm soát |
-| `swarm` | Multi-host vừa phải, team muốn giữ Docker-native ops | service hoặc stack | config/secret của Swarm, overlay network | rolling update, rollback service hoặc stack |
-| `k8s` | Cần orchestration đầy đủ, autoscaling, policy, ecosystem mạnh | Deployment, StatefulSet, Job, Helm release | ConfigMap, Secret, external secret operator, service account | rolling update, canary/blue-green tùy controller |
+| `docker` | Single machine, simple environment, few services | container or compose project | env file, mounted file, external secret manager if any | recreate or controlled script |
+| `swarm` | Moderate multi-host, team wants Docker-native ops | service or stack | Swarm config/secret, overlay network | rolling update, rollback service or stack |
+| `k8s` | Needs full orchestration, autoscaling, policies, strong ecosystem | Deployment, StatefulSet, Job, Helm release | ConfigMap, Secret, external secret operator, service account | rolling update, canary/blue-green by controller |
 
-## Gợi Ý Theo Môi Trường
+## Hints By Environment
 
-- `local`: luôn bắt đầu bằng `docker` với `Dockerfile` và `compose.yaml`.
-- `dev`: có thể dùng `docker`, `swarm` hoặc `k8s` tùy maturity và hạ tầng sẵn có.
-- `uat`: ưu tiên bám topology gần `prod` nhất để kiểm chứng release.
-- `prod`: dùng runtime đã được team vận hành thành thạo; không đổi nền tảng chỉ vì trào lưu.
+- `local`: always start with `docker` using a `Dockerfile` and `compose.yaml`.
+- `dev`: may use `docker`, `swarm`, or `k8s` depending on maturity and available infrastructure.
+- `uat`: prefer a topology as close to `prod` as possible to verify the release.
+- `prod`: use a runtime the team operates fluently; do not switch platforms just because of a trend.
 
-## Mapping Cần Chốt Trong environment_matrix
+## Mapping To Lock In environment_matrix
 
 - `runtime`: `docker|swarm|k8s`
-- `deployment_unit`: ví dụ `compose project`, `swarm stack`, `k8s deployment`
-- `artifacts_expected`: ví dụ `Dockerfile`, `compose.yaml`, `stack.yaml`, `helm values`, `k8s manifests`
+- `deployment_unit`: e.g. `compose project`, `swarm stack`, `k8s deployment`
+- `artifacts_expected`: e.g. `Dockerfile`, `compose.yaml`, `stack.yaml`, `helm values`, `k8s manifests`
 - `config_sources`: env file, mounted config, ConfigMap, parameter store
 - `secret_sources`: secret manager, Swarm secret, K8s Secret, external secret operator
 
-## Rule Chọn Runtime
+## Runtime Selection Rule
 
-- Chọn `docker` khi phạm vi nhỏ, vận hành đơn host và nhu cầu orchestration thấp.
-- Chọn `swarm` khi team đang ở hệ Docker-native multi-host và không cần toàn bộ ecosystem của K8s.
-- Chọn `k8s` khi cần scheduling, autoscaling, policy, workload type đa dạng hoặc chuẩn nền tảng đã khóa ở cấp tổ chức.
-- Nếu `uat` và `prod` dùng runtime khác nhau, phải nêu rõ lý do và rủi ro tương thích.
+- Choose `docker` when the scope is small, operations are single-host, and orchestration needs are low.
+- Choose `swarm` when the team is on a Docker-native multi-host setup and does not need the full K8s ecosystem.
+- Choose `k8s` when you need scheduling, autoscaling, policies, diverse workload types, or a platform standard locked at the organization level.
+- If `uat` and `prod` use different runtimes, state the reason and compatibility risk clearly.

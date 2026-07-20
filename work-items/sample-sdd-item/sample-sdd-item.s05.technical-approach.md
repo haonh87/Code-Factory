@@ -68,7 +68,7 @@ tags:
 # Step 5 - Technical Approach
 
 > [!summary]
-> Tóm tắt option được khuyến nghị, trade-off và boundary kỹ thuật cần giữ.
+> Summarize the recommended option, trade-offs and the technical boundary to preserve.
 
 ## Step Contract
 ```yaml
@@ -82,24 +82,24 @@ owner: ""
 ## Option Analysis
 ```yaml
 options:
-  - "lọc sau khi lấy toàn bộ kết quả"
-  - "đẩy workspace filter xuống query layer read-only"
-recommended_option: "đẩy workspace filter xuống query layer read-only"
+  - "filter after fetching the full result set"
+  - "push the workspace filter down to the read-only query layer"
+recommended_option: "push the workspace filter down to the read-only query layer"
 trade_offs:
-  - "cần normalize path sớm hơn"
-  - "được lợi về đúng tập kết quả và ít nhiễu hơn"
+  - "the path must be normalized earlier"
+  - "the benefit is the correct result set with less noise"
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
-recommended_approach: "thêm workspace filter optional vào flow query và giữ fallback path cũ khi input trống"
-why: "đáp ứng BRD-001 và SRS-FR-001/002 mà không phá SRS-NFR-001"
+recommended_approach: "add an optional workspace filter to the query flow and keep the old fallback path when the input is empty"
+why: "meets BRD-001 and SRS-FR-001/002 without breaking SRS-NFR-001"
 boundaries:
   - "adapter input parsing"
   - "read-only query filtering"
-  - "error handling cho path invalid"
+  - "error handling for an invalid path"
 risk_notes:
-  - "normalize path sai có thể làm miss kết quả"
+  - "a wrong path normalization can cause missed results"
 ```
 
 ## Architecture Details
@@ -110,7 +110,7 @@ domain_boundaries:
 integration_points:
   - "cass read-only search"
 data_or_runtime_notes:
-  - "không có migration và không thay session schema"
+  - "no migration and no change to the session schema"
 ```
 
 ## Spec Change
@@ -121,8 +121,8 @@ impact_area: technical
 current_spec_refs:
   - "SRS-FR-001"
   - "SRS-FR-002"
-problem: "Chưa phát hiện spec gap cần mở change ở thời điểm chốt approach."
-proposed_change: "Giữ section này để trace nếu gap phát sinh sau freeze."
+problem: "No spec gap that requires opening a change was found at the time the approach was locked."
+proposed_change: "Keep this section to trace a gap if one appears after freeze."
 decision: DEFERRED
 decision_owner: "developer"
 updated_artifacts: []
@@ -146,7 +146,7 @@ next_step: "sample-sdd-item.s06.task-breakdown.md"
 ```
 
 ## Handoff
-- Recommended option: filter ngay trong query layer read-only.
-- Trade-off chấp nhận: cần normalize path sớm hơn để giữ tập kết quả đúng.
-- Điều kiện sang step 6: task phải map đủ về requirement và test.
-- Deployment note khi có: không cần migration; release risk thấp.
+- Recommended option: filter inside the read-only query layer.
+- Accepted trade-off: the path must be normalized earlier to keep the correct result set.
+- Conditions to move to step 6: tasks must map fully to requirements and tests.
+- Deployment note if any: no migration needed; release risk is low.

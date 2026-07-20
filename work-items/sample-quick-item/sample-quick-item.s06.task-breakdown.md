@@ -66,7 +66,7 @@ tags:
 # Step 6 - Task Plan
 
 > [!summary]
-> Tóm tắt task plan, dependency, verify checkpoints và review checkpoints.
+> Summarize the task plan, dependencies, verify checkpoints and review checkpoints.
 
 ## Step Contract
 ```yaml
@@ -77,7 +77,7 @@ done_when: []
 owner: ""
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 tasks: []
 dependencies: []
@@ -85,9 +85,9 @@ handoff_points: []
 ```
 
 ## Verification Plan
-- Check bắt buộc:
+- Mandatory check:
 - Risk note:
-- Rollout note nếu có:
+- Rollout note if any:
 
 ## Governance Checks
 ```yaml
@@ -105,6 +105,6 @@ next_step: ""
 ```
 
 ## Handoff
-- Task thực hiện trước:
-- Phụ thuộc chặn:
-- Điều kiện sang step 7:
+- Tasks to do first:
+- Blocking dependencies:
+- Conditions to move to step 7:

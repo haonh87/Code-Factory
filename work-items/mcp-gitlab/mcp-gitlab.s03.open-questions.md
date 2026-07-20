@@ -93,40 +93,40 @@ tags:
 # Step 3 - Open Questions
 
 > [!summary]
-> Tóm tắt câu hỏi mở, missing input, conflict và readiness verdict.
+> Summarize the open questions, missing input, conflicts and the readiness verdict.
 
 ## Step Contract
 ```yaml
-step_goal: "Tách rõ các điểm còn mơ hồ đang chặn acceptance criteria và technical approach cho MCP GitLab phase 1."
+step_goal: "Separate the open points that still block the acceptance criteria and the technical approach for the MCP GitLab phase 1."
 input_summary:
-  - "Scope phase 1 đã khóa: repo GitLab đã tồn tại, chỉ pull/push"
-  - "Repo có pattern sẵn ở mcp/github-push"
-  - "Đã chốt dùng zereight/gitlab-mcp làm chuẩn cho lane GitLab"
+  - "Phase 1 scope is locked: existing GitLab repo, pull/push only"
+  - "The repo already has a pattern in mcp/github-push"
+  - "zereight/gitlab-mcp has been locked as the standard for the GitLab lane"
 output_summary:
-  - "Danh sách open questions có owner"
-  - "Readiness verdict cho bước s04"
+  - "A list of open questions with owners"
+  - "A readiness verdict for step s04"
 done_when:
-  - "Các quyết định còn thiếu được liệt kê rõ để human chốt"
-  - "Nêu rõ vì sao work item chưa sẵn sàng sang s04 đầy đủ"
+  - "The missing decisions are listed clearly for the human to lock"
+  - "It states why the work item is not yet fully ready for s04"
 owner: "developer"
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 open_questions: []
 missing_inputs:
-  - "Mức can thiệp tối thiểu để khớp nhu cầu inspect/pull/push: dùng trực tiếp hay cần wrapper mỏng quanh runtime chuẩn"
-  - "Kỳ vọng behavior khi local branch có uncommitted changes trước pull"
+  - "The minimum intervention to fit the inspect/pull/push need: use it directly or add a thin wrapper around the standard runtime"
+  - "The expected behavior when the local branch has uncommitted changes before a pull"
 conflicts:
-  - "Standard runtime được chọn thiên về GitLab platform/API, trong khi phase 1 cần local git workflow inspect/pull/push cho repo đã tồn tại"
+  - "The selected standard runtime leans toward the GitLab platform/API, while phase 1 needs the local git workflow inspect/pull/push for an existing repo"
 assumptions:
-  - "GitLab API create project không thuộc scope phase 1"
-  - "Remote repository target đã tồn tại và do team quản lý sẵn"
-  - "Phase 1 ưu tiên SSH auth; HTTPS + PAT có thể để phase sau nếu cần"
-  - "Tool surface MVP chỉ gồm inspect, pull và push"
-  - "Pull mặc định dùng ff-only để giảm merge behavior ngoài ý muốn"
-  - "Tên work item và MCP/package phase 1 dùng hướng ngắn gọn `mcp-gitlab`"
-  - "Workflow phải ghi explicit provider target thay vì suy diễn GitHub/GitLab"
+  - "The GitLab API create project is not part of the phase 1 scope"
+  - "The target remote repository already exists and is managed by the team"
+  - "Phase 1 prefers SSH auth; HTTPS + PAT can be deferred to a later phase if needed"
+  - "The MVP tool surface only includes inspect, pull and push"
+  - "The default pull uses ff-only to reduce unexpected merge behavior"
+  - "The work item and the phase 1 MCP/package name use the short `mcp-gitlab` convention"
+  - "The workflow must record the provider target explicitly instead of inferring GitHub/GitLab"
 ```
 
 ## Input Readiness
@@ -134,17 +134,17 @@ assumptions:
 status: READY
 blocking_items: []
 owner_actions:
-  - "Developer chốt ở step 5 cách dùng trực tiếp hay wrap runtime chuẩn"
-  - "Developer materialize technical approach theo approval step 4"
+  - "The developer locks in step 5 whether to use the standard runtime directly or wrap it"
+  - "The developer materializes the technical approach per the step 4 approval"
 ```
 
 ## Audit
 ```yaml
 audit_status: PASS
 notes:
-  - "Scope đã rõ hơn đáng kể so với raw request ban đầu"
-  - "Auth, pull strategy, tool surface MVP và standard runtime đã được user xác nhận"
-  - "Conflict còn lại là technical-fit issue cho step 5, không chặn s04"
+  - "The scope is now significantly clearer than the original raw request"
+  - "Auth, the pull strategy, the MVP tool surface and the standard runtime have been confirmed by the user"
+  - "The remaining conflict is a technical-fit issue for step 5 and does not block s04"
 ```
 
 ## Traceability
@@ -155,5 +155,5 @@ next_step: "mcp-gitlab.s04.acceptance-criteria.md"
 ```
 
 ## Handoff
-- Trạng thái readiness: READY
-- Điều cần làm tiếp: dùng approval của step 4 để materialize technical approach; conflict adopt-vs-wrap sẽ được xử lý ở step 5.
+- Readiness status: READY.
+- What to do next: use the step 4 approval to materialize the technical approach; the adopt-vs-wrap conflict will be handled in step 5.

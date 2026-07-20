@@ -20,10 +20,17 @@ packages/workflow-bundle/workflow-bundle.manifest.json
 packages/workflow-bundle/workflow-pack.manifest.json
 packages/workflow-bundle/*.tgz
 
-# codebase-memory-mcp: local graph index + binary snapshot, không commit
-# (.mcp.json đã commit chung — work-item codebase-memory-team-rollout)
+# codebase-memory-mcp: local graph index + binary snapshot, do not commit
+# (.mcp.json is committed as shared config — work-item codebase-memory-team-rollout)
 .codebase-memory/
 
-# Hook session state rơi rớt ngoài .claude/ root + worktrees cá nhân
+# Hook session state stray outside .claude/ root + personal worktrees
 scripts/.claude/
 .claude/worktrees/
+
+# Personal / scratch files (not part of the public surface)
+memory-bank/
+
+# Working assets — research, plans, scratch translations (not public surface)
+docs/plans/
+docs/research/

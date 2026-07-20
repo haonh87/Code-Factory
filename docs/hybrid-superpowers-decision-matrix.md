@@ -1,249 +1,255 @@
+---
+language: en
+---
+
 # Hybrid Superpowers Decision Matrix
 
-Tài liệu này là bản quyết định nhanh cho policy hybrid giữa `codex-workflow-chain` và `Superpowers`.
+> Vietnamese: hybrid-superpowers-decision-matrix.vi.md
 
-Nếu cần rule đầy đủ, đọc:
+This document is a quick decision aid for the hybrid policy between `codex-workflow-chain` and `Superpowers`.
+
+For the full rules, see:
 - `docs/hybrid-superpowers-policy.md`
 
-Nếu cần contract workflow gốc, đọc:
+For the original workflow contract, see:
 - `skills/orchestration/codex-workflow-chain/references/workflow-chain.md`
 
-## Mục Tiêu
+## Objectives
 
-- quyết định nhanh có bật `TDD`, `worktree`, `subagent`, `review mode` hay không
-- giữ cùng một backbone `s01 -> s08`
-- tránh tranh luận lại policy mỗi lần mở work item mới
+- Decide quickly whether to enable `TDD`, `worktree`, `subagent`, or `review mode`.
+- Keep a single `s01 -> s08` backbone.
+- Avoid re-litigating policy every time a new work item opens.
 
-## Cách Dùng
+## How To Use
 
-1. Xác định `planning_track`.
-2. Xác định `work_item_type`.
-3. Xác định change có tạo `behavior production` hay không.
-4. Xác định scope có tách ownership rõ hay không.
-5. Dùng các bảng dưới đây để bật hoặc tắt capability.
+1. Determine the `planning_track`.
+2. Determine the `work_item_type`.
+3. Determine whether the change produces `production behavior`.
+4. Determine whether the scope allows clearly separated ownership.
+5. Use the tables below to enable or disable a capability.
 
-## Matrix A: Gate Trước Khi Chốt Approach
+## Matrix A: Gate Before Locking The Approach
 
-| Điều kiện | Quyết định |
+| Condition | Decision |
 |---|---|
-| chưa rõ goal hoặc constraint chính | `BLOCK approach` |
-| chưa có `option analysis` ở mức phù hợp | `BLOCK approach` |
-| có phương án nhỏ hơn đã là `giải pháp nhỏ nhất đủ đúng` nhưng vẫn chọn phương án lớn hơn không có lý do cụ thể | `BLOCK approach` |
-| có nhiều hướng hợp lý nhưng chưa nêu trade-off | `BLOCK approach` |
-| hướng khuyến nghị là giải pháp nhỏ nhất đủ đúng trong scope hiện tại | `ALLOW approach` |
-| `quick` và đã có 1 hướng chính + 1 hướng bị loại ngắn gọn | `ALLOW approach` |
-| `full/enterprise` và đã có `option analysis` + recommendation rõ | `ALLOW approach` |
+| the goal or main constraint is unclear | `BLOCK approach` |
+| no `option analysis` at an appropriate level | `BLOCK approach` |
+| a smaller option is already the `smallest sufficient solution` but a larger option is chosen without a specific reason | `BLOCK approach` |
+| multiple reasonable directions exist but trade-offs are not stated | `BLOCK approach` |
+| the recommended direction is the smallest sufficient solution within the current scope | `ALLOW approach` |
+| `quick` and there is 1 main direction + 1 briefly discarded direction | `ALLOW approach` |
+| `full/enterprise` and there is `option analysis` + a clear recommendation | `ALLOW approach` |
 
-Rule chốt:
+Closing rules:
 
-- không nhảy thẳng vào technical approach theo cảm tính
-- nếu chưa đủ dữ liệu để brainstorm, quay lại `s03`
-- brainstorming ngắn được phép; brainstorming bị bỏ hẳn thì không được phép
-- nếu một phương án nhỏ hơn đã là `giải pháp nhỏ nhất đủ đúng`, không mở rộng design chỉ vì nhu cầu giả định
+- do not jump straight into a technical approach based on feeling
+- if there is not enough data to brainstorm, return to `s03`
+- short brainstorming is allowed; skipping brainstorming entirely is not
+- if a smaller option is already the `smallest sufficient solution`, do not expand the design solely for hypothetical needs
 
-## Matrix B: Gate Trước Khi Code
+## Matrix B: Gate Before Code
 
-| Điều kiện | Quyết định |
+| Condition | Decision |
 |---|---|
-| `s04` chưa có acceptance criteria hoặc `DoR` chưa rõ | `BLOCK code` |
-| `s05` chưa có technical approach tối thiểu | `BLOCK code` |
-| `s06` chưa có task plan tối thiểu | `BLOCK code` |
-| `s06` chưa rõ phần chạm chính hoặc `owned_scope` | `BLOCK code` |
-| `s06` chưa rõ thứ tự thực hiện hoặc dependency | `BLOCK code` |
-| `s06` còn placeholder hoặc chưa có verify path đủ dùng | `BLOCK code` |
-| `quick` nhưng đã có `s04-s06` ở mức ngắn gọn | `ALLOW code` |
-| `SDD` mà spec chưa `approved|frozen` | `BLOCK code` |
-| có `spec-change` hoặc `governance-exception` hợp lệ cho trường hợp khẩn cấp | `ALLOW code with exception path` |
+| `s04` has no acceptance criteria or `DoR` is unclear | `BLOCK code` |
+| `s05` has no minimum technical approach | `BLOCK code` |
+| `s06` has no minimum task plan | `BLOCK code` |
+| `s06` does not state the main touchpoints or `owned_scope` | `BLOCK code` |
+| `s06` does not state execution order or dependencies | `BLOCK code` |
+| `s06` still has placeholders or no sufficient verify path | `BLOCK code` |
+| `quick` but `s04-s06` exist in short form | `ALLOW code` |
+| under `SDD` and spec is not `approved|frozen` | `BLOCK code` |
+| a valid `spec-change` or `governance-exception` exists for an emergency | `ALLOW code with exception path` |
 
-Rule chốt:
+Closing rules:
 
-- không nhảy thẳng từ clarify sang implement
-- `s04 -> s05 -> s06 -> s07` là đường vào code chuẩn
-- change nhỏ chỉ được rút gọn artifact, không được bỏ hẳn design hoặc task plan
-- task plan thiếu phần chạm chính, thiếu thứ tự/dependency, có placeholder hoặc thiếu verify path thì xem như chưa đủ điều kiện
+- do not jump straight from clarify to implementation
+- `s04 -> s05 -> s06 -> s07` is the standard path into code
+- a small change may only shorten artifacts, not drop design or task plan entirely
+- a task plan missing main touchpoints, order/dependency, with placeholders, or missing a verify path is treated as not ready
 
-## Matrix 1: Chọn Baseline Theo Track
+## Matrix 1: Choose Baseline By Track
 
-| Tín hiệu | Chọn track |
+| Signal | Track |
 |---|---|
-| một boundary chính, scope nhỏ, review nhẹ | `quick` |
-| feature hoặc change thông thường, có vài task và cần verify rõ | `full` |
-| nhiều boundary, nhiều role, release risk, verify độc lập | `enterprise` |
+| one main boundary, small scope, light review | `quick` |
+| a normal feature or change, a few tasks, clear verify needed | `full` |
+| many boundaries, many roles, release risk, independent verify | `enterprise` |
 
-## Matrix 2: Capability Baseline Theo Track
+## Matrix 2: Capability Baseline By Track
 
 | Track | Brainstorming | Writing plans | Worktree | TDD | Review | Subagent |
 |---|---|---|---|---|---|---|
-| `quick` | `light` | `light` | `optional` | `required` nếu đổi behavior | `self` + final review khi cần | `off` mặc định |
-| `full` | `standard` | `standard` | `recommended` | `required` nếu đổi behavior | `targeted` theo batch hoặc task rủi ro | `optional` |
-| `enterprise` | `standard` | `strict` | `mandatory` | `required` nếu đổi behavior | `independent` | `conditional` |
+| `quick` | `light` | `light` | `optional` | `required` if behavior changes | `self` + final review when needed | `off` by default |
+| `full` | `standard` | `standard` | `recommended` | `required` if behavior changes | `targeted` by batch or risky task | `optional` |
+| `enterprise` | `standard` | `strict` | `mandatory` | `required` if behavior changes | `independent` | `conditional` |
 
-## Matrix 3: Quyết Định TDD
+## Matrix 3: TDD Decision
 
-| Điều kiện | Quyết định |
+| Condition | Decision |
 |---|---|
-| sửa bug behavior | `MUST use TDD` |
-| thêm feature behavior production | `MUST use TDD` |
-| đổi validation rule hoặc contract | `MUST use TDD` |
-| refactor có regression risk đáng kể | `MUST use TDD` |
-| chỉ sửa docs | `DO NOT require TDD` |
-| chỉ rename, format hoặc metadata | `DO NOT require TDD` |
-| chỉ đổi artifact workflow | `DO NOT require TDD` |
+| fixing a behavior bug | `MUST use TDD` |
+| adding production feature behavior | `MUST use TDD` |
+| changing a validation rule or contract | `MUST use TDD` |
+| refactoring with material regression risk | `MUST use TDD` |
+| docs-only edits | `DO NOT require TDD` |
+| rename, format, or metadata only | `DO NOT require TDD` |
+| workflow artifact change only | `DO NOT require TDD` |
 
-Rule chốt:
+Closing rules:
 
-- nếu strict `TDD` bị chặn, phải ghi lý do và `verify path` thay thế trong implementation note
-- `TDD` nghĩa là có test fail trước rồi mới viết code pass
+- if strict `TDD` is blocked, record the reason and an alternative `verify path` in the implementation note
+- `TDD` means a failing test exists first, then code is written to pass
 
-## Matrix 4: Quyết Định Worktree
+## Matrix 4: Worktree Decision
 
-| Tín hiệu | Quyết định |
+| Signal | Decision |
 |---|---|
 | `enterprise` track | `MUST use worktree` |
-| change lớn hoặc rủi ro | `SHOULD use worktree` |
-| bug nhỏ, quick fix, ít file, xong trong một session | `MAY skip worktree` |
+| large or risky change | `SHOULD use worktree` |
+| small bug, quick fix, few files, done in one session | `MAY skip worktree` |
 
-Rule chốt:
+Closing rules:
 
-- `change lớn hoặc rủi ro` gồm tối thiểu: kéo dài hơn một session, chạm nhiều boundary hoặc nhiều file với conflict risk đáng kể, hoặc merge/branch/release risk cao
-- nếu change đã thuộc nhóm nên hoặc phải dùng `worktree` mà vẫn bỏ qua, phải có lý do rõ
-- `worktree` không thay cho review hoặc verify
-- nếu đã dùng `branch/worktree`, quyết định `cleanup`, `close`, `remove` hoặc `merge` chỉ hợp lệ sau khi `s08` có verdict `DoD` rõ
+- `large or risky change` includes at minimum: longer than one session, touching many boundaries or many files with material conflict risk, or high merge/branch/release risk
+- if a change falls into the should-or-must `worktree` category and `worktree` is still skipped, there must be a clear reason
+- `worktree` does not replace review or verify
+- once a `branch/worktree` is in use, `cleanup`, `close`, `remove`, or `merge` is only valid after `s08` has a clear `DoD` verdict
 
-## Matrix 5: Quyết Định Review Mode
+## Matrix 5: Review Mode Decision
 
-| Tín hiệu | Review mode |
+| Signal | Review mode |
 |---|---|
-| `quick` và low risk | `self review` + ít nhất 1 review trước khi rời `s07` |
-| `full` và medium risk | `targeted review` theo batch |
-| logic quan trọng, contract quan trọng, diff khó đọc | `targeted review` bắt buộc |
-| phần chính trong `enterprise` | `independent review` theo hai tầng |
-| `enterprise` hoặc release risk cao | `independent review` |
-| verification owner tách biệt | `independent review` ưu tiên |
+| `quick` and low risk | `self review` + at least 1 review before leaving `s07` |
+| `full` and medium risk | `targeted review` by batch |
+| important logic, important contract, hard-to-read diff | `targeted review` mandatory |
+| main parts in `enterprise` | `independent review` in two tiers |
+| `enterprise` or high release risk | `independent review` |
+| verification owner is separate | `independent review` preferred |
 
-Thứ tự review mặc định:
+Default review order:
 
 1. `spec compliance`
 2. `code quality`
 
-Rule chốt:
+Closing rules:
 
-- không dồn toàn bộ review sang `s08`
-- `full` và `enterprise` phải review sớm cho batch/task rủi ro hoặc phần quan trọng trong `s07`
-- mọi review trong `s07` phải đi theo thứ tự `spec compliance -> code quality`
-- review không thay cho `testing` hoặc `verify`
+- do not push all review to `s08`
+- `full` and `enterprise` must review early for risky batches/tasks or important parts within `s07`
+- every review within `s07` must follow the order `spec compliance -> code quality`
+- review does not replace `testing` or `verify`
 
-## Matrix 5B: Quyết Định Task Plan Đã Đủ Execution-Oriented Chưa
+## Matrix 5B: Is The Task Plan Execution-Oriented Yet
 
-| Điều kiện | Quyết định |
+| Condition | Decision |
 |---|---|
-| chưa rõ phần chạm chính hoặc `owned_scope` | `NOT READY` |
-| chưa có thứ tự thực hiện hoặc dependency rõ | `NOT READY` |
-| chưa có `verify path` đủ dùng | `NOT READY` |
-| có placeholder như `xử lý edge case`, `thêm validation`, `viết test` mà không cụ thể | `NOT READY` |
-| `quick` nhưng đã có phần chạm chính hoặc `owned_scope` + thứ tự ngắn + verify chính | `READY` |
-| `full/enterprise` và đã có file/path chính hoặc `owned_scope` + thứ tự/dependency + verify path + checkpoint khi cần | `READY` |
+| main touchpoints or `owned_scope` unclear | `NOT READY` |
+| no clear execution order or dependency | `NOT READY` |
+| no sufficient `verify path` | `NOT READY` |
+| placeholders like `handle edge cases`, `add validation`, `write tests` without specifics | `NOT READY` |
+| `quick` but has main touchpoints or `owned_scope` + short order + main verify | `READY` |
+| `full/enterprise` and has main files/paths or `owned_scope` + order/dependency + verify path + checkpoint when needed | `READY` |
 
-Rule chốt:
+Closing rules:
 
-- plan phải đủ để implementer không cần tự phát minh lại design
-- nếu scope yêu cầu review/governance checkpoint mà plan không nêu ra, vẫn xem là `NOT READY`
-- `writing-plans` trong hybrid này ưu tiên tính executable, không bắt buộc nhét full code vào plan
+- the plan must be enough that the implementer does not need to reinvent the design
+- if the scope requires a review/governance checkpoint and the plan does not mention it, it is still `NOT READY`
+- `writing-plans` in this hybrid prioritizes executability; it does not require full code inside the plan
 
-## Matrix 6: Quyết Định Subagent
+## Matrix 6: Subagent Decision
 
-| Điều kiện | Quyết định |
+| Condition | Decision |
 |---|---|
-| task plan chưa rõ | `DO NOT use subagent` |
-| `owned_paths` hoặc `owned_scope` chồng lấn mạnh | `DO NOT use subagent` |
-| verification owner chưa rõ | `DO NOT use subagent` |
-| `merge path` hoặc handoff path chưa rõ | `DO NOT use subagent` |
-| task nhỏ và tightly coupled | `DO NOT use subagent` |
-| task là `task độc lập` | `MAY use subagent` |
-| `enterprise` và multi-boundary nhưng vẫn tách được `task độc lập` | `MAY use subagent` |
+| task plan is unclear | `DO NOT use subagent` |
+| `owned_paths` or `owned_scope` strongly overlap | `DO NOT use subagent` |
+| verification owner is unclear | `DO NOT use subagent` |
+| `merge path` or handoff path is unclear | `DO NOT use subagent` |
+| task is small and tightly coupled | `DO NOT use subagent` |
+| task is an `independent task` | `MAY use subagent` |
+| `enterprise` and multi-boundary but `independent tasks` can still be separated | `MAY use subagent` |
 
-Rule chốt:
+Closing rules:
 
-- `agentic` vẫn là mode mặc định
-- chỉ bật subagent sau `s06`
-- chỉ bật subagent cho `task độc lập`
-- subagent không được bypass `review` hoặc `verify`
+- `agentic` is still the default mode
+- only enable subagents after `s06`
+- only enable subagents for `independent tasks`
+- subagents must not bypass `review` or `verify`
 
-## Matrix 7: Quyết Định Theo Work Item Type
+## Matrix 7: Decision By Work Item Type
 
 | `work_item_type` | TDD | Worktree | Review | Subagent |
 |---|---|---|---|---|
-| `BUG` | `MUST` nếu fix behavior | `optional` đến `mandatory` theo track | `required` | `optional` |
-| `FEATURE` | `MUST` nếu có behavior | `recommended` | `required` | `optional` hoặc `conditional` |
-| `CHANGE` | `MUST` nếu đổi contract hoặc behavior | `recommended` | `required` | `optional` |
-| `REFACTOR` | `MUST` nếu regression risk đáng kể | `optional` hoặc `recommended` | `required` | `optional` |
-| `RESEARCH` | `not required` | `not required` trừ khi có prototype riêng | `optional` | `off` mặc định |
+| `BUG` | `MUST` if fixing behavior | `optional` to `mandatory` by track | `required` | `optional` |
+| `FEATURE` | `MUST` if there is behavior | `recommended` | `required` | `optional` or `conditional` |
+| `CHANGE` | `MUST` if changing contract or behavior | `recommended` | `required` | `optional` |
+| `REFACTOR` | `MUST` if material regression risk | `optional` or `recommended` | `required` | `optional` |
+| `RESEARCH` | `not required` | `not required` unless a separate prototype exists | `optional` | `off` by default |
 
-## Matrix 8: Quyết Định Theo Step
+## Matrix 8: Decision By Step
 
-| Step | Capability từ Superpowers được bật | Mức mặc định |
+| Step | Superpowers capability enabled | Default level |
 |---|---|---|
-| `s01` | `brainstorming` style question forcing | `ON` |
-| `s02` | trình bày business intent gọn, dễ approve | `ON` |
-| `s03` | question forcing cho blocker và assumption | `ON`; thiếu dữ liệu thì block `s05` |
-| `s04` | `spec approved before code` mindset | `ON`, nhưng gate thật là `DoR` |
-| `s05` | option thinking, `YAGNI/DRY`, giải pháp nhỏ nhất đủ đúng, disciplined brainstorming | `ON` và là gate chất lượng |
-| `s06` | `writing-plans` style | `ON` từ `full`, `light` ở `quick` |
-| `s07` | `worktree`, `TDD`, `subagent`, `requesting-code-review` | `ON` theo signal |
-| `s08` | `finishing-a-development-branch` mindset | `ON`, nhưng verdict thật là `DoD` |
+| `s01` | `brainstorming`-style question forcing | `ON` |
+| `s02` | concise, easy-to-approve business intent | `ON` |
+| `s03` | question forcing for blockers and assumptions | `ON`; if data is missing, block `s05` |
+| `s04` | `spec approved before code` mindset | `ON`, but the real gate is `DoR` |
+| `s05` | option thinking, `YAGNI/DRY`, smallest sufficient solution, disciplined brainstorming | `ON` and is the quality gate |
+| `s06` | `writing-plans` style | `ON` from `full`, `light` at `quick` |
+| `s07` | `worktree`, `TDD`, `subagent`, `requesting-code-review` | `ON` by signal |
+| `s08` | `finishing-a-development-branch` mindset | `ON`, but the real verdict is `DoD` |
 
-## Công Thức Nhanh
+## Quick Formula
 
-| Nếu | Thì |
+| If | Then |
 |---|---|
-| chưa có `option analysis` đủ dùng | không chốt `s05` |
-| có phương án nhỏ hơn đã là `giải pháp nhỏ nhất đủ đúng` | chọn phương án nhỏ hơn |
-| task plan chưa execution-oriented | không vào `s07` |
-| chưa có `s04-s06` | không vào `s07` |
-| có behavior change | bật `TDD` |
-| có `change lớn hoặc rủi ro` | bật `worktree` |
-| task là `task độc lập` | cân nhắc `subagent` |
-| có batch/task rủi ro hoặc diff quan trọng | review sớm trong `s07` |
-| bắt đầu review trong `s07` | kiểm `spec compliance` trước rồi mới `code quality` |
-| diff quan trọng hoặc release risk cao | nâng `review mode` |
-| chưa qua `s08` | không tuyên bố `done` |
-| dùng `branch/worktree` và `s08` chưa có verdict `DoD` rõ | chưa cleanup/close/merge |
+| no sufficient `option analysis` | do not lock `s05` |
+| a smaller option is already the `smallest sufficient solution` | pick the smaller option |
+| task plan is not execution-oriented | do not enter `s07` |
+| no `s04-s06` yet | do not enter `s07` |
+| there is a behavior change | enable `TDD` |
+| there is a `large or risky change` | enable `worktree` |
+| the task is an `independent task` | consider `subagent` |
+| there is a risky batch/task or an important diff | review early within `s07` |
+| starting review in `s07` | check `spec compliance` first, then `code quality` |
+| important diff or high release risk | raise `review mode` |
+| not past `s08` | do not declare `done` |
+| using `branch/worktree` and `s08` has no clear `DoD` verdict | do not cleanup/close/merge |
 
-## Default An Toàn
+## Safe Default
 
-| Trường hợp | Default an toàn |
+| Case | Safe default |
 |---|---|
-| không chắc gate đã qua chưa | xem như chưa qua gate và quay lại step tương ứng |
-| không chắc có cần subagent không | `không dùng` |
-| không chắc có cần mở boundary hoặc abstraction mới không | `không mở nếu đường hiện có vẫn đủ đáp ứng` |
-| không chắc có cần worktree không | `dùng nếu change có dấu hiệu của change lớn hoặc rủi ro` |
-| không chắc có cần TDD không | `dùng nếu behavior production bị tác động` |
-| không chắc review mức nào | bắt đầu bằng `targeted review` |
-| không chắc track nào | chọn `full` |
+| unsure whether a gate has passed | treat it as not passed and return to the corresponding step |
+| unsure whether a subagent is needed | `do not use one` |
+| unsure whether to open a new boundary or abstraction | `do not open one if the existing path still meets the need` |
+| unsure whether a worktree is needed | `use one if the change shows signs of a large or risky change` |
+| unsure whether TDD is needed | `use it if production behavior is affected` |
+| unsure which review level | start with `targeted review` |
+| unsure which track | choose `full` |
 
-## Phản Mẫu
+## Anti-Patterns
 
-- dùng `review pass` thay cho `DoD`
-- chốt technical approach theo cảm tính mà không có `option analysis`
-- mở abstraction, service hoặc boundary mới chỉ để đón trước nhu cầu giả định
-- nhảy từ `s01-s03` sang code mà không có `s04-s06`
-- dùng task plan toàn placeholder rồi vẫn vào implement
-- dồn toàn bộ review sang `s08`
-- review `code quality` trước khi chốt `spec compliance`
-- viết xong code rồi mới thêm test nhưng vẫn gọi là `TDD`
-- bật subagent cho task không độc lập hoặc chồng lấn ownership
-- tự tuyên bố `done` trước khi `s08` có verdict `DoD`
-- cleanup, close hoặc merge `branch/worktree` trước khi `s08` có verdict `DoD` rõ
-- dùng `quick` cho change có nhiều boundary hoặc release risk
-- bỏ qua `worktree` trong `enterprise` mà không có lý do
+- using `review pass` in place of `DoD`
+- locking a technical approach by feeling without `option analysis`
+- opening a new abstraction, service, or boundary merely to anticipate hypothetical needs
+- jumping from `s01-s03` to code without `s04-s06`
+- using a placeholder task plan and still entering implementation
+- pushing all review to `s08`
+- reviewing `code quality` before locking `spec compliance`
+- writing code first and adding tests later while still calling it `TDD`
+- enabling subagents for non-independent tasks or overlapping ownership
+- self-declaring `done` before `s08` has a `DoD` verdict
+- cleanup, close, or merge of `branch/worktree` before `s08` has a clear `DoD` verdict
+- using `quick` for changes with many boundaries or release risk
+- skipping `worktree` in `enterprise` without a reason
 
-## Kết Luận Thao Tác
+## Operational Conclusion
 
-Mặc định thực dụng:
+Pragmatic defaults:
 
-- bắt đầu với `full`
-- nếu không chắc gate đã qua chưa thì coi như chưa qua gate
-- bật `TDD` nếu behavior bị tác động
-- bật `worktree` nếu change thuộc nhóm `change lớn hoặc rủi ro`
-- chỉ bật `subagent` khi `s06` đủ tốt
-- giữ `DoR` ở `s04` và `DoD` ở `s08` làm gate thật
+- start with `full`
+- if unsure whether a gate has passed, treat it as not passed
+- enable `TDD` if behavior is affected
+- enable `worktree` if the change is a `large or risky change`
+- only enable `subagent` once `s06` is good enough
+- keep `DoR` at `s04` and `DoD` at `s08` as the real gates

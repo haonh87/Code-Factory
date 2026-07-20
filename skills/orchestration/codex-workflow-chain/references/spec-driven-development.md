@@ -1,32 +1,38 @@
+---
+language: en
+---
+
 # Spec Driven Development Reference
 
-Tài liệu này mô tả lớp `SDD` cho workflow 8 bước. Mục tiêu là làm cho `BRD/SRS` thật sự điều khiển design, task, implementation, verification và rollout.
+> Vietnamese: spec-driven-development.vi.md
 
-## Nguyên Tắc
+This document describes the `SDD` layer for the eight-step workflow. The goal is to make `BRD/SRS` actually drive design, tasking, implementation, verification, and rollout.
 
-- Workflow vẫn giữ 8 bước; SDD là lớp ràng buộc artifact, gate và traceability.
-- `BRD` và `SRS` là source-of-truth cho business và requirement khi work item cần spec chính thức.
-- `product-specs/` là root mặc định để materialize `BRD/SRS` thật trong repo.
-- NotebookLM chỉ là lớp lưu corpus và truy hồi tài liệu trong lúc thực thi; kết luận từ NotebookLM phải được chuẩn hóa vào `BRD`, `SRS` hoặc note workflow trước khi dùng làm quyết định.
-- Technical approach, task, implementation và test evidence phải trace được về requirement ID khi work item chạy theo SDD.
-- Sau khi spec đã `frozen`, mọi lệch behavior phải đi qua `spec-change`, không để code trở thành source-of-truth thay spec.
+## Principles
+
+- The workflow keeps eight steps; SDD is an artifact, gate, and traceability constraint layer.
+- `BRD` and `SRS` are the source of truth for business and requirements when a work item needs a formal spec.
+- `product-specs/` is the default root for materializing real `BRD/SRS` in the repo.
+- NotebookLM is only a corpus storage and document-retrieval layer during execution; conclusions from NotebookLM must be normalized into `BRD`, `SRS`, or the workflow note before being used as a decision.
+- Technical approach, tasks, implementation, and test evidence must trace back to a requirement ID when a work item runs under SDD.
+- After the spec is `frozen`, any behavioral deviation must go through a `spec-change`; code must not become the source of truth in place of the spec.
 
 ## SDD Artifact Stack
 
-| Layer | Artifact | Owner chính | Mục đích |
+| Layer | Artifact | Main owner | Purpose |
 |---|---|---|---|
-| Business | `BRD` | `po`, `ba` support | Khóa problem, goal, KPI, scope, out-of-scope, business rule và decision log. |
-| Requirement | `SRS` | `ba`, role delivery review | Khóa functional requirement, NFR, UX/system behavior, acceptance criteria và constraints. |
-| Acceptance | `AC` | `ba`, `qc` | Biến requirement thành tiêu chí đo được. |
-| Technical | `technical-approach-spec` | `developer`, `designer/devops` support | Chọn hướng kỹ thuật dựa trên frozen spec. |
-| Planning | `task-breakdown-spec` | `developer`, `qc/devops` support | Lập task plan trace về requirement/AC. |
-| Implementation | code/config/doc changes | `developer`, `devops` support | Implement theo frozen spec hoặc spec change đã được approve. |
-| Verification | `spec-coverage-report` | `qc` | Chứng minh requirement nào pass, fail, partial hoặc untested. |
-| Rollout | release/business acceptance | `qc`, `devops`, `po` | Chốt `dod`, `release` và `business_acceptance`. |
+| Business | `BRD` | `po`, `ba` support | Pin problem, goal, KPI, scope, out-of-scope, business rules, and decision log. |
+| Requirement | `SRS` | `ba`, delivery-role review | Pin functional requirements, NFRs, UX/system behavior, acceptance criteria, and constraints. |
+| Acceptance | `AC` | `ba`, `qc` | Turn requirements into measurable criteria. |
+| Technical | `technical-approach-spec` | `developer`, `designer/devops` support | Choose the technical direction based on the frozen spec. |
+| Planning | `task-breakdown-spec` | `developer`, `qc/devops` support | Build a task plan that traces to requirement/AC. |
+| Implementation | code/config/doc changes | `developer`, `devops` support | Implement per the frozen spec or an approved spec change. |
+| Verification | `spec-coverage-report` | `qc` | Prove which requirements pass, fail, are partial, or untested. |
+| Rollout | release/business acceptance | `qc`, `devops`, `po` | Close `dod`, `release`, and `business_acceptance`. |
 
 ## Product Spec Root
 
-Root mặc định cho product spec thật trong repo:
+The default root for real product specs in the repo:
 
 ```text
 product-specs/
@@ -35,7 +41,7 @@ product-specs/
   templates/
 ```
 
-Command validator hiện có:
+Existing validator command:
 
 ```bash
 wfc sdd --workflow-root work-items --project-root .
@@ -43,13 +49,13 @@ wfc sdd --workflow-root work-items --project-root .
 
 ## Spec Lifecycle
 
-Trạng thái chuẩn:
+Standard states:
 
 ```text
 draft -> reviewed -> approved -> frozen -> implemented -> verified -> accepted
 ```
 
-Trạng thái ngoại lệ:
+Exception states:
 
 ```text
 change_requested
@@ -57,19 +63,19 @@ deprecated
 blocked
 ```
 
-Quy tắc:
+Rules:
 
-- `draft`: đang viết, chưa dùng làm source-of-truth cho implementation.
-- `reviewed`: đã được role reviewer đọc, còn có thể chỉnh.
-- `approved`: business/requirement owner đã đồng ý nội dung.
-- `frozen`: đủ ổn định để bước 5, 6, 7 bám vào; mọi thay đổi sau đó phải qua `spec-change`.
-- `implemented`: đã có code/config/doc thay đổi theo spec.
-- `verified`: QC đã có evidence theo spec coverage.
-- `accepted`: PO hoặc business owner đã chốt `business_acceptance` khi scope yêu cầu.
+- `draft`: still being written; not yet a source of truth for implementation.
+- `reviewed`: a role reviewer has read it; it may still be edited.
+- `approved`: the business/requirement owner has agreed on the content.
+- `frozen`: stable enough that steps 5, 6, and 7 can follow it; any later change must go through a `spec-change`.
+- `implemented`: code/config/doc changes exist that follow the spec.
+- `verified`: QC has evidence per spec coverage.
+- `accepted`: the PO or business owner has closed `business_acceptance` when the scope requires it.
 
 ## ID Vocabulary
 
-| Prefix | Ý nghĩa | Owner |
+| Prefix | Meaning | Owner |
 |---|---|---|
 | `BRD-###` | business goal, rule, scope decision | `po`, `ba` |
 | `SRS-FR-###` | functional requirement | `ba` |
@@ -77,43 +83,43 @@ Quy tắc:
 | `SRS-UX-###` | UX/system behavior requirement | `ba`, `designer` |
 | `AC-###` | acceptance criterion | `ba`, `qc` |
 | `TASK-###` | implementation/verification/release task | `developer`, `qc`, `devops` |
-| `TEST-###` | test scenario hoặc verification evidence | `qc` |
-| `CHANGE-###` | spec change request | role phát hiện gap, `po/ba` approve tùy scope |
+| `TEST-###` | test scenario or verification evidence | `qc` |
+| `CHANGE-###` | spec change request | the role that finds the gap; `po/ba` approves depending on scope |
 
-Không cần ép ID cho mọi dòng note nhỏ. Nhưng nếu work item được đánh dấu SDD, mọi requirement quan trọng phải có ID và trace tối thiểu tới AC hoặc accepted assumption.
+You do not need to force IDs on every small note line. But if a work item is marked SDD, every important requirement must have an ID and at minimum trace to an AC or an accepted assumption.
 
 ## Step Mapping
 
-| Step | SDD responsibility | Gate bổ sung |
+| Step | SDD responsibility | Additional gate |
 |---|---|---|
-| `s01` Clarify | Tạo `BRD` draft hoặc business context section; ghi source evidence từ NotebookLM/project docs nếu dùng. | Có `BRD-*` hoặc context decision rõ nếu work item cần BRD. |
-| `s02` Business Goal | Chốt goal, KPI, scope, out-of-scope và business rules trong `BRD`. | `BRD` đạt tối thiểu `reviewed` hoặc có accepted assumptions. |
-| `s03` Open Questions | Tìm gap, conflict, missing input; dùng NotebookLM/project search làm evidence; cập nhật `BRD/SRS` decision log. | Không còn blocker chưa có owner hoặc resolution path. |
-| `s04` Acceptance + DoR | Tạo/cập nhật `SRS`, gán requirement IDs, map AC, chạy spec review và `spec-freeze-gate` khi đủ. | `SRS` đạt `approved|frozen`; AC map được về requirement ID; DoR `READY` hoặc có accepted assumptions. |
-| `s05` Technical Approach | Technical approach phải reference `SRS-*`, `AC-*` liên quan. | Không chọn approach nếu requirement chính chưa có ID hoặc spec gap chưa được xử lý. |
-| `s06` Task Plan | Task phải map về `SRS-*` và `AC-*`; test/release task cũng phải trace. | Mỗi requirement in-scope có task hoặc quyết định deferred rõ. |
-| `s07` Implement | Implement theo frozen spec; nếu behavior lệch, tạo `spec-change`. | Không merge/handoff nếu code lệch spec mà chưa có approved change hoặc documented exception. |
-| `s08` Verify + DoD | Tạo `spec-coverage-report`; chốt DoD/release/business acceptance dựa trên `BRD/SRS`. | Requirement coverage rõ `PASS|FAIL|PARTIAL|UNTESTED`; gap còn lại có owner/next action. |
+| `s01` Clarify | Create a `BRD` draft or business context section; record source evidence from NotebookLM/project docs if used. | A clear `BRD-*` or context decision if the work item needs a BRD. |
+| `s02` Business Goal | Pin goal, KPI, scope, out-of-scope, and business rules in `BRD`. | `BRD` reaches at least `reviewed` or has accepted assumptions. |
+| `s03` Open Questions | Find gaps, conflicts, and missing input; use NotebookLM/project search as evidence; update the `BRD/SRS` decision log. | No remaining blocker without an owner or resolution path. |
+| `s04` Acceptance + DoR | Create/update `SRS`, assign requirement IDs, map ACs, run spec review and the `spec-freeze-gate` when ready. | `SRS` reaches `approved|frozen`; ACs map to requirement IDs; DoR `READY` or has accepted assumptions. |
+| `s05` Technical Approach | The technical approach must reference the relevant `SRS-*` and `AC-*`. | No approach selection if a key requirement has no ID or a spec gap is unresolved. |
+| `s06` Task Plan | Tasks must map to `SRS-*` and `AC-*`; test/release tasks must also trace. | Every in-scope requirement has a task or a clearly deferred decision. |
+| `s07` Implement | Implement per the frozen spec; if behavior deviates, create a `spec-change`. | No merge/handoff if code deviates from spec without an approved change or a documented exception. |
+| `s08` Verify + DoD | Create a `spec-coverage-report`; close DoD/release/business acceptance based on `BRD/SRS`. | Requirement coverage clearly `PASS|FAIL|PARTIAL|UNTESTED`; remaining gaps have an owner/next action. |
 
 ## Spec Freeze Gate
 
-`spec-freeze-gate` là gate ở cuối step 4 hoặc trước khi bước 5 đi sâu vào design.
+The `spec-freeze-gate` is a gate at the end of step 4, or before step 5 goes deep into design.
 
-Điều kiện tối thiểu:
+Minimum conditions:
 
-- `BRD` có owner và business scope rõ.
-- `SRS` có owner và reviewer chính.
-- Requirement chính có ID.
-- Acceptance criteria map được về requirement ID.
-- Open questions blocking đã được resolve, deferred hoặc accepted as assumption.
-- Role signoff cho `dor` đã có owner.
-- Nếu scope có UX, runtime, data hoặc release risk, reviewer tương ứng đã được ghi nhận.
+- `BRD` has an owner and a clear business scope.
+- `SRS` has an owner and a primary reviewer.
+- Key requirements have IDs.
+- Acceptance criteria map to requirement IDs.
+- Blocking open questions are resolved, deferred, or accepted as assumptions.
+- The role signoff for `dor` has an owner.
+- If the scope has UX, runtime, data, or release risk, the corresponding reviewers are recorded.
 
 ## Spec Change Protocol
 
-Kích hoạt khi step 5, 6, 7 hoặc 8 phát hiện spec thiếu, sai hoặc không thể implement/verify an toàn.
+Triggered when step 5, 6, 7, or 8 finds the spec missing, wrong, or unsafe to implement/verify.
 
-Luồng chuẩn:
+Standard flow:
 
 ```text
 detect spec gap
@@ -125,11 +131,11 @@ detect spec gap
 -> continue or block
 ```
 
-Không được âm thầm sửa code để hợp với hiểu biết mới nếu `SRS` vẫn nói ngược lại.
+You must not silently edit code to match a new understanding if the `SRS` still says otherwise.
 
 ## Traceability Matrix
 
-Tối thiểu nên trace được chuỗi:
+At minimum, you should be able to trace the chain:
 
 ```text
 BRD-###
@@ -140,9 +146,9 @@ BRD-###
 -> PASS|FAIL|PARTIAL|UNTESTED
 ```
 
-Nếu work item nhỏ không tạo `BRD/SRS` riêng, note workflow vẫn nên có trace tương đương trong block `## Traceability`.
+If a small work item does not create its own `BRD/SRS`, the workflow note should still keep an equivalent trace in a `## Traceability` block.
 
-## Schema Gợi Ý
+## Suggested Schemas
 
 ### `spec-metadata`
 

@@ -1,48 +1,54 @@
+---
+language: en
+---
+
 # Promotion Flow
 
-## Thứ Tự Chuẩn
+> Vietnamese: promotion-flow.vi.md
+
+## Standard Order
 
 `local -> dev -> uat -> prod`
 
-Mỗi lần promote nên giữ nguyên image contract; chỉ thay config, secrets, replica, resource và guard.
+Each promotion should keep the same image contract; only change config, secrets, replicas, resources, and guards.
 
 ## Tag Strategy
 
-- Dùng tag bất biến theo commit, build number hoặc release version.
-- Không promote bằng tag mơ hồ như `latest` làm chuẩn release.
-- Nếu cần tag tiện thao tác như `dev` hoặc `stable`, vẫn phải giữ tag bất biến làm source of truth.
+- Use immutable tags by commit, build number, or release version.
+- Do not promote with a vague tag like `latest` as the release standard.
+- If you need a convenience tag like `dev` or `stable`, still keep an immutable tag as the source of truth.
 
-## Gate Theo Môi Trường
+## Gates By Environment
 
-| Môi trường | Mục tiêu | Gate tối thiểu |
+| Environment | Goal | Minimum gate |
 |---|---|---|
-| `dev` | Xác nhận artifact build được, deploy được và smoke pass | image build pass, deploy pass, health pass |
-| `uat` | Xác nhận hành vi gần production, sẵn sàng business validation | cùng image với nhánh promote, smoke pass, test nghiệp vụ hoặc sign-off liên quan |
-| `prod` | Rollout an toàn với khả năng rollback | approval nếu cần, rollout plan, observability check, rollback path |
+| `dev` | Confirm the artifact builds, deploys, and smoke passes | image build pass, deploy pass, health pass |
+| `uat` | Confirm near-production behavior, ready for business validation | same image as the promotion branch, smoke pass, business test or related sign-off |
+| `prod` | Safe rollout with rollback capability | approval if needed, rollout plan, observability check, rollback path |
 
 ## Rollout Rule
 
-- Chọn strategy rõ ràng: `recreate`, `rolling`, `blue-green`, `canary`, `manual phased rollout`.
-- Strategy phải phù hợp runtime và mức chịu rủi ro của môi trường.
-- Ghi rõ verification ngay sau rollout: health, smoke, log, metric, queue lag hoặc business KPI ngắn hạn nếu có.
+- Choose a clear strategy: `recreate`, `rolling`, `blue-green`, `canary`, `manual phased rollout`.
+- The strategy must fit the runtime and the environment's risk tolerance.
+- Record verification right after rollout: health, smoke, log, metric, queue lag, or short-term business KPI if any.
 
 ## Rollback Rule
 
-- Rollback phải dựa trên artifact đã biết là tốt, không rollback mù.
-- Nếu có migration hoặc stateful change, rollback app và rollback data không được xem là một việc giống nhau.
-- Nêu rõ điều kiện dừng rollout và điều kiện kích hoạt rollback.
+- Rollback must be based on a known-good artifact; do not roll back blind.
+- If there is a migration or stateful change, app rollback and data rollback are not the same thing.
+- State clearly the conditions to stop rollout and the conditions to trigger rollback.
 
-## Guard Vận Hành Thường Gặp
+## Common Operational Guards
 
-- Manual approval trước `prod`
-- Backup hoặc snapshot trước thay đổi stateful
-- Feature flag
-- Monitoring dashboard và alert window
-- Maintenance window hoặc communication plan
+- Manual approval before `prod`
+- Backup or snapshot before a stateful change
+- Feature flags
+- Monitoring dashboard and alert window
+- Maintenance window or communication plan
 
-## Dấu Hiệu BLOCKED
+## Signs Of BLOCKED
 
-- Chưa có image bất biến hoặc chưa chốt tag strategy.
-- Chưa có runtime target rõ cho môi trường đích.
-- Chưa có verification check sau deploy.
-- Chưa có rollback path khả thi cho môi trường quan trọng.
+- No immutable image or no locked tag strategy yet.
+- No clear runtime target for the target environment.
+- No post-deploy verification check.
+- No viable rollback path for an important environment.

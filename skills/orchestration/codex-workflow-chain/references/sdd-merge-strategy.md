@@ -1,93 +1,99 @@
-# Merge Strategy Giữa Workflow Hiện Tại, Spec Kit, OpenSpec, cc-sdd Và BMAD-METHOD
+---
+language: en
+---
 
-Tài liệu này chốt cách kết hợp workflow hiện tại của repo với bốn bộ kit/workflow AI phổ biến:
+# Merge Strategy Across The Current Workflow, Spec Kit, OpenSpec, cc-sdd, And BMAD-METHOD
+
+> Vietnamese: sdd-merge-strategy.vi.md
+
+This document pins how to combine the repo's current workflow with four popular AI kit/workflow sets:
 
 - `github/spec-kit`
 - `Fission-AI/OpenSpec`
 - `gotalab/cc-sdd`
 - `bmad-code-org/BMAD-METHOD`
 
-Thời điểm đối chiếu: `2026-04-11`.
+Cross-reference date: `2026-04-11`.
 
-Nguyên tắc nền:
+Foundational principles:
 
-- Workflow hiện tại của repo vẫn là `host workflow`.
-- Không thay toàn bộ workflow hiện tại bằng một bộ kit bên ngoài.
-- Chỉ mượn lớp mạnh nhất của từng kit để giảm trùng lặp và tránh xung đột triết lý.
+- The repo's current workflow remains the `host workflow`.
+- Do not replace the entire current workflow with an external kit.
+- Only borrow the strongest layer of each kit to reduce duplication and avoid philosophy conflicts.
 
-## Nguồn Tham Chiếu
+## Reference Sources
 
-| Bộ kit | Repository | Điều nên lấy |
+| Kit | Repository | What to take |
 |---|---|---|
 | `spec-kit` | `https://github.com/github/spec-kit` | governance, constitution, clarify/analyze/checklist mindset, phase discipline |
 | `OpenSpec` | `https://github.com/Fission-AI/OpenSpec` | change-centric model, `specs/` vs `changes/`, archive lifecycle, brownfield workflow |
 | `cc-sdd` | `https://github.com/gotalab/cc-sdd` | agentic implementation loop, subagent orchestration, requirements -> design -> tasks execution pattern |
 | `BMAD-METHOD` | `https://github.com/bmad-code-org/BMAD-METHOD` | scale-adaptive routing, phase language, role-aware agile lifecycle, story-centric implementation, project-context |
 
-## Merge Strategy Chính
+## Main Merge Strategy
 
-| Lớp | Giữ từ workflow hiện tại | Mượn từ `spec-kit` | Mượn từ `OpenSpec` | Mượn từ `cc-sdd` | Mượn từ `BMAD-METHOD` | Quyết định merge |
+| Layer | Keep from current workflow | Borrow from `spec-kit` | Borrow from `OpenSpec` | Borrow from `cc-sdd` | Borrow from `BMAD-METHOD` | Merge decision |
 |---|---|---|---|---|---|---|
-| Workflow khung | `Clarify -> Business Goal -> Open Questions -> Acceptance + DoR -> Technical Approach -> Task Plan -> Implement -> Verify + DoD` | tư duy phase rõ ràng | không thay khung step | không thay khung step | phase language `Analysis -> Planning -> Solutioning -> Implementation` chỉ dùng như overlay đọc hiểu | giữ nguyên workflow 8 bước |
-| Governance | `DoR`, `DoD`, `release`, `business_acceptance`, role signoff | constitution, checklist, quality bar, principle-driven delivery | không phải điểm mạnh chính | có thể tham khảo steering nhẹ | `project-context`, planning track rules, collaboration framing | dùng `spec-kit` làm nguồn cảm hứng chính; BMAD hỗ trợ ở lớp project-context |
-| Product artifacts | `BRD`, `SRS`, role outputs, traceability theo role | tăng độ chặt của template/spec checklist | delta/change folder cho phần thay đổi | không thay artifact sản phẩm | `PRD`/story mindset chỉ dùng để enrich planning, không thay `BRD/SRS` | `BRD/SRS` vẫn là source-of-truth rollout |
-| Change management | step note + rollout artifact | không phải lớp mạnh nhất | `openspec/specs/` là current truth, `openspec/changes/` là proposed change, có `archive` | không phải lớp chính | không phải lớp mạnh nhất | mượn mạnh từ `OpenSpec` |
-| Discovery | `s01-s04` đã rõ business/requirement/readiness | `clarify`, `analyze`, `checklist` mindset | proposal-first cho change lớn | discovery routing kiểu Kiro | analyst/PM/UX collaboration và scale-adaptive routing | giữ `s01-s04`, thêm helper/checklist/routing khi cần |
-| Design và tasking | `Technical Approach`, `Task Plan`, trace về requirement/AC | nhịp `specify -> plan -> tasks` | change folder chứa `design.md`, `tasks.md` | contract `requirements -> design -> tasks` | planning track: quick flow vs full flow vs enterprise; story breakdown | workflow hiện tại làm chủ; BMAD giúp chọn độ sâu planning |
-| Implementation | `s07` bám frozen spec/spec-change | command mindset `/implement` | command mindset `/apply` | subagent, per-task review, auto-debug, long-running execution | story-centric dev cycle, just-in-time context, quick-dev cho change nhỏ | `cc-sdd` là nguồn tham chiếu chính cho execution engine; BMAD là nguồn phụ cho story flow |
-| Verify và acceptance | `QC`, `release`, `business_acceptance`, `spec-coverage-report` | `analyze/checklist` trước implement hoặc release | `archive` sau khi verify xong | independent review loop | test-architect/test-strategy mindset khi scope lớn | verify vẫn do workflow hiện tại làm chủ |
-| Brownfield vs greenfield | dùng chung một workflow có gate | hợp feature/planning rõ | rất mạnh cho brownfield, multi-spec update | mạnh ở implementation-heavy work | mạnh ở scale-adaptive planning từ small -> enterprise | route theo loại work item thay vì ép một bộ kit cho mọi case |
-| Tooling UX | skill-based workflow hiện tại | command set của `spec-kit` chỉ nên tham khảo | command set của `OpenSpec` chỉ nên tham khảo | command/skill set của `cc-sdd` chỉ nên tham khảo | workflow/agent menu chỉ nên tham khảo, không bê nguyên | chỉ nên có một command surface nội bộ cho repo |
+| Framework workflow | `Clarify -> Business Goal -> Open Questions -> Acceptance + DoR -> Technical Approach -> Task Plan -> Implement -> Verify + DoD` | clear phase thinking | do not replace the step framework | do not replace the step framework | the `Analysis -> Planning -> Solutioning -> Implementation` phase language is used only as a reading overlay | keep the eight-step workflow as-is |
+| Governance | `DoR`, `DoD`, `release`, `business_acceptance`, role signoff | constitution, checklist, quality bar, principle-driven delivery | not a primary strength | light steering may be referenced | `project-context`, planning track rules, collaboration framing | use `spec-kit` as the main source of inspiration; BMAD supports the project-context layer |
+| Product artifacts | `BRD`, `SRS`, role outputs, traceability by role | tighten the template/spec checklist | a delta/change folder for the changing part | do not replace product artifacts | `PRD`/story mindset only to enrich planning, not to replace `BRD/SRS` | `BRD/SRS` remains the rollout source-of-truth |
+| Change management | step note + rollout artifact | not the strongest layer | `openspec/specs/` as current truth, `openspec/changes/` as proposed change, with `archive` | not the main layer | not the strongest layer | borrow heavily from `OpenSpec` |
+| Discovery | `s01-s04` already clarify business/requirement/readiness | `clarify`, `analyze`, `checklist` mindset | proposal-first for large changes | Kiro-style discovery routing | analyst/PM/UX collaboration and scale-adaptive routing | keep `s01-s04`, add helpers/checklists/routing as needed |
+| Design and tasking | `Technical Approach`, `Task Plan`, traceability to requirement/AC | the `specify -> plan -> tasks` cadence | a change folder holding `design.md`, `tasks.md` | the `requirements -> design -> tasks` contract | planning track: quick flow vs full flow vs enterprise; story breakdown | the current workflow leads; BMAD helps pick planning depth |
+| Implementation | `s07` follows the frozen spec/spec-change | the `/implement` command mindset | the `/apply` command mindset | subagent, per-task review, auto-debug, long-running execution | story-centric dev cycle, just-in-time context, quick-dev for small changes | `cc-sdd` is the primary reference for the execution engine; BMAD is a secondary source for the story flow |
+| Verify and acceptance | `QC`, `release`, `business_acceptance`, `spec-coverage-report` | `analyze/checklist` before implement or release | `archive` after verify completes | independent review loop | test-architect/test-strategy mindset for large scope | verify still leads in the current workflow |
+| Brownfield vs greenfield | one workflow with gates for both | clear feature/planning | very strong for brownfield, multi-spec update | strong for implementation-heavy work | strong for scale-adaptive planning from small to enterprise | route by work-item type rather than forcing one kit for every case |
+| Tooling UX | the current skill-based workflow | the `spec-kit` command set should be referenced only | the `OpenSpec` command set should be referenced only | the `cc-sdd` command/skill set should be referenced only | the workflow/agent menu should be referenced only, not copied wholesale | keep a single internal command surface for the repo |
 
-## Routing Rule Theo Loại Work Item
+## Routing Rule By Work-Item Type
 
-| Loại work item | Merge strategy khuyến nghị |
+| Work-item type | Recommended merge strategy |
 |---|---|
-| `FEATURE` mới, scope rõ | workflow hiện tại + `spec-kit` mạnh + `BMAD` vừa; `OpenSpec` và `cc-sdd` dùng theo nhu cầu |
-| `CHANGE` trên hệ thống đang chạy | workflow hiện tại + `OpenSpec` mạnh, `cc-sdd` vừa, `spec-kit` nhẹ, `BMAD` nhẹ |
-| `REFACTOR` hoặc migration phức tạp | workflow hiện tại + `OpenSpec` mạnh + `cc-sdd` mạnh + `BMAD` vừa |
-| `BUG` nhỏ, scope hẹp | workflow hiện tại rút gọn + `BMAD Quick Flow` mindset; không cần full ceremony của cả 4 bộ |
-| `RESEARCH` | workflow hiện tại + `spec-kit` checklist nhẹ; dùng `BMAD` nếu cần analyst-style exploration; chỉ dùng `OpenSpec` nếu research sinh proposed change rõ |
-| enterprise/compliance-heavy | workflow hiện tại + `spec-kit` mạnh + `BMAD Enterprise track` mạnh; `OpenSpec` cho change trace; `cc-sdd` cho execution |
+| new `FEATURE`, clear scope | current workflow + strong `spec-kit` + medium `BMAD`; `OpenSpec` and `cc-sdd` as needed |
+| `CHANGE` on a running system | current workflow + strong `OpenSpec`, medium `cc-sdd`, light `spec-kit`, light `BMAD` |
+| `REFACTOR` or complex migration | current workflow + strong `OpenSpec` + strong `cc-sdd` + medium `BMAD` |
+| small `BUG`, narrow scope | condensed current workflow + `BMAD Quick Flow` mindset; no need for the full ceremony of all four kits |
+| `RESEARCH` | current workflow + light `spec-kit` checklist; use `BMAD` for analyst-style exploration; use `OpenSpec` only if the research produces a clear proposed change |
+| enterprise/compliance-heavy | current workflow + strong `spec-kit` + strong `BMAD Enterprise track`; `OpenSpec` for change trace; `cc-sdd` for execution |
 
-## Áp Vào Repo Này
+## Applied To This Repo
 
-| Thành phần trong repo | Quyết định áp dụng |
+| Repo component | Application decision |
 |---|---|
-| `BRD` và `SRS` | giữ làm source-of-truth rollout artifact |
-| note `s01` đến `s08` | giữ làm execution trace, handoff trace và evidence theo role |
-| policy/constitution | bổ sung một lớp principle/checklist kiểu `spec-kit`; có thể thêm `project-context` kiểu `BMAD` để lưu convention, skill level, collaboration preference |
-| change folder | có thể thêm một lớp `changes/<change-id>/` kiểu `OpenSpec` để quản lý proposal, design, tasks và spec delta |
-| planning depth | có thể route `Quick Flow`, `Full Flow`, `Enterprise Flow` kiểu `BMAD`, nhưng map về cùng 8 step hiện tại |
-| `s07-s08` execution | nếu muốn tăng autonomy, mượn mô hình implementer/reviewer/auto-debug từ `cc-sdd`, cộng thêm story-centric/quick-dev mindset từ `BMAD` |
-| archive | chỉ archive change khi `DoD`, `release` và `business_acceptance` đã rõ |
+| `BRD` and `SRS` | keep as the rollout source-of-truth artifact |
+| `s01` to `s08` notes | keep as execution trace, handoff trace, and per-role evidence |
+| policy/constitution | add a `spec-kit`-style principle/checklist layer; optionally add a `BMAD`-style `project-context` to hold conventions, skill level, and collaboration preferences |
+| change folder | optionally add an `OpenSpec`-style `changes/<change-id>/` layer to manage proposal, design, tasks, and spec delta |
+| planning depth | optionally route `Quick Flow`, `Full Flow`, `Enterprise Flow` in the `BMAD` style, but map back to the same eight steps |
+| `s07-s08` execution | to increase autonomy, borrow the implementer/reviewer/auto-debug model from `cc-sdd`, plus the story-centric/quick-dev mindset from `BMAD` |
+| archive | archive a change only when `DoD`, `release`, and `business_acceptance` are clear |
 
-## Không Nên Làm
+## What Not To Do
 
-| Tránh | Lý do |
+| Avoid | Reason |
 |---|---|
-| thay toàn bộ workflow hiện tại bằng `OpenSpec` | sẽ mất lớp role/signoff/product governance đang mạnh |
-| thay toàn bộ workflow hiện tại bằng `BMAD` | sẽ tạo hai hệ role, hai hệ artifact và hai lớp phase bị chồng nhau |
-| thay `BRD/SRS` bằng change delta | delta chỉ nên là lớp thay đổi, không thay source-of-truth |
-| thay `BRD/SRS` bằng `PRD/story` của BMAD một cách máy móc | BMAD planning artifact nên chỉ bổ trợ, không thay rollout artifact hiện tại |
-| bê nguyên command surface của cả bốn bộ kit | UX sẽ rối và trùng ngữ nghĩa |
-| để execution kit quyết định thay business gate | implementation loop không thay được `DoR`, `DoD`, `release`, `business_acceptance` |
+| replacing the entire current workflow with `OpenSpec` | loses the strong role/signoff/product governance layer |
+| replacing the entire current workflow with `BMAD` | creates two role systems, two artifact systems, and two overlapping phase layers |
+| replacing `BRD/SRS` with change deltas | deltas should be the change layer, not the source of truth |
+| mechanically replacing `BRD/SRS` with BMAD `PRD/story` | BMAD planning artifacts should support, not replace, the current rollout artifacts |
+| copying the command surfaces of all four kits wholesale | the UX becomes confusing and semantically duplicated |
+| letting an execution kit decide in place of a business gate | the implementation loop cannot replace `DoR`, `DoD`, `release`, or `business_acceptance` |
 
-## Kết Luận
+## Conclusion
 
-Mô hình khuyến nghị cho repo này là:
+The recommended model for this repo is:
 
-- workflow hiện tại làm `xương sống`
-- `OpenSpec` làm `change layer`
-- `cc-sdd` làm `execution layer`
-- `spec-kit` làm `governance/checklist layer`
-- `BMAD-METHOD` làm `scale-adaptive routing + role-aware agile planning layer`
+- the current workflow as the `backbone`
+- `OpenSpec` as the `change layer`
+- `cc-sdd` as the `execution layer`
+- `spec-kit` as the `governance/checklist layer`
+- `BMAD-METHOD` as the `scale-adaptive routing + role-aware agile planning layer`
 
-Nếu cần hiện thực hóa tiếp, bước hợp lý tiếp theo là tách rõ:
+If you want to materialize this further, the sensible next step is to separate clearly:
 
-- `source-of-truth artifact`
-- `change artifact`
-- `execution trace artifact`
-- `archive protocol`
+- the `source-of-truth artifact`
+- the `change artifact`
+- the `execution trace artifact`
+- the `archive protocol`
 
-Kiến trúc đích tổng thể để review trước khi hiện thực hóa nằm tại `references/target-architecture.md`.
+The overall target architecture to review before materialization lives at `references/target-architecture.md`.

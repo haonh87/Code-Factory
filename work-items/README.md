@@ -1,14 +1,14 @@
 # Work Items
 
-Thư mục này là `canonical artifact root` cho workflow artifacts thật của repo.
+This directory is the `canonical artifact root` for the repo's real workflow artifacts.
 
-## Mục Đích
+## Purpose
 
-- chứa các work item đã được materialize thành note workflow
-- làm target chuẩn cho `scaffold`, `validate` và CI phase 2
-- giữ execution trace theo backbone `s01 -> s08`
+- hold work items that have been materialized into workflow notes
+- be the standard target for `scaffold`, `validate` and CI phase 2
+- keep the execution trace along the `s01 -> s08` backbone
 
-## Cấu Trúc Chuẩn
+## Standard Structure
 
 ```text
 work-items/
@@ -23,52 +23,52 @@ work-items/
     <work_item_slug>.s08.verification.md
 ```
 
-## Quy Ước
+## Conventions
 
-- tên thư mục con phải đúng bằng `work_item_slug`
-- mọi note trong cùng thư mục phải dùng cùng `work_item_slug`
-- step file phải bám naming chuẩn `<work_item_slug>.sNN.<step-slug>.md`
-- không dùng thư mục này cho note rời không thuộc workflow backbone
-- `sample-workflow-item/` hiện là sample canonical đầu tiên để CI phase 2 có artifact thật để validate
-- `sample-sdd-item/` là sample canonical cho `SDD phase 1`, trỏ tới `product-specs/brd/sample-sdd-item.md` và `product-specs/srs/sample-sdd-item.md`
-- `sample-sdd-item/` hiện cũng được nối với `changes/CHANGE-001/` để làm sample canonical đầu tiên cho `Phase 2: Change Layer`
-- `sample-execution-item/` là sample canonical cho `Phase 3: Execution Layer`, minh họa `multi_agent`, runtime artifacts và `review_mode=independent`
-- `sample-quick-item/` là sample canonical cho `planning_track=quick`
-- `sample-enterprise-item/` là sample canonical cho `planning_track=enterprise`
+- the sub-directory name must be exactly the `work_item_slug`
+- every note in the same directory must use the same `work_item_slug`
+- a step file must follow the standard naming `<work_item_slug>.sNN.<step-slug>.md`
+- do not use this directory for loose notes that do not belong to the workflow backbone
+- `sample-workflow-item/` is currently the first canonical sample so CI phase 2 has a real artifact to validate
+- `sample-sdd-item/` is the canonical sample for `SDD phase 1`, pointing to `product-specs/brd/sample-sdd-item.md` and `product-specs/srs/sample-sdd-item.md`
+- `sample-sdd-item/` is also linked to `changes/CHANGE-001/` to be the first canonical sample for `Phase 2: Change Layer`
+- `sample-execution-item/` is the canonical sample for `Phase 3: Execution Layer`, illustrating `multi_agent`, runtime artifacts and `review_mode=independent`
+- `sample-quick-item/` is the canonical sample for `planning_track=quick`
+- `sample-enterprise-item/` is the canonical sample for `planning_track=enterprise`
 
-## Command Chuẩn
+## Standard Commands
 
-Scaffold cả workflow:
+Scaffold the whole workflow:
 
 ```bash
 npm run scaffold:workflow -- --work-item <work-item-slug>
 ```
 
-Validate toàn bộ artifact root:
+Validate the whole artifact root:
 
 ```bash
 npm run validate:workflow -- --workflow-root work-items --project-root .
 ```
 
-Validate riêng phần SDD:
+Validate the SDD part only:
 
 ```bash
 npm run validate:workflow:sdd -- --workflow-root work-items --project-root .
 ```
 
-Validate riêng phần change layer:
+Validate the change layer only:
 
 ```bash
 npm run validate:workflow:change -- --workflow-root work-items --project-root .
 ```
 
-Validate riêng phần execution layer:
+Validate the execution layer only:
 
 ```bash
 npm run validate:workflow:execution -- --workflow-root work-items
 ```
 
-Validate riêng phần adaptive planning:
+Validate the adaptive planning part only:
 
 ```bash
 npm run validate:workflow:planning -- --workflow-root work-items

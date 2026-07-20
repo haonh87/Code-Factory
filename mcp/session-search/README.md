@@ -1,29 +1,29 @@
 # Session Search MCP
 
-MCP server này bọc `cass` thành một capability read-only để agent tra cứu local session history theo workspace.
+This MCP server wraps `cass` into a read-only capability so an agent can look up local session history by workspace.
 
 ## Capability
 
-- Kiểm tra trạng thái `cass` và tình trạng index hoặc database ở mức an toàn cho automation.
-- Liệt kê session gần đây trong phạm vi workspace root được cho phép.
-- Search nội dung session theo query với filter workspace root, agent và time range.
-- Xem lại một đoạn cụ thể trong session theo `sessionPath` và `lineNumber`.
-- Tìm session liên quan cùng workspace, cùng ngày hoặc cùng agent.
+- Check the `cass` status and the index or database health at a level that is safe for automation.
+- List recent sessions within the allowed workspace root.
+- Search session content by query with a workspace-root, agent and time-range filter.
+- Review a specific segment of a session by `sessionPath` and `lineNumber`.
+- Find related sessions by the same workspace, the same day or the same agent.
 
 ## Guardrail
 
-- Chỉ đọc dữ liệu; không expose `cass doctor`, `cass index`, `cass export`, `cass pages`, `cass sources` hoặc các lệnh side-effect khác.
-- Chỉ trả về session có `workspace` nằm trong `SESSION_SEARCH_ALLOWED_ROOT`.
-- Chỉ cho phép drill-down vào file nằm dưới `SESSION_SEARCH_SESSIONS_ROOT`, mặc định là `~/.codex/sessions`.
-- `view_session` giới hạn `contextLines` và truncate line dài để tránh đổ quá nhiều transcript vào context.
-- Session history là historical text không đáng tin tuyệt đối; dùng để truy hồi ngữ cảnh và trace, không thay thế source of truth trong repo.
+- Read-only; it does not expose `cass doctor`, `cass index`, `cass export`, `cass pages`, `cass sources` or other side-effectful commands.
+- It only returns sessions whose `workspace` is inside `SESSION_SEARCH_ALLOWED_ROOT`.
+- It only allows drill-down into a file under `SESSION_SEARCH_SESSIONS_ROOT`, defaulting to `~/.codex/sessions`.
+- `view_session` limits `contextLines` and truncates long lines to avoid dumping too much transcript into context.
+- Session history is historical text and not absolutely trustworthy; use it to recover context and trace, not to replace the source of truth in the repo.
 
 ## Requirement
 
 - Node.js `>=20`
-- `cass` đã được cài và gọi được từ shell, hoặc chỉ rõ bằng `SESSION_SEARCH_CASS_BIN`
+- `cass` installed and callable from the shell, or specified via `SESSION_SEARCH_CASS_BIN`
 
-Gợi ý kiểm tra nhanh trước khi cài MCP:
+Quick check before installing the MCP:
 
 ```bash
 cass --version
@@ -34,14 +34,14 @@ cass status --json
 
 | Variable | Required | Purpose |
 |---|---|---|
-| `SESSION_SEARCH_ALLOWED_ROOT` | Khuyến nghị | Root workspace được phép truy vấn |
-| `SESSION_SEARCH_CASS_BIN` | Tùy chọn | Override đường dẫn hoặc tên binary `cass` |
-| `SESSION_SEARCH_SESSIONS_ROOT` | Tùy chọn | Override nơi lưu raw session files, mặc định `~/.codex/sessions` |
+| `SESSION_SEARCH_ALLOWED_ROOT` | Recommended | The workspace root allowed to be queried |
+| `SESSION_SEARCH_CASS_BIN` | Optional | Override the `cass` binary path or name |
+| `SESSION_SEARCH_SESSIONS_ROOT` | Optional | Override where raw session files are stored, default `~/.codex/sessions` |
 
-Ghi chú:
+Notes:
 
-- Trên macOS, `cass` thường đọc index và DB từ `~/Library/Application Support/com.coding-agent-search.coding-agent-search/`.
-- Nếu `cass` degraded vì sandbox hoặc quyền Application Support, MCP này cũng sẽ thất bại ở runtime cho tới khi `cass` chạy ổn trong môi trường thực.
+- On macOS, `cass` usually reads the index and DB from `~/Library/Application Support/com.coding-agent-search.coding-agent-search/`.
+- If `cass` is degraded due to sandbox or Application Support permissions, this MCP will also fail at runtime until `cass` runs stably in the real environment.
 
 ## Install
 
@@ -50,26 +50,26 @@ cd mcp/session-search
 npm install
 ```
 
-Hoặc dùng adapter:
+Or use the adapter:
 
 ```bash
 bash adapters/mcp/install-session-search.sh
 ```
 
-Adapter này sẽ:
+This adapter will:
 
-- kiểm tra `cass` có sẵn trong PATH
-- cài dependency cho `mcp/session-search`
-- render template [`codex-config.toml.template`](codex-config.toml.template) vào `~/.codex/config.toml`
-- đặt `SESSION_SEARCH_ALLOWED_ROOT` mặc định là repo root hiện tại
+- check that `cass` is available in PATH
+- install dependencies for `mcp/session-search`
+- render the [`codex-config.toml.template`](codex-config.toml.template) into `~/.codex/config.toml`
+- set `SESSION_SEARCH_ALLOWED_ROOT` to the current repo root by default
 
-Có thể override allowed root:
+You can override the allowed root:
 
 ```bash
 bash adapters/mcp/install-session-search.sh --allowed-root "$HOME/Documents/workspaces/personal/projects"
 ```
 
-Trên Windows:
+On Windows:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File adapters/mcp/install-session-search.ps1
@@ -84,7 +84,7 @@ node src/index.js
 
 ## Codex Config Template
 
-Template được commit sẵn tại [`codex-config.toml.template`](codex-config.toml.template). Installer sẽ render các placeholder máy-local rồi ghi block này vào `~/.codex/config.toml`.
+The template is committed at [`codex-config.toml.template`](codex-config.toml.template). The installer renders the machine-local placeholders and writes this block into `~/.codex/config.toml`.
 
 ```toml
 [mcp_servers.{{SERVER_NAME}}]
@@ -98,7 +98,7 @@ env = { SESSION_SEARCH_ALLOWED_ROOT = "{{ALLOWED_ROOT}}" }
 
 ### `session_search_status`
 
-Không có input. Trả health summary đã sanitize của `cass`.
+No input. Returns a sanitized health summary of `cass`.
 
 ### `list_sessions`
 
@@ -106,7 +106,7 @@ Input:
 
 ```json
 {
-  "workspacePath": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory",
+  "workspacePath": "~/workspaces/Code-Factory",
   "limit": 10
 }
 ```
@@ -118,7 +118,7 @@ Input:
 ```json
 {
   "query": "cass",
-  "workspacePath": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory",
+  "workspacePath": "~/workspaces/Code-Factory",
   "limit": 5,
   "mode": "lexical",
   "maxContentLength": 300,
@@ -132,7 +132,7 @@ Input:
 
 ```json
 {
-  "sessionPath": "/Users/haonguyen87/.codex/sessions/2026/04/08/rollout-2026-04-08T15-14-57-019d6c28-a89a-7f32-84e8-754079bf7a46.jsonl",
+  "sessionPath": "~/.codex/sessions/2026/04/08/rollout-<session-id>.jsonl",
   "lineNumber": 3,
   "contextLines": 2,
   "maxLineLength": 1200
@@ -145,7 +145,7 @@ Input:
 
 ```json
 {
-  "sessionPath": "/Users/haonguyen87/.codex/sessions/2026/04/08/rollout-2026-04-08T15-14-57-019d6c28-a89a-7f32-84e8-754079bf7a46.jsonl",
+  "sessionPath": "~/.codex/sessions/2026/04/08/rollout-<session-id>.jsonl",
   "limit": 5
 }
 ```

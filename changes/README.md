@@ -1,14 +1,14 @@
 # Changes
 
-Thư mục này là source-of-truth cho `change layer` của repo.
+This directory is the source of truth for the repo's `change layer`.
 
-## Mục Đích
+## Purpose
 
-- đóng gói từng thay đổi theo kiểu `proposal -> design -> tasks -> spec-delta -> archive`
-- nối `work-items/` với `BRD/SRS` mà không thay chúng
-- làm artifact root cho validator và CI của `Phase 2`
+- package each change in the style `proposal -> design -> tasks -> spec-delta -> archive`
+- connect `work-items/` with `BRD/SRS` without replacing them
+- be the artifact root for the validator and CI of `Phase 2`
 
-## Cấu Trúc Chuẩn
+## Standard Structure
 
 ```text
 changes/
@@ -24,21 +24,21 @@ changes/
     archive-metadata.md
 ```
 
-## Command Chuẩn
+## Standard Commands
 
-Scaffold một change package:
+Scaffold a change package:
 
 ```bash
 npm run scaffold:change -- --change-id CHANGE-001 --work-item <work-item-slug>
 ```
 
-Approve change package do agent materialize:
+Approve a change package materialized by the agent:
 
 ```bash
 npm run change-item -- approve --change-id CHANGE-001 --reviewed-by <role>
 ```
 
-Validate change layer:
+Validate the change layer:
 
 ```bash
 npm run validate:workflow:change -- --workflow-root work-items --project-root .
@@ -46,4 +46,4 @@ npm run validate:workflow:change -- --workflow-root work-items --project-root .
 
 ## Sample
 
-- `CHANGE-001` hiện là sample canonical đầu tiên cho phase 2 và được nối với `work-items/sample-sdd-item/`.
+- `CHANGE-001` is currently the first canonical sample for phase 2 and is linked to `work-items/sample-sdd-item/`.

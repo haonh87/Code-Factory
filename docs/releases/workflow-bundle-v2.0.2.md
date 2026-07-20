@@ -6,31 +6,31 @@ Branch: `release/v2.0.2`
 
 ## Changelog
 
-`workflow-bundle v2.0.2` là patch release tiếp theo sau `v2.0.1`, tập trung vào capability control và trusted human approval enforcement để giảm khả năng bypass các gate bắt buộc human review/approve.
+`workflow-bundle v2.0.2` is the patch release after `v2.0.1`, focused on capability control and trusted human approval enforcement to reduce the chance of bypassing gates that require human review/approve.
 
 ### Added
 
-- Thêm `workflow-capability-control.js` để khóa implementation path ở mức filesystem cho tới khi protocol mở `ACTIVE + s07 + granted_write_paths`.
-- Thêm `wfc capability status|sync|check` để inspect và sync capability control.
-- Thêm `workflow-trusted-approval-utils.js` để tạo và verify trusted signed receipts ngoài project root.
-- Thêm `workflow-gate-review.js` và command `wfc gate approve|reject|status` cho trusted human approval ở các gate workflow.
-- Thêm smoke case `capability-control` để kiểm lock/unlock implementation path thật.
-- Thêm regression smoke `greenfield-qr-voucher-proposal` để chặn raw feature request greenfield có UI + API + brand tone đi thẳng sang scaffold hoặc code.
+- Add `workflow-capability-control.js` to lock the implementation path at the filesystem level until the protocol opens `ACTIVE + s07 + granted_write_paths`.
+- Add `wfc capability status|sync|check` to inspect and sync capability control.
+- Add `workflow-trusted-approval-utils.js` to create and verify trusted signed receipts outside the project root.
+- Add `workflow-gate-review.js` and the `wfc gate approve|reject|status` command for trusted human approval at the workflow gates.
+- Add a `capability-control` smoke case to test the real lock/unlock of the implementation path.
+- Add a `greenfield-qr-voucher-proposal` regression smoke to block a raw greenfield feature request with UI + API + brand tone from going straight to scaffold or code.
 
 ### Changed
 
-- `wfc work-item activate|resume` giờ bắt buộc có `--write-root` hoặc `granted_write_paths` sẵn có.
-- `work-item`, `change-item` và workflow gate approval không còn chỉ dựa vào metadata trong note/report; protocol sẽ cross-check trusted signed receipts trước khi mở `ACTIVE`, `VERIFIED`, `DONE`.
-- `greenfield bootstrap` không còn nhận self-attested CLI metadata kiểu `--bootstrap-reviewed-by`; bootstrap approval phải đi qua trusted gate receipt.
-- `materialize`, `init`, `scaffold`, `scaffold-change` và protocol transition sẽ sync capability control tự động để write policy nhất quán hơn.
-- Public docs, quickstart, help text và protocol reference đã được cập nhật theo flow mới.
+- `wfc work-item activate|resume` now requires `--write-root` or an existing `granted_write_paths`.
+- `work-item`, `change-item` and workflow gate approval no longer rely only on metadata in the note/report; the protocol cross-checks trusted signed receipts before opening `ACTIVE`, `VERIFIED`, `DONE`.
+- `greenfield bootstrap` no longer accepts self-attested CLI metadata like `--bootstrap-reviewed-by`; bootstrap approval must go through a trusted gate receipt.
+- `materialize`, `init`, `scaffold`, `scaffold-change` and protocol transitions will sync capability control automatically for a more consistent write policy.
+- Public docs, quickstart, help text and the protocol reference have been updated to the new flow.
 
 ### Fixed
 
-- Sửa gap giữa `human-controlled gates` và runtime enforcement khi agent không chỉ đi qua validator mà còn sửa implementation path trực tiếp.
-- Sửa footgun bootstrap legacy và mutating action bootstrap report.
-- Sửa gap “AI tự khai reviewed_by là đủ” bằng signed receipts gắn với artifact digest.
-- Sửa drift semantic ở block trạng thái router: nếu còn `Missing Gates` thì không được báo `ACTIVE` và `Next Human Action` không được là `NONE`.
+- Fix the gap between `human-controlled gates` and runtime enforcement when the agent not only goes through the validator but also edits the implementation path directly.
+- Fix the legacy bootstrap footgun and the mutating-action bootstrap report.
+- Fix the "AI self-declares reviewed_by is enough" gap with signed receipts tied to the artifact digest.
+- Fix the semantic drift in the router status block: if there are still `Missing Gates`, it must not report `ACTIVE` and `Next Human Action` must not be `NONE`.
 
 ## Scope
 
@@ -56,7 +56,7 @@ Branch: `release/v2.0.2`
 
 ## Verification
 
-Các checks đã chạy cho release này:
+The checks run for this release:
 
 - `npm run bundle:workflow-bundle-runtime`
 - `git diff --check`
@@ -66,13 +66,13 @@ Các checks đã chạy cho release này:
 - `node packages/workflow-bundle/scripts/run-workflow-bundle-smoke.js`
 - `node packages/workflow-bundle/bin/wfc.js help`
 
-Kết quả:
+Results:
 
-- governance validator pass
-- protocol validator pass
-- authoring smoke pass
-- bundle smoke pass
-- help surface pass
+- governance validator passed
+- protocol validator passed
+- authoring smoke passed
+- bundle smoke passed
+- help surface passed
 
 ## Public Docs
 
@@ -83,6 +83,6 @@ Kết quả:
 
 ## Notes
 
-- `v2.0.0` vẫn là first public release.
-- `v2.0.1` là patch release hardening semantics/protocol.
-- `v2.0.2` là patch release siết capability control và trusted human approval enforcement.
+- `v2.0.0` is still the first public release.
+- `v2.0.1` is the hardening semantics/protocol patch release.
+- `v2.0.2` is the patch release tightening capability control and trusted human approval enforcement.

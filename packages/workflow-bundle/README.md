@@ -1,19 +1,25 @@
+---
+language: en
+---
+
 # workflow-bundle
 
-`workflow-bundle` là package CLI của public release `v2.2.1`: cài workflow bundle cho Codex hoặc Claude Code, scaffold hoặc validate workflow, và hỗ trợ flow `agent proposes, human approves` cho `work-item` và `change`.
+> Vietnamese: README.vi.md
 
-Quickstart chi tiết: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
+`workflow-bundle` is the CLI package of the `v2.2.1` public release: it installs the workflow bundle for Codex or Claude Code, scaffolds or validates workflows, and supports the `agent proposes, human approves` flow for `work-item` and `change`.
+
+Detailed quickstart: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
 ## Requirements
 
 - `node >= 18`
 - `npm >= 9`
-- `~/.codex` hoặc `~/.claude` writable khi dùng `wfc install|update|skills`
-- `git` nếu clone source repo thay vì cài từ npm registry
+- a writable `~/.codex` or `~/.claude` when using `wfc install|update|skills`
+- `git` if cloning the source repo instead of installing from the npm registry
 
 ## Install
 
-Cài package publish:
+Install the published package:
 
 ```bash
 npm install -g workflow-bundle
@@ -21,7 +27,7 @@ wfc help
 wfc version
 ```
 
-Nâng từ package legacy:
+Upgrade from the legacy package:
 
 ```bash
 npm uninstall -g workflow-contracts
@@ -29,7 +35,7 @@ npm install -g workflow-bundle
 wfc version
 ```
 
-Dùng trực tiếp từ source repo:
+Use directly from the source repo:
 
 ```bash
 cd packages/workflow-bundle
@@ -39,80 +45,80 @@ wfc version
 
 ## What `v2.2.1` Includes
 
-- workflow bundle install surface qua `wfc install|update|status|skills`
-- core authoring CLI qua `wfc init|scaffold|validate`
-- agentic proposal flow qua `wfc materialize|change-item|work-item|protocol`
-- human approval gates cho change package và work item
-- capability control để khóa implementation path cho tới khi work item vào `ACTIVE` ở `s07`
-- runtime prompt nhiều khối với `AGENTS.global.md` làm authority, `workflow-governance-router` làm entry router và `codex-workflow-chain` làm workflow backbone
+- workflow bundle install surface via `wfc install|update|status|skills`
+- core authoring CLI via `wfc init|scaffold|validate`
+- agentic proposal flow via `wfc materialize|change-item|work-item|protocol`
+- human approval gates for change packages and work items
+- capability control to lock the implementation path until the work item reaches `ACTIVE` at `s07`
+- multi-block runtime prompt with `AGENTS.global.md` as authority, `workflow-governance-router` as the entry router, and `codex-workflow-chain` as the workflow backbone
 
 ## Runtime Model
 
-Sau khi cài bundle, coding task không được đi thẳng vào implement chỉ vì user nói “build”, “fix” hoặc “thêm”.
+After installing the bundle, a coding task must not jump straight into implementation just because the user says “build”, “fix”, or “add”.
 
-Runtime hiện tại được hiểu như sau:
+The current runtime is understood as follows:
 
 - `authority layer`: `AGENTS.global.md`
-- `entry router`: skill `workflow-governance-router`
-- `workflow backbone`: skill `codex-workflow-chain`
-- `step skills`: skill theo từng step của workflow
+- `entry router`: the `workflow-governance-router` skill
+- `workflow backbone`: the `codex-workflow-chain` skill
+- `step skills`: one skill per workflow step
 
-Với workflow-governed delivery task, agent phải route trước rồi mới hành động. Block trạng thái tối thiểu nên xuất hiện là:
+For any workflow-governed delivery task, the agent must route before acting. The minimal status block that should appear is:
 
 ```text
-Current Step: s0X <tên step>
+Current Step: s0X <step name>
 Workflow Status: ACTIVE | BLOCKED | WAITING_APPROVAL | READY_FOR_REVIEW | VERIFIED
 Delivery Context: greenfield | brownfield
-What I Am Doing Now: <một câu>
-Missing Gates: <danh sách hoặc NONE>
-Next Artifact: <artifact hoặc decision cần tiếp theo>
-Next Human Action: <review/approval cần từ người, hoặc NONE>
+What I Am Doing Now: <one sentence>
+Missing Gates: <list or NONE>
+Next Artifact: <next artifact or decision>
+Next Human Action: <review/approval required from a human, or NONE>
 ```
 
-Quy tắc đọc block này:
+Rules for reading this block:
 
-- nếu `Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`, `READY_FOR_REVIEW` hoặc `VERIFIED`; chỉ hợp lệ là `BLOCKED` hoặc `WAITING_APPROVAL`
-- nếu `Missing Gates` khác `NONE`, `Next Human Action` không được là `NONE`
-- raw feature request greenfield kiểu `QR Voucher + voucher service API + tone brand` trong repo trống phải dừng ở `proposal stage`, không được tự scaffold hay code
+- if `Missing Gates` is not `NONE`, `Workflow Status` must not be `ACTIVE`, `READY_FOR_REVIEW`, or `VERIFIED`; only `BLOCKED` or `WAITING_APPROVAL` are valid
+- if `Missing Gates` is not `NONE`, `Next Human Action` must not be `NONE`
+- a raw greenfield feature request such as `QR Voucher + voucher service API + tone brand` in an empty repo must stop at the `proposal stage`; it must not self-scaffold or code
 
 ## Command Overview
 
-| Việc cần làm | Lệnh |
+| Task | Command |
 |---|---|
-| Cài workflow bundle vào Codex hoặc Claude Code home / project | `wfc install --mode codex|claude --scope global|project|both [--project-root <path>]` |
-| Overwrite workflow bundle theo install state đã lưu | `wfc update --mode codex|claude` |
-| Xem trạng thái và version bundle đã cài | `wfc status --mode codex|claude` |
-| List, add, remove skill managed của workflow bundle | `wfc skills list|add|remove --mode codex|claude` |
-| Khởi tạo repo dự án | `wfc init` |
-| Tạo workflow mới thủ công | `wfc scaffold --work-item <slug>` |
-| Tạo một step workflow | `wfc scaffold-step --work-item <slug> --step <sNN>` |
-| Tạo change package | `wfc scaffold-change --change-id <CHANGE-ID> --work-item <slug>` |
-| Validate workflow chuẩn | `wfc` |
-| Validate naming hoặc governance | `wfc naming` , `wfc governance` |
+| Install the workflow bundle into a Codex or Claude Code home / project | `wfc install --mode codex|claude --scope global|project|both [--project-root <path>]` |
+| Overwrite the workflow bundle per the saved install state | `wfc update --mode codex|claude` |
+| Show installed bundle status and version | `wfc status --mode codex|claude` |
+| List, add, remove managed skills of the workflow bundle | `wfc skills list|add|remove --mode codex|claude` |
+| Initialize a project repo | `wfc init` |
+| Create a new workflow manually | `wfc scaffold --work-item <slug>` |
+| Create one workflow step | `wfc scaffold-step --work-item <slug> --step <sNN>` |
+| Create a change package | `wfc scaffold-change --change-id <CHANGE-ID> --work-item <slug>` |
+| Standard workflow validation | `wfc` |
+| Validate naming or governance | `wfc naming` , `wfc governance` |
 | Validate SDD, change, execution, planning | `wfc sdd` , `wfc change` , `wfc exec` , `wfc plan` |
-| Chạy smoke hoặc fixtures | `wfc smoke` , `wfc fixtures` |
-| Phân tích raw request thành work item candidate | `wfc materialize --request "<raw-request>"` |
-| Materialize và auto-scaffold | `wfc materialize --request "<raw-request>" --auto-scaffold` |
-| Human approve change package do agent đề xuất | `wfc change-item approve --change-id <CHANGE-ID> --reviewed-by <role>` |
-| Liệt kê hoặc xem detail work item | `wfc work-item list` , `wfc work-item status --work-item <slug>` |
-| Human approve work item hoặc seal workflow gate | `wfc work-item approve --work-item <slug> --reviewed-by <role>` , `wfc gate approve --work-item <slug> --gate <spec|dor|approach|task_plan> --reviewed-by <role>` |
-| Activate execution sau gate pass | `wfc work-item activate --work-item <slug> --step s07 --write-root <path>` |
-| Xem hoặc sync capability control | `wfc capability status` , `wfc capability sync` , `wfc capability check --path <path>` |
-| Validate work-item protocol | `wfc protocol` |
+| Run smoke or fixtures | `wfc smoke` , `wfc fixtures` |
+| Analyze a raw request into a work-item candidate | `wfc materialize --request "<raw-request>"` |
+| Materialize and auto-scaffold | `wfc materialize --request "<raw-request>" --auto-scaffold` |
+| Human-approve an agent-proposed change package | `wfc change-item approve --change-id <CHANGE-ID> --reviewed-by <role>` |
+| List or inspect work items | `wfc work-item list` , `wfc work-item status --work-item <slug>` |
+| Human-approve a work item or seal a workflow gate | `wfc work-item approve --work-item <slug> --reviewed-by <role>` , `wfc gate approve --work-item <slug> --gate <spec|dor|approach|task_plan> --reviewed-by <role>` |
+| Activate execution after gates pass | `wfc work-item activate --work-item <slug> --step s07 --write-root <path>` |
+| View or sync capability control | `wfc capability status` , `wfc capability sync` , `wfc capability check --path <path>` |
+| Validate the work-item protocol | `wfc protocol` |
 
 ### Recommended Usage
 
 - `interactive terminal`:
-  - `wfc install`: chạy trực tiếp `wfc install`; CLI sẽ hỏi `mode` và `scope`
-  - nếu chọn `project|both` mà chưa truyền `--project-root`, CLI sẽ hỏi thêm project root
-  - `wfc update`, `wfc status`, `wfc skills list|add|remove`: có thể bỏ `--mode`; CLI sẽ hỏi chọn `mode`
+  - `wfc install`: run `wfc install` directly; the CLI will ask for `mode` and `scope`
+  - if you choose `project|both` without passing `--project-root`, the CLI will also ask for the project root
+  - `wfc update`, `wfc status`, `wfc skills list|add|remove`: you may omit `--mode`; the CLI will ask you to pick a `mode`
 - `automation/CI/scripts`:
-  - luôn truyền `--mode` tường minh
-  - với `wfc install`, luôn truyền thêm `--scope` tường minh
+  - always pass `--mode` explicitly
+  - for `wfc install`, always also pass `--scope` explicitly
 
 ## First Flow
 
-Flow manual:
+Manual flow:
 
 ```bash
 wfc init
@@ -123,7 +129,7 @@ wfc change
 wfc plan
 ```
 
-Flow agentic:
+Agentic flow:
 
 ```bash
 wfc materialize --request "them dang nhap Google cho customer portal" --auto-scaffold
@@ -140,24 +146,24 @@ wfc work-item activate --work-item add-google-oauth-login --step s07 --write-roo
 wfc protocol
 ```
 
-Ghi chú:
+Notes:
 
-- `wfc work-item activate` không còn chỉ là “đã scaffold thì activate”.
-- Trước `ACTIVE`, work item phải có approval gate đã pass; nếu có `change_id` thì change package cũng phải được approve.
-- `ACTIVE` chỉ mở khi evidence `s04`, `s05`, `s06` đã đủ để runtime cho phép vào execution.
-- `change-item approve`, `work-item approve` và `gate approve` sẽ ghi signed receipt vào trusted approval root ngoài project root; không có receipt hợp lệ thì protocol không mở gate.
-- các lệnh `approve` vẫn đi qua CLI, nhưng phải do human tự chạy trong interactive TTY; normal mode sẽ reject `--approval-passphrase` và `WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE`.
-- lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase trực tiếp trên TTY đó.
-- non-interactive approval chỉ dành cho smoke/test fixture, không phải operational path.
-- implementation path bị khóa ở mức filesystem cho tới khi có `ACTIVE + s07 + granted write roots`.
-- strict default của repo mới là `protocolControl.legacyScaffoldPolicy=forbid`; chỉ khi project config bật explicit `allow_readonly` thì `wfc work-item list|status` mới nên dùng bootstrap report read-only từ `s01` cũ để quan sát trạng thái legacy scaffold.
-- các action mutating như `approve|activate|verify|close` không được tự bootstrap; chúng yêu cầu `.work-item-report.json` đã tồn tại.
+- `wfc work-item activate` is no longer just “if scaffolded, then activate”.
+- Before `ACTIVE`, the work item must have its approval gates passed; if it has a `change_id`, the change package must also be approved.
+- `ACTIVE` opens only when evidence for `s04`, `s05`, `s06` is sufficient for the runtime to allow execution.
+- `change-item approve`, `work-item approve`, and `gate approve` write a signed receipt into a trusted approval root outside the project root; without a valid receipt, the protocol will not open the gate.
+- the `approve` commands still go through the CLI, but a human must run them in an interactive TTY; normal mode will reject `--approval-passphrase` and `WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE`.
+- the first approval in a trusted approval root creates an approver keypair and asks the human to enter an approval passphrase directly in that TTY.
+- non-interactive approval is for smoke/test fixtures only, not an operational path.
+- the implementation path is locked at the filesystem level until `ACTIVE + s07 + granted write roots` exist.
+- the strict default for a new repo is `protocolControl.legacyScaffoldPolicy=forbid`; only if project config explicitly enables `allow_readonly` should `wfc work-item list|status` use a read-only bootstrap report from an old `s01` to observe legacy-scaffold state.
+- mutating actions such as `approve|activate|verify|close` must not self-bootstrap; they require an existing `.work-item-report.json`.
 
 ## Config
 
-CLI sẽ tìm project root bằng cách đi ngược từ `cwd`, nhưng file config canonical phải nằm ngay tại project root dưới tên `workflow-bundle.config.json`. Legacy config `workflow-contracts.config.json` vẫn được chấp nhận để migration êm hơn.
+The CLI finds the project root by walking upward from `cwd`, but the canonical config file must live at the project root as `workflow-bundle.config.json`. The legacy config `workflow-contracts.config.json` is still accepted for a smoother migration.
 
-Ví dụ:
+Example:
 
 ```json
 {
@@ -176,29 +182,29 @@ Ví dụ:
 }
 ```
 
-Ý nghĩa nhanh:
+Quick meaning:
 
-- `protocolControl.legacyScaffoldPolicy`: strict default là `forbid`; không coi legacy scaffold như đường delivery hợp lệ trừ khi project bật explicit `allow_readonly`
-- `authoringRoots`: path workflow/artifact luôn được phép ghi
-- `alwaysWritablePaths`: path ngoại lệ vẫn được phép ghi; strict default để trống, nên config workflow không còn là bypass writable mặc định
-- `protectedRoots`: nếu để trống, capability control sẽ suy ra từ top-level repo root không thuộc `authoringRoots`
-- implementation path chỉ được mở ghi tạm thời khi `wfc work-item activate|resume --step s07 --write-root <path>` cấp quyền qua `granted_write_paths`
+- `protocolControl.legacyScaffoldPolicy`: the strict default is `forbid`; legacy scaffolds are not treated as a valid delivery path unless the project explicitly enables `allow_readonly`
+- `authoringRoots`: workflow/artifact paths that are always writable
+- `alwaysWritablePaths`: exception paths that remain writable; the strict default is empty, so workflow config is no longer a default writable bypass
+- `protectedRoots`: if empty, capability control infers them from top-level repo roots that are not in `authoringRoots`
+- the implementation path is opened for writing only temporarily when `wfc work-item activate|resume --step s07 --write-root <path>` grants permission via `granted_write_paths`
 
 ## Init
 
-Khởi tạo baseline tối thiểu cho một repo dự án:
+Initialize the minimal baseline for a project repo:
 
 ```bash
 wfc init
 ```
 
-Hoặc nhắm vào một thư mục khác:
+Or target a different directory:
 
 ```bash
 wfc init --project-root /path/to/project
 ```
 
-Lệnh này sẽ tạo:
+This creates:
 
 - `workflow-bundle.config.json`
 - `work-items/`
@@ -215,7 +221,7 @@ Lệnh này sẽ tạo:
 
 ## Maintainer Commands
 
-Nếu đang author package từ source repo:
+If you are authoring the package from the source repo:
 
 ```bash
 npm run build:workflow:bundle-runtime
@@ -230,11 +236,11 @@ npm run validate:workflow:authoring-smoke
 npm run validate:workflow:bundle-smoke
 ```
 
-Pack tarball publishable:
+Build a publishable tarball:
 
 ```bash
 cd packages/workflow-bundle
 npm pack
 ```
 
-`prepack` sẽ tự bundle support policy và toàn bộ `runtime/codex/**`, `runtime/claude/**` trước khi tạo tarball.
+`prepack` will bundle the support policies and the full `runtime/codex/**`, `runtime/claude/**` trees before creating the tarball.

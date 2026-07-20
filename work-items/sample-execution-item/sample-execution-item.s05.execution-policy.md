@@ -17,14 +17,14 @@ verification_owner: "auditor"
 # Step 5 - Execution Policy
 
 > [!summary]
-> Ghi lại lý do chọn execution mode, coordinator, verification owner và fallback cho step.
+> Record the reason for choosing the execution mode, coordinator, verification owner and fallback for the step.
 
-## Artifact Chính
+## Main Artifact
 ```yaml
 execution_mode: multi_agent
 selection_reason:
-  - "Feature có nhiều boundary auth/frontend"
-  - "Cần tách research với design và review"
+  - "the feature has several auth/frontend boundaries"
+  - "research needs to be separated from design and review"
 complexity_signals:
   - multi_boundary
   - large_context
@@ -38,7 +38,7 @@ external_research:
   notebooklm: OPTIONAL
   expected_outputs:
     - "provider constraint summary"
-notes: "Chỉ bật multi_agent từ step 5; nếu owned_paths không đủ rõ ở step 7 thì giảm về fallback mode."
+notes: "Only enable multi_agent from step 5; if owned_paths are not clear enough in step 7, drop to the fallback mode."
 ```
 
 ## Links
