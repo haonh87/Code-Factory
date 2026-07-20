@@ -47,11 +47,40 @@ const REQUIRED_FINALIZED_SIGNOFF_BY_STEP = {
   s08: ["dod"]
 };
 
+// Light host contract (plan v5 §3): s05 không tồn tại; gate `approach` được host
+// tại s06 cùng `task_plan`. s04/s08 giữ nguyên. contract/foundation không áp dụng
+// cho light (default not_applicable).
+const LIGHT_REQUIRED_FINALIZED_SIGNOFF_BY_STEP = {
+  s04: ["spec", "dor"],
+  s06: ["approach", "task_plan"],
+  s08: ["dod"]
+};
+
 function getApprovalGateDefault(key) {
   return key === "spec" ? "required" : "not_applicable";
 }
 
-function getRequiredFinalizedGateKeys(stepId, approvalGates) {
+function getRequiredFinalizedGateKeys(stepId, approvalGates, sddMode) {
+  // Light: dùng host map gọn — s06 require approach+task_plan, bỏ s05.
+  // contract/foundation không áp dụng (light default not_applicable).
+  if (sddMode === "light") {
+    const required = [...(LIGHT_REQUIRED_FINALIZED_SIGNOFF_BY_STEP[stepId] || [])];
+
+    if (stepId === "s08") {
+      if (approvalGates.uat === "required") {
+        required.push("uat");
+      }
+      if (approvalGates.release === "required") {
+        required.push("release");
+      }
+      if (approvalGates.business_acceptance === "required") {
+        required.push("business_acceptance");
+      }
+    }
+
+    return [...new Set(required)];
+  }
+
   const required = [...(REQUIRED_FINALIZED_SIGNOFF_BY_STEP[stepId] || [])];
 
   if (stepId === "s04" && approvalGates.contract === "required") {
@@ -149,6 +178,7 @@ function loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId }) {
       status: "",
       specStatus: "",
       deliveryContext: "",
+      sddMode: "none",
       approvalGates: buildDefaultApprovalGates(),
       roleSignoffs: Object.fromEntries(SIGNOFF_KEYS.map((key) => [key, []])),
       gateReviews: Object.fromEntries(
@@ -174,6 +204,7 @@ function loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId }) {
       status: "",
       specStatus: "",
       deliveryContext: "",
+      sddMode: "none",
       approvalGates: buildDefaultApprovalGates(),
       roleSignoffs: Object.fromEntries(SIGNOFF_KEYS.map((key) => [key, []])),
       gateReviews: Object.fromEntries(
@@ -211,6 +242,7 @@ function loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId }) {
     status: getFrontmatterValue(frontmatterLines, "status") || "draft",
     specStatus: getFrontmatterValue(frontmatterLines, "spec_status") || "draft",
     deliveryContext: getFrontmatterValue(frontmatterLines, "delivery_context") || "brownfield",
+    sddMode: getFrontmatterValue(frontmatterLines, "sdd_mode") || "none",
     approvalGates,
     roleSignoffs,
     gateReviews
@@ -268,7 +300,8 @@ function getMissingGateEvidenceErrors(snapshot, requiredKeys, context = {}) {
         projectRoot: context.projectRoot,
         workflowRoot: context.workflowRoot,
         workItemSlug: context.workItemSlug,
-        gate: key
+        gate: key,
+        sddMode: context.sddMode
       });
 
       if (trustedReceipt.receipt.artifact_ref !== artifact.artifactRef) {
@@ -293,25 +326,56 @@ function getMissingGateEvidenceErrors(snapshot, requiredKeys, context = {}) {
   return errors;
 }
 
-function getProtocolStepGateErrors({ projectRoot, workflowRoot, workItemSlug, toStatus }) {
+// S07 evidence boundary (plan v5 §3, universal): không dồn evidence s07 sang s08.
+// Khi chuyển VERIFIED+, s07 phải tồn tại, đã finalized và có '## Delivery Rule
+// Evidence'. Đây là boundary gate, không thay thế validate-workflow-governance chi
+// tiết hơn cho s07.
+function getS07EvidenceErrors({ workflowRoot, workItemSlug }) {
+  const errors = [];
+  const snapshot = loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId: "s07" });
+  if (!snapshot.exists) {
+    errors.push(`Missing required workflow step note: ${snapshot.filePath}`);
+    return errors;
+  }
+  if (!snapshot.status || snapshot.status === "draft") {
+    errors.push(`s07 implementation note must be reviewed or finalized before verification: ${snapshot.filePath}`);
+  }
+  if (!/## Delivery Rule Evidence/.test(snapshot.content || "")) {
+    errors.push(`Missing '## Delivery Rule Evidence' in s07 implementation note: ${snapshot.filePath}`);
+  }
+  return errors;
+}
+
+function getProtocolStepGateErrors({ projectRoot, workflowRoot, workItemSlug, toStatus, sddMode }) {
   const errors = [];
 
   if (!workflowRoot) {
     return ["Missing workflow_root for protocol-managed work item."];
   }
 
+  // Profile detection: ưu tiên sddMode truyền vào; thiếu thì đọc từ note s01.
+  let resolvedSddMode = sddMode;
+  if (!resolvedSddMode) {
+    const s01Snapshot = loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId: "s01" });
+    resolvedSddMode = s01Snapshot.sddMode || "none";
+  }
+  const isLight = resolvedSddMode === "light";
+  // Light không có s05; pre-step gate check chỉ chạy cho s04 + s06.
+  const preSteps = isLight ? ["s04", "s06"] : ["s04", "s05", "s06"];
+
   if (["ACTIVE", "VERIFIED", "DONE", "ARCHIVED"].includes(toStatus)) {
-    ["s04", "s05", "s06"].forEach((stepId) => {
+    preSteps.forEach((stepId) => {
       const snapshot = loadWorkflowStepGateSnapshot({
         workflowRoot,
         workItemSlug,
         stepId
       });
       errors.push(
-        ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys(stepId, snapshot.approvalGates), {
+        ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys(stepId, snapshot.approvalGates, resolvedSddMode), {
           projectRoot,
           workflowRoot,
-          workItemSlug
+          workItemSlug,
+          sddMode: resolvedSddMode
         })
       );
     });
@@ -322,6 +386,12 @@ function getProtocolStepGateErrors({ projectRoot, workflowRoot, workItemSlug, to
     if (!fs.existsSync(s08Path)) {
       errors.push(`Missing required workflow step note: ${s08Path}`);
     }
+    // S07 evidence boundary (plan v5 §3, Light-specific): s08 không được kết luận
+    // thay s07. Non-light đã có s07 Delivery Rule Evidence check tại governance
+    // validator khi finalize s07, nên protocol boundary chỉ kích hoạt cho light.
+    if (isLight) {
+      errors.push(...getS07EvidenceErrors({ workflowRoot, workItemSlug }));
+    }
   }
 
   if (["DONE", "ARCHIVED"].includes(toStatus)) {
@@ -331,10 +401,11 @@ function getProtocolStepGateErrors({ projectRoot, workflowRoot, workItemSlug, to
       stepId: "s08"
     });
     errors.push(
-      ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys("s08", snapshot.approvalGates), {
+      ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys("s08", snapshot.approvalGates, resolvedSddMode), {
         projectRoot,
         workflowRoot,
-        workItemSlug
+        workItemSlug,
+        sddMode: resolvedSddMode
       })
     );
   }

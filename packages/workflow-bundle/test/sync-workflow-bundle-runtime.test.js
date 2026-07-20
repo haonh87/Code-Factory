@@ -1,7 +1,7 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
-const { copyDirectory } = require("../scripts/sync-workflow-bundle-runtime");
+const { copyDirectory, buildSyncedPackageManifest } = require("../scripts/sync-workflow-bundle-runtime");
 
 let failures = 0;
 
@@ -41,8 +41,50 @@ function testCopyDirectoryNormalizesPermissions() {
   console.log("  PASS: copyDirectory chuẩn hóa quyền 644/755 (read-only source thành writable)");
 }
 
+// ---------- R1: sync propagates schema versions (AC-14 source -> installed copy) ----------
+
+function testPropagatesSchemaVersions() {
+  const source = {
+    bundleName: "codex-workflow-bundle",
+    bundleVersion: "2.1.1",
+    workflowSchemaVersion: "2026-07-light-1",
+    crSchemaVersion: "2026-07-cr-1",
+    codex: { globalAgentsSource: "policies/codex/AGENTS.global.md" },
+    claude: { globalAgentsSource: "runtime/claude/AGENTS.global.md" }
+  };
+  const pkg = buildSyncedPackageManifest({
+    sourceManifest: source,
+    modeEntries: { codex: { globalAgentsSource: "runtime/codex/AGENTS.global.md" }, claude: null }
+  });
+  assert(pkg.bundleName === "codex-workflow-bundle", "bundleName propagated");
+  assert(pkg.bundleVersion === "2.1.1", "bundleVersion propagated");
+  assert(
+    pkg.workflowSchemaVersion === "2026-07-light-1",
+    `workflowSchemaVersion must propagate to package manifest, got '${pkg.workflowSchemaVersion}'`
+  );
+  assert(
+    pkg.crSchemaVersion === "2026-07-cr-1",
+    `crSchemaVersion must propagate to package manifest, got '${pkg.crSchemaVersion}'`
+  );
+  assert(pkg.codex && pkg.codex.globalAgentsSource === "runtime/codex/AGENTS.global.md", "codex mode entry included");
+  assert(!pkg.claude, "null mode entry must be omitted (only bundled modes written)");
+  console.log("  PASS: sync propagates schema versions + bundle identity to package manifest");
+}
+
+function testAbsentSchemaVersionsDefaultEmpty() {
+  const pkg = buildSyncedPackageManifest({
+    sourceManifest: { bundleName: "b", bundleVersion: "1" },
+    modeEntries: {}
+  });
+  assert(pkg.workflowSchemaVersion === "", "absent source workflowSchemaVersion -> empty (not undefined)");
+  assert(pkg.crSchemaVersion === "", "absent source crSchemaVersion -> empty (not undefined)");
+  console.log("  PASS: absent source schema versions default to empty string in package manifest");
+}
+
 console.log("Running sync-workflow-bundle-runtime (copy permissions) tests...\n");
 testCopyDirectoryNormalizesPermissions();
+testPropagatesSchemaVersions();
+testAbsentSchemaVersionsDefaultEmpty();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in sync-workflow-bundle-runtime.test.js`);

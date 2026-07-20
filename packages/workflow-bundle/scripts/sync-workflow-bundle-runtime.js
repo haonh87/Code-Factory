@@ -172,6 +172,27 @@ function bundleRuntimeMode({ repoRoot, packageRoot, sourceManifest, mode }) {
   };
 }
 
+// buildSyncedPackageManifest (plan v5 §8, AC-14): hàm pure xây package manifest
+// từ source manifest + mode entries đã bundle. Pure (không fs) để test được. Sync
+// phải propagate workflowSchemaVersion + crSchemaVersion từ source sang package
+// manifest — installed copy phải báo cùng contract version với authority source.
+function buildSyncedPackageManifest({ sourceManifest, modeEntries }) {
+  const packageManifest = {
+    bundleName: sourceManifest.bundleName || sourceManifest.packName,
+    bundleVersion: sourceManifest.bundleVersion || sourceManifest.packVersion,
+    workflowSchemaVersion: sourceManifest.workflowSchemaVersion || sourceManifest.workflow_schema_version || "",
+    crSchemaVersion: sourceManifest.crSchemaVersion || sourceManifest.cr_schema_version || ""
+  };
+
+  Object.entries(modeEntries || {}).forEach(([mode, entry]) => {
+    if (entry) {
+      packageManifest[mode] = entry;
+    }
+  });
+
+  return packageManifest;
+}
+
 function main() {
   const repoRoot = path.resolve(__dirname, "..", "..", "..");
   const packageRoot = path.resolve(__dirname, "..");
@@ -183,10 +204,6 @@ function main() {
   }
 
   const sourceManifest = loadJson(sourceManifestPath);
-  const packageManifest = {
-    bundleName: sourceManifest.bundleName || sourceManifest.packName,
-    bundleVersion: sourceManifest.bundleVersion || sourceManifest.packVersion
-  };
 
   // Determine harness modes from adapters or manifest
   const availableHarnesses = listAvailableHarnesses(repoRoot);
@@ -194,19 +211,18 @@ function main() {
     ? availableHarnesses.map((h) => h.harnessId)
     : (sourceManifest.harnesses || ["codex", "claude"]);
 
+  const modeEntries = {};
   harnessModes.forEach((mode) => {
-    const bundledRuntime = bundleRuntimeMode({ repoRoot, packageRoot, sourceManifest, mode });
-    if (bundledRuntime) {
-      packageManifest[mode] = bundledRuntime;
-    }
+    modeEntries[mode] = bundleRuntimeMode({ repoRoot, packageRoot, sourceManifest, mode });
   });
+  const packageManifest = buildSyncedPackageManifest({ sourceManifest, modeEntries });
 
   fs.writeFileSync(packageManifestPath, `${JSON.stringify(packageManifest, null, 2)}\n`, "utf8");
   if (legacyPackageManifestPath !== packageManifestPath) {
     removeFileIfExists(legacyPackageManifestPath);
   }
 
-  const runtimeModes = Object.keys(packageManifest).filter((key) => key !== "bundleName" && key !== "bundleVersion" && key !== "content" && key !== "harnesses");
+  const runtimeModes = Object.keys(packageManifest).filter((key) => harnessModes.includes(key));
   const bundledSkillCount = runtimeModes.reduce((total, mode) => total + countBundledSkills(path.join(packageRoot, "runtime", mode, "skills")), 0);
 
   console.log(
@@ -232,5 +248,6 @@ if (require.main === module) {
 
 module.exports = {
   main,
-  copyDirectory
+  copyDirectory,
+  buildSyncedPackageManifest
 };

@@ -7,6 +7,7 @@ const {
   getGateStepId,
   hasApprovedReceipt,
   loadTrustedApprovalReceipt,
+  resolveApprovalPassphrase,
   resolveGateArtifact,
   resolveTrustedApprovalRoot,
   writeTrustedApprovalReceipt
@@ -16,7 +17,12 @@ const {
   resolveWorkflowRootBase
 } = require("./work-item-protocol-utils");
 
-const SUPPORTED_ACTIONS = new Set(["status", "approve", "reject"]);
+const SUPPORTED_ACTIONS = new Set(["status", "approve", "reject", "approve-ready-bundle"]);
+
+// Ready bundle (plan v5 §3 output 5): seal 4 independent trusted receipts cho
+// gate authoring trong một lệnh. Mỗi receipt hash artifact host riêng (light:
+// approach->s06) và được validate authority trước khi seal.
+const READY_BUNDLE_GATES = ["spec", "dor", "approach", "task_plan"];
 const SUPPORTED_GATES = new Set([
   "bootstrap",
   "spec",
@@ -84,6 +90,109 @@ function validateSnapshotAuthority(snapshot, gate, reviewedBy) {
   }
 }
 
+// Đọc profile từ note s01 để resolve gate host map (light: approach->s06).
+function resolveSddMode(workflowRoot, workItemSlug) {
+  const snapshot = loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId: "s01" });
+  return snapshot.sddMode || "none";
+}
+
+// Seal một gate receipt (dùng chung cho approve đơn lẻ và ready-bundle).
+// resolvedPassphrase (tuỳ chọn) tránh prompt nhiều lần khi seal batch.
+function sealGateReceipt({
+  projectRoot,
+  workflowRoot,
+  workItemSlug,
+  gate,
+  reviewedBy,
+  reviewedAt,
+  note,
+  approvalStatus,
+  approvalRoot,
+  approvalPassphrase,
+  resolvedPassphrase,
+  sddMode
+}) {
+  const artifact = resolveGateArtifact({ projectRoot, workflowRoot, workItemSlug, gate, sddMode });
+
+  if (gate !== "bootstrap") {
+    const snapshot = loadWorkflowStepGateSnapshot({
+      workflowRoot,
+      workItemSlug,
+      stepId: getGateStepId(gate, sddMode)
+    });
+    validateSnapshotAuthority(snapshot, gate, reviewedBy);
+  }
+
+  const result = writeTrustedApprovalReceipt({
+    projectRoot,
+    overrideRoot: approvalRoot,
+    kind: "gate",
+    workItemSlug,
+    gate,
+    reviewedBy,
+    reviewedAt,
+    note,
+    approvalStatus,
+    artifactRef: artifact.artifactRef,
+    artifactSha256: artifact.artifactSha256,
+    approvalPassphrase,
+    resolvedPassphrase
+  });
+
+  return {
+    gate,
+    artifact_ref: artifact.artifactRef,
+    artifact_sha256: artifact.artifactSha256,
+    receipt_path: result.receiptPath,
+    receipt_status: result.receipt.approval_status,
+    reviewed_by: result.receipt.reviewed_by,
+    reviewed_at: result.receipt.reviewed_at
+  };
+}
+
+function runApproveReadyBundle({ projectRoot, workflowRoot, workItemSlug, approvalRoot, args, sddMode }) {
+  const reviewedAt = normalizeSingleValue(args["reviewed-at"] || new Date().toISOString());
+  const noteText = getNoteText(args, "Human review approved ready bundle authoring gates.");
+  // Resolve passphrase đúng rule MỘT lần; truyền thẳng cho mỗi receipt để tránh
+  // prompt lặp lại trong TTY hoặc mở rộng non-interactive không cần thiết.
+  const resolvedPassphrase = resolveApprovalPassphrase(normalizeSingleValue(args["approval-passphrase"] || ""));
+  const approvalPassphrase = normalizeSingleValue(args["approval-passphrase"] || "");
+
+  // Mỗi gate có reviewer độc lập, lấy từ gate_reviews.{gate}_reviewed_by đã được
+  // human điền trong note host. Trường chưa điền -> throw (chưa đủ authority).
+  const sealed = READY_BUNDLE_GATES.map((gate) => {
+    const stepId = getGateStepId(gate, sddMode);
+    const snapshot = loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId });
+    const reviewers = (snapshot.gateReviews[gate] && snapshot.gateReviews[gate].reviewedBy) || [];
+    if (reviewers.length < 1) {
+      throw new Error(`ready-bundle requires gate_reviews.${gate}_reviewed_by filled in ${snapshot.filePath}`);
+    }
+
+    return sealGateReceipt({
+      projectRoot,
+      workflowRoot,
+      workItemSlug,
+      gate,
+      reviewedBy: reviewers[0],
+      reviewedAt,
+      note: noteText,
+      approvalStatus: "APPROVED",
+      approvalRoot,
+      approvalPassphrase,
+      resolvedPassphrase,
+      sddMode
+    });
+  });
+
+  const summary = {
+    action: "approve-ready-bundle",
+    work_item_slug: workItemSlug,
+    sdd_mode: sddMode,
+    sealed_gates: sealed
+  };
+  console.log(JSON.stringify(summary, null, 2));
+}
+
 function printStatus(summary, jsonOutput = false) {
   if (jsonOutput) {
     console.log(JSON.stringify(summary, null, 2));
@@ -114,12 +223,26 @@ function runCli() {
     const projectRoot = path.resolve(normalizeSingleValue(args["project-root"] || process.cwd()));
     const workflowRootBase = resolveWorkflowRootBase(projectRoot, normalizeSingleValue(args["workflow-root"] || ""));
     const workItemSlug = requireWorkItemSlug(args);
-    const gate = requireGate(args);
     const workflowRoot = path.join(workflowRootBase, workItemSlug);
     const approvalRootInfo = resolveTrustedApprovalRoot({
       projectRoot,
       overrideRoot: normalizeSingleValue(args["approval-root"] || "")
     });
+    const sddMode = resolveSddMode(workflowRoot, workItemSlug);
+
+    if (action === "approve-ready-bundle") {
+      runApproveReadyBundle({
+        projectRoot,
+        workflowRoot,
+        workItemSlug,
+        approvalRoot: approvalRootInfo.approvalRoot,
+        args,
+        sddMode
+      });
+      return;
+    }
+
+    const gate = requireGate(args);
     const loaded = loadTrustedApprovalReceipt({
       projectRoot,
       overrideRoot: approvalRootInfo.approvalRoot,
@@ -139,7 +262,8 @@ function runCli() {
           workflowRoot,
           workItemSlug,
           gate,
-          ref: normalizeSingleValue(args.ref || loaded.receipt.artifact_ref || "")
+          ref: normalizeSingleValue(args.ref || loaded.receipt.artifact_ref || ""),
+          sddMode
         });
         currentArtifactRef = artifact.artifactRef;
         currentArtifactSha256 = artifact.artifactSha256;
@@ -175,14 +299,15 @@ function runCli() {
       workflowRoot,
       workItemSlug,
       gate,
-      ref: normalizeSingleValue(args.ref || "")
+      ref: normalizeSingleValue(args.ref || ""),
+      sddMode
     });
 
     if (action === "approve" && gate !== "bootstrap") {
       const snapshot = loadWorkflowStepGateSnapshot({
         workflowRoot,
         workItemSlug,
-        stepId: getGateStepId(gate)
+        stepId: getGateStepId(gate, sddMode)
       });
       validateSnapshotAuthority(snapshot, gate, reviewedBy);
     }

@@ -2,6 +2,34 @@ const {
   EXECUTION_RUNTIME_ARTIFACTS
 } = require("./workflow-execution-definitions");
 
+// --- Light compact scaffold (plan v5 §2) ---
+// Light gộp 8 logical step vào 3 physical note khi authoring (s01/s04/s06) và
+// 5 note khi hoàn tất (thêm s07/s08 lazy). Upstream phải profile-aware để không
+// sinh dangling ref tới note không tồn tại (s02/s03/s05 bị host tại s01/s06).
+const LIGHT_INITIAL_STEPS = ["s01", "s04", "s06"];
+const UPSTREAM_BY_STEP_FULL = {
+  s01: [],
+  s02: ["s01"],
+  s03: ["s01", "s02"],
+  s04: ["s01", "s02", "s03"],
+  s05: ["s04"],
+  s06: ["s05"],
+  s07: ["s06"],
+  s08: ["s07"]
+};
+const UPSTREAM_BY_STEP_LIGHT = {
+  s01: [],
+  s04: ["s01"],
+  s06: ["s04"],
+  s07: ["s06"],
+  s08: ["s07"]
+};
+
+function getUpstreamStepIds(stepId, sddMode) {
+  const map = sddMode === "light" ? UPSTREAM_BY_STEP_LIGHT : UPSTREAM_BY_STEP_FULL;
+  return [...(map[stepId] || [])];
+}
+
 const STEP_DEFINITIONS = [
   {
     stepId: "s01",
@@ -773,6 +801,102 @@ function getStepDefinition(stepId) {
   return STEP_DEFINITIONS.find((definition) => definition.stepId === stepId) || null;
 }
 
+// --- Light compact body (plan v5 §2, §3 + budget AC-03) ---
+// Light omit các optional block rỗng/N/A để giữ line budget (≤450 initial, ≤600
+// final) và giảm required prompts. Chỉ giữ block có dữ liệu hoặc block bị
+// validator/governance yêu cầu. Hosted logical section (s02/s03 tại s01, s05 tại
+// s06) được chèn lean.
+const LIGHT_OMIT_BY_STEP = {
+  s01: ["## Step Contract", "## Traceability", "## Handoff"],
+  s04: ["## Step Contract", "## Contract Baseline", "## Requirement Baseline", "## Traceability", "## Handoff"],
+  s06: ["## Step Contract", "## Traceability", "## Handoff", "## Architecture Details"],
+  s07: ["## Step Contract", "## Implementation Notes", "## Spec Change", "## Traceability", "## Handoff", "## Governance Exceptions"],
+  s08: [
+    "## Step Contract",
+    "## Scan Summary",
+    "## UAT Summary",
+    "## Release Summary",
+    "## Business Acceptance Summary",
+    "## Audit",
+    "## Traceability",
+    "## Handoff",
+    "## Governance Exceptions"
+  ]
+};
+
+function buildLightHostedSections(stepId, context) {
+  if (stepId === "s01") {
+    return [
+      yamlSection("## Business Goal", [
+        'business_goal: ""',
+        "success_metrics: []",
+        "non_goals: []"
+      ]),
+      yamlSection("## Open Questions", [
+        "open_questions: []",
+        "missing_inputs: []",
+        "conflicts: []"
+      ])
+    ];
+  }
+
+  if (stepId === "s06") {
+    const sections = [
+      yamlSection("## Option Analysis", [
+        "options: []",
+        'recommended_option: ""',
+        "trade_offs: []"
+      ]),
+      yamlSection("## Technical Approach", [
+        'recommended_approach: ""',
+        'why: ""',
+        "boundaries: []"
+      ])
+    ];
+
+    if (context.deliveryContext === "brownfield") {
+      sections.push(
+        yamlSection("## Brownfield Impact Analysis", [
+          "impacted_modules: []",
+          "compatibility_risks: []",
+          "migration_notes: []",
+          "rollback_notes: []"
+        ])
+      );
+    }
+
+    return sections;
+  }
+
+  return [];
+}
+
+function applyLightSectionFilter(stepId, sections) {
+  const omit = LIGHT_OMIT_BY_STEP[stepId] || [];
+  if (omit.length === 0) {
+    return sections;
+  }
+  return sections.filter((section) => !omit.includes(section.heading));
+}
+
+function insertLightHostedSections(stepId, sections, context) {
+  const hosted = buildLightHostedSections(stepId, context);
+  if (hosted.length === 0) {
+    return sections;
+  }
+
+  const artifactIndex = sections.findIndex((section) => section.heading === "## Artifact Chính");
+  if (artifactIndex < 0) {
+    return [...sections, ...hosted];
+  }
+
+  return [
+    ...sections.slice(0, artifactIndex + 1),
+    ...hosted,
+    ...sections.slice(artifactIndex + 1)
+  ];
+}
+
 function getPrimaryArtifactEntries() {
   return STEP_DEFINITIONS.map((definition) => ({
     stepId: definition.stepId,
@@ -791,6 +915,11 @@ function getAllStepIds() {
 
 function renderStepBody(definition, context) {
   let sections = definition.buildSections(context);
+
+  if (context.sddMode === "light") {
+    sections = applyLightSectionFilter(definition.stepId, sections);
+    sections = insertLightHostedSections(definition.stepId, sections, context);
+  }
 
   if (
     ["EXCEPTION_RECORDED", "WAIVER_APPROVED"].includes(context.governanceStatus) &&
@@ -839,9 +968,11 @@ function renderStepBody(definition, context) {
 module.exports = {
   SECONDARY_ARTIFACTS,
   STEP_DEFINITIONS,
+  LIGHT_INITIAL_STEPS,
   getAllStepIds,
   getAllowedArtifactEntries,
   getPrimaryArtifactEntries,
   getStepDefinition,
+  getUpstreamStepIds,
   renderStepBody
 };

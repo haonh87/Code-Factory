@@ -30,8 +30,10 @@ const {
 } = require("./workflow-planning-definitions");
 const { SDD_MODES } = require("./workflow-sdd-definitions");
 const {
+  LIGHT_INITIAL_STEPS,
   getAllStepIds,
   getStepDefinition,
+  getUpstreamStepIds,
   renderStepBody
 } = require("./workflow-step-definitions");
 const { syncCapabilityControl } = require("./workflow-capability-control");
@@ -68,6 +70,66 @@ function buildYamlList(key, values, indent = "") {
   ];
 }
 
+// --- Light compact frontmatter (plan v5 §2, §3 + budget AC-03) ---
+// Light chỉ giữ gate relevant cho quick/agentic/self/default: spec, dor,
+// approach, task_plan, dod. Các gate N/A (contract, foundation, uat, release,
+// business_acceptance) được omit; validator và gate-review snapshot default
+// missing keys nên omit an toàn. approval_gates chỉ cần spec (required); phần
+// còn lại default not_applicable.
+const FULL_SIGNOFF_KEYS = [
+  "spec",
+  "contract",
+  "dor",
+  "approach",
+  "foundation",
+  "task_plan",
+  "uat",
+  "release",
+  "business_acceptance",
+  "dod"
+];
+const LIGHT_SIGNOFF_KEYS = ["spec", "dor", "approach", "task_plan", "dod"];
+const LIGHT_APPROVAL_GATES = ["spec"];
+
+function buildSpecRefsLines(sddMode) {
+  if (sddMode === "light") {
+    return ["spec_refs:", '  card: ""'];
+  }
+  return ["spec_refs:", '  brd: ""', '  srs: ""'];
+}
+
+function buildApprovalGatesLines(context) {
+  if (context.sddMode === "light") {
+    return [
+      "approval_gates:",
+      ...LIGHT_APPROVAL_GATES.map((gate) => `  ${gate}: "${gate === "spec" ? "required" : "not_applicable"}"`)
+    ];
+  }
+  return [
+    "approval_gates:",
+    '  spec: "required"',
+    `  contract: "${context.defaultApprovalGates.contract}"`,
+    `  foundation: "${context.defaultApprovalGates.foundation}"`,
+    '  uat: "not_applicable"',
+    '  release: "not_applicable"',
+    '  business_acceptance: "not_applicable"'
+  ];
+}
+
+function buildRoleSignoffsLines(sddMode) {
+  const keys = sddMode === "light" ? LIGHT_SIGNOFF_KEYS : FULL_SIGNOFF_KEYS;
+  return ["role_signoffs:", ...keys.map((key) => `  ${key}: []`)];
+}
+
+function buildGateReviewsLines(sddMode) {
+  const keys = sddMode === "light" ? LIGHT_SIGNOFF_KEYS : FULL_SIGNOFF_KEYS;
+  const lines = ["gate_reviews:"];
+  keys.forEach((key) => {
+    lines.push(`  ${key}_reviewed_by: []`, `  ${key}_reviewed_at: ""`);
+  });
+  return lines;
+}
+
 function validateChoice(name, value, allowedValues) {
   if (!allowedValues.includes(value)) {
     throw new Error(`Invalid ${name} '${value}'. Allowed values: ${allowedValues.join(", ")}`);
@@ -78,7 +140,7 @@ function getDefaultWorkflowRoot(workItemSlug) {
   return path.resolve("work-items", workItemSlug);
 }
 
-function getStepIdsFromArgs(args) {
+function getStepIdsFromArgs(args, sddMode) {
   const singleStep = normalizeSingleValue(args.step);
   const stepList = normalizeSingleValue(args.steps);
 
@@ -97,22 +159,17 @@ function getStepIdsFromArgs(args) {
       .filter(Boolean);
   }
 
+  // Light mặc định scaffold 3 note authoring (s01/s04/s06); s07/s08 tạo lazy khi
+  // chuyển ACTIVE/Verify. Explicit --step/--steps vẫn override.
+  if (sddMode === "light") {
+    return [...LIGHT_INITIAL_STEPS];
+  }
+
   return getAllStepIds();
 }
 
-function getDefaultUpstreamArtifacts(stepId, workItemSlug) {
-  const refsByStep = {
-    s01: [],
-    s02: ["s01"],
-    s03: ["s01", "s02"],
-    s04: ["s01", "s02", "s03"],
-    s05: ["s04"],
-    s06: ["s05"],
-    s07: ["s06"],
-    s08: ["s07"]
-  };
-
-  return (refsByStep[stepId] || []).map((upstreamStepId) => {
+function getDefaultUpstreamArtifacts(stepId, workItemSlug, sddMode) {
+  return getUpstreamStepIds(stepId, sddMode).map((upstreamStepId) => {
     const upstreamDefinition = getStepDefinition(upstreamStepId);
     return `${workItemSlug}.${upstreamDefinition.stepId}.${upstreamDefinition.stepSlug}.md`;
   });
@@ -142,57 +199,21 @@ function buildFrontmatter(definition, context) {
     ...buildYamlList("spec_delta_refs", context.specDeltaRefs),
     `archive_status: ${context.archiveStatus}`,
     `sdd_mode: ${context.sddMode}`,
-    "spec_refs:",
-    '  brd: ""',
-    '  srs: ""',
+    ...buildSpecRefsLines(context.sddMode),
     "spec_status: draft",
     `planning_track: ${context.planningTrack}`,
     `execution_mode: ${context.executionMode}`,
-    ...buildYamlList("execution_roles", context.executionRoles),
+    // Light (agentic/self) không emit execution_roles rỗng và verification_owner
+    // rỗng — planning/execution validator default missing keys nên omit an toàn.
+    ...(context.sddMode === "light" ? [] : buildYamlList("execution_roles", context.executionRoles)),
     `review_mode: ${context.reviewMode}`,
-    `verification_owner: ${quoteYamlString(context.verificationOwner)}`,
-    "approval_gates:",
-    '  spec: "required"',
-    `  contract: "${context.defaultApprovalGates.contract}"`,
-    `  foundation: "${context.defaultApprovalGates.foundation}"`,
-    '  uat: "not_applicable"',
-    '  release: "not_applicable"',
-    '  business_acceptance: "not_applicable"',
-    "role_signoffs:",
-    "  spec: []",
-    "  contract: []",
-    "  dor: []",
-    "  approach: []",
-    "  foundation: []",
-    "  task_plan: []",
-    "  uat: []",
-    "  release: []",
-    "  business_acceptance: []",
-    "  dod: []",
-    "gate_reviews:",
-    '  spec_reviewed_by: []',
-    '  spec_reviewed_at: ""',
-    '  contract_reviewed_by: []',
-    '  contract_reviewed_at: ""',
-    '  dor_reviewed_by: []',
-    '  dor_reviewed_at: ""',
-    '  approach_reviewed_by: []',
-    '  approach_reviewed_at: ""',
-    '  foundation_reviewed_by: []',
-    '  foundation_reviewed_at: ""',
-    '  task_plan_reviewed_by: []',
-    '  task_plan_reviewed_at: ""',
-    '  uat_reviewed_by: []',
-    '  uat_reviewed_at: ""',
-    '  release_reviewed_by: []',
-    '  release_reviewed_at: ""',
-    '  business_acceptance_reviewed_by: []',
-    '  business_acceptance_reviewed_at: ""',
-    '  dod_reviewed_by: []',
-    '  dod_reviewed_at: ""',
+    ...(context.sddMode === "light" ? [] : [`verification_owner: ${quoteYamlString(context.verificationOwner)}`]),
+    ...buildApprovalGatesLines(context),
+    ...buildRoleSignoffsLines(context.sddMode),
+    ...buildGateReviewsLines(context.sddMode),
     ...buildYamlList("content_skills", definition.contentSkills),
     ...buildYamlList("artifact_skills", definition.artifactSkills),
-    ...buildYamlList("upstream_artifacts", getDefaultUpstreamArtifacts(definition.stepId, context.workItemSlug)),
+    ...buildYamlList("upstream_artifacts", getDefaultUpstreamArtifacts(definition.stepId, context.workItemSlug, context.sddMode)),
     ...buildYamlList("linked_artifacts", getDefaultLinkedArtifacts(definition.stepId, context)),
     ...buildYamlList("tags", ["agent-ops", `workflow/${definition.stepId}`]),
     "---"
@@ -318,7 +339,7 @@ function parseContextFromArgs(args) {
 function scaffoldWorkflowNotes(options) {
   const args = options.args;
   const context = parseContextFromArgs(args);
-  const stepIds = getStepIdsFromArgs(args);
+  const stepIds = getStepIdsFromArgs(args, context.sddMode);
   const workflowRoot = path.resolve(
     normalizeSingleValue(args["workflow-root"]) || getDefaultWorkflowRoot(context.workItemSlug)
   );
@@ -405,6 +426,39 @@ function scaffoldWorkflowNotes(options) {
   };
 }
 
+// Lazy note builder cho Light (plan v5 §2): s07 tạo khi chuyển ACTIVE, s08 tạo
+// khi bắt đầu Verify. Idempotent — không ghi đè note đã tồn tại trừ khi force,
+// không sinh duplicate. T4 sẽ nối builder này vào transition hooks.
+function ensureLazyWorkflowNote(options) {
+  const args = options.args;
+  const stepId = options.stepId;
+  const force = Boolean(options.force);
+
+  const context = parseContextFromArgs(args);
+  const definition = getStepDefinition(stepId);
+  if (!definition) {
+    throw new Error(`Unsupported step '${stepId}'.`);
+  }
+
+  const workflowRoot = path.resolve(
+    normalizeSingleValue(args["workflow-root"]) || getDefaultWorkflowRoot(context.workItemSlug)
+  );
+  const filePath = path.join(
+    workflowRoot,
+    `${context.workItemSlug}.${definition.stepId}.${definition.stepSlug}.md`
+  );
+
+  if (fs.existsSync(filePath) && !force) {
+    return { created: false, filePath, workflowRoot };
+  }
+
+  ensureDirectory(workflowRoot);
+  const content = buildStepContent(definition, context);
+  fs.writeFileSync(filePath, content, "utf8");
+
+  return { created: true, filePath, workflowRoot };
+}
+
 function runCli() {
   const args = parseCliArgs(process.argv.slice(2));
 
@@ -433,5 +487,6 @@ if (require.main === module) {
 }
 
 module.exports = {
-  scaffoldWorkflowNotes
+  scaffoldWorkflowNotes,
+  ensureLazyWorkflowNote
 };

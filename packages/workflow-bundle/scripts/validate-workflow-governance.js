@@ -222,6 +222,7 @@ function validateWorkflowGovernance(options) {
     const rawDeliveryContext = getFrontmatterValue(frontmatterLines, "delivery_context");
     const deliveryContext = rawDeliveryContext || "brownfield";
     const noteStatus = getFrontmatterValue(frontmatterLines, "status") || "draft";
+    const sddMode = getFrontmatterValue(frontmatterLines, "sdd_mode") || "none";
 
     if (!allowedDeliveryContexts.has(deliveryContext)) {
       errors.push(`Invalid delivery_context '${deliveryContext}' in ${filePath}`);
@@ -249,6 +250,19 @@ function validateWorkflowGovernance(options) {
         errors.push(`Invalid approval_gates.${key} '${approvalGates[key]}' in ${filePath}`);
       }
     });
+
+    // Light không hỗ trợ foundation/contract gate (plan v5 §3, AC-06): required
+    // là hard trigger buộc escalate full — phải fail rõ, không silent skip (S2,
+    // "no silent skipped invariant").
+    if (sddMode === "light") {
+      ["foundation", "contract"].forEach((gateKey) => {
+        if (approvalGates[gateKey] === "required") {
+          errors.push(
+            `sdd_mode=light does not support approval_gates.${gateKey}=required; escalate the work item to sdd_mode=none/strict (full profile): ${filePath}`
+          );
+        }
+      });
+    }
     SIGNOFF_KEYS.forEach((key) => {
       roleSignoffs[key] = getFrontmatterNestedList(frontmatterLines, "role_signoffs", key) || [];
       validateKnownRoles(roleSignoffs[key], `role_signoffs.${key}`, filePath, errors);
@@ -388,7 +402,7 @@ function validateWorkflowGovernance(options) {
     }
 
     if (isFinalizedNoteStatus(noteStatus)) {
-      const requiredSignoffs = getRequiredFinalizedGateKeys(stepId, approvalGates);
+      const requiredSignoffs = getRequiredFinalizedGateKeys(stepId, approvalGates, sddMode);
       requiredSignoffs.forEach((key) => {
         const reviewedByField = getGateReviewFieldName(key, "by");
         const reviewedAtField = getGateReviewFieldName(key, "at");
@@ -408,8 +422,11 @@ function validateWorkflowGovernance(options) {
           errors.push(`Finalized s04 note with approval_gates.spec=required must use spec_status approved|frozen: ${filePath}`);
         }
 
-        if (!hasRequiredBlock(content, "## Requirement Baseline")) {
-          errors.push(`Finalized s04 note with approval_gates.spec=required requires '## Requirement Baseline': ${filePath}`);
+        // Light dùng Spec Card (spec_refs.card) thay Requirement Baseline; SDD
+        // validator lo semantic REQ/AC mapping. Non-light vẫn giữ Requirement Baseline.
+        const specBaselineBlock = sddMode === "light" ? "## Spec Freeze" : "## Requirement Baseline";
+        if (!hasRequiredBlock(content, specBaselineBlock)) {
+          errors.push(`Finalized s04 note with approval_gates.spec=required requires '${specBaselineBlock}': ${filePath}`);
         }
       }
 
@@ -425,6 +442,18 @@ function validateWorkflowGovernance(options) {
         }
         if (!hasYamlScalarValue(optionAnalysisSection, "recommended_option")) {
           errors.push(`Finalized s05 note requires non-empty recommended_option in '## Option Analysis': ${filePath}`);
+        }
+      }
+
+      // Light host s05 invariants (Option Analysis) tại s06 vì s05 không tồn tại.
+      if (stepId === "s06" && sddMode === "light") {
+        const lightOptionSection = getMarkdownSectionContent(content, "## Option Analysis");
+        const lightOptionCount = countYamlListItemsInSection(lightOptionSection, "options");
+        if (lightOptionCount < 2 || lightOptionCount > 3) {
+          errors.push(`Finalized light s06 note requires 2-3 options in '## Option Analysis'; got ${lightOptionCount}: ${filePath}`);
+        }
+        if (!hasYamlScalarValue(lightOptionSection, "recommended_option")) {
+          errors.push(`Finalized light s06 note requires non-empty recommended_option in '## Option Analysis': ${filePath}`);
         }
       }
 
@@ -460,6 +489,10 @@ function validateWorkflowGovernance(options) {
         }
         if (stepId === "s05" && !hasRequiredBlock(content, "## Brownfield Impact Analysis")) {
           errors.push(`Finalized brownfield s05 note requires '## Brownfield Impact Analysis': ${filePath}`);
+        }
+        // Light host Brownfield Impact Analysis tại s06 (s05 không tồn tại).
+        if (stepId === "s06" && sddMode === "light" && !hasRequiredBlock(content, "## Brownfield Impact Analysis")) {
+          errors.push(`Finalized brownfield light s06 note requires '## Brownfield Impact Analysis': ${filePath}`);
         }
         if (stepId === "s06" && !hasRequiredBlock(content, "## Brownfield Delivery Plan")) {
           errors.push(`Finalized brownfield s06 note requires '## Brownfield Delivery Plan': ${filePath}`);

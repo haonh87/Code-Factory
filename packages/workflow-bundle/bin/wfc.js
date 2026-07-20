@@ -122,6 +122,10 @@ const commandTable = {
   },
   "version-bump": {
     script: "bump-version.js"
+  },
+  "cr-aggregate": {
+    script: "cr-aggregate-reconcile.js",
+    useProjectRoot: true
   }
 };
 
@@ -292,6 +296,7 @@ function printHelp() {
       "  skills          List/add/remove managed workflow skills",
       "  materialize     Propose or scaffold a work item from a raw request",
       "  change-item     Manage human approval for change packages",
+      "  cr-aggregate    Reconcile CR aggregate coverage + atomic ACCEPTED spec bump",
       "  work-item       Manage work-item approval and protocol lifecycle",
       "  gate            Manage trusted human approval receipts for workflow gates",
       "  capability      Sync or inspect capability-control write guards",
@@ -313,6 +318,7 @@ function printHelp() {
       "  6. wfc work-item status --work-item <work-item-slug>",
       "  7. if the work item came from agentic flow: wfc work-item approve --work-item <work-item-slug> --reviewed-by <role>",
       "  8. seal required human gates: wfc gate approve --work-item <work-item-slug> --gate <spec|dor|approach|task_plan> --reviewed-by <role>",
+      "  8b. (sdd_mode=light) seal authoring gates in one batch: wfc gate approve-ready-bundle --work-item <work-item-slug> (reviewers read from gate_reviews)",
       "  9. if the work item came from agentic flow: wfc work-item activate --work-item <work-item-slug> --step s07 --write-root <path>",
       " 10. wfc",
       " 11. wfc sdd | wfc change | wfc plan",

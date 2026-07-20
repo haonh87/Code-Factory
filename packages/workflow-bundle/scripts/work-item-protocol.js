@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { formatErrors, parseCliArgs } = require("./workflow-validator-utils");
+const { formatErrors, parseCliArgs, getFrontmatterLines, getFrontmatterValue } = require("./workflow-validator-utils");
 const { loadChangeProposalState } = require("./change-item-utils");
 const { CHANGE_APPROVAL_GATE_PASSED } = require("./workflow-change-definitions");
 const {
@@ -26,7 +26,8 @@ const {
   resolveWorkflowRootBase,
   syncProtocolArtifacts
 } = require("./work-item-protocol-utils");
-const { getProtocolStepGateErrors } = require("./workflow-gate-evidence-utils");
+const { getProtocolStepGateErrors, getWorkflowStepNotePath } = require("./workflow-gate-evidence-utils");
+const { ensureLazyWorkflowNote } = require("./scaffold-workflow");
 
 const SUPPORTED_ACTIONS = new Set([
   "list",
@@ -369,6 +370,64 @@ function applyReject(reportInput, args) {
   return report;
 }
 
+// Light transition hooks (plan v5 §2 + §3): s07 tạo khi chuyển ACTIVE, s08 tạo
+// khi bắt đầu Verify. Idempotent — ensureLazyWorkflowNote no-op nếu note đã tồn tại.
+// Chỉ kích hoạt cho sdd_mode=light (non-light scaffold đủ 8 note ngay từ đầu).
+// Phải chạy TRƯỚC transitionReport để assertStepGateEvidence thấy note s08 tồn tại.
+function ensureLightLazyStepNote(reportInput, projectRoot, stepId) {
+  const report = normalizeProtocolReport(reportInput);
+  const workflowRoot = path.resolve(
+    report.workflow_root ||
+      getWorkItemPaths({
+        projectRoot,
+        workflowRootBase: resolveWorkflowRootBase(projectRoot, ""),
+        workItemSlug: report.work_item_slug
+      }).workflowRoot
+  );
+
+  const s01Path = getWorkflowStepNotePath(workflowRoot, report.work_item_slug, "s01");
+  if (!fs.existsSync(s01Path)) {
+    return;
+  }
+
+  const frontmatterLines = getFrontmatterLines(s01Path);
+  const sddMode = frontmatterLines ? getFrontmatterValue(frontmatterLines, "sdd_mode") || "none" : "none";
+  if (sddMode !== "light") {
+    return;
+  }
+
+  const planningTrack = frontmatterLines ? getFrontmatterValue(frontmatterLines, "planning_track") || "quick" : "quick";
+  const deliveryContext = frontmatterLines ? getFrontmatterValue(frontmatterLines, "delivery_context") || "brownfield" : "brownfield";
+
+  return ensureLazyWorkflowNote({
+    args: {
+      "work-item": report.work_item_slug,
+      "sdd-mode": sddMode,
+      "planning-track": planningTrack,
+      "delivery-context": deliveryContext,
+      "workflow-root": workflowRoot,
+      "project-root": projectRoot
+    },
+    stepId
+  });
+}
+
+// AC-05 (S3): lazy note chỉ được TỒN TẠI khi transition thành công. Note được
+// tạo trước transitionReport (assertStepGateEvidence cần thấy note), nhưng nếu
+// transition fail thì note vừa tạo phải được dọn — không để premature artifact
+// trên đĩa làm bẩn budget và evidence timing.
+function withLightLazyStepNote(reportInput, projectRoot, stepId, runTransition) {
+  const created = ensureLightLazyStepNote(reportInput, projectRoot, stepId);
+  try {
+    return runTransition();
+  } catch (error) {
+    if (created && created.created && created.filePath && fs.existsSync(created.filePath)) {
+      fs.rmSync(created.filePath, { force: true });
+    }
+    throw error;
+  }
+}
+
 function applyAction(reportInput, action, args) {
   const projectRoot = path.resolve(normalizeSingleValue(args["project-root"] || process.cwd()));
 
@@ -378,19 +437,21 @@ function applyAction(reportInput, action, args) {
     case "reject":
       return applyReject(reportInput, args);
     case "activate":
-      return transitionReport(reportInput, {
-        action,
-        actor: normalizeSingleValue(args.actor || "coordinator"),
-        toStatus: "ACTIVE",
-        note: getNoteText(args, "Work item moved into active workflow execution."),
-        currentStep: normalizeSingleValue(args.step || "s07"),
-        handoffTarget: normalizeSingleValue(args["handoff-target"] || "step-s07-owner"),
-        requiredActions: ["Continue active execution from step 7 onward."],
-        protocolOwner: normalizeSingleValue(args["protocol-owner"] || args.actor || ""),
-        grantedWritePaths: resolveGrantedWritePaths(reportInput, args, projectRoot, { requireNonEmpty: true }),
-        auditEvent: "WORK_ITEM_ACTIVATED",
-        projectRoot
-      });
+      return withLightLazyStepNote(reportInput, projectRoot, "s07", () =>
+        transitionReport(reportInput, {
+          action,
+          actor: normalizeSingleValue(args.actor || "coordinator"),
+          toStatus: "ACTIVE",
+          note: getNoteText(args, "Work item moved into active workflow execution."),
+          currentStep: normalizeSingleValue(args.step || "s07"),
+          handoffTarget: normalizeSingleValue(args["handoff-target"] || "step-s07-owner"),
+          requiredActions: ["Continue active execution from step 7 onward."],
+          protocolOwner: normalizeSingleValue(args["protocol-owner"] || args.actor || ""),
+          grantedWritePaths: resolveGrantedWritePaths(reportInput, args, projectRoot, { requireNonEmpty: true }),
+          auditEvent: "WORK_ITEM_ACTIVATED",
+          projectRoot
+        })
+      );
     case "block":
       return transitionReport(reportInput, {
         action,
@@ -421,18 +482,20 @@ function applyAction(reportInput, action, args) {
         projectRoot
       });
     case "verify":
-      return transitionReport(reportInput, {
-        action,
-        actor: normalizeSingleValue(args.actor || "qc"),
-        toStatus: "VERIFIED",
-        note: getNoteText(args, "Technical verification completed."),
-        currentStep: "s08",
-        handoffTarget: normalizeSingleValue(args["handoff-target"] || "definition-of-done"),
-        requiredActions: ["Collect DoD evidence and close the work item when ready."],
-        protocolOwner: normalizeSingleValue(args["protocol-owner"] || ""),
-        auditEvent: "VERIFICATION_CONFIRMED",
-        projectRoot
-      });
+      return withLightLazyStepNote(reportInput, projectRoot, "s08", () =>
+        transitionReport(reportInput, {
+          action,
+          actor: normalizeSingleValue(args.actor || "qc"),
+          toStatus: "VERIFIED",
+          note: getNoteText(args, "Technical verification completed."),
+          currentStep: "s08",
+          handoffTarget: normalizeSingleValue(args["handoff-target"] || "definition-of-done"),
+          requiredActions: ["Collect DoD evidence and close the work item when ready."],
+          protocolOwner: normalizeSingleValue(args["protocol-owner"] || ""),
+          auditEvent: "VERIFICATION_CONFIRMED",
+          projectRoot
+        })
+      );
     case "close":
       return transitionReport(reportInput, {
         action,
@@ -674,6 +737,7 @@ if (require.main === module) {
 
 module.exports = {
   applyAction,
+  ensureLightLazyStepNote,
   listWorkItems,
   runCli,
   transitionReport

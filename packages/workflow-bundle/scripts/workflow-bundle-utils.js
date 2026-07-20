@@ -23,6 +23,18 @@ function getManifestBundleVersion(manifest) {
   return String((manifest && (manifest.bundleVersion || manifest.packVersion)) || "").trim();
 }
 
+// getManifestWorkflowSchemaVersion / getManifestCrSchemaVersion (plan v5 §8,
+// AC-14): đọc contract schema version từ manifest. Phát vào root manifest, sync
+// sang package/installed copy; reader này là contract surface cho sync check.
+// Trả "" khi thiếu — không throw, để sync/checker phân biệt "chưa khai báo".
+function getManifestWorkflowSchemaVersion(manifest) {
+  return String((manifest && (manifest.workflowSchemaVersion || manifest.workflow_schema_version)) || "").trim();
+}
+
+function getManifestCrSchemaVersion(manifest) {
+  return String((manifest && (manifest.crSchemaVersion || manifest.cr_schema_version)) || "").trim();
+}
+
 function validateRuntimeMode(mode, repoRoot) {
   const available = listAvailableHarnesses(repoRoot || getDefaultRepoRoot());
   const harnessIds = available.map((h) => h.harnessId);
@@ -870,6 +882,8 @@ module.exports = {
   getInstalledSkillDirs,
   getManifestBundleName,
   getManifestBundleVersion,
+  getManifestCrSchemaVersion,
+  getManifestWorkflowSchemaVersion,
   getRuntimeConfig,
   getRuntimeConfigFromAdapter,
   listAvailableHarnesses,

@@ -13,7 +13,17 @@ const { CHANGE_ID_PATTERN } = require("./workflow-change-definitions");
 const { GOVERNANCE_PROFILES } = require("./workflow-governance-definitions");
 const { PLANNING_TRACKS } = require("./workflow-planning-definitions");
 const { EXECUTION_MODES } = require("./workflow-execution-definitions");
+const {
+  SDD_LIGHT_PROFILE,
+  SDD_LIGHT_ESCALATION_REASONS,
+  resolveSddLightProfile,
+  evaluateLightEligibility
+} = require("./workflow-sdd-definitions");
 const { syncCapabilityControl } = require("./workflow-capability-control");
+const {
+  createTelemetryRecorder,
+  isTelemetryEnabled
+} = require("./workflow-telemetry");
 const {
   hasApprovedReceipt,
   loadTrustedApprovalReceipt
@@ -32,6 +42,27 @@ const DELIVERY_CONTEXTS = ["greenfield", "brownfield"];
 const WORK_ITEM_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const CHANGE_STRATEGIES = ["none", "reuse_existing", "create_new"];
 const DECISION_OWNERS = ["agent", "coordinator"];
+
+// SDD Light preset + eligibility override knobs (plan v5 §1, T5).
+// preset là preference; hard escalation không bị override (BR-02).
+const SDD_PRESETS = ["auto", "light", "full", "strict"];
+const DEFECT_SOURCES = ["unknown", "n/a", "code", "config", "data", "infra"];
+const RISK_LEVELS = ["low", "medium", "high"];
+const INTERACTION_MODES = ["self", "independent"];
+const MIGRATION_TOKENS = new Set(["migrate", "migration", "backfill", "cutover", "reindex"]);
+const PUBLIC_CONTRACT_TOKENS = new Set(["api", "contract", "policy"]);
+
+// Match token cả biến thể từ (review M5): migrations, migrating, apis, policies...
+// Stem bỏ "y"/"e" cuối rồi cho phép hậu tố y|ies|s|es|e|ing|ed — hard trigger
+// không được miss chỉ vì request viết số nhiều/gerund.
+function tokenMatchesInflected(tokenSet, tokens) {
+  return tokens.some((token) =>
+    [...tokenSet].some((base) => {
+      const stem = base.endsWith("y") || base.endsWith("e") ? base.slice(0, -1) : base;
+      return new RegExp(`^${stem}(y|ies|s|es|e|ing|ed)?$`).test(token);
+    })
+  );
+}
 
 const STOPWORDS = new Set([
   "a",
@@ -481,6 +512,99 @@ function inferExecutionMode(explicitMode) {
   return explicitMode || "agentic";
 }
 
+function parseSpecImpactClassified(rawValue) {
+  if (rawValue === true || rawValue === false) {
+    return rawValue;
+  }
+  if (rawValue == null || rawValue === "") {
+    return null;
+  }
+  // Strict parse (m8): chỉ nhận true|false — "yes"/"1"/typo không được im lặng
+  // thành false rồi trigger escalation sai hướng.
+  const normalized = String(rawValue).toLowerCase();
+  if (normalized === "true") {
+    return true;
+  }
+  if (normalized === "false") {
+    return false;
+  }
+  throw new Error(`Invalid spec-impact-classified '${rawValue}'. Allowed values: true, false`);
+}
+
+// resolveSddProfile (plan v5 §1, T5): dựng eligibility input từ context đã suy
+// diễn + explicit override, rồi chạy evaluateLightEligibility. Explicit preset
+// full/strict là lựa chọn nặng hơn — short-circuit (không silently về light).
+// preset light/auto đi qua eligibility; hard escalation override preset (BR-02).
+function resolveSddProfile({
+  preset,
+  tokens,
+  inferredType,
+  deliveryContext,
+  planningTrack,
+  governanceProfile,
+  executionMode,
+  interactionMode,
+  riskLevel,
+  defectSource,
+  specImpactClassified,
+  sddLightProfile
+}) {
+  const resolvedPreset = preset || "auto";
+  // R2: rollout flag đã được resolve (off|preview|default) ở caller; ở đây chỉ áp
+  // dụng. off chỉ đổi router DEFAULT (preset auto) — explicit light/full/strict
+  // vẫn short-circuit như BR-02.
+  const rolloutProfile = resolveSddLightProfile(sddLightProfile);
+
+  if (resolvedPreset === "full") {
+    return { selected_profile: "full", sdd_mode: "none", sdd_reasons: [], sdd_preset: resolvedPreset, sdd_light_profile: rolloutProfile };
+  }
+  if (resolvedPreset === "strict") {
+    return { selected_profile: "strict", sdd_mode: "none", sdd_reasons: [], sdd_preset: resolvedPreset, sdd_light_profile: rolloutProfile };
+  }
+
+  const tokenSet = new Set(tokens);
+  const eligibilityInput = {
+    deliveryContext,
+    planningTrack,
+    governanceProfile,
+    executionMode,
+    interactionMode,
+    riskLevel,
+    foundationRequired: deliveryContext === "greenfield",
+    hasMigration: tokenMatchesInflected(MIGRATION_TOKENS, tokens),
+    hasPublicContract: tokenMatchesInflected(PUBLIC_CONTRACT_TOKENS, tokens),
+    hasRegulatedEvidence: governanceProfile === "regulated",
+    requiresMultiAgent: executionMode === "multi_agent",
+    defectSource: defectSource || (inferredType === "BUG" ? "UNKNOWN" : "N/A"),
+    specImpactClassified:
+      specImpactClassified == null ? (inferredType === "BUG" ? false : true) : specImpactClassified,
+    blastRadiusHigh: planningTrack === "enterprise" || governanceProfile === "regulated",
+    requiresComplexRelease: planningTrack === "enterprise" || governanceProfile === "regulated"
+  };
+
+  const result = evaluateLightEligibility(eligibilityInput);
+  // R2: sdd_light_profile=off + preset auto + eligible -> rollback về full, ghi
+  // reason light-profile-disabled để observable. Không rewrite artifact.
+  let selectedProfile = result.selected_profile;
+  let reasons = result.escalation_reasons;
+  if (
+    rolloutProfile === "off" &&
+    resolvedPreset === "auto" &&
+    selectedProfile === SDD_LIGHT_PROFILE
+  ) {
+    selectedProfile = "full";
+    reasons = [...reasons, SDD_LIGHT_ESCALATION_REASONS.LIGHT_PROFILE_DISABLED];
+  }
+  const sddMode = selectedProfile === SDD_LIGHT_PROFILE ? "light" : "none";
+  return {
+    selected_profile: selectedProfile,
+    sdd_mode: sddMode,
+    sdd_reasons: reasons,
+    sdd_preset: resolvedPreset,
+    sdd_light_profile: rolloutProfile
+  };
+}
+
 function findWorkItemMatches(existingWorkItems, slug, coreTokens) {
   const exactMatch = existingWorkItems.find((item) => item.slug === slug) || null;
   const nearMatches = existingWorkItems
@@ -639,6 +763,10 @@ function buildScaffoldActions(item, projectRoot) {
     `--delivery-context ${item.delivery_context}`
   ];
 
+  if (item.sdd_mode !== "none") {
+    workflowActionParts.push(`--sdd-mode ${item.sdd_mode}`);
+  }
+
   if (item.change_id) {
     workflowActionParts.push(`--change-id ${item.change_id}`);
   }
@@ -667,10 +795,16 @@ function buildPostMaterializationActions(report, item) {
     actions.push(`wfc change-item approve --change-id ${item.change_id} --reviewed-by <role>`);
   }
   actions.push(`wfc work-item approve --work-item ${item.work_item_slug} --reviewed-by <role>`);
-  actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate spec --reviewed-by <role>`);
-  actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate dor --reviewed-by <role>`);
-  actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate approach --reviewed-by <role>`);
-  actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate task_plan --reviewed-by <role>`);
+  // Light compact: seal 4 authoring gates trong một batch (reviewer đọc từ
+  // gate_reviews). Non-light: 4 gate approve riêng lẽ như cũ.
+  if (item.sdd_mode === "light") {
+    actions.push(`wfc gate approve-ready-bundle --work-item ${item.work_item_slug}`);
+  } else {
+    actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate spec --reviewed-by <role>`);
+    actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate dor --reviewed-by <role>`);
+    actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate approach --reviewed-by <role>`);
+    actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate task_plan --reviewed-by <role>`);
+  }
   actions.push(`wfc work-item activate --work-item ${item.work_item_slug} --step s07 --write-root <path>`);
   return actions;
 }
@@ -682,7 +816,8 @@ function buildDecisionLog({
   changeStrategy,
   planningTrack,
   governanceProfile,
-  deliveryContext
+  deliveryContext,
+  sddProfile
 }) {
   return [
     `split_decision=${splitDecision}`,
@@ -691,7 +826,11 @@ function buildDecisionLog({
     `dedup_result=${dedupResult}`,
     `change_strategy=${changeStrategy}`,
     `planning_track=${planningTrack}`,
-    `governance_profile=${governanceProfile}`
+    `governance_profile=${governanceProfile}`,
+    `sdd_preset=${sddProfile.sdd_preset}`,
+    `selected_profile=${sddProfile.selected_profile}`,
+    `sdd_mode=${sddProfile.sdd_mode}`,
+    `sdd_escalation_reasons=${sddProfile.sdd_reasons.join("|")}`
   ];
 }
 
@@ -730,6 +869,10 @@ function renderMaterializationBlock(report, item) {
     `work_item_slug: ${quoteYamlString(item.work_item_slug)}`,
     `work_item_type: ${item.work_item_type}`,
     `delivery_context: ${item.delivery_context}`,
+    `sdd_preset: ${quoteYamlString(item.sdd_preset)}`,
+    `selected_profile: ${quoteYamlString(item.selected_profile)}`,
+    `sdd_mode: ${item.sdd_mode}`,
+    ...buildYamlList("sdd_escalation_reasons", item.sdd_reasons),
     `bootstrap_gate_status: ${report.bootstrap_gate_status}`,
     `bootstrap_gate_ref: ${quoteYamlString(report.bootstrap_gate_ref)}`,
     `change_strategy: ${item.change_strategy}`,
@@ -771,6 +914,12 @@ function analyzeRequest(options) {
     explicitChangeStrategy,
     explicitChangeId,
     explicitDeliveryContext,
+    explicitSddPreset,
+    explicitSddLightProfile,
+    explicitDefectSource,
+    explicitSpecImpactClassified,
+    explicitRiskLevel,
+    explicitInteractionMode,
     overrideApprovalRoot,
     decisionOwner,
     projectRoot,
@@ -786,6 +935,31 @@ function analyzeRequest(options) {
   const executionMode = inferExecutionMode(explicitExecutionMode);
   const deliveryContext = inferDeliveryContext(projectRoot, explicitDeliveryContext);
   const coreTokens = unique(tokens.filter((token) => !ACTION_TOKENS.has(token)));
+
+  // SDD Light eligibility routing (plan v5 §1, T5): inference + explicit override
+  // -> selected_profile / sdd_mode / escalation reasons. Không silently guess.
+  const interactionMode =
+    explicitInteractionMode || (executionMode === "multi_agent" ? "independent" : "self");
+  const riskLevel =
+    explicitRiskLevel ||
+    (planningTrack === "enterprise" || governanceProfile === "regulated" ? "high" : "medium");
+  const defectSource = explicitDefectSource
+    ? explicitDefectSource.toUpperCase()
+    : null;
+  const sddProfile = resolveSddProfile({
+    preset: explicitSddPreset,
+    tokens,
+    inferredType,
+    deliveryContext,
+    planningTrack,
+    governanceProfile,
+    executionMode,
+    interactionMode,
+    riskLevel,
+    defectSource,
+    specImpactClassified: parseSpecImpactClassified(explicitSpecImpactClassified),
+    sddLightProfile: explicitSddLightProfile
+  });
 
   const existingWorkItems = collectExistingWorkItems(workflowRootBase);
   const workItemMatches = findWorkItemMatches(existingWorkItems, workItemSlug, coreTokens);
@@ -866,7 +1040,11 @@ function analyzeRequest(options) {
     out_of_scope: [],
     planning_track: planningTrack,
     delivery_context: deliveryContext,
-    sdd_mode: "none",
+    sdd_mode: sddProfile.sdd_mode,
+    selected_profile: sddProfile.selected_profile,
+    sdd_reasons: [...sddProfile.sdd_reasons],
+    sdd_preset: sddProfile.sdd_preset,
+    sdd_light_profile: sddProfile.sdd_light_profile,
     governance_profile: governanceProfile,
     execution_mode: executionMode,
     existing_refs: [
@@ -897,7 +1075,8 @@ function analyzeRequest(options) {
     changeStrategy,
     planningTrack,
     governanceProfile,
-    deliveryContext
+    deliveryContext,
+    sddProfile
   });
 
   const requiredActions =
@@ -957,6 +1136,11 @@ function analyzeRequest(options) {
     work_item_slug: item.work_item_slug,
     work_item_type: item.work_item_type,
     delivery_context: deliveryContext,
+    selected_profile: sddProfile.selected_profile,
+    sdd_mode: sddProfile.sdd_mode,
+    sdd_preset: sddProfile.sdd_preset,
+    sdd_light_profile: sddProfile.sdd_light_profile,
+    sdd_reasons: [...sddProfile.sdd_reasons],
     workflow_root: item.work_item_slug ? path.join(workflowRootBase, item.work_item_slug) : "",
     current_step: "",
     change_strategy: item.change_strategy,
@@ -1027,6 +1211,34 @@ function materializeWorkItem(options) {
     throw new Error(`Invalid change-id '${explicitChangeId}'. Use uppercase tokens like CHANGE-001.`);
   }
 
+  const explicitSddPreset = normalizeSingleValue(args["sdd-preset"] || "");
+  if (explicitSddPreset) {
+    validateChoice("sdd-preset", explicitSddPreset, SDD_PRESETS);
+  }
+
+  // R2: sdd_light_profile rollout flag — arg tường minh hoặc env CF_SDD_LIGHT_PROFILE.
+  // resolveSddLightProfile validate (off|preview|default) và default preview.
+  const explicitSddLightProfile = normalizeSingleValue(
+    args["sdd-light-profile"] || (process.env.CF_SDD_LIGHT_PROFILE || "")
+  );
+
+  const explicitDefectSource = normalizeSingleValue(args["defect-source"] || "");
+  if (explicitDefectSource) {
+    validateChoice("defect-source", explicitDefectSource, DEFECT_SOURCES);
+  }
+
+  const explicitRiskLevel = normalizeSingleValue(args["risk-level"] || "");
+  if (explicitRiskLevel) {
+    validateChoice("risk-level", explicitRiskLevel, RISK_LEVELS);
+  }
+
+  const explicitInteractionMode = normalizeSingleValue(args["interaction-mode"] || "");
+  if (explicitInteractionMode) {
+    validateChoice("interaction-mode", explicitInteractionMode, INTERACTION_MODES);
+  }
+
+  const explicitSpecImpactClassified = normalizeSingleValue(args["spec-impact-classified"] || "");
+
   const decisionOwner = normalizeSingleValue(args["decision-owner"] || "agent");
   validateChoice("decision-owner", decisionOwner, DECISION_OWNERS);
   if (args["bootstrap-ref"] || args["bootstrap-reviewed-by"] || args["bootstrap-reviewed-at"]) {
@@ -1052,6 +1264,12 @@ function materializeWorkItem(options) {
     explicitDeliveryContext,
     explicitChangeStrategy,
     explicitChangeId,
+    explicitSddPreset,
+    explicitSddLightProfile,
+    explicitDefectSource,
+    explicitSpecImpactClassified,
+    explicitRiskLevel,
+    explicitInteractionMode,
     overrideApprovalRoot: normalizeSingleValue(args["approval-root"] || ""),
     decisionOwner,
     projectRoot,
@@ -1098,6 +1316,7 @@ function materializeWorkItem(options) {
         "planning-track": item.planning_track,
         "governance-profile": item.governance_profile,
         "execution-mode": item.execution_mode,
+        "sdd-mode": item.sdd_mode,
         "project-root": projectRoot,
         "workflow-root": workflowRoot,
         ...(item.change_id ? { "change-id": item.change_id } : {})
@@ -1134,6 +1353,34 @@ function materializeWorkItem(options) {
     writeReportFile(report, reportPath);
   }
 
+  let telemetryPath = "";
+  if (isTelemetryEnabled(args.telemetry)) {
+    // Ghi telemetry TRƯỚC syncCapabilityControl — sync khóa cây projectRoot
+    // (protected roots) sau đó, mkdir dir telemetry sẽ EACCES.
+    const recorder = createTelemetryRecorder({
+      projectRoot,
+      workItemSlug: item.work_item_slug,
+      outputDirOverride: normalizeSingleValue(args["telemetry-out"] || "")
+    });
+    recorder.recordSelectedProfile({
+      selectedProfile: report.selected_profile,
+      sddLightProfile: report.sdd_light_profile,
+      escalationReasons: report.sdd_reasons
+    });
+    // artifact_count: đếm .md note thực tế được scaffold (chỉ có nghĩa khi đã
+    // MATERIALIZED). Chưa scaffold -> giữ null (không guess).
+    const scaffoldedRoot = path.join(workflowRootBase, item.work_item_slug);
+    if (report.protocol_status === "MATERIALIZED" && fs.existsSync(scaffoldedRoot)) {
+      let mdCount = 0;
+      fs.readdirSync(scaffoldedRoot).forEach((name) => {
+        if (name.endsWith(".md")) mdCount += 1;
+      });
+      recorder.recordArtifactMetrics({ artifactCount: mdCount });
+    }
+    const finalized = recorder.finalize();
+    telemetryPath = finalized.reportPath;
+  }
+
   syncCapabilityControl({
     projectRoot,
     workflowRootBase
@@ -1141,7 +1388,8 @@ function materializeWorkItem(options) {
 
   return {
     report,
-    reportPath
+    reportPath,
+    telemetryPath
   };
 }
 

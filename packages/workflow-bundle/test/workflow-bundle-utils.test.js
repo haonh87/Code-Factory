@@ -6,7 +6,10 @@ const {
   listAvailableHarnesses,
   detectActiveHarness,
   getRuntimeConfigFromAdapter,
-  normalizeInstallState
+  normalizeInstallState,
+  getManifestBundleVersion,
+  getManifestCrSchemaVersion,
+  getManifestWorkflowSchemaVersion
 } = require("../scripts/workflow-bundle-utils");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
@@ -181,6 +184,36 @@ function testNormalizeInstallStateRespectsRepoRoot() {
   console.log("  PASS: normalizeInstallState tôn trọng context.repoRoot");
 }
 
+// ---------- R1: manifest schema-version readers (AC-14 contract surface) ----------
+
+function testReadsSchemaVersions() {
+  const manifest = {
+    bundleName: "codex-workflow-bundle",
+    bundleVersion: "2.1.1",
+    workflowSchemaVersion: "2026-07-light-1",
+    crSchemaVersion: "2026-07-cr-1"
+  };
+  assert(
+    getManifestWorkflowSchemaVersion(manifest) === "2026-07-light-1",
+    `reads workflowSchemaVersion, got '${getManifestWorkflowSchemaVersion(manifest)}'`
+  );
+  assert(
+    getManifestCrSchemaVersion(manifest) === "2026-07-cr-1",
+    `reads crSchemaVersion, got '${getManifestCrSchemaVersion(manifest)}'`
+  );
+  // Existing bundle version reader vẫn hoạt động (no regression).
+  assert(getManifestBundleVersion(manifest) === "2.1.1", "getManifestBundleVersion still works");
+  console.log("  PASS: manifest schema-version readers return declared values");
+}
+
+function testAbsentSchemaVersionsDefaultEmpty() {
+  assert(getManifestWorkflowSchemaVersion({}) === "", "absent workflowSchemaVersion must default to empty string");
+  assert(getManifestCrSchemaVersion({}) === "", "absent crSchemaVersion must default to empty string");
+  assert(getManifestWorkflowSchemaVersion(null) === "", "null manifest must default to empty string");
+  assert(getManifestCrSchemaVersion(undefined) === "", "undefined manifest must default to empty string");
+  console.log("  PASS: absent schema versions default to empty string (no crash on null/undefined)");
+}
+
 console.log("Running workflow-bundle adapter tests...\n");
 testLoadAdapterValid();
 testLoadAdapterErrors();
@@ -189,6 +222,8 @@ testDetectExplicitAndFallback();
 testDetectByEnvAndAmbiguity();
 testRuntimeConfigFromAdapter();
 testNormalizeInstallStateRespectsRepoRoot();
+testReadsSchemaVersions();
+testAbsentSchemaVersionsDefaultEmpty();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in workflow-bundle-utils.test.js`);
