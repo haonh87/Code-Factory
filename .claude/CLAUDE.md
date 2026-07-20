@@ -1,7 +1,7 @@
 # Code-Factory - Project Context
 
 Repository: AI Agent Ops - policy, workflow, skill và adapter cho AI agent.
-Public release: `workflow-bundle v2.2.0`.
+Public release: `workflow-bundle v2.2.1`.
 
 ## Commands
 

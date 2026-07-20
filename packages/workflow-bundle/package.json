@@ -1,6 +1,6 @@
 {
   "name": "workflow-bundle",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Workflow bundle validation, scaffold, materialization and install tooling with a short wfc CLI.",
   "scripts": {
     "bundle:workflow-bundle-runtime": "node scripts/sync-workflow-bundle-runtime.js",
