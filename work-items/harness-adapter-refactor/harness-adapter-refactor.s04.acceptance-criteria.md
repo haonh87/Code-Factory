@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
 governance_status: ALIGNED
@@ -40,7 +40,9 @@ approval_gates:
 role_signoffs:
   spec:
     - "po"
-  contract: []
+  contract:
+    - "po"
+    - "developer"
   dor:
     - "po"
   approach: []
@@ -54,8 +56,10 @@ gate_reviews:
   spec_reviewed_by:
     - "po"
   spec_reviewed_at: "2026-07-20"
-  contract_reviewed_by: []
-  contract_reviewed_at: ""
+  contract_reviewed_by:
+    - "po"
+    - "developer"
+  contract_reviewed_at: "2026-07-20"
   dor_reviewed_by:
     - "po"
   dor_reviewed_at: "2026-07-20"
@@ -120,13 +124,13 @@ decision_notes:
 
 ## Contract Baseline
 ```yaml
-status: PARTIAL
+status: APPROVED
 api_contract_refs:
   - "Contract cần chốt ở s05: schema adapters/<id>/adapter.json (harnessId, harnessLabel, version, detection{homeDirMarker,envVar,defaultHomeDir}, naming{...}, paths{...}, content{...}, runtime{installStateHomeKey}) + quy tắc fallback legacy manifest"
 ux_contract_refs: []
 notes:
   - "approval_gates.contract=required: adapter.json là public surface bundle (dù SCOPE-A giữ manifest legacy, adapter vẫn ship thật cho list/detect/home-resolution)"
-  - "Contract pass khi human duyệt schema tại s05 (văn bản hóa trong technical approach)"
+  - "Contract PASSED (po+developer, 2026-07-20): schema văn bản hóa + duyệt tại s05 section Contract"
 ```
 
 ## Existing System Baseline
