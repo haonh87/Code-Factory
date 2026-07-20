@@ -93,56 +93,83 @@ tags:
 
 ## Step Contract
 ```yaml
-step_goal: ""
-input_summary: []
-output_summary: []
-done_when: []
-owner: ""
+step_goal: "Thi công T-1..T-7 theo task plan approved; evidence cho s08."
+input_summary:
+  - "s06 approved (Task Plan passed 2026-07-20)"
+output_summary:
+  - "Merge 0fbe396 vào release/v2.2.0 (feat e5ee1d3); main working tree sạch WIP"
+done_when:
+  - "T-1..T-7 verify path pass"
+owner: "claude (implement) -> human (s08 DoD)"
 ```
 
 ## Artifact Chính
 ```yaml
-implemented_changes: []
-doc_changes: []
-operational_notes: []
+implemented_changes:
+  - "T-1: worktree .claude/worktrees/harness-adapter từ release/v2.2.0, WIP patch 688 dòng apply, smoke baseline PASS (DONE)"
+  - "T-2: characterization tests — test/workflow-bundle-utils.test.js: loadAdapter (5 error paths), listAvailableHarnesses (sorted/vắng/hỏng-skip), detectActiveHarness (explicit/fallback/env/ambiguity 0-1-nhiều), getRuntimeConfigFromAdapter (DONE)"
+  - "T-3: TDD bug 634 — test repro FAIL đúng lý do (custom_home=undefined) -> fix 'context.repoRoot || getDefaultRepoRoot()' -> PASS (DONE)"
+  - "T-4: edge tests gộp trong T-2 file + chốt hành vi chmod 644-flat là chủ đích (DONE)"
+  - "T-5: fixture new-format test (manifest content+harnesses inline; manifest root KHÔNG đổi) (DONE)"
+  - "T-6: full suite + smoke + validate + AC-4 shim/bin PASS; review 2 tầng PASS; merge --no-ff 0fbe396 vào release/v2.2.0 (DONE)"
+  - "T-7: main checkout -- 3 script + gỡ WIP untracked; main về nguyên trạng 2.1.1 (DONE — có 1 sự cố recover, xem log)"
+doc_changes:
+  - "s07 note này"
+operational_notes:
+  - "Đường legacy sản xuất không đổi; adapter registry hoạt động (list/detect/home-resolution)"
 ```
 
 ## Delivery Rule Evidence
 ```yaml
-behavior_change: YES|NO
-tdd_status: DONE|NOT_REQUIRED|EXCEPTION
-tdd_test_refs: []
-tdd_exception_reason: ""
-tdd_alternative_verify_path: []
-change_risk_profile: QUICK_FIX|STANDARD|LARGE_OR_RISKY
-worktree_status: USED|NOT_REQUIRED|SKIPPED_WITH_REASON
-worktree_refs: []
-worktree_reason: ""
-review_status: COMPLETED|PARTIAL|BLOCKED
-review_refs: []
-spec_compliance_status: PASS|FAIL|PARTIAL|NOT_RUN
-code_quality_status: PASS|FAIL|PARTIAL|NOT_RUN
-delegation_mode: agentic|multi_agent|subagent|sequential_multi_role
-independence_status: PASS|FAIL|NOT_APPLICABLE
+behavior_change: YES
+tdd_status: PARTIAL_EXCEPTION
+tdd_test_refs:
+  - "packages/workflow-bundle/test/workflow-bundle-utils.test.js (7 nhóm assert)"
+  - "packages/workflow-bundle/test/sync-workflow-bundle-runtime.test.js (chmod behavior)"
+tdd_exception_reason: "Code WIP đã tồn tại trước work item (viết ngoài chu trình) — không thể test-first phần đó"
+tdd_alternative_verify_path:
+  - "Characterization tests bọc TOÀN BỘ hàm mới TRƯỚC khi sửa bất kỳ dòng code nào (khóa hành vi)"
+  - "Bug fix 634 đi đúng chu kỳ TDD: test fail đúng lý do (evidence output) -> fix -> pass"
+  - "Export copyDirectory cũng test-first: test fail vì thiếu export -> thêm export -> pass"
+change_risk_profile: ELEVATED
+worktree_status: USED
+worktree_refs:
+  - ".claude/worktrees/harness-adapter (feat/harness-adapter)"
+worktree_reason: "Bắt buộc theo s06: nhiều file, đụng release branch"
+review_status: DONE
+review_refs:
+  - "T-6 review 2 tầng (2026-07-20): spec compliance PASS — SCOPE-A giữ (manifest root untouched; package manifest generated chỉ reorder key theo sort, nội dung y hệt — đã kiểm diff), contract schema đủ key theo bản duyệt s05, không caller ngoài đổi. Code quality PASS — fix 634 minimal đúng ngữ nghĩa (khớp getDefaultInstallState), test style plain-assert khớp repo"
+spec_compliance_status: PASS
+code_quality_status: PASS
+delegation_mode: agentic
+independence_status: NOT_APPLICABLE
 independence_refs: []
-merge_path: ""
-verify_path: []
+merge_path: "feat/harness-adapter -> merge --no-ff 0fbe396 -> release/v2.2.0 (revertable 1 merge commit)"
+verify_path:
+  - "T-1: bundle-smoke PASS trên WIP+v2.2.0 base"
+  - "T-3: test output FAIL->PASS lưu trong transcript; fail message 'custom_home=undefined' đúng root cause precedence"
+  - "T-6: 3 test file pass + smoke PASS + wfc validate 68+64 (worktree) + shim exit 0 + bin version 2.2.0 + status OK"
+  - "Sau merge: smoke + utils test PASS trên release/v2.2.0"
 ```
 
 ## Implementation Notes
 ```yaml
-framework_notes: []
-known_limitations: []
+framework_notes:
+  - "tdd-enforce hook tự chặn Edit production .js cho tới khi test đúng convention tồn tại (packages/X/scripts/foo.js -> packages/X/test/foo.test.js) — hook hoạt động đúng thiết kế, buộc đổi tên test file theo convention"
+  - "INCIDENT + RECOVER (T-7): rm -rf adapters/ ở main xóa nhầm file tracked có sẵn (install scripts cũ) vì adapters/ không thuần untracked; khôi phục ngay bằng git checkout -- adapters/, không mất dữ liệu (WIP đã commit e5ee1d3). Bài học: kiểm git ls-files trước khi rm thư mục hỗn hợp"
+known_limitations:
+  - "New-format manifest chỉ được test bằng fixture (SCOPE-A) — kích hoạt end-to-end là SCOPE-B tương lai"
+  - "Test file trùng tên với bản sdd-light-t1 (workflow-bundle-utils.test.js, sync-...) nhưng khác nội dung — khi sdd-light land phải merge nội dung 2 bản (đã lường trước ở s06)"
 ```
 
 ## Traceability
 ```yaml
-upstream: []
-next_step: ""
+upstream:
+  - "harness-adapter-refactor.s06.task-breakdown.md (approved)"
+next_step: "s08 Verify + DoD"
 ```
 
 ## Handoff
-- Outputs actual:
-- Known limitations:
-- Notes for testing:
-- Notes for deployment khi có:
+- Outputs actual: feat e5ee1d3 + merge 0fbe396 trên release/v2.2.0; main sạch.
+- AC scoreboard tạm: AC-1 ✓, AC-2 HARD ✓ (fail->pass evidence), AC-3 HARD ✓ (smoke + fixture), AC-4 ✓, AC-5 ✓ (chmod test), AC-6 ✓ (ambiguity test), AC-7 HARD ✓.
+- Next: s08 verify + DoD (human).
