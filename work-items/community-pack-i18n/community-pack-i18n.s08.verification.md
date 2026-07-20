@@ -211,8 +211,10 @@ next_step: "Finalize branch/worktree (merge worktree-release-combo-a to main or 
 ```
 
 ## Handoff
-- Overall status: DONE (DoD human-passed 2026-06-24); work-item notes committed (commit 9d8c5aa)
-- Residual risks: EN operative baseline drift (mitigated by glossary + two-tier review on future edits); branch not merged
-- Recommendation: merge `worktree-release-combo-a` to `main` (or designated release branch), then remove worktree
-- Release recommendation if any: N/A (no packaging/runtime); community release handled in separate lane
-- Next action: human decides branch finalization
+- Overall status: DONE + MERGED — DoD human-passed 2026-06-24; branch merged into `main` on 2026-07-20 (commit `3033a6f`).
+- Residual risks: EN operative baseline drift (mitigated by glossary + two-tier review on future edits).
+- Merge notes: `.claude/CLAUDE.md`, `.gitignore`, `README.md`, `docs/publish-surface.md`, `docs/workflow-bundle-quickstart.md`, `docs/workflow-docs-map.md`, and `packages/workflow-bundle/README.md` had real conflicts against the two release merges done earlier the same day (v2.2.0/v2.2.1 version bumps) — resolved by keeping this branch's EN wording with the current `v2.2.1` version references.
+- Regression found and fixed during merge: `run-workflow-bundle-smoke.js` still asserted the pre-translation Vietnamese strings against `policies/codex/AGENTS.global.md` and the `codex-workflow-chain` skill — this work item's own verification never ran bundle-smoke, so the drift went undetected until now. Fixed in commit `4ec270e` (TDD: regression test added first) — see `harness-adapter-refactor`/`claude-hooks-instincts-adoption` work items for the sibling release work merged the same day.
+- Policy scope clarified: only this repo's project-level `.claude/CLAUDE.md` and `policies/codex/AGENTS.global.md` flip to EN-default; the user's personal global `~/.claude/CLAUDE.md` is untouched.
+- Release recommendation if any: N/A (no packaging/runtime); community release handled in a separate lane.
+- Next action: none required. Worktree and branch removed after merge.
