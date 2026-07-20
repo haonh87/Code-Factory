@@ -6,6 +6,10 @@ tmp-codex-home/tmp-sdd-smoke/
 .claude/tdd-session-state.json
 .claude/compact-state.json
 
+# Ghi chú cá nhân, không thuộc nội dung repo
+/Booking.md
+/Daily.md
+
 # Local visual working files; not part of the public docs surface.
 docs/workflow-process.canvas
 docs/workflow-work-items.canvas
