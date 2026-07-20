@@ -94,86 +94,112 @@ tags:
 
 ## Step Contract
 ```yaml
-step_goal: ""
-input_summary: []
-output_summary: []
-done_when: []
-owner: ""
+step_goal: "Verify AC-1..AC-7, regression/compatibility summary, đề xuất DoD verdict."
+input_summary:
+  - "s07: T-1..T-7 DONE; feat e5ee1d3 + merge 0fbe396 vào release/v2.2.0; đã stack tiếp vào v2.2.1 (merge 21acea3)"
+output_summary:
+  - "AC scoreboard 7/7 + DoD proposal"
+done_when:
+  - "Human pass DoD"
+owner: "claude (evidence) -> human (pass DoD)"
 ```
 
 ## Artifact Chính
 ```yaml
-verification_scope: []
-evidence_refs: []
-summary_verdict: PASS|FAIL|PARTIAL
+verification_scope:
+  - "AC-1..AC-7 theo s04 (HARD: AC-2/AC-3/AC-7)"
+evidence_refs:
+  - "AC-1 PASS: workflow-bundle-utils.test.js — loadAdapter 5 error paths + valid, listAvailableHarnesses 3 case, detectActiveHarness explicit/fallback/env/ambiguity, getRuntimeConfigFromAdapter precedence; toàn bộ pass"
+  - "AC-2 HARD PASS (TDD): test repro chạy TRƯỚC fix -> FAIL 'custom_home=undefined' (đúng root cause precedence); sau fix 1 dòng -> PASS; fix khớp ngữ nghĩa getDefaultInstallState"
+  - "AC-3 HARD PASS: bundle-smoke PASS tại 4 điểm (WIP baseline, sau fix, sau merge v2.2.0, sau stack v2.2.1); fixture new-format test pass; manifest root KHÔNG đổi (SCOPE-A)"
+  - "AC-4 PASS: shim scripts/workflow-bundle-cli.js exit 0; bin/wfc.js version/status hoạt động nguyên trạng"
+  - "AC-5 PASS: sync-workflow-bundle-runtime.test.js khóa hành vi chmod 644/755 (read-only source -> writable dest; 644-flat chủ đích); export copyDirectory cũng theo test-first"
+  - "AC-6 PASS: ambiguity test — non-TTY 2 harness throw message có '--mode'; env detect 0/1/nhiều case"
+  - "AC-7 HARD PASS: wfc validate khớp baseline ở worktree (68+64) và main (84+80) trước/sau toàn bộ"
+summary_verdict: PASS
 ```
 
 ## Governance Checks
 ```yaml
-checklist_applied: []
-checks: []
+checklist_applied:
+  - "project-context/checklists/default.md"
+checks:
+  - "TDD exception ghi trung thực (code WIP có sẵn) + alternative path đã thực thi đúng cam kết s05"
+  - "Contract: schema adapter.json ship đúng bản duyệt; không spec-change nào phát sinh trong s07"
+  - "Worktree + review 2 tầng + merge revertable đều đúng s06; incident rm nhầm adapters/ tracked đã recover 0 mất mát, ghi s07"
 blocking_items: []
-owner: ""
-next_action: ""
+owner: "human (pass DoD)"
+next_action: "human chốt DoD"
 ```
 
 ## Regression & Compatibility Summary
 ```yaml
-regression_status: PASS|FAIL|PARTIAL
-compatibility_status: PASS|FAIL|PARTIAL
+regression_status: PASS
+compatibility_status: PASS
 breaking_changes: []
-rollback_readiness: READY|BLOCKED|PARTIAL
+rollback_readiness: READY
+notes:
+  - "Legacy manifest path khóa bằng characterization tests; smoke pass trên cả 2 release branch"
+  - "Package manifest generated: modes đổi thứ tự alphabet (sort registry) — nội dung y hệt, đã review"
+  - "Rollback: revert merge 0fbe396 trên release/v2.2.0 (1 merge commit); main chưa nhiễm thay đổi nào"
 ```
 
 ## Scan Summary
 ```yaml
-status: PASS|FAIL|PARTIAL
-notes: []
+status: PASS
+notes:
+  - "Diff production 3 file JS đã qua review 2 tầng + test suite; không secret, không network call mới, không dependency mới"
 ```
 
 ## UAT Summary
 ```yaml
-status: NOT_APPLICABLE|PASS|FAIL|PARTIAL
+status: NOT_APPLICABLE
 reviewers: []
 notes: []
 ```
 
 ## Release Summary
 ```yaml
-status: NOT_APPLICABLE|PASS|FAIL|PARTIAL
+status: PARTIAL
 reviewers: []
-notes: []
+notes:
+  - "Đã land vào release/v2.2.0 (integration target đúng kế hoạch); tag/publish v2.2.0 là release-lane action riêng, chưa thuộc DoD work item này"
 ```
 
 ## Business Acceptance Summary
 ```yaml
-status: NOT_APPLICABLE|PASS|FAIL|PARTIAL
+status: NOT_APPLICABLE
 reviewers: []
 notes: []
 ```
 
 ## Audit
 ```yaml
-audit_status: PASS|FAIL|PARTIAL
-notes: []
+audit_status: PASS
+notes:
+  - "Traceability đủ: hardcode-harness problem (s02) -> AC (s04) -> OPT-A+contract (s05) -> T-1..T-7 (s07) -> evidence (s08)"
 ```
 
 ## Definition of Done
 ```yaml
-status: DONE|BLOCKED|PARTIAL
-residual_risks: []
-owners: []
+status: PARTIAL
+residual_risks:
+  - "New-format manifest chỉ fixture-tested — kích hoạt end-to-end là SCOPE-B (work item tương lai)"
+  - "sdd-light-t1 land sau sẽ phải merge nội dung 2 file test trùng tên (đã lường, coordination ghi s06/s07)"
+owners:
+  - "human: pass DoD"
 ```
 
 ## Traceability
 ```yaml
-upstream: []
-next_step: ""
+upstream:
+  - "harness-adapter-refactor.s07.implementation.md"
+next_step: "Human pass DoD -> đóng work item; tag v2.2.0 thuộc release lane"
 ```
 
 ## Handoff
-- Overall status:
-- Residual risks:
-- Recommendation:
-- Release recommendation khi có:
-- Next action:
+- Overall status: 7/7 AC PASS (3 HARD pass), verification verdict PASS — chờ human pass DoD.
+- Residual: SCOPE-B tương lai; test-file merge coordination với sdd-light.
+- Recommendation: pass DoD; sau đó release lane chốt changelog + tag v2.2.0.
+- Release recommendation khi có: v2.2.0 đủ scope (chỉ chứa work item này) — sẵn sàng cho Release gate khi anh muốn tag.
+- Next action: human chốt DoD.

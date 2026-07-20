@@ -94,86 +94,112 @@ tags:
 
 ## Step Contract
 ```yaml
-step_goal: ""
-input_summary: []
-output_summary: []
-done_when: []
-owner: ""
+step_goal: "Verify AC-1..AC-6, regression/compatibility summary, đề xuất DoD verdict."
+input_summary:
+  - "s07: T-1..T-5 DONE; commit aafcab1 trên release/v2.2.1; v2.2.1 đã stack đủ v2.2.0 (merge 21acea3)"
+output_summary:
+  - "AC scoreboard 6/6 + DoD proposal"
+done_when:
+  - "Human pass DoD"
+owner: "claude (evidence) -> human (pass DoD)"
 ```
 
 ## Artifact Chính
 ```yaml
-verification_scope: []
-evidence_refs: []
-summary_verdict: PASS|FAIL|PARTIAL
+verification_scope:
+  - "AC-1..AC-6 theo s04 (HARD: AC-2/AC-3/AC-5)"
+evidence_refs:
+  - "AC-1 PASS: git ls-files đủ 5 hook + settings.json + instincts.yaml trên release/v2.2.1; 5/5 script settings.json trỏ tới đều tồn tại"
+  - "AC-2 HARD PASS: grep /Users/ staged diff = 0; junk scripts/.claude/ xóa + ignore; .claude/worktrees/ ignore (check-ignore pass)"
+  - "AC-3 HARD PASS: degrade matrix 5 hook × (stdin rỗng, JSON hỏng) = exit 0 toàn bộ"
+  - "AC-4 PASS: profile matrix — minimal=0, standard=0, strict block-case=2 (đúng design), CF_DISABLED_HOOKS=0"
+  - "AC-5 HARD PASS: wfc validate 68+64 worktree trước/sau, cả sau merge stack v2.2.0"
+  - "AC-6 PASS: load-workflow-context.sh có exit 0 tường minh; chạy lại exit 0"
+  - "Rollback rehearsal: revert sạch trong worktree tạm, validate PASS trạng thái revert"
+summary_verdict: PASS
 ```
 
 ## Governance Checks
 ```yaml
-checklist_applied: []
-checks: []
+checklist_applied:
+  - "project-context/checklists/default.md"
+checks:
+  - "Security review commit settings.json: 5 script đã đọc kỹ (s03 agent) + degrade matrix chạy thật — không path máy, không network, không secret"
+  - "Adopt-as-is giữ đúng (duy nhất 1 dòng defensive fix, có evidence trước/sau)"
+  - "TDD NOT_REQUIRED đúng phân loại; review 2 tầng + rollback rehearsal đúng s06"
 blocking_items: []
-owner: ""
-next_action: ""
+owner: "human (pass DoD)"
+next_action: "human chốt DoD"
 ```
 
 ## Regression & Compatibility Summary
 ```yaml
-regression_status: PASS|FAIL|PARTIAL
-compatibility_status: PASS|FAIL|PARTIAL
+regression_status: PASS
+compatibility_status: PASS
 breaking_changes: []
-rollback_readiness: READY|BLOCKED|PARTIAL
+rollback_readiness: READY
+notes:
+  - "Main worktree không đổi hành vi (bản untracked vẫn nguyên); hiệu lực team sau release merge + pull"
+  - "Teammate: hooks bật strict khi pull (by design OPT-A); opt-out 3 lớp documented trong CLAUDE.md"
+  - "Rollback: revert aafcab1 (rehearsed); cá nhân dùng opt-out không cần revert"
 ```
 
 ## Scan Summary
 ```yaml
-status: PASS|FAIL|PARTIAL
-notes: []
+status: PASS
+notes:
+  - "Shell scripts đã audit nội dung (s03) + matrix hành vi (s07); settings.json chỉ chứa hooks config"
 ```
 
 ## UAT Summary
 ```yaml
-status: NOT_APPLICABLE|PASS|FAIL|PARTIAL
+status: NOT_APPLICABLE
 reviewers: []
 notes: []
 ```
 
 ## Release Summary
 ```yaml
-status: NOT_APPLICABLE|PASS|FAIL|PARTIAL
+status: PARTIAL
 reviewers: []
-notes: []
+notes:
+  - "Đã land vào release/v2.2.1; tag/publish là release-lane action riêng"
 ```
 
 ## Business Acceptance Summary
 ```yaml
-status: NOT_APPLICABLE|PASS|FAIL|PARTIAL
+status: NOT_APPLICABLE
 reviewers: []
 notes: []
 ```
 
 ## Audit
 ```yaml
-audit_status: PASS|FAIL|PARTIAL
-notes: []
+audit_status: PASS
+notes:
+  - "Traceability đủ: commit-dở-dang problem (s02) -> AC (s04) -> OPT-A auto-on strict (s05) -> T-1..T-5 (s07) -> evidence (s08)"
 ```
 
 ## Definition of Done
 ```yaml
-status: DONE|BLOCKED|PARTIAL
-residual_risks: []
-owners: []
+status: PARTIAL
+residual_risks:
+  - "Máy thiếu node chưa test thật (mitigation: Claude Code bỏ qua hook lỗi — hành vi platform đã biết; teammate đầu tiên là verify thực tế)"
+  - "Ma sát TDD strict với teammate mới — theo dõi sau rollout, đổi default là work item riêng nếu cần (data-driven)"
+owners:
+  - "human: pass DoD"
 ```
 
 ## Traceability
 ```yaml
-upstream: []
-next_step: ""
+upstream:
+  - "claude-hooks-instincts-adoption.s07.implementation.md"
+next_step: "Human pass DoD -> đóng work item; tag v2.2.1 thuộc release lane"
 ```
 
 ## Handoff
-- Overall status:
-- Residual risks:
-- Recommendation:
-- Release recommendation khi có:
-- Next action:
+- Overall status: 6/6 AC PASS (3 HARD pass), verification verdict PASS — chờ human pass DoD.
+- Residual: máy fresh/thiếu node chưa test thật; ma sát strict theo dõi sau rollout.
+- Recommendation: pass DoD; release lane chốt changelog + tag v2.2.1 sau v2.2.0.
+- Release recommendation khi có: v2.2.1 đủ scope — sẵn sàng Release gate sau khi v2.2.0 tag.
+- Next action: human chốt DoD.
