@@ -10,6 +10,10 @@ const DEFAULT_INSTALL_STATE_FILE = ".codex-workflow-bundle.install-state.json";
 const LEGACY_INSTALL_STATE_FILE = ".codex-workflow-pack.install-state.json";
 const VALID_INSTALL_SCOPES = ["global", "project", "both"];
 const VALID_RUNTIME_MODES = ["codex", "claude"];
+const ADAPTERS_DIR_NAME = "adapters";
+const ADAPTER_CONFIG_FILE = "adapter.json";
+
+const _adapterCache = new Map();
 
 function getManifestBundleName(manifest) {
   return String((manifest && (manifest.bundleName || manifest.packName)) || "").trim();
@@ -19,15 +23,27 @@ function getManifestBundleVersion(manifest) {
   return String((manifest && (manifest.bundleVersion || manifest.packVersion)) || "").trim();
 }
 
-function validateRuntimeMode(mode) {
+function validateRuntimeMode(mode, repoRoot) {
+  const available = listAvailableHarnesses(repoRoot || getDefaultRepoRoot());
+  const harnessIds = available.map((h) => h.harnessId);
+
+  // If adapters exist, validate against adapter list
+  if (harnessIds.length > 0) {
+    if (!harnessIds.includes(mode)) {
+      throw new Error(`Invalid mode '${mode}'. Available harnesses: ${harnessIds.join(", ")}`);
+    }
+    return;
+  }
+
+  // Fallback to hardcoded list when no adapters dir
   if (!VALID_RUNTIME_MODES.includes(mode)) {
     throw new Error(`Invalid mode '${mode}'. Allowed values: ${VALID_RUNTIME_MODES.join(", ")}`);
   }
 }
 
-function resolveRuntimeMode(explicitMode) {
+function resolveRuntimeMode(explicitMode, repoRoot) {
   const mode = String(explicitMode || "codex").trim().toLowerCase();
-  validateRuntimeMode(mode);
+  validateRuntimeMode(mode, repoRoot);
   return mode;
 }
 
@@ -87,6 +103,152 @@ function findManifestUpwards(startDir) {
   }
 }
 
+function loadAdapter(harnessId, repoRoot) {
+  if (!harnessId || typeof harnessId !== "string") {
+    throw new Error(`Invalid harnessId: '${harnessId}'`);
+  }
+
+  const cacheKey = `${repoRoot}:${harnessId}`;
+  if (_adapterCache.has(cacheKey)) {
+    return _adapterCache.get(cacheKey);
+  }
+
+  const adapterPath = path.join(repoRoot, ADAPTERS_DIR_NAME, harnessId, ADAPTER_CONFIG_FILE);
+  if (!fs.existsSync(adapterPath)) {
+    throw new Error(`Adapter not found for harness '${harnessId}'. Expected: ${adapterPath}`);
+  }
+
+  const adapter = JSON.parse(readUtf8(adapterPath));
+  if (!adapter || typeof adapter !== "object" || Array.isArray(adapter)) {
+    throw new Error(`Invalid adapter config in ${adapterPath}`);
+  }
+  if (adapter.harnessId !== harnessId) {
+    throw new Error(`Adapter harnessId mismatch: expected '${harnessId}', got '${adapter.harnessId}' in ${adapterPath}`);
+  }
+  if (!adapter.detection || !adapter.naming || !adapter.content) {
+    throw new Error(`Adapter '${harnessId}' missing required sections (detection, naming, content) in ${adapterPath}`);
+  }
+
+  _adapterCache.set(cacheKey, adapter);
+  return adapter;
+}
+
+function listAvailableHarnesses(repoRoot) {
+  const adaptersDir = path.join(repoRoot, ADAPTERS_DIR_NAME);
+  if (!fs.existsSync(adaptersDir)) {
+    return [];
+  }
+
+  const entries = fs.readdirSync(adaptersDir, { withFileTypes: true });
+  const harnesses = [];
+
+  for (const entry of entries) {
+    if (!entry.isDirectory()) {
+      continue;
+    }
+
+    const adapterPath = path.join(adaptersDir, entry.name, ADAPTER_CONFIG_FILE);
+    if (!fs.existsSync(adapterPath)) {
+      continue;
+    }
+
+    try {
+      const adapter = JSON.parse(readUtf8(adapterPath));
+      harnesses.push({
+        harnessId: entry.name,
+        harnessLabel: (adapter && adapter.harnessLabel) || entry.name
+      });
+    } catch (_) {
+      // Skip invalid adapters silently
+    }
+  }
+
+  return harnesses.sort((a, b) => a.harnessId.localeCompare(b.harnessId));
+}
+
+function detectActiveHarness(repoRoot, explicitMode) {
+  if (explicitMode) {
+    const mode = String(explicitMode).trim().toLowerCase();
+    const available = listAvailableHarnesses(repoRoot);
+    const harnessIds = available.map((h) => h.harnessId);
+    if (harnessIds.length > 0 && !harnessIds.includes(mode)) {
+      // Fallback: check against VALID_RUNTIME_MODES for backward compat
+      if (!VALID_RUNTIME_MODES.includes(mode)) {
+        throw new Error(`Invalid mode '${mode}'. Available harnesses: ${harnessIds.join(", ")}`);
+      }
+    }
+    return mode;
+  }
+
+  const available = listAvailableHarnesses(repoRoot);
+  if (available.length === 0) {
+    return "codex"; // Backward compat: no adapters dir means old setup
+  }
+
+  const os = require("os");
+  const detected = [];
+
+  for (const harness of available) {
+    const adapter = loadAdapter(harness.harnessId, repoRoot);
+    const envVar = adapter.detection && adapter.detection.envVar;
+    const homeDirMarker = adapter.detection && adapter.detection.homeDirMarker;
+    const defaultHomeDir = adapter.detection && adapter.detection.defaultHomeDir;
+
+    // Check environment variable
+    if (envVar && process.env[envVar]) {
+      detected.push({ harnessId: harness.harnessId, source: "env" });
+      continue;
+    }
+
+    // Check home directory marker
+    if (defaultHomeDir || homeDirMarker) {
+      const markerDir = path.join(os.homedir(), homeDirMarker || defaultHomeDir);
+      if (fs.existsSync(markerDir)) {
+        detected.push({ harnessId: harness.harnessId, source: "homedir" });
+      }
+    }
+  }
+
+  if (detected.length === 0) {
+    return "codex"; // Backward compat default
+  }
+
+  if (detected.length === 1) {
+    return detected[0].harnessId;
+  }
+
+  // Multiple harnesses detected
+  if (process.stdin.isTTY) {
+    // Caller should handle interactive prompt; return null to signal ambiguity
+    return null;
+  }
+
+  throw new Error(
+    `Multiple harnesses detected (${detected.map((d) => d.harnessId).join(", ")}). Specify --mode <harness> in non-interactive mode.`
+  );
+}
+
+function getRuntimeConfigFromAdapter(manifest, adapter) {
+  const content = manifest.content || {};
+  const naming = adapter.naming || {};
+  const adapterPaths = adapter.paths || {};
+  const adapterContent = adapter.content || {};
+
+  return {
+    globalAgentsSource: adapterContent.globalAgentsSourceRel || content.globalAgentsSource || "",
+    skillsSourceRoot: adapterContent.skillsSourceRootRel || content.skillsSourceRoot || "",
+    supportPoliciesSourceRoot: adapterContent.supportPoliciesSourceRootRel || content.supportPoliciesSourceRoot || "",
+    supportPoliciesTargetRoot: adapterPaths.supportPoliciesTargetRoot || "",
+    globalAgentsFileName: naming.globalAgentsFileName || "",
+    projectAgentsFileName: naming.projectAgentsFileName || "",
+    managedSkillsManifestFile: naming.managedSkillsManifestFile || "",
+    legacyManagedSkillsManifestFile: naming.legacyManagedSkillsManifestFile || "",
+    installStateFile: naming.installStateFile || "",
+    legacyInstallStateFile: naming.legacyInstallStateFile || "",
+    agentsManifestFileName: adapterPaths.agentsManifestFileName || null
+  };
+}
+
 function getDefaultRepoRoot() {
   const foundFromScriptDir = findManifestUpwards(__dirname);
   if (foundFromScriptDir) {
@@ -133,8 +295,15 @@ function loadBundleManifest(repoRoot) {
     throw new Error(`Invalid workflow bundle manifest root in ${manifestPath}`);
   }
 
-  if (!getManifestBundleName(manifest) || !getManifestBundleVersion(manifest) || !manifest.codex) {
+  if (!getManifestBundleName(manifest) || !getManifestBundleVersion(manifest)) {
     throw new Error(`Workflow bundle manifest is missing required fields in ${manifestPath}`);
+  }
+
+  // Support both old format (top-level codex/claude keys) and new format (content + harnesses)
+  const hasOldFormat = manifest.codex || manifest.claude;
+  const hasNewFormat = manifest.content && manifest.harnesses;
+  if (!hasOldFormat && !hasNewFormat) {
+    throw new Error(`Workflow bundle manifest has no harness config in ${manifestPath}`);
   }
 
   return {
@@ -143,7 +312,14 @@ function loadBundleManifest(repoRoot) {
   };
 }
 
-function getRuntimeConfig(manifest, mode) {
+function getRuntimeConfig(manifest, mode, repoRoot) {
+  // New format: content + harnesses + adapter
+  if (manifest.content && manifest.harnesses) {
+    const adapter = loadAdapter(mode, repoRoot || getDefaultRepoRoot());
+    return getRuntimeConfigFromAdapter(manifest, adapter);
+  }
+
+  // Legacy format: top-level codex/claude keys
   const runtimeConfig = manifest?.[mode];
   if (!runtimeConfig || typeof runtimeConfig !== "object" || Array.isArray(runtimeConfig)) {
     throw new Error(`Workflow bundle manifest is missing runtime config '${mode}'.`);
@@ -152,24 +328,53 @@ function getRuntimeConfig(manifest, mode) {
   return runtimeConfig;
 }
 
-function getDefaultRuntimeHome(mode) {
-  if (mode === "claude") {
-    return path.join(require("os").homedir(), ".claude");
+function getDefaultRuntimeHome(mode, repoRoot) {
+  try {
+    const adapter = loadAdapter(mode, repoRoot || getDefaultRepoRoot());
+    const defaultHomeDir = (adapter.detection && adapter.detection.defaultHomeDir) || `.${mode}`;
+    return path.join(require("os").homedir(), defaultHomeDir);
+  } catch (_) {
+    // Fallback to hardcoded defaults when adapter is not available
+    if (mode === "claude") {
+      return path.join(require("os").homedir(), ".claude");
+    }
+    return path.join(require("os").homedir(), ".codex");
   }
-
-  return path.join(require("os").homedir(), ".codex");
 }
 
-function resolveRuntimeHome({ mode, explicitRuntimeHome, explicitCodexHome, explicitClaudeHome }) {
+function resolveRuntimeHome({ mode, explicitRuntimeHome, explicitCodexHome, explicitClaudeHome, repoRoot }) {
   if (explicitRuntimeHome) {
     return path.resolve(explicitRuntimeHome);
   }
 
-  if (mode === "claude") {
-    return path.resolve(explicitClaudeHome || process.env.CLAUDE_HOME || getDefaultRuntimeHome("claude"));
+  // Legacy flags: --codex-home / --claude-home still supported
+  if (mode === "claude" && explicitClaudeHome) {
+    return path.resolve(explicitClaudeHome);
+  }
+  if (mode === "codex" && explicitCodexHome) {
+    return path.resolve(explicitCodexHome);
   }
 
-  return path.resolve(explicitCodexHome || process.env.CODEX_HOME || getDefaultRuntimeHome("codex"));
+  // Adapter-based env var resolution
+  try {
+    const adapter = loadAdapter(mode, repoRoot || getDefaultRepoRoot());
+    const envVar = (adapter.detection && adapter.detection.envVar) || "";
+    if (envVar && process.env[envVar]) {
+      return path.resolve(process.env[envVar]);
+    }
+  } catch (_) {
+    // Fallback to hardcoded env vars when adapter is not available
+  }
+
+  // Legacy env var fallback
+  if (mode === "claude" && process.env.CLAUDE_HOME) {
+    return path.resolve(process.env.CLAUDE_HOME);
+  }
+  if (mode === "codex" && process.env.CODEX_HOME) {
+    return path.resolve(process.env.CODEX_HOME);
+  }
+
+  return getDefaultRuntimeHome(mode, repoRoot);
 }
 
 function resolveCodexHome(explicitCodexHome) {
@@ -215,7 +420,7 @@ function getConfiguredBundleFileNames(runtimeConfig) {
 }
 
 function getBundlePaths({ repoRoot, runtimeHome, manifest, mode }) {
-  const runtimeConfig = getRuntimeConfig(manifest, mode);
+  const runtimeConfig = getRuntimeConfig(manifest, mode, repoRoot);
   const bundleFileNames = getConfiguredBundleFileNames(runtimeConfig);
   const globalAgentsSource = path.join(repoRoot, runtimeConfig.globalAgentsSource);
   const skillsSourceRoot = path.join(repoRoot, runtimeConfig.skillsSourceRoot);
@@ -239,7 +444,8 @@ function getBundlePaths({ repoRoot, runtimeHome, manifest, mode }) {
     legacyManagedSkillsManifestPath: path.join(runtimeHome, bundleFileNames.legacyManagedSkillsManifestFile),
     installStatePath: path.join(runtimeHome, bundleFileNames.installStateFile),
     legacyInstallStatePath: path.join(runtimeHome, bundleFileNames.legacyInstallStateFile),
-    projectAgentsFileName: runtimeConfig.projectAgentsFileName
+    projectAgentsFileName: runtimeConfig.projectAgentsFileName,
+    agentsManifestFileName: runtimeConfig.agentsManifestFileName || null
   };
 }
 
@@ -347,14 +553,28 @@ function writeManagedSkillsManifest(bundlePaths, managedSkills) {
 function getDefaultInstallState({ manifest, repoRoot, runtimeHome, mode }) {
   const bundleName = getManifestBundleName(manifest);
 
-  return {
+  // Resolve adapter to get installStateHomeKey
+  let installStateHomeKey = "codex_home"; // backward compat default
+  try {
+    const adapter = loadAdapter(mode, repoRoot || getDefaultRepoRoot());
+    if (adapter.runtime && adapter.runtime.installStateHomeKey) {
+      installStateHomeKey = adapter.runtime.installStateHomeKey;
+    }
+  } catch (_) {
+    // Fallback: derive from mode
+    if (mode === "claude") {
+      installStateHomeKey = "claude_home";
+    }
+  }
+
+  const state = {
     bundle_name: bundleName,
     installed_bundle_version: "",
     repo_root: repoRoot,
     runtime_mode: mode,
     runtime_home: runtimeHome,
-    codex_home: mode === "codex" ? runtimeHome : "",
-    claude_home: mode === "claude" ? runtimeHome : "",
+    codex_home: "",
+    claude_home: "",
     install_scope: "",
     managed_skills: [],
     global_policy: {
@@ -365,6 +585,11 @@ function getDefaultInstallState({ manifest, repoRoot, runtimeHome, mode }) {
     installed_at: "",
     updated_at: ""
   };
+
+  // Set the mode-specific home key
+  state[installStateHomeKey] = runtimeHome;
+
+  return state;
 }
 
 function normalizeProjectTargets(targetsInput) {
@@ -396,14 +621,27 @@ function normalizeInstallState(stateInput, context) {
   const installedBundleVersion = String(
     stateInput.installed_bundle_version || stateInput.installed_pack_version || defaults.installed_bundle_version
   ).trim();
-  const runtimeMode = resolveRuntimeMode(stateInput.runtime_mode || defaults.runtime_mode);
+  const runtimeMode = resolveRuntimeMode(stateInput.runtime_mode || defaults.runtime_mode, context.repoRoot);
   const runtimeHome = String(
     stateInput.runtime_home ||
       (runtimeMode === "claude" ? stateInput.claude_home : stateInput.codex_home) ||
       defaults.runtime_home
   ).trim();
 
-  return {
+  // Resolve adapter to get installStateHomeKey
+  let installStateHomeKey = "codex_home"; // backward compat default
+  try {
+    const adapter = loadAdapter(runtimeMode, context.repoRoot || getDefaultRepoRoot());
+    if (adapter.runtime && adapter.runtime.installStateHomeKey) {
+      installStateHomeKey = adapter.runtime.installStateHomeKey;
+    }
+  } catch (_) {
+    if (runtimeMode === "claude") {
+      installStateHomeKey = "claude_home";
+    }
+  }
+
+  const normalized = {
     bundle_name: bundleName,
     installed_bundle_version: installedBundleVersion,
     repo_root: String(stateInput.repo_root || defaults.repo_root).trim(),
@@ -426,6 +664,11 @@ function normalizeInstallState(stateInput, context) {
     installed_at: String(stateInput.installed_at || defaults.installed_at).trim(),
     updated_at: String(stateInput.updated_at || defaults.updated_at).trim()
   };
+
+  // Ensure the mode-specific home key is set
+  normalized[installStateHomeKey] = normalized[installStateHomeKey] || runtimeHome;
+
+  return normalized;
 }
 
 function loadInstallState({ manifest, repoRoot, runtimeHome, mode, installStatePath, legacyInstallStatePath }) {
@@ -615,8 +858,11 @@ module.exports = {
   LEGACY_MANAGED_SKILLS_MANIFEST_FILE,
   VALID_INSTALL_SCOPES,
   VALID_RUNTIME_MODES,
+  ADAPTERS_DIR_NAME,
+  ADAPTER_CONFIG_FILE,
   assertBundleSources,
   collectSourceSkills,
+  detectActiveHarness,
   getConfiguredBundleFileNames,
   getBundlePaths,
   getDefaultInstallState,
@@ -625,6 +871,9 @@ module.exports = {
   getManifestBundleName,
   getManifestBundleVersion,
   getRuntimeConfig,
+  getRuntimeConfigFromAdapter,
+  listAvailableHarnesses,
+  loadAdapter,
   loadBundleManifest,
   loadInstallState,
   mergeProjectTargets,

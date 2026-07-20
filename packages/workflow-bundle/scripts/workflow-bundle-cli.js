@@ -5,10 +5,12 @@ const { formatErrors, parseCliArgs } = require("./workflow-validator-utils");
 const {
   assertBundleSources,
   collectSourceSkills,
+  detectActiveHarness,
   getBundlePaths,
   getManifestBundleName,
   getManifestBundleVersion,
   getInstalledSkillDirs,
+  listAvailableHarnesses,
   loadInstallState,
   loadBundleManifest,
   mergeProjectTargets,
@@ -30,7 +32,6 @@ const {
 
 const SUPPORTED_ACTIONS = new Set(["help", "status", "install", "update", "skills"]);
 const SUPPORTED_SKILL_ACTIONS = new Set(["list", "install", "add", "remove", "delete"]);
-const INSTALL_MODE_OPTIONS = ["codex", "claude"];
 const INSTALL_SCOPE_OPTIONS = ["global", "project", "both"];
 
 function getNowIso() {
@@ -104,8 +105,17 @@ async function prepareInteractiveInstallArgs(args) {
   const nextArgs = { ...args };
   const missingFields = [];
 
+  const repoRoot = resolveRepoRoot(normalizeSingleValue(nextArgs["repo-root"] || ""));
+  const availableHarnesses = listAvailableHarnesses(repoRoot);
+  const modeOptions = availableHarnesses.length > 0
+    ? availableHarnesses.map((h) => h.harnessId)
+    : ["codex", "claude"];
+  const modeLabels = availableHarnesses.length > 0
+    ? availableHarnesses.map((h) => `${h.harnessId} (${h.harnessLabel})`)
+    : modeOptions;
+
   if (!normalizeSingleValue(nextArgs.mode || "")) {
-    missingFields.push("'--mode <codex|claude>'");
+    missingFields.push("'--mode <harness>'");
   }
   if (!normalizeSingleValue(nextArgs.scope || "")) {
     missingFields.push("'--scope <global|project|both>'");
@@ -118,8 +128,12 @@ async function prepareInteractiveInstallArgs(args) {
   if (!normalizeSingleValue(nextArgs.mode || "")) {
     nextArgs.mode = await promptForChoice({
       label: "Select runtime mode",
-      options: INSTALL_MODE_OPTIONS
+      options: modeLabels.length > 1 ? modeLabels : modeOptions
     });
+    // Extract harnessId if the choice includes a label
+    const chosenLabel = nextArgs.mode;
+    const matchingHarness = availableHarnesses.find((h) => `${h.harnessId} (${h.harnessLabel})` === chosenLabel);
+    nextArgs.mode = matchingHarness ? matchingHarness.harnessId : chosenLabel;
   }
 
   if (!normalizeSingleValue(nextArgs.scope || "")) {
@@ -148,23 +162,41 @@ async function prepareInteractiveModeArgs(args, actionLabel) {
     return nextArgs;
   }
 
-  assertInteractivePromptAvailable(actionLabel, ["'--mode <codex|claude>'"]);
-  nextArgs.mode = await promptForChoice({
+  // Try auto-detection first
+  const repoRoot = resolveRepoRoot(normalizeSingleValue(nextArgs["repo-root"] || ""));
+  const detectedMode = detectActiveHarness(repoRoot, "");
+  if (detectedMode) {
+    nextArgs.mode = detectedMode;
+    return nextArgs;
+  }
+
+  // Multiple harnesses detected or none detected — prompt user
+  const availableHarnesses = listAvailableHarnesses(repoRoot);
+  const modeOptions = availableHarnesses.length > 0
+    ? availableHarnesses.map((h) => `${h.harnessId} (${h.harnessLabel})`)
+    : ["codex", "claude"];
+
+  assertInteractivePromptAvailable(actionLabel, ["'--mode <harness>'"]);
+  const chosen = await promptForChoice({
     label: `Select runtime mode for ${actionLabel}`,
-    options: INSTALL_MODE_OPTIONS
+    options: modeOptions
   });
+  // Extract harnessId if the choice includes a label
+  const matchingHarness = availableHarnesses.find((h) => `${h.harnessId} (${h.harnessLabel})` === chosen);
+  nextArgs.mode = matchingHarness ? matchingHarness.harnessId : chosen;
   return nextArgs;
 }
 
 function getRuntimeContext(args) {
   const repoRoot = resolveRepoRoot(normalizeSingleValue(args["repo-root"] || ""));
   const { manifest } = loadBundleManifest(repoRoot);
-  const mode = resolveRuntimeMode(normalizeSingleValue(args.mode || ""));
+  const mode = resolveRuntimeMode(normalizeSingleValue(args.mode || ""), repoRoot);
   const runtimeHome = resolveRuntimeHome({
     mode,
     explicitRuntimeHome: normalizeSingleValue(args["runtime-home"] || ""),
     explicitCodexHome: normalizeSingleValue(args["codex-home"] || ""),
-    explicitClaudeHome: normalizeSingleValue(args["claude-home"] || "")
+    explicitClaudeHome: normalizeSingleValue(args["claude-home"] || ""),
+    repoRoot
   });
   const bundlePaths = getBundlePaths({ repoRoot, runtimeHome, manifest, mode });
 
@@ -186,16 +218,16 @@ function printHelp() {
       "Workflow Bundle CLI",
       "",
       "Usage:",
-      "  wfc install [--mode codex|claude] [--scope global|project|both] [--project-root PATH] [--skill NAME] [--exclude-skill NAME]",
-      "  wfc update [--mode codex|claude] [--scope global|project|both] [--project-root PATH] [--skill NAME] [--exclude-skill NAME]",
-      "  wfc status [--mode codex|claude] [--json]",
-      "  wfc skills list [--mode codex|claude] [--json]",
-      "  wfc skills add [--mode codex|claude] --skill NAME [--skill NAME]",
-      "  wfc skills remove [--mode codex|claude] --skill NAME [--skill NAME]",
+      "  wfc install [--mode <harness>] [--scope global|project|both] [--project-root PATH] [--skill NAME] [--exclude-skill NAME]",
+      "  wfc update [--mode <harness>] [--scope global|project|both] [--project-root PATH] [--skill NAME] [--exclude-skill NAME]",
+      "  wfc status [--mode <harness>] [--json]",
+      "  wfc skills list [--mode <harness>] [--json]",
+      "  wfc skills add [--mode <harness>] --skill NAME [--skill NAME]",
+      "  wfc skills remove [--mode <harness>] --skill NAME [--skill NAME]",
       "",
       "Options:",
       "  --repo-root PATH    Path to the workflow bundle source repo.",
-      "  --mode VALUE        Runtime mode: codex, claude. Install/update/status prompt when omitted in TTY.",
+      "  --mode VALUE        Runtime harness mode (e.g. codex, claude). Auto-detected when omitted in TTY.",
       "  --runtime-home PATH Override runtime home directly.",
       "  --codex-home PATH   Override Codex home. Default: $CODEX_HOME or ~/.codex",
       "  --claude-home PATH  Override Claude home. Default: $CLAUDE_HOME or ~/.claude",
@@ -209,8 +241,8 @@ function printHelp() {
       "  - 'wfc status' shows both source_bundle_version and installed_bundle_version.",
       "  - 'wfc update' overwrites the current installed bundle using the recorded install state.",
       "  - 'wfc install' shows numbered choices for mode and scope when they are omitted in an interactive terminal.",
-      "  - 'wfc update', 'wfc status' and 'wfc skills ...' show a numbered choice for mode when '--mode' is omitted in an interactive terminal.",
-      "  - Claude mode installs workflow memory/policy files plus managed skill references under ~/.claude/skills."
+      "  - 'wfc update', 'wfc status' and 'wfc skills ...' auto-detect the active harness or show a choice when '--mode' is omitted.",
+      "  - When '--mode' is omitted, the harness is auto-detected from home directory markers and environment variables."
     ].join("\n")
   );
 }
