@@ -134,6 +134,15 @@ Notes:
 - `delivery_context` must be explicit so the protocol can pick the right `greenfield` or `brownfield` gate.
 - `bootstrap_*` is only used when the work item is `greenfield`; this is a project-level gate before opening the first implementation path.
 
+### How `sdd_mode` Is Selected (SDD Light Eligibility)
+
+The full eligibility matrix and hard escalation triggers are authoritative in `policies/codex/AGENTS.global.md § Hard Rule: SDD Light Profile`; this section only describes how materialization applies them:
+
+- An explicit `--preset full` or `--preset strict` short-circuits directly to that profile — it never runs the eligibility check and never silently downgrades to Light.
+- `--preset light` (or the default `auto` preset) runs the eligibility check against `delivery_context`, `planning_track`, `governance_profile`, `execution_mode`, `interaction_mode`, risk level, and every hard-escalation signal (foundation/greenfield, public contract, migration/cutover, regulated evidence, multi-agent delegation, unclassified `defect_source` or spec impact, high blast radius, complex release gate, compact CR exceeding eligibility). Any hard trigger overrides the requested preset — the work item escalates to `full`/`strict` and the trigger is recorded in `sdd_escalation_reasons`.
+- The rollout flag `sdd_light_profile=off|preview|default` only affects the `auto` preset: when the flag is `off` and the request would otherwise be eligible for Light, materialization escalates to `full` and records the `light-profile-disabled` reason instead of rewriting the request as Light. An explicit `--preset light` still goes through the same hard-escalation check regardless of the rollout flag.
+- Do not silently guess `sdd_mode`: an ambiguous `defect_source` or unclassified spec impact must either stop at `PROPOSED` for human clarification or escalate — never assume `light` or `none` by default.
+
 ## Standard Decision Flow
 
 ### Step 1. Normalize The Request

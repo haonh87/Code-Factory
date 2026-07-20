@@ -93,6 +93,24 @@ Interpreted per the current workflow chain:
 - For a work item running under `SDD`, you must not implement if the `spec` is not in `approved|frozen`, unless a `spec-change` or `governance-exception` has been recorded per the rules.
 - If an emergency forces shortening authoring before code, you must record the exception or waiver per `project-context/governance-decision-model.md`; you must not silently skip and then backfill documentation as if the process had never drifted.
 
+## Hard Rule: SDD Light Profile
+
+- `sdd_mode=light` (`SDD Light`) is a representation profile that reduces authoring ceremony; it does not add a new SDD mode, does not remove any logical lifecycle step, and does not weaken any control invariant.
+- Eligibility: a work item may run Light only when **all** of the following are true: `delivery_context=brownfield`, `planning_track=quick`, `governance_profile=default`, `execution_mode=agentic`, `interaction_mode=self`, and risk is `low` or `medium`.
+- Hard escalation to full/strict overrides an explicit `--preset sdd-light` and cannot be bypassed by a normal preset flag. It fires on any of: greenfield or a foundation decision, a public API/event/data contract, a database migration/backfill/cutover, regulated or security-sensitive evidence, required multi-agent delegation, `defect_source=UNKNOWN` or unclassified spec impact, high blast radius or multi-system scope, a complex UAT/release gate, or a compact CR exceeding requirement-only-delta eligibility.
+- The eligibility router must return `eligible`, `selected_profile`, and `escalation_reasons[]`; when any hard trigger fires, the router escalates regardless of the requested preset.
+- Rollout is controlled by `sdd_light_profile=off|preview|default` (default rollout stage is `preview`, meaning an eligible work item auto-selects Light unless the flag is `off`). Setting it to `off` only changes the router default; it never rewrites artifacts already created.
+- Physical note mapping for Light (8 logical steps still exist in the trace model; only the physical note count is reduced):
+  - `s01` hosts Clarify + Business Goal + Open Questions + classification + the protocol anchor.
+  - `s04` hosts Acceptance + DoR + Spec Freeze/approved CR.
+  - `s06` hosts Option Analysis + Brownfield Impact + Technical Approach + Task Plan (there is no separate `s05` physical note for Light).
+  - `s07` is created lazily when the work item transitions to `ACTIVE`; it keeps its own Delivery Rule Evidence boundary and is never merged into `s08`.
+  - `s08` is created lazily when Verify starts.
+- Gate host contract for Light: `Spec + DoR` at `s04`; `Approach + Task Plan` at `s06` (no `s05` gate check); `Foundation` is not supported — a work item that needs it must auto-escalate to full; `Delivery Rule Evidence` stays at `s07`; `DoD` at `s08` only passes when coverage and CR contribution (when linked to a CR) are valid.
+- Light uses one Spec Card (`spec_refs.card`) instead of separate `BRD`/`SRS`; see `references/spec-driven-development.md` for the Spec Card contract.
+- A `ready-bundle` command may seal Spec, DoR, Approach and Task Plan receipts in a single interaction, but it must still produce one independent trusted receipt per gate, each hashed to its host artifact with its own reviewer and timestamp; a bundled interaction does not weaken gate semantics.
+- `ACTIVE` for a Light work item still requires the `s04` and `s06` receipts (in place of `s04`+`s05`+`s06`); every other human-controlled-gate invariant in this policy applies unchanged.
+
 ## Hard Rule: Disciplined Brainstorming
 
 - Before locking `s05 Technical Approach`, there must be an `option analysis` at a level that fits the complexity of the work item.
@@ -252,11 +270,12 @@ Interpreted per the current workflow chain:
   - enough evidence for the reviewer to check
   - the owner or approver with the right authority has locked it clearly
 - `work item approval` and `change package approval` are always human-controlled gates; a protocol-managed item must not use `review_required=false` or `approval_status=NOT_REQUIRED` to bypass review.
+- A `ready-bundle` interaction (used to seal several Light authoring gates at once, see `Hard Rule: SDD Light Profile`) still produces one independent trusted receipt per gate; bundling the interaction never substitutes for a per-gate receipt.
 - A `legacy scaffold` without a `.work-item-report.json` is only treated as a read-only-reference artifact when the repo or project config clearly allows it; the strict default of the bundle is `protocolControl.legacyScaffoldPolicy=forbid`.
 - You must not use a `legacy scaffold`, a draft note or a pre-existing artifact as implicit evidence that execution has been opened.
 - Human pass must be explicit; it must not be inferred from a comment, a technical `review pass`, a local `test pass` or the fact that an artifact already exists.
 - If a human-controlled gate has not passed, the workflow must `BLOCKED`, go back to the previous step, or stop before the next gate; it must not continue just because AI judges it "good enough".
-- `ACTIVE` is only valid when `work item approval`, `change package approval` when present, the `bootstrap gate` of `greenfield` when present, and the evidence `s04`, `s05`, `s06` have been human-passed.
+- `ACTIVE` is only valid when `work item approval`, `change package approval` when present, the `bootstrap gate` of `greenfield` when present, and the evidence `s04`, `s05`, `s06` have been human-passed (for `sdd_mode=light`, `s04` and `s06` per the Light gate host contract — there is no separate `s05` note to pass).
 - `VERIFIED` is only valid when `s08` has verify evidence.
 - `DONE` is only valid when `s08` has passed `DoD`, and if the scope requires it, `UAT`, `Release`, `Business Acceptance` have also passed in `s08`.
 - Invariant for the router status block:

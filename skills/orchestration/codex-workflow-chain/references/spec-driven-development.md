@@ -47,6 +47,30 @@ Existing validator command:
 wfc sdd --workflow-root work-items --project-root .
 ```
 
+## Spec Card (`sdd_mode=light`)
+
+For a work item eligible for `SDD Light` (see `policies/codex/AGENTS.global.md § Hard Rule: SDD Light Profile`), one **Spec Card** replaces the separate `BRD` + `SRS` pair. Light uses `spec_refs.card`; `strict` continues to use `spec_refs.brd` and `spec_refs.srs`. Do not maintain a duplicate trace matrix across both when only one applies.
+
+Root for a Spec Card:
+
+```text
+product-specs/
+  cards/
+    <scope>.md
+  templates/
+    spec-card.template.md
+```
+
+A Spec Card is a single note with six blocks (see `product-specs/templates/spec-card.template.md`):
+
+- `Business Goal` — business goal, `in_scope`, `out_scope`.
+- `Requirements` — `REQ-###` entries, each with a `provenance` of `BASELINE` (already in the current spec) or `CR-###` (a delta introduced by an approved Change Request). `cr_required=true` forces `provenance` to be a `CR-###`.
+- `Acceptance Criteria` — `AC-###` entries, each mapping to an existing `REQ-###`; every requirement must have at least one AC (no-duplicate-trace / full mapping).
+- `Assumptions And Open Decisions` — each entry has an owner.
+- `Spec Freeze` — `status`, `authority` (the role with freeze authority per the governance role model), `decided_at`; a `frozen` status without a recorded `authority` fails validation.
+
+The semantic validator (`wfc sdd`) checks, for a Light work item: every `REQ-###` has a valid `provenance`; every `AC-###` maps to a requirement that exists; no duplicate `REQ`/`AC` ids; `frozen` requires `authority` and `decided_at`; a requirement with `cr_required=true` has a `CR-###` provenance. A missing origin, AC mapping, freeze authority, or required CR link fails the check — the same rigor as `BRD/SRS`, in one artifact.
+
 ## Spec Lifecycle
 
 Standard states:
@@ -85,6 +109,10 @@ Rules:
 | `TASK-###` | implementation/verification/release task | `developer`, `qc`, `devops` |
 | `TEST-###` | test scenario or verification evidence | `qc` |
 | `CHANGE-###` | spec change request | the role that finds the gap; `po/ba` approves depending on scope |
+| `REQ-###` | requirement in a Spec Card (`sdd_mode=light`), each with a `BASELINE`/`CR-###` provenance | `ba` |
+| `ASM-###` | Spec Card assumption | owner named on the entry |
+| `ODC-###` | Spec Card open decision | owner named on the entry |
+| `CR-###` | canonical Change Request id (Spec Card / compact-CR vocabulary; `CHANGE-###`/`change_*` are dual-read legacy aliases during the migration window) | `po/ba` approves depending on scope |
 
 You do not need to force IDs on every small note line. But if a work item is marked SDD, every important requirement must have an ID and at minimum trace to an AC or an accepted assumption.
 
@@ -99,6 +127,8 @@ You do not need to force IDs on every small note line. But if a work item is mar
 | `s05` Technical Approach | The technical approach must reference the relevant `SRS-*` and `AC-*`. | No approach selection if a key requirement has no ID or a spec gap is unresolved. |
 | `s06` Task Plan | Tasks must map to `SRS-*` and `AC-*`; test/release tasks must also trace. | Every in-scope requirement has a task or a clearly deferred decision. |
 | `s07` Implement | Implement per the frozen spec; if behavior deviates, create a `spec-change`. | No merge/handoff if code deviates from spec without an approved change or a documented exception. |
+
+For `sdd_mode=light`, the `s04`/`s05`/`s06` rows above apply to the Spec Card instead of `BRD`/`SRS`: `s04` creates/freezes the Spec Card (`REQ`/`AC` mapping, freeze authority); `s05`'s approach-must-reference-requirements rule applies to the Approach content hosted inside `s06` (there is no separate `s05` note for Light); `s06` still maps tasks to `REQ-*`/`AC-*`.
 | `s08` Verify + DoD | Create a `spec-coverage-report`; close DoD/release/business acceptance based on `BRD/SRS`. | Requirement coverage clearly `PASS|FAIL|PARTIAL|UNTESTED`; remaining gaps have an owner/next action. |
 
 ## Spec Freeze Gate
