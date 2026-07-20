@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles: []
@@ -47,7 +47,9 @@ role_signoffs:
   uat: []
   release: []
   business_acceptance: []
-  dod: []
+  dod:
+    - "qc"
+    - "po"
 gate_reviews:
   spec_reviewed_by: []
   spec_reviewed_at: ""
@@ -67,8 +69,10 @@ gate_reviews:
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by:
+    - "qc"
+    - "po"
+  dod_reviewed_at: "2026-07-20"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -196,7 +200,8 @@ notes:
 
 ## Definition of Done
 ```yaml
-status: PARTIAL
+status: DONE
+dod_passed_by: "human (qc/po), 2026-07-20 — DoD cho scope T1-T7; T8/T9 tách work item riêng ngay sau đó"
 residual_risks:
   - "T8 (authority/router/docs cutover) chưa làm — là work item riêng, rủi ro cao nhất của toàn plan (ảnh hưởng mọi work item khác)"
   - "T9 phần còn lại (canary, rollback rehearsal, CHANGE-WFC-001 fixture) chưa làm — cần môi trường thử nghiệm thật, không chỉ code"
@@ -210,12 +215,12 @@ owners:
 upstream:
   - "sdd-light-code-factory.s07.implementation.md"
   - "docs/plans/sdd-light-code-factory-plan-review.md (authority source)"
-next_step: "Human pass DoD (scope T1-T7) -> mở work item riêng cho T8+T9 khi sẵn sàng"
+next_step: "Work item DONE (2026-07-20, scope T1-T7). Tiếp tục ngay: work item sdd-light-authority-cutover cho T8+T9."
 ```
 
 ## Handoff
-- Overall status: 13/13 AC trong scope PASS, verification verdict PASS cho T1-T7 — chờ human pass DoD.
+- Overall status: DONE — DoD passed bởi human (qc/po) 2026-07-20. 13/13 AC trong scope PASS.
 - Residual: T8 (authority cutover, rủi ro cao nhất) + T9 phần rollout chưa làm, đã tách work item theo OPT-A.
 - Recommendation: pass DoD cho scope T1-T7 (giá trị code + test đã chứng minh); khi sẵn sàng, mở work item mới cho T8+T9 với đủ thời gian review vì đây là phần chạm authority layer.
 - Release recommendation khi có: NOT_APPLICABLE — chưa cutover, chưa phải public release.
-- Next action: human chốt DoD.
+- Next action: không còn action bắt buộc cho scope này. T8+T9 tiếp tục ngay ở work item mới sdd-light-authority-cutover.
