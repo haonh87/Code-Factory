@@ -1,0 +1,32 @@
+{
+  "harnessId": "claude",
+  "harnessLabel": "Claude Code",
+  "version": 1,
+  "detection": {
+    "homeDirMarker": ".claude",
+    "envVar": "CLAUDE_HOME",
+    "defaultHomeDir": ".claude"
+  },
+  "naming": {
+    "globalAgentsFileName": "CLAUDE.md",
+    "projectAgentsFileName": "CLAUDE.md",
+    "managedSkillsManifestFile": ".claude-workflow-bundle.managed-skills.txt",
+    "legacyManagedSkillsManifestFile": ".claude-workflow-pack.managed-skills.txt",
+    "installStateFile": ".claude-workflow-bundle.install-state.json",
+    "legacyInstallStateFile": ".claude-workflow-pack.install-state.json"
+  },
+  "paths": {
+    "skillsHomeRel": "skills",
+    "supportPoliciesTargetRoot": "policies/codex",
+    "agentsDirectory": "agents",
+    "agentsManifestFileName": null
+  },
+  "content": {
+    "globalAgentsSourceRel": "policies/codex/AGENTS.global.md",
+    "skillsSourceRootRel": "skills",
+    "supportPoliciesSourceRootRel": "policies/codex"
+  },
+  "runtime": {
+    "installStateHomeKey": "claude_home"
+  }
+}

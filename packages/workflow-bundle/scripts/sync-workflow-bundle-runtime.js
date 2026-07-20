@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { ensureDirectory, readUtf8 } = require("./workflow-validator-utils");
+const { listAvailableHarnesses, loadAdapter, getRuntimeConfigFromAdapter } = require("./workflow-bundle-utils");
 
 const BUNDLE_MANIFEST_FILE = "workflow-bundle.manifest.json";
 const LEGACY_BUNDLE_MANIFEST_FILE = "workflow-pack.manifest.json";
@@ -34,6 +35,33 @@ function removeFileIfExists(filePath) {
 function copyDirectory(sourcePath, destinationPath) {
   fs.rmSync(destinationPath, { recursive: true, force: true });
   fs.cpSync(sourcePath, destinationPath, { recursive: true });
+  // Ensure copied files are writable (source may be read-only)
+  fs.chmodSync(destinationPath, 0o755);
+  for (const entry of fs.readdirSync(destinationPath, { withFileTypes: true })) {
+    const entryPath = path.join(destinationPath, entry.name);
+    if (entry.isFile()) {
+      fs.chmodSync(entryPath, 0o644);
+    } else if (entry.isDirectory()) {
+      // Recursively chmod subdirectories
+      function chmodRecursive(dirPath) {
+        fs.chmodSync(dirPath, 0o755);
+        for (const sub of fs.readdirSync(dirPath, { withFileTypes: true })) {
+          const subPath = path.join(dirPath, sub.name);
+          if (sub.isFile()) {
+            fs.chmodSync(subPath, 0o644);
+          } else if (sub.isDirectory()) {
+            chmodRecursive(subPath);
+          }
+        }
+      }
+      chmodRecursive(entryPath);
+    }
+  }
+}
+
+function copyFileWritable(sourcePath, destinationPath) {
+  fs.copyFileSync(sourcePath, destinationPath);
+  fs.chmodSync(destinationPath, 0o644);
 }
 
 function copyDirectoryWithoutFiles(sourcePath, destinationPath, excludedFileNames) {
@@ -55,7 +83,7 @@ function copyDirectoryWithoutFiles(sourcePath, destinationPath, excludedFileName
     }
 
     if (entry.isFile()) {
-      fs.copyFileSync(sourceEntryPath, destinationEntryPath);
+      copyFileWritable(sourceEntryPath, destinationEntryPath);
     }
   });
 }
@@ -84,7 +112,22 @@ function countBundledSkills(skillsRoot) {
 }
 
 function bundleRuntimeMode({ repoRoot, packageRoot, sourceManifest, mode }) {
-  const runtimeConfig = sourceManifest[mode];
+  // Determine runtime config: new format uses adapter, old format uses manifest key
+  let runtimeConfig;
+  if (sourceManifest.content && sourceManifest.harnesses) {
+    // New format: content + adapter
+    try {
+      const adapter = loadAdapter(mode, repoRoot);
+      runtimeConfig = getRuntimeConfigFromAdapter(sourceManifest, adapter);
+    } catch (_) {
+      // Adapter not found for this mode — skip
+      return null;
+    }
+  } else {
+    // Legacy format: top-level mode key
+    runtimeConfig = sourceManifest[mode];
+  }
+
   if (!runtimeConfig) {
     return null;
   }
@@ -115,7 +158,7 @@ function bundleRuntimeMode({ repoRoot, packageRoot, sourceManifest, mode }) {
     ensureDirectory(path.dirname(runtimePoliciesRoot));
   }
 
-  fs.copyFileSync(sourceGlobalAgents, path.join(runtimeRoot, path.basename(sourceGlobalAgents)));
+  copyFileWritable(sourceGlobalAgents, path.join(runtimeRoot, path.basename(sourceGlobalAgents)));
   copyDirectory(sourceSkillsRoot, runtimeSkillsRoot);
   if (runtimePoliciesRoot && sourceSupportPoliciesRoot) {
     copyDirectoryWithoutFiles(sourceSupportPoliciesRoot, runtimePoliciesRoot, new Set([runtimeConfig.globalAgentsFileName]));
@@ -145,7 +188,13 @@ function main() {
     bundleVersion: sourceManifest.bundleVersion || sourceManifest.packVersion
   };
 
-  ["codex", "claude"].forEach((mode) => {
+  // Determine harness modes from adapters or manifest
+  const availableHarnesses = listAvailableHarnesses(repoRoot);
+  const harnessModes = availableHarnesses.length > 0
+    ? availableHarnesses.map((h) => h.harnessId)
+    : (sourceManifest.harnesses || ["codex", "claude"]);
+
+  harnessModes.forEach((mode) => {
     const bundledRuntime = bundleRuntimeMode({ repoRoot, packageRoot, sourceManifest, mode });
     if (bundledRuntime) {
       packageManifest[mode] = bundledRuntime;
@@ -157,18 +206,15 @@ function main() {
     removeFileIfExists(legacyPackageManifestPath);
   }
 
-  const bundledSkillCount = Object.keys(packageManifest)
-    .filter((key) => key === "codex" || key === "claude")
-    .reduce((total, mode) => total + countBundledSkills(path.join(packageRoot, "runtime", mode, "skills")), 0);
+  const runtimeModes = Object.keys(packageManifest).filter((key) => key !== "bundleName" && key !== "bundleVersion" && key !== "content" && key !== "harnesses");
+  const bundledSkillCount = runtimeModes.reduce((total, mode) => total + countBundledSkills(path.join(packageRoot, "runtime", mode, "skills")), 0);
 
   console.log(
     [
       "OK: bundled workflow bundle runtime",
       `package_root=${packageRoot}`,
       `bundle_version=${packageManifest.bundleVersion}`,
-      `modes=${Object.keys(packageManifest)
-        .filter((key) => key === "codex" || key === "claude")
-        .join(",")}`,
+      `modes=${runtimeModes.join(",")}`,
       `skills=${bundledSkillCount}`,
       `manifest=${packageManifestPath}`
     ].join(" | ")
@@ -185,5 +231,6 @@ if (require.main === module) {
 }
 
 module.exports = {
-  main
+  main,
+  copyDirectory
 };

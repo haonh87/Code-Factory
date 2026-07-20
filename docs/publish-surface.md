@@ -1,19 +1,19 @@
 # Publish Surface
 
-Tài liệu này chốt public publish surface cho `workflow-bundle v2.1.1`.
+Tài liệu này chốt public publish surface cho `workflow-bundle v2.2.0`.
 
-`v2.1.1` là public release hiện tại của workflow này:
+`v2.2.0` là public release hiện tại của workflow này:
 - cài được vào Codex hoặc Claude Code bằng `wfc install|update|status|skills`
 - author workflow bằng `wfc init|scaffold|validate`
 - cho agent chủ động đề xuất `work-item` và `change`
 - nhưng human vẫn giữ quyền approve ở các gate trước khi delivery tiếp tục
 
-`v2.0.0` vẫn là first public release; `v2.1.1` là patch release kế tiếp trên cùng public surface.
+`v2.0.0` vẫn là first public release; `v2.2.0` là bản kế tiếp trên cùng public surface, không phá vỡ tương thích ngược — bổ sung harness adapter registry (additive; manifest legacy giữ nguyên).
 
 ## Canonical Release Refs
 
-- Tag: `v2.1.1`
-- Branch: `release/v2.1.1`
+- Tag: `v2.2.0`
+- Branch: `release/v2.2.0`
 
 Khi chia sẻ workflow này cho người mới dùng, ưu tiên trỏ vào một trong hai ref trên thay vì working tree hiện tại.
 
@@ -36,7 +36,7 @@ Khi chia sẻ workflow này cho người mới dùng, ưu tiên trỏ vào một
 5. [`../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`](../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
 6. [`../skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](../skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
 
-## Public Promise Of `v2.1.1`
+## Public Promise Of `v2.2.0`
 
 - Installable workflow bundle cho Codex và Claude Code qua `wfc install|update|status|skills`
 - Core authoring CLI qua `wfc init`, `wfc scaffold`, `wfc`, `wfc sdd|change|exec|plan`
@@ -53,7 +53,7 @@ Khi chia sẻ workflow này cho người mới dùng, ưu tiên trỏ vào một
   - legacy config `workflow-contracts.config.json`
   - legacy state `.codex-workflow-pack.*`
 
-Hai lớp legacy trên hiện vẫn được giữ để migration êm hơn, nhưng không nên coi đó là core public story của `v2.1.1`.
+Hai lớp legacy trên hiện vẫn được giữ để migration êm hơn, nhưng không nên coi đó là core public story của `v2.2.0`.
 
 ## Internal Or Maintainer Docs
 
@@ -78,6 +78,6 @@ Các file dưới đây là working assets cục bộ, không phải source-of-t
 
 ## Publish Rule
 
-- nếu nói về public release, dùng ngôn ngữ của `v2.1.1`
+- nếu nói về public release, dùng ngôn ngữ của `v2.2.0`
 - nếu nói về approval model, phải nêu rõ `agent proposes, human approves`
 - không dùng tài liệu internal hoặc memory-bank làm public onboarding path
