@@ -61,7 +61,7 @@ product-specs/
     spec-card.template.md
 ```
 
-A Spec Card is a single note with six blocks (see `product-specs/templates/spec-card.template.md`):
+A Spec Card is a single note with five blocks (see `product-specs/templates/spec-card.template.md`):
 
 - `Business Goal` — business goal, `in_scope`, `out_scope`.
 - `Requirements` — `REQ-###` entries, each with a `provenance` of `BASELINE` (already in the current spec) or `CR-###` (a delta introduced by an approved Change Request). `cr_required=true` forces `provenance` to be a `CR-###`.
@@ -69,7 +69,14 @@ A Spec Card is a single note with six blocks (see `product-specs/templates/spec-
 - `Assumptions And Open Decisions` — each entry has an owner.
 - `Spec Freeze` — `status`, `authority` (the role with freeze authority per the governance role model), `decided_at`; a `frozen` status without a recorded `authority` fails validation.
 
-The semantic validator (`wfc sdd`) checks, for a Light work item: every `REQ-###` has a valid `provenance`; every `AC-###` maps to a requirement that exists; no duplicate `REQ`/`AC` ids; `frozen` requires `authority` and `decided_at`; a requirement with `cr_required=true` has a `CR-###` provenance. A missing origin, AC mapping, freeze authority, or required CR link fails the check — the same rigor as `BRD/SRS`, in one artifact.
+For a Light work item, the semantic validator (`wfc sdd`) checks:
+- every `REQ-###` has a valid `provenance`
+- every `AC-###` maps to a requirement that exists
+- no duplicate `REQ`/`AC` ids
+- `frozen` requires both `authority` and `decided_at`
+- a requirement with `cr_required=true` has a `CR-###` provenance
+
+A missing origin, AC mapping, freeze authority, or required CR link fails the check — the same rigor as `BRD/SRS`, in one artifact.
 
 ## Spec Lifecycle
 

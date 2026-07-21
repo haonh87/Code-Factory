@@ -14,7 +14,11 @@ This document pins the public publish surface for `workflow-bundle v2.3.0`.
 - lets the agent proactively propose `work-item` and `change`
 - but the human still holds approval authority at each gate before delivery continues
 
-`v2.0.0` remains the first public release; `v2.3.0` is the next release on the same public surface, with no breaking change (`v2.2.x` added the harness adapter registry and internal hooks/instincts tooling — additive; `v2.3.0` adds an English-first public surface with Vietnamese `*.vi.md` supplements, and an `sdd_mode=light` profile for lower-ceremony work items — both additive, no change to the public promise below).
+`v2.0.0` remains the first public release. `v2.3.0` is the next release on the same public surface, and it makes no breaking change:
+- `v2.2.x` added the harness adapter registry and internal hooks/instincts tooling.
+- `v2.3.0` adds an English-first public surface (with Vietnamese `*.vi.md` supplements) and an `sdd_mode=light` profile for lower-ceremony work items.
+
+All of the above are additive — the public promise below is unchanged.
 
 ## Canonical Release Refs
 

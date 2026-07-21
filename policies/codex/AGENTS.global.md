@@ -95,9 +95,24 @@ Interpreted per the current workflow chain:
 
 ## Hard Rule: SDD Light Profile
 
-- `sdd_mode=light` (`SDD Light`) is a representation profile that reduces authoring ceremony; it does not add a new SDD mode, does not remove any logical lifecycle step, and does not weaken any control invariant.
-- Eligibility: a work item may run Light only when **all** of the following are true: `delivery_context=brownfield`, `planning_track=quick`, `governance_profile=default`, `execution_mode=agentic`, `interaction_mode=self`, and risk is `low` or `medium`.
-- Hard escalation to full/strict overrides an explicit `--preset sdd-light` and cannot be bypassed by a normal preset flag. It fires on any of: greenfield or a foundation decision, a public API/event/data contract, a database migration/backfill/cutover, regulated or security-sensitive evidence, required multi-agent delegation, `defect_source=UNKNOWN` or unclassified spec impact, high blast radius or multi-system scope, a complex UAT/release gate, or a compact CR exceeding requirement-only-delta eligibility.
+- `sdd_mode=light` (`SDD Light`) reduces authoring ceremony. It does not add a new SDD mode, does not remove any logical lifecycle step, and does not weaken any control invariant — it only changes how much gets written and where.
+- Eligibility: a work item may run Light only when **all** of the following are true:
+  - `delivery_context=brownfield`
+  - `planning_track=quick`
+  - `governance_profile=default`
+  - `execution_mode=agentic`
+  - `interaction_mode=self`
+  - risk is `low` or `medium`
+- Hard escalation to full/strict overrides an explicit `--preset sdd-light`; a normal preset flag cannot bypass it. It fires when any of the following is true:
+  - the work item is greenfield or needs a `Foundation Decision`
+  - it touches a public API/event/data contract
+  - it involves a database migration, backfill, or cutover
+  - it needs regulated or security-sensitive evidence
+  - it requires multi-agent delegation
+  - `defect_source=UNKNOWN` or the spec impact is not yet classified
+  - blast radius is high or it spans multiple systems
+  - it needs a complex UAT/release gate
+  - a compact CR exceeds requirement-only-delta eligibility
 - The eligibility router must return `eligible`, `selected_profile`, and `escalation_reasons[]`; when any hard trigger fires, the router escalates regardless of the requested preset.
 - Rollout is controlled by `sdd_light_profile=off|preview|default` (default rollout stage is `preview`, meaning an eligible work item auto-selects Light unless the flag is `off`). Setting it to `off` only changes the router default; it never rewrites artifacts already created.
 - Physical note mapping for Light (8 logical steps still exist in the trace model; only the physical note count is reduced):
@@ -106,9 +121,14 @@ Interpreted per the current workflow chain:
   - `s06` hosts Option Analysis + Brownfield Impact + Technical Approach + Task Plan (there is no separate `s05` physical note for Light).
   - `s07` is created lazily when the work item transitions to `ACTIVE`; it keeps its own Delivery Rule Evidence boundary and is never merged into `s08`.
   - `s08` is created lazily when Verify starts.
-- Gate host contract for Light: `Spec + DoR` at `s04`; `Approach + Task Plan` at `s06` (no `s05` gate check); `Foundation` is not supported — a work item that needs it must auto-escalate to full; `Delivery Rule Evidence` stays at `s07`; `DoD` at `s08` only passes when coverage and CR contribution (when linked to a CR) are valid.
+- Gate host contract for Light:
+  - `Spec + DoR` at `s04`.
+  - `Approach + Task Plan` at `s06` (there is no separate `s05` gate check).
+  - `Foundation Decision` is not supported — a work item that needs one must auto-escalate to full.
+  - `Delivery Rule Evidence` stays at `s07`.
+  - `DoD` at `s08` only passes when coverage, and CR contribution when linked to a CR, are both valid.
 - Light uses one Spec Card (`spec_refs.card`) instead of separate `BRD`/`SRS`; see `references/spec-driven-development.md` for the Spec Card contract.
-- A `ready-bundle` command may seal Spec, DoR, Approach and Task Plan receipts in a single interaction, but it must still produce one independent trusted receipt per gate, each hashed to its host artifact with its own reviewer and timestamp; a bundled interaction does not weaken gate semantics.
+- A `ready-bundle` command may seal the Spec, DoR, Approach, and Task Plan receipts in a single interaction, but each gate still gets its own independent trusted receipt, hashed to its host artifact with its own reviewer and timestamp. Bundling the interaction does not weaken gate semantics.
 - `ACTIVE` for a Light work item still requires the `s04` and `s06` receipts (in place of `s04`+`s05`+`s06`); every other human-controlled-gate invariant in this policy applies unchanged.
 
 ## Hard Rule: Disciplined Brainstorming

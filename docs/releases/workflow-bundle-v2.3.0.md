@@ -6,15 +6,17 @@ Branch: `release/v2.3.0`
 
 ## Changelog
 
-`workflow-bundle v2.3.0` ships two independent, additive initiatives that both landed directly on `main` since `v2.2.1`: the community-facing English translation of the whole public/skill surface, and the `sdd_mode=light` profile (eligibility router, Spec Card, compact CR, and the authority-layer cutover that makes it operate end-to-end).
+`workflow-bundle v2.3.0` ships two independent, additive changes since `v2.2.1`:
+1. The whole public docs and skill surface is now written in English by default, with Vietnamese kept as supplementary reference files, for the community-facing release.
+2. A new `sdd_mode=light` profile — a lighter-weight, lower-paperwork way to run the same eight-step workflow — is now fully wired up: eligibility router, Spec Card, compact CR, and the authority-layer update that makes agents actually follow the new rules.
 
 ### Added
 
-- **`sdd_mode=light` profile** (SDD Light, plan v5, approved 2026-07-16): a lower-ceremony representation of the same eight-step workflow for eligible brownfield/quick/agentic/low-risk work items.
+- **`sdd_mode=light` profile** (SDD Light, plan v5, approved 2026-07-16): the same eight-step workflow, but with fewer required documents and less required approval overhead, for eligible brownfield/quick/agentic/low-risk work items.
   - Eligibility router + hard-escalation matrix (`workflow-sdd-definitions.js`), budget assertions (artifact count, generated line count, required prompts).
   - Spec Card (`product-specs/templates/spec-card.template.md`) replaces separate `BRD`/`SRS` for Light — semantic validation of `REQ`/`AC` mapping, provenance (`BASELINE`/`CR-###`), and freeze authority (`validate-workflow-sdd.js`).
   - Compact scaffold with lazy `s07`/`s08` note creation (`scaffold-workflow.js`).
-  - Profile-aware gate host map: `Spec+DoR` at `s04`, `Approach+Task Plan` at `s06` (no separate `s05` note), `Foundation` auto-escalates to full (`validate-workflow-governance.js`, `workflow-gate-review.js`, `work-item-protocol.js`).
+  - Profile-aware gate host map: `Spec+DoR` at `s04`, `Approach+Task Plan` at `s06` (no separate `s05` note); a work item that needs a `Foundation Decision` auto-escalates to the full workflow instead (`validate-workflow-governance.js`, `workflow-gate-review.js`, `work-item-protocol.js`).
   - Materializer eligibility routing and classification (`materialize-work-item.js`).
   - Compact Change Request (`cr_profile=compact`, one `request.md`) with canonical `CR`/`cr_*` vocabulary and dual-read of legacy `CHANGE`/`change_*` during the migration window (`workflow-change-definitions.js`, `scaffold-change-package.js`, `validate-workflow-change.js`).
   - CR aggregate reconciliation and atomic `ACCEPTED` spec version bump, with no-self-accept and waiver handling (`cr-aggregate-reconcile.js`, new).
@@ -26,11 +28,11 @@ Branch: `release/v2.3.0`
 
 ### Changed
 
-- `.gitignore`: `memory-bank/`, `docs/plans/`, and `docs/research/` are now treated as internal working assets, excluded from the public surface (an individual load-bearing file, such as an approved plan a work item cites as its authority source, is still force-added when genuinely needed).
+- `.gitignore`: `memory-bank/`, `docs/plans/`, and `docs/research/` are now excluded as internal working assets — they are not part of the public surface. A single file in one of these folders can still be committed on purpose (`git add -f`) when a work item genuinely needs to keep it as its approved authority source.
 
 ### Fixed
 
-- None in this release (the one bug fixed this cycle — a precedence bug in `normalizeInstallState` — shipped in `v2.2.0`).
+- Nothing new in `v2.3.0` itself. The one bug fixed this development cycle — a precedence bug in `normalizeInstallState` — already shipped in `v2.2.0`.
 
 ### Compatibility
 

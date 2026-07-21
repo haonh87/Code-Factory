@@ -107,7 +107,11 @@ Check at minimum:
 
 A gate is only considered PASS if the approval is explicit and has enough evidence to read.
 
-For `sdd_mode: light`, apply the Light gate host contract instead of the list above: `Spec` + `DoR` hosted at `s04`; `Approach` + `Task Plan` hosted together at `s06` (do not check a separate `s05` receipt); `Foundation` is not supported for Light — if the work item needs it, treat this as a hard escalation and route it to the full chain rather than reporting a missing Light gate. `Contract`, when present, still applies at `s04` the same as full/strict.
+For `sdd_mode: light`, apply the Light gate host contract instead of the list above:
+- `Spec` + `DoR` hosted at `s04`.
+- `Approach` + `Task Plan` hosted together at `s06` (do not check a separate `s05` receipt).
+- `Foundation Decision` is not supported for Light — if the work item needs one, treat this as a hard escalation and route it to the full chain rather than reporting a missing Light gate.
+- `Contract`, when present, still applies at `s04`, the same as full/strict.
 
 ### Step 5: Choose Workflow Status
 
