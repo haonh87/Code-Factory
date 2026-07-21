@@ -1,6 +1,6 @@
 {
   "bundleName": "codex-workflow-bundle",
-  "bundleVersion": "2.2.1",
+  "bundleVersion": "2.3.0",
   "workflowSchemaVersion": "2026-07-light-1",
   "crSchemaVersion": "2026-07-cr-1",
   "codex": {
