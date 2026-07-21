@@ -282,6 +282,19 @@ Conventions:
 | `s07` | Implement | Execute per the approach, frozen spec, approved change, and pinned `governance` rules | Code/config/doc changes, `implementation-spec`, `implementation-notes`; `governance-exception` when needed; `spec-change` when needed | `s04-s06` meet the minimum conditions; behavior change uses `TDD` or has a clear reason plus an alternative `verify path`; large or risky change uses `worktree` or has a clear reason to skip; the main part or risky batch/task is reviewed within `s07` in the order `spec compliance -> code quality`; `subagent` is only used for independent tasks or has a clear fallback; output meets the contract; no unrecorded/unapproved spec drift or `governance drift` |
 | `s08` | Verify + DoD | Verify evidence, coverage, `governance compliance`, DoD, and release and business acceptance when needed | `verification-spec`, `governance-checklist` when needed, `spec-coverage-report`, review reports, `definition-of-done`, `governance-exception` when an open deviation remains | Coverage/evidence is clear; DoD conclusion is clear; only this step may declare `done`; if there is a `branch/worktree`, the close decision is only valid after the `s08` verdict; `governance` compliance is transparent; remaining gaps have an owner/next action |
 
+### `sdd_mode=light`: Same Eight Logical Steps, Fewer Physical Notes
+
+The table above describes all eight logical steps; `SDD Light` never removes a logical step or a control invariant, it only changes which physical note hosts each one. Full authority for the eligibility matrix, hard escalation, gate host contract, and rollout flag lives in `policies/codex/AGENTS.global.md § Hard Rule: SDD Light Profile` — read it before authoring or reviewing a Light work item.
+
+Physical note mapping for Light:
+- `s01` hosts `Clarify` + `Business Goal` + `Open Questions` + classification + the protocol anchor.
+- `s04` hosts `Acceptance + DoR` (Spec Card, not `BRD/SRS`; see `references/spec-driven-development.md`).
+- `s06` hosts `Option Analysis` + `Brownfield Impact` + `Technical Approach` + `Task Plan` (there is no separate `s05` note).
+- `s07` is created lazily at `ACTIVE` and keeps its own Delivery Rule Evidence boundary; it is never merged into `s08`.
+- `s08` is created lazily when Verify starts.
+
+A work item that fails Light eligibility, or hits a hard escalation trigger, auto-escalates to the full eight-note flow above; an explicit `--preset sdd-light` cannot override a hard escalation.
+
 ## Governance Layer
 
 `Governance` in this workflow is a thin shared layer, not a separate step.
@@ -298,12 +311,12 @@ Application principles:
 
 ## Hard Rule: Spec/Design Before Code
 
-- `s07 Implement` must not start if `s04`, `s05`, or `s06` do not meet the minimum conditions.
+- `s07 Implement` must not start if `s04`, `s05`, or `s06` do not meet the minimum conditions (for `sdd_mode=light`, read this as `s04` and `s06` per the Light gate host contract — there is no separate `s05` note).
 - Minimum conditions to start production code:
   - `s04` has measurable acceptance criteria and a clear `DoR`.
-  - `s05` has a technical approach enough to lock the impacted boundary and a validation plan.
+  - `s05` has a technical approach enough to lock the impacted boundary and a validation plan (for Light, this content is hosted inside `s06`, not a separate note).
   - `s06` has a task plan enough to know the execution order and verify path.
-- `planning_track=quick` only allows shortening authoring detail; it does not allow dropping `s05` or `s06` entirely.
+- `planning_track=quick` only allows shortening authoring detail; it does not allow dropping `s05` or `s06` entirely (for `sdd_mode=light`, `s05`'s content is hosted inside `s06` by design — see `AGENTS.global.md § Hard Rule: SDD Light Profile`).
 - When a work item runs under `SDD`, code may only start when `spec` is `approved|frozen`, unless there is a valid `spec-change` or `governance-exception`.
 - If an emergency forces shorter authoring before code, the deviation must be recorded as an exception or waiver; you must not code first then backfill artifacts as if the process was never broken.
 
@@ -462,7 +475,7 @@ Application principles:
 - `work item approval` and `change package approval` are always human-controlled gates; a protocol-managed item must not use `review_required=false` or `approval_status=NOT_REQUIRED` to bypass review.
 - Human pass must be explicit; do not infer it from a comment, a technical `review pass`, a local `test pass`, or the fact that an artifact exists.
 - If a human-controlled gate has not passed, the workflow must be `BLOCKED`, go back to the previous step, or stop before the next gate; it must not continue just because AI judges it "good enough".
-- `ACTIVE` is only valid when `work item approval`, `change package approval` when present, `bootstrap gate` of `greenfield` when present, and the `s04`, `s05`, `s06` evidence have been human-passed.
+- `ACTIVE` is only valid when `work item approval`, `change package approval` when present, `bootstrap gate` of `greenfield` when present, and the `s04`, `s05`, `s06` evidence have been human-passed (for `sdd_mode=light`, `s04` and `s06` — no separate `s05` note to pass).
 - `VERIFIED` is only valid when `s08` has verify evidence.
 - `DONE` is only valid when `s08` has passed `DoD`, and if the scope requires it, `UAT`, `Release`, and `Business Acceptance` have also passed in `s08`.
 - Invariants for the router state block:

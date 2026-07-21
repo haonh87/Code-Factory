@@ -91,6 +91,8 @@ Pick the best-fitting step in the chain:
 
 If data is missing to enter a deeper step, return to the previous step instead of advancing.
 
+If the work item note declares `sdd_mode: light`, there is no separate `s05` physical note: its content (Option Analysis, Brownfield Impact, Technical Approach) is hosted inside `s06`. Do not report `Missing Gates: s05` or wait for an `s05` file for a Light work item — check the Approach content and receipt inside `s06` instead. Full authority for this mapping is `policies/codex/AGENTS.global.md § Hard Rule: SDD Light Profile`.
+
 ### Step 4: Check Missing Gates
 
 Check at minimum:
@@ -104,6 +106,8 @@ Check at minimum:
 - the matching human approval
 
 A gate is only considered PASS if the approval is explicit and has enough evidence to read.
+
+For `sdd_mode: light`, apply the Light gate host contract instead of the list above: `Spec` + `DoR` hosted at `s04`; `Approach` + `Task Plan` hosted together at `s06` (do not check a separate `s05` receipt); `Foundation` is not supported for Light — if the work item needs it, treat this as a hard escalation and route it to the full chain rather than reporting a missing Light gate. `Contract`, when present, still applies at `s04` the same as full/strict.
 
 ### Step 5: Choose Workflow Status
 
