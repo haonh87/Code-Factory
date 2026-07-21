@@ -94,86 +94,117 @@ tags:
 
 ## Step Contract
 ```yaml
-step_goal: ""
-input_summary: []
-output_summary: []
-done_when: []
-owner: ""
+step_goal: "Verify AC-14/AC-EXIT-1..4 (PASS) + AC-15 (PARTIAL, ghi rõ gap), regression/compatibility summary, đề xuất DoD verdict."
+input_summary:
+  - "s07: T-A..T-H DONE; commit sau feed250 merged vào main"
+output_summary:
+  - "AC scoreboard + 2 incident permission + 1 gap T9 + DoD proposal"
+done_when:
+  - "Human pass DoD"
+owner: "claude (evidence) -> human (pass DoD)"
 ```
 
 ## Artifact Chính
 ```yaml
-verification_scope: []
-evidence_refs: []
-summary_verdict: PASS|FAIL|PARTIAL
+verification_scope:
+  - "AC-14, AC-15, AC-EXIT-1..4 theo s04 (HARD: AC-14, AC-15, AC-EXIT-2, AC-EXIT-4)"
+evidence_refs:
+  - "AC-14 PASS: 5 file authority đối chiếu tay với code T1-T7 thật; schema-version-sync test PASS; router/workflow-chain/materialization/AGENTS.global.md nhất quán (1 nguồn chính + 4 trỏ về, đúng OPT-A)"
+  - "AC-15 PARTIAL: canary thật (materialize --sdd-preset light --auto-scaffold --telemetry on, sample BUG brownfield/quick/agentic/low-risk) -> artifact_count=3 (budget<=4 PASS), tổng dòng thật 434 (budget<=450 PASS, ~96% ngưỡng). required_prompt_count/approval_interaction_count/lead_time_ms KHÔNG có automated evidence — gap có thật trong code (workflow-telemetry.js hỗ trợ field nhưng không CLI call site nào truyền vào), ghi nhận minh bạch, không che giấu"
+  - "AC-EXIT-1 PASS: golden Light fixture (run-workflow-authoring-smoke.js) PASS sau khi router/authority cập nhật"
+  - "AC-EXIT-2 HARD PASS: toàn bộ 108 file/104 note qua wfc validate + 24 unit test + 7 verification_commands PASS, 0 delta so với baseline T-A"
+  - "AC-EXIT-3 PASS: đối chiếu router logic mới với validator T1-T4 — không có đường bypass gate check nào"
+  - "AC-EXIT-4 HARD PASS: rollback rehearsal trong worktree tạm — revert 5 file, validate+test+smoke PASS lại trạng thái trước T8"
+summary_verdict: PARTIAL
 ```
 
 ## Governance Checks
 ```yaml
-checklist_applied: []
-checks: []
+checklist_applied:
+  - "project-context/checklists/default.md"
+checks:
+  - "Contract: nội dung 5 file khớp đúng bản duyệt ở s05 (OPT-A), không tự ý đổi khi implement"
+  - "2 incident permission (capability-control stale lock) đã điều tra qua đúng công cụ (wfc capability status) trước khi hành động, xử lý đúng phạm vi (không chmod tràn lan)"
+  - "T9 gap ghi nhận minh bạch — không tuyên bố AC-15 PASS khi chỉ có 2/4 metric có evidence tự động"
+  - "sdd_light_profile vẫn preview — KHÔNG tự bật default cho team (đúng non_goals)"
 blocking_items: []
-owner: ""
-next_action: ""
+owner: "human (pass DoD)"
+next_action: "human quyết: chấp nhận AC-15 PARTIAL (2/4 metric có evidence, budget chính đã đạt) là đủ để DONE, hay cần wiring thêm 3 metric còn lại trước khi DONE"
 ```
 
 ## Regression & Compatibility Summary
 ```yaml
-regression_status: PASS|FAIL|PARTIAL
-compatibility_status: PASS|FAIL|PARTIAL
+regression_status: PASS
+compatibility_status: PASS
 breaking_changes: []
-rollback_readiness: READY|BLOCKED|PARTIAL
+rollback_readiness: READY
+notes:
+  - "108 file/104 note, 24 unit test, 7 verification_commands, bundle-smoke — tất cả PASS trước T8, sau T8 (worktree), sau rollback rehearsal, và sau merge main — 0 delta xuyên suốt"
+  - "Full/strict path không đổi hành vi (additive only, đã verify)"
+  - "Rollback: revert merge commit trên main (đã rehearse); sdd_light_profile giữ preview, không rewrite artifact"
 ```
 
 ## Scan Summary
 ```yaml
-status: PASS|FAIL|PARTIAL
-notes: []
+status: PASS
+notes:
+  - "Thay đổi thuần tài liệu (5 file authority) — không code mới, không secret, không dependency"
+  - "2 incident permission là filesystem state, không phải security issue — đã điều tra + xử lý đúng phạm vi"
 ```
 
 ## UAT Summary
 ```yaml
-status: NOT_APPLICABLE|PASS|FAIL|PARTIAL
+status: NOT_APPLICABLE
 reviewers: []
 notes: []
 ```
 
 ## Release Summary
 ```yaml
-status: NOT_APPLICABLE|PASS|FAIL|PARTIAL
+status: NOT_APPLICABLE
 reviewers: []
-notes: []
+notes:
+  - "Merge thẳng main; sdd_light_profile giữ preview — chưa phải public release/default rollout"
 ```
 
 ## Business Acceptance Summary
 ```yaml
-status: NOT_APPLICABLE|PASS|FAIL|PARTIAL
+status: NOT_APPLICABLE
 reviewers: []
-notes: []
+notes:
+  - "Giá trị business (giảm ceremony) giờ đã CÓ THỂ hiện thực hóa (authority đã biết Light) nhưng default vẫn preview — business acceptance đầy đủ chờ canary metrics hoàn chỉnh + quyết định bật default"
 ```
 
 ## Audit
 ```yaml
-audit_status: PASS|FAIL|PARTIAL
-notes: []
+audit_status: PASS
+notes:
+  - "Traceability đủ: plan approved (2026-07-16) -> sdd-light-code-factory T1-T7 (DONE 2026-07-20) -> sdd-light-authority-cutover T8+T9 (s01-s07, 2026-07-20/21) -> evidence s08"
+  - "2 incident + 1 gap đều được điều tra và ghi nhận trung thực, không che giấu để coi là 'xong'"
 ```
 
 ## Definition of Done
 ```yaml
-status: DONE|BLOCKED|PARTIAL
-residual_risks: []
-owners: []
+status: PARTIAL
+residual_risks:
+  - "AC-15 chỉ 2/4 metric (artifact_count, generated_line_count-đo thủ công) có evidence; required_prompt_count/approval_interaction_count/lead_time_ms cần wiring thêm vào materialize/protocol CLI hoặc đo qua 1 chu trình approval thật — đề xuất: chấp nhận residual này vì budget CHÍNH (artifact + line, phản ánh trực tiếp mục tiêu giảm ceremony) đã chứng minh đạt bằng dữ liệu thật"
+  - "Nhiều file khác trong scripts/, mcp/ đang read-only do capability-control tích lũy qua phiên dài — không thuộc scope này, đáng có work item dọn riêng"
+  - "sdd_light_profile vẫn preview — cần theo dõi thêm trước khi human quyết chuyển default cho toàn team"
+owners:
+  - "human: pass DoD (chấp nhận AC-15 PARTIAL) hoặc yêu cầu wiring thêm 3 metric trước khi DONE"
 ```
 
 ## Traceability
 ```yaml
-upstream: []
-next_step: ""
+upstream:
+  - "sdd-light-authority-cutover.s07.implementation.md"
+  - "sdd-light-code-factory (T1-T7 DONE, work item tiền nhiệm)"
+next_step: "Human pass DoD -> toàn bộ plan v5 SDD Light (T1-T9) DONE, trừ residual AC-15 đã ghi nhận"
 ```
 
 ## Handoff
-- Overall status:
-- Residual risks:
-- Recommendation:
-- Release recommendation khi có:
-- Next action:
+- Overall status: AC-14/AC-EXIT-1..4 PASS; AC-15 PARTIAL (budget chính đạt, 2/4 metric tự động) — chờ human pass DoD.
+- Residual: 3/4 telemetry metric chưa auto-capture (gap có thật, không phải fail ẩn); file read-only rải rác ngoài scope.
+- Recommendation: pass DoD, chấp nhận AC-15 PARTIAL — mục tiêu cốt lõi (giảm artifact + dòng ceremony) đã chứng minh bằng canary thật; 3 metric còn lại là nice-to-have observability, không phải core governance invariant.
+- Release recommendation khi có: NOT_APPLICABLE — sdd_light_profile giữ preview.
+- Next action: human chốt DoD cho toàn bộ plan v5 (T1-T9, work item sdd-light-code-factory + sdd-light-authority-cutover).
