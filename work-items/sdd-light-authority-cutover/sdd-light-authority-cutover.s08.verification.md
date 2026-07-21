@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles: []
@@ -47,7 +47,9 @@ role_signoffs:
   uat: []
   release: []
   business_acceptance: []
-  dod: []
+  dod:
+    - "qc"
+    - "po"
 gate_reviews:
   spec_reviewed_by: []
   spec_reviewed_at: ""
@@ -67,8 +69,10 @@ gate_reviews:
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by:
+    - "qc"
+    - "po"
+  dod_reviewed_at: "2026-07-21"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -185,7 +189,8 @@ notes:
 
 ## Definition of Done
 ```yaml
-status: PARTIAL
+status: DONE
+dod_passed_by: "human (qc/po), 2026-07-21 — AC-15 residual accepted (core artifact/line budget proven; prompt/interaction/lead-time telemetry wiring is a follow-up, not a blocking governance gap)"
 residual_risks:
   - "AC-15 chỉ 2/4 metric (artifact_count, generated_line_count-đo thủ công) có evidence; required_prompt_count/approval_interaction_count/lead_time_ms cần wiring thêm vào materialize/protocol CLI hoặc đo qua 1 chu trình approval thật — đề xuất: chấp nhận residual này vì budget CHÍNH (artifact + line, phản ánh trực tiếp mục tiêu giảm ceremony) đã chứng minh đạt bằng dữ liệu thật"
   - "Nhiều file khác trong scripts/, mcp/ đang read-only do capability-control tích lũy qua phiên dài — không thuộc scope này, đáng có work item dọn riêng"
@@ -199,12 +204,12 @@ owners:
 upstream:
   - "sdd-light-authority-cutover.s07.implementation.md"
   - "sdd-light-code-factory (T1-T7 DONE, work item tiền nhiệm)"
-next_step: "Human pass DoD -> toàn bộ plan v5 SDD Light (T1-T9) DONE, trừ residual AC-15 đã ghi nhận"
+next_step: "Work item DONE (2026-07-21). Plan v5 SDD Light (T1-T9) hoàn tất toàn bộ."
 ```
 
 ## Handoff
-- Overall status: AC-14/AC-EXIT-1..4 PASS; AC-15 PARTIAL (budget chính đạt, 2/4 metric tự động) — chờ human pass DoD.
+- Overall status: DONE — DoD passed bởi human (qc/po) 2026-07-21. AC-14/AC-EXIT-1..4 PASS; AC-15 residual accepted.
 - Residual: 3/4 telemetry metric chưa auto-capture (gap có thật, không phải fail ẩn); file read-only rải rác ngoài scope.
 - Recommendation: pass DoD, chấp nhận AC-15 PARTIAL — mục tiêu cốt lõi (giảm artifact + dòng ceremony) đã chứng minh bằng canary thật; 3 metric còn lại là nice-to-have observability, không phải core governance invariant.
 - Release recommendation khi có: NOT_APPLICABLE — sdd_light_profile giữ preview.
-- Next action: human chốt DoD cho toàn bộ plan v5 (T1-T9, work item sdd-light-code-factory + sdd-light-authority-cutover).
+- Next action: không còn action bắt buộc. Plan v5 SDD Light (T1-T9) DONE toàn bộ qua 2 work item: sdd-light-code-factory (T1-T7) + sdd-light-authority-cutover (T8-T9).
