@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: README.vi.md
 
-`workflow-bundle` is the CLI package of the `v2.2.1` public release: it installs the workflow bundle for Codex or Claude Code, scaffolds or validates workflows, and supports the `agent proposes, human approves` flow for `work-item` and `change`.
+`workflow-bundle` is the CLI package of the `v2.3.0` public release: it installs the workflow bundle for Codex or Claude Code, scaffolds or validates workflows, and supports the `agent proposes, human approves` flow for `work-item` and `change`.
 
 Detailed quickstart: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -43,7 +43,7 @@ npm link
 wfc version
 ```
 
-## What `v2.2.1` Includes
+## What `v2.3.0` Includes
 
 - workflow bundle install surface via `wfc install|update|status|skills`
 - core authoring CLI via `wfc init|scaffold|validate`
