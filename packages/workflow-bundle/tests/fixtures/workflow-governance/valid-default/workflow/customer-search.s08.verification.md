@@ -27,7 +27,7 @@ execution_roles:
   - developer
 approval_gates:
   spec: required
-  contract: required
+  contract: not_applicable
   foundation: not_applicable
   uat: required
   release: not_applicable

@@ -17,7 +17,7 @@ governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
   - "project-context/checklists/design-review.md"
-sdd_mode: light
+sdd_mode: strict
 spec_refs:
   brd: "product-specs/brd/design-refresh.md"
   srs: "product-specs/srs/design-refresh.md"

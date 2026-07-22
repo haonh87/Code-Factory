@@ -38,8 +38,9 @@ role_signoffs:
 gate_reviews:
   dor_reviewed_by: []
   dor_reviewed_at: ""
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
+  approach_reviewed_by:
+    - developer
+  approach_reviewed_at: "2026-04-14T10:30:00Z"
   task_plan_reviewed_by:
     - developer
   task_plan_reviewed_at: "2026-04-14T11:00:00Z"
@@ -69,6 +70,14 @@ step_goal: "Tách customer search thành các task có thể implement và verif
 exit_when:
   - "Task đủ nhỏ để thực hiện."
   - "Plan cover verify path chính."
+```
+
+## Option Analysis
+```yaml
+options:
+  - "Thêm debounce phía client, giữ nguyên API hiện có"
+  - "Đổi API sang server-side incremental search"
+recommended_option: "Thêm debounce phía client, giữ nguyên API hiện có"
 ```
 
 ## Artifact Chính
@@ -101,6 +110,18 @@ checks:
 blocking_items: []
 owner: "developer"
 next_action: "Sang implement"
+```
+
+## Brownfield Impact Analysis
+```yaml
+impacted_modules:
+  - "customer search input"
+  - "customer list API query"
+compatibility_risks:
+  - "Không được làm vỡ search by name hiện có"
+migration_notes: []
+rollback_notes:
+  - "Rollback về query cũ nếu debounce gây regression"
 ```
 
 ## Brownfield Delivery Plan

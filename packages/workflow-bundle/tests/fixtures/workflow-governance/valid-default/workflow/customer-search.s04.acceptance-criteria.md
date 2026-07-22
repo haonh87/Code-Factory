@@ -28,7 +28,7 @@ execution_roles:
   - qc
 approval_gates:
   spec: required
-  contract: required
+  contract: not_applicable
   foundation: not_applicable
   uat: not_applicable
 role_signoffs:
@@ -105,6 +105,17 @@ approved_spec_refs:
   - "product-specs/srs/customer-search.md"
 decision_notes:
   - "Search scope, KPI và non-goals đã được chốt ở baseline spec."
+```
+
+## Spec Freeze
+```yaml
+status: READY
+requirement_ids:
+  - BRD-CS-001
+  - SRS-CS-001
+accepted_assumptions:
+  - "Debounce timing chưa cần benchmark tải lớn"
+blockers: []
 ```
 
 ## Contract Baseline
