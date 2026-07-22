@@ -87,6 +87,15 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 - Only create this block when the change truly touches schema, query, migration, retention, or rollback concerns of the database.
 - Keep the field names in the schema unchanged; do not rename fields when writing them into the note.
 
+## Choosing The Reference By Engine
+
+- Determine the database engine from `database_design` and `deployment_context`.
+- Only read the reference directly related to the current engine:
+  - `PostgreSQL`: `references/postgresql.md`
+  - `MySQL`/`MariaDB`: `references/mysql.md`
+  - `MongoDB`: `references/mongodb.md`
+- If the engine has no matching reference yet, fall back to the general lock/rollback/backfill reasoning in this skill and note the gap in `required_actions`.
+
 ## Evaluation Flow
 
 1. Identify the database change scope in `review_scope`.

@@ -19,7 +19,15 @@ language: en
 - If the step table mentions a new block such as `## Review Findings` or `## Implementation Notes`, the matching step template must also have that block.
 - If a template references a skill's schema, the `### \`<skill-name>\`` entry must also exist in the schema catalog section.
 
-## 3. Template And Schema
+## 3. Governance Authority Sync
+
+- Every `## Hard Rule: ...` heading in `policies/codex/AGENTS.global.md` must have a matching `## Hard Rule: ...` heading in `skills/orchestration/codex-workflow-chain/SKILL.md`, with the exact same wording (`grep -n "^## Hard Rule" <file>` on both and diff the heading lists).
+- A hard rule that only makes sense at router/entry level (for example `Router Before Action`, `Generic Coding Defaults Do Not Open A Gate`) may live in `workflow-governance-router/SKILL.md` instead, but it must still exist verbatim in at least one skill file; it must not exist only in `AGENTS.global.md` with no skill-layer counterpart.
+- If a rule's authority body (eligibility conditions, escalation triggers, gate host contract) is long, the skill copy may summarize it, but it must state which file is the full authority (for example `Full authority for this rule is policies/codex/AGENTS.global.md § Hard Rule: <name>`) instead of silently omitting the rule.
+- This check is heading-text equality, not paraphrase equality: a rule present under a differently worded heading (e.g. `Prefer The Smallest Sufficient Solution` vs `Prefer The Smallest Solution That Is Correct`) still counts as drift and must be flagged.
+- `references/workflow-chain.md` inside `codex-workflow-chain` restates the same Hard Rule set again for its own step-mapping purposes; its headings must also match `AGENTS.global.md` 1:1 for the same reason.
+
+## 4. Template And Schema
 
 - Step 5:
   - A specialized design/frontend skill must go into `## Architecture Details`.
@@ -28,7 +36,7 @@ language: en
 - Step 8:
   - A specialized review skill must use `## Review Findings` or an equivalent review block, not push into `## Scan Summary`.
 
-## 4. Boundary Between Skills
+## 5. Boundary Between Skills
 
 - `frontend-experience-design` must be clearly a design-before-code skill.
 - `frontend-architecture` must be clearly a source-code boundary and ownership skill.
@@ -37,13 +45,13 @@ language: en
 - `react-best-practices-review` must be clearly a React render/data boundary review.
 - If two skills are close in scope, at least one of the two must have an `Out Of Scope` section or a decision rule to separate the roles.
 
-## 5. Cross-Reference And Runtime Layout
+## 6. Cross-Reference And Runtime Layout
 
 - Every cross-reference path between skills must be correct for the flat runtime layout after a global install.
 - Do not use a path that is only correct in the repo's group structure if the real runtime no longer keeps that grouping.
 - If a skill references `references/...` or `scripts/...`, the corresponding file must actually exist.
 
-## 6. Script And Automatic Checks
+## 7. Script And Automatic Checks
 
 - The audit script should catch at least:
   - valid frontmatter
@@ -51,14 +59,15 @@ language: en
   - unique skill name
   - workflow-chain existence
   - core marker/template/schema existence
+  - `## Hard Rule` heading-list equality between `policies/codex/AGENTS.global.md` and `skills/orchestration/codex-workflow-chain/SKILL.md` (and its `references/workflow-chain.md`)
 - What the script cannot catch must live in this semantic checklist.
 
-## 7. README And Repo Documentation
+## 8. README And Repo Documentation
 
 - If a new skill changes how the repo is maintained, consider adding it to the README or an operations note.
 - It is not required to list every skill in the README, but the README must not contradict the current runtime model.
 
-## 8. Audit Conclusion
+## 9. Audit Conclusion
 
 - `PASS`: no blocking mismatch, no important template/schema drift remaining.
 - `PARTIAL`: the repo runs but warnings or minor semantic gaps remain.

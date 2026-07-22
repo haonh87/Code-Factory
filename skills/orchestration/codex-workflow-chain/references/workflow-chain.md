@@ -333,7 +333,7 @@ Application principles:
 - `planning_track=quick` only allows shortening the `option analysis` detail; it does not allow dropping the option comparison entirely.
 - If there is not enough data to brainstorm seriously, the blocker or assumption must be pushed to `s03 Open Questions` instead of forcing an approach choice.
 
-## Hard Rule: Prefer The Smallest Sufficient Solution
+## Hard Rule: Prefer The Smallest Solution That Is Correct
 
 - At `s05 Technical Approach`, if a smaller option still meets the acceptance criteria, current constraints, related `governance`, and the main validation need, that option must be preferred.
 - Do not open a new abstraction, layer, service, framework, schema split, queue, cache, or config surface only for hypothetical future needs.
@@ -372,7 +372,7 @@ Application principles:
 - `TDD` is not required for `docs-only`, rename, format, metadata-only, or artifact workflow that does not affect production behavior.
 - If strict `TDD` is blocked by legacy, harness, or test environment, the reason and an alternative `verify path` must be recorded in the implementation note; you must not write code first then add tests after and still call it `TDD`.
 
-## Hard Rule: Worktree For Large Or Risky Change
+## Hard Rule: Worktree For Large Or Risky Changes
 
 - At `s07 Implement`, a `worktree` must be used when the change is in the `large or risky change` group.
 - `large or risky change` in this workflow includes at minimum:
@@ -421,7 +421,7 @@ Application principles:
 - `agentic` remains the default mode; if the `independent task` conditions are not met, fall back to `agentic` or `sequential_multi_role`.
 - `subagent` must not bypass `review`, `testing`, `verify`, or `DoD`.
 
-## Hard Rule: No Premature Done Declaration
+## Hard Rule: Do Not Self-Declare Done
 
 - No agent, worker, or implementer may declare `done` before `s08 Verify + DoD` has a clear `DoD` verdict.
 - A local `review pass`, `test pass`, `code done`, `merge done`, or a clean `worktree` is not equivalent to `DoD`.
@@ -429,7 +429,7 @@ Application principles:
 - If a check is skipped, an exception is open, a gap has no clear owner, or evidence is insufficient, only `PARTIAL` or not-complete may be reported; `done` must not be reported.
 - `DoD` is the gate that closes a work item at the delivery level, not a subjective state of the implementer.
 
-## Hard Rule: Branch/Worktree Closed Only After Verify
+## Hard Rule: Branch/Worktree Only Finalized After Verify
 
 - When a work item uses a `branch` or `worktree`, the `cleanup`, `close`, `remove`, or `merge` decision is only valid after `s08 Verify + DoD` has a clear `DoD` verdict.
 - A clean `branch`, clean `worktree`, reviewed diff, or locally merged code is not evidence to close a branch/worktree early.

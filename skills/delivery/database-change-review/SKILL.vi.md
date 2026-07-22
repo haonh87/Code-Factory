@@ -87,6 +87,15 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 - Chỉ tạo block này khi thay đổi thực sự chạm schema, query, migration, retention hoặc rollback concern của database.
 - Giữ nguyên tên field trong schema; không đổi tên field khi ghi vào note.
 
+## Chọn Reference Theo Engine
+
+- Xác định database engine từ `database_design` và `deployment_context`.
+- Chỉ đọc reference liên quan trực tiếp đến engine hiện tại:
+  - `PostgreSQL`: `references/postgresql.vi.md`
+  - `MySQL`/`MariaDB`: `references/mysql.vi.md`
+  - `MongoDB`: `references/mongodb.vi.md`
+- Nếu engine chưa có reference tương ứng, dùng lại phần lý luận lock/rollback/backfill chung của skill này và ghi rõ khoảng trống vào `required_actions`.
+
 ## Luồng Đánh Giá
 
 1. Xác định phạm vi thay đổi database trong `review_scope`.

@@ -84,6 +84,17 @@ Follow the 8-step delivery workflow for coding tasks.
 - When a work item runs under `SDD`, do not implement if the `spec` is not yet `approved|frozen`, unless a `spec-change` or `governance-exception` exists per the rules.
 - If an emergency forces a deviation, record the exception or waiver clearly; do not code first and backfill docs as if the workflow had never been shortened.
 
+## Hard Rule: SDD Light Profile
+
+- `sdd_mode=light` (`SDD Light`) reduces authoring ceremony; it does not add a new SDD mode, remove a lifecycle step, or weaken any control invariant — it only changes how much gets written and where. Full authority for this rule is `policies/codex/AGENTS.global.md § Hard Rule: SDD Light Profile`.
+- A work item may run Light only when it is `delivery_context=brownfield`, `planning_track=quick`, `governance_profile=default`, `execution_mode=agentic`, `interaction_mode=self`, and risk is `low` or `medium`.
+- Hard escalation to full/strict overrides an explicit Light preset when the item is greenfield, needs a `Foundation Decision`, touches a public API/event/data contract, involves a database migration/backfill/cutover, needs regulated or security-sensitive evidence, requires multi-agent delegation, has `defect_source=UNKNOWN` or unclassified spec impact, has high blast radius or spans multiple systems, or needs a complex UAT/release gate.
+- Physical note mapping for Light: `s01` hosts Clarify + Business Goal + Open Questions + classification; `s04` hosts Acceptance + DoR + Spec Freeze/approved CR; `s06` hosts Option Analysis + Brownfield Impact + Technical Approach + Task Plan (there is no separate `s05` physical note for Light); `s07` and `s08` are created lazily when the item transitions to `ACTIVE`/Verify starts. The 8 logical steps still exist in the trace model; only the physical note count is reduced.
+- Gate host contract for Light: `Spec + DoR` at `s04`; `Approach + Task Plan` at `s06` (no separate `s05` gate check); `Foundation Decision` is not supported — a work item that needs one must auto-escalate to full; `Delivery Rule Evidence` stays at `s07`; `DoD` at `s08`.
+- Light uses one Spec Card (`spec_refs.card`) instead of separate `BRD`/`SRS`; see `references/spec-driven-development.md` for the Spec Card contract.
+- A `ready-bundle` interaction may seal the Spec, DoR, Approach, and Task Plan receipts in one step, but each gate still gets its own independent trusted receipt with its own reviewer and timestamp; bundling the interaction never weakens gate semantics.
+- `ACTIVE` for a Light work item still requires the `s04` and `s06` receipts (in place of `s04`+`s05`+`s06`); every other human-controlled-gate invariant in this skill applies unchanged.
+
 ## Hard Rule: Disciplined Brainstorming
 
 - Before closing `s05 Technical Approach`, there must be an `option analysis` at a level fitting the work item's complexity.
@@ -97,7 +108,7 @@ Follow the 8-step delivery workflow for coding tasks.
 - `planning_track=quick` only allows reducing the detail level of `option analysis`; it does not allow dropping the option comparison entirely.
 - If there is not enough data to brainstorm seriously, reflect the blocker or assumption in `s03 Open Questions` instead of forcing an approach.
 
-## Hard Rule: Prefer The Smallest Sufficient Solution
+## Hard Rule: Prefer The Smallest Solution That Is Correct
 
 - At `s05 Technical Approach`, if a smaller option still meets the acceptance criteria, current constraints, related `governance`, and the main verification need, prefer that option.
 - Do not open a new abstraction, layer, service, framework, schema split, queue, cache, or config surface only for hypothetical future needs.
@@ -136,7 +147,7 @@ Follow the 8-step delivery workflow for coding tasks.
 - `TDD` is not required for `docs-only`, rename, format, metadata-only, or workflow artifacts that do not affect production behavior.
 - If strict `TDD` is blocked by legacy, harness, or test environment, record the reason and an alternate `verify path` in the implementation note; do not write code first and add tests after while still calling it `TDD`.
 
-## Hard Rule: Worktree For Large Or Risky Change
+## Hard Rule: Worktree For Large Or Risky Changes
 
 - At `s07 Implement`, use a `worktree` when the change falls under `large or risky change`.
 - `large or risky change` in this workflow includes at minimum:
@@ -185,7 +196,7 @@ Follow the 8-step delivery workflow for coding tasks.
 - `agentic` remains the default mode; if the conditions for `independent task` are not met, fall back to `agentic` or `sequential_multi_role`.
 - `subagent` must not bypass `review`, `testing`, `verify`, or `DoD`.
 
-## Hard Rule: No Premature Done Declaration
+## Hard Rule: Do Not Self-Declare Done
 
 - No agent, worker, or implementer may declare `done` before `s08 Verify + DoD` has a clear `DoD` verdict.
 - `review pass`, local `test pass`, `code done`, `merge done`, or a clean `worktree` are not equivalent to `DoD`.
@@ -193,7 +204,7 @@ Follow the 8-step delivery workflow for coding tasks.
 - If checks were skipped, exceptions are still open, gaps have no clear owner, or evidence is insufficient, you may only report `PARTIAL` or not-complete; do not report `done`.
 - `DoD` is the delivery-level gate that closes a work item, not a subjective state of the implementer.
 
-## Hard Rule: Branch/Worktree Closed Only After Verify
+## Hard Rule: Branch/Worktree Only Finalized After Verify
 
 - When a work item uses a `branch` or `worktree`, the decision to `cleanup`, `close`, `remove`, or `merge` is only valid after `s08 Verify + DoD` has a clear `DoD` verdict.
 - A clean `branch`, clean `worktree`, reviewed diff, or locally merged code is not evidence to close a branch/worktree early.
