@@ -93,8 +93,16 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 - `enterprise` không được kết luận dưới mức `REQUIRED` nếu không có waiver rõ.
 - Nếu `worktree_decision != NOT_NEEDED`, `isolation_strategy` không được để trống.
 - Nếu `worktree_decision=OPTIONAL|NOT_NEEDED`, phải giải thích vì sao main workspace vẫn an toàn.
+- Nếu `worktree_path` đi ra ngoài working tree của repo mà không ghi lý do trong `decision_reason`, phải coi `isolation_strategy` là chưa hoàn chỉnh.
 - Mặc định viết và trao đổi bằng tiếng Việt có dấu.
 - File văn bản phải lưu UTF-8.
+
+## Ràng Buộc Vị Trí
+
+- Mặc định và bắt buộc: `worktree_path` phải nằm trong working tree của chính repo, ví dụ `.claude/worktrees/<name>` — đúng convention mà tool `EnterWorktree` đang dùng. Không được dựng `worktree_path` bằng các đoạn `..` đi ra khỏi repo root.
+- Trước khi chốt `isolation_strategy`, phải resolve `worktree_path` thành absolute path và xác nhận nó vẫn nằm trong boundary của repo. Một relative path chưa được resolve hoặc chưa kiểm tra là không chấp nhận được.
+- Vị trí nằm ngoài working tree của repo chỉ hợp lệ như một exception có lý do rõ (ví dụ runtime không có convention worktree trong repo). Phải ghi lý do vào `decision_reason`, và dù vậy vẫn chỉ được là sibling trực tiếp một cấp so với repo root — không phải relative path tùy ý.
+- Ràng buộc này áp dụng bất kể runtime hay agent nào thực thi; luật quan tâm đến worktree nằm ở đâu, không phải tool nào tạo ra nó.
 
 ## Luật Ra Quyết Định
 

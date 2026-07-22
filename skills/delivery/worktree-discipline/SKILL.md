@@ -93,8 +93,16 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 - `enterprise` must not conclude below `REQUIRED` without a clear waiver.
 - If `worktree_decision != NOT_NEEDED`, `isolation_strategy` must not be empty.
 - If `worktree_decision=OPTIONAL|NOT_NEEDED`, explain why the main workspace is still safe.
+- If `worktree_path` escapes the repo working tree without a recorded reason in `decision_reason`, treat `isolation_strategy` as incomplete.
 - Default to writing and communicating in English.
 - Text files must be stored as UTF-8.
+
+## Location Constraint
+
+- Default and required: `worktree_path` must resolve to a location inside the repo's own working tree, e.g. `.claude/worktrees/<name>`, the same convention the `EnterWorktree` tool already uses. Never build `worktree_path` from `..` segments that walk out past the repo root.
+- Before locking `isolation_strategy`, resolve `worktree_path` to an absolute path and confirm it stays inside the repo boundary. An unresolved or unchecked relative path is not acceptable.
+- A location outside the repo working tree is only valid as an explicit, justified exception (for example a runtime with no in-repo worktree convention). Record the reason in `decision_reason`, and even then keep it to one direct sibling of the repo root — not an open-ended relative path.
+- This constraint applies regardless of which runtime or agent performs the implementation; the rule is about where the worktree ends up, not which tool creates it.
 
 ## Decision Rules
 
