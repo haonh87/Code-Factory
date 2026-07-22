@@ -320,6 +320,17 @@ Application principles:
 - When a work item runs under `SDD`, code may only start when `spec` is `approved|frozen`, unless there is a valid `spec-change` or `governance-exception`.
 - If an emergency forces shorter authoring before code, the deviation must be recorded as an exception or waiver; you must not code first then backfill artifacts as if the process was never broken.
 
+## Hard Rule: SDD Light Profile
+
+- `sdd_mode=light` (`SDD Light`) reduces authoring ceremony; it does not add a new SDD mode, remove a lifecycle step, or weaken any control invariant — it only changes how much gets written and where. Full authority for this rule is `policies/codex/AGENTS.global.md § Hard Rule: SDD Light Profile`.
+- A work item may run Light only when it is `delivery_context=brownfield`, `planning_track=quick`, `governance_profile=default`, `execution_mode=agentic`, `interaction_mode=self`, and risk is `low` or `medium`.
+- Hard escalation to full/strict overrides an explicit Light preset when the item is greenfield, needs a `Foundation Decision`, touches a public API/event/data contract, involves a database migration/backfill/cutover, needs regulated or security-sensitive evidence, requires multi-agent delegation, has `defect_source=UNKNOWN` or unclassified spec impact, has high blast radius or spans multiple systems, or needs a complex UAT/release gate.
+- Physical note mapping for Light: `s01` hosts Clarify + Business Goal + Open Questions + classification; `s04` hosts Acceptance + DoR + Spec Freeze/approved CR; `s06` hosts Option Analysis + Brownfield Impact + Technical Approach + Task Plan (there is no separate `s05` physical note for Light); `s07` and `s08` are created lazily when the item transitions to `ACTIVE`/Verify starts. The 8 logical steps still exist in the trace model; only the physical note count is reduced.
+- Gate host contract for Light: `Spec + DoR` at `s04`; `Approach + Task Plan` at `s06` (no separate `s05` gate check); `Foundation Decision` is not supported — a work item that needs one must auto-escalate to full; `Delivery Rule Evidence` stays at `s07`; `DoD` at `s08`.
+- Light uses one Spec Card (`spec_refs.card`) instead of separate `BRD`/`SRS`; see `references/spec-driven-development.md` for the Spec Card contract.
+- A `ready-bundle` interaction may seal the Spec, DoR, Approach, and Task Plan receipts in one step, but each gate still gets its own independent trusted receipt with its own reviewer and timestamp; bundling the interaction never weakens gate semantics.
+- `ACTIVE` for a Light work item still requires the `s04` and `s06` receipts (in place of `s04`+`s05`+`s06`); every other human-controlled-gate invariant in this reference applies unchanged.
+
 ## Hard Rule: Disciplined Brainstorming
 
 - Before pinning `s05 Technical Approach`, there must be an `option analysis` at a level fitting the work item complexity.
@@ -515,7 +526,9 @@ Application principles:
   - `s06` pass `Task Plan`
 - If there is no clear evidence that the above gates have been human-passed, the correct behavior is to stop at the `proposal stage`, present options/trade-offs/recommendations, then wait for human review.
 - The `safe default` for an `empty/greenfield project` is: do not implement; do not scaffold; do not pin the final stack on behalf of the human.
-- The `bootstrap gate` for a new project must follow the order: `Spec -> Contract if present -> Approach -> Foundation if present -> work item approval -> Task Plan -> Implement`.## Hard Rule: Brownfield Baseline And Delta Discipline
+- The `bootstrap gate` for a new project must follow the order: `Spec -> Contract if present -> Approach -> Foundation if present -> work item approval -> Task Plan -> Implement`.
+
+## Hard Rule: Brownfield Baseline And Delta Discipline
 
 - Each work item must declare `delivery_context: greenfield|brownfield`; it must not be left implicit at the inference level after the workflow note has been materialized.
 - For `brownfield`, AI must treat the existing system as the running baseline; the default is to change by the `smallest sufficient delta`, not to open a `Foundation Decision` on its own without a clear reason.

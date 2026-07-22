@@ -103,9 +103,10 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 
 ## Decision Rules
 
-- `SELF` only fits small scope, low risk, and still must follow the correct `review_order`.
-- `TARGETED` fits `full`, or `quick` with a clear logic/contract batch.
-- `INDEPENDENT` fits `enterprise`, important diffs, high release risk or a separate review owner.
+- The baseline level mapping (`quick`→`SELF`, `full`→`TARGETED`, `enterprise`→`INDEPENDENT`) follows `codex-workflow-chain § Hard Rule: Review Early, Do Not Wait Until The End` directly — do not re-derive the per-track minimum here.
+- `SELF` still must follow the correct `review_order` even at the baseline level.
+- `TARGETED` also applies to `quick` when there is a clear logic/contract batch, above that track's baseline.
+- `INDEPENDENT` also applies when release risk is high or the review owner must be separate from the implementer, regardless of track.
 - If there is important logic/contracts, `review_batches` must split that part out instead of mixing it into a large batch.
 - If a finding touches spec or requirements, return to `spec compliance` before debating `code quality`.
 

@@ -116,7 +116,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 4. Review responsive layout at the level of overflow, wrapping, sticky areas, spacing, density and readability across main viewports.
 5. Review interaction feedback at the level of loading, empty, error, success, disabled, validation and recovery paths.
 6. Review navigation clarity for route changes, breadcrumbs, modal/drawer transitions, back paths or step progression when present.
-7. Review performance heuristic for large lists, charts, media, hot rerenders, hydration cost or network-heavy surfaces when risk signals exist.
+7. Review performance heuristic for large lists, charts, media, or network-heavy surfaces when risk signals exist — virtualization, lazy loading, and image/media weight are in scope here; for React-specific causes such as hot rerenders, hydration cost, or client bundle bloat, defer to `react-best-practices-review`'s `render_stability`/`hydration_bundle_cost` gates instead of re-diagnosing them in this skill.
 8. Record `findings` with severity, evidence and specific recommendation.
 9. Reconcile acceptance criteria in `criteria_results`.
 10. Conclude `overall_status`, `residual_risks` and `handoff_recommendation`.

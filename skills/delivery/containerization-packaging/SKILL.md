@@ -86,6 +86,20 @@ notes_for_implementation: ""
 - If local needs helpers like a database, cache, or queue, describe them in `compose.yaml` instead of just noting "run by hand".
 - `frontend_static` and `web_api` should not use the same entrypoint pattern if the runtime artifact differs.
 
+## Normalizing Output In A Workflow Note
+
+If this skill's output is saved as a `.md` note in the workflow chain:
+
+- At step 5, place this skill's YAML schema inside `## Architecture Details` alongside any other DevOps schema in scope.
+- At step 8, when the scope has packaging or rollout, place this skill's schema inside `## Deployment Review` next to `deployment-devops` and the other specialized DevOps schemas present.
+- Do not replace `## Main Artifact`; this skill's output is always a supporting DevOps block, never the step's main artifact.
+
+## Decision Rule
+
+- `READY` when `dockerfile_contract` reflects the real build artifact and startup command, no secret is baked into the image, and `verification_checks` are defined.
+- `READY_WITH_GUARDS` when packaging works but carries an explicit guard (for example a temporary root user with a tracked follow-up, or a missing `healthcheck` covered by an external monitor).
+- `BLOCKED` when the base image or build stage cannot be determined for the `language_profile`, a secret would have to be baked into the image to make it run, or the `entrypoint`/`command` pattern for the `workload_profile` is unresolved.
+
 ## Reference Docs
 
 - `references/language-stacks.md`: choose a packaging pattern by Node.js, Python, Java, .NET, Go, PHP.

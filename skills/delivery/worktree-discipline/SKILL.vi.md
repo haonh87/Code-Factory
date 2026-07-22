@@ -106,11 +106,10 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 
 ## Luật Ra Quyết Định
 
-- `REQUIRED` khi `planning_track=enterprise`, hoặc change kéo dài, nhiều boundary, nhiều file với conflict risk đáng kể, hoặc merge/release risk cao.
-- `RECOMMENDED` khi `planning_track=full` và scope không còn là quick fix.
-- `OPTIONAL` khi change trung bình nhưng ownership đủ rõ và conflict risk thấp.
+- Điều kiện chọn `REQUIRED` vs `RECOMMENDED` bám theo `codex-workflow-chain § Hard Rule: Worktree For Large Or Risky Changes` trực tiếp — đối chiếu `planning_track` và `risk_signals` với rule đó thay vì suy diễn lại danh sách trigger ở đây.
+- `OPTIONAL` khi change trung bình nhưng ownership đủ rõ và conflict risk thấp — thấp hơn `RECOMMENDED` một bậc, không phải từ đồng nghĩa.
 - `NOT_NEEDED` chỉ phù hợp với bug nhỏ hoặc quick fix, ít file, xong trong một session và conflict risk thấp.
-- Nếu có nhiều worker hoặc người cùng chạm vùng path gần nhau, thiên về `REQUIRED` hoặc `RECOMMENDED`.
+- Nếu có nhiều worker hoặc người cùng chạm vùng path gần nhau, thiên về `REQUIRED` hoặc `RECOMMENDED` dù không có trigger đơn lẻ nào trong Hard Rule tự kích hoạt.
 
 ## Điều Kiện Hoàn Tất
 

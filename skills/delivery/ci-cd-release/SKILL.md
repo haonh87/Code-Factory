@@ -78,6 +78,20 @@ notes_for_implementation_or_ops: ""
 - Approval and rollout controls for `prod` must be recorded clearly, not left as vague "manual".
 - Pre-merge gates and pre-release gates are two different tiers; do not merge them if the risks differ.
 
+## Normalizing Output In A Workflow Note
+
+If this skill's output is saved as a `.md` note in the workflow chain:
+
+- At step 5, place this skill's YAML schema inside `## Architecture Details` alongside any other DevOps schema in scope.
+- At step 8, when the scope has packaging or rollout, place this skill's schema inside `## Deployment Review` next to `deployment-devops` and the other specialized DevOps schemas present.
+- Do not replace `## Main Artifact`; this skill's output is always a supporting DevOps block, never the step's main artifact.
+
+## Decision Rule
+
+- `READY` when quality gates, tagging strategy, promotion flow, and rollback controls are all locked with evidence, and none of the `BLOCKED` triggers below apply.
+- `READY_WITH_GUARDS` when the pipeline can run but only with an explicit guard recorded in `approval_controls` or `release_controls` (for example a temporary manual approval step, a staged rollout, or a tracked follow-up).
+- `BLOCKED` when there is no immutable tag/registry strategy yet, no clear runtime target for the promotion destination, no post-deploy verification check, or no viable rollback path for an important environment — see `references/promotion-controls.md` and `deployment-devops/references/promotion-flow.md § Signs Of BLOCKED` for the canonical trigger list.
+
 ## Reference Docs
 
 - `references/pipeline-stages.md`: pipeline structure, build, test, publish.

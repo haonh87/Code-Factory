@@ -80,6 +80,20 @@ notes_for_implementation_or_ops: ""
 - Workload stateful phải có `storage_strategy`, `rollback_steps` và guard dữ liệu.
 - Không dùng cùng một pattern cho `docker`, `swarm`, `k8s` nếu platform semantics khác nhau.
 
+## Chuẩn Hóa Output Trong Workflow Note
+
+Nếu output của skill này được lưu thành note `.md` trong workflow chain:
+
+- Ở step 5, đặt schema YAML của skill này trong `## Architecture Details` cùng các schema DevOps khác đang có trong scope.
+- Ở step 8, khi scope có packaging hoặc rollout, đặt schema của skill này trong `## Deployment Review` cạnh `deployment-devops` và các schema DevOps chuyên biệt khác đang có.
+- Không thay thế `## Main Artifact`; output của skill này luôn là block DevOps hỗ trợ, không phải main artifact của step.
+
+## Luật Ra Quyết Định
+
+- `READY` khi `runtime_matrix` đầy đủ cho mọi môi trường trong phạm vi, `rollout_and_rollback` đã định nghĩa cho từng môi trường, và mọi workload stateful đều có `storage_strategy` và `rollback_steps`.
+- `READY_WITH_GUARDS` khi runtime deploy vẫn khả thi nhưng kèm guard rõ (vd `uat` lệch topology so với `prod` có lý do ghi rõ, một bước scaling manual, hoặc autoscaling bị trì hoãn có follow-up theo dõi).
+- `BLOCKED` khi một workload stateful không có `storage_strategy` hoặc `rollback_steps`, hoặc runtime target (`docker`/`swarm`/`k8s`) của một môi trường trong phạm vi chưa xác định được.
+
 ## Tài Liệu Tham Chiếu
 
 - `references/runtime-platforms.md`: pattern theo Docker, Swarm, Kubernetes.

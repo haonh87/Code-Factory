@@ -89,6 +89,12 @@ notes_for_implementation_or_release: ""
 4. Aggregate the environment matrix, promotion flow, and operational guards across the whole.
 5. Conclude `READY`, `READY_WITH_GUARDS`, or `BLOCKED`.
 
+## Decision Rule
+
+- `READY` when `environment_matrix` is complete, every `specialized_followups` entry has resolved with no open item in `evidence_or_gaps` affecting release.
+- `READY_WITH_GUARDS` when release is possible but `cross_cutting_guards` carries an explicit condition (for example a manual gate before `prod`, or a temporary monitoring-only rollback while a full rollback path is being built).
+- `BLOCKED` when any specialized skill's own `packaging_recommendation`/`runtime_recommendation`/`pipeline_recommendation` is `BLOCKED`, or `evidence_or_gaps` has an unresolved item that affects release.
+
 ## Environment Rules
 
 - `local` must have a containerized baseline if the work item requires running by container.

@@ -47,6 +47,22 @@ Không cần dùng skill này cho:
 - trò chuyện thông thường
 - tác vụ viết lách không thuộc delivery
 
+## Hard Rule: Router Before Action
+
+- Với mọi yêu cầu coding hoặc workflow-governed delivery task, phải route qua skill này trước khi trả lời substantive hoặc hành động; xem block `<HARD-GATE>` ở trên để biết đúng boundary.
+- Skill này phải xác định tối thiểu `Current Step`, `Workflow Status`, `Delivery Context`, `Missing Gates`, `Next Artifact`, `Next Human Action` (xem `Mẫu Báo Cáo Bắt Buộc`).
+- Nếu không chốt được các mục trên, hành vi đúng là `BLOCKED` hoặc quay lại `s01`, không nhảy sang implement.
+- Chỉ tác vụ ngoài delivery workflow (hỏi đáp thuần, dịch thuật, tóm tắt, trò chuyện thông thường — xem `Khi Phải Dùng`) mới được bỏ qua router này.
+- Authority đầy đủ cho rule này là `policies/codex/AGENTS.global.md § Hard Rule: Router Before Action`.
+
+## Hard Rule: Generic Coding Defaults Do Not Open A Gate
+
+- Một generic coding default hoặc execution habit (xem `Red Flags` bên dưới cho ví dụ cụ thể) chỉ là execution-convenience heuristic, không phải approval — không bao giờ thay thế cho gate đã pass.
+- Các default đó chỉ được áp dụng sau khi skill này đã chốt rõ `Current Step: s07 Implement`, `Workflow Status: ACTIVE`, `Missing Gates: NONE`, `Next Human Action: NONE`.
+- Trước thời điểm đó, xung đột giữa generic coding default và workflow governance được giải quyết theo `Conflict Resolution` bên dưới — governance thắng.
+- Không suy diễn rằng user "muốn code ngay" chỉ vì wording là feature request, scope có vẻ rõ, hoặc agent có thể tự nghĩ ra approach.
+- Authority đầy đủ cho rule này là `policies/codex/AGENTS.global.md § Hard Rule: Generic Coding Defaults Do Not Open A Gate`.
+
 ## Rule Nền
 
 - Nếu không chắc task có thuộc workflow-governed delivery hay không, mặc định coi là có và dùng skill này.

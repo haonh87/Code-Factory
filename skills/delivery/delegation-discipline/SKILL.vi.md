@@ -105,7 +105,7 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 - `AGENTIC` là default an toàn khi task nhỏ hoặc tightly coupled.
 - `SUBAGENT` phù hợp khi chỉ có một lane hoặc một worker độc lập cần tách ra, nhưng merge path và verify path đã rõ.
 - `SEQUENTIAL_MULTI_ROLE` phù hợp khi cần nhiều góc nhìn nhưng chưa đủ điều kiện cho worker song song.
-- `MULTI_AGENT` chỉ phù hợp khi có từ hai lane `task độc lập` trở lên, với `owned_scope` hoặc `owned_paths` tương đối rời nhau, `merge_path` rõ và `verify_path` rõ.
+- `MULTI_AGENT` chỉ phù hợp khi có từ hai lane `task độc lập` trở lên — áp dụng trực tiếp điều kiện `task độc lập` từ `codex-workflow-chain § Hard Rule: Subagent Only For Independent Tasks` thay vì suy diễn lại checklist ở đây.
 - Nếu verification owner chưa rõ, recommendation không được là `SUBAGENT` hoặc `MULTI_AGENT`.
 - Nếu task vừa khám phá context xong mà boundary chưa ổn định, giữ `AGENTIC`.
 

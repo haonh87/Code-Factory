@@ -14,9 +14,8 @@ Each promotion should keep the same image contract; only change config, secrets,
 
 ## Tag Strategy
 
-- Use immutable tags by commit, build number, or release version.
-- Do not promote with a vague tag like `latest` as the release standard.
-- If you need a convenience tag like `dev` or `stable`, still keep an immutable tag as the source of truth.
+- Canonical owner of tagging/approval/evidence is `ci-cd-release/references/promotion-controls.md § Tagging`; use that reference directly instead of re-deriving a tag policy here.
+- What matters at this level: whichever tag strategy is chosen, every environment in `Standard Order` must promote the same immutable artifact/image contract — only config, secrets, replicas, resources, and guards change between environments.
 
 ## Gates By Environment
 

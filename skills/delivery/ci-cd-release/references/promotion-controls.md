@@ -13,9 +13,8 @@ language: en
 
 ## Promotion
 
-- `local -> dev`: goal is to confirm the artifact builds and deploys.
-- `dev -> uat`: goal is to confirm the artifact is stable enough for near-production verification.
-- `uat -> prod`: goal is a controlled release with approval and a rollback path.
+- Canonical owner of the per-environment promotion goal and minimum gate is `deployment-devops/references/promotion-flow.md § Gates By Environment`; use that table directly instead of re-deriving per-stage goals here.
+- What matters at this level: the pipeline must actually enforce that table's minimum gate before letting an artifact move to the next environment — a pipeline stage that skips a gate is a pipeline defect, not a policy gap.
 
 ## Approval
 
@@ -24,8 +23,8 @@ language: en
 
 ## Rollback
 
-- Rollback must point to a known-good artifact.
-- If there is a migration or stateful change, record the rollback control at both the app layer and the data layer.
+- Canonical owner of the rollback rule (known-good artifact, app-layer vs data-layer distinction for migrations, stop/trigger conditions) is `deployment-devops/references/promotion-flow.md § Rollback Rule`.
+- What matters at this level: the "known-good artifact" a rollback points to must resolve to one of this file's immutable tags, never a convenience tag.
 
 ## Evidence
 

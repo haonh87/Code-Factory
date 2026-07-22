@@ -86,6 +86,20 @@ notes_for_implementation: ""
 - Nếu local có phụ trợ như database, cache, queue, mô tả chúng trong `compose.yaml` thay vì chỉ ghi chạy tay.
 - `frontend_static` và `web_api` không nên dùng cùng một pattern entrypoint nếu artifact runtime khác nhau.
 
+## Chuẩn Hóa Output Trong Workflow Note
+
+Nếu output của skill này được lưu thành note `.md` trong workflow chain:
+
+- Ở step 5, đặt schema YAML của skill này trong `## Architecture Details` cùng các schema DevOps khác đang có trong scope.
+- Ở step 8, khi scope có packaging hoặc rollout, đặt schema của skill này trong `## Deployment Review` cạnh `deployment-devops` và các schema DevOps chuyên biệt khác đang có.
+- Không thay thế `## Main Artifact`; output của skill này luôn là block DevOps hỗ trợ, không phải main artifact của step.
+
+## Luật Ra Quyết Định
+
+- `READY` khi `dockerfile_contract` phản ánh đúng build artifact và startup command thật, không có secret nào bị bake vào image, và đã có `verification_checks`.
+- `READY_WITH_GUARDS` khi packaging vẫn chạy được nhưng kèm guard rõ (vd chạy tạm bằng root user có follow-up theo dõi, hoặc thiếu `healthcheck` được bù bằng external monitor).
+- `BLOCKED` khi không xác định được base image hoặc build stage cho `language_profile`, phải bake secret vào image mới chạy được, hoặc pattern `entrypoint`/`command` cho `workload_profile` chưa xác định.
+
 ## Tài Liệu Tham Chiếu
 
 - `references/language-stacks.md`: chọn packaging pattern theo Node.js, Python, Java, .NET, Go, PHP.

@@ -103,9 +103,10 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 
 ## Luật Ra Quyết Định
 
-- `SELF` chỉ phù hợp với scope nhỏ, risk thấp và vẫn phải theo đúng `review_order`.
-- `TARGETED` phù hợp cho `full`, hoặc `quick` có batch logic/contract rõ.
-- `INDEPENDENT` phù hợp với `enterprise`, diff quan trọng, release risk cao hoặc reviewer owner tách biệt.
+- Ánh xạ mức baseline (`quick`→`SELF`, `full`→`TARGETED`, `enterprise`→`INDEPENDENT`) bám theo `codex-workflow-chain § Hard Rule: Review Early, Do Not Wait Until The End` trực tiếp — không suy diễn lại mức tối thiểu theo track ở đây.
+- `SELF` vẫn phải theo đúng `review_order` dù ở mức baseline.
+- `TARGETED` cũng áp dụng cho `quick` khi có batch logic/contract rõ, cao hơn baseline của track đó.
+- `INDEPENDENT` cũng áp dụng khi release risk cao hoặc reviewer owner phải tách biệt khỏi implementer, bất kể track.
 - Nếu có logic/contract quan trọng, `review_batches` phải tách phần đó ra thay vì trộn vào batch lớn.
 - Nếu finding chạm spec hoặc requirement, phải quay lại `spec compliance` trước khi tranh luận `code quality`.
 

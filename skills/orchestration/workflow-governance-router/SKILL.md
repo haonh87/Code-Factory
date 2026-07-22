@@ -47,6 +47,22 @@ This skill is not needed for:
 - ordinary conversation
 - writing tasks outside delivery
 
+## Hard Rule: Router Before Action
+
+- For any coding request or workflow-governed delivery task, route through this skill before giving a substantive answer or taking action; see the `<HARD-GATE>` block above for the exact boundary.
+- This skill must determine at minimum `Current Step`, `Workflow Status`, `Delivery Context`, `Missing Gates`, `Next Artifact`, `Next Human Action` (see `Mandatory Report Template`).
+- If these cannot be locked, the correct behavior is `BLOCKED` or going back to `s01`, not jumping to implementation.
+- Only tasks outside the delivery workflow (pure Q&A, translation, summarization, ordinary conversation — see `When To Use`) may skip this router.
+- Full authority for this rule is `policies/codex/AGENTS.global.md § Hard Rule: Router Before Action`.
+
+## Hard Rule: Generic Coding Defaults Do Not Open A Gate
+
+- A generic coding default or execution habit (see `Red Flags` below for concrete examples) is an execution-convenience heuristic, not an approval — it never substitutes for a passed gate.
+- Those defaults may only be applied once this skill has clearly locked `Current Step: s07 Implement`, `Workflow Status: ACTIVE`, `Missing Gates: NONE`, `Next Human Action: NONE`.
+- Before that point, a conflict between a generic coding default and workflow governance is resolved per `Conflict Resolution` below — governance wins.
+- Do not infer the user "wants to code right away" just because the wording is a feature request, the scope seems clear, or the agent can produce an approach on its own.
+- Full authority for this rule is `policies/codex/AGENTS.global.md § Hard Rule: Generic Coding Defaults Do Not Open A Gate`.
+
 ## Baseline Rules
 
 - If unsure whether the task is a workflow-governed delivery, default to treating it as one and use this skill.

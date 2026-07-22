@@ -80,6 +80,20 @@ notes_for_implementation_or_ops: ""
 - Stateful workloads must have a `storage_strategy`, `rollback_steps`, and data guards.
 - Do not use the same pattern for `docker`, `swarm`, `k8s` if the platform semantics differ.
 
+## Normalizing Output In A Workflow Note
+
+If this skill's output is saved as a `.md` note in the workflow chain:
+
+- At step 5, place this skill's YAML schema inside `## Architecture Details` alongside any other DevOps schema in scope.
+- At step 8, when the scope has packaging or rollout, place this skill's schema inside `## Deployment Review` next to `deployment-devops` and the other specialized DevOps schemas present.
+- Do not replace `## Main Artifact`; this skill's output is always a supporting DevOps block, never the step's main artifact.
+
+## Decision Rule
+
+- `READY` when `runtime_matrix` is complete for every environment in scope, `rollout_and_rollback` is defined for each of them, and every stateful workload has a `storage_strategy` and `rollback_steps`.
+- `READY_WITH_GUARDS` when runtime deploy is possible but carries an explicit guard (for example `uat` diverging from `prod` topology with a recorded reason, a manual scaling step, or autoscaling deferred with a tracked follow-up).
+- `BLOCKED` when a stateful workload has no `storage_strategy` or `rollback_steps`, or an in-scope environment's runtime target (`docker`/`swarm`/`k8s`) cannot yet be determined.
+
 ## Reference Docs
 
 - `references/runtime-platforms.md`: patterns for Docker, Swarm, Kubernetes.

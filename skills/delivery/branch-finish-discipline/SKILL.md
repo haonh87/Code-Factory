@@ -96,10 +96,10 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 
 ## Decision Rule
 
-- `HOLD_OPEN` is the default when `verify_complete`, `dod_complete`, `findings_closed`, or `exceptions_resolved` has not passed.
-- `CLEANUP_ALLOWED` fits when the workspace can be cleaned up but the final merge or close still depends on other repo conditions.
-- `MERGE_ALLOWED` only fits when verify and `DoD` are sufficient, findings are closed, and no exceptions are open.
-- If using multiple worktrees or multi-agent handoff, closeout is only valid after the `verify path` and `handoff path` have clearly ended.
+- `HOLD_OPEN` is the default whenever the finalize conditions in `codex-workflow-chain § Hard Rule: Branch/Worktree Only Finalized After Verify` are not yet met — map `finish_gate_checks` onto that Hard Rule instead of re-deriving the conditions here.
+- `CLEANUP_ALLOWED` fits when the workspace can be cleaned up but the final merge or close still depends on other repo conditions — a distinct, lighter state than `MERGE_ALLOWED`, not covered by the Hard Rule on its own.
+- `MERGE_ALLOWED` only fits once every condition in that Hard Rule is satisfied.
+- If using multiple worktrees or multi-agent handoff, closeout is only valid after the `verify path` and `handoff path` have clearly ended, per the same Hard Rule.
 
 ## Completion Conditions
 

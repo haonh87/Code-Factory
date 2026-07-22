@@ -105,7 +105,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 - `AGENTIC` is the safe default when the task is small or tightly coupled.
 - `SUBAGENT` fits when there is only one lane or one independent worker to split out, but the merge path and verify path are clear.
 - `SEQUENTIAL_MULTI_ROLE` fits when you need multiple perspectives but do not yet meet the conditions for parallel workers.
-- `MULTI_AGENT` only fits when there are two or more `independent task` lanes, with reasonably disjoint `owned_scope` or `owned_paths`, a clear `merge_path`, and a clear `verify_path`.
+- `MULTI_AGENT` only fits when there are two or more `independent task` lanes — apply the `independent task` eligibility from `codex-workflow-chain § Hard Rule: Subagent Only For Independent Tasks` directly rather than re-deriving the checklist here.
 - If the verification owner is unclear, the recommendation must not be `SUBAGENT` or `MULTI_AGENT`.
 - If the task just finished exploring context and the boundary is not stable, keep `AGENTIC`.
 

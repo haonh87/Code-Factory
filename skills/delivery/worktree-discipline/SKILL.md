@@ -106,11 +106,10 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 
 ## Decision Rules
 
-- `REQUIRED` when `planning_track=enterprise`, or the change is long-running, multi-boundary, multi-file with meaningful conflict risk, or merge/release risk is high.
-- `RECOMMENDED` when `planning_track=full` and the scope is no longer a quick fix.
-- `OPTIONAL` when the change is medium but ownership is clear and conflict risk is low.
+- Eligibility for `REQUIRED` vs `RECOMMENDED` follows `codex-workflow-chain § Hard Rule: Worktree For Large Or Risky Changes` directly — consume `planning_track` and `risk_signals` against that rule instead of re-deriving the trigger list here.
+- `OPTIONAL` when the change is medium but ownership is clear and conflict risk is low — a step below `RECOMMENDED`, not a synonym for it.
 - `NOT_NEEDED` only fits a small bug or quick fix, few files, done in one session and low conflict risk.
-- If multiple workers or people touch nearby paths, lean toward `REQUIRED` or `RECOMMENDED`.
+- If multiple workers or people touch nearby paths, lean toward `REQUIRED` or `RECOMMENDED` even if no single trigger from the Hard Rule fires on its own.
 
 ## Completion Conditions
 

@@ -96,10 +96,10 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 
 ## Luật Ra Quyết Định
 
-- `HOLD_OPEN` là default khi `verify_complete`, `dod_complete`, `findings_closed` hoặc `exceptions_resolved` chưa pass.
-- `CLEANUP_ALLOWED` phù hợp khi workspace có thể dọn nhưng merge hoặc close cuối còn phụ thuộc điều kiện khác của repo.
-- `MERGE_ALLOWED` chỉ phù hợp khi verify và `DoD` đã đủ, finding đã đóng và không còn exception mở.
-- Nếu dùng nhiều worktree hoặc multi-agent handoff, closeout chỉ hợp lệ sau khi `verify path` và `handoff path` đã kết thúc rõ.
+- `HOLD_OPEN` là default bất cứ khi nào điều kiện finalize trong `codex-workflow-chain § Hard Rule: Branch/Worktree Only Finalized After Verify` chưa đạt — map `finish_gate_checks` vào Hard Rule đó thay vì suy diễn lại điều kiện ở đây.
+- `CLEANUP_ALLOWED` phù hợp khi workspace có thể dọn nhưng merge hoặc close cuối còn phụ thuộc điều kiện khác của repo — một trạng thái riêng, nhẹ hơn `MERGE_ALLOWED`, không nằm trong Hard Rule.
+- `MERGE_ALLOWED` chỉ phù hợp khi mọi điều kiện trong Hard Rule đó đã đạt.
+- Nếu dùng nhiều worktree hoặc multi-agent handoff, closeout chỉ hợp lệ sau khi `verify path` và `handoff path` đã kết thúc rõ, theo cùng Hard Rule.
 
 ## Điều Kiện Hoàn Tất
 

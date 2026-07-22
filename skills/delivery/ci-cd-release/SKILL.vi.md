@@ -78,6 +78,20 @@ notes_for_implementation_or_ops: ""
 - Approval và rollout control của `prod` phải được ghi rõ, không để “manual” mơ hồ.
 - Pre-merge gate và pre-release gate là hai tầng khác nhau; không gộp nếu rủi ro khác nhau.
 
+## Chuẩn Hóa Output Trong Workflow Note
+
+Nếu output của skill này được lưu thành note `.md` trong workflow chain:
+
+- Ở step 5, đặt schema YAML của skill này trong `## Architecture Details` cùng các schema DevOps khác đang có trong scope.
+- Ở step 8, khi scope có packaging hoặc rollout, đặt schema của skill này trong `## Deployment Review` cạnh `deployment-devops` và các schema DevOps chuyên biệt khác đang có.
+- Không thay thế `## Main Artifact`; output của skill này luôn là block DevOps hỗ trợ, không phải main artifact của step.
+
+## Luật Ra Quyết Định
+
+- `READY` khi quality gate, tagging strategy, promotion flow và rollback control đã chốt đủ evidence, và không có trigger `BLOCKED` nào ở dưới xảy ra.
+- `READY_WITH_GUARDS` khi pipeline có thể chạy nhưng chỉ với guard rõ ghi trong `approval_controls` hoặc `release_controls` (vd bước approval manual tạm thời, rollout theo giai đoạn, hoặc follow-up có theo dõi).
+- `BLOCKED` khi chưa có tag/registry strategy bất biến, chưa có runtime target rõ cho đích promotion, chưa có post-deploy verification check, hoặc chưa có rollback path khả thi cho môi trường quan trọng — xem `references/promotion-controls.md` và `deployment-devops/references/promotion-flow.vi.md § Dấu Hiệu BLOCKED` để có danh sách trigger chuẩn.
+
 ## Tài Liệu Tham Chiếu
 
 - `references/pipeline-stages.md`: cấu trúc pipeline, build, test, publish.

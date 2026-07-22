@@ -89,6 +89,12 @@ notes_for_implementation_or_release: ""
 4. Tổng hợp environment matrix, promotion flow và guard vận hành xuyên suốt.
 5. Kết luận `READY`, `READY_WITH_GUARDS` hoặc `BLOCKED`.
 
+## Luật Ra Quyết Định
+
+- `READY` khi `environment_matrix` đầy đủ, mọi mục trong `specialized_followups` đã resolve và không còn item mở trong `evidence_or_gaps` ảnh hưởng release.
+- `READY_WITH_GUARDS` khi release vẫn khả thi nhưng `cross_cutting_guards` kèm điều kiện rõ (vd manual gate trước `prod`, hoặc rollback tạm chỉ dựa vào monitoring trong lúc xây rollback path đầy đủ).
+- `BLOCKED` khi bất kỳ `packaging_recommendation`/`runtime_recommendation`/`pipeline_recommendation` của skill chuyên trách nào là `BLOCKED`, hoặc `evidence_or_gaps` còn item chưa resolve ảnh hưởng release.
+
 ## Quy Tắc Môi Trường
 
 - `local` bắt buộc có baseline container hóa nếu work item yêu cầu chạy bằng container.

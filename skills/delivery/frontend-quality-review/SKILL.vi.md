@@ -116,7 +116,7 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 4. Rà responsive layout ở mức overflow, wrapping, sticky area, spacing, density và readability theo viewport chính.
 5. Rà interaction feedback ở mức loading, empty, error, success, disabled, validation và recovery path.
 6. Rà navigation clarity cho route change, breadcrumb, modal/drawer transition, back path hoặc step progression nếu có.
-7. Rà performance heuristic cho list lớn, chart, media, rerender nóng, hydration cost hoặc network-heavy surface nếu có dấu hiệu rủi ro.
+7. Rà performance heuristic cho list lớn, chart, media hoặc network-heavy surface nếu có dấu hiệu rủi ro — virtualization, lazy loading và trọng lượng ảnh/media thuộc phạm vi ở đây; với nguyên nhân đặc thù React như rerender nóng, hydration cost hoặc client bundle phình to, để `react-best-practices-review` xử lý qua gate `render_stability`/`hydration_bundle_cost` thay vì tự chẩn đoán lại ở skill này.
 8. Ghi `findings` với severity, evidence và recommendation cụ thể.
 9. Đối chiếu lại acceptance criteria trong `criteria_results`.
 10. Kết luận `overall_status`, `residual_risks` và `handoff_recommendation`.
