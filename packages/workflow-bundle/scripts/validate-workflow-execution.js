@@ -56,10 +56,12 @@ function validateArtifactFrontmatter(runtimePath, expected, errors, sourceFile) 
 
 function validateRuntimeArtifactContent(runtimePath, expected, errors) {
   const content = readUtf8(runtimePath);
-  const artifactSection = getMarkdownSectionContent(content, "## Artifact Chính");
+  const artifactSection =
+    getMarkdownSectionContent(content, "## Main Artifact") ||
+    getMarkdownSectionContent(content, "## Artifact Chính");
 
   if (!artifactSection) {
-    errors.push(`Missing '## Artifact Chính' in runtime artifact: ${runtimePath}`);
+    errors.push(`Missing '## Main Artifact' (or legacy '## Artifact Chính') in runtime artifact: ${runtimePath}`);
     return;
   }
 
