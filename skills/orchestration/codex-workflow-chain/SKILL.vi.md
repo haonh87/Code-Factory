@@ -354,6 +354,7 @@ Public docs:
 
 - `references/workflow-overview-author-edition.md`: bản overview chính thức để giới thiệu workflow ở góc nhìn delivery và tác giả.
 - `references/workflow-versioning.md`: chốt ranh giới public baseline `v1.0.0` và các extension sau đó.
+- `references/adaptive-planning.md`: cách route độ sâu theo `planning_track=quick|full|enterprise` khi cần track khác quick flow mặc định.
 - `references/workflow-chain.md`: workflow 8 bước, step-skill-artifact mapping, template note và schema workflow.
 - `references/execution-runtime.md`: execution policy, role contract, handoff/merge protocol và cách dùng `agentic|multi_agent` trong baseline.
 

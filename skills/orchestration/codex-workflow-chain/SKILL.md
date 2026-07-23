@@ -365,6 +365,7 @@ Public docs:
 
 - `references/workflow-overview-author-edition.md`: the official overview to introduce the workflow from a delivery and author perspective.
 - `references/workflow-versioning.md`: locks the public baseline `v1.0.0` boundary and later extensions.
+- `references/adaptive-planning.md`: how to route depth by `planning_track=quick|full|enterprise` when a track other than the default quick flow is needed.
 - `references/workflow-chain.md`: the 8-step workflow, step-skill-artifact mapping, note templates, and workflow schemas.
 - `references/execution-runtime.md`: execution policy, role contract, handoff/merge protocol, and how to use `agentic|multi_agent` in the baseline.
 

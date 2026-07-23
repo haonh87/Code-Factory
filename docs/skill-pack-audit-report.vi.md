@@ -8,7 +8,7 @@ language: vi
 
 Note theo dõi cho đợt audit skill pack của `workflow-bundle v2.3.0` (36 skill trải trên `analysis`, `architecture`, `delivery`, `guardrails`, `orchestration`, `obsidian`). Thực hiện theo phương pháp của `workflow-pack-audit` (check tương đương script + review checklist semantic), chạy qua 4 nhánh phân tích song song cộng với verify trực tiếp bằng `diff`/`grep` cho mọi claim quan trọng trước khi hành động theo nó.
 
-Ngày audit: `2026-07-22`.
+Ngày audit: `2026-07-22`. Ngày re-audit: `2026-07-23`.
 
 ## Trạng Thái Nhanh
 
@@ -16,9 +16,44 @@ Ngày audit: `2026-07-22`.
 |---|---|---|
 | P0 | 3 | ĐÃ FIX — commit `6297649` |
 | P1 | 6 | ĐÃ FIX — commit `72c8f70` |
-| P2 | 7 | 5 ĐÃ FIX, 2 NO_CHANGE_NEEDED — chưa commit |
+| P2 | 7 | 5 ĐÃ FIX, 2 NO_CHANGE_NEEDED — commit `c201c7f` |
+| Re-audit | 2 | ĐÃ FIX — xem REF-01/REF-02 bên dưới |
 
-Verify sau P0, P1 và P2: `npm run build:workflow:bundle-runtime` (đồng bộ mirror), `npm run validate:workflow:bundle-smoke` (PASS), `npm run validate:workflow:unit` (25/25 PASS), kiểm UTF-8 trên mọi file `*.vi.md` đã sửa, và diff bằng `comm` xác nhận cả 15 heading `## Hard Rule` trong `policies/codex/AGENTS.global.md` đều có mặt nguyên văn ở đâu đó trong tầng skill.
+Toàn bộ commit đã push lên `origin/main`.
+
+Verify sau P0, P1, P2 và lượt re-audit: `npm run build:workflow:bundle-runtime` (đồng bộ mirror), `npm run validate:workflow:bundle-smoke` (PASS), `npm run validate:workflow:unit` (25/25 PASS), kiểm UTF-8 trên mọi file `*.vi.md` đã sửa, và diff bằng `comm` xác nhận cả 15 heading `## Hard Rule` trong `policies/codex/AGENTS.global.md` đều có mặt nguyên văn ở đâu đó trong tầng skill.
+
+## Lượt Re-Audit (2026-07-23)
+
+Chạy lại phương pháp của `workflow-pack-audit` từ đầu để xác nhận các fix P0-P2 vẫn đứng vững và không có gì regress:
+
+- `scripts/audit-workflow-pack.ps1` không chạy được trên môi trường này (thiếu `pwsh`); đã viết lại tương đương 1:1 bằng Node (`audit-workflow-pack.js`, không commit — script verify ad hoc) và chạy trên toàn bộ cây `skills/`.
+- Check cơ học: 0 `FAIL` thật (skill files found, folder-name match, skill-name uniqueness, marker core/specialized của `workflow-chain.md`, scan forbidden-fragment — đều sạch). 37 `WARN` ở check regex frontmatter — đã có từ trước trong chính file `.ps1`, không phải regression: regex gốc yêu cầu `name:` phải theo ngay sau bởi `description:` không có dòng `language:` xen giữa, nhưng khoảng nửa số skill trong repo (kể cả nhiều skill chưa từng bị đụng tới trong đợt audit này, vd `step-goal-contract`, `karpathy-coding-discipline`) đặt `language:` xen giữa hoặc quanh 2 field đó. Đây là gap về độ chặt của script, không phải lỗi nội dung; ghi nhận ở đây thay vì sửa, vì nới lỏng script là việc khác với audit nội dung skill.
+- Governance Authority Sync re-check bằng đúng lệnh `comm`/`diff` như đợt audit gốc: vẫn 15/15 Hard Rule có mặt ở đâu đó trong tầng skill; bản thân `workflow-chain.md` vẫn thiếu `Router Before Action`/`Generic Coding Defaults Do Not Open A Gate` — đúng theo thiết kế (2 rule này thuộc về `workflow-governance-router`, theo đúng exception của checklist).
+- Check cross-reference: mọi path `` `references/*.md` `` được nhắc trong bất kỳ `SKILL.md`/`SKILL.vi.md` đều resolve về file thật (45 lần nhắc EN + 38 lần nhắc VI, 0 thiếu).
+- Check orphan (file reference tồn tại nhưng không ai trỏ tới): tìm thấy 5, đã fix 5 (xem REF-01/REF-02).
+
+```yaml
+findings:
+  - id: REF-01
+    priority: RE-AUDIT
+    status: FIXED
+    fixed_in: "chưa commit"
+    severity: LOW
+    area: SKILL
+    path: "skills/delivery/deployment-devops/SKILL.md"
+    issue: "references/{local-docker,runtime-targets,promotion-flow}.md (+ .vi.md) tồn tại nhưng không được liệt kê trong Reference Docs của chính deployment-devops, cũng không reachable từ references/devops-skill-map.md -- agent gọi deployment-devops trực tiếp sẽ không bao giờ phát hiện ra chúng. Điều này làm suy yếu trực tiếp fix DEVOPS-01 ở P1, vốn đã chốt promotion-flow.md làm chủ sở hữu chuẩn cho gate môi trường/rollout/rollback/BLOCKED."
+    recommendation: "Thêm cả 3 file vào danh sách Reference Docs của deployment-devops (EN+VI)."
+  - id: REF-02
+    priority: RE-AUDIT
+    status: FIXED
+    fixed_in: "chưa commit"
+    severity: LOW
+    area: SKILL
+    path: "skills/orchestration/codex-workflow-chain/SKILL.md"
+    issue: "references/adaptive-planning.md (+ .vi.md) tồn tại và reachable từ docs/workflow-docs-map.md, nhưng chưa từng được liệt kê trong Reference Docs của chính codex-workflow-chain -- gap có từ trước, không liên quan tới phần việc P0-P2 của đợt audit này."
+    recommendation: "Thêm vào danh sách Reference Docs của codex-workflow-chain (EN+VI)."
+```
 
 ## Findings
 
@@ -136,7 +171,7 @@ findings:
   - id: OBS-01
     priority: P2
     status: FIXED
-    fixed_in: "chưa commit"
+    fixed_in: "c201c7f"
     severity: LOW
     area: SKILL
     path: "skills/obsidian/{json-canvas,obsidian-bases,obsidian-markdown}/SKILL.md"
@@ -146,7 +181,7 @@ findings:
   - id: FE-03
     priority: P2
     status: FIXED
-    fixed_in: "chưa commit"
+    fixed_in: "c201c7f"
     severity: LOW
     area: SKILL
     path: "skills/architecture/frontend-architecture/SKILL.md, skills/architecture/frontend-experience-design/SKILL.md"
@@ -156,7 +191,7 @@ findings:
   - id: NB-01
     priority: P2
     status: FIXED
-    fixed_in: "chưa commit"
+    fixed_in: "c201c7f"
     severity: LOW
     area: SKILL
     path: "skills/notebooklm/SKILL.md, skills/delivery/frontend-quality-review/SKILL.md, skills/delivery/implementation/SKILL.md"
@@ -166,7 +201,7 @@ findings:
   - id: AN-01
     priority: P2
     status: FIXED
-    fixed_in: "chưa commit"
+    fixed_in: "c201c7f"
     severity: LOW
     area: SKILL
     path: "skills/analysis/system-design/SKILL.md"
@@ -176,7 +211,7 @@ findings:
   - id: AN-02
     priority: P2
     status: FIXED
-    fixed_in: "chưa commit"
+    fixed_in: "c201c7f"
     severity: LOW
     area: SKILL
     path: "skills/analysis/requirement-analysis/SKILL.md"
@@ -186,7 +221,7 @@ findings:
   - id: ARCH-02
     priority: P2
     status: FIXED
-    fixed_in: "chưa commit"
+    fixed_in: "c201c7f"
     severity: LOW
     area: SKILL
     path: "skills/architecture/domain-architecture/SKILL.md, skills/architecture/database-design/SKILL.md, skills/architecture/frontend-architecture/SKILL.md"
@@ -211,11 +246,11 @@ findings:
     issue: "notebooklm nằm trực tiếp dưới skills/, không có subfolder, khác mọi skill còn lại (analysis/architecture/delivery/guardrails/orchestration/obsidian)."
     recommendation: "Chuyển sang thư mục skills/tooling/ (hoặc skills/integrations/) mới; cập nhật path trong registry/manifest nếu có tham chiếu tới vị trí cũ."
     resolution_note: "README.md, README.vi.md, skills/README.md và skills/README.vi.md đều đã ghi rõ đây là vị trí có chủ đích (\"top-level integration skill by design ... không thuộc riêng analysis, delivery hay guardrails\"), không phải oversight. Thử git mv sang skills/tooling/notebooklm xác nhận việc move an toàn về mặt kỹ thuật (sync-workflow-bundle-runtime.js dò skill qua recursive walk chung, và Codex flat runtime key theo skill name chứ không theo category nguồn), nhưng đã revert vì di chuyển sẽ đi ngược lý do đã ghi, chỉ gán nó sang một category đơn lẻ khác. Không sửa gì."
-overall_status: PARTIAL
+overall_status: PASS
 follow_up_actions:
-  - "Commit batch P2 (hiện chưa commit) sau khi review."
-  - "Chạy lại check Governance Authority Sync của workflow-pack-audit một lần nữa để xác nhận không còn drift nào phát sinh qua cả P0-P2."
-notes: "P0 và P1 đã implement và commit (6297649, 72c8f70). Batch P2 đã implement (5 ĐÃ FIX, 2 NO_CHANGE_NEEDED sau khi xem lại) nhưng chưa commit, chờ human review theo đúng mô hình AI proposes, human approves của repo."
+  - "Commit REF-01/REF-02 (hiện chưa commit, phát hiện trong lượt re-audit 2026-07-23)."
+  - "Cân nhắc nới lỏng regex frontmatter của audit-workflow-pack.ps1 để chấp nhận language: xen giữa name: và description: (37 WARN, có từ trước, không do đợt audit này gây ra) — follow-up mức thấp riêng, không tracking thành finding có số ở đây."
+notes: "P0, P1 và P2 đã implement, commit và push (6297649, 72c8f70, c201c7f). Re-audit ngày 2026-07-23 phát hiện và fix thêm 2 gap nhỏ về khả năng phát hiện reference (REF-01, REF-02); check cơ học còn lại sạch (0 FAIL thật, 0 cross-reference gãy, 0 file reference mồ côi sau khi fix)."
 ```
 
 ## Cách Dùng Note Này

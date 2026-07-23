@@ -109,6 +109,9 @@ notes_for_implementation_or_release: ""
 Read the right file as needed:
 
 - `references/devops-skill-map.md`: when you need to choose the right specialized skill.
+- `references/local-docker.md`: when you need the local container baseline pattern.
+- `references/runtime-targets.md`: when you need to pick a runtime target per environment.
+- `references/promotion-flow.md`: when you need the canonical environment gates, rollout strategy, rollback rule, and BLOCKED signs (also owns tagging cross-reference to `ci-cd-release/references/promotion-controls.md`).
 - `../containerization-packaging/SKILL.md`: when you need to lock packaging by language and workload.
 - `../platform-runtime-deployment/SKILL.md`: when you need to lock runtime deploy by platform.
 - `../ci-cd-release/SKILL.md`: when you need to lock pipeline, tagging, promotion, and approval.

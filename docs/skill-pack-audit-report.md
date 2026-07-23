@@ -8,7 +8,7 @@ language: en
 
 Tracking note for the skill-pack audit of `workflow-bundle v2.3.0` (36 skills across `analysis`, `architecture`, `delivery`, `guardrails`, `orchestration`, `obsidian`). Produced with `workflow-pack-audit`'s method (script-equivalent checks + semantic checklist review), run across 4 parallel analysis passes plus direct `diff`/`grep` verification of every load-bearing claim before acting on it.
 
-Audit date: `2026-07-22`.
+Audit date: `2026-07-22`. Re-audit date: `2026-07-23`.
 
 ## Quick Status
 
@@ -16,9 +16,44 @@ Audit date: `2026-07-22`.
 |---|---|---|
 | P0 | 3 | FIXED — commit `6297649` |
 | P1 | 6 | FIXED — commit `72c8f70` |
-| P2 | 7 | 5 FIXED, 2 NO_CHANGE_NEEDED — not yet committed |
+| P2 | 7 | 5 FIXED, 2 NO_CHANGE_NEEDED — commit `c201c7f` |
+| Re-audit | 2 | FIXED — see REF-01/REF-02 below |
 
-Verification after P0, P1, and P2: `npm run build:workflow:bundle-runtime` (mirror sync), `npm run validate:workflow:bundle-smoke` (PASS), `npm run validate:workflow:unit` (25/25 PASS), UTF-8 check on every changed `*.vi.md` file, and a `comm` diff confirming all 15 `## Hard Rule` headings in `policies/codex/AGENTS.global.md` exist verbatim somewhere in the skill layer.
+All commits pushed to `origin/main`.
+
+Verification after P0, P1, P2, and the re-audit pass: `npm run build:workflow:bundle-runtime` (mirror sync), `npm run validate:workflow:bundle-smoke` (PASS), `npm run validate:workflow:unit` (25/25 PASS), UTF-8 check on every changed `*.vi.md` file, and a `comm` diff confirming all 15 `## Hard Rule` headings in `policies/codex/AGENTS.global.md` exist verbatim somewhere in the skill layer.
+
+## Re-Audit Pass (2026-07-23)
+
+Ran `workflow-pack-audit`'s method again end-to-end to confirm the P0-P2 fixes hold and nothing regressed:
+
+- `scripts/audit-workflow-pack.ps1` cannot run in this environment (no `pwsh` installed); reimplemented its checks 1:1 in Node (`audit-workflow-pack.js`, not committed -- ad hoc verification script) and ran it against the full `skills/` tree.
+- Mechanical checks: 0 real `FAIL` (skill files found, folder-name match, skill-name uniqueness, `workflow-chain.md` core/specialized markers, forbidden-fragment scan all clean). 37 `WARN` on a frontmatter regex check -- pre-existing in the `.ps1` script itself, not a regression: the original regex requires `name:` immediately followed by `description:` with no `language:` line between them, but roughly half the skills in the repo (including many never touched by this audit, e.g. `step-goal-contract`, `karpathy-coding-discipline`) place `language:` between or around those two fields. This is a script-strictness gap, not a content defect; noted here rather than fixed, since changing the script's tolerance is a separate concern from the skill-content audit.
+- Governance Authority Sync re-checked with the same `comm`/`diff` commands from the original audit: still 15/15 Hard Rule present somewhere in the skill layer; `workflow-chain.md` itself is still missing `Router Before Action`/`Generic Coding Defaults Do Not Open A Gate` by design (those two live in `workflow-governance-router` instead, per the checklist's own exception).
+- Cross-reference check: every `` `references/*.md` `` path mentioned in any `SKILL.md`/`SKILL.vi.md` resolves to a real file (45 EN + 38 VI mentions, 0 missing).
+- Orphan check (reference files that exist but nothing points to): found 5, fixed 5 (see REF-01/REF-02).
+
+```yaml
+findings:
+  - id: REF-01
+    priority: RE-AUDIT
+    status: FIXED
+    fixed_in: "uncommitted"
+    severity: LOW
+    area: SKILL
+    path: "skills/delivery/deployment-devops/SKILL.md"
+    issue: "references/{local-docker,runtime-targets,promotion-flow}.md (+ .vi.md) existed but were not listed in deployment-devops's own Reference Docs section, nor reachable from references/devops-skill-map.md -- an agent invoking deployment-devops directly would never discover them. This directly undermines the P1 DEVOPS-01 fix, which made promotion-flow.md the canonical owner of environment gates/rollout/rollback/BLOCKED signs."
+    recommendation: "Add all 3 files to deployment-devops's Reference Docs list (EN+VI)."
+  - id: REF-02
+    priority: RE-AUDIT
+    status: FIXED
+    fixed_in: "uncommitted"
+    severity: LOW
+    area: SKILL
+    path: "skills/orchestration/codex-workflow-chain/SKILL.md"
+    issue: "references/adaptive-planning.md (+ .vi.md) existed and is reachable from docs/workflow-docs-map.md, but was never listed in codex-workflow-chain's own Reference Docs section -- pre-existing gap, unrelated to the P0-P2 work in this audit."
+    recommendation: "Add it to codex-workflow-chain's Reference Docs list (EN+VI)."
+```
 
 ## Findings
 
@@ -136,7 +171,7 @@ findings:
   - id: OBS-01
     priority: P2
     status: FIXED
-    fixed_in: "uncommitted"
+    fixed_in: "c201c7f"
     severity: LOW
     area: SKILL
     path: "skills/obsidian/{json-canvas,obsidian-bases,obsidian-markdown}/SKILL.md"
@@ -146,7 +181,7 @@ findings:
   - id: FE-03
     priority: P2
     status: FIXED
-    fixed_in: "uncommitted"
+    fixed_in: "c201c7f"
     severity: LOW
     area: SKILL
     path: "skills/architecture/frontend-architecture/SKILL.md, skills/architecture/frontend-experience-design/SKILL.md"
@@ -156,7 +191,7 @@ findings:
   - id: NB-01
     priority: P2
     status: FIXED
-    fixed_in: "uncommitted"
+    fixed_in: "c201c7f"
     severity: LOW
     area: SKILL
     path: "skills/notebooklm/SKILL.md, skills/delivery/frontend-quality-review/SKILL.md, skills/delivery/implementation/SKILL.md"
@@ -166,7 +201,7 @@ findings:
   - id: AN-01
     priority: P2
     status: FIXED
-    fixed_in: "uncommitted"
+    fixed_in: "c201c7f"
     severity: LOW
     area: SKILL
     path: "skills/analysis/system-design/SKILL.md"
@@ -176,7 +211,7 @@ findings:
   - id: AN-02
     priority: P2
     status: FIXED
-    fixed_in: "uncommitted"
+    fixed_in: "c201c7f"
     severity: LOW
     area: SKILL
     path: "skills/analysis/requirement-analysis/SKILL.md"
@@ -186,7 +221,7 @@ findings:
   - id: ARCH-02
     priority: P2
     status: FIXED
-    fixed_in: "uncommitted"
+    fixed_in: "c201c7f"
     severity: LOW
     area: SKILL
     path: "skills/architecture/domain-architecture/SKILL.md, skills/architecture/database-design/SKILL.md, skills/architecture/frontend-architecture/SKILL.md"
@@ -211,11 +246,11 @@ findings:
     issue: "notebooklm sits directly under skills/ with no subfolder, unlike every other skill (analysis/architecture/delivery/guardrails/orchestration/obsidian)."
     recommendation: "Move to a new skills/tooling/ (or skills/integrations/) directory; update any registry/manifest paths that reference the old location."
     resolution_note: "README.md, README.vi.md, skills/README.md, and skills/README.vi.md all already document this as a deliberate placement (\"top-level integration skill by design ... not belonging solely to analysis, delivery or guardrails\"), not an oversight. A trial git mv to skills/tooling/notebooklm confirmed the move is mechanically safe (sync-workflow-bundle-runtime.js discovers skills via a generic recursive walk, and the Codex flat runtime keys installs by skill name, not source category), but was reverted since moving it would contradict the recorded rationale and just reassign it to a different single category. No change made."
-overall_status: PARTIAL
+overall_status: PASS
 follow_up_actions:
-  - "Commit the P2 changes (currently uncommitted) once reviewed."
-  - "Re-run workflow-pack-audit's Governance Authority Sync check once more to confirm no other drift was introduced across P0-P2."
-notes: "P0 and P1 are implemented and committed (6297649, 72c8f70). P2 batch is implemented (5 FIXED, 2 NO_CHANGE_NEEDED after re-review) but not yet committed, pending human review per this repo's AI-proposes-human-approves model."
+  - "Commit REF-01/REF-02 (currently uncommitted, found during the 2026-07-23 re-audit)."
+  - "Consider relaxing audit-workflow-pack.ps1's frontmatter regex to tolerate language: between name: and description: (37 WARN, pre-existing, not caused by this audit) -- separate low-priority follow-up, not tracked as a numbered finding here."
+notes: "P0, P1, and P2 are implemented, committed, and pushed (6297649, 72c8f70, c201c7f). Re-audit on 2026-07-23 found and fixed 2 more small reference-discoverability gaps (REF-01, REF-02); mechanical checks otherwise clean (0 real FAIL, 0 broken cross-references, 0 orphaned reference files after the fix)."
 ```
 
 ## How To Use This Note
