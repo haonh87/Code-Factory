@@ -61,6 +61,7 @@ The documents below are oriented toward mechanics, rollout, history, or roadmap:
 - [`../skills/orchestration/codex-workflow-chain/references/workflow-versioning.md`](../skills/orchestration/codex-workflow-chain/references/workflow-versioning.md)
 - [`hybrid-superpowers-policy.md`](hybrid-superpowers-policy.md)
 - [`hybrid-superpowers-decision-matrix.md`](hybrid-superpowers-decision-matrix.md)
+- [`skill-pack-audit-report.md`](skill-pack-audit-report.md)
 - [`../skills/orchestration/codex-workflow-chain/references/implementation-blueprint.md`](../skills/orchestration/codex-workflow-chain/references/implementation-blueprint.md)
 - [`../skills/orchestration/codex-workflow-chain/references/target-architecture.md`](../skills/orchestration/codex-workflow-chain/references/target-architecture.md)
 - [`../skills/orchestration/codex-workflow-chain/references/workflow-ci-enforcement.md`](../skills/orchestration/codex-workflow-chain/references/workflow-ci-enforcement.md)
@@ -74,6 +75,7 @@ Reading guide:
 - `workflow-governance-router` is the meta-skill entrypoint of the multi-block prompt model; it pins the current step, delivery context, and missing gates before step skills run.
 - `hybrid-superpowers-policy` is the internal reference policy for the hybrid model between the repo workflow backbone and the execution discipline from Superpowers.
 - `hybrid-superpowers-decision-matrix` is a cheat sheet for deciding quickly when to enable `TDD`, `worktree`, `subagent`, and `review mode`.
+- `skill-pack-audit-report` tracks the standing findings from the skill-pack audit (sizing, Hard Rule drift, skill-boundary overlap) with a per-finding `status`; update it in place as `P0`/`P1`/`P2` items get fixed.
 
 ## Excluded Working Assets
 

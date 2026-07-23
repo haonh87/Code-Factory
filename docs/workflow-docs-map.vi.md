@@ -61,6 +61,7 @@ Các tài liệu dưới đây thiên về mechanics, rollout, history hoặc ro
 - [`../skills/orchestration/codex-workflow-chain/references/workflow-versioning.md`](../skills/orchestration/codex-workflow-chain/references/workflow-versioning.md)
 - [`hybrid-superpowers-policy.md`](hybrid-superpowers-policy.md)
 - [`hybrid-superpowers-decision-matrix.md`](hybrid-superpowers-decision-matrix.md)
+- [`skill-pack-audit-report.vi.md`](skill-pack-audit-report.vi.md)
 - [`../skills/orchestration/codex-workflow-chain/references/implementation-blueprint.md`](../skills/orchestration/codex-workflow-chain/references/implementation-blueprint.md)
 - [`../skills/orchestration/codex-workflow-chain/references/target-architecture.md`](../skills/orchestration/codex-workflow-chain/references/target-architecture.md)
 - [`../skills/orchestration/codex-workflow-chain/references/workflow-ci-enforcement.md`](../skills/orchestration/codex-workflow-chain/references/workflow-ci-enforcement.md)
@@ -74,6 +75,7 @@ Quy tắc đọc:
 - `workflow-governance-router` là entrypoint meta-skill của mô hình prompt nhiều khối; nó chốt current step, delivery context và missing gates trước khi step skill chạy.
 - `hybrid-superpowers-policy` là policy tham chiếu nội bộ cho mô hình hybrid giữa backbone workflow của repo và execution discipline từ Superpowers.
 - `hybrid-superpowers-decision-matrix` là cheat sheet để quyết định nhanh khi nào bật `TDD`, `worktree`, `subagent` và `review mode`.
+- `skill-pack-audit-report` theo dõi các finding còn treo từ đợt audit skill pack (sizing, drift Hard Rule, chồng lấn ranh giới skill) kèm `status` theo từng finding; cập nhật tại chỗ khi item `P0`/`P1`/`P2` được fix.
 
 ## Excluded Working Assets
 
