@@ -141,8 +141,12 @@ function testRecorderCustomOutputDir() {
 
 function testRecorderCrMismatchAndValidation() {
   const projectRoot = fs.mkdtempSync(path.join(os.tmpdir(), "telemetry-"));
+  // Explicit out-of-band temp dir: without an override the recorder writes to
+  // the default $HOME/.workflow-telemetry/, which pollutes the real home of
+  // whoever runs the suite. Isolate it so the test has no home-dir side effect.
+  const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "telemetry-out-"));
   try {
-    const recorder = createTelemetryRecorder({ projectRoot, workItemSlug: "wi" });
+    const recorder = createTelemetryRecorder({ projectRoot, workItemSlug: "wi", outputDirOverride: outDir });
     recorder.recordCrReconciliationMismatch({
       cr_id: "CR-002",
       missing: 2,
@@ -153,7 +157,8 @@ function testRecorderCrMismatchAndValidation() {
     recorder.recordValidationSummary({ errors: 1, warnings: 2, profile: "full" });
     recorder.recordApprovalInteraction({ count: 3 });
     recorder.recordLeadTime({ toReadyMs: 1500, toDoneMs: null });
-    const { report } = recorder.finalize({ filename: "mix.json" });
+    const { report, reportPath } = recorder.finalize({ filename: "mix.json" });
+    assert(reportPath.startsWith(outDir), "telemetry written to isolated temp dir, not real $HOME");
     assert(report.cr_reconciliation_mismatch && report.cr_reconciliation_mismatch.cr_id === "CR-002", "cr mismatch recorded");
     assert(report.cr_reconciliation_mismatch.missing === 2, "cr mismatch missing count");
     assert(report.validation.errors === 1 && report.validation.warnings === 2, "validation summary recorded");
@@ -163,6 +168,7 @@ function testRecorderCrMismatchAndValidation() {
     console.log("  PASS: recorder captures CR mismatch + validation + approval + lead-time");
   } finally {
     rmrf(projectRoot);
+    rmrf(outDir);
   }
 }
 

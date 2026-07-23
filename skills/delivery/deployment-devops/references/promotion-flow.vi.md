@@ -14,7 +14,7 @@ Mỗi lần promote nên giữ nguyên image contract; chỉ thay config, secret
 
 ## Tag Strategy
 
-- Chủ sở hữu chuẩn cho tagging/approval/evidence là `ci-cd-release/references/promotion-controls.vi.md § Tagging`; dùng trực tiếp reference đó thay vì suy diễn lại tag policy ở đây.
+- Chủ sở hữu chuẩn cho tagging/approval/evidence là `../../ci-cd-release/references/promotion-controls.vi.md § Tagging`; dùng trực tiếp reference đó thay vì suy diễn lại tag policy ở đây.
 - Điều quan trọng ở tầng này: bất kể chọn tag strategy nào, mọi môi trường trong `Thứ Tự Chuẩn` phải promote cùng artifact/image contract bất biến — chỉ config, secrets, replica, resource và guard thay đổi giữa các môi trường.
 
 ## Gate Theo Môi Trường

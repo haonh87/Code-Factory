@@ -14,7 +14,7 @@ Each promotion should keep the same image contract; only change config, secrets,
 
 ## Tag Strategy
 
-- Canonical owner of tagging/approval/evidence is `ci-cd-release/references/promotion-controls.md § Tagging`; use that reference directly instead of re-deriving a tag policy here.
+- Canonical owner of tagging/approval/evidence is `../../ci-cd-release/references/promotion-controls.md § Tagging`; use that reference directly instead of re-deriving a tag policy here.
 - What matters at this level: whichever tag strategy is chosen, every environment in `Standard Order` must promote the same immutable artifact/image contract — only config, secrets, replicas, resources, and guards change between environments.
 
 ## Gates By Environment

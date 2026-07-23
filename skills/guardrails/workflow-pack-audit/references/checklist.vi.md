@@ -25,7 +25,7 @@ language: vi
 - Một hard rule chỉ có ý nghĩa ở tầng router/entry (ví dụ `Router Before Action`, `Generic Coding Defaults Do Not Open A Gate`) có thể nằm ở `workflow-governance-router/SKILL.md` thay vì ở `codex-workflow-chain`, nhưng vẫn phải tồn tại nguyên văn ở ít nhất một skill file; không được để chỉ tồn tại ở `AGENTS.global.md` mà không có bản đối chiếu ở tầng skill.
 - Nếu phần nội dung của rule (điều kiện eligibility, escalation trigger, gate host contract) dài, bản skill được phép tóm tắt, nhưng phải nêu rõ file nào là authority đầy đủ (ví dụ `Full authority for this rule is policies/codex/AGENTS.global.md § Hard Rule: <name>`) thay vì bỏ sót rule một cách im lặng.
 - Check này là so khớp heading nguyên văn, không phải so khớp diễn giải: một rule tồn tại dưới heading diễn đạt khác (vd `Prefer The Smallest Sufficient Solution` vs `Prefer The Smallest Solution That Is Correct`) vẫn tính là drift và phải bị flag.
-- `references/workflow-chain.md` trong `codex-workflow-chain` diễn giải lại cùng bộ Hard Rule cho mục đích step-mapping; heading của nó cũng phải khớp `AGENTS.global.md` 1:1 vì cùng lý do.
+- `references/workflow-chain.md` trong `codex-workflow-chain` diễn giải lại cùng bộ Hard Rule cho mục đích step-mapping; heading của nó phải khớp `AGENTS.global.md` theo cùng rule như `SKILL.md` ở trên. Hai rule tầng entry (`Router Before Action`, `Generic Coding Defaults Do Not Open A Gate`) được phép vắng mặt ở `references/workflow-chain.md` vì chúng nằm ở `workflow-governance-router/SKILL.md`; mọi heading Hard Rule còn lại phải khớp nguyên văn. Coi đây là cùng router exception, không phải yêu cầu 1:1 riêng.
 
 ## 4. Template Và Schema
 

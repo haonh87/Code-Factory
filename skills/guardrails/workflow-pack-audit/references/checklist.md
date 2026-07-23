@@ -25,7 +25,7 @@ language: en
 - A hard rule that only makes sense at router/entry level (for example `Router Before Action`, `Generic Coding Defaults Do Not Open A Gate`) may live in `workflow-governance-router/SKILL.md` instead, but it must still exist verbatim in at least one skill file; it must not exist only in `AGENTS.global.md` with no skill-layer counterpart.
 - If a rule's authority body (eligibility conditions, escalation triggers, gate host contract) is long, the skill copy may summarize it, but it must state which file is the full authority (for example `Full authority for this rule is policies/codex/AGENTS.global.md § Hard Rule: <name>`) instead of silently omitting the rule.
 - This check is heading-text equality, not paraphrase equality: a rule present under a differently worded heading (e.g. `Prefer The Smallest Sufficient Solution` vs `Prefer The Smallest Solution That Is Correct`) still counts as drift and must be flagged.
-- `references/workflow-chain.md` inside `codex-workflow-chain` restates the same Hard Rule set again for its own step-mapping purposes; its headings must also match `AGENTS.global.md` 1:1 for the same reason.
+- `references/workflow-chain.md` inside `codex-workflow-chain` restates the same Hard Rule set again for its own step-mapping purposes; its headings must match `AGENTS.global.md` under the same rule as `SKILL.md` above. The two entry-level rules (`Router Before Action`, `Generic Coding Defaults Do Not Open A Gate`) may be absent from `references/workflow-chain.md` because they live in `workflow-governance-router/SKILL.md`; every other Hard Rule heading must match verbatim. Treat this as the same router exception, not a separate 1:1 requirement.
 
 ## 4. Template And Schema
 

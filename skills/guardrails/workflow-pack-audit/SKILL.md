@@ -44,7 +44,7 @@ Audit the consistency of a workflow pack on two layers: mechanical checks via a 
 
 ## Companion Resources
 
-- Run the script `scripts/audit-workflow-pack.ps1` first to get deterministic checks.
+- Run the audit `npm run validate:workflow:pack-audit` (Node, canonical) first to get deterministic checks. The legacy `scripts/audit-workflow-pack.ps1` is deprecated and kept only for reference.
 - Then read `references/checklist.md` and review the remaining semantic items for the area just changed.
 - If you need a sample note to record the audit result, use `templates/audit-report.sample.md`.
 
@@ -86,7 +86,7 @@ notes: ""
 
 ## Execution Flow
 
-1. Run `scripts/audit-workflow-pack.ps1 -RepoRoot <repo_root>` to get deterministic checks.
+1. Run `npm run validate:workflow:pack-audit` (or `node packages/workflow-bundle/scripts/audit-workflow-pack.js --repo-root <repo_root>`) to get deterministic checks.
 2. Load `references/checklist.md` and review the semantic items for the area just changed.
 3. Collect `checks` from the script and add `findings` for drift the script cannot catch.
 4. Conclude `overall_status`:

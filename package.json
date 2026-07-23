@@ -26,6 +26,7 @@
     "validate:workflow:bundle-smoke": "node packages/workflow-bundle/bin/wfc.js bundle-smoke",
     "validate:workflow:fixtures": "node packages/workflow-bundle/bin/wfc.js fixtures",
     "validate:workflow:unit": "node packages/workflow-bundle/test/run-all.js",
+    "validate:workflow:pack-audit": "node packages/workflow-bundle/scripts/audit-workflow-pack.js --repo-root .",
     "bump-version": "node packages/workflow-bundle/bin/wfc.js version bump"
   },
   "engines": {

@@ -6,6 +6,9 @@ language: vi
 
 > English: skill-pack-audit-report.md
 
+> [!warning] Đã bị thay thế — giữ làm lịch sử
+> Note theo dõi này (số skill `36`, bằng chứng theo từng finding bên dưới) phản ánh đợt 2026-07-22/23 và chỉ giữ làm lịch sử. Nó đã bị thay thế bởi bản re-audit độc lập `docs/skill-pack-review-2026-07-23.md` và report sau khi sửa `docs/skill-pack-audit-report-2026-07-23-post-fix.md`. Source hiện tại có `37` skill; không dùng số liệu hay verdict PASS bên dưới như trạng thái hiện hành. Bằng chứng cũ được giữ nguyên, không chỉnh sửa.
+
 Note theo dõi cho đợt audit skill pack của `workflow-bundle v2.3.0` (36 skill trải trên `analysis`, `architecture`, `delivery`, `guardrails`, `orchestration`, `obsidian`). Thực hiện theo phương pháp của `workflow-pack-audit` (check tương đương script + review checklist semantic), chạy qua 4 nhánh phân tích song song cộng với verify trực tiếp bằng `diff`/`grep` cho mọi claim quan trọng trước khi hành động theo nó.
 
 Ngày audit: `2026-07-22`. Ngày re-audit: `2026-07-23`.

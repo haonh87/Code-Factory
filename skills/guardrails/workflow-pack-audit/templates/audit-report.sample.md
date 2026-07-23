@@ -17,7 +17,7 @@ status: template
 - Repo root: `d:/workspaces/RnD/AI/Code-Factory`
 - Audit date: `2026-04-01`
 - Audit scope: the whole `skills/` tree and `skills/orchestration/codex-workflow-chain/references/workflow-chain.md`
-- Script used: `skills/guardrails/workflow-pack-audit/scripts/audit-workflow-pack.ps1`
+- Script used: `packages/workflow-bundle/scripts/audit-workflow-pack.js` (via `npm run validate:workflow:pack-audit`)
 
 ## Audit YAML
 
@@ -69,6 +69,7 @@ notes: "Deterministic audit passed. No blocking drift or conflict was found betw
 
 ## Command Used
 
-```powershell
-& "skills/guardrails/workflow-pack-audit/scripts/audit-workflow-pack.ps1" -RepoRoot .
+```bash
+npm run validate:workflow:pack-audit
+# or: node packages/workflow-bundle/scripts/audit-workflow-pack.js --repo-root .
 ```

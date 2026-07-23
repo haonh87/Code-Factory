@@ -6,6 +6,9 @@ language: en
 
 > Vietnamese: skill-pack-audit-report.vi.md
 
+> [!warning] Superseded — kept as history
+> This tracking note (skill count `36`, per-finding evidence below) reflects the 2026-07-22/23 pass and is retained for history only. It is superseded by the independent re-audit in `docs/skill-pack-review-2026-07-23.md` and the post-fix audit report `docs/skill-pack-audit-report-2026-07-23-post-fix.md`. The current source tree has `37` skills; do not treat the counts or PASS verdicts below as current. Its evidence is intentionally left unedited.
+
 Tracking note for the skill-pack audit of `workflow-bundle v2.3.0` (36 skills across `analysis`, `architecture`, `delivery`, `guardrails`, `orchestration`, `obsidian`). Produced with `workflow-pack-audit`'s method (script-equivalent checks + semantic checklist review), run across 4 parallel analysis passes plus direct `diff`/`grep` verification of every load-bearing claim before acting on it.
 
 Audit date: `2026-07-22`. Re-audit date: `2026-07-23`.

@@ -1,7 +1,7 @@
 ---
 language: en
 name: codex-workflow-chain
-description: Apply the 8-step coding workflow to software development tasks using Codex. Use for coding, debugging, refactoring, writing tests, automation scripts, feature delivery, and the local -> dev -> uat -> prod DevOps flow. The workflow keeps a single chain with short names: Clarify, Business Goal, Open Questions, Acceptance + DoR, Technical Approach, Task Plan, Implement, Verify + DoD; with business -> design -> code -> verify traceability, a governance overlay, an SDD overlay, role signoff, release readiness, and a clear split between business skills and artifact skills.
+description: "Apply the 8-step coding workflow to software development tasks using Codex. Use for coding, debugging, refactoring, writing tests, automation scripts, feature delivery, and the local -> dev -> uat -> prod DevOps flow. The workflow keeps a single chain with short names: Clarify, Business Goal, Open Questions, Acceptance + DoR, Technical Approach, Task Plan, Implement, Verify + DoD; with business -> design -> code -> verify traceability, a governance overlay, an SDD overlay, role signoff, release readiness, and a clear split between business skills and artifact skills."
 ---
 
 # Coding Workflow Chain For Codex

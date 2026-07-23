@@ -1,6 +1,6 @@
 ---
 name: karpathy-coding-discipline
-description: 4 nguyên tắc hành vi cho coding agent, dựa trên quan sát Karpathy về lỗi LLM phổ biến: giả định ngầm, over-engineer, sửa lân cận, không verify. Chạy xuyên suốt mọi step, bổ trợ guardrails và delivery skill, không thay workflow chain hay approval gate.
+description: "4 nguyên tắc hành vi cho coding agent, dựa trên quan sát Karpathy về lỗi LLM phổ biến: giả định ngầm, over-engineer, sửa lân cận, không verify. Chạy xuyên suốt mọi step, bổ trợ guardrails và delivery skill, không thay workflow chain hay approval gate."
 language: vi
 ---
 

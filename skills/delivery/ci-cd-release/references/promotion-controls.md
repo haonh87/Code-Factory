@@ -13,7 +13,7 @@ language: en
 
 ## Promotion
 
-- Canonical owner of the per-environment promotion goal and minimum gate is `deployment-devops/references/promotion-flow.md § Gates By Environment`; use that table directly instead of re-deriving per-stage goals here.
+- Canonical owner of the per-environment promotion goal and minimum gate is `../../deployment-devops/references/promotion-flow.md § Gates By Environment`; use that table directly instead of re-deriving per-stage goals here.
 - What matters at this level: the pipeline must actually enforce that table's minimum gate before letting an artifact move to the next environment — a pipeline stage that skips a gate is a pipeline defect, not a policy gap.
 
 ## Approval
@@ -23,7 +23,7 @@ language: en
 
 ## Rollback
 
-- Canonical owner of the rollback rule (known-good artifact, app-layer vs data-layer distinction for migrations, stop/trigger conditions) is `deployment-devops/references/promotion-flow.md § Rollback Rule`.
+- Canonical owner of the rollback rule (known-good artifact, app-layer vs data-layer distinction for migrations, stop/trigger conditions) is `../../deployment-devops/references/promotion-flow.md § Rollback Rule`.
 - What matters at this level: the "known-good artifact" a rollback points to must resolve to one of this file's immutable tags, never a convenience tag.
 
 ## Evidence

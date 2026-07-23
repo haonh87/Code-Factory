@@ -1,7 +1,7 @@
 ---
 language: en
 name: code-scan-review
-description: Scan code at the Verify step across 4 fixed lanes: syntax, static analysis, security, and performance heuristics. Use when you need to scan a diff or affected module in a wrapper-first, evidence-based way with a clear false-positive policy, and pick the right reference by language such as PHP, TypeScript/JavaScript, Python, Go, and Java.
+description: "Scan code at the Verify step across 4 fixed lanes: syntax, static analysis, security, and performance heuristics. Use when you need to scan a diff or affected module in a wrapper-first, evidence-based way with a clear false-positive policy, and pick the right reference by language such as PHP, TypeScript/JavaScript, Python, Go, and Java."
 ---
 
 # Code Scan Review

@@ -111,7 +111,7 @@ notes_for_implementation_or_release: ""
 - `references/devops-skill-map.md`: khi cần chọn skill chuyên trách phù hợp.
 - `references/local-docker.md`: khi cần pattern baseline container hóa local.
 - `references/runtime-targets.md`: khi cần chọn runtime target theo môi trường.
-- `references/promotion-flow.md`: khi cần gate môi trường chuẩn, rollout strategy, rollback rule và dấu hiệu BLOCKED (cũng sở hữu cross-reference tagging sang `ci-cd-release/references/promotion-controls.vi.md`).
+- `references/promotion-flow.md`: khi cần gate môi trường chuẩn, rollout strategy, rollback rule và dấu hiệu BLOCKED (cũng sở hữu cross-reference tagging sang `../ci-cd-release/references/promotion-controls.vi.md`).
 - `../containerization-packaging/SKILL.md`: khi cần khóa packaging theo ngôn ngữ và workload.
 - `../platform-runtime-deployment/SKILL.md`: khi cần khóa runtime deploy theo platform.
 - `../ci-cd-release/SKILL.md`: khi cần khóa pipeline, tagging, promotion và approval.

@@ -44,7 +44,7 @@ Audit tính nhất quán của workflow pack theo hai lớp: kiểm tra cơ họ
 
 ## Tài Nguyên Kèm Theo
 
-- Chạy script `scripts/audit-workflow-pack.ps1` trước để lấy deterministic checks.
+- Chạy audit `npm run validate:workflow:pack-audit` (Node, canonical) trước để lấy deterministic checks. Bản cũ `scripts/audit-workflow-pack.ps1` đã deprecated, chỉ giữ để tham khảo.
 - Sau đó đọc `references/checklist.md` và rà các mục semantic còn lại cho vùng vừa thay đổi.
 - Nếu cần note mẫu để ghi kết quả audit, dùng `templates/audit-report.sample.md`.
 
@@ -86,7 +86,7 @@ notes: ""
 
 ## Luồng Thực Thi
 
-1. Chạy `scripts/audit-workflow-pack.ps1 -RepoRoot <repo_root>` để lấy deterministic checks.
+1. Chạy `npm run validate:workflow:pack-audit` (hoặc `node packages/workflow-bundle/scripts/audit-workflow-pack.js --repo-root <repo_root>`) để lấy deterministic checks.
 2. Tải `references/checklist.md` và rà các mục semantic cho vùng vừa thay đổi.
 3. Tập hợp `checks` từ script và bổ sung `findings` cho các drift không kiểm được bằng script.
 4. Kết luận `overall_status`:

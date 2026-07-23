@@ -90,7 +90,7 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 
 - `READY` khi quality gate, tagging strategy, promotion flow và rollback control đã chốt đủ evidence, và không có trigger `BLOCKED` nào ở dưới xảy ra.
 - `READY_WITH_GUARDS` khi pipeline có thể chạy nhưng chỉ với guard rõ ghi trong `approval_controls` hoặc `release_controls` (vd bước approval manual tạm thời, rollout theo giai đoạn, hoặc follow-up có theo dõi).
-- `BLOCKED` khi chưa có tag/registry strategy bất biến, chưa có runtime target rõ cho đích promotion, chưa có post-deploy verification check, hoặc chưa có rollback path khả thi cho môi trường quan trọng — xem `references/promotion-controls.md` và `deployment-devops/references/promotion-flow.vi.md § Dấu Hiệu BLOCKED` để có danh sách trigger chuẩn.
+- `BLOCKED` khi chưa có tag/registry strategy bất biến, chưa có runtime target rõ cho đích promotion, chưa có post-deploy verification check, hoặc chưa có rollback path khả thi cho môi trường quan trọng — xem `references/promotion-controls.md` và `../deployment-devops/references/promotion-flow.vi.md § Dấu Hiệu BLOCKED` để có danh sách trigger chuẩn.
 
 ## Tài Liệu Tham Chiếu
 

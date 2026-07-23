@@ -1,3 +1,15 @@
+# DEPRECATED — kept for reference only.
+#
+# The canonical audit is now the Node port:
+#   npm run validate:workflow:pack-audit
+#   node packages/workflow-bundle/scripts/audit-workflow-pack.js --repo-root <repo>
+#
+# Why deprecated: this script parsed frontmatter with an order-dependent regex
+# (`^---\nname:\ndescription:\n---`) that false-failed every skill whose
+# frontmatter leads with `language:`, and it never checked Hard Rule heading
+# equality or cross-reference resolution. The Node port fixes all three and runs
+# without a PowerShell dependency. Do not extend this file; edit the Node port.
+
 param(
     [string]$RepoRoot = "."
 )

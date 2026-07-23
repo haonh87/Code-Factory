@@ -1,6 +1,6 @@
 ---
 name: notebooklm
-description: Use Google NotebookLM through notebooklm-mcp-cli.
+description: "Use Google NotebookLM from the terminal or through its MCP tools via notebooklm-mcp-cli. Use when the task explicitly requires querying, syncing, or managing NotebookLM notebooks and sources from the command line or an MCP client."
 language: en
 ---
 
