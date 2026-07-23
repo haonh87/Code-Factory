@@ -25,6 +25,7 @@ Do not self-declare `done` in this skill; the completion verdict is only valid a
 - When s04-s06 are ready to move into implementation.
 - When adding a feature, fixing a bug, refactoring or adjusting accompanying config/doc within the approved scope.
 - When the stack is React web or Next.js and the change touches server/client split, data fetching, context or loading paths, combine with `react-web-implementation`.
+- When the stack is Vue, Angular, Svelte, or another non-React framework: this skill still applies in full; there is no framework-specific implementation skill yet for those stacks, so stay with this skill's generic implementation discipline and note the gap instead of assuming a specialized guide exists.
 
 ## Out Of Scope
 

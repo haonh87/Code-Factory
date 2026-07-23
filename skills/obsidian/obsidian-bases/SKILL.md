@@ -171,147 +171,18 @@ formulas:
 
 ## Functions Reference
 
-### Global Functions
+Formulas and filters call functions scoped by type (`date.`, `string.`, `list.`, `file.`, ...). Most common:
 
 | Function | Signature | Description |
 |----------|-----------|-------------|
-| `date()` | `date(string): date` | Parse string to date. Format: `YYYY-MM-DD HH:mm:ss` |
-| `duration()` | `duration(string): duration` | Parse duration string |
-| `now()` | `now(): date` | Current date and time |
-| `today()` | `today(): date` | Current date (time = 00:00:00) |
 | `if()` | `if(condition, trueResult, falseResult?)` | Conditional |
-| `min()` | `min(n1, n2, ...): number` | Smallest number |
-| `max()` | `max(n1, n2, ...): number` | Largest number |
-| `number()` | `number(any): number` | Convert to number |
-| `link()` | `link(path, display?): Link` | Create a link |
-| `list()` | `list(element): List` | Wrap in list if not already |
-| `file()` | `file(path): file` | Get file object |
-| `image()` | `image(path): image` | Create image for rendering |
-| `icon()` | `icon(name): icon` | Lucide icon by name |
-| `html()` | `html(string): html` | Render as HTML |
-| `escapeHTML()` | `escapeHTML(string): string` | Escape HTML characters |
+| `date()` | `date(string): date` | Parse string to date |
+| `now()` / `today()` | `now(): date` / `today(): date` | Current date/time |
+| `string.contains()` | `string.contains(value): boolean` | Check substring |
+| `list.filter()` / `list.map()` | `list.filter(expression): list` | Filter/transform a list |
+| `file.hasTag()` | `file.hasTag(...tags): boolean` | Has any of the tags |
 
-### Any Type Functions
-
-| Function | Signature | Description |
-|----------|-----------|-------------|
-| `isTruthy()` | `any.isTruthy(): boolean` | Coerce to boolean |
-| `isType()` | `any.isType(type): boolean` | Check type |
-| `toString()` | `any.toString(): string` | Convert to string |
-
-### Date Functions & Fields
-
-**Fields:** `date.year`, `date.month`, `date.day`, `date.hour`, `date.minute`, `date.second`, `date.millisecond`
-
-| Function | Signature | Description |
-|----------|-----------|-------------|
-| `date()` | `date.date(): date` | Remove time portion |
-| `format()` | `date.format(string): string` | Format with Moment.js pattern |
-| `time()` | `date.time(): string` | Get time as string |
-| `relative()` | `date.relative(): string` | Human-readable relative time |
-| `isEmpty()` | `date.isEmpty(): boolean` | Always false for dates |
-
-### Date Arithmetic
-
-```yaml
-# Duration units: y/year/years, M/month/months, d/day/days, 
-#                 w/week/weeks, h/hour/hours, m/minute/minutes, s/second/seconds
-
-# Add/subtract durations
-"date + \"1M\""           # Add 1 month
-"date - \"2h\""           # Subtract 2 hours
-"now() + \"1 day\""       # Tomorrow
-"today() + \"7d\""        # A week from today
-
-# Subtract dates for millisecond difference
-"now() - file.ctime"
-
-# Complex duration arithmetic
-"now() + (duration('1d') * 2)"
-```
-
-### String Functions
-
-**Field:** `string.length`
-
-| Function | Signature | Description |
-|----------|-----------|-------------|
-| `contains()` | `string.contains(value): boolean` | Check substring |
-| `containsAll()` | `string.containsAll(...values): boolean` | All substrings present |
-| `containsAny()` | `string.containsAny(...values): boolean` | Any substring present |
-| `startsWith()` | `string.startsWith(query): boolean` | Starts with query |
-| `endsWith()` | `string.endsWith(query): boolean` | Ends with query |
-| `isEmpty()` | `string.isEmpty(): boolean` | Empty or not present |
-| `lower()` | `string.lower(): string` | To lowercase |
-| `title()` | `string.title(): string` | To Title Case |
-| `trim()` | `string.trim(): string` | Remove whitespace |
-| `replace()` | `string.replace(pattern, replacement): string` | Replace pattern |
-| `repeat()` | `string.repeat(count): string` | Repeat string |
-| `reverse()` | `string.reverse(): string` | Reverse string |
-| `slice()` | `string.slice(start, end?): string` | Substring |
-| `split()` | `string.split(separator, n?): list` | Split to list |
-
-### Number Functions
-
-| Function | Signature | Description |
-|----------|-----------|-------------|
-| `abs()` | `number.abs(): number` | Absolute value |
-| `ceil()` | `number.ceil(): number` | Round up |
-| `floor()` | `number.floor(): number` | Round down |
-| `round()` | `number.round(digits?): number` | Round to digits |
-| `toFixed()` | `number.toFixed(precision): string` | Fixed-point notation |
-| `isEmpty()` | `number.isEmpty(): boolean` | Not present |
-
-### List Functions
-
-**Field:** `list.length`
-
-| Function | Signature | Description |
-|----------|-----------|-------------|
-| `contains()` | `list.contains(value): boolean` | Element exists |
-| `containsAll()` | `list.containsAll(...values): boolean` | All elements exist |
-| `containsAny()` | `list.containsAny(...values): boolean` | Any element exists |
-| `filter()` | `list.filter(expression): list` | Filter by condition (uses `value`, `index`) |
-| `map()` | `list.map(expression): list` | Transform elements (uses `value`, `index`) |
-| `reduce()` | `list.reduce(expression, initial): any` | Reduce to single value (uses `value`, `index`, `acc`) |
-| `flat()` | `list.flat(): list` | Flatten nested lists |
-| `join()` | `list.join(separator): string` | Join to string |
-| `reverse()` | `list.reverse(): list` | Reverse order |
-| `slice()` | `list.slice(start, end?): list` | Sublist |
-| `sort()` | `list.sort(): list` | Sort ascending |
-| `unique()` | `list.unique(): list` | Remove duplicates |
-| `isEmpty()` | `list.isEmpty(): boolean` | No elements |
-
-### File Functions
-
-| Function | Signature | Description |
-|----------|-----------|-------------|
-| `asLink()` | `file.asLink(display?): Link` | Convert to link |
-| `hasLink()` | `file.hasLink(otherFile): boolean` | Has link to file |
-| `hasTag()` | `file.hasTag(...tags): boolean` | Has any of the tags |
-| `hasProperty()` | `file.hasProperty(name): boolean` | Has property |
-| `inFolder()` | `file.inFolder(folder): boolean` | In folder or subfolder |
-
-### Link Functions
-
-| Function | Signature | Description |
-|----------|-----------|-------------|
-| `asFile()` | `link.asFile(): file` | Get file object |
-| `linksTo()` | `link.linksTo(file): boolean` | Links to file |
-
-### Object Functions
-
-| Function | Signature | Description |
-|----------|-----------|-------------|
-| `isEmpty()` | `object.isEmpty(): boolean` | No properties |
-| `keys()` | `object.keys(): list` | List of keys |
-| `values()` | `object.values(): list` | List of values |
-
-### Regular Expression Functions
-
-| Function | Signature | Description |
-|----------|-----------|-------------|
-| `matches()` | `regexp.matches(string): boolean` | Test if matches |
+See `references/functions.md` for the full function list by type (Global, Any, Date, String, Number, List, File, Link, Object, Regex) and date-arithmetic syntax. Default summary formulas (for `summaries:` blocks) are listed below in this file.
 
 ## View Types
 
@@ -386,142 +257,6 @@ views:
 
 ## Complete Examples
 
-### Task Tracker Base
-
-```yaml
-filters:
-  and:
-    - file.hasTag("task")
-    - 'file.ext == "md"'
-
-formulas:
-  days_until_due: 'if(due, ((date(due) - today()) / 86400000).round(0), "")'
-  is_overdue: 'if(due, date(due) < today() && status != "done", false)'
-  priority_label: 'if(priority == 1, "🔴 High", if(priority == 2, "🟡 Medium", "🟢 Low"))'
-
-properties:
-  status:
-    displayName: Status
-  formula.days_until_due:
-    displayName: "Days Until Due"
-  formula.priority_label:
-    displayName: Priority
-
-views:
-  - type: table
-    name: "Active Tasks"
-    filters:
-      and:
-        - 'status != "done"'
-    order:
-      - file.name
-      - status
-      - formula.priority_label
-      - due
-      - formula.days_until_due
-    groupBy:
-      property: status
-      direction: ASC
-    summaries:
-      formula.days_until_due: Average
-
-  - type: table
-    name: "Completed"
-    filters:
-      and:
-        - 'status == "done"'
-    order:
-      - file.name
-      - completed_date
-```
-
-### Reading List Base
-
-```yaml
-filters:
-  or:
-    - file.hasTag("book")
-    - file.hasTag("article")
-
-formulas:
-  reading_time: 'if(pages, (pages * 2).toString() + " min", "")'
-  status_icon: 'if(status == "reading", "📖", if(status == "done", "✅", "📚"))'
-  year_read: 'if(finished_date, date(finished_date).year, "")'
-
-properties:
-  author:
-    displayName: Author
-  formula.status_icon:
-    displayName: ""
-  formula.reading_time:
-    displayName: "Est. Time"
-
-views:
-  - type: cards
-    name: "Library"
-    order:
-      - cover
-      - file.name
-      - author
-      - formula.status_icon
-    filters:
-      not:
-        - 'status == "dropped"'
-
-  - type: table
-    name: "Reading List"
-    filters:
-      and:
-        - 'status == "to-read"'
-    order:
-      - file.name
-      - author
-      - pages
-      - formula.reading_time
-```
-
-### Project Notes Base
-
-```yaml
-filters:
-  and:
-    - file.inFolder("Projects")
-    - 'file.ext == "md"'
-
-formulas:
-  last_updated: 'file.mtime.relative()'
-  link_count: 'file.links.length'
-  
-summaries:
-  avgLinks: 'values.filter(value.isType("number")).mean().round(1)'
-
-properties:
-  formula.last_updated:
-    displayName: "Updated"
-  formula.link_count:
-    displayName: "Links"
-
-views:
-  - type: table
-    name: "All Projects"
-    order:
-      - file.name
-      - status
-      - formula.last_updated
-      - formula.link_count
-    summaries:
-      formula.link_count: avgLinks
-    groupBy:
-      property: status
-      direction: ASC
-
-  - type: list
-    name: "Quick List"
-    order:
-      - file.name
-      - status
-```
-
 ### Daily Notes Index
 
 ```yaml
@@ -550,6 +285,8 @@ views:
       - formula.word_estimate
       - file.mtime
 ```
+
+See `references/examples.md` for 3 more complete, longer examples: a task tracker, a reading list, and a project notes index.
 
 ## Embedding Bases
 

@@ -25,6 +25,7 @@ Không được tự tuyên bố `done` trong skill này; verdict hoàn tất ch
 - Khi s04-s06 đã đủ điều kiện để đi vào triển khai.
 - Khi cần thêm feature, sửa bug, refactor hoặc chỉnh config/doc đi kèm trong phạm vi đã approve.
 - Khi stack là React web hoặc Next.js và thay đổi chạm server/client split, data fetching, context hoặc loading path, phối hợp thêm `react-web-implementation`.
+- Khi stack là Vue, Angular, Svelte hoặc framework non-React khác: skill này vẫn áp dụng đầy đủ; chưa có skill implementation chuyên biệt cho các stack đó, nên bám theo discipline implementation chung của skill này và ghi rõ khoảng trống thay vì mặc định đã có guide chuyên biệt.
 
 ## Không Thuộc Phạm Vi
 

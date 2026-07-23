@@ -24,6 +24,7 @@ Review frontend quality at the level of user experience and technical heuristic 
 - When `testing` already covers behavior but a conclusion is still needed on accessibility, clarity, usability or frontend performance heuristic.
 - When `code-scan-review` is done but not enough to say the UI actually works well at the user level.
 - When the stack is React or Next.js and screen-level quality review must be separated from React render/data boundary review, combine with `react-best-practices-review`.
+- When the stack is Vue, Angular, Svelte, or another non-React framework: this skill still applies in full for screen-level quality; there is no framework-specific render/data-boundary review skill yet for those stacks, so `code-scan-review`'s static analysis and this skill's `performance_heuristic` gate are the closest available coverage — record the gap in `residual_risks` instead of assuming render-level quality is covered.
 
 ## Out Of Scope
 

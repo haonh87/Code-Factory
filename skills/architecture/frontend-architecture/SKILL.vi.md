@@ -73,7 +73,7 @@ interaction_rules:
     to: ""
     allowed_via: ""
     forbidden_patterns: []
-state_ownership_rules:
+client_state_ownership_rules:
   - state_area: ""
     owner_module: ""
     notes: ""
@@ -90,7 +90,7 @@ notes_for_next_step: ""
 - `flows`: các user journey ghép nhiều module nếu cần orchestration layer.
 - `shared_areas`: vùng dùng chung được phép tồn tại và giới hạn nội dung của từng vùng.
 - `interaction_rules`: quy tắc tương tác được phép giữa module, flow và app shell.
-- `state_ownership_rules`: ownership của từng vùng state quan trọng.
+- `client_state_ownership_rules`: ownership của từng vùng state quan trọng.
 - `routing_rules`: quy tắc gán route cho module hoặc flow.
 - `architecture_risks`: rủi ro nếu boundary, ownership hoặc shared rule bị chọn sai.
 - `notes_for_next_step`: ghi chú chuyển sang `system-design`, `task-breakdown-planner` hoặc `implementation`.
@@ -125,6 +125,7 @@ Chỉ áp dụng mục này khi `frontend_style = MODULE_FIRST` hoặc `MODULE_F
 - Không đặt business rule trong `shared`, `common`, `core`, `app` hoặc utility folder.
 - Không đặt tên module theo concern kỹ thuật như `api`, `modal`, `table`, `hook`, `store`.
 - Nếu cùng một thuật ngữ nghiệp vụ mang nhiều nghĩa theo route hoặc user flow, phải cân nhắc tách module hoặc nâng cấp style.
+- Khi `domain-architecture` đã chạy cho hệ thống này, mỗi giá trị `owner_module` trong `client_state_ownership_rules` phải trace về đúng entry trong `ownership_map` của nó; nếu owner của vùng state không khớp, ghi mismatch vào `architecture_risks` thay vì để lệch âm thầm.
 - Tài liệu phải lưu UTF-8 và không làm hỏng dấu tiếng Việt.
 
 ## Luật Ra Quyết Định
@@ -139,6 +140,6 @@ Chỉ áp dụng mục này khi `frontend_style = MODULE_FIRST` hoặc `MODULE_F
 ## Điều Kiện Hoàn Tất
 
 - Có `frontend_style` và lý do chọn đủ rõ.
-- Có `feature_modules`, `state_ownership_rules` và `routing_rules` đủ để bước sau không bị mơ hồ về ownership.
+- Có `feature_modules`, `client_state_ownership_rules` và `routing_rules` đủ để bước sau không bị mơ hồ về ownership.
 - Có `interaction_rules` và `shared_areas` đủ để kiểm soát import boundary và tái sử dụng.
 - Có `architecture_risks` cho các điểm chưa chốt hoặc còn tranh chấp.

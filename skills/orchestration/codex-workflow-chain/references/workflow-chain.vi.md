@@ -2376,7 +2376,7 @@ shared_areas:
     allowed_contents: []
     forbidden_contents: []
 interaction_rules: []
-state_ownership_rules: []
+client_state_ownership_rules: []
 routing_rules: []
 architecture_risks: []
 notes_for_next_step: ""

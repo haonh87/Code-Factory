@@ -116,6 +116,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 ## Quality Rules
 
 - Each table must have a clear owner in `owner_module`.
+- When `domain-architecture` has already been run for this system, each `owner_module` value must trace back to an entry in its `ownership_map`; if a table's owner does not match, record the mismatch in `design_risks` instead of silently diverging.
 - Do not design cross-domain relationships indiscriminately just for convenient joins.
 - Do not add an index unless it is tied to a concrete query pattern.
 - Do not treat retention as an afterthought; lock it in the design if the data has a clear lifecycle.

@@ -73,7 +73,7 @@ interaction_rules:
     to: ""
     allowed_via: ""
     forbidden_patterns: []
-state_ownership_rules:
+client_state_ownership_rules:
   - state_area: ""
     owner_module: ""
     notes: ""
@@ -90,7 +90,7 @@ notes_for_next_step: ""
 - `flows`: user journeys composing multiple modules when an orchestration layer is needed.
 - `shared_areas`: shared areas allowed to exist and the content limits of each.
 - `interaction_rules`: the allowed interaction rules between modules, flows, and the app shell.
-- `state_ownership_rules`: ownership of each important state area.
+- `client_state_ownership_rules`: ownership of each important state area.
 - `routing_rules`: rules for assigning routes to modules or flows.
 - `architecture_risks`: risks if the boundary, ownership, or shared rule is chosen wrong.
 - `notes_for_next_step`: notes for handing off to `system-design`, `task-breakdown-planner`, or `implementation`.
@@ -125,6 +125,7 @@ Apply this section only when `frontend_style = MODULE_FIRST` or `MODULE_FIRST_WI
 - Do not put business rules in `shared`, `common`, `core`, `app`, or utility folders.
 - Do not name modules by technical concern such as `api`, `modal`, `table`, `hook`, `store`.
 - If the same business term carries multiple meanings by route or user flow, consider splitting the module or upgrading the style.
+- When `domain-architecture` has already been run for this system, each `owner_module` value in `client_state_ownership_rules` must trace back to an entry in its `ownership_map`; if a state area's owner does not match, record the mismatch in `architecture_risks` instead of silently diverging.
 - Store documents as UTF-8 and do not corrupt Vietnamese diacritics in `*.vi.md` supplement files.
 
 ## Decision Rule
@@ -139,6 +140,6 @@ Apply this section only when `frontend_style = MODULE_FIRST` or `MODULE_FIRST_WI
 ## Completion Conditions
 
 - A `frontend_style` and a clear enough reason for the choice.
-- `feature_modules`, `state_ownership_rules`, and `routing_rules` clear enough that the next step is not vague about ownership.
+- `feature_modules`, `client_state_ownership_rules`, and `routing_rules` clear enough that the next step is not vague about ownership.
 - `interaction_rules` and `shared_areas` sufficient to control import boundaries and reuse.
 - `architecture_risks` for points not yet locked or still disputed.

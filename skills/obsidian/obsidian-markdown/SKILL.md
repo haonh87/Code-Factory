@@ -214,32 +214,9 @@ tag:#project status:done
 > > Nested content
 ```
 
-### Supported Callout Types
+### Callout Types
 
-| Type | Aliases | Description |
-|------|---------|-------------|
-| `note` | - | Blue, pencil icon |
-| `abstract` | `summary`, `tldr` | Teal, clipboard icon |
-| `info` | - | Blue, info icon |
-| `todo` | - | Blue, checkbox icon |
-| `tip` | `hint`, `important` | Cyan, flame icon |
-| `success` | `check`, `done` | Green, checkmark icon |
-| `question` | `help`, `faq` | Yellow, question mark |
-| `warning` | `caution`, `attention` | Orange, warning icon |
-| `failure` | `fail`, `missing` | Red, X icon |
-| `danger` | `error` | Red, zap icon |
-| `bug` | - | Red, bug icon |
-| `example` | - | Purple, list icon |
-| `quote` | `cite` | Gray, quote icon |
-
-### Custom Callouts (CSS)
-
-```css
-.callout[data-callout="custom-type"] {
-  --callout-color: 255, 0, 0;
-  --callout-icon: lucide-alert-circle;
-}
-```
+The most common types are `note`, `tip`, `warning`, `success`, and `question`. For the full type/alias table and custom callout CSS, see `references/callouts.md`.
 
 ## Lists
 
@@ -390,54 +367,9 @@ $\int_a^b$         Integral
 $\alpha, \beta$    Greek letters
 ```
 
-## Diagrams (Mermaid)
+## Diagrams And Footnotes
 
-````markdown
-```mermaid
-graph TD
-    A[Start] --> B{Decision}
-    B -->|Yes| C[Do this]
-    B -->|No| D[Do that]
-    C --> E[End]
-    D --> E
-```
-````
-
-### Sequence Diagrams
-
-````markdown
-```mermaid
-sequenceDiagram
-    Alice->>Bob: Hello Bob
-    Bob-->>Alice: Hi Alice
-```
-````
-
-### Linking in Diagrams
-
-````markdown
-```mermaid
-graph TD
-    A[Biology]
-    B[Chemistry]
-    A --> B
-    class A,B internal-link;
-```
-````
-
-## Footnotes
-
-```markdown
-This sentence has a footnote[^1].
-
-[^1]: This is the footnote content.
-
-You can also use named footnotes[^note].
-
-[^note]: Named footnotes still appear as numbers.
-
-Inline footnotes are also supported.^[This is an inline footnote.]
-```
+For Mermaid diagram syntax (flowcharts, sequence diagrams, internal links in diagrams) and footnote syntax, see `references/diagrams-and-extras.md`.
 
 ## Comments
 
@@ -524,91 +456,9 @@ Tags can contain:
 - Hyphens `-`
 - Forward slashes `/` (for nesting)
 
-## HTML Content
+## HTML Content And A Complete Example
 
-Obsidian supports HTML within Markdown:
-
-```markdown
-<div class="custom-container">
-  <span style="color: red;">Colored text</span>
-</div>
-
-<details>
-  <summary>Click to expand</summary>
-  Hidden content here.
-</details>
-
-<kbd>Ctrl</kbd> + <kbd>C</kbd>
-```
-
-## Complete Example
-
-````markdown
----
-title: Project Alpha
-date: 2024-01-15
-tags:
-  - project
-  - active
-status: in-progress
-priority: high
----
-
-# Project Alpha
-
-## Overview
-
-This project aims to [[improve workflow]] using modern techniques.
-
-> [!important] Key Deadline
-> The first milestone is due on ==January 30th==.
-
-## Tasks
-
-- [x] Initial planning
-- [x] Resource allocation
-- [ ] Development phase
-  - [ ] Backend implementation
-  - [ ] Frontend design
-- [ ] Testing
-- [ ] Deployment
-
-## Technical Notes
-
-The main algorithm uses the formula $O(n \log n)$ for sorting.
-
-```python
-def process_data(items):
-    return sorted(items, key=lambda x: x.priority)
-```
-
-## Architecture
-
-```mermaid
-graph LR
-    A[Input] --> B[Process]
-    B --> C[Output]
-    B --> D[Cache]
-```
-
-## Related Documents
-
-- ![[Meeting Notes 2024-01-10#Decisions]]
-- [[Budget Allocation|Budget]]
-- [[Team Members]]
-
-## References
-
-For more details, see the official documentation[^1].
-
-[^1]: https://example.com/docs
-
-%%
-Internal notes:
-- Review with team on Friday
-- Consider alternative approaches
-%%
-````
+Obsidian supports raw HTML within Markdown (`<div>`, `<details>`, `<kbd>`, etc.). For HTML syntax and one fully worked example note combining frontmatter, callouts, tasks, math, Mermaid, embeds, and footnotes, see `references/diagrams-and-extras.md`.
 
 ## References
 

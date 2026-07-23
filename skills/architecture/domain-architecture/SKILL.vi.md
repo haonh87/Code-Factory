@@ -82,7 +82,7 @@ notes_for_next_step: ""
 - `architecture_style`: mức độ áp dụng kiến trúc domain phù hợp với bài toán.
 - `domain_modules`: các module nghiệp vụ chính và trách nhiệm của từng module.
 - `bounded_contexts`: boundary ngôn ngữ và boundary tích hợp nếu cần tách context.
-- `ownership_map`: ai sở hữu logic, dữ liệu và quyết định thay đổi ở từng vùng.
+- `ownership_map`: ai sở hữu logic, dữ liệu và quyết định thay đổi ở từng vùng; đây là trace target cho `owner_module` của `database-design` và `frontend-architecture` khi cả hai skill cùng chạy cho hệ thống này.
 - `interaction_rules`: kênh tương tác được phép giữa các module hoặc context.
 - `layer_rules`: quy tắc phụ thuộc giữa presentation, application, domain và infrastructure.
 - `aggregate_candidates`: gợi ý vùng nghiệp vụ cần xét sâu hơn ở bước thiết kế dữ liệu hoặc mô hình domain.

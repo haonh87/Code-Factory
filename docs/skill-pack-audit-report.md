@@ -16,9 +16,9 @@ Audit date: `2026-07-22`.
 |---|---|---|
 | P0 | 3 | FIXED — commit `6297649` |
 | P1 | 6 | FIXED — commit `72c8f70` |
-| P2 | 7 | OPEN — not started |
+| P2 | 7 | 5 FIXED, 2 NO_CHANGE_NEEDED — not yet committed |
 
-Verification after P0 and after P1: `npm run build:workflow:bundle-runtime` (mirror sync), `npm run validate:workflow:bundle-smoke` (PASS), `npm run validate:workflow:unit` (25/25 PASS), UTF-8 check on every changed `*.vi.md` file, and a `comm` diff confirming all 15 `## Hard Rule` headings in `policies/codex/AGENTS.global.md` exist verbatim somewhere in the skill layer.
+Verification after P0, P1, and P2: `npm run build:workflow:bundle-runtime` (mirror sync), `npm run validate:workflow:bundle-smoke` (PASS), `npm run validate:workflow:unit` (25/25 PASS), UTF-8 check on every changed `*.vi.md` file, and a `comm` diff confirming all 15 `## Hard Rule` headings in `policies/codex/AGENTS.global.md` exist verbatim somewhere in the skill layer.
 
 ## Findings
 
@@ -135,73 +135,87 @@ findings:
     recommendation: "Extract to references/dod-pattern.md and references/module-first-pattern.md (+ .vi.md); leave a conditional pointer in SKILL.md."
   - id: OBS-01
     priority: P2
-    status: OPEN
+    status: FIXED
+    fixed_in: "uncommitted"
     severity: LOW
     area: SKILL
     path: "skills/obsidian/{json-canvas,obsidian-bases,obsidian-markdown}/SKILL.md"
     issue: "3 skills are 600+ lines each with no references/ directory -- the only skills in the repo not using progressive disclosure, despite the pattern being established elsewhere (code-scan-review, deployment-devops, codex-workflow-chain)."
     recommendation: "Extract low-frequency material (Complete Examples, Functions Reference, Callouts/Diagrams tables) into references/; keep SKILL.md to core, high-frequency syntax. Estimated 35-51% size reduction per skill."
+    resolution_note: "json-canvas 643->331 (-49%), obsidian-bases 619->356 (-42%), obsidian-markdown 621->471 (-24%). New references/ files: json-canvas/examples.md; obsidian-bases/{functions,examples}.md; obsidian-markdown/{callouts,diagrams-and-extras}.md. These 3 skills have no SKILL.vi.md sibling by existing convention (unlike the rest of the repo), so the new reference files were kept EN-only to match, not split into .vi.md pairs."
   - id: FE-03
     priority: P2
-    status: OPEN
+    status: FIXED
+    fixed_in: "uncommitted"
     severity: LOW
     area: SKILL
     path: "skills/architecture/frontend-architecture/SKILL.md, skills/architecture/frontend-experience-design/SKILL.md"
     issue: "\"state\" means two different things across the pair: frontend-architecture's state_ownership_rules (module ownership) vs frontend-experience-design's surface_states (loading/empty/error/success) -- same word, different concept."
     recommendation: "Rename one of the two fields to remove the terminology collision."
+    resolution_note: "Renamed frontend-architecture's field to client_state_ownership_rules (SKILL.md + .vi.md, plus the schema-catalog copy in codex-workflow-chain/references/workflow-chain.md + .vi.md). frontend-experience-design's surface_states is unchanged."
   - id: NB-01
     priority: P2
-    status: OPEN
+    status: FIXED
+    fixed_in: "uncommitted"
     severity: LOW
     area: SKILL
     path: "skills/notebooklm/SKILL.md, skills/delivery/frontend-quality-review/SKILL.md, skills/delivery/implementation/SKILL.md"
     issue: "notebooklm has fallback guidance for auth failure but none for MCP/network/uvx failure, despite CLAUDE.md requiring an explicit limitation statement on any tool failure. Separately, React/Next.js is the only framework covered at s07/s08 with no explicit fallback line for Vue/Angular/Svelte."
     recommendation: "Add an MCP/network-failure fallback paragraph to notebooklm; add one non-React fallback line to the React-specific skills' Out Of Scope."
+    resolution_note: "Added a Fallback When Unavailable section to notebooklm/SKILL.md (no .vi.md sibling exists for this skill). Added a non-React fallback bullet to frontend-quality-review and implementation (both SKILL.md + .vi.md)."
   - id: AN-01
     priority: P2
-    status: OPEN
+    status: FIXED
+    fixed_in: "uncommitted"
     severity: LOW
     area: SKILL
     path: "skills/analysis/system-design/SKILL.md"
     issue: "system-design's Mandatory Process re-runs the full option-comparison ritual already performed by brainstorming instead of consuming its locked recommended_option."
     recommendation: "Consume brainstorming's recommended_option directly when present; only re-run comparison if it is missing or weak."
+    resolution_note: "Merged the old steps 2-4 of Mandatory Process into one conditional step: consume option_analysis directly when brainstorming already locked a recommended_option that still fits; only fall back to generating the comparison when it is missing/weak (SKILL.md + .vi.md)."
   - id: AN-02
     priority: P2
-    status: OPEN
+    status: FIXED
+    fixed_in: "uncommitted"
     severity: LOW
     area: SKILL
     path: "skills/analysis/requirement-analysis/SKILL.md"
     issue: "~20% of the file is an illustrative YAML example, not part of the mandatory contract."
     recommendation: "Trim the worked example or move it to a short reference file."
+    resolution_note: "Moved to references/example.md (+ .vi.md); SKILL.md keeps a 2-line pointer. 174->141 lines."
   - id: ARCH-02
     priority: P2
-    status: OPEN
+    status: FIXED
+    fixed_in: "uncommitted"
     severity: LOW
     area: SKILL
     path: "skills/architecture/domain-architecture/SKILL.md, skills/architecture/database-design/SKILL.md, skills/architecture/frontend-architecture/SKILL.md"
     issue: "ownership_map (domain-architecture), owner_module (database-design), and state_ownership_rules (frontend-architecture) are each defined independently with no field forcing them to agree -- a traceability gap, not literal duplication."
     recommendation: "Add a rule requiring owner_module values in database-design/frontend-architecture to trace back to domain-architecture's ownership_map, flagging a mismatch as a design_risk instead of silently allowing drift."
+    resolution_note: "Added the trace-back rule to database-design's and frontend-architecture's Quality Rules (EN+VI), and a one-line cross-reference to domain-architecture's ownership_map description (EN+VI)."
   - id: DEVOPS-03
     priority: P2
-    status: OPEN
+    status: NO_CHANGE_NEEDED
     severity: LOW
     area: DOC
     path: "skills/delivery/{ci-cd-release,containerization-packaging,platform-runtime-deployment,deployment-devops,code-scan-review}/references/*.vi.md"
     issue: "~15 EN/VI reference file pairs (30 files) confirmed as literal line-for-line translations, not drifted -- but this contradicts the project's own stated convention (\"Vietnamese retained as supplementary reference ... Runtime skills are EN-first\")."
     recommendation: "Decide whether to keep full VI reference duplicates or collapse to a single EN reference with a VI pointer, matching the SKILL.md-level convention already used elsewhere."
+    resolution_note: "On review this does NOT contradict the convention: CLAUDE.md explicitly names \"*.vi.md siblings\" as the supplementary-reference mechanism, and every skill added or edited in this repo (including all of P0/P1/P2 above) follows the identical SKILL.md+SKILL.vi.md / references/*.md+*.vi.md pairing. Collapsing DevOps references to EN-only would be inconsistent with the rest of the repo and would reduce VI usability. No change made."
   - id: TAX-01
     priority: P2
-    status: OPEN
+    status: NO_CHANGE_NEEDED
     severity: LOW
     area: SKILL
     path: "skills/notebooklm/"
     issue: "notebooklm sits directly under skills/ with no subfolder, unlike every other skill (analysis/architecture/delivery/guardrails/orchestration/obsidian)."
     recommendation: "Move to a new skills/tooling/ (or skills/integrations/) directory; update any registry/manifest paths that reference the old location."
+    resolution_note: "README.md, README.vi.md, skills/README.md, and skills/README.vi.md all already document this as a deliberate placement (\"top-level integration skill by design ... not belonging solely to analysis, delivery or guardrails\"), not an oversight. A trial git mv to skills/tooling/notebooklm confirmed the move is mechanically safe (sync-workflow-bundle-runtime.js discovers skills via a generic recursive walk, and the Codex flat runtime keys installs by skill name, not source category), but was reverted since moving it would contradict the recorded rationale and just reassign it to a different single category. No change made."
 overall_status: PARTIAL
 follow_up_actions:
-  - "Decide whether to run the P2 batch, and in what order."
-  - "Re-run workflow-pack-audit's new Governance Authority Sync check once more before starting P2, to confirm no other drift was introduced."
-notes: "P0 and P1 are implemented and committed (6297649, 72c8f70). P2 is proposal-only per this repo's AI-proposes-human-approves model; no P2 file has been touched."
+  - "Commit the P2 changes (currently uncommitted) once reviewed."
+  - "Re-run workflow-pack-audit's Governance Authority Sync check once more to confirm no other drift was introduced across P0-P2."
+notes: "P0 and P1 are implemented and committed (6297649, 72c8f70). P2 batch is implemented (5 FIXED, 2 NO_CHANGE_NEEDED after re-review) but not yet committed, pending human review per this repo's AI-proposes-human-approves model."
 ```
 
 ## How To Use This Note

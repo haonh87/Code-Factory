@@ -16,9 +16,9 @@ Ngày audit: `2026-07-22`.
 |---|---|---|
 | P0 | 3 | ĐÃ FIX — commit `6297649` |
 | P1 | 6 | ĐÃ FIX — commit `72c8f70` |
-| P2 | 7 | CÒN MỞ — chưa bắt đầu |
+| P2 | 7 | 5 ĐÃ FIX, 2 NO_CHANGE_NEEDED — chưa commit |
 
-Verify sau P0 và sau P1: `npm run build:workflow:bundle-runtime` (đồng bộ mirror), `npm run validate:workflow:bundle-smoke` (PASS), `npm run validate:workflow:unit` (25/25 PASS), kiểm UTF-8 trên mọi file `*.vi.md` đã sửa, và diff bằng `comm` xác nhận cả 15 heading `## Hard Rule` trong `policies/codex/AGENTS.global.md` đều có mặt nguyên văn ở đâu đó trong tầng skill.
+Verify sau P0, P1 và P2: `npm run build:workflow:bundle-runtime` (đồng bộ mirror), `npm run validate:workflow:bundle-smoke` (PASS), `npm run validate:workflow:unit` (25/25 PASS), kiểm UTF-8 trên mọi file `*.vi.md` đã sửa, và diff bằng `comm` xác nhận cả 15 heading `## Hard Rule` trong `policies/codex/AGENTS.global.md` đều có mặt nguyên văn ở đâu đó trong tầng skill.
 
 ## Findings
 
@@ -135,73 +135,87 @@ findings:
     recommendation: "Tách sang references/dod-pattern.md và references/module-first-pattern.md (+ .vi.md); giữ pointer có điều kiện trong SKILL.md."
   - id: OBS-01
     priority: P2
-    status: OPEN
+    status: FIXED
+    fixed_in: "chưa commit"
     severity: LOW
     area: SKILL
     path: "skills/obsidian/{json-canvas,obsidian-bases,obsidian-markdown}/SKILL.md"
     issue: "3 skill dài 600+ dòng mỗi file, không có thư mục references/ -- 3 skill DUY NHẤT trong repo chưa dùng progressive disclosure, dù pattern này đã thiết lập ở nơi khác (code-scan-review, deployment-devops, codex-workflow-chain)."
     recommendation: "Tách nội dung ít dùng (Complete Examples, Functions Reference, bảng Callouts/Diagrams) sang references/; giữ SKILL.md chỉ còn cú pháp core, tần suất cao. Ước tính giảm 35-51% kích thước mỗi skill."
+    resolution_note: "json-canvas 643->331 (-49%), obsidian-bases 619->356 (-42%), obsidian-markdown 621->471 (-24%). File reference mới: json-canvas/examples.md; obsidian-bases/{functions,examples}.md; obsidian-markdown/{callouts,diagrams-and-extras}.md. 3 skill này vốn không có SKILL.vi.md sibling (khác quy ước phần còn lại của repo), nên file reference mới giữ EN-only để nhất quán, không tách bản .vi.md."
   - id: FE-03
     priority: P2
-    status: OPEN
+    status: FIXED
+    fixed_in: "chưa commit"
     severity: LOW
     area: SKILL
     path: "skills/architecture/frontend-architecture/SKILL.md, skills/architecture/frontend-experience-design/SKILL.md"
     issue: "\"state\" mang 2 nghĩa khác nhau giữa cặp skill: state_ownership_rules của frontend-architecture (module sở hữu state) vs surface_states của frontend-experience-design (loading/empty/error/success) -- cùng từ, khác khái niệm."
     recommendation: "Đổi tên 1 trong 2 field để tránh va chạm thuật ngữ."
+    resolution_note: "Đổi tên field của frontend-architecture thành client_state_ownership_rules (SKILL.md + .vi.md, và bản schema catalog trong codex-workflow-chain/references/workflow-chain.md + .vi.md). surface_states của frontend-experience-design giữ nguyên."
   - id: NB-01
     priority: P2
-    status: OPEN
+    status: FIXED
+    fixed_in: "chưa commit"
     severity: LOW
     area: SKILL
     path: "skills/notebooklm/SKILL.md, skills/delivery/frontend-quality-review/SKILL.md, skills/delivery/implementation/SKILL.md"
     issue: "notebooklm có fallback khi auth lỗi nhưng không có khi MCP/network/uvx lỗi, dù CLAUDE.md yêu cầu rõ phải nêu limitation cho mọi trường hợp tool failure. Riêng biệt, React/Next.js là framework duy nhất có coverage ở s07/s08, chưa có dòng fallback rõ cho Vue/Angular/Svelte."
     recommendation: "Thêm đoạn fallback MCP/network-lỗi cho notebooklm; thêm 1 dòng fallback non-React vào Out Of Scope của các skill React-specific."
+    resolution_note: "Thêm mục Fallback When Unavailable vào notebooklm/SKILL.md (skill này không có bản .vi.md). Thêm dòng fallback non-React vào frontend-quality-review và implementation (cả SKILL.md + .vi.md)."
   - id: AN-01
     priority: P2
-    status: OPEN
+    status: FIXED
+    fixed_in: "chưa commit"
     severity: LOW
     area: SKILL
     path: "skills/analysis/system-design/SKILL.md"
     issue: "Mandatory Process của system-design chạy lại toàn bộ nghi thức so sánh option mà brainstorming đã làm, thay vì tiêu thụ recommended_option đã khoá."
     recommendation: "Tiêu thụ thẳng recommended_option từ brainstorming khi đã có; chỉ chạy lại so sánh khi thiếu hoặc yếu."
+    resolution_note: "Gộp 3 bước cũ (2-4) của Mandatory Process thành 1 bước có điều kiện: tiêu thụ thẳng option_analysis khi brainstorming đã chốt recommended_option còn phù hợp; chỉ tự tạo so sánh khi thiếu/yếu (SKILL.md + .vi.md)."
   - id: AN-02
     priority: P2
-    status: OPEN
+    status: FIXED
+    fixed_in: "chưa commit"
     severity: LOW
     area: SKILL
     path: "skills/analysis/requirement-analysis/SKILL.md"
     issue: "~20% file là ví dụ YAML minh hoạ, không thuộc hợp đồng bắt buộc."
     recommendation: "Cắt bớt ví dụ minh hoạ hoặc chuyển sang file reference ngắn."
+    resolution_note: "Chuyển sang references/example.md (+ .vi.md); SKILL.md chỉ còn pointer 2 dòng. 174->141 dòng."
   - id: ARCH-02
     priority: P2
-    status: OPEN
+    status: FIXED
+    fixed_in: "chưa commit"
     severity: LOW
     area: SKILL
     path: "skills/architecture/domain-architecture/SKILL.md, skills/architecture/database-design/SKILL.md, skills/architecture/frontend-architecture/SKILL.md"
     issue: "ownership_map (domain-architecture), owner_module (database-design) và state_ownership_rules (frontend-architecture) đều được định nghĩa độc lập, không field nào ép chúng phải khớp nhau -- gap traceability, không phải trùng lặp nguyên văn."
     recommendation: "Thêm rule ép giá trị owner_module ở database-design/frontend-architecture phải trace về ownership_map của domain-architecture, flag mismatch thành design_risk thay vì để trôi âm thầm."
+    resolution_note: "Thêm rule trace-back vào Quy Tắc Chất Lượng của database-design và frontend-architecture (EN+VI), và 1 dòng cross-reference vào mô tả ownership_map của domain-architecture (EN+VI)."
   - id: DEVOPS-03
     priority: P2
-    status: OPEN
+    status: NO_CHANGE_NEEDED
     severity: LOW
     area: DOC
     path: "skills/delivery/{ci-cd-release,containerization-packaging,platform-runtime-deployment,deployment-devops,code-scan-review}/references/*.vi.md"
     issue: "~15 cặp reference EN/VI (30 file) được xác nhận là dịch line-for-line, chưa drift -- nhưng đi ngược quy ước đã công bố của project (\"Vietnamese retained as supplementary reference ... Runtime skills are EN-first\")."
     recommendation: "Quyết định giữ nguyên cặp reference VI đầy đủ hay gộp về 1 reference EN kèm pointer VI, khớp quy ước đã dùng ở cấp SKILL.md."
+    resolution_note: "Xem lại thì việc này KHÔNG đi ngược quy ước: CLAUDE.md nêu rõ \"*.vi.md siblings\" chính là cơ chế supplementary-reference, và mọi skill được thêm/sửa trong repo này (kể cả toàn bộ P0/P1/P2 ở trên) đều theo đúng cặp SKILL.md+SKILL.vi.md / references/*.md+*.vi.md. Gộp reference DevOps về EN-only sẽ bất nhất với phần còn lại của repo và giảm khả năng dùng cho người đọc tiếng Việt. Không sửa gì."
   - id: TAX-01
     priority: P2
-    status: OPEN
+    status: NO_CHANGE_NEEDED
     severity: LOW
     area: SKILL
     path: "skills/notebooklm/"
     issue: "notebooklm nằm trực tiếp dưới skills/, không có subfolder, khác mọi skill còn lại (analysis/architecture/delivery/guardrails/orchestration/obsidian)."
     recommendation: "Chuyển sang thư mục skills/tooling/ (hoặc skills/integrations/) mới; cập nhật path trong registry/manifest nếu có tham chiếu tới vị trí cũ."
+    resolution_note: "README.md, README.vi.md, skills/README.md và skills/README.vi.md đều đã ghi rõ đây là vị trí có chủ đích (\"top-level integration skill by design ... không thuộc riêng analysis, delivery hay guardrails\"), không phải oversight. Thử git mv sang skills/tooling/notebooklm xác nhận việc move an toàn về mặt kỹ thuật (sync-workflow-bundle-runtime.js dò skill qua recursive walk chung, và Codex flat runtime key theo skill name chứ không theo category nguồn), nhưng đã revert vì di chuyển sẽ đi ngược lý do đã ghi, chỉ gán nó sang một category đơn lẻ khác. Không sửa gì."
 overall_status: PARTIAL
 follow_up_actions:
-  - "Quyết định có chạy tiếp batch P2 không, và theo thứ tự nào."
-  - "Chạy lại check Governance Authority Sync mới của workflow-pack-audit một lần trước khi bắt đầu P2, để xác nhận không có drift mới phát sinh."
-notes: "P0 và P1 đã implement và commit (6297649, 72c8f70). P2 mới ở giai đoạn đề xuất theo đúng mô hình AI proposes, human approves của repo; chưa có file P2 nào bị đụng tới."
+  - "Commit batch P2 (hiện chưa commit) sau khi review."
+  - "Chạy lại check Governance Authority Sync của workflow-pack-audit một lần nữa để xác nhận không còn drift nào phát sinh qua cả P0-P2."
+notes: "P0 và P1 đã implement và commit (6297649, 72c8f70). Batch P2 đã implement (5 ĐÃ FIX, 2 NO_CHANGE_NEEDED sau khi xem lại) nhưng chưa commit, chờ human review theo đúng mô hình AI proposes, human approves của repo."
 ```
 
 ## Cách Dùng Note Này

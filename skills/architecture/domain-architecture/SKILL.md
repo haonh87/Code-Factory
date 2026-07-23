@@ -82,7 +82,7 @@ notes_for_next_step: ""
 - `architecture_style`: the domain architecture application level fitting the problem.
 - `domain_modules`: the main business modules and each module's responsibilities.
 - `bounded_contexts`: language and integration boundaries when contexts need to be separated.
-- `ownership_map`: who owns the logic, data, and change decisions in each area.
+- `ownership_map`: who owns the logic, data, and change decisions in each area; this is the trace target for `owner_module` in `database-design` and `frontend-architecture` when both skills run for the same system.
 - `interaction_rules`: the allowed interaction channels between modules or contexts.
 - `layer_rules`: dependency rules across presentation, application, domain, and infrastructure.
 - `aggregate_candidates`: hints for areas that need deeper design at the data or domain model step.

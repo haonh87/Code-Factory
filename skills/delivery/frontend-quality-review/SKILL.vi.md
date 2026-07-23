@@ -24,6 +24,7 @@ Rà soát chất lượng frontend ở mức trải nghiệm người dùng và 
 - Khi `testing` đã cover behavior nhưng vẫn cần kết luận thêm về accessibility, clarity, usability hoặc frontend performance heuristic.
 - Khi `code-scan-review` đã xong nhưng chưa đủ để nói UI thực sự ổn ở mức người dùng.
 - Khi stack là React hoặc Next.js và cần tách riêng review screen-level quality với review React render/data boundary, phối hợp thêm `react-best-practices-review`.
+- Khi stack là Vue, Angular, Svelte hoặc framework non-React khác: skill này vẫn áp dụng đầy đủ cho screen-level quality; chưa có skill review render/data-boundary chuyên biệt cho các stack đó, nên static analysis của `code-scan-review` và gate `performance_heuristic` của skill này là coverage gần nhất hiện có — ghi rõ khoảng trống vào `residual_risks` thay vì mặc định render-level quality đã được cover.
 
 ## Không Thuộc Phạm Vi
 

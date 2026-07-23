@@ -116,6 +116,7 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 ## Quy Tắc Chất Lượng
 
 - Mỗi bảng phải có owner rõ trong `owner_module`.
+- Khi `domain-architecture` đã chạy cho hệ thống này, mỗi giá trị `owner_module` phải trace về đúng entry trong `ownership_map` của nó; nếu owner của bảng không khớp, ghi mismatch vào `design_risks` thay vì để lệch âm thầm.
 - Không thiết kế quan hệ chéo domain vô tội vạ chỉ để tiện join.
 - Không thêm index nếu không gắn với query pattern cụ thể.
 - Không coi retention là việc xử lý sau; phải chốt ngay trong design nếu dữ liệu có vòng đời rõ.

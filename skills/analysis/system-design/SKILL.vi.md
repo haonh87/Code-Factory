@@ -108,17 +108,15 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 ## Quy Trình Bắt Buộc
 
 1. Restate `design_problem` từ goal, AC và baseline repo.
-2. Đọc lại `option analysis`; nếu còn yếu, quay lại `brainstorming`.
-3. Đề xuất ít nhất 2 phương án nếu bài toán có nhiều hướng hợp lý.
-4. Nếu hướng làm gần như hiển nhiên, vẫn phải nêu ít nhất 1 hướng thay thế hoặc hướng bị loại.
-5. Áp dụng rule `giải pháp nhỏ nhất đủ đúng`.
-6. Chọn `recommended_design` và nêu `recommendation_reason`.
-7. Ghi `rejected_options` để làm rõ vì sao không chọn hướng còn lại.
-8. Liệt kê `component_changes`, `data_flow`, `interface_changes`.
-9. Mô hình hóa `failure_modes`, `compatibility_impact`, `rollback_impact`, `observability_hooks`.
-10. Ghi `business_rule_trace` để đảm bảo design không đi lệch requirement gốc.
-11. Nếu chạm boundary sâu, mở `specialized_followups` tương ứng.
-12. Ghi `validation_plan` và `notes_for_next_step` để bàn giao sang `task-breakdown-planner`.
+2. Kiểm tra `option_analysis` đầu vào: nếu `brainstorming` đã chốt `recommended_option` với lý do rõ và vẫn phù hợp constraint hiện tại, tiêu thụ thẳng vào `design_options`/`recommended_design`/`recommendation_reason` — không chạy lại nghi thức so sánh ở đây. Chỉ tự tạo so sánh (đề xuất ít nhất 2 phương án nếu bài toán có nhiều hướng hợp lý, hoặc nêu ít nhất 1 hướng thay thế/hướng bị loại nếu hướng làm gần như hiển nhiên) khi `option_analysis` thiếu, yếu hoặc không còn phù hợp; trong trường hợp đó, ưu tiên quay lại `brainstorming` trừ khi gap đủ nhỏ để tự đóng ngay tại đây.
+3. Áp dụng rule `giải pháp nhỏ nhất đủ đúng`.
+4. Chọn `recommended_design` và nêu `recommendation_reason`.
+5. Ghi `rejected_options` để làm rõ vì sao không chọn hướng còn lại.
+6. Liệt kê `component_changes`, `data_flow`, `interface_changes`.
+7. Mô hình hóa `failure_modes`, `compatibility_impact`, `rollback_impact`, `observability_hooks`.
+8. Ghi `business_rule_trace` để đảm bảo design không đi lệch requirement gốc.
+9. Nếu chạm boundary sâu, mở `specialized_followups` tương ứng.
+10. Ghi `validation_plan` và `notes_for_next_step` để bàn giao sang `task-breakdown-planner`.
 
 ## Quy Tắc Chất Lượng
 

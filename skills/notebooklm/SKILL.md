@@ -60,6 +60,15 @@ Run diagnostics when the CLI behaves unexpectedly:
 uvx --from notebooklm-mcp-cli nlm doctor
 ```
 
+## Fallback When Unavailable
+
+If `uvx` is not installed, the network is unreachable, or the MCP server does not respond (not an auth error — see `Auth And Health` for that case):
+
+- Do not retry the same command in a loop; try `nlm doctor` once for a network/env diagnosis, then stop.
+- Fall back to manual research (reading the source docs, repo files, or web pages directly) or another available research tool for the current step.
+- State the limitation clearly in the step's output (for example in `s01`, `s03`, or `s05` notes): what NotebookLM was expected to provide and why it could not run this time.
+- Do not treat a skipped NotebookLM step as a silent pass; a missing corpus lookup is a noted gap, not a completed one.
+
 ## What Tools Exist
 
 These are the core capabilities from the upstream features table:

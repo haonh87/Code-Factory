@@ -108,17 +108,15 @@ If this skill's output is persisted as a `.md` note in the workflow chain:
 ## Mandatory Process
 
 1. Restate `design_problem` from the goal, AC, and repo baseline.
-2. Re-read the `option analysis`; if it is still weak, return to `brainstorming`.
-3. Propose at least 2 options if the problem has multiple reasonable directions.
-4. If the direction is nearly obvious, still state at least 1 alternative or rejected direction.
-5. Apply the `smallest sufficient solution` rule.
-6. Choose the `recommended_design` and state the `recommendation_reason`.
-7. Record `rejected_options` to clarify why the remaining directions were not chosen.
-8. Enumerate `component_changes`, `data_flow`, and `interface_changes`.
-9. Model `failure_modes`, `compatibility_impact`, `rollback_impact`, and `observability_hooks`.
-10. Record `business_rule_trace` to ensure the design does not drift from the original requirement.
-11. If it touches a deep boundary, open the corresponding `specialized_followups`.
-12. Record `validation_plan` and `notes_for_next_step` to hand off to `task-breakdown-planner`.
+2. Check the incoming `option_analysis`: if `brainstorming` already produced a `recommended_option` with a clear reason and it still fits current constraints, consume it directly into `design_options`/`recommended_design`/`recommendation_reason` — do not re-run the comparison ritual here. Only fall back to generating the comparison yourself (propose at least 2 options if the problem has multiple reasonable directions, or state at least 1 alternative/rejected direction if the direction is nearly obvious) when `option_analysis` is missing, weak, or no longer fits; in that case, prefer returning to `brainstorming` unless the gap is small enough to close inline.
+3. Apply the `smallest sufficient solution` rule.
+4. Choose the `recommended_design` and state the `recommendation_reason`.
+5. Record `rejected_options` to clarify why the remaining directions were not chosen.
+6. Enumerate `component_changes`, `data_flow`, and `interface_changes`.
+7. Model `failure_modes`, `compatibility_impact`, `rollback_impact`, and `observability_hooks`.
+8. Record `business_rule_trace` to ensure the design does not drift from the original requirement.
+9. If it touches a deep boundary, open the corresponding `specialized_followups`.
+10. Record `validation_plan` and `notes_for_next_step` to hand off to `task-breakdown-planner`.
 
 ## Quality Rules
 
