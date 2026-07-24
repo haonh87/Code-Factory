@@ -307,7 +307,7 @@ function printHelp() {
       "  version bump    Bump bundle version across all files",
       "  help            Show this help",
       "",
-      "Public v2.3.0 Flow:",
+      "Public v2.3.1 Flow:",
       "  1. wfc install --mode codex --scope global",
       "  2. wfc init",
       "  3. choose one:",

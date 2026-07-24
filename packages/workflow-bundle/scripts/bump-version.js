@@ -5,17 +5,28 @@ const path = require("path");
 
 const SEMVER_RE = /^\d+\.\d+\.\d+$/;
 
-function resolveRepoRoot() {
-  let dir = path.resolve(__dirname);
+function resolveRepoRoot(startDir = __dirname) {
+  // Walk up and return the OUTERMOST directory that holds a
+  // workflow-bundle.manifest.json. The repo ships two manifests — one at the
+  // repo root and one inside packages/workflow-bundle/ — so returning the first
+  // match while walking up from the script dir would resolve to the inner
+  // package and then build doubled-up paths like
+  // packages/workflow-bundle/packages/workflow-bundle/... The repo root is the
+  // topmost manifest, so keep the highest one seen.
+  let dir = path.resolve(startDir);
+  let found = null;
   while (true) {
     if (fs.existsSync(path.join(dir, "workflow-bundle.manifest.json"))) {
-      return dir;
+      found = dir;
     }
     const parent = path.dirname(dir);
     if (parent === dir) break;
     dir = parent;
   }
-  throw new Error("Cannot find repo root (missing workflow-bundle.manifest.json).");
+  if (!found) {
+    throw new Error("Cannot find repo root (missing workflow-bundle.manifest.json).");
+  }
+  return found;
 }
 
 function readJson(filePath) {
@@ -200,3 +211,5 @@ if (require.main === module) {
     process.exit(1);
   }
 }
+
+module.exports = { resolveRepoRoot };

@@ -4,6 +4,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { execFileSync } = require("child_process");
+const { resolveRepoRoot } = require("../scripts/bump-version");
 
 function assert(condition, message) {
   if (!condition) throw new Error(message || "Assertion failed");
@@ -193,6 +194,34 @@ function testSubstringSafety() {
   }
 }
 
+function testResolveRepoRootPrefersOutermostManifest() {
+  // Regression: the repo has a manifest at the root AND a second one inside
+  // packages/workflow-bundle/. resolveRepoRoot() must return the OUTERMOST
+  // (repo root), not stop at the first (inner package) one it meets while
+  // walking up from the script dir. The previous "return first match" bug
+  // resolved to the inner package and then wrote to a doubled-up path.
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "resolve-root-test-"));
+  try {
+    const innerDir = path.join(tempRoot, "packages", "workflow-bundle");
+    const scriptsDir = path.join(innerDir, "scripts");
+    fs.mkdirSync(scriptsDir, { recursive: true });
+    fs.writeFileSync(path.join(tempRoot, "workflow-bundle.manifest.json"), "{}\n", "utf8");
+    fs.writeFileSync(path.join(innerDir, "workflow-bundle.manifest.json"), "{}\n", "utf8");
+
+    const resolvedFromScripts = fs.realpathSync(resolveRepoRoot(scriptsDir));
+    assert(resolvedFromScripts === fs.realpathSync(tempRoot),
+      `resolveRepoRoot from scripts dir should be repo root '${tempRoot}', got '${resolvedFromScripts}'`);
+
+    const resolvedFromInner = fs.realpathSync(resolveRepoRoot(innerDir));
+    assert(resolvedFromInner === fs.realpathSync(tempRoot),
+      `resolveRepoRoot from inner package dir should be repo root '${tempRoot}', got '${resolvedFromInner}'`);
+
+    console.log("  PASS: resolveRepoRoot returns outermost manifest (repo root), not inner package");
+  } finally {
+    fs.rmSync(tempRoot, { recursive: true, force: true });
+  }
+}
+
 function runTests() {
   console.log("Running bump-version tests...\n");
 
@@ -203,6 +232,7 @@ function runTests() {
   testNoOverwriteExistingReleaseNote();
   testRejectPrereleaseSemver();
   testSubstringSafety();
+  testResolveRepoRootPrefersOutermostManifest();
 
   console.log("\nAll bump-version tests passed.");
 }
