@@ -33,7 +33,17 @@ instincts:
 
   - id: smoke-test-version-bump
     trigger: "bumping bundleVersion in manifest"
-    action: "also update version assertion in run-workflow-bundle-smoke.js — smoke test checks the version string directly"
+    action: "use `npm run bump-version -- <ver>`; it updates 11 files including both manifests, package.json, README, .claude/CLAUDE.md, docs version refs, and creates a release-note stub. Do NOT hand-edit version strings. run-workflow-bundle-smoke.js reads bundleVersion dynamically from the manifest and needs no assertion change"
     domain: release
     source: bug-fix
     added: "2026-06-07"
+    revised: "2026-08-14"
+    revision_note: "Original action said the smoke test hardcodes the version string. Verified false at line 103 of run-workflow-bundle-smoke.js: `readJson(...).bundleVersion`. Following the old instinct would send someone hunting for an assertion that does not exist"
+
+  - id: chmod-before-install
+    trigger: "running `wfc install` when a previous install already exists"
+    action: "chmod -R u+w on ~/.claude/policies ~/.codex/policies ~/.claude/skills ~/.codex/skills first. Installed files land at 0444, so copyFileSync on the second install fails with EACCES on the first read-only destination"
+    domain: release
+    source: bug-fix
+    added: "2026-08-14"
+    note: "Sibling of chmod-after-copyfile, seen from the destination side. Hit while installing v2.3.2; the failure names one file, so it reads like a corrupt file rather than a systemic permission issue"

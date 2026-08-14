@@ -186,6 +186,8 @@ Minimum rules for `multi-agent`:
 S1 Clarify
 -> requirement-analysis
 -> product-thinking
+-> sa   (solution + system lens: architecture drivers, runs s01-s04)
+-> ta   (technical lens: quality attribute scenarios with thresholds, runs s01-s04)
 -> output: shared understanding of the request + initial scope frame + initial governance context (restatement-spec + discovery-framing-spec + governance-context when needed)
 
 S2 Business Goal

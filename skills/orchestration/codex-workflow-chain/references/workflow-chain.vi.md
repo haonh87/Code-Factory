@@ -186,6 +186,8 @@ Luật tối thiểu cho `multi-agent`:
 S1 Clarify
 -> requirement-analysis
 -> product-thinking
+-> sa   (góc nhìn solution + system: architecture driver, chạy s01-s04)
+-> ta   (góc nhìn technical: quality attribute scenario có ngưỡng, chạy s01-s04)
 -> output: bản hiểu chung về yêu cầu + khung phạm vi ban đầu + governance context ban đầu (restatement-spec + discovery-framing-spec + governance-context khi cần)
 
 S2 Business Goal
