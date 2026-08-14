@@ -1,0 +1,7 @@
+interface:
+  display_name: "TA — Technical Architect Lens"
+  short_description: "Trích driver kỹ thuật, quality attribute có ngưỡng, ràng buộc tích hợp"
+  default_prompt: "Dùng $ta để biến yêu cầu thành architecture driver kỹ thuật: quality attribute scenario có ngưỡng số, ràng buộc kỹ thuật, thực tế tích hợp và giới hạn hệ cũ, rồi bàn giao cho DEV, QC, DevOps trước khi ai chọn technical approach."
+
+policy:
+  allow_implicit_invocation: true
