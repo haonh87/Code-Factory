@@ -42,7 +42,7 @@ instincts:
 
   - id: chmod-before-install
     trigger: "running `wfc install` when a previous install already exists"
-    action: "chmod -R u+w on ~/.claude/policies ~/.codex/policies ~/.claude/skills ~/.codex/skills first. Installed files land at 0444, so copyFileSync on the second install fails with EACCES on the first read-only destination"
+    action: "chmod -R u+w ~/.claude ~/.codex first — the WHOLE tree, not just skills/ and policies/. Installed files land at 0444. The top-level policy files (~/.claude/CLAUDE.md, ~/.codex/AGENTS.global.md) are written last, so chmod-ing only the subdirectories lets skills install and then fails at the very end, leaving a partial install that still reports matching checksums for skills"
     domain: release
     source: bug-fix
     added: "2026-08-14"
