@@ -128,14 +128,32 @@ nằm ở độ sáng, thứ mà mọi dạng mù màu đều giữ nguyên.
 
 | Kênh | View A — Business Owner | View B — team |
 |---|---|---|
-| Vị trí / nhóm | **domain** | **tags** |
+| Vị trí / nhóm | **domain** | **tags**, trừ đi giá trị mà kênh khác đã mang |
 | Kích thước | *đồng nhất* | *đồng nhất* |
 | Độ sáng | **lifecycle** | *đồng nhất* |
 | Hue | *đồng nhất — một màu xanh* | *đồng nhất* |
-| Hình khối | *đồng nhất — một hình* | **loại phần tử**, tối đa 3 |
+| Hình khối | *đồng nhất — một hình* | **loại phần tử** — chỉ khi có nhiều hơn một loại; không thì đồng nhất |
 | Nét đường | *không vẽ quan hệ kỹ thuật* | **sync / async / tùy chọn** |
 | Viền | *đồng nhất* | **nội bộ / vendor** |
 | Độ dày | *đồng nhất* | *đồng nhất* |
+
+### Hai cái bẫy mà bảng này che mất
+
+Cả hai đều lộ ra khi áp bảng vào một landscape thật, không phải khi đọc bảng.
+
+**Thuộc tính dùng để nhóm có thể lén mang một giá trị mà kênh khác đã sở hữu.** `tags` gồm
+`core / satellite / vendor`. Quy ước nhà đã giao `vendor` cho viền. Nhóm theo `tags` vì thế đặt
+`vendor` lên **cả vị trí** — một thuộc tính, hai kênh, **R2 FAIL**. Xử lý theo R9: quy ước nhà
+thắng, nên `vendor` rời khỏi nhóm và các nhóm còn `core / satellite`. Hệ thống vendor nằm trong nhóm
+mà nó phục vụ, và chỉ được nhận ra bằng viền.
+
+Khái quát lên: **nhóm theo thuộc tính TRỪ ĐI những giá trị mà kênh khác đã mang.**
+
+**Hình khối chỉ được giao việc khi có nhiều hơn một loại phần tử để thể hiện.** Dòng trong bảng đọc
+như thể hình khối luôn có việc. Không phải vậy. Một landscape mà mọi phần tử đều là software system
+thì không còn loại thứ hai nào cho hình khối mang — và phần tử "ngoài" duy nhất thường chính là
+vendor, vốn đã nằm ở viền. Khi đó hình khối rơi về **R3** và phải để đồng nhất. Chỉ giao việc cho
+hình khối khi thật sự có người dùng, data store, hoặc hệ thống ngoài không phải vendor.
 
 View B **cố ý không** đặt `lifecycle` lên độ sáng. Team hỏi "sửa chỗ này thì gãy chỗ nào", không hỏi
 "hệ nào sắp bị bỏ". Mã hoá lifecycle ở đó là R8 theo chiều ngược: nhét thông tin của một câu hỏi khác

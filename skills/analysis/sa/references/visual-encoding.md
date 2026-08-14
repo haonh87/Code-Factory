@@ -132,14 +132,33 @@ information lives in lightness, which every form of CVD preserves.
 
 | Channel | View A — Business Owner | View B — team |
 |---|---|---|
-| Position / grouping | **domain** | **tags** |
+| Position / grouping | **domain** | **tags**, minus any value another channel already carries |
 | Size | *uniform* | *uniform* |
 | Lightness | **lifecycle** | *uniform* |
 | Hue | *uniform — one blue* | *uniform* |
-| Shape | *uniform — one shape* | **element kind**, max 3 |
+| Shape | *uniform — one shape* | **element kind** — only when more than one kind is present; otherwise uniform |
 | Line style | *technical relations not drawn* | **sync / async / optional** |
 | Border | *uniform* | **internal / vendor** |
 | Line weight | *uniform* | *uniform* |
+
+### Two traps this table hides
+
+Both were found by applying the table to a real landscape, not by reading it.
+
+**A grouping attribute can smuggle a value another channel already owns.** `tags` carries
+`core / satellite / vendor`. House convention already assigns `vendor` to the border. Grouping by
+`tags` therefore puts `vendor` on **position as well** — one attribute, two channels, **R2 fails**.
+Resolution under R9: house convention wins, so `vendor` leaves the grouping and the groups become
+`core / satellite`. A vendor system sits in whichever group it serves and is identified by its
+border alone.
+
+Generalise it: **group by the attribute minus any value another channel already carries.**
+
+**Shape is only assigned when there is more than one kind to show.** The row reads as though shape
+always has a job. It does not. A landscape whose elements are all software systems has no second
+kind for shape to carry — and the one "external" element is usually the vendor, already on the
+border. Shape then falls to **R3** and is held uniform. Assign shape only when people, data stores,
+or non-vendor external systems are genuinely present.
 
 View B deliberately does **not** put `lifecycle` on lightness. The team asks "if I change this, what
 breaks", not "which system is being retired". Encoding lifecycle there would be R8 in reverse:
