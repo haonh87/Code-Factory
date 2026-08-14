@@ -22,17 +22,24 @@ skill decides whether a landscape is needed and refuses to accept one that fails
 This section is what you fill it from.
 
 A landscape is a **decision-support artifact**, not a picture of the estate. Every element on it
-should be there because someone would otherwise decide wrong. These are the six decisions a
-landscape actually supports — a valid `question_answered` is an instance of one of them:
+should be there because someone would otherwise decide wrong.
 
-| # | The decision it supports | A `question_answered` that fits |
-|---|---|---|
-| 1 | **Who approves this change** | "Which systems does the order contract change touch, and who owns each?" |
-| 2 | **What breaks if this stops** | "If the invoice provider is down, which flows stall?" |
-| 3 | **How big is this change** | "How many systems and owning teams does adding pre-orders pull in?" |
-| 4 | **Build new or reuse** | "Which system already holds customer contact data?" |
-| 5 | **Where next year's money goes** | "Which systems in this domain are we investing in versus retiring?" |
-| 6 | **Are we talking about the same thing** | "What does the business call this system, and what does the team call it?" |
+It is also the only level that sees what no other level can: **the space between systems**. C4
+Context and below look inside one system; enterprise architecture looks at capabilities. The
+expensive failures in transformation work almost always live in the gap between systems, and the
+landscape is where that gap becomes visible.
+
+These are the six decisions a landscape actually supports — a valid `question_answered` is an
+instance of one of them:
+
+| # | The decision it supports | A `question_answered` that fits | What goes wrong without it |
+|---|---|---|---|
+| 1 | **Who approves this change** | "Which systems does the order contract change touch, and who owns each?" | Two teams write the same data and nobody is accountable when it is wrong |
+| 2 | **What breaks if this stops** | "If the invoice provider is down, which flows stall?" | Incidents cascade in ways nobody predicted |
+| 3 | **How big is this change** | "How many systems and owning teams does adding pre-orders pull in?" | The estimate misses systems, and every plan built on it is wrong |
+| 4 | **Build new or reuse** | "Which system already holds customer contact data?" | Three systems do the same job and none does it well |
+| 5 | **Where next year's money goes** | "Which systems in this domain are we investing in versus retiring?" | Investment follows the loudest voice in the room |
+| 6 | **Are we talking about the same thing** | "What does the business call this system, and what does the team call it?" | Each side means something different, and it surfaces at UAT |
 
 If the question you would write fits none of these, that is a signal — not a reason to invent a
 seventh. Most often it means no landscape is needed and the profile should stay `driver-only`.
@@ -89,6 +96,34 @@ Every check below is a count. "Looks fine" is not a verdict.
 
 Checks 2, 3 and 8 come from `REQ-024`; the rest from `REQ-020`. Element limits in check 6 are
 **reasoned proposals, not measured standards** — treat them as calibration targets, not law.
+
+## Checking By Using It
+
+The eight checks above are **static**: they inspect the drawing. A landscape can pass all eight and
+still be unusable, or still be hiding something. These three tests are **dynamic** — they check the
+drawing by trying to use it.
+
+| Test | How | What it catches that a static check cannot |
+|---|---|---|
+| **Newcomer** | Hand it to someone new and ask them to name the system responsible for one business process | The drawing is correct but **unreadable** |
+| **Incident** | Take a real incident that already happened and trace its path on the map | The map is **hiding a dependency** — the real path is not on it |
+| **Drift** | Compare the model against reality on a fixed cadence | The map is **dead** and nobody noticed |
+
+The incident test is the strongest of the three: it checks the map against something that actually
+happened. No static check can do that. A landscape can score perfectly on all eight counts and still
+omit the shared nightly job that caused last month's outage.
+
+**These three are not a handoff gate.** They need people and elapsed time, so requiring them before
+every drawing would mean they get skipped and then abandoned. Run them on a cadence instead:
+
+| | Static checks (the eight) | Dynamic tests (these three) |
+|---|---|---|
+| When | Every time, before accepting a landscape | Periodically, and after any significant change |
+| Who | The skill, mechanically | People — a newcomer, an incident review, an owner |
+| Blocking | Yes — a failed check blocks acceptance | No — a failure opens a finding, not a stop |
+
+Record dynamic-test results in `metrics` when you run them; record "not run this cycle" rather than
+omitting the row.
 
 ## The Three Checks That Need Explaining
 

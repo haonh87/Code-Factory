@@ -22,17 +22,24 @@ quyết định có cần landscape hay không, và từ chối nhận bản v�
 lấy nội dung để điền.
 
 Landscape là **công cụ hỗ trợ quyết định**, không phải bức ảnh chụp hệ thống. Mỗi phần tử trên đó có
-mặt vì thiếu nó sẽ có người quyết sai. Đây là sáu quyết định mà một landscape thật sự phục vụ — một
-`question_answered` hợp lệ là một trường hợp cụ thể của một trong sáu:
+mặt vì thiếu nó sẽ có người quyết sai.
 
-| # | Quyết định nó phục vụ | Câu `question_answered` khớp |
-|---|---|---|
-| 1 | **Ai duyệt thay đổi này** | "Thay đổi contract đơn hàng chạm những hệ thống nào, mỗi hệ ai sở hữu?" |
-| 2 | **Cái gì hỏng nếu cái này dừng** | "Nhà cung cấp hoá đơn sập thì luồng nào kẹt?" |
-| 3 | **Thay đổi này to cỡ nào** | "Thêm tính năng đặt trước kéo theo bao nhiêu hệ thống và bao nhiêu đội?" |
-| 4 | **Xây mới hay dùng lại** | "Hệ thống nào đang giữ thông tin liên hệ của khách?" |
-| 5 | **Tiền năm sau rót vào đâu** | "Trong miền này, hệ nào đang được đầu tư, hệ nào sắp bỏ?" |
-| 6 | **Có đang nói cùng một thứ không** | "Nghiệp vụ gọi hệ này là gì, còn team gọi nó là gì?" |
+Nó cũng là tầng **duy nhất** nhìn thấy thứ mà không tầng nào khác thấy: **khoảng trống giữa các hệ
+thống**. C4 Context và các tầng dưới nhìn vào bên trong một hệ thống; enterprise architecture nhìn ở
+mức năng lực. Những lỗi đắt tiền trong chuyển đổi số hầu như luôn nằm ở khoảng trống giữa các hệ
+thống, và landscape là chỗ khoảng trống đó hiện ra.
+
+Đây là sáu quyết định mà một landscape thật sự phục vụ — một `question_answered` hợp lệ là một
+trường hợp cụ thể của một trong sáu:
+
+| # | Quyết định nó phục vụ | Câu `question_answered` khớp | Không có nó thì sao |
+|---|---|---|---|
+| 1 | **Ai duyệt thay đổi này** | "Thay đổi contract đơn hàng chạm những hệ thống nào, mỗi hệ ai sở hữu?" | Hai đội cùng ghi một dữ liệu, không ai chịu trách nhiệm khi sai |
+| 2 | **Cái gì hỏng nếu cái này dừng** | "Nhà cung cấp hoá đơn sập thì luồng nào kẹt?" | Sự cố lan truyền theo cách không ai lường trước |
+| 3 | **Thay đổi này to cỡ nào** | "Thêm tính năng đặt trước kéo theo bao nhiêu hệ thống và bao nhiêu đội?" | Ước lượng sót hệ thống, mọi kế hoạch dựng trên đó đều sai |
+| 4 | **Xây mới hay dùng lại** | "Hệ thống nào đang giữ thông tin liên hệ của khách?" | Ba hệ thống cùng làm một việc, không cái nào làm đủ tốt |
+| 5 | **Tiền năm sau rót vào đâu** | "Trong miền này, hệ nào đang được đầu tư, hệ nào sắp bỏ?" | Đầu tư chạy theo tiếng nói to nhất trong phòng họp |
+| 6 | **Có đang nói cùng một thứ không** | "Nghiệp vụ gọi hệ này là gì, còn team gọi nó là gì?" | Mỗi bên hiểu một kiểu, tới UAT mới lộ |
 
 Nếu câu bạn định viết không khớp cái nào trong sáu, đó là một tín hiệu — không phải lý do để bịa ra
 cái thứ bảy. Thường thì nó có nghĩa là không cần landscape, và profile nên giữ ở `driver-only`.
@@ -89,6 +96,34 @@ Mọi mục dưới đây đều là một phép đếm. "Nhìn ổn" không ph�
 
 Mục 2, 3, 8 đến từ `REQ-024`; các mục còn lại từ `REQ-020`. Giới hạn số phần tử ở mục 6 là **đề xuất
 có lập luận, không phải chuẩn đã đo** — coi là đích hiệu chuẩn, không phải luật.
+
+## Kiểm bằng cách dùng thử
+
+Tám mục ở trên là kiểm **tĩnh**: chúng soi chính bản vẽ. Một landscape có thể đạt cả tám mà vẫn
+không dùng được, hoặc vẫn đang giấu thứ gì đó. Ba phép thử dưới đây là kiểm **động** — chúng kiểm
+bản vẽ bằng cách thử dùng nó.
+
+| Phép thử | Cách làm | Bắt được gì mà kiểm tĩnh không bắt được |
+|---|---|---|
+| **Người mới** | Đưa cho một người mới, bảo họ chỉ ra hệ thống chịu trách nhiệm cho một quy trình nghiệp vụ | Bản vẽ đúng nhưng **không đọc được** |
+| **Sự cố** | Lấy một sự cố **đã thật sự xảy ra**, truy đường lan truyền của nó trên bản đồ | Bản đồ đang **giấu một phụ thuộc** — đường lan truyền thật không có trên hình |
+| **Độ lệch** | So model với hiện trạng theo một nhịp cố định | Bản đồ **đã chết** mà không ai để ý |
+
+Phép thử sự cố mạnh nhất trong ba: nó đối chiếu bản đồ với một thứ **đã thật sự xảy ra**. Không phép
+kiểm tĩnh nào làm được điều đó. Một landscape có thể đạt hoàn hảo cả tám phép đếm mà vẫn thiếu đúng
+cái job chạy đêm dùng chung đã gây ra sự cố tháng trước.
+
+**Ba phép thử này KHÔNG phải cổng bàn giao.** Chúng cần người và cần thời gian, nên bắt buộc chạy
+trước mỗi lần vẽ sẽ dẫn tới bị bỏ qua rồi bỏ hẳn. Hãy chạy theo nhịp:
+
+| | Kiểm tĩnh (tám mục) | Kiểm động (ba phép thử) |
+|---|---|---|
+| Khi nào | Mọi lần, trước khi nghiệm thu landscape | Định kỳ, và sau mỗi thay đổi đáng kể |
+| Ai làm | Skill, bằng máy | Người — một người mới, một buổi rà sự cố, một chủ sở hữu |
+| Có chặn không | Có — không đạt là không nghiệm thu | Không — không đạt thì mở một phát hiện, không phải dừng |
+
+Khi có chạy kiểm động, ghi kết quả vào `metrics`; chu kỳ nào không chạy thì ghi "chưa chạy chu kỳ
+này", đừng bỏ dòng.
 
 ## Ba mục cần giải thích thêm
 
