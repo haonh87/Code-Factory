@@ -16,6 +16,50 @@ acceptable to ship — not how to draw one.
 **This skill does not build models and does not draw views.** That is `architecture-modeling`. This
 skill decides whether a landscape is needed and refuses to accept one that fails the bar below.
 
+## What A Landscape Is For
+
+`question_answered` is a required field and the skill refuses to commission a drawing without it.
+This section is what you fill it from.
+
+A landscape is a **decision-support artifact**, not a picture of the estate. Every element on it
+should be there because someone would otherwise decide wrong. These are the six decisions a
+landscape actually supports — a valid `question_answered` is an instance of one of them:
+
+| # | The decision it supports | A `question_answered` that fits |
+|---|---|---|
+| 1 | **Who approves this change** | "Which systems does the order contract change touch, and who owns each?" |
+| 2 | **What breaks if this stops** | "If the invoice provider is down, which flows stall?" |
+| 3 | **How big is this change** | "How many systems and owning teams does adding pre-orders pull in?" |
+| 4 | **Build new or reuse** | "Which system already holds customer contact data?" |
+| 5 | **Where next year's money goes** | "Which systems in this domain are we investing in versus retiring?" |
+| 6 | **Are we talking about the same thing** | "What does the business call this system, and what does the team call it?" |
+
+If the question you would write fits none of these, that is a signal — not a reason to invent a
+seventh. Most often it means no landscape is needed and the profile should stay `driver-only`.
+
+### What A Landscape Is Not For
+
+| Mistaken purpose | Why it fails |
+|---|---|
+| "Draw every system we have" | Complete is the enemy of usable. Eighty boxes get opened once |
+| "Show how it is deployed" | That is a deployment view. Mixing the two ruins both |
+| "Mirror the org chart" | Conway's Law is something to **observe**, not to design from. Drawing by department legitimises the wrong boundary |
+| "Produce it once for project X" | A landscape six months out of date is worse than none, because people still trust it |
+
+### Two Readers, Two Views, One Model
+
+The same landscape serves two audiences asking different questions. Do not merge them into one
+picture; derive both from one model.
+
+| | Business reader | Engineering reader |
+|---|---|---|
+| Their question | "Where is my money going, and what is blocking it?" | "If I change this, what breaks?" |
+| Grouped by | Business domain | System and ownership boundary |
+| Edge labels | "orders flow to the warehouse" | `REST sync`, `Kafka async`, `CDC`, `batch 02:00` |
+| Readable size | ~12 elements. More than that and the reader stops deciding | ~25 elements per domain |
+
+This is `view_axis` in the schema: `domain` for the first, `system` for the second.
+
 ## Format Is Chosen By Diagram Type
 
 | Diagram | Format | Why |

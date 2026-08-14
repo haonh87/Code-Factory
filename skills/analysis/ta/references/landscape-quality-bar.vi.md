@@ -16,6 +16,50 @@ Chỉ đọc file này khi khối `landscape` có `applicable: true`. Nó địn
 **Skill này không dựng model và không vẽ view.** Việc đó là của `architecture-modeling`. Skill này
 quyết định có cần landscape hay không, và từ chối nhận bản vẽ không đạt chuẩn dưới đây.
 
+## Landscape để làm gì
+
+`question_answered` là trường bắt buộc, và skill từ chối đặt vẽ khi nó còn trống. Mục này là chỗ bạn
+lấy nội dung để điền.
+
+Landscape là **công cụ hỗ trợ quyết định**, không phải bức ảnh chụp hệ thống. Mỗi phần tử trên đó có
+mặt vì thiếu nó sẽ có người quyết sai. Đây là sáu quyết định mà một landscape thật sự phục vụ — một
+`question_answered` hợp lệ là một trường hợp cụ thể của một trong sáu:
+
+| # | Quyết định nó phục vụ | Câu `question_answered` khớp |
+|---|---|---|
+| 1 | **Ai duyệt thay đổi này** | "Thay đổi contract đơn hàng chạm những hệ thống nào, mỗi hệ ai sở hữu?" |
+| 2 | **Cái gì hỏng nếu cái này dừng** | "Nhà cung cấp hoá đơn sập thì luồng nào kẹt?" |
+| 3 | **Thay đổi này to cỡ nào** | "Thêm tính năng đặt trước kéo theo bao nhiêu hệ thống và bao nhiêu đội?" |
+| 4 | **Xây mới hay dùng lại** | "Hệ thống nào đang giữ thông tin liên hệ của khách?" |
+| 5 | **Tiền năm sau rót vào đâu** | "Trong miền này, hệ nào đang được đầu tư, hệ nào sắp bỏ?" |
+| 6 | **Có đang nói cùng một thứ không** | "Nghiệp vụ gọi hệ này là gì, còn team gọi nó là gì?" |
+
+Nếu câu bạn định viết không khớp cái nào trong sáu, đó là một tín hiệu — không phải lý do để bịa ra
+cái thứ bảy. Thường thì nó có nghĩa là không cần landscape, và profile nên giữ ở `driver-only`.
+
+### Landscape KHÔNG để làm gì
+
+| Ngộ nhận | Vì sao hỏng |
+|---|---|
+| "Vẽ hết mọi hệ thống đang có" | Đầy đủ là kẻ thù của hữu dụng. Tám mươi ô thì người ta mở đúng một lần |
+| "Cho thấy nó triển khai thế nào" | Đó là deployment view. Trộn hai thứ làm hỏng cả hai |
+| "Vẽ theo sơ đồ tổ chức" | Conway's Law là thứ để **quan sát**, không phải thứ để thiết kế theo. Vẽ theo phòng ban là hợp thức hoá đúng cái ranh giới sai |
+| "Làm một lần cho dự án X" | Landscape lệch thực tế sáu tháng còn tệ hơn không có, vì người ta vẫn tin nó |
+
+### Hai người đọc, hai bản vẽ, một model
+
+Cùng một landscape phục vụ hai đối tượng hỏi hai câu khác nhau. Đừng gộp vào một hình; hãy dẫn xuất
+cả hai từ một model.
+
+| | Người đọc nghiệp vụ | Người đọc kỹ thuật |
+|---|---|---|
+| Câu họ hỏi | "Tiền của tôi nằm ở đâu, cái gì đang cản?" | "Tôi sửa chỗ này thì gãy chỗ nào?" |
+| Nhóm theo | Miền nghiệp vụ | Hệ thống và ranh giới sở hữu |
+| Nhãn trên đường nối | "đơn hàng chuyển sang kho" | `REST sync`, `Kafka async`, `CDC`, `batch 02:00` |
+| Cỡ đọc được | ~12 phần tử. Nhiều hơn là người đọc thôi ra quyết định | ~25 phần tử cho một miền |
+
+Đây chính là `view_axis` trong schema: `domain` cho bản đầu, `system` cho bản sau.
+
 ## Định dạng chọn theo loại bản vẽ
 
 | Loại bản vẽ | Định dạng | Vì sao |
