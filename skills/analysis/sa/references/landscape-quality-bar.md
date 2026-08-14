@@ -79,6 +79,9 @@ This is `view_axis` in the schema: `domain` for the first, `system` for the seco
 asks for one of those in `mermaid`, refuse, state the reason, and propose `drawio`. Producing a
 sub-standard diagram because the caller named the wrong format is worse than producing none.
 
+How each visual channel is allocated — colour, shape, size — is decided before drawing, in
+`visual-encoding.md`. This file judges the result.
+
 ## The Bar — Countable, Not Impressionistic
 
 Every check below is a count. "Looks fine" is not a verdict.

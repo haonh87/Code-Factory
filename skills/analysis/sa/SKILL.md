@@ -219,5 +219,6 @@ binds the system lens: state that a capability needs one owner, not which system
 - `references/metric-table.md` — the nine metrics, their formulas and the pairing rules.
 - `references/block-ownership.md` — which blocks belong to `sa`, to `ta`, or to both.
 - `references/landscape-quality-bar.md` — the eight checks a landscape must pass to be accepted.
+- `references/visual-encoding.md` — which visual channel may carry which attribute, decided before drawing.
 - `references/example.md` — one complete filled artifact, showing quantified, binary and not_quantified drivers side by side.
 - `references/invocation-rules.md` — directive grammar, profile selection, hard escalation and format rules.

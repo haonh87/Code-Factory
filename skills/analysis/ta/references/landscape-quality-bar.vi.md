@@ -79,6 +79,9 @@ cả hai từ một model.
 yêu cầu hai loại đó bằng `mermaid`, hãy từ chối, nêu lý do, và đề xuất `drawio`. Sinh ra bản vẽ dưới
 chuẩn chỉ vì người gọi nêu sai định dạng còn tệ hơn là không sinh gì.
 
+Việc phân bổ từng kênh thị giác — màu, hình khối, kích thước — được quyết trước khi vẽ, ở
+`visual-encoding.md`. File này chấm kết quả.
+
 ## Chuẩn — đếm được, không cảm tính
 
 Mọi mục dưới đây đều là một phép đếm. "Nhìn ổn" không phải một kết luận.

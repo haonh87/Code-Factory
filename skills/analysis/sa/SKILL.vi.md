@@ -214,5 +214,6 @@ ràng buộc cả góc nhìn hệ thống: nói rằng một năng lực cần �
 - `references/metric-table.md` — chín chỉ số, công thức và luật đọc theo cặp.
 - `references/block-ownership.md` — khối nào của `sa`, của `ta`, hay của cả hai.
 - `references/landscape-quality-bar.md` — tám mục kiểm mà một landscape phải qua mới được nhận.
+- `references/visual-encoding.md` — kênh thị giác nào được mang thuộc tính nào, quyết trước khi vẽ.
 - `references/example.md` — một artifact hoàn chỉnh đã điền, cho thấy driver quantified, binary và not_quantified cạnh nhau.
 - `references/invocation-rules.md` — cú pháp chỉ thị, chọn profile, escalation cứng và luật định dạng.
