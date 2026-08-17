@@ -2,7 +2,6 @@
 
 Release candidate prepared: `2026-08-17`
 Planned tag: `v2.4.0`
-Candidate branch: `release/v2.4.0`
 Change: [`CHANGE-002`](../../changes/CHANGE-002/proposal.md)
 Status: `UNPUBLISHED — Release, Business Acceptance, and DoD remain human-controlled gates`
 
@@ -74,7 +73,7 @@ regulated workflow evidence validation, and completes the architecture lane with
 - General-purpose graph layout and arbitrary diagram shapes are outside this release.
 - The host lacks PyYAML, so `skill-creator`'s optional `quick_validate.py` was skipped; the
   dependency-free contract tests and workflow pack audit are the recorded alternative.
-- The host has no configured `eslint` or `semgrep`; native syntax, 33 unit test files, negative
+- The host has no configured `eslint` or `semgrep`; native syntax, 34 unit test files, negative
   fixtures, and diff-aware manual security/performance review are recorded, while the automated
   pre-handoff code-scan verdict remains `PARTIAL`.
 - Tagging, registry publication, live global installation/update, merge, and worktree cleanup are
@@ -91,7 +90,7 @@ regulated workflow evidence validation, and completes the architecture lane with
   draw.io SHA-256 is `1585d15d0a9520e0940fcb389afbc7de6bb22e4ddb6fdb80f16958551017485d`.
 - T6: runtime sync reports 82 generated copies; canonical/Codex/Claude counts are 41/41/41;
   recursive byte equality and `diff -qr` pass; bundle smoke and package dry-run inclusion pass.
-- T8: 33 unit test files, all workflow validator lanes, 13 authoring-smoke cases, 10 governance
+- T8: 34 unit test files, all workflow validator lanes, 13 authoring-smoke cases, 10 governance
   fixtures, pack audit, bundle smoke, UTF-8/JSON/syntax checks, install-all 4/4, and isolated
   v2.3.2 rollback for Codex and Claude pass.
 - The retained tarball filename, SHA-256, package inventory, and source commit are recorded in
@@ -102,10 +101,17 @@ regulated workflow evidence validation, and completes the architecture lane with
 
 - Before Release approval, invalidate and discard the candidate while leaving v2.3.2 as the
   published release; do not tag or publish v2.4.0.
-- Validate v2.3.2 rollback only in isolated Codex and Claude roots and assert unmanaged hashes and
-  modes remain unchanged. Its documented hardened-update permission defect still applies.
-- After publication, rollback must resolve to the retained immutable v2.3.2 artifact or tag, never a
-  convenience tag. Application data is unaffected because this release has no data migration.
+- Before replacing the package, capture `wfc status --mode codex|claude`, the saved scope, and every
+  project root. After publication, rollback must resolve to the retained immutable v2.3.2 artifact
+  or tag, never a convenience tag.
+- Install that v2.3.2 package, then run `wfc install --mode codex|claude --scope global|project|both
+  [--project-root <repo-root>]` for every captured target. Verify `installed_version=2.3.2`, the
+  40-skill inventory, absence of `architecture-modeling`, and unchanged unmanaged hashes/modes.
+- Do not use the v2.3.2 `wfc update` command for this downgrade. The older CLI rejects the newer
+  `architecture-modeling` managed-state entry; v2.3.2 `wfc install` is the tested replacement path.
+- Rehearse only in isolated Codex and Claude roots before touching a live installation because the
+  documented v2.3.2 hardened-update permission defect still applies. Application data is unaffected
+  because this release has no data migration.
 - Keep the implementation branch/worktree until s08 DoD and branch-finish review authorize merge or
   cleanup.
 
@@ -120,7 +126,7 @@ regulated workflow evidence validation, and completes the architecture lane with
 
 - Approved: work item, CHANGE-002, Spec (`ba`), Contract (`developer`), DoR (`qc`), Approach
   (`developer`), and Task Plan (`developer`), each with a digest-matched trusted receipt.
-- Pending: QC first-open of the retained draw.io, T8 integrated Verify evidence, and the human DoD,
-  Release, and Business Acceptance decisions.
+- Pending: QC first-open of the retained draw.io and the human DoD, Release, and Business Acceptance
+  decisions.
 - Do not create `v2.4.0`, publish to a registry, update live global installations, merge, or clean
   the worktree until the corresponding human-controlled gate authorizes that action.

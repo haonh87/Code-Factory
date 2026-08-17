@@ -6,9 +6,9 @@ language: en
 
 > Vietnamese: README.vi.md
 
-This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The current public release is `workflow-bundle v2.4.0`: an installable workflow bundle for Codex and Claude Code that lets the agent proactively propose `work-item` and `change`, while the human retains approval authority at the gates before delivery proceeds.
+This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.4.0`: an installable workflow bundle for Codex and Claude Code that lets the agent proactively propose `work-item` and `change`, while the human retains approval authority at the gates before delivery proceeds. It remains unpublished until the human Release gate passes.
 
-When sharing with new users, use the `v2.4.0` tag or the `release/v2.4.0` branch as the canonical public reference instead of the working tree. The tag and publication remain blocked until the human Release gate passes.
+Until that gate passes, treat the candidate source commit and retained candidate digest in CHANGE-002 as the release-candidate references. Create and share the `v2.4.0` tag only after Release approval.
 
 > Looking for the community-facing English overview? See [`docs/release/community-pack-readme.md`](docs/release/community-pack-readme.md) (Vietnamese: [`docs/release/community-pack-readme.vi.md`](docs/release/community-pack-readme.vi.md)).
 
@@ -22,7 +22,7 @@ When sharing with new users, use the `v2.4.0` tag or the `release/v2.4.0` branch
 
 ## Start Here
 
-If you are approaching the repo for the first time and want to follow the `v2.4.0` public release:
+If you are approaching the repo for the first time and want to review the `v2.4.0` release candidate:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)

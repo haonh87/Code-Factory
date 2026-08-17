@@ -267,6 +267,7 @@ function testHardenedManagedDestinationsRecoverWithoutTouchingUnmanagedFiles() {
     const projectDest = path.join(projectRoot, "AGENTS.md");
     const supportSource = path.join(base, "support-source");
     const supportDest = path.join(runtimeHome, "policies");
+    const unmanagedSupportFile = path.join(supportDest, "unmanaged-inside.keep");
 
     fs.mkdirSync(path.join(sourceSkill, "references"), { recursive: true });
     fs.writeFileSync(path.join(sourceSkill, "SKILL.md"), "new skill\n");
@@ -283,6 +284,7 @@ function testHardenedManagedDestinationsRecoverWithoutTouchingUnmanagedFiles() {
     fs.writeFileSync(path.join(supportSource, "rule.md"), "new rule\n");
     fs.mkdirSync(supportDest, { recursive: true });
     fs.writeFileSync(path.join(supportDest, "rule.md"), "old rule\n");
+    fs.writeFileSync(unmanagedSupportFile, "user-owned support policy sibling\n");
 
     const bundlePaths = {
       managedSkillsManifestPath: path.join(runtimeHome, ".managed.txt"),
@@ -305,9 +307,14 @@ function testHardenedManagedDestinationsRecoverWithoutTouchingUnmanagedFiles() {
     [path.join(managedSkill, "references"), managedSkill, skillsHome, supportDest, runtimeHome, projectRoot]
       .forEach((dirPath) => fs.chmodSync(dirPath, 0o555));
     fs.chmodSync(unmanagedFile, 0o440);
+    fs.chmodSync(unmanagedSupportFile, 0o440);
     const unmanagedBefore = {
       digest: digestFile(unmanagedFile),
       mode: fs.statSync(unmanagedFile).mode & 0o777
+    };
+    const unmanagedSupportBefore = {
+      digest: digestFile(unmanagedSupportFile),
+      mode: fs.statSync(unmanagedSupportFile).mode & 0o777
     };
 
     assertDoesNotThrow(
@@ -351,6 +358,14 @@ function testHardenedManagedDestinationsRecoverWithoutTouchingUnmanagedFiles() {
     assert(fs.readFileSync(path.join(supportDest, "rule.md"), "utf8") === "new rule\n", "support policy content updated");
     assert(digestFile(unmanagedFile) === unmanagedBefore.digest, "unmanaged file digest remains unchanged");
     assert((fs.statSync(unmanagedFile).mode & 0o777) === unmanagedBefore.mode, "unmanaged file mode remains unchanged");
+    assert(
+      digestFile(unmanagedSupportFile) === unmanagedSupportBefore.digest,
+      "unmanaged file inside the managed policies tree keeps its digest"
+    );
+    assert(
+      (fs.statSync(unmanagedSupportFile).mode & 0o777) === unmanagedSupportBefore.mode,
+      "unmanaged file inside the managed policies tree keeps its mode"
+    );
     console.log("  PASS: hardened managed destinations recover without mutating unmanaged content or mode");
   } finally {
     chmodTreeWritable(base);

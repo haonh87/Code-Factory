@@ -118,15 +118,16 @@ function runHardenedUpdateMatrix({ wfcBin, tempRoot, skills = ["codex-workflow-c
       const unmanagedHome = path.join(runtimeHome, "unmanaged.keep");
       fs.writeFileSync(unmanagedHome, `${mode}-${scope}-home\n`);
       fs.chmodSync(unmanagedHome, 0o440);
-      const unmanagedPaths = [unmanagedHome];
+      const unmanagedPolicy = path.join(runtimeHome, "policies", "codex", "unmanaged-inside.keep");
+      fs.writeFileSync(unmanagedPolicy, `${mode}-${scope}-policy\n`);
+      fs.chmodSync(unmanagedPolicy, 0o440);
+      const unmanagedPaths = [unmanagedHome, unmanagedPolicy];
       if (scope === "project") {
         const unmanagedProject = path.join(projectRoot, "unmanaged.keep");
         fs.writeFileSync(unmanagedProject, `${mode}-${scope}-project\n`);
         fs.chmodSync(unmanagedProject, 0o440);
         unmanagedPaths.push(unmanagedProject);
       }
-      const unmanagedBefore = unmanagedPaths.map(fileSnapshot);
-
       if (skills.length === 0) {
         hardenManagedTree(path.join(runtimeHome, "skills"));
       } else {
@@ -143,6 +144,8 @@ function runHardenedUpdateMatrix({ wfcBin, tempRoot, skills = ["codex-workflow-c
       }
       fs.chmodSync(path.join(runtimeHome, "skills"), 0o555);
       fs.chmodSync(runtimeHome, 0o555);
+      unmanagedPaths.forEach((filePath) => fs.chmodSync(filePath, 0o440));
+      const unmanagedBefore = unmanagedPaths.map(fileSnapshot);
 
       runNodeScriptCaptureOutput(
         wfcBin,

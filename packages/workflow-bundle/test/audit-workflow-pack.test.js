@@ -112,6 +112,13 @@ function testRealRepoNotFailing() {
   const repoRoot = path.resolve(__dirname, "../../..");
   const result = auditWorkflowPack({ repoRoot });
   const failing = result.checks.filter((c) => c.status === "FAIL");
+  const architectureModelingIntegration = result.checks.find(
+    (check) => check.id === "workflow_skill_integration::architecture-modeling"
+  );
+  assert(
+    architectureModelingIntegration && architectureModelingIntegration.status === "PASS",
+    "real repo audit must prove architecture-modeling is mapped into s05 routing, template, and schema catalog"
+  );
   assert(
     result.overall !== "FAIL",
     `real repo audit must not FAIL; failing checks: ${failing.map((c) => c.id + " (" + c.evidence + ")").join(" | ")}`

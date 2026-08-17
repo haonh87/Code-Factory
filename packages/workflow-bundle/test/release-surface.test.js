@@ -48,14 +48,13 @@ assert(packageJson.version === releaseVersion, `package version must be ${releas
 assert(read("packages/workflow-bundle/bin/wfc.js").includes(`Public ${releaseLabel} Flow:`), "wfc help must name the v2.4.0 flow");
 
 const publicClaims = [
-  ["README.md", `current public release is \`workflow-bundle ${releaseLabel}\``],
-  ["README.md", `use the \`${releaseLabel}\` tag or the \`release/${releaseLabel}\` branch`],
-  ["packages/workflow-bundle/README.md", `\`${releaseLabel}\` public release`],
+  ["README.md", `prepared release candidate is \`workflow-bundle ${releaseLabel}\``],
+  ["README.md", `remains unpublished until the human Release gate passes`],
+  ["packages/workflow-bundle/README.md", `prepared for the \`${releaseLabel}\` release candidate`],
   ["packages/workflow-bundle/README.md", `## What \`${releaseLabel}\` Includes`],
-  ["docs/publish-surface.md", `pins the public publish surface for \`workflow-bundle ${releaseLabel}\``],
-  ["docs/publish-surface.md", `\`${releaseLabel}\` is the current public release`],
-  ["docs/publish-surface.md", `Tag: \`${releaseLabel}\``],
-  ["docs/publish-surface.md", `Branch: \`release/${releaseLabel}\``],
+  ["docs/publish-surface.md", `pins the planned public publish surface for \`workflow-bundle ${releaseLabel}\``],
+  ["docs/publish-surface.md", `\`${releaseLabel}\` is a release candidate`],
+  ["docs/publish-surface.md", `remains unpublished until the human Release gate passes`],
   ["docs/workflow-docs-map.md", `\`workflow-bundle ${releaseLabel}\``],
   ["docs/workflow-bundle-quickstart.md", `\`workflow-bundle ${releaseLabel}\``]
 ];
@@ -84,8 +83,42 @@ if (fs.existsSync(path.join(repoRoot, releaseNotePath))) {
     "## Rollback",
     "## Release Gates"
   ].forEach((claim) => assert(releaseNote.includes(claim), `${releaseNotePath} missing '${claim}'`));
+  assert(!releaseNote.includes("Candidate branch: `release/v2.4.0`"), "release note must not claim a branch that does not exist");
+  assert(!releaseNote.includes("T8 integrated Verify evidence"), "release note must not mark T8 passed and pending at the same time");
+  assert(releaseNote.includes("Do not use the v2.3.2 `wfc update` command for this downgrade"), "release note must document the executable rollback command boundary");
   assert(!/(?:\(điền\)|\bTODO\b|\bTBD\b|là \.\.\.)/i.test(releaseNote), "v2.4.0 release note must be placeholder-free");
 }
+
+assert(!read("README.md").includes("current public release is `workflow-bundle v2.4.0`"), "root README must not call an unpublished candidate current");
+assert(!read("packages/workflow-bundle/README.md").includes("`v2.4.0` public release"), "package README must not call an unpublished candidate public");
+assert(!read("docs/publish-surface.md").includes("`v2.4.0` is the current public release"), "publish surface must not call an unpublished candidate current");
+[
+  "README.md",
+  "docs/workflow-docs-map.md",
+  "docs/workflow-bundle-quickstart.md",
+  "docs/publish-surface.md",
+  "packages/workflow-bundle/README.md"
+].forEach((file) => {
+  const text = read(file);
+  [
+    "`v2.4.0` public release",
+    "`v2.4.0` is the current public release",
+    "public release `workflow-bundle v2.4.0`",
+    "current public release is `workflow-bundle v2.4.0`"
+  ].forEach((claim) => assert(!text.includes(claim), `${file} must not contain unpublished-release claim '${claim}'`));
+});
+
+const guardrailsWorkflow = read(".github/workflows/workflow-guardrails.yml");
+[
+  "release-candidate:",
+  '- "18"',
+  '- "22"',
+  "npm run validate:workflow:unit",
+  "npm run validate:workflow:pack-audit",
+  "npm run validate:workflow:bundle-smoke",
+  "npm run validate:workflow:release-candidate",
+  "fetch-depth: 0"
+].forEach((claim) => assert(guardrailsWorkflow.includes(claim), `.github/workflows/workflow-guardrails.yml missing '${claim}'`));
 
 const priorRelease = read("docs/releases/workflow-bundle-v2.3.2.md");
 assert(

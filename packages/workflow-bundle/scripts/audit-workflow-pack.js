@@ -25,6 +25,24 @@ const ROUTER_EXCEPTION_RULES = [
   "Generic Coding Defaults Do Not Open A Gate"
 ];
 
+const WORKFLOW_SKILL_INTEGRATION_CONTRACTS = [
+  {
+    skillName: "architecture-modeling",
+    step: "s05",
+    skillMarkers: [
+      "use `architecture-modeling` after system/domain boundaries are known"
+    ],
+    markers: [
+      "-> when needed: domain-architecture | architecture-modeling",
+      "or `architecture-modeling` or `frontend-architecture`",
+      "including `architecture-modeling`",
+      "# add `architecture-modeling` when deriving governed architecture views",
+      "# `architecture-modeling`",
+      "### `architecture-modeling`"
+    ]
+  }
+];
+
 // ---------------------------------------------------------------------------
 // Frontmatter parsing (field-order independent, YAML-scalar aware)
 // ---------------------------------------------------------------------------
@@ -298,6 +316,23 @@ function auditWorkflowPack({ repoRoot }) {
       const found = marker.re.test(chainText);
       add(`workflow_marker::${marker.id}`, found ? "PASS" : "FAIL", found ? "found" : "missing");
     }
+
+    for (const contract of WORKFLOW_SKILL_INTEGRATION_CONTRACTS) {
+      if (!skillDirByName[contract.skillName]) continue;
+      const chainSkillPath = path.join(repo, "skills/orchestration/codex-workflow-chain/SKILL.md");
+      const chainSkillText = fs.existsSync(chainSkillPath) ? fs.readFileSync(chainSkillPath, "utf8") : "";
+      const missing = [
+        ...contract.markers.filter((marker) => !chainText.includes(marker)),
+        ...contract.skillMarkers.filter((marker) => !chainSkillText.includes(marker))
+      ];
+      add(
+        `workflow_skill_integration::${contract.skillName}`,
+        missing.length === 0 ? "PASS" : "FAIL",
+        missing.length === 0
+          ? `${contract.step} backbone routing, required-block mapping, template, and schema catalog are present`
+          : `Missing ${contract.step} integration marker(s): ${missing.join(" | ")}`
+      );
+    }
   }
 
   // ----- Hard Rule heading equality (with router exception) -----
@@ -426,5 +461,6 @@ module.exports = {
   isSkillRelativeReference,
   extractReferenceTokens,
   auditWorkflowPack,
-  ROUTER_EXCEPTION_RULES
+  ROUTER_EXCEPTION_RULES,
+  WORKFLOW_SKILL_INTEGRATION_CONTRACTS
 };

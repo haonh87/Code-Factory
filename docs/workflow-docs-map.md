@@ -10,7 +10,7 @@ This document separates the public onboarding path of `workflow-bundle v2.4.0` f
 
 ## Public Onboarding Docs
 
-This is the set to read when starting with the `v2.4.0` public release.
+This is the set to read when reviewing the `v2.4.0` release candidate.
 
 1. [`../README.md`](../README.md)
 2. [`publish-surface.md`](publish-surface.md)

@@ -923,12 +923,14 @@ function copyTreeContents(sourceRoot, destinationRoot, excludedFileNames) {
     }
 
     if (entry.isDirectory()) {
+      prepareManagedPathForWrite(destinationPath);
       ensureDirectory(destinationPath);
       copyTreeContents(sourcePath, destinationPath, excludedFileNames);
       return;
     }
 
     if (entry.isFile()) {
+      prepareManagedPathForWrite(destinationPath);
       ensureDirectory(path.dirname(destinationPath));
       fs.copyFileSync(sourcePath, destinationPath);
     }
@@ -940,7 +942,7 @@ function syncSupportPolicies({ supportPoliciesSourceRoot, supportPoliciesDestRoo
     return "";
   }
 
-  prepareManagedPathForWrite(supportPoliciesDestRoot, { recursive: true });
+  prepareManagedPathForWrite(supportPoliciesDestRoot);
   ensureDirectory(supportPoliciesDestRoot);
   copyTreeContents(supportPoliciesSourceRoot, supportPoliciesDestRoot, new Set(normalizeArray(excludedFileNames)));
   return supportPoliciesDestRoot;
