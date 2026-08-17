@@ -585,14 +585,14 @@ bootstrap_reviewed_at: ""
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "stabilize-architecture-skill-bundle"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/stabilize-architecture-skill-bundle"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - ".claude/worktrees/stabilize-architecture-skill-bundle-v2.4.0"
   - "work-items/stabilize-architecture-skill-bundle"
@@ -608,13 +608,12 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-14T14:04:13.699Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-08-14T14:56:00.220Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-08-17T11:19:42.182Z"
 required_actions:
-  - "Continue active execution from step 7 onward."
-blockers:
-  - "Task Plan trusted receipt has not passed"
+  - "Archive the work item when all downstream lifecycle actions are complete."
+blockers: []
 review_notes:
   - "Human review approved."
 refs:
@@ -638,6 +637,8 @@ audit_events:
   - "TASK_PLAN_DRAFTED"
   - "TASK_PLAN_REVIEWED"
   - "WORK_ITEM_ACTIVATED"
+  - "VERIFICATION_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Traceability

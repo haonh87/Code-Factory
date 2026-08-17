@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Create one corrective v2.4.0 release that fixes all reviewed v2.3.2 findings and adds architecture-modeling to both bundle runtimes with drawio contract compatibility.",
@@ -78,7 +78,7 @@
   "work_item_type": "CHANGE",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/stabilize-architecture-skill-bundle",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     ".claude/worktrees/stabilize-architecture-skill-bundle-v2.4.0",
     "work-items/stabilize-architecture-skill-bundle",
@@ -86,9 +86,9 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CHANGE-002",
-  "handoff_target": "step-s07-owner",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
-    "Continue active execution from step 7 onward."
+    "Archive the work item when all downstream lifecycle actions are complete."
   ],
   "blockers": [],
   "refs": [
@@ -112,7 +112,9 @@
     "APPROACH_GATE_APPROVED",
     "TASK_PLAN_DRAFTED",
     "TASK_PLAN_REVIEWED",
-    "WORK_ITEM_ACTIVATED"
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -157,6 +159,22 @@
       "from_status": "MATERIALIZED",
       "to_status": "ACTIVE",
       "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-08-17T10:56:59.483Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "QC first-open passed; AC-001 through AC-010 have verification evidence. Final human-controlled gates remain pending."
+    },
+    {
+      "timestamp": "2026-08-17T11:19:42.182Z",
+      "action": "close",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "DoD, Release, and Business Acceptance receipts are APPROVED and digest-matched; the work item is closed at the delivery level."
     }
   ]
 }

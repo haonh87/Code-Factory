@@ -99,7 +99,7 @@ replacement_evidence: "CHANGE-002 AC-004 and the T3 inconsistent-coverage negati
 ```yaml
 artifact_ref: "work-items/arch-role-skills-release/arch-role-skills-release.s08.verification.md"
 preserved_sha256: "345e9a7a75883f02848ba7086f6dc16020ce89375f69c3dd8d2e7f1ce8159253"
-correction_status: QUARANTINED_UNTIL_T8
+correction_status: QUARANTINED_PENDING_HUMAN_GATES
 claims_not_reusable:
   - "Repeat install/update safety, because v2.3.2 can fail against hardened managed content."
   - "Release completeness based only on a 40-skill runtime count."
@@ -108,6 +108,19 @@ required_replacement:
   - "T1 four-scenario hardened update evidence with unchanged unmanaged hashes and modes."
   - "T6 41-skill canonical/runtime equality evidence."
   - "T8 integrated verification and human-controlled Release/DoD receipts."
+replacement_candidate:
+  artifact_ref: ".claude/worktrees/stabilize-architecture-skill-bundle-v2.4.0/packages/workflow-bundle/workflow-bundle-2.4.0.tgz"
+  source_commit: "e6190bd14b4f0156b159c23de2df850c401745d9"
+  sha256: "44f40296f2c3b0494ac84414c26c743c9cc3e91cb8caa54dfb8c41f33fb2db3e"
+  size_bytes: 886190
+  archive_entries: 518
+  runtime_skill_counts: {codex: 41, claude: 41}
+  exact_artifact_smoke: "PASS: wfc version=2.4.0; Codex/Claude x global/project=4/4; managed skills=41; unmanaged snapshots unchanged"
+  supersedes:
+    source_commit: "70617402c34deb20396c0e76b2d54993fad4d9fa"
+    sha256: "aee0fa0943603b2d14a6cdb8440b82872c37d0bee3435e593073dac098070f1b"
+    reason: "Post-review corrective source changes invalidated the prior candidate before any Release approval or publication."
+  status: "UNPUBLISHED_PENDING_HUMAN_GATES"
 ```
 
 ## Protocol State Correction
