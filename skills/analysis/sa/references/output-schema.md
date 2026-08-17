@@ -53,7 +53,7 @@ drivers:
       traces_to: []                  # OBJ ids. Empty = this driver serves no stated objective;
                                      # it must then appear in input_issues.untraceable_drivers
       threshold:
-        status: quantified|not_quantified
+        status: quantified|binary|not_quantified
         value: ""
         reason: ""                   # required when not_quantified
       verification: ""               # how it will be checked later
@@ -86,8 +86,10 @@ input_issues:                        # mandatory at every profile — never appl
 
 metrics:
   applicable: true|false
-  items:
+  items:                              # exactly M-01 through M-10, never fewer
     - id: M-01
+      applicable: true|false
+      reason: ""                      # required when applicable = false
       name: ""
       formula: ""
       value: ""
@@ -100,7 +102,7 @@ handoff:
   to_dev:   { applicable: true|false, reason: "", items: [] }   # shared: sa gives boundary
                                                                  # constraints, ta gives technical ones
   to_qc:    { applicable: true|false, reason: "", items: [] }
-  to_devops:{ applicable: true|false, reason: "", items: [] }
+  to_devops: { applicable: true|false, reason: "", items: [] }
 
 stop_condition:
   met: true|false

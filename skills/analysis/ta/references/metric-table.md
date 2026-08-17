@@ -15,7 +15,7 @@ never the person who ran it.
 
 ## What Each Metric Row Must Carry
 
-A metric is only complete when all three parts are present. A metric missing any part fails the
+A metric is only complete when all five parts are present. A metric missing any part fails the
 skill's own gate — this is the contract from `REQ-006`.
 
 | Part | Meaning | Failure if missing |
@@ -23,6 +23,8 @@ skill's own gate — this is the contract from `REQ-006`.
 | `formula` | How the number is computed, as a ratio or count | Reader cannot reproduce the number |
 | `value` | The computed result on this run | Metric is decorative |
 | `evidence` | Pointer to the exact rows in the output the number came from | Number cannot be audited |
+| `threshold` | The declared pass target or comparison boundary | A result cannot be interpreted |
+| `calibration` | Whether the threshold is calibrated against delivery data | Proposal can be mistaken for an observed standard |
 
 ## The Metrics
 

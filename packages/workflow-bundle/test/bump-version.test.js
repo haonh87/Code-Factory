@@ -131,18 +131,20 @@ function testSuccessfulBump() {
     assert(!wfcContent.includes("v1.0.0"), "wfc.js help text should not have v1.0.0");
 
     const claudeMd = fs.readFileSync(path.join(tempRoot, ".claude", "CLAUDE.md"), "utf8");
-    assert(claudeMd.includes("v2.0.0") && !claudeMd.includes("v1.0.0"), ".claude/CLAUDE.md should have v2.0.0");
+    assert(claudeMd.includes("v1.0.0") && !claudeMd.includes("v2.0.0"), ".claude/CLAUDE.md must require manual release review");
 
     const readme = fs.readFileSync(path.join(tempRoot, "README.md"), "utf8");
-    assert(readme.includes("v2.0.0") && !readme.includes("v1.0.0"), "README.md should have v2.0.0");
+    assert(readme.includes("v1.0.0") && !readme.includes("v2.0.0"), "README.md must not be blindly rewritten");
+    assert(output.includes("Manual review required"), "Output should identify public docs as a manual review boundary");
 
     const releaseNotePath = path.join(tempRoot, "docs", "releases", "workflow-bundle-v2.0.0.md");
     assert(fs.existsSync(releaseNotePath), "Release note stub should be created");
     const releaseNote = fs.readFileSync(releaseNotePath, "utf8");
     assert(releaseNote.includes("v2.0.0"), "Release note should mention v2.0.0");
     assert(releaseNote.includes("v1.0.0"), "Release note should mention previous v1.0.0");
+    assert(!/\(điền|TODO|TBD|\.\.\./i.test(releaseNote), "Generated release note must not contain placeholders");
 
-    console.log("  PASS: successful bump updates all core + doc files + creates release note stub");
+    console.log("  PASS: successful bump updates structured metadata and creates a reviewed-boundary release note");
   } finally {
     fs.rmSync(tempRoot, { recursive: true, force: true });
   }
@@ -174,21 +176,22 @@ function testRejectPrereleaseSemver() {
   }
 }
 
-function testSubstringSafety() {
+function testDoesNotBlindlyRewritePublicDocs() {
   const tempRoot = createTempRepo();
   try {
-    // Write a doc file that contains the old version as part of a longer version
-    // e.g., "v1.0.0" inside "v1.0.01" should NOT be replaced
-    fs.writeFileSync(path.join(tempRoot, "README.md"), "Release v1.0.01 and v1.0.0.\n", "utf8");
+    const historicalContent = [
+      "Current release v1.0.0.",
+      "Historical verification: v1.0.0 installed 10 skills.",
+      "Substring guard: v1.0.01."
+    ].join("\n") + "\n";
+    fs.writeFileSync(path.join(tempRoot, "README.md"), historicalContent, "utf8");
 
     runBumpVersion(tempRoot, "2.0.0");
 
     const readme = fs.readFileSync(path.join(tempRoot, "README.md"), "utf8");
-    assert(readme.includes("v1.0.01"), "Substring v1.0.01 should not be corrupted");
-    assert(readme.includes("v2.0.0"), "Exact version v1.0.0 should be replaced with v2.0.0");
-    assert(!readme.includes("v1.0.0") || readme.includes("v1.0.01"), "v1.0.0 should not remain unless part of v1.0.01");
+    assert(readme === historicalContent, "Bump tool must leave public docs byte-identical for explicit human review");
 
-    console.log("  PASS: substring safety — version in longer version string preserved");
+    console.log("  PASS: public and historical docs are not blindly rewritten");
   } finally {
     fs.rmSync(tempRoot, { recursive: true, force: true });
   }
@@ -231,7 +234,7 @@ function runTests() {
   testSuccessfulBump();
   testNoOverwriteExistingReleaseNote();
   testRejectPrereleaseSemver();
-  testSubstringSafety();
+  testDoesNotBlindlyRewritePublicDocs();
   testResolveRepoRootPrefersOutermostManifest();
 
   console.log("\nAll bump-version tests passed.");

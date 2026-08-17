@@ -1,7 +1,7 @@
 ---
 language: en
 name: sa
-description: Turn a product or change request into solution-level and system-level architecture drivers — objectives with measures, business and regulatory constraints, which system should own which capability, where the seams between systems sit, which data has a single source of truth, and the criteria that will later decide direction — each driver traced to an objective, given a numeric threshold or an explicit reason it has none, and mapped to a handoff block for BA, DEV, QC and DevOps. Use at steps s01 to s04, before acceptance criteria are locked and before any technical approach is chosen. Runs standalone from a raw request; output of requirement-analysis or product-thinking is optional supplementary input. Does not restate or normalise requirements, does not run product discovery, does not explore or choose a solution direction, does not design a technical approach, and does not build architecture models or draw views.
+description: Turn a product or change request into solution-level and system-level architecture drivers — objectives with measures, business and regulatory constraints, which system should own which capability, where the seams between systems sit, which data has a single source of truth, and the criteria that will later decide direction — each driver traced to an objective, given a numeric threshold or an explicit reason it has none, and mapped to a handoff block for BA, DEV and QC. Use at steps s01 to s04, before acceptance criteria are locked and before any technical approach is chosen. Runs standalone from a raw request; output of requirement-analysis or product-thinking is optional supplementary input. Does not restate or normalise requirements, does not run product discovery, does not explore or choose a solution direction, does not design a technical approach, and does not build architecture models or draw views.
 ---
 
 # SA — Solution And System Architect Lens
@@ -45,7 +45,8 @@ of this skill; the rest travels on to `s04` untouched.
 - Give every driver a numeric threshold, or an explicit reason it has none.
 - Trace both directions: every driver reaches an objective, every objective is supported.
 - Report the input_issues in the input rather than smoothing over them.
-- Hand BA, DEV, QC and DevOps a block each can act on without reading the rest.
+- Hand BA, DEV and QC a block each can act on without reading the rest; emit the TA-owned DevOps
+  block as non-applicable.
 - Measure the analysis with the metrics in `references/metric-table.md` and publish the numbers.
 
 ## Position In The Workflow
@@ -180,7 +181,8 @@ Blocks that do not apply are emitted with `applicable: false` and a `reason`. `i
 - Never name a technology, product or pattern as the answer. Constraints yes, solutions no.
 - Never invent an owner. `unknown` is a finding; a guess is a false result someone will act on.
 - Do not fill blocks owned by `ta`. Disagreement with its output goes in `input_issues`.
-- Every metric carries `formula`, `value` and `evidence`. Two out of three fails the gate.
+- Every metric carries `formula`, `value`, `evidence`, `threshold` and `calibration`. Missing any one
+  fails the gate.
 - Read metrics in pairs — see the pairing table in `references/metric-table.md`.
 
 ## Decision Rule
@@ -208,7 +210,8 @@ binds the system lens: state that a capability needs one owner, not which system
 - Every driver has an anchor, a threshold status that fits what it is, and a `verification`.
 - Traceability runs both ways, with every break recorded in `input_issues`.
 - Every driver appears in at least one handoff block, or in `input_issues.surplus_drivers`.
-- Every metric has `formula`, `value` and `evidence`, and carries `calibration: uncalibrated`.
+- Every metric has `formula`, `value`, `evidence`, `threshold` and `calibration`; calibration remains
+  `uncalibrated` until measured against delivery data.
 - If a landscape was produced, `question_answered` is stated and all eight quality checks are counted.
 - `stop_condition` is decided, and every item pushed to `s03` has an owner.
 - No technology, product or pattern is named as the answer anywhere in the output.
@@ -216,7 +219,7 @@ binds the system lens: state that a capability needs one owner, not which system
 ## References
 
 - `references/output-schema.md` — the full artifact schema and the rules binding it together.
-- `references/metric-table.md` — the nine metrics, their formulas and the pairing rules.
+- `references/metric-table.md` — the ten metrics, their formulas and the pairing rules.
 - `references/block-ownership.md` — which blocks belong to `sa`, to `ta`, or to both.
 - `references/landscape-quality-bar.md` — the eight checks a landscape must pass to be accepted.
 - `references/visual-encoding.md` — which visual channel may carry which attribute, decided before drawing.

@@ -1,9 +1,11 @@
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const {
   ROUTER_HARDSTOP_SNIPPET,
   NEXT_HUMAN_ACTION_SNIPPET,
-  QR_VOUCHER_SNIPPET
+  QR_VOUCHER_SNIPPET,
+  runHardenedUpdateMatrix
 } = require("../scripts/run-workflow-bundle-smoke");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
@@ -50,8 +52,30 @@ function testRouterHardstopSnippetPresentInSource() {
   console.log("  PASS: router hard-stop + QR Voucher snippets present in source policy/skill files");
 }
 
+function testHardenedUpdateMatrix() {
+  assert(typeof runHardenedUpdateMatrix === "function", "hardened Codex/Claude x global/project matrix helper must be exported");
+  if (typeof runHardenedUpdateMatrix !== "function" || process.platform === "win32") {
+    return;
+  }
+
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "wfc-hardened-matrix-"));
+  try {
+    const results = runHardenedUpdateMatrix({
+      wfcBin: path.join(repoRoot, "packages", "workflow-bundle", "bin", "wfc.js"),
+      tempRoot
+    });
+    assert(results.length === 4, `expected 4 hardened update scenarios, got ${results.length}`);
+    assert(results.every((result) => result.exit_ok), "all hardened update scenarios exit without EACCES");
+    assert(results.every((result) => result.unmanaged_unchanged), "all unmanaged content and mode snapshots remain unchanged");
+    console.log("  PASS: hardened Codex/Claude x global/project update matrix");
+  } finally {
+    fs.rmSync(tempRoot, { recursive: true, force: true });
+  }
+}
+
 console.log("Running run-workflow-bundle-smoke (source snippet sync) tests...\n");
 testRouterHardstopSnippetPresentInSource();
+testHardenedUpdateMatrix();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in run-workflow-bundle-smoke.test.js`);

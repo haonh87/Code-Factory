@@ -154,7 +154,7 @@ Minimum rules for `multi-agent`:
 |---|---|---|
 | `requirement-analysis`, `product-thinking` | The main agent analyzes and locks the business meaning of the step | A worker like `analyst` or `product-owner-proxy` provides input to the coordinator |
 | `brainstorming`, `system-design` | The main agent compares options then pins the recommendation | A worker like `solution-designer`; multiple workers may represent different options |
-| `domain-architecture`, `frontend-architecture`, `frontend-experience-design`, `database-design` | The main agent calls deep by the boundary actually impacted | Specialist workers own each architecture boundary or screen behavior |
+| `domain-architecture`, `architecture-modeling`, `frontend-architecture`, `frontend-experience-design`, `database-design` | The main agent calls deep by the boundary actually impacted; `architecture-modeling` derives governed views only after boundaries are known | Specialist workers own each architecture boundary or view-modeling concern |
 | `task-breakdown-planner` | The main agent splits tasks and checks dependencies | A `planner` worker creates the plan, a `dependency-reviewer` checks the critical path |
 | `deployment-devops` | The main agent locks overall DevOps scope, environment matrix, and the coordination direction across packaging, runtime, release | Workers like `platform-architect`, `release-planner`, or `deployment-reviewer` provide the overall plan and evidence to the coordinator |
 | `containerization-packaging`, `platform-runtime-deployment`, `ci-cd-release` | The main agent locks the deep contract per packaging, runtime, or pipeline/release layer | Specialist workers like `image-packager`, `platform-architect`, or `release-engineer` own the DevOps output per layer |
@@ -208,7 +208,7 @@ S4 Acceptance + DoR
 S5 Technical Approach
 -> brainstorming
 -> system-design
--> when needed: domain-architecture | frontend-architecture | frontend-experience-design | database-design | deployment-devops | containerization-packaging | platform-runtime-deployment | ci-cd-release
+-> when needed: domain-architecture | architecture-modeling | frontend-architecture | frontend-experience-design | database-design | deployment-devops | containerization-packaging | platform-runtime-deployment | ci-cd-release
 -> output: recommended technical option + architecture details to lock + deployment topology when the scope has runtime delivery (option-analysis-spec + technical-approach-spec + architecture-detail-spec when needed)
 
 S6 Task Plan
@@ -967,14 +967,14 @@ Rules:
 | `s02` Business Goal | `<work_item_slug>.s02.business-goal.md` | `## Step Contract`, `## Main Artifact`, `## SDD Traceability` when needed, `## Traceability`, `## Handoff` | `step-goal-contract`, `product-thinking`, `brd-spec` when needed |
 | `s03` Open Questions | `<work_item_slug>.s03.open-questions.md` | `## Step Contract`, `## Main Artifact`, `## Input Readiness`, `## Audit`, `## Governance Context` when there is a `governance blocker`, `## SDD Traceability` when needed, `## Traceability`, `## Handoff` | `step-goal-contract`, step 3 artifact, `input-readiness-assessor`, `step-goal-auditor`, `governance-context` when needed, `brd-spec` or `srs-spec` update when needed |
 | `s04` Acceptance + DoR | `<work_item_slug>.s04.acceptance-criteria.md` | `## Step Contract`, `## Main Artifact`, `## Governance Checks`, `## Definition of Ready`, `## Spec Freeze` when SDD, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, step 4 artifact, `governance-checklist`, `definition-of-ready-gate`, `srs-spec`, `spec-freeze-gate` when SDD |
-| `s05` Technical Approach | `<work_item_slug>.s05.technical-approach.md` | `## Step Contract`, `## Option Analysis`, `## Main Artifact`, `## Architecture Details`, `## Governance Exceptions` when present, `## Spec Change` when present, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `brainstorming`, `system-design`, `governance-exception` when present, `spec-change` when present, `domain-architecture` or `frontend-architecture` or `frontend-experience-design` or `database-design` or `deployment-devops` or `containerization-packaging` or `platform-runtime-deployment` or `ci-cd-release` when present |
+| `s05` Technical Approach | `<work_item_slug>.s05.technical-approach.md` | `## Step Contract`, `## Option Analysis`, `## Main Artifact`, `## Architecture Details`, `## Governance Exceptions` when present, `## Spec Change` when present, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `brainstorming`, `system-design`, `governance-exception` when present, `spec-change` when present, `domain-architecture` or `architecture-modeling` or `frontend-architecture` or `frontend-experience-design` or `database-design` or `deployment-devops` or `containerization-packaging` or `platform-runtime-deployment` or `ci-cd-release` when present |
 | `s06` Task Plan | `<work_item_slug>.s06.task-breakdown.md` | `## Step Contract`, `## Main Artifact`, `## Verification Plan`, `## Governance Checks`, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `task-breakdown-planner`, `governance-checklist`, `spec-traceability-matrix` when SDD |
 | `s07` Implement | `<work_item_slug>.s07.implementation.md` if a note exists | `## Step Contract`, `## Main Artifact`, `## Implementation Notes` when present, `## Governance Exceptions` when present, `## Spec Change` when present, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `implementation`, `worktree-discipline` when present, `review-discipline` when present, `delegation-discipline` when present, `react-web-implementation` when present, `governance-exception` when present, `spec-change` when present |
 | `s08` Verify + DoD | `<work_item_slug>.s08.verification.md` | `## Step Contract`, `## Main Artifact`, `## Governance Checks`, `## Spec Coverage`, `## Scan Summary`, `## Review Findings` when present, `## Database Review` when present, `## Deployment Review` when present, `## Governance Exceptions` when present, `## Audit`, `## Definition of Done`, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `testing`, `governance-checklist`, `spec-coverage-report` when SDD, `code-scan-review`, `frontend-quality-review` when present, `react-best-practices-review` when present, `database-change-review` when present, `branch-finish-discipline` when there is branch/worktree closeout, `governance-exception` when present, `deployment-devops` or `containerization-packaging` or `platform-runtime-deployment` or `ci-cd-release` when present, `step-goal-auditor`, `definition-of-done-gate` |
 
 Notes:
 - `step 1 artifact`, `step 3 artifact`, `step 4 artifact` are minimal schemas at the workflow level; they do not replace the detailed schema of a skill if the team wants to store more detail.
-- At step 5, choose `domain-architecture`, `frontend-architecture`, `frontend-experience-design`, `database-design` by the real scope; do not force calling all if they are not relevant.
+- At step 5, choose `domain-architecture`, `architecture-modeling`, `frontend-architecture`, `frontend-experience-design`, `database-design` by the real scope; use `architecture-modeling` only after boundaries are known, and do not force calling all if they are not relevant.
 - At step 7, only create a note when the implementation has `doc_changes`, needs a separate handoff, or the user requests a doc artifact.
 - For `work_item_type=REFACTOR`, step 4 should clearly fill `behavioral_invariants` to lock the scope where behavior does not change.
 - For `work_item_type=RESEARCH`, step 8 should conclude a clear recommendation instead of only logging findings.
@@ -996,7 +996,7 @@ Notes:
 | 4 when running SDD | `spec-freeze-gate` | `## Spec Freeze` | BRD/SRS owner, requirement IDs, AC mapping, blockers, accepted assumptions, reviewer coverage |
 | 5 | `option-analysis-spec` | `## Option Analysis` | `brainstorming` schema; at least 2 options, 1 recommended option |
 | 5 | `technical-approach-spec` | `## Main Artifact` | `system-design` schema |
-| 5 when deep boundary locking is needed | `architecture-detail-spec` | `## Architecture Details` | one or more specialized architecture schemas, including `frontend-experience-design`, `deployment-devops`, `containerization-packaging`, `platform-runtime-deployment`, `ci-cd-release` when there is runtime delivery |
+| 5 when deep boundary locking or governed architecture views are needed | `architecture-detail-spec` | `## Architecture Details` | one or more specialized architecture schemas, including `architecture-modeling`, `frontend-experience-design`, `deployment-devops`, `containerization-packaging`, `platform-runtime-deployment`, `ci-cd-release` when there is runtime delivery |
 | 5, 7, 8 when there is a deviation | `governance-exception` | `## Governance Exceptions` | principle deviated, reason, impact, mitigation, owner, approve/waiver status |
 | 5-7 when a spec gap is found | `spec-change` | `## Spec Change` | `spec-change` schema; do not let code/design drift from frozen spec if the change is not handled |
 | 6 | `task-breakdown-spec` | `## Main Artifact` | `task-breakdown-planner` schema |
@@ -1509,6 +1509,7 @@ content_skills:
   - brainstorming
   - step-goal-contract
   # add `domain-architecture` when in use
+  # add `architecture-modeling` when deriving governed architecture views
   # add `frontend-architecture` when in use
   # add `frontend-experience-design` when locking screen behavior, UI state, or responsive rules
   # add `database-design` when in use
@@ -1552,6 +1553,7 @@ tags:
 ```yaml
 # use one or more related schemas:
 # `domain-architecture`
+# `architecture-modeling`
 # `frontend-architecture`
 # `frontend-experience-design`
 # `database-design`
@@ -2347,6 +2349,34 @@ validation_plan: []
 specialized_followups:
   - skill: ""
     reason: ""
+notes_for_next_step: ""
+```
+
+### `architecture-modeling`
+
+```yaml
+architecture_model:
+  architecture_state: baseline|transition|target|vision
+  model_format: ARCHITECTURE_YAML|STRUCTURIZR_DSL
+  model_source: ""
+  elements: []
+  relationships: []
+views:
+  business_views: []
+  engineering_views: []
+render_plan:
+  ownership_status: RESOLVED|UNRESOLVED
+  render_owner: HOUSE_SKILL|ARCHITECTURE_MODELING|UNRESOLVED
+  owner_skill: ""
+  built_in_renderer: REQUIRED|MUST_NOT_RUN|BLOCKED
+  exactly_one_render_owner: true|false
+  requested_artifacts: []
+  emitted_artifacts: []
+  handoff: {}
+quality:
+  status: PASS|FAIL|PARTIAL|NOT_RUN
+  metrics: {}
+gaps: []
 notes_for_next_step: ""
 ```
 

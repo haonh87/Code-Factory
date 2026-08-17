@@ -372,6 +372,48 @@ function patchMaterializedWorkflowForActivation(workflowRoot, workItemSlug) {
     { pattern: /^  dor_reviewed_at: ""$/m, replacement: '  dor_reviewed_at: "2026-04-19T09:12:00Z"' }
   ]);
 
+  let s04Content = fs.readFileSync(s04Path, "utf8");
+  s04Content = replaceYamlSection(s04Content, "## Requirement Baseline", [
+    "status: APPROVED",
+    "approved_spec_refs:",
+    '  - "changes/CHANGE-SMOKE/spec-delta.md"',
+    "approved_spec_digests:",
+    '  - ref: "changes/CHANGE-SMOKE/spec-delta.md"',
+    '    sha256: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"',
+    "decision_notes:",
+    '  - "Smoke evidence fixture"'
+  ]);
+  s04Content = replaceYamlSection(s04Content, "## Existing System Baseline", [
+    "current_behavior_refs:",
+    '  - "existing login flow"',
+    "impacted_surfaces:",
+    '  - "auth service"',
+    "compatibility_constraints:",
+    '  - "preserve existing login"',
+    "rollback_constraints:",
+    '  - "revert the focused auth change"'
+  ]);
+  s04Content = replaceYamlSection(s04Content, "## Artifact Chính", [
+    "acceptance_criteria:",
+    '  - id: "AC-SMOKE-001"',
+    '    criterion: "Google login follows the approved smoke contract."',
+    '    verification: "Run the isolated lifecycle smoke."',
+    "edge_cases: []",
+    "out_of_scope: []",
+    "done_when:",
+    '  - "AC-SMOKE-001 passes"',
+    "behavioral_invariants:",
+    '  - "Existing login remains available"'
+  ]);
+  s04Content = replaceYamlSection(s04Content, "## Definition of Ready", [
+    "status: READY",
+    "blockers: []",
+    'owners: ["po", "developer"]',
+    "notes:",
+    '  - "Smoke fixture is executable"'
+  ]);
+  fs.writeFileSync(s04Path, s04Content, "utf8");
+
   let s05Content = fs.readFileSync(s05Path, "utf8");
   s05Content = replaceLine(s05Content, /^status: draft$/m, "status: reviewed");
   s05Content = replaceLine(s05Content, /^  approach: \[\]$/m, "  approach:\n    - developer");
@@ -407,6 +449,21 @@ function patchMaterializedWorkflowForActivation(workflowRoot, workItemSlug) {
       replacement: '  task_plan_reviewed_at: "2026-04-19T09:30:00Z"'
     }
   ]);
+  let s06Content = fs.readFileSync(s06Path, "utf8");
+  s06Content = replaceYamlSection(s06Content, "## Artifact Chính", [
+    "tasks:",
+    '  - id: "T-SMOKE-001"',
+    '    name: "Exercise the approved lifecycle"',
+    "    owned_scope:",
+    '      - "src"',
+    "    verify_path:",
+    '      - "run workflow authoring smoke"',
+    '    verify: "Lifecycle reaches ACTIVE only after all trusted receipts pass."',
+    "dependencies: []",
+    "handoff_points:",
+    '  - "verify lifecycle state"'
+  ]);
+  fs.writeFileSync(s06Path, s06Content, "utf8");
 }
 
 function patchMaterializedWorkflowForDone(workflowRoot, workItemSlug) {
@@ -418,6 +475,26 @@ function patchMaterializedWorkflowForDone(workflowRoot, workItemSlug) {
     { pattern: /^  dod_reviewed_by: \[\]$/m, replacement: '  dod_reviewed_by:\n    - qc' },
     { pattern: /^  dod_reviewed_at: ""$/m, replacement: '  dod_reviewed_at: "2026-04-19T10:00:00Z"' }
   ]);
+  let s08Content = fs.readFileSync(s08Path, "utf8");
+  const coverageLines = [
+    "coverage:",
+    '  - ref: "AC-SMOKE-001"',
+    "    status: PASS",
+    '    evidence: "workflow authoring lifecycle smoke"',
+    "status: PASS",
+    "summary:",
+    "  pass: 1",
+    "  partial: 0",
+    "  untested: 0",
+    "  fail: 0",
+    "  total: 1"
+  ];
+  if (s08Content.includes("## Spec Coverage")) {
+    s08Content = replaceYamlSection(s08Content, "## Spec Coverage", coverageLines);
+  } else {
+    s08Content = `${s08Content.trimEnd()}\n\n## Spec Coverage\n\`\`\`yaml\n${coverageLines.join("\n")}\n\`\`\`\n`;
+  }
+  fs.writeFileSync(s08Path, s08Content, "utf8");
 }
 
 function sealWorkflowGate(repoRoot, projectRoot, workflowRootBase, workItemSlug, gate, reviewedBy, extraArgs = []) {
@@ -537,6 +614,46 @@ function runCaseLightGoldenBudget(repoRoot, projectRoot) {
 
   validateBaseline(repoRoot, workflowRoot, projectRoot);
   runNodeScript(repoRoot, "scripts/validate-workflow-planning.js", ["--workflow-root", workflowRoot]);
+}
+
+function runCaseSemanticEvidenceGuard(repoRoot) {
+  const { getFinalizedStepSemanticEvidenceErrors } = require(path.join(
+    repoRoot,
+    "scripts",
+    "workflow-gate-evidence-utils.js"
+  ));
+  const fixtureRoot = path.join(repoRoot, "tests", "fixtures", "workflow-governance");
+  const cases = [
+    {
+      name: "invalid-empty-required-evidence.s04.md",
+      stepId: "s04",
+      expected: /acceptance_criteria.*non-empty/i
+    },
+    {
+      name: "invalid-placeholder-evidence.s04.md",
+      stepId: "s04",
+      expected: /placeholder.*criterion/i
+    },
+    {
+      name: "invalid-coverage-total.s08.md",
+      stepId: "s08",
+      expected: /coverage summary.*PASS/i
+    }
+  ];
+
+  cases.forEach((fixture) => {
+    const content = fs.readFileSync(path.join(fixtureRoot, fixture.name), "utf8");
+    const errors = getFinalizedStepSemanticEvidenceErrors({
+      stepId: fixture.stepId,
+      content,
+      filePath: fixture.name,
+      sddMode: "none",
+      deliveryContext: "brownfield"
+    });
+    if (!errors.some((error) => fixture.expected.test(error))) {
+      throw new Error(`Semantic evidence fixture '${fixture.name}' was not rejected as expected: ${JSON.stringify(errors)}`);
+    }
+  });
 }
 
 function runCaseQuickSingleStep(repoRoot, projectRoot) {
@@ -1293,6 +1410,7 @@ function main() {
   const cases = [
     { name: "basic-full", run: runCaseBasicFull },
     { name: "light-golden-budget", run: runCaseLightGoldenBudget },
+    { name: "semantic-evidence-guard", run: runCaseSemanticEvidenceGuard },
     { name: "quick-single-step", run: runCaseQuickSingleStep },
     { name: "mutating-action-requires-report", run: runCaseMutatingActionRequiresReport },
     { name: "strict-default-blocks-legacy-scaffold", run: runCaseStrictDefaultBlocksLegacyScaffold },
@@ -1351,5 +1469,6 @@ if (require.main === module) {
 module.exports = {
   main,
   runCaseLightGoldenBudget,
+  runCaseSemanticEvidenceGuard,
   seedProjectContext
 };

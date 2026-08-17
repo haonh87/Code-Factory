@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: README.vi.md
 
-`workflow-bundle` is the CLI package of the `v2.3.2` public release: it installs the workflow bundle for Codex or Claude Code, scaffolds or validates workflows, and supports the `agent proposes, human approves` flow for `work-item` and `change`.
+`workflow-bundle` is the CLI package prepared for the `v2.4.0` release candidate: it installs the workflow bundle for Codex or Claude Code, scaffolds or validates workflows, and supports the `agent proposes, human approves` flow for `work-item` and `change`. It remains unpublished until the human Release gate passes.
 
 Detailed quickstart: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -43,7 +43,28 @@ npm link
 wfc version
 ```
 
-## What `v2.3.2` Includes
+### Roll Back From v2.4.0 To v2.3.2
+
+Capture the current mode, scope, project roots, and status before replacing the package. Then install
+the retained immutable v2.3.2 package and run `install` for every recorded target:
+
+```bash
+wfc status --mode codex
+npm install -g workflow-bundle@2.3.2
+wfc install --mode codex --scope global
+wfc install --mode codex --scope project --project-root <repo-root>
+wfc status --mode codex
+wfc skills list --mode codex
+```
+
+Use the same sequence with `--mode claude` for Claude Code. Do not use the v2.3.2 `wfc update`
+command for this downgrade: that older CLI rejects the newer `architecture-modeling` managed-state
+entry. A v2.3.2 `wfc install` is the supported replacement path; it removes that skill and restores
+the 40-skill v2.3.2 inventory while preserving unmanaged files. Rehearse against isolated homes
+before operating on a live installation because v2.3.2 retains its documented hardened-update
+permission defect.
+
+## What `v2.4.0` Includes
 
 - workflow bundle install surface via `wfc install|update|status|skills`
 - core authoring CLI via `wfc init|scaffold|validate`
@@ -51,6 +72,9 @@ wfc version
 - human approval gates for change packages and work items
 - capability control to lock the implementation path until the work item reaches `ACTIVE` at `s07`
 - multi-block runtime prompt with `AGENTS.global.md` as authority, `workflow-governance-router` as the entry router, and `codex-workflow-chain` as the workflow backbone
+- 41 managed skills in each generated runtime, including corrected `sa` and `ta` contracts
+- `architecture-modeling` with one-model/two-audience views, explicit render ownership, and deterministic draw.io support for landscape and integration views
+- permission-safe repeat install/update behavior that preserves unmanaged content
 
 ## Runtime Model
 
@@ -234,6 +258,7 @@ npm run validate:workflow:protocol
 npm run validate:workflow:fixtures
 npm run validate:workflow:authoring-smoke
 npm run validate:workflow:bundle-smoke
+npm run validate:workflow:release-candidate
 ```
 
 Build a publishable tarball:

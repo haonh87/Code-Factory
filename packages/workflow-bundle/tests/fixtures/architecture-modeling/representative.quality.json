@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "status": "PARTIAL",
+  "automated_status": "PASS",
+  "model_id": "MODEL-ORDER-LANDSCAPE",
+  "model_digest": "9aa0c40b789d123b797904a3b7629e73e55012e438efdc0538f95492eb74c4ac",
+  "view_id": "VIEW-ORDER-LANDSCAPE",
+  "view_kind": "LANDSCAPE",
+  "render_owner": "ARCHITECTURE_MODELING",
+  "output_path": "packages/workflow-bundle/tests/fixtures/architecture-modeling/representative.drawio",
+  "metrics": {
+    "named_ownership_rate": 1,
+    "overlap_count": 0,
+    "non_endpoint_intersection_count": 0,
+    "unanalyzed_two_way_arrow_count": 0,
+    "vague_aggregate_box_count": 0,
+    "engineering_element_count": 6,
+    "delete_test_failure_count": 0,
+    "containment_error_count": 0
+  },
+  "geometry": {
+    "canvas": {
+      "width": 1180,
+      "height": 410
+    },
+    "domain_count": 3,
+    "system_count": 6,
+    "relationship_count": 5,
+    "orthogonal_relationship_count": 5
+  },
+  "manual_steps": [
+    "Open the representative artifact in draw.io for QC first-open confirmation."
+  ],
+  "manual_step_count": 1,
+  "manual_review_status": "PENDING_QC_FIRST_OPEN"
+}

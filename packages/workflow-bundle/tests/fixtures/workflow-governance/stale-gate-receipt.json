@@ -1,0 +1,11 @@
+{
+  "gate": "spec",
+  "receipt": {
+    "artifact_ref": "work-items/example/example.s04.acceptance-criteria.md",
+    "artifact_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "artifact": {
+    "artifactRef": "work-items/example/example.s04.acceptance-criteria.md",
+    "artifactSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  }
+}

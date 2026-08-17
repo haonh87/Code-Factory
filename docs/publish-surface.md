@@ -6,26 +6,27 @@ language: en
 
 > Vietnamese: publish-surface.vi.md
 
-This document pins the public publish surface for `workflow-bundle v2.3.2`.
+This document pins the planned public publish surface for `workflow-bundle v2.4.0`.
 
-`v2.3.2` is the current public release of this workflow:
+`v2.4.0` is a release candidate. It remains unpublished until the human Release gate passes. Once approved, its planned public surface will:
 - installable into Codex or Claude Code via `wfc install|update|status|skills`
 - author workflows with `wfc init|scaffold|validate`
 - lets the agent proactively propose `work-item` and `change`
 - but the human still holds approval authority at each gate before delivery continues
 
-`v2.0.0` remains the first public release. `v2.3.2` is the next release on the same public surface, and it makes no breaking change:
+`v2.0.0` remains the first public release. If approved, `v2.4.0` will continue on the same public surface and make no breaking command-line change:
 - `v2.2.x` added the harness adapter registry and internal hooks/instincts tooling.
-- `v2.3.2` adds an English-first public surface (with Vietnamese `*.vi.md` supplements) and an `sdd_mode=light` profile for lower-ceremony work items.
+- `v2.3.x` added the English-first public surface, Vietnamese `*.vi.md` supplements, `sdd_mode=light`, and the `sa`/`ta` architecture-driver skills.
+- `v2.4.0` fixes managed repeat updates and evidence validation, corrects the `sa`/`ta` contracts, and adds `architecture-modeling` to both 41-skill runtimes.
 
 All of the above are additive — the public promise below is unchanged.
 
-## Canonical Release Refs
+## Planned Canonical Release Ref
 
-- Tag: `v2.3.2`
-- Branch: `release/v2.3.2`
+- Tag after Release approval: `v2.4.0`
+- Candidate evidence before approval: source commit and immutable tarball digest recorded in CHANGE-002
 
-When sharing this workflow with new users, prefer pointing to one of the two refs above rather than the current working tree.
+Do not create the tag, present a candidate branch as canonical, or publish the package until the human Release gate passes.
 
 ## System Requirements
 
@@ -46,7 +47,7 @@ This is the document set to use for public onboarding:
 5. [`../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`](../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
 6. [`../skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](../skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
 
-## Public Promise Of `v2.3.2`
+## Public Promise Of `v2.4.0`
 
 - Installable workflow bundle for Codex and Claude Code via `wfc install|update|status|skills`
 - Core authoring CLI via `wfc init`, `wfc scaffold`, `wfc`, `wfc sdd|change|exec|plan`
@@ -54,6 +55,9 @@ This is the document set to use for public onboarding:
 - Human approval gates for `change`, `work-item`, and workflow gate receipts
 - Trusted signed receipts outside the project root for the mandatory human gates
 - Migration from legacy state `.codex-workflow-pack.*` to `.codex-workflow-bundle.*`
+- 41 managed skills in each Codex and Claude runtime, with canonical/runtime byte parity
+- Architecture-driver analysis through `sa` and `ta`, followed by model/view production through `architecture-modeling` at `s05`
+- Deterministic built-in draw.io rendering for allowlisted landscape and integration views when no house renderer owns the artifact
 
 ## Not In The Public Promise
 
@@ -63,7 +67,7 @@ This is the document set to use for public onboarding:
   - legacy config `workflow-contracts.config.json`
   - legacy state `.codex-workflow-pack.*`
 
-The two legacy layers above are still kept to make migration smoother, but they should not be treated as the core public story of `v2.3.2`.
+The two legacy layers above are still kept to make migration smoother, but they should not be treated as the core public story of `v2.4.0`.
 
 ## Internal Or Maintainer Docs
 
@@ -88,6 +92,6 @@ The files below are local working assets, not source-of-truth:
 
 ## Publish Rule
 
-- when talking about the public release, use the language of `v2.3.2`
+- until Release approval, call `v2.4.0` a release candidate rather than the current public release
 - when talking about the approval model, state clearly `agent proposes, human approves`
 - do not use internal docs or memory-bank as the public onboarding path

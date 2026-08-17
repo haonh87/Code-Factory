@@ -323,6 +323,7 @@ Follow the 8-step delivery workflow for coding tasks.
 
 5. Technical Approach
 - Choose the smallest sufficient technical option after disciplined brainstorming; lock trade-offs and the architecture/UX/DevOps boundary within the `governance` constraints in effect.
+- When governed landscape, integration, or deployment-topology views are needed, use `architecture-modeling` after system/domain boundaries are known so every view derives from one model source.
 
 6. Task Plan
 - Split implementation into small ordered tasks, traceable to requirements/AC, with a verify plan and enough review/governance checkpoints; the task plan must be clear enough to execute without reinventing the design.

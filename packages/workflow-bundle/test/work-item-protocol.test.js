@@ -4,6 +4,12 @@ const path = require("path");
 const { execFileSync } = require("child_process");
 const { ensureLightLazyStepNote } = require("../scripts/work-item-protocol");
 const { loadTrustedApprovalReceipt, hasApprovedReceipt, resolveGateArtifact } = require("../scripts/workflow-trusted-approval-utils");
+const {
+  getProtocolStateContradictionErrors,
+  getTrustedReceiptArtifactErrors
+} = require("../scripts/workflow-gate-evidence-utils");
+
+const governanceFixtureRoot = path.join(__dirname, "..", "tests", "fixtures", "workflow-governance");
 
 let failures = 0;
 
@@ -295,11 +301,48 @@ function testFailedVerifyDoesNotLeavePrematureS08() {
   }
 }
 
+function testStaleDigestFixtureIsRejected() {
+  const fixture = JSON.parse(fs.readFileSync(path.join(governanceFixtureRoot, "stale-gate-receipt.json"), "utf8"));
+  const errors = getTrustedReceiptArtifactErrors({
+    gate: fixture.gate,
+    receipt: fixture.receipt,
+    artifact: fixture.artifact,
+    filePath: "stale-gate-receipt.json"
+  });
+  assert(
+    errors.some((error) => /stale after artifact changed/i.test(error)),
+    `stale digest fixture must fail, got ${JSON.stringify(errors)}`
+  );
+  console.log("  PASS: stale trusted-receipt digest fixture is rejected");
+}
+
+function testContradictoryProtocolStateFixtureIsRejected() {
+  const fixture = JSON.parse(
+    fs.readFileSync(path.join(governanceFixtureRoot, "contradictory-protocol-state.json"), "utf8")
+  );
+  const receiptState = {
+    ...fixture.receipt_state,
+    approvedGates: new Set(fixture.receipt_state.approvedGates)
+  };
+  const errors = getProtocolStateContradictionErrors(fixture.report, receiptState, "protocol-report.json");
+  assert(errors.some((error) => /work-item approval.*APPROVED/i.test(error)), `work-item contradiction missing: ${JSON.stringify(errors)}`);
+  assert(errors.some((error) => /CHANGE-999.*APPROVED/i.test(error)), `change contradiction missing: ${JSON.stringify(errors)}`);
+  assert(errors.some((error) => /task_plan.*APPROVED/i.test(error)), `task-plan contradiction missing: ${JSON.stringify(errors)}`);
+  assert(errors.some((error) => /spec.*APPROVED/i.test(error)), `spec required-action contradiction missing: ${JSON.stringify(errors)}`);
+
+  const source = fs.readFileSync(path.join(__dirname, "..", "scripts", "work-item-protocol.js"), "utf8");
+  const activateCase = source.match(/case "activate":([\s\S]*?)case "block":/);
+  assert(activateCase && /blockers:\s*\[\]/.test(activateCase[1]), "activate transition must clear stale blockers");
+  console.log("  PASS: contradictory protocol state fixture is rejected and activate clears blockers");
+}
+
 console.log("Running work-item-protocol (Light) tests...\n");
 testEnsureLightLazyStepNoteCreatesS07S08();
 testEnsureLightLazyNoopForNonLight();
 testApproveReadyBundleSealsFourIndependentReceipts();
 testFailedVerifyDoesNotLeavePrematureS08();
+testStaleDigestFixtureIsRejected();
+testContradictoryProtocolStateFixtureIsRejected();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in work-item-protocol-light.test.js`);

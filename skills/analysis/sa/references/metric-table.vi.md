@@ -15,7 +15,7 @@ chạy skill.
 
 ## Mỗi dòng chỉ số phải có gì
 
-Chỉ số chỉ được coi là đủ khi có cả ba phần. Thiếu bất kỳ phần nào là không đạt gate của chính
+Chỉ số chỉ được coi là đủ khi có cả năm phần. Thiếu bất kỳ phần nào là không đạt gate của chính
 skill — đây là hợp đồng của `REQ-006`.
 
 | Phần | Nghĩa | Hỏng gì nếu thiếu |
@@ -23,6 +23,8 @@ skill — đây là hợp đồng của `REQ-006`.
 | `formula` | Cách tính ra con số, dạng tỷ lệ hoặc đếm | Người đọc không tái lập được con số |
 | `value` | Kết quả tính được ở lần chạy này | Chỉ số thành đồ trang trí |
 | `evidence` | Trỏ tới đúng những dòng trong output đã tạo ra con số | Không kiểm chứng lại được |
+| `threshold` | Đích pass hoặc ranh giới so sánh đã khai | Không diễn giải được kết quả |
+| `calibration` | Ngưỡng đã được hiệu chỉnh theo dữ liệu giao hàng hay chưa | Đề xuất có thể bị hiểu nhầm là chuẩn đã quan sát |
 
 ## Danh sách chỉ số
 

@@ -1,4 +1,5 @@
 const fs = require("fs");
+const crypto = require("crypto");
 const os = require("os");
 const path = require("path");
 const { execFileSync } = require("child_process");
@@ -49,6 +50,120 @@ function runNodeScriptExpectFailure(scriptPath, args, cwd, expectedMessage) {
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
+}
+
+function fileSnapshot(filePath) {
+  return {
+    sha256: crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex"),
+    mode: fs.statSync(filePath).mode & 0o777
+  };
+}
+
+function hardenManagedTree(targetPath) {
+  if (!fs.existsSync(targetPath)) {
+    return;
+  }
+  const stat = fs.lstatSync(targetPath);
+  if (stat.isSymbolicLink()) {
+    throw new Error(`Unexpected symbolic link in smoke fixture: ${targetPath}`);
+  }
+  if (stat.isDirectory()) {
+    fs.readdirSync(targetPath).forEach((name) => hardenManagedTree(path.join(targetPath, name)));
+    fs.chmodSync(targetPath, 0o555);
+    return;
+  }
+  fs.chmodSync(targetPath, 0o444);
+}
+
+function countInstalledSkills(skillsRoot) {
+  let count = 0;
+  function walk(current) {
+    fs.readdirSync(current, { withFileTypes: true }).forEach((entry) => {
+      const target = path.join(current, entry.name);
+      if (entry.isDirectory()) walk(target);
+      if (entry.isFile() && entry.name === "SKILL.md") count += 1;
+    });
+  }
+  walk(skillsRoot);
+  return count;
+}
+
+function runHardenedUpdateMatrix({ wfcBin, tempRoot, skills = ["codex-workflow-chain"] }) {
+  const scenarios = [];
+  for (const mode of ["codex", "claude"]) {
+    for (const scope of ["global", "project"]) {
+      const scenarioRoot = path.join(tempRoot, `${mode}-${scope}`);
+      const runtimeHome = path.join(scenarioRoot, `.${mode}`);
+      const projectRoot = path.join(scenarioRoot, "project");
+      const homeFlag = mode === "codex" ? "--codex-home" : "--claude-home";
+      const globalPolicyName = mode === "codex" ? "AGENTS.global.md" : "CLAUDE.md";
+      const projectPolicyName = mode === "codex" ? "AGENTS.md" : "CLAUDE.md";
+      const statePrefix = mode === "codex" ? ".codex" : ".claude";
+      fs.mkdirSync(scenarioRoot, { recursive: true });
+      const installArgs = [
+        "install",
+        "--mode",
+        mode,
+        homeFlag,
+        runtimeHome,
+        "--scope",
+        scope
+      ];
+      skills.forEach((skill) => installArgs.push("--skill", skill));
+      if (scope === "project") {
+        installArgs.push("--project-root", projectRoot);
+      }
+      runNodeScriptCaptureOutput(wfcBin, installArgs, scenarioRoot);
+
+      const unmanagedHome = path.join(runtimeHome, "unmanaged.keep");
+      fs.writeFileSync(unmanagedHome, `${mode}-${scope}-home\n`);
+      fs.chmodSync(unmanagedHome, 0o440);
+      const unmanagedPolicy = path.join(runtimeHome, "policies", "codex", "unmanaged-inside.keep");
+      fs.writeFileSync(unmanagedPolicy, `${mode}-${scope}-policy\n`);
+      fs.chmodSync(unmanagedPolicy, 0o440);
+      const unmanagedPaths = [unmanagedHome, unmanagedPolicy];
+      if (scope === "project") {
+        const unmanagedProject = path.join(projectRoot, "unmanaged.keep");
+        fs.writeFileSync(unmanagedProject, `${mode}-${scope}-project\n`);
+        fs.chmodSync(unmanagedProject, 0o440);
+        unmanagedPaths.push(unmanagedProject);
+      }
+      if (skills.length === 0) {
+        hardenManagedTree(path.join(runtimeHome, "skills"));
+      } else {
+        skills.forEach((skill) => hardenManagedTree(path.join(runtimeHome, "skills", skill)));
+      }
+      hardenManagedTree(path.join(runtimeHome, "policies"));
+      hardenManagedTree(path.join(runtimeHome, `${statePrefix}-workflow-bundle.managed-skills.txt`));
+      hardenManagedTree(path.join(runtimeHome, `${statePrefix}-workflow-bundle.install-state.json`));
+      if (scope === "global") {
+        hardenManagedTree(path.join(runtimeHome, globalPolicyName));
+      } else {
+        hardenManagedTree(path.join(projectRoot, projectPolicyName));
+        fs.chmodSync(projectRoot, 0o555);
+      }
+      fs.chmodSync(path.join(runtimeHome, "skills"), 0o555);
+      fs.chmodSync(runtimeHome, 0o555);
+      unmanagedPaths.forEach((filePath) => fs.chmodSync(filePath, 0o440));
+      const unmanagedBefore = unmanagedPaths.map(fileSnapshot);
+
+      runNodeScriptCaptureOutput(
+        wfcBin,
+        ["update", "--mode", mode, homeFlag, runtimeHome],
+        scenarioRoot
+      );
+
+      const unmanagedAfter = unmanagedPaths.map(fileSnapshot);
+      scenarios.push({
+        mode,
+        scope,
+        exit_ok: true,
+        unmanaged_unchanged: JSON.stringify(unmanagedAfter) === JSON.stringify(unmanagedBefore),
+        managed_skill_count: countInstalledSkills(path.join(runtimeHome, "skills"))
+      });
+    }
+  }
+  return scenarios;
 }
 
 function runCodexModeSmoke({ wfcBin, tempRoot, repoRoot }) {
@@ -292,6 +407,7 @@ function main() {
     runNodeScriptCaptureOutput(path.join(packageRoot, "scripts", "sync-workflow-bundle-runtime.js"), [], repoRoot);
     runCodexModeSmoke({ wfcBin, tempRoot, repoRoot });
     runClaudeModeSmoke({ wfcBin, tempRoot });
+    runHardenedUpdateMatrix({ wfcBin, tempRoot: path.join(tempRoot, "hardened-matrix") });
     runConfigHardeningSmoke({ wfcBin, tempRoot });
     console.log(`OK: workflow bundle smoke passed under ${tempRoot}`);
   } finally {
@@ -311,5 +427,6 @@ if (require.main === module) {
 module.exports = {
   ROUTER_HARDSTOP_SNIPPET,
   NEXT_HUMAN_ACTION_SNIPPET,
-  QR_VOUCHER_SNIPPET
+  QR_VOUCHER_SNIPPET,
+  runHardenedUpdateMatrix
 };

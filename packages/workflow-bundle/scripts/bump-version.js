@@ -57,29 +57,26 @@ function generateReleaseNote(newVersion, oldVersion) {
     `Tag: \`v${newVersion}\``,
     `Branch: \`release/v${newVersion}\``,
     "",
-    "## Changelog",
+    "## Release Preparation",
     "",
-    `\`workflow-bundle v${newVersion}\` là ... (điền changelog)`,
+    `This candidate advances structured package metadata from \`v${oldVersion}\` to \`v${newVersion}\`.`,
+    "Release-specific changes must be reviewed and recorded here before the human Release gate.",
     "",
-    "### Added",
+    "## Metadata Changes",
     "",
-    "- (điền)",
-    "",
-    "### Changed",
-    "",
-    "- (điền)",
-    "",
-    "### Fixed",
-    "",
-    "- (điền)",
-    "",
-    "## Scope",
-    "",
-    "- (điền)",
+    `- Root and package manifests target \`v${newVersion}\`.`,
+    `- Package metadata and the public CLI flow label target \`v${newVersion}\`.`,
+    "- Public documentation is intentionally not rewritten by this tool; it requires explicit review.",
     "",
     "## Verification",
     "",
-    "- (điền)",
+    "- No verification is inferred by the version bump.",
+    "- Record test, audit, package digest, and smoke evidence before release approval.",
+    "",
+    "## Rollback",
+    "",
+    `- Keep \`v${oldVersion}\` as the current published fallback until \`v${newVersion}\` passes its Release gate.`,
+    "- Do not publish, tag, or update live installations from this generated note alone.",
     "",
     "## Public Docs",
     "",
@@ -88,10 +85,10 @@ function generateReleaseNote(newVersion, oldVersion) {
     "- [`docs/workflow-bundle-quickstart.md`](../workflow-bundle-quickstart.md)",
     "- [`packages/workflow-bundle/README.md`](../../packages/workflow-bundle/README.md)",
     "",
-    "## Notes",
+    "## Release Gates",
     "",
-    `- \`v${oldVersion}\` là previous release.`,
-    `- \`v${newVersion}\` là current release.`
+    "- Status: candidate metadata only.",
+    "- Human Release approval remains required before tag or publication."
   ].join("\n") + "\n";
 }
 
@@ -175,14 +172,9 @@ function main() {
     path.join(repoRoot, "packages", "workflow-bundle", "README.md")
   ];
 
-  docFiles.forEach((filePath, index) => {
-    if (!fs.existsSync(filePath)) {
-      console.warn(`  [${5 + index}] ${path.relative(repoRoot, filePath)} — not found, skipped`);
-      return;
-    }
-    const didReplace = replaceInFile(filePath, oldVersion, newVersion);
-    console.log(`  [${5 + index}] ${path.relative(repoRoot, filePath)} — version refs${didReplace ? "" : " (no match)"}`);
-    if (didReplace) updated++;
+  console.log("\nManual review required: public docs are not rewritten automatically.");
+  docFiles.forEach((filePath) => {
+    console.log(`  - ${path.relative(repoRoot, filePath)}`);
   });
 
   const releaseNotePath = path.join(repoRoot, "docs", "releases", `workflow-bundle-v${newVersion}.md`);
@@ -198,7 +190,7 @@ function main() {
   console.log("");
   console.log(`Done. ${updated} file(s) updated.`);
   console.log("Next steps:");
-  console.log("  1. Fill in the release note changelog");
+  console.log("  1. Review and update public docs plus the generated release note explicitly");
   console.log("  2. Run: wfc bundle-smoke");
   console.log("  3. Commit and tag");
 }

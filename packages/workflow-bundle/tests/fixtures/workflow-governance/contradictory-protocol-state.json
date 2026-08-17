@@ -1,0 +1,19 @@
+{
+  "report": {
+    "work_item_slug": "example",
+    "change_id": "CHANGE-999",
+    "blockers": [
+      "Work-item approval is pending",
+      "CHANGE-999 approval is pending",
+      "Task Plan trusted receipt has not passed"
+    ],
+    "required_actions": [
+      "Review and approve Spec before activation"
+    ]
+  },
+  "receipt_state": {
+    "workItemApproved": true,
+    "changeApproved": true,
+    "approvedGates": ["spec", "task_plan"]
+  }
+}

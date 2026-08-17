@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" agent="architecture-modeling" version="24.7.17">
+  <diagram id="diagram:MODEL-ORDER-LANDSCAPE" name="VIEW-ORDER-LANDSCAPE">
+    <mxGraphModel dx="1180" dy="410" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1180" pageHeight="410" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="domain:DOM-CUSTOMER" value="Customer Engagement" style="swimlane;html=1;rounded=1;startSize=32;horizontal=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="100" width="300" height="270" as="geometry"/>
+        </mxCell>
+        <mxCell id="domain:DOM-ORDER" value="Order Management" style="swimlane;html=1;rounded=1;startSize=32;horizontal=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="100" width="300" height="270" as="geometry"/>
+        </mxCell>
+        <mxCell id="domain:DOM-STORE-SALES" value="Store Sales" style="swimlane;html=1;rounded=1;startSize=32;horizontal=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="840" y="100" width="300" height="270" as="geometry"/>
+        </mxCell>
+        <mxCell id="system:SYS-LOYALTY" value="Loyalty Service&#xa;Owner: Customer Platform Team" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;" vertex="1" parent="domain:DOM-CUSTOMER">
+          <mxGeometry x="40" y="60" width="220" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="system:SYS-NOTIFICATION" value="Notification Service&#xa;Owner: Customer Communications Team" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;" vertex="1" parent="domain:DOM-CUSTOMER">
+          <mxGeometry x="40" y="160" width="220" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="system:SYS-KITCHEN" value="Kitchen Orchestration&#xa;Owner: Restaurant Operations Team" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;" vertex="1" parent="domain:DOM-ORDER">
+          <mxGeometry x="40" y="60" width="220" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="system:SYS-ORDER" value="Order Service&#xa;Owner: Order Team" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;" vertex="1" parent="domain:DOM-ORDER">
+          <mxGeometry x="40" y="160" width="220" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="system:SYS-DELIVERY-CHANNEL" value="Delivery Channel&#xa;Owner: Digital Channels Team" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;" vertex="1" parent="domain:DOM-STORE-SALES">
+          <mxGeometry x="40" y="60" width="220" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="system:SYS-POS" value="Point of Sale&#xa;Owner: Store Platform Team" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=center;verticalAlign=middle;" vertex="1" parent="domain:DOM-STORE-SALES">
+          <mxGeometry x="40" y="160" width="220" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="relationship:INT-CHANNEL-ORDER" value="Submit a delivery order" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="system:SYS-DELIVERY-CHANNEL" target="system:SYS-ORDER">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="820" y="195"/>
+              <mxPoint x="820" y="70"/>
+              <mxPoint x="760" y="70"/>
+              <mxPoint x="760" y="295"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relationship:INT-ORDER-KITCHEN" value="Start fulfillment" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="system:SYS-ORDER" target="system:SYS-KITCHEN">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="295"/>
+              <mxPoint x="720" y="195"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relationship:INT-ORDER-LOYALTY" value="Record earned loyalty benefits" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="system:SYS-ORDER" target="system:SYS-LOYALTY">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="420" y="295"/>
+              <mxPoint x="420" y="50"/>
+              <mxPoint x="360" y="50"/>
+              <mxPoint x="360" y="195"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relationship:INT-ORDER-NOTIFICATION" value="Notify order status" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="system:SYS-ORDER" target="system:SYS-NOTIFICATION">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="420" y="295"/>
+              <mxPoint x="420" y="40"/>
+              <mxPoint x="360" y="40"/>
+              <mxPoint x="360" y="295"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="relationship:INT-POS-ORDER" value="Submit an in-store order" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endFill=1;" edge="1" parent="1" source="system:SYS-POS" target="system:SYS-ORDER">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="820" y="295"/>
+              <mxPoint x="820" y="30"/>
+              <mxPoint x="760" y="30"/>
+              <mxPoint x="760" y="295"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

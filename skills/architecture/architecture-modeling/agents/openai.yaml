@@ -1,0 +1,4 @@
+interface:
+  display_name: "Architecture Modeling"
+  short_description: "Build governed architecture models and views"
+  default_prompt: "Use $architecture-modeling to build one stable architecture model, derive the requested business and engineering views, and resolve exactly one render owner."

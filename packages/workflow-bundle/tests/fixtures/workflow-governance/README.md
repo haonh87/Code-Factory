@@ -21,6 +21,12 @@ Mục tiêu:
 - `invalid-waiver-missing-approval/workflow/`: fail vì `WAIVER_APPROVED` thiếu `approved_by` hoặc `review_date`
 - `invalid-waiver-wrong-authority/workflow/`: fail vì `WAIVER_APPROVED` không đạt authority tối thiểu theo role model
 - `invalid-reviewed-gate-pending/workflow/`: fail vì note đã qua `draft` nhưng vẫn giữ `governance_status=CHECKS_PENDING` ở gate `s04`
+- `invalid-empty-required-evidence.s04.md`: fragment âm cho evidence list bắt buộc nhưng rỗng
+- `invalid-placeholder-evidence.s04.md`: fragment âm cho criterion/DoR còn placeholder
+- `invalid-coverage-total.s08.md`: fragment âm cho coverage rows, summary và verdict tự mâu thuẫn
+- `stale-gate-receipt.json`: receipt có artifact digest cũ
+- `contradictory-protocol-state.json`: blocker/required action nói gate còn pending sau trusted receipt `APPROVED`
+- `valid-semantic-evidence.s04.md`: control fragment hợp lệ cho semantic evidence checks
 
 ## Cách Chạy
 
@@ -53,5 +59,6 @@ npm run validate:workflow:fixtures
 ## Ghi Chú
 
 - Fixture suite này ưu tiên test governance validator, không nhằm thay thế full end-to-end workflow examples.
+- Semantic evidence checks được enforce tại transition/governance validation cho profile `strict|regulated`; fragment tests vẫn gọi trực tiếp rule set đầy đủ để khóa từng lỗi độc lập.
 - Các file note vẫn giữ naming chuẩn `<work_item_slug>.sNN.<step-slug>.md` để có thể dùng chung cho naming validator nếu cần.
 - Root `tests/fixtures/workflow-governance/` ở repo không còn là canonical source để tránh drift hai cây fixture giống nhau.

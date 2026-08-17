@@ -6,11 +6,11 @@ language: en
 
 > Vietnamese: workflow-docs-map.vi.md
 
-This document separates the public onboarding path of `workflow-bundle v2.3.2` from the deep-dive docs and the maintainer context.
+This document separates the public onboarding path of `workflow-bundle v2.4.0` from the deep-dive docs and the maintainer context.
 
 ## Public Onboarding Docs
 
-This is the set to read when starting with the `v2.3.2` public release.
+This is the set to read when reviewing the `v2.4.0` release candidate.
 
 1. [`../README.md`](../README.md)
 2. [`publish-surface.md`](publish-surface.md)
@@ -21,7 +21,7 @@ This is the set to read when starting with the `v2.3.2` public release.
 
 Reading guide:
 
-- `README` answers what this repo is and what the public promise of `v2.3.2` is.
+- `README` answers what this repo is and what the public promise of `v2.4.0` is.
 - `publish-surface` pins the canonical tag or branch and the system requirements.
 - `quickstart` answers how to install `wfc`, install the workflow bundle, init a repo, and run the first flow.
 - the package `README` covers install, upgrade, command overview, and publish mechanics at the package level.
@@ -40,6 +40,7 @@ The documents below are still part of the public surface, but are only needed wh
 - [`../skills/orchestration/codex-workflow-chain/references/work-item-materialization.md`](../skills/orchestration/codex-workflow-chain/references/work-item-materialization.md)
 - [`../skills/orchestration/codex-workflow-chain/references/work-item-protocol.md`](../skills/orchestration/codex-workflow-chain/references/work-item-protocol.md)
 - [`../skills/orchestration/codex-workflow-chain/references/spec-driven-development.md`](../skills/orchestration/codex-workflow-chain/references/spec-driven-development.md)
+- [`../skills/architecture/architecture-modeling/SKILL.md`](../skills/architecture/architecture-modeling/SKILL.md)
 
 Reading guide:
 
@@ -50,6 +51,7 @@ Reading guide:
 - `workflow-rule-checklist-alignment` is a semantic audit of how rules, checklists, gates, and validators support each other, with a flowchart and residual gaps.
 - `work-item-materialization` and `work-item-protocol` are deep dives for `agent proposes, human approves`.
 - `spec-driven-development` is only needed when the repo uses `BRD` or `SRS` as the primary source-of-truth.
+- `architecture-modeling` defines the stable model, view routing, draw.io ownership, and quality contract for architecture views.
 - comparative or hybrid policies are not public deep-dive unless explicitly promoted into the publish surface.
 
 ## Maintainer And Historical Docs

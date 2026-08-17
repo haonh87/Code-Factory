@@ -176,3 +176,44 @@ jobs:
 
       - name: Validate scaffold -> validate authoring flow
         run: npm run validate:workflow:authoring-smoke
+
+  release-candidate:
+    name: Release Candidate (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs:
+      - workflow-authoring-smoke
+    strategy:
+      fail-fast: false
+      matrix:
+        node:
+          - "18"
+          - "22"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Show runtime versions
+        run: |
+          node --version
+          npm --version
+
+      - name: Run workflow-bundle unit and regression suite
+        run: npm run validate:workflow:unit
+
+      - name: Audit workflow pack integration
+        run: npm run validate:workflow:pack-audit
+
+      - name: Run source install and update smoke
+        run: npm run validate:workflow:bundle-smoke
+
+      - name: Pack, install, and smoke the exact candidate artifact
+        run: npm run validate:workflow:release-candidate

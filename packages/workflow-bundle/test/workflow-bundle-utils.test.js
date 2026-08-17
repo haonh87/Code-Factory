@@ -1,4 +1,5 @@
 const fs = require("fs");
+const crypto = require("crypto");
 const os = require("os");
 const path = require("path");
 const {
@@ -9,7 +10,13 @@ const {
   normalizeInstallState,
   getManifestBundleVersion,
   getManifestCrSchemaVersion,
-  getManifestWorkflowSchemaVersion
+  getManifestWorkflowSchemaVersion,
+  syncGlobalPolicy,
+  syncProjectPolicy,
+  syncSkills,
+  syncSupportPolicies,
+  writeInstallState,
+  writeManagedSkillsManifest
 } = require("../scripts/workflow-bundle-utils");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
@@ -34,6 +41,31 @@ function assertThrows(fn, pattern, message) {
       console.error(`  FAIL: ${message} (message không khớp: '${error.message}')`);
     }
   }
+}
+
+function assertDoesNotThrow(fn, message) {
+  try {
+    fn();
+  } catch (error) {
+    failures += 1;
+    console.error(`  FAIL: ${message} (${error.code || error.message})`);
+  }
+}
+
+function chmodTreeWritable(targetPath) {
+  if (!fs.existsSync(targetPath)) {
+    return;
+  }
+
+  const stat = fs.lstatSync(targetPath);
+  fs.chmodSync(targetPath, stat.isDirectory() ? 0o755 : 0o644);
+  if (stat.isDirectory()) {
+    fs.readdirSync(targetPath).forEach((name) => chmodTreeWritable(path.join(targetPath, name)));
+  }
+}
+
+function digestFile(filePath) {
+  return crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
 }
 
 function makeTempAdapters(spec) {
@@ -214,6 +246,186 @@ function testAbsentSchemaVersionsDefaultEmpty() {
   console.log("  PASS: absent schema versions default to empty string (no crash on null/undefined)");
 }
 
+// ---------- CHANGE-002 / AC-001: hardened managed destinations are updateable ----------
+
+function testHardenedManagedDestinationsRecoverWithoutTouchingUnmanagedFiles() {
+  if (process.platform === "win32") {
+    console.log("  SKIP: POSIX permission lifecycle fixture on win32");
+    return;
+  }
+
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), "wfc-hardened-update-"));
+  try {
+    const sourceSkill = path.join(base, "source-skill");
+    const runtimeHome = path.join(base, "runtime-home");
+    const skillsHome = path.join(runtimeHome, "skills");
+    const managedSkill = path.join(skillsHome, "managed-skill");
+    const unmanagedFile = path.join(skillsHome, "unmanaged.keep");
+    const globalSource = path.join(base, "AGENTS.source.md");
+    const globalDest = path.join(runtimeHome, "AGENTS.md");
+    const projectRoot = path.join(base, "project");
+    const projectDest = path.join(projectRoot, "AGENTS.md");
+    const supportSource = path.join(base, "support-source");
+    const supportDest = path.join(runtimeHome, "policies");
+    const unmanagedSupportFile = path.join(supportDest, "unmanaged-inside.keep");
+
+    fs.mkdirSync(path.join(sourceSkill, "references"), { recursive: true });
+    fs.writeFileSync(path.join(sourceSkill, "SKILL.md"), "new skill\n");
+    fs.writeFileSync(path.join(sourceSkill, "references", "contract.md"), "new contract\n");
+    fs.mkdirSync(path.join(managedSkill, "references"), { recursive: true });
+    fs.writeFileSync(path.join(managedSkill, "SKILL.md"), "old skill\n");
+    fs.writeFileSync(path.join(managedSkill, "references", "contract.md"), "old contract\n");
+    fs.writeFileSync(unmanagedFile, "user owned\n");
+    fs.writeFileSync(globalSource, "new policy\n");
+    fs.writeFileSync(globalDest, "old policy\n");
+    fs.mkdirSync(projectRoot, { recursive: true });
+    fs.writeFileSync(projectDest, "old project policy\n");
+    fs.mkdirSync(supportSource, { recursive: true });
+    fs.writeFileSync(path.join(supportSource, "rule.md"), "new rule\n");
+    fs.mkdirSync(supportDest, { recursive: true });
+    fs.writeFileSync(path.join(supportDest, "rule.md"), "old rule\n");
+    fs.writeFileSync(unmanagedSupportFile, "user-owned support policy sibling\n");
+
+    const bundlePaths = {
+      managedSkillsManifestPath: path.join(runtimeHome, ".managed.txt"),
+      legacyManagedSkillsManifestPath: path.join(runtimeHome, ".legacy-managed.txt"),
+      installStatePath: path.join(runtimeHome, ".state.json"),
+      legacyInstallStatePath: path.join(runtimeHome, ".legacy-state.json")
+    };
+    fs.writeFileSync(bundlePaths.managedSkillsManifestPath, "managed-skill\n");
+    fs.writeFileSync(bundlePaths.installStatePath, "{}\n");
+
+    [
+      path.join(managedSkill, "SKILL.md"),
+      path.join(managedSkill, "references", "contract.md"),
+      globalDest,
+      projectDest,
+      path.join(supportDest, "rule.md"),
+      bundlePaths.managedSkillsManifestPath,
+      bundlePaths.installStatePath
+    ].forEach((filePath) => fs.chmodSync(filePath, 0o444));
+    [path.join(managedSkill, "references"), managedSkill, skillsHome, supportDest, runtimeHome, projectRoot]
+      .forEach((dirPath) => fs.chmodSync(dirPath, 0o555));
+    fs.chmodSync(unmanagedFile, 0o440);
+    fs.chmodSync(unmanagedSupportFile, 0o440);
+    const unmanagedBefore = {
+      digest: digestFile(unmanagedFile),
+      mode: fs.statSync(unmanagedFile).mode & 0o777
+    };
+    const unmanagedSupportBefore = {
+      digest: digestFile(unmanagedSupportFile),
+      mode: fs.statSync(unmanagedSupportFile).mode & 0o777
+    };
+
+    assertDoesNotThrow(
+      () => syncSkills({
+        selectedSkillNames: ["managed-skill"],
+        availableSkills: [{ name: "managed-skill", sourceDir: sourceSkill }],
+        skillsHome,
+        previousManagedSkills: ["managed-skill"]
+      }),
+      "syncSkills must recover owner-write on the selected managed skill"
+    );
+    assertDoesNotThrow(
+      () => writeManagedSkillsManifest(bundlePaths, ["managed-skill"]),
+      "managed-skills manifest must be replaceable after hardening"
+    );
+    assertDoesNotThrow(
+      () => syncSupportPolicies({ supportPoliciesSourceRoot: supportSource, supportPoliciesDestRoot: supportDest }),
+      "managed support policies must be replaceable after hardening"
+    );
+    assertDoesNotThrow(
+      () => syncGlobalPolicy({ globalAgentsSource: globalSource, globalAgentsDest: globalDest }),
+      "global managed policy must be replaceable after hardening"
+    );
+    assertDoesNotThrow(
+      () => syncProjectPolicy({ globalAgentsSource: globalSource, projectRoot, projectAgentsFileName: "AGENTS.md" }),
+      "project managed policy must be replaceable after hardening"
+    );
+    assertDoesNotThrow(
+      () => writeInstallState(bundlePaths, { runtime_mode: "codex" }, {
+        manifest: { bundleName: "fixture" },
+        repoRoot,
+        runtimeHome,
+        mode: "codex"
+      }),
+      "install state must be replaceable after hardening"
+    );
+
+    assert(fs.readFileSync(path.join(managedSkill, "SKILL.md"), "utf8") === "new skill\n", "managed skill content updated");
+    assert(fs.readFileSync(globalDest, "utf8") === "new policy\n", "global policy content updated");
+    assert(fs.readFileSync(projectDest, "utf8") === "new policy\n", "project policy content updated");
+    assert(fs.readFileSync(path.join(supportDest, "rule.md"), "utf8") === "new rule\n", "support policy content updated");
+    assert(digestFile(unmanagedFile) === unmanagedBefore.digest, "unmanaged file digest remains unchanged");
+    assert((fs.statSync(unmanagedFile).mode & 0o777) === unmanagedBefore.mode, "unmanaged file mode remains unchanged");
+    assert(
+      digestFile(unmanagedSupportFile) === unmanagedSupportBefore.digest,
+      "unmanaged file inside the managed policies tree keeps its digest"
+    );
+    assert(
+      (fs.statSync(unmanagedSupportFile).mode & 0o777) === unmanagedSupportBefore.mode,
+      "unmanaged file inside the managed policies tree keeps its mode"
+    );
+    console.log("  PASS: hardened managed destinations recover without mutating unmanaged content or mode");
+  } finally {
+    chmodTreeWritable(base);
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+}
+
+function testManagedWriteRefusesSymbolicLinkTargets() {
+  if (process.platform === "win32") {
+    console.log("  SKIP: symbolic-link managed target fixture on win32");
+    return;
+  }
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), "wfc-managed-symlink-"));
+  try {
+    const source = path.join(base, "source.md");
+    const outside = path.join(base, "outside.md");
+    const destination = path.join(base, "managed.md");
+    fs.writeFileSync(source, "replacement\n");
+    fs.writeFileSync(outside, "outside\n");
+    fs.symlinkSync(outside, destination);
+    assertThrows(
+      () => syncGlobalPolicy({ globalAgentsSource: source, globalAgentsDest: destination }),
+      /Refusing to prepare managed symbolic link/,
+      "managed writes must not follow a symbolic-link destination"
+    );
+    assert(fs.readFileSync(outside, "utf8") === "outside\n", "symbolic-link target remains unchanged");
+    console.log("  PASS: managed write refuses symbolic-link targets");
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+}
+
+function testManagedSkillCleanupRejectsPathTraversal() {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), "wfc-managed-traversal-"));
+  try {
+    const skillsHome = path.join(base, "runtime", "skills");
+    const outside = path.join(base, "outside.keep");
+    fs.mkdirSync(skillsHome, { recursive: true });
+    fs.writeFileSync(outside, "user-owned outside managed skills\n", "utf8");
+    const outsideDigest = digestFile(outside);
+    assertThrows(
+      () => syncSkills({
+        selectedSkillNames: [],
+        availableSkills: [],
+        skillsHome,
+        previousManagedSkills: ["../../outside.keep"]
+      }),
+      /Invalid managed skill name/,
+      "managed cleanup must reject path traversal from a tampered manifest"
+    );
+    assert(fs.existsSync(outside), "path traversal target must remain present");
+    if (fs.existsSync(outside)) {
+      assert(digestFile(outside) === outsideDigest, "path traversal target content must remain unchanged");
+    }
+    console.log("  PASS: managed skill cleanup rejects path traversal");
+  } finally {
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+}
+
 console.log("Running workflow-bundle adapter tests...\n");
 testLoadAdapterValid();
 testLoadAdapterErrors();
@@ -224,6 +436,9 @@ testRuntimeConfigFromAdapter();
 testNormalizeInstallStateRespectsRepoRoot();
 testReadsSchemaVersions();
 testAbsentSchemaVersionsDefaultEmpty();
+testHardenedManagedDestinationsRecoverWithoutTouchingUnmanagedFiles();
+testManagedWriteRefusesSymbolicLinkTargets();
+testManagedSkillCleanupRejectsPathTraversal();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in workflow-bundle-utils.test.js`);
