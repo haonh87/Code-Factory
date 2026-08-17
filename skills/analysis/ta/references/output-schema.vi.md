@@ -53,7 +53,7 @@ drivers:
       traces_to: []                  # id OBJ. Rỗng = driver này không phục vụ mục tiêu nào đã nêu;
                                      # khi đó nó phải xuất hiện trong input_issues.untraceable_drivers
       threshold:
-        status: quantified|not_quantified
+        status: quantified|binary|not_quantified
         value: ""
         reason: ""                   # bắt buộc khi not_quantified
       verification: ""               # sau này kiểm bằng cách nào
@@ -86,8 +86,10 @@ input_issues:                        # bắt buộc ở mọi profile — không
 
 metrics:
   applicable: true|false
-  items:
+  items:                              # đúng M-01 tới M-10, không bao giờ ít hơn
     - id: M-01
+      applicable: true|false
+      reason: ""                      # bắt buộc khi applicable = false
       name: ""
       formula: ""
       value: ""
@@ -100,7 +102,7 @@ handoff:
   to_dev:   { applicable: true|false, reason: "", items: [] }   # dùng chung: sa góp ràng buộc
                                                                  # ranh giới, ta góp ràng buộc kỹ thuật
   to_qc:    { applicable: true|false, reason: "", items: [] }
-  to_devops:{ applicable: true|false, reason: "", items: [] }
+  to_devops: { applicable: true|false, reason: "", items: [] }
 
 stop_condition:
   met: true|false

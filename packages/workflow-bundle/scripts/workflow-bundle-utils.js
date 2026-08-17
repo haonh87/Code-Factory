@@ -533,11 +533,79 @@ function resolveInputPath(primaryPath, legacyPath) {
   return "";
 }
 
+function addOwnerAccess(targetPath, directory) {
+  const stat = fs.lstatSync(targetPath);
+  if (stat.isSymbolicLink()) {
+    throw new Error(`Refusing to prepare managed symbolic link for write: ${targetPath}`);
+  }
+
+  const currentMode = stat.mode & 0o777;
+  const requiredOwnerBits = directory ? 0o700 : 0o600;
+  const nextMode = currentMode | requiredOwnerBits;
+  if (nextMode !== currentMode) {
+    fs.chmodSync(targetPath, nextMode);
+  }
+}
+
+function prepareExistingDirectoryTree(targetPath) {
+  addOwnerAccess(targetPath, true);
+  fs.readdirSync(targetPath, { withFileTypes: true }).forEach((entry) => {
+    const entryPath = path.join(targetPath, entry.name);
+    if (entry.isSymbolicLink()) {
+      throw new Error(`Refusing to prepare managed symbolic link for write: ${entryPath}`);
+    }
+    if (entry.isDirectory()) {
+      prepareExistingDirectoryTree(entryPath);
+      return;
+    }
+    if (entry.isFile()) {
+      addOwnerAccess(entryPath, false);
+    }
+  });
+}
+
+function prepareManagedPathForWrite(targetPath, options = {}) {
+  const resolvedTarget = path.resolve(targetPath);
+  const prepareParent = options.prepareParent !== false;
+
+  if (prepareParent) {
+    const directParent = path.dirname(resolvedTarget);
+    if (fs.existsSync(directParent)) {
+      const parentStat = fs.lstatSync(directParent);
+      if (!parentStat.isDirectory()) {
+        throw new Error(`Managed path parent is not a directory: ${directParent}`);
+      }
+      addOwnerAccess(directParent, true);
+    }
+  }
+
+  if (!fs.existsSync(resolvedTarget)) {
+    return resolvedTarget;
+  }
+
+  const targetStat = fs.lstatSync(resolvedTarget);
+  if (targetStat.isSymbolicLink()) {
+    throw new Error(`Refusing to prepare managed symbolic link for write: ${resolvedTarget}`);
+  }
+  if (targetStat.isDirectory()) {
+    if (options.recursive) {
+      prepareExistingDirectoryTree(resolvedTarget);
+    } else {
+      addOwnerAccess(resolvedTarget, true);
+    }
+  } else {
+    addOwnerAccess(resolvedTarget, false);
+  }
+
+  return resolvedTarget;
+}
+
 function removeFileIfExists(filePath) {
   if (!filePath || !fs.existsSync(filePath)) {
     return;
   }
 
+  prepareManagedPathForWrite(filePath);
   fs.rmSync(filePath, { force: true });
 }
 
@@ -554,6 +622,7 @@ function readManagedSkillsManifest({ managedSkillsManifestPath, legacyManagedSki
 }
 
 function writeManagedSkillsManifest(bundlePaths, managedSkills) {
+  prepareManagedPathForWrite(bundlePaths.managedSkillsManifestPath);
   ensureDirectory(path.dirname(bundlePaths.managedSkillsManifestPath));
   fs.writeFileSync(bundlePaths.managedSkillsManifestPath, `${managedSkills.join("\n")}\n`, "utf8");
 
@@ -695,6 +764,7 @@ function loadInstallState({ manifest, repoRoot, runtimeHome, mode, installStateP
 
 function writeInstallState(bundlePaths, stateInput, context) {
   const normalizedState = normalizeInstallState(stateInput, context);
+  prepareManagedPathForWrite(bundlePaths.installStatePath);
   ensureDirectory(path.dirname(bundlePaths.installStatePath));
   fs.writeFileSync(bundlePaths.installStatePath, `${JSON.stringify(normalizedState, null, 2)}\n`, "utf8");
 
@@ -759,30 +829,57 @@ function selectSkills({ availableSkills, requestedSkills, excludedSkills, curren
   return unique(finalNames).sort((left, right) => left.localeCompare(right));
 }
 
+function resolveManagedSkillDestination(skillsHome, skillName) {
+  const normalizedName = String(skillName || "");
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(normalizedName)) {
+    throw new Error(`Invalid managed skill name '${normalizedName}'.`);
+  }
+  const resolvedSkillsHome = path.resolve(skillsHome);
+  const destination = path.resolve(resolvedSkillsHome, normalizedName);
+  if (path.dirname(destination) !== resolvedSkillsHome) {
+    throw new Error(`Invalid managed skill name '${normalizedName}'.`);
+  }
+  return destination;
+}
+
 function syncSkills({ selectedSkillNames, availableSkills, skillsHome, previousManagedSkills }) {
-  ensureDirectory(skillsHome);
   const availableByName = new Map(availableSkills.map((skill) => [skill.name, skill]));
+  const selectedDestinations = new Map(
+    selectedSkillNames.map((skillName) => {
+      if (!availableByName.has(skillName)) {
+        throw new Error(`Unknown managed skill '${skillName}'.`);
+      }
+      return [skillName, resolveManagedSkillDestination(skillsHome, skillName)];
+    })
+  );
+  const previousDestinations = previousManagedSkills.map((skillName) => [
+    skillName,
+    resolveManagedSkillDestination(skillsHome, skillName)
+  ]);
+  prepareManagedPathForWrite(skillsHome);
+  ensureDirectory(skillsHome);
   const installed = [];
   const removed = [];
 
   selectedSkillNames.forEach((skillName) => {
     const skill = availableByName.get(skillName);
-    const skillDest = path.join(skillsHome, skillName);
+    const skillDest = selectedDestinations.get(skillName);
+    prepareManagedPathForWrite(skillDest, { recursive: true });
     fs.rmSync(skillDest, { recursive: true, force: true });
     fs.cpSync(skill.sourceDir, skillDest, { recursive: true });
     installed.push(skillDest);
   });
 
-  previousManagedSkills.forEach((skillName) => {
+  previousDestinations.forEach(([skillName, staleSkillDest]) => {
     if (selectedSkillNames.includes(skillName)) {
       return;
     }
 
-    const staleSkillDest = path.join(skillsHome, skillName);
     if (!fs.existsSync(staleSkillDest)) {
       return;
     }
 
+    prepareManagedPathForWrite(staleSkillDest, { recursive: true });
     fs.rmSync(staleSkillDest, { recursive: true, force: true });
     removed.push(staleSkillDest);
   });
@@ -794,6 +891,7 @@ function syncSkills({ selectedSkillNames, availableSkills, skillsHome, previousM
 }
 
 function syncGlobalPolicy({ globalAgentsSource, globalAgentsDest }) {
+  prepareManagedPathForWrite(globalAgentsDest);
   ensureDirectory(path.dirname(globalAgentsDest));
   fs.copyFileSync(globalAgentsSource, globalAgentsDest);
   return globalAgentsDest;
@@ -801,8 +899,10 @@ function syncGlobalPolicy({ globalAgentsSource, globalAgentsDest }) {
 
 function syncProjectPolicy({ globalAgentsSource, projectRoot, projectAgentsFileName }) {
   const resolvedProjectRoot = path.resolve(projectRoot);
+  prepareManagedPathForWrite(resolvedProjectRoot);
   ensureDirectory(resolvedProjectRoot);
   const destinationPath = path.join(resolvedProjectRoot, projectAgentsFileName);
+  prepareManagedPathForWrite(destinationPath);
   fs.copyFileSync(globalAgentsSource, destinationPath);
 
   return {
@@ -840,6 +940,7 @@ function syncSupportPolicies({ supportPoliciesSourceRoot, supportPoliciesDestRoo
     return "";
   }
 
+  prepareManagedPathForWrite(supportPoliciesDestRoot, { recursive: true });
   ensureDirectory(supportPoliciesDestRoot);
   copyTreeContents(supportPoliciesSourceRoot, supportPoliciesDestRoot, new Set(normalizeArray(excludedFileNames)));
   return supportPoliciesDestRoot;
@@ -895,6 +996,7 @@ module.exports = {
   normalizeInstallState,
   normalizeProjectTargets,
   normalizeSingleValue,
+  prepareManagedPathForWrite,
   readManagedSkillsManifest,
   resolveCodexHome,
   resolveRuntimeHome,

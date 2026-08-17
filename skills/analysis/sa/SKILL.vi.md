@@ -1,7 +1,7 @@
 ---
 language: vi
 name: sa
-description: Biến một yêu cầu sản phẩm hoặc yêu cầu thay đổi thành architecture driver ở tầng giải pháp và tầng hệ thống — mục tiêu kèm cách đo, ràng buộc thương mại và pháp lý, năng lực nào nên thuộc hệ thống nào, ranh giới giữa các hệ thống nằm ở đâu, dữ liệu nào cần nguồn sự thật duy nhất, và tiêu chí sau này dùng để chọn hướng — mỗi driver truy vết được về một mục tiêu, có ngưỡng số hoặc lý do tường minh vì sao chưa có, và map vào khối bàn giao cho BA, DEV, QC, DevOps. Dùng ở bước s01 tới s04, trước khi chốt acceptance criteria và trước khi chọn bất kỳ technical approach nào. Chạy độc lập từ yêu cầu thô; output của requirement-analysis hay product-thinking là đầu vào bổ trợ tùy chọn. Không chuẩn hóa lại yêu cầu, không làm product discovery, không mở hay chọn hướng giải pháp, không thiết kế technical approach, và không dựng model hay vẽ view kiến trúc.
+description: Biến một yêu cầu sản phẩm hoặc yêu cầu thay đổi thành architecture driver ở tầng giải pháp và tầng hệ thống — mục tiêu kèm cách đo, ràng buộc thương mại và pháp lý, năng lực nào nên thuộc hệ thống nào, ranh giới giữa các hệ thống nằm ở đâu, dữ liệu nào cần nguồn sự thật duy nhất, và tiêu chí sau này dùng để chọn hướng — mỗi driver truy vết được về một mục tiêu, có ngưỡng số hoặc lý do tường minh vì sao chưa có, và map vào khối bàn giao cho BA, DEV và QC. Dùng ở bước s01 tới s04, trước khi chốt acceptance criteria và trước khi chọn bất kỳ technical approach nào. Chạy độc lập từ yêu cầu thô; output của requirement-analysis hay product-thinking là đầu vào bổ trợ tùy chọn. Không chuẩn hóa lại yêu cầu, không làm product discovery, không mở hay chọn hướng giải pháp, không thiết kế technical approach, và không dựng model hay vẽ view kiến trúc.
 ---
 
 # SA — Góc nhìn Solution và System Architect
@@ -44,7 +44,8 @@ là toàn bộ giá trị của skill này; phần còn lại đi tiếp sang `s
 - Cho mỗi driver một ngưỡng số, hoặc một lý do tường minh vì sao chưa có.
 - Truy vết hai chiều: mọi driver về được mục tiêu, mọi mục tiêu có driver đỡ.
 - Báo cáo vấn đề của đầu vào thay vì làm mượt nó đi.
-- Giao cho BA, DEV, QC, DevOps mỗi vai một khối tự đọc được mà không cần đọc phần còn lại.
+- Giao cho BA, DEV, QC mỗi vai một khối tự đọc được mà không cần đọc phần còn lại; xuất khối DevOps
+  do TA sở hữu ở trạng thái không áp dụng.
 - Đo bản phân tích bằng chỉ số ở `references/metric-table.md` và công bố con số.
 
 ## Position In The Workflow
@@ -176,7 +177,8 @@ Khối không áp dụng thì xuất với `applicable: false` kèm `reason`. `i
 - Không bao giờ bịa chủ sở hữu. `unknown` là một phát hiện; phỏng đoán là kết quả sai mà người ta sẽ
   hành động theo.
 - Không điền khối do `ta` sở hữu. Không đồng ý với output của nó thì đưa vào `input_issues`.
-- Mọi chỉ số có đủ `formula`, `value`, `evidence`. Được hai trên ba là không đạt gate.
+- Mọi chỉ số có đủ `formula`, `value`, `evidence`, `threshold`, `calibration`. Thiếu một mục là không
+  đạt gate.
 - Đọc chỉ số theo cặp — xem bảng cặp đối trọng ở `references/metric-table.md`.
 
 ## Decision Rule
@@ -203,7 +205,8 @@ ràng buộc cả góc nhìn hệ thống: nói rằng một năng lực cần �
 - Mọi driver đều chỉ ra được ai đứng sau, có trạng thái ngưỡng đúng bản chất, và có `verification`.
 - Truy vết chạy được hai chiều, mọi chỗ đứt đều ghi trong `input_issues`.
 - Mọi driver có mặt ở ít nhất một khối bàn giao, hoặc trong `input_issues.surplus_drivers`.
-- Mọi chỉ số có `formula`, `value`, `evidence`, và mang `calibration: uncalibrated`.
+- Mọi chỉ số có `formula`, `value`, `evidence`, `threshold`, `calibration`; calibration giữ
+  `uncalibrated` tới khi được đo theo dữ liệu giao hàng.
 - Nếu có landscape, `question_answered` đã nêu và cả tám mục kiểm đã đếm.
 - `stop_condition` đã quyết, và mọi mục đẩy sang `s03` đều có chủ sở hữu.
 - Không có công nghệ, sản phẩm hay pattern nào bị gọi tên như câu trả lời ở bất kỳ đâu trong output.
@@ -211,7 +214,7 @@ ràng buộc cả góc nhìn hệ thống: nói rằng một năng lực cần �
 ## References
 
 - `references/output-schema.md` — schema đầy đủ của artifact và các luật ràng buộc nó.
-- `references/metric-table.md` — chín chỉ số, công thức và luật đọc theo cặp.
+- `references/metric-table.md` — mười chỉ số, công thức và luật đọc theo cặp.
 - `references/block-ownership.md` — khối nào của `sa`, của `ta`, hay của cả hai.
 - `references/landscape-quality-bar.md` — tám mục kiểm mà một landscape phải qua mới được nhận.
 - `references/visual-encoding.md` — kênh thị giác nào được mang thuộc tính nào, quyết trước khi vẽ.

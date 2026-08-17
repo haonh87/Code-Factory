@@ -1,0 +1,118 @@
+{
+  "architecture_model": {
+    "model_id": "MODEL-ORDER-LANDSCAPE",
+    "architecture_state": "target",
+    "model_format": "ARCHITECTURE_YAML",
+    "elements": [
+      {
+        "system_id": "SYS-POS",
+        "name": "Point of Sale",
+        "kind": "software_system",
+        "responsibility": "Captures in-store orders and payments.",
+        "domain": "Store Sales",
+        "boundary_id": "DOM-STORE-SALES",
+        "owner": "Store Platform Team",
+        "decision_impact": "Store leaders lose the order-entry boundary if this box is removed."
+      },
+      {
+        "system_id": "SYS-DELIVERY-CHANNEL",
+        "name": "Delivery Channel",
+        "kind": "external_system",
+        "responsibility": "Supplies delivery-partner orders.",
+        "domain": "Store Sales",
+        "boundary_id": "DOM-STORE-SALES",
+        "owner": "Digital Channels Team",
+        "decision_impact": "Channel owners cannot see the external order source if removed."
+      },
+      {
+        "system_id": "SYS-ORDER",
+        "name": "Order Service",
+        "kind": "software_system",
+        "responsibility": "Owns order lifecycle and fulfillment state.",
+        "domain": "Order Management",
+        "boundary_id": "DOM-ORDER",
+        "owner": "Order Team",
+        "decision_impact": "Product and engineering lose the order source of truth if removed."
+      },
+      {
+        "system_id": "SYS-KITCHEN",
+        "name": "Kitchen Orchestration",
+        "kind": "software_system",
+        "responsibility": "Routes accepted items to restaurant kitchens.",
+        "domain": "Order Management",
+        "boundary_id": "DOM-ORDER",
+        "owner": "Restaurant Operations Team",
+        "decision_impact": "Operations cannot decide where fulfillment starts if removed."
+      },
+      {
+        "system_id": "SYS-LOYALTY",
+        "name": "Loyalty Service",
+        "kind": "software_system",
+        "responsibility": "Calculates and records loyalty benefits.",
+        "domain": "Customer Engagement",
+        "boundary_id": "DOM-CUSTOMER",
+        "owner": "Customer Platform Team",
+        "decision_impact": "Customer teams lose the loyalty ownership boundary if removed."
+      },
+      {
+        "system_id": "SYS-NOTIFICATION",
+        "name": "Notification Service",
+        "kind": "software_system",
+        "responsibility": "Delivers customer order notifications.",
+        "domain": "Customer Engagement",
+        "boundary_id": "DOM-CUSTOMER",
+        "owner": "Customer Communications Team",
+        "decision_impact": "Journey owners cannot locate notification responsibility if removed."
+      }
+    ],
+    "relationships": [
+      {
+        "integration_id": "INT-POS-ORDER",
+        "from_system_id": "SYS-POS",
+        "to_system_id": "SYS-ORDER",
+        "direction": "DIRECTED",
+        "business_purpose": "Submit an in-store order"
+      },
+      {
+        "integration_id": "INT-CHANNEL-ORDER",
+        "from_system_id": "SYS-DELIVERY-CHANNEL",
+        "to_system_id": "SYS-ORDER",
+        "direction": "DIRECTED",
+        "business_purpose": "Submit a delivery order"
+      },
+      {
+        "integration_id": "INT-ORDER-KITCHEN",
+        "from_system_id": "SYS-ORDER",
+        "to_system_id": "SYS-KITCHEN",
+        "direction": "DIRECTED",
+        "business_purpose": "Start fulfillment"
+      },
+      {
+        "integration_id": "INT-ORDER-LOYALTY",
+        "from_system_id": "SYS-ORDER",
+        "to_system_id": "SYS-LOYALTY",
+        "direction": "DIRECTED",
+        "business_purpose": "Record earned loyalty benefits"
+      },
+      {
+        "integration_id": "INT-ORDER-NOTIFICATION",
+        "from_system_id": "SYS-ORDER",
+        "to_system_id": "SYS-NOTIFICATION",
+        "direction": "DIRECTED",
+        "business_purpose": "Notify order status"
+      }
+    ]
+  },
+  "requested_view": {
+    "view_id": "VIEW-ORDER-LANDSCAPE",
+    "kind": "LANDSCAPE",
+    "audience": "engineering",
+    "render_format": "DRAWIO"
+  },
+  "render_plan": {
+    "render_owner": "ARCHITECTURE_MODELING",
+    "owner_skill": "architecture-modeling",
+    "built_in_renderer": "REQUIRED",
+    "exactly_one_render_owner": true
+  }
+}

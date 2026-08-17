@@ -1,7 +1,12 @@
 const fs = require("fs");
 const path = require("path");
 const { ensureDirectory, readUtf8 } = require("./workflow-validator-utils");
-const { listAvailableHarnesses, loadAdapter, getRuntimeConfigFromAdapter } = require("./workflow-bundle-utils");
+const {
+  listAvailableHarnesses,
+  loadAdapter,
+  getRuntimeConfigFromAdapter,
+  prepareManagedPathForWrite
+} = require("./workflow-bundle-utils");
 
 const BUNDLE_MANIFEST_FILE = "workflow-bundle.manifest.json";
 const LEGACY_BUNDLE_MANIFEST_FILE = "workflow-pack.manifest.json";
@@ -29,10 +34,12 @@ function removeFileIfExists(filePath) {
     return;
   }
 
+  prepareManagedPathForWrite(filePath);
   fs.rmSync(filePath, { force: true });
 }
 
 function copyDirectory(sourcePath, destinationPath) {
+  prepareManagedPathForWrite(destinationPath, { recursive: true });
   fs.rmSync(destinationPath, { recursive: true, force: true });
   fs.cpSync(sourcePath, destinationPath, { recursive: true });
   // Ensure copied files are writable (source may be read-only)
@@ -60,11 +67,13 @@ function copyDirectory(sourcePath, destinationPath) {
 }
 
 function copyFileWritable(sourcePath, destinationPath) {
+  prepareManagedPathForWrite(destinationPath);
   fs.copyFileSync(sourcePath, destinationPath);
   fs.chmodSync(destinationPath, 0o644);
 }
 
 function copyDirectoryWithoutFiles(sourcePath, destinationPath, excludedFileNames) {
+  prepareManagedPathForWrite(destinationPath, { recursive: true });
   fs.rmSync(destinationPath, { recursive: true, force: true });
   fs.mkdirSync(destinationPath, { recursive: true });
 
@@ -152,7 +161,7 @@ function bundleRuntimeMode({ repoRoot, packageRoot, sourceManifest, mode }) {
     throw new Error(`Missing support policies root for mode '${mode}': ${sourceSupportPoliciesRoot}`);
   }
 
-  fs.rmSync(runtimeRoot, { recursive: true, force: true });
+  prepareManagedPathForWrite(runtimeRoot);
   ensureDirectory(runtimeRoot);
   if (runtimePoliciesRoot) {
     ensureDirectory(path.dirname(runtimePoliciesRoot));
@@ -217,6 +226,7 @@ function main() {
   });
   const packageManifest = buildSyncedPackageManifest({ sourceManifest, modeEntries });
 
+  prepareManagedPathForWrite(packageManifestPath);
   fs.writeFileSync(packageManifestPath, `${JSON.stringify(packageManifest, null, 2)}\n`, "utf8");
   if (legacyPackageManifestPath !== packageManifestPath) {
     removeFileIfExists(legacyPackageManifestPath);

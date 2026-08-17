@@ -4,6 +4,11 @@ Released: `2026-08-14`
 Tag: `v2.3.2`
 Branch: `release/v2.3.2`
 
+> Superseded on `2026-08-17` by `v2.4.0` in the prepared release surface. The v2.4.0 tag and
+> publication remain subject to the human Release gate. Verification figures below are preserved as
+> the original v2.3.2 record and must not be reused as corrective-release evidence; see
+> [`CHANGE-002/evidence-correction.md`](../../changes/CHANGE-002/evidence-correction.md).
+
 ## Changelog
 
 `workflow-bundle v2.3.2` adds the `sa` and `ta` skills to the pack (38 → 40 skills) and wires them
@@ -90,6 +95,6 @@ into the policy layer and the step map. No gate, governance, or workflow-chain b
 ## Notes
 
 - `v2.3.1` is the previous release.
-- `v2.3.2` is the current release.
+- `v2.3.2` is the historical release superseded by the prepared `v2.4.0` release surface.
 - Version step follows the pack's own precedent: `v2.3.1` also added one skill (37 → 38) as a patch
   bump. Adding skills is treated as additive and backward-compatible here, not as a minor release.

@@ -26,6 +26,7 @@ const {
   SIGNOFF_KEYS,
   countYamlListItemsInSection,
   getApprovalGateDefault,
+  getFinalizedStepSemanticEvidenceErrors,
   getRequiredFinalizedGateKeys,
   getSectionScalarValue
 } = require("./workflow-gate-evidence-utils");
@@ -402,6 +403,20 @@ function validateWorkflowGovernance(options) {
     }
 
     if (isFinalizedNoteStatus(noteStatus)) {
+      // Keep legacy/default artifacts readable while making strict and regulated
+      // gates reject semantic placeholders, empty evidence, and false coverage.
+      if (["strict", "regulated"].includes(governanceProfile)) {
+        errors.push(
+          ...getFinalizedStepSemanticEvidenceErrors({
+            stepId,
+            content,
+            filePath,
+            sddMode,
+            deliveryContext
+          })
+        );
+      }
+
       const requiredSignoffs = getRequiredFinalizedGateKeys(stepId, approvalGates, sddMode);
       requiredSignoffs.forEach((key) => {
         const reviewedByField = getGateReviewFieldName(key, "by");

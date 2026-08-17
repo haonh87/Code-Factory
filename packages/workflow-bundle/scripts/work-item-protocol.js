@@ -445,6 +445,7 @@ function applyAction(reportInput, action, args) {
           note: getNoteText(args, "Work item moved into active workflow execution."),
           currentStep: normalizeSingleValue(args.step || "s07"),
           handoffTarget: normalizeSingleValue(args["handoff-target"] || "step-s07-owner"),
+          blockers: [],
           requiredActions: ["Continue active execution from step 7 onward."],
           protocolOwner: normalizeSingleValue(args["protocol-owner"] || args.actor || ""),
           grantedWritePaths: resolveGrantedWritePaths(reportInput, args, projectRoot, { requireNonEmpty: true }),

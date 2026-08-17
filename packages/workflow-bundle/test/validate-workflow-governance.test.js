@@ -6,6 +6,9 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { validateWorkflowGovernance } = require("../scripts/validate-workflow-governance");
+const { getFinalizedStepSemanticEvidenceErrors } = require("../scripts/workflow-gate-evidence-utils");
+
+const semanticFixtureRoot = path.join(__dirname, "..", "tests", "fixtures", "workflow-governance");
 
 let failures = 0;
 
@@ -139,10 +142,145 @@ function testLightWithoutFoundationContractPasses() {
   }
 }
 
+function readSemanticFixture(name) {
+  return fs.readFileSync(path.join(semanticFixtureRoot, name), "utf8");
+}
+
+function testFinalizedSemanticEvidenceFixtures() {
+  const emptyErrors = getFinalizedStepSemanticEvidenceErrors({
+    stepId: "s04",
+    content: readSemanticFixture("invalid-empty-required-evidence.s04.md"),
+    filePath: "invalid-empty-required-evidence.s04.md",
+    sddMode: "none"
+  });
+  assert(
+    emptyErrors.some((error) => /acceptance_criteria.*non-empty/i.test(error)),
+    `empty required evidence must fail, got ${JSON.stringify(emptyErrors)}`
+  );
+  assert(
+    emptyErrors.some((error) => /current_behavior_refs.*non-empty/i.test(error)),
+    `empty brownfield baseline must fail, got ${JSON.stringify(emptyErrors)}`
+  );
+
+  const placeholderErrors = getFinalizedStepSemanticEvidenceErrors({
+    stepId: "s04",
+    content: readSemanticFixture("invalid-placeholder-evidence.s04.md"),
+    filePath: "invalid-placeholder-evidence.s04.md",
+    sddMode: "none"
+  });
+  assert(
+    placeholderErrors.some((error) => /placeholder.*criterion/i.test(error)),
+    `placeholder criterion must fail, got ${JSON.stringify(placeholderErrors)}`
+  );
+  assert(
+    placeholderErrors.some((error) => /Definition of Ready.*concrete status/i.test(error)),
+    `placeholder DoR status must fail, got ${JSON.stringify(placeholderErrors)}`
+  );
+
+  const coverageErrors = getFinalizedStepSemanticEvidenceErrors({
+    stepId: "s08",
+    content: readSemanticFixture("invalid-coverage-total.s08.md"),
+    filePath: "invalid-coverage-total.s08.md",
+    sddMode: "none"
+  });
+  assert(
+    coverageErrors.some((error) => /coverage summary.*PASS/i.test(error)),
+    `coverage count mismatch must fail, got ${JSON.stringify(coverageErrors)}`
+  );
+  assert(
+    coverageErrors.some((error) => /coverage status PASS.*non-PASS/i.test(error)),
+    `contradictory coverage status must fail, got ${JSON.stringify(coverageErrors)}`
+  );
+
+  const validErrors = getFinalizedStepSemanticEvidenceErrors({
+    stepId: "s04",
+    content: readSemanticFixture("valid-semantic-evidence.s04.md"),
+    filePath: "valid-semantic-evidence.s04.md",
+    sddMode: "none"
+  });
+  assert(validErrors.length === 0, `valid semantic evidence must pass, got ${JSON.stringify(validErrors)}`);
+  console.log("  PASS: finalized semantic evidence negative/control fixtures");
+}
+
+function testStrictFinalizedNoteUsesSemanticValidator() {
+  const projectRoot = buildProject();
+  const slug = "strict-semantic-item";
+  const workflowRoot = path.join(projectRoot, "work-items", slug);
+  try {
+    writeFile(path.join(projectRoot, "project-context", "checklists", "strict.md"), "# Strict\n");
+    writeFile(
+      path.join(workflowRoot, `${slug}.s04.acceptance-criteria.md`),
+      [
+        "---",
+        `artifact_id: \"${slug}.s04.acceptance-criteria\"`,
+        "artifact_family: workflow-step",
+        `work_item_slug: \"${slug}\"`,
+        'step_id: "s04"',
+        'step_slug: "acceptance-criteria"',
+        "workflow_stage: design",
+        "work_item_type: CHANGE",
+        "delivery_context: brownfield",
+        "artifact_role: primary",
+        "artifact_kind: primary-note",
+        "source_of_truth: true",
+        "status: approved",
+        'governance_ref: "project-context/project-context.md"',
+        "governance_profile: strict",
+        "governance_status: CHECKS_PASSED",
+        "checklist_refs:",
+        '  - "project-context/checklists/strict.md"',
+        "sdd_mode: none",
+        "spec_status: approved",
+        "planning_track: full",
+        "execution_mode: agentic",
+        "review_mode: targeted",
+        "approval_gates:",
+        '  spec: "required"',
+        "role_signoffs:",
+        '  spec: ["ba"]',
+        '  dor: ["qc"]',
+        "gate_reviews:",
+        '  spec_reviewed_by: ["ba"]',
+        '  spec_reviewed_at: "2026-08-17"',
+        '  dor_reviewed_by: ["qc"]',
+        '  dor_reviewed_at: "2026-08-17"',
+        "upstream_artifacts: []",
+        "linked_artifacts: []",
+        "tags: []",
+        "---",
+        "",
+        "# s04",
+        "",
+        readSemanticFixture("invalid-empty-required-evidence.s04.md"),
+        "",
+        "## Governance Checks",
+        "```yaml",
+        'checklist_applied: ["project-context/checklists/strict.md"]',
+        "checks: []",
+        "blocking_items: []",
+        'owner: "qc"',
+        'next_action: "fix evidence"',
+        "```"
+      ].join("\n")
+    );
+    const result = validateWorkflowGovernance({ workflowRoot, projectRoot });
+    assert(!result.ok, "strict finalized note with empty evidence must fail governance validation");
+    assert(
+      result.errors.some((error) => /acceptance_criteria.*non-empty/i.test(error)),
+      `strict semantic integration error missing, got ${JSON.stringify(result.errors)}`
+    );
+    console.log("  PASS: strict/regulated finalized notes route through semantic validator");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
 console.log("Running validate-workflow-governance (light gate guard) tests...\n");
 testLightFoundationRequiredErrors();
 testLightContractRequiredErrors();
 testLightWithoutFoundationContractPasses();
+testFinalizedSemanticEvidenceFixtures();
+testStrictFinalizedNoteUsesSemanticValidator();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in validate-workflow-governance.test.js`);

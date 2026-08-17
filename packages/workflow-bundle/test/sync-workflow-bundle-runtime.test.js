@@ -41,6 +41,50 @@ function testCopyDirectoryNormalizesPermissions() {
   console.log("  PASS: copyDirectory chuẩn hóa quyền 644/755 (read-only source thành writable)");
 }
 
+function chmodTreeWritable(targetPath) {
+  if (!fs.existsSync(targetPath)) {
+    return;
+  }
+  const stat = fs.lstatSync(targetPath);
+  fs.chmodSync(targetPath, stat.isDirectory() ? 0o755 : 0o644);
+  if (stat.isDirectory()) {
+    fs.readdirSync(targetPath).forEach((name) => chmodTreeWritable(path.join(targetPath, name)));
+  }
+}
+
+function testCopyDirectoryReplacesHardenedDestination() {
+  if (process.platform === "win32") {
+    console.log("  SKIP: POSIX permission lifecycle fixture on win32");
+    return;
+  }
+
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), "wfc-sync-hardened-"));
+  try {
+    const src = path.join(base, "src");
+    const dest = path.join(base, "dest");
+    fs.mkdirSync(path.join(src, "nested"), { recursive: true });
+    fs.writeFileSync(path.join(src, "nested", "current.md"), "current\n");
+    fs.mkdirSync(path.join(dest, "nested"), { recursive: true });
+    fs.writeFileSync(path.join(dest, "nested", "stale.md"), "stale\n");
+    fs.chmodSync(path.join(dest, "nested", "stale.md"), 0o444);
+    fs.chmodSync(path.join(dest, "nested"), 0o555);
+    fs.chmodSync(dest, 0o555);
+
+    try {
+      copyDirectory(src, dest);
+      assert(true, "copyDirectory replaces a hardened managed destination");
+    } catch (error) {
+      assert(false, `copyDirectory must replace hardened managed destination (${error.code || error.message})`);
+    }
+    assert(fs.existsSync(path.join(dest, "nested", "current.md")), "current file copied after hardened replacement");
+    assert(!fs.existsSync(path.join(dest, "nested", "stale.md")), "stale managed file removed after hardened replacement");
+    console.log("  PASS: copyDirectory replaces hardened managed destination");
+  } finally {
+    chmodTreeWritable(base);
+    fs.rmSync(base, { recursive: true, force: true });
+  }
+}
+
 // ---------- R1: sync propagates schema versions (AC-14 source -> installed copy) ----------
 
 function testPropagatesSchemaVersions() {
@@ -83,6 +127,7 @@ function testAbsentSchemaVersionsDefaultEmpty() {
 
 console.log("Running sync-workflow-bundle-runtime (copy permissions) tests...\n");
 testCopyDirectoryNormalizesPermissions();
+testCopyDirectoryReplacesHardenedDestination();
 testPropagatesSchemaVersions();
 testAbsentSchemaVersionsDefaultEmpty();
 

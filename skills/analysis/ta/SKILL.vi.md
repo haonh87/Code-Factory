@@ -173,7 +173,8 @@ bao giờ được `applicable: false`.
 - Không bao giờ bịa chủ sở hữu. `unknown` là một phát hiện; phỏng đoán là kết quả sai mà người ta sẽ
   hành động theo.
 - Không điền `objectives` và `handoff.to_ba`. Không đồng ý với `sa` thì đưa vào `input_issues`.
-- Mọi chỉ số có đủ `formula`, `value`, `evidence`. Được hai trên ba là không đạt gate.
+- Mọi chỉ số có đủ `formula`, `value`, `evidence`, `threshold`, `calibration`. Thiếu một mục là không
+  đạt gate.
 - Đọc chỉ số theo cặp — xem bảng cặp đối trọng ở `references/metric-table.md`.
 
 ## Decision Rule
@@ -200,7 +201,8 @@ buộc bạn đang phát biểu, không phải một phần của thiết kế m
 - Mọi tích hợp nêu rõ cơ chế, chủ contract và hành vi khi lỗi.
 - Mọi driver đều chỉ ra được ai đứng sau, có trạng thái ngưỡng đúng bản chất, và có `verification`.
 - Mọi driver có mặt ở ít nhất một khối bàn giao, hoặc trong `input_issues.surplus_drivers`.
-- Mọi chỉ số có `formula`, `value`, `evidence`, và mang `calibration: uncalibrated`.
+- Mọi chỉ số có `formula`, `value`, `evidence`, `threshold`, `calibration`; calibration giữ
+  `uncalibrated` tới khi được đo theo dữ liệu giao hàng.
 - Nếu có landscape, `question_answered` đã nêu và cả tám mục kiểm đã đếm.
 - `stop_condition` đã quyết, và mọi mục đẩy sang `s03` đều có chủ sở hữu.
 - Không có công nghệ, sản phẩm hay pattern nào bị gọi tên như câu trả lời ở bất kỳ đâu trong output.
@@ -208,7 +210,7 @@ buộc bạn đang phát biểu, không phải một phần của thiết kế m
 ## References
 
 - `references/output-schema.md` — schema đầy đủ của artifact và các luật ràng buộc nó.
-- `references/metric-table.md` — chín chỉ số, công thức và luật đọc theo cặp.
+- `references/metric-table.md` — mười chỉ số, công thức và luật đọc theo cặp.
 - `references/block-ownership.md` — khối nào của `ta`, của `sa`, hay của cả hai.
 - `references/landscape-quality-bar.md` — tám mục kiểm mà một landscape phải qua mới được nhận.
 - `references/visual-encoding.md` — kênh thị giác nào được mang thuộc tính nào, quyết trước khi vẽ.

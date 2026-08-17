@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: README.vi.md
 
-`workflow-bundle` is the CLI package of the `v2.3.2` public release: it installs the workflow bundle for Codex or Claude Code, scaffolds or validates workflows, and supports the `agent proposes, human approves` flow for `work-item` and `change`.
+`workflow-bundle` is the CLI package of the `v2.4.0` public release: it installs the workflow bundle for Codex or Claude Code, scaffolds or validates workflows, and supports the `agent proposes, human approves` flow for `work-item` and `change`.
 
 Detailed quickstart: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -43,7 +43,7 @@ npm link
 wfc version
 ```
 
-## What `v2.3.2` Includes
+## What `v2.4.0` Includes
 
 - workflow bundle install surface via `wfc install|update|status|skills`
 - core authoring CLI via `wfc init|scaffold|validate`
@@ -51,6 +51,9 @@ wfc version
 - human approval gates for change packages and work items
 - capability control to lock the implementation path until the work item reaches `ACTIVE` at `s07`
 - multi-block runtime prompt with `AGENTS.global.md` as authority, `workflow-governance-router` as the entry router, and `codex-workflow-chain` as the workflow backbone
+- 41 managed skills in each generated runtime, including corrected `sa` and `ta` contracts
+- `architecture-modeling` with one-model/two-audience views, explicit render ownership, and deterministic draw.io support for landscape and integration views
+- permission-safe repeat install/update behavior that preserves unmanaged content
 
 ## Runtime Model
 

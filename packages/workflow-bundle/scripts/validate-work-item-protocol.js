@@ -20,7 +20,10 @@ const {
   quoteYamlString,
   resolveWorkflowRootBase
 } = require("./work-item-protocol-utils");
-const { getProtocolStepGateErrors } = require("./workflow-gate-evidence-utils");
+const {
+  getProtocolStateContradictionErrors,
+  getProtocolStepGateErrors
+} = require("./workflow-gate-evidence-utils");
 const {
   hasApprovedReceipt,
   loadTrustedApprovalReceipt
@@ -216,22 +219,51 @@ function validateProtocolState(report, context, errors) {
     errors.push(`${error}: ${reportPath}`);
   });
 
-  if (["ACTIVE", "VERIFIED", "DONE", "ARCHIVED"].includes(report.protocol_status)) {
-    const workItemReceipt = loadTrustedApprovalReceipt({
+  const workItemReceipt = loadTrustedApprovalReceipt({
+    projectRoot: context.projectRoot,
+    kind: "work-item",
+    workItemSlug: slug
+  });
+  const workItemApproved = hasApprovedReceipt(workItemReceipt.receipt, workItemReceipt.approvalRoot);
+  let changeApproved = false;
+  let changeReceipt = null;
+  if (report.change_id) {
+    changeReceipt = loadTrustedApprovalReceipt({
       projectRoot: context.projectRoot,
-      kind: "work-item",
-      workItemSlug: slug
+      kind: "change",
+      changeId: report.change_id
     });
+    changeApproved = hasApprovedReceipt(changeReceipt.receipt, changeReceipt.approvalRoot);
+  }
+
+  const approvedGates = new Set();
+  ["spec", "contract", "dor", "approach", "foundation", "task_plan", "uat", "release", "business_acceptance", "dod"].forEach(
+    (gate) => {
+      const loaded = loadTrustedApprovalReceipt({
+        projectRoot: context.projectRoot,
+        kind: "gate",
+        workItemSlug: slug,
+        gate
+      });
+      if (hasApprovedReceipt(loaded.receipt, loaded.approvalRoot)) {
+        approvedGates.add(gate);
+      }
+    }
+  );
+  errors.push(
+    ...getProtocolStateContradictionErrors(
+      report,
+      { workItemApproved, changeApproved, approvedGates },
+      reportPath
+    )
+  );
+
+  if (["ACTIVE", "VERIFIED", "DONE", "ARCHIVED"].includes(report.protocol_status)) {
     if (!hasApprovedReceipt(workItemReceipt.receipt, workItemReceipt.approvalRoot)) {
       errors.push(`Missing trusted work-item approval receipt for ${slug}: ${reportPath}`);
     }
 
     if (report.change_id) {
-      const changeReceipt = loadTrustedApprovalReceipt({
-        projectRoot: context.projectRoot,
-        kind: "change",
-        changeId: report.change_id
-      });
       if (!hasApprovedReceipt(changeReceipt.receipt, changeReceipt.approvalRoot)) {
         errors.push(`Missing trusted change approval receipt for ${report.change_id}: ${reportPath}`);
       }

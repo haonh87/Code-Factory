@@ -177,7 +177,8 @@ reason. `input_issues` is never `applicable: false`.
 - Never invent a measurement. If today's latency is unknown, `unknown` is the finding.
 - Never invent an owner. `unknown` is a finding; a guess is a false result someone will act on.
 - Do not fill `objectives` or `handoff.to_ba`. Disagreement with `sa` goes in `input_issues`.
-- Every metric carries `formula`, `value` and `evidence`. Two out of three fails the gate.
+- Every metric carries `formula`, `value`, `evidence`, `threshold` and `calibration`. Missing any one
+  fails the gate.
 - Read metrics in pairs — see the pairing table in `references/metric-table.md`.
 
 ## Decision Rule
@@ -204,7 +205,8 @@ part of the constraint you are stating, not part of the design someone else will
 - Every integration names its mechanism, its contract owner and its failure behaviour.
 - Every driver has an anchor, a threshold status that fits what it is, and a `verification`.
 - Every driver appears in at least one handoff block, or in `input_issues.surplus_drivers`.
-- Every metric has `formula`, `value` and `evidence`, and carries `calibration: uncalibrated`.
+- Every metric has `formula`, `value`, `evidence`, `threshold` and `calibration`; calibration remains
+  `uncalibrated` until measured against delivery data.
 - If a landscape was produced, `question_answered` is stated and all eight quality checks are counted.
 - `stop_condition` is decided, and every item pushed to `s03` has an owner.
 - No technology, product or pattern is named as the answer anywhere in the output.
@@ -212,7 +214,7 @@ part of the constraint you are stating, not part of the design someone else will
 ## References
 
 - `references/output-schema.md` — the full artifact schema and the rules binding it together.
-- `references/metric-table.md` — the nine metrics, their formulas and the pairing rules.
+- `references/metric-table.md` — the ten metrics, their formulas and the pairing rules.
 - `references/block-ownership.md` — which blocks belong to `ta`, to `sa`, or to both.
 - `references/landscape-quality-bar.md` — the eight checks a landscape must pass to be accepted.
 - `references/visual-encoding.md` — which visual channel may carry which attribute, decided before drawing.

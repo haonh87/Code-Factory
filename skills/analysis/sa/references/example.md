@@ -6,9 +6,8 @@ language: en
 
 > Vietnamese: example.vi.md
 >
-> **Canonical source: `skills/analysis/sa/references/example.md`.**
-> `skills/analysis/ta/references/example.md` is a byte-identical copy. Edit the canonical file,
-> then re-copy. A `diff` between the two copies runs in the verify path; drift fails.
+> This example is SA-owned. The TA counterpart is intentionally different and demonstrates only
+> the technical lens.
 
 One complete artifact, filled. The schema in `output-schema.md` tells you the shape; this file
 shows what a good fill actually looks like — including the parts most runs get wrong.
@@ -98,8 +97,8 @@ drivers:
       priority: high
 
     - id: DRV-4
-      kind: quality_attribute
-      statement: "Màn hình chọn khung giờ phản hồi đủ nhanh để khách không bỏ giữa chừng"
+      kind: business_goal
+      statement: "Tỷ lệ khách bỏ dở ở bước chọn khung giờ phải giảm sau phát hành"
       origin:
         stakeholder: "PO"
         concern: "Chọn khung giờ là bước dễ rơi nhất trong luồng đặt hàng"
@@ -109,7 +108,7 @@ drivers:
         status: not_quantified       # <-- LẼ RA phải có số, nhưng chưa có
         value: ""
         reason: "Chưa có số đo tỷ lệ rơi hiện tại ở bước này, nên mọi ngưỡng đưa ra bây giờ đều là bịa"
-      verification: "Chưa xác định được cho tới khi có baseline tỷ lệ rơi theo bước"
+      verification: "Đo tỷ lệ rơi hiện tại trong 4 tuần, đặt target cùng PO, rồi so 4 tuần sau phát hành"
       architectural_significance: "Nếu ngưỡng cuối cùng đủ chặt thì năng lực theo khung giờ phải đọc được mà không gọi vòng sang hệ thống khác"
       priority: medium
 
@@ -124,6 +123,9 @@ landscape:
   produced_by: ""
 
 input_issues:
+  unanchored_drivers: []
+  contested_ownership:
+    - "CAP-2 capacity source: no existing system has one agreed ownership record"
   untraceable_drivers: []
   unsupported_objectives: []
   conflicting_drivers: []
@@ -132,6 +134,7 @@ input_issues:
   ownerless_assumptions:
     - "Giả định màn hình bếp hiện tại nhận được đơn có giờ hẹn trong tương lai. Chưa ai đứng tên xác nhận; nếu sai thì DRV-2 đổi hoàn toàn về độ khó"
   surplus_drivers: []
+  missing_capability: []
 
 metrics:
   applicable: true
@@ -167,10 +170,10 @@ metrics:
     - id: M-05
       name: "Verification coverage"
       formula: "drivers with a stated measurement method / total drivers"
-      value: "3/4 = 75%"
+      value: "4/4 = 100%"
       threshold: "100%"
       calibration: uncalibrated
-      evidence: "DRV-4 chưa có cách kiểm vì phụ thuộc baseline chưa có"
+      evidence: "DRV-1..DRV-4 đều có verification; DRV-4 nêu rõ phép kiểm chỉ chạy được sau khi có baseline"
     - id: M-06
       name: "Handoff coverage"
       formula: "drivers mapped to >=1 downstream block / total drivers"
@@ -181,10 +184,10 @@ metrics:
     - id: M-07
       name: "Open-item ownership"
       formula: "items pushed to s03 carrying a named owner / total items pushed"
-      value: "2/2 = 100%"
+      value: "3/3 = 100%"
       threshold: "100%"
       calibration: uncalibrated
-      evidence: "xem stop_condition.pushed_to_s03"
+      evidence: "ba dòng stop_condition.pushed_to_s03 đều có owner"
     - id: M-08
       name: "Option discipline"
       formula: "direction choices with >=1 rejected alternative and reason / total direction choices"
@@ -194,11 +197,20 @@ metrics:
       evidence: "Lần chạy này không chốt hướng nào; chọn hướng thuộc s05"
     - id: M-09
       name: "Landscape element ownership"
+      applicable: false
+      reason: "landscape applicable=false ở profile driver-only"
       formula: "landscape elements with a named owner / total elements"
       value: "n/a"
       threshold: "100%"
       calibration: uncalibrated
       evidence: "landscape applicable=false ở profile driver-only"
+    - id: M-10
+      name: "Capability ownership clarity"
+      formula: "capabilities in scope with exactly one owning system / total capabilities in scope"
+      value: "1/2 = 50%"
+      threshold: "100%"
+      calibration: uncalibrated
+      evidence: "CAP-1 pre-order lifecycle có owner hiện hữu là Order Management; CAP-2 capacity source chưa có owner thống nhất và nằm trong contested_ownership"
 
 handoff:
   to_ba:
@@ -209,8 +221,11 @@ handoff:
       - "DRV-2 → tiêu chí: đơn đặt trước xuất hiện trên màn hình bếp >= 30 phút trước giờ hẹn, đo ở p99"
       - "DRV-3 → tiêu chí: đơn đặt trước không chứa trường cá nhân nào ngoài danh sách ở chính sách mục 4"
   to_dev:
-    applicable: false
-    reason: "owned by /ta"
+    applicable: true
+    reason: ""
+    items:
+      - "Boundary constraint: pre-order lifecycle keeps one source of truth; no duplicate order state across app and kitchen display"
+      - "Boundary constraint: capacity source must have exactly one owning system before s05 chooses an approach"
   to_qc:
     applicable: true
     reason: ""
@@ -225,11 +240,13 @@ handoff:
 
 stop_condition:
   met: false
-  reason: "DRV-4 chưa lượng hóa được và một giả định nền chưa có chủ. Cả hai chặn việc chốt acceptance criteria ở s04, nên phân tích dừng và bàn giao thay vì đoán tiếp"
+  reason: "DRV-4 chưa lượng hóa, ownership của capacity source còn contested, và một giả định nền chưa được xác nhận; cả ba phải được bàn giao thay vì đoán"
   pushed_to_s03:
     - question: "Tỷ lệ rơi hiện tại ở bước chọn khung giờ là bao nhiêu, đo ở đâu"
       owner: "po"
     - question: "Màn hình bếp hiện tại có nhận được đơn có giờ hẹn trong tương lai không"
+      owner: "developer"
+    - question: "Hệ thống nào sở hữu duy nhất capacity source và contract của nó"
       owner: "developer"
 ```
 
@@ -253,8 +270,9 @@ be read as a decision the PO made.
 number for `DRV-4`, or quietly drop it. The metric is allowed to be short as long as the shortfall
 is visible.
 
-**`M-05` is 75% and `stop_condition.met` is `false`.** The analysis is honest that it is not
-finished. Two questions go to `s03` with named owners rather than being answered by guesswork.
+**`M-05` is 100% while `stop_condition.met` is `false`.** Every driver states how it will be
+verified, but one verification still depends on a missing baseline. Coverage does not pretend the
+input gap disappeared; three questions go to `s03` with named owners.
 
 ## What Is Not Here, On Purpose
 

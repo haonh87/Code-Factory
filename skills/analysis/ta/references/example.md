@@ -6,26 +6,23 @@ language: en
 
 > Vietnamese: example.vi.md
 >
-> **Canonical source: `skills/analysis/sa/references/example.md`.**
-> `skills/analysis/ta/references/example.md` is a byte-identical copy. Edit the canonical file,
-> then re-copy. A `diff` between the two copies runs in the verify path; drift fails.
-
-One complete artifact, filled. The schema in `output-schema.md` tells you the shape; this file
-shows what a good fill actually looks like — including the parts most runs get wrong.
+> This example is TA-owned. It uses the objectives from an existing SA artifact as read-only trace
+> anchors and fills only technical driver and handoff content.
 
 ## The Call
 
 ```
-/sa Thêm tính năng đặt hàng trước cho ứng dụng khách hàng, đơn đặt trước phải hiện ở màn hình bếp
+/ta Add pre-ordering to the customer app; pre-orders must appear on the kitchen display
 ```
 
-No directives. Brownfield, one customer app plus the existing kitchen display. No contract change.
+No directives. Brownfield. The SA artifact supplies `OBJ-1` and `OBJ-2`; the current kitchen-order
+contract and ownership register are available as baseline evidence.
 
 ## The Artifact
 
 ```yaml
 invocation:
-  skill: sa
+  skill: ta
   directives_parsed: []
   directives_unresolved: []
   selected_profile: driver-only
@@ -33,89 +30,81 @@ invocation:
   escalation_reasons: []
 
 objectives:
-  applicable: true
-  items:
-    - id: OBJ-1
-      statement: "Giảm tải bếp giờ cao điểm"
-      measure: "số đơn tồn tại quầy lúc 12h, so với trung bình 4 tuần trước"
-      source: "PO, họp planning 2026-08-10"
-      confidence: stated
-    - id: OBJ-2
-      statement: "Khách biết trước thời điểm nhận hàng"
-      measure: "tỷ lệ đơn đặt trước giao đúng khung giờ đã hẹn"
-      source: "suy ra từ chính yêu cầu; chưa ai phát biểu"
-      confidence: inferred          # <-- không ai nói ra, nên phải đánh dấu
+  applicable: false
+  reason: "owned by /sa; OBJ-1 and OBJ-2 are read-only trace anchors from sa_output"
+  items: []
 
 drivers:
   applicable: true
+  reason: ""
   items:
     - id: DRV-1
-      kind: business_goal
-      statement: "Khách chọn được khung giờ nhận hàng trong các khung còn năng lực phục vụ"
+      kind: quality_attribute
+      statement: "Available-slot lookup responds within 300 ms at p95 under 200 requests per second"
       origin:
-        stakeholder: "PO"
-        concern: "Đặt trước mà bếp không kham nổi thì làm hỏng cả trải nghiệm lẫn mục tiêu giảm tải"
-        constraint_ref: ""
-      traces_to: [OBJ-1, OBJ-2]
+        stakeholder: "Product owner"
+        concern: "A slow slot picker increases abandonment at the most fragile step"
+        constraint_ref: "Current peak forecast 200 requests/second"
+      traces_to: [OBJ-2]
       threshold:
         status: quantified
-        value: "mỗi khung 30 phút nhận tối đa 12 đơn đặt trước"
+        value: "p95 <= 300 ms at 200 requests/second"
         reason: ""
-      verification: "Đặt thử 13 đơn vào cùng khung; đơn thứ 13 phải bị từ chối kèm gợi ý khung khác"
-      architectural_significance: "Buộc phải có mô hình năng lực theo khung giờ, tức một nguồn sự thật về sức chứa mà cả app và bếp cùng đọc"
+      verification: "Replay the peak profile for 15 minutes and calculate p95 from the complete result set"
+      architectural_significance: "Rules out a request path that depends on multiple slow synchronous lookups"
       priority: high
 
     - id: DRV-2
-      kind: constraint
-      statement: "Đơn đặt trước hiện ở màn hình bếp trước giờ hẹn ít nhất 30 phút"
+      kind: integration
+      statement: "A confirmed pre-order reaches the kitchen display no later than 60 seconds after acceptance"
       origin:
-        stakeholder: "Bếp trưởng"
-        concern: "Dưới 30 phút thì không kịp chuẩn bị nguyên liệu, đặt trước thành vô nghĩa"
-        constraint_ref: ""
+        stakeholder: "Kitchen lead"
+        concern: "Late visibility removes the preparation window promised by pre-ordering"
+        constraint_ref: "Existing kitchen-order contract v3"
       traces_to: [OBJ-1]
       threshold:
         status: quantified
-        value: "hiện trên màn hình bếp >= 30 phút trước giờ hẹn, ở p99"
+        value: "delivery lag <= 60 seconds at p99"
         reason: ""
-      verification: "Đo khoảng cách giữa thời điểm hiển thị và giờ hẹn trên 200 đơn liên tiếp"
-      architectural_significance: "Đặt sàn thời gian cho đường đưa dữ liệu tới màn hình bếp, loại các cơ chế chỉ đồng bộ theo phiên làm việc"
+      verification: "Replay 500 contract-v3 messages, correlate acceptance and display timestamps, and calculate p99"
+      architectural_significance: "Constrains the integration path and its observable delivery semantics without choosing a transport"
       priority: high
 
     - id: DRV-3
-      kind: regulatory
-      statement: "Thông tin liên hệ của khách trong đơn đặt trước chịu nghĩa vụ bảo vệ dữ liệu cá nhân"
+      kind: integration
+      statement: "The existing kitchen-order contract remains backward compatible for current orders"
       origin:
-        stakeholder: "Pháp chế"
-        concern: "Đơn đặt trước lưu lâu hơn đơn tại quầy nên rơi vào diện lưu trữ có nghĩa vụ"
-        constraint_ref: "Chính sách bảo vệ dữ liệu nội bộ, mục 4"
-      traces_to: [OBJ-2]
+        stakeholder: "Order platform owner"
+        concern: "Pre-order fields must not break current kitchen clients"
+        constraint_ref: "Kitchen-order contract v3 compatibility policy"
+      traces_to: [OBJ-1, OBJ-2]
       threshold:
-        status: binary               # <-- thoả hoặc không; không con số nào có nghĩa
+        status: binary
         value: ""
         reason: ""
-      verification: "Rà trường dữ liệu cá nhân trong đơn đặt trước, đối chiếu mục 4 của chính sách, có chữ ký Pháp chế"
-      architectural_significance: "Ràng buộc nơi được lưu và thời hạn lưu thông tin liên hệ; loại phương án nhân bản đơn sang hệ thống không nằm trong phạm vi chính sách"
+      verification: "Run the v3 consumer compatibility suite and obtain the contract owner's approval"
+      architectural_significance: "Rules out a breaking replacement of the current contract"
       priority: high
 
     - id: DRV-4
       kind: quality_attribute
-      statement: "Màn hình chọn khung giờ phản hồi đủ nhanh để khách không bỏ giữa chừng"
+      statement: "The pre-order path recovers after kitchen-display unavailability without losing accepted orders"
       origin:
-        stakeholder: "PO"
-        concern: "Chọn khung giờ là bước dễ rơi nhất trong luồng đặt hàng"
-        constraint_ref: ""
-      traces_to: [OBJ-2]
+        stakeholder: "Operations lead"
+        concern: "A display restart must not silently discard already accepted pre-orders"
+        constraint_ref: "No measured recovery baseline exists"
+      traces_to: [OBJ-1]
       threshold:
-        status: not_quantified       # <-- LẼ RA phải có số, nhưng chưa có
+        status: not_quantified
         value: ""
-        reason: "Chưa có số đo tỷ lệ rơi hiện tại ở bước này, nên mọi ngưỡng đưa ra bây giờ đều là bịa"
-      verification: "Chưa xác định được cho tới khi có baseline tỷ lệ rơi theo bước"
-      architectural_significance: "Nếu ngưỡng cuối cùng đủ chặt thì năng lực theo khung giờ phải đọc được mà không gọi vòng sang hệ thống khác"
-      priority: medium
+        reason: "No recovery-time baseline or approved target exists for the current display integration"
+      verification: "Measure recovery and loss during three controlled display restarts, then ask Operations to set the target"
+      architectural_significance: "Requires explicit failure and recovery behavior before an approach can be accepted"
+      priority: high
 
 landscape:
   applicable: false
-  reason: "profile driver-only: một ứng dụng khách hàng cộng màn hình bếp sẵn có, không đổi contract, ranh giới tích hợp không dịch chuyển"
+  reason: "driver-only profile; the integration boundary and current contract are already named"
   question_answered: ""
   render_format: ""
   view_axis: ""
@@ -124,14 +113,17 @@ landscape:
   produced_by: ""
 
 input_issues:
+  unanchored_drivers: []
+  contested_ownership:
+    - "CAP-3 slot-capacity calculation has no single owning system in the current ownership register"
   untraceable_drivers: []
   unsupported_objectives: []
   conflicting_drivers: []
   unquantified_nfrs:
-    - "DRV-4: chưa có baseline tỷ lệ rơi ở bước chọn khung giờ. Cần số đo trước khi đặt ngưỡng"
-  ownerless_assumptions:
-    - "Giả định màn hình bếp hiện tại nhận được đơn có giờ hẹn trong tương lai. Chưa ai đứng tên xác nhận; nếu sai thì DRV-2 đổi hoàn toàn về độ khó"
+    - "DRV-4: recovery target is absent; Operations must decide after baseline measurement"
+  ownerless_assumptions: []
   surplus_drivers: []
+  missing_capability: []
 
 metrics:
   applicable: true
@@ -142,122 +134,119 @@ metrics:
       value: "4/4 = 100%"
       threshold: "100%"
       calibration: uncalibrated
-      evidence: "DRV-1 [OBJ-1,OBJ-2]; DRV-2 [OBJ-1]; DRV-3 [OBJ-2]; DRV-4 [OBJ-2]"
+      evidence: "DRV-1 [OBJ-2]; DRV-2 [OBJ-1]; DRV-3 [OBJ-1,OBJ-2]; DRV-4 [OBJ-1]"
     - id: M-02
       name: "Objective support"
-      formula: "objectives supported by >=1 driver / total objectives"
+      formula: "objectives supported by >=1 driver / total objectives in sa_output"
       value: "2/2 = 100%"
       threshold: "100%"
       calibration: uncalibrated
-      evidence: "OBJ-1 có DRV-1, DRV-2; OBJ-2 có DRV-1, DRV-3, DRV-4"
+      evidence: "OBJ-1 has DRV-2, DRV-3, DRV-4; OBJ-2 has DRV-1, DRV-3"
     - id: M-03
       name: "Driver provenance"
       formula: "drivers with a stakeholder concern or a named constraint / total drivers"
       value: "4/4 = 100%"
       threshold: "100%"
       calibration: uncalibrated
-      evidence: "PO, Bếp trưởng, Pháp chế kèm chính sách mục 4, PO"
+      evidence: "Product owner, Kitchen lead, Order platform owner, and Operations lead are named"
     - id: M-04
       name: "NFR quantification"
       formula: "drivers with status quantified / drivers where a number is meaningful"
       value: "2/3 = 67%"
       threshold: "100%"
       calibration: uncalibrated
-      evidence: "DRV-1 và DRV-2 quantified; DRV-4 not_quantified. DRV-3 là binary nên KHÔNG nằm trong mẫu số"
+      evidence: "DRV-1 and DRV-2 quantified; DRV-4 not_quantified; binary DRV-3 excluded"
     - id: M-05
       name: "Verification coverage"
       formula: "drivers with a stated measurement method / total drivers"
-      value: "3/4 = 75%"
+      value: "4/4 = 100%"
       threshold: "100%"
       calibration: uncalibrated
-      evidence: "DRV-4 chưa có cách kiểm vì phụ thuộc baseline chưa có"
+      evidence: "DRV-1..DRV-4 each carry a verification method"
     - id: M-06
       name: "Handoff coverage"
       formula: "drivers mapped to >=1 downstream block / total drivers"
       value: "4/4 = 100%"
       threshold: "100%"
       calibration: uncalibrated
-      evidence: "xem khối handoff"
+      evidence: "All drivers appear in to_dev and to_qc; operational drivers also appear in to_devops"
     - id: M-07
       name: "Open-item ownership"
       formula: "items pushed to s03 carrying a named owner / total items pushed"
       value: "2/2 = 100%"
       threshold: "100%"
       calibration: uncalibrated
-      evidence: "xem stop_condition.pushed_to_s03"
+      evidence: "Both pushed_to_s03 rows name developer or devops"
     - id: M-08
       name: "Option discipline"
       formula: "direction choices with >=1 rejected alternative and reason / total direction choices"
       value: "0/0 = n/a"
       threshold: "100%"
       calibration: uncalibrated
-      evidence: "Lần chạy này không chốt hướng nào; chọn hướng thuộc s05"
+      evidence: "TA records constraints only; direction choice belongs to s05"
     - id: M-09
       name: "Landscape element ownership"
+      applicable: false
+      reason: "landscape applicable=false in driver-only profile"
       formula: "landscape elements with a named owner / total elements"
       value: "n/a"
       threshold: "100%"
       calibration: uncalibrated
-      evidence: "landscape applicable=false ở profile driver-only"
+      evidence: "landscape applicable=false in driver-only profile"
+    - id: M-10
+      name: "Capability ownership clarity"
+      formula: "capabilities in scope with exactly one owning system / total capabilities in scope"
+      value: "2/3 = 67%"
+      threshold: "100%"
+      calibration: uncalibrated
+      evidence: "CAP-1 order acceptance belongs to Order Management; CAP-2 kitchen projection belongs to Kitchen Display; CAP-3 slot-capacity calculation is contested"
 
 handoff:
   to_ba:
+    applicable: false
+    reason: "owned by /sa"
+    items: []
+  to_dev:
     applicable: true
     reason: ""
     items:
-      - "DRV-1 → tiêu chí: đặt đơn thứ 13 vào một khung 30 phút phải bị từ chối kèm gợi ý khung còn chỗ"
-      - "DRV-2 → tiêu chí: đơn đặt trước xuất hiện trên màn hình bếp >= 30 phút trước giờ hẹn, đo ở p99"
-      - "DRV-3 → tiêu chí: đơn đặt trước không chứa trường cá nhân nào ngoài danh sách ở chính sách mục 4"
-  to_dev:
-    applicable: false
-    reason: "owned by /ta"
+      - "Technical constraint DRV-1: preserve p95 <= 300 ms at 200 requests/second"
+      - "Contract constraint DRV-2/DRV-3: keep contract v3 compatible and observable with p99 delivery lag <= 60 seconds"
+      - "Failure constraint DRV-4: approach must state loss prevention and recovery behavior"
   to_qc:
     applicable: true
     reason: ""
     items:
-      - "DRV-1: đặt thử 13 đơn cùng khung, kỳ vọng đơn 13 bị từ chối"
-      - "DRV-2: đo khoảng cách hiển thị so với giờ hẹn trên 200 đơn liên tiếp"
-      - "DRV-3: rà trường dữ liệu, cần chữ ký Pháp chế, không phải test tự động"
-      - "DRV-4: CHƯA test được. Cần baseline tỷ lệ rơi trước. Đừng viết test giả cho nó"
+      - "DRV-1: 15-minute peak replay and p95 calculation"
+      - "DRV-2: 500-message correlation and p99 delivery calculation"
+      - "DRV-3: v3 consumer compatibility suite and owner approval"
+      - "DRV-4: three controlled restart measurements before target approval"
   to_devops:
-    applicable: false
-    reason: "owned by /ta"
+    applicable: true
+    reason: ""
+    items:
+      - "DRV-1: retain the 200 requests/second peak profile for capacity validation"
+      - "DRV-2: expose acceptance-to-display delivery lag"
+      - "DRV-4: own the restart baseline and recovery target proposal"
 
 stop_condition:
   met: false
-  reason: "DRV-4 chưa lượng hóa được và một giả định nền chưa có chủ. Cả hai chặn việc chốt acceptance criteria ở s04, nên phân tích dừng và bàn giao thay vì đoán tiếp"
+  reason: "Recovery target and slot-capacity ownership remain unresolved; both must move to s03 instead of being guessed"
   pushed_to_s03:
-    - question: "Tỷ lệ rơi hiện tại ở bước chọn khung giờ là bao nhiêu, đo ở đâu"
-      owner: "po"
-    - question: "Màn hình bếp hiện tại có nhận được đơn có giờ hẹn trong tương lai không"
+    - question: "Which system owns slot-capacity calculation and its contract"
       owner: "developer"
+    - question: "What recovery-time and loss target applies after kitchen-display unavailability"
+      owner: "devops"
 ```
 
-## What This Example Is Actually Showing
+## What This Example Is Showing
 
-Read the four drivers against each other — each one is a different case you will hit:
-
-| Driver | The case it demonstrates |
-|---|---|
-| `DRV-1` | The normal case: a number exists, so `quantified` with a real threshold |
-| `DRV-2` | A number from a different stakeholder, with a percentile — `p99`, not "usually" |
-| `DRV-3` | **`binary`.** A regulatory duty is satisfied or not. Forcing a number here would be theatre, and it stays out of the `M-04` denominator |
-| `DRV-4` | **`not_quantified`.** A number *should* exist and does not. The reason is stated, `M-04` drops to 67%, and the gap is visible instead of hidden |
-
-Three details that separate a real run from a plausible-looking one:
-
-**`OBJ-2` is marked `inferred`.** Nobody stated it; the analysis derived it. Left unmarked it would
-be read as a decision the PO made.
-
-**`M-04` is 67%, not 100%.** Two ways to reach 100% were available and both are wrong: invent a
-number for `DRV-4`, or quietly drop it. The metric is allowed to be short as long as the shortfall
-is visible.
-
-**`M-05` is 75% and `stop_condition.met` is `false`.** The analysis is honest that it is not
-finished. Two questions go to `s03` with named owners rather than being answered by guesswork.
+- `objectives` and `to_ba` remain present but non-applicable because SA owns them.
+- `DRV-3` is binary and excluded from M-04, while its compatibility verification remains mandatory.
+- `to_dev`, `to_qc`, and `to_devops` are independently actionable and contain only the technical lens.
+- M-10 exposes the unresolved capacity owner instead of assigning one during pre-design analysis.
 
 ## What Is Not Here, On Purpose
 
-No technology, no product, no pattern. `DRV-1` says a single source of truth for capacity is needed
-and stops — it does not say which store holds it. `DRV-2` rules out session-bound sync mechanisms by
-stating a time floor, not by naming a transport. Choosing any of that is `system-design` at `s05`.
+No stack, product, transport, pattern, schema, or module design is selected. Those choices belong to
+`system-design` and the specialized architecture skills at s05.

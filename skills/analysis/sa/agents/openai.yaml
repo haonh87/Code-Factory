@@ -1,7 +1,7 @@
 interface:
   display_name: "SA — Solution Architect Lens"
   short_description: "Trích architecture driver tầng giải pháp, có ngưỡng và bàn giao theo vai"
-  default_prompt: "Dùng $sa để biến yêu cầu thành architecture driver tầng giải pháp: mục tiêu có cách đo, ràng buộc thương mại và pháp lý, mỗi driver truy vết về mục tiêu và có ngưỡng số hoặc lý do chưa có, rồi bàn giao cho BA, DEV, QC, DevOps."
+  default_prompt: "Dùng $sa để biến yêu cầu thành architecture driver tầng giải pháp: mục tiêu có cách đo, ràng buộc thương mại và pháp lý, mỗi driver truy vết về mục tiêu và có ngưỡng số hoặc lý do chưa có, rồi bàn giao cho BA, DEV và QC."
 
 policy:
   allow_implicit_invocation: true
