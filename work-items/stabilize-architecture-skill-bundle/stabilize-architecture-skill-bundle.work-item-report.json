@@ -1,0 +1,162 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "ACTIVE",
+  "decision_owner": "agent",
+  "protocol_owner": "developer",
+  "raw_request_summary": "Create one corrective v2.4.0 release that fixes all reviewed v2.3.2 findings and adds architecture-modeling to both bundle runtimes with drawio contract compatibility.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "stabilize-architecture-skill-bundle",
+      "work_item_title": "Stabilize Architecture Skill Bundle",
+      "work_item_type": "CHANGE",
+      "scope_summary": "Correct all reviewed v2.3.2 findings and add architecture-modeling as one v2.4.0 release.",
+      "primary_outcome": "A release-ready v2.4.0 bundle whose architecture skill lane is complete, internally consistent, reinstallable, and evidence-backed.",
+      "in_scope": [
+        "Fix repeat install/update permission handling",
+        "Fix sa/ta schema, ownership, example, metric, and coverage defects",
+        "Strengthen workflow evidence validation and correct misleading release artifacts without fabricating historical approval",
+        "Add architecture-modeling to the source and both generated runtimes",
+        "Align architecture-modeling with the drawio landscape contract",
+        "Correct public documentation, metadata, release notes, and bundle inventory",
+        "Release as v2.4.0 after the required gates and verification"
+      ],
+      "out_of_scope": [
+        "Publishing to a registry or updating global installations before Release approval",
+        "Redesigning unrelated workflow capabilities",
+        "Modifying unrelated user-owned dirty files",
+        "Using multi-agent execution without a separately approved delegation plan"
+      ],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "full",
+      "sdd_reasons": [],
+      "sdd_preset": "full",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/architecture-role-skills",
+        "work-items/arch-role-skills-release"
+      ],
+      "collision_notes": [
+        "architecture-role-skills is frozen and explicitly excludes bundling architecture-modeling",
+        "arch-role-skills-release covers the completed v2.3.2 packaging scope and must not be silently reopened",
+        "sample-workflow-item is a fixture and is not semantically reusable"
+      ],
+      "change_strategy": "create_new",
+      "change_id": "CHANGE-002",
+      "change_reason": "The scope adds a public bundle capability, changes frozen skill contracts, and has its own v2.4.0 release intent.",
+      "change_refs": [
+        "changes/CHANGE-002"
+      ],
+      "scaffold_actions": [
+        "wfc scaffold-change --change-id CHANGE-002 --work-item stabilize-architecture-skill-bundle",
+        "wfc scaffold --work-item stabilize-architecture-skill-bundle --planning-track full --delivery-context brownfield --change-id CHANGE-002 --governance-profile strict"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "split_decision=single selected explicitly by the user as option A",
+    "release_target=v2.4.0",
+    "work_item_type=CHANGE",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict after reviewing completed/frozen near matches",
+    "change_strategy=create_new",
+    "change_id=CHANGE-002",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=full",
+    "execution_mode=agentic"
+  ],
+  "work_item_slug": "stabilize-architecture-skill-bundle",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/stabilize-architecture-skill-bundle",
+  "current_step": "s07",
+  "granted_write_paths": [
+    ".claude/worktrees/stabilize-architecture-skill-bundle-v2.4.0",
+    "work-items/stabilize-architecture-skill-bundle",
+    "changes/CHANGE-002"
+  ],
+  "change_strategy": "create_new",
+  "change_id": "CHANGE-002",
+  "handoff_target": "step-s07-owner",
+  "required_actions": [
+    "Continue active execution from step 7 onward."
+  ],
+  "blockers": [],
+  "refs": [
+    "changes/CHANGE-002",
+    "work-items/stabilize-architecture-skill-bundle",
+    "work-items/architecture-role-skills",
+    "work-items/arch-role-skills-release"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "CHANGE_CREATED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "S04_GATES_APPROVED",
+    "TECHNICAL_APPROACH_DRAFTED",
+    "APPROACH_REVIEWED",
+    "APPROACH_GATE_APPROVED",
+    "TASK_PLAN_DRAFTED",
+    "TASK_PLAN_REVIEWED",
+    "WORK_ITEM_ACTIVATED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-08-14T14:04:13.699Z",
+  "review_notes": [
+    "Human review approved."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-08-14T13:51:11.375Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work-item candidate created."
+    },
+    {
+      "timestamp": "2026-08-14T13:52:57Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "User selected the single v2.4.0 change boundary; CHANGE-002 and full workflow notes were scaffolded with approvals pending."
+    },
+    {
+      "timestamp": "2026-08-14T14:04:13.700Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-08-14T14:56:00.220Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
+    }
+  ]
+}
