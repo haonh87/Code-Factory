@@ -3,5 +3,15 @@
   "workflowRoot": "work-items",
   "protocolControl": {
     "legacyScaffoldPolicy": "allow_readonly"
+  },
+  "artifactGovernance": {
+    "layerRoots": {
+      "spec": "product-specs",
+      "design": "work-items",
+      "plan": "work-items",
+      "progress": "work-items",
+      "verify": "work-items",
+      "decision": "work-items"
+    }
   }
 }

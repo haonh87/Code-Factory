@@ -6,7 +6,7 @@ language: vi
 
 > Tiếng Anh / English: workflow-bundle-quickstart.md
 
-Hướng dẫn này tập trung vào public release `workflow-bundle v2.1.1`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, bootstrap một repo mới, và chạy flow `agent proposes, human approves`.
+Hướng dẫn này tập trung vào ứng viên phát hành `workflow-bundle v2.5.0`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Không thể cài từ registry cho tới khi human Release gate phê duyệt.
 
 ## Mục Tiêu
 

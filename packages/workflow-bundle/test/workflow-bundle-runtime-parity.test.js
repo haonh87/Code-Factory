@@ -7,6 +7,13 @@ const runtimeRoots = {
   codex: path.join(repoRoot, "packages", "workflow-bundle", "runtime", "codex", "skills"),
   claude: path.join(repoRoot, "packages", "workflow-bundle", "runtime", "claude", "skills")
 };
+const expectedSkillCount = 42;
+const requiredArtifactGovernanceFiles = [
+  "SKILL.md",
+  "SKILL.vi.md",
+  "references/ownership-table.md",
+  "references/worked-example.md"
+];
 let failures = 0;
 
 function assert(condition, message) {
@@ -61,13 +68,23 @@ function collectRelativeFiles(root) {
 console.log("Running workflow-bundle canonical/runtime parity tests...\n");
 const canonical = collectSkillDirs(canonicalRoot, "canonical");
 const canonicalNames = [...canonical.keys()].sort();
-assert(canonicalNames.length === 41, `canonical inventory must contain 41 skills, got ${canonicalNames.length}`);
+assert(canonicalNames.length === expectedSkillCount, `canonical inventory must contain ${expectedSkillCount} skills, got ${canonicalNames.length}`);
 assert(canonicalNames.includes("architecture-modeling"), "canonical inventory must include architecture-modeling");
+assert(canonicalNames.includes("artifact-governance"), "canonical inventory must include artifact-governance");
+if (canonical.has("artifact-governance")) {
+  const artifactGovernanceFiles = collectRelativeFiles(canonical.get("artifact-governance"));
+  requiredArtifactGovernanceFiles.forEach((relativePath) => {
+    assert(
+      artifactGovernanceFiles.includes(relativePath),
+      `canonical artifact-governance must include ${relativePath}`
+    );
+  });
+}
 
 for (const [mode, runtimeRoot] of Object.entries(runtimeRoots)) {
   const runtime = collectSkillDirs(runtimeRoot, `${mode} runtime`);
   const names = [...runtime.keys()].sort();
-  assert(names.length === 41, `${mode} runtime must contain 41 managed skills, got ${names.length}`);
+  assert(names.length === expectedSkillCount, `${mode} runtime must contain ${expectedSkillCount} managed skills, got ${names.length}`);
   assert(JSON.stringify(names) === JSON.stringify(canonicalNames), `${mode} runtime skill inventory differs from canonical`);
 
   for (const name of canonicalNames) {

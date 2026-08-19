@@ -6,11 +6,11 @@ language: en
 
 > Vietnamese: workflow-docs-map.vi.md
 
-This document separates the public onboarding path of `workflow-bundle v2.4.0` from the deep-dive docs and the maintainer context.
+This document separates the public onboarding path of `workflow-bundle v2.5.0` from the deep-dive docs and the maintainer context.
 
 ## Public Onboarding Docs
 
-This is the set to read when reviewing the `v2.4.0` release candidate.
+This is the set to read when reviewing the `v2.5.0` release candidate.
 
 1. [`../README.md`](../README.md)
 2. [`publish-surface.md`](publish-surface.md)
@@ -21,7 +21,7 @@ This is the set to read when reviewing the `v2.4.0` release candidate.
 
 Reading guide:
 
-- `README` answers what this repo is and what the public promise of `v2.4.0` is.
+- `README` answers what this repo is and what the public promise of `v2.5.0` is.
 - `publish-surface` pins the canonical tag or branch and the system requirements.
 - `quickstart` answers how to install `wfc`, install the workflow bundle, init a repo, and run the first flow.
 - the package `README` covers install, upgrade, command overview, and publish mechanics at the package level.

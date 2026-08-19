@@ -5,7 +5,13 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
-const { validateWorkflowGovernance } = require("../scripts/validate-workflow-governance");
+const {
+  ARTIFACT_OWNERSHIP_RULES,
+  DEFAULT_ARTIFACT_GOVERNANCE_LAYER_ROOTS,
+  getArtifactOwnershipDuplicationErrors,
+  getArtifactGovernanceLayerRoots,
+  validateWorkflowGovernance
+} = require("../scripts/validate-workflow-governance");
 const { getFinalizedStepSemanticEvidenceErrors } = require("../scripts/workflow-gate-evidence-utils");
 
 const semanticFixtureRoot = path.join(__dirname, "..", "tests", "fixtures", "workflow-governance");
@@ -34,6 +40,136 @@ function buildProject() {
   fs.writeFileSync(path.join(projectRoot, "project-context", "project-context.md"), "# Ctx\n", "utf8");
   fs.writeFileSync(path.join(projectRoot, "project-context", "checklists", "default.md"), "# CL\n", "utf8");
   return projectRoot;
+}
+
+function testArtifactGovernanceLayerRoots() {
+  const projectRoot = buildProject();
+  try {
+    assert(
+      JSON.stringify(getArtifactGovernanceLayerRoots(projectRoot)) ===
+        JSON.stringify(DEFAULT_ARTIFACT_GOVERNANCE_LAYER_ROOTS),
+      "missing artifactGovernance config must inherit the six Code-Factory layer roots"
+    );
+
+    const customRoots = {
+      spec: "specs",
+      design: "delivery",
+      plan: "delivery",
+      progress: "delivery",
+      verify: "evidence",
+      decision: "decisions"
+    };
+    writeFile(
+      path.join(projectRoot, "workflow-contracts.config.json"),
+      `${JSON.stringify({ artifactGovernance: { layerRoots: customRoots } }, null, 2)}\n`
+    );
+    assert(
+      JSON.stringify(getArtifactGovernanceLayerRoots(projectRoot)) === JSON.stringify(customRoots),
+      "artifactGovernance.layerRoots must override the shipped default"
+    );
+    console.log("  PASS: artifactGovernance layer roots default + custom config");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
+function copySemanticFixture(name, targetPath) {
+  writeFile(targetPath, readSemanticFixture(name));
+}
+
+function testArtifactPlacementAndExemption() {
+  const projectRoot = buildProject();
+  const outsideRoot = path.join(projectRoot, "outside");
+  try {
+    copySemanticFixture("unplaced-artifact.md", path.join(outsideRoot, "unplaced-artifact.md"));
+    let result = validateWorkflowGovernance({ workflowRoot: outsideRoot, projectRoot });
+    assert(!result.ok, "artifact outside every declared layer root must fail");
+    assert(
+      result.errors.some((error) => /no declared artifact-governance layer root/i.test(error)),
+      `unplaced error must name the missing declared root, got ${JSON.stringify(result.errors)}`
+    );
+
+    rmrf(outsideRoot);
+    copySemanticFixture("exemption-without-reason.md", path.join(outsideRoot, "exemption-without-reason.md"));
+    result = validateWorkflowGovernance({ workflowRoot: outsideRoot, projectRoot });
+    assert(!result.ok, "empty artifact governance exemption reason must fail");
+    assert(
+      result.errors.some((error) => /exemption reason.*non-empty/i.test(error)),
+      `empty exemption error must be explicit, got ${JSON.stringify(result.errors)}`
+    );
+
+    rmrf(outsideRoot);
+    const statedReason = "External signer requires this artifact to keep an independently addressable path.";
+    copySemanticFixture("exemption-with-reason.md", path.join(outsideRoot, "exemption-with-reason.md"));
+    result = validateWorkflowGovernance({ workflowRoot: outsideRoot, projectRoot });
+    assert(result.ok, `stated artifact governance exemption must pass, got ${JSON.stringify(result.errors)}`);
+    assert(
+      Array.isArray(result.notices) && result.notices.some((notice) => notice.includes(statedReason)),
+      `validation notices must echo the exemption reason, got ${JSON.stringify(result.notices)}`
+    );
+    console.log("  PASS: artifact placement rejects unplaced/empty exemption and echoes stated reason");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
+function testCustomLayerRootsAcceptAdopterLayout() {
+  const projectRoot = buildProject();
+  const slug = "custom-layout-item";
+  const defaultRoot = path.join(projectRoot, "work-items", slug);
+  const customRoot = path.join(projectRoot, "delivery", slug);
+  try {
+    writeLightS01(projectRoot, slug, []);
+    fs.mkdirSync(path.dirname(customRoot), { recursive: true });
+    fs.renameSync(defaultRoot, customRoot);
+
+    let result = validateWorkflowGovernance({ workflowRoot: customRoot, projectRoot });
+    assert(!result.ok, "adopter layout without declared roots must inherit the default and fail placement");
+
+    const customRoots = Object.fromEntries(
+      ["spec", "design", "plan", "progress", "verify", "decision"].map((layer) => [layer, "delivery"])
+    );
+    writeFile(
+      path.join(projectRoot, "workflow-contracts.config.json"),
+      `${JSON.stringify({ artifactGovernance: { layerRoots: customRoots } }, null, 2)}\n`
+    );
+    result = validateWorkflowGovernance({ workflowRoot: customRoot, projectRoot });
+    assert(result.ok, `adopter layout must pass after declaring custom roots, got ${JSON.stringify(result.errors)}`);
+    console.log("  PASS: custom artifactGovernance roots accept an adopter layout");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
+function testArtifactOwnershipDuplicationRules() {
+  const projectRoot = path.resolve(__dirname, "..", "..", "..");
+  const cases = [
+    ["duplicate-technical-sequence.s06.md", "Main Artifact.task_breakdown[].dependencies"],
+    ["duplicate-path-map.s06.md", "Main Artifact.task_breakdown[].paths_in_scope"],
+    ["duplicate-tdd-targets.s06.md", "Main Artifact.task_breakdown[].verification_hint"],
+    ["duplicate-acceptance-coverage.s06.md", "Traceability.task_refs"],
+    ["duplicate-human-review-points.s06.md", "frontmatter.role_signoffs"]
+  ];
+  assert(ARTIFACT_OWNERSHIP_RULES.length === 5, "ownership enforcement must define exactly the five measured F9 rules");
+  cases.forEach(([name, owner]) => {
+    const filePath = path.join(semanticFixtureRoot, name);
+    const errors = getArtifactOwnershipDuplicationErrors({
+      filePath,
+      content: readSemanticFixture(name),
+      projectRoot
+    });
+    assert(errors.length === 1, `${name} must produce one duplication error, got ${JSON.stringify(errors)}`);
+    assert(errors[0] && errors[0].includes(owner), `${name} error must name owning block '${owner}'`);
+  });
+
+  const cleanName = "deduplicated-role-output.s06.md";
+  const cleanErrors = getArtifactOwnershipDuplicationErrors({
+    filePath: path.join(semanticFixtureRoot, cleanName),
+    content: readSemanticFixture(cleanName),
+    projectRoot
+  });
+  assert(cleanErrors.length === 0, `deduplicated equivalent must pass, got ${JSON.stringify(cleanErrors)}`);
+  console.log("  PASS: five F9 duplication rules name their owners; deduplicated equivalent passes");
 }
 
 function writeLightS01(projectRoot, slug, extraGates) {
@@ -276,6 +412,10 @@ function testStrictFinalizedNoteUsesSemanticValidator() {
 }
 
 console.log("Running validate-workflow-governance (light gate guard) tests...\n");
+testArtifactGovernanceLayerRoots();
+testArtifactPlacementAndExemption();
+testCustomLayerRootsAcceptAdopterLayout();
+testArtifactOwnershipDuplicationRules();
 testLightFoundationRequiredErrors();
 testLightContractRequiredErrors();
 testLightWithoutFoundationContractPasses();

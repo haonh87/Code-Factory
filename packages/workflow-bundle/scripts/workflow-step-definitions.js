@@ -1,5 +1,6 @@
 const {
-  EXECUTION_RUNTIME_ARTIFACTS
+  EXECUTION_RUNTIME_ARTIFACTS,
+  buildOwnedExecutionSections
 } = require("./workflow-execution-definitions");
 
 // --- Light compact scaffold (plan v5 §2) ---
@@ -763,19 +764,7 @@ function buildGovernanceExceptionSectionsIfNeeded(context) {
 }
 
 function buildExecutionContextSectionsIfNeeded(stepId, context) {
-  const sections = [];
-
-  if (context.executionMode === "multi_agent" && ["s05", "s06", "s07"].includes(stepId)) {
-    sections.push(
-      yamlSection("## Execution Runtime", [
-        "execution_mode: multi_agent",
-        `review_mode: ${context.reviewMode}`,
-        `verification_owner: "${context.verificationOwner}"`,
-        "runtime_artifacts:",
-        ...getRuntimeArtifactListLines(stepId, context.workItemSlug)
-      ])
-    );
-  }
+  const sections = buildOwnedExecutionSections(stepId, context);
 
   if (stepId === "s08" && (context.executionMode === "multi_agent" || context.reviewMode !== "self")) {
     sections.push(
@@ -789,12 +778,6 @@ function buildExecutionContextSectionsIfNeeded(stepId, context) {
   }
 
   return sections;
-}
-
-function getRuntimeArtifactListLines(stepId, workItemSlug) {
-  return EXECUTION_RUNTIME_ARTIFACTS
-    .filter((artifact) => artifact.stepId === stepId && artifact.stepId !== "s08")
-    .map((artifact) => `  - "${workItemSlug}.${artifact.stepId}.${artifact.stepSlug}.md"`);
 }
 
 function getStepDefinition(stepId) {

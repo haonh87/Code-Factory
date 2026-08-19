@@ -182,6 +182,90 @@ function getRequiredExecutionArtifacts(stepId, executionMode) {
   return getExecutionArtifactDefinitions(stepId).filter((artifact) => requiredSlugs.has(artifact.stepSlug));
 }
 
+function buildAssignmentId(role, index) {
+  const roleToken = String(role || "role")
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "ROLE";
+  return `S06-${roleToken}-${String(index + 1).padStart(3, "0")}`;
+}
+
+function buildOwnedExecutionSections(stepId, context) {
+  if (context.executionMode !== "multi_agent") return [];
+
+  if (stepId === "s05") {
+    return [
+      yamlSection("## Execution Topology", [
+        "execution_mode: multi_agent",
+        "selection_reason: []",
+        "complexity_signals: []",
+        'coordinator_role: ""',
+        `verification_owner: "${context.verificationOwner}"`,
+        "fallback_mode: agentic|sequential_multi_role",
+        "parallel_budget: 1|2|3|4",
+        "external_research:",
+        "  notebooklm: NONE|OPTIONAL|REQUIRED",
+        "  expected_outputs: []",
+        'notes: ""'
+      ])
+    ];
+  }
+
+  if (stepId === "s06") {
+    return [
+      yamlSection("## Role Outputs", [
+        "assignments:",
+        ...context.executionRoles.flatMap((role, index) => [
+          `  - assignment_id: "${buildAssignmentId(role, index)}"`,
+          `    role: "${role}"`,
+          "    owned_scope: []",
+          "    owned_paths: []",
+          "    skills: []",
+          "    inputs: []",
+          "    done_when: []",
+          "    depends_on: []",
+          "    status: PLANNED|READY|IN_PROGRESS|HANDOFF|MERGED|BLOCKED|CANCELLED"
+        ])
+      ])
+    ];
+  }
+
+  if (stepId === "s07") {
+    const assignmentIds = context.executionRoles.map(buildAssignmentId);
+    return [
+      yamlSection("## Role Outputs", [
+        "handoffs:",
+        ...context.executionRoles.flatMap((role, index) => [
+          `  - assignment_id: "${assignmentIds[index]}"`,
+          `    role: "${role}"`,
+          "    status: HANDOFF|BLOCKED|PARTIAL",
+          '    summary: ""',
+          "    outputs_produced: []",
+          "    artifact_refs: []",
+          "    code_refs: []",
+          "    evidence: []",
+          "    open_issues: []",
+          '    recommended_next_action: ""'
+        ])
+      ]),
+      yamlSection("## Merge Summary", [
+        "execution_mode: multi_agent",
+        'coordinator_role: ""',
+        "merged_assignments:",
+        ...assignmentIds.map((assignmentId) => `  - "${assignmentId}"`),
+        "rejected_assignments: []",
+        "conflicts_resolved: []",
+        "source_of_truth_updated: true|false",
+        "final_artifacts: []",
+        "residual_risks: []",
+        "ready_for_audit: true|false"
+      ])
+    ];
+  }
+
+  return [];
+}
+
 function buildExecutionArtifactFrontmatter(definition, context) {
   return [
     "---",
@@ -233,6 +317,7 @@ module.exports = {
   EXECUTION_MODES,
   REVIEW_MODES,
   EXECUTION_RUNTIME_ARTIFACTS,
+  buildOwnedExecutionSections,
   getExecutionArtifactDefinitions,
   getRequiredExecutionArtifacts,
   renderExecutionArtifactBody

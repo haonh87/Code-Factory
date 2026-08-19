@@ -731,6 +731,7 @@ A short way to remember:
 - For a step with auxiliary artifacts, link the auxiliary artifacts in `## Links`; do not bury canonical decisions in auxiliary artifacts.
 - `## Role Outputs` is an optional block; turn it on only when a step has many roles sharing ownership, has role-specific handoff, or needs clear auditing of signoff contribution.
 - In `## Role Outputs`, describe the actual contribution of each role to the step; do not repeat the summary verbatim or the overall step output if the role adds no separate ownership.
+- For `execution_mode=multi_agent`, the execution contract is hosted in the primary notes: `s05 ## Execution Topology`, `s06 ## Role Outputs` with `assignments[]`, and `s07 ## Role Outputs` with `handoffs[]` plus `## Merge Summary`. These blocks are required for those steps and replace the fixed-name runtime files for all new scaffolds.
 - SDD blocks are optional by scope; when `sdd_mode=strict`, step 4 should have `## Spec Freeze`, steps 5-7 have `## Spec Change` if a gap is found, step 6 has `## SDD Traceability`, and step 8 has `## Spec Coverage`.
 
 ### Naming Conventions
@@ -757,14 +758,13 @@ A short way to remember:
   - `<work_item_slug>.s08.verification.md`
 - Standard file names for auxiliary artifacts:
   - step 5 canvas: `<work_item_slug>.s05.architecture.canvas`
-  - step 5 execution runtime: `<work_item_slug>.s05.execution-policy.md`
   - step 6 canvas: `<work_item_slug>.s06.task-map.canvas`
   - step 6 base: `<work_item_slug>.s06.task-dashboard.base`
-  - step 6 execution runtime: `<work_item_slug>.s06.worker-assignment.md`
-  - step 7 execution runtime: `<work_item_slug>.s07.worker-handoff-report.md`
-  - step 7 execution runtime: `<work_item_slug>.s07.merge-report.md`
+  - step 7 concurrent-writer escape hatch: `<work_item_slug>.s07.worker-handoff-report.<assignment-id>.md`
   - step 8 base: `<work_item_slug>.s08.verification-dashboard.base`
   - step 8 execution runtime when needed: `<work_item_slug>.s08.execution-escalation.md`
+- The role-indexed handoff filename is only for a genuinely concurrent topology whose workers write separate files. Its frontmatter must include the matching `assignment_id` and a non-empty `artifact_governance_exemption_reason`; the primary `s07` note must list every such file in `linked_artifacts`.
+- The old fixed filenames `s05.execution-policy.md`, `s06.worker-assignment.md`, `s07.worker-handoff-report.md`, and `s07.merge-report.md` remain readable for compatibility. New scaffolds must not emit them.
 - Do not use vague file names like `analysis.md`, `final.md`, `design-v2.md`, `notes.base`.
 - Do not name workflow files by subjective content type such as `requirements.md`, `architecture.md`, `assessment.md`, `threshold.md`, `glossary.md`.
 - Standard mapping:
@@ -808,12 +808,12 @@ Notes:
 - `changes/` is the default root for a real change package when a work item needs a `change layer`.
 - `planning_track` defaults to `full`; if this field is absent in an old artifact, the validator currently treats it as `full` for backward compatibility.
 - `scaffold:workflow-step` generates a minimal but contract-correct note for the chosen step; the `Governance Exceptions` and SDD blocks are added when the corresponding option requires it.
-- If `execution_mode=multi_agent`, scaffold will auto-generate runtime artifacts for `s05`, `s06`, `s07` and add them to `linked_artifacts` of the main note.
+- If `execution_mode=multi_agent`, scaffold writes execution policy, plural assignments, plural handoffs, and merge state into the owning sections of the `s05`, `s06`, and `s07` primary notes. Adding roles adds entries, not files.
 - If `governance_profile=custom` is needed, scaffold must also pass `--governance-ref` and at least one `--checklist-ref`.
 - `--work-item` is currently the short CLI name for `work_item_slug`.
 - `work_item_slug` is the identifier of a unit of work that runs across the entire eight-step workflow, not a step name; it should be pinned before scaffolding from a user request, ticket, or change request, then reflected back in `s01 Clarify`.
 - If a note belongs to a change package that has been scaffolded or linked to a real package, `change_id`, `change_status`, `spec_delta_refs`, and `archive_status` must be consistent with `changes/<change-id>/`.
-- If a step runs `multi_agent`, `review_mode`, `verification_owner`, and `linked_artifacts` must be consistent with the corresponding runtime artifacts.
+- If a step runs `multi_agent`, `review_mode`, `verification_owner`, assignment ids, handoff ids, and merge ids must be consistent across the owning sections. `linked_artifacts` is required only when the declared role-indexed escape hatch creates separate handoff files.
 - Example: the user request "fix login timeout" can be mapped to `work_item_slug=fix-login-timeout`, which then creates files such as `fix-login-timeout.s01.restate.md`, `fix-login-timeout.s04.acceptance-criteria.md`, `fix-login-timeout.s08.verification.md`.
 
 ### Standard Frontmatter For The Main Note
@@ -939,7 +939,7 @@ Rules:
 - `change_status` only uses `draft|proposed|approved|in_progress|verified|archived|blocked`.
 - `spec_delta_refs` is only filled when `change_id` is attached and must point to a real delta under `changes/<change-id>/spec-delta/`.
 - `archive_status` uses `not_ready|ready_to_archive|archived` and must be consistent with the change package archive state.
-- `multi_agent` in the current rollout should only be turned on for `s05-s08`; if it is on for `s05-s07`, the corresponding runtime artifacts must exist and be linked in `linked_artifacts`.
+- `multi_agent` in the current rollout should only be turned on for `s05-s08`; if it is on for `s05-s07`, the corresponding owning sections must exist. Every id in `merged_assignments` must resolve to an entry in `handoffs[]`.
 - `quick` should not use `multi_agent`, `review_mode != self`, or `sdd_mode=strict`; `enterprise` should have a stricter `governance_profile` than `default` and a clear review owner at delivery steps.
 
 ### Block To Add When Tracing Execution Topology
@@ -967,9 +967,9 @@ Rules:
 | `s02` Business Goal | `<work_item_slug>.s02.business-goal.md` | `## Step Contract`, `## Main Artifact`, `## SDD Traceability` when needed, `## Traceability`, `## Handoff` | `step-goal-contract`, `product-thinking`, `brd-spec` when needed |
 | `s03` Open Questions | `<work_item_slug>.s03.open-questions.md` | `## Step Contract`, `## Main Artifact`, `## Input Readiness`, `## Audit`, `## Governance Context` when there is a `governance blocker`, `## SDD Traceability` when needed, `## Traceability`, `## Handoff` | `step-goal-contract`, step 3 artifact, `input-readiness-assessor`, `step-goal-auditor`, `governance-context` when needed, `brd-spec` or `srs-spec` update when needed |
 | `s04` Acceptance + DoR | `<work_item_slug>.s04.acceptance-criteria.md` | `## Step Contract`, `## Main Artifact`, `## Governance Checks`, `## Definition of Ready`, `## Spec Freeze` when SDD, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, step 4 artifact, `governance-checklist`, `definition-of-ready-gate`, `srs-spec`, `spec-freeze-gate` when SDD |
-| `s05` Technical Approach | `<work_item_slug>.s05.technical-approach.md` | `## Step Contract`, `## Option Analysis`, `## Main Artifact`, `## Architecture Details`, `## Governance Exceptions` when present, `## Spec Change` when present, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `brainstorming`, `system-design`, `governance-exception` when present, `spec-change` when present, `domain-architecture` or `architecture-modeling` or `frontend-architecture` or `frontend-experience-design` or `database-design` or `deployment-devops` or `containerization-packaging` or `platform-runtime-deployment` or `ci-cd-release` when present |
-| `s06` Task Plan | `<work_item_slug>.s06.task-breakdown.md` | `## Step Contract`, `## Main Artifact`, `## Verification Plan`, `## Governance Checks`, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `task-breakdown-planner`, `governance-checklist`, `spec-traceability-matrix` when SDD |
-| `s07` Implement | `<work_item_slug>.s07.implementation.md` if a note exists | `## Step Contract`, `## Main Artifact`, `## Implementation Notes` when present, `## Governance Exceptions` when present, `## Spec Change` when present, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `implementation`, `worktree-discipline` when present, `review-discipline` when present, `delegation-discipline` when present, `react-web-implementation` when present, `governance-exception` when present, `spec-change` when present |
+| `s05` Technical Approach | `<work_item_slug>.s05.technical-approach.md` | `## Step Contract`, `## Option Analysis`, `## Main Artifact`, `## Architecture Details`, `## Execution Topology` when `multi_agent`, `## Governance Exceptions` when present, `## Spec Change` when present, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `brainstorming`, `system-design`, `governance-exception` when present, `spec-change` when present, `domain-architecture` or `architecture-modeling` or `frontend-architecture` or `frontend-experience-design` or `database-design` or `deployment-devops` or `containerization-packaging` or `platform-runtime-deployment` or `ci-cd-release` when present |
+| `s06` Task Plan | `<work_item_slug>.s06.task-breakdown.md` | `## Step Contract`, `## Main Artifact`, `## Role Outputs` with `assignments[]` when `multi_agent`, `## Verification Plan`, `## Governance Checks`, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `task-breakdown-planner`, `governance-checklist`, `spec-traceability-matrix` when SDD |
+| `s07` Implement | `<work_item_slug>.s07.implementation.md` if a note exists | `## Step Contract`, `## Main Artifact`, `## Role Outputs` with `handoffs[]` and `## Merge Summary` when `multi_agent`, `## Implementation Notes` when present, `## Governance Exceptions` when present, `## Spec Change` when present, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `implementation`, `worktree-discipline` when present, `review-discipline` when present, `delegation-discipline` when present, `react-web-implementation` when present, `governance-exception` when present, `spec-change` when present |
 | `s08` Verify + DoD | `<work_item_slug>.s08.verification.md` | `## Step Contract`, `## Main Artifact`, `## Governance Checks`, `## Spec Coverage`, `## Scan Summary`, `## Review Findings` when present, `## Database Review` when present, `## Deployment Review` when present, `## Governance Exceptions` when present, `## Audit`, `## Definition of Done`, `## SDD Traceability`, `## Traceability`, `## Handoff` | `step-goal-contract`, `testing`, `governance-checklist`, `spec-coverage-report` when SDD, `code-scan-review`, `frontend-quality-review` when present, `react-best-practices-review` when present, `database-change-review` when present, `branch-finish-discipline` when there is branch/worktree closeout, `governance-exception` when present, `deployment-devops` or `containerization-packaging` or `platform-runtime-deployment` or `ci-cd-release` when present, `step-goal-auditor`, `definition-of-done-gate` |
 
 Notes:
@@ -1024,7 +1024,7 @@ Notes:
 
 - The step templates below fully inherit the standard frontmatter in the `Standard Frontmatter For The Main Note` section.
 - If the work item uses a `change layer`, the `change_id`, `change_status`, `spec_delta_refs`, `archive_status` fields must be kept in the frontmatter of each step note even though the shortened example below does not repeat the full explanation.
-- If the work item uses `multi_agent`, the `review_mode`, `verification_owner`, and runtime artifacts fields must be kept in sync with the execution validator even though the shortened example below does not repeat the full runtime file.
+- If the work item uses `multi_agent`, the `review_mode`, `verification_owner`, and owning execution sections must be kept in sync with the execution validator even though the shortened example below does not repeat every section.
 - If the work item uses a non-`full` `planning_track`, the presets and guardrails of that track must be kept in sync with the planning validator even though the shortened example below does not repeat the full routing matrix.
 - If you copy the template by hand, `wfc scaffold` is still the canonical source for the current frontmatter; at minimum keep `delivery_context`, `approval_gates`, `role_signoffs`, `gate_reviews`, and the required sections by `greenfield|brownfield`.````md
 ```md

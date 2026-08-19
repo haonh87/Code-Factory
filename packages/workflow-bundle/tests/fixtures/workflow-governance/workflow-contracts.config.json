@@ -1,0 +1,12 @@
+{
+  "artifactGovernance": {
+    "layerRoots": {
+      "spec": ".",
+      "design": ".",
+      "plan": ".",
+      "progress": ".",
+      "verify": ".",
+      "decision": "."
+    }
+  }
+}

@@ -40,6 +40,291 @@ const SIGNOFF_KEYS = [
 
 const APPROVAL_GATE_KEYS = ["spec", "contract", "foundation", "uat", "release", "business_acceptance"];
 
+function artifactReferenceError(code, message) {
+  const error = new Error(message);
+  error.code = code;
+  return error;
+}
+
+function splitInlineYamlValues(input) {
+  const values = [];
+  let current = "";
+  let quote = "";
+
+  for (const character of input) {
+    if (quote) {
+      current += character;
+      if (character === quote) {
+        quote = "";
+      }
+      continue;
+    }
+    if (character === '"' || character === "'") {
+      quote = character;
+      current += character;
+      continue;
+    }
+    if (character === ",") {
+      values.push(current.trim());
+      current = "";
+      continue;
+    }
+    current += character;
+  }
+  if (current.trim()) {
+    values.push(current.trim());
+  }
+  return values;
+}
+
+function parseArtifactYamlScalar(rawValue) {
+  const value = String(rawValue || "").trim();
+  if (value === "[]") return [];
+  if (value === "{}") return {};
+  if (value.startsWith("[") && value.endsWith("]")) {
+    const body = value.slice(1, -1).trim();
+    return body ? splitInlineYamlValues(body).map(parseArtifactYamlScalar) : [];
+  }
+  if (value.startsWith('"') && value.endsWith('"')) {
+    try {
+      return JSON.parse(value);
+    } catch (_error) {
+      return value.slice(1, -1);
+    }
+  }
+  if (value.startsWith("'") && value.endsWith("'")) {
+    return value.slice(1, -1).replace(/''/g, "'");
+  }
+  if (/^(?:true|false)$/i.test(value)) return value.toLowerCase() === "true";
+  if (/^(?:null|~)$/i.test(value)) return null;
+  if (/^-?(?:0|[1-9]\d*)(?:\.\d+)?$/.test(value)) return Number(value);
+  return value;
+}
+
+function assertSafeArtifactYamlKey(key, lineIndex) {
+  if (["__proto__", "constructor", "prototype"].includes(key)) {
+    throw artifactReferenceError(
+      "ARTIFACT_REFERENCE_YAML_INVALID",
+      `Unsafe YAML mapping key '${key}' at line ${lineIndex + 1}.`
+    );
+  }
+}
+
+function parseArtifactYaml(yamlText) {
+  const tokens = String(yamlText || "")
+    .split(/\r?\n/)
+    .map((line, lineIndex) => ({
+      indent: (line.match(/^ */) || [""])[0].length,
+      text: line.trim(),
+      lineIndex
+    }))
+    .filter((token) => token.text && !token.text.startsWith("#"));
+
+  function parseBlock(startIndex, indent) {
+    const isList = tokens[startIndex] && tokens[startIndex].indent === indent && tokens[startIndex].text.startsWith("-");
+    const value = isList ? [] : {};
+    let index = startIndex;
+
+    while (index < tokens.length) {
+      const token = tokens[index];
+      if (token.indent < indent) break;
+      if (token.indent > indent) {
+        throw artifactReferenceError(
+          "ARTIFACT_REFERENCE_YAML_INVALID",
+          `Unexpected YAML indentation at line ${token.lineIndex + 1}.`
+        );
+      }
+
+      if (isList) {
+        if (!token.text.startsWith("-")) break;
+        const itemText = token.text.slice(1).trim();
+        index += 1;
+        if (!itemText) {
+          if (index >= tokens.length || tokens[index].indent <= indent) {
+            value.push(null);
+          } else {
+            const child = parseBlock(index, tokens[index].indent);
+            value.push(child.value);
+            index = child.nextIndex;
+          }
+          continue;
+        }
+
+        const itemMatch = itemText.match(/^([A-Za-z0-9_-]+):(?:\s*(.*))?$/);
+        if (!itemMatch) {
+          value.push(parseArtifactYamlScalar(itemText));
+          continue;
+        }
+
+        const item = {};
+        const initialKey = itemMatch[1];
+        assertSafeArtifactYamlKey(initialKey, token.lineIndex);
+        const initialValue = itemMatch[2] || "";
+        item[initialKey] = initialValue ? parseArtifactYamlScalar(initialValue) : null;
+        if (index < tokens.length && tokens[index].indent > indent) {
+          const child = parseBlock(index, tokens[index].indent);
+          if (initialValue) {
+            if (!child.value || Array.isArray(child.value) || typeof child.value !== "object") {
+              throw artifactReferenceError(
+                "ARTIFACT_REFERENCE_YAML_INVALID",
+                `Expected YAML mapping after list item at line ${token.lineIndex + 1}.`
+              );
+            }
+            Object.assign(item, child.value);
+          } else {
+            item[initialKey] = child.value;
+          }
+          index = child.nextIndex;
+        }
+        value.push(item);
+        continue;
+      }
+
+      if (token.text.startsWith("-")) break;
+      const mappingMatch = token.text.match(/^([A-Za-z0-9_-]+):(?:\s*(.*))?$/);
+      if (!mappingMatch) {
+        throw artifactReferenceError(
+          "ARTIFACT_REFERENCE_YAML_INVALID",
+          `Unsupported YAML mapping at line ${token.lineIndex + 1}.`
+        );
+      }
+      const key = mappingMatch[1];
+      assertSafeArtifactYamlKey(key, token.lineIndex);
+      const rawValue = mappingMatch[2] || "";
+      index += 1;
+      if (rawValue) {
+        value[key] = parseArtifactYamlScalar(rawValue);
+      } else if (index < tokens.length && tokens[index].indent > indent) {
+        const child = parseBlock(index, tokens[index].indent);
+        value[key] = child.value;
+        index = child.nextIndex;
+      } else {
+        value[key] = null;
+      }
+    }
+
+    return { value, nextIndex: index };
+  }
+
+  if (tokens.length === 0) return {};
+  return parseBlock(0, tokens[0].indent).value;
+}
+
+function resolveArtifactYamlPath(document, dottedPath, reference) {
+  if (!dottedPath) return document;
+  const segments = dottedPath.split(".").filter(Boolean);
+  let current = document;
+
+  for (const segment of segments) {
+    const match = segment.match(/^([A-Za-z0-9_-]+)(?:\[([^\]]*)\])?$/);
+    if (!match) {
+      throw artifactReferenceError(
+        "ARTIFACT_REFERENCE_PATH_MISSING",
+        `Unsupported path segment '${segment}' in artifact reference '${reference}'.`
+      );
+    }
+    const key = match[1];
+    const selector = match[2];
+    if (!current || Array.isArray(current) || typeof current !== "object" || !Object.prototype.hasOwnProperty.call(current, key)) {
+      throw artifactReferenceError(
+        "ARTIFACT_REFERENCE_PATH_MISSING",
+        `Path '${dottedPath}' was not found in artifact reference '${reference}'.`
+      );
+    }
+    current = current[key];
+    if (selector !== undefined) {
+      if (!Array.isArray(current)) {
+        throw artifactReferenceError(
+          "ARTIFACT_REFERENCE_PATH_MISSING",
+          `Path segment '${segment}' does not select a list in artifact reference '${reference}'.`
+        );
+      }
+      if (selector) {
+        const selected = current.find((entry) => entry && typeof entry === "object" && String(entry.id) === selector);
+        if (!selected) {
+          throw artifactReferenceError(
+            "ARTIFACT_REFERENCE_PATH_MISSING",
+            `List item '${selector}' was not found in artifact reference '${reference}'.`
+          );
+        }
+        current = selected;
+      }
+    }
+  }
+  return current;
+}
+
+function resolveArtifactReference({ projectRoot, currentFile, reference }) {
+  const root = path.resolve(projectRoot || ".");
+  const sourceFile = path.resolve(currentFile || "");
+  const rawReference = String(reference || "").trim();
+  const hashIndex = rawReference.indexOf("#");
+  if (hashIndex < 0 || hashIndex === rawReference.length - 1) {
+    throw artifactReferenceError(
+      "ARTIFACT_REFERENCE_PATH_MISSING",
+      `Artifact reference must contain '#<Section Heading>.<path>': '${rawReference}'.`
+    );
+  }
+
+  const artifactRef = rawReference.slice(0, hashIndex);
+  const fragment = rawReference.slice(hashIndex + 1);
+  const dotIndex = fragment.indexOf(".");
+  const heading = (dotIndex < 0 ? fragment : fragment.slice(0, dotIndex)).trim();
+  const dottedPath = dotIndex < 0 ? "" : fragment.slice(dotIndex + 1).trim();
+  const artifactPath = artifactRef ? path.resolve(root, artifactRef) : sourceFile;
+  const relativeArtifactPath = path.relative(root, artifactPath);
+  if (relativeArtifactPath === ".." || relativeArtifactPath.startsWith(`..${path.sep}`) || path.isAbsolute(relativeArtifactPath)) {
+    throw artifactReferenceError(
+      "ARTIFACT_REFERENCE_FILE_OUTSIDE_ROOT",
+      `Artifact reference escapes project root: '${rawReference}'.`
+    );
+  }
+  if (!fs.existsSync(artifactPath) || !fs.statSync(artifactPath).isFile()) {
+    throw artifactReferenceError(
+      "ARTIFACT_REFERENCE_FILE_MISSING",
+      `Artifact reference file does not exist: ${artifactPath}`
+    );
+  }
+
+  const lines = readUtf8(artifactPath).split(/\r?\n/);
+  const headingLine = `## ${heading}`;
+  const headingIndex = lines.findIndex((line) => line.trim() === headingLine);
+  if (headingIndex < 0) {
+    throw artifactReferenceError(
+      "ARTIFACT_REFERENCE_HEADING_MISSING",
+      `Artifact reference heading '${headingLine}' was not found in ${artifactPath}.`
+    );
+  }
+
+  let yamlStart = -1;
+  let yamlEnd = -1;
+  for (let index = headingIndex + 1; index < lines.length; index += 1) {
+    if (/^##\s+/.test(lines[index].trim())) break;
+    if (yamlStart < 0 && lines[index].trim() === "```yaml") {
+      yamlStart = index + 1;
+      continue;
+    }
+    if (yamlStart >= 0 && lines[index].trim() === "```") {
+      yamlEnd = index;
+      break;
+    }
+  }
+  if (yamlStart < 0 || yamlEnd < yamlStart) {
+    throw artifactReferenceError(
+      "ARTIFACT_REFERENCE_YAML_MISSING",
+      `Artifact reference heading '${headingLine}' has no complete YAML block in ${artifactPath}.`
+    );
+  }
+
+  const document = parseArtifactYaml(lines.slice(yamlStart, yamlEnd).join("\n"));
+  return {
+    artifactPath,
+    heading,
+    dottedPath,
+    value: resolveArtifactYamlPath(document, dottedPath, rawReference)
+  };
+}
+
 const REQUIRED_FINALIZED_SIGNOFF_BY_STEP = {
   s04: ["spec", "dor"],
   s05: ["approach"],
@@ -730,5 +1015,6 @@ module.exports = {
   getSectionScalarValue,
   getTrustedReceiptArtifactErrors,
   getWorkflowStepNotePath,
-  loadWorkflowStepGateSnapshot
+  loadWorkflowStepGateSnapshot,
+  resolveArtifactReference
 };

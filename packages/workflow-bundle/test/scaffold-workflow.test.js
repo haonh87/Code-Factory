@@ -3,6 +3,7 @@ const os = require("os");
 const path = require("path");
 const { scaffoldWorkflowNotes, ensureLazyWorkflowNote } = require("../scripts/scaffold-workflow");
 const { SDD_LIGHT_BUDGET, SDD_LIGHT_PROFILE } = require("../scripts/workflow-sdd-definitions");
+const { validateWorkflowExecution } = require("../scripts/validate-workflow-execution");
 
 let failures = 0;
 
@@ -199,10 +200,75 @@ function testNonLightStillScaffoldsAll() {
   rmrf(projectRoot);
 }
 
+function scaffoldMultiAgent(roleCount) {
+  const projectRoot = buildProjectRoot();
+  const slug = `multi-role-${roleCount}`;
+  const workflowRoot = path.join(projectRoot, "work-items", slug);
+  const roles = Array.from({ length: roleCount }, (_value, index) => `role-${index + 1}`);
+  const args = {
+    "work-item": slug,
+    "planning-track": "full",
+    "delivery-context": "brownfield",
+    "workflow-root": workflowRoot,
+    "project-root": projectRoot,
+    steps: "s05,s06,s07",
+    "execution-mode": "multi_agent",
+    "execution-role": roles,
+    "review-mode": "independent",
+    "verification-owner": "qc"
+  };
+  scaffoldWorkflowNotes({ args });
+  return { projectRoot, workflowRoot, slug, roles };
+}
+
+function testMultiAgentSectionsHaveFlatFileCount() {
+  const scenarios = [2, 3, 4, 8].map(scaffoldMultiAgent);
+  const counts = [];
+  try {
+    scenarios.forEach(({ workflowRoot, slug, roles }) => {
+      const files = fs.readdirSync(workflowRoot).filter((file) => file.endsWith(".md")).sort();
+      counts.push(files.length);
+      ["execution-policy", "worker-assignment", "worker-handoff-report", "merge-report"].forEach((legacySlug) => {
+        assert(!files.some((file) => file.includes(`.${legacySlug}.md`)), `new scaffold must not emit ${legacySlug}`);
+      });
+
+      const s05 = readNote(workflowRoot, slug, "s05", "technical-approach");
+      const s06 = readNote(workflowRoot, slug, "s06", "task-breakdown");
+      const s07 = readNote(workflowRoot, slug, "s07", "implementation");
+      assert(/## Execution Topology/.test(s05), "s05 must host execution policy in ## Execution Topology");
+      assert(/## Role Outputs/.test(s06) && /assignments:/.test(s06), "s06 must host assignments[] in ## Role Outputs");
+      assert(/## Role Outputs/.test(s07) && /handoffs:/.test(s07), "s07 must host handoffs[] in ## Role Outputs");
+      assert(/## Merge Summary/.test(s07), "s07 must host merge report in ## Merge Summary");
+      assert((s06.match(/^\s+- assignment_id:/gm) || []).length === roles.length, "assignment count must match role count");
+      assert((s07.match(/^\s+- assignment_id:/gm) || []).length === roles.length, "handoff count must match role count");
+      assert(validateWorkflowExecution({ workflowRoot }).ok, "generated section-shaped runtime must validate");
+    });
+    assert(new Set(counts).size === 1, `2/3/4/8 roles must have identical file counts, got ${counts.join("/")}`);
+
+    const sample = scenarios[0];
+    const s07Path = path.join(sample.workflowRoot, `${sample.slug}.s07.implementation.md`);
+    fs.chmodSync(s07Path, 0o644);
+    const content = fs.readFileSync(s07Path, "utf8").replace(
+      "merged_assignments:\n",
+      'merged_assignments:\n  - "S06-ORPHAN-999"\n'
+    );
+    fs.writeFileSync(s07Path, content, "utf8");
+    const orphanResult = validateWorkflowExecution({ workflowRoot: sample.workflowRoot });
+    assert(
+      !orphanResult.ok && orphanResult.errors.some((error) => /without a matching.*handoff/i.test(error)),
+      `orphaned merged assignment must fail, got ${JSON.stringify(orphanResult.errors)}`
+    );
+    console.log(`  PASS: multi-agent 2/3/4/8 roles keep flat file count ${counts.join("/")} and reject orphan ids`);
+  } finally {
+    scenarios.forEach(({ projectRoot }) => rmrf(projectRoot));
+  }
+}
+
 console.log("Running scaffold-workflow (Light compact) tests...\n");
 testCompactScaffold();
 testExplicitStepsRespected();
 testNonLightStillScaffoldsAll();
+testMultiAgentSectionsHaveFlatFileCount();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in scaffold-workflow.test.js`);

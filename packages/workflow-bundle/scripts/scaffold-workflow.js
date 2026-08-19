@@ -20,9 +20,7 @@ const {
 } = require("./workflow-change-definitions");
 const {
   EXECUTION_MODES,
-  REVIEW_MODES,
-  getRequiredExecutionArtifacts,
-  renderExecutionArtifactBody
+  REVIEW_MODES
 } = require("./workflow-execution-definitions");
 const {
   PLANNING_TRACKS,
@@ -318,10 +316,8 @@ function buildFrontmatter(definition, context) {
   return lines.join("\n");
 }
 
-function getDefaultLinkedArtifacts(stepId, context) {
-  return getRequiredExecutionArtifacts(stepId, context.executionMode).map(
-    (artifact) => `${context.workItemSlug}.${artifact.stepId}.${artifact.stepSlug}.md`
-  );
+function getDefaultLinkedArtifacts() {
+  return [];
 }
 
 function buildStepContent(definition, context) {
@@ -494,23 +490,6 @@ function scaffoldWorkflowNotes(options) {
     const content = buildStepContent(definition, context);
     fs.writeFileSync(filePath, content, "utf8");
     createdFiles.push(filePath);
-
-    const runtimeArtifacts = getRequiredExecutionArtifacts(stepId, context.executionMode);
-    runtimeArtifacts.forEach((artifact) => {
-      const runtimeFilePath = path.join(
-        workflowRoot,
-        `${context.workItemSlug}.${artifact.stepId}.${artifact.stepSlug}.md`
-      );
-
-      if (fs.existsSync(runtimeFilePath) && !force) {
-        errors.push(`File already exists, use --force to overwrite: ${runtimeFilePath}`);
-        return;
-      }
-
-      const runtimeContent = renderExecutionArtifactBody(artifact, context);
-      fs.writeFileSync(runtimeFilePath, runtimeContent, "utf8");
-      createdFiles.push(runtimeFilePath);
-    });
   });
 
   if (errors.length > 0) {

@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+"use strict";
+
 const crypto = require("crypto");
 const fs = require("fs");
 const os = require("os");
@@ -7,21 +9,46 @@ const path = require("path");
 const { execFileSync } = require("child_process");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
-const rollbackTag = "v2.3.2";
-const candidateVersion = "2.4.0";
-const candidateSkillCount = 41;
-const expectedVersion = "2.3.2";
-const expectedSkillCount = 40;
+const packageRoot = path.join(repoRoot, "packages", "workflow-bundle");
+const candidateVersion = "2.5.0";
+const candidateSkillCount = 42;
+const rollbackVersion = "2.4.0";
+const rollbackSkillCount = 41;
+const retainedRollbackDigest = "44f40296f2c3b0494ac84414c26c743c9cc3e91cb8caa54dfb8c41f33fb2db3e";
+const defaultRollbackTarball = path.resolve(
+  repoRoot,
+  "..",
+  "stabilize-architecture-skill-bundle-v2.4.0",
+  "packages",
+  "workflow-bundle",
+  "workflow-bundle-2.4.0.tgz"
+);
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
 }
 
+function sha256(filePath) {
+  return crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
+}
+
 function snapshot(filePath) {
   return {
-    sha256: crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex"),
+    sha256: sha256(filePath),
     mode: fs.statSync(filePath).mode & 0o777
   };
+}
+
+function chmodTreeWritable(targetPath) {
+  if (!fs.existsSync(targetPath)) return;
+  const stat = fs.lstatSync(targetPath);
+  if (stat.isSymbolicLink()) return;
+  if (stat.isDirectory()) {
+    fs.chmodSync(targetPath, (stat.mode & 0o777) | 0o700);
+    fs.readdirSync(targetPath).forEach((name) => chmodTreeWritable(path.join(targetPath, name)));
+    return;
+  }
+  fs.chmodSync(targetPath, (stat.mode & 0o777) | 0o600);
 }
 
 function countSkills(root) {
@@ -37,7 +64,46 @@ function countSkills(root) {
   return count;
 }
 
-function runRollbackTransition({ oldRepoRoot, tempRoot, mode, scope }) {
+function installArtifact(tarballPath, installPrefix, cacheRoot) {
+  const npmBin = process.platform === "win32" ? "npm.cmd" : "npm";
+  execFileSync(
+    npmBin,
+    ["install", "--prefix", installPrefix, "--ignore-scripts", "--no-audit", "--no-fund", tarballPath],
+    {
+      cwd: path.dirname(installPrefix),
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+      env: { ...process.env, npm_config_cache: cacheRoot, npm_config_update_notifier: "false" }
+    }
+  );
+  return path.join(installPrefix, "node_modules", "workflow-bundle");
+}
+
+function assertArtifactIdentity(tarballPath, expectedDigest, label) {
+  assert(path.isAbsolute(tarballPath), `${label} tarball path must be absolute`);
+  assert(fs.existsSync(tarballPath), `${label} tarball missing: ${tarballPath}`);
+  assert(/^[a-f0-9]{64}$/.test(expectedDigest), `${label} expected digest must be a lowercase SHA-256`);
+  const actualDigest = sha256(tarballPath);
+  assert(actualDigest === expectedDigest, `${label} digest mismatch: expected ${expectedDigest}, got ${actualDigest}`);
+  return actualDigest;
+}
+
+function runSourcePreflight() {
+  const packageJson = JSON.parse(fs.readFileSync(path.join(packageRoot, "package.json"), "utf8"));
+  assert(packageJson.version === candidateVersion, `source package version must be ${candidateVersion}, got ${packageJson.version}`);
+  for (const mode of ["codex", "claude"]) {
+    const skillsRoot = path.join(packageRoot, "runtime", mode, "skills");
+    assert(countSkills(skillsRoot) === candidateSkillCount, `source ${mode} runtime must contain ${candidateSkillCount} skills`);
+    assert(
+      fs.existsSync(path.join(skillsRoot, "guardrails", "artifact-governance", "SKILL.vi.md")),
+      `source ${mode} runtime must contain artifact-governance/SKILL.vi.md`
+    );
+  }
+  assertArtifactIdentity(defaultRollbackTarball, retainedRollbackDigest, "retained v2.4.0 rollback");
+  console.log(`OK: rollback preflight passed for v${candidateVersion} -> v${rollbackVersion}; no candidate tarball was created`);
+}
+
+function runRollbackTransition({ candidatePackageRoot, rollbackPackageRoot, tempRoot, mode, scope }) {
   const scenarioRoot = path.join(tempRoot, `${mode}-${scope}`);
   const runtimeHome = path.join(scenarioRoot, `.${mode}`);
   const projectRoot = path.join(scenarioRoot, "project");
@@ -59,65 +125,75 @@ function runRollbackTransition({ oldRepoRoot, tempRoot, mode, scope }) {
   const installArgs = ["install", "--mode", mode, homeFlag, runtimeHome, "--scope", scope];
   if (scope === "project") installArgs.push("--project-root", projectRoot);
 
-  execFileSync(
-    process.execPath,
-    [path.join(repoRoot, "packages", "workflow-bundle", "bin", "wfc.js"), ...installArgs],
-    { cwd: repoRoot, stdio: "pipe", encoding: "utf8" }
-  );
-
-  const candidateState = JSON.parse(
-    fs.readFileSync(path.join(runtimeHome, `${statePrefix}-workflow-bundle.install-state.json`), "utf8")
-  );
-  assert(candidateState.installed_bundle_version === candidateVersion, `${mode}/${scope}: candidate install must start at ${candidateVersion}`);
-  assert(countSkills(path.join(runtimeHome, "skills")) === candidateSkillCount, `${mode}/${scope}: candidate must install ${candidateSkillCount} skills`);
-  assert(fs.existsSync(path.join(runtimeHome, "skills", "architecture-modeling", "SKILL.md")), `${mode}/${scope}: candidate must contain architecture-modeling before rollback`);
-
-  execFileSync(
-    process.execPath,
-    [
-      path.join(oldRepoRoot, "packages", "workflow-bundle", "bin", "wfc.js"),
-      ...installArgs
-    ],
-    { cwd: oldRepoRoot, stdio: "pipe", encoding: "utf8" }
-  );
-
-  const after = unmanagedPaths.map(snapshot);
-  assert(JSON.stringify(after) === JSON.stringify(before), `${mode}/${scope}: unmanaged rollback marker changed`);
-  const state = JSON.parse(fs.readFileSync(path.join(runtimeHome, `${statePrefix}-workflow-bundle.install-state.json`), "utf8"));
-  assert(state.installed_bundle_version === expectedVersion, `${mode}/${scope}: expected installed version ${expectedVersion}`);
-  const skillCount = countSkills(path.join(runtimeHome, "skills"));
-  assert(skillCount === expectedSkillCount, `${mode}/${scope}: expected ${expectedSkillCount} rollback skills, got ${skillCount}`);
-  assert(!fs.existsSync(path.join(runtimeHome, "skills", "architecture-modeling")), `${mode}/${scope}: rollback must remove architecture-modeling`);
-  return { mode, scope, installedVersion: state.installed_bundle_version, skillCount, unmanaged: after };
-}
-
-console.log("Running isolated v2.4.0 -> v2.3.2 rollback transition smoke...\n");
-const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-v2.3.2-rollback-"));
-try {
-  const archivePath = path.join(tempRoot, "source.tar");
-  const oldRepoRoot = path.join(tempRoot, "source");
-  fs.mkdirSync(oldRepoRoot, { recursive: true });
-  execFileSync("git", ["archive", "--format=tar", "--output", archivePath, rollbackTag], {
-    cwd: repoRoot,
-    stdio: "pipe"
-  });
-  execFileSync("tar", ["-xf", archivePath, "-C", oldRepoRoot], { stdio: "pipe" });
-  execFileSync(process.execPath, [path.join(oldRepoRoot, "packages", "workflow-bundle", "scripts", "sync-workflow-bundle-runtime.js")], {
-    cwd: oldRepoRoot,
+  execFileSync(process.execPath, [path.join(candidatePackageRoot, "bin", "wfc.js"), ...installArgs], {
+    cwd: candidatePackageRoot,
     stdio: "pipe",
     encoding: "utf8"
   });
 
-  const results = [];
-  for (const mode of ["codex", "claude"]) {
-    for (const scope of ["global", "project"]) {
-      results.push(runRollbackTransition({ oldRepoRoot, tempRoot, mode, scope }));
-    }
-  }
-  results.forEach((result) => {
-    console.log(`  PASS: ${result.mode}/${result.scope} installed_version=${result.installedVersion}, managed_skills=${result.skillCount}, unmanaged_markers=${result.unmanaged.length}`);
+  const statePath = path.join(runtimeHome, `${statePrefix}-workflow-bundle.install-state.json`);
+  const candidateState = JSON.parse(fs.readFileSync(statePath, "utf8"));
+  assert(candidateState.installed_bundle_version === candidateVersion, `${mode}/${scope}: candidate install must start at ${candidateVersion}`);
+  assert(countSkills(path.join(runtimeHome, "skills")) === candidateSkillCount, `${mode}/${scope}: candidate must install ${candidateSkillCount} skills`);
+  assert(fs.existsSync(path.join(runtimeHome, "skills", "artifact-governance", "SKILL.md")), `${mode}/${scope}: candidate must contain artifact-governance before rollback`);
+
+  execFileSync(process.execPath, [path.join(rollbackPackageRoot, "bin", "wfc.js"), ...installArgs], {
+    cwd: rollbackPackageRoot,
+    stdio: "pipe",
+    encoding: "utf8"
   });
-  console.log("\nOK: release-rollback-smoke.test.js passed");
-} finally {
-  fs.rmSync(tempRoot, { recursive: true, force: true });
+
+  const after = unmanagedPaths.map(snapshot);
+  assert(JSON.stringify(after) === JSON.stringify(before), `${mode}/${scope}: unmanaged rollback marker changed`);
+  const state = JSON.parse(fs.readFileSync(statePath, "utf8"));
+  assert(state.installed_bundle_version === rollbackVersion, `${mode}/${scope}: expected installed version ${rollbackVersion}`);
+  const skillCount = countSkills(path.join(runtimeHome, "skills"));
+  assert(skillCount === rollbackSkillCount, `${mode}/${scope}: expected ${rollbackSkillCount} rollback skills, got ${skillCount}`);
+  assert(!fs.existsSync(path.join(runtimeHome, "skills", "artifact-governance")), `${mode}/${scope}: rollback must remove artifact-governance`);
+  return { mode, scope, installedVersion: state.installed_bundle_version, skillCount, unmanaged: after };
+}
+
+function runExactRollback(candidateTarball, candidateDigest, rollbackTarball, rollbackDigest) {
+  const actualCandidateDigest = assertArtifactIdentity(candidateTarball, candidateDigest, "v2.5.0 candidate");
+  const actualRollbackDigest = assertArtifactIdentity(rollbackTarball, rollbackDigest, "v2.4.0 rollback");
+  console.log(`Running exact v${candidateVersion} -> v${rollbackVersion} rollback transition smoke...\n`);
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-v2.5.0-rollback-"));
+  try {
+    const cacheRoot = path.join(tempRoot, "npm-cache");
+    const candidatePackageRoot = installArtifact(candidateTarball, path.join(tempRoot, "candidate-package"), cacheRoot);
+    const rollbackPackageRoot = installArtifact(rollbackTarball, path.join(tempRoot, "rollback-package"), cacheRoot);
+    const candidatePackage = JSON.parse(fs.readFileSync(path.join(candidatePackageRoot, "package.json"), "utf8"));
+    const rollbackPackage = JSON.parse(fs.readFileSync(path.join(rollbackPackageRoot, "package.json"), "utf8"));
+    assert(candidatePackage.version === candidateVersion, `candidate package version must be ${candidateVersion}`);
+    assert(rollbackPackage.version === rollbackVersion, `rollback package version must be ${rollbackVersion}`);
+
+    const results = [];
+    for (const mode of ["codex", "claude"]) {
+      for (const scope of ["global", "project"]) {
+        results.push(runRollbackTransition({ candidatePackageRoot, rollbackPackageRoot, tempRoot, mode, scope }));
+      }
+    }
+    results.forEach((result) => {
+      console.log(`  PASS: ${result.mode}/${result.scope} installed_version=${result.installedVersion}, managed_skills=${result.skillCount}, unmanaged_markers=${result.unmanaged.length}`);
+    });
+    console.log(`  PASS: candidate_sha256=${actualCandidateDigest}`);
+    console.log(`  PASS: rollback_sha256=${actualRollbackDigest}`);
+    console.log("\nOK: release-rollback-smoke.test.js passed");
+  } finally {
+    chmodTreeWritable(tempRoot);
+    fs.rmSync(tempRoot, { recursive: true, force: true });
+  }
+}
+
+const candidateTarball = process.env.WORKFLOW_BUNDLE_CANDIDATE_TARBALL;
+if (candidateTarball) {
+  const rollbackTarball = process.env.WORKFLOW_BUNDLE_ROLLBACK_TARBALL || "";
+  runExactRollback(
+    candidateTarball,
+    process.env.WORKFLOW_BUNDLE_CANDIDATE_SHA256 || "",
+    rollbackTarball,
+    process.env.WORKFLOW_BUNDLE_ROLLBACK_SHA256 || ""
+  );
+} else {
+  runSourcePreflight();
 }

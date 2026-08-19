@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: workflow-bundle-quickstart.vi.md
 
-This guide focuses on the `workflow-bundle v2.4.0` release candidate: install `wfc`, install the workflow bundle for Codex or Claude Code, bootstrap a new repo, and run the `agent proposes, human approves` flow. Registry installation remains unavailable until the human Release gate passes.
+This guide focuses on the `workflow-bundle v2.5.0` release candidate: install `wfc`, install the workflow bundle for Codex or Claude Code, bootstrap a new repo, and run the `agent proposes, human approves` flow. Registry installation remains unavailable until the human Release gate passes.
 
 ## Objectives
 
