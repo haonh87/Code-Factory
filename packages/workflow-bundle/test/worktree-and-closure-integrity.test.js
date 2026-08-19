@@ -318,7 +318,12 @@ function testDbBinMappingResolvesToPackageTestDir() {
     scriptsWithTest.status === 0,
     "control: the existing packages/X/scripts/ mapping still allows a file whose test exists"
   );
-  const scriptsWithoutTest = hookVerdict("packages/workflow-bundle/scripts/validate-work-item-protocol.js");
+  // Deliberately a name that does not and will not exist. An earlier version of this
+  // control named a real script that had no test at the time - and T2 then gave that
+  // script a test, so the control started failing for a reason that had nothing to do
+  // with the hook. Same brittleness class as F-01: do not couple an assertion to
+  // mutable repo state when a controlled input works.
+  const scriptsWithoutTest = hookVerdict("packages/workflow-bundle/scripts/no-such-script-xyz.js");
   assert(
     scriptsWithoutTest.status === 2,
     "control: a packages/X/scripts/ file with no test is still blocked"
