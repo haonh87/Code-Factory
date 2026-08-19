@@ -72,6 +72,13 @@ function getNoteText(args, fallback = "") {
   return String(raw || fallback).trim();
 }
 
+// Stated in every finalization refusal so the failure carries the fix with it,
+// rather than requiring the operator to have read the flow documentation first.
+const GATE_ORDER_HINT =
+  "Correct order: fill gate_reviews -> set status and spec_status -> seal the gate -> activate. " +
+  "Sealing before the note is finalized produces a receipt that activate will reject as stale, " +
+  "because the receipt is bound to the note's content hash.";
+
 function validateSnapshotAuthority(snapshot, gate, reviewedBy) {
   if (gate === "bootstrap") {
     return;
@@ -87,6 +94,28 @@ function validateSnapshotAuthority(snapshot, gate, reviewedBy) {
   }
   if (!signoffs.includes(reviewedBy)) {
     throw new Error(`role_signoffs.${gate} in ${snapshot.filePath} must include '${reviewedBy}' before sealing trusted approval.`);
+  }
+
+  // TD-02: a receipt is bound to the sha256 of its host note, and `work-item activate`
+  // additionally requires the note to be finalized - status non-draft, plus spec_status
+  // approved|frozen for the spec gate. Sealing first and finalizing afterwards therefore
+  // guaranteed a stale receipt, and the published flow listed exactly that order with
+  // nothing in between. Refusing here is what stops the documented sequence being a trap.
+  //
+  // The alternative - letting a receipt survive later edits - would trade away the digest
+  // binding that makes a receipt worth anything, so it was rejected in s06 ASM-002.
+  //
+  // The two conditions mirror workflow-gate-evidence-utils.js:264 and :282 so that sealing
+  // and activating agree instead of each holding its own copy of the rule.
+  if (!snapshot.status || snapshot.status === "draft") {
+    throw new Error(
+      `Cannot seal gate '${gate}': host note is still status draft in ${snapshot.filePath}. ${GATE_ORDER_HINT}`
+    );
+  }
+  if (gate === "spec" && !["approved", "frozen"].includes(snapshot.specStatus)) {
+    throw new Error(
+      `Cannot seal gate 'spec': spec_status is '${snapshot.specStatus || "draft"}' in ${snapshot.filePath}, expected approved or frozen. ${GATE_ORDER_HINT}`
+    );
   }
 }
 
@@ -355,5 +384,9 @@ if (require.main === module) {
 }
 
 module.exports = {
-  runCli
+  runCli,
+  // Exported so the finalization guard is unit-testable. See
+  // packages/workflow-bundle/test/workflow-gate-review.test.js.
+  validateSnapshotAuthority,
+  GATE_ORDER_HINT
 };
