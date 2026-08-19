@@ -16,6 +16,7 @@ const {
   REVIEW_MODES,
   getRequiredExecutionArtifacts
 } = require("./workflow-execution-definitions");
+const { resolveArtifactReference } = require("./workflow-gate-evidence-utils");
 
 const filePattern =
   /^(?<work_item_slug>[a-z0-9]+(?:-[a-z0-9]+)*)\.(?<step_id>s0[1-8])\.(?<step_slug>[a-z-]+)\.md$/;
@@ -81,6 +82,130 @@ function validateRuntimeArtifactContent(runtimePath, expected, errors) {
   });
 }
 
+function validateRequiredObjectFields(value, requiredFields, label, filePath, errors) {
+  requiredFields.forEach((field) => {
+    if (!value || typeof value !== "object" || !Object.prototype.hasOwnProperty.call(value, field)) {
+      errors.push(`${label} is missing required field '${field}': ${filePath}`);
+    }
+  });
+}
+
+function resolveSectionValue({ workflowRoot, filePath, reference, errors }) {
+  try {
+    return resolveArtifactReference({
+      projectRoot: workflowRoot,
+      currentFile: filePath,
+      reference
+    }).value;
+  } catch (error) {
+    errors.push(`Cannot read execution section '${reference}': ${error.message}`);
+    return null;
+  }
+}
+
+function validateSectionExecutionContent({ workflowRoot, filePath, stepId, content, errors }) {
+  if (stepId === "s05") {
+    const topology = getMarkdownSectionContent(content, "## Execution Topology");
+    if (!topology) return false;
+    [
+      /execution_mode:\s*multi_agent/,
+      /coordinator_role:/,
+      /verification_owner:/,
+      /fallback_mode:/
+    ].forEach((pattern) => {
+      if (!pattern.test(topology)) {
+        errors.push(`Execution Topology is missing required content matching ${pattern}: ${filePath}`);
+      }
+    });
+    return true;
+  }
+
+  if (stepId === "s06") {
+    if (!getMarkdownSectionContent(content, "## Role Outputs")) return false;
+    const assignments = resolveSectionValue({
+      workflowRoot,
+      filePath,
+      reference: "#Role Outputs.assignments[]",
+      errors
+    });
+    if (!Array.isArray(assignments) || assignments.length < 1) {
+      errors.push(`Role Outputs.assignments must contain at least one assignment: ${filePath}`);
+      return true;
+    }
+    assignments.forEach((assignment, index) => {
+      const label = `Role Outputs assignment '${assignment && assignment.assignment_id ? assignment.assignment_id : index + 1}'`;
+      validateRequiredObjectFields(
+        assignment,
+        ["assignment_id", "role", "owned_scope", "done_when", "status"],
+        label,
+        filePath,
+        errors
+      );
+    });
+    return true;
+  }
+
+  if (stepId === "s07") {
+    const roleOutputs = getMarkdownSectionContent(content, "## Role Outputs");
+    const mergeSummary = getMarkdownSectionContent(content, "## Merge Summary");
+    if (!roleOutputs && !mergeSummary) return false;
+    if (!roleOutputs) {
+      errors.push(`Section-shaped multi_agent s07 requires '## Role Outputs': ${filePath}`);
+    }
+    if (!mergeSummary) {
+      errors.push(`Section-shaped multi_agent s07 requires '## Merge Summary': ${filePath}`);
+    }
+
+    const handoffs = roleOutputs
+      ? resolveSectionValue({ workflowRoot, filePath, reference: "#Role Outputs.handoffs[]", errors })
+      : null;
+    if (roleOutputs && (!Array.isArray(handoffs) || handoffs.length < 1)) {
+      errors.push(`Role Outputs.handoffs must contain at least one handoff: ${filePath}`);
+    } else if (Array.isArray(handoffs)) {
+      handoffs.forEach((handoff, index) => {
+        const label = `Role Outputs handoff '${handoff && handoff.assignment_id ? handoff.assignment_id : index + 1}'`;
+        validateRequiredObjectFields(
+          handoff,
+          ["assignment_id", "status", "summary", "evidence"],
+          label,
+          filePath,
+          errors
+        );
+      });
+    }
+
+    if (mergeSummary) {
+      [
+        /execution_mode:\s*multi_agent/,
+        /coordinator_role:/,
+        /merged_assignments:/,
+        /ready_for_audit:/
+      ].forEach((pattern) => {
+        if (!pattern.test(mergeSummary)) {
+          errors.push(`Merge Summary is missing required content matching ${pattern}: ${filePath}`);
+        }
+      });
+      const mergedAssignments = resolveSectionValue({
+        workflowRoot,
+        filePath,
+        reference: "#Merge Summary.merged_assignments[]",
+        errors
+      });
+      if (Array.isArray(mergedAssignments) && Array.isArray(handoffs)) {
+        const handoffIds = new Set(handoffs.map((handoff) => handoff && handoff.assignment_id).filter(Boolean));
+        mergedAssignments.forEach((assignmentId) => {
+          if (!handoffIds.has(assignmentId)) {
+            errors.push(`Merge Summary references assignment '${assignmentId}' without a matching Role Outputs handoff: ${filePath}`);
+          }
+        });
+      }
+    }
+    return true;
+  }
+
+  return false;
+}
+
 function validateWorkflowExecution(options) {
   const workflowRoot = resolveExistingPath(options.workflowRoot, "workflow-root");
   const files = collectFilesRecursive(workflowRoot, new Set([".md"]));
@@ -113,6 +238,7 @@ function validateWorkflowExecution(options) {
     const executionRoles = getFrontmatterList(frontmatterLines, "execution_roles") || [];
     const linkedArtifacts = getFrontmatterList(frontmatterLines, "linked_artifacts") || [];
     const { work_item_slug: workItemSlug, step_id: stepId } = match.groups;
+    const content = readUtf8(filePath);
 
     if (!allowedExecutionModes.has(executionMode)) {
       errors.push(`Invalid execution_mode '${executionMode}' in ${filePath}`);
@@ -146,6 +272,17 @@ function validateWorkflowExecution(options) {
 
     if (stepId === "s08" && reviewMode === "self") {
       errors.push(`multi_agent step 8 requires review_mode 'independent' or 'auto_fix_loop': ${filePath}`);
+    }
+
+    const usesSectionShape = validateSectionExecutionContent({
+      workflowRoot,
+      filePath,
+      stepId,
+      content,
+      errors
+    });
+    if (usesSectionShape) {
+      continue;
     }
 
     const requiredArtifacts = getRequiredExecutionArtifacts(stepId, executionMode);

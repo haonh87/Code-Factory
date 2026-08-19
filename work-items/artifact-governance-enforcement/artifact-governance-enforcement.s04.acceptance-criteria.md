@@ -16,9 +16,11 @@ governance_profile: default
 governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
-change_id: ""
-change_status: draft
-spec_delta_refs: []
+change_id: "CHANGE-003"
+change_status: approved
+spec_delta_refs:
+  - "changes/CHANGE-003/spec-delta/brd.delta.md"
+  - "changes/CHANGE-003/spec-delta/srs.delta.md"
 archive_status: not_ready
 sdd_mode: none
 spec_refs:
@@ -35,8 +37,8 @@ approval_gates:
   contract: "required"
   foundation: "not_applicable"
   uat: "not_applicable"
-  release: "not_applicable"
-  business_acceptance: "not_applicable"
+  release: "required"
+  business_acceptance: "required"
 role_signoffs:
   spec:
     - "ba"
@@ -46,26 +48,32 @@ role_signoffs:
   dor:
     - "po"
     - "ba"
+    - "qc"
   approach:
     - "developer"
   foundation: []
   task_plan:
     - "developer"
   uat: []
-  release: []
-  business_acceptance: []
+  release:
+    - "qc"
+    - "devops"
+  business_acceptance:
+    - "po"
   dod:
     - "qc"
 gate_reviews:
   spec_reviewed_by:
     - "ba"
-  spec_reviewed_at: "2026-08-17T07:02:47.000Z"
+  spec_reviewed_at: "2026-08-18T02:28:16.652Z"
   contract_reviewed_by:
     - "ba"
-  contract_reviewed_at: "2026-08-17T07:02:47.000Z"
+    - "developer"
+  contract_reviewed_at: "2026-08-18T02:28:37.298Z"
   dor_reviewed_by:
     - "po"
-  dor_reviewed_at: "2026-08-17T07:02:47.000Z"
+    - "qc"
+  dor_reviewed_at: "2026-08-18T02:28:51.735Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   foundation_reviewed_by: []
@@ -85,13 +93,18 @@ content_skills:
   - "requirement-analysis"
   - "step-goal-contract"
   - "definition-of-ready-gate"
+  - "sa"
+  - "ta"
 artifact_skills:
   - "obsidian-markdown"
 upstream_artifacts:
   - "artifact-governance-enforcement.s01.restate.md"
   - "artifact-governance-enforcement.s02.business-goal.md"
   - "artifact-governance-enforcement.s03.open-questions.md"
-linked_artifacts: []
+linked_artifacts:
+  - "changes/CHANGE-003/proposal.md"
+  - "changes/CHANGE-003/spec-delta/brd.delta.md"
+  - "changes/CHANGE-003/spec-delta/srs.delta.md"
 tags:
   - "agent-ops"
   - "workflow/s04"
@@ -100,9 +113,9 @@ tags:
 # Step 4 - Acceptance + DoR
 
 > [!summary]
-> Ten acceptance criteria, each resolvable against a command output or a named fixture.
-> Contract gate applies: the emitted artifact shape is a contract for bundle adopters.
-> Spec, Contract and DoR are all human gates and none has passed.
+> The original AC-001 through AC-010 baseline was approved and remains intact. CHANGE-003 adds
+> AC-011 through AC-016 for the v2.5.0/42-skill release delta. Refreshed Spec, Contract, and DoR
+> receipts are required before release/inventory implementation resumes.
 
 ## Step Contract
 ```yaml
@@ -347,3 +360,152 @@ next_step: "s05 Technical Approach"
 - Carried into `s05` with binding constraints: `Q2` legacy shape, `Q3` escape-hatch design, `Q6` config surface confirmation.
 - Blocking for `s07` only: the write-root collision with `stabilize-architecture-skill-bundle`.
 - Not permitted yet: any change under `packages/`. That waits on Approach and Task Plan receipts, and on the collision clearing.
+
+## CHANGE-003 Acceptance + DoR Delta
+
+> [!warning]
+> The original AC-001 through AC-010 baseline remains intact. This addendum is the only
+> CHANGE-003 scope extension. Until refreshed Spec, Contract, and DoR receipts match this file,
+> the release/inventory implementation path is closed.
+
+### Delta Control
+```yaml
+change_id: "CHANGE-003"
+change_receipt:
+  status: APPROVED
+  reviewed_by: "po"
+  reviewed_at: "2026-08-17T14:42:39.211Z"
+  trusted_receipt: "APPROVED"
+base_spec_digest: "2e268cfce45dfad96d465b2e3b57669d03e10439d03c175f4f1b964f4b14dabc"
+delta_refs:
+  - "changes/CHANGE-003/spec-delta/brd.delta.md"
+  - "changes/CHANGE-003/spec-delta/srs.delta.md"
+supersedes:
+  - "Artifact Chính.out_of_scope release/version/bundle-registration exclusion, for CHANGE-003 only"
+preserves:
+  - "AC-001 through AC-010"
+  - "P4 and approval-path-defect exclusions"
+  - "v2.4.0 at 41 skills and v2.3.2 at 40 skills as historical facts"
+```
+
+### Existing System Baseline Delta
+```yaml
+baseline_date: "2026-08-17"
+current_state:
+  package_version: "2.4.0"
+  canonical_skill_count: 42
+  codex_runtime_skill_count: 42
+  claude_runtime_skill_count: 42
+  aggregate_unit_result: "31 of 36 files pass"
+  failing_release_files:
+    - "release-candidate-artifact-smoke.test.js"
+    - "release-install-all-smoke.test.js"
+    - "release-rollback-smoke.test.js"
+    - "release-surface.test.js"
+    - "workflow-bundle-runtime-parity.test.js"
+baseline_classification: "The five files also fail at clean HEAD 7f5b984 on 41-versus-42 assertions; CHANGE-003 owns the correction because P2's original s04 excluded release registration."
+compatibility_floor:
+  - "No current surface may assign 42 skills to v2.4.0."
+  - "No historical surface may change v2.4.0 from 41 or v2.3.2 from 40."
+  - "Unmanaged hashes and modes must be identical before and after install, update, and rollback."
+```
+
+### Contract Delta
+```yaml
+status: APPROVED
+release_identity: "v2.5.0"
+current_inventory: "42 canonical / 42 Codex / 42 Claude"
+historical_inventory:
+  v2.4.0: 41
+  v2.3.2: 40
+artifact_contract:
+  - "Canonical skill source is the sole owner; both runtimes are recursive derived copies."
+  - "artifact-governance ships with its declared Vietnamese sibling and referenced resources."
+  - "One semantic version resolves to one immutable tarball inventory and one SHA-256."
+  - "The verified tarball is the only artifact eligible for promotion."
+rollback_contract:
+  from: "v2.5.0"
+  to: "v2.4.0"
+  expected_count_transition: "42 -> 41"
+  removes: "artifact-governance"
+  unmanaged_change_count: 0
+```
+
+### Delta Acceptance Criteria
+```yaml
+acceptance_criteria:
+  - id: "AC-011"
+    requirement_ref: "CR-REQ-011"
+    criterion: "artifact-governance has complete declared EN/VI skill content and both runtime copies are recursively equal to canonical."
+    verify: "Assert required files and references, then recursive-diff canonical against Codex and Claude copies with difference count 0."
+    objective: "CHANGE-003 OBJ-002"
+  - id: "AC-012"
+    requirement_ref: "CR-REQ-012"
+    criterion: "Canonical, Codex, and Claude managed inventories are exactly 42/42/42."
+    verify: "Runtime parity, pack audit, package dry-run, and exact-artifact smoke each report 42 in all three inventories."
+    objective: "CHANGE-003 OBJ-001, OBJ-002"
+  - id: "AC-013"
+    requirement_ref: "CR-REQ-013, CR-REQ-014"
+    criterion: "All current surfaces agree on v2.5.0 and 42 skills while frozen v2.4.0 and v2.3.2 surfaces remain 41 and 40 respectively."
+    verify: "Version/inventory assertions are partitioned by release identity and report zero conflicts; git diff shows no historical claim rewritten."
+    objective: "CHANGE-003 OBJ-003"
+  - id: "AC-014"
+    requirement_ref: "CR-REQ-015"
+    criterion: "Exact-candidate install and update pass for Codex and Claude in global and project scopes without unmanaged hash or mode changes."
+    verify: "Serialized 4/4 matrix passes with unmanaged change count 0."
+    objective: "CHANGE-003 OBJ-002"
+  - id: "AC-015"
+    requirement_ref: "CR-REQ-016"
+    criterion: "Exact-artifact rollback from v2.5.0 to retained v2.4.0 passes all four mode/scope cases, changes 42 to 41, removes artifact-governance, and preserves unmanaged state."
+    verify: "Serialized rollback matrix passes 4/4 with version, count, absence, hash, and mode assertions."
+    objective: "CHANGE-003 OBJ-002, OBJ-003"
+  - id: "AC-016"
+    requirement_ref: "BRD-DELTA-006"
+    criterion: "The complete workflow-bundle unit command and all P2 validators, fixtures, audits, and smokes are green before candidate creation."
+    verify: "36 of 36 unit files pass; workflow validators, fixtures, pack audit, bundle smoke, syntax, and UTF-8 checks pass."
+    objective: "CHANGE-003 OBJ-001"
+edge_cases:
+  - id: "EDGE-006"
+    case: "A global replacement changes every 41 to 42."
+    expected: "Rejected because it mutates v2.4.0 history; assertions must be version-scoped."
+  - id: "EDGE-007"
+    case: "A candidate is rebuilt after verification."
+    expected: "Rejected; any tracked source mutation invalidates the candidate and requires full reverification."
+  - id: "EDGE-008"
+    case: "Rollback uses a source checkout rather than the retained v2.4.0 artifact."
+    expected: "Rejected; rollback evidence must identify the immutable known-good artifact."
+out_of_scope_still_applies:
+  - "P4 docs/root/changes migration"
+  - "TD-01, TD-02, and tooling_gap_found_3"
+  - "Registry publication, tag creation, or live global update before Release approval"
+```
+
+### Definition of Ready
+```yaml
+work_item_slug: "artifact-governance-enforcement"
+status: READY
+checks:
+  restated_request_clear: PASS
+  business_goal_clear: PASS
+  scope_defined: PASS
+  open_questions_non_blocking: PASS
+  acceptance_criteria_testable: PASS
+  dependencies_known: PASS
+  verification_direction_present: PASS
+blocking_gaps: []
+accepted_assumptions:
+  - "PO approval of CHANGE-003 accepts v2.5.0 as the additive 42-skill release identity."
+  - "The retained v2.4.0 artifact is the known-good rollback target."
+residual_risks:
+  - "Version-scoped documentation can be corrupted by mechanical search/replace; AC-013 blocks this."
+  - "Candidate provenance breaks after any source mutation; AC-015 and AC-016 require rebuild and reverification."
+next_action: "Use matching Spec, Contract, and DoR receipts as input to the approved CHANGE-003 implementation path."
+```
+
+### Delta Gate Control
+```yaml
+workflow_status: ACTIVE
+missing_gates: []
+next_artifact_after_gates: "s07 implementation evidence"
+implementation_allowed: true
+```

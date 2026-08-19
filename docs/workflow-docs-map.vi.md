@@ -6,11 +6,11 @@ language: vi
 
 > Tiếng Anh / English: workflow-docs-map.md
 
-Tài liệu này tách rõ đâu là public onboarding path của `workflow-bundle v2.1.1`, đâu là deep-dive docs, và đâu là maintainer context.
+Tài liệu này tách rõ đâu là public onboarding path của `workflow-bundle v2.5.0`, đâu là deep-dive docs, và đâu là maintainer context.
 
 ## Public Onboarding Docs
 
-Đây là bộ nên đọc khi muốn bắt đầu đúng public release `v2.1.1`.
+Đây là bộ nên đọc khi review ứng viên phát hành `workflow-bundle v2.5.0`.
 
 1. [`../README.md`](../README.md)
 2. [`publish-surface.md`](publish-surface.md)
@@ -21,7 +21,7 @@ Tài liệu này tách rõ đâu là public onboarding path của `workflow-bund
 
 Quy tắc đọc:
 
-- `README` trả lời repo này là gì và public promise của `v2.1.1` là gì.
+- `README` trả lời repo này là gì và public promise của `v2.5.0` là gì.
 - `publish-surface` chốt tag hoặc branch canonical và system requirements.
 - `quickstart` trả lời cài `wfc`, cài workflow bundle, init repo và chạy flow đầu tiên như thế nào.
 - package `README` trả lời install, upgrade, command overview và publish mechanics ở mức package.
@@ -40,6 +40,8 @@ Các tài liệu dưới đây vẫn thuộc public surface, nhưng chỉ cần 
 - [`../skills/orchestration/codex-workflow-chain/references/work-item-materialization.md`](../skills/orchestration/codex-workflow-chain/references/work-item-materialization.md)
 - [`../skills/orchestration/codex-workflow-chain/references/work-item-protocol.md`](../skills/orchestration/codex-workflow-chain/references/work-item-protocol.md)
 - [`../skills/orchestration/codex-workflow-chain/references/spec-driven-development.md`](../skills/orchestration/codex-workflow-chain/references/spec-driven-development.md)
+- [`../skills/architecture/architecture-modeling/SKILL.md`](../skills/architecture/architecture-modeling/SKILL.md)
+- [`../skills/guardrails/artifact-governance/SKILL.md`](../skills/guardrails/artifact-governance/SKILL.md)
 
 Quy tắc đọc:
 
@@ -50,6 +52,8 @@ Quy tắc đọc:
 - `workflow-rule-checklist-alignment` là bản audit ngữ nghĩa xem rule, checklist, gate và validator đang bổ trợ nhau ra sao, kèm flowchart và residual gaps.
 - `work-item-materialization` và `work-item-protocol` là deep dive cho `agent proposes, human approves`.
 - `spec-driven-development` chỉ cần khi repo dùng `BRD` hoặc `SRS` làm source-of-truth chính.
+- `architecture-modeling` định nghĩa stable model, view routing, draw.io ownership và quality contract cho architecture view.
+- `artifact-governance` quyết định owning root/section và chặn artifact hoặc bản sao không có owner rõ.
 - comparative hoặc hybrid policy không thuộc public deep-dive trừ khi được promote rõ vào publish surface.
 
 ## Maintainer And Historical Docs

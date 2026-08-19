@@ -6,9 +6,9 @@ language: en
 
 > Vietnamese: README.vi.md
 
-This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.4.0`: an installable workflow bundle for Codex and Claude Code that lets the agent proactively propose `work-item` and `change`, while the human retains approval authority at the gates before delivery proceeds. It remains unpublished until the human Release gate passes.
+This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.5.0`: an installable workflow bundle for Codex and Claude Code that lets the agent proactively propose `work-item` and `change`, while the human retains approval authority at the gates before delivery proceeds. It remains unpublished until the human Release gate passes.
 
-Until that gate passes, treat the candidate source commit and retained candidate digest in CHANGE-002 as the release-candidate references. Create and share the `v2.4.0` tag only after Release approval.
+Until that gate passes, treat the candidate source commit and retained candidate digest in CHANGE-003 as the release-candidate references. Create and share the `v2.5.0` tag only after Release approval.
 
 > Looking for the community-facing English overview? See [`docs/release/community-pack-readme.md`](docs/release/community-pack-readme.md) (Vietnamese: [`docs/release/community-pack-readme.vi.md`](docs/release/community-pack-readme.vi.md)).
 
@@ -22,7 +22,7 @@ Until that gate passes, treat the candidate source commit and retained candidate
 
 ## Start Here
 
-If you are approaching the repo for the first time and want to review the `v2.4.0` release candidate:
+If you are approaching the repo for the first time and want to review the `v2.5.0` release candidate:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -43,7 +43,7 @@ The documents below are maintainer or historical context and should not be used 
 
 ## Quick Workflow Commands
 
-The public command surface of `v2.4.0` uses `wfc`.
+The public command surface of `v2.5.0` uses `wfc`.
 
 Install and manage the workflow bundle:
 
@@ -105,14 +105,14 @@ Notes:
 - The first approval in a trusted approval root creates an approver keypair and requires the human to enter an approval passphrase directly in that TTY.
 - The implementation path is locked at the filesystem level until the work item reaches `ACTIVE` at `s07` and is granted a `write-root`.
 - `work-items/` is the canonical artifact root for the repo's workflow artifacts.
-- The approval model of `v2.4.0` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
+- The approval model of `v2.5.0` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
 
 ## Workflow Docs
 
 ### By Purpose
 
 - Public docs for newcomers to the workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface for `v2.4.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface for `v2.5.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart for `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README for installation or publishing: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 

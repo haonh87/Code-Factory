@@ -6,9 +6,16 @@ const path = require("path");
 const { runHardenedUpdateMatrix } = require("../scripts/run-workflow-bundle-smoke");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
-const expectedSkillCount = 41;
+const expectedVersion = "2.5.0";
+const expectedSkillCount = 42;
 
-console.log("Running v2.4.0 install-all hardened update matrix...\n");
+console.log(`Running v${expectedVersion} install-all hardened update matrix...\n`);
+const packageJson = JSON.parse(
+  fs.readFileSync(path.join(repoRoot, "packages", "workflow-bundle", "package.json"), "utf8")
+);
+if (packageJson.version !== expectedVersion) {
+  throw new Error(`source package version must be ${expectedVersion}, got ${packageJson.version}`);
+}
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-install-all-"));
 try {
   const results = runHardenedUpdateMatrix({

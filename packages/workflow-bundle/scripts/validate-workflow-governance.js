@@ -28,7 +28,8 @@ const {
   getApprovalGateDefault,
   getFinalizedStepSemanticEvidenceErrors,
   getRequiredFinalizedGateKeys,
-  getSectionScalarValue
+  getSectionScalarValue,
+  resolveArtifactReference
 } = require("./workflow-gate-evidence-utils");
 
 const filePattern =
@@ -59,6 +60,150 @@ const allowedReviewStates = new Set(["COMPLETED", "PARTIAL", "BLOCKED"]);
 const allowedReviewVerdicts = new Set(["PASS", "FAIL", "PARTIAL", "NOT_RUN"]);
 const allowedDelegationModes = new Set(["agentic", "multi_agent", "subagent", "sequential_multi_role"]);
 const allowedIndependenceStates = new Set(["PASS", "FAIL", "NOT_APPLICABLE"]);
+const ARTIFACT_GOVERNANCE_LAYERS = ["spec", "design", "plan", "progress", "verify", "decision"];
+const DEFAULT_ARTIFACT_GOVERNANCE_LAYER_ROOTS = Object.freeze({
+  spec: "product-specs",
+  design: "work-items",
+  plan: "work-items",
+  progress: "work-items",
+  verify: "work-items",
+  decision: "work-items"
+});
+const ARTIFACT_OWNERSHIP_RULES = Object.freeze([
+  {
+    duplicatePath: "dev_lane.technical_sequence",
+    owner: "Main Artifact.task_breakdown[].dependencies",
+    fact: "execution order and dependency"
+  },
+  {
+    duplicatePath: "dev_lane.path_map",
+    owner: "Main Artifact.task_breakdown[].paths_in_scope",
+    fact: "task paths"
+  },
+  {
+    duplicatePath: "dev_lane.tdd_targets",
+    owner: "Main Artifact.task_breakdown[].verification_hint",
+    fact: "per-task verification method"
+  },
+  {
+    duplicatePath: "ba_lane.acceptance_coverage",
+    owner: "Traceability.task_refs",
+    fact: "acceptance-to-task trace"
+  },
+  {
+    duplicatePath: "ba_lane.human_review_points",
+    owner: "frontmatter.role_signoffs",
+    fact: "gate signoff authority"
+  }
+]);
+
+function getArtifactGovernanceLayerRoots(projectRoot) {
+  const configPath = path.join(path.resolve(projectRoot), "workflow-contracts.config.json");
+  if (!fs.existsSync(configPath)) {
+    return { ...DEFAULT_ARTIFACT_GOVERNANCE_LAYER_ROOTS };
+  }
+
+  const config = JSON.parse(readUtf8(configPath));
+  const configuredRoots = config && config.artifactGovernance && config.artifactGovernance.layerRoots;
+  if (configuredRoots == null) {
+    return { ...DEFAULT_ARTIFACT_GOVERNANCE_LAYER_ROOTS };
+  }
+  if (!configuredRoots || Array.isArray(configuredRoots) || typeof configuredRoots !== "object") {
+    throw new Error(`artifactGovernance.layerRoots must be an object in ${configPath}`);
+  }
+
+  const roots = {};
+  ARTIFACT_GOVERNANCE_LAYERS.forEach((layer) => {
+    const configured = configuredRoots[layer];
+    const value = configured == null ? DEFAULT_ARTIFACT_GOVERNANCE_LAYER_ROOTS[layer] : String(configured).trim();
+    if (!value) {
+      throw new Error(`artifactGovernance.layerRoots.${layer} must be a non-empty path in ${configPath}`);
+    }
+    roots[layer] = value.replace(/[\\/]+$/, "");
+  });
+  return roots;
+}
+
+function isPathWithinRoot(filePath, rootPath) {
+  const relative = path.relative(rootPath, filePath);
+  return relative === "" || (!relative.startsWith(`..${path.sep}`) && relative !== ".." && !path.isAbsolute(relative));
+}
+
+function getArtifactGovernanceExemption(frontmatterLines) {
+  if (!frontmatterLines) return { declared: false, reason: "" };
+  const prefix = "artifact_governance_exemption_reason:";
+  const line = frontmatterLines.find((candidate) => candidate.trim().startsWith(prefix));
+  if (!line) return { declared: false, reason: "" };
+  const rawReason = line.trim().slice(prefix.length).trim();
+  const reason = rawReason.replace(/^(?:"([\s\S]*)"|'([\s\S]*)')$/, (_match, doubleQuoted, singleQuoted) =>
+    doubleQuoted !== undefined ? doubleQuoted : singleQuoted
+  ).trim();
+  return { declared: true, reason };
+}
+
+function getArtifactPlacement({ filePath, projectRoot, layerRoots, frontmatterLines }) {
+  const matchingLayers = Object.entries(layerRoots)
+    .filter(([, rootRef]) => isPathWithinRoot(filePath, path.resolve(projectRoot, rootRef)))
+    .map(([layer]) => layer);
+  if (matchingLayers.length > 0) {
+    return { ok: true, matchingLayers, notice: "", error: "" };
+  }
+
+  const exemption = getArtifactGovernanceExemption(frontmatterLines);
+  if (!exemption.declared) {
+    return {
+      ok: false,
+      matchingLayers: [],
+      notice: "",
+      error: `Artifact is under no declared artifact-governance layer root: ${filePath}`
+    };
+  }
+  if (!exemption.reason) {
+    return {
+      ok: false,
+      matchingLayers: [],
+      notice: "",
+      error: `Artifact governance exemption reason must be non-empty: ${filePath}`
+    };
+  }
+  return {
+    ok: true,
+    matchingLayers: [],
+    notice: `Artifact governance exemption '${exemption.reason}': ${filePath}`,
+    error: ""
+  };
+}
+
+function getArtifactOwnershipDuplicationErrors({ filePath, content, projectRoot }) {
+  const artifactSection =
+    getMarkdownSectionContent(content, "## Main Artifact") ||
+    getMarkdownSectionContent(content, "## Artifact Chính");
+  if (!artifactSection) return [];
+  const errors = [];
+
+  ARTIFACT_OWNERSHIP_RULES.forEach((rule) => {
+    const leafKey = rule.duplicatePath.split(".").pop();
+    if (!new RegExp(`^\\s*${escapeRegExp(leafKey)}:\\s*`, "m").test(artifactSection)) {
+      return;
+    }
+    try {
+      resolveArtifactReference({
+        projectRoot,
+        currentFile: filePath,
+        reference: `#Main Artifact.${rule.duplicatePath}`
+      });
+      errors.push(
+        `Duplicate ${rule.fact} at Main Artifact.${rule.duplicatePath}; owning block is ${rule.owner}: ${filePath}`
+      );
+    } catch (error) {
+      if (error && error.code === "ARTIFACT_REFERENCE_PATH_MISSING") {
+        return;
+      }
+      errors.push(`Cannot evaluate artifact ownership rule '${rule.duplicatePath}': ${error.message}`);
+    }
+  });
+  return errors;
+}
 
 function hasRequiredBlock(fileContent, blockHeading) {
   const pattern = new RegExp(`^${escapeRegExp(blockHeading)}\\s*$`, "m");
@@ -173,6 +318,8 @@ function validateWorkflowGovernance(options) {
   const registerPath = path.join(projectRoot, "project-context", "governance-exception-register.md");
   const files = collectFilesRecursive(workflowRoot, new Set([".md"]));
   const errors = [];
+  const notices = [];
+  const layerRoots = getArtifactGovernanceLayerRoots(projectRoot);
   const workItemDeliveryContextMap = new Map();
   let matchedFiles = 0;
   let registerContent = "";
@@ -193,13 +340,20 @@ function validateWorkflowGovernance(options) {
   });
 
   for (const filePath of files) {
+    const frontmatterLines = getFrontmatterLines(filePath);
+    const placement = getArtifactPlacement({ filePath, projectRoot, layerRoots, frontmatterLines });
+    if (!placement.ok) {
+      errors.push(placement.error);
+    }
+    if (placement.notice) {
+      notices.push(placement.notice);
+    }
+
     const fileName = path.basename(filePath);
     const match = fileName.match(filePattern);
     if (!match || !match.groups) {
       continue;
     }
-
-    const frontmatterLines = getFrontmatterLines(filePath);
 
     if (!frontmatterLines) {
       errors.push(`Missing or invalid YAML frontmatter: ${filePath}`);
@@ -224,6 +378,12 @@ function validateWorkflowGovernance(options) {
     const deliveryContext = rawDeliveryContext || "brownfield";
     const noteStatus = getFrontmatterValue(frontmatterLines, "status") || "draft";
     const sddMode = getFrontmatterValue(frontmatterLines, "sdd_mode") || "none";
+
+    // The new generator contract is marked by Role Outputs. Legacy notes remain
+    // readable and untouched; new-shape notes must satisfy the ownership table.
+    if (hasRequiredBlock(content, "## Role Outputs")) {
+      errors.push(...getArtifactOwnershipDuplicationErrors({ filePath, content, projectRoot }));
+    }
 
     if (!allowedDeliveryContexts.has(deliveryContext)) {
       errors.push(`Invalid delivery_context '${deliveryContext}' in ${filePath}`);
@@ -709,6 +869,7 @@ function validateWorkflowGovernance(options) {
   return {
     ok: errors.length === 0,
     errors,
+    notices,
     validatedCount: matchedFiles,
     workflowRoot
   };
@@ -728,6 +889,7 @@ function runCli() {
       process.exit(1);
     }
 
+    result.notices.forEach((notice) => console.log(`NOTICE: ${notice}`));
     console.log(`OK: validated governance for ${result.validatedCount} workflow note files under ${result.workflowRoot}`);
   } catch (error) {
     console.error(`ERROR: ${error.message}`);
@@ -740,5 +902,10 @@ if (require.main === module) {
 }
 
 module.exports = {
+  ARTIFACT_OWNERSHIP_RULES,
+  DEFAULT_ARTIFACT_GOVERNANCE_LAYER_ROOTS,
+  getArtifactGovernanceLayerRoots,
+  getArtifactOwnershipDuplicationErrors,
+  getArtifactPlacement,
   validateWorkflowGovernance
 };

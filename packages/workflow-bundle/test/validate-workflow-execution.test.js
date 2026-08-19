@@ -70,6 +70,101 @@ function buildProject(artifactHeading) {
   return workflowRoot;
 }
 
+function buildSectionAssignmentProject(omitField = "") {
+  const workflowRoot = fs.mkdtempSync(path.join(os.tmpdir(), "val-exec-section-"));
+  const slug = "section-assignment-item";
+  const assignmentFields = {
+    assignment_id: ['    assignment_id: "S06-ASSIGN-001"'],
+    role: ['    role: "developer"'],
+    owned_scope: ["    owned_scope:", '      - "packages/example.js"'],
+    done_when: ["    done_when:", '      - "focused test passes"'],
+    status: ["    status: READY"]
+  };
+  const assignmentLines = Object.entries(assignmentFields)
+    .filter(([field]) => field !== omitField)
+    .flatMap(([, lines]) => lines);
+
+  writeFile(
+    path.join(workflowRoot, slug, `${slug}.s06.task-breakdown.md`),
+    [
+      "---",
+      `artifact_id: "${slug}.s06.task-breakdown"`,
+      "artifact_family: workflow-step",
+      `work_item_slug: "${slug}"`,
+      'step_id: "s06"',
+      'step_slug: "task-breakdown"',
+      "artifact_role: primary",
+      "artifact_kind: primary-note",
+      "source_of_truth: true",
+      "status: draft",
+      "execution_mode: multi_agent",
+      "review_mode: self",
+      'verification_owner: "qc"',
+      "execution_roles:",
+      "  - developer",
+      "  - qc",
+      "linked_artifacts: []",
+      "tags: []",
+      "---",
+      "",
+      "# s06",
+      "",
+      "## Role Outputs",
+      "```yaml",
+      "assignments:",
+      "  -",
+      ...assignmentLines,
+      "```",
+      ""
+    ].join("\n")
+  );
+  return workflowRoot;
+}
+
+function buildLegacyAssignmentProject() {
+  const workflowRoot = fs.mkdtempSync(path.join(os.tmpdir(), "val-exec-legacy-assignment-"));
+  const slug = "legacy-assignment-item";
+  const runtimeName = `${slug}.s06.worker-assignment.md`;
+  writeFile(
+    path.join(workflowRoot, slug, `${slug}.s06.task-breakdown.md`),
+    [
+      "---",
+      `artifact_id: "${slug}.s06.task-breakdown"`,
+      "artifact_family: workflow-step",
+      `work_item_slug: "${slug}"`,
+      'step_id: "s06"',
+      'step_slug: "task-breakdown"',
+      "artifact_role: primary",
+      "artifact_kind: primary-note",
+      "source_of_truth: true",
+      "status: draft",
+      "execution_mode: multi_agent",
+      "review_mode: self",
+      'verification_owner: "qc"',
+      "execution_roles:",
+      "  - developer",
+      "  - qc",
+      "linked_artifacts:",
+      `  - "${runtimeName}"`,
+      "tags: []",
+      "---",
+      "",
+      "# s06"
+    ].join("\n")
+  );
+  const definition = getExecutionArtifactDefinitions("s06").find((item) => item.stepSlug === "worker-assignment");
+  writeFile(
+    path.join(workflowRoot, slug, runtimeName),
+    renderExecutionArtifactBody(definition, {
+      workItemSlug: slug,
+      executionMode: "multi_agent",
+      reviewMode: "self",
+      verificationOwner: "qc"
+    })
+  );
+  return workflowRoot;
+}
+
 function testAcceptsLegacyVietnameseHeading() {
   const workflowRoot = buildProject("## Artifact Chính");
   const result = validateWorkflowExecution({ workflowRoot });
@@ -84,11 +179,43 @@ function testAcceptsTranslatedEnglishHeading() {
   fs.rmSync(workflowRoot, { recursive: true, force: true });
 }
 
+function testReadsAssignmentsFromRoleOutputs() {
+  const workflowRoot = buildSectionAssignmentProject();
+  const result = validateWorkflowExecution({ workflowRoot });
+  assert(result.ok, `new assignments[] section must pass without a worker-assignment file: ${result.errors.join(" | ")}`);
+  fs.rmSync(workflowRoot, { recursive: true, force: true });
+}
+
+function testAssignmentFieldReaders() {
+  ["assignment_id", "role", "owned_scope", "done_when", "status"].forEach((field) => {
+    const workflowRoot = buildSectionAssignmentProject(field);
+    const result = validateWorkflowExecution({ workflowRoot });
+    assert(
+      !result.ok && result.errors.some((error) => error.includes(`missing required field '${field}'`)),
+      `assignments[] reader must reject missing ${field}; got ${result.errors.join(" | ")}`
+    );
+    fs.rmSync(workflowRoot, { recursive: true, force: true });
+  });
+}
+
+function testLegacyWorkerAssignmentStillPasses() {
+  const workflowRoot = buildLegacyAssignmentProject();
+  const result = validateWorkflowExecution({ workflowRoot });
+  assert(result.ok, `legacy worker-assignment file must remain readable: ${result.errors.join(" | ")}`);
+  fs.rmSync(workflowRoot, { recursive: true, force: true });
+}
+
 console.log("Running validate-workflow-execution (heading i18n) tests...\n");
 testAcceptsLegacyVietnameseHeading();
 console.log("  PASS: accepts legacy '## Artifact Chính' heading");
 testAcceptsTranslatedEnglishHeading();
 console.log("  PASS: accepts translated '## Main Artifact' heading");
+testReadsAssignmentsFromRoleOutputs();
+console.log("  PASS: reads assignments[] from ## Role Outputs");
+testAssignmentFieldReaders();
+console.log("  PASS: assignment_id/role/owned_scope/done_when/status readers reject missing fields");
+testLegacyWorkerAssignmentStillPasses();
+console.log("  PASS: legacy worker-assignment file remains accepted");
 
 if (failures > 0) {
   console.error(`\nFAILED: ${failures} assertion(s) failed in validate-workflow-execution.test.js`);

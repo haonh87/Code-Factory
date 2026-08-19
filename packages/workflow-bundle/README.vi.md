@@ -6,7 +6,7 @@ language: vi
 
 > Tiếng Anh / English: README.md
 
-`workflow-bundle` là package CLI của public release `v2.1.1`: cài workflow bundle cho Codex hoặc Claude Code, scaffold hoặc validate workflow, và hỗ trợ flow `agent proposes, human approves` cho `work-item` và `change`.
+`workflow-bundle` là package CLI được chuẩn bị cho ứng viên phát hành `v2.5.0`: cài workflow bundle cho Codex hoặc Claude Code, scaffold hoặc validate workflow, và hỗ trợ flow `agent proposes, human approves` cho `work-item` và `change`. Package vẫn chưa được phát hành cho đến khi human Release gate phê duyệt.
 
 Quickstart chi tiết: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -43,7 +43,26 @@ npm link
 wfc version
 ```
 
-## What `v2.1.1` Includes
+### Roll Back Từ v2.5.0 Về v2.4.0
+
+Ghi lại mode, scope, project root và status hiện tại trước khi thay package. Sau đó cài đúng tarball
+v2.4.0 bất biến đã được lưu và chạy `install` cho từng target đã ghi:
+
+```bash
+wfc status --mode codex
+npm install -g /absolute/path/to/workflow-bundle-2.4.0.tgz
+wfc install --mode codex --scope global
+wfc install --mode codex --scope project --project-root <repo-root>
+wfc status --mode codex
+wfc skills list --mode codex
+```
+
+Dùng cùng chuỗi lệnh với `--mode claude` cho Claude Code. Không dùng lệnh `wfc update` của v2.4.0
+cho lần hạ cấp này vì managed state v2.5.0 có `artifact-governance`. `wfc install` từ tarball v2.4.0
+được lưu là đường thay thế được hỗ trợ; nó xóa skill đó, khôi phục inventory 41 skill của v2.4.0
+và giữ nguyên file unmanaged. Hãy diễn tập với home cô lập trước khi thao tác trên bản cài live.
+
+## What `v2.5.0` Includes
 
 - workflow bundle install surface qua `wfc install|update|status|skills`
 - core authoring CLI qua `wfc init|scaffold|validate`
@@ -51,6 +70,11 @@ wfc version
 - human approval gates cho change package và work item
 - capability control để khóa implementation path cho tới khi work item vào `ACTIVE` ở `s07`
 - runtime prompt nhiều khối với `AGENTS.global.md` làm authority, `workflow-governance-router` làm entry router và `codex-workflow-chain` làm workflow backbone
+- 42 skill được quản lý trong mỗi generated runtime, gồm contract `sa` và `ta` đã sửa
+- `architecture-modeling` với một model/hai audience, render ownership tường minh và hỗ trợ draw.io deterministic cho landscape và integration view
+- `artifact-governance` với rule one-fact/one-owner, nội dung English/Vietnamese và canonical/runtime parity
+- machine enforcement cho artifact placement, ownership duplication, section-first execution reader và role-indexed handoff đã đăng ký
+- repeat install/update an toàn về permission và giữ nguyên nội dung unmanaged
 
 ## Runtime Model
 
