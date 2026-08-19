@@ -19,6 +19,7 @@
 #
 # Test file convention:
 #   packages/X/scripts/foo.js  → packages/X/test/foo.test.js
+#   packages/X/bin/foo.js      → packages/X/test/foo.test.js
 #   mcp/X/src/bar.js           → mcp/X/test/bar.test.js
 #   mcp/X/src/baz/handler.js   → mcp/X/test/baz/handler.test.js
 #   scripts/foo.js             → scripts/test/foo.test.js
@@ -175,6 +176,14 @@ EXPECTED_TEST=$(node -e "
   // packages/X/scripts/foo.js → packages/X/test/foo.test.js
   if (p.includes('/scripts/') && (p.includes('/packages/') || p.startsWith('packages/'))) {
     testPath = p.replace('/scripts/', '/test/').replace(ext, '.test' + ext);
+  }
+  // packages/X/bin/foo.js → packages/X/test/foo.test.js
+  // Sits beside the sibling rules rather than in the generic fallback below: the
+  // fallback would resolve packages/X/bin/test/foo.test.js, which is not where this
+  // repo keeps package tests, and neither of the two alternative-location rewrites
+  // at the bottom of this script touches /bin/. (D-B, REQ-002)
+  else if (p.includes('/bin/') && (p.includes('/packages/') || p.startsWith('packages/'))) {
+    testPath = p.replace('/bin/', '/test/').replace(ext, '.test' + ext);
   }
   // mcp/X/src/bar.js → mcp/X/test/bar.test.js
   else if (p.includes('/src/') && p.includes('/mcp/')) {
