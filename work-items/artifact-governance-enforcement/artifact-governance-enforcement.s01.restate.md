@@ -289,14 +289,14 @@ bootstrap_reviewed_at: ""
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "artifact-governance-enforcement"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/artifact-governance-enforcement"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - ".claude/worktrees/artifact-governance-enforcement"
   - "work-items/artifact-governance-enforcement"
@@ -311,11 +311,11 @@ decision_owner: "coordinator"
 protocol_owner: "ba"
 reviewed_by: "ba"
 reviewed_at: "2026-08-17T06:19:40.081Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-08-17T07:17:31.324Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-08-19T09:25:58.735Z"
 required_actions:
-  - "Continue active execution from step 7 onward."
+  - "Archive the work item when all downstream lifecycle actions are complete."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -325,6 +325,8 @@ audit_events:
   - "REPORT_BOOTSTRAPPED"
   - "WORK_ITEM_APPROVED"
   - "WORK_ITEM_ACTIVATED"
+  - "VERIFICATION_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Requirement Analysis Spec

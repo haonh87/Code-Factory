@@ -12,14 +12,14 @@
   "decision_log": [
     "bootstrap_from_existing_s01=true"
   ],
-  "work_item_slug": "artifact-governance-enforcement",
-  "work_item_type": "CHANGE",
+  "work_item_slug": "approval-path-defects",
+  "work_item_type": "BUG",
   "delivery_context": "brownfield",
-  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/artifact-governance-enforcement",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/approval-path-defects",
   "current_step": "s08",
   "granted_write_paths": [
-    ".claude/worktrees/artifact-governance-enforcement",
-    "work-items/artifact-governance-enforcement"
+    ".claude/worktrees/approval-path-defects",
+    "work-items/approval-path-defects"
   ],
   "change_strategy": "none",
   "change_id": "",
@@ -29,7 +29,7 @@
   ],
   "blockers": [],
   "refs": [
-    "work-items/artifact-governance-enforcement"
+    "work-items/approval-path-defects"
   ],
   "audit_events": [
     "REPORT_BOOTSTRAPPED",
@@ -41,7 +41,7 @@
   "review_required": true,
   "approval_status": "APPROVED",
   "reviewed_by": "ba",
-  "reviewed_at": "2026-08-17T06:19:40.081Z",
+  "reviewed_at": "2026-08-17T09:07:52.849Z",
   "review_notes": [
     "Human review approved."
   ],
@@ -51,7 +51,7 @@
   "bootstrap_reviewed_at": "",
   "protocol_events": [
     {
-      "timestamp": "2026-08-17T06:13:49.447Z",
+      "timestamp": "2026-08-17T08:37:18.550Z",
       "action": "bootstrap",
       "actor": "system",
       "from_status": "READY_TO_MATERIALIZE",
@@ -59,7 +59,7 @@
       "note": "Bootstrapped read-only report from existing scaffold."
     },
     {
-      "timestamp": "2026-08-17T06:19:40.081Z",
+      "timestamp": "2026-08-17T09:07:52.850Z",
       "action": "approve",
       "actor": "ba",
       "from_status": "MATERIALIZED",
@@ -67,7 +67,7 @@
       "note": "Human review approved."
     },
     {
-      "timestamp": "2026-08-17T07:17:31.324Z",
+      "timestamp": "2026-08-17T09:08:15.343Z",
       "action": "activate",
       "actor": "coordinator",
       "from_status": "MATERIALIZED",
@@ -75,7 +75,7 @@
       "note": "Work item moved into active workflow execution."
     },
     {
-      "timestamp": "2026-08-19T09:25:42.580Z",
+      "timestamp": "2026-08-19T02:12:16.185Z",
       "action": "verify",
       "actor": "qc",
       "from_status": "ACTIVE",
@@ -83,7 +83,7 @@
       "note": "Technical verification completed."
     },
     {
-      "timestamp": "2026-08-19T09:25:58.735Z",
+      "timestamp": "2026-08-19T02:12:31.524Z",
       "action": "close",
       "actor": "coordinator",
       "from_status": "VERIFIED",
