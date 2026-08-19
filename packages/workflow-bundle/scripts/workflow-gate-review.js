@@ -1,6 +1,7 @@
 const path = require("path");
 const { formatErrors, parseCliArgs } = require("./workflow-validator-utils");
 const {
+  getUncommittedDeliveryErrors,
   loadWorkflowStepGateSnapshot
 } = require("./workflow-gate-evidence-utils");
 const {
@@ -139,7 +140,9 @@ function sealGateReceipt({
   approvalRoot,
   approvalPassphrase,
   resolvedPassphrase,
-  sddMode
+  sddMode,
+  allowUncommitted,
+  uncommittedReason
 }) {
   const artifact = resolveGateArtifact({ projectRoot, workflowRoot, workItemSlug, gate, sddMode });
 
@@ -150,6 +153,30 @@ function sealGateReceipt({
       stepId: getGateStepId(gate, sddMode)
     });
     validateSnapshotAuthority(snapshot, gate, reviewedBy);
+  }
+
+  // D-D / REQ-004: the gate that decides completion must read the artifact of
+  // completion. Only dod: the authoring gates are sealed before a delivery exists,
+  // so applying this to them would refuse every work item at s04.
+  let uncommittedWaiver = null;
+  if (gate === "dod" && approvalStatus === "APPROVED") {
+    const verdict = getUncommittedDeliveryErrors({
+      projectRoot,
+      workflowRoot,
+      workItemSlug,
+      allowUncommitted,
+      uncommittedReason
+    });
+
+    if (verdict.errors.length > 0) {
+      throw new Error(
+        `Cannot seal gate 'dod' for '${workItemSlug}':\n- ${verdict.errors.join("\n- ")}`
+      );
+    }
+
+    if (verdict.waived) {
+      uncommittedWaiver = verdict.reason;
+    }
   }
 
   const result = writeTrustedApprovalReceipt({
@@ -175,7 +202,9 @@ function sealGateReceipt({
     receipt_path: result.receiptPath,
     receipt_status: result.receipt.approval_status,
     reviewed_by: result.receipt.reviewed_by,
-    reviewed_at: result.receipt.reviewed_at
+    reviewed_at: result.receipt.reviewed_at,
+    // Surfaced so the CLI echoes it: an exemption nobody can see is worse than no check.
+    ...(uncommittedWaiver ? { uncommitted_delivery_waived_reason: uncommittedWaiver } : {})
   };
 }
 
@@ -236,6 +265,13 @@ function printStatus(summary, jsonOutput = false) {
       `digest_match=${summary.digest_match ? "true" : "false"}`
     ].join(" | ")
   );
+  // D-D: an exemption nobody can see is worse than no check, so it gets its own line
+  // rather than only a key buried in the JSON dump below.
+  if (summary.uncommitted_delivery_waived_reason) {
+    console.log(
+      `WAIVED: closed over an uncommitted delivery. Reason: ${summary.uncommitted_delivery_waived_reason}`
+    );
+  }
   console.log(JSON.stringify(summary, null, 2));
 }
 
@@ -341,6 +377,27 @@ function runCli() {
       validateSnapshotAuthority(snapshot, gate, reviewedBy);
     }
 
+    // D-D / REQ-004. Only dod, and only on approve: the authoring gates are sealed
+    // before any delivery exists, so applying this to them would refuse at s04.
+    let uncommittedWaiver = null;
+    if (action === "approve" && gate === "dod") {
+      const verdict = getUncommittedDeliveryErrors({
+        projectRoot,
+        workflowRoot,
+        workItemSlug,
+        allowUncommitted: Boolean(args["allow-uncommitted-delivery"]),
+        uncommittedReason: normalizeSingleValue(args["uncommitted-reason"] || "")
+      });
+
+      if (verdict.errors.length > 0) {
+        throw new Error(`Cannot seal gate 'dod' for '${workItemSlug}':\n- ${verdict.errors.join("\n- ")}`);
+      }
+
+      if (verdict.waived) {
+        uncommittedWaiver = verdict.reason;
+      }
+    }
+
     const result = writeTrustedApprovalReceipt({
       projectRoot,
       overrideRoot: approvalRootInfo.approvalRoot,
@@ -368,7 +425,8 @@ function runCli() {
         artifact_ref: result.receipt.artifact_ref,
         current_artifact_ref: result.receipt.artifact_ref,
         digest_match: true,
-        current_artifact_sha256: result.receipt.artifact_sha256
+        current_artifact_sha256: result.receipt.artifact_sha256,
+        ...(uncommittedWaiver ? { uncommitted_delivery_waived_reason: uncommittedWaiver } : {})
       },
       Boolean(args.json)
     );
