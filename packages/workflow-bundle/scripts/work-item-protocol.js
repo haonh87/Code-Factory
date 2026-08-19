@@ -685,11 +685,25 @@ function runCli() {
     }
 
     const workItemSlug = requireWorkItemSlug(args);
+    // TD-01: a work item created by `wfc scaffold`/`scaffold-step` has no report, so
+    // `approve` used to fail with "Missing work item report" and the manual authoring
+    // path recommended by AGENTS.global.md could never reach ACTIVE.
+    //
+    // `status` keeps its policy gate: reading a legacy scaffold is a read-only courtesy
+    // that `legacyScaffoldPolicy` is entitled to withhold. `approve` bootstraps
+    // unconditionally, because the report it materialises carries approval_status
+    // PENDING_REVIEW and an empty reviewed_by - recording that a scaffold exists grants
+    // nothing, and the human decision is applied afterwards by applyAction. The audit
+    // trail keeps REPORT_BOOTSTRAPPED so the provenance stays visible.
+    // See approval-path-defects s06 ODC-001.
+    const allowBootstrap =
+      action === "approve" ||
+      (action === "status" && protocolControl.legacyScaffoldPolicy === "allow_readonly");
     const loaded = loadProtocolReport({
       projectRoot,
       workflowRootBase,
       workItemSlug,
-      allowBootstrap: action === "status" && protocolControl.legacyScaffoldPolicy === "allow_readonly"
+      allowBootstrap
     });
 
     if (action === "status") {

@@ -91,11 +91,105 @@ const FULL_SIGNOFF_KEYS = [
 const LIGHT_SIGNOFF_KEYS = ["spec", "dor", "approach", "task_plan", "dod"];
 const LIGHT_APPROVAL_GATES = ["spec"];
 
-function buildSpecRefsLines(sddMode) {
+function buildSpecRefsLines(sddMode, inherited = {}) {
   if (sddMode === "light") {
-    return ["spec_refs:", '  card: ""'];
+    return ["spec_refs:", `  card: "${inherited.specRefsCard || ""}"`];
   }
-  return ["spec_refs:", '  brd: ""', '  srs: ""'];
+  return [
+    "spec_refs:",
+    `  brd: "${inherited.specRefsBrd || ""}"`,
+    `  srs: "${inherited.specRefsSrs || ""}"`
+  ];
+}
+
+// TD-03 and TD-04: a note generated into an existing work item used to carry fixed
+// defaults - work_item_type FEATURE, planning_track full, sdd_mode none, empty
+// spec_refs - regardless of what its siblings already said. That produced notes that
+// failed validation on arrival ("Inconsistent planning_track within work item", and
+// "Missing spec_refs.card for SDD note") and had to be hand-corrected.
+//
+// This is the single inheritance point for both generators: scaffold-step and the
+// lazy Light note builder both reach it through parseContextFromArgs.
+//
+// Precedence is explicit arg > sibling value > documented default. EDGE-001: with no
+// sibling, nothing is inherited and today's defaults stand. EDGE-002: when siblings
+// disagree, refuse rather than pick, because inheriting from an inconsistent set would
+// launder an existing error into new notes.
+// Only work-item IDENTITY fields are inherited and conflict-checked. These are values
+// that must be the same in every note of a work item, so a disagreement is an error.
+//
+// status and spec_status are deliberately NOT here. They are per-note lifecycle fields
+// and are SUPPOSED to differ: a human finalizes the gate host notes (s04, s06) while s01
+// stays draft because it hosts no gate. An earlier version inherited and conflict-checked
+// spec_status, which made `work-item activate` fail with "Sibling notes disagree on
+// spec_status" in the ordinary flow - a regression caught by the end-to-end run in T5.
+//
+// The observed TD-03 symptom was "Missing spec_refs.card", not a spec_status mismatch;
+// inheriting spec_status was scope added beyond the evidence, and it is withdrawn.
+const INHERITED_SCALARS = [
+  "work_item_type",
+  "planning_track",
+  "sdd_mode",
+  "governance_profile",
+  "delivery_context"
+];
+
+function readSiblingInheritance(workflowRoot, workItemSlug) {
+  const result = {};
+  let entries = [];
+  try {
+    entries = fs
+      .readdirSync(workflowRoot)
+      .filter((name) => name.startsWith(`${workItemSlug}.s`) && name.endsWith(".md"))
+      .sort();
+  } catch (_e) {
+    return result; // no directory yet: first scaffold, nothing to inherit
+  }
+  if (entries.length === 0) {
+    return result;
+  }
+
+  const seen = {};
+  entries.forEach((name) => {
+    let raw = "";
+    try {
+      raw = fs.readFileSync(path.join(workflowRoot, name), "utf8");
+    } catch (_e) {
+      return;
+    }
+    const parts = raw.split(/^---$/m);
+    const frontmatter = String(parts[1] || "");
+
+    INHERITED_SCALARS.forEach((key) => {
+      const m = new RegExp(`^${key}:\\s*"?([^"\\n]*)"?\\s*$`, "m").exec(frontmatter);
+      const value = m ? m[1].trim() : "";
+      if (!value) return;
+      seen[key] = seen[key] || {};
+      seen[key][value] = seen[key][value] || [];
+      seen[key][value].push(name);
+    });
+
+    const card = /^\s{2}card:\s*"([^"]*)"\s*$/m.exec(frontmatter);
+    if (card && card[1]) {
+      seen.spec_refs_card = seen.spec_refs_card || {};
+      seen.spec_refs_card[card[1]] = seen.spec_refs_card[card[1]] || [];
+      seen.spec_refs_card[card[1]].push(name);
+    }
+  });
+
+  Object.keys(seen).forEach((key) => {
+    const values = Object.keys(seen[key]);
+    if (values.length > 1) {
+      const detail = values.map((v) => `${v} in ${seen[key][v].join(", ")}`).join("; ");
+      throw new Error(
+        `Sibling notes disagree on '${key}' within work item '${workItemSlug}': ${detail}. ` +
+          "Fix the existing notes before scaffolding another; inheriting from an inconsistent set would spread the error."
+      );
+    }
+    result[key] = values[0];
+  });
+
+  return result;
 }
 
 function buildApprovalGatesLines(context) {
@@ -199,7 +293,9 @@ function buildFrontmatter(definition, context) {
     ...buildYamlList("spec_delta_refs", context.specDeltaRefs),
     `archive_status: ${context.archiveStatus}`,
     `sdd_mode: ${context.sddMode}`,
-    ...buildSpecRefsLines(context.sddMode),
+    ...buildSpecRefsLines(context.sddMode, {
+      specRefsCard: (context.inherited || {}).spec_refs_card || ""
+    }),
     "spec_status: draft",
     `planning_track: ${context.planningTrack}`,
     `execution_mode: ${context.executionMode}`,
@@ -242,16 +338,35 @@ function parseContextFromArgs(args) {
     throw new Error(`Invalid work item slug '${workItemSlug}'. Use kebab-case [a-z0-9-].`);
   }
 
-  const workItemType = normalizeSingleValue(args["work-item-type"] || "FEATURE");
   const projectRoot = path.resolve(normalizeSingleValue(args["project-root"]) || process.cwd());
-  const deliveryContext = inferDeliveryContext(projectRoot, normalizeSingleValue(args["delivery-context"] || ""));
-  const planningTrack = normalizeSingleValue(args["planning-track"] || "full");
+
+  // Inheritance is resolved before any default is applied, so precedence stays
+  // explicit arg > sibling > default. See readSiblingInheritance.
+  const inheritWorkflowRoot = path.resolve(
+    normalizeSingleValue(args["workflow-root"]) || getDefaultWorkflowRoot(workItemSlug)
+  );
+  const inherited = readSiblingInheritance(inheritWorkflowRoot, workItemSlug);
+
+  const workItemType = normalizeSingleValue(
+    args["work-item-type"] || inherited.work_item_type || "FEATURE"
+  );
+  const deliveryContext = inferDeliveryContext(
+    projectRoot,
+    normalizeSingleValue(args["delivery-context"] || inherited.delivery_context || "")
+  );
+  const planningTrack = normalizeSingleValue(
+    args["planning-track"] || inherited.planning_track || "full"
+  );
   validateChoice("delivery-context", deliveryContext, DELIVERY_CONTEXTS);
   validateChoice("planning-track", planningTrack, PLANNING_TRACKS);
   const planningDefaults = getPlanningDefaults(planningTrack);
-  const governanceProfile = normalizeSingleValue(args["governance-profile"] || planningDefaults.governanceProfile);
+  const governanceProfile = normalizeSingleValue(
+    args["governance-profile"] || inherited.governance_profile || planningDefaults.governanceProfile
+  );
   const governanceStatus = normalizeSingleValue(args["governance-status"] || "CHECKS_PENDING");
-  const sddMode = normalizeSingleValue(args["sdd-mode"] || planningDefaults.sddMode);
+  const sddMode = normalizeSingleValue(
+    args["sdd-mode"] || inherited.sdd_mode || planningDefaults.sddMode
+  );
   const executionMode = normalizeSingleValue(args["execution-mode"] || planningDefaults.executionMode);
   const reviewMode = normalizeSingleValue(
     args["review-mode"] || (executionMode === "multi_agent" ? "independent" : planningDefaults.reviewMode)
@@ -332,7 +447,10 @@ function parseContextFromArgs(args) {
     executionMode,
     executionRoles,
     reviewMode,
-    verificationOwner: finalVerificationOwner
+    verificationOwner: finalVerificationOwner,
+    // Carried so the frontmatter builder emits inherited spec_refs and spec_status
+    // without re-reading the sibling notes. TD-03 / TD-04.
+    inherited
   };
 }
 
