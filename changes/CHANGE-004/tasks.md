@@ -246,7 +246,34 @@ branch_finalization:
   non_blocking_format_warning:
     classification: ACCEPTED_EXACT_ARTIFACT_STYLE_WARNING
     detail: "git diff --cached --check reports one terminal blank line in each of the four approved checklist files; bytes were kept unchanged to preserve the approved source and candidate identities."
-  external_release_actions_performed: []
+  external_release_actions_performed:
+    - "Fast-forwarded GitHub main from b6424ddc8a98bafe0e8738211a61b940668d5222 to 7c88f7d564f4c49daecc6eaec345002163f9e9ec."
+    - "Created and pushed annotated tag v2.6.0; tag object 717d3282c4a7f9d039a5a7534a2bb4c581304d6d resolves to commit 7c88f7d564f4c49daecc6eaec345002163f9e9ec."
+    - "Published GitHub Release 375537074 with exact asset workflow-bundle-2.6.0.tgz."
+release_execution:
+  status: COMPLETED
+  published_at: "2026-08-24T08:07:38Z"
+  release_url: "https://github.com/haonh87/Code-Factory/releases/tag/v2.6.0"
+  release_id: 375537074
+  tag:
+    name: v2.6.0
+    kind: annotated
+    object_sha: "717d3282c4a7f9d039a5a7534a2bb4c581304d6d"
+    target_commit: "7c88f7d564f4c49daecc6eaec345002163f9e9ec"
+  github_asset:
+    id: 527285011
+    name: "workflow-bundle-2.6.0.tgz"
+    size_bytes: 932131
+    state: uploaded
+    sha256: "5da823c9e64ca464630aea29dcf59ae4098bd6ea544cfdb36cdf5ccec79f3af9"
+    remote_download_verification: "PASS - downloaded asset is byte-for-byte identical to the approved retained candidate"
+  release_shape:
+    draft: false
+    prerelease: false
+    latest: true
+  npm_registry:
+    status: NOT_PUBLISHED
+    reason: "The local npm client is not authenticated; this release explicitly uses the immutable GitHub asset as its publication artifact."
 branch_and_worktree: FINALIZED
-next_action: "Execute the separately scoped guarded release with the retained exact candidate, or explicitly conclude the no-publication path before archiving the work item and change package."
+next_action: "Archive CHANGE-004 and the DONE work item when the coordinator intentionally opens the archive transition; do not move or recreate tag v2.6.0."
 ```
