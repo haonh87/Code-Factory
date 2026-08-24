@@ -6,9 +6,9 @@ language: vi
 
 > Tiếng Anh / English: README.md
 
-Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent; ứng viên phát hành đã chuẩn bị là `workflow-bundle v2.5.0`: một workflow bundle cài được cho Codex và Claude Code, cho phép agent chủ động đề xuất `work-item` và `change`, còn human giữ quyền approve ở các gate trước khi delivery tiếp tục. Ứng viên này vẫn chưa được phát hành cho đến khi human Release gate phê duyệt.
+Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent; ứng viên phát hành đã chuẩn bị là `workflow-bundle v2.6.0`: một workflow bundle cài được cho Codex và Claude Code, cho phép agent chủ động đề xuất `work-item` và `change`, còn human giữ quyền approve ở các gate trước khi delivery tiếp tục. Ứng viên này vẫn chưa được phát hành cho đến khi human Release gate phê duyệt. Ứng viên bổ sung hướng dẫn design-readiness dạng additive cho hai skill `sa` và `ta` hiện có, đồng thời giữ nguyên inventory 42 skill và boundary thẩm quyền s01-s04 của hai role.
 
-Cho tới khi gate đó pass, dùng source commit và candidate digest được lưu trong CHANGE-003 làm release-candidate reference. Chỉ tạo và chia sẻ tag `v2.5.0` sau khi Release được phê duyệt.
+Cho tới khi gate đó pass, dùng source commit và candidate digest được lưu trong CHANGE-004 làm release-candidate reference. Chỉ tạo và chia sẻ tag `v2.6.0` sau khi Release được phê duyệt. Baseline source để rollback đã xác minh vẫn là `v2.5.0/42`.
 
 ## Requirements
 
@@ -20,7 +20,7 @@ Cho tới khi gate đó pass, dùng source commit và candidate digest được 
 
 ## Bắt Đầu Ở Đây
 
-Nếu đang tiếp cận repo lần đầu và muốn review ứng viên phát hành `v2.5.0`:
+Nếu đang tiếp cận repo lần đầu và muốn review ứng viên phát hành `v2.6.0`:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -41,7 +41,7 @@ Các tài liệu dưới đây là maintainer hoặc historical context, không 
 
 ## Workflow Commands Nhanh
 
-Command surface public của `v2.5.0` dùng `wfc`.
+Command surface public của `v2.6.0` dùng `wfc`.
 
 Install và quản lý workflow bundle:
 
@@ -103,14 +103,14 @@ Ghi chú:
 - lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase trực tiếp trên TTY đó.
 - implementation path bị khóa ở mức filesystem cho tới khi work item vào `ACTIVE` ở `s07` và được cấp `write-root`.
 - `work-items/` là canonical artifact root cho workflow artifacts của repo.
-- Approval model của `v2.5.0` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate, trusted signed receipts và step-gate evidence bắt buộc đã có.
+- Approval model của `v2.6.0` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate, trusted signed receipts và step-gate evidence bắt buộc đã có.
 
 ## Workflow Docs
 
 ### Theo Mục Đích
 
 - Public docs cho người mới dùng workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface cho `v2.5.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface cho `v2.6.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart cho `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README cho cài đặt hoặc publish: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 

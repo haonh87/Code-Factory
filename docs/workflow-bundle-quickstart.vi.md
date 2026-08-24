@@ -6,7 +6,7 @@ language: vi
 
 > Tiếng Anh / English: workflow-bundle-quickstart.md
 
-Hướng dẫn này tập trung vào ứng viên phát hành `workflow-bundle v2.5.0`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Không thể cài từ registry cho tới khi human Release gate phê duyệt.
+Hướng dẫn này tập trung vào ứng viên phát hành `workflow-bundle v2.6.0`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Không thể cài từ registry cho tới khi human Release gate phê duyệt. Candidate giữ 42 managed skill và thêm hướng dẫn design-readiness có điều kiện cho hai skill `sa` và `ta` hiện có.
 
 ## Mục Tiêu
 
