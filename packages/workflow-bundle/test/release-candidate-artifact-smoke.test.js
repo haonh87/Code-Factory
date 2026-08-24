@@ -10,7 +10,7 @@ const { execFileSync } = require("child_process");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
 const packageRoot = path.join(repoRoot, "packages", "workflow-bundle");
-const expectedVersion = "2.5.0";
+const expectedVersion = "2.6.0";
 const expectedSkillCount = 42;
 
 function assert(condition, message) {
@@ -53,6 +53,17 @@ function assertRuntimeContract(root, label) {
     const skillRoot = path.join(skillsRoot, "guardrails", "artifact-governance");
     assert(fs.existsSync(path.join(skillRoot, "SKILL.md")), `${label}/${mode} must contain artifact-governance/SKILL.md`);
     assert(fs.existsSync(path.join(skillRoot, "SKILL.vi.md")), `${label}/${mode} must contain artifact-governance/SKILL.vi.md`);
+    for (const role of ["sa", "ta"]) {
+      const roleRoot = path.join(skillsRoot, "analysis", role);
+      assert(
+        fs.existsSync(path.join(roleRoot, "references", "design-readiness-checklist.md")),
+        `${label}/${mode} must contain ${role}/references/design-readiness-checklist.md`
+      );
+      assert(
+        fs.existsSync(path.join(roleRoot, "references", "design-readiness-checklist.vi.md")),
+        `${label}/${mode} must contain ${role}/references/design-readiness-checklist.vi.md`
+      );
+    }
   }
 }
 
@@ -71,7 +82,7 @@ function runExactArtifactSmoke(tarballPath, expectedDigest) {
   assert(actualDigest === expectedDigest, `candidate digest mismatch: expected ${expectedDigest}, got ${actualDigest}`);
 
   console.log(`Running exact v${expectedVersion} package-artifact smoke...\n`);
-  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-v2.5.0-artifact-"));
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-v2.6.0-artifact-"));
   try {
     const cacheRoot = path.join(tempRoot, "npm-cache");
     const installPrefix = path.join(tempRoot, "install");

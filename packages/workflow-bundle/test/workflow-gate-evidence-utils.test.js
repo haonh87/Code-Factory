@@ -35,12 +35,26 @@ const liveS01 = path.join(
   "artifact-governance-enforcement",
   "artifact-governance-enforcement.s01.restate.md"
 );
+const liveReport = JSON.parse(
+  fs.readFileSync(
+    path.join(
+      repoRoot,
+      "work-items",
+      "artifact-governance-enforcement",
+      "artifact-governance-enforcement.work-item-report.json"
+    ),
+    "utf8"
+  )
+);
 const liveSameNote = resolveArtifactReference({
   projectRoot: repoRoot,
   currentFile: liveS01,
   reference: "#Work Item Protocol.protocol_status"
 });
-assert(liveSameNote.value === "ACTIVE", "same-note resolver must read the live P2 protocol status");
+assert(
+  liveSameNote.value === liveReport.protocol_status,
+  "same-note resolver must match the live P2 protocol source-of-truth"
+);
 
 const liveCrossFile = resolveArtifactReference({
   projectRoot: repoRoot,

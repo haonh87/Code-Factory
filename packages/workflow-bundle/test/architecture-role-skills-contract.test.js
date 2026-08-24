@@ -3,6 +3,60 @@ const path = require("path");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
 const expectedMetricIds = Array.from({ length: 10 }, (_, index) => `M-${String(index + 1).padStart(2, "0")}`);
+const expectedDesignReadinessCheckIds = Array.from(
+  { length: 13 },
+  (_, index) => `DR-C${String(index + 1).padStart(2, "0")}`
+);
+const expectedDesignReadinessQuestionIds = Array.from(
+  { length: 10 },
+  (_, index) => `DR-Q${String(index + 1).padStart(2, "0")}`
+);
+const expectedDesignReadinessCases = [
+  "data_authority",
+  "contested_resource_authority",
+  "reconciliation",
+  "compliance_timing",
+  "lifecycle_retirement",
+  "offline_online_invariant"
+];
+const expectedDesignReadinessCheckLenses = [
+  "sa", "sa", "ta", "ta", "sa", "ta", "sa", "ta", "sa", "ta", "sa", "sa", "sa"
+];
+const expectedDesignReadinessQuestionLenses = [
+  "ta", "ta", "ta", "ta", "ta", "ta", "ta", "ta", "sa", "ta"
+];
+const expectedDesignReadinessCaseContracts = {
+  data_authority: {
+    ownerLens: "sa",
+    references: ["DR-C01", "DR-C02"],
+    destinations: ["input_issues.contested_ownership", "handoff.to_dev", "handoff.to_qc"]
+  },
+  contested_resource_authority: {
+    ownerLens: "ta",
+    references: ["DR-C03", "DR-Q01"],
+    destinations: ["handoff.to_dev", "handoff.to_qc"]
+  },
+  reconciliation: {
+    ownerLens: "ta",
+    references: ["DR-C04", "DR-Q02"],
+    destinations: ["handoff.to_dev", "handoff.to_qc", "handoff.to_devops"]
+  },
+  compliance_timing: {
+    ownerLens: "sa",
+    references: ["DR-C11"],
+    destinations: ["handoff.to_ba", "handoff.to_dev", "handoff.to_qc"]
+  },
+  lifecycle_retirement: {
+    ownerLens: "sa",
+    references: ["DR-C12", "DR-C13"],
+    destinations: ["input_issues.missing_capability", "stop_condition.pushed_to_s03", "handoff.to_dev"]
+  },
+  offline_online_invariant: {
+    ownerLens: "ta",
+    references: ["DR-Q08"],
+    destinations: ["handoff.to_dev", "handoff.to_qc", "handoff.to_devops"]
+  }
+};
 let failures = 0;
 
 function assert(condition, message) {
@@ -14,6 +68,11 @@ function assert(condition, message) {
 
 function read(relativePath) {
   return fs.readFileSync(path.join(repoRoot, relativePath), "utf8");
+}
+
+function readIfExists(relativePath) {
+  const absolutePath = path.join(repoRoot, relativePath);
+  return fs.existsSync(absolutePath) ? fs.readFileSync(absolutePath, "utf8") : "";
 }
 
 function extractYamlFences(markdown) {
@@ -247,12 +306,323 @@ function testBilingualSemanticParity() {
   console.log("  PASS: EN/VI example semantic structure checked");
 }
 
+function designReadinessEntries(reference) {
+  const matches = [
+    ...reference.matchAll(/^\s*- (id|case):\s*["']?((?:DR-[CQ]\d{2})|(?:[a-z_]+))["']?\s*$/gm)
+  ];
+  return matches.map((match, index) => ({
+    kind: match[1],
+    id: match[2],
+    body: reference.slice(match.index + match[0].length, matches[index + 1]?.index ?? reference.length)
+  }));
+}
+
+function contractEntries(entries, idPrefix) {
+  return entries.filter(({ kind, id }) => kind === "id" && id.startsWith(idPrefix));
+}
+
+function caseEntries(entries) {
+  return entries.filter(({ kind }) => kind === "case");
+}
+
+function fieldValue(body, field) {
+  const match = body.match(new RegExp(`^\\s+${field}:\\s*(.*?)\\s*$`, "m"));
+  return match ? match[1].replace(/^(["'])(.*)\1$/, "$2").trim() : "";
+}
+
+function missingFields(entries, fields) {
+  return entries.flatMap(({ id, body }) =>
+    fields.filter((field) => !fieldValue(body, field)).map((field) => `${id}.${field}`)
+  );
+}
+
+function placeholderFields(entries, fields) {
+  const placeholder = /^(?:none|n\/a|tbd|todo|unknown|not applicable|chưa rõ|không áp dụng|\[\]|\{\})$/i;
+  return entries.flatMap(({ id, body }) =>
+    fields.filter((field) => placeholder.test(fieldValue(body, field))).map((field) => `${id}.${field}`)
+  );
+}
+
+function duplicateFieldValues(entries, field) {
+  const seen = new Set();
+  const duplicates = new Set();
+  for (const { body } of entries) {
+    const value = fieldValue(body, field);
+    if (seen.has(value)) {
+      duplicates.add(value);
+    }
+    seen.add(value);
+  }
+  return [...duplicates];
+}
+
+function universallyMandatoryChecks(checks) {
+  const universal = /^(?:always|all cases|every case|unconditional|universal|luôn luôn|mọi trường hợp|vô điều kiện)$/i;
+  return checks
+    .filter(({ body }) => universal.test(fieldValue(body, "mandatory_when")))
+    .map(({ id }) => id);
+}
+
+function destinationHasLens(destination, lens) {
+  return destination.includes(`(${lens} lens)`) || destination.includes(`(góc nhìn ${lens})`);
+}
+
+function assertDesignReadinessInventory(reference, language) {
+  const entries = designReadinessEntries(reference);
+  const checks = contractEntries(entries, "DR-C");
+  const questions = contractEntries(entries, "DR-Q");
+  const cases = caseEntries(entries);
+  const checkFields = [
+    "trigger",
+    "owner_lens",
+    "concern_or_invariant",
+    "expected_evidence",
+    "handoff",
+    "verification",
+    "mandatory_when",
+    "blocking_authority"
+  ];
+  const questionFields = [
+    "trigger",
+    "question",
+    "destination",
+    "expected_evidence",
+    "non_selection_guard"
+  ];
+  const representativeCaseFields = [
+    "owner_lens",
+    "concern_or_invariant",
+    "expected_evidence",
+    "handoff",
+    "non_selection_guard"
+  ];
+
+  assert(
+    JSON.stringify(checks.map(({ id }) => id)) === JSON.stringify(expectedDesignReadinessCheckIds),
+    `${language}: design-readiness checks must be exactly DR-C01 through DR-C13`
+  );
+  const missingCheckFields = missingFields(checks, checkFields);
+  assert(
+    missingCheckFields.length === 0,
+    `${language}: every DR-C entry must expose the approved fields; missing ${missingCheckFields.join(", ") || "inventory"}`
+  );
+  const placeholderCheckFields = placeholderFields(checks, checkFields);
+  assert(
+    placeholderCheckFields.length === 0,
+    `${language}: DR-C fields cannot use placeholder authority or evidence (${placeholderCheckFields.join(", ")})`
+  );
+  const invalidCheckLenses = checks
+    .filter(({ body }, index) => fieldValue(body, "owner_lens") !== expectedDesignReadinessCheckLenses[index])
+    .map(({ id }) => id);
+  assert(
+    invalidCheckLenses.length === 0,
+    `${language}: DR-C owner-lens routing does not match the approved contract (${invalidCheckLenses.join(", ")})`
+  );
+
+  assert(
+    JSON.stringify(questions.map(({ id }) => id)) === JSON.stringify(expectedDesignReadinessQuestionIds),
+    `${language}: design-readiness questions/handoffs must be exactly DR-Q01 through DR-Q10`
+  );
+  const missingQuestionFields = missingFields(questions, questionFields);
+  assert(
+    missingQuestionFields.length === 0,
+    `${language}: every DR-Q entry must expose the approved fields; missing ${missingQuestionFields.join(", ") || "inventory"}`
+  );
+  const placeholderQuestionFields = placeholderFields(questions, questionFields);
+  assert(
+    placeholderQuestionFields.length === 0,
+    `${language}: DR-Q fields cannot use placeholders (${placeholderQuestionFields.join(", ")})`
+  );
+  const invalidQuestionLenses = questions
+    .filter(({ body }, index) =>
+      !destinationHasLens(fieldValue(body, "destination"), expectedDesignReadinessQuestionLenses[index])
+    )
+    .map(({ id }) => id);
+  assert(
+    invalidQuestionLenses.length === 0,
+    `${language}: DR-Q owner-lens routing does not match the approved contract (${invalidQuestionLenses.join(", ")})`
+  );
+
+  assert(
+    JSON.stringify(cases.map(({ id }) => id).sort()) === JSON.stringify([...expectedDesignReadinessCases].sort()),
+    `${language}: representative cases must be exactly the six approved readiness scenarios`
+  );
+  const missingCaseFields = missingFields(cases, representativeCaseFields);
+  assert(
+    missingCaseFields.length === 0,
+    `${language}: every representative case must preserve routing and non-selection evidence; missing ${missingCaseFields.join(", ") || "inventory"}`
+  );
+  const placeholderCaseFields = placeholderFields(cases, representativeCaseFields);
+  assert(
+    placeholderCaseFields.length === 0,
+    `${language}: representative-case fields cannot use placeholders (${placeholderCaseFields.join(", ")})`
+  );
+  for (const { id, body } of cases) {
+    const expected = expectedDesignReadinessCaseContracts[id];
+    if (!expected) {
+      continue;
+    }
+    const handoff = fieldValue(body, "handoff");
+    assert(
+      fieldValue(body, "owner_lens") === expected.ownerLens,
+      `${language}: ${id} must route through the ${expected.ownerLens.toUpperCase()} lens`
+    );
+    for (const reference of expected.references) {
+      assert(handoff.includes(reference), `${language}: ${id} must route through ${reference}`);
+    }
+    for (const destination of expected.destinations) {
+      assert(handoff.includes(destination), `${language}: ${id} must hand off to ${destination}`);
+    }
+  }
+
+  const invalidMandatoryChecks = universallyMandatoryChecks(checks);
+  assert(
+    invalidMandatoryChecks.length === 0,
+    `${language}: checks cannot become universally mandatory without named authority (${invalidMandatoryChecks.join(", ")})`
+  );
+  assert(
+    duplicateFieldValues(checks, "concern_or_invariant").length === 0,
+    `${language}: DR-C normative concerns must be unique`
+  );
+  assert(
+    duplicateFieldValues(questions, "question").length === 0,
+    `${language}: DR-Q normative questions must be unique`
+  );
+}
+
+function testDesignReadinessNegativeFixtures() {
+  const placeholderFixture = [{
+    id: "DR-NEGATIVE",
+    body: '\n    trigger: "TBD"\n    blocking_authority: "none"'
+  }];
+  assert(
+    JSON.stringify(placeholderFields(placeholderFixture, ["trigger", "blocking_authority"])) ===
+      JSON.stringify(["DR-NEGATIVE.trigger", "DR-NEGATIVE.blocking_authority"]),
+    "design-readiness validator must reject placeholder evidence and blocking authority"
+  );
+  const universalFixture = [{ id: "DR-NEGATIVE", body: '\n    mandatory_when: "all cases"' }];
+  assert(
+    JSON.stringify(universallyMandatoryChecks(universalFixture)) === JSON.stringify(["DR-NEGATIVE"]),
+    "design-readiness validator must reject an unanchored universal mandate"
+  );
+  console.log("  PASS: design-readiness negative validation fixtures checked");
+}
+
+function testDesignReadinessReferencesAndContract() {
+  const failuresBefore = failures;
+  const references = {
+    saEn: "skills/analysis/sa/references/design-readiness-checklist.md",
+    saVi: "skills/analysis/sa/references/design-readiness-checklist.vi.md",
+    taEn: "skills/analysis/ta/references/design-readiness-checklist.md",
+    taVi: "skills/analysis/ta/references/design-readiness-checklist.vi.md"
+  };
+  const content = Object.fromEntries(
+    Object.entries(references).map(([key, relativePath]) => [key, readIfExists(relativePath)])
+  );
+
+  for (const [key, relativePath] of Object.entries(references)) {
+    assert(content[key].trim().length > 0, `${relativePath}: canonical design-readiness reference must exist and be non-empty`);
+  }
+  assert(content.saEn === content.taEn, "design-readiness-checklist.md must stay byte-identical across SA/TA");
+  assert(content.saVi === content.taVi, "design-readiness-checklist.vi.md must stay byte-identical across SA/TA");
+
+  assertDesignReadinessInventory(content.saEn, "EN");
+  assertDesignReadinessInventory(content.saVi, "VI");
+
+  for (const [key, reference] of Object.entries(content)) {
+    assert(
+      /^\s*advisory_by_default:\s*true\s*$/m.test(reference) &&
+        /^\s*emit_only_applicable:\s*true\s*$/m.test(reference) &&
+        /^\s*not_applicable_behavior:\s*omit\s*$/m.test(reference) &&
+        /^\s*blocking_requires_named_authority:\s*true\s*$/m.test(reference) &&
+        /^\s*map_to_existing_output_only:\s*true\s*$/m.test(reference),
+      `${references[key]}: must declare applicability, advisory-default, named-authority, and existing-output rules`
+    );
+    assert(
+      reference.includes("system-design") && reference.includes("architecture-modeling"),
+      `${references[key]}: must preserve downstream design and modeling authority`
+    );
+    assert(
+      !/(?:human-capability-documents|docs\/design\.md|\bHCP\b|\bR-\d{2}\b)/i.test(reference),
+      `${references[key]}: private source path, acronym, or rule ID must not leak into public guidance`
+    );
+    assert(
+      !/^\s*design_readiness:\s*$/m.test(reference) &&
+        !/\b(?:recommended_solution|selected_technology|chosen_pattern|schema_choice|domain_boundary_choice|diagram_choice|architecture_model_choice)\s*:/i.test(reference) &&
+        !/^\s*(?:apply_all_checks|emit_full_checklist):\s*true\s*$/mi.test(reference),
+      `${references[key]}: must not add an output block, select a solution, or dump the checklist`
+    );
+  }
+
+  for (const lens of ["sa", "ta"]) {
+    for (const languageSuffix of ["", ".vi"]) {
+      for (const relativePath of [
+        `skills/analysis/${lens}/SKILL${languageSuffix}.md`,
+        `skills/analysis/${lens}/references/output-schema${languageSuffix}.md`
+      ]) {
+        assert(
+          !/^\s*design_readiness:\s*$/m.test(read(relativePath)),
+          `${relativePath}: existing output contract must not gain a design_readiness block`
+        );
+      }
+    }
+  }
+  if (failures === failuresBefore) {
+    console.log("  PASS: design-readiness reference inventory, authority, confidentiality, and behavior contract checked");
+  }
+}
+
+function testDesignReadinessSkillHooks() {
+  const failuresBefore = failures;
+  const hooks = [
+    ["skills/analysis/sa/SKILL.md", "references/design-readiness-checklist.md", "**Anchor every driver", "**Fill the handoff blocks"],
+    ["skills/analysis/ta/SKILL.md", "references/design-readiness-checklist.md", "**Anchor every driver", "**Fill the handoff blocks"],
+    ["skills/analysis/sa/SKILL.vi.md", "references/design-readiness-checklist.vi.md", "**Chỉ rõ ai đứng sau mỗi driver", "**Điền khối bàn giao"],
+    ["skills/analysis/ta/SKILL.vi.md", "references/design-readiness-checklist.vi.md", "**Chỉ rõ ai đứng sau mỗi driver", "**Điền khối bàn giao"]
+  ];
+
+  for (const [relativePath, referencePath, driverAnchor, handoffAnchor] of hooks) {
+    const skill = read(relativePath);
+    const hookIndex = skill.indexOf(referencePath);
+    assert(
+      !/(?:human-capability-documents|docs\/design\.md|\bHCP\b|\bR-\d{2}\b)/i.test(skill),
+      `${relativePath}: private source path, acronym, or rule ID must not leak into skill instructions`
+    );
+    assert(
+      !/\b(?:recommended_solution|selected_technology|chosen_pattern|schema_choice|domain_boundary_choice|diagram_choice|architecture_model_choice)\s*:/i.test(skill) &&
+        !/^\s*(?:apply_all_checks|emit_full_checklist):\s*true\s*$/mi.test(skill),
+      `${relativePath}: skill hook must not select a solution or dump the checklist`
+    );
+    assert(hookIndex >= 0, `${relativePath}: execution flow must invoke ${referencePath}`);
+    if (hookIndex >= 0) {
+      assert(
+        hookIndex > skill.indexOf(driverAnchor) && hookIndex < skill.indexOf(handoffAnchor),
+        `${relativePath}: design-readiness hook must run after driver extraction and before handoff/metrics`
+      );
+      const hookTail = skill.slice(hookIndex);
+      const nextStepOffset = hookTail.slice(1).search(/^\d+\.\s/m);
+      const hookStep = nextStepOffset < 0 ? hookTail : hookTail.slice(0, nextStepOffset + 1);
+      assert(
+        /(?:applicable|relevant|áp dụng|liên quan)/i.test(hookStep) &&
+          /(?:drivers|input_issues|handoff)/.test(hookStep),
+        `${relativePath}: hook must filter for relevance and map only to existing output fields`
+      );
+    }
+  }
+  if (failures === failuresBefore) {
+    console.log("  PASS: concise EN/VI SA/TA design-readiness invocation hooks checked");
+  }
+}
+
 console.log("Running architecture role skills contract tests...\n");
 testYamlSchemasAndExamples();
 testLensOwnershipAndExamples();
 testMetricInventoryAndCoverageValues();
 testSharedReferenceParityAndMetadata();
 testBilingualSemanticParity();
+testDesignReadinessNegativeFixtures();
+testDesignReadinessReferencesAndContract();
+testDesignReadinessSkillHooks();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in architecture-role-skills-contract.test.js`);

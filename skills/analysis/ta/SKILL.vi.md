@@ -146,6 +146,9 @@ bao giờ được `applicable: false`.
    là sở thích, không phải driver: để nó ngoài `drivers` và ghi vào
    `input_issues.unanchored_drivers` kèm lý do. Không bao giờ âm thầm bỏ đi. Đây là lỗi khác với
    bước 9 — không ai yêu cầu nó, so với nó không phục vụ mục tiêu nào.
+   Sau đó nạp `references/design-readiness-checklist.vi.md`, chỉ áp dụng mục liên quan và map finding
+   vào `drivers`, `input_issues` hoặc field `handoff` hiện có mà role sở hữu. Không emit nguyên
+   reference hay chọn giải pháp hạ nguồn.
 8. **Đặt trạng thái ngưỡng.** `quantified` khi có số. `binary` khi driver chỉ thoả hoặc không và
    không con số nào có nghĩa — nghĩa vụ pháp lý, contract không được vỡ. `not_quantified` khi lẽ ra
    *phải* có số mà chưa có; chỗ chưa có baseline thì nói rõ — đó là một phát hiện đáng có.
@@ -216,3 +219,4 @@ buộc bạn đang phát biểu, không phải một phần của thiết kế m
 - `references/visual-encoding.md` — kênh thị giác nào được mang thuộc tính nào, quyết trước khi vẽ.
 - `references/example.md` — một artifact hoàn chỉnh đã điền, cho thấy driver quantified, binary và not_quantified cạnh nhau.
 - `references/invocation-rules.md` — cú pháp chỉ thị, chọn profile, escalation cứng và luật định dạng.
+- `references/design-readiness-checklist.vi.md` — check tiền thiết kế có điều kiện, câu hỏi driver và handoff đúng quyền sở hữu.
