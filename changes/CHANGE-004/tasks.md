@@ -251,7 +251,7 @@ branch_finalization:
     - "Created and pushed annotated tag v2.6.0; tag object 717d3282c4a7f9d039a5a7534a2bb4c581304d6d resolves to commit 7c88f7d564f4c49daecc6eaec345002163f9e9ec."
     - "Published GitHub Release 375537074 with exact asset workflow-bundle-2.6.0.tgz."
 release_execution:
-  status: COMPLETED
+  status: COMPLETED_WITH_POST_RELEASE_FINDING
   published_at: "2026-08-24T08:07:38Z"
   release_url: "https://github.com/haonh87/Code-Factory/releases/tag/v2.6.0"
   release_id: 375537074
@@ -274,6 +274,18 @@ release_execution:
   npm_registry:
     status: NOT_PUBLISHED
     reason: "The local npm client is not authenticated; this release explicitly uses the immutable GitHub asset as its publication artifact."
+  post_release_ci:
+    status: PARTIAL
+    run_id: 32704618485
+    run_url: "https://github.com/haonh87/Code-Factory/actions/runs/32704618485"
+    passing_jobs: 6
+    failing_job: "Workflow Authoring Smoke"
+    skipped_job: "Release Candidate (Node matrix)"
+    finding_id: REL-F01
+    finding: "The stale mutating-action-requires-report smoke case expects a missing-report error, but approve argument validation correctly fails earlier because --reviewed-by is absent."
+    clean_export_reproduction: "CONFIRMED against immutable tag target 7c88f7d564f4c49daecc6eaec345002163f9e9ec"
+    artifact_integrity_impact: NONE
+    disposition: OPEN_REQUIRES_SEPARATE_GOVERNED_FIX_OR_HUMAN_ACCEPTANCE
 branch_and_worktree: FINALIZED
-next_action: "Archive CHANGE-004 and the DONE work item when the coordinator intentionally opens the archive transition; do not move or recreate tag v2.6.0."
+next_action: "Resolve REL-F01 through a separately governed fix/patch release or explicit authorized acceptance; keep v2.6.0 tag immutable and do not archive CHANGE-004 while the finding is open."
 ```
