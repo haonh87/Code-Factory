@@ -1,0 +1,280 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "DONE",
+  "decision_owner": "agent",
+  "protocol_owner": "coordinator",
+  "raw_request_summary": "Derive domain-neutral, confidentiality-safe design-readiness rules and checklists from human-capability-documents/docs/design.md for SA and TA while preserving their s01-s04 authority boundary and bundle parity.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "integrate-design-checklists-into-sa-ta",
+      "work_item_title": "Integrate Design Checklists Into Sa Ta",
+      "work_item_type": "CHANGE",
+      "scope_summary": "Classify R-01 through R-34 and derive portable, conditional pre-design guidance for SA and TA without publishing HCP-specific content or moving s05 design/modeling authority upstream.",
+      "primary_outcome": "A reviewed SA/TA checklist contract that is domain-neutral, confidentiality-safe, backward-compatible, bilingual, runtime-synchronized, and evidence-backed.",
+      "in_scope": [
+        "Classify and privately trace all 34 source rules",
+        "Add portable SA/TA pre-design checks and downstream handoffs",
+        "Preserve the current output-schema, block-ownership, system-design, and architecture-modeling boundaries",
+        "Keep canonical EN/VI sources and both generated runtimes consistent",
+        "Add confidentiality, behavior, parity, reference, pack, compatibility, and UTF-8 verification"
+      ],
+      "out_of_scope": [
+        "Publishing HCP-specific system names, products, ownership decisions, exact thresholds, or verbatim internal content",
+        "Editing the external source document",
+        "Choosing stacks, products, patterns, schemas, domain boundaries, or models inside SA/TA",
+        "Publishing or globally installing a release before Release approval",
+        "Multi-agent execution"
+      ],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "full",
+      "sdd_reasons": [],
+      "sdd_preset": "full",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/architecture-role-skills",
+        "work-items/arch-role-skills-release",
+        "work-items/stabilize-architecture-skill-bundle"
+      ],
+      "collision_notes": [
+        "architecture-role-skills is frozen and defines the existing SA/TA boundary",
+        "arch-role-skills-release is completed packaging history",
+        "stabilize-architecture-skill-bundle is DONE and does not cover derivation from the selected internal source"
+      ],
+      "change_strategy": "create_new",
+      "change_id": "CHANGE-004",
+      "change_reason": "The request changes frozen public SA/TA behavior after the v2.4.0 stabilization item closed, so it requires a new reviewed change package.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:change -- --change-id CHANGE-004 --work-item integrate-design-checklists-into-sa-ta",
+        "npm run scaffold:workflow -- --work-item integrate-design-checklists-into-sa-ta --planning-track full --delivery-context brownfield --change-id CHANGE-004 --governance-profile strict",
+        "npm run validate:workflow -- --workflow-root work-items/integrate-design-checklists-into-sa-ta --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "split_decision=single confirmed by the user",
+    "work_item_type=CHANGE",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict after review of frozen/completed predecessor work items",
+    "change_strategy=create_new",
+    "change_id=CHANGE-004",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=full",
+    "selected_profile=full",
+    "sdd_mode=none",
+    "execution_mode=agentic",
+    "CHANGE-003 integrated into main at v2.5.0/42; CHANGE-004 Approach rebased to target v2.6.0/42 without changing Option A",
+    "The pre-amendment Approach receipt is stale; amended Approach and Task Plan require separate Developer approvals and receipts",
+    "Developer explicitly approved the amended Approach at 2026-08-22T15:09:55Z; trusted s05 receipt resealing remains before Task Plan review",
+    "Amended s05 receipt verified APPROVED with digest_match=true at SHA-256 1a8c335a047741421fd7d2d91e9f45a1ab95a7e23f3c35d76dea96f15fa1887a",
+    "Developer explicitly approved the finalized s06 Task Plan at 2026-08-22T15:24:17Z; trusted Task Plan receipt sealing remains required before activation readiness",
+    "DevOps and QC explicitly approved Release at 2026-08-24T04:58:36Z against source 2b4650d7..., candidate 5da823c9..., and rollback 36615668...; Business Acceptance and shared s08 receipt sealing remain pending",
+    "PO explicitly approved Business Acceptance at 2026-08-24T05:07:41Z against AC-001 through AC-010 at 10/10 PASS and the same source/candidate identities; all s08 human decisions are now recorded"
+  ],
+  "work_item_slug": "integrate-design-checklists-into-sa-ta",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/integrate-design-checklists-into-sa-ta",
+  "current_step": "s08",
+  "granted_write_paths": [
+    ".claude/worktrees/integrate-design-checklists-into-sa-ta-v2.6.0",
+    "work-items/integrate-design-checklists-into-sa-ta",
+    "changes/CHANGE-004"
+  ],
+  "change_strategy": "create_new",
+  "change_id": "CHANGE-004",
+  "handoff_target": "branch-and-release-finalization",
+  "required_actions": [
+    "Archive the work item when all downstream lifecycle actions are complete."
+  ],
+  "blockers": [],
+  "refs": [
+    "changes/CHANGE-004",
+    "work-items/integrate-design-checklists-into-sa-ta",
+    "work-items/architecture-role-skills",
+    "work-items/arch-role-skills-release",
+    "work-items/stabilize-architecture-skill-bundle"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "CHANGE_CREATED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "BASELINE_RECONCILED",
+    "GATE_REVIEW_RECORDED",
+    "GATE_RECEIPT_VERIFIED",
+    "STEP_OPENED",
+    "GATE_REVIEW_RECORDED",
+    "WORK_ITEM_ACTIVATED",
+    "WORK_ITEM_BLOCKED",
+    "WORK_ITEM_RESUMED",
+    "STEP_OPENED",
+    "VERIFICATION_CONFIRMED",
+    "GATE_REVIEW_RECORDED",
+    "GATE_REVIEW_RECORDED",
+    "DONE_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-08-20T08:52:31.424Z",
+  "review_notes": [
+    "Human review approved."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-08-18T09:27:12.683Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-08-18T09:27:12.683Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Materialization inputs are ready for scaffold."
+    },
+    {
+      "timestamp": "2026-08-18T09:27:12.896Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "User confirmed one new domain-neutral CHANGE-004 after review of frozen/completed predecessor scopes; workflow artifacts were auto-scaffolded with all human approvals pending."
+    },
+    {
+      "timestamp": "2026-08-19T02:11:31.392Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-08-20T08:52:31.425Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-08-21T14:55:19Z",
+      "action": "baseline-reconcile",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "CHANGE-003 is integrated into main at v2.5.0/42. CHANGE-004 s05 and s06 are rebased to candidate v2.6.0/42; the prior Approach receipt is stale and the workflow returns to the s05 human gate."
+    },
+    {
+      "timestamp": "2026-08-22T15:09:55Z",
+      "action": "gate-review-recorded",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human Developer explicitly approved the amended s05 Approach for baseline v2.5.0/42, candidate v2.6.0/42, rollback v2.5.0/42, and unchanged Option A; trusted receipt resealing remains required."
+    },
+    {
+      "timestamp": "2026-08-22T15:16:40Z",
+      "action": "step-opened",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Verified amended Approach receipt APPROVED by developer with digest_match=true; current authoring step advances to s06 Task Plan review while s07 remains closed."
+    },
+    {
+      "timestamp": "2026-08-22T15:24:17Z",
+      "action": "gate-review-recorded",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human Developer explicitly approved the finalized s06 Task Plan; trusted receipt sealing and digest verification remain required before activation readiness and s07."
+    },
+    {
+      "timestamp": "2026-08-22T15:29:40.070Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "All required trusted authoring receipts match; activate the approved s07 path for T0 baseline isolation without starting production edits."
+    },
+    {
+      "timestamp": "2026-08-24T03:33:36.524Z",
+      "action": "block",
+      "actor": "coordinator",
+      "from_status": "ACTIVE",
+      "to_status": "BLOCKED",
+      "note": "T8 integrated pre-verify is blocked by three unchanged stale regression-test contracts; targeted CHANGE-004 checks and candidate digest remain stable."
+    },
+    {
+      "timestamp": "2026-08-24T04:03:29.354Z",
+      "action": "resume",
+      "actor": "coordinator",
+      "from_status": "BLOCKED",
+      "to_status": "ACTIVE",
+      "note": "S06-AMEND-003 is Developer-approved and the Task Plan receipt matches SHA-256 455e3c0e...; resume bounded T8 recovery without opening s08 or release gates."
+    },
+    {
+      "timestamp": "2026-08-24T04:31:12Z",
+      "action": "step-opened",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "Human QC explicitly approved opening s08 for independent verification; this does not approve technical verification, DoD, Release, or Business Acceptance."
+    },
+    {
+      "timestamp": "2026-08-24T04:47:10.948Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Human QC explicitly approved Technical Verification and the DoD decision against source 2b4650d7..., candidate 5da823c9..., and rollback 36615668...; Release and Business Acceptance remain unapproved, and the shared s08 trusted receipts will be sealed only after the artifact is frozen."
+    },
+    {
+      "timestamp": "2026-08-24T04:58:36Z",
+      "action": "gate-review-recorded",
+      "actor": "devops+qc",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Human DevOps and QC explicitly approved Release against source 2b4650d7..., candidate 5da823c9..., and rollback 36615668...; no external release action was executed, Business Acceptance remains pending, and trusted receipt sealing is deferred until s08 is frozen."
+    },
+    {
+      "timestamp": "2026-08-24T05:07:41Z",
+      "action": "gate-review-recorded",
+      "actor": "po",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Human PO explicitly approved Business Acceptance against AC-001 through AC-010 at 10/10 PASS and the same frozen source/candidate identities; all required s08 human decisions are recorded and the note is ready for trusted receipt sealing."
+    },
+    {
+      "timestamp": "2026-08-24T06:23:09.530Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "DoD, Release, and Business Acceptance are explicitly human-approved and their trusted receipts all match frozen s08 SHA-256 89f0b65a37d8cf63147c6152526024635a93eedda437fb8499c761759eb4c017. Close the protocol only; no publish, tag, merge, install, or cleanup action is executed."
+    }
+  ]
+}
