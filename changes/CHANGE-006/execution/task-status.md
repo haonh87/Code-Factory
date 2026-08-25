@@ -30,8 +30,8 @@ task_status:
     status: PASS
     evidence: "One replacement candidate is retained from reviewed source commit a9888a923ce264567c308dc490199eada0db63a3. It is byte-identical to the invalidated attempt because tests are excluded from npm payload: SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9, 932575 bytes, 544 files, payload fingerprint efe25e1bb0836b1e7a047a598ae4fd090d7049c6f09590a5050d0cbc80a9a606. Exact candidate 4/4, rollback 4/4, and wrong-digest negative guard PASS."
   - task_id: "TASK-007"
-    status: IN_PROGRESS
-    evidence: "Run 32822390088 at 8de5a8d failed both Node jobs on absent runtime. Run 32824019750 at db4315e proved the runtime bootstrap, then both Node jobs failed only release-rollback-smoke because the ignored v2.6.0 tarball was absent. A new commit/run is required; neither failed run will be rerun as remediation."
+    status: PASS
+    evidence: "Intended release target 23a30756fb2271b6f1604c91e5b31092fb2dec67 has Workflow Guardrails run 32825477258 at 9/9 success: seven sequential jobs plus Release Candidate Node 18 and Node 22. Failed runs 32822390088/32824019750 remain preserved RED evidence."
   - task_id: "TASK-008"
     status: PENDING
     evidence: "s08 not opened."
@@ -39,5 +39,5 @@ task_status:
     status: PENDING
     evidence: "Publication and closeout remain prohibited before s08 approvals."
 blocking_items: []
-next_action: "Commit the replacement-candidate evidence without changing package payload, push the new intended target, and require its own remote Workflow Guardrails 9/9 run."
+next_action: "Commit s07 remote evidence without changing the locked release target, then open s08 for Technical Verification, DoD, and pre-publication Release review."
 ```
