@@ -33,11 +33,11 @@ task_status:
     status: PASS
     evidence: "Intended release target 23a30756fb2271b6f1604c91e5b31092fb2dec67 has Workflow Guardrails run 32825477258 at 9/9 success: seven sequential jobs plus Release Candidate Node 18 and Node 22. Failed runs 32822390088/32824019750 remain preserved RED evidence."
   - task_id: "TASK-008"
-    status: PENDING
-    evidence: "Human QC approved Technical Verification and technical DoD at 2026-08-25T09:15:01Z against 13/13 smoke, 39/39 worktree and clean-target export, reproducible candidate SHA-256 7c1d2c7..., exact candidate/rollback 4/4, wrong-digest rejection, remote run 32825477258 at 9/9, v2.6.0 immutability, scan, compatibility, and governance checks. TASK-008 remains PENDING only for the separate DevOps/QC Release decision."
+    status: PASS
+    evidence: "Human QC approved Technical Verification and technical DoD at 2026-08-25T09:15:01Z; human DevOps and QC approved Release at 2026-08-25T09:23:44Z against target 23a30756..., candidate 7c1d2c7..., rollback 5da823c9..., remote run 32825477258 at 9/9, and unchanged v2.6.0."
   - task_id: "TASK-009"
     status: PENDING
-    evidence: "Publication and closeout remain prohibited before s08 approvals."
+    evidence: "Release approval now authorizes exact v2.6.1 publication and post-release verification; no tag, GitHub release, asset upload, REL-F01 disposition, Business Acceptance, merge, or cleanup has occurred yet."
 blocking_items: []
-next_action: "Human DevOps and QC review Release before TASK-009 publication and post-release evidence."
+next_action: "Execute TASK-009 against target 23a30756... and candidate 7c1d2c7..., verify remote identities, then obtain PO Business Acceptance."
 ```

@@ -68,8 +68,10 @@ gate_reviews:
   task_plan_reviewed_at: "2026-08-24T14:25:32.000Z"
   uat_reviewed_by: []
   uat_reviewed_at: ""
-  release_reviewed_by: []
-  release_reviewed_at: ""
+  release_reviewed_by:
+    - "devops"
+    - "qc"
+  release_reviewed_at: "2026-08-25T09:23:44Z"
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
   dod_reviewed_by:
@@ -103,7 +105,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Pre-release technical verification evidence is `PASS` for release target `23a30756…`, candidate `7c1d2c7…`, and rollback `5da823c9…`. Human QC approved Technical Verification and technical DoD at `2026-08-25T09:15:01Z`. Full lifecycle coverage is `PARTIAL` only because v2.6.1 publication, downloaded-asset verification, REL-F01 disposition, Release approval, and Business Acceptance are intentionally sequenced afterward. Governance is `ALIGNED`; Release is `READY_WITH_GUARDS`, and the branch/worktree remains `HOLD_OPEN`.
+> Pre-release technical verification evidence is `PASS` for release target `23a30756…`, candidate `7c1d2c7…`, and rollback `5da823c9…`. Human QC approved Technical Verification and technical DoD at `2026-08-25T09:15:01Z`; human DevOps and QC approved Release at `2026-08-25T09:23:44Z`. Full lifecycle coverage is `PARTIAL` only because v2.6.1 publication, downloaded-asset verification, REL-F01 disposition, and Business Acceptance are intentionally sequenced afterward. Governance is `ALIGNED`; exact-artifact publication is authorized with guards, and the branch/worktree remains `HOLD_OPEN`.
 
 ## Step Contract
 ```yaml
@@ -280,8 +282,8 @@ gaps:
 residual_risks:
   - "ESLint/Semgrep depth is unavailable."
   - "Any source or payload edit invalidates current candidate evidence."
-recommendation: "TECHNICAL_VERIFICATION_APPROVED: Human QC approved Technical Verification and technical DoD; keep lifecycle open for Release/post-release/Business Acceptance."
-notes_for_review: "PARTIAL is full-lifecycle coverage, not a pre-release technical failure. QC approval is recorded; no source, candidate, or external release mutation occurred."
+recommendation: "RELEASE_APPROVED_WITH_GUARDS: Human QC approved Technical Verification/DoD and human DevOps/QC approved Release; execute only TASK-009 against the bound identities."
+notes_for_review: "PARTIAL is full-lifecycle coverage, not a pre-release technical failure. QC and Release approvals are recorded; no source, candidate, tag, or external release mutation occurred while recording them."
 ```
 
 ## Governance Checks
@@ -299,13 +301,13 @@ checks:
     evidence: "No production path, contract, workflow, tag, release, npm, or unrelated work item changed."
   - id: "GOV-S08-004"
     status: PASS
-    evidence: "QC DoD fields record the explicit human decision; DevOps/QC Release and PO Business Acceptance fields remain empty pending their separate decisions."
+    evidence: "QC DoD and DevOps/QC Release fields record explicit human decisions; PO Business Acceptance remains empty pending post-release evidence."
   - id: "GOV-S08-005"
     status: PASS
     evidence: "Workflow, SDD, change, planning, and execution validators pass; the protocol-only environment limitation is explicitly owned outside CHANGE-006."
 blocking_items: []
 owner: "qc/devops/po"
-next_action: "DevOps and QC review Release against the exact source, candidate, rollback, and remote-run identities."
+next_action: "Execute guarded TASK-009 publication and post-release verification, then obtain PO Business Acceptance."
 ```
 
 ## Regression & Compatibility Summary
@@ -438,19 +440,20 @@ notes: ["approval_gates.uat is not_applicable for this workflow-bundle patch."]
 
 ## Release Summary
 ```yaml
-status: READY_FOR_REVIEW
-reviewers: []
-reviewed_at: ""
+status: APPROVED
+reviewers:
+  - "devops"
+  - "qc"
+reviewed_at: "2026-08-25T09:23:44Z"
 evidence_binding:
   release_target: "23a30756fb2271b6f1604c91e5b31092fb2dec67"
   workflow_run: "32825477258; success 9/9"
   candidate_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
   rollback_sha256: "5da823c9e64ca464630aea29dcf59ae4098bd6ea544cfdb36cdf5ccec79f3af9"
 notes:
-  - "Pre-release readiness is READY_WITH_GUARDS."
+  - "Human DevOps and QC approved Release at 2026-08-25T09:23:44Z."
   - "Human QC approved Technical Verification and technical DoD at 2026-08-25T09:15:01Z."
-  - "DevOps/QC Release approval remains required before v2.6.1."
-  - "Upload exact candidate bytes, then run TASK-009 post-release checks."
+  - "Publish only the exact 7c1d2c7... candidate against target 23a30756..., then run TASK-009 post-release checks."
 ```
 
 ## Business Acceptance Summary
@@ -502,7 +505,7 @@ promotion_flow:
     automation_level: "Manual human-gated GitHub publication."
 approval_controls:
   - "QC Technical Verification and technical DoD approved at 2026-08-25T09:15:01Z."
-  - "DevOps/QC Release before external mutation."
+  - "DevOps/QC Release approved at 2026-08-25T09:23:44Z for the exact bound source/candidate/rollback identities."
   - "PO Business Acceptance after post-release evidence."
 release_controls:
   pre_release: ["digests locked", "remote 9/9", "v2.6.1 absent", "npm excluded"]
@@ -512,7 +515,7 @@ rollback_controls:
   - "Never retarget; use a later patch."
 pipeline_risks: ["wrong upload bytes", "wrong tag target"]
 pipeline_recommendation: READY_WITH_GUARDS
-notes_for_implementation_or_ops: "No publication executed; use exact identities and run TASK-009 after approval."
+notes_for_implementation_or_ops: "Release is approved but not yet executed; publish exact identities and complete TASK-009 before Business Acceptance."
 ```
 
 ## Governance Exceptions
@@ -546,20 +549,20 @@ timebox_breach: false
 timebox_evidence: "One independent pre-release pass."
 gaps: []
 risk_level: LOW
-next_action: "DevOps and QC review Release; retain workspace."
+next_action: "Execute TASK-009 guarded release and post-release checks; retain workspace."
 ```
 
 ### Branch/Worktree Finish
 ```yaml
 finish_target: "codex/fix-authoring-smoke-bootstrap and its in-repo worktree"
 workspace_kind: BOTH
-verify_inputs: ["pre-release evidence PASS", "QC-approved technical DoD", "lifecycle coverage PARTIAL"]
+verify_inputs: ["pre-release evidence PASS", "QC-approved technical DoD", "DevOps/QC-approved Release", "lifecycle coverage PARTIAL"]
 finish_gate_checks:
   verify_complete: PASS
   dod_complete: PASS
   findings_closed: PASS
   exceptions_resolved: PASS
-allowed_actions: ["retain workspace", "review s08", "seal explicit gates"]
+allowed_actions: ["retain workspace", "publish exact approved candidate", "run TASK-009 post-release verification"]
 blocked_actions: ["merge", "cleanup", "worktree remove", "branch delete", "protocol close/archive"]
 cleanup_sequence: []
 merge_conditions:
@@ -588,7 +591,7 @@ residual_risks:
 follow_up_items:
   - "TASK-009 publication/post-release/Business Acceptance/finalization."
   - "Optional S08-F01 wording correction."
-next_action: "DevOps/QC decide Release; protocol DONE remains forbidden until Release, post-release coverage, and Business Acceptance complete."
+next_action: "Execute TASK-009; protocol DONE remains forbidden until post-release coverage and Business Acceptance complete."
 ```
 
 ## SDD Traceability
@@ -604,7 +607,7 @@ requirement_refs:
 acceptance_refs:
   - "AC-001 through AC-004 and AC-008 current-stage PASS"
   - "AC-005 through AC-007 post-release completion staged in TASK-009"
-task_refs: ["TASK-001 through TASK-007 PASS", "TASK-008 technical verification/DoD approved with Release pending", "TASK-009 pending"]
+task_refs: ["TASK-001 through TASK-008 PASS", "TASK-009 authorized and pending execution"]
 test_refs: ["TEST-001 through TEST-007 PASS", "TEST-008 through TEST-010 post-release"]
 change_contribution:
   change_id: "CHANGE-006"
@@ -619,16 +622,16 @@ readiness: ["s04 Spec/DoR approved", "s06 Approach/Task Plan approved"]
 design: ["Option A harness delta", "GitHub-only immutable release"]
 implementation: ["s07 PASS", "target 23a30756", "candidate 7c1d2c7", "rollback 5da823c9"]
 verify: ["13/13", "39/39 worktree and clean export", "exact 4/4 + rollback 4/4", "remote 9/9", "scan/UTF-8/validators"]
-downstream: ["DevOps/QC Release", "TASK-009", "PO Business Acceptance", "receipt sealing", "branch finalization"]
+downstream: ["TASK-009 publication/post-release verification", "PO Business Acceptance", "receipt sealing", "branch finalization"]
 ```
 
 ## Handoff
 
-- Overall status: Technical Verification `APPROVED` and technical DoD `DONE` by human QC; full lifecycle coverage `PARTIAL` pending authorized Release and post-release work.
+- Overall status: Technical Verification `APPROVED`, technical DoD `DONE`, and Release `APPROVED`; full lifecycle coverage remains `PARTIAL` pending TASK-009 and Business Acceptance.
 - Residual risks: exact-upload identity, staged post-release checks, unavailable ESLint/Semgrep depth, and LOW fingerprint wording.
 - Decision provenance: human QC approved Technical Verification and technical DoD at `2026-08-25T09:15:01Z` against target `23a30756…`, candidate `7c1d2c7…`, and rollback `5da823c9…`.
-- Release recommendation: `READY_WITH_GUARDS`; no publication before separate DevOps/QC approval.
-- Next action: human DevOps and QC review Release; keep the branch/worktree open and defer shared s08 receipt sealing until the artifact is frozen.
+- Release provenance: human DevOps and QC approved Release at `2026-08-25T09:23:44Z` against the same immutable identities and remote run `32825477258` at `9/9`.
+- Next action: execute guarded TASK-009 with the exact candidate, keep the branch/worktree open, and defer shared s08 receipt sealing until the artifact is frozen.
 
 ## Links
 

@@ -760,11 +760,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-24T09:36:44.436Z"
-handoff_target: "release-review"
-last_transition_action: "verify"
-last_transition_at: "2026-08-25T09:15:01Z"
+handoff_target: "release-execution"
+last_transition_action: "gate-review-recorded"
+last_transition_at: "2026-08-25T09:23:44Z"
 required_actions:
-  - "Obtain explicit DevOps and QC Release approval before publishing v2.6.1."
+  - "Execute guarded TASK-009 publication and post-release verification, then obtain PO Business Acceptance."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -782,4 +782,5 @@ audit_events:
   - "WORK_ITEM_ACTIVATED"
   - "STEP_OPENED"
   - "VERIFICATION_CONFIRMED"
+  - "GATE_REVIEW_RECORDED"
 ```

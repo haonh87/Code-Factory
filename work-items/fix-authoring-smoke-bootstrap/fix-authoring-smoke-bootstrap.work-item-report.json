@@ -89,9 +89,9 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CHANGE-006",
-  "handoff_target": "release-review",
+  "handoff_target": "release-execution",
   "required_actions": [
-    "Obtain explicit DevOps and QC Release approval before publishing v2.6.1."
+    "Execute guarded TASK-009 publication and post-release verification, then obtain PO Business Acceptance."
   ],
   "blockers": [],
   "refs": [
@@ -108,7 +108,8 @@
     "WORK_ITEM_APPROVED",
     "WORK_ITEM_ACTIVATED",
     "STEP_OPENED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "GATE_REVIEW_RECORDED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -177,6 +178,14 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "Human QC explicitly approved Technical Verification and technical DoD against target 23a30756..., candidate 7c1d2c7..., and rollback 5da823c9...; Release and Business Acceptance remain unapproved, and shared s08 trusted receipts are deferred until the artifact is frozen."
+    },
+    {
+      "timestamp": "2026-08-25T09:23:44Z",
+      "action": "gate-review-recorded",
+      "actor": "devops+qc",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Human DevOps and QC explicitly approved Release against target 23a30756..., candidate 7c1d2c7..., rollback 5da823c9..., and remote run 32825477258 at 9/9; no external release action was executed, Business Acceptance remains pending, and shared s08 trusted receipts are deferred until the artifact is frozen."
     }
   ]
 }
