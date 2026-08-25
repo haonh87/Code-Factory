@@ -57,7 +57,7 @@
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/fix-authoring-smoke-bootstrap",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     "package.json",
     "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js",
@@ -89,9 +89,9 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CHANGE-006",
-  "handoff_target": "step-s07-owner",
+  "handoff_target": "step-s08-verifier",
   "required_actions": [
-    "Continue active execution from step 7 onward."
+    "Run independent s08 verification and prepare evidence for QC Technical Verification and DoD review."
   ],
   "blockers": [],
   "refs": [
@@ -106,7 +106,8 @@
     "WORKFLOW_SCAFFOLDED",
     "STEP_OPENED",
     "WORK_ITEM_APPROVED",
-    "WORK_ITEM_ACTIVATED"
+    "WORK_ITEM_ACTIVATED",
+    "STEP_OPENED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -159,6 +160,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "ACTIVE",
       "note": "Developer-approved Approach and Task Plan receipts verified; begin isolated s07 execution."
+    },
+    {
+      "timestamp": "2026-08-25T08:44:42Z",
+      "action": "step-opened",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "Human QC explicitly approved opening s08 for independent verification; this does not approve Technical Verification, DoD, Release, or Business Acceptance."
     }
   ]
 }

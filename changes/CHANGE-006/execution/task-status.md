@@ -34,10 +34,10 @@ task_status:
     evidence: "Intended release target 23a30756fb2271b6f1604c91e5b31092fb2dec67 has Workflow Guardrails run 32825477258 at 9/9 success: seven sequential jobs plus Release Candidate Node 18 and Node 22. Failed runs 32822390088/32824019750 remain preserved RED evidence."
   - task_id: "TASK-008"
     status: PENDING
-    evidence: "s08 not opened."
+    evidence: "Human QC opened s08. Independent pre-release evidence is ready: 13/13 smoke, 39/39 worktree and clean-target export, reproducible candidate SHA-256 7c1d2c7..., exact candidate/rollback 4/4, wrong-digest rejection, remote run 32825477258 at 9/9, v2.6.0 immutability, scan, compatibility, and governance checks. Technical Verification/DoD and Release remain human-pending."
   - task_id: "TASK-009"
     status: PENDING
     evidence: "Publication and closeout remain prohibited before s08 approvals."
 blocking_items: []
-next_action: "Commit s07 remote evidence without changing the locked release target, then open s08 for Technical Verification, DoD, and pre-publication Release review."
+next_action: "Human QC reviews s08 Technical Verification and technical DoD; then DevOps/QC review Release before TASK-009 publication and post-release evidence."
 ```

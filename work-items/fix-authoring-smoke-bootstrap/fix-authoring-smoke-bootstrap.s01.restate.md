@@ -720,7 +720,7 @@ work_item_slug: "fix-authoring-smoke-bootstrap"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/fix-authoring-smoke-bootstrap"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - "package.json"
   - "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
@@ -760,11 +760,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-24T09:36:44.436Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-08-25T02:40:24.387Z"
+handoff_target: "step-s08-verifier"
+last_transition_action: "step-opened"
+last_transition_at: "2026-08-25T08:44:42Z"
 required_actions:
-  - "Continue active execution from step 7 onward."
+  - "Run independent s08 verification and prepare evidence for QC Technical Verification and DoD review."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -780,4 +780,5 @@ audit_events:
   - "STEP_OPENED"
   - "WORK_ITEM_APPROVED"
   - "WORK_ITEM_ACTIVATED"
+  - "STEP_OPENED"
 ```
