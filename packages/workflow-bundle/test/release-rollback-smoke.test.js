@@ -15,7 +15,6 @@ const candidateSkillCount = 42;
 const rollbackVersion = "2.6.0";
 const rollbackSkillCount = 42;
 const retainedRollbackDigest = "5da823c9e64ca464630aea29dcf59ae4098bd6ea544cfdb36cdf5ccec79f3af9";
-const defaultRollbackTarball = path.join(packageRoot, "workflow-bundle-2.6.0.tgz");
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -92,8 +91,8 @@ function runSourcePreflight() {
       `source ${mode} runtime must contain artifact-governance/SKILL.vi.md`
     );
   }
-  assertArtifactIdentity(defaultRollbackTarball, retainedRollbackDigest, "retained v2.5.0 rollback");
-  console.log(`OK: rollback preflight passed for v${candidateVersion} -> v${rollbackVersion}; no candidate tarball was created`);
+  assert(/^[a-f0-9]{64}$/.test(retainedRollbackDigest), `retained v${rollbackVersion} digest must be a lowercase SHA-256`);
+  console.log(`OK: rollback source contract passed for v${candidateVersion} -> v${rollbackVersion}; exact artifacts are required only in exact-artifact mode`);
 }
 
 function runRollbackTransition({ candidatePackageRoot, rollbackPackageRoot, tempRoot, mode, scope }) {
@@ -173,6 +172,7 @@ function runRollbackTransition({ candidatePackageRoot, rollbackPackageRoot, temp
 
 function runExactRollback(candidateTarball, candidateDigest, rollbackTarball, rollbackDigest) {
   const actualCandidateDigest = assertArtifactIdentity(candidateTarball, candidateDigest, "v2.6.1 candidate");
+  assert(rollbackDigest === retainedRollbackDigest, `v2.6.0 rollback digest must equal the retained immutable digest ${retainedRollbackDigest}`);
   const actualRollbackDigest = assertArtifactIdentity(rollbackTarball, rollbackDigest, "v2.6.0 rollback");
   console.log(`Running exact v${candidateVersion} -> v${rollbackVersion} rollback transition smoke...\n`);
   const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-v2.6.1-rollback-"));
