@@ -24,8 +24,8 @@ task_status:
     status: PASS
     evidence: "B1 and B2 both passed SPEC_COMPLIANCE before CODE_QUALITY with no open finding."
   - task_id: "TASK-005"
-    status: IN_PROGRESS
-    evidence: "Focused smoke, TD-01, version tooling, syntax/JSON/UTF-8, and source release preflights pass; full integrated local suite pending."
+    status: PASS
+    evidence: "Integrated local verification passes: authoring smoke 13/13, unit 39/39, TD-01 through TD-04, install-all four mode/scope cases at 42 skills, pack audit, bundle smoke, release source/rollback preflights, all workflow validators, syntax/JSON/UTF-8/diff checks, and unchanged Workflow Guardrails definition."
   - task_id: "TASK-006"
     status: PENDING
     evidence: "Exact candidate and rollback not yet frozen."
@@ -39,5 +39,5 @@ task_status:
     status: PENDING
     evidence: "Publication and closeout remain prohibited before s08 approvals."
 blocking_items: []
-next_action: "Execute TASK-005 full integrated local verification before freezing the exact candidate."
+next_action: "Execute TASK-006 once: commit the reviewed source, pack one exact v2.6.1 candidate with isolated cache, fingerprint it, and prove candidate plus v2.6.0 rollback 4/4."
 ```

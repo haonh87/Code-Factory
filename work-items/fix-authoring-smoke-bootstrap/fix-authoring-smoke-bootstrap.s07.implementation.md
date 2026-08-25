@@ -110,6 +110,7 @@ value: "Replace the contradictory release signal with trustworthy evidence ready
 scope_in:
   - "Correct and rename the one stale authoring-smoke case."
   - "Advance current package/release surfaces to v2.6.1/42 with v2.6.0/42 as immutable rollback."
+  - "Align every existing release compatibility fixture that the required 39-file unit suite proves is version-bound."
   - "Run early spec-compliance then code-quality review and local candidate verification."
 scope_out:
   - "Production approval semantics, public CLI contract, schema, runtime topology, and managed-skill inventory."
@@ -199,6 +200,7 @@ tasks_completed:
   - "TASK-002: stale smoke case corrected and early B1 review passed."
   - "TASK-003: v2.6.1 structured identity, tests, current EN/VI docs, release note, and v2.6.0 rollback surfaces aligned."
   - "TASK-004: B1 and B2 reviews passed in the required spec-compliance then code-quality order."
+  - "TASK-005: integrated local verification passed, including the required 13-case smoke, 39-file unit suite, release compatibility matrix, pack/runtime checks, and workflow validators."
 bug_repro_evidence:
   - "Unchanged npm run validate:workflow:authoring-smoke: 12 cases passed; mutating-action-requires-report failed because approve returned Missing required argument '--reviewed-by' while the fixture expected Missing work item report."
 hypothesis_log:
@@ -228,21 +230,27 @@ doc_changes:
 config_changes:
   - "Advanced root/package manifests, package version, and public wfc flow label to 2.6.1."
   - "Aligned release-candidate, release-surface, and exact v2.6.1-to-v2.6.0 rollback test contracts."
+  - "Aligned the existing install-all release compatibility fixture to the approved v2.6.1 candidate after the full unit suite exposed its stale v2.6.0 constant."
 review_checkpoints:
   - "TASK-001 isolation check passed: clean approved branch/path with no dirty-main import."
   - "B1 SPEC_COMPLIANCE PASS: AC-001/AC-002 covered; 13-case inventory preserved; only the approved smoke file changed; production approval paths untouched."
   - "B1 CODE_QUALITY PASS: bootstrap-oriented name, direct failure messages, existing helpers, scoped cleanup, node --check and diff --check all pass."
   - "B2 SPEC_COMPLIANCE PASS: all paths match TASK-003; v2.6.0 release-note digest remains 12e2e49d61d7145a71e12eaf6c2c82e7fcdc46d349ce16716daa9b858dc45151; no publication claim, production-path edit, or npm scope."
   - "B2 CODE_QUALITY PASS: structured bump plus targeted review, EN/VI consistency, exact rollback assertions, syntax/JSON/UTF-8/diff checks, and all three source release preflights pass."
+  - "B2R SPEC_COMPLIANCE PASS: the planning-time install-all path correction remains inside TASK-003/TEST-006, preserves v2.6.0 rollback and all approved boundaries, and introduces no Spec or Approach drift."
+  - "B2R CODE_QUALITY PASS: the one-line fixture constant is consistent with every v2.6.1 release surface; targeted install-all and the complete 39-file unit suite pass."
 outputs_actual:
   - "Protocol ACTIVE at s07; isolated branch/worktree at governed anchor 7fe68b3."
   - "Authoring smoke 13/13 PASS and approval-path-defects TD-01 through TD-04 PASS."
   - "Release surface, candidate source contract, and v2.6.1-to-v2.6.0 rollback source preflights PASS at 42 skills."
+  - "Integrated local verification PASS: smoke 13/13; unit 39/39; install-all codex/claude x global/project at 42 skills; pack audit and bundle smoke; workflow, SDD, change, planning, and execution validators; six JavaScript syntax checks; four JSON parses; fifteen UTF-8 files; diff check."
+  - "Workflow Guardrails definition is byte-identical to anchor 7fe68b3 (Git object 3f66ca629842b39122efd48187c7c48abfdf9c11); v2.6.0 release-note and rollback-tarball SHA-256 values remain 12e2e49d61d7145a71e12eaf6c2c82e7fcdc46d349ce16716daa9b858dc45151 and 5da823c9e64ca464630aea29dcf59ae4098bd6ea544cfdb36cdf5ccec79f3af9."
 known_limitations:
-  - "Integrated local suite, exact candidate, remote CI, and s08 gates remain pending."
+  - "Exact candidate, remote CI, and s08 gates remain pending."
   - "The bump tool resolves the outermost manifest by default; an in-repo worktree must pass --repo-root explicitly to avoid writing the parent main tree."
 follow_up_items:
   - "Track worktree-aware default root resolution for bump-version separately; this change uses the supported explicit --repo-root mitigation and does not widen CHANGE-006."
+  - "Implementation path correction: add release-install-all-smoke.test.js to granted paths after the required 39-file unit suite exposed its stale v2.6.0 constant; this is an existing release-test compatibility surface, not a Spec or Approach change."
 notes_for_testing: "Run the unchanged authoring smoke first and preserve the exact failing case/message before editing."
 ```
 
@@ -362,6 +370,11 @@ verify_path:
 ```yaml
 status: NONE
 exceptions: []
+implementation_path_corrections:
+  - path: "packages/workflow-bundle/test/release-install-all-smoke.test.js"
+    trigger: "Required full-unit run failed because the existing install/update compatibility test was still bound to v2.6.0."
+    classification: "Planning-time owned-path correction within TASK-003 release-test alignment; no change to requirements, recommended option, production behavior, public contract, or release controls."
+    authorization: "Added to protocol granted_write_paths and mirrored in the s01 protocol block before editing."
 ```
 
 ## Spec Change
@@ -389,7 +402,7 @@ acceptance_refs:
   - "AC-006 -> TEST-009"
   - "AC-007 -> TEST-010"
   - "AC-008 -> release audit and no npm publication"
-task_refs: ["TASK-001 through TASK-004 complete; TASK-005 through TASK-009 remain sequenced by s06"]
+task_refs: ["TASK-001 through TASK-005 complete; TASK-006 through TASK-009 remain sequenced by s06"]
 test_refs: ["TEST-001 through TEST-010 in s06 verification_plan"]
 ```
 
@@ -402,7 +415,7 @@ downstream: ["s08 coverage, compatibility, Technical Verification, DoD, Release,
 
 ## Handoff
 
-- Actual outputs: TASK-001 through TASK-004 complete; RED-to-GREEN, v2.6.1 release surfaces, and both early review batches are recorded without changing approved s06.
-- Known limitations: integrated local verification, exact candidate, remote CI, and s08 gates remain pending.
+- Actual outputs: TASK-001 through TASK-005 complete; RED-to-GREEN, v2.6.1 release surfaces, early review including the path-correction reopen, and integrated local verification are recorded without changing the approved requirements or approach.
+- Known limitations: exact candidate, remote CI, and s08 gates remain pending.
 - Notes for testing: preserve the unchanged smoke failure before editing and follow s06 exact-artifact controls.
 - Notes for deployment: no publication until DevOps/QC Release approval; npm remains excluded.

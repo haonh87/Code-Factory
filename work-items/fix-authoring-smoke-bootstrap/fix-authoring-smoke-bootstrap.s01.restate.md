@@ -728,6 +728,7 @@ granted_write_paths:
   - "packages/workflow-bundle/package.json"
   - "packages/workflow-bundle/bin/wfc.js"
   - "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js"
+  - "packages/workflow-bundle/test/release-install-all-smoke.test.js"
   - "packages/workflow-bundle/test/release-rollback-smoke.test.js"
   - "packages/workflow-bundle/test/release-surface.test.js"
   - ".claude/CLAUDE.md"
