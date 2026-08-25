@@ -675,7 +675,7 @@ function runCaseQuickSingleStep(repoRoot, projectRoot) {
   runNodeScript(repoRoot, "scripts/validate-workflow-planning.js", ["--workflow-root", workflowRoot]);
 }
 
-function runCaseMutatingActionRequiresReport(repoRoot, projectRoot) {
+function runCaseLegacyScaffoldApprovalBootstrapsReport(repoRoot, projectRoot) {
   const workItemSlug = "legacy-report-required-item";
   const workflowRootBase = path.join(projectRoot, "work-items");
   const workflowRoot = path.join(workflowRootBase, workItemSlug);
@@ -702,24 +702,44 @@ function runCaseMutatingActionRequiresReport(repoRoot, projectRoot) {
   assertContentIncludes(statusOutput, "protocol_status=MATERIALIZED", "Expected read-only bootstrap status for legacy scaffold.");
   assertContentIncludes(statusOutput, '"bootstrap_gate_status": "PENDING_REVIEW"', "Expected greenfield bootstrap status in read-only report.");
 
-  runNodeScriptExpectFailure(
-    repoRoot,
-    "scripts/work-item-protocol.js",
-    [
-      "approve",
-      "--work-item",
-      workItemSlug,
-      "--project-root",
-      projectRoot,
-      "--workflow-root",
-      workflowRootBase
-    ],
-    `Missing work item report: ${reportPath}`
-  );
-
   if (fs.existsSync(reportPath)) {
-    throw new Error("Mutating action must not bootstrap and write a new protocol report.");
+    throw new Error("Read-only status must not bootstrap and persist a protocol report.");
   }
+
+  runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
+    "approve",
+    "--work-item",
+    workItemSlug,
+    "--reviewed-by",
+    "ba",
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase
+  ]);
+
+  if (!fs.existsSync(reportPath)) {
+    throw new Error("Explicit approval must persist the bootstrapped protocol report.");
+  }
+
+  const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+  if (report.request_source !== "legacy-scaffold") {
+    throw new Error(`Expected request_source=legacy-scaffold, got '${report.request_source}'.`);
+  }
+  if (!Array.isArray(report.audit_events) || !report.audit_events.includes("REPORT_BOOTSTRAPPED")) {
+    throw new Error("Expected the bootstrapped report audit trail to include REPORT_BOOTSTRAPPED.");
+  }
+  if (report.approval_status !== "APPROVED") {
+    throw new Error(`Expected approval_status=APPROVED, got '${report.approval_status}'.`);
+  }
+  if (report.reviewed_by !== "ba") {
+    throw new Error(`Expected reviewed_by=ba, got '${report.reviewed_by}'.`);
+  }
+
+  // This suite shares one temporary project across cases. The successful
+  // bootstrap leaves a greenfield report awaiting its separate bootstrap gate,
+  // so remove this case-owned workflow before later capability checks scan it.
+  fs.rmSync(workflowRoot, { recursive: true, force: true });
 }
 
 function runCaseStrictDefaultBlocksLegacyScaffold(repoRoot, projectRoot) {
@@ -1412,7 +1432,7 @@ function main() {
     { name: "light-golden-budget", run: runCaseLightGoldenBudget },
     { name: "semantic-evidence-guard", run: runCaseSemanticEvidenceGuard },
     { name: "quick-single-step", run: runCaseQuickSingleStep },
-    { name: "mutating-action-requires-report", run: runCaseMutatingActionRequiresReport },
+    { name: "legacy-scaffold-approval-bootstraps-report", run: runCaseLegacyScaffoldApprovalBootstrapsReport },
     { name: "strict-default-blocks-legacy-scaffold", run: runCaseStrictDefaultBlocksLegacyScaffold },
     { name: "capability-control", run: runCaseCapabilityControl },
     { name: "approval-requires-interactive-human", run: runCaseApprovalRequiresInteractiveHuman },
