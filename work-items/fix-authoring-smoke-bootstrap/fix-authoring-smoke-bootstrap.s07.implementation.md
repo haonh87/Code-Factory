@@ -111,6 +111,7 @@ scope_in:
   - "Correct and rename the one stale authoring-smoke case."
   - "Advance current package/release surfaces to v2.6.1/42 with v2.6.0/42 as immutable rollback."
   - "Align every existing release compatibility fixture that the required 39-file unit suite proves is version-bound."
+  - "Make the existing full-unit npm entry point materialize its ignored generated runtime before the tests read it, so a clean GitHub checkout follows the same contract as local verification."
   - "Run early spec-compliance then code-quality review and local candidate verification."
 scope_out:
   - "Production approval semantics, public CLI contract, schema, runtime topology, and managed-skill inventory."
@@ -219,6 +220,9 @@ tdd_evidence:
   - behavior: "Legacy scaffold explicit approval bootstraps a provenance-bearing approved report while read-only status persists nothing."
     failing_test: "npm run validate:workflow:authoring-smoke -> stale case failed with Missing required argument '--reviewed-by'."
     passing_test: "npm run validate:workflow:authoring-smoke -> 13/13 PASS; approval-path-defects.test.js -> TD-01 through TD-04 PASS."
+  - behavior: "The documented full-unit npm entry point works from a clean checkout where generated runtime is absent."
+    failing_test: "After moving the ignored runtime aside, unchanged npm run validate:workflow:unit reproduced remote run 32822390088: six runtime-dependent test files failed with ENOENT/Missing source file."
+    passing_test: "With prevalidate:workflow:unit composing the existing runtime builder, the same absent-runtime command generated 2.6.1/84 runtime skills and passed all 39 unit test files."
 safe_refactor_notes:
   - "No production refactor planned; only one smoke function/case changes."
 code_changes:
@@ -232,6 +236,7 @@ config_changes:
   - "Advanced root/package manifests, package version, and public wfc flow label to 2.6.1."
   - "Aligned release-candidate, release-surface, and exact v2.6.1-to-v2.6.0 rollback test contracts."
   - "Aligned the existing install-all release compatibility fixture to the approved v2.6.1 candidate after the full unit suite exposed its stale v2.6.0 constant."
+  - "Added npm lifecycle prevalidate:workflow:unit at the root to invoke the existing build:workflow:bundle-runtime command before the unchanged 39-file runner."
 review_checkpoints:
   - "TASK-001 isolation check passed: clean approved branch/path with no dirty-main import."
   - "B1 SPEC_COMPLIANCE PASS: AC-001/AC-002 covered; 13-case inventory preserved; only the approved smoke file changed; production approval paths untouched."
@@ -240,6 +245,8 @@ review_checkpoints:
   - "B2 CODE_QUALITY PASS: structured bump plus targeted review, EN/VI consistency, exact rollback assertions, syntax/JSON/UTF-8/diff checks, and all three source release preflights pass."
   - "B2R SPEC_COMPLIANCE PASS: the planning-time install-all path correction remains inside TASK-003/TEST-006, preserves v2.6.0 rollback and all approved boundaries, and introduces no Spec or Approach drift."
   - "B2R CODE_QUALITY PASS: the one-line fixture constant is consistent with every v2.6.1 release surface; targeted install-all and the complete 39-file unit suite pass."
+  - "B3 SPEC_COMPLIANCE PASS: the clean-checkout unit bootstrap directly closes the TASK-005/TASK-007 remote evidence gap, keeps .github and production paths unchanged, and leaves the frozen candidate package payload/digest unchanged."
+  - "B3 CODE_QUALITY PASS: one idiomatic npm pre-script reuses the existing deterministic builder; absent-runtime RED then 39/39 GREEN, full local guardrails, exact candidate/rollback, JSON, UTF-8, and diff checks pass with no new abstraction."
 outputs_actual:
   - "Protocol ACTIVE at s07; isolated branch/worktree at governed anchor 7fe68b3."
   - "Authoring smoke 13/13 PASS and approval-path-defects TD-01 through TD-04 PASS."
@@ -249,12 +256,15 @@ outputs_actual:
   - "Exact candidate PASS from clean reviewed source commit 0b6fb3e07a7a40317f4a152ada402c460ba94642: workflow-bundle-2.6.1.tgz SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9, 932575 packed bytes, 4448787 unpacked bytes, 544 npm-pack files/tar entries, npm SHA-1 633ff221631b681764d9ab741ff1e2caba81f728, and integrity sha512-5zJ5cvz6Z8PeL59hVDouGvunD9ZlBUtl2WmZPr6o3bfGwecARJBuL/07Vj+GmdL3yY2jww2pZNoa3QplzmdXHQ==."
   - "Package-payload fingerprint efe25e1bb0836b1e7a047a598ae4fd090d7049c6f09590a5050d0cbc80a9a606 is SHA-256 over the sorted '<file SHA-256><two spaces><package-relative path>' lines for all 544 regular files extracted from the retained candidate."
   - "Exact-artifact verification PASS: v2.6.1 Codex/Claude x global/project install/update 4/4; v2.6.1 -> v2.6.0 rollback 4/4 with 42 managed skills and all unmanaged markers preserved."
+  - "Remote run 32822390088 at 8de5a8d recorded as failed evidence: seven sequential jobs PASS, Node 18/22 unit steps FAIL on the same absent ignored runtime; no skipped downstream matrix step is counted as success."
+  - "Clean-runtime remediation PASS locally: npm prevalidate hook emits the existing runtime sync before the unchanged unit runner, 39/39 pass, and every TASK-005/local exact-artifact check remains green without changing candidate SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9."
 known_limitations:
   - "Remote CI and s08 gates remain pending."
   - "The bump tool resolves the outermost manifest by default; an in-repo worktree must pass --repo-root explicitly to avoid writing the parent main tree."
 follow_up_items:
   - "Track worktree-aware default root resolution for bump-version separately; this change uses the supported explicit --repo-root mitigation and does not widen CHANGE-006."
   - "Implementation path correction: add release-install-all-smoke.test.js to granted paths after the required 39-file unit suite exposed its stale v2.6.0 constant; this is an existing release-test compatibility surface, not a Spec or Approach change."
+  - "Implementation path correction: add root package.json after remote run 32822390088 proved the full-unit npm entry point assumed an already-generated ignored runtime; the correction composes the existing runtime build as an npm pre-script and leaves the workflow file, production paths, public contract, and candidate package payload unchanged."
 notes_for_testing: "Run the unchanged authoring smoke first and preserve the exact failing case/message before editing."
 ```
 
@@ -361,6 +371,7 @@ review_refs:
   - "B1 SPEC_COMPLIANCE PASS and B1 CODE_QUALITY PASS in Main Artifact review_checkpoints."
   - "B2 SPEC_COMPLIANCE PASS and B2 CODE_QUALITY PASS in Main Artifact review_checkpoints."
   - "B2R SPEC_COMPLIANCE PASS and B2R CODE_QUALITY PASS after the owned release-fixture path correction."
+  - "B3 SPEC_COMPLIANCE PASS and B3 CODE_QUALITY PASS after the clean-checkout runtime-bootstrap correction."
 spec_compliance_status: PASS
 code_quality_status: PASS
 delegation_mode: agentic
@@ -380,6 +391,10 @@ implementation_path_corrections:
     trigger: "Required full-unit run failed because the existing install/update compatibility test was still bound to v2.6.0."
     classification: "Planning-time owned-path correction within TASK-003 release-test alignment; no change to requirements, recommended option, production behavior, public contract, or release controls."
     authorization: "Added to protocol granted_write_paths and mirrored in the s01 protocol block before editing."
+  - path: "package.json"
+    trigger: "Remote Workflow Guardrails run 32822390088 passed seven sequential jobs but both Node release-candidate jobs failed in the unit step because a clean checkout has no ignored runtime/codex or runtime/claude tree."
+    classification: "Execution-path correction within TASK-005/TASK-007: compose the existing build:workflow:bundle-runtime command through npm's prevalidate lifecycle; no requirement, approach, workflow definition, production behavior, public contract, or candidate package-payload change."
+    authorization: "Added to protocol granted_write_paths and mirrored in the s01 protocol block before editing; local clean-runtime RED reproduced the same six failing test files."
 ```
 
 ## Spec Change

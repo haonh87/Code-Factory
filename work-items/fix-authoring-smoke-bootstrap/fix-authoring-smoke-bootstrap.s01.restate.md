@@ -722,6 +722,7 @@ delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/fix-authoring-smoke-bootstrap"
 current_step: "s07"
 granted_write_paths:
+  - "package.json"
   - "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
   - "workflow-bundle.manifest.json"
   - "packages/workflow-bundle/workflow-bundle.manifest.json"
