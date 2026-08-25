@@ -713,7 +713,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "fix-authoring-smoke-bootstrap"
@@ -760,11 +760,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-24T09:36:44.436Z"
-handoff_target: "step-s08-verifier"
-last_transition_action: "step-opened"
-last_transition_at: "2026-08-25T08:44:42Z"
+handoff_target: "release-review"
+last_transition_action: "verify"
+last_transition_at: "2026-08-25T09:15:01Z"
 required_actions:
-  - "Run independent s08 verification and prepare evidence for QC Technical Verification and DoD review."
+  - "Obtain explicit DevOps and QC Release approval before publishing v2.6.1."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -781,4 +781,5 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "STEP_OPENED"
+  - "VERIFICATION_CONFIRMED"
 ```

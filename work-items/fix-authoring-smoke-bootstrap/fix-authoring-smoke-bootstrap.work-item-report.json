@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "VERIFIED",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Resolve REL-F01 by aligning the stale mutating-action-requires-report smoke fixture with approved TD-01 bootstrap behavior; rerun guardrail CI and publish patch v2.6.1 without moving v2.6.0.",
@@ -89,9 +89,9 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CHANGE-006",
-  "handoff_target": "step-s08-verifier",
+  "handoff_target": "release-review",
   "required_actions": [
-    "Run independent s08 verification and prepare evidence for QC Technical Verification and DoD review."
+    "Obtain explicit DevOps and QC Release approval before publishing v2.6.1."
   ],
   "blockers": [],
   "refs": [
@@ -107,7 +107,8 @@
     "STEP_OPENED",
     "WORK_ITEM_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "STEP_OPENED"
+    "STEP_OPENED",
+    "VERIFICATION_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -168,6 +169,14 @@
       "from_status": "ACTIVE",
       "to_status": "ACTIVE",
       "note": "Human QC explicitly approved opening s08 for independent verification; this does not approve Technical Verification, DoD, Release, or Business Acceptance."
+    },
+    {
+      "timestamp": "2026-08-25T09:15:01Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Human QC explicitly approved Technical Verification and technical DoD against target 23a30756..., candidate 7c1d2c7..., and rollback 5da823c9...; Release and Business Acceptance remain unapproved, and shared s08 trusted receipts are deferred until the artifact is frozen."
     }
   ]
 }
