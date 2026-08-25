@@ -10,7 +10,7 @@ const { execFileSync } = require("child_process");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
 const packageRoot = path.join(repoRoot, "packages", "workflow-bundle");
-const expectedVersion = "2.6.0";
+const expectedVersion = "2.6.1";
 const expectedSkillCount = 42;
 
 function assert(condition, message) {
@@ -82,7 +82,7 @@ function runExactArtifactSmoke(tarballPath, expectedDigest) {
   assert(actualDigest === expectedDigest, `candidate digest mismatch: expected ${expectedDigest}, got ${actualDigest}`);
 
   console.log(`Running exact v${expectedVersion} package-artifact smoke...\n`);
-  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-v2.6.0-artifact-"));
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-v2.6.1-artifact-"));
   try {
     const cacheRoot = path.join(tempRoot, "npm-cache");
     const installPrefix = path.join(tempRoot, "install");

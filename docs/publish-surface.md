@@ -6,27 +6,28 @@ language: en
 
 > Vietnamese: publish-surface.vi.md
 
-This document pins the planned public publish surface for `workflow-bundle v2.6.0`.
+This document pins the planned public publish surface for `workflow-bundle v2.6.1`.
 
-`v2.6.0` is a release candidate. It remains unpublished until the human Release gate passes. Once approved, its planned public surface will:
+`v2.6.1` is a release candidate. It remains unpublished until the human Release gate passes. Once approved, its planned public surface will:
 - installable into Codex or Claude Code via `wfc install|update|status|skills`
 - author workflows with `wfc init|scaffold|validate`
 - lets the agent proactively propose `work-item` and `change`
 - but the human still holds approval authority at each gate before delivery continues
 
-`v2.0.0` remains the first public release. If approved, `v2.6.0` will continue on the same public surface and make no breaking command-line change:
+`v2.0.0` remains the first public release. If approved, `v2.6.1` will continue on the same public surface and make no breaking command-line change:
 - `v2.2.x` added the harness adapter registry and internal hooks/instincts tooling.
 - `v2.3.x` added the English-first public surface, Vietnamese `*.vi.md` supplements, `sdd_mode=light`, and the `sa`/`ta` architecture-driver skills.
 - `v2.4.0` fixes managed repeat updates and evidence validation, corrects the `sa`/`ta` contracts, and adds `architecture-modeling` to both 41-skill runtimes.
 - `v2.5.0` adds `artifact-governance` as managed skill 42 and ships its placement, ownership, execution-reader, and role-indexed handoff enforcement.
 - `v2.6.0` adds additive design-readiness guidance for the existing `sa` and `ta` skills while retaining 42 managed skills and the existing output contract.
+- `v2.6.1` aligns the stale authoring smoke with approved legacy-scaffold bootstrap behavior while retaining 42 managed skills and the public contract.
 
 All of the above are additive — the public promise below is unchanged.
 
 ## Planned Canonical Release Ref
 
-- Tag after Release approval: `v2.6.0`
-- Candidate evidence before approval: source commit and immutable tarball digest recorded in CHANGE-004
+- Tag after Release approval: `v2.6.1`
+- Candidate evidence before approval: source commit and immutable tarball digest recorded in CHANGE-006
 
 Do not create the tag, present a candidate branch as canonical, or publish the package until the human Release gate passes.
 
@@ -49,7 +50,7 @@ This is the document set to use for public onboarding:
 5. [`../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`](../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
 6. [`../skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](../skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
 
-## Public Promise Of `v2.6.0`
+## Public Promise Of `v2.6.1`
 
 - Installable workflow bundle for Codex and Claude Code via `wfc install|update|status|skills`
 - Core authoring CLI via `wfc init`, `wfc scaffold`, `wfc`, `wfc sdd|change|exec|plan`
@@ -62,6 +63,7 @@ This is the document set to use for public onboarding:
 - Deterministic built-in draw.io rendering for allowlisted landscape and integration views when no house renderer owns the artifact
 - Artifact placement and one-fact/one-owner guidance through `artifact-governance`, with English/Vietnamese parity
 - Conditional design-readiness guidance through `sa` and `ta`, mapped into existing driver, question, stop-condition, and handoff fields without moving design authority out of s05
+- Read-only legacy-scaffold observation plus explicit approval bootstrap with auditable provenance; later mutating lifecycle actions still require a persisted report
 
 ## Not In The Public Promise
 
@@ -71,13 +73,13 @@ This is the document set to use for public onboarding:
   - legacy config `workflow-contracts.config.json`
   - legacy state `.codex-workflow-pack.*`
 
-The two legacy layers above are still kept to make migration smoother, but they should not be treated as the core public story of `v2.6.0`.
+The two legacy layers above are still kept to make migration smoother, but they should not be treated as the core public story of `v2.6.1`.
 
 ## Compatibility And Rollback
 
 - Existing `wfc` commands, flags, state files, SA/TA output blocks, block ownership, Node `>=18`, and npm `>=9` requirements remain compatible.
-- Before publication, rollback restores only CHANGE-004-managed source and candidate surfaces to the verified `v2.5.0/42` baseline.
-- After an authorized publication, use the retained immutable v2.5.0 artifact and `wfc install` for a managed downgrade, verify `v2.5.0/42`, and preserve unmanaged files and modes.
+- Before publication, rollback restores only CHANGE-006-managed source and candidate surfaces to the verified `v2.6.0/42` baseline.
+- After an authorized publication, use the retained immutable v2.6.0 artifact and `wfc install` for a managed downgrade, verify `v2.6.0/42`, and preserve unmanaged files and modes.
 - No database, API, event, deployment, user-configuration, or live global-install migration is part of this candidate.
 
 ## Internal Or Maintainer Docs
@@ -103,6 +105,6 @@ The files below are local working assets, not source-of-truth:
 
 ## Publish Rule
 
-- until Release approval, call `v2.6.0` a release candidate rather than the current public release
+- until Release approval, call `v2.6.1` a release candidate rather than the current public release
 - when talking about the approval model, state clearly `agent proposes, human approves`
 - do not use internal docs or memory-bank as the public onboarding path

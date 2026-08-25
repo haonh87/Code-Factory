@@ -18,14 +18,14 @@ task_status:
     status: PASS
     evidence: "Unchanged RED captured; corrected authoring smoke 13/13 PASS; TD-01 through TD-04 PASS; B1 spec-compliance and code-quality reviews PASS."
   - task_id: "TASK-003"
-    status: IN_PROGRESS
-    evidence: "Not started; current v2.6.1 release-surface alignment is next."
+    status: PASS
+    evidence: "Structured version 2.6.1; reviewed EN/VI current docs; v2.6.1 release note; release/candidate/rollback preflights PASS; immutable v2.6.0 note digest unchanged."
   - task_id: "TASK-004"
-    status: PARTIAL
-    evidence: "B1 review complete; B2 release-surface review pending."
+    status: PASS
+    evidence: "B1 and B2 both passed SPEC_COMPLIANCE before CODE_QUALITY with no open finding."
   - task_id: "TASK-005"
-    status: PENDING
-    evidence: "Focused smoke and TD-01 checks pass; integrated local suite pending."
+    status: IN_PROGRESS
+    evidence: "Focused smoke, TD-01, version tooling, syntax/JSON/UTF-8, and source release preflights pass; full integrated local suite pending."
   - task_id: "TASK-006"
     status: PENDING
     evidence: "Exact candidate and rollback not yet frozen."
@@ -39,5 +39,5 @@ task_status:
     status: PENDING
     evidence: "Publication and closeout remain prohibited before s08 approvals."
 blocking_items: []
-next_action: "Execute TASK-003 v2.6.1 structured version and release-surface alignment, then perform B2 review."
+next_action: "Execute TASK-005 full integrated local verification before freezing the exact candidate."
 ```

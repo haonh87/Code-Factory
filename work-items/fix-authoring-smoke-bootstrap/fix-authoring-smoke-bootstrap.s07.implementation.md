@@ -197,6 +197,8 @@ implementation_mode: BUGFIX
 tasks_completed:
   - "TASK-001: receipts verified, protocol activated, anchor committed, and worktree created."
   - "TASK-002: stale smoke case corrected and early B1 review passed."
+  - "TASK-003: v2.6.1 structured identity, tests, current EN/VI docs, release note, and v2.6.0 rollback surfaces aligned."
+  - "TASK-004: B1 and B2 reviews passed in the required spec-compliance then code-quality order."
 bug_repro_evidence:
   - "Unchanged npm run validate:workflow:authoring-smoke: 12 cases passed; mutating-action-requires-report failed because approve returned Missing required argument '--reviewed-by' while the fixture expected Missing work item report."
 hypothesis_log:
@@ -222,17 +224,25 @@ code_changes:
   - "Removed the successful case-owned workflow after assertions so the shared temp project cannot contaminate later capability cases."
 doc_changes:
   - "Initialized this s07 contract and evidence note."
-config_changes: []
+  - "Updated reviewed current-candidate EN/VI docs and added the lifecycle-stable v2.6.1 release note."
+config_changes:
+  - "Advanced root/package manifests, package version, and public wfc flow label to 2.6.1."
+  - "Aligned release-candidate, release-surface, and exact v2.6.1-to-v2.6.0 rollback test contracts."
 review_checkpoints:
   - "TASK-001 isolation check passed: clean approved branch/path with no dirty-main import."
   - "B1 SPEC_COMPLIANCE PASS: AC-001/AC-002 covered; 13-case inventory preserved; only the approved smoke file changed; production approval paths untouched."
   - "B1 CODE_QUALITY PASS: bootstrap-oriented name, direct failure messages, existing helpers, scoped cleanup, node --check and diff --check all pass."
+  - "B2 SPEC_COMPLIANCE PASS: all paths match TASK-003; v2.6.0 release-note digest remains 12e2e49d61d7145a71e12eaf6c2c82e7fcdc46d349ce16716daa9b858dc45151; no publication claim, production-path edit, or npm scope."
+  - "B2 CODE_QUALITY PASS: structured bump plus targeted review, EN/VI consistency, exact rollback assertions, syntax/JSON/UTF-8/diff checks, and all three source release preflights pass."
 outputs_actual:
   - "Protocol ACTIVE at s07; isolated branch/worktree at governed anchor 7fe68b3."
   - "Authoring smoke 13/13 PASS and approval-path-defects TD-01 through TD-04 PASS."
+  - "Release surface, candidate source contract, and v2.6.1-to-v2.6.0 rollback source preflights PASS at 42 skills."
 known_limitations:
-  - "Version bump, B2 review, exact candidate, remote CI, and s08 gates remain pending."
-follow_up_items: []
+  - "Integrated local suite, exact candidate, remote CI, and s08 gates remain pending."
+  - "The bump tool resolves the outermost manifest by default; an in-repo worktree must pass --repo-root explicitly to avoid writing the parent main tree."
+follow_up_items:
+  - "Track worktree-aware default root resolution for bump-version separately; this change uses the supported explicit --repo-root mitigation and does not widen CHANGE-006."
 notes_for_testing: "Run the unchanged authoring smoke first and preserve the exact failing case/message before editing."
 ```
 
@@ -334,12 +344,12 @@ worktree_refs:
   - ".claude/worktrees/fix-authoring-smoke-bootstrap"
   - "codex/fix-authoring-smoke-bootstrap at anchor 7fe68b3"
 worktree_reason: "Dirty main plus exact artifact/tag/release risk requires isolation."
-review_status: PARTIAL
+review_status: COMPLETED
 review_refs:
   - "B1 SPEC_COMPLIANCE PASS and B1 CODE_QUALITY PASS in Main Artifact review_checkpoints."
-  - "B2 remains pending per Implementation Notes review_plan."
-spec_compliance_status: PARTIAL
-code_quality_status: PARTIAL
+  - "B2 SPEC_COMPLIANCE PASS and B2 CODE_QUALITY PASS in Main Artifact review_checkpoints."
+spec_compliance_status: PASS
+code_quality_status: PASS
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
 independence_refs: ["Single tightly sequenced owner; no delegation used"]
@@ -379,7 +389,7 @@ acceptance_refs:
   - "AC-006 -> TEST-009"
   - "AC-007 -> TEST-010"
   - "AC-008 -> release audit and no npm publication"
-task_refs: ["TASK-001 complete; TASK-002 through TASK-009 remain sequenced by s06"]
+task_refs: ["TASK-001 through TASK-004 complete; TASK-005 through TASK-009 remain sequenced by s06"]
 test_refs: ["TEST-001 through TEST-010 in s06 verification_plan"]
 ```
 
@@ -392,7 +402,7 @@ downstream: ["s08 coverage, compatibility, Technical Verification, DoD, Release,
 
 ## Handoff
 
-- Actual outputs: TASK-001 and TASK-002 complete; RED-to-GREEN and early B1 review evidence are recorded without changing approved s06.
-- Known limitations: TASK-003 onward, candidate, remote CI, and s08 gates remain pending.
+- Actual outputs: TASK-001 through TASK-004 complete; RED-to-GREEN, v2.6.1 release surfaces, and both early review batches are recorded without changing approved s06.
+- Known limitations: integrated local verification, exact candidate, remote CI, and s08 gates remain pending.
 - Notes for testing: preserve the unchanged smoke failure before editing and follow s06 exact-artifact controls.
 - Notes for deployment: no publication until DevOps/QC Release approval; npm remains excluded.

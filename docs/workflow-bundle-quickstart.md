@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: workflow-bundle-quickstart.vi.md
 
-This guide focuses on the `workflow-bundle v2.6.0` release candidate: install `wfc`, install the workflow bundle for Codex or Claude Code, bootstrap a new repo, and run the `agent proposes, human approves` flow. Registry installation remains unavailable until the human Release gate passes. The candidate retains 42 managed skills and adds conditional design-readiness guidance to the existing `sa` and `ta` skills.
+This guide focuses on the `workflow-bundle v2.6.1` release candidate: install `wfc`, install the workflow bundle for Codex or Claude Code, bootstrap a new repo, and run the `agent proposes, human approves` flow. Registry installation remains unavailable until the human Release gate passes. The patch retains 42 managed skills and aligns the authoring smoke with approved legacy-scaffold approval bootstrap behavior.
 
 ## Objectives
 
@@ -240,7 +240,7 @@ wfc protocol
 Protocol notes:
 
 - the strict default for a new repo is `protocolControl.legacyScaffoldPolicy=forbid`; only when the project config explicitly enables `allow_readonly` should `wfc work-item list|status` use a read-only bootstrap report from the old `s01` to observe legacy scaffold.
-- mutating actions such as `approve`, `activate`, `verify`, and `close` must not bootstrap themselves; they require `.work-item-report.json` to already exist.
+- read-only `list|status` never persists a report; explicit `approve` may bootstrap a scaffold-only item with auditable provenance, while `activate|verify|close` require `.work-item-report.json` to already exist.
 - `change-item approve`, `work-item approve`, and `gate approve` sign a receipt into the trusted approval root; if the receipt is invalid or an artifact changes after approval, `activate` will fail.
 - the `approve` commands still go through the CLI, but must be run by a human in an interactive TTY; normal mode will reject `--approval-passphrase` and `WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE`.
 - the first approval in a trusted approval root will create an approver keypair and require the human to enter the approval passphrase directly in that TTY.
