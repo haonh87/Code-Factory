@@ -201,6 +201,7 @@ tasks_completed:
   - "TASK-003: v2.6.1 structured identity, tests, current EN/VI docs, release note, and v2.6.0 rollback surfaces aligned."
   - "TASK-004: B1 and B2 reviews passed in the required spec-compliance then code-quality order."
   - "TASK-005: integrated local verification passed, including the required 13-case smoke, 39-file unit suite, release compatibility matrix, pack/runtime checks, and workflow validators."
+  - "TASK-006: one exact v2.6.1 candidate was packed, inventoried, fingerprinted, hashed, and proven 4/4; exact rollback to immutable v2.6.0 also passed 4/4."
 bug_repro_evidence:
   - "Unchanged npm run validate:workflow:authoring-smoke: 12 cases passed; mutating-action-requires-report failed because approve returned Missing required argument '--reviewed-by' while the fixture expected Missing work item report."
 hypothesis_log:
@@ -245,8 +246,11 @@ outputs_actual:
   - "Release surface, candidate source contract, and v2.6.1-to-v2.6.0 rollback source preflights PASS at 42 skills."
   - "Integrated local verification PASS: smoke 13/13; unit 39/39; install-all codex/claude x global/project at 42 skills; pack audit and bundle smoke; workflow, SDD, change, planning, and execution validators; six JavaScript syntax checks; four JSON parses; fifteen UTF-8 files; diff check."
   - "Workflow Guardrails definition is byte-identical to anchor 7fe68b3 (Git object 3f66ca629842b39122efd48187c7c48abfdf9c11); v2.6.0 release-note and rollback-tarball SHA-256 values remain 12e2e49d61d7145a71e12eaf6c2c82e7fcdc46d349ce16716daa9b858dc45151 and 5da823c9e64ca464630aea29dcf59ae4098bd6ea544cfdb36cdf5ccec79f3af9."
+  - "Exact candidate PASS from clean reviewed source commit 0b6fb3e07a7a40317f4a152ada402c460ba94642: workflow-bundle-2.6.1.tgz SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9, 932575 packed bytes, 4448787 unpacked bytes, 544 npm-pack files/tar entries, npm SHA-1 633ff221631b681764d9ab741ff1e2caba81f728, and integrity sha512-5zJ5cvz6Z8PeL59hVDouGvunD9ZlBUtl2WmZPr6o3bfGwecARJBuL/07Vj+GmdL3yY2jww2pZNoa3QplzmdXHQ==."
+  - "Package-payload fingerprint efe25e1bb0836b1e7a047a598ae4fd090d7049c6f09590a5050d0cbc80a9a606 is SHA-256 over the sorted '<file SHA-256><two spaces><package-relative path>' lines for all 544 regular files extracted from the retained candidate."
+  - "Exact-artifact verification PASS: v2.6.1 Codex/Claude x global/project install/update 4/4; v2.6.1 -> v2.6.0 rollback 4/4 with 42 managed skills and all unmanaged markers preserved."
 known_limitations:
-  - "Exact candidate, remote CI, and s08 gates remain pending."
+  - "Remote CI and s08 gates remain pending."
   - "The bump tool resolves the outermost manifest by default; an in-repo worktree must pass --repo-root explicitly to avoid writing the parent main tree."
 follow_up_items:
   - "Track worktree-aware default root resolution for bump-version separately; this change uses the supported explicit --repo-root mitigation and does not widen CHANGE-006."
@@ -356,6 +360,7 @@ review_status: COMPLETED
 review_refs:
   - "B1 SPEC_COMPLIANCE PASS and B1 CODE_QUALITY PASS in Main Artifact review_checkpoints."
   - "B2 SPEC_COMPLIANCE PASS and B2 CODE_QUALITY PASS in Main Artifact review_checkpoints."
+  - "B2R SPEC_COMPLIANCE PASS and B2R CODE_QUALITY PASS after the owned release-fixture path correction."
 spec_compliance_status: PASS
 code_quality_status: PASS
 delegation_mode: agentic
@@ -402,7 +407,20 @@ acceptance_refs:
   - "AC-006 -> TEST-009"
   - "AC-007 -> TEST-010"
   - "AC-008 -> release audit and no npm publication"
-task_refs: ["TASK-001 through TASK-005 complete; TASK-006 through TASK-009 remain sequenced by s06"]
+task_refs: ["TASK-001 through TASK-006 complete; TASK-007 through TASK-009 remain sequenced by s06"]
+candidate_evidence:
+  source_commit: "0b6fb3e07a7a40317f4a152ada402c460ba94642"
+  artifact: "packages/workflow-bundle/workflow-bundle-2.6.1.tgz"
+  sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+  size_bytes: 932575
+  unpacked_size_bytes: 4448787
+  npm_pack_file_count: 544
+  tar_entry_count: 544
+  payload_fingerprint_sha256: "efe25e1bb0836b1e7a047a598ae4fd090d7049c6f09590a5050d0cbc80a9a606"
+  exact_candidate_result: "PASS 4/4"
+  rollback_artifact: "packages/workflow-bundle/workflow-bundle-2.6.0.tgz"
+  rollback_sha256: "5da823c9e64ca464630aea29dcf59ae4098bd6ea544cfdb36cdf5ccec79f3af9"
+  exact_rollback_result: "PASS 4/4"
 test_refs: ["TEST-001 through TEST-010 in s06 verification_plan"]
 ```
 
@@ -415,7 +433,7 @@ downstream: ["s08 coverage, compatibility, Technical Verification, DoD, Release,
 
 ## Handoff
 
-- Actual outputs: TASK-001 through TASK-005 complete; RED-to-GREEN, v2.6.1 release surfaces, early review including the path-correction reopen, and integrated local verification are recorded without changing the approved requirements or approach.
-- Known limitations: exact candidate, remote CI, and s08 gates remain pending.
+- Actual outputs: TASK-001 through TASK-006 complete; RED-to-GREEN, v2.6.1 release surfaces, early review including the path-correction reopen, integrated local verification, and exact candidate/rollback evidence are recorded without changing the approved requirements or approach.
+- Known limitations: remote CI and s08 gates remain pending.
 - Notes for testing: preserve the unchanged smoke failure before editing and follow s06 exact-artifact controls.
 - Notes for deployment: no publication until DevOps/QC Release approval; npm remains excluded.

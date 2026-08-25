@@ -27,10 +27,10 @@ task_status:
     status: PASS
     evidence: "Integrated local verification passes: authoring smoke 13/13, unit 39/39, TD-01 through TD-04, install-all four mode/scope cases at 42 skills, pack audit, bundle smoke, release source/rollback preflights, all workflow validators, syntax/JSON/UTF-8/diff checks, and unchanged Workflow Guardrails definition."
   - task_id: "TASK-006"
-    status: PENDING
-    evidence: "Exact candidate and rollback not yet frozen."
+    status: PASS
+    evidence: "One retained candidate was packed from clean reviewed source commit 0b6fb3e07a7a40317f4a152ada402c460ba94642: SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9, 932575 bytes, 544 files, payload fingerprint efe25e1bb0836b1e7a047a598ae4fd090d7049c6f09590a5050d0cbc80a9a606; exact candidate install/update 4/4 and rollback to immutable v2.6.0 4/4 PASS."
   - task_id: "TASK-007"
-    status: PENDING
+    status: IN_PROGRESS
     evidence: "Remote Workflow Guardrails not yet run for this branch."
   - task_id: "TASK-008"
     status: PENDING
@@ -39,5 +39,5 @@ task_status:
     status: PENDING
     evidence: "Publication and closeout remain prohibited before s08 approvals."
 blocking_items: []
-next_action: "Execute TASK-006 once: commit the reviewed source, pack one exact v2.6.1 candidate with isolated cache, fingerprint it, and prove candidate plus v2.6.0 rollback 4/4."
+next_action: "Commit the evidence-only TASK-006 update without changing package payload, push the intended target to main, and require its own remote Workflow Guardrails 9/9 run."
 ```
