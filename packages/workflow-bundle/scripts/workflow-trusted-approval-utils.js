@@ -2,6 +2,7 @@ const crypto = require("crypto");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const { execFileSync } = require("child_process");
 
 const STEP_NOTE_SLUGS = {
   s01: "restate",
@@ -120,14 +121,65 @@ function resolveTrustedApprovalRoot({ projectRoot, overrideRoot }) {
   };
 }
 
+// Every checkout of one repository must address the same receipts. The git common directory
+// is shared by the main worktree and all of its worktrees, so its parent is the main worktree
+// toplevel - a project identity that does not move with the current checkout.
+//
+// Two things this must get right, both learned the hard way:
+//   1. `git rev-parse --git-common-dir` prints a RELATIVE '.git' from the main tree and an
+//      ABSOLUTE path from a worktree. Resolving against cwd first is what makes the two agree;
+//      hashing the raw output would reproduce the very defect this fixes.
+//   2. It must never throw. A non-git directory, or a layout where the git dir is not named
+//      '.git' (git init --separate-git-dir), falls back to the projectRoot it was given, which
+//      is the behaviour every existing receipt was written under.
+function resolveCanonicalProjectRoot(projectRoot) {
+  const givenRoot = String(projectRoot || "");
+  if (!givenRoot) {
+    return givenRoot;
+  }
+
+  let commonDirOutput = "";
+  try {
+    commonDirOutput = execFileSync("git", ["rev-parse", "--git-common-dir"], {
+      cwd: givenRoot,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"]
+    }).trim();
+  } catch (_error) {
+    return givenRoot;
+  }
+
+  if (!commonDirOutput) {
+    return givenRoot;
+  }
+
+  const commonDir = path.resolve(givenRoot, commonDirOutput);
+  if (path.basename(commonDir) !== ".git") {
+    return givenRoot;
+  }
+
+  // git resolves symlinks, the caller's projectRoot may not. On macOS /var is a symlink to
+  // /private/var, so the same repository read from the main tree and from a worktree would
+  // otherwise yield two identities - the exact bug this function exists to remove, one level
+  // deeper. Normalise the git branch only; the fallback keeps returning the caller's path
+  // byte-for-byte so no existing namespace moves.
+  const canonicalRoot = path.dirname(commonDir);
+  try {
+    return fs.realpathSync(canonicalRoot);
+  } catch (_error) {
+    return canonicalRoot;
+  }
+}
+
 function buildProjectApprovalNamespace(projectRoot) {
+  const canonicalRoot = resolveCanonicalProjectRoot(projectRoot);
   const safeProjectName =
     path
-      .basename(projectRoot)
+      .basename(canonicalRoot)
       .toLowerCase()
       .replace(/[^a-z0-9-]+/g, "-")
       .replace(/^-+|-+$/g, "") || "project";
-  const projectHash = sha256(projectRoot).slice(0, 12);
+  const projectHash = sha256(canonicalRoot).slice(0, 12);
   return `${safeProjectName}-${projectHash}`;
 }
 
@@ -450,7 +502,9 @@ function hasApprovedReceipt(receipt, approvalRoot = "") {
 module.exports = {
   APPROVED_RECEIPT_STATUSES,
   GATE_TO_STEP_ID,
+  buildProjectApprovalNamespace,
   buildReceiptPath,
+  resolveCanonicalProjectRoot,
   ensureApproverKeyPair,
   getGateStepId,
   getApproverKeyPaths,
