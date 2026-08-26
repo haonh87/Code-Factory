@@ -29,18 +29,53 @@ function expectReferenceError(fn, code) {
 console.log("Running artifact reference resolver tests...\n");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
-const liveS01 = path.join(
-  repoRoot,
-  "work-items",
-  "artifact-governance-enforcement",
-  "artifact-governance-enforcement.s01.restate.md"
-);
-const liveSameNote = resolveArtifactReference({
-  projectRoot: repoRoot,
-  currentFile: liveS01,
-  reference: "#Work Item Protocol.protocol_status"
-});
-assert(liveSameNote.value === "ACTIVE", "same-note resolver must read the live P2 protocol status");
+
+// D-E / T7: this assertion used to read a LIVE work item note and require protocol_status to be
+// ACTIVE. It broke the moment that work item closed, which made the suite result depend on which
+// work items happen to be ACTIVE rather than on the resolver. The fixture below controls its own
+// input instead.
+//
+// protocol_status is deliberately VERIFIED - a value no work item in this repo carries - so the
+// assertion cannot pass by coincidence if the resolver ever returns a constant or a stale read.
+const sameNoteRoot = fs.mkdtempSync(path.join(os.tmpdir(), "artifact-reference-same-note-"));
+try {
+  const fixtureNote = path.join(
+    sameNoteRoot,
+    "work-items",
+    "fixture-item",
+    "fixture-item.s01.restate.md"
+  );
+  writeFile(
+    fixtureNote,
+    [
+      "---",
+      'artifact_id: "fixture-item.s01.restate"',
+      'work_item_slug: "fixture-item"',
+      "---",
+      "",
+      "# Step 1 - Clarify",
+      "",
+      "## Work Item Protocol",
+      "```yaml",
+      "protocol_status: VERIFIED",
+      'work_item_slug: "fixture-item"',
+      "```",
+      ""
+    ].join("\n")
+  );
+
+  const sameNote = resolveArtifactReference({
+    projectRoot: sameNoteRoot,
+    currentFile: fixtureNote,
+    reference: "#Work Item Protocol.protocol_status"
+  });
+  assert(
+    sameNote.value === "VERIFIED",
+    `same-note resolver must read protocol_status from the note it was given (got ${sameNote.value})`
+  );
+} finally {
+  fs.rmSync(sameNoteRoot, { recursive: true, force: true });
+}
 
 const liveCrossFile = resolveArtifactReference({
   projectRoot: repoRoot,
