@@ -231,15 +231,23 @@ report_provenance: "Persisted via the bundle's own loadProtocolReport with allow
 
 ## Work Item Protocol
 ```yaml
-protocol_status: MATERIALIZED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "worktree-and-closure-integrity"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/worktree-and-closure-integrity"
-current_step: "s01"
-granted_write_paths: []
+current_step: "s07"
+granted_write_paths:
+  - "packages/workflow-bundle/scripts/validate-work-item-protocol.js"
+  - "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js"
+  - "packages/workflow-bundle/scripts/workflow-gate-review.js"
+  - "packages/workflow-bundle/bin/wfc.js"
+  - "packages/workflow-bundle/test"
+  - "packages/workflow-bundle/tests/fixtures"
+  - "scripts/hooks/tdd-enforce.sh"
+  - "work-items/worktree-and-closure-integrity"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -248,14 +256,14 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "coordinator"
-protocol_owner: "ba"
+protocol_owner: "developer"
 reviewed_by: "ba"
 reviewed_at: "2026-08-19T07:21:45.142Z"
-handoff_target: "author-s01"
-last_transition_action: "approve"
-last_transition_at: "2026-08-19T07:21:45.142Z"
+handoff_target: "step-s07-owner"
+last_transition_action: "activate"
+last_transition_at: "2026-08-19T13:23:23.085Z"
 required_actions:
-  - "Review and continue workflow backbone s01 -> s08."
+  - "Continue active execution from step 7 onward."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -264,6 +272,7 @@ refs:
 audit_events:
   - "REPORT_BOOTSTRAPPED"
   - "WORK_ITEM_APPROVED"
+  - "WORK_ITEM_ACTIVATED"
 ```
 
 ## Business Goal

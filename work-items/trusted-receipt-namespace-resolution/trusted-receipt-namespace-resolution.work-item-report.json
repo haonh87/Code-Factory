@@ -2,7 +2,7 @@
   "materialization_status": "READY",
   "protocol_status": "ACTIVE",
   "decision_owner": "coordinator",
-  "protocol_owner": "developer",
+  "protocol_owner": "po",
   "raw_request_summary": "",
   "request_source": "legacy-scaffold",
   "candidate_count": 1,
@@ -12,20 +12,18 @@
   "decision_log": [
     "bootstrap_from_existing_s01=true"
   ],
-  "work_item_slug": "worktree-and-closure-integrity",
+  "work_item_slug": "trusted-receipt-namespace-resolution",
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
-  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/worktree-and-closure-integrity",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/trusted-receipt-namespace-resolution",
   "current_step": "s07",
   "granted_write_paths": [
-    "packages/workflow-bundle/scripts/validate-work-item-protocol.js",
-    "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js",
-    "packages/workflow-bundle/scripts/workflow-gate-review.js",
-    "packages/workflow-bundle/bin/wfc.js",
+    "packages/workflow-bundle/scripts/workflow-trusted-approval-utils.js",
+    "packages/workflow-bundle/scripts/work-item-protocol.js",
     "packages/workflow-bundle/test",
     "packages/workflow-bundle/tests/fixtures",
-    "scripts/hooks/tdd-enforce.sh",
-    "work-items/worktree-and-closure-integrity"
+    ".claude/worktrees/trusted-receipt-namespace-resolution",
+    "work-items/trusted-receipt-namespace-resolution"
   ],
   "change_strategy": "none",
   "change_id": "",
@@ -35,7 +33,7 @@
   ],
   "blockers": [],
   "refs": [
-    "work-items/worktree-and-closure-integrity"
+    "work-items/trusted-receipt-namespace-resolution"
   ],
   "audit_events": [
     "REPORT_BOOTSTRAPPED",
@@ -44,8 +42,8 @@
   ],
   "review_required": true,
   "approval_status": "APPROVED",
-  "reviewed_by": "ba",
-  "reviewed_at": "2026-08-19T07:21:45.142Z",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-08-22T15:11:50.848Z",
   "review_notes": [
     "Human review approved."
   ],
@@ -55,7 +53,7 @@
   "bootstrap_reviewed_at": "",
   "protocol_events": [
     {
-      "timestamp": "2026-08-19T06:22:55.386Z",
+      "timestamp": "2026-08-22T14:41:31.971Z",
       "action": "bootstrap",
       "actor": "system",
       "from_status": "READY_TO_MATERIALIZE",
@@ -63,20 +61,28 @@
       "note": "Bootstrapped read-only report from existing scaffold."
     },
     {
-      "timestamp": "2026-08-19T07:21:45.142Z",
+      "timestamp": "2026-08-22T14:41:31.971Z",
       "action": "approve",
-      "actor": "ba",
+      "actor": "po",
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Human review approved."
     },
     {
-      "timestamp": "2026-08-19T13:23:23.085Z",
+      "timestamp": "2026-08-22T15:11:50.848Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-08-22T15:21:06.401Z",
       "action": "activate",
-      "actor": "developer",
+      "actor": "coordinator",
       "from_status": "MATERIALIZED",
       "to_status": "ACTIVE",
-      "note": "s07 opened for D-A..D-D; worktree isolation per approved T0."
+      "note": "Work item moved into active workflow execution."
     }
   ]
 }
