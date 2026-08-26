@@ -7,6 +7,7 @@
 //
 // Criteria covered: AC-001/SM-3, AC-003/SM-4, AC-006, EDGE-002, EDGE-003, and S05-R01.
 
+const crypto = require("crypto");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
@@ -15,7 +16,10 @@ const { execFileSync } = require("child_process");
 const {
   resolveCanonicalProjectRoot,
   buildProjectApprovalNamespace,
-  loadTrustedApprovalReceipt
+  buildReceiptPath,
+  loadTrustedApprovalReceipt,
+  resolveApprovalPassphrase,
+  resolveGateArtifact
 } = require("../scripts/workflow-trusted-approval-utils");
 
 let failures = 0;
@@ -203,6 +207,110 @@ try {
         `AC-006: resolution is deterministic for ${label}`
       );
     }
+  );
+
+  // ---------------------------------------------------------------- T3: AC-002 compatibility
+  // A receipt written under the LEGACY scheme - basename + sha256 of the projectRoot itself -
+  // must still be found after the change. This is the criterion that decided Opt-A over Opt-B,
+  // so it is asserted rather than argued.
+  const legacyNamespace = (projectRoot) => {
+    const safe =
+      path
+        .basename(projectRoot)
+        .toLowerCase()
+        .replace(/[^a-z0-9-]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "project";
+    return `${safe}-${crypto.createHash("sha256").update(projectRoot).digest("hex").slice(0, 12)}`;
+  };
+
+  const legacyRoot = fs.realpathSync(repoA);
+  assert(
+    buildProjectApprovalNamespace(legacyRoot) === legacyNamespace(legacyRoot),
+    "AC-002: for a plain main-tree checkout the new namespace equals the legacy one - no receipt moves"
+  );
+
+  const legacyDir = path.join(approvalRoot, legacyNamespace(legacyRoot), "gates", "legacy-item");
+  fs.mkdirSync(legacyDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(legacyDir, "spec.json"),
+    JSON.stringify({ kind: "gate", work_item_slug: "legacy-item", gate: "spec", approval_status: "APPROVED" }),
+    "utf8"
+  );
+  const legacyReadFromWorktree = loadTrustedApprovalReceipt({
+    projectRoot: worktreeA,
+    overrideRoot: approvalRoot,
+    kind: "gate",
+    workItemSlug: "legacy-item",
+    gate: "spec"
+  });
+  assert(
+    Boolean(legacyReadFromWorktree.receipt),
+    "AC-002: a receipt written under the legacy scheme is readable from a worktree after the change"
+  );
+
+  // ---------------------------------------------------------------- T3: AC-005 controls
+  // This work item edits the file implementing every approval control. An unasserted control
+  // is an untested control, so each one gets its own named assertion.
+  const savedFixtureFlag = process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE;
+  delete process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE;
+
+  let refusedNonInteractive = false;
+  try {
+    resolveApprovalPassphrase("some-passphrase");
+  } catch (error) {
+    refusedNonInteractive = /Non-interactive human approval is disabled/.test(error.message);
+  }
+  assert(refusedNonInteractive, "AC-005 control 1: an inline passphrase is refused in normal mode");
+
+  process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE = "true";
+  assert(
+    resolveApprovalPassphrase("some-passphrase") === "some-passphrase",
+    "AC-005 control 2: the fixture hatch still works when explicitly enabled - gated, not removed"
+  );
+  if (savedFixtureFlag === undefined) {
+    delete process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE;
+  } else {
+    process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE = savedFixtureFlag;
+  }
+
+  const gatePaths = ["spec", "contract", "dor", "approach", "task_plan"].map((gate) =>
+    buildReceiptPath({
+      projectRoot: repoA,
+      approvalRoot,
+      kind: "gate",
+      workItemSlug: "controls-item",
+      gate
+    })
+  );
+  assert(
+    new Set(gatePaths).size === gatePaths.length,
+    "AC-005 control 3: every gate still gets its own independent receipt path"
+  );
+
+  const noteDir = path.join(repoA, "work-items", "controls-item");
+  fs.mkdirSync(noteDir, { recursive: true });
+  const notePath = path.join(noteDir, "controls-item.s04.acceptance-criteria.md");
+  fs.writeFileSync(notePath, "original\n", "utf8");
+  const artifactBefore = resolveGateArtifact({
+    projectRoot: repoA,
+    workflowRoot: noteDir,
+    workItemSlug: "controls-item",
+    gate: "spec",
+    ref: "",
+    sddMode: "none"
+  });
+  fs.writeFileSync(notePath, "edited after sealing\n", "utf8");
+  const artifactAfter = resolveGateArtifact({
+    projectRoot: repoA,
+    workflowRoot: noteDir,
+    workItemSlug: "controls-item",
+    gate: "spec",
+    ref: "",
+    sddMode: "none"
+  });
+  assert(
+    artifactBefore.artifactSha256 !== artifactAfter.artifactSha256,
+    "AC-005 control 4: a receipt binds to the host artifact sha256, so a post-seal edit is detectable"
   );
 } finally {
   rmrf(tmpRoot);
