@@ -138,6 +138,31 @@ function getApproverKeyPaths(approvalRoot) {
   };
 }
 
+function sleepMs(ms) {
+  const sab = new SharedArrayBuffer(4);
+  const ia = new Int32Array(sab);
+  Atomics.wait(ia, 0, 0, ms);
+}
+
+function readStdinByteSync(buffer) {
+  // On some macOS + Node/libuv combinations, stdin.setRawMode(true) leaves fd 0
+  // non-blocking, so the first (or an occasional) fs.readSync call throws EAGAIN
+  // before any byte has actually arrived yet. This is not an error condition —
+  // it just means "no byte yet" — so retry with a short sleep instead of failing
+  // the whole approval prompt. See nodejs/node#35997 / #38381 for background.
+  while (true) {
+    try {
+      return fs.readSync(0, buffer, 0, 1, null);
+    } catch (err) {
+      if (err && err.code === "EAGAIN") {
+        sleepMs(15);
+        continue;
+      }
+      throw err;
+    }
+  }
+}
+
 function promptHiddenInput(promptText) {
   if (!process.stdin.isTTY) {
     throw new Error("Human approval requires an interactive TTY. Run the approve command in a human-controlled terminal.");
@@ -155,7 +180,7 @@ function promptHiddenInput(promptText) {
 
   try {
     while (true) {
-      const bytesRead = fs.readSync(0, buffer, 0, 1, null);
+      const bytesRead = readStdinByteSync(buffer);
       if (bytesRead < 1) {
         break;
       }
