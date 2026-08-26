@@ -41,7 +41,7 @@ notes: ""
 
 | Exception ID | Work Item | Step | Principle | Owner | Status | Review Date | Notes |
 |---|---|---|---|---|---|---|---|
-| `GOV-EX-001` | _none - that is the exception_ | n/a | Spec/Design Before Code | developer | `PROPOSED` | pending | Orphan EAGAIN retry in the approval prompt, committed to unblock a merge. Needs a human decision and a test. |
+| GOV-EX-001 | none - that is the exception | n/a | Spec/Design Before Code | developer | PROPOSED | pending | Orphan EAGAIN retry in the approval prompt, committed to unblock a merge. Needs a human decision and a test. |
 
 ### `GOV-EX-001`
 
