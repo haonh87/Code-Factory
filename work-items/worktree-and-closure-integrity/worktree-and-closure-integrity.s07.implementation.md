@@ -331,6 +331,7 @@ deliberate_change_mirrored_to_main:
   why_not_worked_around: "The alternatives were worse: writing the file through Bash to dodge a PreToolUse guard, or disabling tdd-enforce wholesale for the session. Both defeat the guard this work item exists to strengthen."
   in_declared_scope: "Yes - scripts/hooks/tdd-enforce.sh is in granted_write_paths."
   merge_note: "It will be superseded by the branch merge. Because the content is identical there is no semantic conflict, but git may refuse to merge over a locally modified file - run `git checkout -- scripts/hooks/tdd-enforce.sh` on main first if it complains."
+  merge_note_measured_2026_08_26: "It does refuse, and the reason is narrower than the note assumed. Content is byte-identical to the branch copy; the ONLY difference is the file mode - 100644 on the branch, 100755 in the main working tree, because the mirrored copy was made executable. That is still a tracked change, so `git merge codex/worktree-and-closure-integrity` aborts with \"Your local changes to the following files would be overwritten by merge\". Run `git checkout -- scripts/hooks/tdd-enforce.sh` immediately before the merge, not earlier: main HEAD does not carry the D-B fix, so discarding the working copy ahead of time re-breaks the live hook until the merge lands."
 
 orphan_change_found_on_main:
   file: "packages/workflow-bundle/scripts/workflow-trusted-approval-utils.js"
