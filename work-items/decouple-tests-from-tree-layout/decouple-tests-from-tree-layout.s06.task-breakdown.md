@@ -101,9 +101,9 @@ tasks:
       - "A negative case proving the test still fails when the artifact is genuinely absent"
     review_checkpoint: "SPEC_COMPLIANCE: AC-001. The fix must not be a skip-if-missing, and must not assert something trivially true. CODE_QUALITY: if a fixture tarball is built, build and clean it up in the test, matching the tmpdir pattern already used in this package."
     verification_hint: "Run the file from both trees and compare verdicts. Then perturb the artifact location in a scratch copy and confirm red."
-    dependencies: ["T0", "OQ-1"]
+    dependencies: ["T0", "OQ-2"]
     blocked: true
-    blocked_reason: "OQ-1 decides whether the artifact is fixtured or the lookup relocated. The fixture design differs per answer, so writing the failing test first would mean writing the wrong one."
+    blocked_reason: "OQ-1 is answered - both original options are ruled out by measurement - but the answer raised OQ-2: should CI gate on a retained release binary at all? That is a po/devops call and it decides whether T1 declares a fetchable artifact home or moves the check out of the unit suite entirely."
   - id: T2
     owner_role: developer
     name: "G-B - fixture the cross-file resolver assertion"
@@ -148,17 +148,28 @@ worktree_decision:
 
 ## Option Analysis
 ```yaml
-goal: "OQ-1 - how should release-rollback-smoke.test.js obtain the v2.4.0 rollback artifact?"
+goal: "OQ-1 - how should release-rollback-smoke.test.js obtain the v2.5.0 rollback artifact?"
+status: "ANSWERED 2026-08-27 by measurement, which rejected the recommendation this block originally carried."
+measurement_that_decided_it:
+  digest_is_real: "retainedRollbackDigest 36615668ad2bcc752998d33e4e7e6f837aef3f1feabf83b04aecd612cabb92ec matches workflow-bundle-2.5.0.tgz byte for byte."
+  where_the_artifact_lives: ".claude/worktrees/artifact-governance-enforcement/packages/workflow-bundle/ - inside a gitignored worktree."
+  tracked_in_git: "No. .gitignore:30 excludes packages/workflow-bundle/*.tgz and git tracks zero .tgz files."
+  rebuildable: "No. The package is at 2.6.0; the rollback target is 2.5.0."
+  ci_runs_it: "workflow-guardrails.yml:210 runs the unit suite, which includes this file."
 options:
-  - "Opt-A: build a fixture tarball in a tmpdir and point the test at it"
-  - "Opt-B: resolve the artifact from inside the repo (a known fixtures path) instead of from repoRoot/.."
-  - "Opt-C: keep the external lookup but fail loudly with a recorded reason when absent"
-recommended_option: "Opt-A"
+  - "Opt-A: build a fixture tarball in a tmpdir and point the test at it - REJECTED BY EVIDENCE"
+  - "Opt-B: resolve the artifact from a known path inside the repo - REJECTED BY EVIDENCE"
+  - "Opt-C: declare the artifact location explicitly and handle its absence deliberately"
+recommended_option: "Opt-C"
+correction_notice: "This block first recommended Opt-A on reasoning alone, and called Opt-C the weakest of the three. Measurement reversed that. The original recommendation is left visible above rather than quietly swapped, because the reversal is the useful part."
 trade_offs:
-  - "Opt-A controls its own input completely, which is the property the work item exists to restore, and it matches the tmpdir pattern the package already uses."
-  - "Opt-A does mean the test stops verifying a REAL released artifact. That is exactly what OQ-1 must confirm is acceptable - if the answer is no, Opt-B becomes correct."
-  - "Rejected Opt-C: it keeps the environmental dependency and only makes the failure louder. AC-003 would still not hold, because the verdict would still differ per tree."
-  - "Opt-B is the fallback if OQ-1 says a real artifact matters; it keeps the artifact real while removing the sibling-directory assumption."
+  - "Opt-A is not merely worse, it is impossible without gutting the check: a fixture tarball has a different digest, so adopting it means editing retainedRollbackDigest, and a digest you rewrite to match whatever you built asserts nothing."
+  - "Opt-B has nothing to relocate. The artifact is not in the repository and .gitignore:30 says that is deliberate, not an oversight."
+  - "Opt-C keeps the environmental dependency, which is exactly why this block rejected it first. The difference measurement makes: the dependency is real and unavoidable, so the honest move is to DECLARE it rather than to hide it behind a relative path that happens to resolve on one machine."
+  - "Opt-C splits into two shapes and choosing between them is OQ-2, a po/devops call: declare a fetchable home for the retained artifact and fail loudly when it is missing, or move the check out of the unit suite into a release lane that runs where the artifact exists."
+what_the_current_code_does_wrong_under_any_option:
+  - "path.resolve(repoRoot, '..', <a worktree name>, ...) encodes one developer's directory layout as a test dependency."
+  - "The worktree name in that path has ALREADY been hand-edited once - it was stabilize-architecture-skill-bundle-v2.4.0 and is now artifact-governance-enforcement, changed in 26591a2 when the rollback target moved. It will need editing again at the next release. That maintenance cost is the defect, independent of OQ-2."
 ```
 
 ## Technical Approach

@@ -44,11 +44,11 @@ requirements:
     statement: "release-rollback-smoke.test.js must produce the same verdict from the main tree and from a worktree."
     defect_ref: "F-03 / F-05"
     location: "packages/workflow-bundle/test/release-rollback-smoke.test.js:18"
-    mechanism: "defaultRollbackTarball resolves path.resolve(repoRoot, '..', 'stabilize-architecture-skill-bundle-v2.4.0', 'packages', 'workflow-bundle', 'workflow-bundle-2.4.0.tgz'). From the main tree repoRoot/.. is the parent of the repository, where that directory does not exist. From a worktree repoRoot/.. is .claude/worktrees/, where it does - measured at 886190 bytes."
-    measured_2026_08_26:
-      from_main_tree: "FAIL - retained v2.4.0 rollback tarball missing"
-      from_worktree: "PASS"
-    why_it_went_unnoticed: "It was authored from inside a worktree, where the sibling-relative path happens to resolve. The repo's own worktree convention rescues it."
+    mechanism: "defaultRollbackTarball resolves path.resolve(repoRoot, '..', <a worktree name>, 'packages', 'workflow-bundle', 'workflow-bundle-<ver>.tgz'). From the main tree repoRoot/.. is the parent of the repository, where nothing matches. From a worktree it is .claude/worktrees/, where the artifact really sits."
+    measured_2026_08_26: "v2.4.0 target: FAIL from the main tree, PASS from a worktree."
+    measured_2026_08_27: "Re-measured after 26591a2 moved the target to v2.5.0 and the directory to artifact-governance-enforcement. Same result: FAIL from main, PASS from a worktree. The hand-edit of that directory name IS the recurring maintenance cost this requirement exists to remove."
+    escalated_finding: "The dependency is not merely on which TREE runs the test but on which MACHINE. The pinned digest matches a real workflow-bundle-2.5.0.tgz, but that artifact is untracked (.gitignore:30 excludes *.tgz, git holds zero), lives only inside a gitignored worktree (.gitignore:38), and cannot be rebuilt because the package is now at 2.6.0. CI runs this suite at workflow-guardrails.yml:210, so on a fresh runner the artifact cannot exist."
+    why_it_went_unnoticed: "It was authored from inside a worktree, where the sibling-relative path happens to resolve. The repo's own worktree convention rescues it locally and cannot rescue it anywhere else."
     provenance: BASELINE
   - id: "REQ-002"
     statement: "workflow-gate-evidence-utils.test.js must not read a live work item note."
@@ -70,7 +70,7 @@ requirements:
 acceptance_criteria:
   - id: AC-001
     requirement: REQ-001
-    description: "release-rollback-smoke.test.js returns the same verdict from the main tree and from a worktree. The rollback artifact is located without depending on what sits beside the repository. The negative case survives: if the artifact is genuinely absent the test still fails, rather than skipping."
+    description: "release-rollback-smoke.test.js returns the same verdict from the main tree and from a worktree, and the retained artifact is located through a DECLARED path rather than through a relative guess at the directory layout. Absence of the artifact is handled deliberately and visibly - never a silent pass and never a silent skip. Whether absence means failure or a recorded skip is OQ-2, a po/devops decision, and this criterion holds under either answer."
   - id: AC-002
     requirement: REQ-002
     description: "No assertion in workflow-gate-evidence-utils.test.js reads a file under work-items/ belonging to a real work item. A grep for live work-item paths returns zero hits, and the cross-file resolver is still proved to resolve against a fixture pair - coverage preserved, not deleted."

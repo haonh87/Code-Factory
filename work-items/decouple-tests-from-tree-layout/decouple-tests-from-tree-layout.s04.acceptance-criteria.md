@@ -155,11 +155,21 @@ checks:
   - check: "requirements reflected into the workflow note"
     status: PASS
     evidence: "sdd_mode=light, so REQ-001..REQ-003 and AC-001..AC-003 live in the Spec Card and are referenced here rather than restated."
-blocking_items:
+resolved_blocking_items:
   - id: "OQ-1"
     item: "Is G-A's retained-rollback check about a real released artifact, or only about the identity comparison?"
-    owner: "developer"
-    blocks: "s06 approach only. AC-002 and AC-003 are unaffected."
+    status: ANSWERED
+    answered_at: "2026-08-27"
+    answer: "A real retained artifact - and BOTH options offered at s06 were wrong. Measured: retainedRollbackDigest 36615668ad2bcc752998d33e4e7e6f837aef3f1feabf83b04aecd612cabb92ec matches a real workflow-bundle-2.5.0.tgz byte for byte, so a fixture tarball (Opt-A) would force changing the digest and destroy the check. But the artifact is NOT in the repository and cannot be put there (Opt-B): .gitignore:30 excludes packages/workflow-bundle/*.tgz, git tracks zero .tgz files, and the only copy on this machine sits inside .claude/worktrees/artifact-governance-enforcement/, which .gitignore:38 also excludes. It cannot be rebuilt either - the package is at 2.6.0 and the rollback target is 2.5.0."
+    consequence: "The defect is worse than the Spec Card describes. This test is not merely tree-dependent, it is MACHINE-dependent: it can only pass where that one gitignored worktree happens to hold that one build."
+blocking_items:
+  - id: "OQ-2"
+    item: "Should CI gate on a retained release binary at all? On a fresh runner the artifact cannot exist, so the check either fails or must be skipped deliberately."
+    owner: "po, with devops"
+    raised_by: "the evidence that answered OQ-1"
+    blocks: "the G-A fix shape - AC-002 and AC-003 are unaffected"
+    why_it_is_not_the_agent_s_call: "It trades release-gate strength against a green CI. Either answer is defensible and both have consequences for the release lane."
+    ci_exposure: "workflow-guardrails.yml:210 runs npm run validate:workflow:unit, which runs run-all.js, which includes this file. On a GitHub runner .claude/worktrees/ does not exist and *.tgz is not in the repository, so fs.existsSync on the tarball is false and the assertion fails. STRONG INFERENCE from the mechanism, not an observed CI run - confirm against an actual run before acting on it."
 owner: "developer"
 next_action: "Answer OQ-1, then a human reviews this note, fills gate_reviews.spec/dor, sets Spec Freeze, and seals spec and dor."
 ```
@@ -172,13 +182,14 @@ ready_for:
   - "G-B / REQ-002 - mechanism understood, the fix shape is already proved by D-E in the same file."
   - "REQ-003 - it is a measurement, not a design decision."
 blockers:
-  - id: "OQ-1"
-    blocks: "G-A / REQ-001 approach"
-    owner: "developer"
-    unblocking_answer: "One line: either the check must verify a real released artifact, or the identity comparison is the point and a fixture tarball is enough."
+  - id: "OQ-2"
+    blocks: "G-A / REQ-001 approach only"
+    owner: "po, with devops"
+    unblocking_answer: "Either 'CI must gate on a retained binary' - then the artifact needs a declared, fetchable home and the test needs a loud failure when it is absent - or 'it must not' - then the check moves out of the unit suite into a release-lane check that runs where the artifact exists."
 notes:
-  - "PARTIAL rather than READY because OQ-1 changes what the G-A fix IS, not merely how it is written. Grading it READY would be the quiet upgrade the safe-default rule exists to prevent."
-  - "PARTIAL rather than BLOCKED because two of three requirements are ready and the blocker is one question with a one-line answer."
+  - "Still PARTIAL after OQ-1 was answered, and the reason changed rather than went away. OQ-1 resolved the fixture-versus-relocate question by ruling out both, and in doing so uncovered OQ-2, which is a larger call: whether CI should gate on a retained release binary."
+  - "Recorded as a worked example of why an option analysis is not evidence. s06 recommended Opt-A on reasoning; ten minutes of measurement showed Opt-A destroys the check and Opt-B is impossible. The recommendation was wrong and the artifact now says so."
+  - "PARTIAL rather than BLOCKED because REQ-002 and REQ-003 are unaffected and independently deliverable."
 ```
 
 ## Spec Freeze
