@@ -183,8 +183,12 @@ ready_for:
   - "REQ-003 - it is a measurement, not a design decision."
 blockers:
   - id: "OQ-2"
-    blocks: "G-A / REQ-001 approach only"
-    owner: "po, with devops"
+    status: MOOT
+    resolved_2026_08_28: "Not answered - retired. a9888a9 removed the dependency the question was about: release-rollback-smoke.test.js now branches on WORKFLOW_BUNDLE_CANDIDATE_TARBALL and falls back to a source preflight that needs no retained artifact, while CI packs the artifact in-job. So CI does gate on an exact artifact, but on one it builds rather than one retained beside the repo - which is neither of the two answers OQ-2 offered."
+    evidence: "repoRoot/.. traversal gone; release-rollback-smoke.test.js exits 0 from the main tree AND from a second detached worktree at the same commit - equal verdicts, which is AC-003's criterion for this file."
+    consequence: "The only DoR blocker is gone. Recommend DoR READY. The `dor` GATE is still unsealed and that verdict is not the agent\'s to give."
+    blocks: "nothing - G-A / REQ-001 is satisfied by a9888a9, and T1 is marked SUPERSEDED in s06"
+    owner: "po, with devops - no longer needed for this question"
     unblocking_answer: "Either 'CI must gate on a retained binary' - then the artifact needs a declared, fetchable home and the test needs a loud failure when it is absent - or 'it must not' - then the check moves out of the unit suite into a release-lane check that runs where the artifact exists."
 notes:
   - "Still PARTIAL after OQ-1 was answered, and the reason changed rather than went away. OQ-1 resolved the fixture-versus-relocate question by ruling out both, and in doing so uncovered OQ-2, which is a larger call: whether CI should gate on a retained release binary."

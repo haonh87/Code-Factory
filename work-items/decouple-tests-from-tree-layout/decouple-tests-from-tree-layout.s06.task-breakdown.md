@@ -101,9 +101,20 @@ tasks:
       - "A negative case proving the test still fails when the artifact is genuinely absent"
     review_checkpoint: "SPEC_COMPLIANCE: AC-001. The fix must not be a skip-if-missing, and must not assert something trivially true. CODE_QUALITY: if a fixture tarball is built, build and clean it up in the test, matching the tmpdir pattern already used in this package."
     verification_hint: "Run the file from both trees and compare verdicts. Then perturb the artifact location in a scratch copy and confirm red."
-    dependencies: ["T0", "OQ-2"]
-    blocked: true
-    blocked_reason: "OQ-1 is answered - both original options are ruled out by measurement - but the answer raised OQ-2: should CI gate on a retained release binary at all? That is a po/devops call and it decides whether T1 declares a fetchable artifact home or moves the check out of the unit suite entirely."
+    dependencies: ["T0"]
+    blocked: false
+    status: SUPERSEDED
+    superseded_2026_08_28:
+      by: "a9888a9 fix(release): separate rollback source preflight - a peer session's release work, not this work item"
+      what_changed: "release-rollback-smoke.test.js no longer depends on what sits beside the repo. It now branches on WORKFLOW_BUNDLE_CANDIDATE_TARBALL: set -> runExactRollback against a supplied artifact; unset -> runSourcePreflight, which needs no retained tarball at all. CI supplies the artifact by packing it IN-JOB, via the separate `Pack, install, and smoke the exact candidate artifact` step."
+      measured:
+        repo_root_traversal: "GONE. repoRoot is path.resolve(__dirname, '..', '..', '..') - the repo root itself. No repoRoot/.. lookup remains; grep for '..' traversal returns only that one line."
+        verdict_from_main_tree: "exit 0"
+        verdict_from_a_second_tree: "exit 0"
+        method: "Created a throwaway detached worktree at the same commit, ran the file in both, compared. Equal verdicts - which is AC-003's criterion for this file."
+      consequence_for_this_work_item: "REQ-001 / AC-001 / G-A is satisfied, by someone else. T1 has nothing left to do. Kept visible as SUPERSEDED rather than deleted, matching how this note kept its own wrong OQ-1 recommendation visible - the reversal is the useful part."
+      consequence_for_OQ_2: "MOOT. OQ-2 asked whether CI should gate on a retained release binary. Answered in practice: it gates on an artifact PACKED IN-JOB, so nothing is retained beside the repo and no fetchable home is needed. The po/devops call the DoR was blocked on has been resolved by implementation rather than by decision."
+      not_claimed_by_this_work_item: "This is not a delivery by this work item. It is a defect that stopped existing while the plan waited on a human answer."
   - id: T2
     owner_role: developer
     name: "G-B - fixture the cross-file resolver assertion"
@@ -132,7 +143,9 @@ tasks:
 
 dependencies:
   - "T0 -> T2 -> T3 runs with nothing outstanding"
-  - "T1 additionally needs OQ-1 answered"
+  - "T1 is SUPERSEDED as of 2026-08-28 - see T1.superseded_2026_08_28. It needs no answer to OQ-2 because OQ-2 is moot."
+  - "History of this line, kept because it shows the plan drifting twice: it first said 'T1 additionally needs OQ-1 answered'; the reversal commit answered OQ-1 and raised OQ-2 but updated only T1.dependencies, leaving this summary stale; then the underlying defect was fixed elsewhere, retiring both questions."
+  - "Live work remaining: T0 -> T2 -> T3, none blocked."
   - "T2 and T1 touch different files and may commit in either order"
 
 delegation_decision:
@@ -143,7 +156,14 @@ delegation_decision:
 worktree_decision:
   status: NOT_REQUIRED
   reason: "Two test files, no production code, finishable in one session, no conflict risk - neither open branch touches these paths. Per the worktree rule this is the small-and-quick case where a worktree may be skipped, and the reason is recorded rather than assumed."
-  caveat: "T0 and T3 still need A worktree to RUN IN, because the criterion is a two-tree comparison. Any existing worktree serves; none needs to be created for this work item."
+  caveat: "T0 and T3 still need A SECOND TREE to run in, because the criterion is a two-tree comparison - the whole defect is that one suite gives two different answers depending on which tree runs it."
+  caveat_invalidated_2026_08_28:
+    was: "Any existing worktree serves; none needs to be created for this work item."
+    now: "FALSE. All four worktrees were removed today under branch-finish-discipline after worktree-and-closure-integrity and trusted-receipt-namespace-resolution closed DONE. `git worktree list` shows main only."
+    consequence: "T0 and T3 must now CREATE a throwaway second tree rather than borrow one. That does not change worktree_decision - this work item still needs no worktree of its own for isolation - but the plan can no longer assume a tree is lying around."
+    concrete: "git worktree add --detach .claude/worktrees/tmp-two-tree-check HEAD -> run the comparison -> git worktree remove <path> --force. It exists only to be a second path for the same commit, so it takes no branch of its own."
+    command_was_wrong_first_time: "The obvious form, `git worktree add <path> main`, FAILS: 'fatal: main is already used by worktree at <repo>' - the primary worktree already has main checked out. --detach HEAD is the form that works. Verified by running both, because an untested command in a plan is exactly the kind of thing the implementer pays for."
+    disclosure: "This was invalidated by the same agent that wrote it, one hour later, by cleaning up the worktrees. Recorded rather than silently repaired, because a plan that quietly stops matching the machine is how both preceding work items got their defects."
 ```
 
 ## Option Analysis
