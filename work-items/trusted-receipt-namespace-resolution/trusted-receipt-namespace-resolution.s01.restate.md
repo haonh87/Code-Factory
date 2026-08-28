@@ -263,14 +263,14 @@ untouched_by_this_work_item:
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "trusted-receipt-namespace-resolution"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/trusted-receipt-namespace-resolution"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - "packages/workflow-bundle/scripts/workflow-trusted-approval-utils.js"
   - "packages/workflow-bundle/scripts/work-item-protocol.js"
@@ -289,11 +289,11 @@ decision_owner: "coordinator"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-08-22T15:11:50.848Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-08-22T15:21:06.401Z"
+handoff_target: "definition-of-done"
+last_transition_action: "verify"
+last_transition_at: "2026-08-28T06:26:08.772Z"
 required_actions:
-  - "Continue active execution from step 7 onward."
+  - "Collect DoD evidence and close the work item when ready."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -303,6 +303,7 @@ audit_events:
   - "REPORT_BOOTSTRAPPED"
   - "WORK_ITEM_APPROVED"
   - "WORK_ITEM_ACTIVATED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
 ## Traceability

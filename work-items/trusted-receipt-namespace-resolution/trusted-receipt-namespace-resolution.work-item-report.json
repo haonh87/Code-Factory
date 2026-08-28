@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "VERIFIED",
   "decision_owner": "coordinator",
   "protocol_owner": "po",
   "raw_request_summary": "",
@@ -16,7 +16,7 @@
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/trusted-receipt-namespace-resolution",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     "packages/workflow-bundle/scripts/workflow-trusted-approval-utils.js",
     "packages/workflow-bundle/scripts/work-item-protocol.js",
@@ -27,9 +27,9 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "step-s07-owner",
+  "handoff_target": "definition-of-done",
   "required_actions": [
-    "Continue active execution from step 7 onward."
+    "Collect DoD evidence and close the work item when ready."
   ],
   "blockers": [],
   "refs": [
@@ -38,7 +38,8 @@
   "audit_events": [
     "REPORT_BOOTSTRAPPED",
     "WORK_ITEM_APPROVED",
-    "WORK_ITEM_ACTIVATED"
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -83,6 +84,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "ACTIVE",
       "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-08-28T06:26:08.772Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Technical verification completed."
     }
   ]
 }
