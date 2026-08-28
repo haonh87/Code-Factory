@@ -316,6 +316,75 @@ try {
   rmrf(tmpRoot);
 }
 
+
+// ---------------------------------------------------------------------------
+// GOV-EX-001 residual debt. The EAGAIN retry in the hidden-passphrase prompt was
+// committed with no work item and no test, to unblock a merge. The register scheduled
+// the test for "immediately after codex/trusted-receipt-namespace-resolution merges",
+// because tdd-enforce refused an edit to that file on main while THIS test file existed
+// only on that branch. The branch has merged, so the debt is payable and is paid here.
+//
+// The retry is behaviour that already ships, so this is coverage rather than a change.
+// fs.readSync is stubbed because the real call needs fd 0 in raw mode, which a test
+// runner does not have - and the point is the retry decision, not the terminal.
+// ---------------------------------------------------------------------------
+
+function testEagainRetryIsCoveredGovEx001() {
+  console.log("\nGOV-EX-001: the EAGAIN retry in the passphrase read is covered");
+
+  const mod = require("../scripts/workflow-trusted-approval-utils");
+  assert(
+    typeof mod.readStdinByteSync === "function",
+    "readStdinByteSync is exported so the retry can be tested at all (the register names this as part of the debt)"
+  );
+  if (typeof mod.readStdinByteSync !== "function") {
+    return;
+  }
+
+  const realReadSync = fs.readSync;
+  try {
+    // Two EAGAIN throws then a byte: the retry must absorb the transient failures.
+    let calls = 0;
+    fs.readSync = () => {
+      calls += 1;
+      if (calls <= 2) {
+        const err = new Error("EAGAIN: resource temporarily unavailable, read");
+        err.code = "EAGAIN";
+        throw err;
+      }
+      return 1;
+    };
+    const got = mod.readStdinByteSync(Buffer.alloc(1));
+    assert(got === 1, `a byte is returned after transient EAGAIN (got ${got})`);
+    assert(calls === 3, `the read is retried rather than failing on the first EAGAIN (calls=${calls})`);
+
+    // A non-EAGAIN error must still propagate - the retry is bounded to EAGAIN only,
+    // which is exactly what the exception's mitigation claims.
+    fs.readSync = () => {
+      const err = new Error("EBADF: bad file descriptor, read");
+      err.code = "EBADF";
+      throw err;
+    };
+    let threw = false;
+    let code = "";
+    try {
+      mod.readStdinByteSync(Buffer.alloc(1));
+    } catch (e) {
+      threw = true;
+      code = e && e.code;
+    }
+    assert(threw && code === "EBADF", `a non-EAGAIN error still throws instead of looping (threw=${threw}, code=${code})`);
+
+    // Zero bytes must be returned as-is, so the caller's end-of-input path still works.
+    fs.readSync = () => 0;
+    assert(mod.readStdinByteSync(Buffer.alloc(1)) === 0, "a zero-byte read is returned, not retried forever");
+  } finally {
+    fs.readSync = realReadSync;
+  }
+}
+
+testEagainRetryIsCoveredGovEx001();
+
 if (failures > 0) {
   console.error(`\nworkflow-trusted-approval-utils.test.js: ${failures} assertion(s) failed.`);
   process.exit(1);

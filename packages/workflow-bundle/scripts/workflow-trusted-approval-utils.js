@@ -538,6 +538,7 @@ module.exports = {
   isTrustedReceiptSignatureValid,
   loadTrustedApprovalReceipt,
   normalizeProjectRelativePath,
+  readStdinByteSync,
   resolveApprovalPassphrase,
   resolveGateArtifact,
   resolveTrustedApprovalRoot,
