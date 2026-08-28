@@ -336,6 +336,202 @@ function testContradictoryProtocolStateFixtureIsRejected() {
   console.log("  PASS: contradictory protocol state fixture is rejected and activate clears blockers");
 }
 
+
+// ---------------------------------------------------------------------------
+// E-B / REQ-004 carried from worktree-and-closure-integrity as L-01: a work item
+// must not reach DONE after its declared delivery was dirtied following a clean
+// dod seal. The seal guard already exists on main; this asserts the TRANSITION,
+// which is a different call site. A test that hits the seal instead would pass
+// while proving nothing about L-01 - see T4's review checkpoint.
+//
+// Nothing is persisted: OQ-4 is answered by re-evaluating at transition time, so
+// the hatch is passed again at the transition rather than stored in a receipt.
+//
+// Work item: trusted-receipt-namespace-resolution, task T4.
+// ---------------------------------------------------------------------------
+
+function git(cwd, args) {
+  try {
+    return { status: 0, out: execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }) };
+  } catch (e) {
+    return { status: e.status === undefined ? 1 : e.status, out: `${e.stdout || ""}${e.stderr || ""}` };
+  }
+}
+
+// Builds a Light work item sitting at VERIFIED with dod sealed over a CLEAN tree,
+// which is the only state from which the DONE transition is reachable.
+// --no-verify because the operator's global commit-msg hook enforces Conventional
+// Commits; a fixture must not depend on the operator's hook configuration.
+function buildProjectAtVerified(slug, opts = {}) {
+  const { projectRoot, workflowRoot } = buildLightProject(slug);
+  const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-eb-approvals-"));
+  const workflowRootBase = path.dirname(workflowRoot);
+  const childEnv = {
+    ...process.env,
+    WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "true",
+    WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: "test-passphrase",
+    WORKFLOW_BUNDLE_APPROVAL_ROOT: approvalRoot
+  };
+
+  const withGit = opts.withGit !== false;
+  if (withGit) {
+    git(projectRoot, ["init", "-q"]);
+    git(projectRoot, ["config", "user.email", "fixture@example.test"]);
+    git(projectRoot, ["config", "user.name", "Fixture"]);
+  }
+  writeFile(path.join(projectRoot, "src", "app.js"), "// committed delivery\n");
+
+  // s07 must exist and be finalized before verify; s08 hosts the dod gate.
+  writeFile(
+    path.join(workflowRoot, `${slug}.s07.implementation.md`),
+    makeHostNoteFrontmatter(slug, "s07", "implementation") +
+      "## Delivery Rule Evidence\n```yaml\nbehavior_change: NO\ntdd_status: NOT_REQUIRED\nworktree_status: NOT_REQUIRED\nreview_status: COMPLETED\ndelegation_mode: agentic\n```\n"
+  );
+  writeFile(
+    path.join(workflowRoot, `${slug}.s08.verification.md`),
+    makeHostNoteFrontmatter(slug, "s08", "verification").replace(
+      '  task_plan_reviewed_at: "2026-07-16"',
+      '  task_plan_reviewed_at: "2026-07-16"\n  dod_reviewed_by: ["qc"]\n  dod_reviewed_at: "2026-07-16"'
+    ) + "## Governance Checks\n```yaml\nchecklist_applied: []\n```\n## SDD Traceability\n```yaml\nrequirement_refs: [REQ-001]\n```\n"
+  );
+
+  // The dod seal guard (merged from the sibling work item) reads granted_write_paths
+  // from the PERSISTED report, so the report must exist on disk before sealing or the
+  // seal refuses with "granted_write_paths is empty" - the guard working as designed.
+  const reportPath = path.join(workflowRoot, `${slug}.work-item-report.json`);
+  writeFile(reportPath, JSON.stringify({
+    work_item_slug: slug,
+    workflow_root: workflowRoot,
+    delivery_context: "brownfield",
+    protocol_status: "VERIFIED",
+    approval_status: "APPROVED",
+    review_required: true,
+    reviewed_by: "po",
+    current_step: "s08",
+    granted_write_paths: ["src"]
+  }, null, 2) + "\n");
+
+  // Commit BEFORE sealing. The L-01 scenario is "seal clean, then dirty, then transition",
+  // so a fixture that seals over a dirty tree would be testing the seal guard instead.
+  if (withGit) {
+    git(projectRoot, ["add", "-A"]);
+    git(projectRoot, ["commit", "--no-verify", "-q", "-m", "chore: seed"]);
+  }
+
+  // The DONE transition also requires a trusted WORK-ITEM receipt, not just gate receipts.
+  const protocolScript = path.resolve(__dirname, "..", "scripts", "work-item-protocol.js");
+  execFileSync(process.execPath, [protocolScript, "approve", "--work-item", slug, "--reviewed-by", "po",
+    "--project-root", projectRoot, "--workflow-root", workflowRootBase, "--approval-root", approvalRoot],
+    { env: childEnv, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
+
+  const gateScript = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  execFileSync(process.execPath, [gateScript, "approve-ready-bundle", "--work-item", slug,
+    "--project-root", projectRoot, "--workflow-root", workflowRootBase, "--approval-root", approvalRoot],
+    { env: childEnv, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
+  execFileSync(process.execPath, [gateScript, "approve", "--work-item", slug, "--gate", "dod",
+    "--reviewed-by", "qc", "--project-root", projectRoot, "--workflow-root", workflowRootBase,
+    "--approval-root", approvalRoot], { env: childEnv, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
+
+  const report = {
+    work_item_slug: slug,
+    workflow_root: workflowRoot,
+    delivery_context: "brownfield",
+    protocol_status: "VERIFIED",
+    approval_status: "APPROVED",
+    review_required: true,
+    reviewed_by: "po",
+    current_step: "s08",
+    granted_write_paths: ["src"]
+  };
+  return { projectRoot, workflowRoot, approvalRoot, report, childEnv };
+}
+
+function closeIt(ctx, extra = {}) {
+  const { applyAction } = require("../scripts/work-item-protocol");
+  // applyAction reads the approval root from the environment rather than from args,
+  // so the fixture root is scoped around the call and restored afterwards.
+  const prevRoot = process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
+  const prevInsecure = process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT;
+  process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = ctx.approvalRoot;
+  process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT = "true";
+  try {
+    return { ok: true, report: applyAction(ctx.report, "close", { "project-root": ctx.projectRoot, ...extra }) };
+  } catch (e) {
+    return { ok: false, message: String(e.message || e) };
+  } finally {
+    if (prevRoot === undefined) delete process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT; else process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = prevRoot;
+    if (prevInsecure === undefined) delete process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT; else process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT = prevInsecure;
+  }
+}
+
+function dirty(ctx, rel, text) {
+  const abs = path.join(ctx.projectRoot, rel);
+  let cur = path.dirname(abs);
+  while (cur.startsWith(ctx.projectRoot)) { try { fs.chmodSync(cur, 0o755); } catch (_e) {} const up = path.dirname(cur); if (up === cur) break; cur = up; }
+  try { fs.chmodSync(ctx.projectRoot, 0o755); } catch (_e) {}
+  try { fs.chmodSync(abs, 0o644); } catch (_e) {}
+  fs.appendFileSync(abs, text, "utf8");
+}
+
+function testEbCleanTreeStillReachesDone() {
+  console.log("\nE-B / AC-004: a clean declared scope still reaches DONE (no false positive)");
+  const ctx = buildProjectAtVerified("eb-clean-item");
+  try {
+    const r = closeIt(ctx);
+    assert(r.ok && r.report.protocol_status === "DONE", `clean tree must reach DONE (got: ${r.ok ? r.report.protocol_status : r.message})`);
+  } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
+}
+
+function testEbDirtyDeclaredPathRefusedAtTransition() {
+  console.log("\nE-B / REQ-004 / L-01: DONE is refused when a declared path is dirty AFTER a clean seal");
+  const ctx = buildProjectAtVerified("eb-dirty-item");
+  try {
+    dirty(ctx, path.join("src", "app.js"), "// uncommitted after the seal\n");
+    const st = git(ctx.projectRoot, ["status", "--porcelain", "--", "src"]);
+    assert(st.out.trim() !== "", `precondition: src is dirty (got "${st.out.trim()}")`);
+    const r = closeIt(ctx);
+    assert(!r.ok, "the DONE transition is REFUSED while a declared path holds uncommitted changes (today: it succeeds - L-01)");
+    assert(!r.ok && /src/.test(r.message), "the refusal names the offending path");
+  } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
+}
+
+function testEbHatchNeedsAStatedReason() {
+  console.log("\nE-B / AC-004: the transition hatch requires a stated reason and echoes it");
+  const withReason = buildProjectAtVerified("eb-hatch-yes");
+  try {
+    dirty(withReason, path.join("src", "app.js"), "// uncommitted\n");
+    const r = closeIt(withReason, { "allow-uncommitted-delivery": true, "uncommitted-reason": "docs-only follow-up, nothing to commit" });
+    assert(r.ok, `the hatch WITH a reason permits DONE (got: ${r.ok ? "ok" : r.message})`);
+  } finally { rmrf(withReason.projectRoot); rmrf(withReason.approvalRoot); }
+
+  const noReason = buildProjectAtVerified("eb-hatch-no");
+  try {
+    dirty(noReason, path.join("src", "app.js"), "// uncommitted\n");
+    const r = closeIt(noReason, { "allow-uncommitted-delivery": true });
+    assert(!r.ok, "the hatch WITHOUT a reason is refused, so the exemption cannot be silent");
+    assert(!r.ok && /reason/i.test(r.message), "the refusal names the missing reason");
+  } finally { rmrf(noReason.projectRoot); rmrf(noReason.approvalRoot); }
+}
+
+function testEbEmptyScopeRefusesRatherThanPassesVacuously() {
+  console.log("\nE-B / EDGE-005: an empty granted_write_paths refuses rather than passing vacuously");
+  const ctx = buildProjectAtVerified("eb-empty-item");
+  try {
+    ctx.report.granted_write_paths = [];
+    const r = closeIt(ctx);
+    assert(!r.ok, "an empty declared scope is not evidence of a clean tree, so DONE is refused");
+  } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
+}
+
+function testEbOutsideGitIsSilent() {
+  console.log("\nE-B / EDGE-006: outside a git repository the guard stays silent (consistent with L-02)");
+  const ctx = buildProjectAtVerified("eb-nogit-item", { withGit: false });
+  try {
+    const r = closeIt(ctx);
+    assert(r.ok && r.report.protocol_status === "DONE", `no git history means nothing to verify, so DONE proceeds (got: ${r.ok ? r.report.protocol_status : r.message})`);
+  } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
+}
+
 console.log("Running work-item-protocol (Light) tests...\n");
 testEnsureLightLazyStepNoteCreatesS07S08();
 testEnsureLightLazyNoopForNonLight();
@@ -343,6 +539,11 @@ testApproveReadyBundleSealsFourIndependentReceipts();
 testFailedVerifyDoesNotLeavePrematureS08();
 testStaleDigestFixtureIsRejected();
 testContradictoryProtocolStateFixtureIsRejected();
+testEbCleanTreeStillReachesDone();
+testEbDirtyDeclaredPathRefusedAtTransition();
+testEbHatchNeedsAStatedReason();
+testEbEmptyScopeRefusesRatherThanPassesVacuously();
+testEbOutsideGitIsSilent();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in work-item-protocol-light.test.js`);
