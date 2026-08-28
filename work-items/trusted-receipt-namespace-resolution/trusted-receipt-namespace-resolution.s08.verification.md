@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -49,7 +49,8 @@ role_signoffs:
   uat: []
   release: []
   business_acceptance: []
-  dod: []
+  dod:
+    - "qc"
 gate_reviews:
   spec_reviewed_by: []
   spec_reviewed_at: ""
@@ -69,8 +70,9 @@ gate_reviews:
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by:
+    - "qc"
+  dod_reviewed_at: "2026-08-28T05:29:22.000Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -237,10 +239,38 @@ notes:
   - "No gate has been claimed, proposed or passed by this note. dod is still MISSING."
 ```
 
+## Spec Coverage
+```yaml
+coverage:
+  - requirement: "AC-001 - receipts resolve for one logical project from any checkout (E-A)"
+    covered_by: "workflow-trusted-approval-utils.test.js: canonical-root, SM-3 namespace identity, and 'the SAME receipt is readable from the worktree'. Plus wfc protocol from the worktree, exit 0."
+    status: PASS
+  - requirement: "AC-002 - every existing receipt stays readable, valid and in place"
+    covered_by: "workflow-trusted-approval-utils.test.js: new namespace equals legacy for a main-tree checkout; legacy-written receipt readable from a worktree. Plus a 56/56 digest inventory, subset method."
+    status: PASS
+  - requirement: "AC-003 - a different project's receipt is still refused"
+    covered_by: "workflow-trusted-approval-utils.test.js: independent repo resolves differently, two repos never share a namespace, and a foreign receipt is a refused lookup rather than an unequal string."
+    status: PASS
+  - requirement: "AC-004 - DONE refused over a dirty declared scope, exemption visible (E-B)"
+    covered_by: "work-item-protocol.test.js: five-group DONE-transition matrix observed RED first, plus a CLI-level assertion driving the real close command."
+    status: PASS
+  - requirement: "AC-005 - the four approval controls unchanged"
+    covered_by: "workflow-trusted-approval-utils.test.js: four explicit non-regression assertions - TTY/passphrase refusal, gated fixture hatch, one receipt per gate, receipt bound to host sha256."
+    status: PASS
+  - requirement: "AC-006 - deterministic, non-fatal identity for every project shape"
+    covered_by: "workflow-trusted-approval-utils.test.js: determinism across plain repo, worktree, nested worktree and non-git, plus separate-git-dir fallback."
+    status: PASS
+status: PASS
+status_reason: "All six criteria covered by named assertions and none deferred. Unlike the sibling work item, which closed PARTIAL on REQ-004, nothing here is carried forward - E-B was that carried item and it is delivered."
+```
+
 ## Definition of Done
 ```yaml
-status: ""
-status_note: "DELIBERATELY UNSET. An agent may gather evidence and give a technical verdict; it may not pass DoD. A human sets this field, fills gate_reviews.dod_reviewed_by and _reviewed_at, then seals - in that order. Note the validator couples finalization and attestation: a finalized s08 note must carry both fields, so they are done together, not in two steps."
+status: DONE
+status_reason: "DONE rather than PARTIAL: all six acceptance criteria are closed with measured evidence and none is deferred. This differs from the sibling work item, which closed PARTIAL because REQ-004 carried an accepted limitation - that limitation was E-B, and E-B is delivered here."
+status_set_by: "human (interactive, 2026-08-28) - recorded by the agent as scribe, not decided by it"
+attestation_provenance: "gate_reviews.dod and role_signoffs.dod recorded as qc on the human's own action - they invoked `wfc gate approve --gate dod --reviewed-by qc` directly, which is the review event these fields record. role_signoffs.dod was empty in this note's scaffold, unlike the sibling's, so the authority row was written from that same invocation. The agent transcribed it; it did not originate it and did not seal the receipt."
+status_note: "SET FROM THE HUMAN\'S DECISION. An agent may gather evidence and give a technical verdict; it may not pass DoD. A human sets this field, fills gate_reviews.dod_reviewed_by and _reviewed_at, then seals - in that order. Note the validator couples finalization and attestation: a finalized s08 note must carry both fields, so they are done together, not in two steps."
 evidence_is_complete: true
 what_a_human_still_decides:
   - "The DoD verdict itself."
