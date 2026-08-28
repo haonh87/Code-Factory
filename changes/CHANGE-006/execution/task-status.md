@@ -36,8 +36,8 @@ task_status:
     status: PASS
     evidence: "Human QC approved Technical Verification and technical DoD at 2026-08-25T09:15:01Z; human DevOps and QC approved Release at 2026-08-25T09:23:44Z against target 23a30756..., candidate 7c1d2c7..., rollback 5da823c9..., remote run 32825477258 at 9/9, and unchanged v2.6.0."
   - task_id: "TASK-009"
-    status: PENDING
-    evidence: "Publication and post-release verification PASS: annotated v2.6.1 resolves to 23a30756..., GitHub release 376297525 contains asset 528978943 with SHA-256 7c1d2c7..., the downloaded artifact is byte-identical and passes exact install/update 4/4, rollback to immutable v2.6.0 passes 4/4, REL-F01 is resolved, and CHANGE-004 archive readiness is READY. Human PO approved Business Acceptance at 2026-08-28T03:46:09Z. TASK-009 remains pending only for trusted receipt sealing, protocol close, and branch/worktree finalization."
+    status: PASS
+    evidence: "Publication and post-release verification PASS: annotated v2.6.1 resolves to 23a30756..., GitHub release 376297525 contains asset 528978943 with SHA-256 7c1d2c7..., the downloaded artifact is byte-identical and passes exact install/update 4/4, rollback to immutable v2.6.0 passes 4/4, REL-F01 is resolved, and CHANGE-004 archive readiness is READY. Human PO approved Business Acceptance at 2026-08-28T03:46:09Z. DoD, Release, and Business Acceptance receipts are APPROVED with digest_match=true against s08 SHA-256 f8710051...; protocol transitioned VERIFIED -> DONE -> ARCHIVED; merge commit 9e5c1ee and closeout commits are on main; the dedicated worktree and local branch were removed after Git confirmed zero unique branch commits."
 blocking_items: []
-next_action: "Integration completed at main merge commit 9e5c1ee; retain the workspace, seal the main-root s08 DoD/Release/Business Acceptance receipts, verify digest matches, close the protocol, and then complete controlled cleanup."
+next_action: "NONE — CHANGE-006 delivery, protocol, archive, and branch/worktree finalization are complete."
 ```

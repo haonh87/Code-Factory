@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "DONE",
+  "protocol_status": "ARCHIVED",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Resolve REL-F01 by aligning the stale mutating-action-requires-report smoke fixture with approved TD-01 bootstrap behavior; rerun guardrail CI and publish patch v2.6.1 without moving v2.6.0.",
@@ -89,10 +89,8 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CHANGE-006",
-  "handoff_target": "branch-worktree-cleanup",
-  "required_actions": [
-    "Archive the work item when all downstream lifecycle actions are complete."
-  ],
+  "handoff_target": "none",
+  "required_actions": [],
   "blockers": [],
   "refs": [
     "work-items/fix-authoring-smoke-bootstrap"
@@ -112,7 +110,8 @@
     "GATE_REVIEW_RECORDED",
     "RELEASE_EXECUTED",
     "BUSINESS_ACCEPTANCE_CONFIRMED",
-    "DONE_CONFIRMED"
+    "DONE_CONFIRMED",
+    "ARCHIVE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -213,6 +212,14 @@
       "from_status": "VERIFIED",
       "to_status": "DONE",
       "note": "Trusted DoD, Release, and Business Acceptance receipts are APPROVED with digest_match=true against the frozen main-root s08 host; close protocol before controlled workspace cleanup."
+    },
+    {
+      "timestamp": "2026-08-28T04:42:07.324Z",
+      "action": "archive",
+      "actor": "coordinator",
+      "from_status": "DONE",
+      "to_status": "ARCHIVED",
+      "note": "Protocol DONE, trusted s08 receipts digest-match, v2.6.1 release evidence is complete, and the integrated branch/worktree has been finalized."
     }
   ]
 }
