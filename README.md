@@ -6,9 +6,9 @@ language: en
 
 > Vietnamese: README.vi.md
 
-This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.5.0`: an installable workflow bundle for Codex and Claude Code that lets the agent proactively propose `work-item` and `change`, while the human retains approval authority at the gates before delivery proceeds. It remains unpublished until the human Release gate passes.
+This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.6.1`: an installable workflow bundle for Codex and Claude Code that lets the agent proactively propose `work-item` and `change`, while the human retains approval authority at the gates before delivery proceeds. It remains unpublished until the human Release gate passes. The patch aligns the stale authoring smoke with the approved bootstrap behavior while preserving production approval semantics, the 42-skill inventory, and the existing public contract.
 
-Until that gate passes, treat the candidate source commit and retained candidate digest in CHANGE-003 as the release-candidate references. Create and share the `v2.5.0` tag only after Release approval.
+Until that gate passes, treat the candidate source commit and retained candidate digest in CHANGE-006 as the release-candidate references. Create and share the `v2.6.1` tag only after Release approval. The verified rollback baseline is the immutable `v2.6.0/42` release.
 
 > Looking for the community-facing English overview? See [`docs/release/community-pack-readme.md`](docs/release/community-pack-readme.md) (Vietnamese: [`docs/release/community-pack-readme.vi.md`](docs/release/community-pack-readme.vi.md)).
 
@@ -22,7 +22,7 @@ Until that gate passes, treat the candidate source commit and retained candidate
 
 ## Start Here
 
-If you are approaching the repo for the first time and want to review the `v2.5.0` release candidate:
+If you are approaching the repo for the first time and want to review the `v2.6.1` release candidate:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -43,7 +43,7 @@ The documents below are maintainer or historical context and should not be used 
 
 ## Quick Workflow Commands
 
-The public command surface of `v2.5.0` uses `wfc`.
+The public command surface of `v2.6.1` uses `wfc`.
 
 Install and manage the workflow bundle:
 
@@ -99,20 +99,20 @@ Notes:
 - `--work-item` is the short CLI name for `work_item_slug`.
 - `work_item_slug` is the identifier carried across all 8 steps, e.g. `fix-login-timeout`, `checkout-recovery`.
 - The strict default for a new repo is `protocolControl.legacyScaffoldPolicy=forbid`; only when project config enables explicit `allow_readonly` should `wfc work-item list|status` use a read-only bootstrap report from an old `s01` to observe legacy scaffold state.
-- Mutating actions such as `approve|activate|verify|close` must not bootstrap themselves; they require an existing `.work-item-report.json`.
+- Read-only `list|status` never persists a report. Explicit `approve` may bootstrap a scaffold-only work item and records `request_source=legacy-scaffold`, `REPORT_BOOTSTRAPPED`, and the human reviewer; `activate|verify|close` still require an existing `.work-item-report.json`.
 - `work-item approval`, `change approval`, and `gate approval` are only considered trusted when a signed receipt exists outside the project root; metadata in a note or report is no longer sufficient to open a gate on its own.
 - The `approve` commands still go through the CLI but must be run by a human in an interactive TTY; normal mode will reject `--approval-passphrase` and `WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE`.
 - The first approval in a trusted approval root creates an approver keypair and requires the human to enter an approval passphrase directly in that TTY.
 - The implementation path is locked at the filesystem level until the work item reaches `ACTIVE` at `s07` and is granted a `write-root`.
 - `work-items/` is the canonical artifact root for the repo's workflow artifacts.
-- The approval model of `v2.5.0` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
+- The approval model of `v2.6.1` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
 
 ## Workflow Docs
 
 ### By Purpose
 
 - Public docs for newcomers to the workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface for `v2.5.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface for `v2.6.1`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart for `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README for installation or publishing: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 

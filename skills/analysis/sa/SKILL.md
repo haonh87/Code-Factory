@@ -151,6 +151,9 @@ Blocks that do not apply are emitted with `applicable: false` and a `reason`. `i
    neither is an opinion, not a driver: leave it out of `drivers` and record it in
    `input_issues.unanchored_drivers` with the reason. Never silently discard it.
    This is a different failure from step 8 — no one asked for it, versus it serves no objective.
+   Then load `references/design-readiness-checklist.md`, apply only relevant entries, and map findings
+   to existing `drivers`, `input_issues`, or role-owned `handoff` fields. Never emit the reference
+   wholesale or make a downstream solution choice.
 6. **Set the threshold status.** `quantified` when a number exists. `binary` when the driver is
    satisfied or not and no number would mean anything — a regulatory duty, a contract that must not
    break. `not_quantified` when a number *should* exist but does not yet; write why — no baseline,
@@ -225,3 +228,4 @@ binds the system lens: state that a capability needs one owner, not which system
 - `references/visual-encoding.md` — which visual channel may carry which attribute, decided before drawing.
 - `references/example.md` — one complete filled artifact, showing quantified, binary and not_quantified drivers side by side.
 - `references/invocation-rules.md` — directive grammar, profile selection, hard escalation and format rules.
+- `references/design-readiness-checklist.md` — conditional pre-design checks, driver questions and owned handoffs.

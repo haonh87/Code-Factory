@@ -30,6 +30,7 @@ console.log("Running artifact reference resolver tests...\n");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
 
+
 // D-E / T7: this assertion used to read a LIVE work item note and require protocol_status to be
 // ACTIVE. It broke the moment that work item closed, which made the suite result depend on which
 // work items happen to be ACTIVE rather than on the resolver. The fixture below controls its own
@@ -76,6 +77,39 @@ try {
 } finally {
   fs.rmSync(sameNoteRoot, { recursive: true, force: true });
 }
+
+// Merge note (2026-08-28): main's 26591a2 fixed the same original brittleness a different way -
+// it kept reading the live note but compared against the live report, so a status change no longer
+// breaks it. AC-006 requires the CONTROLLED fixture, so that one is authoritative here; main's
+// live self-consistency check is kept as an additional assertion so the merge loses nothing.
+// The live check is coupled to that work item continuing to EXIST, which is the residual risk
+// already recorded in s07 as residual-cross-file and owned by the test-hygiene work item.
+const liveS01 = path.join(
+  repoRoot,
+  "work-items",
+  "artifact-governance-enforcement",
+  "artifact-governance-enforcement.s01.restate.md"
+);
+const liveReport = JSON.parse(
+  fs.readFileSync(
+    path.join(
+      repoRoot,
+      "work-items",
+      "artifact-governance-enforcement",
+      "artifact-governance-enforcement.work-item-report.json"
+    ),
+    "utf8"
+  )
+);
+const liveSameNote = resolveArtifactReference({
+  projectRoot: repoRoot,
+  currentFile: liveS01,
+  reference: "#Work Item Protocol.protocol_status"
+});
+assert(
+  liveSameNote.value === liveReport.protocol_status,
+  "same-note resolver must match the live P2 protocol source-of-truth"
+);
 
 const liveCrossFile = resolveArtifactReference({
   projectRoot: repoRoot,

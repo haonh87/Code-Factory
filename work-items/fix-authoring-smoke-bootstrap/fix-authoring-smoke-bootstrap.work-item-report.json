@@ -1,0 +1,209 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "VERIFIED",
+  "decision_owner": "agent",
+  "protocol_owner": "developer",
+  "raw_request_summary": "Resolve REL-F01 by aligning the stale mutating-action-requires-report smoke fixture with approved TD-01 bootstrap behavior; rerun guardrail CI and publish patch v2.6.1 without moving v2.6.0.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "fix-authoring-smoke-bootstrap",
+      "work_item_title": "Fix Authoring Smoke Bootstrap",
+      "work_item_type": "BUG",
+      "scope_summary": "Resolve REL-F01 by aligning the stale mutating-action-requires-report smoke fixture with approved TD-01 bootstrap behavior; rerun guardrail CI and publish patch v2.6.1 without moving v2.6.0.",
+      "primary_outcome": "Resolve REL-F01 by aligning the stale mutating-action-requires-report smoke fixture with approved TD-01 bootstrap behavior; rerun guardrail CI and publish patch v2.6.1 without moving v2.6.0.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "quick",
+      "delivery_context": "brownfield",
+      "sdd_mode": "light",
+      "selected_profile": "sdd-light",
+      "sdd_reasons": [],
+      "sdd_preset": "light",
+      "sdd_light_profile": "preview",
+      "governance_profile": "default",
+      "execution_mode": "agentic",
+      "existing_refs": [],
+      "collision_notes": [],
+      "change_strategy": "create_new",
+      "change_id": "CHANGE-006",
+      "change_reason": "Scope có tín hiệu cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:change -- --change-id CHANGE-006 --work-item fix-authoring-smoke-bootstrap",
+        "npm run scaffold:workflow -- --work-item fix-authoring-smoke-bootstrap --planning-track quick --delivery-context brownfield --sdd-mode light --change-id CHANGE-006",
+        "npm run validate:workflow -- --workflow-root work-items/fix-authoring-smoke-bootstrap --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=BUG",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict",
+    "change_strategy=create_new",
+    "planning_track=quick",
+    "governance_profile=default",
+    "sdd_preset=light",
+    "selected_profile=sdd-light",
+    "sdd_mode=light",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "fix-authoring-smoke-bootstrap",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/fix-authoring-smoke-bootstrap",
+  "current_step": "s08",
+  "granted_write_paths": [
+    "package.json",
+    "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js",
+    "workflow-bundle.manifest.json",
+    "packages/workflow-bundle/workflow-bundle.manifest.json",
+    "packages/workflow-bundle/package.json",
+    "packages/workflow-bundle/bin/wfc.js",
+    "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js",
+    "packages/workflow-bundle/test/release-install-all-smoke.test.js",
+    "packages/workflow-bundle/test/release-rollback-smoke.test.js",
+    "packages/workflow-bundle/test/release-surface.test.js",
+    ".claude/CLAUDE.md",
+    "README.md",
+    "README.vi.md",
+    "docs/publish-surface.md",
+    "docs/publish-surface.vi.md",
+    "docs/workflow-docs-map.md",
+    "docs/workflow-docs-map.vi.md",
+    "docs/workflow-bundle-quickstart.md",
+    "docs/workflow-bundle-quickstart.vi.md",
+    "packages/workflow-bundle/README.md",
+    "packages/workflow-bundle/README.vi.md",
+    "docs/releases/workflow-bundle-v2.6.1.md",
+    "packages/workflow-bundle/workflow-bundle-2.6.1.tgz",
+    "work-items/fix-authoring-smoke-bootstrap",
+    "changes/CHANGE-006",
+    "changes/CHANGE-004/tasks.md",
+    "changes/CHANGE-004/archive-metadata.md"
+  ],
+  "change_strategy": "create_new",
+  "change_id": "CHANGE-006",
+  "handoff_target": "branch-integration-for-receipt-sealing",
+  "required_actions": [
+    "Integrate the conflict-free verified branch into main while retaining the branch/worktree, then seal main-root s08 receipts and validate digest matches before protocol close."
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/fix-authoring-smoke-bootstrap"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "CHANGE_CREATED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "STEP_OPENED",
+    "VERIFICATION_CONFIRMED",
+    "GATE_REVIEW_RECORDED",
+    "RELEASE_EXECUTED",
+    "BUSINESS_ACCEPTANCE_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-08-24T09:36:44.436Z",
+  "review_notes": [
+    "Human review approved."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-08-24T08:51:34.346Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-08-24T08:51:34.347Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Materialization inputs are ready for scaffold."
+    },
+    {
+      "timestamp": "2026-08-24T08:51:34.624Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Auto-scaffolded workflow artifacts."
+    },
+    {
+      "timestamp": "2026-08-24T09:36:44.437Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-08-25T02:40:24.387Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Developer-approved Approach and Task Plan receipts verified; begin isolated s07 execution."
+    },
+    {
+      "timestamp": "2026-08-25T08:44:42Z",
+      "action": "step-opened",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "Human QC explicitly approved opening s08 for independent verification; this does not approve Technical Verification, DoD, Release, or Business Acceptance."
+    },
+    {
+      "timestamp": "2026-08-25T09:15:01Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Human QC explicitly approved Technical Verification and technical DoD against target 23a30756..., candidate 7c1d2c7..., and rollback 5da823c9...; Release and Business Acceptance remain unapproved, and shared s08 trusted receipts are deferred until the artifact is frozen."
+    },
+    {
+      "timestamp": "2026-08-25T09:23:44Z",
+      "action": "gate-review-recorded",
+      "actor": "devops+qc",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Human DevOps and QC explicitly approved Release against target 23a30756..., candidate 7c1d2c7..., rollback 5da823c9..., and remote run 32825477258 at 9/9; no external release action was executed, Business Acceptance remains pending, and shared s08 trusted receipts are deferred until the artifact is frozen."
+    },
+    {
+      "timestamp": "2026-08-25T09:53:15Z",
+      "action": "release-executed",
+      "actor": "devops",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Published GitHub release 376297525 with annotated v2.6.1 tag object feb5b3ee... targeting 23a30756... and asset 528978943 matching 7c1d2c7...; downloaded install/update and immutable v2.6.0 rollback pass 4/4, REL-F01 is resolved, and explicit PO Business Acceptance remains pending."
+    },
+    {
+      "timestamp": "2026-08-28T03:46:09Z",
+      "action": "gate-review-recorded",
+      "actor": "po",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Human PO explicitly approved Business Acceptance after TASK-009 publication, downloaded-asset identity, rollback, AC-001 through AC-008, and REL-F01 evidence were complete; trusted s08 receipts and protocol close remain pending."
+    }
+  ]
+}

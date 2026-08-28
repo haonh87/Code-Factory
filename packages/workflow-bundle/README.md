@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: README.vi.md
 
-`workflow-bundle` is the CLI package prepared for the `v2.5.0` release candidate: it installs the workflow bundle for Codex or Claude Code, scaffolds or validates workflows, and supports the `agent proposes, human approves` flow for `work-item` and `change`. It remains unpublished until the human Release gate passes.
+`workflow-bundle` is the CLI package prepared for the `v2.6.1` release candidate: it installs the workflow bundle for Codex or Claude Code, scaffolds or validates workflows, and supports the `agent proposes, human approves` flow for `work-item` and `change`. It remains unpublished until the human Release gate passes. The patch aligns the stale authoring smoke with the approved bootstrap behavior without changing production approval semantics, managed-skill count, or public CLI contract.
 
 Detailed quickstart: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -43,27 +43,27 @@ npm link
 wfc version
 ```
 
-### Roll Back From v2.5.0 To v2.4.0
+### Roll Back From v2.6.1 To v2.6.0
 
 Capture the current mode, scope, project roots, and status before replacing the package. Then install
-the retained immutable v2.4.0 tarball and run `install` for every recorded target:
+the retained immutable v2.6.0 tarball and run `install` for every recorded target:
 
 ```bash
 wfc status --mode codex
-npm install -g /absolute/path/to/workflow-bundle-2.4.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.6.0.tgz
 wfc install --mode codex --scope global
 wfc install --mode codex --scope project --project-root <repo-root>
 wfc status --mode codex
 wfc skills list --mode codex
 ```
 
-Use the same sequence with `--mode claude` for Claude Code. Do not use the v2.4.0 `wfc update`
-command for this downgrade because the saved v2.5.0 managed state contains `artifact-governance`.
-A v2.4.0 `wfc install` from the retained tarball is the supported replacement path; it removes that
-skill and restores the 41-skill v2.4.0 inventory while preserving unmanaged files. Rehearse against
-isolated homes before operating on a live installation.
+Use the same sequence with `--mode claude` for Claude Code. Use the retained immutable v2.6.0
+artifact and `wfc install` for the downgrade so the fallback identity is explicit; do not rely on a
+mutable registry alias. The supported path restores the v2.6.0 source behavior and preserves the
+42-skill inventory plus unmanaged files. Rehearse against isolated homes before operating on a live
+installation, and do not mutate a live global install before the human Release gate authorizes it.
 
-## What `v2.5.0` Includes
+## What `v2.6.1` Includes
 
 - workflow bundle install surface via `wfc install|update|status|skills`
 - core authoring CLI via `wfc init|scaffold|validate`
@@ -74,6 +74,8 @@ isolated homes before operating on a live installation.
 - 42 managed skills in each generated runtime, including corrected `sa` and `ta` contracts
 - `architecture-modeling` with one-model/two-audience views, explicit render ownership, and deterministic draw.io support for landscape and integration views
 - `artifact-governance` with one-fact/one-owner placement rules, English/Vietnamese content, and canonical/runtime parity
+- additive design-readiness guidance for the existing `sa` and `ta` skills, mapped into their existing fields without selecting an s05 solution
+- corrected 13-case authoring smoke evidence for explicit legacy-scaffold approval bootstrap with `request_source`, `REPORT_BOOTSTRAPPED`, approval status, and reviewer provenance
 - machine enforcement for artifact placement, ownership duplication, section-first execution reads, and registered role-indexed handoffs
 - permission-safe repeat install/update behavior that preserves unmanaged content
 
@@ -182,7 +184,7 @@ Notes:
 - non-interactive approval is for smoke/test fixtures only, not an operational path.
 - the implementation path is locked at the filesystem level until `ACTIVE + s07 + granted write roots` exist.
 - the strict default for a new repo is `protocolControl.legacyScaffoldPolicy=forbid`; only if project config explicitly enables `allow_readonly` should `wfc work-item list|status` use a read-only bootstrap report from an old `s01` to observe legacy-scaffold state.
-- mutating actions such as `approve|activate|verify|close` must not self-bootstrap; they require an existing `.work-item-report.json`.
+- read-only `list|status` never persists a report; explicit `approve` may bootstrap a scaffold-only item with auditable provenance, while `activate|verify|close` require an existing `.work-item-report.json`.
 
 ## Config
 
