@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -45,8 +45,9 @@ gate_reviews:
   approach_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by:
+    - "qc"
+  dod_reviewed_at: "2026-08-28T04:26:48.000Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -87,7 +88,7 @@ evidence_refs:
   - criterion: "AC-001"
     evidence: "wfc protocol run from the worktree with the branch code: workflow_root mismatch lines = 0. Control: the same command from the main tree exits 0. EDGE-003 covered by 5 explicit rejection cases in validate-work-item-protocol.test.js, all green."
     verdict: PASS
-    narrowed_by: "F-02, recorded in s07. The criterion is 'the mismatch line is gone', not 'wfc protocol exits 0'. The run still reports 26 Missing-receipt errors, which are the namespace defect - a different work item, delivered separately on codex/trusted-receipt-namespace-resolution."
+    narrowed_by: "F-02, recorded in s07. The criterion is 'the mismatch line is gone', not 'wfc protocol exits 0'. The run still reports Missing-receipt errors, which are the namespace defect - a different work item, delivered separately on codex/trusted-receipt-namespace-resolution. Count corrected 2026-08-28: it was recorded as 26, measured 31 before the main merge and 58 after it. The number tracks how many work items exist with sealed receipts, not how well this work item performed - which is exactly why the AC-001 criterion is the mismatch line, not the exit code."
   - criterion: "AC-002"
     evidence: "Probed the hook live. packages/workflow-bundle/bin/wfc.js, which has a matching test, exits 0. packages/workflow-bundle/bin/nonexistent.js, which does not, exits 2 - EDGE-004 holds, so the mapping was fixed and not the policy."
     verdict: PASS
@@ -114,6 +115,33 @@ suite_results:
 
 summary_verdict: PASS
 summary_verdict_scope: "This is the TECHNICAL verification verdict over AC-001..AC-006. It is not a DoD verdict and does not attempt to be one."
+```
+
+## Post-Merge Verification
+```yaml
+why_this_exists: "The s08 evidence above was first measured on a branch 13 commits behind main. Certifying numbers from a stale base would mean certifying something other than what lands, so main was merged in and the suite re-run before the DoD verdict."
+merged_at: "2026-08-28"
+merge_commit: "6a6435b - merge: bring main into codex/worktree-and-closure-integrity"
+branch_behind_main_after: 0
+
+conflict_resolved:
+  file: "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js"
+  nature: "Semantic, not textual. Both sides had fixed the same original brittleness by different routes."
+  ours: "T7/D-E - a controlled tmpdir fixture asserting protocol_status VERIFIED, a value no work item in this repo carries."
+  theirs: "main 26591a2 - kept the live read but compared against the live report, so a status change no longer breaks it."
+  resolution: "Kept BOTH."
+  reasoning: "AC-006 requires the controlled fixture, so taking main's version alone would have violated the approved acceptance criterion. Discarding main's would have thrown away a real improvement made by another work item. Keeping both loses nothing."
+  residual: "main's assertion is still coupled to that work item continuing to EXIST - not to its status. That is the residual-cross-file risk already recorded in s07, owned by the test-hygiene work item."
+
+post_merge_results:
+  unit_suite: "42 files, 0 failing, exit 0"
+  validators: "validate, sdd, change, exec, plan - all exit 0 (173 files / 169 notes)"
+  fixtures: "exit 0 - 10 governance fixture cases"
+  pack_audit: "exit 0"
+  workflow_root_mismatch_lines: 0
+  gate_receipts: "52 of 52 digest_match=true, 0 stale"
+  runtime_rebuilt: "sync-workflow-bundle-runtime.js re-run after the merge; bundle_version now reports 2.6.1, 84 skills"
+  verdict: "PASS - identical to the pre-merge result. The merge changed the base without changing any outcome."
 ```
 
 ## Governance Checks
@@ -186,12 +214,24 @@ status_reason: "Five of six requirements fully covered. REQ-004 is PARTIAL again
 
 ## Definition of Done
 ```yaml
-status: ""
-status_note: "DELIBERATELY UNSET. An agent may gather evidence and give a technical verdict; it may not pass DoD. A human sets this field, fills gate_reviews.dod_reviewed_by and _reviewed_at, then seals the dod gate - in that order, because sealing first and editing after invalidates the receipt."
+status: PARTIAL
+status_set_by: "human (interactive, 2026-08-28) - recorded by the agent as scribe, not decided by it"
+status_note: "PARTIAL, not DONE, and deliberately so. Five of six requirements are fully covered; REQ-004 is PARTIAL against its own 'and the DONE transition' clause. The human accepted that limitation (DEC-REQ004-PARTIAL), which permits closure - it does not convert the coverage into DONE. Recording DONE here would erase an accepted, owned limitation from the closure record, which is the precise failure mode this work item exists to prevent. Precedent: approval-path-defects closed PARTIAL on the same reasoning."
+finalization_state: "Finalized 2026-08-28 together with the dod attestation, because the validator couples them: a finalized s08 note must carry non-empty gate_reviews.dod_reviewed_by and _reviewed_at."
+attestation_provenance: "gate_reviews.dod recorded as qc on the human's own action - they invoked `wfc gate approve --gate dod --reviewed-by qc` directly, which is the review event this field records. The agent transcribed it; it did not originate it, and it did not seal the receipt."
 evidence_is_complete: true
+human_decisions_recorded:
+  - id: "DEC-REQ004-PARTIAL"
+    question: "Is REQ-004 being PARTIAL acceptable to close this work item?"
+    decision: "ACCEPTED"
+    decided_by: "human (interactive)"
+    decided_at: "2026-08-28"
+    what_was_accepted: "REQ-004 is implemented at the dod seal only. Its 'and the DONE transition' clause is NOT implemented here. The residual seal-then-dirty window is formally carried by trusted-receipt-namespace-resolution as E-B, rather than left as an unowned gap."
+    why_it_was_a_real_choice: "The alternative was to widen this work item's boundary to reach the receipt payload or work-item-protocol.js, both outside its approved scope, or to add an unhatched check at DONE that would refuse a legitimately waived close (S01-R01)."
+    consequence: "Spec Coverage stays PARTIAL by design. A reviewer reading this note later sees an accepted, owned limitation - not a criterion that was quietly downgraded to make the gate pass."
 what_a_human_still_decides:
-  - "Whether REQ-004 being PARTIAL is acceptable to close this work item, given L-01 is owned by another work item that has its own sealed gates."
-  - "Whether the branch may merge, which per branch-finish-discipline only happens after this verdict."
+  - "The DoD verdict itself: set Definition of Done.status, fill gate_reviews.dod_*, then seal the dod gate."
+  - "Whether the branch may merge to main, which per branch-finish-discipline only happens after that verdict."
 residual_risks:
   - id: "L-01"
     risk: "Seal-then-dirty window at the DONE transition."
@@ -206,9 +246,9 @@ residual_risks:
     owner: "recommend folding into the F-03/F-05 test-hygiene work item"
     status: "Open, out of T7 scope by design"
   - id: "orphan-change"
-    risk: "packages/workflow-bundle/scripts/workflow-trusted-approval-utils.js has an uncommitted +26/-1 change on main belonging to no work item. The namespace branch modifies the same file, so this is a merge conflict waiting to happen."
+    risk: "packages/workflow-bundle/scripts/workflow-trusted-approval-utils.js had an uncommitted +26/-1 change on main belonging to no work item."
     owner: "human"
-    status: "Open, and now on the critical path for the merge order"
+    status: "CLOSED 2026-08-28. Committed on main as 626fc35 'fix(workflow-bundle): retry the approval passphrase read on EAGAIN'. Verified: git status for that path is clean. It is no longer a merge hazard for the namespace branch."
 owners:
   - "qc or developer - dod verdict"
   - "po - if REQ-004 PARTIAL needs a business call"

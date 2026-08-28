@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -66,11 +66,11 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> `T0`–`T5` complete on branch `codex/worktree-and-closure-integrity`: all four approved
-> defects fixed, each behind a fixture observed failing first, six commits, D-D last.
-> Full unit suite is back to the T0 baseline of one pre-existing failure. Two items remain
-> for a human: the `D-E` scope amendment (F-01) needs a `task_plan` re-seal, and `s08` DoD
-> is not self-declarable. `REQ-004` is **PARTIAL** — see `known_limitations`.
+> `T0`–`T7` complete on branch `codex/worktree-and-closure-integrity` (7 commits, D-D last).
+> Every approved defect is fixed behind a fixture observed failing first. `T6` re-run on
+> 2026-08-28: **42/42 unit files pass, 52/52 receipts digest-match, 0 `workflow_root mismatch`
+> lines, all validators green — verdict PASS.** Implementation is complete; `s08` DoD is a human
+> gate and is not self-declarable. `REQ-004` remains **PARTIAL** — see `known_limitations` L-01.
 
 ## Artifact Chính
 ```yaml
@@ -345,51 +345,51 @@ interaction_with_D_D: "It is NOT inside any granted_write_paths, so the D-D dirt
 
 ## T6 Verification Against The T0 Baseline
 ```yaml
-run_at: "2026-08-19, end of s07"
+run_at: "2026-08-28, after T7/D-E landed and the four gates were re-sealed"
+run_from: "branch codex/worktree-and-closure-integrity @ 79df212, worktree clean (0 dirty files)"
 
-main_tree:
-  validate: "exit=0 - naming 156 files, governance 152 notes - MATCHES T0"
-  sdd: "exit=0 - 32 note files - MATCHES T0"
-  change: "exit=0 - same pre-existing CHANGE-003 legacy WARNING as T0"
-  exec: "exit=0 - 152 note files - MATCHES T0"
-  plan: "exit=0 - 152 note files - MATCHES T0"
-  protocol: "exit=0 - 6 protocol-managed work items, 16 legacy skipped - MATCHES T0"
-  fixtures: "exit=0 - 10 governance fixture cases - MATCHES T0"
-  pack_audit: "exit=0 - MATCHES T0"
+unit_suite:
+  at_T0: "1 file failed - workflow-gate-evidence-utils.test.js (pre-existing, F-01)"
+  after_T5: "1 file failed - the same one"
+  now: "42 unit test files, 0 failing, exit 0"
+  verdict: "PASS. The T0 baseline of 1 failure is closed by T7/D-E, so AC-006's 0-failing-file target is met - the criterion AMENDMENT-001 added precisely to make this reachable."
 
-worktree_delivered_code:
+validators_branch_tree:
   validate: "exit=0 - naming 147 files, governance 143 notes"
   sdd: "exit=0 - 31 note files"
-  change: "exit=0 - same pre-existing CHANGE-003 WARNING"
+  change: "exit=0 - same pre-existing CHANGE-003 legacy WARNING as T0, unchanged"
   exec: "exit=0 - 143 note files"
   plan: "exit=0 - 143 note files"
-  fixtures: "exit=0 - 10 cases"
+  fixtures: "exit=0 - 10 governance fixture cases"
   pack_audit: "exit=0"
-  count_delta_explained: "Lower than main because main holds uncommitted work-item notes (integrate-design-checklists-into-sa-ta is untracked; this work item's s07 note is uncommitted). Not a regression."
-
-unit_suite_worktree:
-  at_T0: "1 file failed - workflow-gate-evidence-utils.test.js (pre-existing, F-01)"
-  after_T5: "1 file failed - workflow-gate-evidence-utils.test.js (the same one)"
-  verdict: "No regression across T2..T5."
-  new_test_files_all_green:
-    - "worktree-and-closure-integrity.test.js - 30/30"
-    - "validate-work-item-protocol.test.js - 20/20"
-    - "uncommitted-delivery-guard.test.js - 20/20"
+  verdict: "PASS. Counts are lower than main because main carries newer work items the branch has not merged; not a regression."
 
 receipts:
   at_T0: "34 gate receipts, 34 digest_match=true, 43 total on disk"
-  now: "34 gate receipts, 34 digest_match=true, 43 total on disk"
-  verdict: "No receipt moved. ASM-001 held - no stored report was rewritten."
+  now: "52 gate receipts, 52 digest_match=true, 0 stale. 9 work-item + 5 change = 66 total on disk."
+  growth_explained: "Other work items sealed gates between T0 and now. The count moving is expected; what matters is that nothing already sealed lost validity."
+  verdict: "PASS. 0 stale. ASM-001 held - no stored report was rewritten and no receipt moved."
 
 expected_failure_resolved:
   what: "wfc protocol run from inside the worktree"
-  at_T0: "FAIL - workflow_root mismatch was the first error"
+  at_T0: "FAIL - workflow_root mismatch was the FIRST error, and it named a different work item"
   now: "workflow_root mismatch lines: 0"
-  remaining: "Only the receipt-namespace cluster (F-02), which is out of this work item's boundary by decision. wfc protocol therefore still exits non-zero from a worktree, and T6's criterion was narrowed to match - recorded in open_scope_decisions F-02."
+  verdict: "PASS against the criterion as narrowed by decision F-02."
+  still_failing: "exit=1 with 31 errors, all of them the trusted-receipt namespace cluster."
+  why_that_is_correct_here: "The namespace defect is out of this work item's approved boundary by decision F-02 and is owned by trusted-receipt-namespace-resolution, whose fix is committed on its own branch and not merged into this one. Measuring it here would be measuring another work item's delivery."
 
-not_yet_run:
-  - "The full release/install smoke set was not re-run; it was not part of the T0 baseline either, so there is nothing to compare against."
+t6_verdict: PASS
+t6_verdict_scope: "T6 only - regression and receipt integrity. It is not a DoD verdict and does not close the work item."
+
+not_run:
+  - "The release/install smoke set. It was not in the T0 baseline either, so there is no baseline to compare against."
   - "s08 DoD - a human gate, not self-declarable."
+
+merge_readiness_risk:
+  observed: "The branch is 13 commits behind main (7 branch-only commits ahead)."
+  why_it_matters: "T6 proves the branch does not regress against its own baseline. It does not prove the branch merges cleanly onto today's main, which has moved since cdd68cc."
+  recommendation: "Belongs to s08 / branch-finish-discipline, not to T6. Merge main into the branch and re-run this suite before the DoD verdict, so the numbers being certified are the ones that will actually land."
+  known_touchpoint: "scripts/hooks/tdd-enforce.sh is modified in main's working tree with byte-identical content to the branch commit 9f37044. Content is the same, so there is no semantic conflict, but git may refuse to merge over a locally modified file - run `git checkout -- scripts/hooks/tdd-enforce.sh` on main first if it complains."
 ```
 
 ## Delivery Rule Evidence
@@ -475,32 +475,31 @@ cleanup_preconditions:
 notes_for_implementation: "T1 cannot be written until F-02 is decided - the D-A fixture asserts a different thing under each option."
 ```
 
-## Delivery Rule Evidence
-```yaml
-behavior_change: YES|NO
-tdd_status: DONE|NOT_REQUIRED|EXCEPTION
-tdd_test_refs: []
-tdd_exception_reason: ""
-tdd_alternative_verify_path: []
-change_risk_profile: QUICK_FIX|STANDARD|LARGE_OR_RISKY
-worktree_status: USED|NOT_REQUIRED|SKIPPED_WITH_REASON
-worktree_refs: []
-worktree_reason: ""
-review_status: COMPLETED|PARTIAL|BLOCKED
-review_refs: []
-spec_compliance_status: PASS|FAIL|PARTIAL|NOT_RUN
-code_quality_status: PASS|FAIL|PARTIAL|NOT_RUN
-delegation_mode: agentic|multi_agent|subagent|sequential_multi_role
-independence_status: PASS|FAIL|NOT_APPLICABLE
-independence_refs: []
-merge_path: ""
-verify_path: []
-```
-
 ## SDD Traceability
 ```yaml
-requirement_refs: []
-acceptance_refs: []
-task_refs: []
-test_refs: []
+requirement_refs:
+  - "REQ-001 (D-A) -> T2"
+  - "REQ-002 (D-B) -> T3"
+  - "REQ-003 (D-C) -> T4"
+  - "REQ-004 (D-D) -> T5 - PARTIAL, see known_limitations L-01"
+  - "REQ-005 (failing-first fixtures) -> T1"
+  - "REQ-006 (D-E, added by AMENDMENT-001) -> T7"
+acceptance_refs:
+  - "AC-001 -> D-A fixture group + validate-work-item-protocol.test.js (20/20, incl. 5 EDGE-003 rejections)"
+  - "AC-002 -> D-B fixture group (11/11, incl. EDGE-004 and all four exemption classes)"
+  - "AC-003 -> wfc.test.js AC-003 groups + D-C fixture group"
+  - "AC-004 -> D-D fixture groups + uncommitted-delivery-guard.test.js (20/20)"
+  - "AC-005 -> all four symptoms observed failing first; T1 committed as 550c815 ahead of every fix"
+  - "AC-006 -> 42 unit files, 0 failing (T0 baseline was 1)"
+task_refs:
+  - "T0 550c815-precursor (worktree + baseline) | T1 550c815 | T3 9f37044 | T2 120395e | T4 b036519 | T5 6277243 | T7 79df212"
+  - "33d31f9 - test hygiene, decoupled a D-B control from mutable repo state"
+test_refs:
+  - "packages/workflow-bundle/test/worktree-and-closure-integrity.test.js"
+  - "packages/workflow-bundle/test/validate-work-item-protocol.test.js"
+  - "packages/workflow-bundle/test/uncommitted-delivery-guard.test.js"
+  - "packages/workflow-bundle/test/wfc.test.js"
+  - "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js"
+coverage_gap:
+  - "REQ-004's 'and the DONE transition' clause has no test here, because it is not implemented here. L-01 records why and hands it to trusted-receipt-namespace-resolution as E-B."
 ```
