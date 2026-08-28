@@ -89,9 +89,9 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CHANGE-006",
-  "handoff_target": "branch-integration-for-receipt-sealing",
+  "handoff_target": "main-root-s08-receipt-sealing",
   "required_actions": [
-    "Integrate the conflict-free verified branch into main while retaining the branch/worktree, then seal main-root s08 receipts and validate digest matches before protocol close."
+    "Seal the main-root DoD, Release, and Business Acceptance receipts, validate all three digest matches, then close the protocol before branch/worktree cleanup."
   ],
   "blockers": [],
   "refs": [

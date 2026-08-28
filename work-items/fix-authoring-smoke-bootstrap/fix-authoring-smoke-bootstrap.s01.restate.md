@@ -760,11 +760,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-24T09:36:44.436Z"
-handoff_target: "branch-integration-for-receipt-sealing"
+handoff_target: "main-root-s08-receipt-sealing"
 last_transition_action: "gate-review-recorded"
 last_transition_at: "2026-08-28T03:46:09Z"
 required_actions:
-  - "Integrate the conflict-free verified branch into main while retaining the branch/worktree, then seal main-root s08 receipts and validate digest matches before protocol close."
+  - "Seal the main-root DoD, Release, and Business Acceptance receipts, validate all three digest matches, then close the protocol before branch/worktree cleanup."
 blockers: []
 review_notes:
   - "Human review approved."
