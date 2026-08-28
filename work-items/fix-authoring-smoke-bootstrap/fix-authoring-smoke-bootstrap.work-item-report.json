@@ -89,9 +89,9 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CHANGE-006",
-  "handoff_target": "release-execution",
+  "handoff_target": "business-acceptance-review",
   "required_actions": [
-    "Execute guarded TASK-009 publication and post-release verification, then obtain PO Business Acceptance."
+    "Obtain explicit PO Business Acceptance against the completed TASK-009 publication, rollback, and REL-F01 evidence."
   ],
   "blockers": [],
   "refs": [
@@ -109,7 +109,8 @@
     "WORK_ITEM_ACTIVATED",
     "STEP_OPENED",
     "VERIFICATION_CONFIRMED",
-    "GATE_REVIEW_RECORDED"
+    "GATE_REVIEW_RECORDED",
+    "RELEASE_EXECUTED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -186,6 +187,14 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "Human DevOps and QC explicitly approved Release against target 23a30756..., candidate 7c1d2c7..., rollback 5da823c9..., and remote run 32825477258 at 9/9; no external release action was executed, Business Acceptance remains pending, and shared s08 trusted receipts are deferred until the artifact is frozen."
+    },
+    {
+      "timestamp": "2026-08-25T09:53:15Z",
+      "action": "release-executed",
+      "actor": "devops",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Published GitHub release 376297525 with annotated v2.6.1 tag object feb5b3ee... targeting 23a30756... and asset 528978943 matching 7c1d2c7...; downloaded install/update and immutable v2.6.0 rollback pass 4/4, REL-F01 is resolved, and explicit PO Business Acceptance remains pending."
     }
   ]
 }

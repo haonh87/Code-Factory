@@ -760,11 +760,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-24T09:36:44.436Z"
-handoff_target: "release-execution"
-last_transition_action: "gate-review-recorded"
-last_transition_at: "2026-08-25T09:23:44Z"
+handoff_target: "business-acceptance-review"
+last_transition_action: "release-executed"
+last_transition_at: "2026-08-25T09:53:15Z"
 required_actions:
-  - "Execute guarded TASK-009 publication and post-release verification, then obtain PO Business Acceptance."
+  - "Obtain explicit PO Business Acceptance against the completed TASK-009 publication, rollback, and REL-F01 evidence."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -783,4 +783,5 @@ audit_events:
   - "STEP_OPENED"
   - "VERIFICATION_CONFIRMED"
   - "GATE_REVIEW_RECORDED"
+  - "RELEASE_EXECUTED"
 ```

@@ -105,21 +105,22 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Pre-release technical verification evidence is `PASS` for release target `23a30756…`, candidate `7c1d2c7…`, and rollback `5da823c9…`. Human QC approved Technical Verification and technical DoD at `2026-08-25T09:15:01Z`; human DevOps and QC approved Release at `2026-08-25T09:23:44Z`. Full lifecycle coverage is `PARTIAL` only because v2.6.1 publication, downloaded-asset verification, REL-F01 disposition, and Business Acceptance are intentionally sequenced afterward. Governance is `ALIGNED`; exact-artifact publication is authorized with guards, and the branch/worktree remains `HOLD_OPEN`.
+> Post-release technical verification is `PASS`: annotated v2.6.1 resolves to `23a30756…`, downloaded asset `528978943` is byte-identical to candidate `7c1d2c7…`, rollback remains `5da823c9…`, and REL-F01 is resolved by Workflow Guardrails `9/9`. Human QC approved Technical Verification/DoD and human DevOps/QC approved Release. Governance is `ALIGNED`; Business Acceptance remains pending explicit PO review, and the branch/worktree remains `HOLD_OPEN`.
 
 ## Step Contract
 ```yaml
 step: "s08 Verify + DoD"
-goal: "Produce independent evidence that the v2.6.1 patch is technically ready for human QC and Release review while preserving all post-release and finalization gates."
+goal: "Produce independent pre- and post-release evidence for v2.6.1 while preserving Business Acceptance and finalization as separate human-controlled gates."
 value: "QC and DevOps can decide from fresh source, artifact, rollback, CI, scan, compatibility, and governance evidence instead of relying on the s07 self-check."
 scope_in:
   - "Verify AC-001 through AC-008 at the pre-release stage and identify post-release evidence not yet due."
   - "Rebuild from exact target 23a30756, compare the retained candidate, and rerun exact candidate/rollback plus negative digest controls."
   - "Recheck remote 9/9, v2.6.0 immutability, four scan lanes, workflow validators, UTF-8, and brownfield compatibility."
   - "Prepare Technical Verification, technical DoD, release-readiness, and branch-finish recommendations."
+  - "After Release approval, publish the exact candidate, verify remote identities, resolve REL-F01, and reassess CHANGE-004 archive readiness."
 scope_out:
-  - "Approving Technical Verification, DoD, Release, Business Acceptance, or an exception."
-  - "Creating or moving tags, publishing GitHub/npm, merging, or deleting the worktree."
+  - "Self-approving any human-controlled gate or exception."
+  - "Moving the published tag, publishing npm, merging, or deleting the worktree."
   - "Changing production approval semantics, public contracts, runtime topology, schema, or unrelated work items."
 inputs_required:
   - "Human QC approval to open s08, recorded at 2026-08-25T08:44:42Z."
@@ -133,7 +134,7 @@ done_when:
   - "Fresh local and clean-export checks prove the fixed behavior and both prior CI failure modes."
   - "Candidate identity, reproducibility, exact install/update, rollback, and negative digest behavior have current evidence."
   - "Remote 9/9, v2.6.0 immutability, scan, encoding, and workflow validation are explicit."
-  - "Human approvals and post-release actions remain pending rather than inferred."
+  - "Post-release identities and REL-F01 linkage are explicit; remaining Business Acceptance is not inferred."
 constraints:
   hard_constraints:
     - "Release target, candidate digest, rollback digest, and v2.6.0 identity must not drift."
@@ -158,7 +159,7 @@ risks:
     mitigation: "Bind Release to SHA-256 7c1d2c7... and require a downloaded-asset hash before Business Acceptance/DONE."
     contingency: "Do not move the tag; reject evidence and open a later governed patch."
     owner: "devops/qc"
-    status: MONITORING
+    status: CLOSED
   - id: "S08-RISK-002"
     description: "Post-release evidence could be mistaken for pre-release evidence and close the lifecycle early."
     likelihood: MEDIUM
@@ -176,7 +177,7 @@ timebox:
 
 ## Main Artifact
 ```yaml
-verification_target: "Pre-release technical readiness of CHANGE-006 at 23a30756... with candidate 7c1d2c7..."
+verification_target: "Pre- and post-release technical evidence for CHANGE-006/v2.6.1 at 23a30756... with asset 7c1d2c7..."
 risk_ranked_test_matrix:
   - risk: "The smoke bypasses authority or misses bootstrap provenance."
     severity: HIGH
@@ -219,6 +220,8 @@ manual_exploration:
     - "Recursive cleanup path is harness-owned temporary project plus fixed case slug."
     - "Synchronous reads and loops are bounded test/release work, not a production hot path."
     - "Retained package has 544 files/entries and zero duplicate tar paths."
+    - "Annotated remote v2.6.1 tag resolves to 23a30756..., release 376297525 is public/non-prerelease, and downloaded asset 528978943 is byte-identical to the retained candidate."
+    - "Post-release downloaded candidate and v2.6.0 rollback pass all four Codex/Claude global/project modes."
   issues_found:
     - "LOW S08-F01: s07 calls fingerprint efe25e1b... package-relative, but that value includes archive-root package/; normalized package-relative fingerprint is f1730973.... Artifact identity is unaffected."
 criteria_results:
@@ -235,17 +238,17 @@ criteria_results:
     result: PASS
     evidence: "Run 32825477258 is success for 23a30756 with seven sequential and Node 18/22 success."
   - criterion: "AC-005"
-    result: PARTIAL
-    evidence: "Candidate is reproducible at 7c1d2c7... and exact checks are 4/4; final downloaded v2.6.1 asset cannot exist before Release."
+    result: PASS
+    evidence: "Downloaded asset 528978943 matches SHA-256 7c1d2c7..., is byte-identical to the candidate, has 544 entries/zero duplicates, and passes exact 4/4."
   - criterion: "AC-006"
-    result: PARTIAL
-    evidence: "v2.6.0 currently resolves to 7c88f7d.../5da823c9...; mandated post-v2.6.1 recheck is not due."
+    result: PASS
+    evidence: "Post-v2.6.1 remote/download recheck confirms v2.6.0 still resolves to 7c88f7d.../5da823c9... and rollback passes 4/4."
   - criterion: "AC-007"
-    result: PARTIAL
-    evidence: "TASK-009 owns REL-F01 linkage/archive reassessment after release identity exists."
+    result: PASS
+    evidence: "REL-F01 is resolved by CHANGE-006/v2.6.1 evidence; CHANGE-004 archive readiness is reassessed READY without editing its frozen s08 note."
   - criterion: "AC-008"
     result: PASS
-    evidence: "GitHub release v2.6.1 not found, local tag absent, and no npm publish action occurred."
+    evidence: "v2.6.1 was absent before approval, then one annotated immutable tag/release was created; npm publication remains excluded."
 test_evidence:
   unit_test:
     - "PASS: worktree unit 39/39."
@@ -253,9 +256,10 @@ test_evidence:
   integration_test:
     - "PASS: exact candidate install/update 4/4."
     - "PASS: exact rollback 4/4 with 42 skills and unmanaged markers preserved."
+    - "PASS: downloaded GitHub asset install/update 4/4 and rollback using downloaded v2.6.0 4/4."
   database_test: []
   feature_test:
-    - "PASS: authoring smoke 13/13, bundle smoke, release surface, and remote 9/9."
+    - "PASS: authoring smoke 13/13, bundle smoke, release surface, remote 9/9, annotated tag, and published asset identity."
 commands_run:
   - "npm run validate:workflow:authoring-smoke -> 13/13"
   - "npm run validate:workflow:unit -> 39/39"
@@ -269,21 +273,22 @@ commands_run:
   - "node --check 6/6; JSON.parse 4/4; git diff --check -> PASS"
   - "workflow naming/governance, SDD, change, planning, and execution validators -> PASS"
   - "fatal UTF-8 decode -> PASS for 20 tracked changed text files plus the new s08 note"
-  - "work-item status -> ACTIVE at s08 with the QC step-opened event"
+  - "work-item status -> VERIFIED at s08 with release execution recorded and handoff to Business Acceptance review"
+  - "git push annotated v2.6.1 and gh release create -> release 376297525 at target 23a30756..."
+  - "downloaded v2.6.1 -> 7c1d2c7..., byte-identical, 544 entries, zero duplicates, exact 4/4"
+  - "post-release downloaded v2.6.0 -> 5da823c9...; rollback 4/4; tag target remains 7c88f7d..."
 skipped_checks:
   - "ESLint unavailable and no repo wrapper/config exists; parser/tests/audits are fallback."
   - "Semgrep unavailable; diff-aware pattern scan and manual review are fallback."
-  - "Protocol validation in the in-repo worktree cannot resolve absolute main-root receipt paths; main-root protocol validation reports only four pre-existing stale receipts owned by worktree-and-closure-integrity. Current-item read-only protocol status succeeds at ACTIVE/s08."
-  - "Post-release v2.6.1 digest, second v2.6.0 check, REL-F01, and archive reassessment remain TASK-009."
+  - "Protocol validation in the in-repo worktree cannot resolve absolute main-root receipt paths; main-root protocol validation reports only four pre-existing stale receipts owned by worktree-and-closure-integrity. Current-item read-only protocol status succeeds at VERIFIED/s08."
 release_blockers: []
-status: PARTIAL
-gaps:
-  - "Full lifecycle AC-005 through AC-007 waits for authorized publication and post-release verification."
+status: PASS
+gaps: []
 residual_risks:
   - "ESLint/Semgrep depth is unavailable."
-  - "Any source or payload edit invalidates current candidate evidence."
-recommendation: "RELEASE_APPROVED_WITH_GUARDS: Human QC approved Technical Verification/DoD and human DevOps/QC approved Release; execute only TASK-009 against the bound identities."
-notes_for_review: "PARTIAL is full-lifecycle coverage, not a pre-release technical failure. QC and Release approvals are recorded; no source, candidate, tag, or external release mutation occurred while recording them."
+  - "Business Acceptance, shared s08 receipt sealing, and branch finalization remain pending."
+recommendation: "POST_RELEASE_VERIFICATION_PASS: PO may review Business Acceptance against the completed release and REL-F01 evidence."
+notes_for_review: "All eight acceptance criteria have technical evidence; no npm, tag retarget, merge, cleanup, or Business Acceptance action occurred."
 ```
 
 ## Governance Checks
@@ -298,16 +303,16 @@ checks:
     evidence: "Regression, compatibility, rollback, skipped tools, and post-release boundaries are explicit."
   - id: "GOV-S08-003"
     status: PASS
-    evidence: "No production path, contract, workflow, tag, release, npm, or unrelated work item changed."
+    evidence: "The human-approved immutable tag/release was created with exact bytes; no production path, contract, workflow, npm, retarget, merge, cleanup, or unrelated work item changed."
   - id: "GOV-S08-004"
     status: PASS
-    evidence: "QC DoD and DevOps/QC Release fields record explicit human decisions; PO Business Acceptance remains empty pending post-release evidence."
+    evidence: "QC DoD and DevOps/QC Release fields record explicit human decisions; post-release evidence is complete and PO Business Acceptance remains empty pending an explicit PO decision."
   - id: "GOV-S08-005"
     status: PASS
     evidence: "Workflow, SDD, change, planning, and execution validators pass; the protocol-only environment limitation is explicitly owned outside CHANGE-006."
 blocking_items: []
 owner: "qc/devops/po"
-next_action: "Execute guarded TASK-009 publication and post-release verification, then obtain PO Business Acceptance."
+next_action: "PO reviews the completed post-release evidence and decides Business Acceptance."
 ```
 
 ## Regression & Compatibility Summary
@@ -322,6 +327,7 @@ evidence:
   - "Codex/Claude global/project candidate and rollback pass 4/4 with 42 skills and unmanaged preservation."
   - "Production protocol, gate implementation, workflow, public contracts, schema, and runtime topology are unchanged."
   - "v2.6.0 target 7c88f7d... and downloaded digest 5da823c9... match baseline."
+  - "Published v2.6.1 target 23a30756..., downloaded digest 7c1d2c7..., exact 4/4, and rollback 4/4 match the approved contract."
 ```
 
 ## Spec Coverage
@@ -332,13 +338,13 @@ coverage:
   - { requirement: "REQ-002", acceptance: "AC-002", task: "TASK-002/TASK-004/TASK-005/TASK-008", status: PASS }
   - { requirement: "REQ-003", acceptance: "AC-003", task: "TASK-005/TASK-008", status: PASS }
   - { requirement: "REQ-004", acceptance: "AC-004", task: "TASK-007/TASK-008", status: PASS }
-  - { requirement: "REQ-005", acceptance: "AC-005", task: "TASK-006/TASK-008/TASK-009", status: PARTIAL }
-  - { requirement: "REQ-006", acceptance: "AC-006", task: "TASK-006/TASK-008/TASK-009", status: PARTIAL }
-  - { requirement: "REQ-007", acceptance: "AC-007", task: "TASK-009", status: PARTIAL }
+  - { requirement: "REQ-005", acceptance: "AC-005", task: "TASK-006/TASK-008/TASK-009", status: PASS }
+  - { requirement: "REQ-006", acceptance: "AC-006", task: "TASK-006/TASK-008/TASK-009", status: PASS }
+  - { requirement: "REQ-007", acceptance: "AC-007", task: "TASK-009", status: PASS }
   - { requirement: "REQ-005", acceptance: "AC-008", task: "TASK-008/TASK-009", status: PASS }
-summary: { total: 8, pass: 5, partial: 3, fail: 0, untested: 0 }
-status: PARTIAL
-notes: "Three PARTIAL rows are post-release evidence that cannot exist before separate Release approval."
+summary: { total: 8, pass: 8, partial: 0, fail: 0, untested: 0 }
+status: PASS
+notes: "All technical criteria pass; Business Acceptance remains a separate human-controlled gate."
 ```
 
 ## Scan Summary
@@ -453,20 +459,29 @@ evidence_binding:
 notes:
   - "Human DevOps and QC approved Release at 2026-08-25T09:23:44Z."
   - "Human QC approved Technical Verification and technical DoD at 2026-08-25T09:15:01Z."
-  - "Publish only the exact 7c1d2c7... candidate against target 23a30756..., then run TASK-009 post-release checks."
+  - "Published only the approved 7c1d2c7... candidate against target 23a30756... and completed TASK-009 post-release checks."
+  - "Execution PASS: release 376297525 published at 2026-08-25T09:49:19Z; tag object feb5b3ee... resolves to 23a30756...."
+  - "Post-release PASS: downloaded asset 528978943 matches 7c1d2c7..., exact 4/4; v2.6.0 remains 7c88f7d.../5da823c9..., rollback 4/4."
 ```
 
 ## Business Acceptance Summary
 ```yaml
-status: PENDING
+status: READY_FOR_REVIEW
 reviewers: []
 reviewed_at: ""
-notes: ["PO waits for published identity, REL-F01 disposition, and final AC-005 through AC-007 evidence."]
+notes: ["Published identity, REL-F01 disposition, and AC-001 through AC-008 evidence are complete; explicit PO approval is still required."]
 ```
 
 ## Review Findings
 ```yaml
 findings:
+  - id: "REL-F01"
+    severity: HIGH
+    status: RESOLVED
+    issue: "Historical v2.6.0 Workflow Authoring Smoke used a stale expectation and blocked the Node release-candidate matrix."
+    evidence: "CHANGE-006 corrected the fixture; run 32825477258 is 9/9, v2.6.1 resolves to 23a30756..., and downloaded asset 528978943 matches 7c1d2c7...."
+    owner: "change-006"
+    next_action: "None for the finding; preserve links in CHANGE-004 archive metadata."
   - id: "S08-F01"
     severity: LOW
     status: OPEN_NON_BLOCKING
@@ -513,9 +528,9 @@ release_controls:
 rollback_controls:
   - "Install immutable v2.6.0 5da823c9... and rerun four rollback modes."
   - "Never retarget; use a later patch."
-pipeline_risks: ["wrong upload bytes", "wrong tag target"]
-pipeline_recommendation: READY_WITH_GUARDS
-notes_for_implementation_or_ops: "Release is approved but not yet executed; publish exact identities and complete TASK-009 before Business Acceptance."
+pipeline_risks: []
+pipeline_recommendation: READY
+notes_for_implementation_or_ops: "Publication and post-release verification are complete; retain immutable tags/assets and wait for Business Acceptance."
 ```
 
 ## Governance Exceptions
@@ -542,33 +557,33 @@ checks:
     evidence: "Run 32825477258, v2.6.0 identities, scan/encoding/validators recorded with skips."
   - criterion: "Human gates and post-release actions are not inferred."
     result: PASS
-    evidence: "DoD/Release/Business fields empty; no publish/merge/cleanup."
+    evidence: "DoD and Release decisions are explicit; publication is evidenced; Business Acceptance remains empty; no merge/cleanup."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "One independent pre-release pass."
 gaps: []
 risk_level: LOW
-next_action: "Execute TASK-009 guarded release and post-release checks; retain workspace."
+next_action: "PO reviews Business Acceptance; retain workspace."
 ```
 
 ### Branch/Worktree Finish
 ```yaml
 finish_target: "codex/fix-authoring-smoke-bootstrap and its in-repo worktree"
 workspace_kind: BOTH
-verify_inputs: ["pre-release evidence PASS", "QC-approved technical DoD", "DevOps/QC-approved Release", "lifecycle coverage PARTIAL"]
+verify_inputs: ["pre-release evidence PASS", "QC-approved technical DoD", "DevOps/QC-approved Release", "post-release evidence PASS", "Business Acceptance pending"]
 finish_gate_checks:
   verify_complete: PASS
   dod_complete: PASS
   findings_closed: PASS
   exceptions_resolved: PASS
-allowed_actions: ["retain workspace", "publish exact approved candidate", "run TASK-009 post-release verification"]
+allowed_actions: ["retain workspace", "review Business Acceptance evidence", "prepare final receipt sealing after PO decision"]
 blocked_actions: ["merge", "cleanup", "worktree remove", "branch delete", "protocol close/archive"]
 cleanup_sequence: []
 merge_conditions:
   - "Final DoD, Release, Business Acceptance, and post-release evidence remain valid."
   - "No stale receipt, mismatch, blocker, or unmerged reviewed source."
-residual_risks: ["TASK-009 is pending."]
+residual_risks: ["Business Acceptance and shared s08 receipts are pending."]
 final_recommendation: HOLD_OPEN
 notes_for_closeout: "No finalization at this checkpoint."
 ```
@@ -586,12 +601,12 @@ checks:
   residual_risks_documented: PASS
 gaps: []
 residual_risks:
-  - "Full lifecycle AC-005 through AC-007 requires authorized post-release evidence."
+  - "Business Acceptance and shared s08 receipt sealing remain pending."
   - "ESLint/Semgrep unavailable; fallbacks recorded."
 follow_up_items:
-  - "TASK-009 publication/post-release/Business Acceptance/finalization."
+  - "PO Business Acceptance, receipt sealing, protocol close, and branch/worktree finalization."
   - "Optional S08-F01 wording correction."
-next_action: "Execute TASK-009; protocol DONE remains forbidden until post-release coverage and Business Acceptance complete."
+next_action: "PO decides Business Acceptance; protocol DONE remains forbidden until the gate and receipts are complete."
 ```
 
 ## SDD Traceability
@@ -601,18 +616,17 @@ requirement_refs:
   - "REQ-002 -> TASK-002/TASK-004/TASK-005/TASK-008 -> AC-002 PASS"
   - "REQ-003 -> TASK-005/TASK-008 -> AC-003 PASS"
   - "REQ-004 -> TASK-007/TASK-008 -> AC-004 PASS"
-  - "REQ-005 -> TASK-003/TASK-006/TASK-008/TASK-009 -> AC-005 PARTIAL; AC-008 PASS"
-  - "REQ-006 -> TASK-006/TASK-008/TASK-009 -> AC-006 PARTIAL"
-  - "REQ-007 -> TASK-009 -> AC-007 PARTIAL"
+  - "REQ-005 -> TASK-003/TASK-006/TASK-008/TASK-009 -> AC-005/AC-008 PASS"
+  - "REQ-006 -> TASK-006/TASK-008/TASK-009 -> AC-006 PASS"
+  - "REQ-007 -> TASK-009 -> AC-007 PASS"
 acceptance_refs:
-  - "AC-001 through AC-004 and AC-008 current-stage PASS"
-  - "AC-005 through AC-007 post-release completion staged in TASK-009"
-task_refs: ["TASK-001 through TASK-008 PASS", "TASK-009 authorized and pending execution"]
-test_refs: ["TEST-001 through TEST-007 PASS", "TEST-008 through TEST-010 post-release"]
+  - "AC-001 through AC-008 PASS"
+task_refs: ["TASK-001 through TASK-008 PASS", "TASK-009 publication/post-release/REL-F01 complete; BA/finalization pending"]
+test_refs: ["TEST-001 through TEST-010 PASS"]
 change_contribution:
   change_id: "CHANGE-006"
-  current_status: "pre-release technical evidence ready"
-  final_contribution: "pending post-release and Business Acceptance"
+  current_status: "post-release technical evidence complete"
+  final_contribution: "pending Business Acceptance and finalization"
 ```
 
 ## Traceability
@@ -622,18 +636,20 @@ readiness: ["s04 Spec/DoR approved", "s06 Approach/Task Plan approved"]
 design: ["Option A harness delta", "GitHub-only immutable release"]
 implementation: ["s07 PASS", "target 23a30756", "candidate 7c1d2c7", "rollback 5da823c9"]
 verify: ["13/13", "39/39 worktree and clean export", "exact 4/4 + rollback 4/4", "remote 9/9", "scan/UTF-8/validators"]
-downstream: ["TASK-009 publication/post-release verification", "PO Business Acceptance", "receipt sealing", "branch finalization"]
+downstream: ["PO Business Acceptance", "receipt sealing", "protocol close", "branch finalization"]
 ```
 
 ## Handoff
 
-- Overall status: Technical Verification `APPROVED`, technical DoD `DONE`, and Release `APPROVED`; full lifecycle coverage remains `PARTIAL` pending TASK-009 and Business Acceptance.
-- Residual risks: exact-upload identity, staged post-release checks, unavailable ESLint/Semgrep depth, and LOW fingerprint wording.
+- Overall status: Technical Verification `APPROVED`, technical DoD `DONE`, Release `APPROVED`, and post-release verification `PASS`; Business Acceptance remains pending.
+- Residual risks: pending Business Acceptance/receipts/finalization, unavailable ESLint/Semgrep depth, and LOW fingerprint wording.
 - Decision provenance: human QC approved Technical Verification and technical DoD at `2026-08-25T09:15:01Z` against target `23a30756…`, candidate `7c1d2c7…`, and rollback `5da823c9…`.
 - Release provenance: human DevOps and QC approved Release at `2026-08-25T09:23:44Z` against the same immutable identities and remote run `32825477258` at `9/9`.
-- Next action: execute guarded TASK-009 with the exact candidate, keep the branch/worktree open, and defer shared s08 receipt sealing until the artifact is frozen.
+- Release execution: [v2.6.1](https://github.com/haonh87/Code-Factory/releases/tag/v2.6.1) is public with tag object `feb5b3ee…`, asset `528978943`, exact digest `7c1d2c7…`, and unchanged v2.6.0 rollback identity.
+- Next action: human PO reviews and explicitly approves Business Acceptance; keep the branch/worktree open and defer shared s08 receipt sealing until the artifact is frozen.
 
 ## Links
 
 - [Workflow Guardrails run 32825477258](https://github.com/haonh87/Code-Factory/actions/runs/32825477258)
+- [Immutable v2.6.1 release](https://github.com/haonh87/Code-Factory/releases/tag/v2.6.1)
 - [Immutable v2.6.0 release](https://github.com/haonh87/Code-Factory/releases/tag/v2.6.0)
