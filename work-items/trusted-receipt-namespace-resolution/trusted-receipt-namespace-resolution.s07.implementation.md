@@ -312,6 +312,60 @@ known_limitations:
     already_half_recorded: "s06 carries a concurrency caveat exempting validator file counts, added on 2026-08-21. The same reasoning applies to the receipt inventory and was missed there. This is the correction."
 ```
 
+
+## T6 Regression Against The T0 Baseline (E-A + E-B)
+```yaml
+run_at: "2026-08-28, after E-B landed"
+run_from: "codex/trusted-receipt-namespace-resolution @ 2694562"
+
+baseline_moved_and_why:
+  what: "T0 pinned this worktree at cdd68cc, and s07 praised that per-tree pinning as the only baseline that stays comparable. That pin is now BROKEN - deliberately."
+  cause: "E-B was blocked on SIBLING-MERGE: getUncommittedDeliveryErrors and friends existed only on codex/worktree-and-closure-integrity. Delivering T4/T5 required merging main (2b4a01d), which moved the base by 43 commits."
+  consequence: "T6 no longer compares like-for-like against cdd68cc. Every delta below is therefore attributed rather than assumed, and the two that matter are named."
+  honest_statement: "This is the cost of unblocking E-B. It was not free and is not hidden."
+
+validators_eight:
+  results: "validate, naming, governance, sdd, change, exec, plan, protocol - ALL exit 0"
+  change_note: "Same pre-existing CHANGE-003 legacy WARNING as T0, unchanged."
+  protocol_note: "8 protocol-managed work items, up from 6 at T0 - peer sessions added two. Counts are recorded, not gated, per T0's concurrency caveat."
+  verdict: PASS
+
+unit_suite:
+  t0_worktree_baseline: "1 failing file - workflow-gate-evidence-utils.test.js (F-01)"
+  now: "43 files, 0 failing"
+  NOT_ABSORBED: "The improvement is NOT this work item's. F-01 was fixed by the sibling work item as its D-E/T7 and arrived here through the main merge. T6's own instruction was to say so rather than absorb it, so it is said."
+  plan_text_was_stale: "s06's T6 entry predicted 'exactly TWO pre-existing failures' including release-rollback-smoke (F-03). The T0 record in this note says ONE. The recorded number wins - T6's review checkpoint says compare against what T0 recorded, never against what the plan predicts. This is the third time in this work item that plan text proved staler than measurement."
+  verdict: PASS
+
+receipt_inventory_ac_002:
+  method: "Subset, not set equality, per F-07: every T0 entry must still exist with an unchanged sha256; additions are attributed, never gated."
+  gate_receipts: "56 of 56 digest_match=true, 0 stale"
+  measurement_error_found_and_corrected:
+    symptom: "First count read 70 entries against the 89 recorded on 2026-08-26, which looks like 19 receipts vanishing - exactly the regression AC-002 exists to catch."
+    cause: "My scoping, not a regression. The 2026-08-26 figure counted the WHOLE approvals tree; I counted only the code-factory namespace. 66 (code-factory then) + 23 (product-roadmap, an unrelated project) = 89 exactly."
+    now_like_for_like: "70 + 23 = 93, up 4 from 89 - the four gate receipts sealed today, including worktree-and-closure-integrity's dod."
+    lesson: "The alarm was real and worth chasing. An inventory count is only comparable if the scope of the count is recorded alongside the number."
+  missing: 0
+  digest_changed: 0
+  verdict: PASS
+
+wfc_protocol_from_worktree:
+  t0: "exit 1, 6 receipt-Missing errors"
+  after_E_A: "0 receipt-Missing errors, but still exit 1 on the sibling's stale receipts"
+  now: "exit 0. 0 receipt-missing lines, 0 stale-receipt errors, 0 ERROR lines of any kind."
+  significance: "This is the full closure of the defect. The sibling work item could only reach 'the workflow_root mismatch line is gone' because F-02 fenced the namespace off; with E-A landed and the sibling's receipts valid, the command that started this whole chain now passes cleanly from inside a worktree."
+  verdict: PASS
+
+acceptance_status:
+  AC-001: "CLOSED - namespace resolves identically from both roots, proved on live sealed receipts"
+  AC-002: "CLOSED - subset check, 0 missing, 0 digest changed"
+  AC-004: "CLOSED - E-B delivered. T6's scope_note allowed recording it NOT DELIVERED if E-B were deferred; it was not deferred."
+  remaining: "s08 Verify + DoD, and the dod gate, which are not the agent's to pass."
+
+t6_verdict: PASS
+t6_verdict_scope: "Regression and receipt integrity only. Not a DoD verdict."
+```
+
 ## Traceability
 ```yaml
 upstream:
