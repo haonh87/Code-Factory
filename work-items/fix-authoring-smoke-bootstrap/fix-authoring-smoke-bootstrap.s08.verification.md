@@ -10,21 +10,21 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: reviewed
 governance_ref: "project-context/project-context.md"
 governance_profile: default
 governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: "CHANGE-006"
-change_status: approved
+change_status: verified
 spec_delta_refs:
   - "changes/CHANGE-006/proposal.md"
-archive_status: not_ready
+archive_status: ready_to_archive
 sdd_mode: light
 spec_refs:
   card: "product-specs/cards/fix-authoring-smoke-bootstrap.md"
-spec_status: implemented
+spec_status: accepted
 planning_track: quick
 execution_mode: agentic
 interaction_mode: self
@@ -72,8 +72,9 @@ gate_reviews:
     - "devops"
     - "qc"
   release_reviewed_at: "2026-08-25T09:23:44Z"
-  business_acceptance_reviewed_by: []
-  business_acceptance_reviewed_at: ""
+  business_acceptance_reviewed_by:
+    - "po"
+  business_acceptance_reviewed_at: "2026-08-28T03:46:09Z"
   dod_reviewed_by:
     - "qc"
   dod_reviewed_at: "2026-08-25T09:15:01Z"
@@ -105,7 +106,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Post-release technical verification is `PASS`: annotated v2.6.1 resolves to `23a30756…`, downloaded asset `528978943` is byte-identical to candidate `7c1d2c7…`, rollback remains `5da823c9…`, and REL-F01 is resolved by Workflow Guardrails `9/9`. Human QC approved Technical Verification/DoD and human DevOps/QC approved Release. Governance is `ALIGNED`; Business Acceptance remains pending explicit PO review, and the branch/worktree remains `HOLD_OPEN`.
+> Final lifecycle evidence is `PASS`: annotated v2.6.1 resolves to `23a30756…`, downloaded asset `528978943` is byte-identical to candidate `7c1d2c7…`, rollback remains `5da823c9…`, and REL-F01 is resolved by Workflow Guardrails `9/9`. Human QC approved Technical Verification/DoD, human DevOps/QC approved Release, and human PO approved Business Acceptance at `2026-08-28T03:46:09Z`. Governance is `ALIGNED`; s08 is frozen for trusted receipt sealing and controlled branch finalization.
 
 ## Step Contract
 ```yaml
@@ -134,7 +135,7 @@ done_when:
   - "Fresh local and clean-export checks prove the fixed behavior and both prior CI failure modes."
   - "Candidate identity, reproducibility, exact install/update, rollback, and negative digest behavior have current evidence."
   - "Remote 9/9, v2.6.0 immutability, scan, encoding, and workflow validation are explicit."
-  - "Post-release identities and REL-F01 linkage are explicit; remaining Business Acceptance is not inferred."
+  - "Post-release identities and REL-F01 linkage are explicit; Business Acceptance is recorded only from the explicit human PO decision."
 constraints:
   hard_constraints:
     - "Release target, candidate digest, rollback digest, and v2.6.0 identity must not drift."
@@ -170,7 +171,7 @@ risks:
     owner: "qc/devops/po"
     status: MONITORING
 timebox:
-  target_duration: "One independent pre-release verify pass and one human-review handoff."
+  target_duration: "One independent pre-release verify pass, one post-release evidence pass, and the required human-review handoffs."
   deadline: ""
   escalation_rule: "Block Release for any artifact, target, required-job, authority, governance, or sequencing drift."
 ```
@@ -273,7 +274,7 @@ commands_run:
   - "node --check 6/6; JSON.parse 4/4; git diff --check -> PASS"
   - "workflow naming/governance, SDD, change, planning, and execution validators -> PASS"
   - "fatal UTF-8 decode -> PASS for 20 tracked changed text files plus the new s08 note"
-  - "work-item status -> VERIFIED at s08 with release execution recorded and handoff to Business Acceptance review"
+  - "work-item status -> VERIFIED at s08 with release execution and PO Business Acceptance recorded; handoff targets evidence integration for main-root receipt sealing"
   - "git push annotated v2.6.1 and gh release create -> release 376297525 at target 23a30756..."
   - "downloaded v2.6.1 -> 7c1d2c7..., byte-identical, 544 entries, zero duplicates, exact 4/4"
   - "post-release downloaded v2.6.0 -> 5da823c9...; rollback 4/4; tag target remains 7c88f7d..."
@@ -286,9 +287,9 @@ status: PASS
 gaps: []
 residual_risks:
   - "ESLint/Semgrep depth is unavailable."
-  - "Business Acceptance, shared s08 receipt sealing, and branch finalization remain pending."
-recommendation: "POST_RELEASE_VERIFICATION_PASS: PO may review Business Acceptance against the completed release and REL-F01 evidence."
-notes_for_review: "All eight acceptance criteria have technical evidence; no npm, tag retarget, merge, cleanup, or Business Acceptance action occurred."
+  - "Trusted s08 receipt sealing, protocol close, and branch finalization remain operational follow-up actions."
+recommendation: "LIFECYCLE_ACCEPTED_HOLD_OPEN: freeze this s08 host and preserve the branch/worktree until the user-owned dirty main checkout, including the overlapping untracked v2.6.1 release-note path, is made safe for integration."
+notes_for_review: "All eight acceptance criteria have technical evidence and human PO approved Business Acceptance; no npm, tag retarget, merge, or cleanup action occurred."
 ```
 
 ## Governance Checks
@@ -306,13 +307,13 @@ checks:
     evidence: "The human-approved immutable tag/release was created with exact bytes; no production path, contract, workflow, npm, retarget, merge, cleanup, or unrelated work item changed."
   - id: "GOV-S08-004"
     status: PASS
-    evidence: "QC DoD and DevOps/QC Release fields record explicit human decisions; post-release evidence is complete and PO Business Acceptance remains empty pending an explicit PO decision."
+    evidence: "QC DoD, DevOps/QC Release, and PO Business Acceptance fields record explicit human decisions with reviewer and timestamp; trusted receipts are the next controlled action."
   - id: "GOV-S08-005"
     status: PASS
     evidence: "Workflow, SDD, change, planning, and execution validators pass; the protocol-only environment limitation is explicitly owned outside CHANGE-006."
 blocking_items: []
 owner: "qc/devops/po"
-next_action: "PO reviews the completed post-release evidence and decides Business Acceptance."
+next_action: "Preserve or relocate the user-owned dirty main changes so the frozen evidence commit can be integrated without overwriting the overlapping v2.6.1 release-note path."
 ```
 
 ## Regression & Compatibility Summary
@@ -344,7 +345,7 @@ coverage:
   - { requirement: "REQ-005", acceptance: "AC-008", task: "TASK-008/TASK-009", status: PASS }
 summary: { total: 8, pass: 8, partial: 0, fail: 0, untested: 0 }
 status: PASS
-notes: "All technical criteria pass; Business Acceptance remains a separate human-controlled gate."
+notes: "All technical criteria pass and the separate human-controlled Business Acceptance gate is approved."
 ```
 
 ## Scan Summary
@@ -466,10 +467,18 @@ notes:
 
 ## Business Acceptance Summary
 ```yaml
-status: READY_FOR_REVIEW
-reviewers: []
-reviewed_at: ""
-notes: ["Published identity, REL-F01 disposition, and AC-001 through AC-008 evidence are complete; explicit PO approval is still required."]
+status: APPROVED
+reviewers:
+  - "po"
+reviewed_at: "2026-08-28T03:46:09Z"
+evidence_binding:
+  release_target: "23a30756fb2271b6f1604c91e5b31092fb2dec67"
+  release_id: 376297525
+  asset_id: 528978943
+  asset_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+  rollback_sha256: "5da823c9e64ca464630aea29dcf59ae4098bd6ea544cfdb36cdf5ccec79f3af9"
+  acceptance_coverage: "AC-001 through AC-008 PASS; REL-F01 RESOLVED"
+notes: ["Human PO explicitly approved Business Acceptance after reviewing the completed TASK-009 publication and post-release evidence."]
 ```
 
 ## Review Findings
@@ -484,11 +493,11 @@ findings:
     next_action: "None for the finding; preserve links in CHANGE-004 archive metadata."
   - id: "S08-F01"
     severity: LOW
-    status: OPEN_NON_BLOCKING
+    status: RESOLVED
     issue: "s07 describes efe25e1b... as package-relative although it includes package/ archive root."
     evidence: "Archive-root fingerprint matches efe25e1b...; normalized package-relative fingerprint is f1730973.... Candidate SHA-256, reproducible pack, 544 entries, and zero duplicates match."
     owner: "developer"
-    next_action: "Use this clarification as authoritative; correct s07 wording later if desired."
+    next_action: "None; this s08 clarification is the authoritative final wording and artifact identity is unchanged."
 release_blocking_findings: []
 ```
 
@@ -521,7 +530,7 @@ promotion_flow:
 approval_controls:
   - "QC Technical Verification and technical DoD approved at 2026-08-25T09:15:01Z."
   - "DevOps/QC Release approved at 2026-08-25T09:23:44Z for the exact bound source/candidate/rollback identities."
-  - "PO Business Acceptance after post-release evidence."
+  - "PO Business Acceptance approved at 2026-08-28T03:46:09Z after post-release evidence."
 release_controls:
   pre_release: ["digests locked", "remote 9/9", "v2.6.1 absent", "npm excluded"]
   post_release: ["tag target 23a30756", "download SHA 7c1d2c7...", "v2.6.0 unchanged", "REL-F01 linked"]
@@ -530,7 +539,7 @@ rollback_controls:
   - "Never retarget; use a later patch."
 pipeline_risks: []
 pipeline_recommendation: READY
-notes_for_implementation_or_ops: "Publication and post-release verification are complete; retain immutable tags/assets and wait for Business Acceptance."
+notes_for_implementation_or_ops: "Publication, post-release verification, and Business Acceptance are complete; retain immutable tags/assets and the branch/worktree until the dirty main overlap is safely resolved, then integrate and seal main-root receipts."
 ```
 
 ## Governance Exceptions
@@ -557,35 +566,39 @@ checks:
     evidence: "Run 32825477258, v2.6.0 identities, scan/encoding/validators recorded with skips."
   - criterion: "Human gates and post-release actions are not inferred."
     result: PASS
-    evidence: "DoD and Release decisions are explicit; publication is evidenced; Business Acceptance remains empty; no merge/cleanup."
+    evidence: "DoD, Release, and Business Acceptance decisions are explicit; publication is evidenced; no merge/cleanup is inferred."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
-timebox_evidence: "One independent pre-release pass."
+timebox_evidence: "One independent pre-release pass, one post-release pass, and explicit QC/DevOps/PO gate handoffs."
 gaps: []
 risk_level: LOW
-next_action: "PO reviews Business Acceptance; retain workspace."
+next_action: "Resolve the dirty main overlap without discarding user work; then integrate, seal trusted s08 receipts against main, close the protocol, and complete cleanup."
 ```
 
 ### Branch/Worktree Finish
 ```yaml
 finish_target: "codex/fix-authoring-smoke-bootstrap and its in-repo worktree"
 workspace_kind: BOTH
-verify_inputs: ["pre-release evidence PASS", "QC-approved technical DoD", "DevOps/QC-approved Release", "post-release evidence PASS", "Business Acceptance pending"]
+verify_inputs: ["pre-release evidence PASS", "QC-approved technical DoD", "DevOps/QC-approved Release", "post-release evidence PASS", "PO-approved Business Acceptance"]
 finish_gate_checks:
   verify_complete: PASS
   dod_complete: PASS
   findings_closed: PASS
   exceptions_resolved: PASS
-allowed_actions: ["retain workspace", "review Business Acceptance evidence", "prepare final receipt sealing after PO decision"]
-blocked_actions: ["merge", "cleanup", "worktree remove", "branch delete", "protocol close/archive"]
-cleanup_sequence: []
+allowed_actions: ["retain the branch/worktree", "inspect and preserve user-owned main changes", "prepare a non-destructive integration path"]
+blocked_actions: ["merge into the current dirty main checkout", "overwrite the untracked main v2.6.1 release note", "retarget v2.6.1", "publish npm", "archive CHANGE-006", "skip trusted receipt validation", "remove the branch/worktree"]
+cleanup_sequence:
+  - "Integrate the reviewed evidence commit through the repository's branch strategy without retargeting v2.6.1, but retain the branch/worktree."
+  - "Seal DoD as qc, Release as devops, and Business Acceptance as po against the unchanged main-root s08 note."
+  - "Verify all three receipts are APPROVED with digest_match=true, then transition protocol VERIFIED -> DONE."
+  - "Remove the worktree only after integration is confirmed; delete the branch only when no recovery value remains."
 merge_conditions:
   - "Final DoD, Release, Business Acceptance, and post-release evidence remain valid."
   - "No stale receipt, mismatch, blocker, or unmerged reviewed source."
-residual_risks: ["Business Acceptance and shared s08 receipts are pending."]
+residual_risks: ["The main checkout has user-owned modifications and an untracked docs/releases/workflow-bundle-v2.6.1.md path that overlaps the branch; the published v2.6.1 tag must remain at 23a30756...."]
 final_recommendation: HOLD_OPEN
-notes_for_closeout: "No finalization at this checkpoint."
+notes_for_closeout: "Verification, DoD, Release, Business Acceptance, findings, and exceptions pass, but integration is unsafe until the dirty main overlap is resolved without discarding user work."
 ```
 
 ## Definition of Done
@@ -601,12 +614,11 @@ checks:
   residual_risks_documented: PASS
 gaps: []
 residual_risks:
-  - "Business Acceptance and shared s08 receipt sealing remain pending."
+  - "Dirty-main overlap resolution, evidence integration, trusted s08 receipt sealing, protocol close, and final workspace cleanup remain operational follow-up actions."
   - "ESLint/Semgrep unavailable; fallbacks recorded."
 follow_up_items:
-  - "PO Business Acceptance, receipt sealing, protocol close, and branch/worktree finalization."
-  - "Optional S08-F01 wording correction."
-next_action: "PO decides Business Acceptance; protocol DONE remains forbidden until the gate and receipts are complete."
+  - "Preserve/resolve the dirty main overlap, integrate the frozen evidence commit, seal the three main-root s08 receipts, close the protocol, and execute controlled workspace cleanup."
+next_action: "Resolve the user-owned dirty main overlap first; protocol DONE remains forbidden until integration and all three main-root receipts are APPROVED and digest-matched."
 ```
 
 ## SDD Traceability
@@ -621,12 +633,12 @@ requirement_refs:
   - "REQ-007 -> TASK-009 -> AC-007 PASS"
 acceptance_refs:
   - "AC-001 through AC-008 PASS"
-task_refs: ["TASK-001 through TASK-008 PASS", "TASK-009 publication/post-release/REL-F01 complete; BA/finalization pending"]
+task_refs: ["TASK-001 through TASK-008 PASS", "TASK-009 publication/post-release/REL-F01/Business Acceptance complete; receipts/finalization pending"]
 test_refs: ["TEST-001 through TEST-010 PASS"]
 change_contribution:
   change_id: "CHANGE-006"
-  current_status: "post-release technical evidence complete"
-  final_contribution: "pending Business Acceptance and finalization"
+  current_status: "post-release evidence and Business Acceptance complete"
+  final_contribution: "pending dirty-main overlap resolution, evidence integration, main-root receipt sealing, and controlled cleanup"
 ```
 
 ## Traceability
@@ -636,17 +648,18 @@ readiness: ["s04 Spec/DoR approved", "s06 Approach/Task Plan approved"]
 design: ["Option A harness delta", "GitHub-only immutable release"]
 implementation: ["s07 PASS", "target 23a30756", "candidate 7c1d2c7", "rollback 5da823c9"]
 verify: ["13/13", "39/39 worktree and clean export", "exact 4/4 + rollback 4/4", "remote 9/9", "scan/UTF-8/validators"]
-downstream: ["PO Business Acceptance", "receipt sealing", "protocol close", "branch finalization"]
+downstream: ["dirty-main overlap resolution", "evidence integration", "main-root receipt sealing", "protocol close", "workspace cleanup"]
 ```
 
 ## Handoff
 
-- Overall status: Technical Verification `APPROVED`, technical DoD `DONE`, Release `APPROVED`, and post-release verification `PASS`; Business Acceptance remains pending.
-- Residual risks: pending Business Acceptance/receipts/finalization, unavailable ESLint/Semgrep depth, and LOW fingerprint wording.
+- Overall status: Technical Verification `APPROVED`, technical DoD `DONE`, Release `APPROVED`, post-release verification `PASS`, and Business Acceptance `APPROVED` by human PO at `2026-08-28T03:46:09Z`.
+- Residual risks: the dirty main overlap, pending evidence integration/trusted receipts/protocol close/workspace cleanup, and unavailable ESLint/Semgrep depth.
 - Decision provenance: human QC approved Technical Verification and technical DoD at `2026-08-25T09:15:01Z` against target `23a30756…`, candidate `7c1d2c7…`, and rollback `5da823c9…`.
 - Release provenance: human DevOps and QC approved Release at `2026-08-25T09:23:44Z` against the same immutable identities and remote run `32825477258` at `9/9`.
 - Release execution: [v2.6.1](https://github.com/haonh87/Code-Factory/releases/tag/v2.6.1) is public with tag object `feb5b3ee…`, asset `528978943`, exact digest `7c1d2c7…`, and unchanged v2.6.0 rollback identity.
-- Next action: human PO reviews and explicitly approves Business Acceptance; keep the branch/worktree open and defer shared s08 receipt sealing until the artifact is frozen.
+- Business provenance: human PO explicitly approved Business Acceptance after TASK-009 publication and post-release evidence was complete.
+- Next action: preserve or relocate the user-owned dirty main changes, then integrate this frozen evidence commit while retaining the branch/worktree, seal DoD/Release/Business Acceptance receipts against the stable main-root s08 host, close the protocol, and complete controlled cleanup.
 
 ## Links
 

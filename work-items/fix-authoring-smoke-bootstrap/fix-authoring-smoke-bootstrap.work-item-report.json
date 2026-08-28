@@ -89,9 +89,9 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CHANGE-006",
-  "handoff_target": "business-acceptance-review",
+  "handoff_target": "main-worktree-overlap-resolution",
   "required_actions": [
-    "Obtain explicit PO Business Acceptance against the completed TASK-009 publication, rollback, and REL-F01 evidence."
+    "Preserve or relocate the user-owned dirty main changes, including the overlapping untracked v2.6.1 release note, before integrating the frozen evidence commit and sealing main-root s08 receipts."
   ],
   "blockers": [],
   "refs": [
@@ -110,7 +110,8 @@
     "STEP_OPENED",
     "VERIFICATION_CONFIRMED",
     "GATE_REVIEW_RECORDED",
-    "RELEASE_EXECUTED"
+    "RELEASE_EXECUTED",
+    "BUSINESS_ACCEPTANCE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -195,6 +196,14 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "Published GitHub release 376297525 with annotated v2.6.1 tag object feb5b3ee... targeting 23a30756... and asset 528978943 matching 7c1d2c7...; downloaded install/update and immutable v2.6.0 rollback pass 4/4, REL-F01 is resolved, and explicit PO Business Acceptance remains pending."
+    },
+    {
+      "timestamp": "2026-08-28T03:46:09Z",
+      "action": "gate-review-recorded",
+      "actor": "po",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Human PO explicitly approved Business Acceptance after TASK-009 publication, downloaded-asset identity, rollback, AC-001 through AC-008, and REL-F01 evidence were complete; trusted s08 receipts and protocol close remain pending."
     }
   ]
 }

@@ -760,11 +760,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-24T09:36:44.436Z"
-handoff_target: "business-acceptance-review"
-last_transition_action: "release-executed"
-last_transition_at: "2026-08-25T09:53:15Z"
+handoff_target: "main-worktree-overlap-resolution"
+last_transition_action: "gate-review-recorded"
+last_transition_at: "2026-08-28T03:46:09Z"
 required_actions:
-  - "Obtain explicit PO Business Acceptance against the completed TASK-009 publication, rollback, and REL-F01 evidence."
+  - "Preserve or relocate the user-owned dirty main changes, including the overlapping untracked v2.6.1 release note, before integrating the frozen evidence commit and sealing main-root s08 receipts."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -784,4 +784,5 @@ audit_events:
   - "VERIFICATION_CONFIRMED"
   - "GATE_REVIEW_RECORDED"
   - "RELEASE_EXECUTED"
+  - "BUSINESS_ACCEPTANCE_CONFIRMED"
 ```

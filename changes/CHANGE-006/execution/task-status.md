@@ -37,7 +37,7 @@ task_status:
     evidence: "Human QC approved Technical Verification and technical DoD at 2026-08-25T09:15:01Z; human DevOps and QC approved Release at 2026-08-25T09:23:44Z against target 23a30756..., candidate 7c1d2c7..., rollback 5da823c9..., remote run 32825477258 at 9/9, and unchanged v2.6.0."
   - task_id: "TASK-009"
     status: PENDING
-    evidence: "Publication and post-release verification PASS: annotated v2.6.1 resolves to 23a30756..., GitHub release 376297525 contains asset 528978943 with SHA-256 7c1d2c7..., the downloaded artifact is byte-identical and passes exact install/update 4/4, rollback to immutable v2.6.0 passes 4/4, REL-F01 is resolved, and CHANGE-004 archive readiness is READY. TASK-009 remains pending only for explicit PO Business Acceptance, trusted receipt sealing, protocol close, and branch/worktree finalization."
+    evidence: "Publication and post-release verification PASS: annotated v2.6.1 resolves to 23a30756..., GitHub release 376297525 contains asset 528978943 with SHA-256 7c1d2c7..., the downloaded artifact is byte-identical and passes exact install/update 4/4, rollback to immutable v2.6.0 passes 4/4, REL-F01 is resolved, and CHANGE-004 archive readiness is READY. Human PO approved Business Acceptance at 2026-08-28T03:46:09Z. TASK-009 remains pending only for trusted receipt sealing, protocol close, and branch/worktree finalization."
 blocking_items: []
-next_action: "Human PO reviews the completed TASK-009 publication, post-release, rollback, and REL-F01 evidence and explicitly decides Business Acceptance."
+next_action: "Preserve or relocate the user-owned dirty main changes, then integrate the frozen evidence commit, seal the main-root s08 DoD/Release/Business Acceptance receipts, verify digest matches, close the protocol, and complete controlled workspace cleanup."
 ```
