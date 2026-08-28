@@ -288,7 +288,7 @@ gaps: []
 residual_risks:
   - "ESLint/Semgrep depth is unavailable."
   - "Trusted s08 receipt sealing, protocol close, and branch finalization remain operational follow-up actions."
-recommendation: "LIFECYCLE_ACCEPTED_HOLD_OPEN: freeze this s08 host and preserve the branch/worktree until the user-owned dirty main checkout, including the overlapping untracked v2.6.1 release-note path, is made safe for integration."
+recommendation: "LIFECYCLE_ACCEPTED_MERGE_ALLOWED: the overlap is resolved, dirty-path intersection is empty, and merge simulation is conflict-free; integrate this frozen evidence commit while retaining the branch/worktree for receipt sealing."
 notes_for_review: "All eight acceptance criteria have technical evidence and human PO approved Business Acceptance; no npm, tag retarget, merge, or cleanup action occurred."
 ```
 
@@ -313,7 +313,7 @@ checks:
     evidence: "Workflow, SDD, change, planning, and execution validators pass; the protocol-only environment limitation is explicitly owned outside CHANGE-006."
 blocking_items: []
 owner: "qc/devops/po"
-next_action: "Preserve or relocate the user-owned dirty main changes so the frozen evidence commit can be integrated without overwriting the overlapping v2.6.1 release-note path."
+next_action: "Integrate the frozen evidence branch into main while retaining the branch/worktree, then seal the s08 receipts against the stable main-root note."
 ```
 
 ## Regression & Compatibility Summary
@@ -539,7 +539,7 @@ rollback_controls:
   - "Never retarget; use a later patch."
 pipeline_risks: []
 pipeline_recommendation: READY
-notes_for_implementation_or_ops: "Publication, post-release verification, and Business Acceptance are complete; retain immutable tags/assets and the branch/worktree until the dirty main overlap is safely resolved, then integrate and seal main-root receipts."
+notes_for_implementation_or_ops: "Publication, post-release verification, and Business Acceptance are complete; the overlap is resolved and merge simulation is conflict-free, so integrate while retaining the workspace and then seal main-root receipts."
 ```
 
 ## Governance Exceptions
@@ -573,7 +573,7 @@ timebox_breach: false
 timebox_evidence: "One independent pre-release pass, one post-release pass, and explicit QC/DevOps/PO gate handoffs."
 gaps: []
 risk_level: LOW
-next_action: "Resolve the dirty main overlap without discarding user work; then integrate, seal trusted s08 receipts against main, close the protocol, and complete cleanup."
+next_action: "Integrate the final evidence branch while retaining the workspace, seal trusted s08 receipts against main, close the protocol, and then complete cleanup."
 ```
 
 ### Branch/Worktree Finish
@@ -586,8 +586,8 @@ finish_gate_checks:
   dod_complete: PASS
   findings_closed: PASS
   exceptions_resolved: PASS
-allowed_actions: ["retain the branch/worktree", "inspect and preserve user-owned main changes", "prepare a non-destructive integration path"]
-blocked_actions: ["merge into the current dirty main checkout", "overwrite the untracked main v2.6.1 release note", "retarget v2.6.1", "publish npm", "archive CHANGE-006", "skip trusted receipt validation", "remove the branch/worktree"]
+allowed_actions: ["merge the verified branch into main with the conflict-free simulated result", "retain the branch/worktree", "seal main-root s08 receipts after integration", "close the protocol after digest-match checks"]
+blocked_actions: ["retarget v2.6.1", "publish npm", "archive CHANGE-006 before protocol close", "skip trusted receipt validation", "remove the branch/worktree before integration and receipts are confirmed"]
 cleanup_sequence:
   - "Integrate the reviewed evidence commit through the repository's branch strategy without retargeting v2.6.1, but retain the branch/worktree."
   - "Seal DoD as qc, Release as devops, and Business Acceptance as po against the unchanged main-root s08 note."
@@ -596,9 +596,9 @@ cleanup_sequence:
 merge_conditions:
   - "Final DoD, Release, Business Acceptance, and post-release evidence remain valid."
   - "No stale receipt, mismatch, blocker, or unmerged reviewed source."
-residual_risks: ["The main checkout has user-owned modifications and an untracked docs/releases/workflow-bundle-v2.6.1.md path that overlaps the branch; the published v2.6.1 tag must remain at 23a30756...."]
-final_recommendation: HOLD_OPEN
-notes_for_closeout: "Verification, DoD, Release, Business Acceptance, findings, and exceptions pass, but integration is unsafe until the dirty main overlap is resolved without discarding user work."
+residual_risks: ["Main and branch have diverged, so integration creates a merge commit; unrelated main dirty paths must remain untouched and v2.6.1 must stay at 23a30756...."]
+final_recommendation: MERGE_ALLOWED
+notes_for_closeout: "Verification, DoD, Release, Business Acceptance, findings, and exceptions pass; overlap is resolved, dirty-path intersection is empty, and merge simulation is conflict-free."
 ```
 
 ## Definition of Done
@@ -614,11 +614,11 @@ checks:
   residual_risks_documented: PASS
 gaps: []
 residual_risks:
-  - "Dirty-main overlap resolution, evidence integration, trusted s08 receipt sealing, protocol close, and final workspace cleanup remain operational follow-up actions."
+  - "Evidence integration, trusted s08 receipt sealing, protocol close, and final workspace cleanup remain operational follow-up actions."
   - "ESLint/Semgrep unavailable; fallbacks recorded."
 follow_up_items:
-  - "Preserve/resolve the dirty main overlap, integrate the frozen evidence commit, seal the three main-root s08 receipts, close the protocol, and execute controlled workspace cleanup."
-next_action: "Resolve the user-owned dirty main overlap first; protocol DONE remains forbidden until integration and all three main-root receipts are APPROVED and digest-matched."
+  - "Integrate the frozen evidence branch, seal the three main-root s08 receipts, close the protocol, and execute controlled workspace cleanup."
+next_action: "Integrate while retaining the workspace; protocol DONE remains forbidden until all three main-root receipts are APPROVED and digest-matched."
 ```
 
 ## SDD Traceability
@@ -638,7 +638,7 @@ test_refs: ["TEST-001 through TEST-010 PASS"]
 change_contribution:
   change_id: "CHANGE-006"
   current_status: "post-release evidence and Business Acceptance complete"
-  final_contribution: "pending dirty-main overlap resolution, evidence integration, main-root receipt sealing, and controlled cleanup"
+  final_contribution: "pending evidence integration, main-root receipt sealing, and controlled cleanup"
 ```
 
 ## Traceability
@@ -648,18 +648,18 @@ readiness: ["s04 Spec/DoR approved", "s06 Approach/Task Plan approved"]
 design: ["Option A harness delta", "GitHub-only immutable release"]
 implementation: ["s07 PASS", "target 23a30756", "candidate 7c1d2c7", "rollback 5da823c9"]
 verify: ["13/13", "39/39 worktree and clean export", "exact 4/4 + rollback 4/4", "remote 9/9", "scan/UTF-8/validators"]
-downstream: ["dirty-main overlap resolution", "evidence integration", "main-root receipt sealing", "protocol close", "workspace cleanup"]
+downstream: ["evidence integration", "main-root receipt sealing", "protocol close", "workspace cleanup"]
 ```
 
 ## Handoff
 
 - Overall status: Technical Verification `APPROVED`, technical DoD `DONE`, Release `APPROVED`, post-release verification `PASS`, and Business Acceptance `APPROVED` by human PO at `2026-08-28T03:46:09Z`.
-- Residual risks: the dirty main overlap, pending evidence integration/trusted receipts/protocol close/workspace cleanup, and unavailable ESLint/Semgrep depth.
+- Residual risks: divergent-history merge integration, pending trusted receipts/protocol close/workspace cleanup, and unavailable ESLint/Semgrep depth.
 - Decision provenance: human QC approved Technical Verification and technical DoD at `2026-08-25T09:15:01Z` against target `23a30756…`, candidate `7c1d2c7…`, and rollback `5da823c9…`.
 - Release provenance: human DevOps and QC approved Release at `2026-08-25T09:23:44Z` against the same immutable identities and remote run `32825477258` at `9/9`.
 - Release execution: [v2.6.1](https://github.com/haonh87/Code-Factory/releases/tag/v2.6.1) is public with tag object `feb5b3ee…`, asset `528978943`, exact digest `7c1d2c7…`, and unchanged v2.6.0 rollback identity.
 - Business provenance: human PO explicitly approved Business Acceptance after TASK-009 publication and post-release evidence was complete.
-- Next action: preserve or relocate the user-owned dirty main changes, then integrate this frozen evidence commit while retaining the branch/worktree, seal DoD/Release/Business Acceptance receipts against the stable main-root s08 host, close the protocol, and complete controlled cleanup.
+- Next action: integrate this frozen evidence branch using the conflict-free merge result while retaining the branch/worktree, seal DoD/Release/Business Acceptance receipts against the stable main-root s08 host, close the protocol, and complete controlled cleanup.
 
 ## Links
 

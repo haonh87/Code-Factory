@@ -760,11 +760,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-24T09:36:44.436Z"
-handoff_target: "main-worktree-overlap-resolution"
+handoff_target: "branch-integration-for-receipt-sealing"
 last_transition_action: "gate-review-recorded"
 last_transition_at: "2026-08-28T03:46:09Z"
 required_actions:
-  - "Preserve or relocate the user-owned dirty main changes, including the overlapping untracked v2.6.1 release note, before integrating the frozen evidence commit and sealing main-root s08 receipts."
+  - "Integrate the conflict-free verified branch into main while retaining the branch/worktree, then seal main-root s08 receipts and validate digest matches before protocol close."
 blockers: []
 review_notes:
   - "Human review approved."
