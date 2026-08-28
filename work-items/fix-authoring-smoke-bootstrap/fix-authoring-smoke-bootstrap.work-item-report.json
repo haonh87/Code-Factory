@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "VERIFIED",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Resolve REL-F01 by aligning the stale mutating-action-requires-report smoke fixture with approved TD-01 bootstrap behavior; rerun guardrail CI and publish patch v2.6.1 without moving v2.6.0.",
@@ -57,14 +57,16 @@
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/fix-authoring-smoke-bootstrap",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
+    "package.json",
     "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js",
     "workflow-bundle.manifest.json",
     "packages/workflow-bundle/workflow-bundle.manifest.json",
     "packages/workflow-bundle/package.json",
     "packages/workflow-bundle/bin/wfc.js",
     "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js",
+    "packages/workflow-bundle/test/release-install-all-smoke.test.js",
     "packages/workflow-bundle/test/release-rollback-smoke.test.js",
     "packages/workflow-bundle/test/release-surface.test.js",
     ".claude/CLAUDE.md",
@@ -87,9 +89,9 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CHANGE-006",
-  "handoff_target": "step-s07-owner",
+  "handoff_target": "branch-integration-for-receipt-sealing",
   "required_actions": [
-    "Continue active execution from step 7 onward."
+    "Integrate the conflict-free verified branch into main while retaining the branch/worktree, then seal main-root s08 receipts and validate digest matches before protocol close."
   ],
   "blockers": [],
   "refs": [
@@ -104,7 +106,12 @@
     "WORKFLOW_SCAFFOLDED",
     "STEP_OPENED",
     "WORK_ITEM_APPROVED",
-    "WORK_ITEM_ACTIVATED"
+    "WORK_ITEM_ACTIVATED",
+    "STEP_OPENED",
+    "VERIFICATION_CONFIRMED",
+    "GATE_REVIEW_RECORDED",
+    "RELEASE_EXECUTED",
+    "BUSINESS_ACCEPTANCE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -157,6 +164,46 @@
       "from_status": "MATERIALIZED",
       "to_status": "ACTIVE",
       "note": "Developer-approved Approach and Task Plan receipts verified; begin isolated s07 execution."
+    },
+    {
+      "timestamp": "2026-08-25T08:44:42Z",
+      "action": "step-opened",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "Human QC explicitly approved opening s08 for independent verification; this does not approve Technical Verification, DoD, Release, or Business Acceptance."
+    },
+    {
+      "timestamp": "2026-08-25T09:15:01Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Human QC explicitly approved Technical Verification and technical DoD against target 23a30756..., candidate 7c1d2c7..., and rollback 5da823c9...; Release and Business Acceptance remain unapproved, and shared s08 trusted receipts are deferred until the artifact is frozen."
+    },
+    {
+      "timestamp": "2026-08-25T09:23:44Z",
+      "action": "gate-review-recorded",
+      "actor": "devops+qc",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Human DevOps and QC explicitly approved Release against target 23a30756..., candidate 7c1d2c7..., rollback 5da823c9..., and remote run 32825477258 at 9/9; no external release action was executed, Business Acceptance remains pending, and shared s08 trusted receipts are deferred until the artifact is frozen."
+    },
+    {
+      "timestamp": "2026-08-25T09:53:15Z",
+      "action": "release-executed",
+      "actor": "devops",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Published GitHub release 376297525 with annotated v2.6.1 tag object feb5b3ee... targeting 23a30756... and asset 528978943 matching 7c1d2c7...; downloaded install/update and immutable v2.6.0 rollback pass 4/4, REL-F01 is resolved, and explicit PO Business Acceptance remains pending."
+    },
+    {
+      "timestamp": "2026-08-28T03:46:09Z",
+      "action": "gate-review-recorded",
+      "actor": "po",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Human PO explicitly approved Business Acceptance after TASK-009 publication, downloaded-asset identity, rollback, AC-001 through AC-008, and REL-F01 evidence were complete; trusted s08 receipts and protocol close remain pending."
     }
   ]
 }

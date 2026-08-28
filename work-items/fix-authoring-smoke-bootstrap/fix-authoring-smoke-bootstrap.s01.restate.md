@@ -713,21 +713,23 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "fix-authoring-smoke-bootstrap"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/fix-authoring-smoke-bootstrap"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
+  - "package.json"
   - "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
   - "workflow-bundle.manifest.json"
   - "packages/workflow-bundle/workflow-bundle.manifest.json"
   - "packages/workflow-bundle/package.json"
   - "packages/workflow-bundle/bin/wfc.js"
   - "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js"
+  - "packages/workflow-bundle/test/release-install-all-smoke.test.js"
   - "packages/workflow-bundle/test/release-rollback-smoke.test.js"
   - "packages/workflow-bundle/test/release-surface.test.js"
   - ".claude/CLAUDE.md"
@@ -758,11 +760,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-24T09:36:44.436Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-08-25T02:40:24.387Z"
+handoff_target: "branch-integration-for-receipt-sealing"
+last_transition_action: "gate-review-recorded"
+last_transition_at: "2026-08-28T03:46:09Z"
 required_actions:
-  - "Continue active execution from step 7 onward."
+  - "Integrate the conflict-free verified branch into main while retaining the branch/worktree, then seal main-root s08 receipts and validate digest matches before protocol close."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -778,4 +780,9 @@ audit_events:
   - "STEP_OPENED"
   - "WORK_ITEM_APPROVED"
   - "WORK_ITEM_ACTIVATED"
+  - "STEP_OPENED"
+  - "VERIFICATION_CONFIRMED"
+  - "GATE_REVIEW_RECORDED"
+  - "RELEASE_EXECUTED"
+  - "BUSINESS_ACCEPTANCE_CONFIRMED"
 ```

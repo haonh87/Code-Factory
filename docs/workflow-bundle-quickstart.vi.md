@@ -6,7 +6,7 @@ language: vi
 
 > Tiếng Anh / English: workflow-bundle-quickstart.md
 
-Hướng dẫn này tập trung vào ứng viên phát hành `workflow-bundle v2.6.0`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Không thể cài từ registry cho tới khi human Release gate phê duyệt. Candidate giữ 42 managed skill và thêm hướng dẫn design-readiness có điều kiện cho hai skill `sa` và `ta` hiện có.
+Hướng dẫn này tập trung vào ứng viên phát hành `workflow-bundle v2.6.1`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Không thể cài từ registry cho tới khi human Release gate phê duyệt. Bản vá giữ 42 managed skill và đồng bộ authoring smoke với hành vi bootstrap approval cho legacy scaffold đã được phê duyệt.
 
 ## Mục Tiêu
 
@@ -240,7 +240,7 @@ wfc protocol
 Ghi chú protocol:
 
 - strict default của repo mới là `protocolControl.legacyScaffoldPolicy=forbid`; chỉ khi project config bật explicit `allow_readonly` thì `wfc work-item list|status` mới nên dùng bootstrap report read-only từ `s01` cũ để quan sát legacy scaffold.
-- các action mutating như `approve`, `activate`, `verify`, `close` không được tự bootstrap; chúng yêu cầu `.work-item-report.json` đã tồn tại.
+- `list|status` chỉ đọc và không persist report; `approve` tường minh có thể bootstrap item chỉ có scaffold với provenance audit được, còn `activate|verify|close` yêu cầu `.work-item-report.json` đã tồn tại.
 - `change-item approve`, `work-item approve` và `gate approve` sẽ ký receipt vào trusted approval root; nếu receipt không hợp lệ hoặc artifact đổi sau khi approve, `activate` sẽ fail.
 - các lệnh `approve` vẫn đi qua CLI, nhưng phải do human tự chạy trong interactive TTY; normal mode sẽ reject `--approval-passphrase` và `WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE`.
 - lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase trực tiếp trên TTY đó.
