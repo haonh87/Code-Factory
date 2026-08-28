@@ -517,7 +517,16 @@ function testEbEmptyScopeRefusesRatherThanPassesVacuously() {
   console.log("\nE-B / EDGE-005: an empty granted_write_paths refuses rather than passing vacuously");
   const ctx = buildProjectAtVerified("eb-empty-item");
   try {
+    // The guard reads the PERSISTED report, which is the same object the CLI loads
+    // before calling applyAction - so in the real flow the in-memory and on-disk scopes
+    // cannot diverge. Emptying only the in-memory copy would construct a divergence that
+    // is unreachable through the real path, and would test nothing.
     ctx.report.granted_write_paths = [];
+    const reportPath = path.join(ctx.workflowRoot, `${ctx.report.work_item_slug}.work-item-report.json`);
+    const persisted = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    persisted.granted_write_paths = [];
+    try { fs.chmodSync(reportPath, 0o644); } catch (_e) {}
+    fs.writeFileSync(reportPath, JSON.stringify(persisted, null, 2) + "\n");
     const r = closeIt(ctx);
     assert(!r.ok, "an empty declared scope is not evidence of a clean tree, so DONE is refused");
   } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
@@ -529,6 +538,45 @@ function testEbOutsideGitIsSilent() {
   try {
     const r = closeIt(ctx);
     assert(r.ok && r.report.protocol_status === "DONE", `no git history means nothing to verify, so DONE proceeds (got: ${r.ok ? r.report.protocol_status : r.message})`);
+  } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
+}
+
+
+// T5 review checkpoint, learned from the sibling work item: its equivalent guard was
+// first placed in a function the dod approve path never called, so the unit test passed
+// while the real command was unguarded. The tests above call applyAction directly, which
+// BYPASSES parseCliArgs - so they prove the guard, not the flag wiring. This drives the
+// actual CLI so --allow-uncommitted-delivery and --uncommitted-reason are proven to reach it.
+function testEbGuardIsOnTheRealCliPath() {
+  console.log("\nE-B / T5 checkpoint: the guard is on the path the close CLI actually calls");
+  const ctx = buildProjectAtVerified("eb-cli-item");
+  const script = path.resolve(__dirname, "..", "scripts", "work-item-protocol.js");
+  const env = {
+    ...process.env,
+    WORKFLOW_BUNDLE_APPROVAL_ROOT: ctx.approvalRoot,
+    WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT: "true"
+  };
+  const run = (extra) => {
+    try {
+      return { status: 0, out: execFileSync(process.execPath,
+        [script, "close", "--work-item", ctx.report.work_item_slug, "--project-root", ctx.projectRoot,
+         "--workflow-root", path.dirname(ctx.workflowRoot), ...extra],
+        { env, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }) };
+    } catch (e) {
+      return { status: e.status === undefined ? 1 : e.status, out: `${e.stdout || ""}${e.stderr || ""}` };
+    }
+  };
+  try {
+    dirty(ctx, path.join("src", "app.js"), "// uncommitted after the seal\n");
+
+    const refused = run([]);
+    assert(refused.status !== 0, "the real close CLI refuses over a dirty declared path");
+    assert(/src/.test(refused.out), "the CLI refusal names the offending path");
+
+    const waived = run(["--allow-uncommitted-delivery", "--uncommitted-reason", "branch-parked on purpose"]);
+    assert(waived.status === 0, `the CLI hatch flags actually reach the guard (got: ${waived.out.split("\n")[0]})`);
+    assert(/WAIVED/.test(waived.out) && /branch-parked on purpose/.test(waived.out),
+      "the CLI echoes the waiver and its reason, so the exemption is visible in the operator's output");
   } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
 }
 
@@ -544,6 +592,7 @@ testEbDirtyDeclaredPathRefusedAtTransition();
 testEbHatchNeedsAStatedReason();
 testEbEmptyScopeRefusesRatherThanPassesVacuously();
 testEbOutsideGitIsSilent();
+testEbGuardIsOnTheRealCliPath();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in work-item-protocol-light.test.js`);

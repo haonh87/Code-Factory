@@ -26,7 +26,11 @@ const {
   resolveWorkflowRootBase,
   syncProtocolArtifacts
 } = require("./work-item-protocol-utils");
-const { getProtocolStepGateErrors, getWorkflowStepNotePath } = require("./workflow-gate-evidence-utils");
+const {
+  getProtocolStepGateErrors,
+  getUncommittedDeliveryErrors,
+  getWorkflowStepNotePath
+} = require("./workflow-gate-evidence-utils");
 const { ensureLazyWorkflowNote } = require("./scaffold-workflow");
 
 const SUPPORTED_ACTIONS = new Set([
@@ -219,6 +223,44 @@ function assertStepGateEvidence(report, toStatus, projectRoot) {
   }
 }
 
+// E-B / REQ-004, carried from worktree-and-closure-integrity as L-01. The dod seal
+// already refuses over a dirty declared scope, but sealing and transitioning are two
+// moments: a tree clean at seal time can be dirty by the time DONE is recorded. This
+// closes that window by re-checking at the transition.
+//
+// OQ-4 is answered by RE-EVALUATING rather than storing: no waiver is persisted in the
+// receipt or the report, so a hatch granted at seal time does not silently outlive the
+// condition it was granted for. The operator passes it again here, deliberately.
+function assertUncommittedDeliveryGate(report, toStatus, projectRoot, options = {}) {
+  if (toStatus !== "DONE") {
+    return null;
+  }
+
+  const workflowRoot =
+    report.workflow_root ||
+    getWorkItemPaths({
+      projectRoot,
+      workflowRootBase: resolveWorkflowRootBase(projectRoot, ""),
+      workItemSlug: report.work_item_slug
+    }).workflowRoot;
+
+  const verdict = getUncommittedDeliveryErrors({
+    projectRoot,
+    workflowRoot: path.resolve(workflowRoot),
+    workItemSlug: report.work_item_slug,
+    allowUncommitted: Boolean(options.allowUncommitted),
+    uncommittedReason: options.uncommittedReason
+  });
+
+  if (verdict.errors.length > 0) {
+    throw new Error(
+      `Cannot move work item '${report.work_item_slug}' to DONE:\n- ${verdict.errors.join("\n- ")}`
+    );
+  }
+
+  return verdict.waived ? verdict.reason : null;
+}
+
 function transitionReport(reportInput, options) {
   const report = normalizeProtocolReport(reportInput);
   const {
@@ -244,6 +286,14 @@ function transitionReport(reportInput, options) {
   assertApprovalGate(report, toStatus, projectRoot);
   assertBootstrapGate(report, toStatus, projectRoot);
   assertStepGateEvidence(report, toStatus, projectRoot);
+  const uncommittedWaiver = assertUncommittedDeliveryGate(report, toStatus, projectRoot, {
+    allowUncommitted: options.allowUncommitted,
+    uncommittedReason: options.uncommittedReason
+  });
+  if (uncommittedWaiver) {
+    // Never silent: an exemption nobody can see is worse than no check.
+    console.log(`WAIVED: closed over an uncommitted delivery. Reason: ${uncommittedWaiver}`);
+  }
 
   report.protocol_status = toStatus;
 
@@ -507,6 +557,8 @@ function applyAction(reportInput, action, args) {
         requiredActions: ["Archive the work item when all downstream lifecycle actions are complete."],
         protocolOwner: normalizeSingleValue(args["protocol-owner"] || ""),
         auditEvent: "DONE_CONFIRMED",
+        allowUncommitted: Boolean(args["allow-uncommitted-delivery"]),
+        uncommittedReason: normalizeSingleValue(args["uncommitted-reason"] || ""),
         projectRoot
       });
     case "archive":
@@ -751,6 +803,7 @@ if (require.main === module) {
 }
 
 module.exports = {
+  assertUncommittedDeliveryGate,
   applyAction,
   ensureLightLazyStepNote,
   listWorkItems,
