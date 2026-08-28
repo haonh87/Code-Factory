@@ -1,7 +1,9 @@
 # Code-Factory - Project Context
 
 Repository: AI Agent Ops - policy, workflow, skill and adapter for AI agent tasks.
-Public release: `workflow-bundle v2.4.0`.
+Public release: `workflow-bundle v2.6.0`.
+Prepared candidate: `workflow-bundle v2.6.1` (`UNPUBLISHED`; human Release gate pending).
+Candidate baseline and rollback: immutable `v2.6.0/42`; do not tag, publish, or mutate live global installs from candidate evidence alone.
 
 ## Commands
 

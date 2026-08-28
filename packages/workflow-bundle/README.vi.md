@@ -6,7 +6,7 @@ language: vi
 
 > Tiếng Anh / English: README.md
 
-`workflow-bundle` là package CLI được chuẩn bị cho ứng viên phát hành `v2.5.0`: cài workflow bundle cho Codex hoặc Claude Code, scaffold hoặc validate workflow, và hỗ trợ flow `agent proposes, human approves` cho `work-item` và `change`. Package vẫn chưa được phát hành cho đến khi human Release gate phê duyệt.
+`workflow-bundle` là package CLI được chuẩn bị cho ứng viên phát hành `v2.6.1`: cài workflow bundle cho Codex hoặc Claude Code, scaffold hoặc validate workflow, và hỗ trợ flow `agent proposes, human approves` cho `work-item` và `change`. Package vẫn chưa được phát hành cho đến khi human Release gate phê duyệt. Bản vá đồng bộ authoring smoke đã lỗi thời với hành vi bootstrap đã được phê duyệt mà không đổi production approval semantics, số managed skill hoặc public CLI contract.
 
 Quickstart chi tiết: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -43,26 +43,27 @@ npm link
 wfc version
 ```
 
-### Roll Back Từ v2.5.0 Về v2.4.0
+### Roll Back Từ v2.6.1 Về v2.6.0
 
 Ghi lại mode, scope, project root và status hiện tại trước khi thay package. Sau đó cài đúng tarball
-v2.4.0 bất biến đã được lưu và chạy `install` cho từng target đã ghi:
+v2.6.0 bất biến đã được lưu và chạy `install` cho từng target đã ghi:
 
 ```bash
 wfc status --mode codex
-npm install -g /absolute/path/to/workflow-bundle-2.4.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.6.0.tgz
 wfc install --mode codex --scope global
 wfc install --mode codex --scope project --project-root <repo-root>
 wfc status --mode codex
 wfc skills list --mode codex
 ```
 
-Dùng cùng chuỗi lệnh với `--mode claude` cho Claude Code. Không dùng lệnh `wfc update` của v2.4.0
-cho lần hạ cấp này vì managed state v2.5.0 có `artifact-governance`. `wfc install` từ tarball v2.4.0
-được lưu là đường thay thế được hỗ trợ; nó xóa skill đó, khôi phục inventory 41 skill của v2.4.0
-và giữ nguyên file unmanaged. Hãy diễn tập với home cô lập trước khi thao tác trên bản cài live.
+Dùng cùng chuỗi lệnh với `--mode claude` cho Claude Code. Dùng artifact v2.6.0 bất biến đã được lưu
+và `wfc install` để hạ cấp nhằm giữ identity của fallback tường minh; không dựa vào registry alias có
+thể thay đổi. Đường được hỗ trợ sẽ khôi phục hành vi source v2.6.0, giữ inventory 42 skill và các file
+unmanaged. Hãy diễn tập với home cô lập trước khi thao tác trên bản cài live, và không thay đổi global
+install live trước khi human Release gate cho phép.
 
-## What `v2.5.0` Includes
+## What `v2.6.1` Includes
 
 - workflow bundle install surface qua `wfc install|update|status|skills`
 - core authoring CLI qua `wfc init|scaffold|validate`
@@ -73,6 +74,8 @@ và giữ nguyên file unmanaged. Hãy diễn tập với home cô lập trướ
 - 42 skill được quản lý trong mỗi generated runtime, gồm contract `sa` và `ta` đã sửa
 - `architecture-modeling` với một model/hai audience, render ownership tường minh và hỗ trợ draw.io deterministic cho landscape và integration view
 - `artifact-governance` với rule one-fact/one-owner, nội dung English/Vietnamese và canonical/runtime parity
+- hướng dẫn design-readiness dạng additive cho hai skill `sa` và `ta` hiện có, được map vào các field hiện hữu mà không chọn solution ở s05
+- evidence authoring smoke 13 case đã sửa cho bootstrap approval legacy-scaffold tường minh với provenance `request_source`, `REPORT_BOOTSTRAPPED`, approval status và reviewer
 - machine enforcement cho artifact placement, ownership duplication, section-first execution reader và role-indexed handoff đã đăng ký
 - repeat install/update an toàn về permission và giữ nguyên nội dung unmanaged
 
@@ -181,7 +184,7 @@ Ghi chú:
 - non-interactive approval chỉ dành cho smoke/test fixture, không phải operational path.
 - implementation path bị khóa ở mức filesystem cho tới khi có `ACTIVE + s07 + granted write roots`.
 - strict default của repo mới là `protocolControl.legacyScaffoldPolicy=forbid`; chỉ khi project config bật explicit `allow_readonly` thì `wfc work-item list|status` mới nên dùng bootstrap report read-only từ `s01` cũ để quan sát trạng thái legacy scaffold.
-- các action mutating như `approve|activate|verify|close` không được tự bootstrap; chúng yêu cầu `.work-item-report.json` đã tồn tại.
+- `list|status` chỉ đọc và không persist report; `approve` tường minh có thể bootstrap item chỉ có scaffold với provenance audit được, còn `activate|verify|close` yêu cầu `.work-item-report.json` đã tồn tại.
 
 ## Config
 

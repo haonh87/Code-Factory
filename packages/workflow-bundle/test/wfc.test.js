@@ -67,6 +67,43 @@ function testFinalizeStepPrecedesSealing() {
   );
 }
 
+// D-C / REQ-003 / AC-003: approval-path-defects TD-02 documented the finalization
+// requirement for the seal-then-activate call site as steps 7b/7c. `work-item verify`
+// is a DIFFERENT call site with the same requirement, and it was left undocumented,
+// so the operator meets "s07 implementation note must be reviewed or finalized before
+// verification" as a surprise. Extends the pattern above rather than inventing one.
+//
+// Work item: worktree-and-closure-integrity, requirement REQ-003, task T4.
+function testVerifyStageFinalizationIsDocumented() {
+  console.log("\nAC-003: the flow documents the verify-stage finalization requirement");
+  const text = helpText();
+  const flowLines = text.split("\n").filter((line) => /^\s*\d+[a-z]?\./.test(line));
+  const verifyLines = flowLines.filter((line) => /verify/i.test(line));
+
+  assert(verifyLines.length > 0, "the documented flow includes a step for the verify transition");
+  assert(
+    verifyLines.some((line) => /s07/.test(line)),
+    "the verify step names s07, so the operator knows WHICH note must be finalized"
+  );
+  assert(
+    verifyLines.some((line) => /finali[sz]e|reviewed/i.test(line)),
+    "the verify step names the finalize/reviewed requirement, not merely the word verify"
+  );
+}
+
+function testVerifyStepFollowsActivate() {
+  console.log("\nAC-003: the verify step sits after activate, matching the state machine");
+  const text = helpText();
+  const activateAt = text.search(/work-item activate --work-item/);
+  const verifyAt = text.search(/work-item verify/);
+
+  assert(verifyAt >= 0, "the flow names `wfc work-item verify`");
+  assert(
+    activateAt >= 0 && verifyAt >= 0 && activateAt < verifyAt,
+    `activate is documented before verify (activate@${activateAt}, verify@${verifyAt})`
+  );
+}
+
 function testApprovalRuleStillDocumented() {
   console.log("\nthe existing approval controls are still documented");
   const text = helpText();
@@ -80,6 +117,8 @@ function testApprovalRuleStillDocumented() {
 console.log("Running wfc CLI help tests...");
 testFinalizeStepIsDocumented();
 testFinalizeStepPrecedesSealing();
+testVerifyStageFinalizationIsDocumented();
+testVerifyStepFollowsActivate();
 testApprovalRuleStillDocumented();
 
 if (failures > 0) {

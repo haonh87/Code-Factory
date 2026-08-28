@@ -1,0 +1,88 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "ACTIVE",
+  "decision_owner": "coordinator",
+  "protocol_owner": "po",
+  "raw_request_summary": "",
+  "request_source": "legacy-scaffold",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [],
+  "decision_log": [
+    "bootstrap_from_existing_s01=true"
+  ],
+  "work_item_slug": "trusted-receipt-namespace-resolution",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/trusted-receipt-namespace-resolution",
+  "current_step": "s07",
+  "granted_write_paths": [
+    "packages/workflow-bundle/scripts/workflow-trusted-approval-utils.js",
+    "packages/workflow-bundle/scripts/work-item-protocol.js",
+    "packages/workflow-bundle/test",
+    "packages/workflow-bundle/tests/fixtures",
+    ".claude/worktrees/trusted-receipt-namespace-resolution",
+    "work-items/trusted-receipt-namespace-resolution"
+  ],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "step-s07-owner",
+  "required_actions": [
+    "Continue active execution from step 7 onward."
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/trusted-receipt-namespace-resolution"
+  ],
+  "audit_events": [
+    "REPORT_BOOTSTRAPPED",
+    "WORK_ITEM_APPROVED",
+    "WORK_ITEM_ACTIVATED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-08-22T15:11:50.848Z",
+  "review_notes": [
+    "Human review approved."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-08-22T14:41:31.971Z",
+      "action": "bootstrap",
+      "actor": "system",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Bootstrapped read-only report from existing scaffold."
+    },
+    {
+      "timestamp": "2026-08-22T14:41:31.971Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-08-22T15:11:50.848Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-08-22T15:21:06.401Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
+    }
+  ]
+}

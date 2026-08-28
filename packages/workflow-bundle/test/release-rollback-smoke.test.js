@@ -10,19 +10,11 @@ const { execFileSync } = require("child_process");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
 const packageRoot = path.join(repoRoot, "packages", "workflow-bundle");
-const candidateVersion = "2.5.0";
+const candidateVersion = "2.6.1";
 const candidateSkillCount = 42;
-const rollbackVersion = "2.4.0";
-const rollbackSkillCount = 41;
-const retainedRollbackDigest = "44f40296f2c3b0494ac84414c26c743c9cc3e91cb8caa54dfb8c41f33fb2db3e";
-const defaultRollbackTarball = path.resolve(
-  repoRoot,
-  "..",
-  "stabilize-architecture-skill-bundle-v2.4.0",
-  "packages",
-  "workflow-bundle",
-  "workflow-bundle-2.4.0.tgz"
-);
+const rollbackVersion = "2.6.0";
+const rollbackSkillCount = 42;
+const retainedRollbackDigest = "5da823c9e64ca464630aea29dcf59ae4098bd6ea544cfdb36cdf5ccec79f3af9";
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -99,8 +91,8 @@ function runSourcePreflight() {
       `source ${mode} runtime must contain artifact-governance/SKILL.vi.md`
     );
   }
-  assertArtifactIdentity(defaultRollbackTarball, retainedRollbackDigest, "retained v2.4.0 rollback");
-  console.log(`OK: rollback preflight passed for v${candidateVersion} -> v${rollbackVersion}; no candidate tarball was created`);
+  assert(/^[a-f0-9]{64}$/.test(retainedRollbackDigest), `retained v${rollbackVersion} digest must be a lowercase SHA-256`);
+  console.log(`OK: rollback source contract passed for v${candidateVersion} -> v${rollbackVersion}; exact artifacts are required only in exact-artifact mode`);
 }
 
 function runRollbackTransition({ candidatePackageRoot, rollbackPackageRoot, tempRoot, mode, scope }) {
@@ -136,6 +128,18 @@ function runRollbackTransition({ candidatePackageRoot, rollbackPackageRoot, temp
   assert(candidateState.installed_bundle_version === candidateVersion, `${mode}/${scope}: candidate install must start at ${candidateVersion}`);
   assert(countSkills(path.join(runtimeHome, "skills")) === candidateSkillCount, `${mode}/${scope}: candidate must install ${candidateSkillCount} skills`);
   assert(fs.existsSync(path.join(runtimeHome, "skills", "artifact-governance", "SKILL.md")), `${mode}/${scope}: candidate must contain artifact-governance before rollback`);
+  assert(
+    fs.existsSync(path.join(runtimeHome, "skills", "sa", "references", "design-readiness-checklist.md")),
+    `${mode}/${scope}: candidate must retain the v2.6.0 SA design-readiness reference before rollback`
+  );
+  const candidateSmoke = fs.readFileSync(
+    path.join(candidatePackageRoot, "scripts", "run-workflow-authoring-smoke.js"),
+    "utf8"
+  );
+  assert(
+    candidateSmoke.includes("legacy-scaffold-approval-bootstraps-report"),
+    `${mode}/${scope}: candidate must contain the v2.6.1 bootstrap smoke contract`
+  );
 
   execFileSync(process.execPath, [path.join(rollbackPackageRoot, "bin", "wfc.js"), ...installArgs], {
     cwd: rollbackPackageRoot,
@@ -149,15 +153,29 @@ function runRollbackTransition({ candidatePackageRoot, rollbackPackageRoot, temp
   assert(state.installed_bundle_version === rollbackVersion, `${mode}/${scope}: expected installed version ${rollbackVersion}`);
   const skillCount = countSkills(path.join(runtimeHome, "skills"));
   assert(skillCount === rollbackSkillCount, `${mode}/${scope}: expected ${rollbackSkillCount} rollback skills, got ${skillCount}`);
-  assert(!fs.existsSync(path.join(runtimeHome, "skills", "artifact-governance")), `${mode}/${scope}: rollback must remove artifact-governance`);
+  assert(fs.existsSync(path.join(runtimeHome, "skills", "artifact-governance", "SKILL.md")), `${mode}/${scope}: rollback must retain v2.6.0 artifact-governance`);
+  assert(
+    fs.existsSync(path.join(runtimeHome, "skills", "sa", "references", "design-readiness-checklist.md")),
+    `${mode}/${scope}: rollback must retain the v2.6.0 SA design-readiness reference`
+  );
+  const rollbackSmoke = fs.readFileSync(
+    path.join(rollbackPackageRoot, "scripts", "run-workflow-authoring-smoke.js"),
+    "utf8"
+  );
+  assert(
+    rollbackSmoke.includes("mutating-action-requires-report") &&
+      !rollbackSmoke.includes("legacy-scaffold-approval-bootstraps-report"),
+    `${mode}/${scope}: rollback must restore the immutable v2.6.0 smoke contract`
+  );
   return { mode, scope, installedVersion: state.installed_bundle_version, skillCount, unmanaged: after };
 }
 
 function runExactRollback(candidateTarball, candidateDigest, rollbackTarball, rollbackDigest) {
-  const actualCandidateDigest = assertArtifactIdentity(candidateTarball, candidateDigest, "v2.5.0 candidate");
-  const actualRollbackDigest = assertArtifactIdentity(rollbackTarball, rollbackDigest, "v2.4.0 rollback");
+  const actualCandidateDigest = assertArtifactIdentity(candidateTarball, candidateDigest, "v2.6.1 candidate");
+  assert(rollbackDigest === retainedRollbackDigest, `v2.6.0 rollback digest must equal the retained immutable digest ${retainedRollbackDigest}`);
+  const actualRollbackDigest = assertArtifactIdentity(rollbackTarball, rollbackDigest, "v2.6.0 rollback");
   console.log(`Running exact v${candidateVersion} -> v${rollbackVersion} rollback transition smoke...\n`);
-  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-v2.5.0-rollback-"));
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-v2.6.1-rollback-"));
   try {
     const cacheRoot = path.join(tempRoot, "npm-cache");
     const candidatePackageRoot = installArtifact(candidateTarball, path.join(tempRoot, "candidate-package"), cacheRoot);
