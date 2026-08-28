@@ -263,7 +263,7 @@ untouched_by_this_work_item:
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "trusted-receipt-namespace-resolution"
@@ -289,11 +289,11 @@ decision_owner: "coordinator"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-08-22T15:11:50.848Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-08-28T06:26:08.772Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-08-28T06:27:21.361Z"
 required_actions:
-  - "Collect DoD evidence and close the work item when ready."
+  - "Archive the work item when all downstream lifecycle actions are complete."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -304,6 +304,7 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Traceability
