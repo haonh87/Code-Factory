@@ -713,7 +713,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "fix-authoring-smoke-bootstrap"
@@ -760,11 +760,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-24T09:36:44.436Z"
-handoff_target: "main-root-s08-receipt-sealing"
-last_transition_action: "gate-review-recorded"
-last_transition_at: "2026-08-28T03:46:09Z"
+handoff_target: "branch-worktree-cleanup"
+last_transition_action: "close"
+last_transition_at: "2026-08-28T04:23:54.606Z"
 required_actions:
-  - "Seal the main-root DoD, Release, and Business Acceptance receipts, validate all three digest matches, then close the protocol before branch/worktree cleanup."
+  - "Archive the work item when all downstream lifecycle actions are complete."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -785,4 +785,5 @@ audit_events:
   - "GATE_REVIEW_RECORDED"
   - "RELEASE_EXECUTED"
   - "BUSINESS_ACCEPTANCE_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```
