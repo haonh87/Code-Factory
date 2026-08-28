@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "VERIFIED",
   "decision_owner": "coordinator",
   "protocol_owner": "developer",
   "raw_request_summary": "",
@@ -16,7 +16,7 @@
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/worktree-and-closure-integrity",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     "packages/workflow-bundle/scripts/validate-work-item-protocol.js",
     "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js",
@@ -29,9 +29,9 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "step-s07-owner",
+  "handoff_target": "definition-of-done",
   "required_actions": [
-    "Continue active execution from step 7 onward."
+    "Collect DoD evidence and close the work item when ready."
   ],
   "blockers": [],
   "refs": [
@@ -40,7 +40,8 @@
   "audit_events": [
     "REPORT_BOOTSTRAPPED",
     "WORK_ITEM_APPROVED",
-    "WORK_ITEM_ACTIVATED"
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -77,6 +78,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "ACTIVE",
       "note": "s07 opened for D-A..D-D; worktree isolation per approved T0."
+    },
+    {
+      "timestamp": "2026-08-28T04:35:43.909Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Technical verification completed."
     }
   ]
 }
