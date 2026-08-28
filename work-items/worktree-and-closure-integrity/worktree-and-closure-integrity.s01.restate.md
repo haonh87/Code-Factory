@@ -231,7 +231,7 @@ report_provenance: "Persisted via the bundle's own loadProtocolReport with allow
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "worktree-and-closure-integrity"
@@ -259,11 +259,11 @@ decision_owner: "coordinator"
 protocol_owner: "developer"
 reviewed_by: "ba"
 reviewed_at: "2026-08-19T07:21:45.142Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-08-28T04:35:43.909Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-08-28T04:40:22.075Z"
 required_actions:
-  - "Collect DoD evidence and close the work item when ready."
+  - "Archive the work item when all downstream lifecycle actions are complete."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -274,6 +274,7 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Business Goal

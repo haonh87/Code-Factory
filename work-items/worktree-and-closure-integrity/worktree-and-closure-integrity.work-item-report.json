@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "coordinator",
   "protocol_owner": "developer",
   "raw_request_summary": "",
@@ -29,9 +29,9 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
-    "Collect DoD evidence and close the work item when ready."
+    "Archive the work item when all downstream lifecycle actions are complete."
   ],
   "blockers": [],
   "refs": [
@@ -41,7 +41,8 @@
     "REPORT_BOOTSTRAPPED",
     "WORK_ITEM_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -86,6 +87,14 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "Technical verification completed."
+    },
+    {
+      "timestamp": "2026-08-28T04:40:22.075Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Definition of Done confirmed."
     }
   ]
 }
