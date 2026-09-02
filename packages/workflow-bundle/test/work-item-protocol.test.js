@@ -3,7 +3,13 @@ const os = require("os");
 const path = require("path");
 const { execFileSync } = require("child_process");
 const { ensureLightLazyStepNote } = require("../scripts/work-item-protocol");
-const { loadTrustedApprovalReceipt, hasApprovedReceipt, resolveGateArtifact } = require("../scripts/workflow-trusted-approval-utils");
+const {
+  loadTrustedApprovalReceipt,
+  hasApprovedReceipt,
+  normalizeTrustedApprovalReceipt,
+  resolveGateArtifact
+} = require("../scripts/workflow-trusted-approval-utils");
+const { normalizeProtocolReport, renderProtocolBlock } = require("../scripts/work-item-protocol-utils");
 const {
   getProtocolStateContradictionErrors,
   getTrustedReceiptArtifactErrors
@@ -18,6 +24,47 @@ function assert(condition, message) {
     failures += 1;
     console.error(`  FAIL: ${message}`);
   }
+}
+
+function testLegacyReceiptV1AndAdaptiveProtocolDualRead() {
+  const legacyReceipt = {
+    schema_version: 1,
+    kind: "gate",
+    approval_status: "APPROVED",
+    reviewed_by: "qc",
+    reviewed_at: "2026-08-29T04:37:56Z",
+    signature: "legacy-signature"
+  };
+  const normalizedReceipt = normalizeTrustedApprovalReceipt(legacyReceipt);
+  assert(normalizedReceipt.artifact_shape === "legacy_receipt_v1", "schema v1 receipt must be identified as legacy v1");
+  assert(
+    JSON.stringify(normalizedReceipt.receipt) === JSON.stringify(legacyReceipt),
+    "schema v1 receipt payload must remain byte-field compatible and must not be rewritten"
+  );
+
+  const legacyReport = normalizeProtocolReport({ work_item_slug: "legacy-item" });
+  assert(!Object.prototype.hasOwnProperty.call(legacyReport, "artifact_shape"), "legacy report normalization must not force adaptive fields");
+  const adaptiveReport = normalizeProtocolReport({
+    work_item_slug: "adaptive-item",
+    artifact_shape: "adaptive_v1",
+    request_lane: "maintenance",
+    workflow_required: true,
+    routing_reasons: ["LANE_MAINTENANCE"],
+    escalation_reasons: [],
+    roles: [{ role: "developer", reasons: ["ROLE_DEVELOPER_BOUNDED_CHANGE"] }],
+    gates: [{ gate: "task_plan", reasons: ["GATE_TASK_PLAN_BOUNDED_CHANGE"], reviewer_roles: ["developer"] }],
+    adaptive_activation: {
+      source_version: "2.6.1",
+      installed_versions: ["2.6.4"],
+      parity_passed: true
+    }
+  });
+  assert(adaptiveReport.request_lane === "maintenance", "adaptive report reader must preserve request lane");
+  assert(adaptiveReport.roles.length === 1 && adaptiveReport.gates.length === 1, "adaptive report reader must preserve reasoned roles/gates");
+  const block = renderProtocolBlock(adaptiveReport);
+  assert(/artifact_shape: adaptive_v1/.test(block), "adaptive protocol block must expose its shape");
+  assert(/request_lane: maintenance/.test(block), "adaptive protocol block must expose request lane");
+  console.log("  PASS: receipt v1 and protocol reports dual-read without rewriting legacy shape");
 }
 
 function writeFile(filePath, content) {
@@ -151,6 +198,186 @@ function buildLightProject(slug) {
   return { projectRoot, workflowRoot };
 }
 
+function writeReadinessProtocolReport({ projectRoot, workflowRoot, slug }) {
+  const report = normalizeProtocolReport({
+    artifact_shape: "adaptive_v1",
+    materialization_status: "MATERIALIZED",
+    protocol_status: "MATERIALIZED",
+    decision_owner: "agent",
+    protocol_owner: "developer",
+    work_item_slug: slug,
+    work_item_type: "FEATURE",
+    delivery_context: "brownfield",
+    workflow_root: path.relative(projectRoot, workflowRoot),
+    current_step: "s06",
+    review_required: true,
+    approval_status: "APPROVED",
+    reviewed_by: "po",
+    reviewed_at: "2026-07-16T00:00:00Z",
+    handoff_target: "readiness-review",
+    required_actions: [
+      `wfc gate approve --work-item ${slug} --gate spec --reviewed-by po`,
+      `wfc gate approve --work-item ${slug} --gate dor --reviewed-by po`,
+      `wfc gate approve --work-item ${slug} --gate approach --reviewed-by tech-lead`,
+      `wfc gate approve --work-item ${slug} --gate task_plan --reviewed-by tech-lead`,
+      `wfc work-item activate --work-item ${slug} --step s07 --write-root <path>`
+    ],
+    blockers: [],
+    audit_events: ["WORK_ITEM_APPROVED"],
+    request_lane: "product_delivery",
+    workflow_required: true,
+    routing_reasons: ["LANE_PRODUCT_DELIVERY"],
+    escalation_reasons: [],
+    roles: [
+      { role: "ba", reasons: ["ROLE_BA_PRODUCT_REQUIREMENTS"] },
+      { role: "developer", reasons: ["ROLE_DEVELOPER_DELIVERY"] },
+      { role: "qc", reasons: ["ROLE_QC_VERIFICATION"] }
+    ],
+    gates: [
+      { gate: "spec", reasons: ["GATE_SPEC_PRODUCT_DELIVERY"], reviewer_roles: ["po"] },
+      { gate: "dor", reasons: ["GATE_DOR_PRODUCT_DELIVERY"], reviewer_roles: ["po"] },
+      { gate: "approach", reasons: ["GATE_APPROACH_PRODUCT_DELIVERY"], reviewer_roles: ["tech-lead"] },
+      { gate: "task_plan", reasons: ["GATE_TASK_PLAN_PRODUCT_DELIVERY"], reviewer_roles: ["tech-lead"] }
+    ],
+    adaptive_activation: {
+      source_version: "2.6.1",
+      installed_versions: ["2.6.1"],
+      parity_passed: true
+    }
+  });
+  const reportPath = path.join(workflowRoot, `${slug}.work-item-report.json`);
+  writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
+  return reportPath;
+}
+
+function makeCloseoutHostNoteFrontmatter(slug, terminalGates) {
+  const gateRoles = {
+    dod: "qc",
+    uat: "qc",
+    release: "devops",
+    business_acceptance: "po"
+  };
+  const allTerminal = ["dod", "uat", "release", "business_acceptance"];
+  return [
+    "---",
+    `artifact_id: "${slug}.s08.verification"`,
+    "artifact_family: workflow-step",
+    `work_item_slug: "${slug}"`,
+    'step_id: "s08"',
+    'step_slug: "verification"',
+    "workflow_stage: delivery",
+    "work_item_type: FEATURE",
+    "delivery_context: brownfield",
+    "artifact_role: primary",
+    "artifact_kind: primary-note",
+    "source_of_truth: true",
+    "status: finalized",
+    'governance_ref: "project-context/project-context.md"',
+    "governance_profile: default",
+    "governance_status: CHECKS_PENDING",
+    "checklist_refs:",
+    '  - "project-context/checklists/default.md"',
+    "sdd_mode: none",
+    "spec_refs:",
+    '  card: ""',
+    "spec_status: approved",
+    "planning_track: quick",
+    "execution_mode: agentic",
+    "review_mode: self",
+    "approval_gates:",
+    ...allTerminal.map((gate) => `  ${gate}: "${terminalGates.includes(gate) ? "required" : "not_applicable"}"`),
+    "role_signoffs:",
+    ...allTerminal.flatMap((gate) => [`  ${gate}:`, `    - "${gateRoles[gate]}"`]),
+    "gate_reviews:",
+    ...allTerminal.flatMap((gate) => [
+      `  ${gate}_reviewed_by:`,
+      `    - "${gateRoles[gate]}"`,
+      `  ${gate}_reviewed_at: "2026-07-17T00:00:00Z"`
+    ]),
+    "upstream_artifacts: []",
+    "linked_artifacts: []",
+    "tags: []",
+    "---",
+    ""
+  ].join("\n");
+}
+
+function buildCloseoutProject(slug, terminalGates) {
+  const projectRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-closeout-"));
+  const workflowRoot = path.join(projectRoot, "work-items", slug);
+  writeFile(path.join(workflowRoot, `${slug}.s01.restate.md`), makeS01Frontmatter(slug, "none") + "# s01\n");
+  writeFile(
+    path.join(workflowRoot, `${slug}.s08.verification.md`),
+    makeCloseoutHostNoteFrontmatter(slug, terminalGates) +
+      "# s08\n\n## Technical Verification\n```yaml\nverdict: PASS\n```\n\n## Definition of Done\n```yaml\nverdict: READY_FOR_REVIEW\n```\n"
+  );
+  const reviewers = { dod: "qc", uat: "qc", release: "devops", business_acceptance: "po" };
+  const report = normalizeProtocolReport({
+    artifact_shape: "adaptive_v1",
+    materialization_status: "MATERIALIZED",
+    protocol_status: "VERIFIED",
+    decision_owner: "agent",
+    protocol_owner: "developer",
+    work_item_slug: slug,
+    work_item_type: "FEATURE",
+    delivery_context: "brownfield",
+    workflow_root: path.relative(projectRoot, workflowRoot),
+    current_step: "s08",
+    review_required: true,
+    approval_status: "APPROVED",
+    reviewed_by: "po",
+    reviewed_at: "2026-07-16T00:00:00Z",
+    handoff_target: "closeout-review",
+    required_actions: [
+      ...terminalGates.map((gate) => `wfc gate approve --work-item ${slug} --gate ${gate} --reviewed-by ${reviewers[gate]}`),
+      `wfc work-item close --work-item ${slug}`
+    ],
+    blockers: [],
+    audit_events: ["VERIFICATION_CONFIRMED"],
+    request_lane: terminalGates.length === 1 ? "maintenance" : "product_delivery",
+    workflow_required: true,
+    routing_reasons: [terminalGates.length === 1 ? "LANE_MAINTENANCE" : "LANE_PRODUCT_DELIVERY"],
+    escalation_reasons: [],
+    roles: [
+      { role: "developer", reasons: ["ROLE_DEVELOPER_DELIVERY"] },
+      { role: "qc", reasons: ["ROLE_QC_VERIFICATION"] }
+    ],
+    gates: terminalGates.map((gate) => ({
+      gate,
+      reasons: [`GATE_${gate.toUpperCase()}_CLOSEOUT`],
+      reviewer_roles: [reviewers[gate]]
+    })),
+    adaptive_activation: {
+      source_version: "2.6.1",
+      installed_versions: ["2.6.1"],
+      parity_passed: true
+    }
+  });
+  const reportPath = path.join(workflowRoot, `${slug}.work-item-report.json`);
+  writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
+  return { projectRoot, workflowRoot, reportPath };
+}
+
+function runGateCommand(scriptPath, args, env) {
+  try {
+    return {
+      status: 0,
+      stdout: execFileSync(process.execPath, [scriptPath, ...args], {
+        env,
+        encoding: "utf8",
+        stdio: ["pipe", "pipe", "pipe"]
+      }),
+      stderr: ""
+    };
+  } catch (error) {
+    return {
+      status: error.status || 1,
+      stdout: String(error.stdout || ""),
+      stderr: String(error.stderr || "")
+    };
+  }
+}
+
 // ---------- Output 4: transition hooks tạo s07/s08 đúng thời điểm ----------
 
 function testEnsureLightLazyStepNoteCreatesS07S08() {
@@ -203,6 +430,7 @@ function testApproveReadyBundleSealsFourIndependentReceipts() {
   const slug = "proto-ready-item";
   const { projectRoot, workflowRoot } = buildLightProject(slug);
   const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-approvals-"));
+  const telemetryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-telemetry-"));
   const workflowRootBase = path.dirname(workflowRoot);
   const scriptPath = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
   const childEnv = {
@@ -212,6 +440,7 @@ function testApproveReadyBundleSealsFourIndependentReceipts() {
     WORKFLOW_BUNDLE_APPROVAL_ROOT: approvalRoot
   };
   try {
+    const reportPath = writeReadinessProtocolReport({ projectRoot, workflowRoot, slug });
     const stdout = execFileSync(
       process.execPath,
       [
@@ -220,7 +449,9 @@ function testApproveReadyBundleSealsFourIndependentReceipts() {
         "--work-item", slug,
         "--project-root", projectRoot,
         "--workflow-root", workflowRootBase,
-        "--approval-root", approvalRoot
+        "--approval-root", approvalRoot,
+        "--telemetry", "true",
+        "--telemetry-out", telemetryRoot
       ],
       { env: childEnv, encoding: "utf8" }
     );
@@ -228,6 +459,8 @@ function testApproveReadyBundleSealsFourIndependentReceipts() {
     assert(summary.action === "approve-ready-bundle", "ready-bundle must emit action summary");
     assert(Array.isArray(summary.sealed_gates) && summary.sealed_gates.length === 4, `ready-bundle must seal 4 gates, got ${summary.sealed_gates && summary.sealed_gates.length}`);
     assert(summary.sdd_mode === "light", "ready-bundle must detect light profile");
+    assert(summary.transaction && summary.transaction.status === "COMMITTED", "ready-bundle must commit through the journaled transaction coordinator");
+    assert(summary.approval_plan && summary.approval_plan.gates.length === 4, "ready-bundle must return the complete human summary used for approval");
 
     const sealedGates = summary.sealed_gates.map((s) => s.gate).sort();
     assert(sealedGates.join(",") === "approach,dor,spec,task_plan", `ready-bundle must seal spec/dor/approach/task_plan, got ${sealedGates.join(",")}`);
@@ -254,10 +487,267 @@ function testApproveReadyBundleSealsFourIndependentReceipts() {
     assert(specReceipt.receipt.reviewed_by === "po", "spec receipt reviewer must be po");
     assert(approachReceipt.receipt.reviewed_by === "tech-lead", "approach receipt reviewer must be tech-lead");
 
+    const reconciled = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert(
+      reconciled.required_actions.length === 1 && /work-item activate/.test(reconciled.required_actions[0]),
+      `readiness reconciliation must leave only the activation action, got ${JSON.stringify(reconciled.required_actions)}`
+    );
+    assert(reconciled.blockers.length === 0, "approved readiness reconciliation must leave no stale gate blocker");
+    assert(reconciled.audit_events.includes("READINESS_BUNDLE_APPROVED"), "protocol report records the atomic readiness approval event");
+    const s01 = fs.readFileSync(path.join(workflowRoot, `${slug}.s01.restate.md`), "utf8");
+    assert(!/wfc gate approve/.test(s01) && /wfc work-item activate/.test(s01), "s01 protocol block is reconciled in the same transaction");
+
+    const firstTelemetryFiles = fs.readdirSync(telemetryRoot).filter((name) => name.endsWith(".json"));
+    assert(firstTelemetryFiles.length === 1, `committed approval bundle emits one opt-in event, got ${firstTelemetryFiles.length}`);
+    if (firstTelemetryFiles.length === 1) {
+      const telemetry = JSON.parse(fs.readFileSync(path.join(telemetryRoot, firstTelemetryFiles[0]), "utf8"));
+      const serialized = JSON.stringify(telemetry);
+      assert(telemetry.event_type === "approval_bundle" && telemetry.outcome === "approved", "bundle adapter records bounded event type and outcome");
+      assert(telemetry.request_lane === "product_delivery", "bundle adapter records the selected request lane");
+      assert(telemetry.role_count === 3 && telemetry.gate_count === 4, "bundle adapter records only role and gate counts");
+      assert(telemetry.interaction_count === 1 && telemetry.retry_count === 0, "first bundle interaction is not a retry");
+      assert(/^wi_[a-f0-9]{24}$/.test(telemetry.work_item_id), "bundle adapter pseudonymizes the work item");
+      assert(!serialized.includes(slug) && !("approval_plan" in telemetry), "bundle telemetry stores no slug, plan, receipt, digest, or note body");
+    }
+
+    const receiptBeforeRetry = fs.readFileSync(specReceipt.receiptPath, "utf8");
+    const retry = JSON.parse(
+      execFileSync(
+        process.execPath,
+        [
+          scriptPath,
+          "approve-ready-bundle",
+          "--work-item", slug,
+          "--project-root", projectRoot,
+          "--workflow-root", workflowRootBase,
+          "--approval-root", approvalRoot,
+          "--telemetry", "true",
+          "--telemetry-out", telemetryRoot
+        ],
+        { env: childEnv, encoding: "utf8" }
+      )
+    );
+    assert(retry.transaction.status === "NOOP", "an exact duplicate ready-bundle retry is idempotent");
+    assert(fs.readFileSync(specReceipt.receiptPath, "utf8") === receiptBeforeRetry, "an idempotent retry does not rewrite signed receipt v1");
+    const afterRetry = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert(
+      afterRetry.protocol_events.filter((event) => event.action === "approve-readiness-bundle").length === 1,
+      "an idempotent retry does not duplicate protocol approval events"
+    );
+    const retryTelemetryFiles = fs.readdirSync(telemetryRoot).filter((name) => name.endsWith(".json"));
+    assert(retryTelemetryFiles.length === 2, "idempotent retry records a second interaction event without changing governance state");
+    if (retryTelemetryFiles.length === 2) {
+      const retryEvents = retryTelemetryFiles.map((name) => JSON.parse(fs.readFileSync(path.join(telemetryRoot, name), "utf8")));
+      assert(retryEvents.some((event) => event.retry_count === 1 && event.outcome === "approved"), "NOOP retry is observable only as a bounded retry count");
+    }
+
     console.log("  PASS: approve-ready-bundle (4 independent receipts, approach->s06, per-gate reviewer)");
   } finally {
     rmrf(projectRoot);
     rmrf(approvalRoot);
+    rmrf(telemetryRoot);
+  }
+}
+
+function testReadyBundlePreflightsEveryReviewerBeforeWriting() {
+  const slug = "proto-ready-preflight-item";
+  const { projectRoot, workflowRoot } = buildLightProject(slug);
+  const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-approvals-preflight-"));
+  const workflowRootBase = path.dirname(workflowRoot);
+  const scriptPath = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  const childEnv = {
+    ...process.env,
+    WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "true",
+    WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: "test-passphrase",
+    WORKFLOW_BUNDLE_APPROVAL_ROOT: approvalRoot
+  };
+  try {
+    const reportPath = writeReadinessProtocolReport({ projectRoot, workflowRoot, slug });
+    const s06Path = path.join(workflowRoot, `${slug}.s06.task-breakdown.md`);
+    fs.writeFileSync(
+      s06Path,
+      fs.readFileSync(s06Path, "utf8").replace('  task_plan_reviewed_by: ["tech-lead"]', "  task_plan_reviewed_by: []"),
+      "utf8"
+    );
+    const reportBefore = fs.readFileSync(reportPath, "utf8");
+    const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+    const s01Before = fs.readFileSync(s01Path, "utf8");
+    let outcome;
+    try {
+      outcome = {
+        status: 0,
+        output: execFileSync(
+          process.execPath,
+          [scriptPath, "approve-ready-bundle", "--work-item", slug, "--project-root", projectRoot, "--workflow-root", workflowRootBase, "--approval-root", approvalRoot],
+          { env: childEnv, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }
+        )
+      };
+    } catch (error) {
+      outcome = { status: error.status || 1, output: `${error.stdout || ""}${error.stderr || ""}` };
+    }
+    assert(outcome.status !== 0 && /task_plan_reviewed_by/.test(outcome.output), "missing reviewer fails during complete bundle preflight");
+    ["spec", "dor", "approach", "task_plan"].forEach((gate) => {
+      const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate });
+      assert(!loaded.receipt, `preflight failure writes zero receipts, including ${gate}`);
+    });
+    assert(fs.readFileSync(reportPath, "utf8") === reportBefore, "reviewer preflight failure leaves the protocol report byte-identical");
+    assert(fs.readFileSync(s01Path, "utf8") === s01Before, "reviewer preflight failure leaves the s01 protocol surface byte-identical");
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testRejectReadyBundleKeepsIndependentDecisionEvidence() {
+  const slug = "proto-ready-reject-item";
+  const { projectRoot, workflowRoot } = buildLightProject(slug);
+  const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-approvals-reject-"));
+  const workflowRootBase = path.dirname(workflowRoot);
+  const scriptPath = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  const childEnv = {
+    ...process.env,
+    WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "true",
+    WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: "test-passphrase",
+    WORKFLOW_BUNDLE_APPROVAL_ROOT: approvalRoot
+  };
+  try {
+    const reportPath = writeReadinessProtocolReport({ projectRoot, workflowRoot, slug });
+    const stdout = execFileSync(
+      process.execPath,
+      [scriptPath, "reject-ready-bundle", "--work-item", slug, "--project-root", projectRoot, "--workflow-root", workflowRootBase, "--approval-root", approvalRoot],
+      { env: childEnv, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }
+    );
+    const summary = JSON.parse(stdout);
+    assert(summary.action === "reject-ready-bundle" && summary.transaction.status === "COMMITTED", "ready-bundle rejection is one journaled transaction");
+    ["spec", "dor", "approach", "task_plan"].forEach((gate) => {
+      const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate });
+      assert(loaded.receipt && loaded.receipt.approval_status === "REJECTED", `rejection keeps independent ${gate} evidence`);
+    });
+    const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert(report.blockers.some((entry) => /readiness bundle rejected/i.test(entry)), "rejected bundle adds an explicit activation blocker");
+    assert(report.required_actions.some((entry) => /resolve rejected readiness/i.test(entry)), "rejected bundle records a concrete rework action");
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testMaintenanceCloseoutBundlesOnlyDod() {
+  const slug = "proto-maintenance-closeout-item";
+  const { projectRoot, workflowRoot, reportPath } = buildCloseoutProject(slug, ["dod"]);
+  const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-closeout-maintenance-approvals-"));
+  const scriptPath = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  const env = {
+    ...process.env,
+    WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "true",
+    WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: "test-passphrase",
+    WORKFLOW_BUNDLE_APPROVAL_ROOT: approvalRoot
+  };
+  try {
+    const outcome = runGateCommand(
+      scriptPath,
+      ["approve-closeout-bundle", "--work-item", slug, "--project-root", projectRoot, "--workflow-root", path.dirname(workflowRoot), "--approval-root", approvalRoot],
+      env
+    );
+    assert(outcome.status === 0, `maintenance closeout command succeeds (got: ${outcome.stderr.split("\n")[0]})`);
+    if (outcome.status !== 0) return;
+    const summary = JSON.parse(outcome.stdout);
+    assert(summary.transaction.status === "COMMITTED", "maintenance closeout uses the journaled coordinator");
+    assert(summary.sealed_gates.map((entry) => entry.gate).join(",") === "dod", "maintenance closeout seals DoD only");
+    ["release", "business_acceptance"].forEach((gate) => {
+      const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate });
+      assert(!loaded.receipt, `maintenance closeout emits no ${gate} receipt`);
+    });
+    const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert(report.required_actions.length === 1 && /work-item close/.test(report.required_actions[0]), "maintenance reconciliation leaves only the close transition");
+    assert(report.audit_events.includes("CLOSEOUT_BUNDLE_APPROVED"), "maintenance report records closeout bundle approval");
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testProductReleaseCloseoutKeepsConfiguredAuthority() {
+  const slug = "proto-product-closeout-item";
+  const gates = ["dod", "release", "business_acceptance"];
+  const { projectRoot, workflowRoot, reportPath } = buildCloseoutProject(slug, gates);
+  const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-closeout-product-approvals-"));
+  const scriptPath = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  const env = {
+    ...process.env,
+    WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "true",
+    WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: "test-passphrase",
+    WORKFLOW_BUNDLE_APPROVAL_ROOT: approvalRoot
+  };
+  try {
+    const outcome = runGateCommand(
+      scriptPath,
+      ["approve-closeout-bundle", "--work-item", slug, "--project-root", projectRoot, "--workflow-root", path.dirname(workflowRoot), "--approval-root", approvalRoot],
+      env
+    );
+    assert(outcome.status === 0, `product closeout command succeeds (got: ${outcome.stderr.split("\n")[0]})`);
+    if (outcome.status !== 0) return;
+    const summary = JSON.parse(outcome.stdout);
+    assert(summary.sealed_gates.map((entry) => entry.gate).join(",") === gates.join(","), "product closeout keeps DoD, Release and Business Acceptance in order");
+    const expectedReviewers = { dod: "qc", release: "devops", business_acceptance: "po" };
+    gates.forEach((gate) => {
+      const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate });
+      assert(loaded.receipt && loaded.receipt.approval_status === "APPROVED", `${gate} has an independent approved receipt`);
+      assert(loaded.receipt && loaded.receipt.reviewed_by === expectedReviewers[gate], `${gate} retains its configured reviewer authority`);
+    });
+    const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert(report.required_actions.length === 1 && /work-item close/.test(report.required_actions[0]), "product closeout removes every stale terminal gate action");
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testWorkItemLifecycleAdapterEmitsBoundedTelemetry() {
+  const slug = "proto-private-transition-item";
+  const blockerCanary = "PRIVATE_BLOCKER_CANARY_DO_NOT_PERSIST";
+  const { projectRoot, workflowRoot } = buildLightProject(slug);
+  const telemetryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-transition-telemetry-"));
+  const protocolScript = path.resolve(__dirname, "..", "scripts", "work-item-protocol.js");
+  try {
+    const reportPath = writeReadinessProtocolReport({ projectRoot, workflowRoot, slug });
+    const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    report.protocol_status = "ACTIVE";
+    report.current_step = "s07";
+    report.handoff_target = "developer";
+    report.blockers = [];
+    report.required_actions = ["Continue implementation."];
+    fs.writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
+
+    const outcome = runGateCommand(
+      protocolScript,
+      [
+        "block",
+        "--work-item", slug,
+        "--project-root", projectRoot,
+        "--workflow-root", path.dirname(workflowRoot),
+        "--blocker", blockerCanary,
+        "--note", blockerCanary,
+        "--telemetry", "true",
+        "--telemetry-out", telemetryRoot
+      ],
+      { ...process.env }
+    );
+    assert(outcome.status === 0, `work-item block transition succeeds (got: ${outcome.stderr.split("\n")[0]})`);
+    const eventFiles = fs.readdirSync(telemetryRoot).filter((name) => name.endsWith(".json"));
+    assert(eventFiles.length === 1, `work-item transition emits one opt-in event, got ${eventFiles.length}`);
+    if (eventFiles.length === 1) {
+      const event = JSON.parse(fs.readFileSync(path.join(telemetryRoot, eventFiles[0]), "utf8"));
+      const serialized = JSON.stringify(event);
+      assert(event.event_type === "work_item_transition" && event.outcome === "blocked", "lifecycle adapter records only transition type and bounded outcome");
+      assert(event.role_count === 3 && event.gate_count === 4, "lifecycle adapter records role/gate counts without role identities");
+      assert(event.interaction_count === 0 && event.retry_count === 0, "non-approval transition records zero interaction/retry count");
+      assert(/^wi_[a-f0-9]{24}$/.test(event.work_item_id), "lifecycle adapter pseudonymizes work-item identity");
+      assert(!serialized.includes(slug) && !serialized.includes(blockerCanary), "lifecycle telemetry excludes slug, blocker and free-form note");
+    }
+  } finally {
+    rmrf(projectRoot);
+    rmrf(telemetryRoot);
   }
 }
 
@@ -389,10 +879,12 @@ function buildProjectAtVerified(slug, opts = {}) {
   );
   writeFile(
     path.join(workflowRoot, `${slug}.s08.verification.md`),
-    makeHostNoteFrontmatter(slug, "s08", "verification").replace(
-      '  task_plan_reviewed_at: "2026-07-16"',
-      '  task_plan_reviewed_at: "2026-07-16"\n  dod_reviewed_by: ["qc"]\n  dod_reviewed_at: "2026-07-16"'
-    ) + "## Governance Checks\n```yaml\nchecklist_applied: []\n```\n## SDD Traceability\n```yaml\nrequirement_refs: [REQ-001]\n```\n"
+    makeHostNoteFrontmatter(slug, "s08", "verification")
+      .replace('  spec: "required"', '  spec: "required"\n  dod: "required"')
+      .replace(
+        '  task_plan_reviewed_at: "2026-07-16"',
+        '  task_plan_reviewed_at: "2026-07-16"\n  dod_reviewed_by: ["qc"]\n  dod_reviewed_at: "2026-07-16"'
+      ) + "## Governance Checks\n```yaml\nchecklist_applied: []\n```\n## SDD Traceability\n```yaml\nrequirement_refs: [REQ-001]\n```\n"
   );
 
   // The dod seal guard (merged from the sibling work item) reads granted_write_paths
@@ -580,10 +1072,46 @@ function testEbGuardIsOnTheRealCliPath() {
   } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
 }
 
+function testCloseoutBundlePreservesUncommittedDeliveryGuard() {
+  console.log("\nCR-008 T6: closeout bundle preserves the uncommitted-delivery guard");
+  const ctx = buildProjectAtVerified("closeout-bundle-dirty-item");
+  const gateScript = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  try {
+    dirty(ctx, path.join("src", "app.js"), "// dirtied before closeout bundle\n");
+    const reportPath = path.join(ctx.workflowRoot, `${ctx.report.work_item_slug}.work-item-report.json`);
+    const reportBefore = fs.readFileSync(reportPath, "utf8");
+    const dodBefore = loadTrustedApprovalReceipt({
+      projectRoot: ctx.projectRoot,
+      overrideRoot: ctx.approvalRoot,
+      kind: "gate",
+      workItemSlug: ctx.report.work_item_slug,
+      gate: "dod"
+    });
+    const receiptBefore = fs.readFileSync(dodBefore.receiptPath, "utf8");
+    const outcome = runGateCommand(
+      gateScript,
+      ["approve-closeout-bundle", "--work-item", ctx.report.work_item_slug, "--project-root", ctx.projectRoot, "--workflow-root", path.dirname(ctx.workflowRoot), "--approval-root", ctx.approvalRoot],
+      ctx.childEnv
+    );
+    assert(outcome.status !== 0 && /uncommitted|dirty|src/i.test(`${outcome.stdout}${outcome.stderr}`), "dirty declared delivery blocks the closeout bundle before transaction writes");
+    assert(fs.readFileSync(reportPath, "utf8") === reportBefore, "blocked closeout leaves protocol report byte-identical");
+    assert(fs.readFileSync(dodBefore.receiptPath, "utf8") === receiptBefore, "blocked closeout does not rewrite the existing DoD receipt");
+  } finally {
+    rmrf(ctx.projectRoot);
+    rmrf(ctx.approvalRoot);
+  }
+}
+
 console.log("Running work-item-protocol (Light) tests...\n");
+testLegacyReceiptV1AndAdaptiveProtocolDualRead();
 testEnsureLightLazyStepNoteCreatesS07S08();
 testEnsureLightLazyNoopForNonLight();
 testApproveReadyBundleSealsFourIndependentReceipts();
+testReadyBundlePreflightsEveryReviewerBeforeWriting();
+testRejectReadyBundleKeepsIndependentDecisionEvidence();
+testMaintenanceCloseoutBundlesOnlyDod();
+testProductReleaseCloseoutKeepsConfiguredAuthority();
+testWorkItemLifecycleAdapterEmitsBoundedTelemetry();
 testFailedVerifyDoesNotLeavePrematureS08();
 testStaleDigestFixtureIsRejected();
 testContradictoryProtocolStateFixtureIsRejected();
@@ -593,6 +1121,7 @@ testEbHatchNeedsAStatedReason();
 testEbEmptyScopeRefusesRatherThanPassesVacuously();
 testEbOutsideGitIsSilent();
 testEbGuardIsOnTheRealCliPath();
+testCloseoutBundlePreservesUncommittedDeliveryGuard();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in work-item-protocol-light.test.js`);

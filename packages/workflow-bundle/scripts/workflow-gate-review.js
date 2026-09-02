@@ -1,29 +1,57 @@
+const fs = require("fs");
 const path = require("path");
+const workflowBundlePackage = require("../package.json");
 const { formatErrors, parseCliArgs } = require("./workflow-validator-utils");
 const {
   getUncommittedDeliveryErrors,
   loadWorkflowStepGateSnapshot
 } = require("./workflow-gate-evidence-utils");
 const {
+  buildProjectApprovalNamespace,
+  buildTrustedApprovalReceipt,
   getGateStepId,
   hasApprovedReceipt,
+  isTrustedReceiptSignatureValid,
   loadTrustedApprovalReceipt,
+  readFileSha256,
   resolveApprovalPassphrase,
   resolveGateArtifact,
   resolveTrustedApprovalRoot,
   writeTrustedApprovalReceipt
 } = require("./workflow-trusted-approval-utils");
 const {
+  loadProtocolReport,
   normalizeSingleValue,
+  renderProtocolBlock,
   resolveWorkflowRootBase
 } = require("./work-item-protocol-utils");
+const { reconcileApprovalBundleReport } = require("./work-item-protocol");
+const {
+  buildApprovalBundlePlan,
+  executeApprovalTransaction,
+  recoverApprovalTransaction
+} = require("./workflow-approval-transaction");
+const {
+  emitAdaptiveTelemetryEvent,
+  isTelemetryEnabled
+} = require("./workflow-telemetry");
 
-const SUPPORTED_ACTIONS = new Set(["status", "approve", "reject", "approve-ready-bundle"]);
+const SUPPORTED_ACTIONS = new Set([
+  "status",
+  "approve",
+  "reject",
+  "approve-ready-bundle",
+  "reject-ready-bundle",
+  "approve-closeout-bundle",
+  "reject-closeout-bundle"
+]);
 
 // Ready bundle (plan v5 §3 output 5): seal 4 independent trusted receipts cho
 // gate authoring trong một lệnh. Mỗi receipt hash artifact host riêng (light:
 // approach->s06) và được validate authority trước khi seal.
 const READY_BUNDLE_GATES = ["spec", "dor", "approach", "task_plan"];
+const READINESS_GATES = new Set(["spec", "contract", "dor", "approach", "foundation", "task_plan"]);
+const CLOSEOUT_GATES = new Set(["dod", "uat", "release", "business_acceptance"]);
 const SUPPORTED_GATES = new Set([
   "bootstrap",
   "spec",
@@ -208,45 +236,305 @@ function sealGateReceipt({
   };
 }
 
-function runApproveReadyBundle({ projectRoot, workflowRoot, workItemSlug, approvalRoot, args, sddMode }) {
-  const reviewedAt = normalizeSingleValue(args["reviewed-at"] || new Date().toISOString());
-  const noteText = getNoteText(args, "Human review approved ready bundle authoring gates.");
-  // Resolve passphrase đúng rule MỘT lần; truyền thẳng cho mỗi receipt để tránh
-  // prompt lặp lại trong TTY hoặc mở rộng non-interactive không cần thiết.
-  const resolvedPassphrase = resolveApprovalPassphrase(normalizeSingleValue(args["approval-passphrase"] || ""));
-  const approvalPassphrase = normalizeSingleValue(args["approval-passphrase"] || "");
+function getBundleConsequence(gate) {
+  return {
+    spec: "freeze the approved requirement baseline",
+    contract: "lock the approved public or integration contract",
+    dor: "confirm the work item is ready for technical design and delivery",
+    approach: "lock the approved technical direction",
+    foundation: "lock the approved foundation decision",
+    task_plan: "open the approved implementation sequence",
+    dod: "confirm the technical Definition of Done",
+    uat: "confirm user acceptance testing",
+    release: "authorize the configured release handoff",
+    business_acceptance: "confirm the configured business acceptance"
+  }[gate] || "record the human gate decision";
+}
 
-  // Mỗi gate có reviewer độc lập, lấy từ gate_reviews.{gate}_reviewed_by đã được
-  // human điền trong note host. Trường chưa điền -> throw (chưa đủ authority).
-  const sealed = READY_BUNDLE_GATES.map((gate) => {
+function loadOptionalProtocolReport({ projectRoot, workflowRootBase, workItemSlug }) {
+  try {
+    return loadProtocolReport({ projectRoot, workflowRootBase, workItemSlug, allowBootstrap: false });
+  } catch (error) {
+    if (/^Missing work item report:/.test(error.message)) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+function deriveBundleGates({ protocolReport, sddMode, workflowRoot, workItemSlug, phase }) {
+  const allowedGates = phase === "readiness" ? READINESS_GATES : CLOSEOUT_GATES;
+  if (protocolReport && protocolReport.report.artifact_shape === "adaptive_v1") {
+    const gates = protocolReport.report.gates
+      .map((entry) => entry.gate)
+      .filter((gate) => allowedGates.has(gate));
+    if (gates.length < 1) {
+      throw new Error(`Adaptive ${phase} bundle has no applicable gates.`);
+    }
+    return gates;
+  }
+  if (phase === "readiness") {
+    // Compatibility window: the existing Light/non-Light alias keeps its four
+    // historical authoring gates when no adaptive report is present.
+    return [...READY_BUNDLE_GATES];
+  }
+  const snapshot = loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId: "s08" });
+  const gates = [...CLOSEOUT_GATES].filter((gate) => snapshot.approvalGates[gate] === "required");
+  if (gates.length < 1) {
+    throw new Error("Legacy closeout bundle has no required terminal gates in the s08 host note.");
+  }
+  return gates;
+}
+
+function renderReconciledS01Content(s01Path, report) {
+  const content = fs.readFileSync(s01Path, "utf8");
+  const block = `${renderProtocolBlock(report)}\n\n`;
+  const sectionPattern = /## Work Item Protocol\n```yaml\n[\s\S]*?\n```\n*/m;
+  if (sectionPattern.test(content)) {
+    return content.replace(sectionPattern, block);
+  }
+  const marker = "## Traceability";
+  const markerIndex = content.indexOf(marker);
+  return markerIndex >= 0
+    ? `${content.slice(0, markerIndex)}${block}${content.slice(markerIndex)}`
+    : `${content.trim()}\n\n${block}`;
+}
+
+function buildProtocolReconciliationOperations({ protocolReport, phase, gates, decision, reviewedAt }) {
+  if (!protocolReport) {
+    return [];
+  }
+  const reconciled = reconcileApprovalBundleReport(protocolReport.report, {
+    phase,
+    gates,
+    decision,
+    reviewedAt
+  });
+  const operations = [];
+  const reportContent = `${JSON.stringify(reconciled, null, 2)}\n`;
+  if (!fs.existsSync(protocolReport.reportPath) || fs.readFileSync(protocolReport.reportPath, "utf8") !== reportContent) {
+    operations.push({
+      id: "protocol:report",
+      target_path: protocolReport.reportPath,
+      content: reportContent,
+      expected_sha256: fs.existsSync(protocolReport.reportPath) ? readFileSha256(protocolReport.reportPath) : null
+    });
+  }
+  if (fs.existsSync(protocolReport.s01Path)) {
+    const s01Content = renderReconciledS01Content(protocolReport.s01Path, reconciled);
+    if (fs.readFileSync(protocolReport.s01Path, "utf8") !== s01Content) {
+      operations.push({
+        id: "protocol:s01",
+        target_path: protocolReport.s01Path,
+        content: s01Content,
+        expected_sha256: readFileSha256(protocolReport.s01Path)
+      });
+    }
+  }
+  return operations;
+}
+
+function runGateBundle({ projectRoot, workflowRootBase, workflowRoot, workItemSlug, approvalRoot, args, sddMode, action }) {
+  const phase = action.includes("closeout") ? "closeout" : "readiness";
+  const decision = action.startsWith("reject-") ? "REJECTED" : "APPROVED";
+  const reviewedAt = normalizeSingleValue(args["reviewed-at"] || new Date().toISOString());
+  const noteText = getNoteText(
+    args,
+    decision === "APPROVED"
+      ? `Human review approved ${phase} bundle gates.`
+      : `Human review rejected ${phase} bundle gates.`
+  );
+  const approvalPassphrase = normalizeSingleValue(args["approval-passphrase"] || "");
+  const transactionRoot = path.join(approvalRoot, buildProjectApprovalNamespace(projectRoot), "transactions");
+
+  // Recovery runs before reading current approval inputs. An interrupted bundle
+  // can therefore never be mistaken for current gate state by the next command.
+  recoverApprovalTransaction({
+    transaction_root: transactionRoot,
+    work_item_slug: workItemSlug,
+    refuse_if_live: true
+  });
+  const protocolReport = loadOptionalProtocolReport({ projectRoot, workflowRootBase, workItemSlug });
+  const gates = deriveBundleGates({ protocolReport, sddMode, workflowRoot, workItemSlug, phase });
+
+  // Complete preflight happens for every gate before passphrase resolution,
+  // signing, staging or visible receipt/state writes.
+  const contexts = gates.map((gate) => {
     const stepId = getGateStepId(gate, sddMode);
     const snapshot = loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId });
     const reviewers = (snapshot.gateReviews[gate] && snapshot.gateReviews[gate].reviewedBy) || [];
     if (reviewers.length < 1) {
       throw new Error(`ready-bundle requires gate_reviews.${gate}_reviewed_by filled in ${snapshot.filePath}`);
     }
+    validateSnapshotAuthority(snapshot, gate, reviewers[0]);
+    const artifact = resolveGateArtifact({ projectRoot, workflowRoot, workItemSlug, gate, sddMode });
+    return {
+      gate,
+      reviewedBy: reviewers[0],
+      artifact
+    };
+  });
 
-    return sealGateReceipt({
+  let uncommittedWaiver = null;
+  if (phase === "closeout" && decision === "APPROVED" && gates.includes("dod")) {
+    const verdict = getUncommittedDeliveryErrors({
       projectRoot,
       workflowRoot,
       workItemSlug,
-      gate,
-      reviewedBy: reviewers[0],
-      reviewedAt,
-      note: noteText,
-      approvalStatus: "APPROVED",
-      approvalRoot,
-      approvalPassphrase,
-      resolvedPassphrase,
-      sddMode
+      allowUncommitted: Boolean(args["allow-uncommitted-delivery"]),
+      uncommittedReason: normalizeSingleValue(args["uncommitted-reason"] || "")
     });
+    if (verdict.errors.length > 0) {
+      throw new Error(`Cannot seal closeout bundle for '${workItemSlug}':\n- ${verdict.errors.join("\n- ")}`);
+    }
+    if (verdict.waived) {
+      uncommittedWaiver = verdict.reason;
+    }
+  }
+
+  const approvalPlan = buildApprovalBundlePlan({
+    work_item_slug: workItemSlug,
+    phase,
+    decision,
+    gates: contexts.map(({ gate, reviewedBy, artifact }) => ({
+      gate,
+      reviewer_role: reviewedBy,
+      artifact_digest: `sha256:${artifact.artifactSha256}`,
+      consequence: getBundleConsequence(gate)
+    }))
   });
 
+  if (process.stdin.isTTY) {
+    process.stderr.write(`Approval bundle summary:\n${JSON.stringify(approvalPlan, null, 2)}\n`);
+  }
+  const resolvedPassphrase = resolveApprovalPassphrase(approvalPassphrase);
+  const guards = contexts.map(({ artifact }) => ({
+    path: artifact.artifactPath,
+    expected_sha256: artifact.artifactSha256
+  }));
+  const sealed = [];
+  const operations = [];
+  contexts.forEach(({ gate, reviewedBy, artifact }) => {
+    const existing = loadTrustedApprovalReceipt({
+      projectRoot,
+      overrideRoot: approvalRoot,
+      kind: "gate",
+      workItemSlug,
+      gate
+    });
+    const existingMatches = Boolean(
+      existing.receipt &&
+        isTrustedReceiptSignatureValid({ approvalRoot: existing.approvalRoot, receipt: existing.receipt }) &&
+        existing.receipt.approval_status === decision &&
+        existing.receipt.reviewed_by === reviewedBy &&
+        existing.receipt.artifact_ref === artifact.artifactRef &&
+        existing.receipt.artifact_sha256 === artifact.artifactSha256
+    );
+    const built = existingMatches
+      ? existing
+      : buildTrustedApprovalReceipt({
+          projectRoot,
+          overrideRoot: approvalRoot,
+          kind: "gate",
+          workItemSlug,
+          gate,
+          reviewedBy,
+          reviewedAt,
+          note: noteText,
+          approvalStatus: decision,
+          artifactRef: artifact.artifactRef,
+          artifactSha256: artifact.artifactSha256,
+          resolvedPassphrase
+        });
+    if (!existingMatches) {
+      operations.push({
+        id: `receipt:${gate}`,
+        target_path: built.receiptPath,
+        content: `${JSON.stringify(built.receipt, null, 2)}\n`,
+        expected_sha256: fs.existsSync(built.receiptPath) ? readFileSha256(built.receiptPath) : null
+      });
+    }
+    sealed.push({
+      gate,
+      artifact_ref: artifact.artifactRef,
+      artifact_sha256: artifact.artifactSha256,
+      receipt_path: built.receiptPath,
+      receipt_status: built.receipt.approval_status,
+      reviewed_by: built.receipt.reviewed_by,
+      reviewed_at: built.receipt.reviewed_at
+    });
+  });
+  operations.push(
+    ...buildProtocolReconciliationOperations({
+      protocolReport,
+      phase,
+      gates,
+      decision,
+      reviewedAt
+    })
+  );
+
+  const fixtureMode = String(process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE || "").toLowerCase() === "true";
+  const failAt = fixtureMode ? normalizeSingleValue(args["transaction-fail-at"] || "") : "";
+  const crashAt = fixtureMode ? normalizeSingleValue(args["transaction-crash-at"] || "") : "";
+  const transaction = operations.length > 0
+    ? executeApprovalTransaction({
+        plan: approvalPlan,
+        transaction_root: transactionRoot,
+        operations,
+        guards,
+        fail_at: failAt,
+        crash_at: crashAt
+      })
+    : { status: "NOOP", work_item_slug: workItemSlug, committed_paths: [] };
+
+  let telemetryPath = "";
+  let telemetryError = "";
+  if (isTelemetryEnabled(args.telemetry)) {
+    try {
+      const protocolState = protocolReport ? protocolReport.report : {};
+      const telemetry = emitAdaptiveTelemetryEvent({
+        enabled: true,
+        projectRoot,
+        outputDirOverride: normalizeSingleValue(args["telemetry-out"] || ""),
+        event: {
+          event_type: "approval_bundle",
+          runtime_version: workflowBundlePackage.version,
+          request_lane: protocolState.request_lane,
+          selected_profile:
+            protocolState.selected_profile || (sddMode === "light" ? "sdd-light" : undefined),
+          sdd_light_profile: protocolState.sdd_light_profile,
+          routing_reasons: protocolState.routing_reasons,
+          escalation_reasons: protocolState.escalation_reasons,
+          role_count: Array.isArray(protocolState.roles) ? protocolState.roles.length : null,
+          gate_count: gates.length,
+          interaction_count: 1,
+          override_count: protocolState.human_override ? 1 : 0,
+          retry_count: transaction.status === "NOOP" ? 1 : 0,
+          outcome: decision.toLowerCase(),
+          work_item_slug: workItemSlug,
+          retention_class: "raw",
+          recorded_at: reviewedAt
+        }
+      });
+      telemetryPath = telemetry.reportPath;
+    } catch (_error) {
+      // Telemetry is optional observability after the governance transaction.
+      // A local telemetry failure must not invalidate already-committed receipts.
+      telemetryError = "TELEMETRY_WRITE_FAILED";
+    }
+  }
+
   const summary = {
-    action: "approve-ready-bundle",
+    action,
     work_item_slug: workItemSlug,
     sdd_mode: sddMode,
-    sealed_gates: sealed
+    approval_plan: approvalPlan,
+    transaction,
+    sealed_gates: sealed,
+    ...(telemetryPath ? { telemetry_path: telemetryPath } : {}),
+    ...(telemetryError ? { telemetry_error: telemetryError } : {}),
+    ...(uncommittedWaiver ? { uncommitted_delivery_waived_reason: uncommittedWaiver } : {})
   };
   console.log(JSON.stringify(summary, null, 2));
 }
@@ -295,14 +583,16 @@ function runCli() {
     });
     const sddMode = resolveSddMode(workflowRoot, workItemSlug);
 
-    if (action === "approve-ready-bundle") {
-      runApproveReadyBundle({
+    if (/^(?:approve|reject)-(?:ready|closeout)-bundle$/.test(action)) {
+      runGateBundle({
         projectRoot,
+        workflowRootBase,
         workflowRoot,
         workItemSlug,
         approvalRoot: approvalRootInfo.approvalRoot,
         args,
-        sddMode
+        sddMode,
+        action
       });
       return;
     }

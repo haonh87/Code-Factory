@@ -19,6 +19,21 @@ This document describes how to overlay business roles onto the eight-step workfl
 - `governance` is a thin shared layer; role output must reflect `governance context`, `governance checks`, or `governance-exception` at the relevant step, not be detached from the workflow note.
 - Authority for a `waiver` or `approved_by` must not be inferred only from `role_signoffs`; it must follow `project-context/governance-role-model.md`.
 - When a work item runs under SDD, also use `spec-driven-development.md` to manage lifecycle, requirement IDs, spec freeze, spec change, and the coverage report.
+- Role availability is not role applicability. Derive roles from the canonical request-lane and trigger contract in `adaptive-planning.md`; do not invoke a role or request a signoff merely because its card exists here.
+- Every selected role and gate carries a stable reason code. Omitted and `not_applicable` entries create no pending action; applicability never changes the human authority of a selected gate.
+
+## Applicability Before Role Invocation
+
+| Context | Role set |
+|---|---|
+| non-delivery lane without human materialization override | none |
+| bounded non-delivery override or maintenance | `developer`, `qc` |
+| product delivery base | `po`, `ba`, `developer`, `qc` |
+| public contract, regulated boundary, or greenfield foundation | add `sa`; add `ta` for the corresponding technical risk |
+| migration or security-sensitive technical risk | add `ta` |
+| release/publication | add `devops` |
+
+`sa` and `ta` are trigger-based architecture lenses, not mandatory participants in every coding request. See `adaptive-planning.md` for exact triggers, gate reviewers, reason codes, escalation precedence, and activation guards.
 
 ## Artifact Model
 

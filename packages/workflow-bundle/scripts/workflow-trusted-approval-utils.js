@@ -442,14 +442,38 @@ function loadTrustedApprovalReceipt({ projectRoot, overrideRoot, kind, workItemS
     };
   }
 
+  const normalized = normalizeTrustedApprovalReceipt(JSON.parse(fs.readFileSync(receiptPath, "utf8")));
   return {
     approvalRoot,
     receiptPath,
-    receipt: JSON.parse(fs.readFileSync(receiptPath, "utf8"))
+    receipt: normalized.receipt,
+    artifactShape: normalized.artifact_shape
   };
 }
 
-function writeTrustedApprovalReceipt({
+function normalizeTrustedApprovalReceipt(receipt) {
+  if (!receipt || typeof receipt !== "object" || Array.isArray(receipt)) {
+    throw new Error("Trusted approval receipt must be a JSON object.");
+  }
+  // Early receipt fixtures predate the explicit schema_version field. They are
+  // read as v1 for deprecation compatibility, but are returned unchanged and
+  // still cannot pass signature verification unless they carry the full v1 payload.
+  const schemaVersion = receipt.schema_version == null ? 1 : Number(receipt.schema_version);
+  if (schemaVersion !== 1) {
+    throw new Error(
+      `Unsupported trusted approval receipt schema_version '${receipt.schema_version}'. ` +
+        "The adaptive runtime preserves signed receipt schema v1."
+    );
+  }
+  return {
+    artifact_shape: "legacy_receipt_v1",
+    // Do not add, delete, reorder, or normalize signed fields. Signature verification
+    // reconstructs the historical v1 payload and must see exactly the stored values.
+    receipt
+  };
+}
+
+function buildTrustedApprovalReceipt({
   projectRoot,
   overrideRoot,
   kind,
@@ -463,7 +487,8 @@ function writeTrustedApprovalReceipt({
   artifactRef,
   artifactSha256,
   approvalPassphrase,
-  resolvedPassphrase
+  resolvedPassphrase,
+  recordedAt
 }) {
   const normalizedStatus = String(approvalStatus || "").trim().toUpperCase();
   const { approvalRoot } = resolveTrustedApprovalRoot({ projectRoot, overrideRoot });
@@ -475,8 +500,6 @@ function writeTrustedApprovalReceipt({
     changeId,
     gate
   });
-
-  ensureDirectory(path.dirname(receiptPath));
 
   const payload = {
     schema_version: 1,
@@ -491,7 +514,7 @@ function writeTrustedApprovalReceipt({
     note: String(note || "").trim(),
     artifact_ref: artifactRef || "",
     artifact_sha256: artifactSha256 || "",
-    recorded_at: new Date().toISOString()
+    recorded_at: String(recordedAt || new Date().toISOString()).trim()
   };
   // resolvedPassphrase (tuỳ chọn) cho batch sealing: caller đã resolve passphrase
   // đúng rule qua resolveApprovalPassphrase, truyền thẳng để tránh prompt nhiều lần.
@@ -506,13 +529,18 @@ function writeTrustedApprovalReceipt({
     signature
   };
 
-  fs.writeFileSync(receiptPath, `${JSON.stringify(signedPayload, null, 2)}\n`, "utf8");
-
   return {
     approvalRoot,
     receiptPath,
     receipt: signedPayload
   };
+}
+
+function writeTrustedApprovalReceipt(options) {
+  const result = buildTrustedApprovalReceipt(options);
+  ensureDirectory(path.dirname(result.receiptPath));
+  fs.writeFileSync(result.receiptPath, `${JSON.stringify(result.receipt, null, 2)}\n`, "utf8");
+  return result;
 }
 
 function hasApprovedReceipt(receipt, approvalRoot = "") {
@@ -527,6 +555,7 @@ function hasApprovedReceipt(receipt, approvalRoot = "") {
 module.exports = {
   APPROVED_RECEIPT_STATUSES,
   GATE_TO_STEP_ID,
+  buildTrustedApprovalReceipt,
   buildProjectApprovalNamespace,
   buildReceiptPath,
   resolveCanonicalProjectRoot,
@@ -537,7 +566,9 @@ module.exports = {
   hasApprovedReceipt,
   isTrustedReceiptSignatureValid,
   loadTrustedApprovalReceipt,
+  normalizeTrustedApprovalReceipt,
   normalizeProjectRelativePath,
+  readFileSha256,
   readStdinByteSync,
   resolveApprovalPassphrase,
   resolveGateArtifact,

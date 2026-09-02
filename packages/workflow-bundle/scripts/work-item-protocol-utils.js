@@ -228,11 +228,26 @@ function normalizeProtocolEvent(event) {
   };
 }
 
+function normalizeReasonedEntries(entries, key) {
+  return (Array.isArray(entries) ? entries : [])
+    .filter((entry) => entry && typeof entry === "object" && !Array.isArray(entry))
+    .map((entry) => ({
+      [key]: String(entry[key] || "").trim(),
+      reasons: normalizeArray(entry.reasons),
+      ...(key === "gate" ? { reviewer_roles: normalizeArray(entry.reviewer_roles) } : {})
+    }))
+    .filter((entry) => entry[key]);
+}
+
+function isAdaptiveProtocolReport(report) {
+  return Boolean(report && report.artifact_shape === "adaptive_v1");
+}
+
 function normalizeProtocolReport(report) {
   const decisionOwner = String(report.decision_owner || "agent").trim() || "agent";
   const approvalDefaults = getDefaultApprovalState(decisionOwner);
 
-  return {
+  const normalized = {
     materialization_status: String(report.materialization_status || "PROPOSED").trim(),
     protocol_status: String(report.protocol_status || "PROPOSED").trim(),
     decision_owner: decisionOwner,
@@ -277,6 +292,38 @@ function normalizeProtocolReport(report) {
       })
       .map((event) => normalizeProtocolEvent(event))
       .filter(Boolean)
+  };
+
+  if (!isAdaptiveProtocolReport(report)) {
+    return normalized;
+  }
+
+  const activation =
+    report.adaptive_activation && typeof report.adaptive_activation === "object" && !Array.isArray(report.adaptive_activation)
+      ? report.adaptive_activation
+      : {};
+  return {
+    ...normalized,
+    artifact_shape: "adaptive_v1",
+    request_lane: String(report.request_lane || "").trim(),
+    workflow_required: report.workflow_required === true,
+    routing_reasons: normalizeArray(report.routing_reasons),
+    escalation_reasons: normalizeArray(report.escalation_reasons),
+    roles: normalizeReasonedEntries(report.roles, "role"),
+    gates: normalizeReasonedEntries(report.gates, "gate"),
+    human_override:
+      report.human_override && typeof report.human_override === "object" && !Array.isArray(report.human_override)
+        ? {
+            actor: String(report.human_override.actor || "").trim(),
+            reason: String(report.human_override.reason || "").trim(),
+            at: String(report.human_override.at || "").trim()
+          }
+        : null,
+    adaptive_activation: {
+      source_version: String(activation.source_version || "").trim(),
+      installed_versions: normalizeArray(activation.installed_versions),
+      parity_passed: activation.parity_passed === true
+    }
   };
 }
 
@@ -369,6 +416,17 @@ function loadProtocolReport({ projectRoot, workflowRootBase, workItemSlug, allow
 function renderProtocolBlock(reportInput) {
   const report = normalizeProtocolReport(reportInput);
   const lastEvent = report.protocol_events.length > 0 ? report.protocol_events[report.protocol_events.length - 1] : null;
+  const adaptiveLines = isAdaptiveProtocolReport(report)
+    ? [
+        `artifact_shape: ${report.artifact_shape}`,
+        `request_lane: ${report.request_lane}`,
+        `workflow_required: ${report.workflow_required ? "true" : "false"}`,
+        ...buildYamlList("routing_reasons", report.routing_reasons),
+        ...buildYamlList("escalation_reasons", report.escalation_reasons),
+        ...buildYamlList("role_applicability", report.roles.map((entry) => JSON.stringify(entry))),
+        ...buildYamlList("gate_applicability", report.gates.map((entry) => JSON.stringify(entry)))
+      ]
+    : [];
 
   return [
     "## Work Item Protocol",
@@ -376,6 +434,7 @@ function renderProtocolBlock(reportInput) {
     `protocol_status: ${report.protocol_status}`,
     `approval_status: ${report.approval_status}`,
     `review_required: ${report.review_required ? "true" : "false"}`,
+    ...adaptiveLines,
     `work_item_slug: ${quoteYamlString(report.work_item_slug)}`,
     `work_item_type: ${report.work_item_type}`,
     `delivery_context: ${report.delivery_context}`,
@@ -469,6 +528,7 @@ module.exports = {
   loadProtocolControl,
   normalizeArray,
   normalizeProtocolReport,
+  isAdaptiveProtocolReport,
   normalizeSingleValue,
   quoteYamlString,
   renderProtocolBlock,

@@ -28,6 +28,10 @@ const {
   hasApprovedReceipt,
   loadTrustedApprovalReceipt
 } = require("./workflow-trusted-approval-utils");
+const {
+  REQUEST_LANES,
+  canActivateAdaptiveWrites
+} = require("./workflow-adaptive-governance");
 
 function collectWorkItemDirs(workflowRootBase) {
   if (!fs.existsSync(workflowRootBase)) {
@@ -67,6 +71,21 @@ function validateProtocolBlockSync(s01Content, report, s01Path, errors) {
       errors.push(`Protocol block out of sync in ${s01Path}: missing '${expectedLine}'`);
     }
   });
+
+  if (report.artifact_shape === "adaptive_v1") {
+    [
+      `artifact_shape: adaptive_v1`,
+      `request_lane: ${report.request_lane}`,
+      `workflow_required: ${report.workflow_required ? "true" : "false"}`,
+      report.routing_reasons.length > 0 ? "routing_reasons:" : "routing_reasons: []",
+      report.roles.length > 0 ? "role_applicability:" : "role_applicability: []",
+      report.gates.length > 0 ? "gate_applicability:" : "gate_applicability: []"
+    ].forEach((expectedLine) => {
+      if (!section.includes(expectedLine)) {
+        errors.push(`Adaptive protocol block out of sync in ${s01Path}: missing '${expectedLine}'`);
+      }
+    });
+  }
 }
 
 function validateProtocolEvents(report, reportPath, errors) {
@@ -158,6 +177,32 @@ function validateProtocolState(report, context, errors) {
 
   if (!BOOTSTRAP_GATE_STATUSES.includes(report.bootstrap_gate_status)) {
     errors.push(`Invalid bootstrap_gate_status '${report.bootstrap_gate_status}' in ${reportPath}`);
+  }
+
+  if (report.artifact_shape === "adaptive_v1") {
+    if (!REQUEST_LANES.includes(report.request_lane)) {
+      errors.push(`Invalid adaptive request_lane '${report.request_lane}' in ${reportPath}`);
+    }
+    if (report.workflow_required !== true) {
+      errors.push(`Protocol-managed adaptive report requires workflow_required=true in ${reportPath}`);
+    }
+    if (report.routing_reasons.length < 1) {
+      errors.push(`Adaptive report requires non-empty routing_reasons in ${reportPath}`);
+    }
+    report.roles.forEach((entry, index) => {
+      if (entry.reasons.length < 1) {
+        errors.push(`Adaptive report roles[${index}] requires non-empty reasons in ${reportPath}`);
+      }
+    });
+    report.gates.forEach((entry, index) => {
+      if (entry.reasons.length < 1 || entry.reviewer_roles.length < 1) {
+        errors.push(`Adaptive report gates[${index}] requires reasons and reviewer_roles in ${reportPath}`);
+      }
+    });
+    const activation = canActivateAdaptiveWrites(report.adaptive_activation);
+    if (!activation.allowed) {
+      errors.push(`Adaptive report activation evidence failed [${activation.reasons.join(", ")}] in ${reportPath}`);
+    }
   }
 
   if (report.work_item_slug !== slug) {

@@ -40,6 +40,11 @@ const { validateWorkflowExecution } = require("./validate-workflow-execution");
 const { validateWorkflowGovernance } = require("./validate-workflow-governance");
 const { validateWorkflowPlanning } = require("./validate-workflow-planning");
 const { inferDeliveryContext } = require("./work-item-protocol-utils");
+const {
+  REQUEST_LANES,
+  canActivateAdaptiveWrites,
+  evaluateAdaptiveGovernance
+} = require("./workflow-adaptive-governance");
 
 const WORK_ITEM_TYPES = ["FEATURE", "BUG", "CHANGE", "REFACTOR", "RESEARCH"];
 const DELIVERY_CONTEXTS = ["greenfield", "brownfield"];
@@ -66,6 +71,86 @@ function buildYamlList(key, values, indent = "") {
     `${indent}${key}:`,
     ...values.map((value) => `${indent}  - ${quoteYamlString(value)}`)
   ];
+}
+
+function buildNestedYamlListMap(parentKey, entries, entryKey) {
+  const lines = [`${parentKey}:`];
+  entries.forEach((entry) => {
+    lines.push(`  ${entry[entryKey]}:`);
+    entry.reasons.forEach((reason) => lines.push(`    - ${quoteYamlString(reason)}`));
+  });
+  return lines;
+}
+
+function normalizeAdaptiveBoolean(value, fieldName) {
+  const normalized = normalizeSingleValue(value);
+  if (normalized === true || normalized === "true") return true;
+  if (normalized === false || normalized === "false" || normalized == null || normalized === "") return false;
+  throw new Error(`Invalid ${fieldName} '${normalized}'. Allowed values: true, false`);
+}
+
+function resolveAdaptiveContext(args, { deliveryContext, planningTrack, governanceProfile }) {
+  const adaptiveWritesEnabled = normalizeAdaptiveBoolean(args["adaptive-writes"], "adaptive-writes");
+  if (!adaptiveWritesEnabled) {
+    return null;
+  }
+
+  if (!Object.prototype.hasOwnProperty.call(args, "request-lane")) {
+    throw new Error("--adaptive-writes true requires an explicit --request-lane.");
+  }
+
+  const requestLane = normalizeSingleValue(args["request-lane"]);
+  validateChoice("request-lane", requestLane, REQUEST_LANES);
+  const decision = evaluateAdaptiveGovernance({
+    request_lane: requestLane,
+    requested_lane: requestLane,
+    delivery_context: deliveryContext,
+    planning_track: planningTrack,
+    explicit_materialization: args["explicit-materialization"],
+    mixed_intent: args["mixed-intent"],
+    override_actor: normalizeSingleValue(args["override-actor"] || ""),
+    override_reason: normalizeSingleValue(args["override-reason"] || ""),
+    override_at: normalizeSingleValue(args["override-at"] || ""),
+    triggers: {
+      public_contract: args["public-contract"],
+      migration: args.migration,
+      security_sensitive: args["security-sensitive"],
+      regulated: args.regulated || governanceProfile === "regulated",
+      greenfield_foundation: args["greenfield-foundation"] || deliveryContext === "greenfield",
+      release: args.release
+    }
+  });
+
+  if (!decision.workflow_required) {
+    throw new Error(
+      `Request lane '${decision.request_lane}' does not require workflow artifacts. ` +
+        "Use the non-delivery handler, or provide an audited explicit-materialization override."
+    );
+  }
+
+  const sourceVersion = normalizeSingleValue(args["adaptive-source-version"] || "");
+  const installedVersions = normalizeToArray(args["adaptive-installed-version"]);
+  const parityPassed = normalizeAdaptiveBoolean(args["adaptive-parity-passed"], "adaptive-parity-passed");
+  const activation = canActivateAdaptiveWrites({
+    source_version: sourceVersion,
+    installed_versions: installedVersions,
+    parity_passed: parityPassed
+  });
+  if (!activation.allowed) {
+    throw new Error(
+      `Adaptive artifact writes are blocked: ${activation.reasons.join(", ")}. ` +
+        "Keep the legacy writer or align runtime minors and pass parity validation."
+    );
+  }
+
+  return {
+    decision,
+    activation: {
+      source_version: sourceVersion,
+      installed_versions: installedVersions,
+      parity_passed: parityPassed
+    }
+  };
 }
 
 // --- Light compact frontmatter (plan v5 §2, §3 + budget AC-03) ---
@@ -191,6 +276,13 @@ function readSiblingInheritance(workflowRoot, workItemSlug) {
 }
 
 function buildApprovalGatesLines(context) {
+  if (context.adaptive) {
+    const required = new Set(context.adaptive.decision.gates.map((entry) => entry.gate));
+    return [
+      "approval_gates:",
+      ...FULL_SIGNOFF_KEYS.map((gate) => `  ${gate}: "${required.has(gate) ? "required" : "not_applicable"}"`)
+    ];
+  }
   if (context.sddMode === "light") {
     return [
       "approval_gates:",
@@ -208,13 +300,25 @@ function buildApprovalGatesLines(context) {
   ];
 }
 
-function buildRoleSignoffsLines(sddMode) {
-  const keys = sddMode === "light" ? LIGHT_SIGNOFF_KEYS : FULL_SIGNOFF_KEYS;
+function buildRoleSignoffsLines(context) {
+  if (context.adaptive) {
+    return [
+      "role_signoffs:",
+      ...context.adaptive.decision.gates.map(
+        (entry) => `  ${entry.gate}: ${JSON.stringify(entry.reviewer_roles)}`
+      )
+    ];
+  }
+  const keys = context.sddMode === "light" ? LIGHT_SIGNOFF_KEYS : FULL_SIGNOFF_KEYS;
   return ["role_signoffs:", ...keys.map((key) => `  ${key}: []`)];
 }
 
-function buildGateReviewsLines(sddMode) {
-  const keys = sddMode === "light" ? LIGHT_SIGNOFF_KEYS : FULL_SIGNOFF_KEYS;
+function buildGateReviewsLines(context) {
+  const keys = context.adaptive
+    ? context.adaptive.decision.gates.map((entry) => entry.gate)
+    : context.sddMode === "light"
+      ? LIGHT_SIGNOFF_KEYS
+      : FULL_SIGNOFF_KEYS;
   const lines = ["gate_reviews:"];
   keys.forEach((key) => {
     lines.push(`  ${key}_reviewed_by: []`, `  ${key}_reviewed_at: ""`);
@@ -268,6 +372,22 @@ function getDefaultUpstreamArtifacts(stepId, workItemSlug, sddMode) {
 }
 
 function buildFrontmatter(definition, context) {
+  const adaptiveLines = context.adaptive
+    ? [
+        "artifact_shape: adaptive_v1",
+        `request_lane: ${context.adaptive.decision.request_lane}`,
+        `workflow_required: ${context.adaptive.decision.workflow_required ? "true" : "false"}`,
+        ...buildYamlList("routing_reasons", context.adaptive.decision.routing_reasons),
+        ...buildYamlList("escalation_reasons", context.adaptive.decision.escalation_reasons),
+        ...buildNestedYamlListMap("role_reasons", context.adaptive.decision.roles, "role"),
+        ...buildNestedYamlListMap("gate_reasons", context.adaptive.decision.gates, "gate"),
+        "adaptive_activation:",
+        `  source_version: ${quoteYamlString(context.adaptive.activation.source_version)}`,
+        "  installed_versions:",
+        ...context.adaptive.activation.installed_versions.map((version) => `    - ${quoteYamlString(version)}`),
+        `  parity_passed: ${context.adaptive.activation.parity_passed ? "true" : "false"}`
+      ]
+    : [];
   const lines = [
     "---",
     `artifact_id: ${quoteYamlString(`${context.workItemSlug}.${definition.stepId}.${definition.stepSlug}`)}`,
@@ -299,12 +419,13 @@ function buildFrontmatter(definition, context) {
     `execution_mode: ${context.executionMode}`,
     // Light (agentic/self) không emit execution_roles rỗng và verification_owner
     // rỗng — planning/execution validator default missing keys nên omit an toàn.
-    ...(context.sddMode === "light" ? [] : buildYamlList("execution_roles", context.executionRoles)),
+    ...(context.adaptive || context.sddMode !== "light" ? buildYamlList("execution_roles", context.executionRoles) : []),
     `review_mode: ${context.reviewMode}`,
     ...(context.sddMode === "light" ? [] : [`verification_owner: ${quoteYamlString(context.verificationOwner)}`]),
+    ...adaptiveLines,
     ...buildApprovalGatesLines(context),
-    ...buildRoleSignoffsLines(context.sddMode),
-    ...buildGateReviewsLines(context.sddMode),
+    ...buildRoleSignoffsLines(context),
+    ...buildGateReviewsLines(context),
     ...buildYamlList("content_skills", definition.contentSkills),
     ...buildYamlList("artifact_skills", definition.artifactSkills),
     ...buildYamlList("upstream_artifacts", getDefaultUpstreamArtifacts(definition.stepId, context.workItemSlug, context.sddMode)),
@@ -422,6 +543,15 @@ function parseContextFromArgs(args) {
     }
   }
 
+  const adaptive = resolveAdaptiveContext(args, {
+    deliveryContext,
+    planningTrack,
+    governanceProfile
+  });
+  const selectedExecutionRoles = adaptive
+    ? adaptive.decision.roles.map((entry) => entry.role)
+    : executionRoles;
+
   return {
     planningTrack,
     workItemSlug,
@@ -441,12 +571,13 @@ function parseContextFromArgs(args) {
     archiveStatus,
     sddMode,
     executionMode,
-    executionRoles,
+    executionRoles: selectedExecutionRoles,
     reviewMode,
     verificationOwner: finalVerificationOwner,
     // Carried so the frontmatter builder emits inherited spec_refs and spec_status
     // without re-reading the sibling notes. TD-03 / TD-04.
-    inherited
+    inherited,
+    adaptive
   };
 }
 

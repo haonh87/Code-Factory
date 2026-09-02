@@ -49,6 +49,22 @@ function getFrontmatterValue(content, key) {
   return match ? match[1].replace(/^["']|["']$/g, "") : null;
 }
 
+function getFrontmatterList(content, key) {
+  const lines = content.split(/\r?\n/);
+  const start = lines.findIndex((line) => line === `${key}:`);
+  if (start < 0) return [];
+  const values = [];
+  for (let index = start + 1; index < lines.length; index += 1) {
+    const match = lines[index].match(/^\s{2}-\s*["']?([^"']+?)["']?\s*$/);
+    if (match) {
+      values.push(match[1]);
+      continue;
+    }
+    if (/^\S/.test(lines[index])) break;
+  }
+  return values;
+}
+
 function getUpstreamArtifacts(content) {
   const lines = content.split(/\r?\n/);
   const inFront = lines[0].trim() === "---";
@@ -200,6 +216,106 @@ function testNonLightStillScaffoldsAll() {
   rmrf(projectRoot);
 }
 
+function adaptiveArgs(projectRoot, workflowRoot, requestLane) {
+  return {
+    "work-item": `adaptive-${requestLane.replace(/_/g, "-")}`,
+    "planning-track": "full",
+    "delivery-context": "brownfield",
+    "workflow-root": workflowRoot,
+    "project-root": projectRoot,
+    "request-lane": requestLane,
+    "adaptive-writes": "true",
+    "adaptive-source-version": "2.6.1",
+    "adaptive-installed-version": ["2.6.4", "2.6.0"],
+    "adaptive-parity-passed": "true"
+  };
+}
+
+function testAdaptiveMaintenanceScaffoldOmitsInapplicableCeremony() {
+  const projectRoot = buildProjectRoot();
+  const slug = "adaptive-maintenance";
+  const workflowRoot = path.join(projectRoot, "work-items", slug);
+  try {
+    scaffoldWorkflowNotes({
+      args: { ...adaptiveArgs(projectRoot, workflowRoot, "maintenance"), "work-item": slug, steps: "s06" }
+    });
+    const note = readNote(workflowRoot, slug, "s06", "task-breakdown");
+    assert(getFrontmatterValue(note, "artifact_shape") === "adaptive_v1", "adaptive note must declare adaptive_v1");
+    assert(getFrontmatterValue(note, "request_lane") === "maintenance", "adaptive note must preserve maintenance lane");
+    assert(getFrontmatterValue(note, "workflow_required") === "true", "maintenance must require workflow");
+    assert(
+      JSON.stringify(getFrontmatterList(note, "execution_roles")) === JSON.stringify(["developer", "qc"]),
+      `maintenance roles must be exactly developer/qc, got ${JSON.stringify(getFrontmatterList(note, "execution_roles"))}`
+    );
+    assert(/^\s{2}task_plan:\s*"required"$/m.test(note), "maintenance must require task_plan");
+    assert(/^\s{2}dod:\s*"required"$/m.test(note), "maintenance must require dod");
+    assert(/^\s{2}spec:\s*"not_applicable"$/m.test(note), "maintenance spec must be not_applicable");
+    assert(/^\s{2}task_plan:\s*\["developer"\]$/m.test(note), "task_plan authority must be developer");
+    assert(/^\s{2}dod:\s*\["qc"\]$/m.test(note), "dod authority must be qc");
+    assert(!/^\s{2}spec:\s*\[/m.test(note), "inapplicable spec must not emit a signoff placeholder");
+    assert(/ROLE_DEVELOPER_BOUNDED_CHANGE/.test(note), "developer role must carry its applicability reason");
+    assert(/GATE_TASK_PLAN_BOUNDED_CHANGE/.test(note), "task_plan gate must carry its applicability reason");
+    console.log("  PASS: adaptive maintenance scaffold emits only applicable role/gate ceremony");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
+function testAdaptivePublicContractAddsArchitectureRoles() {
+  const projectRoot = buildProjectRoot();
+  const slug = "adaptive-public-contract";
+  const workflowRoot = path.join(projectRoot, "work-items", slug);
+  try {
+    scaffoldWorkflowNotes({
+      args: {
+        ...adaptiveArgs(projectRoot, workflowRoot, "product_delivery"),
+        "work-item": slug,
+        "public-contract": "true",
+        steps: "s04"
+      }
+    });
+    const note = readNote(workflowRoot, slug, "s04", "acceptance-criteria");
+    assert(
+      JSON.stringify(getFrontmatterList(note, "execution_roles")) ===
+        JSON.stringify(["po", "ba", "sa", "ta", "developer", "qc"]),
+      `public-contract roles must add SA/TA deterministically, got ${JSON.stringify(getFrontmatterList(note, "execution_roles"))}`
+    );
+    assert(/^\s{2}contract:\s*"required"$/m.test(note), "public contract must require contract gate");
+    assert(/ROLE_SA_PUBLIC_CONTRACT_BOUNDARY/.test(note), "SA reason must be explicit");
+    assert(/ROLE_TA_PUBLIC_CONTRACT_RISK/.test(note), "TA reason must be explicit");
+    assert(/GATE_CONTRACT_PUBLIC_CONTRACT/.test(note), "contract gate reason must be explicit");
+    console.log("  PASS: public-contract adaptive scaffold adds reasoned SA/TA and contract gate");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
+function testAdaptiveScaffoldVersionSkewFailsBeforeWrite() {
+  const projectRoot = buildProjectRoot();
+  const slug = "adaptive-skew";
+  const workflowRoot = path.join(projectRoot, "work-items", slug);
+  let message = "";
+  try {
+    try {
+      scaffoldWorkflowNotes({
+        args: {
+          ...adaptiveArgs(projectRoot, workflowRoot, "maintenance"),
+          "work-item": slug,
+          "adaptive-installed-version": ["2.6.1", "2.5.9"],
+          steps: "s06"
+        }
+      });
+    } catch (error) {
+      message = error.message;
+    }
+    assert(/ADAPTIVE_RUNTIME_MINOR_SKEW/.test(message), `skew must fail closed with reason, got: ${message}`);
+    assert(!fs.existsSync(workflowRoot), "failed adaptive activation must write no workflow directory");
+    console.log("  PASS: adaptive scaffold version skew fails before writes");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
 function scaffoldMultiAgent(roleCount) {
   const projectRoot = buildProjectRoot();
   const slug = `multi-role-${roleCount}`;
@@ -268,6 +384,9 @@ console.log("Running scaffold-workflow (Light compact) tests...\n");
 testCompactScaffold();
 testExplicitStepsRespected();
 testNonLightStillScaffoldsAll();
+testAdaptiveMaintenanceScaffoldOmitsInapplicableCeremony();
+testAdaptivePublicContractAddsArchitectureRoles();
+testAdaptiveScaffoldVersionSkewFailsBeforeWrite();
 testMultiAgentSectionsHaveFlatFileCount();
 
 if (failures > 0) {

@@ -10,7 +10,8 @@ const { execFileSync } = require("child_process");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
 const packageRoot = path.join(repoRoot, "packages", "workflow-bundle");
-const expectedVersion = "2.6.1";
+const guardrailsPath = path.join(repoRoot, ".github", "workflows", "workflow-guardrails.yml");
+const expectedVersion = "2.6.2";
 const expectedSkillCount = 42;
 
 function assert(condition, message) {
@@ -67,9 +68,27 @@ function assertRuntimeContract(root, label) {
   }
 }
 
+function assertGuardrailsExactCandidateFlow() {
+  const workflow = fs.readFileSync(guardrailsPath, "utf8");
+  assert(/^  release-candidate-build:\s*$/m.test(workflow), "Guardrails must build one named release candidate before the Node matrix");
+  assert(/uses:\s*actions\/upload-artifact@v4/.test(workflow), "Guardrails must upload the exact candidate artifact once");
+  assert(/uses:\s*actions\/download-artifact@v4/.test(workflow), "Node verification jobs must download the same candidate artifact");
+  assert(/WORKFLOW_BUNDLE_CANDIDATE_TARBALL/.test(workflow), "exact candidate path must be passed to artifact smoke");
+  assert(/WORKFLOW_BUNDLE_CANDIDATE_SHA256/.test(workflow), "build-time candidate digest must be passed to artifact smoke");
+  assert((workflow.match(/npm pack/g) || []).length === 1, "Guardrails must pack once and never rebuild per Node version");
+  const buildJobAt = workflow.indexOf("  release-candidate-build:");
+  const matrixJobAt = workflow.indexOf("  release-candidate:", buildJobAt + 1);
+  assert(buildJobAt >= 0 && matrixJobAt > buildJobAt, "candidate build must precede the Node verification matrix");
+  if (matrixJobAt > buildJobAt) {
+    const matrixJob = workflow.slice(matrixJobAt);
+    assert(/needs:\s*\n\s*-\s*release-candidate-build/.test(matrixJob), "Node matrix must depend on the one candidate-build job");
+  }
+}
+
 function runSourcePreflight() {
   const packageJson = JSON.parse(fs.readFileSync(path.join(packageRoot, "package.json"), "utf8"));
   assert(packageJson.version === expectedVersion, `source package version must be ${expectedVersion}, got ${packageJson.version}`);
+  assertGuardrailsExactCandidateFlow();
   assertRuntimeContract(packageRoot, "source package");
   console.log(`OK: pre-candidate source contract passed for v${expectedVersion}/${expectedSkillCount}; no tarball was created`);
 }
@@ -82,7 +101,7 @@ function runExactArtifactSmoke(tarballPath, expectedDigest) {
   assert(actualDigest === expectedDigest, `candidate digest mismatch: expected ${expectedDigest}, got ${actualDigest}`);
 
   console.log(`Running exact v${expectedVersion} package-artifact smoke...\n`);
-  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-v2.6.1-artifact-"));
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-v2.6.2-artifact-"));
   try {
     const cacheRoot = path.join(tempRoot, "npm-cache");
     const installPrefix = path.join(tempRoot, "install");
@@ -135,9 +154,49 @@ function runExactArtifactSmoke(tarballPath, expectedDigest) {
   }
 }
 
-const candidateTarball = process.env.WORKFLOW_BUNDLE_CANDIDATE_TARBALL;
-if (candidateTarball) {
-  runExactArtifactSmoke(candidateTarball, process.env.WORKFLOW_BUNDLE_CANDIDATE_SHA256 || "");
-} else {
-  runSourcePreflight();
+function runSelfPackedArtifactSmoke() {
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-candidate-build-"));
+  try {
+    const npmBin = process.platform === "win32" ? "npm.cmd" : "npm";
+    const cacheRoot = path.join(tempRoot, "npm-cache");
+    execFileSync(
+      npmBin,
+      ["pack", packageRoot, "--pack-destination", tempRoot],
+      {
+        cwd: repoRoot,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+        env: {
+          ...process.env,
+          npm_config_cache: cacheRoot,
+          npm_config_update_notifier: "false"
+        }
+      }
+    );
+    const tarballs = fs.readdirSync(tempRoot).filter((name) => name.endsWith(".tgz"));
+    assert(tarballs.length === 1, `self-pack must produce exactly one tarball, got ${tarballs.length}`);
+    const tarballPath = path.join(tempRoot, tarballs[0]);
+    runExactArtifactSmoke(tarballPath, sha256(tarballPath));
+  } finally {
+    chmodTreeWritable(tempRoot);
+    fs.rmSync(tempRoot, { recursive: true, force: true });
+  }
 }
+
+if (require.main === module) {
+  const candidateTarball = process.env.WORKFLOW_BUNDLE_CANDIDATE_TARBALL;
+  if (candidateTarball) {
+    runExactArtifactSmoke(candidateTarball, process.env.WORKFLOW_BUNDLE_CANDIDATE_SHA256 || "");
+  } else if (process.argv.includes("--self-pack")) {
+    runSelfPackedArtifactSmoke();
+  } else {
+    runSourcePreflight();
+  }
+}
+
+module.exports = {
+  assertGuardrailsExactCandidateFlow,
+  runExactArtifactSmoke,
+  runSelfPackedArtifactSmoke,
+  runSourcePreflight
+};

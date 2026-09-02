@@ -39,7 +39,10 @@ const SIGNOFF_KEYS = [
   "dod"
 ];
 
-const APPROVAL_GATE_KEYS = ["spec", "contract", "foundation", "uat", "release", "business_acceptance"];
+// Adaptive artifacts make applicability explicit for every human-controlled gate.
+// Legacy artifacts remain readable because missing keys still use the historical
+// defaults and the legacy finalized-step host map below.
+const APPROVAL_GATE_KEYS = [...SIGNOFF_KEYS];
 
 function artifactReferenceError(code, message) {
   const error = new Error(message);
@@ -479,7 +482,25 @@ function getUncommittedDeliveryErrors({ projectRoot, workflowRoot, workItemSlug,
   });
 }
 
-function getRequiredFinalizedGateKeys(stepId, approvalGates, sddMode) {
+function getRequiredFinalizedGateKeys(stepId, approvalGates, sddMode, artifactShape = "legacy_v1") {
+  if (artifactShape === "adaptive_v1") {
+    const hostByGate = {
+      spec: "s04",
+      contract: "s04",
+      dor: "s04",
+      approach: sddMode === "light" ? "s06" : "s05",
+      foundation: "s05",
+      task_plan: "s06",
+      uat: "s08",
+      release: "s08",
+      business_acceptance: "s08",
+      dod: "s08"
+    };
+    return SIGNOFF_KEYS.filter(
+      (key) => hostByGate[key] === stepId && approvalGates[key] === "required"
+    );
+  }
+
   // Light: dùng host map gọn — s06 require approach+task_plan, bỏ s05.
   // contract/foundation không áp dụng (light default not_applicable).
   if (sddMode === "light") {
@@ -880,6 +901,8 @@ function loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId }) {
       deliveryContext: "",
       governanceProfile: "default",
       sddMode: "none",
+      artifactShape: "legacy_v1",
+      requestLane: "",
       approvalGates: buildDefaultApprovalGates(),
       roleSignoffs: Object.fromEntries(SIGNOFF_KEYS.map((key) => [key, []])),
       gateReviews: Object.fromEntries(
@@ -907,6 +930,8 @@ function loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId }) {
       deliveryContext: "",
       governanceProfile: "default",
       sddMode: "none",
+      artifactShape: "legacy_v1",
+      requestLane: "",
       approvalGates: buildDefaultApprovalGates(),
       roleSignoffs: Object.fromEntries(SIGNOFF_KEYS.map((key) => [key, []])),
       gateReviews: Object.fromEntries(
@@ -946,6 +971,8 @@ function loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId }) {
     deliveryContext: getFrontmatterValue(frontmatterLines, "delivery_context") || "brownfield",
     governanceProfile: getFrontmatterValue(frontmatterLines, "governance_profile") || "default",
     sddMode: getFrontmatterValue(frontmatterLines, "sdd_mode") || "none",
+    artifactShape: getFrontmatterValue(frontmatterLines, "artifact_shape") || "legacy_v1",
+    requestLane: getFrontmatterValue(frontmatterLines, "request_lane") || "",
     approvalGates,
     roleSignoffs,
     gateReviews
@@ -1090,7 +1117,12 @@ function getProtocolStepGateErrors({ projectRoot, workflowRoot, workItemSlug, to
         stepId
       });
       errors.push(
-        ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys(stepId, snapshot.approvalGates, resolvedSddMode), {
+        ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys(
+          stepId,
+          snapshot.approvalGates,
+          resolvedSddMode,
+          snapshot.artifactShape
+        ), {
           projectRoot,
           workflowRoot,
           workItemSlug,
@@ -1121,7 +1153,12 @@ function getProtocolStepGateErrors({ projectRoot, workflowRoot, workItemSlug, to
       stepId: "s08"
     });
     errors.push(
-      ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys("s08", snapshot.approvalGates, resolvedSddMode), {
+      ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys(
+        "s08",
+        snapshot.approvalGates,
+        resolvedSddMode,
+        snapshot.artifactShape
+      ), {
         projectRoot,
         workflowRoot,
         workItemSlug,

@@ -3,6 +3,12 @@ const path = require("path");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
 const canonicalRoot = path.join(repoRoot, "skills");
+const canonicalPolicyPath = path.join(repoRoot, "policies", "codex", "AGENTS.global.md");
+const canonicalSupportPoliciesRoot = path.join(repoRoot, "policies", "codex");
+const sourceManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, "workflow-bundle.manifest.json"), "utf8"));
+const packageManifest = JSON.parse(
+  fs.readFileSync(path.join(repoRoot, "packages", "workflow-bundle", "workflow-bundle.manifest.json"), "utf8")
+);
 const runtimeRoots = {
   codex: path.join(repoRoot, "packages", "workflow-bundle", "runtime", "codex", "skills"),
   claude: path.join(repoRoot, "packages", "workflow-bundle", "runtime", "claude", "skills")
@@ -66,6 +72,10 @@ function collectRelativeFiles(root) {
 }
 
 console.log("Running workflow-bundle canonical/runtime parity tests...\n");
+assert(packageManifest.bundleName === sourceManifest.bundleName, "package runtime manifest bundleName must match canonical source");
+assert(packageManifest.bundleVersion === sourceManifest.bundleVersion, "package runtime manifest bundleVersion must match canonical source");
+assert(packageManifest.workflowSchemaVersion === sourceManifest.workflowSchemaVersion, "package runtime workflow schema must match canonical source");
+assert(packageManifest.crSchemaVersion === sourceManifest.crSchemaVersion, "package runtime CR schema must match canonical source");
 const canonical = collectSkillDirs(canonicalRoot, "canonical");
 const canonicalNames = [...canonical.keys()].sort();
 assert(canonicalNames.length === expectedSkillCount, `canonical inventory must contain ${expectedSkillCount} skills, got ${canonicalNames.length}`);
@@ -82,6 +92,36 @@ if (canonical.has("artifact-governance")) {
 }
 
 for (const [mode, runtimeRoot] of Object.entries(runtimeRoots)) {
+  const runtimeManifest = packageManifest[mode];
+  assert(runtimeManifest, `${mode} must exist in the package runtime manifest`);
+  const runtimeGlobalPolicy = path.join(repoRoot, "packages", "workflow-bundle", runtimeManifest.globalAgentsSource);
+  assert(fs.existsSync(runtimeGlobalPolicy), `${mode} runtime global policy must exist`);
+  if (fs.existsSync(runtimeGlobalPolicy)) {
+    assert(
+      fs.readFileSync(runtimeGlobalPolicy).equals(fs.readFileSync(canonicalPolicyPath)),
+      `${mode} runtime global policy bytes must match canonical source`
+    );
+  }
+  const runtimeSupportRoot = path.join(repoRoot, "packages", "workflow-bundle", runtimeManifest.supportPoliciesSourceRoot);
+  assert(fs.existsSync(runtimeSupportRoot), `${mode} runtime support-policy root must exist`);
+  if (fs.existsSync(runtimeSupportRoot)) {
+    const canonicalSupportFiles = collectRelativeFiles(canonicalSupportPoliciesRoot).filter(
+      (relativePath) => relativePath !== "AGENTS.global.md"
+    );
+    const runtimeSupportFiles = collectRelativeFiles(runtimeSupportRoot);
+    assert(
+      JSON.stringify(runtimeSupportFiles) === JSON.stringify(canonicalSupportFiles),
+      `${mode} support-policy inventory must match canonical source without duplicating the global policy`
+    );
+    canonicalSupportFiles.forEach((relativePath) => {
+      assert(
+        fs.readFileSync(path.join(runtimeSupportRoot, relativePath)).equals(
+          fs.readFileSync(path.join(canonicalSupportPoliciesRoot, relativePath))
+        ),
+        `${mode} support policy '${relativePath}' bytes must match canonical source`
+      );
+    });
+  }
   const runtime = collectSkillDirs(runtimeRoot, `${mode} runtime`);
   const names = [...runtime.keys()].sort();
   assert(names.length === expectedSkillCount, `${mode} runtime must contain ${expectedSkillCount} managed skills, got ${names.length}`);

@@ -177,12 +177,47 @@ jobs:
       - name: Validate scaffold -> validate authoring flow
         run: npm run validate:workflow:authoring-smoke
 
+  release-candidate-build:
+    name: Build Exact Release Candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs:
+      - workflow-authoring-smoke
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Pack candidate once and record its digest
+        shell: bash
+        run: |
+          set -euo pipefail
+          candidate_dir="$RUNNER_TEMP/workflow-bundle-candidate"
+          mkdir -p "$candidate_dir"
+          npm pack ./packages/workflow-bundle --pack-destination "$candidate_dir"
+          mapfile -t tarballs < <(find "$candidate_dir" -maxdepth 1 -type f -name '*.tgz' -print)
+          test "${#tarballs[@]}" -eq 1
+          sha256sum "${tarballs[0]}" > "$candidate_dir/workflow-bundle.sha256"
+
+      - name: Upload immutable candidate and digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-bundle-candidate
+          path: ${{ runner.temp }}/workflow-bundle-candidate/
+          if-no-files-found: error
+          retention-days: 7
+
   release-candidate:
     name: Release Candidate (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs:
-      - workflow-authoring-smoke
+      - release-candidate-build
     strategy:
       fail-fast: false
       matrix:
@@ -206,6 +241,26 @@ jobs:
           node --version
           npm --version
 
+      - name: Download the exact candidate built once
+        uses: actions/download-artifact@v4
+        with:
+          name: workflow-bundle-candidate
+          path: ${{ runner.temp }}/workflow-bundle-candidate
+
+      - name: Resolve and verify candidate digest
+        id: candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          candidate_dir="$RUNNER_TEMP/workflow-bundle-candidate"
+          mapfile -t tarballs < <(find "$candidate_dir" -maxdepth 1 -type f -name '*.tgz' -print)
+          test "${#tarballs[@]}" -eq 1
+          expected_sha256="$(awk 'NR == 1 { print $1 }' "$candidate_dir/workflow-bundle.sha256")"
+          actual_sha256="$(sha256sum "${tarballs[0]}" | awk '{ print $1 }')"
+          test "$actual_sha256" = "$expected_sha256"
+          echo "tarball=${tarballs[0]}" >> "$GITHUB_OUTPUT"
+          echo "sha256=$expected_sha256" >> "$GITHUB_OUTPUT"
+
       - name: Run workflow-bundle unit and regression suite
         run: npm run validate:workflow:unit
 
@@ -215,5 +270,8 @@ jobs:
       - name: Run source install and update smoke
         run: npm run validate:workflow:bundle-smoke
 
-      - name: Pack, install, and smoke the exact candidate artifact
+      - name: Install and smoke the exact candidate artifact
         run: npm run validate:workflow:release-candidate
+        env:
+          WORKFLOW_BUNDLE_CANDIDATE_TARBALL: ${{ steps.candidate.outputs.tarball }}
+          WORKFLOW_BUNDLE_CANDIDATE_SHA256: ${{ steps.candidate.outputs.sha256 }}

@@ -12,6 +12,7 @@ const {
   getArtifactGovernanceLayerRoots,
   validateWorkflowGovernance
 } = require("../scripts/validate-workflow-governance");
+const { scaffoldWorkflowNotes } = require("../scripts/scaffold-workflow");
 const { getFinalizedStepSemanticEvidenceErrors } = require("../scripts/workflow-gate-evidence-utils");
 
 const semanticFixtureRoot = path.join(__dirname, "..", "tests", "fixtures", "workflow-governance");
@@ -26,6 +27,17 @@ function assert(condition, message) {
 }
 
 function rmrf(target) {
+  try { fs.chmodSync(target, 0o755); } catch (_e) { /* ignore */ }
+  try {
+    for (const entry of fs.readdirSync(target, { withFileTypes: true })) {
+      const child = path.join(target, entry.name);
+      if (entry.isDirectory()) rmrf(child);
+      else {
+        try { fs.chmodSync(child, 0o644); } catch (_e) { /* ignore */ }
+        fs.rmSync(child, { force: true });
+      }
+    }
+  } catch (_e) { /* ignore */ }
   fs.rmSync(target, { recursive: true, force: true });
 }
 
@@ -411,6 +423,47 @@ function testStrictFinalizedNoteUsesSemanticValidator() {
   }
 }
 
+function testAdaptiveApplicabilityReasonsAreValidated() {
+  const projectRoot = buildProject();
+  const slug = "adaptive-reason-item";
+  const workflowRoot = path.join(projectRoot, "work-items", slug);
+  try {
+    scaffoldWorkflowNotes({
+      args: {
+        "work-item": slug,
+        "planning-track": "full",
+        "delivery-context": "brownfield",
+        "workflow-root": workflowRoot,
+        "project-root": projectRoot,
+        "request-lane": "maintenance",
+        "adaptive-writes": "true",
+        "adaptive-source-version": "2.6.1",
+        "adaptive-installed-version": "2.6.9",
+        "adaptive-parity-passed": "true",
+        steps: "s06"
+      }
+    });
+    let result = validateWorkflowGovernance({ workflowRoot, projectRoot });
+    assert(result.ok, `generated adaptive applicability must validate, got ${JSON.stringify(result.errors)}`);
+
+    const notePath = path.join(workflowRoot, `${slug}.s06.task-breakdown.md`);
+    fs.chmodSync(notePath, 0o644);
+    const withoutReason = fs
+      .readFileSync(notePath, "utf8")
+      .replace(/^\s{2}developer:\n\s{4}-\s*"ROLE_DEVELOPER_BOUNDED_CHANGE"\n/m, "  developer: []\n");
+    fs.writeFileSync(notePath, withoutReason, "utf8");
+    result = validateWorkflowGovernance({ workflowRoot, projectRoot });
+    assert(!result.ok, "selected adaptive role without a reason must fail governance validation");
+    assert(
+      result.errors.some((error) => /non-empty role_reasons\.developer/i.test(error)),
+      `adaptive role reason error must be explicit, got ${JSON.stringify(result.errors)}`
+    );
+    console.log("  PASS: adaptive applicability requires reasoned selected roles/gates");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
 console.log("Running validate-workflow-governance (light gate guard) tests...\n");
 testArtifactGovernanceLayerRoots();
 testArtifactPlacementAndExemption();
@@ -421,6 +474,7 @@ testLightContractRequiredErrors();
 testLightWithoutFoundationContractPasses();
 testFinalizedSemanticEvidenceFixtures();
 testStrictFinalizedNoteUsesSemanticValidator();
+testAdaptiveApplicabilityReasonsAreValidated();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in validate-workflow-governance.test.js`);
