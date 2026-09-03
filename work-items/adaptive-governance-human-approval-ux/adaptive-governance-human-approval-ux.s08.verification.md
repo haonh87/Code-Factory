@@ -266,6 +266,7 @@ test_evidence:
     - "Authoring smoke: 13/13 PASS."
     - "Exact candidate: 4/4 PASS on Node 18 and Node 22."
     - "Exact v2.6.1 rollback: 4/4 PASS on Node 18 and Node 22."
+    - "GitHub-hosted Guardrails run 33636308233: all 10 jobs PASS on source candidate 0125d6bbf164698fe5a0cabbc363c11018948f84."
 commands_run:
   - "npm run validate:workflow:unit"
   - "Node 18.20.8 and Node 22.23.2 packages/workflow-bundle/test/run-all.js"
@@ -274,19 +275,21 @@ commands_run:
   - "workflow standard/naming/governance/sdd/change/execution/planning/protocol validators"
   - "workflow pack audit, authoring smoke and bundle smoke"
   - "JavaScript syntax, Guardrails YAML, UTF-8, local-link, secret/network and diff checks"
+  - "gh run view 33636308233 and download of the hosted workflow-bundle-2.6.2.tgz artifact"
 skipped_checks:
   - "ESLint: no executable/config; node --check, full tests and manual diff review are the fallback."
   - "Semgrep: unavailable; canaries, pattern scans, negative tests and manual sensitive-path review are the fallback."
-  - "GitHub-hosted Guardrails: branch is unpushed; exact local Node 18/22 topology passes and remains a pre-release guard."
-release_blockers: []
+release_blockers:
+  - "The hosted .tgz SHA-256 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788 differs from the local .tgz SHA-256 bound to the original QC decision; QC must explicitly re-bind Technical Verification to the hosted artifact before Release review."
 status: PASS
-gaps: []
+gaps:
+  - "Exact release-artifact binding is pending a QC amendment; technical behavior and extracted package content remain unchanged."
 residual_risks:
-  - "Hosted runner behavior remains unobserved until the authorized branch/pull-request path executes."
+  - "npm/gzip compression bytes differ between the local and hosted packaging environments even though the extracted trees and uncompressed tar stream are identical."
   - "Unchanged github-push MCP has one macOS failure from a Windows-only fixture path; CR-008 changes no MCP file."
   - "Telemetry purge scans its local directory linearly; retained scope and CLI execution make current risk LOW."
-recommendation: "QC approved Technical Verification; retain hosted Guardrails and human Release controls."
-notes_for_review: "QC approved Technical Verification and technical DoD; this authorizes no Release, Business Acceptance, merge or cleanup."
+recommendation: "Retain the original QC decision for behavior/content evidence and request a QC amendment that binds the hosted artifact SHA before Release review."
+notes_for_review: "Hosted Guardrails passed, but its compressed artifact digest is not the digest in the original QC evidence binding; this authorizes no Release, Business Acceptance, merge or cleanup."
 technical_verification_decision:
   status: APPROVED
   reviewed_by: "qc"
@@ -298,21 +301,53 @@ technical_verification_decision:
     rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
 ```
 
+### Hosted Artifact Binding Amendment
+
+```yaml
+status: PENDING_QC_REVIEW
+reason: "The authorized hosted run passed, but npm produced a different compressed .tgz byte stream than the local candidate reviewed by QC."
+source_candidate:
+  commit: "0125d6bbf164698fe5a0cabbc363c11018948f84"
+  pull_request: "https://github.com/haonh87/Code-Factory/pull/2"
+hosted_evidence:
+  workflow_run: "https://github.com/haonh87/Code-Factory/actions/runs/33636308233"
+  workflow_result: PASS
+  jobs_passed: 10
+  candidate:
+    version: "2.6.2"
+    sha256: "8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788"
+    size_bytes: 957222
+comparison:
+  original_qc_bound_tgz_sha256: "ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5"
+  original_qc_bound_size_bytes: 954728
+  extracted_tree: IDENTICAL
+  package_manifest: IDENTICAL
+  uncompressed_tar_sha256: "e82afa836616d84e5b15a97bb4c23475752cd2cb71933c6f5e4ab7b065cdd9ea"
+  gzip_crc32: "b2b19e7e"
+  gzip_uncompressed_size_bytes: 4971008
+interpretation: "No content drift was found; the mismatch is limited to gzip representation produced by different packaging environments."
+requested_human_decision:
+  gate: "Technical Verification artifact-binding amendment"
+  reviewer: "qc"
+  recommendation: "APPROVE the hosted 8ddcb... artifact as the sole v2.6.2 release candidate, while retaining the existing AG-01..AG-13 and rollback evidence."
+release_effect: "BLOCKED until QC explicitly records the amendment."
+```
+
 ## Governance Checks
 ```yaml
 checklist_applied: ["project-context/checklists/default.md", "project-context/checklists/strict.md"]
 checks:
-  - { check: "Pass/not-pass evidence is explicit", status: PASS, evidence: "Each AG maps to named evidence and exact artifact identities." }
+  - { check: "Pass/not-pass evidence is explicit", status: PASS, evidence: "Each AG maps to named evidence; the hosted artifact identity mismatch is explicit and blocks Release pending QC amendment." }
   - { check: "Behavior, docs and release identity are synchronized", status: PASS, evidence: "Policy, runtimes, 42-skill inventories, EN/VI docs and v2.6.2 metadata agree." }
   - { check: "Remaining gaps have owners", status: PASS, evidence: "Hosted Guardrails belongs to DevOps/QC pre-release; unchanged MCP fixture is outside candidate scope." }
   - { check: "Evidence supports release decision", status: PASS, evidence: "Exact candidate/rollback digests, Node matrices, pipeline topology and controls are recorded." }
   - { check: "Rollback/remediation is viable", status: PASS, evidence: "Published v2.6.1 digest is verified and passes every rollback scenario." }
   - { check: "Exceptions are explicit", status: PASS, evidence: "No CR-008 governance exception or waiver is open." }
 blocking_items:
+  - "QC must approve the hosted artifact-binding amendment before Release review."
   - "Release and Business Acceptance remain separate downstream human gates."
-  - "GitHub-hosted Guardrails remains a pre-Release control on the authorized branch/pull-request path."
 owner: "devops/qc/po"
-next_action: "Preserve the VERIFIED branch/worktree for hosted Guardrails, Release and Business Acceptance."
+next_action: "Preserve the VERIFIED branch/worktree and obtain QC approval for the hosted artifact-binding amendment before Release review."
 ```
 
 ## Regression & Compatibility Summary
@@ -418,16 +453,19 @@ notes: ["Controlled kernel runs and Business Acceptance replace a separate UAT g
 
 ## Release Summary
 ```yaml
-status: PARTIAL
+status: BLOCKED_PENDING_QC_REBIND
 reviewers: ["devops", "qc"]
-technical_readiness: READY_WITH_GUARDS
-candidate: { version: "2.6.2", sha256: "ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5" }
+technical_readiness: CONTENT_VERIFIED_ARTIFACT_BINDING_PENDING
+proposed_release_candidate: { version: "2.6.2", sha256: "8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788", source: "GitHub-hosted run 33636308233" }
+previous_qc_bound_candidate: { version: "2.6.2", sha256: "ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5", disposition: "superseded only if QC approves the amendment" }
 rollback: { version: "2.6.1", sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9" }
 pending_controls:
-  - "GitHub-hosted Workflow Guardrails on the authorized branch/pull-request path."
+  - "QC Technical Verification amendment binding the hosted candidate digest."
   - "Human Release approval by DevOps and QC."
   - "Exact-digest publication with no rebuild or tag retarget."
-notes: ["No v2.6.2 tag, release, publication or global install has executed."]
+notes:
+  - "Hosted Guardrails passed all 10 jobs."
+  - "No v2.6.2 tag, release, publication or global install has executed."
 ```
 
 ## Business Acceptance Summary
@@ -461,7 +499,7 @@ promotion_flow:
     automation_level: "AUTOMATED_AFTER_AUTHORIZED_PUSH"
   - from: dev
     to: uat
-    conditions: ["QC Technical Verification/DoD.", "DevOps/QC Release binds same digest."]
+    conditions: ["QC Technical Verification/DoD plus hosted artifact-binding amendment.", "DevOps/QC Release binds the amended hosted digest."]
     automation_level: "HUMAN_GATED_RELEASE_PREPARATION"
   - from: uat
     to: prod
@@ -474,8 +512,8 @@ release_controls:
 rollback_controls:
   - "Use immutable v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9."
   - "Stop on digest, parity or hosted Guardrails mismatch; preserve unmanaged content and receipts."
-pipeline_risks: ["Hosted execution pending authorized push.", "Packaged-source edit invalidates candidate."]
-pipeline_recommendation: READY_WITH_GUARDS
+pipeline_risks: ["Local and hosted gzip byte streams are not reproducible across toolchains.", "Packaged-source edit invalidates candidate."]
+pipeline_recommendation: BLOCKED_PENDING_QC_REBIND
 notes_for_implementation_or_ops: "Readiness only; no push, tag, publication, merge, cleanup or global install is authorized."
 ```
 
@@ -496,34 +534,34 @@ status: PASS
 checks:
   - { criterion: "Every AG has evidence", result: PASS, evidence: "Spec Coverage records 13/13 PASS." }
   - { criterion: "Mandatory and negative paths are covered", result: PASS, evidence: "Node, transaction, CLI, compatibility, privacy, candidate and rollback matrices pass." }
-  - { criterion: "Skipped checks are explicit", result: PASS, evidence: "ESLint, Semgrep and hosted Guardrails list fallbacks and impact." }
-  - { criterion: "Human authority is preserved", result: PASS, evidence: "QC explicitly approved Technical Verification and technical DoD at 2026-09-02T06:24:11Z; Release and Business Acceptance remain pending and branch finish is HOLD_OPEN." }
+  - { criterion: "Skipped checks are explicit", result: PASS, evidence: "ESLint and Semgrep list fallbacks and impact; hosted Guardrails completed successfully." }
+  - { criterion: "Human authority is preserved", result: PASS, evidence: "QC explicitly approved Technical Verification and technical DoD at 2026-09-02T06:24:11Z; the new hosted digest is not inferred approved and remains pending a QC amendment." }
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "One bounded pass; no production or candidate edit."
-gaps: []
+gaps: ["Hosted artifact-binding amendment awaits QC review."]
 risk_level: MEDIUM
-next_action: "Commit the VERIFIED snapshot, preserve HOLD_OPEN and prepare the hosted Guardrails/Release path."
+next_action: "Commit the evidence amendment, preserve HOLD_OPEN and request QC artifact re-binding before Release review."
 ```
 
 ### Branch And Worktree Closeout
 ```yaml
 finish_target: "codex/adaptive-governance-human-approval-ux and its dedicated worktree"
 workspace_kind: BOTH
-verify_inputs: ["B4 QC review PASS", "formal evidence PASS", "QC Technical Verification and technical DoD approval"]
+verify_inputs: ["B4 QC review PASS", "formal evidence PASS", "QC Technical Verification and technical DoD approval", "hosted Guardrails 10/10 jobs PASS"]
 finish_gate_checks:
   verify_complete: PASS
   dod_complete: PASS
-  findings_closed: PASS
+  findings_closed: PARTIAL
   exceptions_resolved: PASS
-allowed_actions: ["Commit the reviewed VERIFIED source snapshot.", "Keep the worktree open and run authorized hosted Guardrails."]
+allowed_actions: ["Commit the hosted-evidence amendment.", "Keep the worktree open and request QC artifact re-binding."]
 blocked_actions: ["Merge/close/remove branch or worktree.", "Tag/publish/install v2.6.2.", "Seal the final s08 receipts before Release and Business Acceptance freeze this host artifact."]
 cleanup_sequence: []
 merge_conditions: ["Hosted Guardrails", "required Release/Business Acceptance", "final digest-matched receipts", "post-merge verification"]
-residual_risks: ["Release and Business Acceptance remain pending.", "Hosted Guardrails remains pending."]
+residual_risks: ["Hosted artifact binding, Release and Business Acceptance remain pending.", "Cross-toolchain gzip bytes are not reproducible."]
 final_recommendation: HOLD_OPEN
-notes_for_closeout: "QC Technical Verification and technical DoD are approved, but downstream gates still prohibit branch finalization."
+notes_for_closeout: "QC Technical Verification and technical DoD remain approved for their recorded evidence; the hosted artifact-binding amendment and downstream gates prohibit branch finalization."
 ```
 
 ## Definition of Done
@@ -553,14 +591,17 @@ human_decision:
     acceptance_coverage: "AG-01..AG-13 PASS"
     candidate_sha256: "ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5"
     rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
-gaps: []
-residual_risks: ["Hosted Guardrails pre-release guard.", "ESLint/Semgrep unavailable with fallbacks.", "Release and Business Acceptance remain required."]
+  hosted_artifact_amendment:
+    status: PENDING_QC_REVIEW
+    proposed_candidate_sha256: "8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788"
+    content_equivalence_sha256: "e82afa836616d84e5b15a97bb4c23475752cd2cb71933c6f5e4ab7b065cdd9ea"
+gaps: ["QC has not yet bound Technical Verification to the hosted .tgz digest."]
+residual_risks: ["Cross-toolchain gzip representation differs.", "ESLint/Semgrep unavailable with fallbacks.", "Release and Business Acceptance remain required."]
 follow_up_items:
-  - "Commit the reviewed VERIFIED source snapshot."
-  - "Run GitHub-hosted Guardrails on the authorized branch/pull-request path."
+  - "Obtain QC approval for the hosted artifact-binding amendment."
   - "Obtain DevOps/QC Release and PO Business Acceptance before workflow DONE/publication."
   - "Freeze final s08 and seal terminal receipts only after every applicable decision is recorded."
-next_action: "Commit the VERIFIED snapshot; technical DoD is DONE while overall workflow remains WAITING_APPROVAL."
+next_action: "Technical DoD remains DONE for the original evidence; obtain QC artifact re-binding before Release review."
 ```
 
 ## SDD Traceability
@@ -581,14 +622,15 @@ upstream:
 verification_targets:
   - "changes/CR-008/spec-delta/brd.delta.md"
   - "changes/CR-008/spec-delta/srs.delta.md"
-  - "v2.6.2 candidate ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5"
+  - "v2.6.2 hosted candidate proposed for QC re-binding: 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788"
+  - "v2.6.2 original QC-bound local candidate: ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5"
   - "v2.6.1 rollback 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
-next_step: "GitHub-hosted Guardrails, followed by DevOps/QC Release and PO Business Acceptance."
+next_step: "QC hosted artifact-binding amendment, followed by DevOps/QC Release and PO Business Acceptance."
 ```
 
 ## Handoff
-- Overall status: QC approved Technical Verification and technical DoD; the work-item protocol is `VERIFIED`, but overall workflow completion remains `WAITING_APPROVAL` for Release and Business Acceptance.
-- Residual risks: hosted Guardrails pending; ESLint/Semgrep unavailable with fallbacks; unchanged MCP fixture baseline gap.
-- QC decision: `APPROVED` at `2026-09-02T06:24:11Z`, bound to AG-01..AG-13 and the recorded candidate/rollback digests.
-- Release recommendation: `READY_WITH_GUARDS`; DevOps/QC Release, hosted Guardrails and exact-digest controls remain mandatory.
-- Next action: commit the `VERIFIED` snapshot, then run hosted Guardrails before Release review. Branch/worktree remains `HOLD_OPEN`.
+- Overall status: QC approved Technical Verification and technical DoD; hosted Guardrails passed, but workflow completion remains `WAITING_APPROVAL` because the hosted artifact digest needs a QC amendment before Release and Business Acceptance.
+- Residual risks: cross-toolchain gzip bytes differ; ESLint/Semgrep remain unavailable with fallbacks; unchanged MCP fixture baseline gap.
+- QC decision: original `APPROVED` decision at `2026-09-02T06:24:11Z` remains bound to AG-01..AG-13 and local candidate `ec000...`; hosted candidate `8ddcb...` is explicitly `PENDING_QC_REVIEW`.
+- Release recommendation: `BLOCKED_PENDING_QC_REBIND`; no Release decision is requested until QC binds the hosted artifact digest.
+- Next action: QC reviews the hosted artifact-binding amendment. Branch/worktree remains `HOLD_OPEN`.

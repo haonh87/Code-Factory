@@ -79,7 +79,10 @@
     "S06 Task Plan was aligned to the approved policy-kernel, adapter and approval-transaction boundaries",
     "Developer explicitly approved the s06 Task Plan and its trusted receipt was verified",
     "The work item was activated at s07 with approved write roots and no remaining authoring gate",
-    "The stored workflow_root locator was normalized from the main-worktree absolute path to a repository-relative path; all five authoring receipts remained APPROVED with digest_match=true in the dedicated worktree"
+    "The stored workflow_root locator was normalized from the main-worktree absolute path to a repository-relative path; all five authoring receipts remained APPROVED with digest_match=true in the dedicated worktree",
+    "GitHub-hosted Guardrails run 33636308233 passed all 10 jobs on source candidate 0125d6bbf164698fe5a0cabbc363c11018948f84",
+    "The hosted v2.6.2 .tgz SHA-256 is 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788 rather than the local QC-bound ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5; extracted content and uncompressed tar SHA-256 e82afa836616d84e5b15a97bb4c23475752cd2cb71933c6f5e4ab7b065cdd9ea are identical",
+    "Release remains blocked until QC explicitly approves the hosted artifact-binding amendment; no approval was inferred from the hosted PASS"
   ],
   "work_item_slug": "adaptive-governance-human-approval-ux",
   "work_item_type": "CHANGE",
@@ -103,11 +106,15 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "technical-verification-artifact-binding-amendment",
   "required_actions": [
-    "Collect DoD evidence and close the work item when ready."
+    "QC reviews and explicitly approves or rejects the hosted v2.6.2 artifact-binding amendment.",
+    "After a QC approval, DevOps and QC review Release against the same hosted artifact digest.",
+    "After Release, PO reviews Business Acceptance."
   ],
-  "blockers": [],
+  "blockers": [
+    "Hosted candidate SHA-256 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788 differs from the local candidate SHA-256 in the original QC evidence binding; Release is blocked pending QC amendment."
+  ],
   "refs": [
     "changes/CR-008",
     "work-items/adaptive-governance-human-approval-ux",
@@ -133,7 +140,10 @@
     "S06_TASK_PLAN_PROPOSED",
     "S06_TASK_PLAN_REVIEWED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "HOSTED_GUARDRAILS_PASSED",
+    "HOSTED_ARTIFACT_DIGEST_MISMATCH_RECORDED",
+    "QC_ARTIFACT_REBIND_PENDING"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -258,6 +268,14 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "Human QC approved Technical Verification and technical DoD against AG-01..AG-13 and exact candidate/rollback evidence; the workflow_root locator was normalized without receipt digest drift; Release and Business Acceptance remain pending."
+    },
+    {
+      "timestamp": "2026-09-03T01:15:17Z",
+      "action": "record-hosted-evidence",
+      "actor": "agent",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Hosted Guardrails passed all 10 jobs, but the hosted compressed artifact digest differs from the local digest in the original QC evidence binding. Extracted content is identical. Release is blocked pending an explicit QC artifact-binding amendment; no human approval was inferred."
     }
   ]
 }
