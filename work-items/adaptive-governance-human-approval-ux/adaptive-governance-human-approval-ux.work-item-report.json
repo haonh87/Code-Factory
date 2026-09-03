@@ -88,7 +88,10 @@
     "Release and Business Acceptance remain separate unapproved human gates",
     "Human DevOps and QC explicitly approved Release for hosted v2.6.2 SHA-256 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788 with immutable rollback v2.6.1; the user-provided abbreviated digest uniquely matched the sole QC-bound candidate",
     "The Release gate record does not imply execution of tag, publication, installation, merge or cleanup",
-    "PO Business Acceptance remains pending"
+    "PO Business Acceptance remained pending after Release approval",
+    "Human PO explicitly approved Business Acceptance for v2.6.2 after the DevOps/QC Release decision",
+    "All applicable terminal human gates are approved; the finalized s08 host now awaits atomic trusted receipt sealing",
+    "No tag, publication, install, merge or cleanup action was inferred from Business Acceptance"
   ],
   "work_item_slug": "adaptive-governance-human-approval-ux",
   "work_item_type": "CHANGE",
@@ -112,12 +115,14 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "business-acceptance-review",
+  "handoff_target": "closeout-receipt-sealing",
   "required_actions": [
-    "PO reviews Business Acceptance against the approved Release candidate and AG-01..AG-13 outcome evidence.",
-    "After Business Acceptance, freeze s08 and seal the terminal trusted receipts before branch finalization."
+    "Run the interactive approve-closeout-bundle command to seal independent DoD, Release and Business Acceptance receipts against the finalized s08 digest.",
+    "Verify every terminal receipt digest, close the work-item protocol, and only then finalize the branch/worktree."
   ],
-  "blockers": [],
+  "blockers": [
+    "Terminal trusted receipts for DoD, Release and Business Acceptance are not yet sealed against the finalized s08 artifact."
+  ],
   "refs": [
     "changes/CR-008",
     "work-items/adaptive-governance-human-approval-ux",
@@ -148,7 +153,9 @@
     "HOSTED_ARTIFACT_DIGEST_MISMATCH_RECORDED",
     "QC_ARTIFACT_REBIND_PENDING",
     "HOSTED_ARTIFACT_BINDING_APPROVED",
-    "RELEASE_APPROVED"
+    "RELEASE_APPROVED",
+    "BUSINESS_ACCEPTANCE_APPROVED",
+    "S08_FINALIZED_FOR_CLOSEOUT"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -297,6 +304,14 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "Human DevOps and QC approved Release for the QC-bound hosted v2.6.2 SHA-256 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788 with immutable v2.6.1 rollback. PO Business Acceptance remains pending; no external publication action was inferred."
+    },
+    {
+      "timestamp": "2026-09-03T06:53:55Z",
+      "action": "business-acceptance-approved",
+      "actor": "po",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Human PO approved Business Acceptance for v2.6.2 after the DevOps/QC Release decision. Every applicable terminal gate is now human-approved; the finalized s08 host awaits atomic receipt sealing. No external publication action was inferred."
     }
   ]
 }
