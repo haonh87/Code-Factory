@@ -85,7 +85,10 @@
     "Release remained blocked until QC explicitly approved the hosted artifact-binding amendment; no approval was inferred from the hosted PASS",
     "Human QC explicitly approved the amended Technical Verification artifact binding for hosted SHA-256 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788, retaining AG-01..AG-13 and the immutable v2.6.1 rollback evidence",
     "The local candidate SHA-256 ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5 is retained only as historical behavior/content evidence and is not authorized for Release",
-    "Release and Business Acceptance remain separate unapproved human gates"
+    "Release and Business Acceptance remain separate unapproved human gates",
+    "Human DevOps and QC explicitly approved Release for hosted v2.6.2 SHA-256 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788 with immutable rollback v2.6.1; the user-provided abbreviated digest uniquely matched the sole QC-bound candidate",
+    "The Release gate record does not imply execution of tag, publication, installation, merge or cleanup",
+    "PO Business Acceptance remains pending"
   ],
   "work_item_slug": "adaptive-governance-human-approval-ux",
   "work_item_type": "CHANGE",
@@ -109,10 +112,10 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "release-review",
+  "handoff_target": "business-acceptance-review",
   "required_actions": [
-    "DevOps and QC review Release against the QC-bound hosted v2.6.2 artifact digest.",
-    "After Release, PO reviews Business Acceptance."
+    "PO reviews Business Acceptance against the approved Release candidate and AG-01..AG-13 outcome evidence.",
+    "After Business Acceptance, freeze s08 and seal the terminal trusted receipts before branch finalization."
   ],
   "blockers": [],
   "refs": [
@@ -144,7 +147,8 @@
     "HOSTED_GUARDRAILS_PASSED",
     "HOSTED_ARTIFACT_DIGEST_MISMATCH_RECORDED",
     "QC_ARTIFACT_REBIND_PENDING",
-    "HOSTED_ARTIFACT_BINDING_APPROVED"
+    "HOSTED_ARTIFACT_BINDING_APPROVED",
+    "RELEASE_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -285,6 +289,14 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "Human QC approved the hosted artifact-binding amendment for SHA-256 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788 while retaining AG-01..AG-13 and immutable v2.6.1 rollback evidence. Release and Business Acceptance remain pending."
+    },
+    {
+      "timestamp": "2026-09-03T06:20:42Z",
+      "action": "release-approved",
+      "actor": "human",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Human DevOps and QC approved Release for the QC-bound hosted v2.6.2 SHA-256 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788 with immutable v2.6.1 rollback. PO Business Acceptance remains pending; no external publication action was inferred."
     }
   ]
 }

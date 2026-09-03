@@ -70,8 +70,8 @@ gate_reviews:
   task_plan_reviewed_at: "2026-08-28T15:08:10Z"
   uat_reviewed_by: []
   uat_reviewed_at: ""
-  release_reviewed_by: []
-  release_reviewed_at: ""
+  release_reviewed_by: ["devops", "qc"]
+  release_reviewed_at: "2026-09-03T06:20:42Z"
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
   dod_reviewed_by: ["qc"]
@@ -107,9 +107,10 @@ tags:
 > Governance is aligned and release readiness is `READY_WITH_GUARDS`. Human QC explicitly approved
 > Technical Verification and technical DoD at `2026-09-02T06:24:11Z`, then approved the hosted artifact
 > binding amendment at `2026-09-03T01:53:52Z`. Technical evidence remains AG-01..AG-13, the sole release
-> candidate is now the hosted SHA-256 `8ddcb719...`, and rollback remains immutable v2.6.1. Overall workflow
-> completion is still waiting for DevOps/QC Release
-> and PO Business Acceptance. The branch/worktree stays `HOLD_OPEN`; no tag or publication is authorized.
+> candidate is now the hosted SHA-256 `8ddcb719...`, and rollback remains immutable v2.6.1. Human DevOps
+> and QC approved Release at `2026-09-03T06:20:42Z` against that exact binding. Overall workflow completion
+> is still waiting for PO Business Acceptance. The branch/worktree stays `HOLD_OPEN`; no tag or publication
+> has been executed by this gate-recording change.
 
 ## Step Contract
 ```yaml
@@ -289,8 +290,8 @@ residual_risks:
   - "npm/gzip compression bytes differ between the local and hosted packaging environments even though the extracted trees and uncompressed tar stream are identical."
   - "Unchanged github-push MCP has one macOS failure from a Windows-only fixture path; CR-008 changes no MCP file."
   - "Telemetry purge scans its local directory linearly; retained scope and CLI execution make current risk LOW."
-recommendation: "Proceed to DevOps/QC Release review using only the QC-bound hosted SHA-256 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788."
-notes_for_review: "The hosted artifact-binding mismatch is resolved by explicit QC amendment. This approval does not authorize Release, Business Acceptance, merge, tag, publication or cleanup."
+recommendation: "Release is approved for the QC-bound hosted SHA-256 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788; proceed to PO Business Acceptance review."
+notes_for_review: "The hosted artifact-binding mismatch is resolved and Release is approved. Business Acceptance, merge, tag, publication and cleanup have not been inferred or executed."
 technical_verification_decision:
   status: APPROVED
   reviewed_by: "qc"
@@ -360,9 +361,9 @@ checks:
   - { check: "Rollback/remediation is viable", status: PASS, evidence: "Published v2.6.1 digest is verified and passes every rollback scenario." }
   - { check: "Exceptions are explicit", status: PASS, evidence: "No CR-008 governance exception or waiver is open." }
 blocking_items:
-  - "Release and Business Acceptance remain separate downstream human gates."
+  - "Business Acceptance remains a separate downstream human gate."
 owner: "devops/qc/po"
-next_action: "Preserve the VERIFIED branch/worktree and obtain DevOps/QC Release approval for the QC-bound hosted candidate."
+next_action: "Preserve the VERIFIED branch/worktree and obtain PO Business Acceptance for the approved Release candidate."
 ```
 
 ## Regression & Compatibility Summary
@@ -468,23 +469,28 @@ notes: ["Controlled kernel runs and Business Acceptance replace a separate UAT g
 
 ## Release Summary
 ```yaml
-status: READY_FOR_REVIEW
+status: APPROVED
 reviewers: ["devops", "qc"]
+reviewed_at: "2026-09-03T06:20:42Z"
+decision_source: "User explicitly approved Release with roles DevOps and QC for the v2.6.2 hosted candidate abbreviated as 8ddcb719..., with rollback v2.6.1; the abbreviation uniquely resolves to the sole QC-bound full digest below."
 technical_readiness: READY
-proposed_release_candidate: { version: "2.6.2", sha256: "8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788", source: "GitHub-hosted run 33636308233" }
+release_candidate: { version: "2.6.2", sha256: "8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788", source: "GitHub-hosted Guardrails artifact stable across runs 33636308233, 33703233050 and 33714303770" }
 previous_qc_bound_candidate: { version: "2.6.2", sha256: "ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5", disposition: "Superseded for Release by the QC-approved hosted binding; retained as historical behavior/content evidence." }
 rollback: { version: "2.6.1", sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9" }
+receipt_state: DEFERRED_UNTIL_FINAL_S08_FREEZE
+receipt_reason: "PO Business Acceptance must still update this same s08 host artifact; the Release receipt will be sealed together with the other terminal receipts after the final freeze."
 pending_controls:
-  - "Human Release approval by DevOps and QC."
   - "Exact-digest publication with no rebuild or tag retarget."
+  - "Human PO Business Acceptance."
 notes:
-  - "Hosted Guardrails passed all 10 jobs."
+  - "The post-binding-decision Guardrails run 33714303770 passed all 10 jobs and its downloaded .tgz matched the approved SHA-256."
   - "No v2.6.2 tag, release, publication or global install has executed."
+  - "This record captures the Release gate decision; it does not treat gate approval as an implicit external publication command."
 ```
 
 ## Business Acceptance Summary
 ```yaml
-status: PARTIAL
+status: READY_FOR_REVIEW
 reviewers: ["po"]
 evidence_ready: ["AG-01..AG-13 coverage", "57.14% interaction reduction", "zero retries", "independent receipts"]
 pending_controls: ["Human PO Business Acceptance after the Release decision."]
@@ -513,13 +519,13 @@ promotion_flow:
     automation_level: "AUTOMATED_AFTER_AUTHORIZED_PUSH"
   - from: dev
     to: uat
-    conditions: ["QC Technical Verification/DoD and hosted artifact-binding amendment are approved.", "DevOps/QC Release binds the amended hosted digest."]
+    conditions: ["QC Technical Verification/DoD and hosted artifact-binding amendment are approved.", "DevOps/QC Release approved the amended hosted digest at 2026-09-03T06:20:42Z."]
     automation_level: "HUMAN_GATED_RELEASE_PREPARATION"
   - from: uat
     to: prod
     conditions: ["Publish exact v2.6.2 bytes.", "Verify release asset digest and isolated install."]
     automation_level: "HUMAN_GATED_PUBLICATION"
-approval_controls: ["QC owns Technical Verification/DoD.", "DevOps/QC own Release.", "PO owns Business Acceptance."]
+approval_controls: ["QC approved Technical Verification/DoD and the artifact-binding amendment.", "DevOps/QC approved Release.", "PO Business Acceptance remains pending."]
 release_controls:
   pre_release: ["Hosted Guardrails and human gates.", "Confirm v2.6.2 tag unused immediately before creation."]
   post_release: ["Verify GitHub asset digest.", "Run isolated install/status smoke."]
@@ -549,33 +555,33 @@ checks:
   - { criterion: "Every AG has evidence", result: PASS, evidence: "Spec Coverage records 13/13 PASS." }
   - { criterion: "Mandatory and negative paths are covered", result: PASS, evidence: "Node, transaction, CLI, compatibility, privacy, candidate and rollback matrices pass." }
   - { criterion: "Skipped checks are explicit", result: PASS, evidence: "ESLint and Semgrep list fallbacks and impact; hosted Guardrails completed successfully." }
-  - { criterion: "Human authority is preserved", result: PASS, evidence: "QC explicitly approved Technical Verification and technical DoD at 2026-09-02T06:24:11Z and the hosted artifact-binding amendment at 2026-09-03T01:53:52Z; Release and Business Acceptance remain unapproved." }
+  - { criterion: "Human authority is preserved", result: PASS, evidence: "QC explicitly approved Technical Verification/DoD and the hosted binding; DevOps/QC explicitly approved Release at 2026-09-03T06:20:42Z; PO Business Acceptance remains unapproved." }
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "One bounded pass; no production or candidate edit."
 gaps: []
 risk_level: MEDIUM
-next_action: "Commit the QC decision, preserve HOLD_OPEN and request DevOps/QC Release review."
+next_action: "Commit the Release decision, preserve HOLD_OPEN and request PO Business Acceptance review."
 ```
 
 ### Branch And Worktree Closeout
 ```yaml
 finish_target: "codex/adaptive-governance-human-approval-ux and its dedicated worktree"
 workspace_kind: BOTH
-verify_inputs: ["B4 QC review PASS", "formal evidence PASS", "QC Technical Verification and technical DoD approval", "hosted Guardrails 10/10 jobs PASS"]
+verify_inputs: ["B4 QC review PASS", "formal evidence PASS", "QC Technical Verification and technical DoD approval", "hosted Guardrails 10/10 jobs PASS", "DevOps/QC Release approval"]
 finish_gate_checks:
   verify_complete: PASS
   dod_complete: PASS
   findings_closed: PASS
   exceptions_resolved: PASS
-allowed_actions: ["Commit the QC-approved artifact binding.", "Keep the worktree open and request DevOps/QC Release review."]
-blocked_actions: ["Merge/close/remove branch or worktree.", "Tag/publish/install v2.6.2.", "Seal the final s08 receipts before Release and Business Acceptance freeze this host artifact."]
+allowed_actions: ["Commit the DevOps/QC Release decision.", "Keep the worktree open and request PO Business Acceptance review."]
+blocked_actions: ["Merge/close/remove branch or worktree.", "Treat the gate record as an implicit tag/publish/install command.", "Seal the final s08 receipts before Business Acceptance freezes this host artifact."]
 cleanup_sequence: []
 merge_conditions: ["Hosted Guardrails", "required Release/Business Acceptance", "final digest-matched receipts", "post-merge verification"]
-residual_risks: ["Release and Business Acceptance remain pending.", "Cross-toolchain gzip bytes are not reproducible."]
+residual_risks: ["Business Acceptance remains pending.", "Cross-toolchain gzip bytes are not reproducible."]
 final_recommendation: HOLD_OPEN
-notes_for_closeout: "QC Technical Verification, technical DoD and hosted artifact binding are approved; downstream Release and Business Acceptance gates prohibit branch finalization."
+notes_for_closeout: "QC Technical Verification, technical DoD, hosted artifact binding and DevOps/QC Release are approved; Business Acceptance and terminal receipts still prohibit branch finalization."
 ```
 
 ## Definition of Done
@@ -600,7 +606,7 @@ human_decision:
     reviewed_by: "qc"
     reviewed_at: "2026-09-02T06:24:11Z"
     receipt_state: DEFERRED_UNTIL_FINAL_S08_FREEZE
-    receipt_reason: "Release and Business Acceptance must still update the same s08 host; sealing now would make the receipt stale."
+    receipt_reason: "Business Acceptance must still update the same s08 host; sealing now would make the receipt stale."
   evidence_binding:
     acceptance_coverage: "AG-01..AG-13 PASS"
     candidate_sha256: "8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788"
@@ -614,12 +620,21 @@ human_decision:
     reviewed_at: "2026-09-03T01:53:52Z"
     approved_candidate_sha256: "8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788"
     content_equivalence_sha256: "e82afa836616d84e5b15a97bb4c23475752cd2cb71933c6f5e4ab7b065cdd9ea"
+  release:
+    status: APPROVED
+    reviewed_by: ["devops", "qc"]
+    reviewed_at: "2026-09-03T06:20:42Z"
+    candidate_sha256: "8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788"
+    rollback_version: "2.6.1"
+    rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+    receipt_state: DEFERRED_UNTIL_FINAL_S08_FREEZE
+    receipt_reason: "Business Acceptance must still update the same s08 host artifact."
 gaps: []
-residual_risks: ["Cross-toolchain gzip representation differs.", "ESLint/Semgrep unavailable with fallbacks.", "Release and Business Acceptance remain required."]
+residual_risks: ["Cross-toolchain gzip representation differs.", "ESLint/Semgrep unavailable with fallbacks.", "Business Acceptance remains required."]
 follow_up_items:
-  - "Obtain DevOps/QC Release and PO Business Acceptance before workflow DONE/publication."
+  - "Obtain PO Business Acceptance before workflow DONE and branch finalization."
   - "Freeze final s08 and seal terminal receipts only after every applicable decision is recorded."
-next_action: "Technical DoD and hosted artifact binding are approved; obtain DevOps/QC Release approval for the same hosted SHA."
+next_action: "Technical DoD, hosted artifact binding and Release are approved; obtain PO Business Acceptance."
 ```
 
 ## SDD Traceability
@@ -643,12 +658,12 @@ verification_targets:
   - "v2.6.2 QC-bound hosted release candidate: 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788"
   - "v2.6.2 superseded local candidate retained as historical content evidence: ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5"
   - "v2.6.1 rollback 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
-next_step: "DevOps/QC Release for the QC-bound hosted candidate, followed by PO Business Acceptance."
+next_step: "PO Business Acceptance, then final s08 freeze and terminal receipt sealing."
 ```
 
 ## Handoff
-- Overall status: QC approved Technical Verification, technical DoD and the hosted artifact-binding amendment. Workflow completion remains `WAITING_APPROVAL` for Release and Business Acceptance.
+- Overall status: QC approved Technical Verification, technical DoD and the hosted artifact-binding amendment; DevOps/QC approved Release. Workflow completion remains `WAITING_APPROVAL` for PO Business Acceptance.
 - Residual risks: cross-toolchain gzip bytes differ; ESLint/Semgrep remain unavailable with fallbacks; unchanged MCP fixture baseline gap.
 - QC decision: original `APPROVED` decision at `2026-09-02T06:24:11Z` retains AG-01..AG-13 and rollback evidence; amendment `APPROVED` at `2026-09-03T01:53:52Z` binds hosted candidate `8ddcb719...` as the sole Release candidate.
-- Release recommendation: `READY_WITH_GUARDS`; DevOps and QC must independently approve Release for the same hosted digest.
-- Next action: DevOps/QC review Release. Branch/worktree remains `HOLD_OPEN`.
+- Release decision: `APPROVED` at `2026-09-03T06:20:42Z` for the full hosted SHA-256 `8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788`, with immutable rollback v2.6.1.
+- Next action: PO reviews Business Acceptance. Branch/worktree remains `HOLD_OPEN`; terminal receipts remain deferred until the final s08 freeze.
