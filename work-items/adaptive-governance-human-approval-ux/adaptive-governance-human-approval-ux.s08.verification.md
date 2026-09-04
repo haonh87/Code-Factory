@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: approved
+status: draft
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: ALIGNED
+governance_status: CHECKS_PENDING
 checklist_refs:
   - "project-context/checklists/default.md"
   - "project-context/checklists/strict.md"
@@ -101,6 +101,12 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
+> **REWORK — QC finding F-AG08-001 (2026-09-03):** the real legacy closeout bundle selected only
+> Release and Business Acceptance, omitted mandatory DoD, and reconciled that partial set as a
+> successful bundle. AG-08 is therefore reopened. Prior verification, Release, and Business
+> Acceptance decisions remain historical evidence only; their receipts must not authorize the
+> corrected candidate. Linked defect: `closeout-bundle-legacy-dod-compatibility`.
+>
 > B4 independent review is approved. Formal local technical evidence recommends `PASS`: AG-01..AG-13
 > are covered, Node 18/22/current each pass 44/44 unit files, and the same exact `v2.6.2` candidate
 > plus immutable `v2.6.1` rollback asset pass all four Codex/Claude x global/project scenarios.
@@ -242,7 +248,13 @@ manual_exploration:
     - "Installed and rolled back exact artifacts across four harness/scope scenarios on Node 18/22."
     - "Inspected EN/VI docs, release identity, local links and immutable rollback guidance."
     - "Reviewed synchronous I/O as bounded CLI/transaction work rather than a request hot path."
-  issues_found: []
+  issues_found:
+    - id: "F-AG08-001"
+      severity: HIGH
+      status: OPEN
+      owner: "developer/qc"
+      evidence: "Legacy approve-closeout-bundle sealed release and business_acceptance but left dod MISSING, then recorded CLOSEOUT_BUNDLE_APPROVED for the partial set."
+      linked_work_item: "closeout-bundle-legacy-dod-compatibility"
 criteria_results:
   - { criterion: "AG-01", result: PASS, evidence: "Non-delivery fixtures assert workflow_required=false and zero delivery writes without audited override." }
   - { criterion: "AG-02", result: PASS, evidence: "Maintenance fixtures omit PO/BA/SA/TA/DevOps without a named trigger." }
@@ -251,7 +263,12 @@ criteria_results:
   - { criterion: "AG-05", result: PASS, evidence: "Not-applicable roles/gates create zero actions, blockers or receipts across derived surfaces." }
   - { criterion: "AG-06", result: PASS, evidence: "Ready-bundle creates one receipt-v1 per applicable gate with reviewer, timestamp and digest." }
   - { criterion: "AG-07", result: PASS, evidence: "Preflight, failure, crash and concurrency fixtures retain zero partial state and idempotent recovery." }
-  - { criterion: "AG-08", result: PASS, evidence: "Maintenance derives DoD only; release retains DoD, Release and Business Acceptance authority." }
+  - criterion: "AG-08"
+    result: FAIL
+    evidence: >-
+      Production-like legacy closeout selected release and business_acceptance only because the
+      legacy s08 omitted approval_gates.dod; mandatory DoD stayed MISSING while derived state
+      recorded CLOSEOUT_BUNDLE_APPROVED.
   - { criterion: "AG-09", result: PASS, evidence: "Legacy/adaptive readers, fixed-host rules, receipt-v1 and rollback compatibility pass." }
   - { criterion: "AG-10", result: PASS, evidence: "Disabled no-op, allowlist, pseudonym, canary, retention and safe purge fixtures pass." }
   - { criterion: "AG-11", result: PASS, evidence: "Successful approval atomically reconciles every source and derived state surface." }
@@ -284,15 +301,17 @@ commands_run:
 skipped_checks:
   - "ESLint: no executable/config; node --check, full tests and manual diff review are the fallback."
   - "Semgrep: unavailable; canaries, pattern scans, negative tests and manual sensitive-path review are the fallback."
-release_blockers: []
-status: PASS
-gaps: []
+release_blockers:
+  - "F-AG08-001: legacy product closeout omits mandatory DoD and can reconcile a partial gate set as success."
+status: FAIL
+gaps:
+  - "A fail-first legacy fixture and corrected exact candidate are pending in closeout-bundle-legacy-dod-compatibility."
 residual_risks:
   - "npm/gzip compression bytes differ between the local and hosted packaging environments even though the extracted trees and uncompressed tar stream are identical."
   - "Unchanged github-push MCP has one macOS failure from a Windows-only fixture path; CR-008 changes no MCP file."
   - "Telemetry purge scans its local directory linearly; retained scope and CLI execution make current risk LOW."
-recommendation: "Release is approved for the QC-bound hosted SHA-256 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788; proceed to PO Business Acceptance review."
-notes_for_review: "The hosted artifact-binding mismatch is resolved and Release is approved. Business Acceptance, merge, tag, publication and cleanup have not been inferred or executed."
+recommendation: "HOLD v2.6.2. Correct F-AG08-001 under the linked defect, produce a new exact candidate, then repeat Technical Verification, Release, and Business Acceptance."
+notes_for_review: "The prior approvals are historical evidence for candidate 8ddcb719... only and do not authorize a corrected candidate."
 technical_verification_decision:
   status: APPROVED
   reviewed_by: "qc"
@@ -310,6 +329,12 @@ technical_verification_decision:
     reviewed_by: "qc"
     reviewed_at: "2026-09-03T01:53:52Z"
     decision_source: "User explicitly approved the amended Technical Verification artifact binding with role QC for the hosted candidate SHA, retaining AG-01..AG-13 and rollback v2.6.1."
+  current_effect:
+    status: REWORK_REQUIRED
+    finding: "F-AG08-001"
+    recorded_by: "qc"
+    recorded_at: "2026-09-03T07:16:34Z"
+    decision_source: "User explicitly authorized QC to record the AG-08 finding and approved a linked defect work item."
 ```
 
 ### Hosted Artifact Binding Amendment
@@ -512,6 +537,8 @@ previous_qc_bound_candidate: { version: "2.6.2", sha256: "ec0007aea70c69f02a3982
 rollback: { version: "2.6.1", sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9" }
 receipt_state: READY_TO_SEAL
 receipt_reason: "The s08 host is finalized after PO Business Acceptance and must not be edited after receipt sealing."
+current_evidence_status: INVALIDATED_BY_AG08_FINDING
+current_authority_effect: "Historical approval only; not valid for a corrected candidate."
 pending_controls:
   - "Exact-digest publication with no rebuild or tag retarget."
   - "Atomic closeout receipt sealing and digest verification."
@@ -530,6 +557,8 @@ decision_source: "User explicitly approved Business Acceptance with role PO for 
 evidence_ready: ["AG-01..AG-13 coverage", "57.14% interaction reduction", "zero retries", "independent receipts"]
 accepted_release: { version: "2.6.2", sha256: "8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788", rollback_version: "2.6.1" }
 receipt_state: READY_TO_SEAL
+current_evidence_status: INVALIDATED_BY_AG08_FINDING
+current_authority_effect: "Historical approval only; PO must review the corrected candidate after technical and release gates pass."
 pending_controls: ["Seal the independent Business Acceptance receipt in the atomic closeout bundle."]
 notes: ["The PO decision is explicit and distinct from Technical Verification and Release approval.", "No publication or tag operation is inferred from this acceptance record."]
 ```
@@ -570,7 +599,7 @@ rollback_controls:
   - "Use immutable v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9."
   - "Stop on digest, parity or hosted Guardrails mismatch; preserve unmanaged content and receipts."
 pipeline_risks: ["Local and hosted gzip byte streams are not reproducible across toolchains.", "Packaged-source edit invalidates candidate."]
-pipeline_recommendation: READY_WITH_GUARDS
+pipeline_recommendation: HOLD
 notes_for_implementation_or_ops: "Readiness only; no push, tag, publication, merge, cleanup or global install is authorized."
 ```
 
@@ -587,19 +616,22 @@ notes: "Unavailable scan tools and unchanged MCP fixture are limitations, not go
 ### Step Goal Audit
 ```yaml
 step: "s08 Verify + DoD evidence preparation"
-status: PASS
+status: FAIL
 checks:
-  - { criterion: "Every AG has evidence", result: PASS, evidence: "Spec Coverage records 13/13 PASS." }
+  - { criterion: "Every AG has evidence", result: FAIL, evidence: "F-AG08-001 disproves the prior AG-08 PASS conclusion for legacy closeout." }
   - { criterion: "Mandatory and negative paths are covered", result: PASS, evidence: "Node, transaction, CLI, compatibility, privacy, candidate and rollback matrices pass." }
   - { criterion: "Skipped checks are explicit", result: PASS, evidence: "ESLint and Semgrep list fallbacks and impact; hosted Guardrails completed successfully." }
   - { criterion: "Human authority is preserved", result: PASS, evidence: "QC explicitly approved Technical Verification/DoD and the hosted binding; DevOps/QC approved Release; PO explicitly approved Business Acceptance at 2026-09-03T06:53:55Z. Independent receipts remain the binding closeout act." }
-constraint_violations: []
-unmitigated_high_risks: []
+constraint_violations:
+  - "AG-08 mandatory terminal authority was omitted on the legacy path."
+unmitigated_high_risks:
+  - "F-AG08-001 remains open until the linked defect is corrected and reverified."
 timebox_breach: false
 timebox_evidence: "One bounded pass; no production or candidate edit."
-gaps: []
-risk_level: MEDIUM
-next_action: "Commit the finalized s08 host, seal the atomic closeout bundle, verify receipt digests and close the protocol."
+gaps:
+  - "Corrected code, RED/GREEN evidence, exact candidate, hosted Guardrails, and repeated terminal approvals are pending."
+risk_level: HIGH
+next_action: "Complete the linked defect workflow; do not seal closeout or finalize the branch."
 ```
 
 ### Branch And Worktree Closeout
@@ -608,28 +640,28 @@ finish_target: "codex/adaptive-governance-human-approval-ux and its dedicated wo
 workspace_kind: BOTH
 verify_inputs: ["B4 QC review PASS", "formal evidence PASS", "QC Technical Verification and technical DoD approval", "hosted Guardrails 10/10 jobs PASS", "DevOps/QC Release approval"]
 finish_gate_checks:
-  verify_complete: PASS
-  dod_complete: PASS
-  findings_closed: PASS
+  verify_complete: FAIL
+  dod_complete: FAIL
+  findings_closed: FAIL
   exceptions_resolved: PASS
   terminal_receipts_complete: PENDING
-allowed_actions: ["Commit the finalized s08 host.", "Seal the DoD, Release and Business Acceptance receipts atomically.", "Verify receipt-to-artifact digest matches."]
-blocked_actions: ["Merge/close/remove branch or worktree before terminal receipts and protocol closeout.", "Treat Business Acceptance as an implicit tag/publish/install command.", "Edit this s08 host after terminal receipts are sealed."]
+allowed_actions: ["Author and review the linked defect workflow.", "Preserve the observed partial receipts as historical evidence.", "Implement only after the linked defect reaches s07 ACTIVE."]
+blocked_actions: ["Seal or close CR-008 using an individual DoD workaround.", "Merge/close/remove branch or worktree.", "Tag, publish, or install v2.6.2 from candidate 8ddcb719..."]
 cleanup_sequence: []
 merge_conditions: ["Hosted Guardrails PASS", "DoD/Release/Business Acceptance approved", "all terminal receipts digest-match", "work-item protocol closed", "post-merge verification"]
-residual_risks: ["Terminal receipts are not yet sealed.", "Cross-toolchain gzip bytes are not reproducible."]
+residual_risks: ["F-AG08-001 omits mandatory DoD on a supported legacy path.", "Release and Business Acceptance receipts exist for evidence now known incomplete."]
 final_recommendation: HOLD_OPEN
-notes_for_closeout: "Every terminal human gate is approved. HOLD_OPEN now depends only on receipt sealing, protocol closeout and the explicit branch-finalization action; after those conditions pass, closeout may conclude without editing this receipt-bound s08 host."
+notes_for_closeout: "QC reopened AG-08. The branch/worktree stays open until the linked defect closes and a corrected candidate receives new terminal approvals."
 ```
 
 ## Definition of Done
 ```yaml
 work_item_slug: "adaptive-governance-human-approval-ux"
-status: DONE
+status: REWORK
 checks:
-  acceptance_criteria_evidenced: PASS
+  acceptance_criteria_evidenced: FAIL
   implementation_recorded: PASS
-  required_verification_completed: PASS
+  required_verification_completed: FAIL
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
@@ -674,20 +706,22 @@ human_decision:
     accepted_version: "2.6.2"
     candidate_sha256: "8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788"
     receipt_state: READY_TO_SEAL
-gaps: []
+gaps:
+  - "F-AG08-001 is open; CLD-01..CLD-05 evidence is pending."
 residual_risks: ["Cross-toolchain gzip representation differs.", "ESLint/Semgrep unavailable with documented fallbacks.", "External publication has not been executed."]
 follow_up_items:
+  - "Complete work-items/closeout-bundle-legacy-dod-compatibility through a new DoD."
   - "Seal and verify the DoD, Release and Business Acceptance receipts against this final artifact digest."
   - "Close the work-item protocol, then perform branch finalization separately."
   - "Publish/tag only under an explicit execution request using the approved hosted digest."
-next_action: "Run the atomic closeout approval bundle, verify the three receipts, then close the work-item protocol."
+next_action: "Hold CR-008 closeout; complete the linked defect and repeat exact-candidate verification plus terminal approvals."
 ```
 
 ## SDD Traceability
 ```yaml
 requirement_refs: ["BR-AG-001", "BR-AG-002", "BR-AG-003", "BR-AG-004", "BR-AG-005", "BR-AG-006", "REQ-AG-001", "REQ-AG-002", "REQ-AG-003", "REQ-AG-004", "REQ-AG-005", "REQ-AG-006", "REQ-AG-007", "REQ-AG-008", "REQ-AG-009", "REQ-AG-010", "REQ-AG-011"]
 acceptance_refs: ["AG-01", "AG-02", "AG-03", "AG-04", "AG-05", "AG-06", "AG-07", "AG-08", "AG-09", "AG-10", "AG-11", "AG-12", "AG-13"]
-task_refs: ["T0", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T8a", "T9"]
+task_refs: ["T0", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T8a", "T8b", "T9", "closeout-bundle-legacy-dod-compatibility"]
 test_refs: ["workflow-adaptive-governance", "materialize-work-item", "scaffold-workflow", "workflow-gate-review", "work-item-protocol", "workflow-telemetry", "runtime-parity", "release-candidate", "release-rollback", "release-surface"]
 ```
 
@@ -704,13 +738,13 @@ verification_targets:
   - "v2.6.2 QC-bound hosted release candidate: 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788"
   - "v2.6.2 superseded local candidate retained as historical content evidence: ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5"
   - "v2.6.1 rollback 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
-next_step: "Atomic closeout receipt sealing, receipt verification and work-item protocol closeout."
+next_step: "Linked defect delivery and re-verification; closeout remains blocked."
 ```
 
 ## Handoff
-- Overall status: QC approved Technical Verification, technical DoD and the hosted artifact-binding amendment; DevOps/QC approved Release; PO approved Business Acceptance. The final s08 host is ready for receipt sealing.
+- Overall status: REWORK. QC finding F-AG08-001 invalidates the prior AG-08 PASS evidence for closeout; prior human approvals remain historical records only.
 - Residual risks: cross-toolchain gzip bytes differ; ESLint/Semgrep remain unavailable with fallbacks; unchanged MCP fixture baseline gap.
 - QC decision: original `APPROVED` decision at `2026-09-02T06:24:11Z` retains AG-01..AG-13 and rollback evidence; amendment `APPROVED` at `2026-09-03T01:53:52Z` binds hosted candidate `8ddcb719...` as the sole Release candidate.
 - Release decision: `APPROVED` at `2026-09-03T06:20:42Z` for the full hosted SHA-256 `8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788`, with immutable rollback v2.6.1.
 - Business Acceptance: `APPROVED` by PO at `2026-09-03T06:53:55Z` for v2.6.2 and the QC-bound hosted candidate.
-- Next action: atomically seal DoD, Release and Business Acceptance receipts. Branch/worktree remains `HOLD_OPEN` until receipt verification and protocol closeout pass.
+- Next action: complete `closeout-bundle-legacy-dod-compatibility`, produce and verify a corrected candidate, then repeat Technical Verification, Release, and Business Acceptance. Branch/worktree remains `HOLD_OPEN`.

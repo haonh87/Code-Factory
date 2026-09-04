@@ -712,12 +712,14 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-09-02T06:33:42.936Z"
+handoff_target: "linked-defect-s01"
+last_transition_action: "record-ag08-finding"
+last_transition_at: "2026-09-03T07:30:43.021Z"
 required_actions:
-  - "Collect DoD evidence and close the work item when ready."
-blockers: []
+  - "Complete closeout-bundle-legacy-dod-compatibility through corrected-candidate verification."
+  - "Repeat Technical Verification, DoD, Release and Business Acceptance for the corrected v2.6.2 candidate before CR-008 closeout."
+blockers:
+  - "F-AG08-001: legacy product closeout omitted mandatory DoD and recorded a partial closeout bundle as successful."
 review_notes:
   - "Human review approved."
 refs:
@@ -726,6 +728,7 @@ refs:
   - "work-items/arch-role-skills-release"
   - "work-items/integrate-design-checklists-into-sa-ta"
   - "work-items/architecture-role-skills"
+  - "work-items/closeout-bundle-legacy-dod-compatibility"
 audit_events:
   - "REQUEST_CAPTURED"
   - "CANDIDATE_PROPOSED"
@@ -745,6 +748,16 @@ audit_events:
   - "S06_TASK_PLAN_REVIEWED"
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
+  - "HOSTED_GUARDRAILS_PASSED"
+  - "HOSTED_ARTIFACT_DIGEST_MISMATCH_RECORDED"
+  - "QC_ARTIFACT_REBIND_PENDING"
+  - "HOSTED_ARTIFACT_BINDING_APPROVED"
+  - "RELEASE_APPROVED"
+  - "BUSINESS_ACCEPTANCE_APPROVED"
+  - "S08_FINALIZED_FOR_CLOSEOUT"
+  - "CLOSEOUT_BUNDLE_APPROVED"
+  - "AG08_CLOSEOUT_COMPATIBILITY_FINDING_RECORDED"
+  - "LINKED_DEFECT_CREATED"
 ```
 
 ## Traceability

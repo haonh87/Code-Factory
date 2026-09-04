@@ -4,6 +4,7 @@ const workflowBundlePackage = require("../package.json");
 const { formatErrors, parseCliArgs } = require("./workflow-validator-utils");
 const {
   getUncommittedDeliveryErrors,
+  getRequiredFinalizedGateKeys,
   loadWorkflowStepGateSnapshot
 } = require("./workflow-gate-evidence-utils");
 const {
@@ -279,7 +280,12 @@ function deriveBundleGates({ protocolReport, sddMode, workflowRoot, workItemSlug
     return [...READY_BUNDLE_GATES];
   }
   const snapshot = loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId: "s08" });
-  const gates = [...CLOSEOUT_GATES].filter((gate) => snapshot.approvalGates[gate] === "required");
+  const gates = getRequiredFinalizedGateKeys(
+    "s08",
+    snapshot.approvalGates,
+    sddMode,
+    snapshot.artifactShape
+  ).filter((gate) => CLOSEOUT_GATES.has(gate));
   if (gates.length < 1) {
     throw new Error("Legacy closeout bundle has no required terminal gates in the s08 host note.");
   }

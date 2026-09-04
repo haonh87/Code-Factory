@@ -115,20 +115,21 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "closeout-receipt-sealing",
+  "handoff_target": "linked-defect-s01",
   "required_actions": [
-    "Run the interactive approve-closeout-bundle command to seal independent DoD, Release and Business Acceptance receipts against the finalized s08 digest.",
-    "Verify every terminal receipt digest, close the work-item protocol, and only then finalize the branch/worktree."
+    "Complete closeout-bundle-legacy-dod-compatibility through corrected-candidate verification.",
+    "Repeat Technical Verification, DoD, Release and Business Acceptance for the corrected v2.6.2 candidate before CR-008 closeout."
   ],
   "blockers": [
-    "Terminal trusted receipts for DoD, Release and Business Acceptance are not yet sealed against the finalized s08 artifact."
+    "F-AG08-001: legacy product closeout omitted mandatory DoD and recorded a partial closeout bundle as successful."
   ],
   "refs": [
     "changes/CR-008",
     "work-items/adaptive-governance-human-approval-ux",
     "work-items/arch-role-skills-release",
     "work-items/integrate-design-checklists-into-sa-ta",
-    "work-items/architecture-role-skills"
+    "work-items/architecture-role-skills",
+    "work-items/closeout-bundle-legacy-dod-compatibility"
   ],
   "audit_events": [
     "REQUEST_CAPTURED",
@@ -155,7 +156,10 @@
     "HOSTED_ARTIFACT_BINDING_APPROVED",
     "RELEASE_APPROVED",
     "BUSINESS_ACCEPTANCE_APPROVED",
-    "S08_FINALIZED_FOR_CLOSEOUT"
+    "S08_FINALIZED_FOR_CLOSEOUT",
+    "CLOSEOUT_BUNDLE_APPROVED",
+    "AG08_CLOSEOUT_COMPATIBILITY_FINDING_RECORDED",
+    "LINKED_DEFECT_CREATED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -312,6 +316,22 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "Human PO approved Business Acceptance for v2.6.2 after the DevOps/QC Release decision. Every applicable terminal gate is now human-approved; the finalized s08 host awaits atomic receipt sealing. No external publication action was inferred."
+    },
+    {
+      "timestamp": "2026-09-03T07:06:55.732Z",
+      "action": "approve-closeout-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "APPROVED closeout gates: release, business_acceptance"
+    },
+    {
+      "timestamp": "2026-09-03T07:30:43.021Z",
+      "action": "record-ag08-finding",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "QC recorded F-AG08-001 after the real legacy closeout bundle omitted mandatory DoD and reconciled only Release plus Business Acceptance. The user approved linked defect closeout-bundle-legacy-dod-compatibility; CR-008 release closeout is held pending a corrected candidate and repeated terminal approvals."
     }
   ]
 }

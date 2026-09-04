@@ -1,0 +1,167 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "ACTIVE",
+  "decision_owner": "agent",
+  "protocol_owner": "qc",
+  "raw_request_summary": "Fix the CR-008 legacy closeout bundle so mandatory DoD cannot be omitted and partial terminal state cannot be recorded as success.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "closeout-bundle-legacy-dod-compatibility",
+      "work_item_title": "Closeout Bundle Legacy Dod Compatibility",
+      "work_item_type": "BUG",
+      "scope_summary": "Correct legacy terminal-gate derivation, atomic reconciliation, and exact-candidate verification for the observed CR-008 missing-DoD closeout.",
+      "primary_outcome": "Legacy maintenance selects DoD and legacy product release selects DoD, Release, and Business Acceptance in one atomic closeout interaction.",
+      "in_scope": [
+        "Legacy closeout terminal-gate derivation when approval_gates.dod is absent",
+        "Regression coverage for maintenance and product-release gate sets",
+        "Atomic receipt and derived-state reconciliation",
+        "Corrected v2.6.2 candidate verification"
+      ],
+      "out_of_scope": [
+        "Workflow reopen capability",
+        "Receipt schema or signer changes",
+        "Unrelated CR-008 behavior",
+        "Publication, tagging, merging, global installation, or worktree cleanup"
+      ],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "strict",
+      "sdd_reasons": [],
+      "sdd_preset": "strict",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.s08.verification.md",
+        "changes/CR-008/spec-delta/srs.delta.md"
+      ],
+      "collision_notes": [],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "Scope chưa cần change layer riêng.",
+      "change_refs": [
+        "changes/CR-008"
+      ],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item closeout-bundle-legacy-dod-compatibility --planning-track full --delivery-context brownfield --governance-profile strict",
+        "npm run validate:workflow -- --workflow-root work-items/closeout-bundle-legacy-dod-compatibility --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=BUG",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict",
+    "change_strategy=none",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=strict",
+    "selected_profile=strict",
+    "sdd_mode=none",
+    "sdd_escalation_reasons=",
+    "linked_defect_parent=adaptive-governance-human-approval-ux",
+    "linked_change_ref=CR-008"
+  ],
+  "work_item_slug": "closeout-bundle-legacy-dod-compatibility",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-legacy-dod-compatibility",
+  "current_step": "s08",
+  "granted_write_paths": [
+    "packages/workflow-bundle/scripts/workflow-gate-review.js",
+    "packages/workflow-bundle/test/work-item-protocol.test.js",
+    "work-items/closeout-bundle-legacy-dod-compatibility"
+  ],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "agent-s08-hosted-verification",
+  "required_actions": [
+    "Commit and push the reviewed scope, then collect hosted Node 18/22 evidence before QC Technical Verification and DoD review."
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/closeout-bundle-legacy-dod-compatibility",
+    "work-items/adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.s08.verification.md",
+    "changes/CR-008"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "S08_OPENED_BY_QC"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-09-03T07:45:40.233Z",
+  "review_notes": [
+    "Approved creation of the recommended linked defect for CR-008 finding F-AG08-001.",
+    "QC approved opening s08 for candidate SHA-256 b2d9ba416e54ec2cd1517a98f1a9b05e010c519a1721651534caf42b44f3b83e at 2026-09-04T10:58:54Z."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-03T07:30:42.969Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-09-03T07:30:42.970Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Materialization inputs are ready for scaffold."
+    },
+    {
+      "timestamp": "2026-09-03T07:30:43.021Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Auto-scaffolded workflow artifacts."
+    },
+    {
+      "timestamp": "2026-09-03T07:45:40.234Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Approved creation of the recommended linked defect for CR-008 finding F-AG08-001."
+    },
+    {
+      "timestamp": "2026-09-04T09:12:57.986Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Task Plan approved; activate bounded TDD implementation for F-AG08-001."
+    },
+    {
+      "timestamp": "2026-09-04T10:58:54Z",
+      "action": "open-s08",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "QC approved opening s08 for candidate SHA-256 b2d9ba416e54ec2cd1517a98f1a9b05e010c519a1721651534caf42b44f3b83e."
+    }
+  ]
+}

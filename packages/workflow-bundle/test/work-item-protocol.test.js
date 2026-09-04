@@ -14,6 +14,7 @@ const {
   getProtocolStateContradictionErrors,
   getTrustedReceiptArtifactErrors
 } = require("../scripts/workflow-gate-evidence-utils");
+const { APPROVAL_TRANSACTION_FAILURE_POINTS } = require("../scripts/workflow-approval-transaction");
 
 const governanceFixtureRoot = path.join(__dirname, "..", "tests", "fixtures", "workflow-governance");
 
@@ -82,6 +83,14 @@ function rmrf(target) {
     }
   } catch (_e) { /* ignore */ }
   fs.rmSync(target, { recursive: true, force: true });
+}
+
+function listFilesRecursively(target) {
+  if (!fs.existsSync(target)) return [];
+  return fs.readdirSync(target, { withFileTypes: true }).flatMap((entry) => {
+    const child = path.join(target, entry.name);
+    return entry.isDirectory() ? listFilesRecursively(child) : [child];
+  });
 }
 
 // s01 note với profile light; các note khác chỉ cần đủ frontmatter cho gate snapshot.
@@ -358,6 +367,57 @@ function buildCloseoutProject(slug, terminalGates) {
   return { projectRoot, workflowRoot, reportPath };
 }
 
+// A supported pre-adaptive report has no artifact_shape or reasoned gates array.
+// Its s08 may also predate an explicit approval_gates.dod key, while the finalized
+// host contract still requires DoD through role_signoffs and gate_reviews.
+function buildLegacyCloseoutProject(slug, optionalTerminalGates, { omitApprovalGates = false } = {}) {
+  const projectRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-closeout-legacy-"));
+  const workflowRoot = path.join(projectRoot, "work-items", slug);
+  const gateRoles = { dod: "qc", uat: "qc", release: "devops", business_acceptance: "po" };
+  const terminalGates = ["dod", ...optionalTerminalGates];
+  let hostFrontmatter = makeCloseoutHostNoteFrontmatter(slug, terminalGates);
+  hostFrontmatter = omitApprovalGates
+    ? hostFrontmatter.replace(
+        /approval_gates:\n(?:  (?:dod|uat|release|business_acceptance): "[^"]+"\n)+/,
+        ""
+      )
+    : hostFrontmatter.replace(/^  dod: "required"\n/m, "");
+
+  writeFile(path.join(workflowRoot, `${slug}.s01.restate.md`), makeS01Frontmatter(slug, "none") + "# s01\n");
+  const hostPath = path.join(workflowRoot, `${slug}.s08.verification.md`);
+  writeFile(
+    hostPath,
+    hostFrontmatter +
+      "# s08\n\n## Technical Verification\n```yaml\nverdict: PASS\n```\n\n## Definition of Done\n```yaml\nverdict: READY_FOR_REVIEW\n```\n"
+  );
+
+  const report = normalizeProtocolReport({
+    materialization_status: "MATERIALIZED",
+    protocol_status: "VERIFIED",
+    decision_owner: "agent",
+    protocol_owner: "developer",
+    work_item_slug: slug,
+    work_item_type: "FEATURE",
+    delivery_context: "brownfield",
+    workflow_root: path.relative(projectRoot, workflowRoot),
+    current_step: "s08",
+    review_required: true,
+    approval_status: "APPROVED",
+    reviewed_by: "po",
+    reviewed_at: "2026-07-16T00:00:00Z",
+    handoff_target: "closeout-review",
+    required_actions: [
+      ...terminalGates.map((gate) => `wfc gate approve --work-item ${slug} --gate ${gate} --reviewed-by ${gateRoles[gate]}`),
+      `wfc work-item close --work-item ${slug}`
+    ],
+    blockers: [],
+    audit_events: ["VERIFICATION_CONFIRMED"]
+  });
+  const reportPath = path.join(workflowRoot, `${slug}.work-item-report.json`);
+  writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
+  return { projectRoot, workflowRoot, reportPath, hostPath };
+}
+
 function runGateCommand(scriptPath, args, env) {
   try {
     return {
@@ -376,6 +436,34 @@ function runGateCommand(scriptPath, args, env) {
       stderr: String(error.stderr || "")
     };
   }
+}
+
+function buildCloseoutApprovalFixture(prefix) {
+  const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+  return {
+    approvalRoot,
+    env: {
+      ...process.env,
+      WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "true",
+      WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: "test-passphrase",
+      WORKFLOW_BUNDLE_APPROVAL_ROOT: approvalRoot
+    }
+  };
+}
+
+function runCloseoutFixture({ slug, projectRoot, workflowRoot, approvalRoot, env, extraArgs = [] }) {
+  return runGateCommand(
+    path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js"),
+    [
+      "approve-closeout-bundle",
+      "--work-item", slug,
+      "--project-root", projectRoot,
+      "--workflow-root", path.dirname(workflowRoot),
+      "--approval-root", approvalRoot,
+      ...extraArgs
+    ],
+    env
+  );
 }
 
 // ---------- Output 4: transition hooks tạo s07/s08 đúng thời điểm ----------
@@ -701,6 +789,144 @@ function testProductReleaseCloseoutKeepsConfiguredAuthority() {
     rmrf(projectRoot);
     rmrf(approvalRoot);
   }
+}
+
+function testLegacyMaintenanceCloseoutRestoresImplicitDod() {
+  const slug = "proto-legacy-maintenance-closeout-item";
+  const { projectRoot, workflowRoot, reportPath, hostPath } = buildLegacyCloseoutProject(slug, [], { omitApprovalGates: true });
+  const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-closeout-legacy-maintenance-approvals-");
+  try {
+    const reportBefore = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    const hostContent = fs.readFileSync(hostPath, "utf8");
+    assert(!Object.prototype.hasOwnProperty.call(reportBefore, "artifact_shape"), "legacy maintenance fixture omits artifact_shape");
+    assert(!Object.prototype.hasOwnProperty.call(reportBefore, "gates"), "legacy maintenance fixture omits adaptive gates");
+    assert(!/^approval_gates:/m.test(hostContent), "legacy maintenance s08 omits the whole approval_gates block");
+
+    const outcome = runCloseoutFixture({ slug, projectRoot, workflowRoot, approvalRoot, env });
+    assert(outcome.status === 0, `legacy maintenance closeout restores implicit DoD (got: ${outcome.stderr.split("\n")[0]})`);
+    if (outcome.status !== 0) return;
+    const summary = JSON.parse(outcome.stdout);
+    assert(summary.sealed_gates.map((entry) => entry.gate).join(",") === "dod", "legacy maintenance closeout seals exactly DoD");
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testLegacyProductReleaseCloseoutRestoresImplicitDod() {
+  const slug = "proto-legacy-product-closeout-item";
+  const expectedGates = ["dod", "release", "business_acceptance"];
+  const { projectRoot, workflowRoot, reportPath, hostPath } = buildLegacyCloseoutProject(slug, ["release", "business_acceptance"]);
+  const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-closeout-legacy-product-approvals-");
+  try {
+    const reportBefore = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    const hostContent = fs.readFileSync(hostPath, "utf8");
+    const approvalBlock = hostContent.match(/approval_gates:\n([\s\S]*?)role_signoffs:/)[1];
+    assert(!Object.prototype.hasOwnProperty.call(reportBefore, "artifact_shape"), "legacy product fixture omits artifact_shape");
+    assert(!Object.prototype.hasOwnProperty.call(reportBefore, "gates"), "legacy product fixture omits adaptive gates");
+    assert(!/^\s+dod:/m.test(approvalBlock), "legacy product s08 omits approval_gates.dod");
+
+    const outcome = runCloseoutFixture({ slug, projectRoot, workflowRoot, approvalRoot, env });
+    assert(outcome.status === 0, `legacy product closeout command succeeds (got: ${outcome.stderr.split("\n")[0]})`);
+    if (outcome.status !== 0) return;
+    const summary = JSON.parse(outcome.stdout);
+    assert(summary.transaction.status === "COMMITTED", "legacy product closeout commits one transaction");
+    assert(
+      summary.sealed_gates.map((entry) => entry.gate).join(",") === expectedGates.join(","),
+      "legacy product closeout restores DoD before configured Release and Business Acceptance"
+    );
+    const expectedReviewers = { dod: "qc", release: "devops", business_acceptance: "po" };
+    expectedGates.forEach((gate) => {
+      const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate });
+      assert(Boolean(loaded.receipt), `legacy product closeout emits an independent ${gate} receipt`);
+      assert(loaded.receipt && loaded.receipt.reviewed_by === expectedReviewers[gate], `legacy ${gate} receipt retains ${expectedReviewers[gate]} authority`);
+    });
+
+    const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+    const reportAfter = fs.readFileSync(reportPath, "utf8");
+    const s01After = fs.readFileSync(s01Path, "utf8");
+    const normalizedAfter = JSON.parse(reportAfter);
+    assert(
+      normalizedAfter.required_actions.length === 1 && /work-item close/.test(normalizedAfter.required_actions[0]),
+      "legacy product reconciliation removes every terminal gate action"
+    );
+    assert(
+      normalizedAfter.audit_events.filter((event) => event === "CLOSEOUT_BUNDLE_APPROVED").length === 1,
+      "legacy product reconciliation records one closeout approval event"
+    );
+    assert(/CLOSEOUT_BUNDLE_APPROVED/.test(s01After), "legacy product s01 mirrors the reconciled closeout event");
+
+    const retry = runCloseoutFixture({ slug, projectRoot, workflowRoot, approvalRoot, env });
+    assert(retry.status === 0, `unchanged legacy product closeout retry succeeds (got: ${retry.stderr.split("\n")[0]})`);
+    if (retry.status === 0) {
+      const retrySummary = JSON.parse(retry.stdout);
+      assert(retrySummary.transaction.status === "NOOP", "unchanged legacy product retry performs no duplicate transaction writes");
+    }
+    assert(fs.readFileSync(reportPath, "utf8") === reportAfter, "unchanged legacy product retry leaves report byte-identical");
+    assert(fs.readFileSync(s01Path, "utf8") === s01After, "unchanged legacy product retry leaves s01 byte-identical");
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testLegacyCloseoutKeepsOptionalTerminalGatesIndependent() {
+  ["release", "business_acceptance"].forEach((optionalGate) => {
+    const slug = `proto-legacy-${optionalGate.replace(/_/g, "-")}-closeout-item`;
+    const { projectRoot, workflowRoot } = buildLegacyCloseoutProject(slug, [optionalGate]);
+    const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-closeout-legacy-optional-approvals-");
+    try {
+      const outcome = runCloseoutFixture({ slug, projectRoot, workflowRoot, approvalRoot, env });
+      assert(outcome.status === 0, `legacy closeout with only ${optionalGate} succeeds (got: ${outcome.stderr.split("\n")[0]})`);
+      if (outcome.status !== 0) return;
+      const summary = JSON.parse(outcome.stdout);
+      assert(
+        summary.sealed_gates.map((entry) => entry.gate).join(",") === ["dod", optionalGate].join(","),
+        `legacy closeout selects DoD plus only configured ${optionalGate}`
+      );
+      const excludedGate = optionalGate === "release" ? "business_acceptance" : "release";
+      const excluded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate: excludedGate });
+      assert(!excluded.receipt, `legacy closeout does not add unconfigured ${excludedGate}`);
+    } finally {
+      rmrf(projectRoot);
+      rmrf(approvalRoot);
+    }
+  });
+}
+
+function testLegacyProductCloseoutFailureMatrixLeavesNoPartialState() {
+  APPROVAL_TRANSACTION_FAILURE_POINTS.forEach((failurePoint) => {
+    const slug = `proto-legacy-closeout-fail-${failurePoint.replace(/_/g, "-")}`;
+    const { projectRoot, workflowRoot, reportPath } = buildLegacyCloseoutProject(slug, ["release", "business_acceptance"]);
+    const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-closeout-legacy-failure-approvals-");
+    const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+    const reportBefore = fs.readFileSync(reportPath, "utf8");
+    const s01Before = fs.readFileSync(s01Path, "utf8");
+    try {
+      const outcome = runCloseoutFixture({
+        slug,
+        projectRoot,
+        workflowRoot,
+        approvalRoot,
+        env,
+        extraArgs: ["--transaction-fail-at", failurePoint]
+      });
+      assert(outcome.status !== 0, `${failurePoint}: injected legacy closeout failure is observed`);
+      ["dod", "release", "business_acceptance"].forEach((gate) => {
+        const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate });
+        assert(!loaded.receipt, `${failurePoint}: no partial ${gate} receipt remains`);
+      });
+      assert(fs.readFileSync(reportPath, "utf8") === reportBefore, `${failurePoint}: protocol report remains byte-identical`);
+      assert(fs.readFileSync(s01Path, "utf8") === s01Before, `${failurePoint}: s01 remains byte-identical`);
+      const transactionResidue = listFilesRecursively(approvalRoot).filter(
+        (filePath) => !new Set(["approver-private.pem", "approver-public.pem"]).has(path.basename(filePath))
+      );
+      assert(transactionResidue.length === 0, `${failurePoint}: no journal, lock, stage, or receipt file remains`);
+    } finally {
+      rmrf(projectRoot);
+      rmrf(approvalRoot);
+    }
+  });
 }
 
 function testWorkItemLifecycleAdapterEmitsBoundedTelemetry() {
@@ -1111,6 +1337,10 @@ testReadyBundlePreflightsEveryReviewerBeforeWriting();
 testRejectReadyBundleKeepsIndependentDecisionEvidence();
 testMaintenanceCloseoutBundlesOnlyDod();
 testProductReleaseCloseoutKeepsConfiguredAuthority();
+testLegacyMaintenanceCloseoutRestoresImplicitDod();
+testLegacyProductReleaseCloseoutRestoresImplicitDod();
+testLegacyCloseoutKeepsOptionalTerminalGatesIndependent();
+testLegacyProductCloseoutFailureMatrixLeavesNoPartialState();
 testWorkItemLifecycleAdapterEmitsBoundedTelemetry();
 testFailedVerifyDoesNotLeavePrematureS08();
 testStaleDigestFixtureIsRejected();
