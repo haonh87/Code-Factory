@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const workflowBundlePackage = require("../package.json");
 const { formatErrors, parseCliArgs, getFrontmatterLines, getFrontmatterValue } = require("./workflow-validator-utils");
 const { loadChangeProposalState } = require("./change-item-utils");
 const { CHANGE_APPROVAL_GATE_PASSED } = require("./workflow-change-definitions");
@@ -26,8 +27,16 @@ const {
   resolveWorkflowRootBase,
   syncProtocolArtifacts
 } = require("./work-item-protocol-utils");
-const { getProtocolStepGateErrors, getWorkflowStepNotePath } = require("./workflow-gate-evidence-utils");
+const {
+  getProtocolStepGateErrors,
+  getUncommittedDeliveryErrors,
+  getWorkflowStepNotePath
+} = require("./workflow-gate-evidence-utils");
 const { ensureLazyWorkflowNote } = require("./scaffold-workflow");
+const {
+  emitAdaptiveTelemetryEvent,
+  isTelemetryEnabled
+} = require("./workflow-telemetry");
 
 const SUPPORTED_ACTIONS = new Set([
   "list",
@@ -219,6 +228,44 @@ function assertStepGateEvidence(report, toStatus, projectRoot) {
   }
 }
 
+// E-B / REQ-004, carried from worktree-and-closure-integrity as L-01. The dod seal
+// already refuses over a dirty declared scope, but sealing and transitioning are two
+// moments: a tree clean at seal time can be dirty by the time DONE is recorded. This
+// closes that window by re-checking at the transition.
+//
+// OQ-4 is answered by RE-EVALUATING rather than storing: no waiver is persisted in the
+// receipt or the report, so a hatch granted at seal time does not silently outlive the
+// condition it was granted for. The operator passes it again here, deliberately.
+function assertUncommittedDeliveryGate(report, toStatus, projectRoot, options = {}) {
+  if (toStatus !== "DONE") {
+    return null;
+  }
+
+  const workflowRoot =
+    report.workflow_root ||
+    getWorkItemPaths({
+      projectRoot,
+      workflowRootBase: resolveWorkflowRootBase(projectRoot, ""),
+      workItemSlug: report.work_item_slug
+    }).workflowRoot;
+
+  const verdict = getUncommittedDeliveryErrors({
+    projectRoot,
+    workflowRoot: path.resolve(workflowRoot),
+    workItemSlug: report.work_item_slug,
+    allowUncommitted: Boolean(options.allowUncommitted),
+    uncommittedReason: options.uncommittedReason
+  });
+
+  if (verdict.errors.length > 0) {
+    throw new Error(
+      `Cannot move work item '${report.work_item_slug}' to DONE:\n- ${verdict.errors.join("\n- ")}`
+    );
+  }
+
+  return verdict.waived ? verdict.reason : null;
+}
+
 function transitionReport(reportInput, options) {
   const report = normalizeProtocolReport(reportInput);
   const {
@@ -244,6 +291,14 @@ function transitionReport(reportInput, options) {
   assertApprovalGate(report, toStatus, projectRoot);
   assertBootstrapGate(report, toStatus, projectRoot);
   assertStepGateEvidence(report, toStatus, projectRoot);
+  const uncommittedWaiver = assertUncommittedDeliveryGate(report, toStatus, projectRoot, {
+    allowUncommitted: options.allowUncommitted,
+    uncommittedReason: options.uncommittedReason
+  });
+  if (uncommittedWaiver) {
+    // Never silent: an exemption nobody can see is worse than no check.
+    console.log(`WAIVED: closed over an uncommitted delivery. Reason: ${uncommittedWaiver}`);
+  }
 
   report.protocol_status = toStatus;
 
@@ -367,6 +422,69 @@ function applyReject(reportInput, args) {
     })
   );
 
+  return report;
+}
+
+function isApprovalActionForGate(action, gate) {
+  const text = String(action || "");
+  return /\bwfc\s+gate\s+approve\b/.test(text) && new RegExp(`--gate\\s+${gate}(?:\\s|$)`).test(text);
+}
+
+function reconcileApprovalBundleReport(reportInput, { phase, gates, decision, reviewedAt } = {}) {
+  const report = normalizeProtocolReport(reportInput);
+  const normalizedPhase = String(phase || "").trim();
+  const normalizedDecision = String(decision || "").trim().toUpperCase();
+  const gateNames = [...new Set((Array.isArray(gates) ? gates : []).map((gate) => String(gate || "").trim()).filter(Boolean))];
+  if (!new Set(["readiness", "closeout"]).has(normalizedPhase)) {
+    throw new Error(`Unsupported approval bundle reconciliation phase '${normalizedPhase}'.`);
+  }
+  if (!new Set(["APPROVED", "REJECTED"]).has(normalizedDecision)) {
+    throw new Error(`Unsupported approval bundle reconciliation decision '${normalizedDecision}'.`);
+  }
+  if (gateNames.length < 1) {
+    throw new Error("Approval bundle reconciliation requires at least one gate.");
+  }
+
+  const eventPrefix = normalizedPhase.toUpperCase();
+  const gateList = gateNames.join(", ");
+  report.blockers = report.blockers.filter((entry) => !/readiness bundle rejected|closeout bundle rejected/i.test(entry));
+  report.required_actions = report.required_actions.filter(
+    (entry) =>
+      !/\bwfc\s+gate\s+(?:approve|reject)-(?:ready|closeout)-bundle\b/.test(String(entry || "")) &&
+      !gateNames.some((gate) => isApprovalActionForGate(entry, gate)) &&
+      !/resolve rejected (?:readiness|closeout)/i.test(String(entry || ""))
+  );
+
+  const auditEvent = `${eventPrefix}_BUNDLE_${normalizedDecision}`;
+  const eventAlreadyRecorded = report.audit_events.includes(auditEvent);
+  if (normalizedDecision === "APPROVED") {
+    appendAuditEvent(report, auditEvent);
+    report.handoff_target = normalizedPhase === "readiness" ? "step-s07-activation" : report.handoff_target;
+  } else {
+    const blocker = `${normalizedPhase === "readiness" ? "Readiness" : "Closeout"} bundle rejected for gates: ${gateList}.`;
+    const action = `Resolve rejected ${normalizedPhase} gates before ${normalizedPhase === "readiness" ? "activation" : "completion"}.`;
+    report.blockers.push(blocker);
+    const retryAction =
+      normalizedPhase === "readiness"
+        ? `wfc gate approve-ready-bundle --work-item ${report.work_item_slug}`
+        : `wfc gate approve-closeout-bundle --work-item ${report.work_item_slug}`;
+    report.required_actions.unshift(action, retryAction);
+    report.handoff_target = `${normalizedPhase}-rework`;
+    appendAuditEvent(report, auditEvent);
+  }
+
+  if (!eventAlreadyRecorded) {
+    report.protocol_events.push(
+      buildProtocolEvent({
+        action: `${normalizedDecision === "APPROVED" ? "approve" : "reject"}-${normalizedPhase}-bundle`,
+        actor: "human-review-bundle",
+        fromStatus: report.protocol_status,
+        toStatus: report.protocol_status,
+        note: `${normalizedDecision} ${normalizedPhase} gates: ${gateList}`,
+        timestamp: reviewedAt
+      })
+    );
+  }
   return report;
 }
 
@@ -507,6 +625,8 @@ function applyAction(reportInput, action, args) {
         requiredActions: ["Archive the work item when all downstream lifecycle actions are complete."],
         protocolOwner: normalizeSingleValue(args["protocol-owner"] || ""),
         auditEvent: "DONE_CONFIRMED",
+        allowUncommitted: Boolean(args["allow-uncommitted-delivery"]),
+        uncommittedReason: normalizeSingleValue(args["uncommitted-reason"] || ""),
         projectRoot
       });
     case "archive":
@@ -734,6 +854,42 @@ function runCli() {
         approvalPassphrase: normalizeSingleValue(args["approval-passphrase"] || "")
       });
     }
+    if (isTelemetryEnabled(args.telemetry)) {
+      try {
+        emitAdaptiveTelemetryEvent({
+          enabled: true,
+          projectRoot,
+          outputDirOverride: normalizeSingleValue(args["telemetry-out"] || ""),
+          event: {
+            event_type: "work_item_transition",
+            runtime_version: workflowBundlePackage.version,
+            request_lane: updatedReport.request_lane,
+            selected_profile: updatedReport.selected_profile,
+            sdd_light_profile: updatedReport.sdd_light_profile,
+            routing_reasons: updatedReport.routing_reasons,
+            escalation_reasons: updatedReport.escalation_reasons,
+            role_count: Array.isArray(updatedReport.roles) ? updatedReport.roles.length : null,
+            gate_count: Array.isArray(updatedReport.gates) ? updatedReport.gates.length : null,
+            interaction_count: action === "approve" || action === "reject" ? 1 : 0,
+            override_count: updatedReport.human_override ? 1 : 0,
+            retry_count: 0,
+            outcome:
+              action === "approve"
+                ? "approved"
+                : action === "reject"
+                  ? "rejected"
+                : String(updatedReport.protocol_status || "").toLowerCase(),
+            work_item_slug: updatedReport.work_item_slug,
+            retention_class: "raw",
+            recorded_at: new Date().toISOString()
+          }
+        });
+      } catch (_error) {
+        // The protocol mutation is already durable. Optional local telemetry
+        // must never convert a successful lifecycle transition into a failure.
+        process.stderr.write("WARN: TELEMETRY_WRITE_FAILED\n");
+      }
+    }
     syncCapabilityControl({
       projectRoot,
       workflowRootBase
@@ -751,9 +907,11 @@ if (require.main === module) {
 }
 
 module.exports = {
+  assertUncommittedDeliveryGate,
   applyAction,
   ensureLightLazyStepNote,
   listWorkItems,
+  reconcileApprovalBundleReport,
   runCli,
   transitionReport
 };

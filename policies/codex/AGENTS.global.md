@@ -41,6 +41,18 @@ This repo runs on a multi-block model, not a single monolithic prompt.
 - If the entry router cannot lock the items above, the correct behavior is `BLOCKED` or going back to `s01`, not jumping to implementation.
 - Only tasks that do not belong to the delivery workflow, such as pure Q&A, translation, summarization or ordinary conversation, may skip this router.
 
+## Hard Rule: Adaptive Admission And Applicability
+
+- Before opening the delivery workflow, classify the request into exactly one canonical lane: `qa`, `translation`, `summarization`, `research`, `documentation`, `read_only_analysis`, `maintenance`, or `product_delivery`.
+- `qa|translation|summarization|research|documentation|read_only_analysis` are non-delivery lanes. They create no delivery artifact, role, gate, pending action, capability-control update, or telemetry write by default.
+- A human may explicitly materialize a non-delivery request only when the decision records a non-empty actor, reason, and UTC timestamp. This override opens materialization; it never approves a gate.
+- `maintenance` uses only the smallest applicable technical lane by default. It must not add `po`, `ba`, `sa`, `ta`, or `devops` without a named trigger.
+- `public_contract`, `migration`, `security_sensitive`, `regulated`, `greenfield_foundation`, `release`, and ambiguous mixed intent are hard escalations to `product_delivery`. Agent inference, a normal preset, and a human materialization override cannot downgrade them.
+- Hard triggers are structured routing inputs, not raw keyword matches. Ambiguous text alone must not invent a trigger; an unknown boolean value fails closed as invalid input rather than silently becoming false.
+- Every required role and gate must carry at least one stable reason code. Every required gate must also name its authorized reviewer roles. An omitted or `not_applicable` entry creates zero pending human actions.
+- The executable contract is `packages/workflow-bundle/scripts/workflow-adaptive-governance.js`; the lane, trigger, role/gate, and reason-code tables are documented in `skills/orchestration/codex-workflow-chain/references/adaptive-planning.md`.
+- Adaptive writes are activation-gated. They are allowed only when every supported installed harness matches the source bundle minor and canonical/runtime parity passes. Until then, the legacy writer remains authoritative and dual-read remains available.
+
 ## Hard Rule: Generic Coding Defaults Do Not Open A Gate
 
 - Any default heuristic or prompt of the kind:

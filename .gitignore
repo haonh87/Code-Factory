@@ -9,6 +9,15 @@ tmp-codex-home/tmp-sdd-smoke/
 # Ghi chú cá nhân, không thuộc nội dung repo
 /Booking.md
 /Daily.md
+/Meeting.md
+/Untitled.base
+
+# Policy do `wfc install --project-root` sinh ra tại project root.
+# Bản copy của global policy (~/.claude/CLAUDE.md, ~/.codex/AGENTS.global.md),
+# tên file theo mode: AGENTS.md cho codex, CLAUDE.md cho claude.
+# Không phải source of truth - project context thật nằm ở .claude/CLAUDE.md (đã track).
+/AGENTS.md
+/CLAUDE.md
 
 # Local visual working files; not part of the public docs surface.
 docs/workflow-process.canvas

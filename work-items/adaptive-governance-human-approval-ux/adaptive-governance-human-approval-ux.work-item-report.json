@@ -1,0 +1,337 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "VERIFIED",
+  "decision_owner": "agent",
+  "protocol_owner": "developer",
+  "raw_request_summary": "Introduce adaptive request-lane admission, context-based role and gate routing, bundled human approvals, and interaction telemetry so non-product requests avoid unnecessary role ceremony while high-risk controls remain human-controlled.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "adaptive-governance-human-approval-ux",
+      "work_item_title": "Adaptive Governance and Human Approval UX",
+      "work_item_type": "CHANGE",
+      "scope_summary": "Add request-lane admission, adaptive role/gate routing, human decision bundles, and interaction telemetry.",
+      "primary_outcome": "Reduce unnecessary workflow and approval friction without weakening mandatory high-risk controls.",
+      "in_scope": [
+        "Deterministic request-lane admission",
+        "Context-based role and gate derivation",
+        "Delivery-ready and closeout approval bundles",
+        "Interaction telemetry",
+        "Policy, validator, documentation, and runtime parity"
+      ],
+      "out_of_scope": [
+        "AI self-approval",
+        "Downgrading public-contract, migration, security, regulated, or release controls",
+        "Bounded signer-session or passphrase caching",
+        "CHANGE-005 and diagram-design adapter WIP",
+        "Changing the immutable v2.6.1 tag or artifact"
+      ],
+      "planning_track": "enterprise",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "full",
+      "sdd_reasons": [],
+      "sdd_preset": "full",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/arch-role-skills-release",
+        "work-items/integrate-design-checklists-into-sa-ta",
+        "work-items/architecture-role-skills"
+      ],
+      "collision_notes": [
+        "The three near matches created or strengthened SA/TA; this item changes workflow admission, role applicability, and approval interaction semantics."
+      ],
+      "change_strategy": "create_new",
+      "change_id": "CR-008",
+      "change_reason": "This is a public workflow, approval, compatibility, and release-boundary change.",
+      "change_refs": [
+        "changes/CR-008"
+      ],
+      "scaffold_actions": [
+        "Scaffolded full CR-008 change package",
+        "Scaffolded enterprise workflow notes under strict governance"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "User accepted the draft direction and requested a plan",
+    "split_decision=single",
+    "delivery_context=brownfield",
+    "manual dedup review confirmed no scope collision",
+    "change_strategy=create_new",
+    "change_id=CR-008",
+    "planning_track=enterprise",
+    "governance_profile=strict",
+    "sdd_mode=none",
+    "execution_mode=agentic",
+    "CR-008 and the work item were approved by PO with valid trusted receipts",
+    "Spec, Contract, DoR, Approach and Task Plan trusted receipts are APPROVED with matching artifact digests",
+    "OQ-AG-001..003 recommendations were explicitly accepted by their corresponding human roles",
+    "Spec, Contract, and DoR were explicitly approved by BA, Developer, and BA/QC; all three trusted receipts were verified",
+    "S05 recommends a pure policy kernel, existing-runtime adapters, and an approval transaction coordinator",
+    "Developer explicitly approved the s05 Approach and its trusted receipt was verified",
+    "S06 Task Plan was aligned to the approved policy-kernel, adapter and approval-transaction boundaries",
+    "Developer explicitly approved the s06 Task Plan and its trusted receipt was verified",
+    "The work item was activated at s07 with approved write roots and no remaining authoring gate",
+    "The stored workflow_root locator was normalized from the main-worktree absolute path to a repository-relative path; all five authoring receipts remained APPROVED with digest_match=true in the dedicated worktree",
+    "GitHub-hosted Guardrails run 33636308233 passed all 10 jobs on source candidate 0125d6bbf164698fe5a0cabbc363c11018948f84",
+    "The hosted v2.6.2 .tgz SHA-256 is 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788 rather than the local QC-bound ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5; extracted content and uncompressed tar SHA-256 e82afa836616d84e5b15a97bb4c23475752cd2cb71933c6f5e4ab7b065cdd9ea are identical",
+    "Release remained blocked until QC explicitly approved the hosted artifact-binding amendment; no approval was inferred from the hosted PASS",
+    "Human QC explicitly approved the amended Technical Verification artifact binding for hosted SHA-256 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788, retaining AG-01..AG-13 and the immutable v2.6.1 rollback evidence",
+    "The local candidate SHA-256 ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5 is retained only as historical behavior/content evidence and is not authorized for Release",
+    "Release and Business Acceptance remain separate unapproved human gates",
+    "Human DevOps and QC explicitly approved Release for hosted v2.6.2 SHA-256 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788 with immutable rollback v2.6.1; the user-provided abbreviated digest uniquely matched the sole QC-bound candidate",
+    "The Release gate record does not imply execution of tag, publication, installation, merge or cleanup",
+    "PO Business Acceptance remained pending after Release approval",
+    "Human PO explicitly approved Business Acceptance for v2.6.2 after the DevOps/QC Release decision",
+    "All applicable terminal human gates are approved; the finalized s08 host now awaits atomic trusted receipt sealing",
+    "No tag, publication, install, merge or cleanup action was inferred from Business Acceptance"
+  ],
+  "work_item_slug": "adaptive-governance-human-approval-ux",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "workflow_root": "work-items/adaptive-governance-human-approval-ux",
+  "current_step": "s08",
+  "granted_write_paths": [
+    "policies/codex/AGENTS.global.md",
+    "skills/orchestration",
+    "packages/workflow-bundle/scripts",
+    "packages/workflow-bundle/test",
+    "packages/workflow-bundle/bin/wfc.js",
+    "packages/workflow-bundle/runtime",
+    ".github/workflows/workflow-guardrails.yml",
+    "README.md",
+    "README.vi.md",
+    "packages/workflow-bundle/README.md",
+    "docs/workflow-bundle-quickstart.md",
+    "work-items/adaptive-governance-human-approval-ux",
+    "changes/CR-008"
+  ],
+  "change_strategy": "create_new",
+  "change_id": "CR-008",
+  "handoff_target": "linked-defect-s01",
+  "required_actions": [
+    "Complete closeout-bundle-legacy-dod-compatibility through corrected-candidate verification.",
+    "Repeat Technical Verification, DoD, Release and Business Acceptance for the corrected v2.6.2 candidate before CR-008 closeout."
+  ],
+  "blockers": [
+    "F-AG08-001: legacy product closeout omitted mandatory DoD and recorded a partial closeout bundle as successful."
+  ],
+  "refs": [
+    "changes/CR-008",
+    "work-items/adaptive-governance-human-approval-ux",
+    "work-items/arch-role-skills-release",
+    "work-items/integrate-design-checklists-into-sa-ta",
+    "work-items/architecture-role-skills",
+    "work-items/closeout-bundle-legacy-dod-compatibility"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "CHANGE_CREATED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "PLAN_DRAFTED",
+    "WORK_ITEM_APPROVED",
+    "OPEN_QUESTIONS_RESOLVED",
+    "S04_GATES_APPROVED",
+    "S05_APPROACH_PROPOSED",
+    "S05_APPROACH_REVIEWED",
+    "APPROACH_GATE_APPROVED",
+    "S06_TASK_PLAN_PROPOSED",
+    "S06_TASK_PLAN_REVIEWED",
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED",
+    "HOSTED_GUARDRAILS_PASSED",
+    "HOSTED_ARTIFACT_DIGEST_MISMATCH_RECORDED",
+    "QC_ARTIFACT_REBIND_PENDING",
+    "HOSTED_ARTIFACT_BINDING_APPROVED",
+    "RELEASE_APPROVED",
+    "BUSINESS_ACCEPTANCE_APPROVED",
+    "S08_FINALIZED_FOR_CLOSEOUT",
+    "CLOSEOUT_BUNDLE_APPROVED",
+    "AG08_CLOSEOUT_COMPATIBILITY_FINDING_RECORDED",
+    "LINKED_DEFECT_CREATED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-08-28T13:15:42.373Z",
+  "review_notes": [
+    "Human review approved."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-08-28T10:43:39.273Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial candidate proposed; automated dedup requested manual review."
+    },
+    {
+      "timestamp": "2026-08-28T10:46:00Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Manual dedup review confirmed a separate adaptive-governance boundary; draft CR and workflow artifacts were scaffolded with all human-controlled approvals pending."
+    },
+    {
+      "timestamp": "2026-08-28T13:15:42.374Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-08-28T13:19:22Z",
+      "action": "authoring-handoff",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "s01 clarification completed and handed off to s02; authoring gates remain pending."
+    },
+    {
+      "timestamp": "2026-08-28T13:55:05Z",
+      "action": "authoring-handoff",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "s02 Business Goal completed and handed off to s03; KPI targets, compatibility window, and telemetry policy require owned resolution."
+    },
+    {
+      "timestamp": "2026-08-28T14:12:35Z",
+      "action": "authoring-handoff",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "OQ-AG-001..003 were accepted by their corresponding human roles; s03 is READY and handed off to s04 authoring."
+    },
+    {
+      "timestamp": "2026-08-28T14:19:37Z",
+      "action": "step-ready-for-review",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "s04 Acceptance, Contract, strict governance checks, and DoR evidence are ready for their independent human gate reviews."
+    },
+    {
+      "timestamp": "2026-08-28T14:23:15Z",
+      "action": "gate-review-recorded",
+      "actor": "human",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Spec was approved as BA, Contract as Developer, and DoR jointly as BA/QC; finalized s04 now awaits trusted receipt sealing."
+    },
+    {
+      "timestamp": "2026-08-28T14:36:14Z",
+      "action": "authoring-handoff",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Spec, Contract and DoR receipts were verified with matching digests; s05 Technical Approach is proposed for Developer review."
+    },
+    {
+      "timestamp": "2026-08-28T14:50:08Z",
+      "action": "gate-review-recorded",
+      "actor": "human",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Developer approved the s05 Technical Approach; the finalized host artifact awaits trusted receipt sealing."
+    },
+    {
+      "timestamp": "2026-08-28T14:54:09Z",
+      "action": "authoring-handoff",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Approach receipt was verified with a matching digest; s06 Task Plan is aligned and proposed for Developer review."
+    },
+    {
+      "timestamp": "2026-08-28T15:08:10Z",
+      "action": "gate-review-recorded",
+      "actor": "human",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Developer approved the finalized s06 Task Plan; the host artifact now awaits trusted receipt sealing."
+    },
+    {
+      "timestamp": "2026-08-28T15:12:45.737Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "All required trusted authoring receipts are approved and digest-matched; activate CR-008 implementation under the approved enterprise plan."
+    },
+    {
+      "timestamp": "2026-09-02T06:33:42.936Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Human QC approved Technical Verification and technical DoD against AG-01..AG-13 and exact candidate/rollback evidence; the workflow_root locator was normalized without receipt digest drift; Release and Business Acceptance remain pending."
+    },
+    {
+      "timestamp": "2026-09-03T01:15:17Z",
+      "action": "record-hosted-evidence",
+      "actor": "agent",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Hosted Guardrails passed all 10 jobs, but the hosted compressed artifact digest differs from the local digest in the original QC evidence binding. Extracted content is identical. Release is blocked pending an explicit QC artifact-binding amendment; no human approval was inferred."
+    },
+    {
+      "timestamp": "2026-09-03T01:53:52Z",
+      "action": "technical-verification-amendment-approved",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Human QC approved the hosted artifact-binding amendment for SHA-256 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788 while retaining AG-01..AG-13 and immutable v2.6.1 rollback evidence. Release and Business Acceptance remain pending."
+    },
+    {
+      "timestamp": "2026-09-03T06:20:42Z",
+      "action": "release-approved",
+      "actor": "human",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Human DevOps and QC approved Release for the QC-bound hosted v2.6.2 SHA-256 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788 with immutable v2.6.1 rollback. PO Business Acceptance remains pending; no external publication action was inferred."
+    },
+    {
+      "timestamp": "2026-09-03T06:53:55Z",
+      "action": "business-acceptance-approved",
+      "actor": "po",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Human PO approved Business Acceptance for v2.6.2 after the DevOps/QC Release decision. Every applicable terminal gate is now human-approved; the finalized s08 host awaits atomic receipt sealing. No external publication action was inferred."
+    },
+    {
+      "timestamp": "2026-09-03T07:06:55.732Z",
+      "action": "approve-closeout-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "APPROVED closeout gates: release, business_acceptance"
+    },
+    {
+      "timestamp": "2026-09-03T07:30:43.021Z",
+      "action": "record-ag08-finding",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "QC recorded F-AG08-001 after the real legacy closeout bundle omitted mandatory DoD and reconciled only Release plus Business Acceptance. The user approved linked defect closeout-bundle-legacy-dod-compatibility; CR-008 release closeout is held pending a corrected candidate and repeated terminal approvals."
+    }
+  ]
+}

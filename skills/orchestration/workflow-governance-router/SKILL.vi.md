@@ -83,6 +83,18 @@ Xác định task là:
 
 Nếu là `non-workflow task`, nêu rõ lý do rồi xử lý theo flow phù hợp.
 
+Trước khi chọn một trong hai nhóm trên, router phải trả về đúng một `request_lane`:
+
+- `qa|translation|summarization|research|documentation|read_only_analysis`
+- `maintenance`
+- `product_delivery`
+
+Nhóm đầu dừng trước khi ghi bất kỳ artifact delivery nào. Nếu human muốn materialize một yêu cầu thuộc nhóm này, quyết định phải ghi đủ actor, lý do và timestamp UTC; override này chỉ mở quyền materialize, không phê duyệt gate. Các hard trigger `public_contract|migration|security_sensitive|regulated|greenfield_foundation|release` và mixed intent không rõ ràng luôn đẩy request lên `product_delivery`; inference hoặc preset thông thường không được hạ mức.
+
+Hard trigger phải là input có cấu trúc. Không suy ra public contract, migration, security change hoặc release chỉ từ một keyword mơ hồ; nếu boolean của trigger không hợp lệ thì reject, không âm thầm đổi thành false.
+
+Contract chuẩn về lane, trigger, role/gate và reason code nằm tại `../codex-workflow-chain/references/adaptive-planning.md`. Adaptive writer phải tắt nếu minor version giữa source và runtime không khớp hoặc parity chưa pass.
+
 ### Bước 2: Xác Định Delivery Context
 
 Chốt một trong hai giá trị:
@@ -153,6 +165,8 @@ Sau khi chốt current step, route sang skill nhỏ nhất đủ đúng:
 - `s08`: ưu tiên `testing`, `definition-of-done-gate`, và các skill review/scan phù hợp
 
 Không được invoke skill implement nếu current step chưa mở tới `s07`.
+
+Phải xét applicability trước khi route role: không gọi role skill hoặc yêu cầu signoff chỉ vì role đó có trong catalog chung. Mỗi role và gate được chọn phải có reason code xác định; mục bị bỏ qua hoặc `not_applicable` không tạo action.
 
 ## Mẫu Báo Cáo Bắt Buộc
 

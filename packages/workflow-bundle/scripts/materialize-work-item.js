@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const workflowBundlePackage = require("../package.json");
 const {
   ensureDirectory,
   formatErrors,
@@ -30,6 +31,11 @@ const {
 } = require("./workflow-trusted-approval-utils");
 const { scaffoldWorkflowNotes } = require("./scaffold-workflow");
 const { scaffoldChangePackage } = require("./scaffold-change-package");
+const {
+  REQUEST_LANES,
+  canActivateAdaptiveWrites,
+  evaluateAdaptiveGovernance
+} = require("./workflow-adaptive-governance");
 const {
   buildProtocolEvent,
   getDefaultApprovalState,
@@ -233,6 +239,13 @@ function normalizeSingleValue(value) {
   }
 
   return value;
+}
+
+function normalizeAdaptiveBoolean(value, fieldName) {
+  const normalized = normalizeSingleValue(value);
+  if (normalized === true || normalized === "true") return true;
+  if (normalized === false || normalized === "false" || normalized == null || normalized === "") return false;
+  throw new Error(`Invalid ${fieldName} '${normalized}'. Allowed values: true, false`);
 }
 
 function validateChoice(name, value, allowedValues) {
@@ -795,6 +808,19 @@ function buildPostMaterializationActions(report, item) {
     actions.push(`wfc change-item approve --change-id ${item.change_id} --reviewed-by <role>`);
   }
   actions.push(`wfc work-item approve --work-item ${item.work_item_slug} --reviewed-by <role>`);
+  if (report.artifact_shape === "adaptive_v1") {
+    const readinessGates = new Set(["spec", "contract", "dor", "approach", "foundation", "task_plan"]);
+    report.gates
+      .filter((entry) => readinessGates.has(entry.gate))
+      .forEach((entry) => {
+        actions.push(
+          `wfc gate approve --work-item ${item.work_item_slug} --gate ${entry.gate} ` +
+            `--reviewed-by ${entry.reviewer_roles[0]}`
+        );
+      });
+    actions.push(`wfc work-item activate --work-item ${item.work_item_slug} --step s07 --write-root <path>`);
+    return actions;
+  }
   // Light compact: seal 4 authoring gates trong một batch (reviewer đọc từ
   // gate_reviews). Non-light: 4 gate approve riêng lẽ như cũ.
   if (item.sdd_mode === "light") {
@@ -1239,6 +1265,9 @@ function materializeWorkItem(options) {
 
   const explicitSpecImpactClassified = normalizeSingleValue(args["spec-impact-classified"] || "");
 
+  const explicitRequestLane = normalizeSingleValue(args["request-lane"] || "product_delivery");
+  validateChoice("request-lane", explicitRequestLane, REQUEST_LANES);
+
   const decisionOwner = normalizeSingleValue(args["decision-owner"] || "agent");
   validateChoice("decision-owner", decisionOwner, DECISION_OWNERS);
   if (args["bootstrap-ref"] || args["bootstrap-reviewed-by"] || args["bootstrap-reviewed-at"]) {
@@ -1251,6 +1280,79 @@ function materializeWorkItem(options) {
   const workflowRootBase = path.resolve(
     normalizeSingleValue(args["workflow-root"] || path.join(projectRoot, "work-items"))
   );
+
+  const admissionDeliveryContext = inferDeliveryContext(projectRoot, explicitDeliveryContext);
+  const adaptiveWritesEnabled = normalizeAdaptiveBoolean(args["adaptive-writes"], "adaptive-writes");
+  const adaptiveDecision = adaptiveWritesEnabled
+    ? evaluateAdaptiveGovernance({
+        request_lane: explicitRequestLane,
+        requested_lane: explicitRequestLane,
+        delivery_context: admissionDeliveryContext,
+        planning_track: explicitPlanningTrack || "full",
+        explicit_materialization: args["explicit-materialization"],
+        mixed_intent: args["mixed-intent"],
+        override_actor: normalizeSingleValue(args["override-actor"] || ""),
+        override_reason: normalizeSingleValue(args["override-reason"] || ""),
+        override_at: normalizeSingleValue(args["override-at"] || ""),
+        triggers: {
+          public_contract: args["public-contract"],
+          migration: args.migration,
+          security_sensitive: args["security-sensitive"],
+          regulated: args.regulated || explicitGovernanceProfile === "regulated",
+          greenfield_foundation:
+            args["greenfield-foundation"] || admissionDeliveryContext === "greenfield",
+          release: args.release
+        }
+      })
+    : null;
+
+  if (adaptiveDecision && !adaptiveDecision.workflow_required) {
+    return {
+      report: {
+        materialization_status: "NOT_APPLICABLE",
+        protocol_status: "NOT_APPLICABLE",
+        raw_request_summary: request.trim(),
+        request_source: normalizeSingleValue(args["request-source"] || "user"),
+        candidate_count: 0,
+        work_items: [],
+        required_actions: [],
+        blockers: [],
+        refs: [],
+        audit_events: ["REQUEST_CAPTURED", "NON_DELIVERY_SHORT_CIRCUIT"],
+        handoff_target: "non-delivery-handler",
+        ...adaptiveDecision
+      },
+      reportPath: "",
+      telemetryPath: ""
+    };
+  }
+
+  let adaptiveActivation = null;
+  if (adaptiveWritesEnabled) {
+    const sourceVersion = normalizeSingleValue(args["adaptive-source-version"] || "");
+    const installedVersions = Array.isArray(args["adaptive-installed-version"])
+      ? args["adaptive-installed-version"].map(String)
+      : args["adaptive-installed-version"]
+        ? [String(args["adaptive-installed-version"])]
+        : [];
+    const parityPassed = normalizeAdaptiveBoolean(args["adaptive-parity-passed"], "adaptive-parity-passed");
+    const activation = canActivateAdaptiveWrites({
+      source_version: sourceVersion,
+      installed_versions: installedVersions,
+      parity_passed: parityPassed
+    });
+    if (!activation.allowed) {
+      throw new Error(
+        `Adaptive artifact writes are blocked: ${activation.reasons.join(", ")}. ` +
+          "No adaptive report, scaffold, capability, or telemetry write was attempted."
+      );
+    }
+    adaptiveActivation = {
+      source_version: sourceVersion,
+      installed_versions: installedVersions,
+      parity_passed: parityPassed
+    };
+  }
 
   const autoScaffold = Boolean(args["auto-scaffold"]);
   const report = analyzeRequest({
@@ -1275,8 +1377,56 @@ function materializeWorkItem(options) {
     projectRoot,
     workflowRootBase
   });
-
   const item = report.work_items[0];
+  if (adaptiveWritesEnabled) {
+    Object.assign(report, {
+      artifact_shape: "adaptive_v1",
+      ...adaptiveDecision,
+      adaptive_activation: adaptiveActivation
+    });
+    item.scaffold_actions = item.scaffold_actions.map((action) => {
+      if (!action.includes("scaffold:workflow")) {
+        return action;
+      }
+      const activationArgs = adaptiveActivation.installed_versions
+        .map((version) => `--adaptive-installed-version ${version}`)
+        .join(" ");
+      const decisionArgs = [
+        ["public-contract", args["public-contract"]],
+        ["migration", args.migration],
+        ["security-sensitive", args["security-sensitive"]],
+        ["regulated", args.regulated],
+        ["greenfield-foundation", args["greenfield-foundation"]],
+        ["release", args.release],
+        ["mixed-intent", args["mixed-intent"]]
+      ]
+        .filter(([, value]) => value === true || value === "true")
+        .map(([name]) => `--${name} true`);
+      if (args["explicit-materialization"] === true || args["explicit-materialization"] === "true") {
+        decisionArgs.push(
+          "--explicit-materialization true",
+          `--override-actor ${JSON.stringify(normalizeSingleValue(args["override-actor"] || ""))}`,
+          `--override-reason ${JSON.stringify(normalizeSingleValue(args["override-reason"] || ""))}`,
+          `--override-at ${JSON.stringify(normalizeSingleValue(args["override-at"] || ""))}`
+        );
+      }
+      return [
+        action,
+        "--adaptive-writes true",
+        `--request-lane ${explicitRequestLane}`,
+        `--adaptive-source-version ${adaptiveActivation.source_version}`,
+        activationArgs,
+        "--adaptive-parity-passed true",
+        ...decisionArgs
+      ]
+        .filter(Boolean)
+        .join(" ");
+    });
+    if (report.materialization_status === "READY") {
+      report.required_actions = [...item.scaffold_actions];
+    }
+  }
+
   const outputArg = normalizeSingleValue(args.output || "");
   let reportPath = outputArg ? path.resolve(projectRoot, outputArg) : "";
 
@@ -1319,6 +1469,31 @@ function materializeWorkItem(options) {
         "sdd-mode": item.sdd_mode,
         "project-root": projectRoot,
         "workflow-root": workflowRoot,
+        ...(adaptiveWritesEnabled
+          ? {
+              "adaptive-writes": "true",
+              "request-lane": explicitRequestLane,
+              "adaptive-source-version": adaptiveActivation.source_version,
+              "adaptive-installed-version": adaptiveActivation.installed_versions,
+              "adaptive-parity-passed": String(adaptiveActivation.parity_passed),
+              ...(args["public-contract"] !== undefined ? { "public-contract": args["public-contract"] } : {}),
+              ...(args.migration !== undefined ? { migration: args.migration } : {}),
+              ...(args["security-sensitive"] !== undefined
+                ? { "security-sensitive": args["security-sensitive"] }
+                : {}),
+              ...(args.regulated !== undefined ? { regulated: args.regulated } : {}),
+              ...(args["greenfield-foundation"] !== undefined
+                ? { "greenfield-foundation": args["greenfield-foundation"] }
+                : {}),
+              ...(args.release !== undefined ? { release: args.release } : {}),
+              ...(args["explicit-materialization"] !== undefined
+                ? { "explicit-materialization": args["explicit-materialization"] }
+                : {}),
+              ...(args["override-actor"] !== undefined ? { "override-actor": args["override-actor"] } : {}),
+              ...(args["override-reason"] !== undefined ? { "override-reason": args["override-reason"] } : {}),
+              ...(args["override-at"] !== undefined ? { "override-at": args["override-at"] } : {})
+            }
+          : {}),
         ...(item.change_id ? { "change-id": item.change_id } : {})
       }
     });
@@ -1365,7 +1540,20 @@ function materializeWorkItem(options) {
     recorder.recordSelectedProfile({
       selectedProfile: report.selected_profile,
       sddLightProfile: report.sdd_light_profile,
-      escalationReasons: report.sdd_reasons
+      requestLane: report.request_lane,
+      routingReasons: report.routing_reasons,
+      escalationReasons: [
+        ...(Array.isArray(report.escalation_reasons) ? report.escalation_reasons : []),
+        ...(Array.isArray(report.sdd_reasons) ? report.sdd_reasons : [])
+      ],
+      roleCount: Array.isArray(report.roles) ? report.roles.length : null,
+      gateCount: Array.isArray(report.gates) ? report.gates.length : null,
+      runtimeVersion: workflowBundlePackage.version
+    });
+    recorder.recordApprovalInteraction({
+      count: 0,
+      retryCount: 0,
+      overrideCount: report.human_override ? 1 : 0
     });
     // artifact_count: đếm .md note thực tế được scaffold (chỉ có nghĩa khi đã
     // MATERIALIZED). Chưa scaffold -> giữ null (không guess).
@@ -1377,7 +1565,11 @@ function materializeWorkItem(options) {
       });
       recorder.recordArtifactMetrics({ artifactCount: mdCount });
     }
-    const finalized = recorder.finalize();
+    const finalized = recorder.finalize({
+      outcome: String(report.protocol_status || report.materialization_status || "")
+        .trim()
+        .toLowerCase()
+    });
     telemetryPath = finalized.reportPath;
   }
 

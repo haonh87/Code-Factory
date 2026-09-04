@@ -2,6 +2,7 @@ const crypto = require("crypto");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const { execFileSync } = require("child_process");
 
 const STEP_NOTE_SLUGS = {
   s01: "restate",
@@ -120,14 +121,65 @@ function resolveTrustedApprovalRoot({ projectRoot, overrideRoot }) {
   };
 }
 
+// Every checkout of one repository must address the same receipts. The git common directory
+// is shared by the main worktree and all of its worktrees, so its parent is the main worktree
+// toplevel - a project identity that does not move with the current checkout.
+//
+// Two things this must get right, both learned the hard way:
+//   1. `git rev-parse --git-common-dir` prints a RELATIVE '.git' from the main tree and an
+//      ABSOLUTE path from a worktree. Resolving against cwd first is what makes the two agree;
+//      hashing the raw output would reproduce the very defect this fixes.
+//   2. It must never throw. A non-git directory, or a layout where the git dir is not named
+//      '.git' (git init --separate-git-dir), falls back to the projectRoot it was given, which
+//      is the behaviour every existing receipt was written under.
+function resolveCanonicalProjectRoot(projectRoot) {
+  const givenRoot = String(projectRoot || "");
+  if (!givenRoot) {
+    return givenRoot;
+  }
+
+  let commonDirOutput = "";
+  try {
+    commonDirOutput = execFileSync("git", ["rev-parse", "--git-common-dir"], {
+      cwd: givenRoot,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"]
+    }).trim();
+  } catch (_error) {
+    return givenRoot;
+  }
+
+  if (!commonDirOutput) {
+    return givenRoot;
+  }
+
+  const commonDir = path.resolve(givenRoot, commonDirOutput);
+  if (path.basename(commonDir) !== ".git") {
+    return givenRoot;
+  }
+
+  // git resolves symlinks, the caller's projectRoot may not. On macOS /var is a symlink to
+  // /private/var, so the same repository read from the main tree and from a worktree would
+  // otherwise yield two identities - the exact bug this function exists to remove, one level
+  // deeper. Normalise the git branch only; the fallback keeps returning the caller's path
+  // byte-for-byte so no existing namespace moves.
+  const canonicalRoot = path.dirname(commonDir);
+  try {
+    return fs.realpathSync(canonicalRoot);
+  } catch (_error) {
+    return canonicalRoot;
+  }
+}
+
 function buildProjectApprovalNamespace(projectRoot) {
+  const canonicalRoot = resolveCanonicalProjectRoot(projectRoot);
   const safeProjectName =
     path
-      .basename(projectRoot)
+      .basename(canonicalRoot)
       .toLowerCase()
       .replace(/[^a-z0-9-]+/g, "-")
       .replace(/^-+|-+$/g, "") || "project";
-  const projectHash = sha256(projectRoot).slice(0, 12);
+  const projectHash = sha256(canonicalRoot).slice(0, 12);
   return `${safeProjectName}-${projectHash}`;
 }
 
@@ -136,6 +188,31 @@ function getApproverKeyPaths(approvalRoot) {
     privateKeyPath: path.join(approvalRoot, PRIVATE_KEY_FILE),
     publicKeyPath: path.join(approvalRoot, PUBLIC_KEY_FILE)
   };
+}
+
+function sleepMs(ms) {
+  const sab = new SharedArrayBuffer(4);
+  const ia = new Int32Array(sab);
+  Atomics.wait(ia, 0, 0, ms);
+}
+
+function readStdinByteSync(buffer) {
+  // On some macOS + Node/libuv combinations, stdin.setRawMode(true) leaves fd 0
+  // non-blocking, so the first (or an occasional) fs.readSync call throws EAGAIN
+  // before any byte has actually arrived yet. This is not an error condition —
+  // it just means "no byte yet" — so retry with a short sleep instead of failing
+  // the whole approval prompt. See nodejs/node#35997 / #38381 for background.
+  while (true) {
+    try {
+      return fs.readSync(0, buffer, 0, 1, null);
+    } catch (err) {
+      if (err && err.code === "EAGAIN") {
+        sleepMs(15);
+        continue;
+      }
+      throw err;
+    }
+  }
 }
 
 function promptHiddenInput(promptText) {
@@ -155,7 +232,7 @@ function promptHiddenInput(promptText) {
 
   try {
     while (true) {
-      const bytesRead = fs.readSync(0, buffer, 0, 1, null);
+      const bytesRead = readStdinByteSync(buffer);
       if (bytesRead < 1) {
         break;
       }
@@ -365,14 +442,38 @@ function loadTrustedApprovalReceipt({ projectRoot, overrideRoot, kind, workItemS
     };
   }
 
+  const normalized = normalizeTrustedApprovalReceipt(JSON.parse(fs.readFileSync(receiptPath, "utf8")));
   return {
     approvalRoot,
     receiptPath,
-    receipt: JSON.parse(fs.readFileSync(receiptPath, "utf8"))
+    receipt: normalized.receipt,
+    artifactShape: normalized.artifact_shape
   };
 }
 
-function writeTrustedApprovalReceipt({
+function normalizeTrustedApprovalReceipt(receipt) {
+  if (!receipt || typeof receipt !== "object" || Array.isArray(receipt)) {
+    throw new Error("Trusted approval receipt must be a JSON object.");
+  }
+  // Early receipt fixtures predate the explicit schema_version field. They are
+  // read as v1 for deprecation compatibility, but are returned unchanged and
+  // still cannot pass signature verification unless they carry the full v1 payload.
+  const schemaVersion = receipt.schema_version == null ? 1 : Number(receipt.schema_version);
+  if (schemaVersion !== 1) {
+    throw new Error(
+      `Unsupported trusted approval receipt schema_version '${receipt.schema_version}'. ` +
+        "The adaptive runtime preserves signed receipt schema v1."
+    );
+  }
+  return {
+    artifact_shape: "legacy_receipt_v1",
+    // Do not add, delete, reorder, or normalize signed fields. Signature verification
+    // reconstructs the historical v1 payload and must see exactly the stored values.
+    receipt
+  };
+}
+
+function buildTrustedApprovalReceipt({
   projectRoot,
   overrideRoot,
   kind,
@@ -386,7 +487,8 @@ function writeTrustedApprovalReceipt({
   artifactRef,
   artifactSha256,
   approvalPassphrase,
-  resolvedPassphrase
+  resolvedPassphrase,
+  recordedAt
 }) {
   const normalizedStatus = String(approvalStatus || "").trim().toUpperCase();
   const { approvalRoot } = resolveTrustedApprovalRoot({ projectRoot, overrideRoot });
@@ -398,8 +500,6 @@ function writeTrustedApprovalReceipt({
     changeId,
     gate
   });
-
-  ensureDirectory(path.dirname(receiptPath));
 
   const payload = {
     schema_version: 1,
@@ -414,7 +514,7 @@ function writeTrustedApprovalReceipt({
     note: String(note || "").trim(),
     artifact_ref: artifactRef || "",
     artifact_sha256: artifactSha256 || "",
-    recorded_at: new Date().toISOString()
+    recorded_at: String(recordedAt || new Date().toISOString()).trim()
   };
   // resolvedPassphrase (tuỳ chọn) cho batch sealing: caller đã resolve passphrase
   // đúng rule qua resolveApprovalPassphrase, truyền thẳng để tránh prompt nhiều lần.
@@ -429,13 +529,18 @@ function writeTrustedApprovalReceipt({
     signature
   };
 
-  fs.writeFileSync(receiptPath, `${JSON.stringify(signedPayload, null, 2)}\n`, "utf8");
-
   return {
     approvalRoot,
     receiptPath,
     receipt: signedPayload
   };
+}
+
+function writeTrustedApprovalReceipt(options) {
+  const result = buildTrustedApprovalReceipt(options);
+  ensureDirectory(path.dirname(result.receiptPath));
+  fs.writeFileSync(result.receiptPath, `${JSON.stringify(result.receipt, null, 2)}\n`, "utf8");
+  return result;
 }
 
 function hasApprovedReceipt(receipt, approvalRoot = "") {
@@ -450,7 +555,10 @@ function hasApprovedReceipt(receipt, approvalRoot = "") {
 module.exports = {
   APPROVED_RECEIPT_STATUSES,
   GATE_TO_STEP_ID,
+  buildTrustedApprovalReceipt,
+  buildProjectApprovalNamespace,
   buildReceiptPath,
+  resolveCanonicalProjectRoot,
   ensureApproverKeyPair,
   getGateStepId,
   getApproverKeyPaths,
@@ -458,7 +566,10 @@ module.exports = {
   hasApprovedReceipt,
   isTrustedReceiptSignatureValid,
   loadTrustedApprovalReceipt,
+  normalizeTrustedApprovalReceipt,
   normalizeProjectRelativePath,
+  readFileSha256,
+  readStdinByteSync,
   resolveApprovalPassphrase,
   resolveGateArtifact,
   resolveTrustedApprovalRoot,

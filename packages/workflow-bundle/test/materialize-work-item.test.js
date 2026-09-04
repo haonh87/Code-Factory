@@ -3,8 +3,14 @@ const os = require("os");
 const path = require("path");
 const { materializeWorkItem } = require("../scripts/materialize-work-item");
 const { SDD_LIGHT_PROFILE } = require("../scripts/workflow-sdd-definitions");
+const { validateWorkItemProtocol } = require("../scripts/validate-work-item-protocol");
 
 let failures = 0;
+const ADAPTIVE_ACTIVATION_ARGS = {
+  "adaptive-source-version": "2.6.1",
+  "adaptive-installed-version": ["2.6.4", "2.6.0"],
+  "adaptive-parity-passed": "true"
+};
 
 function assert(condition, message) {
   if (!condition) {
@@ -47,6 +53,328 @@ function runMaterialize(projectRoot, extraArgs) {
     }
   });
   return result.report;
+}
+
+// ---------- CR-008 T2: adaptive admission must precede every delivery write ----------
+
+function testNonDeliveryLaneShortCircuitsBeforeWrites() {
+  const projectRoot = buildProject();
+  try {
+    const workflowRootBase = path.join(projectRoot, "work-items");
+    const reportPath = path.join(projectRoot, "research-report.json");
+    const result = materializeWorkItem({
+      args: {
+        request: "research current workflow friction",
+        "request-lane": "research",
+        "adaptive-writes": "true",
+        "delivery-context": "brownfield",
+        "project-root": projectRoot,
+        "workflow-root": workflowRootBase,
+        output: "research-report.json",
+        "auto-scaffold": "true"
+      }
+    });
+
+    assert(result.report.request_lane === "research", "non-delivery decision must preserve the research lane");
+    assert(result.report.workflow_required === false, "research must not require the delivery workflow");
+    assert(result.report.materialization_status === "NOT_APPLICABLE", "research must stop at NOT_APPLICABLE");
+    assert(result.report.work_items.length === 0, "research must create no work-item candidate");
+    assert(result.reportPath === "", "research must not return a delivery report path");
+    assert(!fs.existsSync(reportPath), "research must not write the requested delivery report");
+    assert(fs.readdirSync(workflowRootBase).length === 0, "research must create zero workflow artifacts");
+    console.log("  PASS: non-delivery lane short-circuits before report, scaffold, and capability writes");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
+function testNonDeliveryTextDoesNotInventHardTrigger() {
+  const projectRoot = buildProject();
+  try {
+    const workflowRootBase = path.join(projectRoot, "work-items");
+    const plainDocumentation = materializeWorkItem({
+      args: {
+        request: "document the local adapter contract",
+        "request-lane": "documentation",
+        "adaptive-writes": "true",
+        "delivery-context": "brownfield",
+        "project-root": projectRoot,
+        "workflow-root": workflowRootBase
+      }
+    }).report;
+    const explicitPublicContract = materializeWorkItem({
+      args: {
+        request: "document the public API contract change",
+        "request-lane": "documentation",
+        "adaptive-writes": "true",
+        "delivery-context": "brownfield",
+        "public-contract": "true",
+        ...ADAPTIVE_ACTIVATION_ARGS,
+        "project-root": projectRoot,
+        "workflow-root": workflowRootBase
+      }
+    }).report;
+
+    assert(
+      plainDocumentation.request_lane === "documentation" && plainDocumentation.workflow_required === false,
+      "plain documentation text must not invent a public-contract hard trigger"
+    );
+    assert(
+      explicitPublicContract.request_lane === "product_delivery" && explicitPublicContract.workflow_required === true,
+      "structured public-contract signal must escalate to product_delivery"
+    );
+    assert(
+      explicitPublicContract.escalation_reasons.includes("HARD_PUBLIC_CONTRACT"),
+      "structured public-contract escalation must retain its reason"
+    );
+    console.log("  PASS: ambiguous text stays non-delivery while a structured hard trigger escalates");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
+function testAdaptiveBooleanFlagsRejectTypos() {
+  const projectRoot = buildProject();
+  try {
+    let threw = false;
+    let message = "";
+    try {
+      materializeWorkItem({
+        args: {
+          request: "document the public API behavior",
+          "request-lane": "documentation",
+          "adaptive-writes": "true",
+          "delivery-context": "brownfield",
+          "public-contract": "treu",
+          "project-root": projectRoot,
+          "workflow-root": path.join(projectRoot, "work-items")
+        }
+      });
+    } catch (error) {
+      threw = true;
+      message = error.message;
+    }
+
+    assert(threw, "misspelled hard-trigger boolean must fail closed");
+    assert(
+      /triggers\.public_contract/.test(message) && /true, false/.test(message),
+      `failure must name the structured flag and allowed values, got: ${message}`
+    );
+    console.log("  PASS: adaptive boolean typo fails closed instead of downgrading risk");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
+function testNonDeliveryMaterializationRequiresAuditedHumanOverride() {
+  const projectRoot = buildProject();
+  try {
+    let threw = false;
+    let message = "";
+    try {
+      materializeWorkItem({
+        args: {
+          request: "document the local adapter behavior",
+          "request-lane": "documentation",
+          "adaptive-writes": "true",
+          "delivery-context": "brownfield",
+          "explicit-materialization": "true",
+          "project-root": projectRoot,
+          "workflow-root": path.join(projectRoot, "work-items"),
+          "auto-scaffold": "true"
+        }
+      });
+    } catch (error) {
+      threw = true;
+      message = error.message;
+    }
+
+    assert(threw, "non-delivery materialization without audit fields must fail closed");
+    assert(/override-actor/.test(message), `failure must name the missing human override audit field, got: ${message}`);
+    assert(fs.readdirSync(path.join(projectRoot, "work-items")).length === 0, "failed override must leave zero workflow artifacts");
+    console.log("  PASS: incomplete non-delivery human override fails closed before writes");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
+function testNonDeliveryOverrideRejectsImpossibleTimestamp() {
+  const projectRoot = buildProject();
+  try {
+    let threw = false;
+    let message = "";
+    try {
+      materializeWorkItem({
+        args: {
+          request: "document the local adapter behavior",
+          "request-lane": "documentation",
+          "adaptive-writes": "true",
+          "delivery-context": "brownfield",
+          "explicit-materialization": "true",
+          "override-actor": "human:maintainer",
+          "override-reason": "Keep a durable decision record",
+          "override-at": "2026-02-30T04:03:55Z",
+          "project-root": projectRoot,
+          "workflow-root": path.join(projectRoot, "work-items")
+        }
+      });
+    } catch (error) {
+      threw = true;
+      message = error.message;
+    }
+
+    assert(threw, "impossible override timestamp must fail closed");
+    assert(/override-at/.test(message), `timestamp failure must name override-at, got: ${message}`);
+    console.log("  PASS: impossible human-override timestamp fails closed");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
+function testAuditedHumanOverrideOpensNonDeliveryMaterialization() {
+  const projectRoot = buildProject();
+  try {
+    const result = materializeWorkItem({
+      args: {
+        request: "document the local adapter behavior",
+        "request-lane": "documentation",
+        "adaptive-writes": "true",
+        "delivery-context": "brownfield",
+        "explicit-materialization": "true",
+        "override-actor": "human:maintainer",
+        "override-reason": "Keep a durable implementation decision record",
+        "override-at": "2026-08-29T04:03:55Z",
+        ...ADAPTIVE_ACTIVATION_ARGS,
+        "project-root": projectRoot,
+        "workflow-root": path.join(projectRoot, "work-items")
+      }
+    });
+
+    assert(result.report.request_lane === "documentation", "override must preserve the classified lane");
+    assert(result.report.workflow_required === true, "complete human override must enable materialization");
+    assert(
+      Array.isArray(result.report.routing_reasons) &&
+        result.report.routing_reasons.includes("HUMAN_MATERIALIZATION_OVERRIDE"),
+      "override decision must carry HUMAN_MATERIALIZATION_OVERRIDE"
+    );
+    assert(
+      result.report.human_override && result.report.human_override.actor === "human:maintainer",
+      "override actor must be recorded"
+    );
+    assert(
+      result.report.human_override && result.report.human_override.reason.length > 0,
+      "override reason must be recorded"
+    );
+    assert(
+      result.report.human_override && result.report.human_override.at === "2026-08-29T04:03:55Z",
+      "override timestamp must be recorded"
+    );
+    console.log("  PASS: complete human override opens materialization and remains auditable");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
+function testAdaptiveMaterializeSkewFailsBeforeEveryWrite() {
+  const projectRoot = buildProject();
+  const reportPath = path.join(projectRoot, "adaptive-skew-report.json");
+  let message = "";
+  try {
+    try {
+      materializeWorkItem({
+        args: {
+          request: "change a bounded maintenance rule",
+          "request-lane": "maintenance",
+          "adaptive-writes": "true",
+          "delivery-context": "brownfield",
+          "project-root": projectRoot,
+          "workflow-root": path.join(projectRoot, "work-items"),
+          output: "adaptive-skew-report.json",
+          "auto-scaffold": "true",
+          "adaptive-source-version": "2.6.1",
+          "adaptive-installed-version": ["2.6.3", "2.5.9"],
+          "adaptive-parity-passed": "true"
+        }
+      });
+    } catch (error) {
+      message = error.message;
+    }
+    assert(/ADAPTIVE_RUNTIME_MINOR_SKEW/.test(message), `skew must fail closed, got: ${message}`);
+    assert(!fs.existsSync(reportPath), "skew must write no report");
+    assert(fs.readdirSync(path.join(projectRoot, "work-items")).length === 0, "skew must write no workflow artifacts");
+    console.log("  PASS: adaptive materializer version skew fails before all delivery writes");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
+function testAdaptiveMaintenanceAutoScaffoldKeepsAdapterParity() {
+  const projectRoot = buildProject();
+  const slug = "adaptive-maintenance-flow";
+  try {
+    const result = materializeWorkItem({
+      args: {
+        request: "change a bounded maintenance rule",
+        "work-item": slug,
+        "work-item-type": "CHANGE",
+        "request-lane": "maintenance",
+        "adaptive-writes": "true",
+        ...ADAPTIVE_ACTIVATION_ARGS,
+        "planning-track": "full",
+        "delivery-context": "brownfield",
+        "change-strategy": "none",
+        "project-root": projectRoot,
+        "workflow-root": path.join(projectRoot, "work-items"),
+        "auto-scaffold": "true"
+      }
+    });
+    assert(result.report.artifact_shape === "adaptive_v1", "adaptive report must declare adaptive_v1");
+    assert(result.report.protocol_status === "MATERIALIZED", "adaptive auto-scaffold must reach MATERIALIZED");
+    assert(result.report.roles.map((entry) => entry.role).join(",") === "developer,qc", "report roles must match kernel");
+    assert(result.report.gates.map((entry) => entry.gate).join(",") === "task_plan,dod", "report gates must match kernel");
+    assert(
+      result.report.required_actions.some((action) => /--gate task_plan --reviewed-by developer/.test(action)),
+      "maintenance actions must request only the applicable readiness gate"
+    );
+    assert(
+      !result.report.required_actions.some((action) => /--gate (?:spec|dor|approach)/.test(action)),
+      `not_applicable readiness gates must create zero action, got ${JSON.stringify(result.report.required_actions)}`
+    );
+    const s01 = fs.readFileSync(
+      path.join(projectRoot, "work-items", slug, `${slug}.s01.restate.md`),
+      "utf8"
+    );
+    assert(/artifact_shape: adaptive_v1/.test(s01), "s01 frontmatter/protocol must carry adaptive shape");
+    assert(/request_lane: maintenance/.test(s01), "s01 frontmatter/protocol must carry maintenance lane");
+    const validated = validateWorkItemProtocol({
+      args: { "project-root": projectRoot, "workflow-root": path.join(projectRoot, "work-items") }
+    });
+    assert(validated.validatedCount === 1, "adaptive report/protocol adapter pair must validate together");
+    console.log("  PASS: adaptive materialize/scaffold/protocol adapters preserve one kernel decision");
+  } finally {
+    rmrf(projectRoot);
+  }
+}
+
+function testAdaptiveWriterFlagOffKeepsLegacyShape() {
+  const projectRoot = buildProject();
+  try {
+    const result = materializeWorkItem({
+      args: {
+        request: "change a bounded maintenance rule",
+        "request-lane": "maintenance",
+        "adaptive-writes": "false",
+        "delivery-context": "brownfield",
+        "project-root": projectRoot,
+        "workflow-root": path.join(projectRoot, "work-items")
+      }
+    });
+    assert(!Object.prototype.hasOwnProperty.call(result.report, "artifact_shape"), "flag off must keep legacy report shape");
+    assert(!Object.prototype.hasOwnProperty.call(result.report, "request_lane"), "flag off must not partially write adaptive routing fields");
+    console.log("  PASS: one activation flag restores the legacy writer shape");
+  } finally {
+    rmrf(projectRoot);
+  }
 }
 
 // ---------- Output 1: preset passthrough + selected-profile result ----------
@@ -285,6 +613,15 @@ function testSpecImpactClassifiedStrictParse() {
 }
 
 console.log("Running materialize-work-item (Light routing) tests...\n");
+testNonDeliveryLaneShortCircuitsBeforeWrites();
+testNonDeliveryTextDoesNotInventHardTrigger();
+testAdaptiveBooleanFlagsRejectTypos();
+testNonDeliveryMaterializationRequiresAuditedHumanOverride();
+testNonDeliveryOverrideRejectsImpossibleTimestamp();
+testAuditedHumanOverrideOpensNonDeliveryMaterialization();
+testAdaptiveMaterializeSkewFailsBeforeEveryWrite();
+testAdaptiveMaintenanceAutoScaffoldKeepsAdapterParity();
+testAdaptiveWriterFlagOffKeepsLegacyShape();
 testLightEligibleSelectsLightProfile();
 testPresetFullShortCircuitsToFull();
 testGreenfieldEscalatesWithReason();
@@ -394,10 +731,17 @@ testSddLightProfileInvalidThrows();
 function testMaterializeEmitsTelemetryWhenOptIn() {
   const projectRoot = buildProject();
   const telemetryDir = fs.mkdtempSync(path.join(os.tmpdir(), "mat-telemetry-"));
+  const privateSlug = "telemetry-private-work-item";
+  const privateRequest = "change a bounded maintenance rule with private context";
   try {
     const result = materializeWorkItem({
       args: {
-        request: "add export button",
+        request: privateRequest,
+        "work-item": privateSlug,
+        "work-item-type": "CHANGE",
+        "request-lane": "maintenance",
+        "adaptive-writes": "true",
+        ...ADAPTIVE_ACTIVATION_ARGS,
         "project-root": projectRoot,
         "workflow-root": path.join(projectRoot, "work-items"),
         "planning-track": "quick",
@@ -412,10 +756,18 @@ function testMaterializeEmitsTelemetryWhenOptIn() {
     assert(fs.existsSync(result.telemetryPath), `telemetry report file exists, got ${result.telemetryPath}`);
     assert(!result.telemetryPath.includes(path.join("work-items")), "telemetry out-of-band (not under work-items/)");
     const tel = JSON.parse(fs.readFileSync(result.telemetryPath, "utf8"));
+    const serialized = JSON.stringify(tel);
+    assert(tel.schema_version === 2, `telemetry uses privacy schema v2, got ${tel.schema_version}`);
+    assert(tel.event_type === "materialize", `telemetry identifies lifecycle event, got ${tel.event_type}`);
+    assert(tel.runtime_version === "2.6.2", `telemetry carries bounded runtime version, got ${tel.runtime_version}`);
+    assert(tel.request_lane === "maintenance", `telemetry carries lane, got ${tel.request_lane}`);
     assert(tel.selected_profile === SDD_LIGHT_PROFILE, `telemetry carries selected_profile, got ${tel.selected_profile}`);
     assert(tel.sdd_light_profile === "preview", "telemetry carries sdd_light_profile default preview");
+    assert(tel.role_count === 2 && tel.gate_count === 2, `telemetry carries only role/gate counts, got ${tel.role_count}/${tel.gate_count}`);
     assert(typeof tel.artifact_count === "number" && tel.artifact_count > 0, `telemetry carries artifact_count>0 when auto-scaffold ran, got ${tel.artifact_count}`);
-    console.log("  PASS: materialize emits opt-in out-of-band telemetry with profile + artifact count");
+    assert(/^wi_[a-f0-9]{24}$/.test(tel.work_item_id), "telemetry carries only pseudonymous work-item id");
+    assert(!serialized.includes(privateSlug) && !serialized.includes(privateRequest), "materialize adapter persists no slug or raw request");
+    console.log("  PASS: materialize emits privacy-bounded opt-in lifecycle telemetry");
   } finally {
     rmrf(projectRoot);
   }

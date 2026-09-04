@@ -73,6 +73,15 @@ Tuân thủ workflow delivery 8 bước cho các tác vụ coding.
 - Nếu work item dùng `planning_track` khác mặc định hoặc muốn khóa routing rule, chạy thêm `wfc plan --workflow-root work-items`. Nếu repo đã map root script thì `npm run validate:workflow:planning -- --workflow-root work-items` là alias tương đương.
 - `work-items/` là canonical artifact root cho workflow artifacts thật; nếu không có chỉ định khác, workflow note được scaffold nên nằm dưới `work-items/<work_item_slug>/`.
 
+## Quy Tắc Cứng: Adaptive Admission Và Applicability
+
+- Phân loại request trước khi mở workflow delivery 8 bước. Tám lane chuẩn là `qa`, `translation`, `summarization`, `research`, `documentation`, `read_only_analysis`, `maintenance`, `product_delivery`.
+- Lane phi-delivery dừng trước mọi delivery write. Human chỉ được materialize khi ghi đủ actor, lý do và timestamp UTC; thao tác này không phê duyệt gate.
+- Public contract, migration, security-sensitive, regulated, greenfield/foundation, release và mixed intent không rõ ràng luôn fail closed về `product_delivery`; inference hoặc preset thông thường không được hạ mức.
+- Hard trigger là input có cấu trúc, không phải raw keyword match; boolean không hợp lệ phải bị reject thay vì bị đổi thành một downgrade.
+- Chỉ derive role và gate có applicability. Mỗi entry phải có reason code ổn định; mỗi gate còn phải nêu reviewer role. Entry bị bỏ qua hoặc `not_applicable` không tạo pending action.
+- Adaptive writer chỉ được bật khi minor version giữa source/runtime khớp và canonical/runtime parity pass. Authority đầy đủ nằm ở `policies/codex/AGENTS.global.md § Hard Rule: Adaptive Admission And Applicability`; bảng chuẩn nằm trong `references/adaptive-planning.md`.
+
 ## Quy Tắc Cứng: Spec/Design Trước Code
 
 - Không được bắt đầu `s07 Implement` khi `s04 Acceptance + DoR`, `s05 Technical Approach` hoặc `s06 Task Plan` chưa đủ điều kiện tối thiểu.

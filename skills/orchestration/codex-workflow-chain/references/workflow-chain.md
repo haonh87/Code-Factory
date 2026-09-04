@@ -311,6 +311,15 @@ Application principles:
 - `Implement` must not silently drift from the rule; every deviation must be recorded via `governance-exception` or `waiver`.
 - `Verify + DoD` must clearly conclude the `governance compliance` level, not just that the feature passes.
 
+## Hard Rule: Adaptive Admission And Applicability
+
+- Request admission happens before the eight-step delivery chain. Non-delivery lanes stop before delivery writes unless a human records an audited materialization override.
+- Hard public-contract, migration, security, regulated, greenfield/foundation, release, and ambiguous mixed-intent signals always escalate to `product_delivery`.
+- Hard triggers come from structured routing input, not one ambiguous raw keyword; malformed booleans are rejected.
+- Role and gate applicability is reasoned and deterministic; omitted or `not_applicable` entries produce no pending action, while applicable gates retain explicit human authority.
+- Adaptive writes remain disabled on source/runtime minor skew or failed canonical/runtime parity.
+- Full authority is `policies/codex/AGENTS.global.md § Hard Rule: Adaptive Admission And Applicability`; exact lane, trigger, reviewer, and reason-code tables are in `adaptive-planning.md`.
+
 ## Hard Rule: Spec/Design Before Code
 
 - `s07 Implement` must not start if `s04`, `s05`, or `s06` do not meet the minimum conditions (for `sdd_mode=light`, read this as `s04` and `s06` per the Light gate host contract — there is no separate `s05` note).

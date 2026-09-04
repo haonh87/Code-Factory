@@ -818,7 +818,7 @@ function testReconcileEmitsMismatchToRecorder() {
       recordCrReconciliationMismatch(metric) { recorded = metric; }
     };
     reconcileCrAggregate({ projectRoot, changeId: "CR-040", recorder });
-    assert(recorded && recorded.cr_id === "CR-040", "recorder must receive cr_id mismatch metric");
+    assert(recorded && !("cr_id" in recorded), "recorder must not receive a raw CR identifier");
     assert(typeof recorded.missing === "number", "metric carries missing count");
     assert(typeof recorded.unwaived_failures === "number", "metric carries unwaived_failures count");
     assert(typeof recorded.coverage_pass === "boolean", "metric carries coverage_pass");
