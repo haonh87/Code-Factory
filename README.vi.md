@@ -146,6 +146,7 @@ Ghi chú:
 
 ### Architecture Và Rollout
 
+- Master plan hiện tại cho review và remediation toàn bộ: [`Code-Factory master plan`](docs/audits/code-factory-holistic-workflow-skill-remediation-plan.vi.md)
 - Merge strategy với `spec-kit`, `OpenSpec`, `cc-sdd`, `BMAD-METHOD`: [`sdd-merge-strategy.md`](skills/orchestration/codex-workflow-chain/references/sdd-merge-strategy.md)
 - Target architecture: [`target-architecture.md`](skills/orchestration/codex-workflow-chain/references/target-architecture.md)
 - Implementation blueprint theo phase, artifact, validator, CI: [`implementation-blueprint.md`](skills/orchestration/codex-workflow-chain/references/implementation-blueprint.md)

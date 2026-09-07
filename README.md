@@ -148,6 +148,7 @@ Notes:
 
 ### Architecture and Rollout
 
+- Current holistic review and remediation sequence: [`Code-Factory master plan`](docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md)
 - Merge strategy with `spec-kit`, `OpenSpec`, `cc-sdd`, `BMAD-METHOD`: [`sdd-merge-strategy.md`](skills/orchestration/codex-workflow-chain/references/sdd-merge-strategy.md)
 - Target architecture: [`target-architecture.md`](skills/orchestration/codex-workflow-chain/references/target-architecture.md)
 - Implementation blueprint by phase, artifact, validator, CI: [`implementation-blueprint.md`](skills/orchestration/codex-workflow-chain/references/implementation-blueprint.md)
