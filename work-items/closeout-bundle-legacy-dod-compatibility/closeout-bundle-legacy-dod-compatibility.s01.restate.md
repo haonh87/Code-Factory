@@ -517,7 +517,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-legacy-dod-compatibility"
@@ -540,15 +540,21 @@ decision_owner: "agent"
 protocol_owner: "qc"
 reviewed_by: "po"
 reviewed_at: "2026-09-03T07:45:40.233Z"
-handoff_target: "agent-s08-hosted-verification"
-last_transition_action: "open-s08"
-last_transition_at: "2026-09-04T10:58:54Z"
+handoff_target: "closeout-receipt-sealing"
+last_transition_action: "approve-business-acceptance-review"
+last_transition_at: "2026-09-07T14:06:08Z"
 required_actions:
-  - "Commit and push the reviewed scope, then collect hosted Node 18/22 evidence before QC Technical Verification and DoD review."
-blockers: []
+  - "Seal DoD, Release, and Business Acceptance receipts against the finalized s08 host with approve-closeout-bundle in one human TTY interaction."
+blockers:
+  - "CLOSEOUT_TRUSTED_RECEIPTS_PENDING"
 review_notes:
   - "Approved creation of the recommended linked defect for CR-008 finding F-AG08-001."
   - "QC approved opening s08 for candidate SHA-256 b2d9ba416e54ec2cd1517a98f1a9b05e010c519a1721651534caf42b44f3b83e at 2026-09-04T10:58:54Z."
+  - "Agent evidence proposal at 2026-09-04T12:47:23Z: hosted run 33867082744 passed all ten required jobs for source 373d91072dcc8dd02371bb4a37289c81d7299788 and candidate da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690; explicit QC binding amendment remains required."
+  - "QC approved amended Technical Verification artifact binding to hosted candidate SHA-256 da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690 at 2026-09-04T12:54:06Z; b2d9ba41... remains historical pre-host evidence and v2.6.1 SHA-256 7c1d2c7...f0b9 remains rollback."
+  - "QC approved Technical Verification first at 2026-09-04T13:04:21Z, then DoD at 2026-09-04T13:04:29Z for hosted candidate da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690. Closeout receipts remain deferred until Release and Business Acceptance reviewers are recorded, preventing stale s08-bound receipts."
+  - "DevOps and QC approved Release at 2026-09-04T13:20:37Z for hosted candidate da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690 with rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9."
+  - "PO approved Business Acceptance at 2026-09-07T14:06:08Z for work item closeout-bundle-legacy-dod-compatibility and hosted candidate SHA-256 da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690; s08 is finalized for trusted closeout receipt sealing."
 refs:
   - "work-items/closeout-bundle-legacy-dod-compatibility"
   - "work-items/adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.s08.verification.md"
@@ -563,6 +569,14 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "S08_OPENED_BY_QC"
+  - "HOSTED_VERIFICATION_COMPLETED"
+  - "CANDIDATE_BINDING_AMENDMENT_PROPOSED"
+  - "CANDIDATE_BINDING_AMENDMENT_APPROVED_BY_QC"
+  - "VERIFICATION_CONFIRMED"
+  - "DOD_APPROVED_BY_QC"
+  - "RELEASE_APPROVED_BY_DEVOPS_AND_QC"
+  - "BUSINESS_ACCEPTANCE_APPROVED_BY_PO"
+  - "S08_FINALIZED_FOR_CLOSEOUT"
 ```
 
 ## Traceability
