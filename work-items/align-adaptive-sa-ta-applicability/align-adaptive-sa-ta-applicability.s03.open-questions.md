@@ -13,7 +13,7 @@ source_of_truth: true
 status: review
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: BLOCKED
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -108,9 +108,9 @@ tags:
 # Step 3 - Open Questions
 
 > [!summary]
-> Readiness for s04 is **BLOCKED** on two explicit decisions. The recommendation is to reuse the
-> existing stable reason-code allowlists and make `workflow-adaptive-governance.test.js` the
-> canonical semantic fixture, with scaffold and SA/TA contract suites kept as supporting checks.
+> Readiness for s04 is **READY**. BA, Developer, and QC approved OQ-AR-001 Option B; Developer and
+> QC approved OQ-AR-002 Option A. The existing stable reason-code allowlists are normative and
+> `workflow-adaptive-governance.test.js` owns the canonical semantic fixture.
 
 ## Step Contract
 ```yaml
@@ -208,7 +208,10 @@ open_questions:
     question: "Which reason-code vocabulary is normative for conditional SA/TA applicability?"
     owners: ["ba", "developer", "qc"]
     blocking_step: "s04"
-    status: "WAITING_HUMAN_DECISION"
+    status: "APPROVED"
+    decision: "Option B"
+    approved_by: ["ba", "developer", "qc"]
+    approved_at: "2026-09-08T04:39:20Z"
     options:
       - id: "A"
         direction: "Allow free-form reason strings wherever a role is derived."
@@ -241,12 +244,15 @@ open_questions:
     recommendation_reason: >-
       It is the smallest correct choice: current code already exposes stable lane, hard-trigger,
       role, and gate allowlists, including ROLE_SA_* and ROLE_TA_* values required by CF-019.
-    approval_needed: "BA confirms business semantics; Developer confirms contract ownership; QC confirms verifiability."
+    approval_record: "Satisfied by BA, Developer, and QC at 2026-09-08T04:39:20Z."
   - id: "OQ-AR-002"
     question: "Which fixture should own the canonical no-trigger versus trigger-positive semantic matrix?"
     owners: ["developer", "qc"]
     blocking_step: "s05"
-    status: "WAITING_HUMAN_DECISION"
+    status: "APPROVED"
+    decision: "Option A"
+    approved_by: ["developer", "qc"]
+    approved_at: "2026-09-08T04:39:20Z"
     options:
       - id: "A"
         direction: >-
@@ -279,27 +285,25 @@ open_questions:
     recommendation_reason: >-
       Adaptive governance already owns the semantic contract and its golden matrix. Extending it is
       the smallest delta; scaffold and SA/TA suites remain supporting evidence rather than competing owners.
-    approval_needed: "Developer confirms test ownership; QC confirms fail-first and coverage sufficiency."
-missing_inputs:
-  - "Explicit BA, Developer, and QC decision on OQ-AR-001 Option B."
-  - "Explicit Developer and QC decision on OQ-AR-002 Option A."
+    approval_record: "Satisfied by Developer and QC at 2026-09-08T04:39:20Z."
+missing_inputs: []
 conflicts:
   - id: "CONFLICT-AR-001"
     sources:
       - "Adaptive Admission And Applicability: roles derive from named triggers"
       - "Generic Skill Requirement: use SA and TA at every s01-s04"
     conflict: "A downstream generic mandate can re-add roles the router omitted."
-    disposition: "Await human confirmation of the recommendation bundle; s04 will encode router precedence as a contract."
+    disposition: "Human-approved Option B; s04 encodes router precedence and the stable reason-code allowlists as the contract."
     owner: "ba/developer/qc"
-    blocking: true
+    blocking: false
   - id: "CONFLICT-AR-002"
     sources:
       - "Canonical and runtime policies are byte/semantically aligned"
       - "All aligned copies contain the same unconditional SA/TA sentence"
     conflict: "Copy parity proves consistency but does not prove correctness."
-    disposition: "Require semantic expectations in the adaptive-governance fixture, then keep runtime parity as a separate check."
+    disposition: "Human-approved Option A; the adaptive-governance fixture owns semantic expectations and runtime parity remains separate evidence."
     owner: "developer/qc"
-    blocking: true
+    blocking: false
   - id: "CONFLICT-AR-003"
     sources:
       - "s01 draft wording mentioned multi-system as an adaptive hard trigger"
@@ -328,7 +332,7 @@ follow_up_observations:
 ## Input Readiness
 ```yaml
 step: "s04 Acceptance + DoR"
-status: BLOCKED
+status: READY
 available_inputs:
   - "PO-approved work-item trusted receipt"
   - "OQ-CF-004 Option C approval by PO, BA, Developer, and QC"
@@ -337,21 +341,17 @@ available_inputs:
   - "Existing reason-code constants in workflow-adaptive-governance.js"
   - "Existing semantic, scaffold-integration, and SA/TA contract test boundaries"
   - "Exact contradictory clauses in all three policy surfaces"
-missing_inputs:
-  - "Human decision for OQ-AR-001"
-  - "Human decision for OQ-AR-002"
-invalid_inputs:
-  - "The generic user reply 'accept' cannot approve recommendations that had not yet been authored."
-  - "The s01 multi-system trigger mention was agent-introduced taxonomy drift and is excluded from the canonical six-trigger baseline."
+missing_inputs: []
+invalid_inputs: []
 conflicts:
-  - "CONFLICT-AR-001 remains blocking until role-applicability precedence is human-confirmed."
-  - "CONFLICT-AR-002 remains blocking until canonical fixture ownership is human-confirmed."
+  - "CONFLICT-AR-001 is resolved by human-approved OQ-AR-001 Option B."
+  - "CONFLICT-AR-002 is resolved by human-approved OQ-AR-002 Option A."
   - "CONFLICT-AR-003 is corrected to the existing scope and does not block s04."
 assumptions:
-  - "Option B for OQ-AR-001 and Option A for OQ-AR-002 are recommendations, not approvals."
+  - "OQ-AR-001 Option B and OQ-AR-002 Option A are explicit human decisions, not inferred approvals."
   - "No new hard-trigger taxonomy is needed to resolve CF-019."
 risk_level: HIGH
-next_action: "BA, Developer, and QC explicitly approve or amend the recommendation bundle before s04 authoring."
+next_action: "Draft s04 Spec, Contract, and DoR for independent human gate review."
 ```
 
 ## Audit
@@ -373,16 +373,14 @@ checks:
     evidence: "OBS-AR-001 is explicitly OUT_OF_SCOPE with a separate remediation handoff."
   - criterion: "Readiness verdict and next human action are explicit"
     result: PASS
-    evidence: "Input Readiness is BLOCKED on two named decisions with exact approver roles."
+    evidence: "Input Readiness is READY after both decisions were explicitly approved by their named roles."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed in one bounded evidence and recommendation pass."
-gaps:
-  - "OQ-AR-001 human decision is pending."
-  - "OQ-AR-002 human decision is pending."
+gaps: []
 risk_level: HIGH
-next_action: "Wait for explicit approval or amendment of both recommendations; do not author s04 yet."
+next_action: "Author s04 Spec, Contract, and DoR proposal; retain separate human-controlled gate approvals."
 ```
 
 ## Traceability
@@ -393,14 +391,14 @@ upstream:
   - "../../packages/workflow-bundle/scripts/workflow-adaptive-governance.js"
   - "../../packages/workflow-bundle/test/workflow-adaptive-governance.test.js"
 outputs:
-  - "OQ-AR-001 recommendation: Option B"
-  - "OQ-AR-002 recommendation: Option A"
+  - "OQ-AR-001 decision: Option B, approved by BA, Developer, and QC"
+  - "OQ-AR-002 decision: Option A, approved by Developer and QC"
   - "CONFLICT-AR-001..003 dispositions"
   - "OBS-AR-001 out-of-scope follow-up"
-next_step: "s04 Acceptance + DoR after both human decisions"
+next_step: "s04 Acceptance + DoR proposal"
 ```
 
 ## Handoff
-- Readiness: BLOCKED on OQ-AR-001 and OQ-AR-002 human decisions.
-- Recommended bundle: OQ-AR-001 Option B; OQ-AR-002 Option A.
-- Condition for s04: BA/Developer/QC approve OQ-AR-001 and Developer/QC approve OQ-AR-002.
+- Readiness: READY; both open questions have explicit human decisions.
+- Approved bundle: OQ-AR-001 Option B by BA/Developer/QC; OQ-AR-002 Option A by Developer/QC.
+- Condition for s04 authoring: met. Spec, Contract, and DoR remain separate human-controlled gates.

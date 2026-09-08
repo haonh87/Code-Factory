@@ -84,18 +84,21 @@
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/align-adaptive-sa-ta-applicability",
-  "current_step": "s03",
+  "current_step": "s04",
   "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "human-open-question-review",
+  "handoff_target": "human-s04-gate-review",
   "required_actions": [
-    "BA, Developer, and QC approve or amend OQ-AR-001 Option B.",
-    "Developer and QC approve or amend OQ-AR-002 Option A."
+    "BA reviews and approves or rejects the s04 Spec.",
+    "Developer reviews and approves or rejects the s04 Contract.",
+    "BA and QC review and approve or reject the s04 DoR.",
+    "Seal each approved gate with an independent trusted receipt before s05."
   ],
   "blockers": [
-    "OQ-AR-001_HUMAN_DECISION_PENDING",
-    "OQ-AR-002_HUMAN_DECISION_PENDING"
+    "SPEC_APPROVAL_PENDING",
+    "CONTRACT_APPROVAL_PENDING",
+    "DOR_APPROVAL_PENDING"
   ],
   "refs": [
     "work-items/align-adaptive-sa-ta-applicability",
@@ -112,7 +115,9 @@
     "S01_REQUIREMENT_AND_ARCHITECTURE_DRIVERS_DRAFTED",
     "WORK_ITEM_APPROVED",
     "S02_BUSINESS_GOAL_DRAFTED",
-    "S03_RECOMMENDATION_BUNDLE_DRAFTED"
+    "S03_RECOMMENDATION_BUNDLE_DRAFTED",
+    "S03_OPEN_QUESTIONS_APPROVED",
+    "S04_SPEC_CONTRACT_DOR_DRAFTED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -124,7 +129,10 @@
     "A repeated approve invocation at 2026-09-08T03:29:34.925Z is retained in protocol history; the original trusted receipt remains authoritative.",
     "OQ-CF-004 Option C approval does not approve downstream workflow gates.",
     "The generic reply 'accept' opened s03 authoring only; it did not approve recommendations that had not yet been authored.",
-    "s03 corrected an agent-introduced multi-system trigger mention to the six-trigger adaptive baseline."
+    "s03 corrected an agent-introduced multi-system trigger mention to the six-trigger adaptive baseline.",
+    "OQ-AR-001 Option B was approved by BA, Developer, and QC at 2026-09-08T04:39:20Z.",
+    "OQ-AR-002 Option A was approved by Developer and QC at 2026-09-08T04:39:20Z.",
+    "s04 is READY_FOR_REVIEW; its Spec, Contract, and DoR gates remain unapproved."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -194,6 +202,22 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Drafted OQ-AR-001 Option B and OQ-AR-002 Option A recommendations; human decisions remain pending before s04."
+    },
+    {
+      "timestamp": "2026-09-08T04:39:20Z",
+      "action": "approve-s03-recommendation-bundle",
+      "actor": "ba+developer+qc",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human-approved OQ-AR-001 Option B with BA, Developer, and QC; human-approved OQ-AR-002 Option A with Developer and QC."
+    },
+    {
+      "timestamp": "2026-09-08T04:45:45Z",
+      "action": "author-s04-spec-contract-dor",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Drafted the s04 Spec, public workflow Contract, and DoR for independent human gate review; no s04 gate was self-approved."
     }
   ]
 }

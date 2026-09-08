@@ -27,27 +27,41 @@ spec_refs:
 spec_status: draft
 planning_track: full
 execution_mode: agentic
-execution_roles: []
-review_mode: self
-verification_owner: ""
+execution_roles:
+  - "ba"
+  - "developer"
+  - "qc"
+review_mode: targeted
+verification_owner: "qc"
 approval_gates:
   spec: "required"
-  contract: "not_applicable"
+  contract: "required"
+  dor: "required"
+  approach: "required"
   foundation: "not_applicable"
+  task_plan: "required"
   uat: "not_applicable"
   release: "not_applicable"
   business_acceptance: "not_applicable"
+  dod: "required"
 role_signoffs:
-  spec: []
-  contract: []
-  dor: []
-  approach: []
+  spec:
+    - "ba"
+  contract:
+    - "developer"
+  dor:
+    - "ba"
+    - "qc"
+  approach:
+    - "developer"
   foundation: []
-  task_plan: []
+  task_plan:
+    - "developer"
   uat: []
   release: []
   business_acceptance: []
-  dod: []
+  dod:
+    - "qc"
 gate_reviews:
   spec_reviewed_by: []
   spec_reviewed_at: ""
@@ -653,7 +667,7 @@ work_item_slug: "align-adaptive-sa-ta-applicability"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/align-adaptive-sa-ta-applicability"
-current_step: "s03"
+current_step: "s04"
 granted_write_paths: []
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
@@ -666,20 +680,26 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-08T03:03:41.551Z"
-handoff_target: "human-open-question-review"
-last_transition_action: "author-s03-recommendation-bundle"
-last_transition_at: "2026-09-08T04:18:29Z"
+handoff_target: "human-s04-gate-review"
+last_transition_action: "author-s04-spec-contract-dor"
+last_transition_at: "2026-09-08T04:45:45Z"
 required_actions:
-  - "BA, Developer, and QC approve or amend OQ-AR-001 Option B."
-  - "Developer and QC approve or amend OQ-AR-002 Option A."
+  - "BA reviews and approves or rejects the s04 Spec."
+  - "Developer reviews and approves or rejects the s04 Contract."
+  - "BA and QC review and approve or reject the s04 DoR."
+  - "Seal each approved gate with an independent trusted receipt before s05."
 blockers:
-  - "OQ-AR-001_HUMAN_DECISION_PENDING"
-  - "OQ-AR-002_HUMAN_DECISION_PENDING"
+  - "SPEC_APPROVAL_PENDING"
+  - "CONTRACT_APPROVAL_PENDING"
+  - "DOR_APPROVAL_PENDING"
 review_notes:
   - "Human review approved."
   - "Trusted work-item receipt is APPROVED by PO at 2026-09-08T03:03:41.551Z."
   - "A repeated approve invocation at 2026-09-08T03:29:34.925Z was retained in protocol history; the original trusted receipt remains authoritative."
   - "OQ-CF-004 Option C approval authorizes conditional SA/TA applicability but does not approve downstream workflow gates."
+  - "OQ-AR-001 Option B was approved by BA, Developer, and QC at 2026-09-08T04:39:20Z."
+  - "OQ-AR-002 Option A was approved by Developer and QC at 2026-09-08T04:39:20Z."
+  - "s04 is READY_FOR_REVIEW; its Spec, Contract, and DoR gates remain unapproved."
 refs:
   - "work-items/align-adaptive-sa-ta-applicability"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -695,6 +715,8 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "S02_BUSINESS_GOAL_DRAFTED"
   - "S03_RECOMMENDATION_BUNDLE_DRAFTED"
+  - "S03_OPEN_QUESTIONS_APPROVED"
+  - "S04_SPEC_CONTRACT_DOR_DRAFTED"
 ```
 
 ## Traceability
@@ -704,10 +726,10 @@ source_inputs:
   - "CF-019 master audit finding"
   - "CR-008 Adaptive Admission And Applicability rule"
   - "Conflicting generic SA/TA Skill Requirement in source and packaged runtime policies"
-next_step: "s03 Open Questions after completed s02 Business Goal"
+next_step: "s05 Technical Approach only after Spec, Contract, and DoR trusted receipts pass"
 ```
 
 ## Handoff
 - Locked: Option C makes router-derived SA/TA applicability authoritative; hard triggers remain mandatory.
-- Open: OQ-AR-001 reason-code vocabulary and OQ-AR-002 canonical fixture ownership.
-- Gate: PO work-item approval is complete; s03 must resolve OQ-AR-001 and OQ-AR-002 before s04.
+- Decided: OQ-AR-001 Option B and OQ-AR-002 Option A with all required human roles.
+- Gate: s04 Spec, Contract, and DoR are drafted and remain pending independent human approval.
