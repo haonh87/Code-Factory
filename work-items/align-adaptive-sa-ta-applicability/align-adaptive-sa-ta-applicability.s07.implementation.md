@@ -100,8 +100,8 @@ tags:
 > CF-019 is ACTIVE in the existing CR-008 worktree. T1 produced one intentional RED assertion for
 > the unconditional SA/TA rule while every router baseline remained green; T2 applied the smallest
 > canonical policy correction and made the same suite green. Human QC approved AR-B1 Spec
-> Compliance for candidate `c0fc0e6d…`; Code Quality by Developer and QC remains pending before the
-> generated-runtime batch.
+> Compliance, followed by human Developer/QC approval of Code Quality, for candidate `c0fc0e6d…`.
+> The batch has no blocking finding; generated-runtime work may continue.
 
 ## Step Contract
 ```yaml
@@ -145,6 +145,7 @@ tasks_completed:
   - "T2 replaced only the contradictory canonical Skill Requirement paragraph."
   - "T2 GREEN was confirmed with the complete adaptive-governance suite passing."
   - "Human QC approved AR-B1 Spec Compliance for candidate c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045 at 2026-09-08T09:55:19Z."
+  - "Human Developer and QC approved AR-B1 Code Quality for candidate c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045 at 2026-09-08T10:00:24Z with no blocking finding."
 bug_repro_evidence:
   - "node packages/workflow-bundle/test/workflow-adaptive-governance.test.js exited 1 with exactly one failed assertion: canonical Skill Requirement must make router-derived SA/TA applicability authoritative and must not re-add omitted roles."
 hypothesis_log:
@@ -167,16 +168,16 @@ doc_changes:
 config_changes: []
 review_checkpoints:
   - "AR-B1 Spec Compliance PASS by QC at 2026-09-08T09:55:19Z for candidate c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045; scope matches AC-AR-01..07 with no unrecorded spec or governance drift."
-  - "AR-B1 Code Quality by Developer and QC must remain after Spec Compliance."
+  - "AR-B1 Code Quality PASS by Developer and QC at 2026-09-08T10:00:24Z for candidate c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045; assertions are deterministic and bounded, the policy delta is focused, and no blocking finding remains."
 outputs_actual:
   - "T1 intentional RED evidence"
   - "T2 focused canonical policy correction"
   - "T2 GREEN evidence"
 known_limitations:
   - "Generated runtime copies are intentionally unchanged until T3."
-  - "AR-B1 Code Quality and all AR-B2 review remain open."
+  - "AR-B2 Spec Compliance and Code Quality remain open."
 follow_up_items:
-  - "After AR-B1 Code Quality, run T3 runtime synchronization and T4 regressions."
+  - "Run T3 runtime synchronization and T4 regressions, then request AR-B2 Spec Compliance."
 notes_for_testing: "Keep the canonical semantic fixture as the primary behavior proof; do not weaken router or reason-code assertions."
 ```
 
@@ -197,10 +198,10 @@ worktree_reason: "planning_track=full, multi-session CR-008 release risk, and pa
 review_status: PARTIAL
 review_refs:
   - "AR-B1 Spec Compliance: PASS by QC at 2026-09-08T09:55:19Z for c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045"
-  - "AR-B1 Code Quality: pending Developer and QC"
+  - "AR-B1 Code Quality: PASS by Developer and QC at 2026-09-08T10:00:24Z for c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045"
   - "AR-B2: generated runtime parity plus regression evidence"
-spec_compliance_status: PASS
-code_quality_status: NOT_RUN
+spec_compliance_status: PARTIAL
+code_quality_status: PARTIAL
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
 independence_refs:
@@ -248,9 +249,9 @@ finding_policy:
     - "Any change to the AR-B1 candidate after review"
     - "Any later regression that invalidates the semantic fixture or canonical wording"
 handoff_to_verify:
-  - "AR-B1 Spec Compliance PASS is recorded before Code Quality."
+  - "AR-B1 Spec Compliance PASS is recorded before AR-B1 Code Quality PASS."
   - "Do not treat either review as s08 Technical Verification or DoD."
-notes_for_implementation_or_verify: "QC approved AR-B1 Spec Compliance; Code Quality is the next human action."
+notes_for_implementation_or_verify: "AR-B1 is complete with Spec Compliance before Code Quality; proceed to T3-T4 and AR-B2."
 framework_notes:
   - "Node.js CommonJS fixture; no framework or runtime architecture change."
 known_limitations:
@@ -263,11 +264,11 @@ upstream:
   - "align-adaptive-sa-ta-applicability.s04.acceptance-criteria.md"
   - "align-adaptive-sa-ta-applicability.s05.technical-approach.md"
   - "align-adaptive-sa-ta-applicability.s06.task-breakdown.md"
-next_step: "Human Developer and QC review AR-B1 Code Quality before T3."
+next_step: "Run T3 runtime synchronization and T4 regressions, then request AR-B2 Spec Compliance from QC."
 ```
 
 ## Handoff
 - Outputs actual: T1 RED evidence, exact six-trigger matrix, focused T2 policy correction, and T2 GREEN evidence.
-- Known limitations: AR-B1 Code Quality, generated runtime parity, adjacent regressions, AR-B2, and exact-candidate binding remain open.
+- Known limitations: generated runtime parity, adjacent regressions, AR-B2, and exact-candidate binding remain open.
 - Notes for testing: review the locked acceptance behavior before style; the router module and stable reason values are unchanged.
 - Notes for deployment: none; this child performs no release or installation action.
