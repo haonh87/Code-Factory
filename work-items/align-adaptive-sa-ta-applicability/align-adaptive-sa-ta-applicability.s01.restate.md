@@ -667,7 +667,7 @@ work_item_slug: "align-adaptive-sa-ta-applicability"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/align-adaptive-sa-ta-applicability"
-current_step: "s05"
+current_step: "s06"
 granted_write_paths: []
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
@@ -680,15 +680,14 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-08T03:03:41.551Z"
-handoff_target: "human-s05-receipt-sealing"
-last_transition_action: "record-s05-human-approach-approval"
-last_transition_at: "2026-09-08T06:41:51Z"
+handoff_target: "human-s06-task-plan-review"
+last_transition_action: "verify-s05-receipt-and-author-s06-task-plan"
+last_transition_at: "2026-09-08T07:03:07Z"
 required_actions:
-  - "Human runs wfc gate approve for Approach with reviewed-by developer."
-  - "Validate the Approach receipt digest match before authoring s06."
+  - "Developer reviews and approves or amends the s06 Task Plan."
+  - "After approval, finalize s06 and seal the Task Plan receipt before activating s07."
 blockers:
-  - "APPROACH_RECEIPT_PENDING"
-  - "TASK_PLAN_NOT_AUTHORED"
+  - "TASK_PLAN_APPROVAL_PENDING"
 review_notes:
   - "Human review approved."
   - "Trusted work-item receipt is APPROVED by PO at 2026-09-08T03:03:41.551Z."
@@ -699,7 +698,8 @@ review_notes:
   - "BA approved Spec, Developer approved Contract, and BA/QC approved DoR at 2026-09-08T06:08:19Z."
   - "Spec, Contract, and DoR trusted receipts are APPROVED with digest_match=true; latest receipt was sealed at 2026-09-08T06:28:48.620Z."
   - "Developer approved s05 Option A at 2026-09-08T06:41:51Z."
-  - "s05 is finalized; the Approach trusted receipt remains pending human CLI sealing."
+  - "Approach receipt is APPROVED by Developer at 2026-09-08T06:57:11.904Z with digest_match=true for SHA-256 0737fa2d04a1961044edc26a20f5ce655434b2641cb0aebc5f729b31cf9106e2."
+  - "s06 Task Plan is drafted with T1..T6, two targeted review batches, and exact child-to-parent candidate handoff."
 refs:
   - "work-items/align-adaptive-sa-ta-applicability"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -721,6 +721,8 @@ audit_events:
   - "S04_TRUSTED_RECEIPTS_VERIFIED"
   - "S05_TECHNICAL_APPROACH_DRAFTED"
   - "S05_HUMAN_APPROACH_APPROVED_PENDING_RECEIPT"
+  - "S05_TRUSTED_RECEIPT_VERIFIED"
+  - "S06_TASK_PLAN_DRAFTED"
 ```
 
 ## Traceability
@@ -730,7 +732,7 @@ source_inputs:
   - "CF-019 master audit finding"
   - "CR-008 Adaptive Admission And Applicability rule"
   - "Conflicting generic SA/TA Skill Requirement in source and packaged runtime policies"
-next_step: "Seal the Approach trusted receipt; author s06 only after digest_match=true"
+next_step: "Developer reviews s06 Task Plan; s07 only after a digest-valid Task Plan receipt and protocol activation"
 ```
 
 ## Handoff
@@ -738,4 +740,6 @@ next_step: "Seal the Approach trusted receipt; author s06 only after digest_matc
 - Decided: OQ-AR-001 Option B and OQ-AR-002 Option A with all required human roles.
 - Passed: Spec, Contract, and DoR receipts are APPROVED with digest_match=true.
 - Approved: Developer selected s05 Option A — canonical policy precedence, existing semantic fixture, and generated runtime sync.
-- Gate: Approach trusted receipt remains pending; s06 stays closed until digest_match=true.
+- Passed: Approach receipt is APPROVED by Developer with digest_match=true.
+- Proposed: s06 Task Plan sequences T1..T6 in RED -> policy -> sync -> regression -> review -> candidate-binding order.
+- Gate: Developer Task Plan approval remains pending; s07 stays closed.

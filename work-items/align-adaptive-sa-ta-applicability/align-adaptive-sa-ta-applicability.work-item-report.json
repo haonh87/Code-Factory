@@ -84,18 +84,17 @@
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/align-adaptive-sa-ta-applicability",
-  "current_step": "s05",
+  "current_step": "s06",
   "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "human-s05-receipt-sealing",
+  "handoff_target": "human-s06-task-plan-review",
   "required_actions": [
-    "Human runs wfc gate approve for Approach with reviewed-by developer.",
-    "Validate the Approach receipt digest match before authoring s06."
+    "Developer reviews and approves or amends the s06 Task Plan.",
+    "After approval, finalize s06 and seal the Task Plan receipt before activating s07."
   ],
   "blockers": [
-    "APPROACH_RECEIPT_PENDING",
-    "TASK_PLAN_NOT_AUTHORED"
+    "TASK_PLAN_APPROVAL_PENDING"
   ],
   "refs": [
     "work-items/align-adaptive-sa-ta-applicability",
@@ -118,7 +117,9 @@
     "S04_HUMAN_GATES_APPROVED_PENDING_RECEIPTS",
     "S04_TRUSTED_RECEIPTS_VERIFIED",
     "S05_TECHNICAL_APPROACH_DRAFTED",
-    "S05_HUMAN_APPROACH_APPROVED_PENDING_RECEIPT"
+    "S05_HUMAN_APPROACH_APPROVED_PENDING_RECEIPT",
+    "S05_TRUSTED_RECEIPT_VERIFIED",
+    "S06_TASK_PLAN_DRAFTED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -136,7 +137,8 @@
     "BA approved Spec, Developer approved Contract, and BA/QC approved DoR at 2026-09-08T06:08:19Z.",
     "Spec, Contract, and DoR trusted receipts are APPROVED with digest_match=true; latest receipt was sealed at 2026-09-08T06:28:48.620Z.",
     "Developer approved s05 Option A at 2026-09-08T06:41:51Z.",
-    "s05 is finalized; the Approach trusted receipt remains pending human CLI sealing."
+    "Approach receipt is APPROVED by Developer at 2026-09-08T06:57:11.904Z with digest_match=true for SHA-256 0737fa2d04a1961044edc26a20f5ce655434b2641cb0aebc5f729b31cf9106e2.",
+    "s06 Task Plan is drafted with T1..T6, two targeted review batches, and exact child-to-parent candidate handoff."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -254,6 +256,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Developer approved Option A; s05 was finalized and the trusted Approach receipt remains pending human CLI sealing."
+    },
+    {
+      "timestamp": "2026-09-08T07:03:07Z",
+      "action": "verify-s05-receipt-and-author-s06-task-plan",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Verified the Developer Approach receipt with digest_match=true, then drafted the execution-oriented s06 Task Plan; Task Plan approval remains pending."
     }
   ]
 }
