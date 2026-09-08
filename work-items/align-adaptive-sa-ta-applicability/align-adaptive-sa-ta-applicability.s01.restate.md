@@ -130,7 +130,7 @@ done_when:
 constraints:
   hard_constraints:
     - "The workflow router remains the authority for role applicability"
-    - "Public-contract, migration, security, regulated, multi-system, and release triggers cannot be downgraded"
+    - "Public-contract, migration, security-sensitive, regulated, greenfield-foundation, and release triggers cannot be downgraded"
     - "Human-controlled gates remain explicit trusted receipts"
     - "Codex and Claude runtime policy semantics remain aligned with the source policy"
   soft_constraints:
@@ -204,7 +204,7 @@ user_problem_initial: >-
   to remove.
 business_context_initial: >-
   Code-Factory needs fewer irrelevant role acknowledgements without losing architecture oversight
-  when a request changes contracts, data, security, regulated evidence, foundations, or multiple systems.
+  when a request changes public contracts, migrations, security, regulated evidence, foundations, or release scope.
 scope_draft:
   in:
     - "Reconcile the source Codex policy's Adaptive Admission rule and Skill Requirement"
@@ -368,7 +368,7 @@ drivers:
         status: quantified
         value: "100% expected-role match and 0 accepted downgrades for approved trigger fixtures"
         reason: ""
-      verification: "Run public-contract, data-change, security, regulated, foundation, multi-system, and release-scope fixtures."
+      verification: "Run public-contract, migration, security-sensitive, regulated, greenfield-foundation, and release fixtures."
       architectural_significance: "The trigger boundary protects governance while conditional applicability reduces ceremony."
       priority: high
     - id: "SA-DRV-AR-003"
@@ -653,7 +653,7 @@ work_item_slug: "align-adaptive-sa-ta-applicability"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/align-adaptive-sa-ta-applicability"
-current_step: "s02"
+current_step: "s03"
 granted_write_paths: []
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
@@ -666,13 +666,15 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-08T03:03:41.551Z"
-handoff_target: "step-s03-open-questions"
-last_transition_action: "author-s02-business-goal"
-last_transition_at: "2026-09-08T03:31:18Z"
+handoff_target: "human-open-question-review"
+last_transition_action: "author-s03-recommendation-bundle"
+last_transition_at: "2026-09-08T04:18:29Z"
 required_actions:
-  - "Resolve OQ-AR-001 reason-code vocabulary with BA, Developer, and QC."
-  - "Resolve OQ-AR-002 canonical semantic-fixture ownership with Developer and QC."
-blockers: []
+  - "BA, Developer, and QC approve or amend OQ-AR-001 Option B."
+  - "Developer and QC approve or amend OQ-AR-002 Option A."
+blockers:
+  - "OQ-AR-001_HUMAN_DECISION_PENDING"
+  - "OQ-AR-002_HUMAN_DECISION_PENDING"
 review_notes:
   - "Human review approved."
   - "Trusted work-item receipt is APPROVED by PO at 2026-09-08T03:03:41.551Z."
@@ -692,6 +694,7 @@ audit_events:
   - "S01_REQUIREMENT_AND_ARCHITECTURE_DRIVERS_DRAFTED"
   - "WORK_ITEM_APPROVED"
   - "S02_BUSINESS_GOAL_DRAFTED"
+  - "S03_RECOMMENDATION_BUNDLE_DRAFTED"
 ```
 
 ## Traceability

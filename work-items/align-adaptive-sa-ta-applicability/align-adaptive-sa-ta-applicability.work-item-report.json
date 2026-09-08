@@ -84,16 +84,19 @@
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/align-adaptive-sa-ta-applicability",
-  "current_step": "s02",
+  "current_step": "s03",
   "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "step-s03-open-questions",
+  "handoff_target": "human-open-question-review",
   "required_actions": [
-    "Resolve OQ-AR-001 reason-code vocabulary with BA, Developer, and QC.",
-    "Resolve OQ-AR-002 canonical semantic-fixture ownership with Developer and QC."
+    "BA, Developer, and QC approve or amend OQ-AR-001 Option B.",
+    "Developer and QC approve or amend OQ-AR-002 Option A."
   ],
-  "blockers": [],
+  "blockers": [
+    "OQ-AR-001_HUMAN_DECISION_PENDING",
+    "OQ-AR-002_HUMAN_DECISION_PENDING"
+  ],
   "refs": [
     "work-items/align-adaptive-sa-ta-applicability",
     "work-items/adaptive-governance-human-approval-ux",
@@ -108,7 +111,8 @@
     "STEP_OPENED",
     "S01_REQUIREMENT_AND_ARCHITECTURE_DRIVERS_DRAFTED",
     "WORK_ITEM_APPROVED",
-    "S02_BUSINESS_GOAL_DRAFTED"
+    "S02_BUSINESS_GOAL_DRAFTED",
+    "S03_RECOMMENDATION_BUNDLE_DRAFTED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -118,7 +122,9 @@
     "Human review approved.",
     "Trusted work-item receipt is APPROVED by PO at 2026-09-08T03:03:41.551Z.",
     "A repeated approve invocation at 2026-09-08T03:29:34.925Z is retained in protocol history; the original trusted receipt remains authoritative.",
-    "OQ-CF-004 Option C approval does not approve downstream workflow gates."
+    "OQ-CF-004 Option C approval does not approve downstream workflow gates.",
+    "The generic reply 'accept' opened s03 authoring only; it did not approve recommendations that had not yet been authored.",
+    "s03 corrected an agent-introduced multi-system trigger mention to the six-trigger adaptive baseline."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -180,6 +186,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Authored s02 Business Goal after validating the PO work-item trusted receipt; s03 decisions remain open."
+    },
+    {
+      "timestamp": "2026-09-08T04:18:29Z",
+      "action": "author-s03-recommendation-bundle",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Drafted OQ-AR-001 Option B and OQ-AR-002 Option A recommendations; human decisions remain pending before s04."
     }
   ]
 }
