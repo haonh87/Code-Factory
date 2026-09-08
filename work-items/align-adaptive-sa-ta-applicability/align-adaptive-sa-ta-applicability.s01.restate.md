@@ -680,18 +680,18 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-08T03:03:41.551Z"
-handoff_target: "human-s04-gate-review"
-last_transition_action: "author-s04-spec-contract-dor"
-last_transition_at: "2026-09-08T04:45:45Z"
+handoff_target: "human-s04-receipt-sealing"
+last_transition_action: "record-s04-human-gate-approvals"
+last_transition_at: "2026-09-08T06:08:19Z"
 required_actions:
-  - "BA reviews and approves or rejects the s04 Spec."
-  - "Developer reviews and approves or rejects the s04 Contract."
-  - "BA and QC review and approve or reject the s04 DoR."
-  - "Seal each approved gate with an independent trusted receipt before s05."
+  - "Human runs wfc gate approve for Spec with reviewed-by ba."
+  - "Human runs wfc gate approve for Contract with reviewed-by developer."
+  - "Human runs wfc gate approve for DoR with reviewed-by qc; joint BA/QC provenance remains in gate_reviews."
+  - "Validate all three receipt digest matches before authoring s05."
 blockers:
-  - "SPEC_APPROVAL_PENDING"
-  - "CONTRACT_APPROVAL_PENDING"
-  - "DOR_APPROVAL_PENDING"
+  - "SPEC_RECEIPT_PENDING"
+  - "CONTRACT_RECEIPT_PENDING"
+  - "DOR_RECEIPT_PENDING"
 review_notes:
   - "Human review approved."
   - "Trusted work-item receipt is APPROVED by PO at 2026-09-08T03:03:41.551Z."
@@ -699,7 +699,8 @@ review_notes:
   - "OQ-CF-004 Option C approval authorizes conditional SA/TA applicability but does not approve downstream workflow gates."
   - "OQ-AR-001 Option B was approved by BA, Developer, and QC at 2026-09-08T04:39:20Z."
   - "OQ-AR-002 Option A was approved by Developer and QC at 2026-09-08T04:39:20Z."
-  - "s04 is READY_FOR_REVIEW; its Spec, Contract, and DoR gates remain unapproved."
+  - "BA approved Spec, Developer approved Contract, and BA/QC approved DoR at 2026-09-08T06:08:19Z."
+  - "s04 is finalized; all three trusted receipts remain pending human CLI sealing."
 refs:
   - "work-items/align-adaptive-sa-ta-applicability"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -717,6 +718,7 @@ audit_events:
   - "S03_RECOMMENDATION_BUNDLE_DRAFTED"
   - "S03_OPEN_QUESTIONS_APPROVED"
   - "S04_SPEC_CONTRACT_DOR_DRAFTED"
+  - "S04_HUMAN_GATES_APPROVED_PENDING_RECEIPTS"
 ```
 
 ## Traceability
@@ -726,10 +728,11 @@ source_inputs:
   - "CF-019 master audit finding"
   - "CR-008 Adaptive Admission And Applicability rule"
   - "Conflicting generic SA/TA Skill Requirement in source and packaged runtime policies"
-next_step: "s05 Technical Approach only after Spec, Contract, and DoR trusted receipts pass"
+next_step: "Seal Spec, Contract, and DoR trusted receipts; author s05 only after all digest matches pass"
 ```
 
 ## Handoff
 - Locked: Option C makes router-derived SA/TA applicability authoritative; hard triggers remain mandatory.
 - Decided: OQ-AR-001 Option B and OQ-AR-002 Option A with all required human roles.
-- Gate: s04 Spec, Contract, and DoR are drafted and remain pending independent human approval.
+- Human review: Spec, Contract, and DoR are approved with the required role provenance.
+- Gate: three trusted receipts remain pending; s05 stays closed until all digest matches pass.

@@ -88,17 +88,17 @@
   "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "human-s04-gate-review",
+  "handoff_target": "human-s04-receipt-sealing",
   "required_actions": [
-    "BA reviews and approves or rejects the s04 Spec.",
-    "Developer reviews and approves or rejects the s04 Contract.",
-    "BA and QC review and approve or reject the s04 DoR.",
-    "Seal each approved gate with an independent trusted receipt before s05."
+    "Human runs wfc gate approve for Spec with reviewed-by ba.",
+    "Human runs wfc gate approve for Contract with reviewed-by developer.",
+    "Human runs wfc gate approve for DoR with reviewed-by qc; joint BA/QC provenance remains in gate_reviews.",
+    "Validate all three receipt digest matches before authoring s05."
   ],
   "blockers": [
-    "SPEC_APPROVAL_PENDING",
-    "CONTRACT_APPROVAL_PENDING",
-    "DOR_APPROVAL_PENDING"
+    "SPEC_RECEIPT_PENDING",
+    "CONTRACT_RECEIPT_PENDING",
+    "DOR_RECEIPT_PENDING"
   ],
   "refs": [
     "work-items/align-adaptive-sa-ta-applicability",
@@ -117,7 +117,8 @@
     "S02_BUSINESS_GOAL_DRAFTED",
     "S03_RECOMMENDATION_BUNDLE_DRAFTED",
     "S03_OPEN_QUESTIONS_APPROVED",
-    "S04_SPEC_CONTRACT_DOR_DRAFTED"
+    "S04_SPEC_CONTRACT_DOR_DRAFTED",
+    "S04_HUMAN_GATES_APPROVED_PENDING_RECEIPTS"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -132,7 +133,8 @@
     "s03 corrected an agent-introduced multi-system trigger mention to the six-trigger adaptive baseline.",
     "OQ-AR-001 Option B was approved by BA, Developer, and QC at 2026-09-08T04:39:20Z.",
     "OQ-AR-002 Option A was approved by Developer and QC at 2026-09-08T04:39:20Z.",
-    "s04 is READY_FOR_REVIEW; its Spec, Contract, and DoR gates remain unapproved."
+    "BA approved Spec, Developer approved Contract, and BA/QC approved DoR at 2026-09-08T06:08:19Z.",
+    "s04 is finalized; all three trusted receipts remain pending human CLI sealing."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -218,6 +220,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Drafted the s04 Spec, public workflow Contract, and DoR for independent human gate review; no s04 gate was self-approved."
+    },
+    {
+      "timestamp": "2026-09-08T06:08:19Z",
+      "action": "record-s04-human-gate-approvals",
+      "actor": "ba+developer+qc",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Recorded explicit human approval of Spec by BA, Contract by Developer, and DoR by BA/QC; finalized s04 before trusted receipt sealing."
     }
   ]
 }

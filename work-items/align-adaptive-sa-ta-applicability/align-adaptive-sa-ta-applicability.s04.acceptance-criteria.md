@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: final
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
 governance_status: ALIGNED
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -63,12 +63,16 @@ role_signoffs:
   dod:
     - "qc"
 gate_reviews:
-  spec_reviewed_by: []
-  spec_reviewed_at: ""
-  contract_reviewed_by: []
-  contract_reviewed_at: ""
-  dor_reviewed_by: []
-  dor_reviewed_at: ""
+  spec_reviewed_by:
+    - "ba"
+  spec_reviewed_at: "2026-09-08T06:08:19Z"
+  contract_reviewed_by:
+    - "developer"
+  contract_reviewed_at: "2026-09-08T06:08:19Z"
+  dor_reviewed_by:
+    - "ba"
+    - "qc"
+  dor_reviewed_at: "2026-09-08T06:08:19Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   foundation_reviewed_by: []
@@ -114,9 +118,9 @@ tags:
 # Step 4 - Acceptance + DoR
 
 > [!summary]
-> The Spec, public workflow contract, and Definition of Ready are complete for human review. They
-> make router-derived applicability authoritative, preserve every existing hard-risk escalation,
-> and keep final release ownership with the CR-008 parent. No s04 gate is approved by this draft.
+> BA approved the Spec, Developer approved the public workflow Contract, and BA/QC approved DoR.
+> The artifact is final and keeps router-derived applicability authoritative while preserving every
+> hard-risk escalation. Three trusted receipts still need human sealing before s05 can open.
 
 ## Step Contract
 ```yaml
@@ -201,8 +205,15 @@ timebox:
 
 ## Requirement Baseline
 ```yaml
-status: READY_FOR_REVIEW
-approved_spec_refs: []
+status: APPROVED
+approved_spec_refs:
+  - "align-adaptive-sa-ta-applicability.s02.business-goal.md"
+  - "align-adaptive-sa-ta-applicability.s03.open-questions.md"
+approved_spec_digests:
+  - ref: "align-adaptive-sa-ta-applicability.s02.business-goal.md"
+    sha256: "7dbfe1684c02e5e1083a4a6f0756f88f2a1df549f4f39df50551e75ba14e0203"
+  - ref: "align-adaptive-sa-ta-applicability.s03.open-questions.md"
+    sha256: "4e6de63c87806240817a36f755758adefde9a5b86fba4ed880264634a7696816"
 decision_inputs:
   - id: "OQ-AR-001"
     decision: "Option B"
@@ -216,12 +227,12 @@ decision_notes:
   - "The router determines whether SA and TA apply; generic skill guidance must defer to that result."
   - "Stable existing reason-code allowlists are normative; readable explanations are additive only."
   - "The adaptive-governance suite owns semantic behavior; scaffold and SA/TA suites remain supporting evidence."
-  - "READY_FOR_REVIEW is an authoring verdict, not a human Spec approval."
+  - "BA approved the Spec at 2026-09-08T06:08:19Z; trusted receipt sealing remains pending."
 ```
 
 ## Contract Baseline
 ```yaml
-status: READY_FOR_REVIEW
+status: APPROVED
 contract_type: "public workflow policy and evidence contract"
 contract_refs:
   - "../../packages/workflow-bundle/scripts/workflow-adaptive-governance.js"
@@ -243,7 +254,7 @@ compatibility:
   - "The current six hard triggers retain their exact escalation and role semantics."
 notes:
   - "Developer review is required because policy wording and reason codes are externally observable workflow behavior."
-  - "READY_FOR_REVIEW does not substitute for the Contract trusted receipt."
+  - "Developer approved the Contract at 2026-09-08T06:08:19Z; trusted receipt sealing remains pending."
 ```
 
 ## Existing System Baseline
@@ -422,9 +433,12 @@ checks:
   - id: "GOV-AR-05"
     result: PASS
     evidence: "The exact candidate and rollback handoff to the CR-008 parent is part of AC-AR-10."
-blocking_items: []
+blocking_items:
+  - "Seal Spec trusted receipt with BA reviewer metadata."
+  - "Seal Contract trusted receipt with Developer reviewer metadata."
+  - "Seal DoR trusted receipt with joint BA/QC provenance; QC is the receipt sealer."
 owner: "ba/developer/qc"
-next_action: "BA reviews Spec; Developer reviews Contract; BA and QC review DoR."
+next_action: "Seal the three independent trusted receipts from this finalized s04 artifact."
 ```
 
 ## Definition of Ready
@@ -432,34 +446,13 @@ next_action: "BA reviews Spec; Developer reviews Contract; BA and QC review DoR.
 work_item_slug: "align-adaptive-sa-ta-applicability"
 status: READY
 checks:
-  - id: "DOR-AR-01"
-    criterion: "Request, defect boundary, and business value are clear"
-    result: PASS
-    evidence: "s01 and s02 lock CF-019, the parent CR-008 boundary, KPIs, and non-goals."
-  - id: "DOR-AR-02"
-    criterion: "Blocking open questions are resolved"
-    result: PASS
-    evidence: "OQ-AR-001 Option B and OQ-AR-002 Option A have explicit approval by all named owners."
-  - id: "DOR-AR-03"
-    criterion: "Acceptance criteria are measurable and testable"
-    result: PASS
-    evidence: "AC-AR-01..10 specify Given/When/Then behavior and a verification owner/path."
-  - id: "DOR-AR-04"
-    criterion: "Public contract and compatibility baseline are explicit"
-    result: PASS
-    evidence: "Contract Baseline and Existing System Baseline lock inputs, outputs, invariants, impacted surfaces, compatibility, and rollback."
-  - id: "DOR-AR-05"
-    criterion: "Architecture and operational risks have owners and mitigations"
-    result: PASS
-    evidence: "s01 drivers plus R-S04-AR-001..002 cover unsafe downgrade, semantic drift, parity, and candidate handoff."
-  - id: "DOR-AR-06"
-    criterion: "Scope can proceed without inventing the design"
-    result: PASS
-    evidence: "The behavior and evidence boundaries are locked; policy wording and implementation mechanics intentionally remain for s05."
-  - id: "DOR-AR-07"
-    criterion: "Governance and downstream authority are explicit"
-    result: PASS
-    evidence: "Gate owners are declared, no child release gate is opened, and the CR-008 parent owns final candidate verification."
+  restated_request_clear: PASS
+  business_goal_clear: PASS
+  scope_defined: PASS
+  open_questions_non_blocking: PASS
+  acceptance_criteria_testable: PASS
+  dependencies_known: PASS
+  verification_direction_present: PASS
 blocking_gaps: []
 accepted_assumptions:
   - "The current six-trigger taxonomy is sufficient for CF-019."
@@ -468,13 +461,31 @@ accepted_assumptions:
 residual_risks:
   - "A prose-only fix may miss executable semantic drift; fail-first semantic evidence is mandatory."
   - "The parent candidate SHA will change after the child delta and must be re-bound at parent s08."
-owners:
-  - "BA: Spec and DoR"
-  - "Developer: Contract"
-  - "QC: DoR and later verification"
-notes:
-  - "READY is the artifact's readiness assessment; the DoR gate remains pending human approval."
-next_action: "Seal independent Spec, Contract, and DoR trusted receipts before s05."
+next_action: >-
+  Seal the DoR receipt from this finalized artifact. BA and QC review provenance is recorded in
+  gate_reviews; QC is the single cryptographic receipt sealer supported by the current receipt shape.
+```
+
+## Human Gate Decisions
+```yaml
+decisions:
+  - gate: "spec"
+    status: "APPROVED_PENDING_RECEIPT"
+    reviewed_by: ["ba"]
+    reviewed_at: "2026-09-08T06:08:19Z"
+  - gate: "contract"
+    status: "APPROVED_PENDING_RECEIPT"
+    reviewed_by: ["developer"]
+    reviewed_at: "2026-09-08T06:08:19Z"
+  - gate: "dor"
+    status: "APPROVED_PENDING_RECEIPT"
+    reviewed_by: ["ba", "qc"]
+    receipt_sealer: "qc"
+    reviewed_at: "2026-09-08T06:08:19Z"
+decision_source: "User explicitly approved Spec as BA, Contract as Developer, and DoR as BA/QC."
+receipt_model_note: >-
+  The trusted receipt stores one reviewed_by value per gate. Joint BA/QC review remains in
+  gate_reviews while QC seals the DoR receipt.
 ```
 
 ## Audit
@@ -484,7 +495,7 @@ status: PASS
 checks:
   - criterion: "Every approved decision and architecture driver maps to measurable evidence"
     result: PASS
-    evidence: "OQ-AR-001/002 and s01 SA/TA drivers trace to AC-AR-01..10 and DOR-AR-01..07."
+    evidence: "OQ-AR-001/002 and s01 SA/TA drivers trace to AC-AR-01..10 and all seven canonical DoR checks."
   - criterion: "No-trigger and hard-trigger behavior are exact"
     result: PASS
     evidence: "AC-AR-02..04 include exact roles, gates, positive reasons, and negative role expectations."
@@ -496,14 +507,15 @@ checks:
     evidence: "Existing System Baseline and AC-AR-10 preserve rollback v2.6.1 and exact-candidate re-verification."
   - criterion: "DoR has no discovery blocker and human authority remains visible"
     result: PASS
-    evidence: "DOR-AR-01..07 pass while Spec, Contract, and DoR trusted receipts remain explicitly pending."
+    evidence: "All seven canonical DoR checks pass and Human Gate Decisions records the three explicit approvals."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed in one focused acceptance-authoring pass."
-gaps: []
+gaps:
+  - "Spec, Contract, and DoR trusted receipts are not sealed yet."
 risk_level: HIGH
-next_action: "Wait for independent human review of Spec, Contract, and DoR; do not enter s05 yet."
+next_action: "Seal and validate the three independent trusted receipts; do not enter s05 until all digest matches pass."
 ```
 
 ## Traceability
@@ -521,12 +533,13 @@ requirements:
 acceptance_refs:
   - "AC-AR-01..10"
 readiness_refs:
-  - "DOR-AR-01..07"
-next_step: "s05 Technical Approach only after Spec, Contract, and DoR trusted receipts pass"
+  - "Seven canonical Definition of Ready checks"
+next_step: "Seal s04 trusted receipts; author s05 only after all three digest matches are valid"
 ```
 
 ## Handoff
 - Mandatory criteria: AC-AR-01..10, with exact no-trigger and six-trigger behavior.
 - Edge cases to preserve: EDGE-AR-01..07, especially release-only and identical-but-wrong policy copies.
-- Human gate sequence: BA approves Spec; Developer approves Contract; BA and QC approve DoR.
+- Human review: completed for Spec (BA), Contract (Developer), and DoR (BA/QC).
+- Receipt sequence: seal Spec as BA, Contract as Developer, and DoR as QC.
 - Condition for s05: all three independent trusted receipts are present and digest-valid.
