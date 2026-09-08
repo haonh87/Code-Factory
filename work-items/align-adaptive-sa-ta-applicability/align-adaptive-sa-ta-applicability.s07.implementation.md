@@ -99,8 +99,9 @@ tags:
 > [!summary]
 > CF-019 is ACTIVE in the existing CR-008 worktree. T1 produced one intentional RED assertion for
 > the unconditional SA/TA rule while every router baseline remained green; T2 applied the smallest
-> canonical policy correction and made the same suite green. AR-B1 Spec Compliance by QC is pending
-> before Code Quality and the generated-runtime batch.
+> canonical policy correction and made the same suite green. Human QC approved AR-B1 Spec
+> Compliance for candidate `c0fc0e6d…`; Code Quality by Developer and QC remains pending before the
+> generated-runtime batch.
 
 ## Step Contract
 ```yaml
@@ -143,6 +144,7 @@ tasks_completed:
   - "T1 RED was confirmed with exactly one failure caused by the unconditional canonical SA/TA rule."
   - "T2 replaced only the contradictory canonical Skill Requirement paragraph."
   - "T2 GREEN was confirmed with the complete adaptive-governance suite passing."
+  - "Human QC approved AR-B1 Spec Compliance for candidate c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045 at 2026-09-08T09:55:19Z."
 bug_repro_evidence:
   - "node packages/workflow-bundle/test/workflow-adaptive-governance.test.js exited 1 with exactly one failed assertion: canonical Skill Requirement must make router-derived SA/TA applicability authoritative and must not re-add omitted roles."
 hypothesis_log:
@@ -164,7 +166,7 @@ doc_changes:
   - "policies/codex/AGENTS.global.md: made the entry router's role-applicability result authoritative and prohibited generic re-addition of omitted roles."
 config_changes: []
 review_checkpoints:
-  - "AR-B1 Spec Compliance by QC is pending for the semantic fixture and canonical policy."
+  - "AR-B1 Spec Compliance PASS by QC at 2026-09-08T09:55:19Z for candidate c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045; scope matches AC-AR-01..07 with no unrecorded spec or governance drift."
   - "AR-B1 Code Quality by Developer and QC must remain after Spec Compliance."
 outputs_actual:
   - "T1 intentional RED evidence"
@@ -172,9 +174,9 @@ outputs_actual:
   - "T2 GREEN evidence"
 known_limitations:
   - "Generated runtime copies are intentionally unchanged until T3."
-  - "AR-B1 human review is not yet recorded."
+  - "AR-B1 Code Quality and all AR-B2 review remain open."
 follow_up_items:
-  - "After AR-B1, run T3 runtime synchronization and T4 regressions."
+  - "After AR-B1 Code Quality, run T3 runtime synchronization and T4 regressions."
 notes_for_testing: "Keep the canonical semantic fixture as the primary behavior proof; do not weaken router or reason-code assertions."
 ```
 
@@ -194,9 +196,10 @@ worktree_refs:
 worktree_reason: "planning_track=full, multi-session CR-008 release risk, and parent/child candidate coupling require isolation."
 review_status: PARTIAL
 review_refs:
-  - "AR-B1: semantic fixture plus canonical policy"
+  - "AR-B1 Spec Compliance: PASS by QC at 2026-09-08T09:55:19Z for c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045"
+  - "AR-B1 Code Quality: pending Developer and QC"
   - "AR-B2: generated runtime parity plus regression evidence"
-spec_compliance_status: NOT_RUN
+spec_compliance_status: PASS
 code_quality_status: NOT_RUN
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
@@ -212,6 +215,42 @@ verify_path:
 
 ## Implementation Notes
 ```yaml
+review_target: "CF-019 canonical semantic fixture and canonical policy"
+planning_track: full
+review_mode: TARGETED
+review_order:
+  - SPEC_COMPLIANCE
+  - CODE_QUALITY
+review_batches:
+  - batch: "AR-B1"
+    scope:
+      - "packages/workflow-bundle/test/workflow-adaptive-governance.test.js"
+      - "policies/codex/AGENTS.global.md"
+    trigger: "T2 GREEN and candidate c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045"
+    reviewer_role: "QC for Spec Compliance; Developer and QC for Code Quality"
+  - batch: "AR-B2"
+    scope:
+      - "Generated Codex/Claude runtime policy parity"
+      - "Targeted adjacent regression evidence"
+    trigger: "T3-T4 complete"
+    reviewer_role: "QC for Spec Compliance; Developer and QC for Code Quality"
+required_checks:
+  spec_compliance:
+    - "Match AC-AR-01..07 and the approved Option A/T1-T2 scope"
+    - "Keep router behavior, stable reason codes, schemas, and SA/TA contracts unchanged"
+    - "Reject unrecorded specification or governance drift"
+  code_quality:
+    - "Keep assertions deterministic, bounded to the canonical section, and readable"
+    - "Keep the policy delta focused and generated files out of AR-B1"
+finding_policy:
+  blocker_threshold: "Any acceptance mismatch, unrecorded drift, weakened assertion, or unexpected changed path blocks the batch."
+  reopen_conditions:
+    - "Any change to the AR-B1 candidate after review"
+    - "Any later regression that invalidates the semantic fixture or canonical wording"
+handoff_to_verify:
+  - "AR-B1 Spec Compliance PASS is recorded before Code Quality."
+  - "Do not treat either review as s08 Technical Verification or DoD."
+notes_for_implementation_or_verify: "QC approved AR-B1 Spec Compliance; Code Quality is the next human action."
 framework_notes:
   - "Node.js CommonJS fixture; no framework or runtime architecture change."
 known_limitations:
@@ -224,11 +263,11 @@ upstream:
   - "align-adaptive-sa-ta-applicability.s04.acceptance-criteria.md"
   - "align-adaptive-sa-ta-applicability.s05.technical-approach.md"
   - "align-adaptive-sa-ta-applicability.s06.task-breakdown.md"
-next_step: "Human QC reviews AR-B1 Spec Compliance before Developer/QC Code Quality and T3."
+next_step: "Human Developer and QC review AR-B1 Code Quality before T3."
 ```
 
 ## Handoff
 - Outputs actual: T1 RED evidence, exact six-trigger matrix, focused T2 policy correction, and T2 GREEN evidence.
-- Known limitations: generated runtime parity, adjacent regressions, AR-B1/AR-B2, and exact-candidate binding remain open.
+- Known limitations: AR-B1 Code Quality, generated runtime parity, adjacent regressions, AR-B2, and exact-candidate binding remain open.
 - Notes for testing: review the locked acceptance behavior before style; the router module and stable reason values are unchanged.
 - Notes for deployment: none; this child performs no release or installation action.
