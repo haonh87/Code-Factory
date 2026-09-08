@@ -33,8 +33,8 @@ tags:
 > PO đã phê duyệt phạm vi master plan và thứ tự `P0 → P4` để tiếp tục authoring. Quyết định này
 > không tự động phê duyệt bất kỳ child work item, implementation, DoD, Release, Business
 > Acceptance, exception hoặc waiver nào. Approval ngày 2026-09-03 chỉ phủ `CF-001..018`;
-> `CF-019`, `CF-020`, `AC-CF-010` và `AC-CF-011` là đề xuất mới ngày 2026-09-05, chưa được kế
-> thừa phê duyệt.
+> PO/BA/Developer/QC đã phê duyệt OQ-CF-004 Option C ngày 2026-09-08, qua đó chấp nhận `CF-019`
+> nhưng chưa phê duyệt child work item hay implementation. `CF-020` và `AC-CF-011` vẫn là đề xuất.
 
 ## 1. Vì Sao Cần Master Plan Này
 
@@ -80,7 +80,7 @@ Master plan này là portfolio-level authority cho bốn câu hỏi trên. Workf
 | ID | Mức độ | Vấn đề | Trạng thái | Owner chính |
 |---|---|---|---|---|
 | CF-001 | HIGH | Không có master plan được track và dễ tìm | `RESOLVED` qua artifact + link này | PO/BA |
-| CF-002 | HIGH | CR-008/linked defect chưa đóng hết terminal lifecycle | `IN_PROGRESS` | QC/DevOps/PO |
+| CF-002 | HIGH | Child CR-008 đã `DONE`; parent re-verification và reconciliation residual còn mở | `IN_PROGRESS_PARENT_REVERIFY` | Developer/QC/DevOps/PO |
 | CF-003 | HIGH | Source candidate, runtime đang cài và public state lệch nhau | `OPEN` | DevOps |
 | CF-004 | HIGH | CHANGE-005 diagram adapter có prerequisite/status cũ | `OPEN` | Developer/QC |
 | CF-005 | MEDIUM | Test cross-file còn đọc live work-item note | `OPEN` | Developer/QC |
@@ -97,22 +97,20 @@ Master plan này là portfolio-level authority cho bốn câu hỏi trên. Workf
 | CF-016 | MEDIUM | Main worktree có nhiều WIP untracked dễ nhiễm audit/release | `OPEN` | Maintainer/DevOps |
 | CF-017 | HIGH | Local và hosted `.tgz` khác byte dù extracted content bằng nhau | `OPEN` | Developer/DevOps/QC |
 | CF-018 | MEDIUM | GitHub action runtime có cảnh báo deprecation | `OPEN` | DevOps |
-| CF-019 | HIGH | Câu chữ authority về SA/TA mâu thuẫn với adaptive applicability | `PROPOSED_FINDING` | PO/BA/Developer/QC |
+| CF-019 | HIGH | Câu chữ authority về SA/TA mâu thuẫn với adaptive applicability | `ACCEPTED_PENDING_CHILD` | PO/BA/Developer/QC |
 | CF-020 | MEDIUM | Tài liệu current-facing còn version/inventory cũ | `PROPOSED_FINDING` | PO/BA/DevOps |
 
 ## 5. Thứ Tự Thực Thi Đã Phê Duyệt
 
 ### P0 — Làm Cho Trạng Thái Hiện Tại Trung Thực
 
-1. Đóng linked defect của CR-008:
-   - PO Business Acceptance và child `s08` finalization đã được ghi tại commit `fc08bfd`;
-   - seal closeout bundle và kiểm digest của ba receipt;
-   - chỉ đóng child protocol khi ba receipt khớp digest; chưa đóng parent hay branch/worktree.
-2. PO/BA/Developer/QC quyết định `OQ-CF-004` và disposition `CF-019`:
-   - nếu accept thành policy/code defect, tạo child độc lập, sửa rule SA/TA thành conditional theo
-     applicability, thêm semantic fixture và tạo candidate binding mới;
-   - nếu reject hoặc amend, ghi rõ lý do cùng exact no-code/amended closure evidence;
-   - quyết định OQ không tự mở implementation gate.
+1. Linked defect của CR-008 đã `DONE` ở phạm vi child tại commit `eb3aeec`; ba receipt đều khớp
+   digest s08 `acdd6b39…dde9`. Parent và branch/worktree vẫn `HOLD_OPEN`.
+2. `OQ-CF-004` Option C đã được PO/BA/Developer/QC phê duyệt:
+   - `CF-019` được chấp nhận là policy/runtime defect;
+   - bước kế tiếp là đề xuất child độc lập, sửa rule SA/TA thành conditional theo applicability,
+     thêm semantic fixture và tạo candidate binding mới;
+   - quyết định OQ không tự mở child work item hoặc implementation gate.
 3. Quay lại parent CR-008:
    - ghi child evidence và disposition của `CF-019`;
    - verify lại Technical Verification → DoD → Release → Business Acceptance trên candidate cuối;
@@ -168,18 +166,18 @@ Master plan này là portfolio-level authority cho bốn câu hỏi trên. Workf
 
 ## 7. Gate Hiện Tại
 
-Master work item đang ở `s03 Open Questions`, trạng thái `BLOCKED` cho authoring `s04` vì còn năm
+Master work item đang ở `s03 Open Questions`, trạng thái `BLOCKED` cho authoring `s04` vì còn bốn
 quyết định human:
 
 1. `OQ-CF-001` — PO/Maintainer chọn selective promotion cho tài liệu bị ignore.
 2. `OQ-CF-002` — Developer/QC chọn classify-first cho legacy work item; không mint receipt hồi tố.
 3. `OQ-CF-003` — BA sở hữu language rubric, PO/QC/domain reviewer chỉ tham gia theo phạm vi.
-4. `OQ-CF-004` — PO/BA/Developer/QC chọn conditional SA/TA applicability và disposition CF-019.
-5. `OQ-CF-005` — PO/BA/DevOps chọn policy current/historical cho version và skill inventory,
+4. `OQ-CF-005` — PO/BA/DevOps chọn policy current/historical cho version và skill inventory,
    đồng thời disposition CF-020.
 
-Recommendation cho cả năm là **Option C**. Sau khi các role tương ứng phê duyệt, bước kế tiếp mới là
-author `s04 Acceptance + DoR`; chưa được nhảy sang Task Plan hoặc implementation.
+`OQ-CF-004` đã chốt **Option C**. Recommendation cho bốn OQ còn lại vẫn là **Option C**. Sau khi
+các role tương ứng phê duyệt, bước kế tiếp mới là author `s04 Acceptance + DoR`; chưa được nhảy
+sang Task Plan hoặc implementation.
 
 ## Traceability
 

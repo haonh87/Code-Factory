@@ -83,12 +83,12 @@
   "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "human-decision-oq-cf-001-005",
+  "handoff_target": "cf-019-child-work-item-proposal",
   "required_actions": [
     "Resolve OQ-CF-001 document authority with PO/maintainer.",
     "Resolve OQ-CF-002 legacy migration policy with Developer/QC.",
     "Resolve OQ-CF-003 public-language quality ownership with PO/BA.",
-    "Resolve OQ-CF-004 adaptive SA/TA applicability authority with PO/BA/Developer/QC.",
+    "Propose an independent CF-019 child work item; do not infer work-item or implementation approval from OQ-CF-004.",
     "Resolve OQ-CF-005 current-versus-historical public documentation policy with PO/BA/DevOps.",
     "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate spec --reviewed-by <role>",
     "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate dor --reviewed-by <role>",
@@ -100,7 +100,6 @@
     "OQ-CF-001 document authority has no human decision.",
     "OQ-CF-002 legacy reconciliation policy has no human decision.",
     "OQ-CF-003 public-language ownership and rubric have no human decision.",
-    "OQ-CF-004 adaptive SA/TA applicability authority has no human decision.",
     "OQ-CF-005 public version/inventory classification has no human decision."
   ],
   "refs": [
@@ -122,7 +121,8 @@
     "MASTER_PLAN_MADE_DISCOVERABLE",
     "SEMANTIC_FINDINGS_CF_019_CF_020_PROPOSED",
     "OQ_RECOMMENDATION_BUNDLE_AMENDED_CF_019_CF_020",
-    "PORTFOLIO_DEPENDENCY_CYCLE_REMOVED"
+    "PORTFOLIO_DEPENDENCY_CYCLE_REMOVED",
+    "OQ_CF_004_OPTION_C_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -131,7 +131,8 @@
   "review_notes": [
     "Human review approved.",
     "The s03 bundle was amended at 2026-09-07T14:33:29Z so proposed findings CF-019/CF-020 and AC-CF-010/011 have explicit OQ-CF-004/005 decisions; no finding or option was self-approved.",
-    "The detailed P0 dependency cycle was removed: child closeout precedes CF-019 disposition/remediation, which precedes parent CR-008 re-verification; the approved P0-to-P4 phase order is unchanged."
+    "The detailed P0 dependency cycle was removed: child closeout precedes CF-019 disposition/remediation, which precedes parent CR-008 re-verification; the approved P0-to-P4 phase order is unchanged.",
+    "PO, BA, Developer, and QC approved OQ-CF-004 Option C at 2026-09-08T02:23:55Z. CF-019 is accepted as a policy/runtime defect; this decision does not approve its child work item or implementation."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -201,6 +202,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Expanded s03 to OQ-CF-001..005 so CF-019/CF-020 and AC-CF-010/011 have explicit options, scoped owners and verify paths. All five Option C recommendations remain pending human decisions. The detailed P0 ordering was corrected to remove the child-closeout/CF-019/parent-reverification dependency cycle."
+    },
+    {
+      "timestamp": "2026-09-08T02:23:55Z",
+      "action": "approve-oq-cf-004-option-c",
+      "actor": "po+ba+developer+qc",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Approved OQ-CF-004 Option C and accepted CF-019 as a policy/runtime defect. Child work-item approval and implementation authority remain independent human gates."
     }
   ]
 }

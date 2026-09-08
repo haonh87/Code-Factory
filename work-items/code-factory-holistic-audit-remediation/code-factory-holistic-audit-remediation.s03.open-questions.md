@@ -341,7 +341,12 @@ open_questions:
   - id: "OQ-CF-004"
     topic: "Authoritative relationship between adaptive role applicability and the generic SA/TA skill rule"
     owner: "po/ba/developer/qc"
-    status: PENDING_HUMAN_DECISION
+    status: APPROVED
+    selected_option: C
+    disposition: ACCEPTED_POLICY_AND_RUNTIME_DEFECT
+    approved_by: ["po", "ba", "developer", "qc"]
+    approved_at: "2026-09-08T02:23:55Z"
+    implementation_authority: NOT_GRANTED
     affects: ["CF-019", "AC-CF-010", "KPI-CF-005", "KPI-CF-006"]
     observed_baseline:
       adaptive_rule: "Maintenance does not add SA/TA without a named trigger."
@@ -449,15 +454,15 @@ missing_inputs:
   - "Human decision for OQ-CF-001"
   - "Human decision for OQ-CF-002"
   - "Human decision for OQ-CF-003"
-  - "Human decision for OQ-CF-004"
   - "Human decision for OQ-CF-005"
 invalid_inputs: []
 conflicts:
-  - "The five option tensions are documented but not yet resolved by their owners."
+  - "Four option tensions remain unresolved; OQ-CF-004 is resolved by approved Option C."
 assumptions:
   - "Recommendations remain proposals until explicit role decisions are recorded."
+  - "OQ-CF-004 approval accepts CF-019 but does not approve a child work item or implementation."
 risk_level: MEDIUM
-next_action: "Human owners accept or amend OQ-CF-001..005; then re-assess readiness before s04."
+next_action: "Propose the independent CF-019 child; human owners decide OQ-CF-001/002/003/005 before master s04."
 ```
 
 ## Audit
@@ -475,16 +480,17 @@ checks:
     result: PASS
     evidence: "OQ-CF-002 forbids retrospective receipts; every recommendation preserves independent child gates."
   - criterion: "Human owners have decided"
-    result: FAIL
-    evidence: "All five OQs remain PENDING_HUMAN_DECISION."
+    result: PARTIAL
+    evidence: "OQ-CF-004 is APPROVED as Option C by PO/BA/Developer/QC; OQ-CF-001/002/003/005 remain pending."
 constraint_violations: []
-unmitigated_high_risks: []
+unmitigated_high_risks:
+  - "CF-019 is accepted but remains unremediated until an independently approved child reaches implementation and verification."
 timebox_breach: false
 timebox_evidence: "Recommendation authoring completed in one focused pass; human decision is pending."
 gaps:
-  - "OQ-CF-001..005 lack explicit human decisions."
+  - "OQ-CF-001, OQ-CF-002, OQ-CF-003, and OQ-CF-005 lack explicit human decisions."
 risk_level: MEDIUM
-next_action: "Request one bundled human decision with the corresponding scoped roles."
+next_action: "Propose the CF-019 child independently, then request the remaining four decisions with their scoped roles."
 ```
 
 ## Traceability
@@ -496,12 +502,12 @@ upstream:
 outputs:
   - "OQ-CF-001..005 recommendation bundle"
   - "s04 input-readiness report"
-next_step: "Human decision, then s04 Acceptance + DoR"
+next_step: "Independent CF-019 child proposal; remaining human decisions before master s04 Acceptance + DoR"
 ```
 
 ## Handoff
-- Trạng thái readiness: `BLOCKED` chỉ vì năm human decisions chưa được ghi; không có missing technical input.
-- Recommendation: chọn Option C cho OQ-CF-001..005 với authority tương ứng.
+- Trạng thái readiness: `BLOCKED` vì bốn human decisions còn lại chưa được ghi; không có missing technical input.
+- OQ-CF-004: Option C đã được PO/BA/Developer/QC phê duyệt; CF-019 được chấp nhận là policy/runtime defect, nhưng child work item và implementation vẫn cần gate độc lập.
+- Recommendation còn lại: chọn Option C cho OQ-CF-001/002/003/005 với authority tương ứng.
 - Điều cần làm để sang step 4: PO/maintainer quyết OQ-CF-001; Developer/QC quyết OQ-CF-002;
-  BA quyết OQ-CF-003 với PO/QC đồng ý phạm vi trách nhiệm; PO/BA/Developer/QC quyết OQ-CF-004;
-  PO/BA/DevOps quyết OQ-CF-005.
+  BA quyết OQ-CF-003 với PO/QC đồng ý phạm vi trách nhiệm; PO/BA/DevOps quyết OQ-CF-005.

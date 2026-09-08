@@ -41,10 +41,11 @@ tags:
 > [!info] Current navigation
 > Vietnamese companion: [[code-factory-holistic-workflow-skill-remediation-plan.vi]]. The governed
 > workflow record is in `work-items/code-factory-holistic-audit-remediation/`. This plan remains at
-> `s03 Open Questions`; the portfolio sequence is approved, but the five policy decisions in §9
+> `s03 Open Questions`; the portfolio sequence is approved, but four policy decisions in §9
 > still require their named human authorities before `s04` can be authored. The approval dated
-> 2026-09-03 covers `CF-001..018`; `CF-019` and `CF-020` are new audit proposals dated 2026-09-05
-> and do not inherit that approval.
+> 2026-09-03 covers `CF-001..018`. PO/BA/Developer/QC subsequently approved OQ-CF-004 Option C
+> on 2026-09-08, accepting `CF-019` as a defect without approving a child work item or implementation.
+> `CF-020` remains a proposal and does not inherit either approval.
 
 ## 1. Why This Plan Exists
 
@@ -97,10 +98,10 @@ The 2026-09-02 table is retained as the audit snapshot. The authoritative delta 
 | Surface | Current evidence | Portfolio effect |
 |---|---|---|
 | Master plan visibility | Commit `569f48f` tracks this artifact, its Vietnamese companion and governed work item, with links from the README and docs maps. | `CF-001` is resolved; future portfolio updates now have one repository-visible authority. |
-| CR-008 correction | Parent CR-008 remains `VERIFIED` with finding `F-AG08-001`; child `closeout-bundle-legacy-dod-compatibility` is `VERIFIED`. Its hosted candidate is `da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690`; QC approved Technical Verification and DoD, DevOps/QC approved Release, and PO approved Business Acceptance. Commit `fc08bfd` finalized the child s08 host, but all three closeout receipts are still `MISSING`. | Seal the child receipts, close its protocol, then repeat the parent Technical Verification, DoD, Release and Business Acceptance against the corrected candidate. |
-| Candidate source | Production candidate source remains `373d91072dcc8dd02371bb4a37289c81d7299788`; local release-branch HEAD is `fc08bfd` after evidence finalization while origin remains at the production source commit. Hosted Guardrails run `33867082744` passed all 10 jobs. | Candidate behavior is hosted and reproducible by content; the evidence-only commits and receipt lifecycle must finish before parent closeout or promotion. |
+| CR-008 correction | Parent CR-008 remains `VERIFIED` with finding `F-AG08-001`; child `closeout-bundle-legacy-dod-compatibility` reached `DONE` at commit `eb3aeec`. Its DoD, Release and Business Acceptance receipts all match finalized s08 SHA-256 `acdd6b392f2661efcfe636c8916fde5207d0fe19c41633200e276e1d5b20dde9`. | Keep the branch/worktree `HOLD_OPEN`; record the child evidence and CF-019 disposition, then repeat parent Technical Verification, DoD, Release and Business Acceptance against the final candidate. |
+| Candidate source | Production candidate source remains `373d91072dcc8dd02371bb4a37289c81d7299788`; local release-branch HEAD is `eb3aeec` after child closeout while origin remains at the production source commit. Hosted Guardrails run `33867082744` passed all 10 jobs. | Candidate behavior is hosted and reproducible by content; CF-019 remediation and the parent receipt lifecycle must finish before parent closeout or promotion. |
 | Installed runtimes | `wfc status --mode codex|claude` reports source `2.6.2`, installed `2.3.2`, and 40 managed skills for both harnesses. | Adaptive governance is not yet the active user runtime; the original role/gate friction remains observable until release, install and parity activation finish. |
-| Authority wording | `Hard Rule: Adaptive Admission And Applicability` forbids adding SA/TA to maintenance without a trigger, while `Skill Requirement` still says to use SA and TA at every `s01-s04`. | This is a semantic policy conflict (`CF-019`) even though the executable routing matrix correctly omits irrelevant roles. |
+| Authority wording | `Hard Rule: Adaptive Admission And Applicability` forbids adding SA/TA to maintenance without a trigger, while `Skill Requirement` still says to use SA and TA at every `s01-s04`. | OQ-CF-004 Option C is approved: router applicability and stable reason codes are authoritative; a separate child must repair and verify the source/runtime wording. |
 | Public docs freshness | `docs/vi/README.md` and `docs/release/community-pack-*` still present `v2.1.1` and 36 skills as current-facing claims. | These surfaces need a current-vs-historical disposition (`CF-020`) before the next public handoff. |
 | Generated runtime hygiene | Ignored local runtime output contains duplicate category directories such as `analysis 2` and `orchestration 3`; the hosted candidate's 545-file tree did not show a content mismatch. | Treat as local generated-output hygiene and audit coverage, not proof that the approved hosted artifact is corrupted. |
 
@@ -114,7 +115,7 @@ The 2026-09-02 table is retained as the audit snapshot. The authoritative delta 
 | SA/TA metrics deep dive | Draft 12-week learning plan; thresholds unvalidated | `OPEN_EXPERIMENT` |
 | Memory standardization | Codebase-memory trial and team rollout done; umbrella contract unapproved | `PARTIAL` |
 | Trending AI application | WI-2 done; WI-1 security scan and WI-3 Rationalizations pilot absent | `PARTIAL` |
-| Adaptive approval UX | Corrected child candidate passed hosted Guardrails and every child terminal reviewer has approved; trusted child receipts and parent re-verification remain | `IN_PROGRESS_CHILD_CLOSEOUT` |
+| Adaptive approval UX | Corrected child candidate passed hosted Guardrails; child terminal receipts match and its protocol is `DONE`; parent re-verification remains | `IN_PROGRESS_PARENT_REVERIFY` |
 | Diagram-design adapter | Authoring gates approved, but stored protocol remains s06 with stale blockers | `RECONCILE_BEFORE_EXECUTION` |
 | Test/tree decoupling | G-A superseded by another fix; cross-file G-B and two-tree evidence remain | `OPEN` |
 
@@ -123,7 +124,7 @@ The 2026-09-02 table is retained as the audit snapshot. The authoritative delta 
 | ID | Severity | Finding | Evidence | Owner | Status | Closure evidence |
 |---|---|---|---|---|---|---|
 | CF-001 | HIGH | No canonical pack-wide review/remediation plan was visible in tracked repository state. | The approved artifact and workflow existed only as untracked local files. | PO/BA | `RESOLVED` | This plan and its workflow are tracked and linked from the README/docs map. |
-| CF-002 | HIGH | CR-008 closeout was reopened by `F-AG08-001`; the linked correction has all required child reviewer decisions but still needs digest-matching terminal receipts, child protocol closeout and repeated parent terminal review. | Parent/child s08 reports, commits `373d910` and `fc08bfd`, run `33867082744`, hosted candidate `da49e511...`. | QC/DevOps/PO | `IN_PROGRESS` | Child closeout receipts and protocol `DONE`; parent re-verification and fresh terminal receipts; branch finalization. |
+| CF-002 | HIGH | CR-008 closeout was reopened by `F-AG08-001`; its linked correction is now `DONE`, while parent re-verification and finalization remain. The real closeout also exposed phrase-dependent reconciliation of custom pending metadata, which required explicit normalization before protocol close. | Parent/child s08 reports, commits `373d910`, `fc08bfd`, `8b250c2`, `eb3aeec`, run `33867082744`, hosted candidate `da49e511...`. | Developer/QC/DevOps/PO | `IN_PROGRESS_PARENT_REVERIFY` | Parent records child evidence, resolves the reconciliation residual, repeats terminal review with fresh digest-matching receipts, then finalizes the branch. |
 | CF-003 | HIGH | Source candidate, installed runtimes and final public state are materially out of sync. | Candidate source 2.6.2/42; installed Codex/Claude 2.3.2/40; release branch source `373d910...`. | DevOps | `OPEN` | One immutable candidate; source/runtime/origin version and skill parity after governed release/install activation. |
 | CF-004 | HIGH | CHANGE-005 contains stale prerequisite claims and has not reached a truthful execution state. | Report says CHANGE-004 not verified although it is `DONE`; Playwright remains missing; s08 is draft. | Developer/QC | `OPEN` | Reconciled report, re-run T0, explicit route decision and valid transition. |
 | CF-005 | MEDIUM | `decouple-tests-from-tree-layout` still reads a live work-item note in the cross-file assertion. | `workflow-gate-evidence-utils.test.js`; s06 T2/T3. | Developer/QC | `OPEN` | Fixture-controlled test, negative test and equal two-tree result. |
@@ -140,7 +141,7 @@ The 2026-09-02 table is retained as the audit snapshot. The authoritative delta 
 | CF-016 | MEDIUM | Main working tree contains duplicate/untracked WIP that can contaminate release or audit evidence. | `git status` lists CHANGE-005, CR-008, work items, runtime copy and release doc. | Maintainer/DevOps | `OPEN` | Each path attributed, committed in its owning branch, moved, or recoverably cleaned. |
 | CF-017 | HIGH | Exact `.tgz` bytes are not reproducible across local and GitHub-hosted packaging environments, so content-equivalent builds receive different release digests. | Local SHA `ec000...`; hosted SHA `8ddcb...`; identical extracted trees and uncompressed tar SHA `e82afa...`. | Developer/DevOps/QC | `OPEN` | One deterministic packaging environment or canonical content identity, plus a release policy/test that prevents ambiguous digest binding. |
 | CF-018 | MEDIUM | Hosted Guardrails relies on `actions/checkout@v4` and `actions/setup-node@v4` actions whose Node 20 runtime is deprecated; GitHub currently forces Node 24 and emits warnings in every job. | Run `33703233050` annotations. | DevOps | `OPEN` | Upgrade to supported action majors, pin/update policy as appropriate, and obtain one warning-free hosted run. |
-| CF-019 | HIGH | Authority prose conflicts on SA/TA applicability: the adaptive hard rule says maintenance must not add SA/TA without a trigger, but the generic Skill Requirement says to use both throughout `s01-s04`. | `policies/codex/AGENTS.global.md` under `Adaptive Admission And Applicability` and `Skill Requirement`; the same wording is bundled into both harness runtimes. | PO/BA/Developer/QC | `PROPOSED_FINDING` | Human accepts/amends the finding; then rewrite the generic rule as applicability-conditional, add a semantic regression fixture, sync both runtimes, and verify that maintenance produces zero irrelevant SA/TA actions. |
+| CF-019 | HIGH | Authority prose conflicts on SA/TA applicability: the adaptive hard rule says maintenance must not add SA/TA without a trigger, but the generic Skill Requirement says to use both throughout `s01-s04`. | `policies/codex/AGENTS.global.md` under `Adaptive Admission And Applicability` and `Skill Requirement`; OQ-CF-004 Option C approved by PO/BA/Developer/QC on 2026-09-08. | PO/BA/Developer/QC | `ACCEPTED_PENDING_CHILD` | Approve an independent child; rewrite the generic rule as applicability-conditional, add a semantic regression fixture, sync both runtimes, and verify zero irrelevant maintenance SA/TA actions. |
 | CF-020 | MEDIUM | Current-facing documentation still carries stale `v2.1.1`/36-skill claims beside the `v2.6.2`/42-skill candidate surface. | `docs/vi/README.md`, `docs/release/community-pack-readme*.md`, and `docs/release/community-pack-positioning*.md`. | PO/BA/DevOps | `PROPOSED_FINDING` | Human classifies the affected files as current or historical; current files align to the released version/inventory, historical files are labeled and removed from current onboarding. |
 
 ## 6. Execution Sequence
@@ -150,15 +151,14 @@ boundary; completion of one does not approve the next.
 
 ### Phase 0 — Make Current State Truthful
 
-1. **P0.1 — Close the CR-008 linked defect** (`CF-002`, `CF-017`, part of `CF-003`).
-   - PO Business Acceptance and child `s08` finalization are recorded at commit `fc08bfd`; seal the applicable terminal receipts in one human interaction.
-   - Close the child protocol only after every receipt digest matches the frozen host artifact.
-   - Verify: all three child receipts match the finalized s08 digest and the child protocol reaches `DONE`; do not close the parent or branch yet.
-2. **P0.2 — Decide and, if accepted, remediate adaptive role applicability** (`CF-019`; pending OQ-CF-004).
-   - First accept, amend or reject the finding with PO/BA/Developer/QC authority.
-   - If accepted as a code/policy defect, make the generic SA/TA skill rule conditional on the router's applicability decision and stable reason codes, add a semantic regression fixture, and produce a new candidate binding.
+1. **P0.1 — Close the CR-008 linked defect** (`CF-002`, `CF-017`, part of `CF-003`) — `DONE_CHILD_ONLY`.
+   - Child protocol reached `DONE` at `eb3aeec`; DoD, Release and Business Acceptance receipts all match finalized s08 SHA-256 `acdd6b392f2661efcfe636c8916fde5207d0fe19c41633200e276e1d5b20dde9`.
+   - Parent CR-008 and its branch/worktree remain `HOLD_OPEN`.
+2. **P0.2 — Remediate adaptive role applicability** (`CF-019`; OQ-CF-004 Option C approved).
+   - PO/BA/Developer/QC accepted the finding and conditional authority rule on 2026-09-08.
+   - Propose and independently approve a child work item before changing the generic SA/TA rule, policy/runtime copies or semantic fixtures.
+   - After its authoring gates pass, make the generic SA/TA skill rule conditional on the router's applicability decision and stable reason codes, add a semantic regression fixture, and produce a new candidate binding.
    - Keep SA/TA mandatory for named public-contract, regulated, cross-system and greenfield-foundation triggers; do not infer implementation authority from the OQ decision.
-   - If rejected or narrowed, record the reason and exact no-code or amended closure evidence.
 3. **P0.3 — Re-verify and close parent CR-008** (`CF-002`, remainder of `CF-003`).
    - Record the closed child evidence and the OQ-CF-004/CF-019 disposition on the parent.
    - Repeat Technical Verification, DoD, Release and Business Acceptance against the final candidate rather than inheriting superseded approvals.
@@ -256,17 +256,20 @@ The user explicitly approved the master plan on 2026-09-03. That decision approv
 1. the master work-item boundary and finding register;
 2. the P0 → P4 sequencing.
 
-It does not approve the new `CF-019`, `CF-020`, `AC-CF-010`, or `AC-CF-011` proposals added by the
-2026-09-05 evidence refresh.
+The 2026-09-03 approval did not approve the new `CF-019`, `CF-020`, `AC-CF-010`, or `AC-CF-011`
+proposals added by the 2026-09-05 evidence refresh.
+
+PO/BA/Developer/QC approved OQ-CF-004 Option C on 2026-09-08. This accepts `CF-019` and the
+proposed `AC-CF-010` direction, but still does not approve a child work item, implementation,
+Release, Business Acceptance, DoD, exception or waiver. `CF-020` and `AC-CF-011` remain proposals.
 
 The trusted work-item receipt was sealed by `po` at `2026-09-03T01:34:46.476Z`. These decisions
 remain open for s03 and were not resolved by approving the plan:
 
 1. OQ-CF-001 document authority;
 2. OQ-CF-002 legacy migration policy;
-3. OQ-CF-003 public-language quality ownership.
-4. OQ-CF-004 adaptive SA/TA applicability authority and CF-019 disposition;
-5. OQ-CF-005 current-versus-historical version/inventory policy and CF-020 disposition.
+3. OQ-CF-003 public-language quality ownership;
+4. OQ-CF-005 current-versus-historical version/inventory policy and CF-020 disposition.
 
 This approval permits further authoring of the master work item. It does not approve implementation,
 any child work item, CR-008's artifact amendment, Release, Business Acceptance, DoD, exception or

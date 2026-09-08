@@ -574,14 +574,14 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-03T01:34:46.476Z"
-handoff_target: "human-decision-oq-cf-001-005"
-last_transition_action: "amend-decision-bundle"
-last_transition_at: "2026-09-07T14:33:29Z"
+handoff_target: "cf-019-child-work-item-proposal"
+last_transition_action: "approve-oq-cf-004-option-c"
+last_transition_at: "2026-09-08T02:23:55Z"
 required_actions:
   - "Resolve OQ-CF-001 document authority with PO/maintainer."
   - "Resolve OQ-CF-002 legacy migration policy with Developer/QC."
   - "Resolve OQ-CF-003 public-language quality ownership with PO/BA."
-  - "Resolve OQ-CF-004 adaptive SA/TA applicability authority with PO/BA/Developer/QC."
+  - "Propose an independent CF-019 child work item; do not infer work-item or implementation approval from OQ-CF-004."
   - "Resolve OQ-CF-005 current-versus-historical public documentation policy with PO/BA/DevOps."
   - "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate spec --reviewed-by <role>"
   - "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate dor --reviewed-by <role>"
@@ -592,12 +592,12 @@ blockers:
   - "OQ-CF-001 document authority has no human decision."
   - "OQ-CF-002 legacy reconciliation policy has no human decision."
   - "OQ-CF-003 public-language ownership and rubric have no human decision."
-  - "OQ-CF-004 adaptive SA/TA applicability authority has no human decision."
   - "OQ-CF-005 public version/inventory classification has no human decision."
 review_notes:
   - "Human review approved."
   - "The s03 bundle was amended at 2026-09-07T14:33:29Z so proposed findings CF-019/CF-020 and AC-CF-010/011 have explicit OQ-CF-004/005 decisions; no finding or option was self-approved."
   - "The detailed P0 dependency cycle was removed: child closeout precedes CF-019 disposition/remediation, which precedes parent CR-008 re-verification; the approved P0-to-P4 phase order is unchanged."
+  - "PO, BA, Developer, and QC approved OQ-CF-004 Option C at 2026-09-08T02:23:55Z. CF-019 is accepted as a policy/runtime defect; this decision does not approve its child work item or implementation."
 refs:
   - "work-items/code-factory-holistic-audit-remediation"
   - "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md"
@@ -617,6 +617,7 @@ audit_events:
   - "SEMANTIC_FINDINGS_CF_019_CF_020_PROPOSED"
   - "OQ_RECOMMENDATION_BUNDLE_AMENDED_CF_019_CF_020"
   - "PORTFOLIO_DEPENDENCY_CYCLE_REMOVED"
+  - "OQ_CF_004_OPTION_C_APPROVED"
 ```
 
 ## Traceability
@@ -630,7 +631,8 @@ next_step: "Human reviews this s01 boundary and the linked portfolio plan before
 
 ## Handoff
 - Clear: one master portfolio is a distinct research/control item, not a duplicate of any narrow remediation item.
-- Track: document authority, legacy migration, language-quality ownership, role applicability and
-  public version/inventory classification remain OQ-CF-001..005.
+- Track: document authority, legacy migration, language-quality ownership and public
+  version/inventory classification remain OQ-CF-001/002/003/005. OQ-CF-004 is approved as Option C.
 - Human decision: master boundary, finding register and P0 → P4 sequencing approved at `2026-09-03T01:32:13Z`.
+- Human decision: PO/BA/Developer/QC approved OQ-CF-004 Option C at `2026-09-08T02:23:55Z`; CF-019 implementation remains gated independently.
 - Condition for s02: met; trusted work-item receipt is approved and verified. No child implementation gate is implied.
