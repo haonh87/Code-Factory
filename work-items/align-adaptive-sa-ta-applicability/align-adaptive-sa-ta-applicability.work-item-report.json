@@ -1,0 +1,165 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "MATERIALIZED",
+  "decision_owner": "agent",
+  "protocol_owner": "",
+  "raw_request_summary": "Reconcile CF-019 by making router-derived SA/TA applicability authoritative while preserving deterministic hard-risk escalation.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "align-adaptive-sa-ta-applicability",
+      "work_item_title": "Align Adaptive Sa Ta Applicability",
+      "work_item_type": "BUG",
+      "scope_summary": "Align the source and packaged runtime policy clauses with OQ-CF-004 Option C and add semantic no-trigger/trigger-positive evidence.",
+      "primary_outcome": "No-trigger requests create zero SA/TA obligations, while every named hard trigger retains the expected architecture roles and reason codes.",
+      "in_scope": [
+        "Source Codex policy applicability wording",
+        "Packaged Codex and Claude runtime policy parity",
+        "Semantic no-trigger and trigger-positive fixtures",
+        "CR-008 child-work-item traceability"
+      ],
+      "out_of_scope": [
+        "Changing SA/TA internal output contracts",
+        "Redesigning adaptive admission or trusted receipts",
+        "Creating a second change package",
+        "Finalizing the CR-008 release"
+      ],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "strict",
+      "sdd_reasons": [],
+      "sdd_preset": "strict",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s03.open-questions.md",
+        "work-items/adaptive-governance-human-approval-ux",
+        "work-items/arch-role-skills-release",
+        "work-items/architecture-role-skills",
+        "work-items/sdd-light-authority-cutover",
+        "changes/CR-008"
+      ],
+      "collision_notes": [
+        "arch-role-skills-release packaged and released SA/TA roles; it does not own adaptive applicability authority.",
+        "architecture-role-skills created the role capabilities; it does not own conditional admission precedence.",
+        "sdd-light-authority-cutover owns Light gate-host policy; it does not decide whether SA/TA roles apply.",
+        "adaptive-governance-human-approval-ux is the CR-008 parent release container; this child uniquely owns CF-019."
+      ],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "Linked defect under approved CR-008; no second change package is created.",
+      "change_refs": [
+        "changes/CR-008"
+      ],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item align-adaptive-sa-ta-applicability --planning-track full --delivery-context brownfield --governance-profile strict",
+        "npm run validate:workflow -- --workflow-root work-items/align-adaptive-sa-ta-applicability --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance"
+      ],
+      "blockers": [
+        "WORK_ITEM_APPROVAL_PENDING"
+      ]
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=BUG",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict",
+    "change_strategy=none",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=strict",
+    "selected_profile=strict",
+    "sdd_mode=none",
+    "sdd_escalation_reasons=",
+    "oq_cf_004=option_c_approved",
+    "linked_parent=adaptive-governance-human-approval-ux",
+    "linked_change_ref=CR-008",
+    "dedup=related architecture-role and SDD-Light items do not own CF-019 conditional applicability"
+  ],
+  "work_item_slug": "align-adaptive-sa-ta-applicability",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "selected_profile": "strict",
+  "sdd_mode": "none",
+  "sdd_preset": "strict",
+  "sdd_light_profile": "preview",
+  "sdd_reasons": [],
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/align-adaptive-sa-ta-applicability",
+  "current_step": "s01",
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "human-work-item-review",
+  "required_actions": [
+    "PO reviews and, if satisfied, runs wfc work-item approve --work-item align-adaptive-sa-ta-applicability --reviewed-by po.",
+    "After work-item approval, author s02 Business Goal; do not skip to a downstream gate."
+  ],
+  "blockers": [
+    "WORK_ITEM_APPROVAL_PENDING"
+  ],
+  "refs": [
+    "work-items/align-adaptive-sa-ta-applicability",
+    "work-items/adaptive-governance-human-approval-ux",
+    "changes/CR-008"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "S01_REQUIREMENT_AND_ARCHITECTURE_DRIVERS_DRAFTED"
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "review_required": true,
+  "approval_status": "PENDING_REVIEW",
+  "reviewed_by": "",
+  "reviewed_at": "",
+  "review_notes": [
+    "OQ-CF-004 Option C was approved by PO, BA, Developer, and QC; this authorizes proposal direction only, not work-item approval or implementation.",
+    "Dedup review confirms this child uniquely owns CF-019 while reusing the parent CR-008 change authority."
+  ],
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-08T02:41:56.780Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-09-08T02:41:56.780Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Materialization inputs are ready for scaffold."
+    },
+    {
+      "timestamp": "2026-09-08T02:41:56.861Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Auto-scaffolded workflow artifacts."
+    },
+    {
+      "timestamp": "2026-09-08T02:42:41Z",
+      "action": "author-s01-proposal",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Drafted requirement analysis and SA/TA architecture drivers from approved OQ-CF-004 Option C; work-item approval remains pending."
+    }
+  ]
+}
