@@ -81,13 +81,11 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "closeout-receipt-sealing",
+  "handoff_target": "work-item-close-transition",
   "required_actions": [
-    "Seal DoD, Release, and Business Acceptance receipts against the finalized s08 host with approve-closeout-bundle in one human TTY interaction."
+    "Run wfc work-item close after the trusted DoD, Release, and Business Acceptance receipts are committed."
   ],
-  "blockers": [
-    "CLOSEOUT_TRUSTED_RECEIPTS_PENDING"
-  ],
+  "blockers": [],
   "refs": [
     "work-items/closeout-bundle-legacy-dod-compatibility",
     "work-items/adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.s08.verification.md",
@@ -110,7 +108,8 @@
     "DOD_APPROVED_BY_QC",
     "RELEASE_APPROVED_BY_DEVOPS_AND_QC",
     "BUSINESS_ACCEPTANCE_APPROVED_BY_PO",
-    "S08_FINALIZED_FOR_CLOSEOUT"
+    "S08_FINALIZED_FOR_CLOSEOUT",
+    "CLOSEOUT_BUNDLE_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -123,7 +122,8 @@
     "QC approved amended Technical Verification artifact binding to hosted candidate SHA-256 da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690 at 2026-09-04T12:54:06Z; b2d9ba41... remains historical pre-host evidence and v2.6.1 SHA-256 7c1d2c7...f0b9 remains rollback.",
     "QC approved Technical Verification first at 2026-09-04T13:04:21Z, then DoD at 2026-09-04T13:04:29Z for hosted candidate da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690. Closeout receipts remain deferred until Release and Business Acceptance reviewers are recorded, preventing stale s08-bound receipts.",
     "DevOps and QC approved Release at 2026-09-04T13:20:37Z for hosted candidate da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690 with rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9.",
-    "PO approved Business Acceptance at 2026-09-07T14:06:08Z for work item closeout-bundle-legacy-dod-compatibility and hosted candidate SHA-256 da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690; s08 is finalized for trusted closeout receipt sealing."
+    "PO approved Business Acceptance at 2026-09-07T14:06:08Z for work item closeout-bundle-legacy-dod-compatibility and hosted candidate SHA-256 da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690; s08 is finalized for trusted closeout receipt sealing.",
+    "Trusted closeout bundle sealed DoD, Release, and Business Acceptance at 2026-09-08T02:02:43.548Z; all three receipts are APPROVED with digest_match=true against finalized s08 SHA-256 acdd6b392f2661efcfe636c8916fde5207d0fe19c41633200e276e1d5b20dde9."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -225,6 +225,14 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "PO approved Business Acceptance for work item closeout-bundle-legacy-dod-compatibility and hosted candidate SHA-256 da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690; s08 is finalized for trusted closeout receipt sealing."
+    },
+    {
+      "timestamp": "2026-09-08T02:02:43.548Z",
+      "action": "approve-closeout-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "APPROVED closeout gates: dod, release, business_acceptance"
     }
   ]
 }
