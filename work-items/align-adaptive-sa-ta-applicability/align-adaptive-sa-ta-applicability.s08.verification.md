@@ -115,9 +115,12 @@ tags:
 > QC opened s08 at `2026-09-08T10:28:40Z` for exact behavior source commit
 > `a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff` and local pre-host artifact SHA-256
 > `ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47`. All local
-> semantic, full-regression, governance, package, diff, and encoding checks pass. The formal result
-> remains PARTIAL until a pushed source commit completes the build-once hosted Node 18/22 Guardrails
-> matrix. Technical Verification and DoD remain human-controlled and are not inferred.
+> semantic, full-regression, governance, package, diff, and encoding checks pass. Hosted run
+> `34216520563` for source `96212a30a1a341d90f96b85709f9834e8bfaaef8` failed in Workflow
+> Execution because s01-s07 use invalid frontmatter value `review_mode: targeted`; four upstream jobs
+> passed, then four downstream jobs including candidate build and Node matrix were skipped. Finding
+> `F-AR08-001` therefore returns the work item to s07 pending a human-approved metadata/receipt
+> amendment. Technical Verification and DoD remain blocked and are not inferred.
 
 ## Step Contract
 ```yaml
@@ -162,7 +165,7 @@ risks:
     severity: HIGH
     mitigation: "Require the unchanged build-once hosted matrix and zero failed or skipped required jobs."
     owner: "qc"
-    status: OPEN
+    status: BLOCKED_BY_F_AR08_001
   - id: "R-S08-AR-002"
     description: "Copy parity is exact while all policy copies express the same wrong semantics."
     severity: HIGH
@@ -256,7 +259,7 @@ criteria_results:
     evidence: "Canonical/runtime/package policy bytes equal SHA-256 4d8e8c686a266908b1642c829c7daa2ad7572e989e802432ec3dc9e4010435c9 while semantic expectations pass independently."
   - criterion: "AC-AR-09"
     result: PARTIAL
-    evidence: "All local adjacent and full regressions pass; hosted Node 18/22 evidence remains open."
+    evidence: "All local adjacent and full regressions pass; hosted run 34216520563 failed before candidate build because s01-s07 carry invalid review_mode=targeted frontmatter."
   - criterion: "AC-AR-10"
     result: PARTIAL
     evidence: "Exact child source/artifact handoff and parent HOLD control are recorded; actual parent candidate re-verification correctly follows child DoD."
@@ -284,19 +287,21 @@ commands_run:
   - "npm run validate:workflow:pack-audit"
   - "npm run validate:workflow:bundle-smoke"
   - "release-candidate-artifact-smoke.test.js in exact-artifact mode"
+  - "gh run view 34216520563 --job 102029613415 --log-failed"
 skipped_checks:
-  - "Hosted build-once Node 18/22 Guardrails: pending push of the s08-open source commit."
+  - "Hosted candidate build and Node 18/22 matrix: skipped by GitHub after Workflow Execution failed."
   - "ESLint: no repository wrapper, dependency, or configuration exists."
   - "Semgrep: executable is unavailable and no tool installation is authorized."
 release_blockers:
-  - "Hosted build-once Node 18/22 required jobs and candidate binding are not yet available."
+  - "F-AR08-001: invalid review_mode=targeted in s01-s07 fails Workflow Execution and prevents hosted candidate build/Node verification."
 status: PARTIAL
 gaps:
-  - "Hosted run identity, exact hosted artifact SHA-256, and required-job results"
+  - "Valid execution metadata with refreshed trusted receipts where receipt-bound notes change"
+  - "Passing hosted run, exact hosted artifact SHA-256, and Node 18/22 required-job results"
 residual_risks:
   - "A supported hosted Node runtime may differ from local Node 26 despite complete local evidence."
-recommendation: "Commit and push this s08-open evidence, run the unchanged hosted Guardrails matrix, then amend the exact hosted binding before requesting Technical Verification."
-notes_for_review: "Local evidence is complete; PARTIAL reflects the deliberately pending hosted boundary, not a local failure."
+recommendation: "QC approves reopening s07 and records F-AR08-001; Developer approves a metadata-only Task Plan amendment that normalizes s01-s07 review_mode to the supported enum and refreshes affected trusted receipts before creating a new candidate."
+notes_for_review: "Local product evidence remains green, but the hosted governance failure is blocking and must not be waived or hidden."
 ```
 
 ## Governance Checks
@@ -314,15 +319,16 @@ checks:
     result: PASS
     evidence: "The executable router, reason vocabulary, schema, SA/TA contracts, and parent release authority remain unchanged."
   - item: "Hosted evidence boundary"
-    result: PENDING
-    evidence: "The branch has not yet supplied hosted Node 18/22 run identity for the current source commit."
+    result: FAIL
+    evidence: "Run 34216520563 failed Workflow Execution at job 102029613415; candidate build and Node matrix were skipped."
   - item: "Human-controlled terminal decisions"
     result: PASS
     evidence: "Technical Verification and DoD remain pending QC; Release and Business Acceptance are not applicable to this child."
 blocking_items:
-  - "Hosted Guardrails matrix and candidate binding"
+  - "F-AR08-001 execution-metadata normalization and affected trusted-receipt refresh"
+  - "Rerun hosted Guardrails through exact candidate build and Node 18/22"
 owner: "qc"
-next_action: "Run hosted Guardrails and update candidate-bound evidence before Technical Verification review."
+next_action: "Approve returning to s07 for the proposed metadata-only amendment; do not edit receipt-bound notes before the required human approvals."
 ```
 
 ## Regression & Compatibility Summary
@@ -337,7 +343,7 @@ evidence:
   - "Canonical, generated, and packaged policy SHA-256 values are identical."
   - "No router, stable reason, schema, public action, SA/TA contract, or dependency changed."
 pending:
-  - "Hosted Node 18/22 regression matrix"
+  - "Resolve F-AR08-001 and rerun hosted Node 18/22 regression matrix"
 rollback_plan:
   - "If hosted or QC verification fails, return to s07 and revert the focused CF-019 implementation candidate; do not advance parent CR-008."
 ```
@@ -422,26 +428,72 @@ opened_local_candidate_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6df
 local_candidate_version: "2.6.2"
 local_candidate_size_bytes: 954956
 runtime_policy_sha256: "4d8e8c686a266908b1642c829c7daa2ad7572e989e802432ec3dc9e4010435c9"
-hosted_source_sha: ""
-hosted_run_id: ""
+hosted_source_sha: "96212a30a1a341d90f96b85709f9834e8bfaaef8"
+hosted_run_id: "34216520563"
 hosted_candidate_sha256: ""
-binding_verdict: PENDING_HOSTED_EVIDENCE
+binding_verdict: BLOCKED_BEFORE_ARTIFACT_BUILD
 notes:
   - "The opened local artifact passes exact install/update smoke 4/4."
-  - "A hosted digest must not silently replace this local digest; QC must review any byte difference and extracted-content equivalence."
+  - "Hosted Workflow Tooling, Artifacts, SDD, and Changes passed."
+  - "Hosted Workflow Execution failed on invalid review_mode=targeted in all seven CF-019 s01-s07 notes."
+  - "Workflow Authoring Smoke, Planning, Build Exact Release Candidate, and Release Candidate matrix were skipped; no hosted artifact exists to bind."
+```
+
+## Verification Finding F-AR08-001
+```yaml
+finding_id: "F-AR08-001"
+status: OPEN
+severity: HIGH
+category: "WORKFLOW_EXECUTION_METADATA"
+detected_at: "2026-09-08T10:39:13Z"
+detected_by: "GitHub Workflow Guardrails run 34216520563"
+source_sha: "96212a30a1a341d90f96b85709f9834e8bfaaef8"
+failed_job:
+  name: "Workflow Execution"
+  job_id: "102029613415"
+  command: "npm run validate:workflow:execution -- --workflow-root work-items"
+root_cause: "CF-019 s01-s07 frontmatter uses review_mode=targeted, while the canonical execution enum accepts only self, independent, or auto_fix_loop. TARGETED belongs to the review-discipline artifact schema, not workflow-note frontmatter."
+affected_paths:
+  - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s01.restate.md"
+  - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s02.business-goal.md"
+  - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s03.open-questions.md"
+  - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s04.acceptance-criteria.md"
+  - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s05.technical-approach.md"
+  - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s06.task-breakdown.md"
+  - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s07.implementation.md"
+receipt_impact:
+  status: REQUIRES_HUMAN_REVIEW
+  reason: "s04, s05, and s06 are receipt-bound; changing their frontmatter invalidates current artifact digests and requires affected gate receipts to be refreshed with the existing authorities."
+product_behavior_impact: NONE
+hosted_impact:
+  passed_jobs: 4
+  failed_jobs: 1
+  skipped_jobs: 4
+  artifact_built: false
+recommended_resolution:
+  - "QC explicitly approves reopening s07 and records this finding."
+  - "Developer approves a metadata-only Task Plan amendment for review_mode normalization."
+  - "BA/Developer/QC re-confirm and refresh receipt-bound s04 gates; Developer re-confirms and refreshes s05 Approach and s06 Task Plan after the metadata edit."
+  - "Use supported review_mode=independent consistently because human QC is separate from the implementation owner."
+  - "Run execution/protocol/planning validators, create a new exact candidate, and rerun hosted Guardrails."
+prohibited_shortcuts:
+  - "Do not expand the validator enum to accept targeted without a separate approved contract change."
+  - "Do not silently edit receipt-bound artifacts or reuse stale receipts."
+  - "Do not approve Technical Verification or DoD for run 34216520563."
+next_human_action: "Approve the recommended s07 metadata/receipt amendment with the named roles."
 ```
 
 ## Technical Verification
 ```yaml
-status: PENDING
-verdict: PARTIAL
+status: BLOCKED
+verdict: FAIL
 candidate_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
 source_sha: "a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff"
 reviewed_by: []
 reviewed_at: ""
 blocking_items:
-  - "Hosted build-once Node 18/22 Guardrails evidence is pending."
-recommendation: "Do not approve Technical Verification until hosted required jobs and exact artifact binding pass."
+  - "F-AR08-001 is open and hosted run 34216520563 failed before artifact build."
+recommendation: "Do not approve Technical Verification; return to s07 only after explicit amendment approval."
 ```
 
 ## UAT Summary
@@ -478,7 +530,7 @@ checks:
     evidence: "Targeted and full local matrices pass with exact source/artifact identities."
   - criterion: "Hosted Node 18/22 candidate evidence is bound"
     result: FAIL
-    evidence: "No hosted run has been produced for the s08-open source commit yet."
+    evidence: "Run 34216520563 failed Workflow Execution and produced no hosted candidate."
   - criterion: "AC-AR-10 preserves exact parent handoff control"
     result: PASS
     evidence: "The exact child source/artifact is recorded and parent release stays blocked until post-child re-verification."
@@ -490,10 +542,11 @@ unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "The local matrix completed in one verification session; hosted time is pending."
 gaps:
-  - "Hosted source/run/artifact binding"
+  - "F-AR08-001 correction with refreshed receipt-bound gates"
+  - "Passing hosted source/run/artifact binding"
   - "QC Technical Verification followed by QC DoD"
 risk_level: MEDIUM
-next_action: "Commit/push the s08-open source, obtain hosted Guardrails evidence, then return to QC review."
+next_action: "Obtain human approval for the proposed s07 amendment before changing s01-s07 metadata."
 ```
 
 ## Definition of Done
@@ -508,13 +561,14 @@ checks:
   traceability_complete: PASS
   residual_risks_documented: PASS
 gaps:
+  - "F-AR08-001 correction and affected trusted-receipt refresh"
   - "Hosted Node 18/22 evidence and candidate binding"
   - "Explicit QC Technical Verification and subsequent DoD approval"
 residual_risks:
   - "Hosted runtime variation may still invalidate the local candidate."
 follow_up_items:
   - "After child DoD, parent CR-008 re-verifies a candidate containing the exact child result."
-next_action: "Keep DoD blocked until hosted evidence is complete and QC reviews Technical Verification first."
+next_action: "Keep DoD blocked; return to s07 only after the proposed metadata/receipt amendment is explicitly approved."
 ```
 
 ## Branch Finish Decision
@@ -523,16 +577,16 @@ finish_target: "codex/adaptive-governance-human-approval-ux and .claude/worktree
 workspace_kind: BOTH
 verify_inputs:
   - "Local s08 matrix PASS"
-  - "Hosted matrix pending"
+  - "Hosted run 34216520563 FAIL before artifact build"
   - "DoD pending"
 finish_gate_checks:
-  verify_complete: PENDING
+  verify_complete: FAIL
   dod_complete: PENDING
-  findings_closed: PASS
+  findings_closed: FAIL
   exceptions_resolved: PASS
 allowed_actions:
-  - "Commit and push verification evidence required for hosted CI."
-  - "Continue read-only verification and evidence updates."
+  - "Record F-AR08-001 and continue read-only diagnosis."
+  - "Return to s07 after explicit human amendment approval."
 blocked_actions:
   - "Merge branch"
   - "Remove or clean worktree"
@@ -543,6 +597,7 @@ merge_conditions:
   - "Parent CR-008 re-verifies the exact candidate and completes its own gates."
 residual_risks:
   - "Shared parent/child branch state makes early cleanup destructive to the remaining verification path."
+  - "Editing receipt-bound artifacts without refreshed receipts would create stale authorization."
 final_recommendation: HOLD_OPEN
 notes_for_closeout: "A clean workspace or green local tests do not permit finalization before child DoD and parent re-verification."
 ```
@@ -559,12 +614,16 @@ acceptance_refs:
   - "EDGE-AR-01..07"
 implementation_candidate_commit: "a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff"
 opened_local_candidate_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
-next_step: "Obtain hosted Guardrails evidence; then request QC Technical Verification review before DoD."
+hosted_run_id: "34216520563"
+hosted_source_sha: "96212a30a1a341d90f96b85709f9834e8bfaaef8"
+open_findings:
+  - "F-AR08-001"
+next_step: "Obtain human approval to reopen s07 and apply the metadata/receipt amendment; then create and verify a new candidate."
 ```
 
 ## Handoff
-- Overall status: PARTIAL; every local required check passes, hosted verification is pending.
-- Residual risks: supported Node runtime variance and stale parent-candidate evidence.
-- Recommendation: push one immutable s08-open source commit and use its build-once hosted artifact for the next QC binding decision.
+- Overall status: PARTIAL with a blocking hosted governance failure; local product evidence remains green.
+- Residual risks: stale gate receipts if metadata is edited without re-sealing, hosted runtime variance, and stale parent-candidate evidence.
+- Recommendation: approve the named s07 metadata/receipt amendment, then create and host a new exact candidate.
 - Release recommendation: NOT_APPLICABLE for this child; parent CR-008 remains blocked.
-- Next action: run hosted Guardrails, then update Technical Verification evidence without inferring approval.
+- Next action: QC approves reopening s07; Developer approves the Task Plan amendment; affected BA/Developer/QC gate authorities approve receipt refresh.
