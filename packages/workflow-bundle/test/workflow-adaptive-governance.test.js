@@ -6,6 +6,7 @@
 // not been implemented yet. Later tasks turn the same fixtures GREEN; do not
 // weaken an assertion to make an implementation fit.
 
+const fs = require("fs");
 const path = require("path");
 
 let failures = 0;
@@ -99,6 +100,54 @@ const HARD_TRIGGER_FIXTURES = [
   },
   expected_reason: expectedReason
 }));
+
+const HARD_TRIGGER_ROLE_MATRIX = [
+  {
+    trigger: "public_contract",
+    escalation_reason: "HARD_PUBLIC_CONTRACT",
+    optional_roles: {
+      sa: ["ROLE_SA_PUBLIC_CONTRACT_BOUNDARY"],
+      ta: ["ROLE_TA_PUBLIC_CONTRACT_RISK"]
+    },
+    optional_gate: { gate: "contract", reason: "GATE_CONTRACT_PUBLIC_CONTRACT" }
+  },
+  {
+    trigger: "migration",
+    escalation_reason: "HARD_MIGRATION",
+    optional_roles: { ta: ["ROLE_TA_MIGRATION_RISK"] }
+  },
+  {
+    trigger: "security_sensitive",
+    escalation_reason: "HARD_SECURITY_SENSITIVE",
+    optional_roles: { ta: ["ROLE_TA_SECURITY_RISK"] }
+  },
+  {
+    trigger: "regulated",
+    escalation_reason: "HARD_REGULATED",
+    optional_roles: {
+      sa: ["ROLE_SA_REGULATED_BOUNDARY"],
+      ta: ["ROLE_TA_REGULATED_RISK"]
+    }
+  },
+  {
+    trigger: "greenfield_foundation",
+    escalation_reason: "HARD_GREENFIELD_FOUNDATION",
+    optional_roles: {
+      sa: ["ROLE_SA_FOUNDATION_BOUNDARY"],
+      ta: ["ROLE_TA_FOUNDATION_RISK"]
+    },
+    optional_gate: { gate: "foundation", reason: "GATE_FOUNDATION_GREENFIELD" }
+  },
+  {
+    trigger: "release",
+    escalation_reason: "HARD_RELEASE",
+    optional_roles: { devops: ["ROLE_DEVOPS_RELEASE"] },
+    optional_gate: { gate: "release", reason: "GATE_RELEASE_PUBLICATION" }
+  }
+];
+
+const BASE_PRODUCT_ROLES = ["po", "ba", "developer", "qc"];
+const BASE_PRODUCT_GATES = ["spec", "dor", "approach", "task_plan", "dod", "business_acceptance"];
 
 // Controlled pre-adaptive baseline: change + work-item approval, then five
 // independent authoring-gate interactions to ACTIVE. Closeout has the three
@@ -204,6 +253,27 @@ function testCanonicalContractSurface() {
   console.log("  BASELINE: canonical lane and transaction surfaces locked");
 }
 
+function testCanonicalSkillRequirementDefersToRouter() {
+  const repoRoot = path.resolve(__dirname, "..", "..", "..");
+  const canonicalPolicyPath = path.join(repoRoot, "policies", "codex", "AGENTS.global.md");
+  const canonicalPolicy = fs.readFileSync(canonicalPolicyPath, "utf8");
+  const sectionMatch = canonicalPolicy.match(/(?:^|\n)## Skill Requirement\n([\s\S]*?)(?=\n## |$)/);
+  const section = sectionMatch ? sectionMatch[1] : "";
+  const obsoleteUnconditionalRule =
+    /At steps `s01` to `s04`,[\s\S]*?use `sa` and `ta` to turn the request into architecture drivers/;
+  const hasRouterPrecedenceContract =
+    /router(?:'s)?[^.\n]*role-applicability result[^.\n]*authoritative/i.test(section) &&
+    /use `sa` and `ta` only when[^.\n]*router[^.\n]*(?:applicable|selects)/i.test(section) &&
+    /(?:omits|not applicable)[^.\n]*must not re-add/i.test(section) &&
+    !obsoleteUnconditionalRule.test(section);
+
+  assert(
+    Boolean(sectionMatch) && hasRouterPrecedenceContract,
+    "canonical Skill Requirement must make router-derived SA/TA applicability authoritative and must not re-add omitted roles"
+  );
+  console.log("  CF-019: canonical Skill Requirement router precedence locked");
+}
+
 function testGoldenLaneMatrixAndDeterminism() {
   if (!normalizeInput || !evaluateDecision || !serializeDecision) {
     return;
@@ -277,6 +347,70 @@ function testHardTriggersRejectEveryDowngrade() {
   );
 
   console.log("  BASELINE: six hard triggers plus mixed intent reject every downgrade");
+}
+
+function testExactHardTriggerRoleReasonMatrix() {
+  if (!normalizeInput || !evaluateDecision) {
+    return;
+  }
+
+  HARD_TRIGGER_ROLE_MATRIX.forEach((fixture) => {
+    const fixtureName = `matrix-${fixture.trigger}`;
+    const decision = evaluateDecision(
+      normalizeInput({
+        request_lane: "documentation",
+        requested_lane: "documentation",
+        delivery_context: "brownfield",
+        planning_track: "quick",
+        requested_profile: "normal",
+        triggers: { [fixture.trigger]: true }
+      })
+    );
+    const rolesByName = new Map((decision.roles || []).map((entry) => [entry.role, entry]));
+    const gatesByName = new Map((decision.gates || []).map((entry) => [entry.gate, entry]));
+    const expectedOptionalRoles = Object.keys(fixture.optional_roles);
+    const expectedRoles = [...BASE_PRODUCT_ROLES, ...expectedOptionalRoles];
+    const expectedGates = fixture.optional_gate
+      ? [...BASE_PRODUCT_GATES, fixture.optional_gate.gate]
+      : [...BASE_PRODUCT_GATES];
+
+    assert(
+      stableJson((decision.escalation_reasons || []).slice().sort()) ===
+        stableJson([fixture.escalation_reason]),
+      `${fixtureName}: escalation reason must be exactly ${fixture.escalation_reason}`
+    );
+    assert(
+      stableJson((decision.roles || []).map((entry) => entry.role).slice().sort()) ===
+        stableJson(expectedRoles.slice().sort()),
+      `${fixtureName}: roles must be exactly ${expectedRoles.join(", ")}`
+    );
+    Object.entries(fixture.optional_roles).forEach(([role, reasons]) => {
+      const entry = rolesByName.get(role);
+      assert(Boolean(entry), `${fixtureName}: role '${role}' must apply`);
+      assert(
+        Boolean(entry) && stableJson(entry.reasons) === stableJson(reasons),
+        `${fixtureName}: role '${role}' reasons must be exactly ${stableJson(reasons)}`
+      );
+    });
+    ["sa", "ta", "devops"]
+      .filter((role) => !expectedOptionalRoles.includes(role))
+      .forEach((role) => assert(!rolesByName.has(role), `${fixtureName}: role '${role}' must not apply`));
+    assert(
+      stableJson((decision.gates || []).map((entry) => entry.gate).slice().sort()) ===
+        stableJson(expectedGates.slice().sort()),
+      `${fixtureName}: gates must be exactly ${expectedGates.join(", ")}`
+    );
+    if (fixture.optional_gate) {
+      const entry = gatesByName.get(fixture.optional_gate.gate);
+      assert(Boolean(entry), `${fixtureName}: gate '${fixture.optional_gate.gate}' must apply`);
+      assert(
+        Boolean(entry) && (entry.reasons || []).includes(fixture.optional_gate.reason),
+        `${fixtureName}: gate '${fixture.optional_gate.gate}' must include ${fixture.optional_gate.reason}`
+      );
+    }
+  });
+
+  console.log("  CF-019: exact six-trigger role, reason, gate, and negative-role matrix locked");
 }
 
 function testApplicableTerminalGates() {
@@ -467,8 +601,10 @@ function testControlledInteractionBaseline() {
 
 console.log("Running CR-008 adaptive-governance T0 tests...\n");
 testCanonicalContractSurface();
+testCanonicalSkillRequirementDefersToRouter();
 testGoldenLaneMatrixAndDeterminism();
 testHardTriggersRejectEveryDowngrade();
+testExactHardTriggerRoleReasonMatrix();
 testApplicableTerminalGates();
 testApprovalTransactionContract();
 testTelemetrySecretCanary();
