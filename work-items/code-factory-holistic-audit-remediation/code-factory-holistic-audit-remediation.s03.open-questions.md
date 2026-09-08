@@ -32,6 +32,7 @@ execution_roles:
   - "ba"
   - "developer"
   - "qc"
+  - "devops"
 review_mode: independent
 verification_owner: "qc"
 approval_gates:
@@ -95,22 +96,27 @@ tags:
 # Step 3 - Open Questions
 
 > [!summary]
-> OQ-CF-001..003 đã được chuyển thành recommendation bundle có option, trade-off, owner và verify
-> path. Chưa có quyết định human cho ba OQ, vì vậy readiness để viết s04 hiện là **BLOCKED**.
+> OQ-CF-001..005 đã được chuyển thành recommendation bundle có option, trade-off, owner và verify
+> path. OQ-CF-004/005 đóng khoảng trống decision của hai finding mới CF-019/020. Chưa có quyết định
+> human cho năm OQ, vì vậy readiness để viết s04 hiện là **BLOCKED**.
 
 ## Step Contract
 ```yaml
 step: "s03 Open Questions"
 goal: >-
-  Biến OQ-CF-001..003 thành các lựa chọn có thể quyết định về document authority, legacy lifecycle
-  truth và public-language ownership mà không mở implementation hay tự gán approval.
+  Biến OQ-CF-001..005 thành các lựa chọn có thể quyết định về document authority, legacy lifecycle
+  truth, public-language ownership, role applicability authority và current-facing documentation
+  mà không mở implementation hay tự gán approval.
 value: >-
-  Loại bỏ ba vùng mơ hồ có thể khiến s04 khóa acceptance sai: tài liệu nào là canonical, lịch sử
-  legacy được chuyển đổi thế nào mà không giả receipt, và ai chịu trách nhiệm cho ngôn ngữ tự nhiên.
+  Loại bỏ năm vùng mơ hồ có thể khiến s04 khóa acceptance sai: tài liệu nào là canonical, lịch sử
+  legacy được chuyển đổi thế nào mà không giả receipt, ai chịu trách nhiệm cho ngôn ngữ tự nhiên,
+  rule nào điều khiển SA/TA applicability, và tài liệu version/inventory nào là current hay historical.
 scope_in:
   - "Authority và trạng thái của docs/plans, docs/research và docs/audits"
   - "Policy classify/migrate/retire cho 17 legacy items và empty wfc-demo"
   - "Owner, rubric, coverage và gate applicability cho public EN/VI language quality"
+  - "Authority reconciliation giữa adaptive applicability và generic SA/TA Skill Requirement"
+  - "Current-versus-historical policy cho public version và managed-skill inventory claims"
 scope_out:
   - "Di chuyển/xóa file, sửa validator hoặc migrate legacy item"
   - "Sửa prompt/README/skill language"
@@ -118,10 +124,10 @@ scope_out:
 inputs_required:
   - "s01 scope, governance context và SA/TA drivers"
   - "s02 goal, KPI-CF-001..012 và INV-CF-001..005"
-  - "Master plan CF-001..018 và prior-artifact coverage"
-  - "Current .gitignore, protocol output và role authority model"
+  - "Master plan CF-001..020, AC-CF-001..011 và prior-artifact coverage"
+  - "Current .gitignore, protocol output, role authority model và public version/inventory surfaces"
 outputs_required:
-  - "Recommendation bundle cho OQ-CF-001..003"
+  - "Recommendation bundle cho OQ-CF-001..005"
   - "Rejected alternatives, risks, owner và verify path cho từng quyết định"
   - "Input readiness verdict cho s04"
 done_when:
@@ -174,6 +180,24 @@ risks:
     mitigation: "Dùng rubric có binary authority check, measurable coverage và role applicability."
     contingency: "Fail riêng critical surface; không bắt review lại toàn pack khi scope không liên quan."
     owner: "ba/qc"
+    status: OPEN
+  - id: "R-CF-S03-004"
+    description: "Hai authority rule trái nhau khiến maintenance vẫn bị kéo vào SA/TA ceremony dù router đã loại role."
+    likelihood: HIGH
+    impact: HIGH
+    severity: HIGH
+    mitigation: "Chọn một conditional authority rule, giữ hard triggers và khóa bằng semantic fixture."
+    contingency: "Giữ CF-019 mở và không cho parent Business Acceptance đi qua nếu conflict chưa có disposition."
+    owner: "po/ba/developer/qc"
+    status: OPEN
+  - id: "R-CF-S03-005"
+    description: "Cập nhật đồng loạt version có thể biến historical release material thành tuyên bố hiện tại sai sự thật."
+    likelihood: MEDIUM
+    impact: MEDIUM
+    severity: MEDIUM
+    mitigation: "Phân loại current/historical trước; chỉ current surface theo released state thực tế."
+    contingency: "Giữ tài liệu mơ hồ khỏi current onboarding và ghi explicit historical label."
+    owner: "po/ba/devops"
     status: OPEN
 timebox:
   target_duration: "Một focused recommendation pass và một human decision interaction"
@@ -314,8 +338,80 @@ open_questions:
       Option C improves naturalness without turning subjective preference into an all-role gate. BA
       owns clarity, domain owners join only when meaning is theirs, and QC verifies evidence.
     requested_decision: "Accept, amend or reject Option C as BA, with PO/QC agreement on their scoped responsibilities."
+  - id: "OQ-CF-004"
+    topic: "Authoritative relationship between adaptive role applicability and the generic SA/TA skill rule"
+    owner: "po/ba/developer/qc"
+    status: PENDING_HUMAN_DECISION
+    affects: ["CF-019", "AC-CF-010", "KPI-CF-005", "KPI-CF-006"]
+    observed_baseline:
+      adaptive_rule: "Maintenance does not add SA/TA without a named trigger."
+      generic_skill_rule: "Use SA and TA at steps s01 to s04."
+      executable_router: "Omits irrelevant SA/TA roles for maintenance."
+    options:
+      - id: A
+        direction: "Make SA and TA mandatory for every s01-s04 request regardless of applicability"
+        tradeoff: "One simple rule, but contradicts adaptive admission and recreates the role friction the release is meant to remove."
+        recommendation: REJECT
+      - id: B
+        direction: "Let the adaptive router win operationally but leave the generic Skill Requirement unchanged"
+        tradeoff: "Avoids an immediate edit, but keeps two operative instructions with opposite meanings across source and runtime copies."
+        recommendation: REJECT
+      - id: C
+        direction: "Make the generic SA/TA rule conditional on router applicability and stable reason codes"
+        tradeoff: "Requires policy/runtime synchronization and a semantic fixture, but preserves both low-friction maintenance and mandatory high-risk triggers."
+        recommendation: RECOMMENDED
+    recommended_decision:
+      authority_rule:
+        - "The router's applicable_roles and reason_codes decide whether SA and/or TA run for a work item."
+        - "SA/TA remain mandatory for the named public-contract, regulated, cross-system, and greenfield-foundation triggers."
+        - "A generic skill instruction may not re-add a role omitted by the authoritative applicability decision."
+      verify_path:
+        - "Maintenance fixtures produce zero irrelevant SA/TA actions when no trigger exists."
+        - "Public-contract, regulated and greenfield-foundation fixtures still require the correct architecture roles."
+        - "Source policy, Codex runtime and Claude runtime carry semantically identical conditional wording."
+        - "A semantic regression fails when the two operative rules contradict each other."
+    rationale: >-
+      Option C removes the authority conflict without weakening the cases where architecture review is
+      genuinely required. It also turns the intended adaptive behavior into a testable invariant.
+    requested_decision: "Accept, amend or reject Option C jointly as PO, BA, Developer and QC."
+  - id: "OQ-CF-005"
+    topic: "Current-versus-historical policy for public version and managed-skill inventory claims"
+    owner: "po/ba/devops"
+    status: PENDING_HUMAN_DECISION
+    affects: ["CF-020", "AC-CF-011", "KPI-CF-002", "KPI-CF-007"]
+    observed_baseline:
+      current_candidate: "v2.6.2 with 42 source skills; not yet released or installed"
+      installed_runtime: "v2.3.2 with 40 managed skills"
+      stale_claims: "Some current-facing docs still say v2.1.1 and 36 skills"
+    options:
+      - id: A
+        direction: "Replace every version and skill count with v2.6.2 and 42"
+        tradeoff: "Fast consistency, but falsifies historical release material and claims an unreleased candidate as current."
+        recommendation: REJECT
+      - id: B
+        direction: "Leave all existing claims unchanged"
+        tradeoff: "Preserves history, but current onboarding continues to contradict source and runtime state."
+        recommendation: REJECT
+      - id: C
+        direction: "Classify every affected surface as current or historical before updating claims"
+        tradeoff: "Requires an explicit inventory and allowlist, but keeps history truthful and current onboarding accurate."
+        recommendation: RECOMMENDED
+    recommended_decision:
+      policy:
+        - "Current onboarding identifies the actually released version and its managed-skill count, never a candidate-only state."
+        - "Historical release material keeps its original version/count with an explicit historical label and is excluded from current navigation."
+        - "Release promotion updates current surfaces atomically with the released artifact and runtime inventory."
+      verify_path:
+        - "100% affected documents have a CURRENT or HISTORICAL classification."
+        - "Current-facing scans return one released version and one managed-skill count."
+        - "Historical claims are allowlisted and visibly labeled, not silently rewritten."
+        - "Source, release artifact, installed runtimes and public current docs are reconciled after promotion."
+    rationale: >-
+      Option C prevents both stale onboarding and revisionist history. It also makes version/count
+      consistency a release invariant instead of an ad-hoc documentation cleanup.
+    requested_decision: "Accept, amend or reject Option C jointly as PO, BA and DevOps."
 missing_inputs:
-  - "Explicit human decisions for OQ-CF-001..003."
+  - "Explicit human decisions for OQ-CF-001..005."
 conflicts:
   - id: "CONFLICT-CF-001"
     tension: "Repository visibility versus draft/noise and duplicate authority."
@@ -326,11 +422,18 @@ conflicts:
   - id: "CONFLICT-CF-003"
     tension: "Natural language versus exact authority/technical meaning and low ceremony."
     resolution_owner: "ba/po/qc"
+  - id: "CONFLICT-CF-004"
+    tension: "Generic mandatory SA/TA wording versus router-controlled role applicability."
+    resolution_owner: "po/ba/developer/qc"
+  - id: "CONFLICT-CF-005"
+    tension: "Accurate current onboarding versus preservation of historical release claims."
+    resolution_owner: "po/ba/devops"
 assumptions:
   - "The approved master plan remains the only portfolio-level authority."
   - "Ignored plan files are inputs, not shared source-of-truth artifacts."
   - "No trusted receipt may be reconstructed from prose or Git history alone."
   - "English remains the default base documentation and Vietnamese supplements preserve natural target-language phrasing."
+  - "v2.6.2 remains a candidate until the governed release lifecycle is complete."
 ```
 
 ## Input Readiness
@@ -346,13 +449,15 @@ missing_inputs:
   - "Human decision for OQ-CF-001"
   - "Human decision for OQ-CF-002"
   - "Human decision for OQ-CF-003"
+  - "Human decision for OQ-CF-004"
+  - "Human decision for OQ-CF-005"
 invalid_inputs: []
 conflicts:
-  - "The three option tensions are documented but not yet resolved by their owners."
+  - "The five option tensions are documented but not yet resolved by their owners."
 assumptions:
   - "Recommendations remain proposals until explicit role decisions are recorded."
 risk_level: MEDIUM
-next_action: "Human owners accept or amend OQ-CF-001..003; then re-assess readiness before s04."
+next_action: "Human owners accept or amend OQ-CF-001..005; then re-assess readiness before s04."
 ```
 
 ## Audit
@@ -362,7 +467,7 @@ status: PARTIAL
 checks:
   - criterion: "Each OQ has options, recommendation and rationale"
     result: PASS
-    evidence: "OQ-CF-001..003 each compare A/B/C and recommend C."
+    evidence: "OQ-CF-001..005 each compare A/B/C and recommend C."
   - criterion: "Each OQ has authority and verify path"
     result: PASS
     evidence: "Owners, affected metrics and closure evidence are explicit per recommendation."
@@ -371,13 +476,13 @@ checks:
     evidence: "OQ-CF-002 forbids retrospective receipts; every recommendation preserves independent child gates."
   - criterion: "Human owners have decided"
     result: FAIL
-    evidence: "All three OQs remain PENDING_HUMAN_DECISION."
+    evidence: "All five OQs remain PENDING_HUMAN_DECISION."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Recommendation authoring completed in one focused pass; human decision is pending."
 gaps:
-  - "OQ-CF-001..003 lack explicit human decisions."
+  - "OQ-CF-001..005 lack explicit human decisions."
 risk_level: MEDIUM
 next_action: "Request one bundled human decision with the corresponding scoped roles."
 ```
@@ -389,13 +494,14 @@ upstream:
   - "code-factory-holistic-audit-remediation.s02.business-goal.md"
   - "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md"
 outputs:
-  - "OQ-CF-001..003 recommendation bundle"
+  - "OQ-CF-001..005 recommendation bundle"
   - "s04 input-readiness report"
 next_step: "Human decision, then s04 Acceptance + DoR"
 ```
 
 ## Handoff
-- Trạng thái readiness: `BLOCKED` chỉ vì ba human decisions chưa được ghi; không có missing technical input.
-- Recommendation: chọn Option C cho OQ-CF-001..003 với authority tương ứng.
+- Trạng thái readiness: `BLOCKED` chỉ vì năm human decisions chưa được ghi; không có missing technical input.
+- Recommendation: chọn Option C cho OQ-CF-001..005 với authority tương ứng.
 - Điều cần làm để sang step 4: PO/maintainer quyết OQ-CF-001; Developer/QC quyết OQ-CF-002;
-  BA quyết OQ-CF-003 với PO/QC đồng ý phạm vi trách nhiệm.
+  BA quyết OQ-CF-003 với PO/QC đồng ý phạm vi trách nhiệm; PO/BA/Developer/QC quyết OQ-CF-004;
+  PO/BA/DevOps quyết OQ-CF-005.

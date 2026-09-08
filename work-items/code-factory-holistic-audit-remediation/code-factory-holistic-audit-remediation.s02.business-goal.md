@@ -100,13 +100,14 @@ tags:
 step: "s02 Business Goal"
 goal: >-
   Khóa giá trị người dùng, kết quả portfolio, non-goals và thước đo thành công cho việc xử lý
-  CF-001..018 theo thứ tự P0 -> P4 trước khi giải quyết các quyết định còn mở ở s03.
+  CF-001..018 và disposition CF-019/020 theo thứ tự P0 -> P4 trước khi giải quyết các quyết định
+  còn mở ở s03.
 value: >-
   Cho maintainer một chuẩn chung để phân biệt tiến độ thật với artifact tồn tại, validator xanh
   hoặc nhận xét tích cực; đồng thời ngăn portfolio rộng trở thành lý do bulk-fix hay kế thừa approval.
 scope_in:
   - "Giá trị đối với maintainer, contributor, reviewer và người dùng workflow"
-  - "Kết quả kinh doanh/ vận hành của portfolio CF-001..018"
+  - "Kết quả kinh doanh/vận hành của portfolio CF-001..020, với CF-019/020 giữ trạng thái proposed"
   - "Success outcomes, invariant và metric candidates cho pack-wide closure"
 scope_out:
   - "Chọn technical approach hoặc file-level implementation"
@@ -115,11 +116,11 @@ scope_out:
 inputs_required:
   - "s01 Requirement Analysis, SA/TA drivers và governance context"
   - "Master plan đã được PO phê duyệt cùng trusted work-item receipt"
-  - "Finding register CF-001..018 và sequence P0 -> P4"
+  - "Finding register CF-001..020, approval boundary của CF-019/020 và sequence P0 -> P4"
 outputs_required:
   - "Product Thinking record với user problem, business goal và user value"
   - "Observable outcomes, non-goals, risks và KPI-CF-001..012"
-  - "Outcome guardrails và handoff cho OQ-CF-001..003"
+  - "Outcome guardrails và handoff cho OQ-CF-001..005"
 done_when:
   - "User problem và priority cụ thể, không dùng câu chung chung như improve quality"
   - "Mỗi success outcome có ít nhất một metric hoặc evidence path"
@@ -135,7 +136,7 @@ constraints:
     - "Ưu tiên ít ceremony nhất vẫn giữ đúng authority và traceability"
     - "Mỗi finding chỉ có một canonical disposition trong portfolio"
   prohibited_actions:
-    - "Bulk-fix CF-001..018 trong master research item"
+    - "Bulk-fix CF-001..020 trong master research item"
     - "Đánh dấu finding closed chỉ vì file, test hoặc plan tồn tại"
     - "Xóa hoặc gom WIP không rõ ownership"
   compliance_checks:
@@ -188,18 +189,19 @@ user_problem: >-
   validator xanh nhưng che semantic conflict, runtime cài đặt lệch source, và approval ceremony
   có thể tạo thêm ma sát thay vì làm rõ rủi ro.
 business_goal: >-
-  Đưa CF-001..018 về các trạng thái có căn cứ theo sequence P0 -> P4: xử lý release/lifecycle
-  blocker trước, sau đó security và governance blind spot, rồi language/human usability, optional
-  capability backlog và cuối cùng pack-wide closure; đạt 100% finding accountability, 0 finding
-  critical/high không có owner hoặc next gate, 0 unexplained lifecycle contradiction và một
-  closure report được QC kiểm chứng mà không kế thừa approval giữa các work item.
+  Đưa CF-001..018 về các trạng thái có căn cứ và buộc CF-019/020 nhận explicit human disposition
+  theo sequence P0 -> P4: xử lý release/lifecycle blocker trước, sau đó security và governance blind
+  spot, rồi language/human usability, optional capability backlog và cuối cùng pack-wide closure;
+  đạt 100% finding accountability, 0 finding critical/high không có owner hoặc next gate,
+  0 unexplained lifecycle contradiction và một closure report được QC kiểm chứng mà không kế thừa
+  approval giữa các work item.
 user_value: >-
   Người dùng nhìn thấy đúng việc gì đang chặn họ và chỉ được hỏi bởi role/gate có quyết định thực;
   maintainer có một portfolio duy nhất để ưu tiên và truy evidence; contributor có child scope rõ
   để sửa nhỏ, review sớm và không phải đoán lại mục tiêu; reviewer có tiêu chí đủ để bác bỏ một
   mechanical PASS khi semantic hoặc release identity vẫn sai.
 success_outcome:
-  - "CF-001..018 đều có đúng một disposition, owner, dependency, next gate và verify evidence."
+  - "CF-001..020 đều có đúng một disposition, owner, dependency, next gate và verify evidence; proposed finding phải được accept, amend hoặc reject rõ."
   - "P0.1-P0.3 kết thúc trước khi portfolio cho phép bắt đầu P1, trừ exception được đúng authority phê duyệt."
   - "Source, installed Codex/Claude runtimes, origin, hosted CI và release candidate được đối soát bằng identity rõ ràng."
   - "Không còn known semantic conflict bị che bởi workflow-pack audit xanh."
@@ -226,7 +228,7 @@ risks_business:
 metrics_candidate:
   - id: "KPI-CF-001"
     name: "Finding accountability coverage"
-    target: "18/18 = 100% findings có owner, dependency, next gate và verify path"
+    target: "20/20 = 100% findings có owner, dependency, next gate và verify path"
     status: "required invariant"
   - id: "KPI-CF-002"
     name: "Prior-artifact disposition coverage"
@@ -270,12 +272,13 @@ metrics_candidate:
     status: "required invariant"
   - id: "KPI-CF-012"
     name: "Portfolio terminal disposition"
-    target: "18/18 findings VERIFIED_CLOSED, ACCEPTED_RESIDUAL, RETIRED or covered by approved exception"
+    target: "20/20 findings VERIFIED_CLOSED, ACCEPTED_RESIDUAL, RETIRED, REJECTED_BY_AUTHORITY or covered by approved exception"
     status: "required for final portfolio DoD"
 notes_for_next_step: >-
   s03 must decide document authority for ignored plans, legacy migration/retirement policy and
-  public-language quality ownership/rubric. It must not turn these choices into implementation or
-  infer approval for any child item.
+  public-language quality ownership/rubric, plus role-applicability authority and current/historical
+  public documentation. It must not turn these choices into implementation or infer approval for any
+  child item.
 ```
 
 ## Outcome Guardrails
@@ -333,8 +336,10 @@ gaps:
   - "Document authority remains OQ-CF-001."
   - "Legacy migration/retirement policy remains OQ-CF-002."
   - "Public-language owner and quality threshold remain OQ-CF-003."
+  - "Adaptive SA/TA applicability authority and CF-019 disposition remain OQ-CF-004."
+  - "Public version/inventory classification and CF-020 disposition remain OQ-CF-005."
 risk_level: MEDIUM
-next_action: "Proceed to s03 and resolve OQ-CF-001..003 before drafting s04 Acceptance + DoR."
+next_action: "Proceed to s03 and resolve OQ-CF-001..005 before drafting s04 Acceptance + DoR."
 ```
 
 ## Traceability
@@ -354,4 +359,4 @@ next_step: "s03 Open Questions"
   lifecycle, runtime và release evidence mà không ép maintainer ghép thủ công nhiều nguồn.
 - Non-goals: không bulk-fix, không kế thừa child approval, không tự release/cleanup và không ép
   productize optional capability.
-- Điều kiện sang step 3: đạt; OQ-CF-001..003 có owner, decision boundary và metric bị ảnh hưởng rõ.
+- Điều kiện sang step 3: đạt; OQ-CF-001..005 có owner, decision boundary và metric bị ảnh hưởng rõ.

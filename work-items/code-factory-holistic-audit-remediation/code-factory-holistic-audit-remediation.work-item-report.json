@@ -71,8 +71,9 @@
     "The linked portfolio plan is a proposal and cannot grant child-work-item gates.",
     "PO explicitly approved the master work-item boundary, CF-001..018 finding register and P0-to-P4 sequence; the trusted work-item receipt is APPROVED and does not approve any child gate.",
     "s02 Business Goal completed with portfolio outcomes and measurement candidates; OQ-CF-001..003 remain owned decisions for s03.",
-    "s03 recommendation bundle proposes selective document promotion, classify-first legacy reconciliation and BA-owned language quality with scoped PO/QC/domain participation; all three recommendations remain pending human decisions.",
-    "The 2026-09-05 evidence refresh made the approved plan discoverable, added a Vietnamese companion, and proposed CF-019/CF-020 plus AC-CF-010/AC-CF-011 without inheriting the 2026-09-03 approval."
+    "The 2026-09-05 evidence refresh made the approved plan discoverable, added a Vietnamese companion, and proposed CF-019/CF-020 plus AC-CF-010/AC-CF-011 without inheriting the 2026-09-03 approval.",
+    "The 2026-09-07 s03 amendment expands the recommendation bundle to OQ-CF-001..005 so CF-019/CF-020 and AC-CF-010/011 have explicit decisions, owners and verify paths; all five Option C recommendations remain pending human decisions.",
+    "The detailed P0 sequence now closes the linked defect before CF-019 disposition/remediation and parent CR-008 re-verification, removing the former P0.1-to-P1.0 dependency cycle without changing the approved P0-to-P4 phase order."
   ],
   "work_item_slug": "code-factory-holistic-audit-remediation",
   "work_item_type": "RESEARCH",
@@ -82,11 +83,13 @@
   "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "human-decision-oq-cf-001-003",
+  "handoff_target": "human-decision-oq-cf-001-005",
   "required_actions": [
     "Resolve OQ-CF-001 document authority with PO/maintainer.",
     "Resolve OQ-CF-002 legacy migration policy with Developer/QC.",
     "Resolve OQ-CF-003 public-language quality ownership with PO/BA.",
+    "Resolve OQ-CF-004 adaptive SA/TA applicability authority with PO/BA/Developer/QC.",
+    "Resolve OQ-CF-005 current-versus-historical public documentation policy with PO/BA/DevOps.",
     "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate spec --reviewed-by <role>",
     "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate dor --reviewed-by <role>",
     "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate approach --reviewed-by <role>",
@@ -96,7 +99,9 @@
   "blockers": [
     "OQ-CF-001 document authority has no human decision.",
     "OQ-CF-002 legacy reconciliation policy has no human decision.",
-    "OQ-CF-003 public-language ownership and rubric have no human decision."
+    "OQ-CF-003 public-language ownership and rubric have no human decision.",
+    "OQ-CF-004 adaptive SA/TA applicability authority has no human decision.",
+    "OQ-CF-005 public version/inventory classification has no human decision."
   ],
   "refs": [
     "work-items/code-factory-holistic-audit-remediation",
@@ -115,14 +120,18 @@
     "S02_BUSINESS_GOAL_COMPLETED",
     "OQ_RECOMMENDATION_BUNDLE_PREPARED",
     "MASTER_PLAN_MADE_DISCOVERABLE",
-    "SEMANTIC_FINDINGS_CF_019_CF_020_PROPOSED"
+    "SEMANTIC_FINDINGS_CF_019_CF_020_PROPOSED",
+    "OQ_RECOMMENDATION_BUNDLE_AMENDED_CF_019_CF_020",
+    "PORTFOLIO_DEPENDENCY_CYCLE_REMOVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
   "reviewed_by": "po",
   "reviewed_at": "2026-09-03T01:34:46.476Z",
   "review_notes": [
-    "Human review approved."
+    "Human review approved.",
+    "The s03 bundle was amended at 2026-09-07T14:33:29Z so proposed findings CF-019/CF-020 and AC-CF-010/011 have explicit OQ-CF-004/005 decisions; no finding or option was self-approved.",
+    "The detailed P0 dependency cycle was removed: child closeout precedes CF-019 disposition/remediation, which precedes parent CR-008 re-verification; the approved P0-to-P4 phase order is unchanged."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -184,6 +193,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "The approved CF-001..018 plan is now linked from repository navigation with an EN source and VI companion. CF-019/CF-020 and AC-CF-010/011 are evidence-backed proposals only; s03 human decisions remain pending."
+    },
+    {
+      "timestamp": "2026-09-07T14:33:29Z",
+      "action": "amend-decision-bundle",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Expanded s03 to OQ-CF-001..005 so CF-019/CF-020 and AC-CF-010/011 have explicit options, scoped owners and verify paths. All five Option C recommendations remain pending human decisions. The detailed P0 ordering was corrected to remove the child-closeout/CF-019/parent-reverification dependency cycle."
     }
   ]
 }

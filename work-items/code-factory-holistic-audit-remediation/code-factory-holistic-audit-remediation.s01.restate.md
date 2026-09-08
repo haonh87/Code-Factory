@@ -143,6 +143,8 @@ open_governance_questions:
   - "OQ-CF-001: Should ignored planning/research documents become tracked portfolio inputs or be retired? Owner: PO/maintainer"
   - "OQ-CF-002: What migration policy should convert 17 legacy scaffolds into truthful protocol status? Owner: Developer/QC"
   - "OQ-CF-003: Which human role owns natural-language quality for public EN/VI workflow prompts? Owner: PO/BA"
+  - "OQ-CF-004: Which rule has authority when adaptive role applicability omits SA/TA but the generic Skill Requirement includes them? Owner: PO/BA/Developer/QC"
+  - "OQ-CF-005: Which public version/inventory documents are current versus historical? Owner: PO/BA/DevOps"
 ```
 
 ## Requirement Analysis Spec
@@ -174,11 +176,13 @@ open_questions:
   - "OQ-CF-001: tracked-or-retired policy for docs/plans and docs/research"
   - "OQ-CF-002: legacy work-item migration and truthful status policy"
   - "OQ-CF-003: owner and measurable rubric for natural EN/VI language"
+  - "OQ-CF-004: conditional authority policy for SA/TA applicability"
+  - "OQ-CF-005: current-versus-historical policy for version and skill-inventory claims"
 assumptions:
   - "The current repository, CR-008 worktree, installed runtime status and hosted CI are separate evidence domains"
   - "A child finding remains open unless current authoritative evidence proves closure"
 dependencies:
-  - "CR-008 hosted Guardrails and its remaining human Release/Business Acceptance gates"
+  - "CR-008 child trusted closeout receipts and repeated parent terminal review"
   - "Human review of this portfolio and each new child work item"
   - "Network and GitHub authentication for hosted checks"
 risks_initial:
@@ -202,9 +206,28 @@ acceptance_criteria_draft:
   - id: "AC-CF-005"
     description: "Finish with mechanical and semantic audit evidence, runtime parity and zero unexplained lifecycle contradiction."
     measurable: true
+  - id: "AC-CF-006"
+    description: "Add semantic regression evidence for every known policy or schema conflict that a mechanical validator can miss."
+    measurable: true
+  - id: "AC-CF-007"
+    description: "Apply an approved EN/VI language rubric to all mandatory public entry surfaces and a stratified skill sample."
+    measurable: true
+  - id: "AC-CF-008"
+    description: "End with zero unexplained lifecycle contradiction across current work items, changes, receipts and releases."
+    measurable: true
+  - id: "AC-CF-009"
+    description: "Use a reproducible artifact digest or one explicitly governed canonical content identity for release."
+    measurable: true
+  - id: "AC-CF-010"
+    description: "Prevent generic skill instructions from re-adding roles omitted by the authoritative applicability decision."
+    measurable: true
+  - id: "AC-CF-011"
+    description: "Make every current-facing public document identify one actually released version and managed-skill inventory while labeling historical claims."
+    measurable: true
 notes_for_next_step: >-
   s02 must lock the maintainer value, success measures and priority. s03 must resolve document
-  authority, legacy migration and language-quality ownership before formal acceptance is frozen.
+  authority, legacy migration, language-quality ownership, role applicability and current-facing
+  version/inventory classification before formal acceptance is frozen.
 ```
 
 ## SA Architecture Drivers
@@ -299,7 +322,7 @@ metrics:
     - { id: M-04, name: "NFR quantification", formula: "quantified numeric drivers / numeric drivers", value: "3/3 = 100%", threshold: "100%", calibration: uncalibrated, evidence: "threshold fields on DRV-SA-CF-001..003" }
     - { id: M-05, name: "Verification coverage", formula: "drivers with verification / all drivers", value: "3/3 = 100%", threshold: "100%", calibration: uncalibrated, evidence: "verification fields on DRV-SA-CF-001..003" }
     - { id: M-06, name: "Handoff coverage", formula: "drivers mapped to handoff / all drivers", value: "3/3 = 100%", threshold: "100%", calibration: uncalibrated, evidence: "handoff.to_ba/to_dev/to_qc" }
-    - { id: M-07, name: "Open-item ownership", formula: "owned pushed items / pushed items", value: "3/3 = 100%", threshold: "100%", calibration: uncalibrated, evidence: "OQ-CF-001..003" }
+    - { id: M-07, name: "Open-item ownership", formula: "owned pushed items / pushed items", value: "5/5 = 100%", threshold: "100%", calibration: uncalibrated, evidence: "OQ-CF-001..005" }
     - { id: M-08, name: "Option discipline", formula: "direction choices compared / direction choices", value: "not applicable at s01", threshold: "100%", calibration: uncalibrated, evidence: "No approach choice is allowed at s01" }
     - { id: M-09, name: "Landscape element ownership", formula: "owned elements / all elements", value: "not run", threshold: "100%", calibration: uncalibrated, evidence: "Landscape not produced because installed capability is missing" }
     - { id: M-10, name: "Capability ownership clarity", formula: "capabilities with one owner / capabilities reviewed", value: "0/3 = 0%", threshold: "100%", calibration: uncalibrated, evidence: "Three contested_ownership entries" }
@@ -521,7 +544,7 @@ human_decision_at: "2026-09-03T01:32:13Z"
 trusted_receipt_status: APPROVED
 trusted_receipt_recorded_at: "2026-09-03T01:34:46.483Z"
 not_approved:
-  - "OQ-CF-001..003 resolutions"
+  - "OQ-CF-001..005 resolutions"
   - "CF-019, CF-020, AC-CF-010 and AC-CF-011 proposed by the 2026-09-05 evidence refresh"
   - "Any child work-item or child gate"
   - "CR-008 hosted artifact-binding amendment"
@@ -551,13 +574,15 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-03T01:34:46.476Z"
-handoff_target: "human-decision-oq-cf-001-003"
-last_transition_action: "publish-plan-evidence-refresh"
-last_transition_at: "2026-09-05T08:03:55Z"
+handoff_target: "human-decision-oq-cf-001-005"
+last_transition_action: "amend-decision-bundle"
+last_transition_at: "2026-09-07T14:33:29Z"
 required_actions:
   - "Resolve OQ-CF-001 document authority with PO/maintainer."
   - "Resolve OQ-CF-002 legacy migration policy with Developer/QC."
   - "Resolve OQ-CF-003 public-language quality ownership with PO/BA."
+  - "Resolve OQ-CF-004 adaptive SA/TA applicability authority with PO/BA/Developer/QC."
+  - "Resolve OQ-CF-005 current-versus-historical public documentation policy with PO/BA/DevOps."
   - "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate spec --reviewed-by <role>"
   - "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate dor --reviewed-by <role>"
   - "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate approach --reviewed-by <role>"
@@ -567,8 +592,12 @@ blockers:
   - "OQ-CF-001 document authority has no human decision."
   - "OQ-CF-002 legacy reconciliation policy has no human decision."
   - "OQ-CF-003 public-language ownership and rubric have no human decision."
+  - "OQ-CF-004 adaptive SA/TA applicability authority has no human decision."
+  - "OQ-CF-005 public version/inventory classification has no human decision."
 review_notes:
   - "Human review approved."
+  - "The s03 bundle was amended at 2026-09-07T14:33:29Z so proposed findings CF-019/CF-020 and AC-CF-010/011 have explicit OQ-CF-004/005 decisions; no finding or option was self-approved."
+  - "The detailed P0 dependency cycle was removed: child closeout precedes CF-019 disposition/remediation, which precedes parent CR-008 re-verification; the approved P0-to-P4 phase order is unchanged."
 refs:
   - "work-items/code-factory-holistic-audit-remediation"
   - "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md"
@@ -586,6 +615,8 @@ audit_events:
   - "OQ_RECOMMENDATION_BUNDLE_PREPARED"
   - "MASTER_PLAN_MADE_DISCOVERABLE"
   - "SEMANTIC_FINDINGS_CF_019_CF_020_PROPOSED"
+  - "OQ_RECOMMENDATION_BUNDLE_AMENDED_CF_019_CF_020"
+  - "PORTFOLIO_DEPENDENCY_CYCLE_REMOVED"
 ```
 
 ## Traceability
@@ -599,6 +630,7 @@ next_step: "Human reviews this s01 boundary and the linked portfolio plan before
 
 ## Handoff
 - Clear: one master portfolio is a distinct research/control item, not a duplicate of any narrow remediation item.
-- Track: document authority, legacy migration and language-quality ownership remain OQ-CF-001..003.
+- Track: document authority, legacy migration, language-quality ownership, role applicability and
+  public version/inventory classification remain OQ-CF-001..005.
 - Human decision: master boundary, finding register and P0 → P4 sequencing approved at `2026-09-03T01:32:13Z`.
 - Condition for s02: met; trusted work-item receipt is approved and verified. No child implementation gate is implied.

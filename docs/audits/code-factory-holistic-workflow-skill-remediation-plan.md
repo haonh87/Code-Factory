@@ -13,7 +13,7 @@ approved_by: po
 approved_at: 2026-09-03T01:34:46.476Z
 human_decision_at: 2026-09-03T01:32:13Z
 date: 2026-09-02
-last_updated: 2026-09-05
+last_updated: 2026-09-07
 delivery_context: brownfield
 planning_track: full
 governance_profile: strict
@@ -41,7 +41,7 @@ tags:
 > [!info] Current navigation
 > Vietnamese companion: [[code-factory-holistic-workflow-skill-remediation-plan.vi]]. The governed
 > workflow record is in `work-items/code-factory-holistic-audit-remediation/`. This plan remains at
-> `s03 Open Questions`; the portfolio sequence is approved, but the three policy decisions in §9
+> `s03 Open Questions`; the portfolio sequence is approved, but the five policy decisions in §9
 > still require their named human authorities before `s04` can be authored. The approval dated
 > 2026-09-03 covers `CF-001..018`; `CF-019` and `CF-020` are new audit proposals dated 2026-09-05
 > and do not inherit that approval.
@@ -90,15 +90,15 @@ The review covers all of these surfaces:
 | CR-008 dedicated worktree | evidence commit `5807611`, protocol `VERIFIED`; hosted runs `33636308233` and `33703233050` each passed 10/10 jobs | Hosted `.tgz` is stable at `8ddcb...` across both runs but differs from the local QC-bound digest despite identical extracted content; QC artifact re-binding, Release and Business Acceptance remain. |
 | Main working tree | unrelated untracked WIP present | Avoid broad cleanup or accidental inclusion. |
 
-### Current Delta — 2026-09-05
+### Current Delta — 2026-09-07
 
 The 2026-09-02 table is retained as the audit snapshot. The authoritative delta is:
 
 | Surface | Current evidence | Portfolio effect |
 |---|---|---|
-| Master plan visibility | This artifact and its workflow directory existed only as untracked files on local `main`. | `CF-001` is resolved only when the files are tracked and linked from the README/docs map. |
-| CR-008 correction | Parent CR-008 remains `VERIFIED` with finding `F-AG08-001`; child `closeout-bundle-legacy-dod-compatibility` is `VERIFIED`. Its hosted candidate is `da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690`; QC approved Technical Verification and DoD, and DevOps/QC approved Release. PO Business Acceptance and terminal receipts remain. | Finish the child first, then repeat the parent Technical Verification, DoD, Release and Business Acceptance against the corrected candidate. |
-| Candidate source | `codex/adaptive-governance-human-approval-ux` and origin point to `373d91072dcc8dd02371bb4a37289c81d7299788`; hosted Guardrails run `33867082744` passed all 10 jobs. | Candidate evidence is hosted and reproducible by content, but the release lifecycle is not complete. |
+| Master plan visibility | Commit `569f48f` tracks this artifact, its Vietnamese companion and governed work item, with links from the README and docs maps. | `CF-001` is resolved; future portfolio updates now have one repository-visible authority. |
+| CR-008 correction | Parent CR-008 remains `VERIFIED` with finding `F-AG08-001`; child `closeout-bundle-legacy-dod-compatibility` is `VERIFIED`. Its hosted candidate is `da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690`; QC approved Technical Verification and DoD, DevOps/QC approved Release, and PO approved Business Acceptance. Commit `fc08bfd` finalized the child s08 host, but all three closeout receipts are still `MISSING`. | Seal the child receipts, close its protocol, then repeat the parent Technical Verification, DoD, Release and Business Acceptance against the corrected candidate. |
+| Candidate source | Production candidate source remains `373d91072dcc8dd02371bb4a37289c81d7299788`; local release-branch HEAD is `fc08bfd` after evidence finalization while origin remains at the production source commit. Hosted Guardrails run `33867082744` passed all 10 jobs. | Candidate behavior is hosted and reproducible by content; the evidence-only commits and receipt lifecycle must finish before parent closeout or promotion. |
 | Installed runtimes | `wfc status --mode codex|claude` reports source `2.6.2`, installed `2.3.2`, and 40 managed skills for both harnesses. | Adaptive governance is not yet the active user runtime; the original role/gate friction remains observable until release, install and parity activation finish. |
 | Authority wording | `Hard Rule: Adaptive Admission And Applicability` forbids adding SA/TA to maintenance without a trigger, while `Skill Requirement` still says to use SA and TA at every `s01-s04`. | This is a semantic policy conflict (`CF-019`) even though the executable routing matrix correctly omits irrelevant roles. |
 | Public docs freshness | `docs/vi/README.md` and `docs/release/community-pack-*` still present `v2.1.1` and 36 skills as current-facing claims. | These surfaces need a current-vs-historical disposition (`CF-020`) before the next public handoff. |
@@ -114,7 +114,7 @@ The 2026-09-02 table is retained as the audit snapshot. The authoritative delta 
 | SA/TA metrics deep dive | Draft 12-week learning plan; thresholds unvalidated | `OPEN_EXPERIMENT` |
 | Memory standardization | Codebase-memory trial and team rollout done; umbrella contract unapproved | `PARTIAL` |
 | Trending AI application | WI-2 done; WI-1 security scan and WI-3 Rationalizations pilot absent | `PARTIAL` |
-| Adaptive approval UX | Technical verification/technical DoD approved; hosted Guardrails passed; artifact digest amendment pending QC | `WAITING_QC_REBIND` |
+| Adaptive approval UX | Corrected child candidate passed hosted Guardrails and every child terminal reviewer has approved; trusted child receipts and parent re-verification remain | `IN_PROGRESS_CHILD_CLOSEOUT` |
 | Diagram-design adapter | Authoring gates approved, but stored protocol remains s06 with stale blockers | `RECONCILE_BEFORE_EXECUTION` |
 | Test/tree decoupling | G-A superseded by another fix; cross-file G-B and two-tree evidence remain | `OPEN` |
 
@@ -123,7 +123,7 @@ The 2026-09-02 table is retained as the audit snapshot. The authoritative delta 
 | ID | Severity | Finding | Evidence | Owner | Status | Closure evidence |
 |---|---|---|---|---|---|---|
 | CF-001 | HIGH | No canonical pack-wide review/remediation plan was visible in tracked repository state. | The approved artifact and workflow existed only as untracked local files. | PO/BA | `RESOLVED` | This plan and its workflow are tracked and linked from the README/docs map. |
-| CF-002 | HIGH | CR-008 closeout was reopened by `F-AG08-001`; the linked correction has reached Technical Verification, DoD and Release but still needs PO Business Acceptance, terminal receipts, child closeout and repeated parent terminal review. | Parent/child s08 reports, run `33867082744`, hosted candidate `da49e511...`. | QC/DevOps/PO | `IN_PROGRESS` | Child Business Acceptance and closeout; parent re-verification and fresh terminal receipts; protocol `DONE`; branch finalization. |
+| CF-002 | HIGH | CR-008 closeout was reopened by `F-AG08-001`; the linked correction has all required child reviewer decisions but still needs digest-matching terminal receipts, child protocol closeout and repeated parent terminal review. | Parent/child s08 reports, commits `373d910` and `fc08bfd`, run `33867082744`, hosted candidate `da49e511...`. | QC/DevOps/PO | `IN_PROGRESS` | Child closeout receipts and protocol `DONE`; parent re-verification and fresh terminal receipts; branch finalization. |
 | CF-003 | HIGH | Source candidate, installed runtimes and final public state are materially out of sync. | Candidate source 2.6.2/42; installed Codex/Claude 2.3.2/40; release branch source `373d910...`. | DevOps | `OPEN` | One immutable candidate; source/runtime/origin version and skill parity after governed release/install activation. |
 | CF-004 | HIGH | CHANGE-005 contains stale prerequisite claims and has not reached a truthful execution state. | Report says CHANGE-004 not verified although it is `DONE`; Playwright remains missing; s08 is draft. | Developer/QC | `OPEN` | Reconciled report, re-run T0, explicit route decision and valid transition. |
 | CF-005 | MEDIUM | `decouple-tests-from-tree-layout` still reads a live work-item note in the cross-file assertion. | `workflow-gate-evidence-utils.test.js`; s06 T2/T3. | Developer/QC | `OPEN` | Fixture-controlled test, negative test and equal two-tree result. |
@@ -150,66 +150,69 @@ boundary; completion of one does not approve the next.
 
 ### Phase 0 — Make Current State Truthful
 
-1. **P0.1 — Close CR-008 release boundary** (`CF-002`, `CF-017`, part of `CF-003`).
-   - Complete PO Business Acceptance for child candidate `da49e511...`, finalize its `s08`, and seal the applicable terminal receipts in one human interaction.
+1. **P0.1 — Close the CR-008 linked defect** (`CF-002`, `CF-017`, part of `CF-003`).
+   - PO Business Acceptance and child `s08` finalization are recorded at commit `fc08bfd`; seal the applicable terminal receipts in one human interaction.
    - Close the child protocol only after every receipt digest matches the frozen host artifact.
-   - Return to parent CR-008, record the corrected child evidence, then repeat Technical Verification, DoD, Release and Business Acceptance rather than inheriting superseded approvals.
-   - Resolve or explicitly disposition `CF-019` before parent Business Acceptance; a policy-text change creates a new candidate binding.
-   - Verify: exact SHA, required hosted checks, receipt digest match, both protocols `DONE`, post-merge checks, then branch finalization.
-2. **P0.2 — Reconcile CHANGE-005 diagram adapter** (`CF-004`, `CF-016`).
+   - Verify: all three child receipts match the finalized s08 digest and the child protocol reaches `DONE`; do not close the parent or branch yet.
+2. **P0.2 — Decide and, if accepted, remediate adaptive role applicability** (`CF-019`; pending OQ-CF-004).
+   - First accept, amend or reject the finding with PO/BA/Developer/QC authority.
+   - If accepted as a code/policy defect, make the generic SA/TA skill rule conditional on the router's applicability decision and stable reason codes, add a semantic regression fixture, and produce a new candidate binding.
+   - Keep SA/TA mandatory for named public-contract, regulated, cross-system and greenfield-foundation triggers; do not infer implementation authority from the OQ decision.
+   - If rejected or narrowed, record the reason and exact no-code or amended closure evidence.
+3. **P0.3 — Re-verify and close parent CR-008** (`CF-002`, remainder of `CF-003`).
+   - Record the closed child evidence and the OQ-CF-004/CF-019 disposition on the parent.
+   - Repeat Technical Verification, DoD, Release and Business Acceptance against the final candidate rather than inheriting superseded approvals.
+   - Verify: exact SHA, required hosted checks, parent receipt digest match, both protocols `DONE`, post-merge checks, then branch finalization.
+4. **P0.4 — Reconcile CHANGE-005 diagram adapter** (`CF-004`, `CF-016`).
    - Refresh completed CHANGE-004 prerequisite and re-run the T0 environment preflight.
    - Keep s07 closed while Playwright/Chromium or an approved alternative remains unavailable.
    - Verify: report/artifacts/receipts agree and the router returns one non-contradictory state.
-3. **P0.3 — Close the mutable-test residual** (`CF-005`).
+5. **P0.5 — Close the mutable-test residual** (`CF-005`).
    - Materialize/approve the legacy item correctly before implementation.
    - Execute s06 T0 → T2 → T3 with TDD and two-tree evidence.
 
 ### Phase 1 — Close Security and Governance Blind Spots
 
-4. **P1.0 — Proposed amendment: reconcile adaptive role applicability authority** (`CF-019`; pending human review).
-   - Make the generic SA/TA skill rule conditional on the router's applicability decision and stable reason codes.
-   - Add a semantic policy/fixture check so a mechanical Hard Rule heading match cannot hide contradictory operative prose.
-   - Keep SA/TA mandatory for the named public-contract, regulated and greenfield-foundation triggers.
-5. **P1.1 — Security baseline** (`CF-006`).
+6. **P1.1 — Security baseline** (`CF-006`).
    - Materialize WI-1 as a separate security research/audit work item.
    - Review the external scanner and run it ephemerally over `skills/`, hooks, MCP and adapters.
    - Do not auto-fix findings; split behavior changes into governed child items.
-6. **P1.2 — Protocol and portfolio truth** (`CF-007`, `CF-008`, `CF-011`, `CF-016`).
+7. **P1.2 — Protocol and portfolio truth** (`CF-007`, `CF-008`, `CF-011`, `CF-016`).
    - Decide track-or-retire and legacy migration policies.
    - Remove or repair the empty demo item through a recoverable action.
    - Add a portfolio reconciliation check that distinguishes legacy completion evidence from pending protocol.
-7. **P1.3 — SA/TA schema and audit coverage** (`CF-009`, `CF-010`).
+8. **P1.3 — SA/TA schema and audit coverage** (`CF-009`, `CF-010`).
    - First add a failing semantic fixture for the threshold enum mismatch.
    - Repair the canonical schema and sync both skill copies/runtime mirrors.
    - Extend pack audit so the conflict cannot return behind a green mechanical result.
-8. **P1.4 — Hosted action-runtime hygiene** (`CF-018`).
+9. **P1.4 — Hosted action-runtime hygiene** (`CF-018`).
    - Upgrade the deprecated Node 20-based GitHub action majors in a separate CI child work item.
    - Verify the complete Guardrails matrix without runtime-deprecation annotations.
 
 ### Phase 2 — Improve Language and Human Usability
 
-9. **P2.1 — Language and interaction quality review** (`CF-012`, `CF-020`).
+10. **P2.1 — Language and interaction quality review** (`CF-012`, `CF-020`).
    - Inventory public entry paths, approval prompts, error messages, README/quickstart and a stratified sample of all skill groups.
    - Score clarity, naturalness, duplication, actionable next step and role/gate relevance in EN and VI.
    - Validate CR-008 outcomes with interaction telemetry; keep authority and UX metrics separate.
 
 ### Phase 3 — Decide Optional Capability Backlog
 
-10. **P3.1 — Memory umbrella decision** (`CF-013`).
+11. **P3.1 — Memory umbrella decision** (`CF-013`).
    - Choose reduced P0-P2 scope, split it, or retire the umbrella plan; do not reopen the completed codebase-memory trial.
-11. **P3.2 — SA/TA metrics experiment** (`CF-014`).
+12. **P3.2 — SA/TA metrics experiment** (`CF-014`).
    - Keep it as a learning experiment unless a PO explicitly sponsors productization.
    - If sponsored, run the stated one-month/one-quarter calibration before using thresholds for people or delivery gates.
-12. **P3.3 — Rationalizations pilot decision** (`CF-015`).
+13. **P3.3 — Rationalizations pilot decision** (`CF-015`).
     - Compare the proposed pilot with current guardrails; implement one skill only or record supersession.
 
 ### Phase 4 — Pack-Wide Closure
 
-13. Run the mechanical workflow/pack/protocol/planning/unit/smoke/security checks.
-14. Perform semantic review across all 42 skills and every authority/runtime boundary.
-15. Reconcile source, Codex, Claude, origin, hosted CI, release and portfolio status.
-16. Publish a final coverage matrix with `PASS|PARTIAL|FAIL|NOT_APPLICABLE` per finding.
-17. Ask QC for DoD only when every required finding has direct closure evidence or an approved exception.
+14. Run the mechanical workflow/pack/protocol/planning/unit/smoke/security checks.
+15. Perform semantic review across all 42 skills and every authority/runtime boundary.
+16. Reconcile source, Codex, Claude, origin, hosted CI, release and portfolio status.
+17. Publish a final coverage matrix with `PASS|PARTIAL|FAIL|NOT_APPLICABLE` per finding.
+18. Ask QC for DoD only when every required finding has direct closure evidence or an approved exception.
 
 ## 7. Child-Work-Item Contract
 
@@ -262,6 +265,8 @@ remain open for s03 and were not resolved by approving the plan:
 1. OQ-CF-001 document authority;
 2. OQ-CF-002 legacy migration policy;
 3. OQ-CF-003 public-language quality ownership.
+4. OQ-CF-004 adaptive SA/TA applicability authority and CF-019 disposition;
+5. OQ-CF-005 current-versus-historical version/inventory policy and CF-020 disposition.
 
 This approval permits further authoring of the master work item. It does not approve implementation,
 any child work item, CR-008's artifact amendment, Release, Business Acceptance, DoD, exception or
@@ -278,6 +283,6 @@ requirements:
 findings:
   - "CF-001..020"
 sequence:
-  - "P0.1 -> P0.2 -> P0.3 -> P1.1 -> P1.2 -> P1.3 -> P1.4 -> P2.1 -> P3.1 -> P3.2 -> P3.3 -> P4"
-next_artifact: "s03 human decisions for OQ-CF-001..003, then s04 Acceptance + DoR"
+  - "P0.1 -> P0.2 -> P0.3 -> P0.4 -> P0.5 -> P1.1 -> P1.2 -> P1.3 -> P1.4 -> P2.1 -> P3.1 -> P3.2 -> P3.3 -> P4"
+next_artifact: "s03 human decisions for OQ-CF-001..005, then s04 Acceptance + DoR"
 ```
