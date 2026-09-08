@@ -2,7 +2,7 @@
   "materialization_status": "READY",
   "protocol_status": "MATERIALIZED",
   "decision_owner": "agent",
-  "protocol_owner": "",
+  "protocol_owner": "po",
   "raw_request_summary": "Reconcile CF-019 by making router-derived SA/TA applicability authoritative while preserving deterministic hard-risk escalation.",
   "request_source": "user",
   "candidate_count": 1,
@@ -60,9 +60,7 @@
         "npm run scaffold:workflow -- --work-item align-adaptive-sa-ta-applicability --planning-track full --delivery-context brownfield --governance-profile strict",
         "npm run validate:workflow -- --workflow-root work-items/align-adaptive-sa-ta-applicability --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance"
       ],
-      "blockers": [
-        "WORK_ITEM_APPROVAL_PENDING"
-      ]
+      "blockers": []
     }
   ],
   "decision_log": [
@@ -85,23 +83,17 @@
   "work_item_slug": "align-adaptive-sa-ta-applicability",
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
-  "selected_profile": "strict",
-  "sdd_mode": "none",
-  "sdd_preset": "strict",
-  "sdd_light_profile": "preview",
-  "sdd_reasons": [],
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/align-adaptive-sa-ta-applicability",
-  "current_step": "s01",
+  "current_step": "s02",
+  "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "human-work-item-review",
+  "handoff_target": "step-s03-open-questions",
   "required_actions": [
-    "PO reviews and, if satisfied, runs wfc work-item approve --work-item align-adaptive-sa-ta-applicability --reviewed-by po.",
-    "After work-item approval, author s02 Business Goal; do not skip to a downstream gate."
+    "Resolve OQ-AR-001 reason-code vocabulary with BA, Developer, and QC.",
+    "Resolve OQ-AR-002 canonical semantic-fixture ownership with Developer and QC."
   ],
-  "blockers": [
-    "WORK_ITEM_APPROVAL_PENDING"
-  ],
+  "blockers": [],
   "refs": [
     "work-items/align-adaptive-sa-ta-applicability",
     "work-items/adaptive-governance-human-approval-ux",
@@ -114,20 +106,24 @@
     "DEDUP_CONFIRMED",
     "WORKFLOW_SCAFFOLDED",
     "STEP_OPENED",
-    "S01_REQUIREMENT_AND_ARCHITECTURE_DRIVERS_DRAFTED"
+    "S01_REQUIREMENT_AND_ARCHITECTURE_DRIVERS_DRAFTED",
+    "WORK_ITEM_APPROVED",
+    "S02_BUSINESS_GOAL_DRAFTED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-09-08T03:03:41.551Z",
+  "review_notes": [
+    "Human review approved.",
+    "Trusted work-item receipt is APPROVED by PO at 2026-09-08T03:03:41.551Z.",
+    "A repeated approve invocation at 2026-09-08T03:29:34.925Z is retained in protocol history; the original trusted receipt remains authoritative.",
+    "OQ-CF-004 Option C approval does not approve downstream workflow gates."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
   "bootstrap_reviewed_by": "",
   "bootstrap_reviewed_at": "",
-  "review_required": true,
-  "approval_status": "PENDING_REVIEW",
-  "reviewed_by": "",
-  "reviewed_at": "",
-  "review_notes": [
-    "OQ-CF-004 Option C was approved by PO, BA, Developer, and QC; this authorizes proposal direction only, not work-item approval or implementation.",
-    "Dedup review confirms this child uniquely owns CF-019 while reusing the parent CR-008 change authority."
-  ],
   "protocol_events": [
     {
       "timestamp": "2026-09-08T02:41:56.780Z",
@@ -160,6 +156,30 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Drafted requirement analysis and SA/TA architecture drivers from approved OQ-CF-004 Option C; work-item approval remains pending."
+    },
+    {
+      "timestamp": "2026-09-08T03:03:41.552Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-09-08T03:29:34.925Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-09-08T03:31:18Z",
+      "action": "author-s02-business-goal",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Authored s02 Business Goal after validating the PO work-item trusted receipt; s03 decisions remain open."
     }
   ]
 }

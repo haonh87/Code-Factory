@@ -126,7 +126,7 @@ outputs_required:
 done_when:
   - "The contradiction and intended Option C behavior are explicit"
   - "Every architecture driver has provenance, threshold, verification, and handoff"
-  - "The child remains pending explicit work-item approval"
+  - "The child work-item approval is recorded through a valid PO trusted receipt before s02"
 constraints:
   hard_constraints:
     - "The workflow router remains the authority for role applicability"
@@ -175,7 +175,7 @@ applicable_principles:
   - "Brownfield changes use the smallest correct delta"
   - "Source policy and packaged runtimes require semantic parity"
 required_reviews:
-  - "PO approval of this child work item before s02"
+  - "PO approval of this child work item before s02: complete through trusted receipt"
   - "BA and QC review of Spec and DoR at s04"
   - "Developer review of Approach and Task Plan before s07"
   - "QC review of spec compliance, code quality, Technical Verification, and DoD"
@@ -305,8 +305,8 @@ acceptance_criteria_draft:
     description: "The child hands an exact candidate SHA to CR-008 without independently approving Release, Business Acceptance, merge, tag, publish, or install."
     measurable: true
 notes_for_next_step: >-
-  s02 must quantify value and success. The child work item itself remains PENDING_REVIEW and must be
-  approved before s02 is authored.
+  The PO trusted receipt opened s02. Business value and success measures are now captured in s02;
+  proceed to s03 to resolve OQ-AR-001 and OQ-AR-002.
 ```
 
 ## SA Architecture Drivers
@@ -459,8 +459,8 @@ handoff:
     reason: "No packaging or deployment decision is made in s01; parent CR-008 owns release coordination."
     items: []
 stop_condition:
-  met: false
-  reason: "The driver set is complete, but the child work item and two owned open questions remain pending."
+  met: true
+  reason: "The s01 driver set and PO work-item approval are complete; the two owned decisions are handed to s03."
   pushed_to_s03:
     - { question: "Which reason-code vocabulary is normative?", owner: "ba/developer/qc" }
     - { question: "Which fixture owns the semantic matrix?", owner: "developer/qc" }
@@ -641,20 +641,19 @@ existing_refs:
   - "work-items/architecture-role-skills"
   - "work-items/sdd-light-authority-cutover"
   - "changes/CR-008"
-blockers:
-  - "WORK_ITEM_APPROVAL_PENDING"
+blockers: []
 ```
 
 ## Work Item Protocol
 ```yaml
 protocol_status: MATERIALIZED
-approval_status: PENDING_REVIEW
+approval_status: APPROVED
 review_required: true
 work_item_slug: "align-adaptive-sa-ta-applicability"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/align-adaptive-sa-ta-applicability"
-current_step: "s01"
+current_step: "s02"
 granted_write_paths: []
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
@@ -664,20 +663,21 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: ""
-reviewed_by: ""
-reviewed_at: ""
-handoff_target: "human-work-item-review"
-last_transition_action: "author-s01-proposal"
-last_transition_at: "2026-09-08T02:42:41Z"
+protocol_owner: "po"
+reviewed_by: "po"
+reviewed_at: "2026-09-08T03:03:41.551Z"
+handoff_target: "step-s03-open-questions"
+last_transition_action: "author-s02-business-goal"
+last_transition_at: "2026-09-08T03:31:18Z"
 required_actions:
-  - "PO reviews and, if satisfied, approves work item align-adaptive-sa-ta-applicability."
-  - "After work-item approval, author s02 Business Goal; do not skip to a downstream gate."
-blockers:
-  - "WORK_ITEM_APPROVAL_PENDING"
+  - "Resolve OQ-AR-001 reason-code vocabulary with BA, Developer, and QC."
+  - "Resolve OQ-AR-002 canonical semantic-fixture ownership with Developer and QC."
+blockers: []
 review_notes:
-  - "OQ-CF-004 Option C was approved by PO, BA, Developer, and QC; this authorizes the proposal direction only."
-  - "Dedup review found related historical work items but no duplicate: they package SA/TA skills or Light governance, while CF-019 owns conditional applicability precedence."
+  - "Human review approved."
+  - "Trusted work-item receipt is APPROVED by PO at 2026-09-08T03:03:41.551Z."
+  - "A repeated approve invocation at 2026-09-08T03:29:34.925Z was retained in protocol history; the original trusted receipt remains authoritative."
+  - "OQ-CF-004 Option C approval authorizes conditional SA/TA applicability but does not approve downstream workflow gates."
 refs:
   - "work-items/align-adaptive-sa-ta-applicability"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -690,6 +690,8 @@ audit_events:
   - "WORKFLOW_SCAFFOLDED"
   - "STEP_OPENED"
   - "S01_REQUIREMENT_AND_ARCHITECTURE_DRIVERS_DRAFTED"
+  - "WORK_ITEM_APPROVED"
+  - "S02_BUSINESS_GOAL_DRAFTED"
 ```
 
 ## Traceability
@@ -699,10 +701,10 @@ source_inputs:
   - "CF-019 master audit finding"
   - "CR-008 Adaptive Admission And Applicability rule"
   - "Conflicting generic SA/TA Skill Requirement in source and packaged runtime policies"
-next_step: "s02 Business Goal after explicit PO work-item approval"
+next_step: "s03 Open Questions after completed s02 Business Goal"
 ```
 
 ## Handoff
 - Locked: Option C makes router-derived SA/TA applicability authoritative; hard triggers remain mandatory.
 - Open: OQ-AR-001 reason-code vocabulary and OQ-AR-002 canonical fixture ownership.
-- Gate: PO must explicitly approve this child work item before s02 is authored.
+- Gate: PO work-item approval is complete; s03 must resolve OQ-AR-001 and OQ-AR-002 before s04.
