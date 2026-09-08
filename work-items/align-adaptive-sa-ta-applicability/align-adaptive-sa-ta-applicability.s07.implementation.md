@@ -101,7 +101,9 @@ tags:
 > the unconditional SA/TA rule while every router baseline remained green; T2 applied the smallest
 > canonical policy correction and made the same suite green. Human QC approved AR-B1 Spec
 > Compliance, followed by human Developer/QC approval of Code Quality, for candidate `c0fc0e6d…`.
-> The batch has no blocking finding; generated-runtime work may continue.
+> T3 regenerated both runtime modes with exact canonical byte parity; T4 passed every targeted
+> regression, workflow/governance validator, encoding check, and the mechanical plus semantic pack
+> audit. AR-B2 Spec Compliance by QC is now pending before AR-B2 Code Quality.
 
 ## Step Contract
 ```yaml
@@ -146,6 +148,9 @@ tasks_completed:
   - "T2 GREEN was confirmed with the complete adaptive-governance suite passing."
   - "Human QC approved AR-B1 Spec Compliance for candidate c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045 at 2026-09-08T09:55:19Z."
   - "Human Developer and QC approved AR-B1 Code Quality for candidate c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045 at 2026-09-08T10:00:24Z with no blocking finding."
+  - "T3 ran the existing runtime generator for Codex and Claude and proved exact canonical byte parity."
+  - "T4 passed the adaptive, runtime parity, scaffold, architecture-role contract, and bundle-smoke suites."
+  - "T4 passed workflow-pack audit, child workflow validation, protocol validation, planning validation, diff, UTF-8, and U+FFFD checks."
 bug_repro_evidence:
   - "node packages/workflow-bundle/test/workflow-adaptive-governance.test.js exited 1 with exactly one failed assertion: canonical Skill Requirement must make router-derived SA/TA applicability authoritative and must not re-add omitted roles."
 hypothesis_log:
@@ -156,6 +161,12 @@ debug_experiments:
   - goal: "Localize the contradiction without accepting formatting noise as bug evidence."
     action: "Read only the canonical Skill Requirement section and run the expanded semantic fixture before editing policy."
     result: "One policy-precedence assertion failed; all existing and new executable routing assertions passed."
+  - goal: "Prove generated policy parity without creating another source of truth."
+    action: "Run npm run build:workflow:bundle-runtime, then compare canonical, runtime Codex, and runtime Claude SHA-256 values."
+    result: "All three files are byte-identical at SHA-256 4d8e8c686a266908b1642c829c7daa2ad7572e989e802432ec3dc9e4010435c9; generated runtime remains ignored and creates no unexpected tracked path."
+  - goal: "Detect adjacent contract or workflow-pack regression before AR-B2."
+    action: "Run the five T4 Node suites, pack audit, child workflow validator, protocol validator, planning validator, diff check, UTF-8 decode, and U+FFFD scan."
+    result: "Every required check passed; the U+FFFD scan returned no match."
 tdd_evidence:
   - behavior: "Generic SA/TA guidance defers to router applicability and never re-adds an omitted or not-applicable role."
     failing_test: "node packages/workflow-bundle/test/workflow-adaptive-governance.test.js -> exit 1, exactly one intended policy-precedence assertion."
@@ -165,20 +176,25 @@ code_changes:
   - "packages/workflow-bundle/test/workflow-adaptive-governance.test.js: added the bounded policy contract and exact six-trigger positive/negative matrix."
 doc_changes:
   - "policies/codex/AGENTS.global.md: made the entry router's role-applicability result authoritative and prohibited generic re-addition of omitted roles."
+  - "packages/workflow-bundle/runtime/codex/AGENTS.global.md: regenerated from the canonical policy; generated/ignored runtime output."
+  - "packages/workflow-bundle/runtime/claude/AGENTS.global.md: regenerated from the canonical policy; generated/ignored runtime output."
 config_changes: []
 review_checkpoints:
   - "AR-B1 Spec Compliance PASS by QC at 2026-09-08T09:55:19Z for candidate c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045; scope matches AC-AR-01..07 with no unrecorded spec or governance drift."
   - "AR-B1 Code Quality PASS by Developer and QC at 2026-09-08T10:00:24Z for candidate c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045; assertions are deterministic and bounded, the policy delta is focused, and no blocking finding remains."
+  - "AR-B2 Spec Compliance by QC is pending for generated runtime parity and the T4 regression evidence; Code Quality must remain after it."
 outputs_actual:
   - "T1 intentional RED evidence"
   - "T2 focused canonical policy correction"
   - "T2 GREEN evidence"
+  - "T3 generated Codex/Claude runtime parity at SHA-256 4d8e8c686a266908b1642c829c7daa2ad7572e989e802432ec3dc9e4010435c9"
+  - "T4 targeted regression, governance, pack-audit, and encoding evidence"
 known_limitations:
-  - "Generated runtime copies are intentionally unchanged until T3."
   - "AR-B2 Spec Compliance and Code Quality remain open."
+  - "T5 final review aggregation and T6 exact-candidate binding remain open."
 follow_up_items:
-  - "Run T3 runtime synchronization and T4 regressions, then request AR-B2 Spec Compliance."
-notes_for_testing: "Keep the canonical semantic fixture as the primary behavior proof; do not weaken router or reason-code assertions."
+  - "After AR-B2, finalize T5 evidence and bind the exact child candidate in T6."
+notes_for_testing: "Keep the canonical semantic fixture as the primary behavior proof; preserve generated byte parity and rerun the T4 matrix against the exact s08 candidate."
 ```
 
 ## Delivery Rule Evidence
@@ -199,7 +215,8 @@ review_status: PARTIAL
 review_refs:
   - "AR-B1 Spec Compliance: PASS by QC at 2026-09-08T09:55:19Z for c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045"
   - "AR-B1 Code Quality: PASS by Developer and QC at 2026-09-08T10:00:24Z for c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045"
-  - "AR-B2: generated runtime parity plus regression evidence"
+  - "AR-B2 Spec Compliance: pending QC for generated runtime parity plus regression evidence"
+  - "AR-B2 Code Quality: pending Developer and QC"
 spec_compliance_status: PARTIAL
 code_quality_status: PARTIAL
 delegation_mode: agentic
@@ -251,11 +268,38 @@ finding_policy:
 handoff_to_verify:
   - "AR-B1 Spec Compliance PASS is recorded before AR-B1 Code Quality PASS."
   - "Do not treat either review as s08 Technical Verification or DoD."
-notes_for_implementation_or_verify: "AR-B1 is complete with Spec Compliance before Code Quality; proceed to T3-T4 and AR-B2."
+notes_for_implementation_or_verify: "AR-B1 is complete in the required order; T3-T4 pass and AR-B2 Spec Compliance is the next human action."
 framework_notes:
   - "Node.js CommonJS fixture; no framework or runtime architecture change."
 known_limitations:
-  - "T3-T6 and both human review checkpoints remain open."
+  - "AR-B2, final s07 evidence aggregation, and exact-candidate binding remain open."
+```
+
+## Workflow Pack Audit
+```yaml
+audit_scope: "CF-019 canonical policy wording, generated runtime parity, and adjacent workflow-pack compatibility"
+checks:
+  - id: "PACK-MECHANICAL"
+    status: PASS
+    evidence: "npm run validate:workflow:pack-audit returned WORKFLOW_PACK_AUDIT=PASS, including 170 flat-layout cross-references, 42 unique skill names, frontmatter, schemas, markers, and hard-rule heading sync."
+  - id: "PACK-AUTHORITY"
+    status: PASS
+    evidence: "The delta changes no Hard Rule heading or executable router; authority sync remains green and the generic Skill Requirement now defers to router applicability."
+  - id: "PACK-TEMPLATE-SCHEMA"
+    status: PASS
+    evidence: "No skill, workflow-chain mapping, step template, schema, or SA/TA contract changed; the semantic checklist requires no follow-on mapping update."
+  - id: "PACK-RUNTIME-PARITY"
+    status: PASS
+    evidence: "Canonical, generated Codex, and generated Claude policies are byte-identical at SHA-256 4d8e8c686a266908b1642c829c7daa2ad7572e989e802432ec3dc9e4010435c9."
+  - id: "PACK-ENCODING"
+    status: PASS
+    evidence: "All five affected source/generated text surfaces decode as UTF-8 and contain no U+FFFD replacement character."
+findings: []
+overall_status: PASS
+follow_up_actions:
+  - "Obtain AR-B2 Spec Compliance before Code Quality."
+  - "Rerun the same matrix against the exact child candidate in s08."
+notes: "No release, installation, merge, tag, or parent-candidate mutation was performed."
 ```
 
 ## Traceability
@@ -264,11 +308,11 @@ upstream:
   - "align-adaptive-sa-ta-applicability.s04.acceptance-criteria.md"
   - "align-adaptive-sa-ta-applicability.s05.technical-approach.md"
   - "align-adaptive-sa-ta-applicability.s06.task-breakdown.md"
-next_step: "Run T3 runtime synchronization and T4 regressions, then request AR-B2 Spec Compliance from QC."
+next_step: "Human QC reviews AR-B2 Spec Compliance before Developer/QC Code Quality."
 ```
 
 ## Handoff
-- Outputs actual: T1 RED evidence, exact six-trigger matrix, focused T2 policy correction, and T2 GREEN evidence.
-- Known limitations: generated runtime parity, adjacent regressions, AR-B2, and exact-candidate binding remain open.
+- Outputs actual: T1/T2 RED-to-GREEN policy evidence plus T3/T4 runtime parity, regression, governance, audit, and encoding evidence.
+- Known limitations: AR-B2, final evidence aggregation, and exact-candidate binding remain open.
 - Notes for testing: review the locked acceptance behavior before style; the router module and stable reason values are unchanged.
 - Notes for deployment: none; this child performs no release or installation action.
