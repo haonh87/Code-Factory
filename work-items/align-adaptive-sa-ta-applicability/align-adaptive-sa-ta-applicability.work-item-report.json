@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "MATERIALIZED",
+  "protocol_status": "ACTIVE",
   "decision_owner": "agent",
   "protocol_owner": "po",
   "raw_request_summary": "Reconcile CF-019 by making router-derived SA/TA applicability authoritative while preserving deterministic hard-risk escalation.",
@@ -84,19 +84,21 @@
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/align-adaptive-sa-ta-applicability",
-  "current_step": "s06",
-  "granted_write_paths": [],
+  "current_step": "s07",
+  "granted_write_paths": [
+    "packages/workflow-bundle/test/workflow-adaptive-governance.test.js",
+    "policies/codex/AGENTS.global.md",
+    "packages/workflow-bundle/runtime/codex/AGENTS.global.md",
+    "packages/workflow-bundle/runtime/claude/AGENTS.global.md",
+    "work-items/align-adaptive-sa-ta-applicability"
+  ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "human-s06-receipt-sealing",
+  "handoff_target": "step-s07-owner",
   "required_actions": [
-    "Human runs wfc gate approve for Task Plan with reviewed-by developer.",
-    "Validate the Task Plan receipt digest match, then activate s07 through the protocol."
+    "Continue active execution from step 7 onward."
   ],
-  "blockers": [
-    "TASK_PLAN_RECEIPT_PENDING",
-    "S07_NOT_ACTIVE"
-  ],
+  "blockers": [],
   "refs": [
     "work-items/align-adaptive-sa-ta-applicability",
     "work-items/adaptive-governance-human-approval-ux",
@@ -121,7 +123,8 @@
     "S05_HUMAN_APPROACH_APPROVED_PENDING_RECEIPT",
     "S05_TRUSTED_RECEIPT_VERIFIED",
     "S06_TASK_PLAN_DRAFTED",
-    "S06_HUMAN_TASK_PLAN_APPROVED_PENDING_RECEIPT"
+    "S06_HUMAN_TASK_PLAN_APPROVED_PENDING_RECEIPT",
+    "WORK_ITEM_ACTIVATED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -275,6 +278,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Developer approved s06 T1..T6 and AR-B1..AR-B2; s06 was finalized and the trusted Task Plan receipt remains pending human CLI sealing."
+    },
+    {
+      "timestamp": "2026-09-08T09:39:29.131Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
     }
   ]
 }

@@ -660,15 +660,20 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: MATERIALIZED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "align-adaptive-sa-ta-applicability"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/align-adaptive-sa-ta-applicability"
-current_step: "s06"
-granted_write_paths: []
+current_step: "s07"
+granted_write_paths:
+  - "packages/workflow-bundle/test/workflow-adaptive-governance.test.js"
+  - "policies/codex/AGENTS.global.md"
+  - "packages/workflow-bundle/runtime/codex/AGENTS.global.md"
+  - "packages/workflow-bundle/runtime/claude/AGENTS.global.md"
+  - "work-items/align-adaptive-sa-ta-applicability"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -680,20 +685,19 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-08T03:03:41.551Z"
-handoff_target: "human-s06-receipt-sealing"
-last_transition_action: "record-s06-human-task-plan-approval"
-last_transition_at: "2026-09-08T07:26:34Z"
+handoff_target: "step-s07-owner"
+last_transition_action: "activate"
+last_transition_at: "2026-09-08T09:39:29.131Z"
 required_actions:
-  - "Human runs wfc gate approve for Task Plan with reviewed-by developer."
-  - "Validate the Task Plan receipt digest match, then activate s07 through the protocol."
-blockers:
-  - "TASK_PLAN_RECEIPT_PENDING"
-  - "S07_NOT_ACTIVE"
+  - "Continue active execution from step 7 onward."
+blockers: []
 review_notes:
   - "Human review approved."
   - "Trusted work-item receipt is APPROVED by PO at 2026-09-08T03:03:41.551Z."
-  - "A repeated approve invocation at 2026-09-08T03:29:34.925Z was retained in protocol history; the original trusted receipt remains authoritative."
-  - "OQ-CF-004 Option C approval authorizes conditional SA/TA applicability but does not approve downstream workflow gates."
+  - "A repeated approve invocation at 2026-09-08T03:29:34.925Z is retained in protocol history; the original trusted receipt remains authoritative."
+  - "OQ-CF-004 Option C approval does not approve downstream workflow gates."
+  - "The generic reply 'accept' opened s03 authoring only; it did not approve recommendations that had not yet been authored."
+  - "s03 corrected an agent-introduced multi-system trigger mention to the six-trigger adaptive baseline."
   - "OQ-AR-001 Option B was approved by BA, Developer, and QC at 2026-09-08T04:39:20Z."
   - "OQ-AR-002 Option A was approved by Developer and QC at 2026-09-08T04:39:20Z."
   - "BA approved Spec, Developer approved Contract, and BA/QC approved DoR at 2026-09-08T06:08:19Z."
@@ -726,6 +730,7 @@ audit_events:
   - "S05_TRUSTED_RECEIPT_VERIFIED"
   - "S06_TASK_PLAN_DRAFTED"
   - "S06_HUMAN_TASK_PLAN_APPROVED_PENDING_RECEIPT"
+  - "WORK_ITEM_ACTIVATED"
 ```
 
 ## Traceability
