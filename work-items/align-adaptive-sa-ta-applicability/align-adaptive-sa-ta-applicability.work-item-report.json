@@ -84,21 +84,18 @@
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/align-adaptive-sa-ta-applicability",
-  "current_step": "s04",
+  "current_step": "s05",
   "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "human-s04-receipt-sealing",
+  "handoff_target": "human-s05-approach-review",
   "required_actions": [
-    "Human runs wfc gate approve for Spec with reviewed-by ba.",
-    "Human runs wfc gate approve for Contract with reviewed-by developer.",
-    "Human runs wfc gate approve for DoR with reviewed-by qc; joint BA/QC provenance remains in gate_reviews.",
-    "Validate all three receipt digest matches before authoring s05."
+    "Developer reviews and approves or amends s05 Option A.",
+    "After approval, finalize s05 and seal the Approach trusted receipt before s06."
   ],
   "blockers": [
-    "SPEC_RECEIPT_PENDING",
-    "CONTRACT_RECEIPT_PENDING",
-    "DOR_RECEIPT_PENDING"
+    "APPROACH_APPROVAL_PENDING",
+    "TASK_PLAN_NOT_AUTHORED"
   ],
   "refs": [
     "work-items/align-adaptive-sa-ta-applicability",
@@ -118,7 +115,9 @@
     "S03_RECOMMENDATION_BUNDLE_DRAFTED",
     "S03_OPEN_QUESTIONS_APPROVED",
     "S04_SPEC_CONTRACT_DOR_DRAFTED",
-    "S04_HUMAN_GATES_APPROVED_PENDING_RECEIPTS"
+    "S04_HUMAN_GATES_APPROVED_PENDING_RECEIPTS",
+    "S04_TRUSTED_RECEIPTS_VERIFIED",
+    "S05_TECHNICAL_APPROACH_DRAFTED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -134,7 +133,8 @@
     "OQ-AR-001 Option B was approved by BA, Developer, and QC at 2026-09-08T04:39:20Z.",
     "OQ-AR-002 Option A was approved by Developer and QC at 2026-09-08T04:39:20Z.",
     "BA approved Spec, Developer approved Contract, and BA/QC approved DoR at 2026-09-08T06:08:19Z.",
-    "s04 is finalized; all three trusted receipts remain pending human CLI sealing."
+    "Spec, Contract, and DoR trusted receipts are APPROVED with digest_match=true; latest receipt was sealed at 2026-09-08T06:28:48.620Z.",
+    "s05 recommends the smallest policy-precedence delta; Developer Approach approval remains pending."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -228,6 +228,22 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Recorded explicit human approval of Spec by BA, Contract by Developer, and DoR by BA/QC; finalized s04 before trusted receipt sealing."
+    },
+    {
+      "timestamp": "2026-09-08T06:36:30Z",
+      "action": "verify-s04-trusted-receipts",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Verified Spec, Contract, and DoR receipts as APPROVED with digest_match=true against s04 SHA-256 78f715cc25f1b803f8e52121fd0afdf204ef73a27aa529a2fec836c816d7bce4."
+    },
+    {
+      "timestamp": "2026-09-08T06:36:30Z",
+      "action": "author-s05-technical-approach",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Drafted Option A technical approach using the canonical policy, existing semantic fixture, generated runtime sync, and no router or SA/TA contract change; Developer approval remains pending."
     }
   ]
 }

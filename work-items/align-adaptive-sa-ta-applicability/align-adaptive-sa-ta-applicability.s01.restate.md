@@ -667,7 +667,7 @@ work_item_slug: "align-adaptive-sa-ta-applicability"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/align-adaptive-sa-ta-applicability"
-current_step: "s04"
+current_step: "s05"
 granted_write_paths: []
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
@@ -680,18 +680,15 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-08T03:03:41.551Z"
-handoff_target: "human-s04-receipt-sealing"
-last_transition_action: "record-s04-human-gate-approvals"
-last_transition_at: "2026-09-08T06:08:19Z"
+handoff_target: "human-s05-approach-review"
+last_transition_action: "author-s05-technical-approach"
+last_transition_at: "2026-09-08T06:36:30Z"
 required_actions:
-  - "Human runs wfc gate approve for Spec with reviewed-by ba."
-  - "Human runs wfc gate approve for Contract with reviewed-by developer."
-  - "Human runs wfc gate approve for DoR with reviewed-by qc; joint BA/QC provenance remains in gate_reviews."
-  - "Validate all three receipt digest matches before authoring s05."
+  - "Developer reviews and approves or amends s05 Option A."
+  - "After approval, finalize s05 and seal the Approach trusted receipt before s06."
 blockers:
-  - "SPEC_RECEIPT_PENDING"
-  - "CONTRACT_RECEIPT_PENDING"
-  - "DOR_RECEIPT_PENDING"
+  - "APPROACH_APPROVAL_PENDING"
+  - "TASK_PLAN_NOT_AUTHORED"
 review_notes:
   - "Human review approved."
   - "Trusted work-item receipt is APPROVED by PO at 2026-09-08T03:03:41.551Z."
@@ -700,7 +697,8 @@ review_notes:
   - "OQ-AR-001 Option B was approved by BA, Developer, and QC at 2026-09-08T04:39:20Z."
   - "OQ-AR-002 Option A was approved by Developer and QC at 2026-09-08T04:39:20Z."
   - "BA approved Spec, Developer approved Contract, and BA/QC approved DoR at 2026-09-08T06:08:19Z."
-  - "s04 is finalized; all three trusted receipts remain pending human CLI sealing."
+  - "Spec, Contract, and DoR trusted receipts are APPROVED with digest_match=true; latest receipt was sealed at 2026-09-08T06:28:48.620Z."
+  - "s05 recommends the smallest policy-precedence delta; Developer Approach approval remains pending."
 refs:
   - "work-items/align-adaptive-sa-ta-applicability"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -719,6 +717,8 @@ audit_events:
   - "S03_OPEN_QUESTIONS_APPROVED"
   - "S04_SPEC_CONTRACT_DOR_DRAFTED"
   - "S04_HUMAN_GATES_APPROVED_PENDING_RECEIPTS"
+  - "S04_TRUSTED_RECEIPTS_VERIFIED"
+  - "S05_TECHNICAL_APPROACH_DRAFTED"
 ```
 
 ## Traceability
@@ -728,11 +728,12 @@ source_inputs:
   - "CF-019 master audit finding"
   - "CR-008 Adaptive Admission And Applicability rule"
   - "Conflicting generic SA/TA Skill Requirement in source and packaged runtime policies"
-next_step: "Seal Spec, Contract, and DoR trusted receipts; author s05 only after all digest matches pass"
+next_step: "Developer reviews s05 Approach; s06 only after an APPROVED digest-valid Approach receipt"
 ```
 
 ## Handoff
 - Locked: Option C makes router-derived SA/TA applicability authoritative; hard triggers remain mandatory.
 - Decided: OQ-AR-001 Option B and OQ-AR-002 Option A with all required human roles.
-- Human review: Spec, Contract, and DoR are approved with the required role provenance.
-- Gate: three trusted receipts remain pending; s05 stays closed until all digest matches pass.
+- Passed: Spec, Contract, and DoR receipts are APPROVED with digest_match=true.
+- Proposed: s05 Option A uses a canonical policy precedence clause, existing semantic fixture, and generated runtime sync.
+- Gate: Developer Approach approval remains pending; s06 stays closed.
