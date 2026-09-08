@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "qc",
   "raw_request_summary": "Fix the CR-008 legacy closeout bundle so mandatory DoD cannot be omitted and partial terminal state cannot be recorded as success.",
@@ -81,9 +81,11 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "work-item-close-transition",
+  "handoff_target": "parent-cr008-cf019-decision",
   "required_actions": [
-    "Run wfc work-item close after the trusted DoD, Release, and Business Acceptance receipts are committed."
+    "Record this child DONE evidence and corrected candidate in parent CR-008.",
+    "Keep the shared branch/worktree HOLD_OPEN until CF-019 is dispositioned and parent CR-008 is re-verified, receipt-complete, and DONE.",
+    "Archive this child only after the downstream parent lifecycle actions are complete."
   ],
   "blockers": [],
   "refs": [
@@ -109,7 +111,9 @@
     "RELEASE_APPROVED_BY_DEVOPS_AND_QC",
     "BUSINESS_ACCEPTANCE_APPROVED_BY_PO",
     "S08_FINALIZED_FOR_CLOSEOUT",
-    "CLOSEOUT_BUNDLE_APPROVED"
+    "CLOSEOUT_BUNDLE_APPROVED",
+    "DONE_CONFIRMED",
+    "BRANCH_FINISH_HOLD_OPEN"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -123,7 +127,8 @@
     "QC approved Technical Verification first at 2026-09-04T13:04:21Z, then DoD at 2026-09-04T13:04:29Z for hosted candidate da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690. Closeout receipts remain deferred until Release and Business Acceptance reviewers are recorded, preventing stale s08-bound receipts.",
     "DevOps and QC approved Release at 2026-09-04T13:20:37Z for hosted candidate da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690 with rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9.",
     "PO approved Business Acceptance at 2026-09-07T14:06:08Z for work item closeout-bundle-legacy-dod-compatibility and hosted candidate SHA-256 da49e51167d6dbe2a497aca2201408828099707fb0b1aab3d24b381d405d6690; s08 is finalized for trusted closeout receipt sealing.",
-    "Trusted closeout bundle sealed DoD, Release, and Business Acceptance at 2026-09-08T02:02:43.548Z; all three receipts are APPROVED with digest_match=true against finalized s08 SHA-256 acdd6b392f2661efcfe636c8916fde5207d0fe19c41633200e276e1d5b20dde9."
+    "Trusted closeout bundle sealed DoD, Release, and Business Acceptance at 2026-09-08T02:02:43.548Z; all three receipts are APPROVED with digest_match=true against finalized s08 SHA-256 acdd6b392f2661efcfe636c8916fde5207d0fe19c41633200e276e1d5b20dde9.",
+    "Branch Finish Audit at 2026-09-08T02:10:58.887Z: child verify_complete=PASS, dod_complete=PASS, findings_closed=PASS, and exceptions_resolved=PASS. Final recommendation is HOLD_OPEN for the shared CR-008 branch/worktree pending CF-019 disposition and parent re-verification/closeout."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -233,6 +238,14 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "APPROVED closeout gates: dod, release, business_acceptance"
+    },
+    {
+      "timestamp": "2026-09-08T02:10:58.887Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Trusted DoD, Release, and Business Acceptance receipts match the finalized s08 artifact; close the linked defect protocol and hand evidence back to CR-008 while the parent branch remains open."
     }
   ]
 }
