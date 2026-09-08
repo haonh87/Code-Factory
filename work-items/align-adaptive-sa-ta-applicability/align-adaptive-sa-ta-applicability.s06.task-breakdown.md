@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: final
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
 governance_status: ALIGNED
@@ -77,8 +77,9 @@ gate_reviews:
   approach_reviewed_at: "2026-09-08T06:41:51Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  task_plan_reviewed_by:
+    - "developer"
+  task_plan_reviewed_at: "2026-09-08T07:26:34Z"
   uat_reviewed_by: []
   uat_reviewed_at: ""
   release_reviewed_by: []
@@ -120,7 +121,8 @@ tags:
 > Execute CF-019 as one tightly coupled agentic sequence: add fail-first semantic evidence, apply the
 > smallest canonical policy correction, regenerate both runtime copies, run targeted regressions,
 > complete two-tier review, and bind the exact child candidate for CR-008 re-verification. This is a
-> proposal; Developer Task Plan approval and a digest-valid receipt are still required before s07.
+> approved by Developer. The artifact is final; its digest-valid Task Plan receipt and protocol
+> activation are still required before s07.
 
 ## Step Contract
 ```yaml
@@ -436,7 +438,7 @@ checks:
     owner: "developer"
     next_action: "Open a spec change or governance exception if implementation must drift."
 blocking_items: []
-notes: "Governance authoring checks pass; the separate human Task Plan gate remains pending."
+notes: "Governance authoring checks and Developer review pass; trusted receipt sealing remains pending."
 ```
 
 ## Brownfield Delivery Plan
@@ -482,15 +484,25 @@ checks:
     evidence: "Verification Plan and Brownfield Delivery Plan contain each required lane."
   - criterion: "No implementation authority is inferred from drafting the plan"
     result: PASS
-    evidence: "The note remains draft and T1 depends on a Developer-approved digest-valid Task Plan receipt."
+    evidence: "The note is finalized with Developer review provenance; the missing trusted receipt and inactive protocol still block T1."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed in one bounded planning pass after the Approach receipt was verified."
 gaps:
-  - "Developer Task Plan approval and its trusted receipt remain pending."
+  - "The trusted Task Plan receipt and s07 protocol activation remain pending."
 risk_level: MEDIUM
-next_action: "Developer reviews and approves or amends this Task Plan before s07 activation."
+next_action: "Human seals the Task Plan receipt as Developer, validates digest_match, and then activates s07."
+```
+
+## Human Gate Decision
+```yaml
+gate: "task_plan"
+status: "APPROVED_PENDING_RECEIPT"
+reviewed_by: ["developer"]
+reviewed_at: "2026-09-08T07:26:34Z"
+decision_source: "User explicitly approved the Task Plan with role Developer."
+approved_scope: "T1..T6 and AR-B1..AR-B2 as authored"
 ```
 
 ## Traceability
@@ -525,7 +537,8 @@ verification_refs:
 
 - First task after activation: T1 adds fail-first precedence and exact trigger evidence; no policy
   edit is allowed until the intended RED is confirmed.
-- Blocking dependency: Developer must approve this Task Plan and seal a digest-valid receipt.
+- Human review: Developer approved T1..T6 and AR-B1..AR-B2 at 2026-09-08T07:26:34Z.
+- Blocking dependency: human must seal a digest-valid Task Plan receipt and activate the protocol.
 - Execution topology: agentic in the existing CR-008 worktree; no subagent because T1-T4 share one
   tightly coupled evidence chain.
 - Condition for s07: Task Plan artifact is final, Developer review provenance is recorded, the

@@ -680,14 +680,15 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-08T03:03:41.551Z"
-handoff_target: "human-s06-task-plan-review"
-last_transition_action: "verify-s05-receipt-and-author-s06-task-plan"
-last_transition_at: "2026-09-08T07:03:07Z"
+handoff_target: "human-s06-receipt-sealing"
+last_transition_action: "record-s06-human-task-plan-approval"
+last_transition_at: "2026-09-08T07:26:34Z"
 required_actions:
-  - "Developer reviews and approves or amends the s06 Task Plan."
-  - "After approval, finalize s06 and seal the Task Plan receipt before activating s07."
+  - "Human runs wfc gate approve for Task Plan with reviewed-by developer."
+  - "Validate the Task Plan receipt digest match, then activate s07 through the protocol."
 blockers:
-  - "TASK_PLAN_APPROVAL_PENDING"
+  - "TASK_PLAN_RECEIPT_PENDING"
+  - "S07_NOT_ACTIVE"
 review_notes:
   - "Human review approved."
   - "Trusted work-item receipt is APPROVED by PO at 2026-09-08T03:03:41.551Z."
@@ -700,6 +701,7 @@ review_notes:
   - "Developer approved s05 Option A at 2026-09-08T06:41:51Z."
   - "Approach receipt is APPROVED by Developer at 2026-09-08T06:57:11.904Z with digest_match=true for SHA-256 0737fa2d04a1961044edc26a20f5ce655434b2641cb0aebc5f729b31cf9106e2."
   - "s06 Task Plan is drafted with T1..T6, two targeted review batches, and exact child-to-parent candidate handoff."
+  - "Developer approved s06 T1..T6 and AR-B1..AR-B2 at 2026-09-08T07:26:34Z; the Task Plan receipt remains pending."
 refs:
   - "work-items/align-adaptive-sa-ta-applicability"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -723,6 +725,7 @@ audit_events:
   - "S05_HUMAN_APPROACH_APPROVED_PENDING_RECEIPT"
   - "S05_TRUSTED_RECEIPT_VERIFIED"
   - "S06_TASK_PLAN_DRAFTED"
+  - "S06_HUMAN_TASK_PLAN_APPROVED_PENDING_RECEIPT"
 ```
 
 ## Traceability
@@ -732,7 +735,7 @@ source_inputs:
   - "CF-019 master audit finding"
   - "CR-008 Adaptive Admission And Applicability rule"
   - "Conflicting generic SA/TA Skill Requirement in source and packaged runtime policies"
-next_step: "Developer reviews s06 Task Plan; s07 only after a digest-valid Task Plan receipt and protocol activation"
+next_step: "Seal the Task Plan receipt, validate digest_match, then activate s07"
 ```
 
 ## Handoff
@@ -741,5 +744,5 @@ next_step: "Developer reviews s06 Task Plan; s07 only after a digest-valid Task 
 - Passed: Spec, Contract, and DoR receipts are APPROVED with digest_match=true.
 - Approved: Developer selected s05 Option A — canonical policy precedence, existing semantic fixture, and generated runtime sync.
 - Passed: Approach receipt is APPROVED by Developer with digest_match=true.
-- Proposed: s06 Task Plan sequences T1..T6 in RED -> policy -> sync -> regression -> review -> candidate-binding order.
-- Gate: Developer Task Plan approval remains pending; s07 stays closed.
+- Approved: Developer accepted s06 T1..T6 and AR-B1..AR-B2.
+- Gate: Task Plan trusted receipt and protocol activation remain pending; s07 stays closed.
