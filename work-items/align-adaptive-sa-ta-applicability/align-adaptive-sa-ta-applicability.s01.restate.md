@@ -680,14 +680,14 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-08T03:03:41.551Z"
-handoff_target: "human-s05-approach-review"
-last_transition_action: "author-s05-technical-approach"
-last_transition_at: "2026-09-08T06:36:30Z"
+handoff_target: "human-s05-receipt-sealing"
+last_transition_action: "record-s05-human-approach-approval"
+last_transition_at: "2026-09-08T06:41:51Z"
 required_actions:
-  - "Developer reviews and approves or amends s05 Option A."
-  - "After approval, finalize s05 and seal the Approach trusted receipt before s06."
+  - "Human runs wfc gate approve for Approach with reviewed-by developer."
+  - "Validate the Approach receipt digest match before authoring s06."
 blockers:
-  - "APPROACH_APPROVAL_PENDING"
+  - "APPROACH_RECEIPT_PENDING"
   - "TASK_PLAN_NOT_AUTHORED"
 review_notes:
   - "Human review approved."
@@ -698,7 +698,8 @@ review_notes:
   - "OQ-AR-002 Option A was approved by Developer and QC at 2026-09-08T04:39:20Z."
   - "BA approved Spec, Developer approved Contract, and BA/QC approved DoR at 2026-09-08T06:08:19Z."
   - "Spec, Contract, and DoR trusted receipts are APPROVED with digest_match=true; latest receipt was sealed at 2026-09-08T06:28:48.620Z."
-  - "s05 recommends the smallest policy-precedence delta; Developer Approach approval remains pending."
+  - "Developer approved s05 Option A at 2026-09-08T06:41:51Z."
+  - "s05 is finalized; the Approach trusted receipt remains pending human CLI sealing."
 refs:
   - "work-items/align-adaptive-sa-ta-applicability"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -719,6 +720,7 @@ audit_events:
   - "S04_HUMAN_GATES_APPROVED_PENDING_RECEIPTS"
   - "S04_TRUSTED_RECEIPTS_VERIFIED"
   - "S05_TECHNICAL_APPROACH_DRAFTED"
+  - "S05_HUMAN_APPROACH_APPROVED_PENDING_RECEIPT"
 ```
 
 ## Traceability
@@ -728,12 +730,12 @@ source_inputs:
   - "CF-019 master audit finding"
   - "CR-008 Adaptive Admission And Applicability rule"
   - "Conflicting generic SA/TA Skill Requirement in source and packaged runtime policies"
-next_step: "Developer reviews s05 Approach; s06 only after an APPROVED digest-valid Approach receipt"
+next_step: "Seal the Approach trusted receipt; author s06 only after digest_match=true"
 ```
 
 ## Handoff
 - Locked: Option C makes router-derived SA/TA applicability authoritative; hard triggers remain mandatory.
 - Decided: OQ-AR-001 Option B and OQ-AR-002 Option A with all required human roles.
 - Passed: Spec, Contract, and DoR receipts are APPROVED with digest_match=true.
-- Proposed: s05 Option A uses a canonical policy precedence clause, existing semantic fixture, and generated runtime sync.
-- Gate: Developer Approach approval remains pending; s06 stays closed.
+- Approved: Developer selected s05 Option A — canonical policy precedence, existing semantic fixture, and generated runtime sync.
+- Gate: Approach trusted receipt remains pending; s06 stays closed until digest_match=true.

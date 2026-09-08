@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: final
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
 governance_status: ALIGNED
@@ -72,8 +72,9 @@ gate_reviews:
     - "ba"
     - "qc"
   dor_reviewed_at: "2026-09-08T06:08:19Z"
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
+  approach_reviewed_by:
+    - "developer"
+  approach_reviewed_at: "2026-09-08T06:41:51Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -117,10 +118,10 @@ tags:
 # Step 5 - Technical Approach
 
 > [!summary]
-> Recommend Option A: add one explicit router-precedence rule to the canonical policy, prove the
-> current contradiction RED in the existing adaptive-governance semantic suite, then sync the
-> canonical policy into both runtime copies. No router algorithm, reason code, schema, or SA/TA
-> skill contract changes are proposed.
+> Developer approved Option A: add one explicit router-precedence rule to the canonical policy,
+> prove the current contradiction RED in the existing adaptive-governance semantic suite, then sync
+> the canonical policy into both runtime copies. The artifact is final; its trusted Approach receipt
+> still needs human sealing before s06.
 
 ## Step Contract
 ```yaml
@@ -246,6 +247,15 @@ dev_lane:
     Brownfield router behavior is already correct; the defect is the unconditional sentence in all
     three aligned policy surfaces. The generated Claude source path is runtime/claude/AGENTS.global.md.
 options:
+  - "Option A - Canonical policy precedence plus existing semantic fixture"
+  - "Option B - Introduce a generated shared policy fragment"
+  - "Option C - Make SA/TA skills self-decline or alter router derivation"
+recommended_option: "Option A - Canonical policy precedence plus existing semantic fixture"
+recommendation_reason: >-
+  Option A is the smallest solution that meets AC-AR-01..10: it corrects the policy authority seam,
+  uses approved existing owners, and preserves every executable compatibility surface. Options B
+  and C add boundaries without solving a current requirement better.
+option_details:
   - name: "Option A - Canonical policy precedence plus existing semantic fixture"
     summary: >-
       Add an explicit router-authority clause to the canonical Skill Requirement, add fail-first
@@ -279,17 +289,12 @@ options:
       - "Moves admission ownership into the wrong boundary and expands compatibility scope."
     risks:
       - "Multiple sources of truth can disagree and miss hard-trigger coverage."
-recommended_option: "Option A - Canonical policy precedence plus existing semantic fixture"
-recommendation_reason: >-
-  Option A is the smallest solution that meets AC-AR-01..10: it corrects the policy authority seam,
-  uses approved existing owners, and preserves every executable compatibility surface. Options B
-  and C add boundaries without solving a current requirement better.
 validation_plan:
   - "Add the semantic precedence and exact trigger-role assertions first; run them RED against the current policy."
   - "Change only the canonical policy and run the runtime sync script."
   - "Run adaptive-governance semantic tests, runtime parity, scaffold integration, SA/TA contract regression, and workflow-pack audit."
   - "Verify the changed text files as UTF-8 and bind the exact child candidate to parent CR-008 verification."
-notes_for_next_step: "Ready for system-design normalization in this s05 proposal; Developer approval is still required before s06."
+notes_for_next_step: "Developer approved Option A; seal a digest-valid Approach receipt before authoring s06."
 ```
 
 ## Foundation Decision
@@ -484,15 +489,25 @@ checks:
     evidence: "All four mandatory system-design perspectives contain concrete evidence and guardrails."
   - criterion: "No implementation authority is inferred from authoring the approach"
     result: PASS
-    evidence: "Artifact remains draft and Approach gate metadata has no reviewer or receipt."
+    evidence: "Artifact is finalized with Developer review provenance; the missing trusted receipt still blocks s06 and implementation."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed in one bounded option and design pass after all s04 receipts passed."
 gaps:
-  - "Developer human approval and trusted Approach receipt remain pending."
+  - "The trusted Approach receipt remains pending."
 risk_level: MEDIUM
-next_action: "Developer reviews and approves or amends Option A before s06 authoring."
+next_action: "Human seals the Approach receipt as Developer and validates digest_match before s06 authoring."
+```
+
+## Human Gate Decision
+```yaml
+gate: "approach"
+status: "APPROVED_PENDING_RECEIPT"
+reviewed_by: ["developer"]
+reviewed_at: "2026-09-08T06:41:51Z"
+decision_source: "User explicitly approved the Approach with role Developer."
+selected_option: "Option A - Canonical policy precedence plus existing semantic fixture"
 ```
 
 ## Traceability
@@ -508,11 +523,12 @@ acceptance_refs:
 design_refs:
   - "Option A"
   - "PATH-CORRECTION-AR-001"
-next_step: "s06 Task Plan only after Developer-approved Approach receipt"
+next_step: "Seal the Approach trusted receipt; author s06 only after digest_match=true"
 ```
 
 ## Handoff
 - Recommended option: Option A — canonical policy precedence plus existing semantic fixture.
 - Accepted trade-off: the canonical semantic test reads a bounded policy section in addition to executable router output.
-- Condition for s06: Developer explicitly approves the Approach and seals a digest-valid receipt.
+- Human review: Developer approved Option A at 2026-09-08T06:41:51Z.
+- Condition for s06: human seals the Approach receipt as Developer and verifies digest_match=true.
 - Deployment note: no deployment design; parent CR-008 retains release and rollback ownership.

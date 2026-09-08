@@ -88,13 +88,13 @@
   "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "human-s05-approach-review",
+  "handoff_target": "human-s05-receipt-sealing",
   "required_actions": [
-    "Developer reviews and approves or amends s05 Option A.",
-    "After approval, finalize s05 and seal the Approach trusted receipt before s06."
+    "Human runs wfc gate approve for Approach with reviewed-by developer.",
+    "Validate the Approach receipt digest match before authoring s06."
   ],
   "blockers": [
-    "APPROACH_APPROVAL_PENDING",
+    "APPROACH_RECEIPT_PENDING",
     "TASK_PLAN_NOT_AUTHORED"
   ],
   "refs": [
@@ -117,7 +117,8 @@
     "S04_SPEC_CONTRACT_DOR_DRAFTED",
     "S04_HUMAN_GATES_APPROVED_PENDING_RECEIPTS",
     "S04_TRUSTED_RECEIPTS_VERIFIED",
-    "S05_TECHNICAL_APPROACH_DRAFTED"
+    "S05_TECHNICAL_APPROACH_DRAFTED",
+    "S05_HUMAN_APPROACH_APPROVED_PENDING_RECEIPT"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -134,7 +135,8 @@
     "OQ-AR-002 Option A was approved by Developer and QC at 2026-09-08T04:39:20Z.",
     "BA approved Spec, Developer approved Contract, and BA/QC approved DoR at 2026-09-08T06:08:19Z.",
     "Spec, Contract, and DoR trusted receipts are APPROVED with digest_match=true; latest receipt was sealed at 2026-09-08T06:28:48.620Z.",
-    "s05 recommends the smallest policy-precedence delta; Developer Approach approval remains pending."
+    "Developer approved s05 Option A at 2026-09-08T06:41:51Z.",
+    "s05 is finalized; the Approach trusted receipt remains pending human CLI sealing."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -244,6 +246,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Drafted Option A technical approach using the canonical policy, existing semantic fixture, generated runtime sync, and no router or SA/TA contract change; Developer approval remains pending."
+    },
+    {
+      "timestamp": "2026-09-08T06:41:51Z",
+      "action": "record-s05-human-approach-approval",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Developer approved Option A; s05 was finalized and the trusted Approach receipt remains pending human CLI sealing."
     }
   ]
 }
