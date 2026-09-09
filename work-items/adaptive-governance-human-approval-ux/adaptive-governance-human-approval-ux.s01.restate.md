@@ -712,17 +712,18 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "parent-s08-qc-binding-review"
-last_transition_action: "prepare-parent-reverification-binding"
-last_transition_at: "2026-09-09T07:16:45Z"
+handoff_target: "parent-s08-technical-verification-review"
+last_transition_action: "parent-hosted-binding-approved"
+last_transition_at: "2026-09-09T08:06:32Z"
 required_actions:
-  - "QC approves or rejects the parent hosted binding for source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d, run 34322150024, and hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5."
-  - "After binding approval, QC decides Technical Verification and DoD; DevOps/QC Release and PO Business Acceptance follow."
+  - "QC decides Technical Verification for the approved parent hosted binding."
+  - "After Technical Verification, QC decides DoD; DevOps/QC Release and PO Business Acceptance follow."
 blockers: []
 review_notes:
   - "Human review approved."
   - "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local verification matrix and hosted Guardrails run 34322150024."
-  - "Hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 passed checksum, extracted-payload parity, and exact artifact smoke. F-AG08-001 is resolved; current binding and terminal approvals remain pending."
+  - "Hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 passed checksum, extracted-payload parity, and exact artifact smoke. F-AG08-001 is resolved."
+  - "Human QC approved the exact parent hosted binding at 2026-09-09T08:06:32Z. Technical Verification, DoD, Release, and Business Acceptance remain separate pending gates."
 refs:
   - "changes/CR-008"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -763,6 +764,7 @@ audit_events:
   - "LINKED_DEFECTS_DONE"
   - "PARENT_REVERIFICATION_PASS"
   - "PARENT_HOSTED_BINDING_READY"
+  - "PARENT_HOSTED_BINDING_APPROVED"
 ```
 
 ## Traceability
@@ -777,11 +779,12 @@ outputs:
   - "clarified adaptive-governance boundary"
   - "AG-01..AG-11 acceptance draft"
   - "SA and TA architecture-driver handoffs"
-next_step: "QC review of the exact parent hosted source/run/artifact binding in s08"
+next_step: "QC Technical Verification decision for the approved parent hosted binding in s08"
 ```
 
 ## Handoff
 - Current state: both linked child work items are `DONE`; parent re-verification is `PASS`, AG-01..AG-13 are 13/13 PASS, and F-AG08-001 is resolved.
 - Candidate: source `38bb0d178aa994e2a7c6e841b58b3e6b4263c56d`, hosted run `34322150024`, SHA-256 `2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5`.
-- Next human action: QC approves or rejects the exact parent hosted binding. Technical Verification, DoD, Release, and Business Acceptance remain separate pending gates.
+- Binding: QC approved the exact source/run/artifact binding at `2026-09-09T08:06:32Z`; local `ebfb5ffb…` remains pre-host evidence and v2.6.1 remains rollback.
+- Next human action: QC separately approves or rejects Technical Verification. DoD, Release, and Business Acceptance remain pending gates.
 - Branch/worktree decision: `HOLD_OPEN`; no merge, tag, publication, release, cleanup, or global install is authorized.
