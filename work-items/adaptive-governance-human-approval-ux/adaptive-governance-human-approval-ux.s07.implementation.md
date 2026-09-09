@@ -116,7 +116,8 @@ tags:
 > **REOPENED BY QC (2026-09-09):** `F-AG11-001` is OPEN. The repeated parent closeout sealed
 > digest-valid DoD, Release, and Business Acceptance receipts but retained the pre-closeout action
 > and handoff and omitted a current-cycle protocol event. The linked defect
-> `closeout-bundle-repeat-cycle-reconciliation` is materialized but not approved for implementation.
+> `closeout-bundle-repeat-cycle-reconciliation` has PO work-item approval but is not approved for implementation;
+> its trusted receipt and later authoring gates remain separate.
 > All earlier implementation/review evidence below is historical pre-finding evidence.
 >
 > CR-008 is ACTIVE in a dedicated enterprise worktree. B0, B1a and B1b are approved. T3/T4 now render
@@ -1146,7 +1147,8 @@ root_cause_evidence:
 linked_work_item:
   slug: "closeout-bundle-repeat-cycle-reconciliation"
   protocol_status: MATERIALIZED
-  approval_status: PENDING_REVIEW
+  approval_status: APPROVED
+  trusted_receipt_status: MISSING
   implementation_path: CLOSED
 release_effect:
   parent_s07: REOPENED
@@ -1154,7 +1156,7 @@ release_effect:
   terminal_receipts: HISTORICAL_PRE_FINDING
   branch_worktree: HOLD_OPEN
   release: BLOCKED
-next_human_action: "PO approves the linked work item; later gates remain independent."
+next_human_action: "Seal the linked work-item trusted receipt; later gates remain independent."
 ```
 
 ## Workflow Pack Audit
@@ -1211,7 +1213,7 @@ next_step: "Commit the VERIFIED snapshot and run hosted Guardrails before Releas
 
 ## Handoff
 - Current state: `F-AG11-001` reopened the parent delivery lane; the prior B0-B4 and verification evidence is retained as historical pre-finding evidence.
-- Linked defect: `closeout-bundle-repeat-cycle-reconciliation` is materialized at s01 with PO work-item approval pending; implementation is not open.
+- Linked defect: PO approved `closeout-bundle-repeat-cycle-reconciliation` at s01; trusted receipt sealing and all authoring gates remain, so implementation is not open.
 - Required behavior: a repeated committed closeout must remove every satisfied pending action, set the canonical close-ready handoff, append one current-cycle event, and remain a NOOP on unchanged retry.
 - Release effect: the source `38bb0d1…`, run `34322150024`, candidate `2a5ae701…`, and terminal receipts are historical pre-finding evidence only.
 - Branch/worktree: `HOLD_OPEN`; no publish, tag, merge, install, cleanup, or branch finalization is authorized.

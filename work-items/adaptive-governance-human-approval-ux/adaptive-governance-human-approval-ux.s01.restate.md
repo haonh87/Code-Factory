@@ -712,16 +712,16 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "linked-defect-work-item-approval"
-last_transition_action: "record-ag11-repeat-cycle-finding"
-last_transition_at: "2026-09-09T10:12:13Z"
+handoff_target: "linked-defect-trusted-receipt"
+last_transition_action: "linked-defect-work-item-approved"
+last_transition_at: "2026-09-09T13:32:51Z"
 required_actions:
-  - "PO approves work item closeout-bundle-repeat-cycle-reconciliation."
+  - "Seal and verify the trusted work-item receipt for closeout-bundle-repeat-cycle-reconciliation, then continue s02."
   - "Complete the linked defect through Spec, DoR, Approach, Task Plan, TDD implementation, two-tier review, hosted verification, and DoD."
   - "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
 blockers:
   - "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."
-  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is MATERIALIZED and awaits the PO decision before authoring continues."
+  - "Linked defect closeout-bundle-repeat-cycle-reconciliation has explicit PO approval; its trusted receipt must be sealed before authoring continues."
 review_notes:
   - "Human review approved."
   - "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local verification matrix and hosted Guardrails run 34322150024."
@@ -733,6 +733,7 @@ review_notes:
   - "Human PO approved Business Acceptance at 2026-09-09T09:00:31Z for the same exact Release-approved candidate. The finalized s08 host is ready for atomic trusted-receipt sealing; no publish or tag action was inferred or executed."
   - "The 2026-09-09T09:57:16.873Z closeout receipts are retained as historical pre-finding evidence against s08 SHA-256 1c5f5d81bcdfde07638d0ce379a66f22976e99a2932b8789801626b86ae5e9b3."
   - "QC recorded F-AG11-001 and reopened the parent delivery lane; release, protocol close, and branch finalization are blocked pending the linked defect and corrected-candidate re-verification."
+  - "Human PO approved linked defect closeout-bundle-repeat-cycle-reconciliation at 2026-09-09T13:32:51Z; receipt sealing and every later gate remain separate."
 refs:
   - "changes/CR-008"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -783,6 +784,7 @@ audit_events:
   - "AG11_REPEAT_CYCLE_FINDING_RECORDED"
   - "LINKED_REPEAT_CYCLE_DEFECT_MATERIALIZED"
   - "PARENT_RELEASE_BLOCKED_BY_F_AG11_001"
+  - "LINKED_REPEAT_CYCLE_DEFECT_WORK_ITEM_APPROVED"
 ```
 
 ## Current Governance Router Status
@@ -811,11 +813,11 @@ outputs:
   - "clarified adaptive-governance boundary"
   - "AG-01..AG-11 acceptance draft"
   - "SA and TA architecture-driver handoffs"
-next_step: "PO work-item review for closeout-bundle-repeat-cycle-reconciliation"
+next_step: "Seal the linked defect trusted work-item receipt, then continue its s02 Business Goal"
 ```
 
 ## Handoff
 - Current state: `F-AG11-001` is OPEN and the parent delivery lane is reopened; the prior candidate and terminal receipts are historical pre-finding evidence only.
-- Linked defect: `closeout-bundle-repeat-cycle-reconciliation` is materialized at s01 with PO work-item approval pending.
-- Next human action: PO approves that linked work item; later Spec, DoR, Approach, Task Plan, implementation, review, Verify/DoD, Release, and Business Acceptance gates remain independent.
+- Linked defect: PO approved `closeout-bundle-repeat-cycle-reconciliation` at s01; its trusted work-item receipt is not yet sealed.
+- Next human action: seal that trusted receipt; later Spec, DoR, Approach, Task Plan, implementation, review, Verify/DoD, Release, and Business Acceptance gates remain independent.
 - Branch/worktree decision: `HOLD_OPEN`; no merge, tag, publication, release, cleanup, global install, or branch finalization is authorized.

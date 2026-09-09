@@ -466,15 +466,15 @@ constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "One bounded linked-defect clarification pass."
-gaps: ["Trusted work-item approval remains pending."]
+gaps: ["The trusted work-item approval receipt still requires human TTY sealing."]
 risk_level: HIGH
-next_action: "PO reviews the linked work item before s02 proceeds."
+next_action: "Seal and verify the trusted work-item receipt before s02 proceeds."
 ```
 
 ## Work Item Protocol
 ```yaml
 protocol_status: MATERIALIZED
-approval_status: PENDING_REVIEW
+approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
 work_item_type: BUG
@@ -491,19 +491,20 @@ change_strategy: none
 change_id: ""
 decision_owner: "agent"
 protocol_owner: "developer"
-reviewed_by: ""
-reviewed_at: ""
-handoff_target: "human-review"
-last_transition_action: "materialize"
-last_transition_at: "2026-09-09T10:12:13Z"
+reviewed_by: "po"
+reviewed_at: "2026-09-09T13:32:51Z"
+handoff_target: "trusted-work-item-receipt"
+last_transition_action: "work-item-review-recorded"
+last_transition_at: "2026-09-09T13:32:51Z"
 required_actions:
-  - "wfc work-item approve --work-item closeout-bundle-repeat-cycle-reconciliation --reviewed-by po"
-  - "After approval, continue s02 Business Goal; do not implement before Spec, DoR, Approach, and Task Plan receipts pass."
+  - "Seal the trusted receipt with wfc work-item approve --work-item closeout-bundle-repeat-cycle-reconciliation --reviewed-by po --reviewed-at 2026-09-09T13:32:51Z --note 'PO approved the linked work item for F-AG11-001; later gates remain independent.'"
+  - "After receipt verification, continue s02 Business Goal; do not implement before Spec, DoR, Approach, and Task Plan receipts pass."
 blockers:
-  - "Human PO work-item approval is pending."
+  - "The trusted work-item approval receipt must be sealed before the s02 handoff."
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
-  - "Creation approval does not substitute for PO work-item approval or later gates."
+  - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
+  - "This decision does not substitute for the trusted receipt or any later gate."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -517,6 +518,7 @@ audit_events:
   - "WORKFLOW_SCAFFOLDED"
   - "STEP_OPENED"
   - "S01_REQUIREMENT_AND_ARCHITECTURE_DRIVERS_DRAFTED"
+  - "WORK_ITEM_REVIEW_RECORDED_PENDING_RECEIPT"
 ```
 
 ## Traceability
@@ -529,11 +531,12 @@ outputs:
   - "repeat-cycle reconciliation BUG scope"
   - "RCR-01..06 acceptance draft"
   - "SA and TA driver-only handoffs"
-next_step: "Human work-item review, then s02 Business Goal"
+next_step: "Seal the trusted work-item receipt, then continue s02 Business Goal"
 ```
 
 ## Handoff
 - Clear: closeout receipts succeeded, but current navigation and event evidence did not reconcile.
 - Distinct scope: repeat-cycle/idempotency, not the resolved missing-DoD selector defect.
-- Blocker: PO work-item approval is pending; no implementation path is open.
+- Decision: PO approved the work item; the trusted receipt still requires human TTY sealing.
+- Boundary: implementation remains closed until Spec, DoR, Approach, and Task Plan independently pass.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.
