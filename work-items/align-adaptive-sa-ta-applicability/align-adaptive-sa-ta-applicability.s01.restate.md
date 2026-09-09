@@ -660,7 +660,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "align-adaptive-sa-ta-applicability"
@@ -685,12 +685,12 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-08T03:03:41.551Z"
-handoff_target: "trusted-dod-receipt"
-last_transition_action: "verify"
-last_transition_at: "2026-09-09T04:20:33.534Z"
+handoff_target: "parent-cr-008-reverification"
+last_transition_action: "close"
+last_transition_at: "2026-09-09T04:26:08.744Z"
 required_actions:
-  - "QC seals the trusted DoD receipt against the finalized s08 artifact."
-  - "Close the child protocol, then re-verify parent CR-008 against an exact candidate containing the child result."
+  - "Re-verify parent CR-008 against an exact candidate containing the completed CF-019 result."
+  - "Keep the shared branch/worktree open until parent verification and parent closeout gates complete."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -716,7 +716,8 @@ review_notes:
   - "QC approved the amended hosted artifact binding at 2026-09-09T03:29:33Z for source d7c0efa876b014625d3e0e76382ad61b65e82d6e, run 34304892135, and SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5; ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47 remains local pre-host evidence."
   - "QC approved Technical Verification at 2026-09-09T03:43:48Z for source d7c0efa876b014625d3e0e76382ad61b65e82d6e, run 34304892135, and hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5; DoD remains pending."
   - "Spec Coverage was completed at 2026-09-09T03:53:46Z with AC-AR-01..10 PASS and no uncovered acceptance criterion; QC DoD remained the only missing child gate."
-  - "QC explicitly approved DoD at 2026-09-09T04:15:06Z based on the approved Technical Verification and AC-AR-01..10 Spec Coverage at 10/10 PASS; the protocol is VERIFIED pending trusted DoD receipt sealing, and parent CR-008 re-verification remains mandatory."
+  - "QC explicitly approved DoD at 2026-09-09T04:15:06Z based on the approved Technical Verification and AC-AR-01..10 Spec Coverage at 10/10 PASS; the protocol was VERIFIED pending trusted DoD receipt sealing, and parent CR-008 re-verification remained mandatory."
+  - "QC sealed the trusted DoD receipt at 2026-09-09T04:24:18Z with digest_match=true for s08 SHA-256 186049911f4e04cea6406a095935849207551c200dabfd3e8e81a4db6daca249; the child protocol transitioned VERIFIED to DONE at 2026-09-09T04:26:08.744Z."
 refs:
   - "work-items/align-adaptive-sa-ta-applicability"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -753,7 +754,8 @@ audit_events:
   - "S08_SPEC_COVERAGE_READY"
   - "VERIFICATION_CONFIRMED"
   - "S08_DOD_APPROVED"
-  - "VERIFICATION_CONFIRMED"
+  - "S08_DOD_RECEIPT_VERIFIED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Traceability
@@ -763,7 +765,7 @@ source_inputs:
   - "CF-019 master audit finding"
   - "CR-008 Adaptive Admission And Applicability rule"
   - "Conflicting generic SA/TA Skill Requirement in source and packaged runtime policies"
-next_step: "QC seals the trusted DoD receipt; then close the child protocol and re-verify parent CR-008"
+next_step: "Re-verify parent CR-008 against an exact candidate containing the completed CF-019 result"
 ```
 
 ## Handoff
@@ -780,4 +782,5 @@ next_step: "QC seals the trusted DoD receipt; then close the child protocol and 
 - Approved: QC accepted the amended hosted binding for `d7c0efa…` / run `34304892135` / SHA-256 `2a5ae701…`; `ebfb5ffb…` remains local pre-host evidence.
 - Approved: QC passed Technical Verification for the exact hosted source/run/SHA-256 binding.
 - Approved: QC passed DoD based on approved Technical Verification and AC-AR-01..10 at 10/10 PASS.
-- Next: seal the trusted DoD receipt, close the child protocol, then continue mandatory parent CR-008 re-verification.
+- Closed: trusted DoD receipt is digest-valid and the child protocol is `DONE`.
+- Next: continue mandatory parent CR-008 exact-candidate re-verification; keep the shared branch/worktree open.
