@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "VERIFIED",
   "decision_owner": "agent",
   "protocol_owner": "po",
   "raw_request_summary": "Reconcile CF-019 by making router-derived SA/TA applicability authoritative while preserving deterministic hard-risk escalation.",
@@ -94,9 +94,10 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "step-s08-qc",
+  "handoff_target": "trusted-dod-receipt",
   "required_actions": [
-    "QC decides DoD after the approved Technical Verification."
+    "QC seals the trusted DoD receipt against the finalized s08 artifact.",
+    "Close the child protocol, then re-verify parent CR-008 against an exact candidate containing the child result."
   ],
   "blockers": [],
   "refs": [
@@ -133,7 +134,9 @@
     "S08_HOSTED_ARTIFACT_READY_FOR_QC_BINDING",
     "S08_HOSTED_ARTIFACT_BINDING_APPROVED",
     "S08_TECHNICAL_VERIFICATION_APPROVED",
-    "S08_SPEC_COVERAGE_READY"
+    "S08_SPEC_COVERAGE_READY",
+    "VERIFICATION_CONFIRMED",
+    "S08_DOD_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -162,7 +165,8 @@
     "F-AR08-001 is resolved and the amended hosted binding evidence was prepared for QC; Technical Verification and DoD remain pending.",
     "QC approved the amended hosted artifact binding at 2026-09-09T03:29:33Z for source d7c0efa876b014625d3e0e76382ad61b65e82d6e, run 34304892135, and SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5; ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47 remains local pre-host evidence.",
     "QC approved Technical Verification at 2026-09-09T03:43:48Z for source d7c0efa876b014625d3e0e76382ad61b65e82d6e, run 34304892135, and hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5; DoD remains pending.",
-    "Spec Coverage was completed at 2026-09-09T03:53:46Z with AC-AR-01..10 PASS and no uncovered acceptance criterion; QC DoD remains the only missing child gate."
+    "Spec Coverage was completed at 2026-09-09T03:53:46Z with AC-AR-01..10 PASS and no uncovered acceptance criterion; QC DoD remained the only missing child gate.",
+    "QC explicitly approved DoD at 2026-09-09T04:15:06Z based on the approved Technical Verification and AC-AR-01..10 Spec Coverage at 10/10 PASS; the protocol is VERIFIED pending trusted DoD receipt sealing, and parent CR-008 re-verification remains mandatory."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -368,6 +372,14 @@
       "from_status": "ACTIVE",
       "to_status": "ACTIVE",
       "note": "Completed explicit Spec Coverage for AC-AR-01..10 with 10/10 PASS evidence; DoD remains pending QC."
+    },
+    {
+      "timestamp": "2026-09-09T04:20:33.534Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "QC approved Technical Verification and DoD after AC-AR-01..10 achieved 10/10 PASS; trusted DoD receipt sealing and parent CR-008 re-verification remain."
     }
   ]
 }

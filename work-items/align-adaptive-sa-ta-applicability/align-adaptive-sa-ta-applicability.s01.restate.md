@@ -660,7 +660,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "align-adaptive-sa-ta-applicability"
@@ -685,11 +685,12 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-08T03:03:41.551Z"
-handoff_target: "step-s08-qc"
-last_transition_action: "complete-s08-spec-coverage"
-last_transition_at: "2026-09-09T03:53:46Z"
+handoff_target: "trusted-dod-receipt"
+last_transition_action: "verify"
+last_transition_at: "2026-09-09T04:20:33.534Z"
 required_actions:
-  - "QC decides DoD after the approved Technical Verification."
+  - "QC seals the trusted DoD receipt against the finalized s08 artifact."
+  - "Close the child protocol, then re-verify parent CR-008 against an exact candidate containing the child result."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -714,7 +715,8 @@ review_notes:
   - "F-AR08-001 is resolved and the amended hosted binding evidence was prepared for QC; Technical Verification and DoD remain pending."
   - "QC approved the amended hosted artifact binding at 2026-09-09T03:29:33Z for source d7c0efa876b014625d3e0e76382ad61b65e82d6e, run 34304892135, and SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5; ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47 remains local pre-host evidence."
   - "QC approved Technical Verification at 2026-09-09T03:43:48Z for source d7c0efa876b014625d3e0e76382ad61b65e82d6e, run 34304892135, and hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5; DoD remains pending."
-  - "Spec Coverage was completed at 2026-09-09T03:53:46Z with AC-AR-01..10 PASS and no uncovered acceptance criterion; QC DoD remains the only missing child gate."
+  - "Spec Coverage was completed at 2026-09-09T03:53:46Z with AC-AR-01..10 PASS and no uncovered acceptance criterion; QC DoD remained the only missing child gate."
+  - "QC explicitly approved DoD at 2026-09-09T04:15:06Z based on the approved Technical Verification and AC-AR-01..10 Spec Coverage at 10/10 PASS; the protocol is VERIFIED pending trusted DoD receipt sealing, and parent CR-008 re-verification remains mandatory."
 refs:
   - "work-items/align-adaptive-sa-ta-applicability"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -749,6 +751,9 @@ audit_events:
   - "S08_HOSTED_ARTIFACT_BINDING_APPROVED"
   - "S08_TECHNICAL_VERIFICATION_APPROVED"
   - "S08_SPEC_COVERAGE_READY"
+  - "VERIFICATION_CONFIRMED"
+  - "S08_DOD_APPROVED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
 ## Traceability
@@ -758,7 +763,7 @@ source_inputs:
   - "CF-019 master audit finding"
   - "CR-008 Adaptive Admission And Applicability rule"
   - "Conflicting generic SA/TA Skill Requirement in source and packaged runtime policies"
-next_step: "QC decides DoD after the approved Technical Verification"
+next_step: "QC seals the trusted DoD receipt; then close the child protocol and re-verify parent CR-008"
 ```
 
 ## Handoff
@@ -774,4 +779,5 @@ next_step: "QC decides DoD after the approved Technical Verification"
 - Resolved: `F-AR08-001`; the former local SHA-256 remains pre-host evidence only.
 - Approved: QC accepted the amended hosted binding for `d7c0efa…` / run `34304892135` / SHA-256 `2a5ae701…`; `ebfb5ffb…` remains local pre-host evidence.
 - Approved: QC passed Technical Verification for the exact hosted source/run/SHA-256 binding.
-- Next: QC decides DoD; parent CR-008 re-verification remains subsequent.
+- Approved: QC passed DoD based on approved Technical Verification and AC-AR-01..10 at 10/10 PASS.
+- Next: seal the trusted DoD receipt, close the child protocol, then continue mandatory parent CR-008 re-verification.

@@ -107,8 +107,9 @@ tags:
 > jobs for source `d7c0efa…`. Its authoritative hosted artifact SHA-256 is `2a5ae701…`; the supplied
 > checksum, extracted payload parity, and direct install/update smoke all pass. QC approved the
 > amended hosted binding at `2026-09-09T03:29:33Z` while retaining `ebfb5ffb…` as local pre-host
-> evidence. s07/T6a is complete, and QC approved Technical Verification at
-> `2026-09-09T03:43:48Z`; DoD remains the only open child gate in s08.
+> evidence. s07/T6a is complete, QC approved Technical Verification at
+> `2026-09-09T03:43:48Z`, and QC approved DoD at `2026-09-09T04:15:06Z` after
+> AC-AR-01..10 reached 10/10 PASS. Parent CR-008 exact-candidate re-verification remains mandatory.
 
 ## Step Contract
 ```yaml
@@ -208,12 +209,11 @@ outputs_actual:
   - "T6a metadata rebind, five refreshed digest-valid receipts, and newly packed post-T6a candidate smoke"
 known_limitations:
   - "The T6 source/artifact pair is historical pre-amendment evidence and must not be reused as the resumed verification candidate."
-  - "Child s08 DoD, followed by parent CR-008 exact-candidate re-verification, remain human-controlled follow-up work."
+  - "Parent CR-008 exact-candidate re-verification remains mandatory after child DoD."
   - "The hosted archive differs from local pre-host bytes; extracted content parity and smoke pass, and QC approved the authoritative hosted binding before Technical Verification."
 follow_up_items:
-  - "QC decides DoD after the approved Technical Verification for run 34304892135."
-  - "After child DoD, refresh parent CR-008 verification against a candidate containing the exact child implementation result."
-notes_for_testing: "Treat run 34216520563 as historical failed evidence. Run 34304892135 and hosted SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 pass all technical checks; amended binding and Technical Verification are explicitly QC-approved, but DoD must not be inferred."
+  - "Refresh parent CR-008 verification against a candidate containing the exact child implementation result."
+notes_for_testing: "Treat run 34216520563 as historical failed evidence. Run 34304892135 and hosted SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 pass all technical checks; amended binding, Technical Verification, and DoD are explicitly QC-approved."
 ```
 
 ## Delivery Rule Evidence
@@ -242,7 +242,7 @@ delegation_mode: agentic
 independence_status: NOT_APPLICABLE
 independence_refs:
   - "s06 records that test, policy, generator, and evidence paths share one tightly coupled sequence."
-merge_path: "Child candidate -> QC s08 DoD -> exact candidate re-bound to parent CR-008 verification; no merge before DoD."
+merge_path: "Completed child candidate -> exact candidate re-bound to parent CR-008 verification; no merge before parent re-verification and parent gates."
 verify_path:
   - "node packages/workflow-bundle/test/workflow-adaptive-governance.test.js"
   - "npm run build:workflow:bundle-runtime"
@@ -346,9 +346,8 @@ checks:
     evidence: "The exact semantic, runtime parity, adjacent regression, governance, pack-audit, diff, and encoding checks are named for QC."
 open_findings: []
 cleanup_preconditions:
-  - "Child s08 Technical Verification and DoD pass for the new post-T6a exact candidate."
   - "Parent CR-008 re-verifies a candidate that includes the exact child result."
-next_action: "Push the binding-only handoff and rerun hosted Guardrails for the new candidate."
+next_action: "Keep the shared branch/worktree open and hand off the exact child result to parent CR-008 re-verification."
 ```
 
 ## T6 Exact Candidate Binding
@@ -389,12 +388,12 @@ parent_cr_008_handoff:
   required: true
   superseded_by: "T6a post-receipt candidate"
   rule: "Parent CR-008 must re-verify an exact candidate containing child source commit 1a803ba84a4e76150c90954d89dcc3b52f75111e after child DoD."
-  release_status: BLOCKED_PENDING_CHILD_DOD_AND_PARENT_REVERIFY
+  release_status: BLOCKED_PENDING_PARENT_REVERIFY
   rollback_version: "v2.6.1"
 worktree_cleanup_guard:
   status: HOLD_OPEN
-  reason: "Branch/worktree finalization remains blocked until child s08 DoD and parent exact-candidate re-verification complete."
-next_human_action: "QC approves DoD after reviewing the approved Technical Verification for run 34304892135."
+  reason: "Branch/worktree finalization remains blocked until parent exact-candidate re-verification completes."
+next_human_action: "NONE for the child; parent CR-008 re-verification is the mandatory next workflow action."
 ```
 
 ## T6a Metadata-only Rebind
@@ -483,7 +482,7 @@ hosted_candidate:
   disposition: "Authoritative hosted candidate explicitly approved by QC at 2026-09-09T03:29:33Z; local ebfb5ffb... remains pre-host evidence only."
   binding_reviewed_by: ["qc"]
   binding_reviewed_at: "2026-09-09T03:29:33Z"
-next_action: "QC decides DoD after the approved Technical Verification."
+next_action: "Hand off the exact completed child result to parent CR-008 re-verification."
 ```
 
 ## Workflow Pack Audit
@@ -531,8 +530,8 @@ local_candidate_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc84705
 hosted_source_sha: "d7c0efa876b014625d3e0e76382ad61b65e82d6e"
 hosted_run_id: "34304892135"
 hosted_candidate_sha256: "2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5"
-candidate_disposition: "Hosted technical evidence, amended binding, and Technical Verification approved by QC; DoD remains pending."
-next_step: "QC decides DoD."
+candidate_disposition: "Hosted technical evidence, amended binding, Technical Verification, and DoD approved by QC."
+next_step: "Parent CR-008 exact-candidate re-verification."
 ```
 
 ## Handoff
@@ -540,6 +539,6 @@ next_step: "QC decides DoD."
 - Completed reviews: AR-B1 and AR-B2 passed Spec Compliance before Code Quality with the required human roles and no open finding.
 - Candidate: hosted source `d7c0efa876b014625d3e0e76382ad61b65e82d6e`, run `34304892135`, artifact SHA-256 `2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5`; nine jobs, checksum, payload parity, and exact smoke PASS.
 - Historical note: local pre-host SHA-256 `ebfb5ffb…` remains supporting evidence only; hosted archive identity is authoritative.
-- Current gate: QC DoD; amended hosted binding and Technical Verification are approved, while parent re-verification remains subsequent.
-- Notes for testing: technical verification evidence is complete; do not infer any human-controlled verdict.
+- Current gate: child DoD is approved; parent CR-008 exact-candidate re-verification remains mandatory.
+- Notes for testing: child technical verification and DoD evidence are complete; do not reuse stale parent evidence.
 - Notes for deployment: none; this child performs no release or installation action.
