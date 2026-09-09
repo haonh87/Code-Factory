@@ -101,8 +101,8 @@ tags:
 > and BA/Developer/QC re-approved the unchanged Spec, Contract, DoR, Approach, and Task Plan for a
 > metadata-only rebind using `review_mode=independent`. T1..T6 and AR-B1/AR-B2 remain historical
 > passing evidence; candidate `a97e0ee…` / `ebfb5ffb…` is now pre-amendment evidence only. A new
-> candidate is blocked until all affected receipts are re-sealed; the local metadata validation now
-> passes, including Workflow Execution across all 193 workflow notes.
+> all five refreshed receipts are now `APPROVED` with `digest_match=true`, and Protocol passes for
+> all 11 managed work items. T6a is ready for a new immutable candidate; no terminal gate is inferred.
 
 ## Step Contract
 ```yaml
@@ -224,7 +224,7 @@ worktree_refs:
   - ".claude/worktrees/cr-008-adaptive-governance"
   - "codex/adaptive-governance-human-approval-ux"
 worktree_reason: "planning_track=full, multi-session CR-008 release risk, and parent/child candidate coupling require isolation."
-review_status: REOPENED_FOR_METADATA_REBIND
+review_status: T6A_APPROVED_AND_RECEIPTS_VERIFIED
 review_refs:
   - "AR-B1 Spec Compliance: PASS by QC at 2026-09-08T09:55:19Z for c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045"
   - "AR-B1 Code Quality: PASS by Developer and QC at 2026-09-08T10:00:24Z for c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045"
@@ -394,7 +394,7 @@ next_human_action: "Historical T6 handoff is superseded by T6a; human re-seals t
 ```yaml
 task: "T6a"
 finding_ref: "F-AR08-001"
-status: LOCAL_VALIDATION_PASS_RECEIPTS_PENDING
+status: RECEIPTS_VERIFIED_READY_FOR_CANDIDATE
 authorized_at: "2026-09-08T10:55:26Z"
 authorization:
   reopen_s07_and_finding:
@@ -424,8 +424,14 @@ metadata_delta:
   - "Record the approved T6a amendment and retain a97e0ee… / ebfb5ffb… as historical pre-amendment evidence."
 receipt_boundary:
   affected_gates: ["spec", "contract", "dor", "approach", "task_plan"]
-  status: PENDING_HUMAN_RESEAL
+  status: VERIFIED
   rule: "No resumed candidate may be created until every refreshed receipt is APPROVED with digest_match=true."
+  evidence:
+    - "Spec APPROVED by BA at 2026-09-09T02:25:40.247Z; digest_match=true; s04 SHA-256 2068bb3a4ae95377e2cf5af79ef2c43f48fc71ac920b2af0fd5fabc3b7e74295."
+    - "Contract APPROVED by Developer at 2026-09-09T02:25:56.083Z; digest_match=true; same s04 SHA-256."
+    - "DoR APPROVED by QC at 2026-09-09T02:26:08.853Z; digest_match=true; same s04 SHA-256."
+    - "Approach APPROVED by Developer at 2026-09-09T02:26:27.677Z; digest_match=true; s05 SHA-256 c423abe3bc3dab0f735bc757e740e5ba39d9659acc9962e4472cfa50c9a9b8e5."
+    - "Task Plan APPROVED by Developer at 2026-09-09T02:26:39.341Z; digest_match=true; s06 SHA-256 af21fc0379d79cd4e345caaed4b693e191d727ea9b78d3d9d774162dee5b94b3."
 verification_path:
   - "npm run validate:workflow:execution -- --workflow-root work-items"
   - "npm run validate:workflow -- --workflow-root work-items --project-root ."
@@ -440,13 +446,13 @@ verification_evidence:
   work_item_report_json: PASS
   diff_check: PASS
   utf8_and_replacement_scan: PASS
-  protocol: "EXPECTED_BLOCK; exactly five stale receipts: spec, contract, dor, approach, task_plan"
+  protocol: "PASS at 2026-09-09T02:28:18Z; 11 protocol-managed work items validated and 16 legacy items skipped"
 historical_candidate:
   source_sha: "a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff"
   artifact_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
   hosted_run_id: "34216520563"
   disposition: "HISTORICAL_PRE_AMENDMENT_ONLY"
-next_action: "Commit stable amended artifacts, report their SHA-256 digests, then ask the human to re-seal all five gate receipts."
+next_action: "Commit the verified receipt evidence, pack one candidate from the clean source SHA, and run exact-artifact smoke."
 ```
 
 ## Workflow Pack Audit
@@ -488,17 +494,17 @@ task_status:
   T4: COMPLETE
   T5: COMPLETE
   T6: COMPLETE
-  T6a: LOCAL_VALIDATION_PASS_RECEIPTS_PENDING
+  T6a: RECEIPTS_VERIFIED_READY_FOR_CANDIDATE
 implementation_candidate_commit: "a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff"
 local_candidate_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
 candidate_disposition: "Historical pre-T6a evidence; not eligible for resumed verification."
-next_step: "Complete T6a local validation and re-seal affected trusted receipts before creating a new exact candidate."
+next_step: "Create and smoke a new exact candidate, then bind the immutable source/artifact pair for hosted verification."
 ```
 
 ## Handoff
 - Outputs actual: T1/T2 RED-to-GREEN policy evidence plus T3/T4 runtime parity, regression, governance, audit, and encoding evidence.
 - Completed reviews: AR-B1 and AR-B2 passed Spec Compliance before Code Quality with the required human roles and no open finding.
 - Historical candidate: source `a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff`; local artifact SHA-256 `ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47`; do not reuse after T6a.
-- Current gate: refreshed Spec, Contract, DoR, Approach, and Task Plan trusted receipts; Technical Verification, DoD, and parent re-verification remain open.
-- Notes for testing: first require Workflow Execution to accept `review_mode=independent`, then create and verify a new exact candidate; router behavior and stable reason values are unchanged.
+- Current gate: new exact-candidate creation and hosted verification; Technical Verification, DoD, and parent re-verification remain open.
+- Notes for testing: Workflow Execution and Protocol now pass; create and verify one immutable candidate while keeping router behavior and stable reason values unchanged.
 - Notes for deployment: none; this child performs no release or installation action.

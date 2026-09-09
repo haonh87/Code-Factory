@@ -122,8 +122,9 @@ tags:
 > `F-AR08-001` therefore returned the work item to s07. QC approved the reopen/finding and the
 > named BA/Developer/QC authorities approved metadata-only amendment T6a at
 > `2026-09-08T10:55:26Z`. T6a now passes local Workflow Execution, workflow, planning, diff, JSON,
-> and encoding checks; only the five expected stale receipts remain before a new candidate.
-> Technical Verification and DoD stay blocked and are not inferred.
+> and encoding checks. All five refreshed receipts are `APPROVED` with `digest_match=true`, and
+> Protocol passes. A new exact candidate and hosted run remain required; Technical Verification and
+> DoD stay blocked and are not inferred.
 
 ## Step Contract
 ```yaml
@@ -299,7 +300,6 @@ release_blockers:
   - "F-AR08-001: invalid review_mode=targeted in s01-s07 fails Workflow Execution and prevents hosted candidate build/Node verification."
 status: PARTIAL
 gaps:
-  - "Refreshed trusted receipts for Spec, Contract, DoR, Approach, and Task Plan"
   - "Passing hosted run, exact hosted artifact SHA-256, and Node 18/22 required-job results"
 residual_risks:
   - "A supported hosted Node runtime may differ from local Node 26 despite complete local evidence."
@@ -328,10 +328,9 @@ checks:
     result: PASS
     evidence: "Technical Verification and DoD remain pending QC; Release and Business Acceptance are not applicable to this child."
 blocking_items:
-  - "F-AR08-001 execution-metadata normalization and affected trusted-receipt refresh"
   - "Rerun hosted Guardrails through exact candidate build and Node 18/22"
 owner: "qc"
-next_action: "Human re-seals the affected gate receipts before any new candidate is created."
+next_action: "Create one new exact candidate from the clean post-receipt source and rerun hosted Guardrails."
 ```
 
 ## Regression & Compatibility Summary
@@ -446,7 +445,7 @@ notes:
 ```yaml
 finding_id: "F-AR08-001"
 status: OPEN
-remediation_status: LOCAL_FIX_PASS_RECEIPTS_AND_HOSTED_RERUN_PENDING
+remediation_status: LOCAL_FIX_AND_RECEIPTS_PASS_HOSTED_RERUN_PENDING
 severity: HIGH
 category: "WORKFLOW_EXECUTION_METADATA"
 detected_at: "2026-09-08T10:39:13Z"
@@ -466,8 +465,14 @@ affected_paths:
   - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s06.task-breakdown.md"
   - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s07.implementation.md"
 receipt_impact:
-  status: REAPPROVED_PENDING_RESEAL
-  reason: "The named authorities re-approved unchanged gate content for the metadata-only rebind; s04, s05, and s06 still require new cryptographic receipts against their amended digests."
+  status: VERIFIED
+  reason: "All five refreshed receipts are APPROVED with digest_match=true against the amended s04/s05/s06 digests."
+  verified_receipts:
+    - "Spec by BA at 2026-09-09T02:25:40.247Z; s04 SHA-256 2068bb3a4ae95377e2cf5af79ef2c43f48fc71ac920b2af0fd5fabc3b7e74295"
+    - "Contract by Developer at 2026-09-09T02:25:56.083Z; same s04 SHA-256"
+    - "DoR by QC at 2026-09-09T02:26:08.853Z; same s04 SHA-256"
+    - "Approach by Developer at 2026-09-09T02:26:27.677Z; s05 SHA-256 c423abe3bc3dab0f735bc757e740e5ba39d9659acc9962e4472cfa50c9a9b8e5"
+    - "Task Plan by Developer at 2026-09-09T02:26:39.341Z; s06 SHA-256 af21fc0379d79cd4e345caaed4b693e191d727ea9b78d3d9d774162dee5b94b3"
 product_behavior_impact: NONE
 local_remediation:
   validated_at: "2026-09-09T01:55:03Z"
@@ -475,7 +480,7 @@ local_remediation:
   child_workflow_governance: "PASS; 8 files and 8 notes"
   workflow_planning: "PASS; 193 workflow notes"
   json_diff_encoding: PASS
-  protocol: "EXPECTED_BLOCK; spec, contract, dor, approach, and task_plan receipts are stale after the approved artifact edit"
+  protocol: "PASS at 2026-09-09T02:28:18Z; 11 managed work items validated"
 hosted_impact:
   passed_jobs: 4
   failed_jobs: 1
@@ -491,7 +496,7 @@ prohibited_shortcuts:
   - "Do not expand the validator enum to accept targeted without a separate approved contract change."
   - "Do not silently edit receipt-bound artifacts or reuse stale receipts."
   - "Do not approve Technical Verification or DoD for run 34216520563."
-next_human_action: "After stable artifact digests are reported, re-seal Spec, Contract, DoR, Approach, and Task Plan receipts with the approved roles."
+next_human_action: "NONE until the new hosted candidate evidence is ready for QC review."
 ```
 
 ## Technical Verification
@@ -504,7 +509,7 @@ reviewed_by: []
 reviewed_at: ""
 blocking_items:
   - "F-AR08-001 is open and hosted run 34216520563 failed before artifact build."
-recommendation: "Do not approve Technical Verification; T6a passes locally but still needs refreshed receipts and a new hosted candidate."
+recommendation: "Do not approve Technical Verification; T6a and receipts pass, but a new hosted candidate is still required."
 ```
 
 ## UAT Summary
@@ -553,11 +558,10 @@ unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "The local matrix completed in one verification session; hosted time is pending."
 gaps:
-  - "F-AR08-001 receipt refresh after the locally passing correction"
   - "Passing hosted source/run/artifact binding"
   - "QC Technical Verification followed by QC DoD"
 risk_level: MEDIUM
-next_action: "Re-seal T6a-affected receipts, then create and verify a new exact candidate."
+next_action: "Create and verify a new exact candidate."
 ```
 
 ## Definition of Done
@@ -572,7 +576,6 @@ checks:
   traceability_complete: PASS
   residual_risks_documented: PASS
 gaps:
-  - "F-AR08-001 correction and affected trusted-receipt refresh"
   - "Hosted Node 18/22 evidence and candidate binding"
   - "Explicit QC Technical Verification and subsequent DoD approval"
 residual_risks:
@@ -629,7 +632,7 @@ hosted_run_id: "34216520563"
 hosted_source_sha: "96212a30a1a341d90f96b85709f9834e8bfaaef8"
 open_findings:
   - "F-AR08-001"
-next_step: "Re-seal T6a-affected receipts; then create and verify a new candidate."
+next_step: "Create and verify a new exact candidate."
 ```
 
 ## Handoff
@@ -637,4 +640,4 @@ next_step: "Re-seal T6a-affected receipts; then create and verify a new candidat
 - Residual risks: stale gate receipts if metadata is edited without re-sealing, hosted runtime variance, and stale parent-candidate evidence.
 - Approved action: execute metadata-only T6a with `review_mode=independent`; old candidate evidence remains historical.
 - Release recommendation: NOT_APPLICABLE for this child; parent CR-008 remains blocked.
-- Next action: have the approved BA/Developer/QC roles re-seal the five affected trusted receipts.
+- Next action: create one exact candidate and rerun hosted Guardrails; wait for QC before Technical Verification or DoD.

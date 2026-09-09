@@ -96,7 +96,7 @@
   "change_id": "",
   "handoff_target": "step-s07-owner",
   "required_actions": [
-    "Complete approved T6a metadata validation and re-seal affected trusted receipts before creating a new candidate."
+    "Create and smoke one exact post-T6a candidate, then bind it for hosted verification."
   ],
   "blockers": [],
   "refs": [
@@ -126,7 +126,8 @@
     "S06_HUMAN_TASK_PLAN_APPROVED_PENDING_RECEIPT",
     "WORK_ITEM_ACTIVATED",
     "S07_T6A_METADATA_REBIND_APPROVED",
-    "S07_T6A_LOCAL_VALIDATION_PASS"
+    "S07_T6A_LOCAL_VALIDATION_PASS",
+    "S07_T6A_RECEIPTS_VERIFIED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -148,7 +149,8 @@
     "s06 Task Plan is drafted with T1..T6, two targeted review batches, and exact child-to-parent candidate handoff.",
     "Developer approved s06 T1..T6 and AR-B1..AR-B2 at 2026-09-08T07:26:34Z; the Task Plan receipt remains pending.",
     "QC reopened s07 and recorded F-AR08-001; Developer approved T6a; BA/Developer/QC re-approved unchanged Spec, Contract, DoR, Approach, and Task Plan for review_mode=independent at 2026-09-08T10:55:26Z.",
-    "T6a local Workflow Execution, workflow, planning, JSON, diff, and encoding checks passed at 2026-09-09T01:55:03Z; protocol is blocked only by the five expected stale receipts."
+    "T6a local Workflow Execution, workflow, planning, JSON, diff, and encoding checks passed at 2026-09-09T01:55:03Z; protocol is blocked only by the five expected stale receipts.",
+    "All five refreshed receipts are APPROVED with digest_match=true and Protocol passed at 2026-09-09T02:28:18Z; T6a may create a new exact candidate."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -306,6 +308,14 @@
       "from_status": "ACTIVE",
       "to_status": "ACTIVE",
       "note": "Workflow Execution, child workflow governance, planning, JSON, diff, and encoding checks passed; protocol remains blocked only by the expected five stale trusted receipts."
+    },
+    {
+      "timestamp": "2026-09-09T02:28:18Z",
+      "action": "verify-s07-t6a-receipts",
+      "actor": "agent",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "Verified Spec, Contract, DoR, Approach, and Task Plan receipts as APPROVED with digest_match=true; protocol validation passed and candidate creation is unblocked."
     }
   ]
 }
