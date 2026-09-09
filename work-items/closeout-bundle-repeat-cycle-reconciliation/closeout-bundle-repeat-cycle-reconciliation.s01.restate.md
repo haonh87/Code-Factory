@@ -466,9 +466,9 @@ constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "One bounded linked-defect clarification pass."
-gaps: ["The trusted work-item approval receipt still requires human TTY sealing."]
+gaps: []
 risk_level: HIGH
-next_action: "Seal and verify the trusted work-item receipt before s02 proceeds."
+next_action: "Review the drafted s02 Business Goal before s03 proceeds."
 ```
 
 ## Work Item Protocol
@@ -480,7 +480,7 @@ work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation"
-current_step: "s01"
+current_step: "s02"
 granted_write_paths: []
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
@@ -493,18 +493,19 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "trusted-work-item-receipt"
-last_transition_action: "work-item-review-recorded"
-last_transition_at: "2026-09-09T13:32:51Z"
+handoff_target: "business-goal-review"
+last_transition_action: "open-s02-business-goal"
+last_transition_at: "2026-09-09T13:57:05Z"
 required_actions:
-  - "Seal the trusted receipt with wfc work-item approve --work-item closeout-bundle-repeat-cycle-reconciliation --reviewed-by po --reviewed-at 2026-09-09T13:32:51Z --note 'PO approved the linked work item for F-AG11-001; later gates remain independent.'"
-  - "After receipt verification, continue s02 Business Goal; do not implement before Spec, DoR, Approach, and Task Plan receipts pass."
+  - "PO confirms the s02 Business Goal, KPI targets, scope boundary, and non-goals."
+  - "After confirmation, continue s03 Open Questions; do not implement before Spec, DoR, Approach, and Task Plan receipts pass."
 blockers:
-  - "The trusted work-item approval receipt must be sealed before the s02 handoff."
+  - "The s02 Business Goal awaits human confirmation."
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
-  - "This decision does not substitute for the trusted receipt or any later gate."
+  - "Trusted work-item receipt recorded at 2026-09-09T13:53:59.942Z verifies APPROVED for PO with SHA-256 4ae668c9dc20dfaa1ff8979da9ce43485511c2d19e59e98e18c08427e7485b0d."
+  - "This decision does not substitute for Spec, DoR, Approach, Task Plan, or any later gate."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -519,6 +520,9 @@ audit_events:
   - "STEP_OPENED"
   - "S01_REQUIREMENT_AND_ARCHITECTURE_DRIVERS_DRAFTED"
   - "WORK_ITEM_REVIEW_RECORDED_PENDING_RECEIPT"
+  - "WORK_ITEM_APPROVED"
+  - "TRUSTED_WORK_ITEM_RECEIPT_VERIFIED"
+  - "S02_BUSINESS_GOAL_DRAFTED"
 ```
 
 ## Traceability
@@ -531,12 +535,13 @@ outputs:
   - "repeat-cycle reconciliation BUG scope"
   - "RCR-01..06 acceptance draft"
   - "SA and TA driver-only handoffs"
-next_step: "Seal the trusted work-item receipt, then continue s02 Business Goal"
+next_step: "Human review of s02 Business Goal, then s03 Open Questions"
 ```
 
 ## Handoff
 - Clear: closeout receipts succeeded, but current navigation and event evidence did not reconcile.
 - Distinct scope: repeat-cycle/idempotency, not the resolved missing-DoD selector defect.
-- Decision: PO approved the work item; the trusted receipt still requires human TTY sealing.
+- Decision: PO approval is backed by a verified trusted receipt; the completed receipt action has been removed.
+- Current step: s02 Business Goal is drafted and awaits human confirmation.
 - Boundary: implementation remains closed until Spec, DoR, Approach, and Task Plan independently pass.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.
