@@ -131,7 +131,8 @@ tags:
 > install/update smoke passes 4/4 and its extracted payload is byte-identical to the local candidate.
 > `F-AR08-001` is resolved. Because the hosted archive identity differs from the pre-host archive,
 > QC explicitly approved the amended hosted binding at `2026-09-09T03:29:33Z`, while retaining
-> `ebfb5ffb…` as local pre-host evidence. Technical Verification and DoD remain separate QC gates.
+> `ebfb5ffb…` as local pre-host evidence. QC then approved Technical Verification for the exact
+> hosted source/run/SHA-256 at `2026-09-09T03:43:48Z`. DoD remains the only open child gate.
 
 ## Step Contract
 ```yaml
@@ -316,7 +317,7 @@ status: PASS
 gaps: []
 residual_risks:
   - "GitHub emitted non-blocking action-runtime deprecation warnings for Node 20; migrate affected action versions before GitHub forces Node 24 behavior to avoid future CI drift."
-recommendation: "The amended hosted artifact binding is QC-approved; QC should now decide Technical Verification, with DoD remaining subsequent."
+recommendation: "Technical Verification is QC-approved; QC should now decide the separate DoD gate."
 notes_for_review: "Technical evidence is green. Human-controlled terminal gates remain pending and are not inferred from automation."
 ```
 
@@ -339,10 +340,10 @@ checks:
     evidence: "Run 34304892135 completed successfully for source d7c0efa876b014625d3e0e76382ad61b65e82d6e; all nine required jobs passed and the downloaded candidate digest/payload/smoke checks passed."
   - item: "Human-controlled terminal decisions"
     result: PASS
-    evidence: "Technical Verification and DoD remain pending QC; Release and Business Acceptance are not applicable to this child."
+    evidence: "Technical Verification is approved by QC; DoD remains pending QC, while Release and Business Acceptance are not applicable to this child."
 blocking_items: []
 owner: "qc"
-next_action: "QC decides Technical Verification against the approved hosted binding."
+next_action: "QC decides DoD after the approved Technical Verification."
 ```
 
 ## Regression & Compatibility Summary
@@ -359,7 +360,7 @@ evidence:
   - "Hosted run 34304892135 passed the build-once exact candidate and both Node 18/22 matrices."
   - "Hosted archive SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 matches its supplied checksum; extracted bytes match the local pre-host payload."
 pending:
-  - "QC Technical Verification and DoD"
+  - "QC DoD"
 rollback_plan:
   - "If hosted or QC verification fails, return to s07 and revert the focused CF-019 implementation candidate; do not advance parent CR-008."
 ```
@@ -518,7 +519,7 @@ pipeline_scope:
 pipeline_recommendation: READY_WITH_GUARDS
 operational_warnings:
   - "GitHub annotated Node 20 action-runtime deprecation and forced Node 24 migration; this is non-blocking for the successful run and should be tracked separately."
-next_action: "QC decides Technical Verification against the approved source/run/SHA-256 binding; DoD remains subsequent."
+next_action: "QC decides DoD after the approved Technical Verification."
 ```
 
 ## Verification Finding F-AR08-001
@@ -590,20 +591,22 @@ prohibited_shortcuts:
   - "Do not expand the validator enum to accept targeted without a separate approved contract change."
   - "Do not silently edit receipt-bound artifacts or reuse stale receipts."
   - "Do not approve Technical Verification or DoD for run 34216520563."
-next_human_action: "QC approves Technical Verification for the approved hosted source/run/SHA-256 binding."
+next_human_action: "QC approves DoD after reviewing the complete Technical Verification evidence."
 ```
 
 ## Technical Verification
 ```yaml
-status: READY_FOR_REVIEW
-verdict: PENDING_HUMAN_APPROVAL
+status: APPROVED
+verdict: PASS
 candidate_sha256: "2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5"
 source_sha: "d7c0efa876b014625d3e0e76382ad61b65e82d6e"
 hosted_run_id: "34304892135"
-reviewed_by: []
-reviewed_at: ""
+reviewed_by:
+  - "qc"
+reviewed_at: "2026-09-09T03:43:48Z"
+decision_source: "User explicitly approved Technical Verification with role QC for the exact hosted source d7c0efa876b014625d3e0e76382ad61b65e82d6e, run 34304892135, and candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5."
 blocking_items: []
-recommendation: "QC may now approve or reject Technical Verification against the approved source/run/digest; DoD must be decided only afterward."
+recommendation: "Technical Verification is QC-approved; proceed to the separate QC DoD decision without inferring completion."
 ```
 
 ## UAT Summary
@@ -644,17 +647,20 @@ checks:
   - criterion: "AC-AR-10 preserves exact parent handoff control"
     result: PASS
     evidence: "The exact child source/artifact is recorded and parent release stays blocked until post-child re-verification."
-  - criterion: "QC explicitly approves Technical Verification and DoD"
+  - criterion: "QC explicitly approves Technical Verification"
+    result: PASS
+    evidence: "QC approved Technical Verification at 2026-09-09T03:43:48Z for the exact hosted source/run/SHA-256 binding."
+  - criterion: "QC explicitly approves DoD"
     result: FAIL
-    evidence: "QC approved opening only; terminal review decisions remain pending."
+    evidence: "DoD remains a separate pending human-controlled gate."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "The local matrix and hosted run 34304892135 completed within the planned verification sequence."
 gaps:
-  - "QC Technical Verification followed by QC DoD"
+  - "QC DoD approval"
 risk_level: LOW
-next_action: "QC decides Technical Verification, then DoD in order."
+next_action: "QC decides DoD using the approved Technical Verification and complete traceability evidence."
 ```
 
 ## Definition of Done
@@ -664,17 +670,18 @@ status: BLOCKED
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
-  required_verification_completed: FAIL
+  required_verification_completed: PASS
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
 gaps:
-  - "Explicit QC Technical Verification and subsequent DoD approval"
+  - "Explicit QC DoD approval"
 residual_risks:
-  - "The hosted archive digest differs from local pre-host output; QC accepted the authoritative hosted identity after extracted payload parity and both smoke paths passed."
+  - "GitHub action-runtime deprecation warnings remain a non-blocking operational follow-up."
+  - "Parent CR-008 must not reuse stale pre-child candidate evidence."
 follow_up_items:
   - "After child DoD, parent CR-008 re-verifies a candidate containing the exact child result."
-next_action: "Keep DoD blocked until QC approves Technical Verification first."
+next_action: "QC reviews and decides DoD; do not infer DONE from Technical Verification alone."
 ```
 
 ## Branch Finish Decision
@@ -687,13 +694,14 @@ verify_inputs:
   - "Hosted artifact checksum, extracted payload parity, and direct smoke PASS"
   - "DoD pending"
 finish_gate_checks:
-  verify_complete: PENDING
+  verify_complete: PASS
   dod_complete: PENDING
   findings_closed: PASS
   exceptions_resolved: PASS
 allowed_actions:
   - "Record the QC-approved amended hosted binding."
-  - "Continue s08 human-controlled Technical Verification and DoD review in order."
+  - "Record the QC-approved Technical Verification."
+  - "Continue to the human-controlled DoD review."
 blocked_actions:
   - "Merge branch"
   - "Remove or clean worktree"
@@ -726,13 +734,13 @@ hosted_source_sha: "d7c0efa876b014625d3e0e76382ad61b65e82d6e"
 hosted_candidate_sha256: "2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5"
 candidate_binding_status: "HOSTED_BINDING_QC_APPROVED"
 open_findings: []
-next_step: "QC reviews Technical Verification, then DoD in sequence."
+next_step: "QC reviews and decides DoD."
 ```
 
 ## Handoff
-- Overall status: technical checks PASS and amended hosted binding approved by QC; Technical Verification and DoD remain pending.
+- Overall status: technical checks, amended hosted binding, and Technical Verification PASS; DoD remains pending QC.
 - Hosted candidate: source `d7c0efa876b014625d3e0e76382ad61b65e82d6e`, run `34304892135`, SHA-256 `2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5`.
 - Residual risks: action-runtime deprecation warning and stale parent-candidate evidence; neither permits bypassing QC.
 - Resolved: `F-AR08-001`; old failed run `34216520563` remains historical.
 - Release recommendation: NOT_APPLICABLE for this child; parent CR-008 remains blocked.
-- Next action: QC decides Technical Verification for the approved hosted binding; DoD follows only after Technical Verification.
+- Next action: QC decides DoD; parent CR-008 re-verification remains subsequent to child DoD.

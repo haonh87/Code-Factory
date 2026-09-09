@@ -686,10 +686,10 @@ protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-08T03:03:41.551Z"
 handoff_target: "step-s08-qc"
-last_transition_action: "approve-s08-hosted-artifact-binding"
-last_transition_at: "2026-09-09T03:29:33Z"
+last_transition_action: "approve-s08-technical-verification"
+last_transition_at: "2026-09-09T03:43:48Z"
 required_actions:
-  - "QC decides Technical Verification for the approved hosted artifact binding; DoD follows afterward."
+  - "QC decides DoD after the approved Technical Verification."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -713,6 +713,7 @@ review_notes:
   - "Hosted Guardrails run 34304892135 passed all nine required jobs for source d7c0efa876b014625d3e0e76382ad61b65e82d6e; downloaded artifact SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 matches its checksum, has byte-identical extracted payload, and passes exact-artifact smoke 4/4."
   - "F-AR08-001 is resolved and the amended hosted binding evidence was prepared for QC; Technical Verification and DoD remain pending."
   - "QC approved the amended hosted artifact binding at 2026-09-09T03:29:33Z for source d7c0efa876b014625d3e0e76382ad61b65e82d6e, run 34304892135, and SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5; ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47 remains local pre-host evidence."
+  - "QC approved Technical Verification at 2026-09-09T03:43:48Z for source d7c0efa876b014625d3e0e76382ad61b65e82d6e, run 34304892135, and hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5; DoD remains pending."
 refs:
   - "work-items/align-adaptive-sa-ta-applicability"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -745,6 +746,7 @@ audit_events:
   - "S08_HOSTED_GUARDRAILS_PASS"
   - "S08_HOSTED_ARTIFACT_READY_FOR_QC_BINDING"
   - "S08_HOSTED_ARTIFACT_BINDING_APPROVED"
+  - "S08_TECHNICAL_VERIFICATION_APPROVED"
 ```
 
 ## Traceability
@@ -754,7 +756,7 @@ source_inputs:
   - "CF-019 master audit finding"
   - "CR-008 Adaptive Admission And Applicability rule"
   - "Conflicting generic SA/TA Skill Requirement in source and packaged runtime policies"
-next_step: "QC decides Technical Verification for the approved hosted artifact binding; DoD follows afterward"
+next_step: "QC decides DoD after the approved Technical Verification"
 ```
 
 ## Handoff
@@ -769,4 +771,5 @@ next_step: "QC decides Technical Verification for the approved hosted artifact b
 - Passed: hosted run `34304892135` completed all nine required jobs; artifact SHA-256 `2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5` passed checksum, extracted-payload parity, and exact smoke 4/4.
 - Resolved: `F-AR08-001`; the former local SHA-256 remains pre-host evidence only.
 - Approved: QC accepted the amended hosted binding for `d7c0efa…` / run `34304892135` / SHA-256 `2a5ae701…`; `ebfb5ffb…` remains local pre-host evidence.
-- Next: QC decides Technical Verification; DoD remains subsequent.
+- Approved: QC passed Technical Verification for the exact hosted source/run/SHA-256 binding.
+- Next: QC decides DoD; parent CR-008 re-verification remains subsequent.
