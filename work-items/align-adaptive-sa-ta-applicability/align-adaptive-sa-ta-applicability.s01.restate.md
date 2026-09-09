@@ -667,7 +667,7 @@ work_item_slug: "align-adaptive-sa-ta-applicability"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/align-adaptive-sa-ta-applicability"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - "packages/workflow-bundle/test/workflow-adaptive-governance.test.js"
   - "policies/codex/AGENTS.global.md"
@@ -685,11 +685,11 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-08T03:03:41.551Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-09-08T09:39:29.131Z"
+handoff_target: "step-s08-qc"
+last_transition_action: "bind-s08-hosted-candidate"
+last_transition_at: "2026-09-09T02:59:22Z"
 required_actions:
-  - "Continue active execution from step 7 onward."
+  - "QC approves the amended hosted artifact binding before Technical Verification and DoD."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -710,6 +710,8 @@ review_notes:
   - "T6a local Workflow Execution, workflow, planning, JSON, diff, and encoding checks passed at 2026-09-09T01:55:03Z; protocol is blocked only by the five expected stale receipts."
   - "All five refreshed receipts are APPROVED with digest_match=true and Protocol passed at 2026-09-09T02:28:18Z; T6a may create a new exact candidate."
   - "T6a packed a new candidate from clean source 1a803ba84a4e76150c90954d89dcc3b52f75111e at 2026-09-09T02:36:31Z; SHA-256 ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47 and exact-artifact smoke 4/4 PASS."
+  - "Hosted Guardrails run 34304892135 passed all nine required jobs for source d7c0efa876b014625d3e0e76382ad61b65e82d6e; downloaded artifact SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 matches its checksum, has byte-identical extracted payload, and passes exact-artifact smoke 4/4."
+  - "F-AR08-001 is resolved; QC amended artifact-binding approval, Technical Verification, and DoD remain pending."
 refs:
   - "work-items/align-adaptive-sa-ta-applicability"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -739,6 +741,8 @@ audit_events:
   - "S07_T6A_LOCAL_VALIDATION_PASS"
   - "S07_T6A_RECEIPTS_VERIFIED"
   - "S07_T6A_LOCAL_CANDIDATE_PASS"
+  - "S08_HOSTED_GUARDRAILS_PASS"
+  - "S08_HOSTED_ARTIFACT_READY_FOR_QC_BINDING"
 ```
 
 ## Traceability
@@ -748,7 +752,7 @@ source_inputs:
   - "CF-019 master audit finding"
   - "CR-008 Adaptive Admission And Applicability rule"
   - "Conflicting generic SA/TA Skill Requirement in source and packaged runtime policies"
-next_step: "Push the binding-only handoff and rerun hosted Guardrails"
+next_step: "QC approves the amended hosted artifact binding before Technical Verification and DoD"
 ```
 
 ## Handoff
@@ -760,5 +764,6 @@ next_step: "Push the binding-only handoff and rerun hosted Guardrails"
 - Approved: Developer accepted s06 T1..T6 and AR-B1..AR-B2.
 - Reopened: s07 for F-AR08-001 under approved metadata-only T6a with `review_mode=independent`.
 - Passed: refreshed Spec, Contract, DoR, Approach, and Task Plan receipts are digest-valid.
-- Passed: one immutable post-T6a local candidate was packed and passed exact-artifact smoke 4/4.
-- Next: push the binding-only handoff and rerun hosted Guardrails.
+- Passed: hosted run `34304892135` completed all nine required jobs; artifact SHA-256 `2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5` passed checksum, extracted-payload parity, and exact smoke 4/4.
+- Resolved: `F-AR08-001`; the former local SHA-256 remains pre-host evidence only.
+- Next: QC approves the amended hosted artifact binding before Technical Verification and DoD.

@@ -102,9 +102,11 @@ tags:
 > metadata-only rebind using `review_mode=independent`. T1..T6 and AR-B1/AR-B2 remain historical
 > passing evidence; candidate `a97e0ee…` / `ebfb5ffb…` is now pre-amendment provenance only. All
 > five refreshed receipts are `APPROVED` with `digest_match=true`, and Protocol passes for all
-> 11 managed work items. T6a packed a new file from clean source `1a803ba…`; exact-artifact smoke
-> passes 4/4. The tarball SHA-256 remains `ebfb5ffb…` because package payload bytes are unchanged.
-> Hosted Guardrails and all terminal gates remain pending.
+> 11 managed work items. T6a packed a local pre-host file from clean source `1a803ba…`; exact-artifact
+> smoke passes 4/4 at SHA-256 `ebfb5ffb…`. Hosted run `34304892135` then passed all nine required
+> jobs for source `d7c0efa…`. Its authoritative hosted artifact SHA-256 is `2a5ae701…`; the supplied
+> checksum, extracted payload parity, and direct install/update smoke all pass. s07 implementation is
+> ready for s08 review; amended artifact binding, Technical Verification, and DoD remain QC gates.
 
 ## Step Contract
 ```yaml
@@ -159,7 +161,7 @@ tasks_completed:
   - "Human Developer and QC approved AR-B2 Code Quality for candidate aade0485c58f1ff1ead7bb55dcf2fe0f7a4bdfe8 at 2026-09-08T10:13:27Z with no blocking finding."
   - "T5 aggregated complete TDD, worktree isolation, two-tier review, agentic/no-subagent, and verify-path evidence."
   - "T6 bound exact reviewed source commit a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff to local pre-s08 workflow-bundle-2.6.2.tgz SHA-256 ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47."
-  - "T6a normalized workflow execution metadata to review_mode=independent and refreshed affected gate provenance without changing product behavior; local execution/workflow/planning/diff/encoding checks pass and only the expected stale receipts remain."
+  - "T6a normalized workflow execution metadata to review_mode=independent and refreshed affected gate provenance without changing product behavior; local execution/workflow/planning/diff/encoding checks and all five digest-valid receipts pass."
 bug_repro_evidence:
   - "node packages/workflow-bundle/test/workflow-adaptive-governance.test.js exited 1 with exactly one failed assertion: canonical Skill Requirement must make router-derived SA/TA applicability authoritative and must not re-add omitted roles."
 hypothesis_log:
@@ -205,11 +207,11 @@ outputs_actual:
 known_limitations:
   - "The T6 source/artifact pair is historical pre-amendment evidence and must not be reused as the resumed verification candidate."
   - "Child s08 Technical Verification and DoD, followed by parent CR-008 exact-candidate re-verification, remain human-controlled follow-up work."
-  - "The local tarball digest is pre-host evidence; if hosted packaging produces different archive bytes, QC must compare extracted content and approve an amended hosted binding before Technical Verification."
+  - "The hosted archive differs from local pre-host bytes; extracted content parity and smoke pass, but QC must approve the amended hosted binding before Technical Verification."
 follow_up_items:
-  - "Push the binding-only handoff and rerun hosted Guardrails for the post-T6a branch head."
-  - "After child DoD, refresh parent CR-008 verification against a candidate that contains source commit 1a803ba84a4e76150c90954d89dcc3b52f75111e."
-notes_for_testing: "Treat run 34216520563 as historical failed evidence. The newly packed post-T6a tarball passes exact-artifact smoke; run hosted Node 18/22 against the pushed handoff without inferring Technical Verification or DoD."
+  - "QC approves the amended hosted binding for run 34304892135 before Technical Verification."
+  - "After child DoD, refresh parent CR-008 verification against a candidate containing the exact child implementation result."
+notes_for_testing: "Treat run 34216520563 as historical failed evidence. Run 34304892135 and hosted SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 pass all technical checks; do not infer amended binding, Technical Verification, or DoD."
 ```
 
 ## Delivery Rule Evidence
@@ -390,14 +392,14 @@ parent_cr_008_handoff:
 worktree_cleanup_guard:
   status: HOLD_OPEN
   reason: "Branch/worktree finalization remains blocked until child s08 DoD and parent exact-candidate re-verification complete."
-next_human_action: "Historical T6 handoff is superseded by the locally passing T6a candidate; hosted evidence remains pending."
+next_human_action: "QC approves the amended hosted artifact binding for run 34304892135 before Technical Verification."
 ```
 
 ## T6a Metadata-only Rebind
 ```yaml
 task: "T6a"
 finding_ref: "F-AR08-001"
-status: CANDIDATE_BOUND_READY_FOR_HOSTED
+status: HOSTED_PASS_READY_FOR_QC_BINDING
 authorized_at: "2026-09-08T10:55:26Z"
 authorization:
   reopen_s07_and_finding:
@@ -467,7 +469,17 @@ post_t6a_candidate:
   runtime_policy_sha256: "4d8e8c686a266908b1642c829c7daa2ad7572e989e802432ec3dc9e4010435c9"
   artifact_smoke: "PASS; digest identity, version, and Codex/Claude global/project install-update matrix 4/4"
   lifecycle: "Ephemeral local post-T6a candidate; no publish, release, tag, or persistent install."
-next_action: "Commit this binding-only handoff and push the branch to rerun hosted Guardrails."
+hosted_candidate:
+  run_id: "34304892135"
+  source_sha: "d7c0efa876b014625d3e0e76382ad61b65e82d6e"
+  artifact_sha256: "2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5"
+  artifact_size_bytes: 957359
+  supplied_checksum_match: PASS
+  extracted_payload_parity: PASS
+  required_jobs: "PASS 9/9, including Node 18 and Node 22"
+  exact_artifact_smoke: "PASS; digest identity, version 2.6.2, and Codex/Claude global/project 4/4"
+  disposition: "Authoritative hosted candidate pending explicit QC amended-binding approval."
+next_action: "QC approves the amended hosted binding before Technical Verification."
 ```
 
 ## Workflow Pack Audit
@@ -509,18 +521,21 @@ task_status:
   T4: COMPLETE
   T5: COMPLETE
   T6: COMPLETE
-  T6a: CANDIDATE_BOUND_READY_FOR_HOSTED
+  T6a: HOSTED_PASS_READY_FOR_QC_BINDING
 implementation_candidate_commit: "1a803ba84a4e76150c90954d89dcc3b52f75111e"
 local_candidate_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
-candidate_disposition: "Newly packed post-T6a local candidate; exact-artifact smoke PASS, hosted evidence pending."
-next_step: "Push the binding-only handoff and run hosted Guardrails against the post-T6a branch head."
+hosted_source_sha: "d7c0efa876b014625d3e0e76382ad61b65e82d6e"
+hosted_run_id: "34304892135"
+hosted_candidate_sha256: "2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5"
+candidate_disposition: "Hosted technical evidence PASS; QC amended-binding approval remains pending."
+next_step: "QC approves the amended hosted artifact binding before Technical Verification."
 ```
 
 ## Handoff
 - Outputs actual: T1/T2 RED-to-GREEN policy evidence plus T3/T4 runtime parity, regression, governance, audit, and encoding evidence.
 - Completed reviews: AR-B1 and AR-B2 passed Spec Compliance before Code Quality with the required human roles and no open finding.
-- Candidate: clean source `1a803ba84a4e76150c90954d89dcc3b52f75111e`; newly packed local artifact SHA-256 `ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47`; exact smoke PASS 4/4.
-- Historical note: the old package has the same digest because T6a changes no packaged byte; provenance now binds the newly created file to the post-receipt source.
-- Current gate: hosted verification; Technical Verification, DoD, and parent re-verification remain open.
-- Notes for testing: Workflow Execution and Protocol now pass; create and verify one immutable candidate while keeping router behavior and stable reason values unchanged.
+- Candidate: hosted source `d7c0efa876b014625d3e0e76382ad61b65e82d6e`, run `34304892135`, artifact SHA-256 `2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5`; nine jobs, checksum, payload parity, and exact smoke PASS.
+- Historical note: local pre-host SHA-256 `ebfb5ffb…` remains supporting evidence only; hosted archive identity is authoritative.
+- Current gate: QC amended artifact binding; Technical Verification, DoD, and parent re-verification remain open.
+- Notes for testing: technical verification evidence is complete; do not infer any human-controlled verdict.
 - Notes for deployment: none; this child performs no release or installation action.

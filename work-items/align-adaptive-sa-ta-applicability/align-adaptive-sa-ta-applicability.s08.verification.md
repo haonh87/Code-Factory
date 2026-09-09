@@ -124,8 +124,13 @@ tags:
 > `2026-09-08T10:55:26Z`. T6a now passes local Workflow Execution, workflow, planning, diff, JSON,
 > and encoding checks. All five refreshed receipts are `APPROVED` with `digest_match=true`, and
 > Protocol passes. A newly packed post-T6a candidate from clean source `1a803ba…` passes exact
-> artifact smoke 4/4 at SHA-256 `ebfb5ffb…`; the digest is unchanged because package payload bytes
-> are unchanged. A new hosted run remains required; Technical Verification and DoD stay blocked.
+> artifact smoke 4/4 at local pre-host SHA-256 `ebfb5ffb…`. Hosted Guardrails run
+> `34304892135` then completed successfully for source `d7c0efa876b014625d3e0e76382ad61b65e82d6e`:
+> all nine required jobs passed, including Build Exact Release Candidate and the Node 18/22 matrix.
+> The downloaded hosted artifact checksum matches its supplied digest at SHA-256 `2a5ae701…`; direct
+> install/update smoke passes 4/4 and its extracted payload is byte-identical to the local candidate.
+> `F-AR08-001` is resolved. Because the hosted archive identity differs from the pre-host archive,
+> QC must approve the amended hosted binding before Technical Verification and DoD can be decided.
 
 ## Step Contract
 ```yaml
@@ -136,6 +141,7 @@ scope_in:
   - "AC-AR-01..10 and EDGE-AR-01..07"
   - "Exact behavior source a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff"
   - "Local pre-host workflow-bundle-2.6.2.tgz SHA-256 ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
+  - "Hosted workflow-bundle-2.6.2.tgz from run 34304892135 SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5"
   - "Local full verification, diff-aware scan, hosted Node 18/22 Guardrails, and parent handoff controls"
 scope_out:
   - "Release, Business Acceptance, merge, tag, publish, persistent install, or worktree cleanup"
@@ -170,7 +176,7 @@ risks:
     severity: HIGH
     mitigation: "Require the unchanged build-once hosted matrix and zero failed or skipped required jobs."
     owner: "qc"
-    status: BLOCKED_BY_F_AR08_001
+    status: CLOSED
   - id: "R-S08-AR-002"
     description: "Copy parity is exact while all policy copies express the same wrong semantics."
     severity: HIGH
@@ -248,6 +254,7 @@ manual_exploration:
     - "Reviewed the exact c0fc0e6 implementation diff and confirmed the only executable addition is a bounded test fixture reading a repository-owned policy file."
     - "Confirmed the policy delta is one precedence paragraph and does not alter the executable router, reason values, schemas, or SA/TA contracts."
     - "Confirmed commits after a97e0ee and before hosted verification change workflow evidence only, not package payload sources."
+    - "Downloaded the immutable artifact from hosted run 34304892135 and compared its extracted package tree with the post-T6a local candidate; diff -qr returned no difference."
   issues_found: []
 criteria_results:
   - criterion: "AC-AR-01"
@@ -263,11 +270,11 @@ criteria_results:
     result: PASS
     evidence: "Canonical/runtime/package policy bytes equal SHA-256 4d8e8c686a266908b1642c829c7daa2ad7572e989e802432ec3dc9e4010435c9 while semantic expectations pass independently."
   - criterion: "AC-AR-09"
-    result: PARTIAL
-    evidence: "All local adjacent and full regressions pass; hosted run 34216520563 failed before candidate build because s01-s07 carry invalid review_mode=targeted frontmatter."
+    result: PASS
+    evidence: "All local regressions pass, and hosted run 34304892135 passed all nine required jobs including the build-once candidate plus Node 18 and Node 22 verification."
   - criterion: "AC-AR-10"
-    result: PARTIAL
-    evidence: "Exact child source/artifact handoff and parent HOLD control are recorded; actual parent candidate re-verification correctly follows child DoD."
+    result: PASS
+    evidence: "Exact hosted child source/run/artifact handoff and parent HOLD control are recorded; actual parent candidate re-verification remains an explicit post-child-DoD follow-up."
 test_evidence:
   unit_test:
     - "npm run validate:workflow:unit -> PASS, 44 workflow-bundle test files"
@@ -279,6 +286,8 @@ test_evidence:
   feature_test:
     - "workflow bundle smoke -> PASS"
     - "exact local artifact smoke -> PASS, Codex/Claude x global/project 4/4"
+    - "hosted run 34304892135 -> PASS, all nine required jobs including Release Candidate Node 18 and Node 22"
+    - "downloaded hosted artifact -> digest PASS, extracted payload parity PASS, exact install/update smoke 4/4 PASS"
 commands_run:
   - "node --check packages/workflow-bundle/test/workflow-adaptive-governance.test.js"
   - "npm run validate:workflow:fixtures"
@@ -293,19 +302,21 @@ commands_run:
   - "npm run validate:workflow:bundle-smoke"
   - "release-candidate-artifact-smoke.test.js in exact-artifact mode"
   - "gh run view 34216520563 --job 102029613415 --log-failed"
+  - "gh run view 34304892135 --json conclusion,createdAt,updatedAt,headSha,jobs,url"
+  - "gh run download 34304892135 -n workflow-bundle-candidate"
+  - "shasum -a 256 workflow-bundle-2.6.2.tgz and comparison with workflow-bundle.sha256"
+  - "diff -qr between extracted local and hosted package trees"
+  - "npm run validate:workflow:release-candidate against hosted SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5"
 skipped_checks:
-  - "Hosted candidate build and Node 18/22 matrix: skipped by GitHub after Workflow Execution failed."
   - "ESLint: no repository wrapper, dependency, or configuration exists."
   - "Semgrep: executable is unavailable and no tool installation is authorized."
-release_blockers:
-  - "F-AR08-001: invalid review_mode=targeted in s01-s07 fails Workflow Execution and prevents hosted candidate build/Node verification."
-status: PARTIAL
-gaps:
-  - "Passing hosted run, exact hosted artifact SHA-256, and Node 18/22 required-job results"
+release_blockers: []
+status: PASS
+gaps: []
 residual_risks:
-  - "A supported hosted Node runtime may differ from local Node 26 despite complete local evidence."
-recommendation: "Execute approved T6a, re-seal all affected trusted receipts against stable amended digests, then create a new exact candidate and rerun hosted Guardrails."
-notes_for_review: "Local product evidence remains green, but the hosted governance failure is blocking and must not be waived or hidden."
+  - "GitHub emitted non-blocking action-runtime deprecation warnings for Node 20; migrate affected action versions before GitHub forces Node 24 behavior to avoid future CI drift."
+recommendation: "QC should approve the amended hosted artifact binding first, then decide Technical Verification and DoD in sequence."
+notes_for_review: "Technical evidence is green. Human-controlled terminal gates remain pending and are not inferred from automation."
 ```
 
 ## Governance Checks
@@ -323,20 +334,19 @@ checks:
     result: PASS
     evidence: "The executable router, reason vocabulary, schema, SA/TA contracts, and parent release authority remain unchanged."
   - item: "Hosted evidence boundary"
-    result: FAIL
-    evidence: "Run 34216520563 failed Workflow Execution at job 102029613415; candidate build and Node matrix were skipped."
+    result: PASS
+    evidence: "Run 34304892135 completed successfully for source d7c0efa876b014625d3e0e76382ad61b65e82d6e; all nine required jobs passed and the downloaded candidate digest/payload/smoke checks passed."
   - item: "Human-controlled terminal decisions"
     result: PASS
     evidence: "Technical Verification and DoD remain pending QC; Release and Business Acceptance are not applicable to this child."
-blocking_items:
-  - "Rerun hosted Guardrails through exact candidate build and Node 18/22"
+blocking_items: []
 owner: "qc"
-next_action: "Create one new exact candidate from the clean post-receipt source and rerun hosted Guardrails."
+next_action: "Review and approve the amended hosted artifact binding before deciding Technical Verification."
 ```
 
 ## Regression & Compatibility Summary
 ```yaml
-regression_status: PARTIAL
+regression_status: PASS
 compatibility_status: PASS
 breaking_changes: []
 rollback_readiness: READY
@@ -345,8 +355,10 @@ evidence:
   - "Workflow validators, 13-case authoring smoke, package smoke, and pack audit pass."
   - "Canonical, generated, and packaged policy SHA-256 values are identical."
   - "No router, stable reason, schema, public action, SA/TA contract, or dependency changed."
+  - "Hosted run 34304892135 passed the build-once exact candidate and both Node 18/22 matrices."
+  - "Hosted archive SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 matches its supplied checksum; extracted bytes match the local pre-host payload."
 pending:
-  - "Resolve F-AR08-001 and rerun hosted Node 18/22 regression matrix"
+  - "QC amended artifact-binding approval, Technical Verification, and DoD"
 rollback_plan:
   - "If hosted or QC verification fails, return to s07 and revert the focused CF-019 implementation candidate; do not advance parent CR-008."
 ```
@@ -415,9 +427,9 @@ performance_heuristic_results:
 skipped_scans:
   - "ESLint: no wrapper, dependency, or config exists."
   - "Semgrep: executable unavailable; no installation was authorized."
-overall_status: PARTIAL
+overall_status: PASS
 remediation_actions: []
-notes_for_verify: "Tool gaps are explicit and proportionate to a test-plus-policy-only delta; hosted runtime evidence remains the only blocking verification gap."
+notes_for_verify: "Tool gaps are explicit and proportionate to a test-plus-policy-only delta; hosted runtime evidence is complete and terminal human gates remain pending."
 ```
 
 ## Candidate Binding Review
@@ -443,22 +455,43 @@ notes:
   - "Workflow Authoring Smoke, Planning, Build Exact Release Candidate, and Release Candidate matrix were skipped; no hosted artifact exists to bind."
 ```
 
-## T6a Candidate Proposal
+## T6a Hosted Candidate Binding
 ```yaml
-status: LOCAL_PASS_HOSTED_PENDING
-built_at: "2026-09-09T02:36:31Z"
-source:
+status: READY_FOR_QC_AMENDED_BINDING
+bound_at: "2026-09-09T02:59:22Z"
+local_pre_host_source:
   commit_sha: "1a803ba84a4e76150c90954d89dcc3b52f75111e"
   worktree_status_at_pack: CLEAN
   provenance: "Post-T6a source with five refreshed digest-valid receipts and passing Protocol."
-artifact:
+local_pre_host_artifact:
   name: "workflow-bundle-2.6.2.tgz"
   path: "/private/tmp/cf019-t6a-candidate.SdWPFD/workflow-bundle-2.6.2.tgz"
   sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
   size_bytes: 954956
-  payload_relation: "Byte-identical to the historical tarball because T6a changes no package file."
+hosted:
+  run_id: "34304892135"
+  run_url: "https://github.com/haonh87/Code-Factory/actions/runs/34304892135"
+  source_sha: "d7c0efa876b014625d3e0e76382ad61b65e82d6e"
+  conclusion: SUCCESS
+  created_at: "2026-09-09T02:51:54Z"
+  completed_at: "2026-09-09T02:53:59Z"
+  required_jobs: 9
+  passed_jobs: 9
+  failed_jobs: 0
+  skipped_jobs: 0
+hosted_artifact:
+  name: "workflow-bundle-2.6.2.tgz"
+  downloaded_path: "/private/tmp/cf019-hosted-candidate.qxGmla/workflow-bundle-2.6.2.tgz"
+  sha256: "2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5"
+  size_bytes: 957359
+  supplied_checksum_match: PASS
+  archive_relation: "Archive SHA-256 differs from local pre-host output; hosted identity is authoritative for subsequent verification."
+payload_comparison:
+  status: PASS
+  command: "diff -qr <extracted-local>/package <extracted-hosted>/package"
+  evidence: "No byte-level file difference in the extracted package trees."
 runtime_policy_sha256: "4d8e8c686a266908b1642c829c7daa2ad7572e989e802432ec3dc9e4010435c9"
-artifact_smoke:
+hosted_artifact_smoke:
   status: PASS
   evidence:
     - "Digest identity PASS."
@@ -472,17 +505,19 @@ pipeline_scope:
     - "Build Exact Release Candidate"
     - "Release Candidate Node 18 and Node 22"
   approval_controls:
-    - "Hosted green does not approve Technical Verification or DoD; QC remains the authority."
+    - "Hosted green and payload equivalence do not approve the amended binding, Technical Verification, or DoD; QC remains the authority."
   rollback_control: "Parent release remains blocked and rollback baseline stays v2.6.1."
 pipeline_recommendation: READY_WITH_GUARDS
-next_action: "Commit the binding-only evidence and push to trigger hosted Guardrails."
+operational_warnings:
+  - "GitHub annotated Node 20 action-runtime deprecation and forced Node 24 migration; this is non-blocking for the successful run and should be tracked separately."
+next_action: "QC explicitly approves the amended hosted artifact binding for source d7c0efa876b014625d3e0e76382ad61b65e82d6e and SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5."
 ```
 
 ## Verification Finding F-AR08-001
 ```yaml
 finding_id: "F-AR08-001"
-status: OPEN
-remediation_status: LOCAL_FIX_RECEIPTS_AND_CANDIDATE_SMOKE_PASS_HOSTED_RERUN_PENDING
+status: RESOLVED
+remediation_status: HOSTED_GUARDRAILS_AND_EXACT_ARTIFACT_PASS
 severity: HIGH
 category: "WORKFLOW_EXECUTION_METADATA"
 detected_at: "2026-09-08T10:39:13Z"
@@ -522,10 +557,21 @@ local_remediation:
   candidate_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
   candidate_smoke: "PASS; v2.6.2 and Codex/Claude global/project 4/4"
 hosted_impact:
-  passed_jobs: 4
-  failed_jobs: 1
-  skipped_jobs: 4
-  artifact_built: false
+  replacement_run_id: "34304892135"
+  replacement_source_sha: "d7c0efa876b014625d3e0e76382ad61b65e82d6e"
+  passed_jobs: 9
+  failed_jobs: 0
+  skipped_jobs: 0
+  artifact_built: true
+  artifact_sha256: "2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5"
+  artifact_checksum_match: PASS
+  extracted_payload_parity: PASS
+  exact_artifact_smoke: PASS
+resolved_at: "2026-09-09T02:59:22Z"
+resolution_evidence:
+  - "Workflow Execution passed in hosted run 34304892135 after review_mode normalization."
+  - "All nine required jobs passed, including Build Exact Release Candidate and both Node 18/22 matrices."
+  - "Downloaded artifact checksum, extracted payload parity, version, and Codex/Claude install-update smoke all passed."
 approved_resolution:
   - "QC approved reopening s07 and recording this finding at 2026-09-08T10:55:26Z."
   - "Developer approved metadata-only Task Plan amendment T6a."
@@ -536,20 +582,21 @@ prohibited_shortcuts:
   - "Do not expand the validator enum to accept targeted without a separate approved contract change."
   - "Do not silently edit receipt-bound artifacts or reuse stale receipts."
   - "Do not approve Technical Verification or DoD for run 34216520563."
-next_human_action: "NONE until the new hosted candidate evidence is ready for QC review."
+next_human_action: "QC approves the amended hosted artifact binding before Technical Verification."
 ```
 
 ## Technical Verification
 ```yaml
 status: BLOCKED
-verdict: FAIL
-candidate_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
-source_sha: "1a803ba84a4e76150c90954d89dcc3b52f75111e"
+verdict: PENDING_HUMAN_APPROVAL
+candidate_sha256: "2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5"
+source_sha: "d7c0efa876b014625d3e0e76382ad61b65e82d6e"
+hosted_run_id: "34304892135"
 reviewed_by: []
 reviewed_at: ""
 blocking_items:
-  - "F-AR08-001 remains open until a new hosted run builds and verifies the post-T6a candidate."
-recommendation: "Do not approve Technical Verification; T6a receipts and local candidate smoke pass, but hosted evidence is still required."
+  - "QC has not yet approved the amended binding from local pre-host SHA-256 ebfb5ffb... to authoritative hosted SHA-256 2a5ae701...."
+recommendation: "Approve the amended hosted binding first; after that receipt is recorded, QC may decide Technical Verification against the same source/run/digest."
 ```
 
 ## UAT Summary
@@ -585,8 +632,8 @@ checks:
     result: PASS
     evidence: "Targeted and full local matrices pass with exact source/artifact identities."
   - criterion: "Hosted Node 18/22 candidate evidence is bound"
-    result: FAIL
-    evidence: "Run 34216520563 failed Workflow Execution and produced no hosted candidate."
+    result: PASS
+    evidence: "Run 34304892135 passed all nine required jobs; hosted SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 is checksum-valid, payload-equivalent, and smoke-tested."
   - criterion: "AC-AR-10 preserves exact parent handoff control"
     result: PASS
     evidence: "The exact child source/artifact is recorded and parent release stays blocked until post-child re-verification."
@@ -596,12 +643,12 @@ checks:
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
-timebox_evidence: "The local matrix completed in one verification session; hosted time is pending."
+timebox_evidence: "The local matrix and hosted run 34304892135 completed within the planned verification sequence."
 gaps:
-  - "Passing hosted source/run/artifact binding"
+  - "QC approval of the amended hosted artifact binding"
   - "QC Technical Verification followed by QC DoD"
-risk_level: MEDIUM
-next_action: "Create and verify a new exact candidate."
+risk_level: LOW
+next_action: "QC reviews the amended hosted binding, then decides Technical Verification and DoD in order."
 ```
 
 ## Definition of Done
@@ -609,20 +656,20 @@ next_action: "Create and verify a new exact candidate."
 work_item_slug: "align-adaptive-sa-ta-applicability"
 status: BLOCKED
 checks:
-  acceptance_criteria_evidenced: FAIL
+  acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
   required_verification_completed: FAIL
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
 gaps:
-  - "Hosted Node 18/22 evidence and candidate binding"
+  - "QC approval of the amended hosted artifact binding"
   - "Explicit QC Technical Verification and subsequent DoD approval"
 residual_risks:
-  - "Hosted runtime variation may still invalidate the local candidate."
+  - "The hosted archive digest differs from local pre-host output even though extracted payload parity and both smoke paths pass; QC must accept the authoritative hosted identity."
 follow_up_items:
   - "After child DoD, parent CR-008 re-verifies a candidate containing the exact child result."
-next_action: "Keep DoD blocked while T6a receipt refresh and new hosted verification remain incomplete."
+next_action: "Keep DoD blocked until QC approves the amended hosted binding and Technical Verification first."
 ```
 
 ## Branch Finish Decision
@@ -631,16 +678,17 @@ finish_target: "codex/adaptive-governance-human-approval-ux and .claude/worktree
 workspace_kind: BOTH
 verify_inputs:
   - "Local s08 matrix PASS"
-  - "Hosted run 34216520563 FAIL before artifact build"
+  - "Hosted run 34304892135 PASS with exact candidate on Node 18/22"
+  - "Hosted artifact checksum, extracted payload parity, and direct smoke PASS"
   - "DoD pending"
 finish_gate_checks:
-  verify_complete: FAIL
+  verify_complete: PENDING
   dod_complete: PENDING
-  findings_closed: FAIL
+  findings_closed: PASS
   exceptions_resolved: PASS
 allowed_actions:
-  - "Apply approved metadata-only T6a and validate it locally."
-  - "Re-seal affected trusted receipts and create a new candidate only after digest_match=true."
+  - "Record the hosted evidence and request QC amended-binding review."
+  - "Continue s08 human-controlled Technical Verification and DoD review in order."
 blocked_actions:
   - "Merge branch"
   - "Remove or clean worktree"
@@ -651,7 +699,7 @@ merge_conditions:
   - "Parent CR-008 re-verifies the exact candidate and completes its own gates."
 residual_risks:
   - "Shared parent/child branch state makes early cleanup destructive to the remaining verification path."
-  - "Editing receipt-bound artifacts without refreshed receipts would create stale authorization."
+  - "Pushing evidence-only commits would create a newer hosted source and must not silently replace the currently bound candidate."
 final_recommendation: HOLD_OPEN
 notes_for_closeout: "A clean workspace or green local tests do not permit finalization before child DoD and parent re-verification."
 ```
@@ -668,17 +716,18 @@ acceptance_refs:
   - "EDGE-AR-01..07"
 implementation_candidate_commit: "1a803ba84a4e76150c90954d89dcc3b52f75111e"
 opened_local_candidate_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
-hosted_run_id: "34216520563"
-hosted_source_sha: "96212a30a1a341d90f96b85709f9834e8bfaaef8"
-candidate_binding_status: "POST_T6A_LOCAL_PASS_HOSTED_PENDING"
-open_findings:
-  - "F-AR08-001"
-next_step: "Commit the post-T6a binding evidence and push to trigger hosted Guardrails."
+hosted_run_id: "34304892135"
+hosted_source_sha: "d7c0efa876b014625d3e0e76382ad61b65e82d6e"
+hosted_candidate_sha256: "2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5"
+candidate_binding_status: "HOSTED_PAYLOAD_VERIFIED_QC_AMENDED_BINDING_PENDING"
+open_findings: []
+next_step: "QC approves the amended hosted artifact binding, then Technical Verification and DoD are reviewed in sequence."
 ```
 
 ## Handoff
-- Overall status: PARTIAL with a blocking hosted governance failure; local product evidence remains green.
-- Residual risks: stale gate receipts if metadata is edited without re-sealing, hosted runtime variance, and stale parent-candidate evidence.
-- Approved action: execute metadata-only T6a with `review_mode=independent`; old candidate evidence remains historical.
+- Overall status: technical checks PASS; human-controlled amended binding, Technical Verification, and DoD remain pending.
+- Hosted candidate: source `d7c0efa876b014625d3e0e76382ad61b65e82d6e`, run `34304892135`, SHA-256 `2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5`.
+- Residual risks: action-runtime deprecation warning and stale parent-candidate evidence; neither permits bypassing QC.
+- Resolved: `F-AR08-001`; old failed run `34216520563` remains historical.
 - Release recommendation: NOT_APPLICABLE for this child; parent CR-008 remains blocked.
-- Next action: push the binding-only handoff and rerun hosted Guardrails; wait for QC before Technical Verification or DoD.
+- Next action: QC approves the amended hosted artifact binding before Technical Verification; DoD follows only after Technical Verification.
