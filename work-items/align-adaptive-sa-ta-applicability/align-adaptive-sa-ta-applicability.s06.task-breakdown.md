@@ -30,7 +30,7 @@ execution_mode: agentic
 execution_roles:
   - "developer"
   - "qc"
-review_mode: targeted
+review_mode: independent
 verification_owner: "qc"
 approval_gates:
   spec: "required"
@@ -64,22 +64,22 @@ role_signoffs:
 gate_reviews:
   spec_reviewed_by:
     - "ba"
-  spec_reviewed_at: "2026-09-08T06:08:19Z"
+  spec_reviewed_at: "2026-09-08T10:55:26Z"
   contract_reviewed_by:
     - "developer"
-  contract_reviewed_at: "2026-09-08T06:08:19Z"
+  contract_reviewed_at: "2026-09-08T10:55:26Z"
   dor_reviewed_by:
     - "ba"
     - "qc"
-  dor_reviewed_at: "2026-09-08T06:08:19Z"
+  dor_reviewed_at: "2026-09-08T10:55:26Z"
   approach_reviewed_by:
     - "developer"
-  approach_reviewed_at: "2026-09-08T06:41:51Z"
+  approach_reviewed_at: "2026-09-08T10:55:26Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by:
     - "developer"
-  task_plan_reviewed_at: "2026-09-08T07:26:34Z"
+  task_plan_reviewed_at: "2026-09-08T10:55:26Z"
   uat_reviewed_by: []
   uat_reviewed_at: ""
   release_reviewed_by: []
@@ -118,11 +118,10 @@ tags:
 # Step 6 - Task Plan
 
 > [!summary]
-> Execute CF-019 as one tightly coupled agentic sequence: add fail-first semantic evidence, apply the
-> smallest canonical policy correction, regenerate both runtime copies, run targeted regressions,
-> complete two-tier review, and bind the exact child candidate for CR-008 re-verification. This is a
-> approved by Developer. The artifact is final; its digest-valid Task Plan receipt and protocol
-> activation are still required before s07.
+> T1..T6 remain unchanged. Developer approved amendment T6a at `2026-09-08T10:55:26Z` to normalize
+> s01-s07 to supported `review_mode=independent`, refresh affected gate receipts, and create a new
+> candidate only after every refreshed digest matches. This is a metadata-only rebind; it does not
+> change product behavior, Option A, or the completed AR-B1/AR-B2 review conclusions.
 
 ## Step Contract
 ```yaml
@@ -156,15 +155,15 @@ done_when:
   - "Every in-scope acceptance criterion has an owning task and verification route"
   - "Behavior change uses an explicit fail-for-the-right-reason TDD sequence"
   - "Every task names concrete paths, dependencies, outputs, and verification"
-  - "Spec Compliance precedes Code Quality for each targeted review batch"
+  - "Spec Compliance precedes Code Quality for each review batch"
   - "Compatibility, rollback, workflow validation, UTF-8, and parent-candidate handoff are explicit"
   - "No implementation authority is inferred from drafting the plan"
 constraints:
   hard_constraints:
-    - "Do not edit receipt-bound s04 or s05 artifacts during implementation"
+    - "Do not change receipt-bound s04/s05 semantics; approved T6a permits only review metadata/provenance edits followed by fresh receipts"
     - "Do not change workflow-adaptive-governance.js, stable reason codes, schemas, or SA/TA contracts unless implementation stops and returns to design"
     - "Edit only the canonical policy; generate runtime policy copies through the existing sync script"
-    - "Use TDD for the policy behavior change and targeted review in Spec Compliance -> Code Quality order"
+    - "Use TDD for the policy behavior change and review in Spec Compliance -> Code Quality order"
     - "Keep execution agentic because the tasks are tightly coupled and share one evidence chain"
     - "Keep the current CR-008 worktree open until child DoD and parent candidate re-verification"
   soft_constraints:
@@ -178,9 +177,9 @@ constraints:
   compliance_checks:
     - "Task path map matches approved s05 component ownership"
     - "TDD evidence captures RED and GREEN commands and outcomes"
-    - "Two targeted review batches record Spec Compliance before Code Quality"
+    - "Two review batches record Spec Compliance before Code Quality"
     - "Strict checklist covers compatibility, rollback, and parent-candidate evidence"
-    - "Task Plan receipt is APPROVED with digest_match=true before s07 activation"
+    - "Refreshed Task Plan receipt is APPROVED with digest_match=true before resumed candidate creation"
 risks:
   - id: "R-S06-AR-001"
     description: "The RED fixture fails for formatting noise instead of the authority contradiction."
@@ -232,9 +231,9 @@ ba_lane:
     - "No new lane, hard trigger, role, gate, reason code, schema, or SA/TA skill contract"
     - "No direct edit to workflow-adaptive-governance.js unless a new design cycle is approved"
     - "No release, Business Acceptance, merge, tag, publish, or install from this child"
-    - "No modification of receipt-bound s04 or s05 artifacts"
+    - "No semantic modification of receipt-bound s04 or s05 artifacts; T6a permits only the approved review-mode rebind with refreshed receipts"
   human_review_points:
-    - "Developer approves this Task Plan and seals its trusted receipt before s07 activation"
+    - "Developer approved T6a; the refreshed Task Plan receipt must be human-sealed before resumed candidate creation"
     - "AR-B1: QC records Spec Compliance for the semantic fixture and canonical policy before Developer/QC Code Quality"
     - "AR-B2: QC records Spec Compliance for generated parity and regression evidence before Developer/QC Code Quality"
     - "QC owns Technical Verification and DoD at s08; parent CR-008 retains release authority"
@@ -373,6 +372,31 @@ task_breakdown:
       - "Parent CR-008 re-verification requirement against the new candidate"
     review_checkpoint: "QC owns child Technical Verification and DoD; parent release remains blocked until exact-candidate refresh."
     verification_hint: "Use git diff/status, SHA-256 binding, child s08 evidence, and refreshed parent candidate verification; perform no child release action."
+  - id: "T6a"
+    owner_role: "developer"
+    name: "Normalize execution review metadata and refresh gate provenance"
+    objective: "Resolve F-AR08-001 without changing accepted behavior, implementation code, or the completed review conclusions."
+    paths_in_scope:
+      - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s01.restate.md"
+      - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s02.business-goal.md"
+      - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s03.open-questions.md"
+      - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s04.acceptance-criteria.md"
+      - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s05.technical-approach.md"
+      - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s06.task-breakdown.md"
+      - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s07.implementation.md"
+      - "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s08.verification.md"
+    dependencies:
+      - "QC approval to reopen s07 and record F-AR08-001"
+      - "Developer approval of T6a"
+      - "BA/Developer/QC re-approval of affected Spec, Contract, DoR, Approach, and Task Plan gates"
+    outputs_expected:
+      - "Supported review_mode=independent in s01-s08"
+      - "Updated s02/s03 baseline digests in s04"
+      - "Updated gate-review provenance and human decisions without semantic contract drift"
+      - "Workflow Execution PASS locally"
+      - "Fresh digest-valid Spec, Contract, DoR, Approach, and Task Plan trusted receipts before a new candidate"
+    review_checkpoint: "Developer approved T6a and the named gate authorities re-approved unchanged content at 2026-09-08T10:55:26Z; trusted receipts remain a separate human sealing action."
+    verification_hint: "Run execution, workflow, protocol, and planning validators plus diff/UTF-8 checks; require all refreshed receipts to report APPROVED and digest_match=true before candidate creation."
 dependencies_global:
   - "Developer-approved, digest-valid Task Plan receipt is required before any T1 edit"
   - "The existing CR-008 worktree and branch remain the isolated implementation workspace"
@@ -381,7 +405,7 @@ dependencies_global:
 risk_notes:
   - "A policy-only change is behaviorally significant because it controls which skills users must endure."
   - "Generated-runtime sync is safe only with an allowlisted diff and parity evidence."
-  - "Receipt-bound s04/s05 artifacts must stay byte-stable."
+  - "Receipt-bound s04/s05/s06 artifacts may change only for approved T6a metadata/provenance and must receive refreshed trusted receipts."
   - "Any router or stable-reason change invalidates the approved approach and must reopen design."
 verification_plan:
   - "RED: new policy-precedence assertion fails specifically against the current unconditional Skill Requirement."
@@ -391,6 +415,7 @@ verification_plan:
   - "GOVERNANCE: run wfc validate for the child plus protocol and planning validators for the workflow root."
   - "QUALITY: run git diff --check, UTF-8 decode, U+FFFD scan, and changed-path allowlist inspection."
   - "REVIEW: AR-B1 Spec Compliance -> Code Quality, then AR-B2 Spec Compliance -> Code Quality."
+  - "REBIND: execution metadata passes locally and all affected trusted receipts are refreshed before candidate creation."
   - "VERIFY: QC binds the exact child candidate in s08 before parent CR-008 candidate refresh."
 notes_for_implementation: >-
   Run sequentially in the existing worktree. Do not delegate the shared test-policy-sync chain. Stop
@@ -467,16 +492,16 @@ rollback_or_restore_steps:
 step: "s06 Task Plan authoring"
 status: PASS
 checks:
-  - criterion: "Every in-scope acceptance criterion has an owning task and verification route"
+  - criterion: "Every in-scope acceptance criterion and the hosted metadata finding have an owning task and verification route"
     result: PASS
-    evidence: "BA acceptance_coverage maps AC-AR-01..10 and edge behavior to T1..T6."
+    evidence: "BA acceptance_coverage maps AC-AR-01..10 and edge behavior to T1..T6; T6a owns F-AR08-001 remediation and receipt refresh."
   - criterion: "Behavior change uses an explicit fail-for-the-right-reason TDD sequence"
     result: PASS
     evidence: "T1 requires the policy contradiction RED before T2 and names the accepted failing condition."
   - criterion: "Every task names concrete paths, dependencies, outputs, and verification"
     result: PASS
     evidence: "All six task records fill paths_in_scope, dependencies, outputs_expected, review_checkpoint, and verification_hint."
-  - criterion: "Spec Compliance precedes Code Quality for each targeted review batch"
+  - criterion: "Spec Compliance precedes Code Quality for each review batch"
     result: PASS
     evidence: "AR-B1 and AR-B2 explicitly enforce the two-tier order and named reviewer roles."
   - criterion: "Compatibility, rollback, workflow validation, UTF-8, and parent handoff are explicit"
@@ -490,9 +515,9 @@ unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed in one bounded planning pass after the Approach receipt was verified."
 gaps:
-  - "The trusted Task Plan receipt and s07 protocol activation remain pending."
+  - "The refreshed Task Plan receipt remains pending against the T6a-amended artifact digest."
 risk_level: MEDIUM
-next_action: "Human seals the Task Plan receipt as Developer, validates digest_match, and then activates s07."
+next_action: "Human re-seals the Task Plan receipt as Developer and validates digest_match before resumed candidate creation."
 ```
 
 ## Human Gate Decision
@@ -500,9 +525,9 @@ next_action: "Human seals the Task Plan receipt as Developer, validates digest_m
 gate: "task_plan"
 status: "APPROVED_PENDING_RECEIPT"
 reviewed_by: ["developer"]
-reviewed_at: "2026-09-08T07:26:34Z"
-decision_source: "User explicitly approved the Task Plan with role Developer."
-approved_scope: "T1..T6 and AR-B1..AR-B2 as authored"
+reviewed_at: "2026-09-08T10:55:26Z"
+decision_source: "User explicitly approved Task Plan amendment T6a with role Developer and re-approved the unchanged Task Plan for the metadata-only review_mode=independent rebind."
+approved_scope: "T1..T6, AR-B1..AR-B2, and metadata-only amendment T6a"
 ```
 
 ## Traceability
@@ -524,7 +549,7 @@ design_refs:
   - "s05 Option A"
   - "PATH-CORRECTION-AR-001"
 task_refs:
-  - "T1..T6"
+  - "T1..T6a"
 implementation_refs: []
 verification_refs:
   - "AR-B1"
@@ -535,11 +560,12 @@ verification_refs:
 
 ## Handoff
 
-- First task after activation: T1 adds fail-first precedence and exact trigger evidence; no policy
-  edit is allowed until the intended RED is confirmed.
-- Human review: Developer approved T1..T6 and AR-B1..AR-B2 at 2026-09-08T07:26:34Z.
-- Blocking dependency: human must seal a digest-valid Task Plan receipt and activate the protocol.
+- Amendment execution: T6a normalizes only workflow metadata/provenance; accepted behavior and
+  completed AR-B1/AR-B2 conclusions remain unchanged.
+- Human review: Developer approved T6a and re-approved the unchanged Task Plan at
+  2026-09-08T10:55:26Z.
+- Blocking dependency: human must re-seal all affected digest-valid receipts before a new candidate.
 - Execution topology: agentic in the existing CR-008 worktree; no subagent because T1-T4 share one
   tightly coupled evidence chain.
 - Condition for s07: Task Plan artifact is final, Developer review provenance is recorded, the
-  trusted receipt is `APPROVED` with `digest_match=true`, and protocol activation succeeds.
+  refreshed trusted receipts are `APPROVED` with `digest_match=true`.

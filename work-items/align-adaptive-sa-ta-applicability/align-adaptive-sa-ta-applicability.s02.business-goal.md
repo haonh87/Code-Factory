@@ -30,7 +30,7 @@ execution_mode: agentic
 execution_roles:
   - "po"
   - "ba"
-review_mode: targeted
+review_mode: independent
 verification_owner: "qc"
 approval_gates:
   spec: "required"

@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: approved
+status: draft
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: ALIGNED
+governance_status: CHECKS_PENDING
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -30,7 +30,7 @@ execution_mode: agentic
 execution_roles:
   - "developer"
   - "qc"
-review_mode: targeted
+review_mode: independent
 verification_owner: "qc"
 approval_gates:
   spec: "required"
@@ -97,18 +97,12 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> CF-019 is ACTIVE in the existing CR-008 worktree. T1 produced one intentional RED assertion for
-> the unconditional SA/TA rule while every router baseline remained green; T2 applied the smallest
-> canonical policy correction and made the same suite green. Human QC approved AR-B1 Spec
-> Compliance, followed by human Developer/QC approval of Code Quality, for candidate `c0fc0e6d…`.
-> T3 regenerated both runtime modes with exact canonical byte parity; T4 passed every targeted
-> regression, workflow/governance validator, encoding check, and the mechanical plus semantic pack
-> audit. Human QC approved AR-B2 Spec Compliance for candidate `aade0485…`, followed by human
-> Developer/QC approval of AR-B2 Code Quality. T5 records complete TDD, worktree, review, and
-> no-delegation evidence with no open implementation finding. T6 binds source commit
-> `a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff` to local pre-s08 artifact SHA-256
-> `ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47`; QC must still open and
-> perform s08, and parent CR-008 must re-verify an exact candidate containing this child result.
+> QC reopened s07 and recorded `F-AR08-001` at `2026-09-08T10:55:26Z`. Developer approved T6a,
+> and BA/Developer/QC re-approved the unchanged Spec, Contract, DoR, Approach, and Task Plan for a
+> metadata-only rebind using `review_mode=independent`. T1..T6 and AR-B1/AR-B2 remain historical
+> passing evidence; candidate `a97e0ee…` / `ebfb5ffb…` is now pre-amendment evidence only. A new
+> candidate is blocked until all affected receipts are re-sealed; the local metadata validation now
+> passes, including Workflow Execution across all 193 workflow notes.
 
 ## Step Contract
 ```yaml
@@ -121,13 +115,15 @@ value: >-
   Remove irrelevant architecture-role ceremony while preserving every named hard-risk escalation
   and the child-to-parent CR-008 verification boundary.
 scope_in:
-  - "T1-T6 from the approved s06 Task Plan"
+  - "T1-T6 from the approved s06 Task Plan plus approved metadata-only amendment T6a"
   - "Canonical semantic fixture, canonical policy, generated runtime parity, regressions, and evidence"
 scope_out:
   - "Router implementation, reason-code vocabulary, schemas, or SA/TA output contracts"
   - "Release, Business Acceptance, merge, tag, publish, install, or worktree cleanup"
 inputs_required:
-  - "Digest-valid Spec, Contract, DoR, Approach, and Task Plan trusted receipts"
+  - "Explicit QC approval to reopen s07 and record F-AR08-001"
+  - "Explicit Developer approval of T6a and named-role re-approval of unchanged authoring gates"
+  - "Fresh digest-valid Spec, Contract, DoR, Approach, and Task Plan receipts before new candidate creation"
   - "Protocol ACTIVE with the approved write roots"
   - "Approved s05 Option A and s06 T1..T6 sequence"
 outputs_required:
@@ -136,7 +132,8 @@ outputs_required:
   - "AR-B1 and AR-B2 reviews in Spec Compliance -> Code Quality order"
   - "Exact child candidate handoff to child s08 and parent CR-008 re-verification"
 done_when:
-  - "T1-T6 outputs and verification paths are complete"
+  - "T1-T6 outputs remain complete and T6a execution metadata passes locally"
+  - "All T6a-affected trusted receipts are refreshed and digest-valid"
   - "Both targeted review batches have no unresolved blocker"
   - "The implementation note is ready for QC verification at s08"
 owner: "developer"
@@ -160,6 +157,7 @@ tasks_completed:
   - "Human Developer and QC approved AR-B2 Code Quality for candidate aade0485c58f1ff1ead7bb55dcf2fe0f7a4bdfe8 at 2026-09-08T10:13:27Z with no blocking finding."
   - "T5 aggregated complete TDD, worktree isolation, two-tier review, agentic/no-subagent, and verify-path evidence."
   - "T6 bound exact reviewed source commit a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff to local pre-s08 workflow-bundle-2.6.2.tgz SHA-256 ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47."
+  - "T6a normalized workflow execution metadata to review_mode=independent and refreshed affected gate provenance without changing product behavior; local execution/workflow/planning/diff/encoding checks pass and only the expected stale receipts remain."
 bug_repro_evidence:
   - "node packages/workflow-bundle/test/workflow-adaptive-governance.test.js exited 1 with exactly one failed assertion: canonical Skill Requirement must make router-derived SA/TA applicability authoritative and must not re-add omitted roles."
 hypothesis_log:
@@ -202,12 +200,14 @@ outputs_actual:
   - "T5 complete Delivery Rule Evidence with both targeted review batches closed"
   - "T6 exact source/artifact binding plus installed-artifact smoke across Codex/Claude global/project"
 known_limitations:
+  - "The T6 source/artifact pair is historical pre-amendment evidence and must not be reused as the resumed verification candidate."
   - "Child s08 Technical Verification and DoD, followed by parent CR-008 exact-candidate re-verification, remain human-controlled follow-up work."
   - "The local tarball digest is pre-host evidence; if hosted packaging produces different archive bytes, QC must compare extracted content and approve an amended hosted binding before Technical Verification."
 follow_up_items:
-  - "Request QC approval to open s08 for the exact T6 candidate."
+  - "Re-seal Spec, Contract, DoR, Approach, and Task Plan receipts against the T6a-amended artifacts."
+  - "Create and host a new exact candidate only after every refreshed receipt reports digest_match=true."
   - "After child DoD, refresh parent CR-008 verification against a candidate that contains source commit a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff."
-notes_for_testing: "Open s08 only after QC approval. Use source commit a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff and local pre-s08 artifact SHA-256 ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47; rerun the T4 matrix, exact-artifact smoke, and hosted Node matrix without inferring DoD."
+notes_for_testing: "Treat a97e0ee… / ebfb5ffb… and run 34216520563 as historical evidence. After T6a receipts are digest-valid, create a new exact candidate and rerun the T4 matrix, exact-artifact smoke, and hosted Node matrix without inferring Technical Verification or DoD."
 ```
 
 ## Delivery Rule Evidence
@@ -224,7 +224,7 @@ worktree_refs:
   - ".claude/worktrees/cr-008-adaptive-governance"
   - "codex/adaptive-governance-human-approval-ux"
 worktree_reason: "planning_track=full, multi-session CR-008 release risk, and parent/child candidate coupling require isolation."
-review_status: COMPLETED
+review_status: REOPENED_FOR_METADATA_REBIND
 review_refs:
   - "AR-B1 Spec Compliance: PASS by QC at 2026-09-08T09:55:19Z for c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045"
   - "AR-B1 Code Quality: PASS by Developer and QC at 2026-09-08T10:00:24Z for c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045"
@@ -248,7 +248,7 @@ verify_path:
 ```yaml
 review_target: "CF-019 canonical semantic fixture and canonical policy"
 planning_track: full
-review_mode: TARGETED
+review_mode: INDEPENDENT
 review_order:
   - SPEC_COMPLIANCE
   - CODE_QUALITY
@@ -282,11 +282,11 @@ handoff_to_verify:
   - "AR-B1 Spec Compliance PASS is recorded before AR-B1 Code Quality PASS."
   - "AR-B2 Spec Compliance PASS is recorded before AR-B2 Code Quality PASS."
   - "Do not treat either review as s08 Technical Verification or DoD."
-notes_for_implementation_or_verify: "AR-B1 and AR-B2 are complete in the required order with no blocking finding; bind the exact T6 candidate before requesting s08."
+notes_for_implementation_or_verify: "AR-B1 and AR-B2 remain complete in the required order. Re-seal T6a-affected receipts, then bind a new exact candidate before resumed s08 verification."
 framework_notes:
   - "Node.js CommonJS fixture; no framework or runtime architecture change."
 known_limitations:
-  - "QC-owned s08 and parent CR-008 exact-candidate re-verification remain open."
+  - "T6a receipt refresh, resumed s08, and parent CR-008 exact-candidate re-verification remain open."
 ```
 
 ## AR-B2 Code Quality Review
@@ -340,9 +340,9 @@ checks:
     evidence: "The exact semantic, runtime parity, adjacent regression, governance, pack-audit, diff, and encoding checks are named for QC."
 open_findings: []
 cleanup_preconditions:
-  - "Child s08 Technical Verification and DoD pass for the exact T6 candidate."
+  - "Child s08 Technical Verification and DoD pass for the new post-T6a exact candidate."
   - "Parent CR-008 re-verifies a candidate that includes the exact child result."
-next_action: "Request QC approval to open s08 for the exact T6 candidate."
+next_action: "Re-seal T6a-affected receipts, then create the new exact candidate for resumed s08."
 ```
 
 ## T6 Exact Candidate Binding
@@ -387,7 +387,66 @@ parent_cr_008_handoff:
 worktree_cleanup_guard:
   status: HOLD_OPEN
   reason: "Branch/worktree finalization remains blocked until child s08 DoD and parent exact-candidate re-verification complete."
-next_human_action: "QC approves opening s08 Verify + DoD for the exact candidate."
+next_human_action: "Historical T6 handoff is superseded by T6a; human re-seals the affected receipts before a new candidate is created."
+```
+
+## T6a Metadata-only Rebind
+```yaml
+task: "T6a"
+finding_ref: "F-AR08-001"
+status: LOCAL_VALIDATION_PASS_RECEIPTS_PENDING
+authorized_at: "2026-09-08T10:55:26Z"
+authorization:
+  reopen_s07_and_finding:
+    reviewed_by: ["qc"]
+  task_plan_amendment:
+    reviewed_by: ["developer"]
+  spec_reapproval:
+    reviewed_by: ["ba"]
+  contract_reapproval:
+    reviewed_by: ["developer"]
+  dor_reapproval:
+    reviewed_by: ["ba", "qc"]
+    receipt_sealer: "qc"
+  approach_reapproval:
+    reviewed_by: ["developer"]
+  task_plan_reapproval:
+    reviewed_by: ["developer"]
+decision_source: "User explicitly approved the complete T6a recommendation bundle with the named roles."
+change_class: "metadata-only workflow artifact rebind"
+behavior_change: NO
+tdd_status: NOT_APPLICABLE
+tdd_reason: "No production policy, executable router, test behavior, schema, reason code, or packaged runtime content changes."
+metadata_delta:
+  - "Normalize s01-s07 frontmatter from invalid targeted to supported independent."
+  - "Keep s08 on independent and synchronize affected gate-review provenance."
+  - "Refresh s04 approved s02/s03 digests after their frontmatter changes."
+  - "Record the approved T6a amendment and retain a97e0ee… / ebfb5ffb… as historical pre-amendment evidence."
+receipt_boundary:
+  affected_gates: ["spec", "contract", "dor", "approach", "task_plan"]
+  status: PENDING_HUMAN_RESEAL
+  rule: "No resumed candidate may be created until every refreshed receipt is APPROVED with digest_match=true."
+verification_path:
+  - "npm run validate:workflow:execution -- --workflow-root work-items"
+  - "npm run validate:workflow -- --workflow-root work-items --project-root ."
+  - "npm run validate:workflow:protocol -- --workflow-root work-items"
+  - "npm run validate:workflow:planning -- --workflow-root work-items"
+  - "git diff --check and UTF-8/U+FFFD checks for the eight CF-019 notes"
+verification_evidence:
+  validated_at: "2026-09-09T01:55:03Z"
+  workflow_execution: "PASS; 193 workflow notes"
+  child_workflow_governance: "PASS; 8 files and 8 notes"
+  workflow_planning: "PASS; 193 workflow notes"
+  work_item_report_json: PASS
+  diff_check: PASS
+  utf8_and_replacement_scan: PASS
+  protocol: "EXPECTED_BLOCK; exactly five stale receipts: spec, contract, dor, approach, task_plan"
+historical_candidate:
+  source_sha: "a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff"
+  artifact_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
+  hosted_run_id: "34216520563"
+  disposition: "HISTORICAL_PRE_AMENDMENT_ONLY"
+next_action: "Commit stable amended artifacts, report their SHA-256 digests, then ask the human to re-seal all five gate receipts."
 ```
 
 ## Workflow Pack Audit
@@ -429,15 +488,17 @@ task_status:
   T4: COMPLETE
   T5: COMPLETE
   T6: COMPLETE
+  T6a: LOCAL_VALIDATION_PASS_RECEIPTS_PENDING
 implementation_candidate_commit: "a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff"
 local_candidate_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
-next_step: "Request human QC approval to open s08 Verify + DoD for the exact candidate; do not infer Technical Verification or DoD."
+candidate_disposition: "Historical pre-T6a evidence; not eligible for resumed verification."
+next_step: "Complete T6a local validation and re-seal affected trusted receipts before creating a new exact candidate."
 ```
 
 ## Handoff
 - Outputs actual: T1/T2 RED-to-GREEN policy evidence plus T3/T4 runtime parity, regression, governance, audit, and encoding evidence.
 - Completed reviews: AR-B1 and AR-B2 passed Spec Compliance before Code Quality with the required human roles and no open finding.
-- Candidate: source `a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff`; local pre-s08 `workflow-bundle-2.6.2.tgz` SHA-256 `ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47`.
-- Current gate: QC approval to open s08; Technical Verification, DoD, and parent re-verification remain open.
-- Notes for testing: review the locked acceptance behavior before style; the router module and stable reason values are unchanged.
+- Historical candidate: source `a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff`; local artifact SHA-256 `ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47`; do not reuse after T6a.
+- Current gate: refreshed Spec, Contract, DoR, Approach, and Task Plan trusted receipts; Technical Verification, DoD, and parent re-verification remain open.
+- Notes for testing: first require Workflow Execution to accept `review_mode=independent`, then create and verify a new exact candidate; router behavior and stable reason values are unchanged.
 - Notes for deployment: none; this child performs no release or installation action.

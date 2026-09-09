@@ -31,7 +31,7 @@ execution_roles:
   - "ba"
   - "developer"
   - "qc"
-review_mode: targeted
+review_mode: independent
 verification_owner: "qc"
 approval_gates:
   spec: "required"
@@ -65,14 +65,14 @@ role_signoffs:
 gate_reviews:
   spec_reviewed_by:
     - "ba"
-  spec_reviewed_at: "2026-09-08T06:08:19Z"
+  spec_reviewed_at: "2026-09-08T10:55:26Z"
   contract_reviewed_by:
     - "developer"
-  contract_reviewed_at: "2026-09-08T06:08:19Z"
+  contract_reviewed_at: "2026-09-08T10:55:26Z"
   dor_reviewed_by:
     - "ba"
     - "qc"
-  dor_reviewed_at: "2026-09-08T06:08:19Z"
+  dor_reviewed_at: "2026-09-08T10:55:26Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   foundation_reviewed_by: []
@@ -118,9 +118,10 @@ tags:
 # Step 4 - Acceptance + DoR
 
 > [!summary]
-> BA approved the Spec, Developer approved the public workflow Contract, and BA/QC approved DoR.
-> The artifact is final and keeps router-derived applicability authoritative while preserving every
-> hard-risk escalation. Three trusted receipts still need human sealing before s05 can open.
+> BA re-approved the Spec, Developer re-approved the public workflow Contract, and BA/QC
+> re-approved DoR for the metadata-only `review_mode=independent` rebind at
+> `2026-09-08T10:55:26Z`. The accepted behavior is unchanged; the three refreshed trusted receipts
+> must still be human-sealed against this artifact before resumed candidate creation.
 
 ## Step Contract
 ```yaml
@@ -211,9 +212,9 @@ approved_spec_refs:
   - "align-adaptive-sa-ta-applicability.s03.open-questions.md"
 approved_spec_digests:
   - ref: "align-adaptive-sa-ta-applicability.s02.business-goal.md"
-    sha256: "7dbfe1684c02e5e1083a4a6f0756f88f2a1df549f4f39df50551e75ba14e0203"
+    sha256: "bf56b4f5758253161337eca2919c07ad786e8e5feee61c03197a3d94c1ff3a61"
   - ref: "align-adaptive-sa-ta-applicability.s03.open-questions.md"
-    sha256: "4e6de63c87806240817a36f755758adefde9a5b86fba4ed880264634a7696816"
+    sha256: "cd282d1131ffb86396017f1a0ee778a9c875f75bc4c87557ef59592b96e6b44e"
 decision_inputs:
   - id: "OQ-AR-001"
     decision: "Option B"
@@ -227,7 +228,7 @@ decision_notes:
   - "The router determines whether SA and TA apply; generic skill guidance must defer to that result."
   - "Stable existing reason-code allowlists are normative; readable explanations are additive only."
   - "The adaptive-governance suite owns semantic behavior; scaffold and SA/TA suites remain supporting evidence."
-  - "BA approved the Spec at 2026-09-08T06:08:19Z; trusted receipt sealing remains pending."
+  - "BA re-approved the unchanged Spec at 2026-09-08T10:55:26Z for the metadata-only review-mode rebind; refreshed receipt sealing remains pending."
 ```
 
 ## Contract Baseline
@@ -254,7 +255,7 @@ compatibility:
   - "The current six hard triggers retain their exact escalation and role semantics."
 notes:
   - "Developer review is required because policy wording and reason codes are externally observable workflow behavior."
-  - "Developer approved the Contract at 2026-09-08T06:08:19Z; trusted receipt sealing remains pending."
+  - "Developer re-approved the unchanged Contract at 2026-09-08T10:55:26Z for the metadata-only review-mode rebind; refreshed receipt sealing remains pending."
 ```
 
 ## Existing System Baseline
@@ -434,9 +435,9 @@ checks:
     result: PASS
     evidence: "The exact candidate and rollback handoff to the CR-008 parent is part of AC-AR-10."
 blocking_items:
-  - "Seal Spec trusted receipt with BA reviewer metadata."
-  - "Seal Contract trusted receipt with Developer reviewer metadata."
-  - "Seal DoR trusted receipt with joint BA/QC provenance; QC is the receipt sealer."
+  - "Re-seal the Spec trusted receipt with BA reviewer metadata."
+  - "Re-seal the Contract trusted receipt with Developer reviewer metadata."
+  - "Re-seal the DoR trusted receipt with joint BA/QC provenance; QC is the receipt sealer."
 owner: "ba/developer/qc"
 next_action: "Seal the three independent trusted receipts from this finalized s04 artifact."
 ```
@@ -472,17 +473,17 @@ decisions:
   - gate: "spec"
     status: "APPROVED_PENDING_RECEIPT"
     reviewed_by: ["ba"]
-    reviewed_at: "2026-09-08T06:08:19Z"
+    reviewed_at: "2026-09-08T10:55:26Z"
   - gate: "contract"
     status: "APPROVED_PENDING_RECEIPT"
     reviewed_by: ["developer"]
-    reviewed_at: "2026-09-08T06:08:19Z"
+    reviewed_at: "2026-09-08T10:55:26Z"
   - gate: "dor"
     status: "APPROVED_PENDING_RECEIPT"
     reviewed_by: ["ba", "qc"]
     receipt_sealer: "qc"
-    reviewed_at: "2026-09-08T06:08:19Z"
-decision_source: "User explicitly approved Spec as BA, Contract as Developer, and DoR as BA/QC."
+    reviewed_at: "2026-09-08T10:55:26Z"
+decision_source: "User explicitly re-approved the unchanged Spec as BA, Contract as Developer, and DoR as BA/QC for the metadata-only review_mode=independent rebind."
 receipt_model_note: >-
   The trusted receipt stores one reviewed_by value per gate. Joint BA/QC review remains in
   gate_reviews while QC seals the DoR receipt.
@@ -513,9 +514,9 @@ unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed in one focused acceptance-authoring pass."
 gaps:
-  - "Spec, Contract, and DoR trusted receipts are not sealed yet."
+  - "The refreshed Spec, Contract, and DoR trusted receipts are not sealed against the amended digest yet."
 risk_level: HIGH
-next_action: "Seal and validate the three independent trusted receipts; do not enter s05 until all digest matches pass."
+next_action: "Seal and validate the three refreshed independent trusted receipts; do not create the resumed candidate until all digest matches pass."
 ```
 
 ## Traceability
@@ -534,7 +535,7 @@ acceptance_refs:
   - "AC-AR-01..10"
 readiness_refs:
   - "Seven canonical Definition of Ready checks"
-next_step: "Seal s04 trusted receipts; author s05 only after all three digest matches are valid"
+next_step: "Seal refreshed s04 trusted receipts; resume candidate creation only after all three digest matches are valid"
 ```
 
 ## Handoff
@@ -542,4 +543,4 @@ next_step: "Seal s04 trusted receipts; author s05 only after all three digest ma
 - Edge cases to preserve: EDGE-AR-01..07, especially release-only and identical-but-wrong policy copies.
 - Human review: completed for Spec (BA), Contract (Developer), and DoR (BA/QC).
 - Receipt sequence: seal Spec as BA, Contract as Developer, and DoR as QC.
-- Condition for s05: all three independent trusted receipts are present and digest-valid.
+- Resume condition: all three refreshed independent trusted receipts are present and digest-valid.

@@ -31,7 +31,7 @@ execution_roles:
   - "ba"
   - "developer"
   - "qc"
-review_mode: targeted
+review_mode: independent
 verification_owner: "qc"
 approval_gates:
   spec: "required"
@@ -706,6 +706,8 @@ review_notes:
   - "Approach receipt is APPROVED by Developer at 2026-09-08T06:57:11.904Z with digest_match=true for SHA-256 0737fa2d04a1961044edc26a20f5ce655434b2641cb0aebc5f729b31cf9106e2."
   - "s06 Task Plan is drafted with T1..T6, two targeted review batches, and exact child-to-parent candidate handoff."
   - "Developer approved s06 T1..T6 and AR-B1..AR-B2 at 2026-09-08T07:26:34Z; the Task Plan receipt remains pending."
+  - "QC reopened s07 and recorded F-AR08-001; Developer approved T6a; BA/Developer/QC re-approved unchanged Spec, Contract, DoR, Approach, and Task Plan for review_mode=independent at 2026-09-08T10:55:26Z."
+  - "T6a local Workflow Execution, workflow, planning, JSON, diff, and encoding checks passed at 2026-09-09T01:55:03Z; protocol is blocked only by the five expected stale receipts."
 refs:
   - "work-items/align-adaptive-sa-ta-applicability"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -731,6 +733,8 @@ audit_events:
   - "S06_TASK_PLAN_DRAFTED"
   - "S06_HUMAN_TASK_PLAN_APPROVED_PENDING_RECEIPT"
   - "WORK_ITEM_ACTIVATED"
+  - "S07_T6A_METADATA_REBIND_APPROVED"
+  - "S07_T6A_LOCAL_VALIDATION_PASS"
 ```
 
 ## Traceability
@@ -740,7 +744,7 @@ source_inputs:
   - "CF-019 master audit finding"
   - "CR-008 Adaptive Admission And Applicability rule"
   - "Conflicting generic SA/TA Skill Requirement in source and packaged runtime policies"
-next_step: "Seal the Task Plan receipt, validate digest_match, then activate s07"
+next_step: "Complete T6a validation and re-seal affected receipts before creating a new candidate"
 ```
 
 ## Handoff
@@ -750,4 +754,5 @@ next_step: "Seal the Task Plan receipt, validate digest_match, then activate s07
 - Approved: Developer selected s05 Option A — canonical policy precedence, existing semantic fixture, and generated runtime sync.
 - Passed: Approach receipt is APPROVED by Developer with digest_match=true.
 - Approved: Developer accepted s06 T1..T6 and AR-B1..AR-B2.
-- Gate: Task Plan trusted receipt and protocol activation remain pending; s07 stays closed.
+- Reopened: s07 for F-AR08-001 under approved metadata-only T6a with `review_mode=independent`.
+- Gate: refreshed Spec, Contract, DoR, Approach, and Task Plan receipts must be digest-valid before a new candidate.

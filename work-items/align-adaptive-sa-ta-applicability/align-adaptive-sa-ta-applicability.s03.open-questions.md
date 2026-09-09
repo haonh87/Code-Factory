@@ -31,7 +31,7 @@ execution_roles:
   - "ba"
   - "developer"
   - "qc"
-review_mode: targeted
+review_mode: independent
 verification_owner: "qc"
 approval_gates:
   spec: "required"

@@ -30,7 +30,7 @@ execution_mode: agentic
 execution_roles:
   - "developer"
   - "qc"
-review_mode: targeted
+review_mode: independent
 verification_owner: "qc"
 approval_gates:
   spec: "required"
@@ -64,17 +64,17 @@ role_signoffs:
 gate_reviews:
   spec_reviewed_by:
     - "ba"
-  spec_reviewed_at: "2026-09-08T06:08:19Z"
+  spec_reviewed_at: "2026-09-08T10:55:26Z"
   contract_reviewed_by:
     - "developer"
-  contract_reviewed_at: "2026-09-08T06:08:19Z"
+  contract_reviewed_at: "2026-09-08T10:55:26Z"
   dor_reviewed_by:
     - "ba"
     - "qc"
-  dor_reviewed_at: "2026-09-08T06:08:19Z"
+  dor_reviewed_at: "2026-09-08T10:55:26Z"
   approach_reviewed_by:
     - "developer"
-  approach_reviewed_at: "2026-09-08T06:41:51Z"
+  approach_reviewed_at: "2026-09-08T10:55:26Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -118,10 +118,10 @@ tags:
 # Step 5 - Technical Approach
 
 > [!summary]
-> Developer approved Option A: add one explicit router-precedence rule to the canonical policy,
-> prove the current contradiction RED in the existing adaptive-governance semantic suite, then sync
-> the canonical policy into both runtime copies. The artifact is final; its trusted Approach receipt
-> still needs human sealing before s06.
+> Developer re-approved Option A for the metadata-only `review_mode=independent` rebind at
+> `2026-09-08T10:55:26Z`. The technical direction, behavior boundary, and validation plan are
+> unchanged; a refreshed Approach receipt must still be human-sealed before resumed candidate
+> creation.
 
 ## Step Contract
 ```yaml
@@ -294,7 +294,7 @@ validation_plan:
   - "Change only the canonical policy and run the runtime sync script."
   - "Run adaptive-governance semantic tests, runtime parity, scaffold integration, SA/TA contract regression, and workflow-pack audit."
   - "Verify the changed text files as UTF-8 and bind the exact child candidate to parent CR-008 verification."
-notes_for_next_step: "Developer approved Option A; seal a digest-valid Approach receipt before authoring s06."
+notes_for_next_step: "Developer re-approved unchanged Option A for the metadata-only rebind; seal a refreshed digest-valid Approach receipt before resumed candidate creation."
 ```
 
 ## Foundation Decision
@@ -489,15 +489,15 @@ checks:
     evidence: "All four mandatory system-design perspectives contain concrete evidence and guardrails."
   - criterion: "No implementation authority is inferred from authoring the approach"
     result: PASS
-    evidence: "Artifact is finalized with Developer review provenance; the missing trusted receipt still blocks s06 and implementation."
+    evidence: "Artifact is finalized with renewed Developer review provenance; the refreshed trusted receipt still blocks resumed candidate creation."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed in one bounded option and design pass after all s04 receipts passed."
 gaps:
-  - "The trusted Approach receipt remains pending."
+  - "The refreshed trusted Approach receipt remains pending against the amended artifact digest."
 risk_level: MEDIUM
-next_action: "Human seals the Approach receipt as Developer and validates digest_match before s06 authoring."
+next_action: "Human re-seals the Approach receipt as Developer and validates digest_match before resumed candidate creation."
 ```
 
 ## Human Gate Decision
@@ -505,8 +505,8 @@ next_action: "Human seals the Approach receipt as Developer and validates digest
 gate: "approach"
 status: "APPROVED_PENDING_RECEIPT"
 reviewed_by: ["developer"]
-reviewed_at: "2026-09-08T06:41:51Z"
-decision_source: "User explicitly approved the Approach with role Developer."
+reviewed_at: "2026-09-08T10:55:26Z"
+decision_source: "User explicitly re-approved the unchanged Approach with role Developer for the metadata-only review_mode=independent rebind."
 selected_option: "Option A - Canonical policy precedence plus existing semantic fixture"
 ```
 
@@ -523,12 +523,12 @@ acceptance_refs:
 design_refs:
   - "Option A"
   - "PATH-CORRECTION-AR-001"
-next_step: "Seal the Approach trusted receipt; author s06 only after digest_match=true"
+next_step: "Seal the refreshed Approach trusted receipt; resume candidate creation only after digest_match=true"
 ```
 
 ## Handoff
 - Recommended option: Option A — canonical policy precedence plus existing semantic fixture.
 - Accepted trade-off: the canonical semantic test reads a bounded policy section in addition to executable router output.
-- Human review: Developer approved Option A at 2026-09-08T06:41:51Z.
-- Condition for s06: human seals the Approach receipt as Developer and verifies digest_match=true.
+- Human review: Developer re-approved unchanged Option A at 2026-09-08T10:55:26Z for the metadata-only rebind.
+- Resume condition: human re-seals the Approach receipt as Developer and verifies digest_match=true.
 - Deployment note: no deployment design; parent CR-008 retains release and rollback ownership.
