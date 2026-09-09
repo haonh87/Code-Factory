@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: review
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -100,9 +100,11 @@ tags:
 > QC reopened s07 and recorded `F-AR08-001` at `2026-09-08T10:55:26Z`. Developer approved T6a,
 > and BA/Developer/QC re-approved the unchanged Spec, Contract, DoR, Approach, and Task Plan for a
 > metadata-only rebind using `review_mode=independent`. T1..T6 and AR-B1/AR-B2 remain historical
-> passing evidence; candidate `a97e0ee…` / `ebfb5ffb…` is now pre-amendment evidence only. A new
-> all five refreshed receipts are now `APPROVED` with `digest_match=true`, and Protocol passes for
-> all 11 managed work items. T6a is ready for a new immutable candidate; no terminal gate is inferred.
+> passing evidence; candidate `a97e0ee…` / `ebfb5ffb…` is now pre-amendment provenance only. All
+> five refreshed receipts are `APPROVED` with `digest_match=true`, and Protocol passes for all
+> 11 managed work items. T6a packed a new file from clean source `1a803ba…`; exact-artifact smoke
+> passes 4/4. The tarball SHA-256 remains `ebfb5ffb…` because package payload bytes are unchanged.
+> Hosted Guardrails and all terminal gates remain pending.
 
 ## Step Contract
 ```yaml
@@ -199,15 +201,15 @@ outputs_actual:
   - "T4 targeted regression, governance, pack-audit, and encoding evidence"
   - "T5 complete Delivery Rule Evidence with both targeted review batches closed"
   - "T6 exact source/artifact binding plus installed-artifact smoke across Codex/Claude global/project"
+  - "T6a metadata rebind, five refreshed digest-valid receipts, and newly packed post-T6a candidate smoke"
 known_limitations:
   - "The T6 source/artifact pair is historical pre-amendment evidence and must not be reused as the resumed verification candidate."
   - "Child s08 Technical Verification and DoD, followed by parent CR-008 exact-candidate re-verification, remain human-controlled follow-up work."
   - "The local tarball digest is pre-host evidence; if hosted packaging produces different archive bytes, QC must compare extracted content and approve an amended hosted binding before Technical Verification."
 follow_up_items:
-  - "Re-seal Spec, Contract, DoR, Approach, and Task Plan receipts against the T6a-amended artifacts."
-  - "Create and host a new exact candidate only after every refreshed receipt reports digest_match=true."
-  - "After child DoD, refresh parent CR-008 verification against a candidate that contains source commit a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff."
-notes_for_testing: "Treat a97e0ee… / ebfb5ffb… and run 34216520563 as historical evidence. After T6a receipts are digest-valid, create a new exact candidate and rerun the T4 matrix, exact-artifact smoke, and hosted Node matrix without inferring Technical Verification or DoD."
+  - "Push the binding-only handoff and rerun hosted Guardrails for the post-T6a branch head."
+  - "After child DoD, refresh parent CR-008 verification against a candidate that contains source commit 1a803ba84a4e76150c90954d89dcc3b52f75111e."
+notes_for_testing: "Treat run 34216520563 as historical failed evidence. The newly packed post-T6a tarball passes exact-artifact smoke; run hosted Node 18/22 against the pushed handoff without inferring Technical Verification or DoD."
 ```
 
 ## Delivery Rule Evidence
@@ -224,7 +226,7 @@ worktree_refs:
   - ".claude/worktrees/cr-008-adaptive-governance"
   - "codex/adaptive-governance-human-approval-ux"
 worktree_reason: "planning_track=full, multi-session CR-008 release risk, and parent/child candidate coupling require isolation."
-review_status: T6A_APPROVED_AND_RECEIPTS_VERIFIED
+review_status: COMPLETED
 review_refs:
   - "AR-B1 Spec Compliance: PASS by QC at 2026-09-08T09:55:19Z for c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045"
   - "AR-B1 Code Quality: PASS by Developer and QC at 2026-09-08T10:00:24Z for c0fc0e6d46c35884c0c52d6dfaa49bc911c6b045"
@@ -282,11 +284,11 @@ handoff_to_verify:
   - "AR-B1 Spec Compliance PASS is recorded before AR-B1 Code Quality PASS."
   - "AR-B2 Spec Compliance PASS is recorded before AR-B2 Code Quality PASS."
   - "Do not treat either review as s08 Technical Verification or DoD."
-notes_for_implementation_or_verify: "AR-B1 and AR-B2 remain complete in the required order. Re-seal T6a-affected receipts, then bind a new exact candidate before resumed s08 verification."
+notes_for_implementation_or_verify: "AR-B1 and AR-B2 remain complete in the required order. T6a receipts and local candidate smoke pass; hosted verification is next."
 framework_notes:
   - "Node.js CommonJS fixture; no framework or runtime architecture change."
 known_limitations:
-  - "T6a receipt refresh, resumed s08, and parent CR-008 exact-candidate re-verification remain open."
+  - "Hosted T6a verification, resumed s08, and parent CR-008 exact-candidate re-verification remain open."
 ```
 
 ## AR-B2 Code Quality Review
@@ -342,7 +344,7 @@ open_findings: []
 cleanup_preconditions:
   - "Child s08 Technical Verification and DoD pass for the new post-T6a exact candidate."
   - "Parent CR-008 re-verifies a candidate that includes the exact child result."
-next_action: "Re-seal T6a-affected receipts, then create the new exact candidate for resumed s08."
+next_action: "Push the binding-only handoff and rerun hosted Guardrails for the new candidate."
 ```
 
 ## T6 Exact Candidate Binding
@@ -381,20 +383,21 @@ qc_verification_handoff:
   - "Record Technical Verification first and DoD only afterward; neither verdict is inferred from this handoff."
 parent_cr_008_handoff:
   required: true
-  rule: "Parent CR-008 must re-verify an exact candidate containing child source commit a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff after child DoD."
+  superseded_by: "T6a post-receipt candidate"
+  rule: "Parent CR-008 must re-verify an exact candidate containing child source commit 1a803ba84a4e76150c90954d89dcc3b52f75111e after child DoD."
   release_status: BLOCKED_PENDING_CHILD_DOD_AND_PARENT_REVERIFY
   rollback_version: "v2.6.1"
 worktree_cleanup_guard:
   status: HOLD_OPEN
   reason: "Branch/worktree finalization remains blocked until child s08 DoD and parent exact-candidate re-verification complete."
-next_human_action: "Historical T6 handoff is superseded by T6a; human re-seals the affected receipts before a new candidate is created."
+next_human_action: "Historical T6 handoff is superseded by the locally passing T6a candidate; hosted evidence remains pending."
 ```
 
 ## T6a Metadata-only Rebind
 ```yaml
 task: "T6a"
 finding_ref: "F-AR08-001"
-status: RECEIPTS_VERIFIED_READY_FOR_CANDIDATE
+status: CANDIDATE_BOUND_READY_FOR_HOSTED
 authorized_at: "2026-09-08T10:55:26Z"
 authorization:
   reopen_s07_and_finding:
@@ -452,7 +455,19 @@ historical_candidate:
   artifact_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
   hosted_run_id: "34216520563"
   disposition: "HISTORICAL_PRE_AMENDMENT_ONLY"
-next_action: "Commit the verified receipt evidence, pack one candidate from the clean source SHA, and run exact-artifact smoke."
+post_t6a_candidate:
+  built_at: "2026-09-09T02:36:31Z"
+  source_sha: "1a803ba84a4e76150c90954d89dcc3b52f75111e"
+  source_worktree_status: CLEAN
+  artifact_path: "/private/tmp/cf019-t6a-candidate.SdWPFD/workflow-bundle-2.6.2.tgz"
+  artifact_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
+  artifact_size_bytes: 954956
+  package_version: "2.6.2"
+  payload_relation: "Byte-identical to the pre-amendment package because T6a changes only work-item metadata outside the package files allowlist."
+  runtime_policy_sha256: "4d8e8c686a266908b1642c829c7daa2ad7572e989e802432ec3dc9e4010435c9"
+  artifact_smoke: "PASS; digest identity, version, and Codex/Claude global/project install-update matrix 4/4"
+  lifecycle: "Ephemeral local post-T6a candidate; no publish, release, tag, or persistent install."
+next_action: "Commit this binding-only handoff and push the branch to rerun hosted Guardrails."
 ```
 
 ## Workflow Pack Audit
@@ -494,17 +509,18 @@ task_status:
   T4: COMPLETE
   T5: COMPLETE
   T6: COMPLETE
-  T6a: RECEIPTS_VERIFIED_READY_FOR_CANDIDATE
-implementation_candidate_commit: "a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff"
+  T6a: CANDIDATE_BOUND_READY_FOR_HOSTED
+implementation_candidate_commit: "1a803ba84a4e76150c90954d89dcc3b52f75111e"
 local_candidate_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
-candidate_disposition: "Historical pre-T6a evidence; not eligible for resumed verification."
-next_step: "Create and smoke a new exact candidate, then bind the immutable source/artifact pair for hosted verification."
+candidate_disposition: "Newly packed post-T6a local candidate; exact-artifact smoke PASS, hosted evidence pending."
+next_step: "Push the binding-only handoff and run hosted Guardrails against the post-T6a branch head."
 ```
 
 ## Handoff
 - Outputs actual: T1/T2 RED-to-GREEN policy evidence plus T3/T4 runtime parity, regression, governance, audit, and encoding evidence.
 - Completed reviews: AR-B1 and AR-B2 passed Spec Compliance before Code Quality with the required human roles and no open finding.
-- Historical candidate: source `a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff`; local artifact SHA-256 `ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47`; do not reuse after T6a.
-- Current gate: new exact-candidate creation and hosted verification; Technical Verification, DoD, and parent re-verification remain open.
+- Candidate: clean source `1a803ba84a4e76150c90954d89dcc3b52f75111e`; newly packed local artifact SHA-256 `ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47`; exact smoke PASS 4/4.
+- Historical note: the old package has the same digest because T6a changes no packaged byte; provenance now binds the newly created file to the post-receipt source.
+- Current gate: hosted verification; Technical Verification, DoD, and parent re-verification remain open.
 - Notes for testing: Workflow Execution and Protocol now pass; create and verify one immutable candidate while keeping router behavior and stable reason values unchanged.
 - Notes for deployment: none; this child performs no release or installation action.

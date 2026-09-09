@@ -123,8 +123,9 @@ tags:
 > named BA/Developer/QC authorities approved metadata-only amendment T6a at
 > `2026-09-08T10:55:26Z`. T6a now passes local Workflow Execution, workflow, planning, diff, JSON,
 > and encoding checks. All five refreshed receipts are `APPROVED` with `digest_match=true`, and
-> Protocol passes. A new exact candidate and hosted run remain required; Technical Verification and
-> DoD stay blocked and are not inferred.
+> Protocol passes. A newly packed post-T6a candidate from clean source `1a803ba…` passes exact
+> artifact smoke 4/4 at SHA-256 `ebfb5ffb…`; the digest is unchanged because package payload bytes
+> are unchanged. A new hosted run remains required; Technical Verification and DoD stay blocked.
 
 ## Step Contract
 ```yaml
@@ -434,6 +435,7 @@ hosted_source_sha: "96212a30a1a341d90f96b85709f9834e8bfaaef8"
 hosted_run_id: "34216520563"
 hosted_candidate_sha256: ""
 binding_verdict: BLOCKED_BEFORE_ARTIFACT_BUILD
+disposition: HISTORICAL_PRE_T6A_RUN
 notes:
   - "The opened local artifact passes exact install/update smoke 4/4."
   - "Hosted Workflow Tooling, Artifacts, SDD, and Changes passed."
@@ -441,11 +443,46 @@ notes:
   - "Workflow Authoring Smoke, Planning, Build Exact Release Candidate, and Release Candidate matrix were skipped; no hosted artifact exists to bind."
 ```
 
+## T6a Candidate Proposal
+```yaml
+status: LOCAL_PASS_HOSTED_PENDING
+built_at: "2026-09-09T02:36:31Z"
+source:
+  commit_sha: "1a803ba84a4e76150c90954d89dcc3b52f75111e"
+  worktree_status_at_pack: CLEAN
+  provenance: "Post-T6a source with five refreshed digest-valid receipts and passing Protocol."
+artifact:
+  name: "workflow-bundle-2.6.2.tgz"
+  path: "/private/tmp/cf019-t6a-candidate.SdWPFD/workflow-bundle-2.6.2.tgz"
+  sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
+  size_bytes: 954956
+  payload_relation: "Byte-identical to the historical tarball because T6a changes no package file."
+runtime_policy_sha256: "4d8e8c686a266908b1642c829c7daa2ad7572e989e802432ec3dc9e4010435c9"
+artifact_smoke:
+  status: PASS
+  evidence:
+    - "Digest identity PASS."
+    - "Installed wfc version 2.6.2 PASS."
+    - "Codex/Claude x global/project install/update matrix PASS 4/4."
+pipeline_scope:
+  branch_model: "Existing codex/adaptive-governance-human-approval-ux branch and open PR trigger."
+  artifact_contract: "GitHub builds once, uploads one immutable tarball plus SHA-256, then Node 18/22 download the same artifact."
+  required_checks:
+    - "Workflow Tooling -> Artifacts -> SDD -> Changes -> Execution -> Planning -> Authoring Smoke"
+    - "Build Exact Release Candidate"
+    - "Release Candidate Node 18 and Node 22"
+  approval_controls:
+    - "Hosted green does not approve Technical Verification or DoD; QC remains the authority."
+  rollback_control: "Parent release remains blocked and rollback baseline stays v2.6.1."
+pipeline_recommendation: READY_WITH_GUARDS
+next_action: "Commit the binding-only evidence and push to trigger hosted Guardrails."
+```
+
 ## Verification Finding F-AR08-001
 ```yaml
 finding_id: "F-AR08-001"
 status: OPEN
-remediation_status: LOCAL_FIX_AND_RECEIPTS_PASS_HOSTED_RERUN_PENDING
+remediation_status: LOCAL_FIX_RECEIPTS_AND_CANDIDATE_SMOKE_PASS_HOSTED_RERUN_PENDING
 severity: HIGH
 category: "WORKFLOW_EXECUTION_METADATA"
 detected_at: "2026-09-08T10:39:13Z"
@@ -481,6 +518,9 @@ local_remediation:
   workflow_planning: "PASS; 193 workflow notes"
   json_diff_encoding: PASS
   protocol: "PASS at 2026-09-09T02:28:18Z; 11 managed work items validated"
+  candidate_source_sha: "1a803ba84a4e76150c90954d89dcc3b52f75111e"
+  candidate_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
+  candidate_smoke: "PASS; v2.6.2 and Codex/Claude global/project 4/4"
 hosted_impact:
   passed_jobs: 4
   failed_jobs: 1
@@ -491,7 +531,7 @@ approved_resolution:
   - "Developer approved metadata-only Task Plan amendment T6a."
   - "BA re-approved Spec; Developer re-approved Contract; BA/QC re-approved DoR; Developer re-approved Approach and Task Plan."
   - "Use supported review_mode=independent consistently because human QC is separate from the implementation owner."
-  - "Execution/workflow/planning validators now pass; re-seal receipts, create a new exact candidate, and rerun hosted Guardrails."
+  - "Execution/workflow/planning/protocol and exact local candidate smoke now pass; rerun hosted Guardrails."
 prohibited_shortcuts:
   - "Do not expand the validator enum to accept targeted without a separate approved contract change."
   - "Do not silently edit receipt-bound artifacts or reuse stale receipts."
@@ -504,12 +544,12 @@ next_human_action: "NONE until the new hosted candidate evidence is ready for QC
 status: BLOCKED
 verdict: FAIL
 candidate_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
-source_sha: "a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff"
+source_sha: "1a803ba84a4e76150c90954d89dcc3b52f75111e"
 reviewed_by: []
 reviewed_at: ""
 blocking_items:
-  - "F-AR08-001 is open and hosted run 34216520563 failed before artifact build."
-recommendation: "Do not approve Technical Verification; T6a and receipts pass, but a new hosted candidate is still required."
+  - "F-AR08-001 remains open until a new hosted run builds and verifies the post-T6a candidate."
+recommendation: "Do not approve Technical Verification; T6a receipts and local candidate smoke pass, but hosted evidence is still required."
 ```
 
 ## UAT Summary
@@ -626,13 +666,14 @@ upstream:
 acceptance_refs:
   - "AC-AR-01..10"
   - "EDGE-AR-01..07"
-implementation_candidate_commit: "a97e0ee38350a174b5a3dbe2ef69f47719c5f0ff"
+implementation_candidate_commit: "1a803ba84a4e76150c90954d89dcc3b52f75111e"
 opened_local_candidate_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
 hosted_run_id: "34216520563"
 hosted_source_sha: "96212a30a1a341d90f96b85709f9834e8bfaaef8"
+candidate_binding_status: "POST_T6A_LOCAL_PASS_HOSTED_PENDING"
 open_findings:
   - "F-AR08-001"
-next_step: "Create and verify a new exact candidate."
+next_step: "Commit the post-T6a binding evidence and push to trigger hosted Guardrails."
 ```
 
 ## Handoff
@@ -640,4 +681,4 @@ next_step: "Create and verify a new exact candidate."
 - Residual risks: stale gate receipts if metadata is edited without re-sealing, hosted runtime variance, and stale parent-candidate evidence.
 - Approved action: execute metadata-only T6a with `review_mode=independent`; old candidate evidence remains historical.
 - Release recommendation: NOT_APPLICABLE for this child; parent CR-008 remains blocked.
-- Next action: create one exact candidate and rerun hosted Guardrails; wait for QC before Technical Verification or DoD.
+- Next action: push the binding-only handoff and rerun hosted Guardrails; wait for QC before Technical Verification or DoD.

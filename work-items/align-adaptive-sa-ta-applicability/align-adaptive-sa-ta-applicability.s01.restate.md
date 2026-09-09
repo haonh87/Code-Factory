@@ -709,6 +709,7 @@ review_notes:
   - "QC reopened s07 and recorded F-AR08-001; Developer approved T6a; BA/Developer/QC re-approved unchanged Spec, Contract, DoR, Approach, and Task Plan for review_mode=independent at 2026-09-08T10:55:26Z."
   - "T6a local Workflow Execution, workflow, planning, JSON, diff, and encoding checks passed at 2026-09-09T01:55:03Z; protocol is blocked only by the five expected stale receipts."
   - "All five refreshed receipts are APPROVED with digest_match=true and Protocol passed at 2026-09-09T02:28:18Z; T6a may create a new exact candidate."
+  - "T6a packed a new candidate from clean source 1a803ba84a4e76150c90954d89dcc3b52f75111e at 2026-09-09T02:36:31Z; SHA-256 ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47 and exact-artifact smoke 4/4 PASS."
 refs:
   - "work-items/align-adaptive-sa-ta-applicability"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -737,6 +738,7 @@ audit_events:
   - "S07_T6A_METADATA_REBIND_APPROVED"
   - "S07_T6A_LOCAL_VALIDATION_PASS"
   - "S07_T6A_RECEIPTS_VERIFIED"
+  - "S07_T6A_LOCAL_CANDIDATE_PASS"
 ```
 
 ## Traceability
@@ -746,7 +748,7 @@ source_inputs:
   - "CF-019 master audit finding"
   - "CR-008 Adaptive Admission And Applicability rule"
   - "Conflicting generic SA/TA Skill Requirement in source and packaged runtime policies"
-next_step: "Create and smoke one exact post-T6a candidate, then bind it for hosted verification"
+next_step: "Push the binding-only handoff and rerun hosted Guardrails"
 ```
 
 ## Handoff
@@ -758,4 +760,5 @@ next_step: "Create and smoke one exact post-T6a candidate, then bind it for host
 - Approved: Developer accepted s06 T1..T6 and AR-B1..AR-B2.
 - Reopened: s07 for F-AR08-001 under approved metadata-only T6a with `review_mode=independent`.
 - Passed: refreshed Spec, Contract, DoR, Approach, and Task Plan receipts are digest-valid.
-- Next: create and smoke one immutable post-T6a candidate before hosted verification.
+- Passed: one immutable post-T6a local candidate was packed and passed exact-artifact smoke 4/4.
+- Next: push the binding-only handoff and rerun hosted Guardrails.
