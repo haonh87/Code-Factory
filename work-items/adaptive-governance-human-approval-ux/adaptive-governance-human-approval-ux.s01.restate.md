@@ -712,12 +712,12 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "parent-s08-business-acceptance-review"
-last_transition_action: "parent-release-approved"
-last_transition_at: "2026-09-09T08:47:09Z"
+handoff_target: "parent-s08-closeout-bundle"
+last_transition_action: "parent-business-acceptance-approved"
+last_transition_at: "2026-09-09T09:00:31Z"
 required_actions:
-  - "PO decides Business Acceptance for the Release-approved parent hosted binding."
-  - "After Business Acceptance, finalize s08 and seal the complete terminal receipt bundle before protocol closeout."
+  - "Run the human TTY closeout-bundle approval to seal DoD, Release, and Business Acceptance receipts against finalized s08."
+  - "Verify all three receipt digests, then close the protocol and perform branch finalization separately."
 blockers: []
 review_notes:
   - "Human review approved."
@@ -726,7 +726,8 @@ review_notes:
   - "Human QC approved the exact parent hosted binding at 2026-09-09T08:06:32Z."
   - "Human QC approved Technical Verification at 2026-09-09T08:13:53Z for the same exact binding and AG-01..AG-13 at 13/13 PASS."
   - "Human QC approved DoD at 2026-09-09T08:19:40Z for the same Technical Verification evidence binding."
-  - "Human DevOps and QC approved Release at 2026-09-09T08:47:09Z for the exact current candidate and rollback. Business Acceptance remains pending; no publish or tag action was inferred or executed."
+  - "Human DevOps and QC approved Release at 2026-09-09T08:47:09Z for the exact current candidate and rollback; no publish or tag action was inferred or executed."
+  - "Human PO approved Business Acceptance at 2026-09-09T09:00:31Z for the same exact Release-approved candidate. The finalized s08 host is ready for atomic trusted-receipt sealing; no publish or tag action was inferred or executed."
 refs:
   - "changes/CR-008"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -771,6 +772,8 @@ audit_events:
   - "PARENT_TECHNICAL_VERIFICATION_APPROVED"
   - "PARENT_DOD_APPROVED"
   - "PARENT_RELEASE_APPROVED"
+  - "PARENT_BUSINESS_ACCEPTANCE_APPROVED"
+  - "PARENT_S08_FINALIZED_FOR_CLOSEOUT"
 ```
 
 ## Traceability
@@ -785,7 +788,7 @@ outputs:
   - "clarified adaptive-governance boundary"
   - "AG-01..AG-11 acceptance draft"
   - "SA and TA architecture-driver handoffs"
-next_step: "PO Business Acceptance decision for the Release-approved parent hosted binding in s08"
+next_step: "Seal trusted DoD, Release, and Business Acceptance receipts against finalized s08"
 ```
 
 ## Handoff
@@ -795,5 +798,6 @@ next_step: "PO Business Acceptance decision for the Release-approved parent host
 - Technical Verification: QC approved the same exact binding at `2026-09-09T08:13:53Z` with AG-01..AG-13 at 13/13 PASS.
 - DoD: QC approved the same Technical Verification evidence binding at `2026-09-09T08:19:40Z`; terminal receipts remain unsealed until s08 is final.
 - Release: DevOps and QC approved v2.6.2 at `2026-09-09T08:47:09Z` for the exact current source/run/hosted digest and immutable v2.6.1 rollback; approval did not publish or create a tag.
-- Next human action: PO approves or rejects Business Acceptance.
+- Business Acceptance: PO approved the same exact Release-approved candidate at `2026-09-09T09:00:31Z`; approval did not publish or create a tag.
+- Next human action: run the atomic closeout-bundle command in a human TTY to seal DoD, Release, and Business Acceptance receipts.
 - Branch/worktree decision: `HOLD_OPEN`; no merge, tag, publication, release, cleanup, or global install is authorized.

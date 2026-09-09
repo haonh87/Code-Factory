@@ -102,7 +102,9 @@
     "Human QC explicitly approved DoD for work item adaptive-governance-human-approval-ux against the approved Technical Verification binding for source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d, run 34322150024, hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5, and AG-01..AG-13 at 13/13 PASS.",
     "Release and Business Acceptance remain separate pending human gates; terminal receipts will be sealed together after the final s08 artifact is stable.",
     "Human DevOps and QC explicitly approved current Release at 2026-09-09T08:47:09Z for v2.6.2 source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d, run 34322150024, hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5, and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9.",
-    "Current Release approval did not publish, create or move a tag, install, merge, or clean up; PO Business Acceptance remains pending."
+    "Current Release approval did not publish, create or move a tag, install, merge, or clean up; PO Business Acceptance remains pending.",
+    "Human PO explicitly approved current Business Acceptance at 2026-09-09T09:00:31Z for the exact Release-approved v2.6.2 candidate source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d, run 34322150024, hosted SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5, and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9.",
+    "All applicable current terminal decisions are human-approved; s08 is finalized for atomic trusted-receipt sealing. Business Acceptance did not publish, create or move a tag, install, merge, or clean up."
   ],
   "work_item_slug": "adaptive-governance-human-approval-ux",
   "work_item_type": "CHANGE",
@@ -126,10 +128,10 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "parent-s08-business-acceptance-review",
+  "handoff_target": "parent-s08-closeout-bundle",
   "required_actions": [
-    "PO decides Business Acceptance for the Release-approved parent hosted binding.",
-    "After Business Acceptance, finalize s08 and seal the complete terminal receipt bundle before protocol closeout."
+    "Run the human TTY closeout-bundle approval to seal DoD, Release, and Business Acceptance receipts against finalized s08.",
+    "Verify all three receipt digests, then close the protocol and perform branch finalization separately."
   ],
   "blockers": [],
   "refs": [
@@ -176,7 +178,9 @@
     "PARENT_HOSTED_BINDING_APPROVED",
     "PARENT_TECHNICAL_VERIFICATION_APPROVED",
     "PARENT_DOD_APPROVED",
-    "PARENT_RELEASE_APPROVED"
+    "PARENT_RELEASE_APPROVED",
+    "PARENT_BUSINESS_ACCEPTANCE_APPROVED",
+    "PARENT_S08_FINALIZED_FOR_CLOSEOUT"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -189,7 +193,8 @@
     "Human QC approved the exact parent hosted binding at 2026-09-09T08:06:32Z.",
     "Human QC approved Technical Verification at 2026-09-09T08:13:53Z for the same exact binding and AG-01..AG-13 at 13/13 PASS.",
     "Human QC approved DoD at 2026-09-09T08:19:40Z for the same Technical Verification evidence binding.",
-    "Human DevOps and QC approved Release at 2026-09-09T08:47:09Z for the exact current candidate and rollback. Business Acceptance remains pending; no publish or tag action was inferred or executed."
+    "Human DevOps and QC approved Release at 2026-09-09T08:47:09Z for the exact current candidate and rollback; no publish or tag action was inferred or executed.",
+    "Human PO approved Business Acceptance at 2026-09-09T09:00:31Z for the same exact Release-approved candidate. The finalized s08 host is ready for atomic trusted-receipt sealing; no publish or tag action was inferred or executed."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -395,6 +400,14 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "Human DevOps and QC explicitly approved Release for v2.6.2 source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d, run 34322150024, hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5, and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. PO Business Acceptance remains pending; approval did not publish or create a tag."
+    },
+    {
+      "timestamp": "2026-09-09T09:00:31Z",
+      "action": "parent-business-acceptance-approved",
+      "actor": "po",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Human PO explicitly approved Business Acceptance for the exact Release-approved v2.6.2 source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d, run 34322150024, hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5, and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. All applicable current terminal decisions are approved and s08 is finalized for atomic trusted-receipt sealing; no publish or tag action was executed."
     }
   ]
 }
