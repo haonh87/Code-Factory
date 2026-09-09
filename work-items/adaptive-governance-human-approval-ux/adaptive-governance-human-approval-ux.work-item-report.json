@@ -90,8 +90,11 @@
     "The Release gate record does not imply execution of tag, publication, installation, merge or cleanup",
     "PO Business Acceptance remained pending after Release approval",
     "Human PO explicitly approved Business Acceptance for v2.6.2 after the DevOps/QC Release decision",
-    "All applicable terminal human gates are approved; the finalized s08 host now awaits atomic trusted receipt sealing",
-    "No tag, publication, install, merge or cleanup action was inferred from Business Acceptance"
+    "All applicable terminal human gates were approved for hosted candidate 8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788; those decisions later became historical after F-AG08-001 reopened AG-08.",
+    "No tag, publication, install, merge or cleanup action was inferred from Business Acceptance",
+    "QC recorded F-AG08-001 and required corrected-candidate verification; prior Technical Verification, DoD, Release, and Business Acceptance decisions no longer authorize current closeout.",
+    "Both linked work items are DONE and parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed local and hosted re-verification.",
+    "Parent hosted candidate binding, Technical Verification, DoD, Release, and Business Acceptance remain pending as separate current human-controlled gates."
   ],
   "work_item_slug": "adaptive-governance-human-approval-ux",
   "work_item_type": "CHANGE",
@@ -115,21 +118,20 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "linked-defect-s01",
+  "handoff_target": "parent-s08-qc-binding-review",
   "required_actions": [
-    "Complete closeout-bundle-legacy-dod-compatibility through corrected-candidate verification.",
-    "Repeat Technical Verification, DoD, Release and Business Acceptance for the corrected v2.6.2 candidate before CR-008 closeout."
+    "QC approves or rejects the parent hosted binding for source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d, run 34322150024, and hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5.",
+    "After binding approval, QC decides Technical Verification and DoD; DevOps/QC Release and PO Business Acceptance follow."
   ],
-  "blockers": [
-    "F-AG08-001: legacy product closeout omitted mandatory DoD and recorded a partial closeout bundle as successful."
-  ],
+  "blockers": [],
   "refs": [
     "changes/CR-008",
     "work-items/adaptive-governance-human-approval-ux",
     "work-items/arch-role-skills-release",
     "work-items/integrate-design-checklists-into-sa-ta",
     "work-items/architecture-role-skills",
-    "work-items/closeout-bundle-legacy-dod-compatibility"
+    "work-items/closeout-bundle-legacy-dod-compatibility",
+    "work-items/align-adaptive-sa-ta-applicability"
   ],
   "audit_events": [
     "REQUEST_CAPTURED",
@@ -159,14 +161,19 @@
     "S08_FINALIZED_FOR_CLOSEOUT",
     "CLOSEOUT_BUNDLE_APPROVED",
     "AG08_CLOSEOUT_COMPATIBILITY_FINDING_RECORDED",
-    "LINKED_DEFECT_CREATED"
+    "LINKED_DEFECT_CREATED",
+    "LINKED_DEFECTS_DONE",
+    "PARENT_REVERIFICATION_PASS",
+    "PARENT_HOSTED_BINDING_READY"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
   "reviewed_by": "po",
   "reviewed_at": "2026-08-28T13:15:42.373Z",
   "review_notes": [
-    "Human review approved."
+    "Human review approved.",
+    "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local verification matrix and hosted Guardrails run 34322150024.",
+    "Hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 passed supplied-checksum verification, extracted-payload parity, and exact artifact smoke. F-AG08-001 is resolved; current binding and terminal approvals remain pending."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -332,6 +339,14 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "QC recorded F-AG08-001 after the real legacy closeout bundle omitted mandatory DoD and reconciled only Release plus Business Acceptance. The user approved linked defect closeout-bundle-legacy-dod-compatibility; CR-008 release closeout is held pending a corrected candidate and repeated terminal approvals."
+    },
+    {
+      "timestamp": "2026-09-09T07:16:45Z",
+      "action": "prepare-parent-reverification-binding",
+      "actor": "agent",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local matrix and hosted run 34322150024; downloaded candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 passed checksum, payload-parity, and exact-smoke checks. F-AG08-001 is resolved; current human binding and terminal gates remain pending."
     }
   ]
 }
