@@ -52,8 +52,8 @@ role_signoffs:
   foundation: []
   task_plan: ["developer"]
   uat: []
-  release: ["devops", "qc"]
-  business_acceptance: ["po"]
+  release: []
+  business_acceptance: []
   dod: ["qc"]
 gate_reviews:
   spec_reviewed_by: ["ba"]
@@ -74,8 +74,8 @@ gate_reviews:
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-09-09T08:19:40Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -114,8 +114,9 @@ tags:
 > Prior Technical Verification, DoD, Release, and Business Acceptance decisions for `8ddcb719…` are
 > retained as historical evidence only. QC approved the exact current hosted binding at
 > `2026-09-09T08:06:32Z`, then approved Technical Verification at `2026-09-09T08:13:53Z` against
-> AG-01..AG-13 at 13/13 PASS. DoD remains a separate QC decision; Release and Business Acceptance
-> remain subsequent human gates.
+> AG-01..AG-13 at 13/13 PASS. QC separately approved DoD at `2026-09-09T08:19:40Z` for the same
+> binding. Release and Business Acceptance remain subsequent human gates, and terminal receipts
+> will be sealed together only after the final s08 artifact is stable.
 > Branch/worktree remains `HOLD_OPEN`; no merge, tag, publication, release, or global install occurred.
 
 ## Step Contract
@@ -309,8 +310,8 @@ residual_risks:
   - "npm/gzip compression bytes differ between the local and hosted packaging environments even though the extracted trees and uncompressed tar stream are identical."
   - "Unchanged github-push MCP has one macOS failure from a Windows-only fixture path; CR-008 changes no MCP file."
   - "Telemetry purge scans its local directory linearly; retained scope and CLI execution make current risk LOW."
-recommendation: "QC should decide DoD for the Technical-Verification-approved parent binding source 38bb0d1/run 34322150024/SHA-256 2a5ae701..., before new Release and Business Acceptance review."
-notes_for_review: "The current parent technical evidence and Technical Verification are PASS/APPROVED. Prior terminal approvals remain historical and do not authorize DoD, Release, or Business Acceptance for the current candidate."
+recommendation: "DevOps and QC should decide Release for the DoD-approved parent binding source 38bb0d1/run 34322150024/SHA-256 2a5ae701..., before PO Business Acceptance review."
+notes_for_review: "The current parent technical evidence is PASS; artifact binding, Technical Verification, and DoD are APPROVED. Prior Release and Business Acceptance decisions remain historical and do not authorize the current candidate."
 historical_technical_verification_decision:
   status: APPROVED
   reviewed_by: "qc"
@@ -417,7 +418,7 @@ rollback:
 binding_note: "The hosted archive identity is authoritative. Its extracted payload is byte-identical to local pre-host evidence, and the same hosted digest also passed the completed CF-019 child verification."
 operational_warnings:
   - "GitHub reports actions/checkout@v4, setup-node@v4, upload-artifact@v4, and download-artifact@v4 as Node 20 actions forced onto Node 24; track migration separately before enforcement changes."
-next_action: "QC decides DoD as a separate gate for this exact Technical-Verification-approved binding."
+next_action: "DevOps and QC decide Release for this exact DoD-approved binding."
 ```
 
 ## Current Technical Verification Decision
@@ -434,8 +435,8 @@ evidence_binding:
   local_pre_host_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
   rollback_version: "2.6.1"
   rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
-authority_effect: "Technical Verification is approved for this exact binding only. DoD remains a separate QC gate; Release and Business Acceptance remain pending."
-next_action: "QC decides DoD for this exact Technical Verification evidence binding."
+authority_effect: "Technical Verification is approved for this exact binding only. DoD was separately approved by QC; Release and Business Acceptance remain pending."
+next_action: "DevOps and QC decide Release for the same exact binding."
 ```
 
 ## Governance Checks
@@ -449,9 +450,9 @@ checks:
   - { check: "Rollback/remediation is viable", status: PASS, evidence: "Published v2.6.1 digest is verified and passes every rollback scenario." }
   - { check: "Exceptions are explicit", status: PASS, evidence: "No CR-008 governance exception or waiver is open." }
 blocking_items:
-  - "Current DoD, Release, and Business Acceptance decisions remain pending."
+  - "Current Release and Business Acceptance decisions remain pending."
 owner: "devops/qc/po"
-next_action: "QC decides DoD for the Technical-Verification-approved parent binding."
+next_action: "DevOps and QC decide Release for the DoD-approved parent binding."
 ```
 
 ## Regression & Compatibility Summary
@@ -601,7 +602,7 @@ historical_release_candidate: { version: "2.6.2", sha256: "8ddcb719f55c49424aee5
 previous_qc_bound_candidate: { version: "2.6.2", sha256: "ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5", disposition: "Superseded for Release by the QC-approved hosted binding; retained as historical behavior/content evidence." }
 rollback: { version: "2.6.1", sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9" }
 receipt_state: NOT_READY
-receipt_reason: "Current DoD and Release decisions have not passed."
+receipt_reason: "Current Release has not passed; terminal receipts will be sealed atomically after all decisions are recorded."
 current_evidence_status: HISTORICAL_ONLY
 current_authority_effect: "Historical approval only; DevOps and QC must review the current parent candidate after DoD."
 pending_controls:
@@ -658,7 +659,7 @@ promotion_flow:
     to: prod
     conditions: ["Publish exact v2.6.2 bytes.", "Verify release asset digest and isolated install."]
     automation_level: "HUMAN_GATED_PUBLICATION"
-approval_controls: ["Prior approvals are historical only.", "QC approved the current hosted binding and Technical Verification; DoD remains a separate QC gate.", "DevOps/QC must approve current Release.", "PO must approve current Business Acceptance.", "Independent terminal receipts must bind the finalized s08 digest before protocol closeout."]
+approval_controls: ["Prior approvals are historical only.", "QC separately approved the current hosted binding, Technical Verification, and DoD.", "DevOps/QC must approve current Release.", "PO must approve current Business Acceptance.", "Independent terminal receipts must bind the finalized s08 digest before protocol closeout."]
 release_controls:
   pre_release: ["Hosted Guardrails and human gates.", "Confirm v2.6.2 tag unused immediately before creation."]
   post_release: ["Verify GitHub asset digest.", "Run isolated install/status smoke."]
@@ -667,7 +668,7 @@ rollback_controls:
   - "Stop on digest, parity or hosted Guardrails mismatch; preserve unmanaged content and receipts."
 pipeline_risks: ["Local and hosted gzip byte streams are not reproducible across toolchains.", "Packaged-source edit invalidates candidate."]
 pipeline_recommendation: READY_WITH_GUARDS
-notes_for_implementation_or_ops: "Run 34322150024 and exact hosted artifact smoke pass; QC approved the current artifact binding and Technical Verification. DoD, Release, and Business Acceptance remain required before merge, tag, publication, cleanup, or global install."
+notes_for_implementation_or_ops: "Run 34322150024 and exact hosted artifact smoke pass; QC approved the current artifact binding, Technical Verification, and DoD. Release and Business Acceptance remain required before merge, tag, publication, cleanup, or global install."
 ```
 
 ## Governance Exceptions
@@ -688,14 +689,14 @@ checks:
   - { criterion: "Every AG has evidence", result: PASS, evidence: "AG-01..AG-13 are 13/13 PASS after both linked defects reached DONE and source 38bb0d1 passed local plus hosted re-verification." }
   - { criterion: "Mandatory and negative paths are covered", result: PASS, evidence: "Node, transaction, CLI, compatibility, privacy, candidate and rollback matrices pass." }
   - { criterion: "Skipped checks are explicit", result: PASS, evidence: "ESLint and Semgrep list fallbacks and impact; hosted Guardrails completed successfully." }
-  - { criterion: "Human authority is preserved", result: PASS, evidence: "Prior decisions are explicitly historical; QC separately approved the current hosted binding and Technical Verification, while DoD, Release, and Business Acceptance remain pending their authorized human reviewers and independent receipts." }
+  - { criterion: "Human authority is preserved", result: PASS, evidence: "Prior decisions are explicitly historical; QC separately approved the current hosted binding, Technical Verification, and DoD, while Release and Business Acceptance remain pending their authorized human reviewers and independent receipts." }
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "One bounded pass; no production or candidate edit."
 gaps: []
 risk_level: LOW
-next_action: "QC decides DoD for the Technical-Verification-approved parent binding."
+next_action: "DevOps and QC decide Release for the DoD-approved parent binding."
 ```
 
 ### Branch And Worktree Closeout
@@ -705,23 +706,23 @@ workspace_kind: BOTH
 verify_inputs: ["Both linked defects DONE", "local full matrix PASS", "hosted run 34322150024 9/9 jobs PASS", "hosted checksum/payload parity/exact smoke PASS"]
 finish_gate_checks:
   verify_complete: PASS
-  dod_complete: PENDING
+  dod_complete: PASS
   findings_closed: PASS
   exceptions_resolved: PASS
   terminal_receipts_complete: PENDING
-allowed_actions: ["Record the separate current DoD decision, then proceed through Release and Business Acceptance in order.", "Preserve old approvals as historical evidence."]
+allowed_actions: ["Proceed through current Release and Business Acceptance reviews in order.", "Preserve old approvals as historical evidence."]
 blocked_actions: ["Merge/close/remove branch or worktree.", "Tag, publish, release, or install v2.6.2 before current terminal gates and receipts pass."]
 cleanup_sequence: []
 merge_conditions: ["Hosted Guardrails PASS", "DoD/Release/Business Acceptance approved", "all terminal receipts digest-match", "work-item protocol closed", "post-merge verification"]
 residual_risks: ["Prior terminal receipts are historical and must not authorize the current candidate.", "Node 20 action-runtime deprecation requires a separate pipeline maintenance follow-up."]
 final_recommendation: HOLD_OPEN
-notes_for_closeout: "Technical re-verification, binding, and Technical Verification are approved, but the branch/worktree stays open until DoD, Release, Business Acceptance, and trusted receipts pass."
+notes_for_closeout: "Technical re-verification, binding, Technical Verification, and DoD are approved, but the branch/worktree stays open until Release, Business Acceptance, and trusted receipts pass."
 ```
 
 ## Definition of Done
 ```yaml
 work_item_slug: "adaptive-governance-human-approval-ux"
-status: BLOCKED
+status: PARTIAL
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -755,6 +756,17 @@ human_decision:
     reviewed_at: "2026-09-02T06:24:11Z"
     decision_source: "User explicitly approved Technical Verification and DoD with role QC."
   dod:
+    status: APPROVED
+    reviewed_by: "qc"
+    reviewed_at: "2026-09-09T08:19:40Z"
+    decision_source: "User explicitly approved current DoD with role QC for this work item and exact Technical Verification evidence binding."
+    source_sha: "38bb0d178aa994e2a7c6e841b58b3e6b4263c56d"
+    run_id: "34322150024"
+    candidate_sha256: "2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5"
+    acceptance_coverage: "AG-01..AG-13: 13/13 PASS"
+    receipt_state: PENDING_CLOSEOUT_BUNDLE
+    receipt_reason: "Release and Business Acceptance must be recorded before all terminal receipts are sealed against one final s08 digest."
+  historical_dod:
     status: HISTORICAL_ONLY
     reviewed_by: "qc"
     reviewed_at: "2026-09-02T06:24:11Z"
@@ -790,15 +802,13 @@ human_decision:
     candidate_sha256: "8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788"
     receipt_state: HISTORICAL_ONLY
 gaps:
-  - "Current QC DoD is pending after approved Technical Verification."
-  - "Current DevOps/QC Release and PO Business Acceptance are pending after technical closeout."
+  - "Current DevOps/QC Release and PO Business Acceptance are pending after approved technical closeout."
 residual_risks: ["Cross-toolchain gzip representation differs.", "ESLint/Semgrep unavailable with documented fallbacks.", "External publication has not been executed."]
 follow_up_items:
-  - "Approve DoD for the current Technical-Verification-approved parent hosted binding."
-  - "Repeat Release and Business Acceptance, then seal and verify the terminal receipts against the final artifact digest."
+  - "Approve Release and Business Acceptance, then seal and verify all terminal receipts against the final artifact digest."
   - "Close the work-item protocol, then perform branch finalization separately."
   - "Publish/tag only under an explicit execution request using the approved hosted digest."
-next_action: "QC decides DoD separately; do not infer it from Technical Verification or historical receipts."
+next_action: "DevOps and QC decide Release; do not infer it from DoD or historical receipts."
 ```
 
 ## SDD Traceability
@@ -824,7 +834,7 @@ verification_targets:
   - "v2.6.1 rollback 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
   - "Parent re-verification source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d / run 34322150024 / hosted v2.6.2 SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5"
   - "Completed child work items: closeout-bundle-legacy-dod-compatibility and align-adaptive-sa-ta-applicability"
-next_step: "QC DoD decision for the Technical-Verification-approved parent hosted binding; Release and Business Acceptance remain pending."
+next_step: "DevOps/QC Release decision for the DoD-approved parent hosted binding; Business Acceptance remains pending."
 ```
 
 ## Handoff
@@ -835,4 +845,5 @@ next_step: "QC DoD decision for the Technical-Verification-approved parent hoste
 - Current candidate: source `38bb0d178aa994e2a7c6e841b58b3e6b4263c56d`, run `34322150024`, hosted SHA-256 `2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5`; checksum, extracted-payload parity, Node 18/22 and exact smoke all PASS.
 - Binding decision: `APPROVED` by QC at `2026-09-09T08:06:32Z` for source `38bb0d1…`, run `34322150024`, and hosted SHA-256 `2a5ae701…`; local `ebfb5ffb…` remains pre-host evidence and v2.6.1 remains rollback.
 - Technical Verification: `APPROVED` by QC at `2026-09-09T08:13:53Z` for the same binding with AG-01..AG-13 at 13/13 PASS.
-- Next action: QC separately decides DoD; Release and Business Acceptance follow. Branch/worktree remains `HOLD_OPEN`.
+- DoD: `APPROVED` by QC at `2026-09-09T08:19:40Z` for the same Technical Verification evidence binding; its receipt will be sealed with the complete terminal bundle after s08 is final.
+- Next action: DevOps and QC decide Release; Business Acceptance follows. Branch/worktree remains `HOLD_OPEN`.
