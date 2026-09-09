@@ -104,6 +104,7 @@ linked_artifacts:
   - "changes/CR-008/design.md"
   - "changes/CR-008/tasks.md"
   - "packages/workflow-bundle/test/workflow-adaptive-governance.test.js"
+  - "../closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s01.restate.md"
 tags:
   - "agent-ops"
   - "workflow/s07"
@@ -112,6 +113,12 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
+> **REOPENED BY QC (2026-09-09):** `F-AG11-001` is OPEN. The repeated parent closeout sealed
+> digest-valid DoD, Release, and Business Acceptance receipts but retained the pre-closeout action
+> and handoff and omitted a current-cycle protocol event. The linked defect
+> `closeout-bundle-repeat-cycle-reconciliation` is materialized but not approved for implementation.
+> All earlier implementation/review evidence below is historical pre-finding evidence.
+>
 > CR-008 is ACTIVE in a dedicated enterprise worktree. B0, B1a and B1b are approved. T3/T4 now render
 > applicable-only adaptive artifacts, preserve legacy/receipt-v1 reads and fail closed on runtime
 > skew. T5-T7 now provide recoverable journaled approval bundles, applicability-based closeout and
@@ -1113,6 +1120,43 @@ review_decisions:
     findings: []
 ```
 
+## F-AG11-001 Reopen Decision
+```yaml
+finding:
+  id: "F-AG11-001"
+  title: "Repeated closeout succeeds but current workflow state remains pending"
+  severity: HIGH
+  status: OPEN
+  criterion: "AG-11"
+  requirement: "REQ-AG-009"
+  recorded_by: "qc"
+  recorded_at: "2026-09-09T10:12:13Z"
+  decision_source: >-
+    User explicitly authorized QC to reopen s07, record F-AG11-001, and create the recommended
+    linked defect closeout-bundle-repeat-cycle-reconciliation.
+observed:
+  receipts: "PASS: DoD, Release, and Business Acceptance are APPROVED with digest_match=true against historical s08 SHA-256 1c5f5d81bcdfde07638d0ce379a66f22976e99a2932b8789801626b86ae5e9b3."
+  required_actions: "FAIL: report and s01 still ask the operator to run closeout-bundle approval and verify it."
+  handoff: "FAIL: parent-s08-closeout-bundle is retained instead of the next valid protocol-close action."
+  protocol_event: "FAIL: no event was appended for the 2026-09-09T09:57:16.873Z closeout cycle because historical CLOSEOUT_BUNDLE_APPROVED evidence already existed."
+root_cause_evidence:
+  - "work-item-protocol.js filters only literal approve-closeout-bundle command strings, not semantic/prose pending instructions."
+  - "The successful closeout path retains report.handoff_target rather than assigning canonical post-closeout navigation."
+  - "eventAlreadyRecorded is based on global audit-event presence, so a historical cycle suppresses the current-cycle protocol event."
+linked_work_item:
+  slug: "closeout-bundle-repeat-cycle-reconciliation"
+  protocol_status: MATERIALIZED
+  approval_status: PENDING_REVIEW
+  implementation_path: CLOSED
+release_effect:
+  parent_s07: REOPENED
+  parent_s08: INVALIDATED_BY_FINDING
+  terminal_receipts: HISTORICAL_PRE_FINDING
+  branch_worktree: HOLD_OPEN
+  release: BLOCKED
+next_human_action: "PO approves the linked work item; later gates remain independent."
+```
+
 ## Workflow Pack Audit
 ```yaml
 audit_scope: "CR-008 T1-T9 policy, adapters, approval transaction, telemetry, public docs, runtime payload, Guardrails and integrated verification"
@@ -1166,7 +1210,8 @@ next_step: "Commit the VERIFIED snapshot and run hosted Guardrails before Releas
 ```
 
 ## Handoff
-- Actual outputs: B0/B1a/B1b/B2/B3/B4 approvals; T1-T8 implementation; Developer-approved T8a rollover to unique version 2.6.2; T9 integrated evidence; TDD closure of unsafe telemetry purge; 20-run AG-12 evidence; exact candidate and rollback matrices.
-- Known limitations: Release and Business Acceptance are not approved; GitHub-hosted Guardrails is pending; one unchanged github-push MCP fixture is Windows-path-specific.
-- Notes for testing: Node 18.20.8, Node 22.23.2 and current Node 26.5.0 each pass 44/44 unit files; exact candidate digest `ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5` and immutable rollback digest `7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9` pass Node 18/22 four-scenario matrices.
-- Notes for deployment: do not publish, tag or install globally before s08 DoD and human Release approval. Never retarget `v2.6.1`; candidate `v2.6.2` remains local. The branch/worktree stays open.
+- Current state: `F-AG11-001` reopened the parent delivery lane; the prior B0-B4 and verification evidence is retained as historical pre-finding evidence.
+- Linked defect: `closeout-bundle-repeat-cycle-reconciliation` is materialized at s01 with PO work-item approval pending; implementation is not open.
+- Required behavior: a repeated committed closeout must remove every satisfied pending action, set the canonical close-ready handoff, append one current-cycle event, and remain a NOOP on unchanged retry.
+- Release effect: the source `38bb0d1…`, run `34322150024`, candidate `2a5ae701…`, and terminal receipts are historical pre-finding evidence only.
+- Branch/worktree: `HOLD_OPEN`; no publish, tag, merge, install, cleanup, or branch finalization is authorized.

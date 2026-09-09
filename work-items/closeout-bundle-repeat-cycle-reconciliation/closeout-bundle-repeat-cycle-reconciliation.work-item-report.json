@@ -1,0 +1,147 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "MATERIALIZED",
+  "decision_owner": "agent",
+  "protocol_owner": "developer",
+  "raw_request_summary": "Fix repeated closeout-bundle reconciliation so a successful current approval cycle removes stale pending approval actions and handoffs, records a current-cycle protocol event despite historical evidence, and remains idempotent.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
+      "work_item_title": "Closeout Bundle Repeat Cycle Reconciliation",
+      "work_item_type": "BUG",
+      "scope_summary": "Resolve F-AG11-001 by reconciling current lifecycle state and audit evidence after a repeated successful closeout.",
+      "primary_outcome": "Zero stale approval prompts and exactly one auditable event for each committed closeout cycle.",
+      "in_scope": [
+        "Cycle-aware closeout event identity",
+        "Semantic required-action cleanup",
+        "Canonical post-closeout handoff",
+        "Two-cycle and unchanged-retry regression coverage",
+        "Parent CR-008 exact-candidate re-verification"
+      ],
+      "out_of_scope": [
+        "Legacy terminal-gate selection",
+        "Receipt schema, signer, or human authority changes",
+        "Generic lifecycle redesign",
+        "Publication, tag, merge, install, or cleanup"
+      ],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "full",
+      "sdd_reasons": [],
+      "sdd_preset": "full",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/adaptive-governance-human-approval-ux",
+        "work-items/closeout-bundle-legacy-dod-compatibility",
+        "work-items/approval-path-defects"
+      ],
+      "collision_notes": [
+        "Manual dedup confirmed the prior closeout child owns missing-DoD gate selection, while this child owns repeat-cycle reconciliation and event identity."
+      ],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "The defect is a bounded child of approved CR-008 and does not require a separate change package.",
+      "change_refs": ["changes/CR-008"],
+      "scaffold_actions": [
+        "Scaffolded full brownfield BUG workflow under strict governance.",
+        "Drafted s01 requirement analysis plus SA/TA driver-only handoff."
+      ],
+      "blockers": ["Human PO work-item approval is pending."]
+    }
+  ],
+  "decision_log": [
+    "QC explicitly approved recording F-AG11-001 and reopening the parent delivery lane.",
+    "The user approved creation of the recommended linked defect.",
+    "split_decision=single",
+    "delivery_context=brownfield",
+    "manual dedup review confirmed no scope collision",
+    "change_strategy=none; the work item remains linked to CR-008",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_mode=none",
+    "execution_mode=agentic",
+    "SA and TA selected driver-only because one existing package boundary is affected and no public contract or system seam moves.",
+    "PO work-item approval and all later human-controlled gates remain pending."
+  ],
+  "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "selected_profile": "full",
+  "sdd_mode": "none",
+  "sdd_preset": "full",
+  "sdd_light_profile": "preview",
+  "sdd_reasons": [],
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation",
+  "current_step": "s01",
+  "granted_write_paths": [],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "human-review",
+  "required_actions": [
+    "wfc work-item approve --work-item closeout-bundle-repeat-cycle-reconciliation --reviewed-by po",
+    "After approval, continue s02 Business Goal; do not implement before Spec, DoR, Approach, and Task Plan receipts pass."
+  ],
+  "blockers": [
+    "Human PO work-item approval is pending."
+  ],
+  "refs": [
+    "work-items/closeout-bundle-repeat-cycle-reconciliation",
+    "work-items/adaptive-governance-human-approval-ux",
+    "work-items/closeout-bundle-legacy-dod-compatibility",
+    "changes/CR-008"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "S01_REQUIREMENT_AND_ARCHITECTURE_DRIVERS_DRAFTED"
+  ],
+  "review_required": true,
+  "approval_status": "PENDING_REVIEW",
+  "reviewed_by": "",
+  "reviewed_at": "",
+  "review_notes": [
+    "QC approved recording parent finding F-AG11-001 and creation of this linked defect.",
+    "Creation approval does not substitute for PO work-item approval or later gates."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-09T10:12:13Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial linked defect candidate proposed for F-AG11-001."
+    },
+    {
+      "timestamp": "2026-09-09T10:12:13Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Manual dedup confirmed a distinct repeat-cycle reconciliation boundary."
+    },
+    {
+      "timestamp": "2026-09-09T10:12:13Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Scaffolded full strict workflow artifacts and drafted s01; human work-item approval remains pending."
+    }
+  ]
+}

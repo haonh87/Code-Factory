@@ -712,22 +712,27 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "parent-s08-closeout-bundle"
-last_transition_action: "parent-business-acceptance-approved"
-last_transition_at: "2026-09-09T09:00:31Z"
+handoff_target: "linked-defect-work-item-approval"
+last_transition_action: "record-ag11-repeat-cycle-finding"
+last_transition_at: "2026-09-09T10:12:13Z"
 required_actions:
-  - "Run the human TTY closeout-bundle approval to seal DoD, Release, and Business Acceptance receipts against finalized s08."
-  - "Verify all three receipt digests, then close the protocol and perform branch finalization separately."
-blockers: []
+  - "PO approves work item closeout-bundle-repeat-cycle-reconciliation."
+  - "Complete the linked defect through Spec, DoR, Approach, Task Plan, TDD implementation, two-tier review, hosted verification, and DoD."
+  - "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
+blockers:
+  - "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."
+  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is MATERIALIZED and awaits the PO decision before authoring continues."
 review_notes:
   - "Human review approved."
   - "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local verification matrix and hosted Guardrails run 34322150024."
-  - "Hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 passed checksum, extracted-payload parity, and exact artifact smoke. F-AG08-001 is resolved."
+  - "Hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 passed supplied-checksum verification, extracted-payload parity, and exact artifact smoke. F-AG08-001 is resolved."
   - "Human QC approved the exact parent hosted binding at 2026-09-09T08:06:32Z."
   - "Human QC approved Technical Verification at 2026-09-09T08:13:53Z for the same exact binding and AG-01..AG-13 at 13/13 PASS."
   - "Human QC approved DoD at 2026-09-09T08:19:40Z for the same Technical Verification evidence binding."
   - "Human DevOps and QC approved Release at 2026-09-09T08:47:09Z for the exact current candidate and rollback; no publish or tag action was inferred or executed."
   - "Human PO approved Business Acceptance at 2026-09-09T09:00:31Z for the same exact Release-approved candidate. The finalized s08 host is ready for atomic trusted-receipt sealing; no publish or tag action was inferred or executed."
+  - "The 2026-09-09T09:57:16.873Z closeout receipts are retained as historical pre-finding evidence against s08 SHA-256 1c5f5d81bcdfde07638d0ce379a66f22976e99a2932b8789801626b86ae5e9b3."
+  - "QC recorded F-AG11-001 and reopened the parent delivery lane; release, protocol close, and branch finalization are blocked pending the linked defect and corrected-candidate re-verification."
 refs:
   - "changes/CR-008"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -736,6 +741,7 @@ refs:
   - "work-items/architecture-role-skills"
   - "work-items/closeout-bundle-legacy-dod-compatibility"
   - "work-items/align-adaptive-sa-ta-applicability"
+  - "work-items/closeout-bundle-repeat-cycle-reconciliation"
 audit_events:
   - "REQUEST_CAPTURED"
   - "CANDIDATE_PROPOSED"
@@ -774,6 +780,23 @@ audit_events:
   - "PARENT_RELEASE_APPROVED"
   - "PARENT_BUSINESS_ACCEPTANCE_APPROVED"
   - "PARENT_S08_FINALIZED_FOR_CLOSEOUT"
+  - "AG11_REPEAT_CYCLE_FINDING_RECORDED"
+  - "LINKED_REPEAT_CYCLE_DEFECT_MATERIALIZED"
+  - "PARENT_RELEASE_BLOCKED_BY_F_AG11_001"
+```
+
+## Current Governance Router Status
+```yaml
+workflow_status: BLOCKED
+current_step: s07
+reopened_by: qc
+reopened_at: "2026-09-09T10:12:13Z"
+finding: "F-AG11-001"
+protocol_projection_status: VERIFIED
+projection_note: >-
+  The current protocol enum has no VERIFIED-to-s07 reopen transition. Keep the last valid protocol
+  projection for validator compatibility while this governance-router state and the s07/s08 source
+  artifacts block release and direct work to the linked defect.
 ```
 
 ## Traceability
@@ -788,16 +811,11 @@ outputs:
   - "clarified adaptive-governance boundary"
   - "AG-01..AG-11 acceptance draft"
   - "SA and TA architecture-driver handoffs"
-next_step: "Seal trusted DoD, Release, and Business Acceptance receipts against finalized s08"
+next_step: "PO work-item review for closeout-bundle-repeat-cycle-reconciliation"
 ```
 
 ## Handoff
-- Current state: both linked child work items are `DONE`; parent re-verification is `PASS`, AG-01..AG-13 are 13/13 PASS, and F-AG08-001 is resolved.
-- Candidate: source `38bb0d178aa994e2a7c6e841b58b3e6b4263c56d`, hosted run `34322150024`, SHA-256 `2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5`.
-- Binding: QC approved the exact source/run/artifact binding at `2026-09-09T08:06:32Z`; local `ebfb5ffb…` remains pre-host evidence and v2.6.1 remains rollback.
-- Technical Verification: QC approved the same exact binding at `2026-09-09T08:13:53Z` with AG-01..AG-13 at 13/13 PASS.
-- DoD: QC approved the same Technical Verification evidence binding at `2026-09-09T08:19:40Z`; terminal receipts remain unsealed until s08 is final.
-- Release: DevOps and QC approved v2.6.2 at `2026-09-09T08:47:09Z` for the exact current source/run/hosted digest and immutable v2.6.1 rollback; approval did not publish or create a tag.
-- Business Acceptance: PO approved the same exact Release-approved candidate at `2026-09-09T09:00:31Z`; approval did not publish or create a tag.
-- Next human action: run the atomic closeout-bundle command in a human TTY to seal DoD, Release, and Business Acceptance receipts.
-- Branch/worktree decision: `HOLD_OPEN`; no merge, tag, publication, release, cleanup, or global install is authorized.
+- Current state: `F-AG11-001` is OPEN and the parent delivery lane is reopened; the prior candidate and terminal receipts are historical pre-finding evidence only.
+- Linked defect: `closeout-bundle-repeat-cycle-reconciliation` is materialized at s01 with PO work-item approval pending.
+- Next human action: PO approves that linked work item; later Spec, DoR, Approach, Task Plan, implementation, review, Verify/DoD, Release, and Business Acceptance gates remain independent.
+- Branch/worktree decision: `HOLD_OPEN`; no merge, tag, publication, release, cleanup, global install, or branch finalization is authorized.

@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: approved
+status: draft
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: ALIGNED
+governance_status: CHECKS_PENDING
 checklist_refs:
   - "project-context/checklists/default.md"
   - "project-context/checklists/strict.md"
@@ -95,6 +95,7 @@ linked_artifacts:
   - "docs/releases/workflow-bundle-v2.6.2.md"
   - "../closeout-bundle-legacy-dod-compatibility/closeout-bundle-legacy-dod-compatibility.s08.verification.md"
   - "../align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.s08.verification.md"
+  - "../closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s01.restate.md"
 tags:
   - "agent-ops"
   - "workflow/s08"
@@ -103,6 +104,14 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
+> **INVALIDATED BY F-AG11-001 (2026-09-09):** the repeated parent closeout at
+> `2026-09-09T09:57:16.873Z` sealed digest-valid terminal receipts but did not reconcile the
+> current report/protocol navigation or append a current-cycle event. QC reopened the s07 delivery
+> lane and recorded `F-AG11-001` as HIGH. The linked defect
+> `closeout-bundle-repeat-cycle-reconciliation` is materialized at s01 with PO work-item approval
+> pending. Everything below that declares PASS/DONE/APPROVED for the previous parent candidate is
+> retained as historical pre-finding evidence and does not authorize release or closeout.
+>
 > **PARENT RE-VERIFICATION READY (2026-09-09):** linked defects
 > `closeout-bundle-legacy-dod-compatibility` and `align-adaptive-sa-ta-applicability` are both `DONE`.
 > Source `38bb0d178aa994e2a7c6e841b58b3e6b4263c56d` passed the complete local verification matrix and
@@ -201,6 +210,53 @@ timebox:
   escalation_rule: "Any criterion failure, artifact drift or HIGH scan finding returns to s07 and reopens the affected B4 review."
 ```
 
+## F-AG11-001 Reopen And Evidence Invalidation
+```yaml
+finding:
+  id: "F-AG11-001"
+  title: "Repeated closeout leaves the successful approval pending and suppresses the current-cycle event"
+  severity: HIGH
+  status: OPEN
+  criterion: "AG-11"
+  requirement: "REQ-AG-009"
+  recorded_by: "qc"
+  recorded_at: "2026-09-09T10:12:13Z"
+  decision_source: >-
+    User explicitly approved reopening s07 and recording F-AG11-001 with role QC, then approved
+    creation of linked defect closeout-bundle-repeat-cycle-reconciliation.
+observed_closeout:
+  reviewed_at: "2026-09-09T09:57:16.873Z"
+  host_artifact_sha256: "1c5f5d81bcdfde07638d0ce379a66f22976e99a2932b8789801626b86ae5e9b3"
+  receipt_results:
+    dod: "APPROVED; digest_match=true"
+    release: "APPROVED; digest_match=true"
+    business_acceptance: "APPROVED; digest_match=true"
+  reconciliation_results:
+    required_actions: FAIL
+    handoff_target: FAIL
+    current_cycle_protocol_event: FAIL
+root_cause_evidence:
+  - "Required-action cleanup recognizes only literal CLI strings and leaves equivalent prose instructions pending."
+  - "Successful closeout retains report.handoff_target instead of selecting the canonical protocol-close handoff."
+  - "Global CLOSEOUT_BUNDLE_APPROVED history is used as event deduplication, suppressing a later successful cycle."
+evidence_effect:
+  prior_source_sha: "38bb0d178aa994e2a7c6e841b58b3e6b4263c56d"
+  prior_run_id: "34322150024"
+  prior_candidate_sha256: "2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5"
+  prior_terminal_receipts: HISTORICAL_PRE_FINDING
+  technical_verification: INVALIDATED_BY_HIGH_FINDING
+  dod: INVALIDATED_BY_HIGH_FINDING
+  release: BLOCKED
+  business_acceptance: INVALIDATED_BY_HIGH_FINDING
+  branch_worktree: HOLD_OPEN
+linked_work_item:
+  slug: "closeout-bundle-repeat-cycle-reconciliation"
+  protocol_status: MATERIALIZED
+  approval_status: PENDING_REVIEW
+  current_step: s01
+next_human_action: "PO approves the linked work item; no implementation action is allowed before later gates pass."
+```
+
 ## Main Artifact
 ```yaml
 verification_target: "CR-008 adaptive governance and exact workflow-bundle v2.6.2 candidate"
@@ -257,6 +313,12 @@ manual_exploration:
       owner: "developer/qc"
       evidence: "The linked defect is DONE; the corrected legacy closeout contract requires DoD, rejects partial reconciliation, and passes local plus hosted regression evidence on source 38bb0d1."
       linked_work_item: "closeout-bundle-legacy-dod-compatibility"
+    - id: "F-AG11-001"
+      severity: HIGH
+      status: OPEN
+      owner: "developer/qc"
+      evidence: "A repeated successful closeout sealed three digest-valid receipts but retained the closeout approval action/handoff and appended no current-cycle protocol event."
+      linked_work_item: "closeout-bundle-repeat-cycle-reconciliation"
 criteria_results:
   - { criterion: "AG-01", result: PASS, evidence: "Non-delivery fixtures assert workflow_required=false and zero delivery writes without audited override." }
   - { criterion: "AG-02", result: PASS, evidence: "Maintenance fixtures omit PO/BA/SA/TA/DevOps without a named trigger." }
@@ -273,7 +335,7 @@ criteria_results:
       and source 38bb0d1 passes the full local and hosted matrix.
   - { criterion: "AG-09", result: PASS, evidence: "Legacy/adaptive readers, fixed-host rules, receipt-v1 and rollback compatibility pass." }
   - { criterion: "AG-10", result: PASS, evidence: "Disabled no-op, allowlist, pseudonym, canary, retention and safe purge fixtures pass." }
-  - { criterion: "AG-11", result: PASS, evidence: "Successful approval atomically reconciles every source and derived state surface." }
+  - { criterion: "AG-11", result: FAIL, evidence: "F-AG11-001: repeated closeout receipts committed, but required actions, handoff, and current-cycle event did not reconcile." }
   - { criterion: "AG-12", result: PASS, evidence: "20 runs reduce median interactions 7->3 (57.14%) with 0.00% retry and independent receipts." }
   - { criterion: "AG-13", result: PASS, evidence: "Skew fails before writes; parity, exact candidate and rollback pass Node 18/22." }
 test_evidence:
@@ -305,15 +367,19 @@ commands_run:
 skipped_checks:
   - "ESLint: no executable/config; node --check, full tests and manual diff review are the fallback."
   - "Semgrep: unavailable; canaries, pattern scans, negative tests and manual sensitive-path review are the fallback."
-release_blockers: []
-status: PASS
-gaps: []
+release_blockers:
+  - "F-AG11-001 is OPEN and linked defect closeout-bundle-repeat-cycle-reconciliation has not passed work-item approval or delivery gates."
+  - "The corrected source and exact hosted candidate have not been re-verified."
+  - "DoD, Release, and Business Acceptance must be repeated after corrected-candidate Technical Verification."
+status: FAIL
+gaps:
+  - "AG-11 repeat-cycle reconciliation is not implemented or verified."
 residual_risks:
   - "npm/gzip compression bytes differ between the local and hosted packaging environments even though the extracted trees and uncompressed tar stream are identical."
   - "Unchanged github-push MCP has one macOS failure from a Windows-only fixture path; CR-008 changes no MCP file."
   - "Telemetry purge scans its local directory linearly; retained scope and CLI execution make current risk LOW."
-recommendation: "Seal DoD, Release, and Business Acceptance receipts atomically against this finalized s08 host for source 38bb0d1/run 34322150024/SHA-256 2a5ae701...."
-notes_for_review: "The current parent technical evidence is PASS; artifact binding, Technical Verification, DoD, Release, and Business Acceptance are APPROVED. Prior terminal decisions remain historical, and no receipt is inferred before the human TTY closeout action."
+recommendation: "Keep release and branch finalization blocked; approve and deliver closeout-bundle-repeat-cycle-reconciliation, then build and re-verify one corrected candidate before repeating terminal gates."
+notes_for_review: "The former parent PASS and all terminal decisions are historical pre-finding evidence. F-AG11-001 overrides them for current closeout."
 historical_technical_verification_decision:
   status: APPROVED
   reviewed_by: "qc"
@@ -425,7 +491,7 @@ next_action: "Seal the trusted closeout receipt bundle against this finalized s0
 
 ## Current Technical Verification Decision
 ```yaml
-status: APPROVED
+status: HISTORICAL_PRE_FINDING
 reviewed_by: "qc"
 reviewed_at: "2026-09-09T08:13:53Z"
 decision_source: "User explicitly approved Technical Verification with role QC for the exact approved parent source/run/artifact binding and AG-01..AG-13 at 13/13 PASS."
@@ -437,8 +503,8 @@ evidence_binding:
   local_pre_host_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
   rollback_version: "2.6.1"
   rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
-authority_effect: "Technical Verification is approved for this exact binding only. DoD, Release, and Business Acceptance were separately approved by their authorized human roles for the same binding."
-next_action: "Seal the trusted closeout receipt bundle against this finalized s08 host."
+authority_effect: "F-AG11-001 invalidates this decision for current release authorization; retain it only as evidence of the pre-finding candidate."
+next_action: "Verify a corrected candidate only after the linked defect passes its delivery gates."
 ```
 
 ## Governance Checks
@@ -447,19 +513,20 @@ checklist_applied: ["project-context/checklists/default.md", "project-context/ch
 checks:
   - { check: "Pass/not-pass evidence is explicit", status: PASS, evidence: "Each AG maps to named evidence; QC explicitly approved the current hosted source/run/artifact binding." }
   - { check: "Behavior, docs and release identity are synchronized", status: PASS, evidence: "Policy, runtimes, 42-skill inventories, EN/VI docs and v2.6.2 metadata agree." }
-  - { check: "Remaining gaps have owners", status: PASS, evidence: "Hosted Guardrails belongs to DevOps/QC pre-release; unchanged MCP fixture is outside candidate scope." }
-  - { check: "Evidence supports release decision", status: PASS, evidence: "Exact candidate/rollback digests, Node matrices, pipeline topology and controls are recorded." }
+  - { check: "Remaining gaps have owners", status: FAIL, evidence: "F-AG11-001 is owned by the new linked defect, whose PO work-item approval is pending." }
+  - { check: "Evidence supports release decision", status: FAIL, evidence: "The verified candidate reproduces F-AG11-001 and cannot authorize release." }
   - { check: "Rollback/remediation is viable", status: PASS, evidence: "Published v2.6.1 digest is verified and passes every rollback scenario." }
   - { check: "Exceptions are explicit", status: PASS, evidence: "No CR-008 governance exception or waiver is open." }
 blocking_items:
-  - "Trusted DoD, Release, and Business Acceptance receipts remain unsealed."
+  - "F-AG11-001 remains OPEN."
+  - "Linked defect work-item approval and authoring gates remain pending."
 owner: "qc/devops/po"
-next_action: "Run the human TTY closeout-bundle approval to seal all applicable terminal receipts atomically."
+next_action: "Approve and deliver the linked defect before creating a corrected verification candidate."
 ```
 
 ## Regression & Compatibility Summary
 ```yaml
-regression_status: PASS
+regression_status: FAIL
 compatibility_status: PASS
 breaking_changes: []
 rollback_readiness: READY
@@ -468,6 +535,7 @@ evidence:
   - "Legacy fixed-shape artifacts and receipt v1 retain reader/enforcement behavior."
   - "Adaptive writes require matching minor and parity; invalid activation writes nothing."
   - "Rollback to v2.6.1 removes adaptive runtime and preserves skills plus unmanaged hashes/modes."
+  - "F-AG11-001 proves the repeat-cycle reconciliation path is not covered by the former PASS matrix."
 known_baseline_gap: "Unchanged github-push MCP fixture uses a Windows-only D:\\ path on macOS; MCP diff is empty."
 ```
 
@@ -592,7 +660,7 @@ notes: ["Controlled kernel runs and Business Acceptance replace a separate UAT g
 
 ## Release Summary
 ```yaml
-status: APPROVED
+status: BLOCKED
 reviewers: ["devops", "qc"]
 reviewed_at: "2026-09-09T08:47:09Z"
 decision_source: "User explicitly approved Release with roles DevOps and QC for the exact current source, run, hosted candidate SHA-256, and rollback SHA-256, while explicitly stating that approval does not publish or create a tag."
@@ -604,13 +672,14 @@ qc_bound_current_candidate: { version: "2.6.2", source_sha: "38bb0d178aa994e2a7c
 historical_release_candidate: { version: "2.6.2", sha256: "8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788", source: "GitHub-hosted Guardrails artifact stable across runs 33636308233, 33703233050 and 33714303770" }
 previous_qc_bound_candidate: { version: "2.6.2", sha256: "ec0007aea70c69f02a3982b649b1ee594472d901259be253293ead676fe1f0c5", disposition: "Superseded for Release by the QC-approved hosted binding; retained as historical behavior/content evidence." }
 rollback: { version: "2.6.1", sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9" }
-receipt_state: READY_TO_SEAL
-receipt_reason: "All applicable human decisions are recorded; seal DoD, Release, and Business Acceptance atomically against this finalized s08 digest."
-current_evidence_status: APPROVED
-current_authority_effect: "DevOps and QC approved Release for the exact current candidate and rollback; PO subsequently approved Business Acceptance for the same candidate. Neither decision publishes, creates or moves a tag, installs, merges, or cleans up."
+receipt_state: HISTORICAL_PRE_FINDING
+receipt_reason: "The 2026-09-09 closeout receipts matched the former s08 digest, but F-AG11-001 invalidates that candidate for current release authorization."
+current_evidence_status: INVALIDATED_BY_F_AG11_001
+current_authority_effect: "The DevOps/QC decision and sealed receipt are retained as historical evidence only; they do not authorize publication of the affected candidate."
 pending_controls:
-  - "Exact-digest publication with no rebuild or tag retarget."
-  - "Atomic closeout receipt sealing and digest verification."
+  - "Approve and complete the linked defect."
+  - "Build and verify one corrected hosted candidate."
+  - "Repeat Technical Verification, DoD, Release, Business Acceptance, and terminal receipt sealing."
 notes:
   - "Current Release approval is bound to source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d, run 34322150024, hosted SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5, and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9."
   - "Historical post-binding-decision Guardrails run 33714303770 passed all 10 jobs and its downloaded .tgz matched the historical approved SHA-256."
@@ -620,7 +689,7 @@ notes:
 
 ## Business Acceptance Summary
 ```yaml
-status: APPROVED
+status: HISTORICAL_PRE_FINDING
 reviewers: ["po"]
 reviewed_at: "2026-09-09T09:00:31Z"
 decision_source: "User explicitly approved Business Acceptance with role PO for the exact Release-approved candidate above."
@@ -630,10 +699,10 @@ historical_decision_source: "User explicitly approved Business Acceptance for ca
 evidence_ready: ["AG-01..AG-13 coverage", "57.14% interaction reduction", "zero retries", "independent receipts"]
 historical_accepted_release: { version: "2.6.2", sha256: "8ddcb719f55c49424aee5058f58cb71ac3976e11ade0d1d12c165d38e0671788", rollback_version: "2.6.1" }
 accepted_release: { version: "2.6.2", source_sha: "38bb0d178aa994e2a7c6e841b58b3e6b4263c56d", run_id: "34322150024", sha256: "2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5", rollback_version: "2.6.1", rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9" }
-receipt_state: READY_TO_SEAL
-current_evidence_status: APPROVED
-current_authority_effect: "PO approved Business Acceptance for the exact current Release-approved candidate after Technical Verification, DoD, and Release passed."
-pending_controls: ["Seal the independent Business Acceptance receipt in the atomic closeout bundle."]
+receipt_state: HISTORICAL_PRE_FINDING
+current_evidence_status: INVALIDATED_BY_F_AG11_001
+current_authority_effect: "PO approval is retained as historical pre-finding evidence and must be repeated for the corrected Release-approved candidate."
+pending_controls: ["Complete the linked defect and repeat Business Acceptance after corrected-candidate Release approval."]
 notes: ["The PO decision is explicit and distinct from Technical Verification and Release approval.", "No publication or tag operation is inferred from this acceptance record."]
 ```
 
@@ -673,8 +742,8 @@ rollback_controls:
   - "Use immutable v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9."
   - "Stop on digest, parity or hosted Guardrails mismatch; preserve unmanaged content and receipts."
 pipeline_risks: ["Local and hosted gzip byte streams are not reproducible across toolchains.", "Packaged-source edit invalidates candidate."]
-pipeline_recommendation: READY_WITH_GUARDS
-notes_for_implementation_or_ops: "Run 34322150024 and exact hosted artifact smoke pass; QC approved the current artifact binding, Technical Verification, and DoD, DevOps/QC approved Release, and PO approved Business Acceptance. Terminal receipts remain required before merge, tag, publication, cleanup, or global install; approval records themselves performed none of those actions."
+pipeline_recommendation: BLOCKED
+notes_for_implementation_or_ops: "F-AG11-001 blocks the former candidate and terminal approvals. Do not merge, tag, publish, install, or clean up until the linked defect is complete and one corrected candidate passes the full parent closeout lifecycle."
 ```
 
 ## Governance Exceptions
@@ -690,19 +759,19 @@ notes: "Unavailable scan tools and unchanged MCP fixture are limitations, not go
 ### Step Goal Audit
 ```yaml
 step: "s08 Verify + DoD evidence preparation"
-status: PASS
+status: FAIL
 checks:
-  - { criterion: "Every AG has evidence", result: PASS, evidence: "AG-01..AG-13 are 13/13 PASS after both linked defects reached DONE and source 38bb0d1 passed local plus hosted re-verification." }
+  - { criterion: "Every AG has evidence", result: FAIL, evidence: "AG-11 fails on the real repeated parent closeout; F-AG11-001 is OPEN." }
   - { criterion: "Mandatory and negative paths are covered", result: PASS, evidence: "Node, transaction, CLI, compatibility, privacy, candidate and rollback matrices pass." }
   - { criterion: "Skipped checks are explicit", result: PASS, evidence: "ESLint and Semgrep list fallbacks and impact; hosted Guardrails completed successfully." }
-  - { criterion: "Human authority is preserved", result: PASS, evidence: "Prior decisions are explicitly historical; QC separately approved the current hosted binding, Technical Verification, and DoD, DevOps/QC separately approved Release, and PO separately approved Business Acceptance for the same exact candidate. Trusted receipts remain a distinct human TTY action." }
+  - { criterion: "Human authority is preserved", result: PASS, evidence: "Receipts retain independent reviewers and signatures; the defect concerns stale completion state, not inferred approval." }
 constraint_violations: []
-unmitigated_high_risks: []
+unmitigated_high_risks: ["F-AG11-001 repeat-cycle reconciliation failure"]
 timebox_breach: false
 timebox_evidence: "One bounded pass; no production or candidate edit."
-gaps: []
-risk_level: LOW
-next_action: "Seal the complete trusted closeout receipt bundle against the finalized s08 digest."
+gaps: ["No corrected implementation, candidate, hosted run, or repeated terminal decision exists."]
+risk_level: HIGH
+next_action: "Approve the linked defect work item, then continue its governed delivery chain."
 ```
 
 ### Branch And Worktree Closeout
@@ -711,31 +780,38 @@ finish_target: "codex/adaptive-governance-human-approval-ux and its dedicated wo
 workspace_kind: BOTH
 verify_inputs: ["Both linked defects DONE", "local full matrix PASS", "hosted run 34322150024 9/9 jobs PASS", "hosted checksum/payload parity/exact smoke PASS"]
 finish_gate_checks:
-  verify_complete: PASS
-  dod_complete: PASS
-  findings_closed: PASS
+  verify_complete: FAIL
+  dod_complete: FAIL
+  findings_closed: FAIL
   exceptions_resolved: PASS
-  terminal_receipts_complete: PENDING
-allowed_actions: ["Seal and verify the complete trusted closeout receipt bundle.", "Preserve old approvals as historical evidence."]
-blocked_actions: ["Merge/close/remove branch or worktree before trusted receipts and protocol closeout.", "Create a tag, publish a GitHub Release, or install v2.6.2 without a separate explicit execution request."]
+  terminal_receipts_complete: HISTORICAL_PRE_FINDING
+allowed_actions: ["Preserve old approvals as historical evidence.", "Proceed only with approved linked-defect authoring actions."]
+blocked_actions: ["Merge/close/remove branch or worktree while F-AG11-001 is open.", "Create a tag, publish a GitHub Release, or install the affected v2.6.2 candidate."]
 cleanup_sequence: []
 merge_conditions: ["Hosted Guardrails PASS", "DoD/Release/Business Acceptance approved", "all terminal receipts digest-match", "work-item protocol closed", "post-merge verification"]
 residual_risks: ["Prior terminal receipts are historical and must not authorize the current candidate.", "Node 20 action-runtime deprecation requires a separate pipeline maintenance follow-up."]
 final_recommendation: HOLD_OPEN
-notes_for_closeout: "Technical re-verification, binding, Technical Verification, DoD, Release, and Business Acceptance are approved, but the branch/worktree stays open until trusted receipts pass and the protocol is closed."
+notes_for_closeout: "F-AG11-001 invalidates parent closeout. Keep the branch/worktree open through linked-defect delivery and corrected-candidate parent re-verification."
 ```
 
 ## Definition of Done
 ```yaml
 work_item_slug: "adaptive-governance-human-approval-ux"
-status: DONE
+status: BLOCKED
 checks:
-  acceptance_criteria_evidenced: PASS
+  acceptance_criteria_evidenced: FAIL
   implementation_recorded: PASS
   required_verification_completed: PASS
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
+current_effect:
+  finding: "F-AG11-001"
+  status: INVALIDATED_BY_HIGH_FINDING
+  linked_work_item: "closeout-bundle-repeat-cycle-reconciliation"
+  prior_s08_sha256: "1c5f5d81bcdfde07638d0ce379a66f22976e99a2932b8789801626b86ae5e9b3"
+  prior_closeout_reviewed_at: "2026-09-09T09:57:16.873Z"
+  prior_terminal_receipts: HISTORICAL_PRE_FINDING
 human_decision:
   current_artifact_binding:
     status: APPROVED
@@ -834,20 +910,20 @@ human_decision:
     rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
     receipt_state: READY_TO_SEAL
     execution_effect: "No publish, tag creation or movement, install, merge, or cleanup was executed or authorized by this approval record."
-gaps: []
+gaps: ["AG-11 fails for a repeated closeout cycle; linked defect is only MATERIALIZED and awaiting PO approval."]
 residual_risks: ["Cross-toolchain gzip representation differs.", "ESLint/Semgrep unavailable with documented fallbacks.", "External publication has not been executed."]
 follow_up_items:
-  - "Seal and verify all terminal receipts against the final artifact digest."
-  - "Close the work-item protocol, then perform branch finalization separately."
-  - "Publish/tag only under an explicit execution request using the approved hosted digest."
-next_action: "Run the human TTY closeout-bundle approval, then verify all terminal receipt digests before protocol closeout."
+  - "Approve and deliver closeout-bundle-repeat-cycle-reconciliation through s08."
+  - "Build and host one corrected candidate, then repeat parent Technical Verification and DoD."
+  - "Repeat Release, Business Acceptance, and receipt sealing for the corrected candidate."
+next_action: "PO approves the linked defect work item; implementation remains closed."
 ```
 
 ## SDD Traceability
 ```yaml
 requirement_refs: ["BR-AG-001", "BR-AG-002", "BR-AG-003", "BR-AG-004", "BR-AG-005", "BR-AG-006", "REQ-AG-001", "REQ-AG-002", "REQ-AG-003", "REQ-AG-004", "REQ-AG-005", "REQ-AG-006", "REQ-AG-007", "REQ-AG-008", "REQ-AG-009", "REQ-AG-010", "REQ-AG-011"]
 acceptance_refs: ["AG-01", "AG-02", "AG-03", "AG-04", "AG-05", "AG-06", "AG-07", "AG-08", "AG-09", "AG-10", "AG-11", "AG-12", "AG-13"]
-task_refs: ["T0", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T8a", "T8b", "T9", "closeout-bundle-legacy-dod-compatibility", "align-adaptive-sa-ta-applicability"]
+task_refs: ["T0", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T8a", "T8b", "T9", "closeout-bundle-legacy-dod-compatibility", "align-adaptive-sa-ta-applicability", "closeout-bundle-repeat-cycle-reconciliation"]
 test_refs: ["workflow-adaptive-governance", "materialize-work-item", "scaffold-workflow", "workflow-gate-review", "work-item-protocol", "workflow-telemetry", "runtime-parity", "release-candidate", "release-rollback", "release-surface"]
 ```
 
@@ -870,14 +946,8 @@ next_step: "Seal trusted DoD, Release, and Business Acceptance receipts against 
 ```
 
 ## Handoff
-- Overall status: parent technical re-verification PASS; AG-01..AG-13 are 13/13 PASS and F-AG08-001 is resolved.
-- Residual risks: cross-toolchain gzip bytes differ; ESLint/Semgrep remain unavailable with fallbacks; unchanged MCP fixture baseline gap.
-- Historical QC decision: the `2026-09-02` Technical Verification and `2026-09-03` binding amendment for `8ddcb719...` are retained as superseded evidence only.
-- Historical terminal decisions: Release and Business Acceptance for `8ddcb719...` are retained as history only and do not authorize the current candidate.
-- Current candidate: source `38bb0d178aa994e2a7c6e841b58b3e6b4263c56d`, run `34322150024`, hosted SHA-256 `2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5`; checksum, extracted-payload parity, Node 18/22 and exact smoke all PASS.
-- Binding decision: `APPROVED` by QC at `2026-09-09T08:06:32Z` for source `38bb0d1…`, run `34322150024`, and hosted SHA-256 `2a5ae701…`; local `ebfb5ffb…` remains pre-host evidence and v2.6.1 remains rollback.
-- Technical Verification: `APPROVED` by QC at `2026-09-09T08:13:53Z` for the same binding with AG-01..AG-13 at 13/13 PASS.
-- DoD: `APPROVED` by QC at `2026-09-09T08:19:40Z` for the same Technical Verification evidence binding; its receipt will be sealed with the complete terminal bundle after s08 is final.
-- Release: `APPROVED` by DevOps and QC at `2026-09-09T08:47:09Z` for the exact current source/run/hosted digest and immutable v2.6.1 rollback; approval did not publish or create a tag.
-- Business Acceptance: `APPROVED` by PO at `2026-09-09T09:00:31Z` for the same exact Release-approved candidate; approval did not publish or create a tag.
-- Next action: seal the complete trusted closeout receipt bundle in a human TTY interaction. Branch/worktree remains `HOLD_OPEN` until receipts pass and the protocol is closed.
+- Overall status: `FAIL/BLOCKED`; `F-AG11-001` proves AG-11 fails on a real repeated closeout cycle.
+- Historical evidence: source `38bb0d1…`, run `34322150024`, hosted SHA-256 `2a5ae701…`, the former Technical Verification/DoD/Release/Business Acceptance decisions, and the receipts sealed at `2026-09-09T09:57:16.873Z` are retained only as pre-finding evidence.
+- Linked defect: `closeout-bundle-repeat-cycle-reconciliation` is materialized at s01 under `full + strict`; PO work-item approval is pending and implementation is closed.
+- Required sequence: approve the child work item, complete s02-s06 and its human gates, implement with TDD, review in two tiers, verify one exact hosted candidate, then repeat parent terminal gates.
+- Branch/worktree: `HOLD_OPEN`; no merge, tag, release publication, install, cleanup, or branch finalization is authorized.
