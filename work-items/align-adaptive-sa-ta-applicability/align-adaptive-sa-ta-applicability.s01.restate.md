@@ -686,8 +686,8 @@ protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-08T03:03:41.551Z"
 handoff_target: "step-s08-qc"
-last_transition_action: "approve-s08-technical-verification"
-last_transition_at: "2026-09-09T03:43:48Z"
+last_transition_action: "complete-s08-spec-coverage"
+last_transition_at: "2026-09-09T03:53:46Z"
 required_actions:
   - "QC decides DoD after the approved Technical Verification."
 blockers: []
@@ -714,6 +714,7 @@ review_notes:
   - "F-AR08-001 is resolved and the amended hosted binding evidence was prepared for QC; Technical Verification and DoD remain pending."
   - "QC approved the amended hosted artifact binding at 2026-09-09T03:29:33Z for source d7c0efa876b014625d3e0e76382ad61b65e82d6e, run 34304892135, and SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5; ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47 remains local pre-host evidence."
   - "QC approved Technical Verification at 2026-09-09T03:43:48Z for source d7c0efa876b014625d3e0e76382ad61b65e82d6e, run 34304892135, and hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5; DoD remains pending."
+  - "Spec Coverage was completed at 2026-09-09T03:53:46Z with AC-AR-01..10 PASS and no uncovered acceptance criterion; QC DoD remains the only missing child gate."
 refs:
   - "work-items/align-adaptive-sa-ta-applicability"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -747,6 +748,7 @@ audit_events:
   - "S08_HOSTED_ARTIFACT_READY_FOR_QC_BINDING"
   - "S08_HOSTED_ARTIFACT_BINDING_APPROVED"
   - "S08_TECHNICAL_VERIFICATION_APPROVED"
+  - "S08_SPEC_COVERAGE_READY"
 ```
 
 ## Traceability

@@ -365,6 +365,48 @@ rollback_plan:
   - "If hosted or QC verification fails, return to s07 and revert the focused CF-019 implementation candidate; do not advance parent CR-008."
 ```
 
+## Spec Coverage
+```yaml
+status: PASS
+coverage:
+  - id: "AC-AR-01"
+    status: PASS
+    evidence: "The fail-first bounded policy assertion and final canonical wording prove that generic guidance defers to router-derived applicability."
+  - id: "AC-AR-02"
+    status: PASS
+    evidence: "Canonical non-delivery fixtures return no workflow, role, gate, artifact, or human-action obligations without explicit materialization."
+  - id: "AC-AR-03"
+    status: PASS
+    evidence: "The no-trigger maintenance fixture returns exactly Developer/QC and Task Plan/DoD, with negative assertions for PO, BA, SA, TA, and DevOps."
+  - id: "AC-AR-04"
+    status: PASS
+    evidence: "The six-trigger matrix passes exact positive and negative role, gate, and HARD_* reason assertions."
+  - id: "AC-AR-05"
+    status: PASS
+    evidence: "Reason allowlist, completeness, sanitization, and free-form-only rejection assertions pass."
+  - id: "AC-AR-06"
+    status: PASS
+    evidence: "Twenty repeated evaluations of identical normalized input are deeply identical, ordered, and de-duplicated."
+  - id: "AC-AR-07"
+    status: PASS
+    evidence: "workflow-adaptive-governance.test.js owns the semantic matrix; scaffold and SA/TA contract suites remain supporting evidence."
+  - id: "AC-AR-08"
+    status: PASS
+    evidence: "Canonical and generated Codex/Claude policies are byte-identical at SHA-256 4d8e8c686a266908b1642c829c7daa2ad7572e989e802432ec3dc9e4010435c9, while the independent semantic assertion passes."
+  - id: "AC-AR-09"
+    status: PASS
+    evidence: "Local full regression and hosted Guardrails run 34304892135 pass all required jobs, including exact candidate verification on Node 18 and Node 22."
+  - id: "AC-AR-10"
+    status: PASS
+    evidence: "The exact child source/run/artifact is bound and QC-verified; parent CR-008 remains HOLD until post-child-DoD candidate re-verification, with no child-owned release action."
+summary:
+  total: 10
+  pass: 10
+  fail: 0
+  partial: 0
+gaps: []
+```
+
 ## Scan Summary
 ```yaml
 scan_target: "Diff-only formal scan of the CF-019 canonical policy and semantic fixture"
