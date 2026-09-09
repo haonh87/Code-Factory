@@ -105,8 +105,9 @@ tags:
 > 11 managed work items. T6a packed a local pre-host file from clean source `1a803ba…`; exact-artifact
 > smoke passes 4/4 at SHA-256 `ebfb5ffb…`. Hosted run `34304892135` then passed all nine required
 > jobs for source `d7c0efa…`. Its authoritative hosted artifact SHA-256 is `2a5ae701…`; the supplied
-> checksum, extracted payload parity, and direct install/update smoke all pass. s07 implementation is
-> ready for s08 review; amended artifact binding, Technical Verification, and DoD remain QC gates.
+> checksum, extracted payload parity, and direct install/update smoke all pass. QC approved the
+> amended hosted binding at `2026-09-09T03:29:33Z` while retaining `ebfb5ffb…` as local pre-host
+> evidence. s07/T6a is complete; Technical Verification and DoD remain separate QC gates in s08.
 
 ## Step Contract
 ```yaml
@@ -207,11 +208,11 @@ outputs_actual:
 known_limitations:
   - "The T6 source/artifact pair is historical pre-amendment evidence and must not be reused as the resumed verification candidate."
   - "Child s08 Technical Verification and DoD, followed by parent CR-008 exact-candidate re-verification, remain human-controlled follow-up work."
-  - "The hosted archive differs from local pre-host bytes; extracted content parity and smoke pass, but QC must approve the amended hosted binding before Technical Verification."
+  - "The hosted archive differs from local pre-host bytes; extracted content parity and smoke pass, and QC approved the authoritative hosted binding before Technical Verification."
 follow_up_items:
-  - "QC approves the amended hosted binding for run 34304892135 before Technical Verification."
+  - "QC decides Technical Verification for the approved binding from run 34304892135."
   - "After child DoD, refresh parent CR-008 verification against a candidate containing the exact child implementation result."
-notes_for_testing: "Treat run 34216520563 as historical failed evidence. Run 34304892135 and hosted SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 pass all technical checks; do not infer amended binding, Technical Verification, or DoD."
+notes_for_testing: "Treat run 34216520563 as historical failed evidence. Run 34304892135 and hosted SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 pass all technical checks, and the amended binding is explicitly QC-approved; do not infer Technical Verification or DoD."
 ```
 
 ## Delivery Rule Evidence
@@ -392,14 +393,14 @@ parent_cr_008_handoff:
 worktree_cleanup_guard:
   status: HOLD_OPEN
   reason: "Branch/worktree finalization remains blocked until child s08 DoD and parent exact-candidate re-verification complete."
-next_human_action: "QC approves the amended hosted artifact binding for run 34304892135 before Technical Verification."
+next_human_action: "QC approves Technical Verification for the hosted binding from run 34304892135."
 ```
 
 ## T6a Metadata-only Rebind
 ```yaml
 task: "T6a"
 finding_ref: "F-AR08-001"
-status: HOSTED_PASS_READY_FOR_QC_BINDING
+status: COMPLETE
 authorized_at: "2026-09-08T10:55:26Z"
 authorization:
   reopen_s07_and_finding:
@@ -478,8 +479,10 @@ hosted_candidate:
   extracted_payload_parity: PASS
   required_jobs: "PASS 9/9, including Node 18 and Node 22"
   exact_artifact_smoke: "PASS; digest identity, version 2.6.2, and Codex/Claude global/project 4/4"
-  disposition: "Authoritative hosted candidate pending explicit QC amended-binding approval."
-next_action: "QC approves the amended hosted binding before Technical Verification."
+  disposition: "Authoritative hosted candidate explicitly approved by QC at 2026-09-09T03:29:33Z; local ebfb5ffb... remains pre-host evidence only."
+  binding_reviewed_by: ["qc"]
+  binding_reviewed_at: "2026-09-09T03:29:33Z"
+next_action: "QC decides Technical Verification against the approved hosted binding."
 ```
 
 ## Workflow Pack Audit
@@ -521,14 +524,14 @@ task_status:
   T4: COMPLETE
   T5: COMPLETE
   T6: COMPLETE
-  T6a: HOSTED_PASS_READY_FOR_QC_BINDING
+  T6a: COMPLETE
 implementation_candidate_commit: "1a803ba84a4e76150c90954d89dcc3b52f75111e"
 local_candidate_sha256: "ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47"
 hosted_source_sha: "d7c0efa876b014625d3e0e76382ad61b65e82d6e"
 hosted_run_id: "34304892135"
 hosted_candidate_sha256: "2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5"
-candidate_disposition: "Hosted technical evidence PASS; QC amended-binding approval remains pending."
-next_step: "QC approves the amended hosted artifact binding before Technical Verification."
+candidate_disposition: "Hosted technical evidence PASS and amended binding approved by QC; Technical Verification remains pending."
+next_step: "QC decides Technical Verification for the approved hosted binding."
 ```
 
 ## Handoff
@@ -536,6 +539,6 @@ next_step: "QC approves the amended hosted artifact binding before Technical Ver
 - Completed reviews: AR-B1 and AR-B2 passed Spec Compliance before Code Quality with the required human roles and no open finding.
 - Candidate: hosted source `d7c0efa876b014625d3e0e76382ad61b65e82d6e`, run `34304892135`, artifact SHA-256 `2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5`; nine jobs, checksum, payload parity, and exact smoke PASS.
 - Historical note: local pre-host SHA-256 `ebfb5ffb…` remains supporting evidence only; hosted archive identity is authoritative.
-- Current gate: QC amended artifact binding; Technical Verification, DoD, and parent re-verification remain open.
+- Current gate: QC Technical Verification; amended hosted binding is approved, while DoD and parent re-verification remain open.
 - Notes for testing: technical verification evidence is complete; do not infer any human-controlled verdict.
 - Notes for deployment: none; this child performs no release or installation action.
