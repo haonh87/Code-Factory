@@ -105,8 +105,8 @@ tags:
 > still instructed the operator to run the same approval and retained the pre-closeout handoff.
 > Historical `CLOSEOUT_BUNDLE_APPROVED` evidence also suppressed an event for the current cycle.
 > This linked BUG isolates `F-AG11-001`. Spec, DoR, and Approach now have digest-matched trusted
-> receipts, and an execution-oriented s06 Task Plan is proposed for Developer review. It does not
-> open implementation.
+> receipts, and Human Developer approved the execution-oriented s06 Task Plan. Its trusted receipt
+> and explicit s07 activation remain pending, so implementation is not open.
 
 ## Step Contract
 ```yaml
@@ -495,14 +495,14 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "s06-task-plan-review"
-last_transition_action: "s05-receipt-verified-open-s06"
-last_transition_at: "2026-09-10T08:23:51Z"
+handoff_target: "s06-trusted-receipt-sealing"
+last_transition_action: "s06-task-plan-human-approved"
+last_transition_at: "2026-09-10T08:56:19Z"
 required_actions:
-  - "Developer reviews and explicitly approves the proposed s06 Task Plan."
-  - "After finalization, seal and verify the Task Plan receipt; then explicitly activate s07 with bounded write paths."
+  - "wfc gate approve --work-item closeout-bundle-repeat-cycle-reconciliation --gate task_plan --reviewed-by developer"
+  - "After the receipt verifies with digest_match=true, explicitly activate s07 with the approved bounded write paths."
 blockers:
-  - "Task Plan is proposed but has not been approved by Developer or sealed with a digest-matched trusted receipt."
+  - "The Developer-approved Task Plan does not yet have a digest-matched trusted receipt."
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -517,6 +517,7 @@ review_notes:
   - "Human Developer approved the s05 Approach at 2026-09-10T08:12:02Z."
   - "Trusted Approach receipt APPROVED by Developer at 2026-09-10T08:20:46.196Z matches finalized s05 SHA-256 5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a."
   - "The proposed s06 Task Plan orders T0..T8, three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, and one exact-candidate child-to-parent verification path."
+  - "Human Developer approved the s06 Task Plan at 2026-09-10T08:56:19Z; the finalized host now awaits a trusted Task Plan receipt."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -545,6 +546,7 @@ audit_events:
   - "S05_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT"
   - "S05_APPROACH_RECEIPT_VERIFIED"
   - "S06_TASK_PLAN_DRAFTED"
+  - "S06_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT"
 ```
 
 ## Traceability
@@ -562,15 +564,15 @@ outputs:
   - "Digest-matched BA Spec and QC DoR trusted receipts"
   - "Developer-approved transaction-delta Technical Approach with shared journal/event identity"
   - "Proposed T0..T8 TDD, review, compatibility, and exact-candidate Task Plan"
-next_step: "Developer reviews and approves s06 Task Plan; implementation remains closed"
+next_step: "Seal and verify the Developer-approved s06 Task Plan receipt before explicit s07 activation"
 ```
 
 ## Handoff
 - Clear: closeout receipts succeeded, but current navigation and event evidence did not reconcile.
 - Distinct scope: repeat-cycle/idempotency, not the resolved missing-DoD selector defect.
 - Decision: PO approval is backed by a verified trusted receipt; the completed receipt action has been removed.
-- Current step: the Developer Approach receipt is `APPROVED` with `digest_match=true`; s06 Task Plan is proposed.
+- Current step: the Developer Approach receipt is `APPROVED` with `digest_match=true`; Human Developer approved s06 Task Plan at `2026-09-10T08:56:19Z`.
 - Recommendation: transaction-delta closeout projector with one shared journal/event transaction ID and no new public schema.
 - Plan: T0..T8 with three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, then one exact-candidate child-to-parent verification path.
-- Boundary: implementation remains closed until Developer approves Task Plan, its trusted receipt matches, and s07 is explicitly activated.
+- Boundary: implementation remains closed until the Task Plan trusted receipt matches and s07 is explicitly activated.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.

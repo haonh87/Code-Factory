@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
 governance_status: ALIGNED
@@ -64,8 +64,8 @@ gate_reviews:
   approach_reviewed_at: "2026-09-10T08:12:02Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  task_plan_reviewed_by: ["developer"]
+  task_plan_reviewed_at: "2026-09-10T08:56:19Z"
   uat_reviewed_by: []
   uat_reviewed_at: ""
   release_reviewed_by: []
@@ -104,10 +104,11 @@ tags:
 > The Developer-approved s05 Approach is backed by a trusted receipt at
 > `2026-09-10T08:20:46.196Z`; its digest matches s05 SHA-256
 > `5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a`.
-> This proposed plan executes the transaction-delta projector in the existing CR-008 worktree through
+> Human Developer approved this Task Plan at `2026-09-10T08:56:19Z`. It executes the
+> transaction-delta projector in the existing CR-008 worktree through
 > three TDD and review batches: shared cycle identity, canonical state projection, then
-> failure/compatibility and exact-candidate evidence. Implementation remains closed until Developer
-> approves this Task Plan, its trusted receipt matches the finalized s06 snapshot, and s07 is activated.
+> failure/compatibility and exact-candidate evidence. The finalized host now awaits its trusted
+> receipt; implementation remains closed until that receipt matches and s07 is explicitly activated.
 
 ## Step Contract
 ```yaml
@@ -450,11 +451,10 @@ checks:
     result: PASS
     evidence: "T8 preserves exact-candidate provenance, v2.6.1 rollback, parent re-verification, and independent human terminal gates."
 blocking_items:
-  - "Developer Task Plan approval"
   - "Digest-matched trusted Task Plan receipt"
   - "Explicit s07 activation with bounded write paths"
 owner: "developer/qc"
-next_action: "Developer reviews the proposed Task Plan; after approval the finalized host must receive a trusted receipt before s07 activation."
+next_action: "Seal and verify the Developer-approved Task Plan receipt against this finalized host, then explicitly activate s07."
 ```
 
 ## Brownfield Delivery Plan
@@ -524,9 +524,9 @@ unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed in one focused planning pass after the s05 trusted receipt verified."
 gaps:
-  - "Developer Task Plan approval, trusted receipt, and explicit s07 activation remain pending."
+  - "The digest-matched trusted Task Plan receipt and explicit s07 activation remain pending."
 risk_level: HIGH
-next_action: "Developer reviews and approves this proposed Task Plan; no production code is authorized yet."
+next_action: "Seal and verify the Developer-approved Task Plan receipt; no production code is authorized yet."
 ```
 
 ## Traceability
@@ -550,5 +550,5 @@ next_step: "s07 only after Developer approval, digest-matched Task Plan receipt,
 - Review sequence: B1, B2, and B3 each record Spec Compliance before Code Quality.
 - Final evidence: T7 completes atomic/compatibility regression; T8 builds one candidate and routes child then parent s08 decisions.
 - Delegation: none; the coordinator, classifier, projector, and shared fixtures are tightly coupled.
-- Current gate: Task Plan is proposed and awaits Developer approval; implementation remains closed.
+- Current gate: Human Developer approved Task Plan at `2026-09-10T08:56:19Z`; its trusted receipt remains pending and implementation is closed.
 - Branch/worktree: `HOLD_OPEN`; no publication, tag, merge, install, cleanup, or finalization is authorized.

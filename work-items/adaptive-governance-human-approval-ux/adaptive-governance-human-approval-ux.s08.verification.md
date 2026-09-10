@@ -111,7 +111,7 @@ tags:
 > `closeout-bundle-repeat-cycle-reconciliation` has human-approved OQ-RCR-001=B,
 > OQ-RCR-002=A, and OQ-RCR-003=A. Its BA Spec and QC DoR receipts both match finalized s04,
 > and its Developer-approved transaction-delta s05 Approach receipt matches finalized s05. Its s06
-> Task Plan is proposed for Developer review. Everything below that
+> Task Plan is Developer-approved and awaits its trusted receipt. Everything below that
 > declares PASS/DONE/APPROVED for the previous parent candidate is
 > retained as historical pre-finding evidence and does not authorize release or closeout.
 >
@@ -262,8 +262,10 @@ linked_work_item:
   current_step: s06
   approach_status: "APPROVED; digest_match=true"
   approach_receipt_sha256: "5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a"
-  task_plan_status: PROPOSED_PENDING_DEVELOPER_APPROVAL
-next_human_action: "Developer reviews and approves the linked defect Task Plan; no implementation action is allowed before its receipt and explicit s07 activation."
+  task_plan_status: HUMAN_APPROVED_PENDING_RECEIPT
+  task_plan_reviewed_by: developer
+  task_plan_reviewed_at: "2026-09-10T08:56:19Z"
+next_human_action: "Seal and verify the linked defect Task Plan receipt; no implementation action is allowed before explicit s07 activation."
 ```
 
 ## Main Artifact

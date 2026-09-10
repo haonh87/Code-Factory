@@ -119,7 +119,8 @@ tags:
 > `closeout-bundle-repeat-cycle-reconciliation` has human-approved OQ-RCR-001=B,
 > OQ-RCR-002=A, and OQ-RCR-003=A. Its BA Spec and QC DoR receipts both match finalized s04,
 > and its Developer-approved transaction-delta s05 Approach receipt matches finalized s05. An
-> execution-oriented s06 Task Plan is proposed for Developer review, so implementation remains closed.
+> execution-oriented s06 Task Plan is Developer-approved and awaits its trusted receipt, so
+> implementation remains closed.
 > All earlier implementation/review evidence below is historical pre-finding evidence.
 >
 > CR-008 is ACTIVE in a dedicated enterprise worktree. B0, B1a and B1b are approved. T3/T4 now render
@@ -1156,7 +1157,9 @@ linked_work_item:
   current_step: s06
   approach_status: "APPROVED; digest_match=true"
   approach_receipt_sha256: "5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a"
-  task_plan_status: PROPOSED_PENDING_DEVELOPER_APPROVAL
+  task_plan_status: HUMAN_APPROVED_PENDING_RECEIPT
+  task_plan_reviewed_by: developer
+  task_plan_reviewed_at: "2026-09-10T08:56:19Z"
   implementation_path: CLOSED
 release_effect:
   parent_s07: REOPENED
@@ -1164,7 +1167,7 @@ release_effect:
   terminal_receipts: HISTORICAL_PRE_FINDING
   branch_worktree: HOLD_OPEN
   release: BLOCKED
-next_human_action: "Developer reviews and approves the linked defect s06 Task Plan; its receipt and s07 activation remain separate."
+next_human_action: "Seal and verify the linked defect Task Plan receipt; explicit s07 activation remains separate."
 ```
 
 ## Workflow Pack Audit
@@ -1221,7 +1224,7 @@ next_step: "Commit the VERIFIED snapshot and run hosted Guardrails before Releas
 
 ## Handoff
 - Current state: `F-AG11-001` reopened the parent delivery lane; the prior B0-B4 and verification evidence is retained as historical pre-finding evidence.
-- Linked defect: the s05 Approach receipt for `closeout-bundle-repeat-cycle-reconciliation` is digest-matched, and the s06 Task Plan is proposed for Developer approval; implementation is closed.
+- Linked defect: the s05 Approach receipt for `closeout-bundle-repeat-cycle-reconciliation` is digest-matched, and Human Developer approved the s06 Task Plan; its receipt remains pending and implementation is closed.
 - Required behavior: a repeated committed closeout must remove every satisfied pending action, set the canonical close-ready handoff, append one current-cycle event, and remain a NOOP on unchanged retry.
 - Release effect: the source `38bb0d1…`, run `34322150024`, candidate `2a5ae701…`, and terminal receipts are historical pre-finding evidence only.
 - Branch/worktree: `HOLD_OPEN`; no publish, tag, merge, install, cleanup, or branch finalization is authorized.
