@@ -104,7 +104,9 @@ tags:
 > A repeated CR-008 closeout sealed three digest-valid receipts, but the report and protocol block
 > still instructed the operator to run the same approval and retained the pre-closeout handoff.
 > Historical `CLOSEOUT_BUNDLE_APPROVED` evidence also suppressed an event for the current cycle.
-> This linked BUG isolates `F-AG11-001`; it does not open implementation.
+> This linked BUG isolates `F-AG11-001`. Spec, DoR, and Approach now have digest-matched trusted
+> receipts, and an execution-oriented s06 Task Plan is proposed for Developer review. It does not
+> open implementation.
 
 ## Step Contract
 ```yaml
@@ -480,7 +482,7 @@ work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation"
-current_step: "s05"
+current_step: "s06"
 granted_write_paths: []
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
@@ -493,14 +495,14 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "s05-trusted-receipt-sealing"
-last_transition_action: "s05-approach-human-approved"
-last_transition_at: "2026-09-10T08:12:02Z"
+handoff_target: "s06-task-plan-review"
+last_transition_action: "s05-receipt-verified-open-s06"
+last_transition_at: "2026-09-10T08:23:51Z"
 required_actions:
-  - "wfc gate approve --work-item closeout-bundle-repeat-cycle-reconciliation --gate approach --reviewed-by developer"
-  - "After the receipt verifies with digest_match=true, continue to s06 Task Plan; implementation remains closed."
+  - "Developer reviews and explicitly approves the proposed s06 Task Plan."
+  - "After finalization, seal and verify the Task Plan receipt; then explicitly activate s07 with bounded write paths."
 blockers:
-  - "The Developer-approved Approach does not yet have a digest-matched trusted receipt."
+  - "Task Plan is proposed but has not been approved by Developer or sealed with a digest-matched trusted receipt."
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -512,7 +514,9 @@ review_notes:
   - "Human BA approved Spec and human BA/QC approved DoR at 2026-09-10T03:09:26Z."
   - "Trusted Spec receipt APPROVED by BA at 2026-09-10T04:55:23.729Z and trusted DoR receipt APPROVED by QC at 2026-09-10T04:55:36.637Z both match finalized s04 SHA-256 b50db12a977a007b8785baff4153ad54d8049e0003d030deaf4329bebff9f60b."
   - "The proposed s05 Approach compares three options and recommends operation-delta cycle classification plus one shared journal/event transaction ID."
-  - "Human Developer approved the s05 Approach at 2026-09-10T08:12:02Z; the finalized host now awaits a trusted Approach receipt."
+  - "Human Developer approved the s05 Approach at 2026-09-10T08:12:02Z."
+  - "Trusted Approach receipt APPROVED by Developer at 2026-09-10T08:20:46.196Z matches finalized s05 SHA-256 5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a."
+  - "The proposed s06 Task Plan orders T0..T8, three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, and one exact-candidate child-to-parent verification path."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -539,6 +543,8 @@ audit_events:
   - "S04_DOR_RECEIPT_VERIFIED"
   - "S05_TECHNICAL_APPROACH_DRAFTED"
   - "S05_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT"
+  - "S05_APPROACH_RECEIPT_VERIFIED"
+  - "S06_TASK_PLAN_DRAFTED"
 ```
 
 ## Traceability
@@ -555,14 +561,16 @@ outputs:
   - "Proposed AC-RCR-01..08 and DoR READY assessment"
   - "Digest-matched BA Spec and QC DoR trusted receipts"
   - "Developer-approved transaction-delta Technical Approach with shared journal/event identity"
-next_step: "Seal and verify the Developer Approach receipt before s06"
+  - "Proposed T0..T8 TDD, review, compatibility, and exact-candidate Task Plan"
+next_step: "Developer reviews and approves s06 Task Plan; implementation remains closed"
 ```
 
 ## Handoff
 - Clear: closeout receipts succeeded, but current navigation and event evidence did not reconcile.
 - Distinct scope: repeat-cycle/idempotency, not the resolved missing-DoD selector defect.
 - Decision: PO approval is backed by a verified trusted receipt; the completed receipt action has been removed.
-- Current step: Developer approved the finalized s05 Technical Approach; its digest-matched trusted receipt remains pending.
+- Current step: the Developer Approach receipt is `APPROVED` with `digest_match=true`; s06 Task Plan is proposed.
 - Recommendation: transaction-delta closeout projector with one shared journal/event transaction ID and no new public schema.
-- Boundary: implementation remains closed until Approach and Task Plan each receive valid trusted receipts.
+- Plan: T0..T8 with three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, then one exact-candidate child-to-parent verification path.
+- Boundary: implementation remains closed until Developer approves Task Plan, its trusted receipt matches, and s07 is explicitly activated.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.

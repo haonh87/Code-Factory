@@ -56,7 +56,7 @@
         "Drafted s01 requirement analysis plus SA/TA driver-only handoff."
       ],
       "blockers": [
-        "The Developer-approved Approach requires a digest-matched trusted receipt before s06."
+        "The proposed s06 Task Plan requires Developer approval, a digest-matched trusted receipt, and explicit s07 activation before implementation."
       ]
     }
   ],
@@ -83,7 +83,9 @@
     "Human BA explicitly approved Spec, and human BA plus QC explicitly approved DoR at 2026-09-10T03:09:26Z.",
     "Trusted Spec receipt APPROVED by BA at 2026-09-10T04:55:23.729Z and trusted DoR receipt APPROVED by QC at 2026-09-10T04:55:36.637Z both verify digest_match=true against finalized s04 SHA-256 b50db12a977a007b8785baff4153ad54d8049e0003d030deaf4329bebff9f60b.",
     "s05 recommends the transaction-delta projector with shared journal/event transaction identity; no public contract or foundation boundary changes.",
-    "Human Developer explicitly approved the s05 Approach at 2026-09-10T08:12:02Z; trusted receipt sealing remains separate."
+    "Human Developer explicitly approved the s05 Approach at 2026-09-10T08:12:02Z; trusted receipt sealing remains separate.",
+    "Trusted Approach receipt APPROVED by Developer at 2026-09-10T08:20:46.196Z verifies digest_match=true against finalized s05 SHA-256 5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a.",
+    "s06 Task Plan was drafted as three TDD/two-tier-review batches plus exact-candidate child-to-parent re-verification; Developer Task Plan approval remains pending."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -94,17 +96,17 @@
   "sdd_light_profile": "preview",
   "sdd_reasons": [],
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation",
-  "current_step": "s05",
+  "current_step": "s06",
   "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "s05-trusted-receipt-sealing",
+  "handoff_target": "s06-task-plan-review",
   "required_actions": [
-    "wfc gate approve --work-item closeout-bundle-repeat-cycle-reconciliation --gate approach --reviewed-by developer",
-    "After the receipt verifies with digest_match=true, continue to s06 Task Plan; implementation remains closed."
+    "Developer reviews and explicitly approves the proposed s06 Task Plan.",
+    "After finalization, seal and verify the Task Plan receipt; then explicitly activate s07 with bounded write paths."
   ],
   "blockers": [
-    "The Developer-approved Approach does not yet have a digest-matched trusted receipt."
+    "Task Plan is proposed but has not been approved by Developer or sealed with a digest-matched trusted receipt."
   ],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
@@ -132,7 +134,9 @@
     "S04_SPEC_RECEIPT_VERIFIED",
     "S04_DOR_RECEIPT_VERIFIED",
     "S05_TECHNICAL_APPROACH_DRAFTED",
-    "S05_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT"
+    "S05_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT",
+    "S05_APPROACH_RECEIPT_VERIFIED",
+    "S06_TASK_PLAN_DRAFTED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -149,7 +153,9 @@
     "Human BA approved Spec and human BA/QC approved DoR at 2026-09-10T03:09:26Z.",
     "Trusted Spec receipt APPROVED by BA at 2026-09-10T04:55:23.729Z and trusted DoR receipt APPROVED by QC at 2026-09-10T04:55:36.637Z both match finalized s04 SHA-256 b50db12a977a007b8785baff4153ad54d8049e0003d030deaf4329bebff9f60b.",
     "The proposed s05 Approach compares three options and recommends operation-delta cycle classification plus one shared journal/event transaction ID.",
-    "Human Developer approved the s05 Approach at 2026-09-10T08:12:02Z; the finalized host now awaits a trusted Approach receipt."
+    "Human Developer approved the s05 Approach at 2026-09-10T08:12:02Z; the finalized host now awaits a trusted Approach receipt.",
+    "Trusted Approach receipt APPROVED by Developer at 2026-09-10T08:20:46.196Z matches finalized s05 SHA-256 5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a.",
+    "The proposed s06 Task Plan orders T0..T8, three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, and one exact-candidate child-to-parent verification path."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -259,6 +265,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Human Developer explicitly approved the transaction-delta Technical Approach. Trusted receipt sealing remains pending; Task Plan and implementation authority are not implied."
+    },
+    {
+      "timestamp": "2026-09-10T08:23:51Z",
+      "action": "s05-receipt-verified-open-s06",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Verified the Developer Approach receipt with digest_match=true against finalized s05 and drafted the execution-oriented s06 Task Plan. Developer Task Plan approval remains pending; implementation stays closed."
     }
   ]
 }

@@ -116,7 +116,9 @@
     "The linked defect s03 reached READY/PASS and s04 Acceptance + DoR was drafted; Spec and DoR remain independent human-controlled gates.",
     "Human BA approved the linked defect Spec and human BA plus QC approved its DoR at 2026-09-10T03:09:26Z.",
     "The linked defect BA Spec and QC DoR trusted receipts both verify digest_match=true against finalized s04 SHA-256 b50db12a977a007b8785baff4153ad54d8049e0003d030deaf4329bebff9f60b.",
-    "Human Developer approved the linked defect transaction-delta s05 Approach at 2026-09-10T08:12:02Z; its trusted receipt remains pending.",
+    "Human Developer approved the linked defect transaction-delta s05 Approach at 2026-09-10T08:12:02Z.",
+    "The linked defect Developer Approach receipt at 2026-09-10T08:20:46.196Z verifies digest_match=true against finalized s05 SHA-256 5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a.",
+    "The linked defect s06 Task Plan is proposed with T0..T8, three TDD RED/GREEN pairs, B1..B3 two-tier reviews, and one corrected-candidate child-to-parent verification path; Developer approval remains pending.",
     "The prior source, candidate, Technical Verification, DoD, Release, Business Acceptance, and terminal receipts are historical pre-finding evidence only; release and branch finalization are blocked."
   ],
   "work_item_slug": "adaptive-governance-human-approval-ux",
@@ -150,15 +152,16 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "linked-defect-s05-receipt-sealing",
+  "handoff_target": "linked-defect-s06-task-plan-review",
   "required_actions": [
-    "Seal and verify the linked defect Developer Approach receipt against the finalized s05 host.",
-    "Complete the linked defect through Task Plan, TDD implementation, two-tier review, hosted verification, and DoD.",
+    "Developer reviews and explicitly approves the linked defect s06 Task Plan.",
+    "Seal and verify its finalized Task Plan receipt, then explicitly activate child s07 with bounded write paths.",
+    "Complete the linked defect through TDD implementation, two-tier review, hosted verification, and DoD.",
     "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
   ],
   "blockers": [
     "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event.",
-    "Linked defect closeout-bundle-repeat-cycle-reconciliation is at s05; its Developer-approved Approach receipt blocks s06."
+    "Linked defect closeout-bundle-repeat-cycle-reconciliation is at s06; Developer Task Plan approval and trusted receipt block implementation."
   ],
   "refs": [
     "changes/CR-008",
@@ -221,7 +224,9 @@
     "LINKED_REPEAT_CYCLE_DEFECT_S04_HUMAN_APPROVED_PENDING_RECEIPTS",
     "LINKED_REPEAT_CYCLE_DEFECT_S04_RECEIPTS_VERIFIED",
     "LINKED_REPEAT_CYCLE_DEFECT_S05_DRAFTED",
-    "LINKED_REPEAT_CYCLE_DEFECT_S05_HUMAN_APPROVED_PENDING_RECEIPT"
+    "LINKED_REPEAT_CYCLE_DEFECT_S05_HUMAN_APPROVED_PENDING_RECEIPT",
+    "LINKED_REPEAT_CYCLE_DEFECT_S05_RECEIPT_VERIFIED",
+    "LINKED_REPEAT_CYCLE_DEFECT_S06_DRAFTED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -245,7 +250,9 @@
     "The linked defect s04 Spec and DoR were drafted; before the current human decision, implementation and parent release remained blocked pending independent child gates and delivery.",
     "Human BA approved the linked defect Spec and human BA/QC approved its DoR at 2026-09-10T03:09:26Z.",
     "The linked defect BA Spec receipt at 2026-09-10T04:55:23.729Z and QC DoR receipt at 2026-09-10T04:55:36.637Z both match finalized s04 SHA-256 b50db12a977a007b8785baff4153ad54d8049e0003d030deaf4329bebff9f60b.",
-    "Human Developer approved the linked defect s05 Approach at 2026-09-10T08:12:02Z; the finalized host now awaits a trusted Approach receipt."
+    "Human Developer approved the linked defect s05 Approach at 2026-09-10T08:12:02Z.",
+    "The linked defect Developer Approach receipt at 2026-09-10T08:20:46.196Z matches finalized s05 SHA-256 5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a.",
+    "The linked defect s06 Task Plan is proposed for Developer review; child implementation and parent release remain blocked."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -531,6 +538,14 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "Human Developer approved the linked defect transaction-delta Approach. Its trusted receipt remains pending; parent release and child implementation stay blocked."
+    },
+    {
+      "timestamp": "2026-09-10T08:23:51Z",
+      "action": "linked-defect-s05-receipt-verified-s06-drafted",
+      "actor": "agent",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Verified the linked defect Approach receipt with digest_match=true and drafted its execution-oriented s06 Task Plan. Developer Task Plan approval remains pending; parent release and child implementation stay blocked."
     }
   ]
 }
