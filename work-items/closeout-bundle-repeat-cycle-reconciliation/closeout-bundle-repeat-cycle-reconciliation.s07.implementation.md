@@ -111,7 +111,9 @@ tags:
 > `a65704aa0be26f99988d6d5c13f632fc76907ddd`: marker-only history, a later cycle with
 > an older event, deterministic gate order, shared transaction attribution, and two byte-stable
 > retries all pass. Human QC approved B1 Spec Compliance at `2026-09-10T11:27:32Z`.
-> B1 Code Quality is now open for Developer and QC review; T5 remains blocked until it passes.
+> Human Developer and QC approved B1 Code Quality at `2026-09-10T11:38:58Z` with no findings.
+> B1 is complete in the required order, so T5 fail-first canonical-state and report/s01 parity
+> fixtures are now open; T6 production changes remain blocked until the expected RED is recorded.
 
 ## Step Contract
 ```yaml
@@ -160,7 +162,7 @@ tasks_completed:
   - "T3 RED: three assertions proved later-cycle event creation and first/later transaction attribution were absent"
   - "T4 GREEN: classified receipt/pre-event state delta before event construction and bound one event to the shared transaction ID"
 tasks_next:
-  - "B1: QC reviews Spec Compliance before Developer/QC may review Code Quality"
+  - "T5: write fail-first canonical-state and report/s01 parity fixtures before any T6 production change"
 bug_repro_evidence:
   - behavior: "A later successful closeout is suppressed when historical CLOSEOUT_BUNDLE_APPROVED evidence exists."
     observed: "reconcileApprovalBundleReport uses report.audit_events.includes(auditEvent) as a global eventAlreadyRecorded condition."
@@ -215,11 +217,11 @@ doc_changes:
 config_changes: []
 review_checkpoints:
   - "B1 Spec Compliance: APPROVED_BY_QC at 2026-09-10T11:27:32Z"
-  - "B1 Code Quality: READY_FOR_DEVELOPER_AND_QC_REVIEW"
+  - "B1 Code Quality: APPROVED_BY_DEVELOPER_AND_QC at 2026-09-10T11:38:58Z"
   - "B2 after T6: QC Spec Compliance, then Developer/QC Code Quality"
   - "B3 after T7: QC Spec Compliance, then Developer/QC Code Quality"
 known_limitations:
-  - "B1 approval and T5-T7 canonical projection, atomicity, compatibility, and later review work remain."
+  - "T5-T7 canonical projection, atomicity, compatibility, and later review work remain."
   - "F-AG11-001 keeps parent verification, release, protocol close, and branch finalization blocked."
 ```
 
@@ -243,9 +245,9 @@ review_status: PARTIAL
 review_refs:
   - "B1 Spec Compliance APPROVED_BY_QC at 2026-09-10T11:27:32Z for source a65704aa0be26f99988d6d5c13f632fc76907ddd."
   - "B1 Code Quality opened only after the Spec Compliance decision was recorded."
-  - "B1 Code Quality recommendation prepared at 2026-09-10T11:32:30Z; Developer/QC verdict pending."
+  - "B1 Code Quality APPROVED_BY_DEVELOPER_AND_QC at 2026-09-10T11:38:58Z for source a65704aa0be26f99988d6d5c13f632fc76907ddd."
 spec_compliance_status: PASS
-code_quality_status: PARTIAL
+code_quality_status: PASS
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
 independence_refs:
@@ -320,7 +322,7 @@ finding_policy:
 handoff_to_verify:
   - "All B1-B3 two-tier reviews pass in order."
   - "s07 Delivery Rule Evidence is complete and T7 full regression is green."
-notes_for_implementation_or_verify: "Do not begin T5 until B1 Code Quality is approved by both Developer and QC."
+notes_for_implementation_or_verify: "B1 passed in order; begin T5 with failing tests and do not edit T6 production code until the expected RED is recorded."
 ```
 
 ## B1 Review
@@ -347,11 +349,12 @@ spec_compliance:
     - "Both focused suites PASS and all three changed production files pass node --check."
   findings: []
 code_quality:
-  status: READY_FOR_REVIEW
-  recommended_verdict: PASS
-  reviewer_roles: ["developer", "qc"]
+  status: APPROVED
+  verdict: PASS
+  reviewed_by: ["developer", "qc"]
+  reviewed_at: "2026-09-10T11:38:58Z"
+  decision_source: "User explicitly approved B1 Code Quality with roles Developer and QC."
   prepared_at: "2026-09-10T11:32:30Z"
-  blocked_by: ""
   evidence:
     - "Correctness: event construction follows receipt/pre-event delta classification; the event operation cannot classify itself as a new cycle."
     - "Atomicity: one validated canonical UUID is reused by lock, journal, staged filenames, result, and event note; the existing rollback/recovery coordinator remains intact."
@@ -373,12 +376,12 @@ upstream:
   - "s06 approved T0..T8 Task Plan"
 current:
   - "T0-T4 complete at a65704aa0be26f99988d6d5c13f632fc76907ddd"
-  - "B1 Spec Compliance PASS; B1 Code Quality READY_FOR_REVIEW"
-next_step: "Human Developer and QC review B1 Code Quality"
+  - "B1 Spec Compliance PASS; B1 Code Quality PASS"
+next_step: "Execute T5 fail-first canonical-state and report/s01 parity fixtures"
 ```
 
 ## Handoff
-- Outputs actual: T0-T4 RED/GREEN evidence and B1 Spec Compliance proposal.
-- Known limitations: B1 Code Quality and T5-T8 remain pending.
-- Notes for testing: both focused suites pass; do not start T5 until B1 Code Quality passes with Developer and QC.
+- Outputs actual: T0-T4 RED/GREEN evidence and completed B1 two-tier review.
+- Known limitations: T5-T8 remain pending.
+- Notes for testing: both focused suites pass; T5 must capture the expected semantic projection RED before T6 production edits.
 - Notes for deployment: none in s07; corrected candidate and rollback binding are T8/s08 work.

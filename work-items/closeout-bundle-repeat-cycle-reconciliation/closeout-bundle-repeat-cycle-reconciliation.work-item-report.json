@@ -89,7 +89,8 @@
     "The work item was explicitly activated at s07 on 2026-09-10T10:13:59.704Z with the seven approved write roots.",
     "T0 froze pre-production source edc9454d38126d51ad9e5a85afc475d2915ac9bd and both focused baseline suites passed before any production edit.",
     "T1/T3 RED commits c6cc787 and bf7b451 precede T2/T4 GREEN commits d80ae43 and a65704a; B1 Spec Compliance is ready for QC review while Code Quality remains unopened.",
-    "Human QC explicitly approved B1 Spec Compliance at 2026-09-10T11:27:32Z for source a65704aa0be26f99988d6d5c13f632fc76907ddd; B1 Code Quality opened afterward as the next independent review."
+    "Human QC explicitly approved B1 Spec Compliance at 2026-09-10T11:27:32Z for source a65704aa0be26f99988d6d5c13f632fc76907ddd; B1 Code Quality opened afterward as the next independent review.",
+    "Human Developer and QC explicitly approved B1 Code Quality at 2026-09-10T11:38:58Z for the same source with no findings; B1 is complete in order and T5 fail-first work is open."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -107,9 +108,9 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "s07-b1-code-quality-review",
+  "handoff_target": "s07-t5-red",
   "required_actions": [
-    "Developer and QC review B1 Code Quality for T1-T4 at source a65704aa0be26f99988d6d5c13f632fc76907ddd."
+    "Execute T5 fail-first canonical-state and report/s01 parity fixtures before T6 production changes."
   ],
   "blockers": [],
   "refs": [
@@ -148,7 +149,9 @@
     "S07_B1_SPEC_COMPLIANCE_READY_FOR_REVIEW",
     "S07_B1_SPEC_COMPLIANCE_APPROVED",
     "S07_B1_CODE_QUALITY_OPENED",
-    "S07_B1_CODE_QUALITY_RECOMMENDATION_PREPARED"
+    "S07_B1_CODE_QUALITY_RECOMMENDATION_PREPARED",
+    "S07_B1_CODE_QUALITY_APPROVED",
+    "S07_T5_OPENED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -173,7 +176,8 @@
     "s07 activated at 2026-09-10T10:13:59.704Z. T0 baseline at source edc9454d38126d51ad9e5a85afc475d2915ac9bd passed work-item-protocol.test.js and workflow-gate-review.test.js before production edits.",
     "T1-T4 complete at source a65704aa0be26f99988d6d5c13f632fc76907ddd. B1 Spec Compliance is READY_FOR_REVIEW by QC; B1 Code Quality remains NOT_RUN until that approval.",
     "Human QC approved B1 Spec Compliance at 2026-09-10T11:27:32Z with no findings. B1 Code Quality is now READY_FOR_REVIEW by Developer and QC; T5 remains blocked.",
-    "B1 Code Quality recommendation PASS was prepared at 2026-09-10T11:32:30Z from focused test, syntax, diff, security, compatibility, performance, and minimal-delta evidence; human Developer/QC verdict remains pending."
+    "B1 Code Quality recommendation PASS was prepared at 2026-09-10T11:32:30Z from focused test, syntax, diff, security, compatibility, performance, and minimal-delta evidence; human Developer/QC verdict remains pending.",
+    "Human Developer and QC approved B1 Code Quality at 2026-09-10T11:38:58Z with no findings. T5 fail-first fixtures are now open; T6 production changes remain blocked until the expected RED is recorded."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -331,6 +335,14 @@
       "from_status": "ACTIVE",
       "to_status": "ACTIVE",
       "note": "Human QC approved B1 Spec Compliance for T1-T4 at source a65704aa0be26f99988d6d5c13f632fc76907ddd with no findings. B1 Code Quality opens next; no later review or DoD is implied."
+    },
+    {
+      "timestamp": "2026-09-10T11:38:58Z",
+      "action": "s07-b1-code-quality-approved",
+      "actor": "developer/qc",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "Human Developer and QC approved B1 Code Quality for T1-T4 at source a65704aa0be26f99988d6d5c13f632fc76907ddd with no findings. B1 is complete in the required order and T5 fail-first work opens; no later review or DoD is implied."
     }
   ]
 }

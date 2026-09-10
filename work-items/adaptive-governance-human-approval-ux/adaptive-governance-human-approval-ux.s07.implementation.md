@@ -1164,16 +1164,16 @@ linked_work_item:
   implementation_path: ACTIVE
   activation_at: "2026-09-10T10:13:59.704Z"
   t0_baseline: "PASS at source edc9454d38126d51ad9e5a85afc475d2915ac9bd; both focused suites green"
-  implementation_status: "T1-T4 complete at source a65704aa0be26f99988d6d5c13f632fc76907ddd"
+  implementation_status: "T1-T4 complete at source a65704aa0be26f99988d6d5c13f632fc76907ddd; T5 fail-first work open"
   b1_spec_compliance: "APPROVED_BY_QC at 2026-09-10T11:27:32Z"
-  b1_code_quality: READY_FOR_REVIEW
+  b1_code_quality: "APPROVED_BY_DEVELOPER_AND_QC at 2026-09-10T11:38:58Z"
 release_effect:
   parent_s07: REOPENED
   parent_s08: INVALIDATED_BY_FINDING
   terminal_receipts: HISTORICAL_PRE_FINDING
   branch_worktree: HOLD_OPEN
   release: BLOCKED
-next_human_action: "Developer and QC review child B1 Code Quality."
+next_human_action: "NONE until child B2 Spec Compliance is ready for QC review."
 ```
 
 ## Workflow Pack Audit
@@ -1230,7 +1230,7 @@ next_step: "Commit the VERIFIED snapshot and run hosted Guardrails before Releas
 
 ## Handoff
 - Current state: `F-AG11-001` reopened the parent delivery lane; the prior B0-B4 and verification evidence is retained as historical pre-finding evidence.
-- Linked defect: T1-T4 are complete at source `a65704aa0be26f99988d6d5c13f632fc76907ddd`; QC approved B1 Spec Compliance and B1 Code Quality is ready for Developer/QC review.
+- Linked defect: T1-T4 are complete at source `a65704aa0be26f99988d6d5c13f632fc76907ddd`; B1 Spec Compliance and B1 Code Quality passed in order, so T5 fail-first work is open.
 - Required behavior: a repeated committed closeout must remove every satisfied pending action, set the canonical close-ready handoff, append one current-cycle event, and remain a NOOP on unchanged retry.
 - Release effect: the source `38bb0d1…`, run `34322150024`, candidate `2a5ae701…`, and terminal receipts are historical pre-finding evidence only.
 - Branch/worktree: `HOLD_OPEN`; no publish, tag, merge, install, cleanup, or branch finalization is authorized.
