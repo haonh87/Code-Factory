@@ -87,7 +87,8 @@
     "Human Developer explicitly approved the s06 Task Plan at 2026-09-10T08:56:19Z; trusted receipt sealing and s07 activation remain separate.",
     "Trusted Task Plan receipt APPROVED by Developer at 2026-09-10T10:11:42.373Z verifies digest_match=true against finalized s06 SHA-256 7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9.",
     "The work item was explicitly activated at s07 on 2026-09-10T10:13:59.704Z with the seven approved write roots.",
-    "T0 froze pre-production source edc9454d38126d51ad9e5a85afc475d2915ac9bd and both focused baseline suites passed before any production edit."
+    "T0 froze pre-production source edc9454d38126d51ad9e5a85afc475d2915ac9bd and both focused baseline suites passed before any production edit.",
+    "T1/T3 RED commits c6cc787 and bf7b451 precede T2/T4 GREEN commits d80ae43 and a65704a; B1 Spec Compliance is ready for QC review while Code Quality remains unopened."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -107,7 +108,7 @@
   "change_id": "",
   "handoff_target": "step-s07-owner",
   "required_actions": [
-    "Execute T1 fail-first optional transaction-identity tests before any production change."
+    "QC reviews B1 conformance for T1-T4 at source a65704aa0be26f99988d6d5c13f632fc76907ddd before Code Quality may open."
   ],
   "blockers": [],
   "refs": [
@@ -142,7 +143,8 @@
     "S06_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT",
     "S06_TASK_PLAN_RECEIPT_VERIFIED",
     "WORK_ITEM_ACTIVATED",
-    "S07_T0_BASELINE_RECORDED"
+    "S07_T0_BASELINE_RECORDED",
+    "S07_B1_SPEC_COMPLIANCE_READY_FOR_REVIEW"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -164,7 +166,8 @@
     "The proposed s06 Task Plan orders T0..T8, three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, and one exact-candidate child-to-parent verification path.",
     "Human Developer approved the s06 Task Plan at 2026-09-10T08:56:19Z.",
     "Trusted Task Plan receipt APPROVED by Developer at 2026-09-10T10:11:42.373Z matches finalized s06 SHA-256 7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9.",
-    "s07 activated at 2026-09-10T10:13:59.704Z. T0 baseline at source edc9454d38126d51ad9e5a85afc475d2915ac9bd passed work-item-protocol.test.js and workflow-gate-review.test.js before production edits."
+    "s07 activated at 2026-09-10T10:13:59.704Z. T0 baseline at source edc9454d38126d51ad9e5a85afc475d2915ac9bd passed work-item-protocol.test.js and workflow-gate-review.test.js before production edits.",
+    "T1-T4 complete at source a65704aa0be26f99988d6d5c13f632fc76907ddd. B1 Spec Compliance is READY_FOR_REVIEW by QC; B1 Code Quality remains NOT_RUN until that approval."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -306,6 +309,14 @@
       "from_status": "ACTIVE",
       "to_status": "ACTIVE",
       "note": "Verified the digest-matched Task Plan receipt, retained the seven approved write roots, and recorded two passing focused baseline suites at source edc9454d38126d51ad9e5a85afc475d2915ac9bd before production edits."
+    },
+    {
+      "timestamp": "2026-09-10T11:13:29Z",
+      "action": "s07-b1-spec-compliance-ready-for-review",
+      "actor": "agent",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "T1/T3 fail-first commits and T2/T4 GREEN commits are recorded at source a65704aa0be26f99988d6d5c13f632fc76907ddd. QC Spec Compliance review is next; Code Quality has not started."
     }
   ]
 }

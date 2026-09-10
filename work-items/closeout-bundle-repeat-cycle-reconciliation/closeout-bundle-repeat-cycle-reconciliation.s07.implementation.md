@@ -107,7 +107,10 @@ tags:
 > pre-production source baseline at `edc9454d38126d51ad9e5a85afc475d2915ac9bd`; both focused
 > baseline suites pass. T1 produced the expected four-assertion RED, and T2 is GREEN: the coordinator
 > now validates and reuses an optional canonical UUID while omitted callers retain generated IDs.
-> T3 real closeout-cycle fixtures are next; B1 has not started.
+> T3 produced the expected three-assertion RED, and T4 is GREEN at source
+> `a65704aa0be26f99988d6d5c13f632fc76907ddd`: marker-only history, a later cycle with
+> an older event, deterministic gate order, shared transaction attribution, and two byte-stable
+> retries all pass. B1 Spec Compliance is ready for QC review; Code Quality remains unopened.
 
 ## Step Contract
 ```yaml
@@ -153,9 +156,10 @@ tasks_completed:
   - "T0: verified every authoring receipt, activated s07, inventoried the worktree, and ran both focused baselines"
   - "T1 RED: four assertions proved supplied-ID reuse and malformed-ID fail-before-write behavior were absent"
   - "T2 GREEN: added optional canonical UUID validation/reuse and preserved generated-ID defaults"
+  - "T3 RED: three assertions proved later-cycle event creation and first/later transaction attribution were absent"
+  - "T4 GREEN: classified receipt/pre-event state delta before event construction and bound one event to the shared transaction ID"
 tasks_next:
-  - "T3 RED: reproduce first cycle, later committed cycle, and unchanged retry through the real closeout CLI"
-  - "T4 GREEN: classify only receipt/pre-event state delta, then bind one event to the shared transaction ID"
+  - "B1: QC reviews Spec Compliance before Developer/QC may review Code Quality"
 bug_repro_evidence:
   - behavior: "A later successful closeout is suppressed when historical CLOSEOUT_BUNDLE_APPROVED evidence exists."
     observed: "reconcileApprovalBundleReport uses report.audit_events.includes(auditEvent) as a global eventAlreadyRecorded condition."
@@ -178,6 +182,9 @@ debug_experiments:
   - goal: "Freeze the pre-change behavior baseline."
     action: "Ran work-item-protocol.test.js and workflow-gate-review.test.js at source edc9454d38126d51ad9e5a85afc475d2915ac9bd."
     result: "Both suites PASS before production edits."
+  - goal: "Separate a real current cycle from historical marker/event evidence."
+    action: "Ran the real closeout CLI for marker-only history, a later re-verified host, then two unchanged retries."
+    result: "Two committed cycles have distinct matching journal/event IDs; both retries are NOOP and report/s01 remain byte-identical."
 tdd_evidence:
   - behavior: "A caller-supplied valid transaction_id is reused by the journal and COMMITTED result."
     failing_test: "workflow-gate-review.test.js failed: valid caller-supplied transaction_id was not reused."
@@ -185,20 +192,32 @@ tdd_evidence:
   - behavior: "Malformed supplied identity fails before target, journal, lock, or directory writes."
     failing_test: "Three assertions failed because malformed identity was ignored and the transaction committed writes."
     passing_test: "Malformed identity now throws a canonical UUID error before transaction-path creation; every no-write assertion passes."
+  - behavior: "Historical CLOSEOUT_BUNDLE_APPROVED evidence does not suppress the current committed-cycle event."
+    failing_test: "work-item-protocol.test.js failed event-count plus first/later transaction-attribution assertions."
+    passing_test: "Marker-only and older-event histories now each receive exactly one current event with matching journal ID and ordered gates."
+  - behavior: "A fully reconciled retry is not a cycle."
+    failing_test: "The RED fixture retained existing NOOP behavior as a guard while event attribution failed."
+    passing_test: "Two unchanged retries return NOOP with no transaction_id and byte-identical report/s01."
 code_changes:
   - path: "packages/workflow-bundle/scripts/workflow-approval-transaction.js"
     change: "Validate an optional canonical UUID before transaction recovery/preflight writes and reuse it for the existing lock, journal, stage, and result identity."
   - path: "packages/workflow-bundle/test/workflow-gate-review.test.js"
     change: "Add fail-first valid/invalid supplied-ID cases and pin the existing generated-ID default."
+  - path: "packages/workflow-bundle/scripts/workflow-gate-review.js"
+    change: "Classify closeout from receipt or pre-event report/s01 operations, allocate one identity only for a real cycle, then construct the final event operation."
+  - path: "packages/workflow-bundle/scripts/work-item-protocol.js"
+    change: "Allow explicit event sequencing and include shared transaction_id in the existing event note without changing event shape."
+  - path: "packages/workflow-bundle/test/work-item-protocol.test.js"
+    change: "Add real marker-only, older-event, second-host, exact event-attribution, marker-dedup, and two-retry fixtures."
 doc_changes:
   - "Recorded the s07 activation and T0 baseline in child and parent workflow evidence."
 config_changes: []
 review_checkpoints:
-  - "B1 after T4: QC Spec Compliance, then Developer/QC Code Quality"
+  - "B1 Spec Compliance: READY_FOR_QC_REVIEW; Code Quality: BLOCKED_BY_REVIEW_ORDER"
   - "B2 after T6: QC Spec Compliance, then Developer/QC Code Quality"
   - "B3 after T7: QC Spec Compliance, then Developer/QC Code Quality"
 known_limitations:
-  - "T3-T7 cycle/projector, atomicity, compatibility, and review work remains."
+  - "B1 approval and T5-T7 canonical projection, atomicity, compatibility, and later review work remain."
   - "F-AG11-001 keeps parent verification, release, protocol close, and branch finalization blocked."
 ```
 
@@ -209,6 +228,7 @@ tdd_status: PARTIAL
 tdd_test_refs:
   - "testOptionalTransactionIdentityIsValidatedAndReused"
   - "testAtomicCommitAndIndependentReceipts generated-ID compatibility assertion"
+  - "testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry"
 tdd_exception_reason: ""
 tdd_alternative_verify_path: []
 change_risk_profile: LARGE_OR_RISKY
@@ -219,8 +239,9 @@ worktree_refs:
 worktree_reason: "Full planning, multi-session parent history, open HIGH finding, and release/merge risk require the existing isolated worktree."
 review_status: PARTIAL
 review_refs:
-  - "B1-B3 are scheduled after their approved implementation batches; none has run yet."
-spec_compliance_status: NOT_RUN
+  - "B1 Spec Compliance proposal prepared at 2026-09-10T11:13:29Z for source a65704aa0be26f99988d6d5c13f632fc76907ddd; human QC verdict pending."
+  - "B1 Code Quality is not started because Spec Compliance must pass first."
+spec_compliance_status: PARTIAL
 code_quality_status: NOT_RUN
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
@@ -282,6 +303,31 @@ batches:
 review_gate: "Do not begin the next implementation batch until both reviews for the current batch pass."
 ```
 
+## B1 Review
+```yaml
+batch: B1
+source_sha: "a65704aa0be26f99988d6d5c13f632fc76907ddd"
+scope: ["T1", "T2", "T3", "T4"]
+spec_compliance:
+  status: READY_FOR_REVIEW
+  recommended_verdict: PASS
+  reviewer_role: qc
+  evidence:
+    - "AC-RCR-01: first-cycle controls remain green; a changed host commits a later cycle; two unchanged retries are NOOP."
+    - "AC-RCR-02: marker-only and older-event histories each append one current event; its note matches transaction_id and ordered gates; marker count stays one."
+    - "AC-RCR-04 partial-to-B1 scope: two unchanged retries expose no transaction ID and keep report/s01 byte-identical."
+    - "AC-RCR-06 B1 scope: malformed identity fails before targets or transaction directories; existing failure/recovery matrix remains green."
+    - "EDGE-RCR-01/02/05: marker-only, older event, and changed exact host cases are explicit fixtures."
+    - "No public CLI, receipt-v1, authority, gate-set, event-object, config, dependency, or lifecycle contract changed."
+  checks:
+    - "Expected RED commits c6cc787 and bf7b451 precede GREEN commits d80ae43 and a65704a."
+    - "Both focused suites PASS and all three changed production files pass node --check."
+  findings: []
+code_quality:
+  status: NOT_RUN
+  blocked_by: "B1 Spec Compliance human QC approval"
+```
+
 ## Traceability
 ```yaml
 upstream:
@@ -289,12 +335,13 @@ upstream:
   - "s05 approved transaction-delta projector"
   - "s06 approved T0..T8 Task Plan"
 current:
-  - "T0 PASS; s07 ACTIVE; no production edit"
-next_step: "T1 fail-first optional transaction identity tests"
+  - "T0-T4 complete at a65704aa0be26f99988d6d5c13f632fc76907ddd"
+  - "B1 Spec Compliance READY_FOR_REVIEW; B1 Code Quality NOT_RUN"
+next_step: "Human QC reviews B1 Spec Compliance"
 ```
 
 ## Handoff
-- Outputs actual: s07 activation and T0 baseline evidence.
-- Known limitations: implementation and B1 review remain pending.
-- Notes for testing: create the T1 failure before changing `workflow-approval-transaction.js`.
+- Outputs actual: T0-T4 RED/GREEN evidence and B1 Spec Compliance proposal.
+- Known limitations: B1 human reviews and T5-T8 remain pending.
+- Notes for testing: both focused suites pass; do not start T5 until B1 Spec Compliance then Code Quality pass in order.
 - Notes for deployment: none in s07; corrected candidate and rollback binding are T8/s08 work.

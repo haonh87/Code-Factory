@@ -101,7 +101,8 @@ tags:
 > Code-Factory must route requests by intent and risk, require only applicable roles and gates,
 > and reduce repeated human approval interactions without weakening high-risk controls. Parent release
 > remains blocked by `F-AG11-001`; the linked defect has all authoring receipts digest-matched,
-> is `ACTIVE` at s07, and has a passing T0 baseline. T1 fail-first tests are next.
+> is `ACTIVE` at s07, and T1-T4 RED/GREEN are complete at source
+> `a65704aa0be26f99988d6d5c13f632fc76907ddd`. B1 Spec Compliance is ready for QC review.
 
 ## Step Contract
 ```yaml
@@ -718,12 +719,12 @@ handoff_target: "linked-defect-s07-tdd-b1"
 last_transition_action: "linked-defect-s07-activated-t0-pass"
 last_transition_at: "2026-09-10T10:18:10Z"
 required_actions:
-  - "Complete linked defect T1-T4 through fail-first implementation, then request B1 Spec Compliance before Code Quality."
+  - "QC reviews linked defect B1 conformance for T1-T4 before Developer/QC Code Quality may open."
   - "Continue the linked defect through remaining TDD batches, two-tier review, hosted verification, and DoD."
   - "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
 blockers:
   - "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."
-  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is ACTIVE at s07 and has not yet passed B1 review or verification."
+  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is ACTIVE at s07; B1 conformance and later reviews/verification remain pending."
 review_notes:
   - "Human review approved."
   - "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local verification matrix and hosted Guardrails run 34322150024."
@@ -747,6 +748,7 @@ review_notes:
   - "The linked defect s06 Task Plan was proposed for Developer review."
   - "Human Developer approved the linked defect s06 Task Plan at 2026-09-10T08:56:19Z."
   - "The linked defect Task Plan receipt matches finalized s06 SHA-256 7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9; s07 is ACTIVE and T0 focused baselines pass at source edc9454d38126d51ad9e5a85afc475d2915ac9bd."
+  - "Linked defect T1-T4 are complete at source a65704aa0be26f99988d6d5c13f632fc76907ddd. QC B1 Spec Compliance review is next; Code Quality has not started."
 refs:
   - "changes/CR-008"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -814,6 +816,7 @@ audit_events:
   - "LINKED_REPEAT_CYCLE_DEFECT_S06_RECEIPT_VERIFIED"
   - "LINKED_REPEAT_CYCLE_DEFECT_S07_ACTIVATED"
   - "LINKED_REPEAT_CYCLE_DEFECT_T0_BASELINE_PASS"
+  - "LINKED_REPEAT_CYCLE_DEFECT_B1_SPEC_COMPLIANCE_READY"
 ```
 
 ## Current Governance Router Status
@@ -842,11 +845,11 @@ outputs:
   - "clarified adaptive-governance boundary"
   - "AG-01..AG-11 acceptance draft"
   - "SA and TA architecture-driver handoffs"
-next_step: "Complete linked defect T1-T4 and present B1 Spec Compliance for QC review; parent release remains blocked"
+next_step: "Human QC reviews linked defect B1 Spec Compliance; parent release remains blocked"
 ```
 
 ## Handoff
 - Current state: `F-AG11-001` is OPEN and the parent delivery lane is reopened; the prior candidate and terminal receipts are historical pre-finding evidence only.
-- Linked defect: all authoring receipts are `APPROVED` with `digest_match=true`; s07 is `ACTIVE` and T0 focused baselines pass.
-- Next human action: none until T1-T4 complete and B1 Spec Compliance is ready for QC review.
+- Linked defect: all authoring receipts match; T1-T4 RED/GREEN are complete at source `a65704aa0be26f99988d6d5c13f632fc76907ddd`.
+- Next human action: QC reviews B1 Spec Compliance; Code Quality remains unopened.
 - Branch/worktree decision: `HOLD_OPEN`; no merge, tag, publication, release, cleanup, global install, or branch finalization is authorized.

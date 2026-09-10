@@ -105,8 +105,9 @@ tags:
 > still instructed the operator to run the same approval and retained the pre-closeout handoff.
 > Historical `CLOSEOUT_BUNDLE_APPROVED` evidence also suppressed an event for the current cycle.
 > This linked BUG isolates `F-AG11-001`. Spec, DoR, Approach, and Task Plan now have digest-matched
-> trusted receipts. The work item is `ACTIVE` at s07, and T0 passed both focused baseline suites at
-> pre-production source `edc9454d38126d51ad9e5a85afc475d2915ac9bd`; T1 fail-first tests are next.
+> trusted receipts. The work item is `ACTIVE` at s07; T1-T4 RED/GREEN are complete at source
+> `a65704aa0be26f99988d6d5c13f632fc76907ddd`. B1 Spec Compliance is ready for QC review;
+> Code Quality remains unopened until that decision passes.
 
 ## Step Contract
 ```yaml
@@ -506,7 +507,7 @@ handoff_target: "step-s07-owner"
 last_transition_action: "activate"
 last_transition_at: "2026-09-10T10:13:59.704Z"
 required_actions:
-  - "Execute T1 fail-first optional transaction-identity tests before any production change."
+  - "QC reviews B1 conformance for T1-T4 at source a65704aa0be26f99988d6d5c13f632fc76907ddd before Code Quality may open."
 blockers: []
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
@@ -525,6 +526,7 @@ review_notes:
   - "Human Developer approved the s06 Task Plan at 2026-09-10T08:56:19Z."
   - "Trusted Task Plan receipt APPROVED by Developer at 2026-09-10T10:11:42.373Z matches finalized s06 SHA-256 7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9."
   - "s07 activated at 2026-09-10T10:13:59.704Z. T0 baseline at source edc9454d38126d51ad9e5a85afc475d2915ac9bd passed both focused suites before production edits."
+  - "T1-T4 complete at source a65704aa0be26f99988d6d5c13f632fc76907ddd. B1 Spec Compliance is READY_FOR_REVIEW by QC; B1 Code Quality remains NOT_RUN until that approval."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -557,6 +559,7 @@ audit_events:
   - "S06_TASK_PLAN_RECEIPT_VERIFIED"
   - "WORK_ITEM_ACTIVATED"
   - "S07_T0_BASELINE_RECORDED"
+  - "S07_B1_SPEC_COMPLIANCE_READY_FOR_REVIEW"
 ```
 
 ## Traceability
@@ -575,15 +578,16 @@ outputs:
   - "Developer-approved transaction-delta Technical Approach with shared journal/event identity"
   - "Developer-approved and digest-matched T0..T8 TDD, review, compatibility, and exact-candidate Task Plan"
   - "Explicit s07 activation and passing T0 pre-production baseline"
-next_step: "Execute T1 fail-first optional transaction-identity tests"
+  - "T1-T4 fail-first/green transaction identity and cycle-event implementation"
+next_step: "Human QC reviews B1 Spec Compliance"
 ```
 
 ## Handoff
 - Clear: closeout receipts succeeded, but current navigation and event evidence did not reconcile.
 - Distinct scope: repeat-cycle/idempotency, not the resolved missing-DoD selector defect.
 - Decision: PO approval is backed by a verified trusted receipt; the completed receipt action has been removed.
-- Current step: s07 is `ACTIVE`; every authoring receipt matches and T0 baseline is green at source `edc9454d38126d51ad9e5a85afc475d2915ac9bd`.
+- Current step: s07 is `ACTIVE`; T1-T4 are complete at source `a65704aa0be26f99988d6d5c13f632fc76907ddd`.
 - Recommendation: transaction-delta closeout projector with one shared journal/event transaction ID and no new public schema.
 - Plan: T0..T8 with three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, then one exact-candidate child-to-parent verification path.
-- Boundary: T1 fail-first transaction-identity tests must fail for the expected reason before any production edit.
+- Boundary: B1 Spec Compliance must pass before B1 Code Quality or T5 may begin.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.
