@@ -56,7 +56,7 @@
         "Drafted s01 requirement analysis plus SA/TA driver-only handoff."
       ],
       "blockers": [
-        "The s02 Business Goal awaits human confirmation."
+        "OQ-RCR-001..003 require human decisions before s04 Acceptance + DoR."
       ]
     }
   ],
@@ -75,7 +75,9 @@
     "Human PO explicitly approved the linked work item at 2026-09-09T13:32:51Z; the trusted receipt still requires human TTY sealing.",
     "Spec, DoR, Approach, Task Plan, implementation, review, Verify/DoD, Release, and Business Acceptance remain independent later gates.",
     "The trusted work-item receipt was recorded at 2026-09-09T13:53:59.942Z and verified as APPROVED for PO; receipt SHA-256 is 4ae668c9dc20dfaa1ff8979da9ce43485511c2d19e59e98e18c08427e7485b0d.",
-    "s02 Business Goal was drafted from RCR-01..06, AG-11, REQ-AG-009, and the F-AG11-001 evidence without selecting a technical approach."
+    "s02 Business Goal was drafted from RCR-01..06, AG-11, REQ-AG-009, and the F-AG11-001 evidence without selecting a technical approach.",
+    "Human PO explicitly approved the s02 Business Goal at 2026-09-10T01:36:42Z.",
+    "s03 isolated three decision-bearing questions and reused existing CR-008 authority for candidate identity, scope boundary, and release hold."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -86,17 +88,17 @@
   "sdd_light_profile": "preview",
   "sdd_reasons": [],
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation",
-  "current_step": "s02",
+  "current_step": "s03",
   "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "business-goal-review",
+  "handoff_target": "open-question-recommendation-review",
   "required_actions": [
-    "PO confirms the s02 Business Goal, KPI targets, scope boundary, and non-goals.",
-    "After confirmation, continue s03 Open Questions; do not implement before Spec, DoR, Approach, and Task Plan receipts pass."
+    "BA, Developer, and QC approve or amend OQ-RCR-001..003 using the recommendation bundle.",
+    "After the decisions are recorded, draft s04 Acceptance + DoR; do not implement before Spec, DoR, Approach, and Task Plan receipts pass."
   ],
   "blockers": [
-    "The s02 Business Goal awaits human confirmation."
+    "OQ-RCR-001..003 require human decisions before s04 Acceptance + DoR."
   ],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
@@ -115,7 +117,9 @@
     "WORK_ITEM_REVIEW_RECORDED_PENDING_RECEIPT",
     "WORK_ITEM_APPROVED",
     "TRUSTED_WORK_ITEM_RECEIPT_VERIFIED",
-    "S02_BUSINESS_GOAL_DRAFTED"
+    "S02_BUSINESS_GOAL_DRAFTED",
+    "S02_BUSINESS_GOAL_APPROVED",
+    "S03_OPEN_QUESTIONS_DRAFTED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -125,7 +129,8 @@
     "QC approved recording parent finding F-AG11-001 and creation of this linked defect.",
     "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z.",
     "Trusted work-item receipt recorded at 2026-09-09T13:53:59.942Z verifies APPROVED for PO with SHA-256 4ae668c9dc20dfaa1ff8979da9ce43485511c2d19e59e98e18c08427e7485b0d.",
-    "This decision does not substitute for Spec, DoR, Approach, Task Plan, or any later gate."
+    "Human PO explicitly approved the s02 Business Goal at 2026-09-10T01:36:42Z.",
+    "This decision does not substitute for the s03 decisions, Spec, DoR, Approach, Task Plan, or any later gate."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -179,6 +184,22 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Verified the signed PO work-item receipt, reconciled the completed receipt action, and drafted s02 Business Goal. Implementation remains closed."
+    },
+    {
+      "timestamp": "2026-09-10T01:36:42Z",
+      "action": "business-goal-approved",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human PO explicitly approved the s02 Business Goal and authorized continuation to s03 Open Questions. No later gate is implied."
+    },
+    {
+      "timestamp": "2026-09-10T01:36:42Z",
+      "action": "open-s03-open-questions",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Drafted the minimum decision-bearing open-question recommendation bundle; s04 remains blocked until human decisions are recorded."
     }
   ]
 }

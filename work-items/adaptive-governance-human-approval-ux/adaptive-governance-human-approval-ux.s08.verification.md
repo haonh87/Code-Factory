@@ -108,8 +108,8 @@ tags:
 > `2026-09-09T09:57:16.873Z` sealed digest-valid terminal receipts but did not reconcile the
 > current report/protocol navigation or append a current-cycle event. QC reopened the s07 delivery
 > lane and recorded `F-AG11-001` as HIGH. The linked defect
-> `closeout-bundle-repeat-cycle-reconciliation` has a verified PO work-item receipt and is at s02
-> Business Goal review. Everything below that declares PASS/DONE/APPROVED for the previous parent candidate is
+> `closeout-bundle-repeat-cycle-reconciliation` has PO-approved s02 and is at s03 Open Questions;
+> OQ-RCR-001..003 await human decisions. Everything below that declares PASS/DONE/APPROVED for the previous parent candidate is
 > retained as historical pre-finding evidence and does not authorize release or closeout.
 >
 > **PARENT RE-VERIFICATION READY (2026-09-09):** linked defects
@@ -254,8 +254,8 @@ linked_work_item:
   protocol_status: MATERIALIZED
   approval_status: APPROVED
   trusted_receipt_status: APPROVED
-  current_step: s02
-next_human_action: "Confirm the linked defect s02 Business Goal; no implementation action is allowed before later gates pass."
+  current_step: s03
+next_human_action: "Approve or amend linked defect OQ-RCR-001..003; no implementation action is allowed before later gates pass."
 ```
 
 ## Main Artifact
@@ -369,7 +369,7 @@ skipped_checks:
   - "ESLint: no executable/config; node --check, full tests and manual diff review are the fallback."
   - "Semgrep: unavailable; canaries, pattern scans, negative tests and manual sensitive-path review are the fallback."
 release_blockers:
-  - "F-AG11-001 is OPEN and linked defect closeout-bundle-repeat-cycle-reconciliation has not passed work-item approval or delivery gates."
+  - "F-AG11-001 is OPEN and linked defect closeout-bundle-repeat-cycle-reconciliation has not passed its s04-s08 delivery gates."
   - "The corrected source and exact hosted candidate have not been re-verified."
   - "DoD, Release, and Business Acceptance must be repeated after corrected-candidate Technical Verification."
 status: FAIL
@@ -379,7 +379,7 @@ residual_risks:
   - "npm/gzip compression bytes differ between the local and hosted packaging environments even though the extracted trees and uncompressed tar stream are identical."
   - "Unchanged github-push MCP has one macOS failure from a Windows-only fixture path; CR-008 changes no MCP file."
   - "Telemetry purge scans its local directory linearly; retained scope and CLI execution make current risk LOW."
-recommendation: "Keep release and branch finalization blocked; approve and deliver closeout-bundle-repeat-cycle-reconciliation, then build and re-verify one corrected candidate before repeating terminal gates."
+recommendation: "Keep release and branch finalization blocked; resolve OQ-RCR-001..003 and deliver closeout-bundle-repeat-cycle-reconciliation, then build and re-verify one corrected candidate before repeating terminal gates."
 notes_for_review: "The former parent PASS and all terminal decisions are historical pre-finding evidence. F-AG11-001 overrides them for current closeout."
 historical_technical_verification_decision:
   status: APPROVED
@@ -514,13 +514,13 @@ checklist_applied: ["project-context/checklists/default.md", "project-context/ch
 checks:
   - { check: "Pass/not-pass evidence is explicit", status: PASS, evidence: "Each AG maps to named evidence; QC explicitly approved the current hosted source/run/artifact binding." }
   - { check: "Behavior, docs and release identity are synchronized", status: PASS, evidence: "Policy, runtimes, 42-skill inventories, EN/VI docs and v2.6.2 metadata agree." }
-  - { check: "Remaining gaps have owners", status: FAIL, evidence: "F-AG11-001 is owned by the linked defect at s02 Business Goal review; later gates remain open." }
+  - { check: "Remaining gaps have owners", status: FAIL, evidence: "F-AG11-001 is owned by the linked defect at s03 Open Questions; OQ-RCR-001..003 and later gates remain open." }
   - { check: "Evidence supports release decision", status: FAIL, evidence: "The verified candidate reproduces F-AG11-001 and cannot authorize release." }
   - { check: "Rollback/remediation is viable", status: PASS, evidence: "Published v2.6.1 digest is verified and passes every rollback scenario." }
   - { check: "Exceptions are explicit", status: PASS, evidence: "No CR-008 governance exception or waiver is open." }
 blocking_items:
   - "F-AG11-001 remains OPEN."
-  - "Linked defect s02 review and authoring gates remain open."
+  - "Linked defect OQ-RCR-001..003 and authoring gates remain open."
 owner: "qc/devops/po"
 next_action: "Approve and deliver the linked defect before creating a corrected verification candidate."
 ```
@@ -911,13 +911,13 @@ human_decision:
     rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
     receipt_state: READY_TO_SEAL
     execution_effect: "No publish, tag creation or movement, install, merge, or cleanup was executed or authorized by this approval record."
-gaps: ["AG-11 fails for a repeated closeout cycle; linked defect is at s02 Business Goal review and later gates remain open."]
+gaps: ["AG-11 fails for a repeated closeout cycle; linked defect is at s03 Open Questions and later gates remain open."]
 residual_risks: ["Cross-toolchain gzip representation differs.", "ESLint/Semgrep unavailable with documented fallbacks.", "External publication has not been executed."]
 follow_up_items:
-  - "Confirm s02 and deliver closeout-bundle-repeat-cycle-reconciliation through s08."
+  - "Resolve OQ-RCR-001..003 and deliver closeout-bundle-repeat-cycle-reconciliation through s08."
   - "Build and host one corrected candidate, then repeat parent Technical Verification and DoD."
   - "Repeat Release, Business Acceptance, and receipt sealing for the corrected candidate."
-next_action: "Confirm the linked defect s02 Business Goal; implementation remains closed."
+next_action: "Approve or amend linked defect OQ-RCR-001..003; implementation remains closed."
 ```
 
 ## SDD Traceability
@@ -949,6 +949,6 @@ next_step: "Seal trusted DoD, Release, and Business Acceptance receipts against 
 ## Handoff
 - Overall status: `FAIL/BLOCKED`; `F-AG11-001` proves AG-11 fails on a real repeated closeout cycle.
 - Historical evidence: source `38bb0d1…`, run `34322150024`, hosted SHA-256 `2a5ae701…`, the former Technical Verification/DoD/Release/Business Acceptance decisions, and the receipts sealed at `2026-09-09T09:57:16.873Z` are retained only as pre-finding evidence.
-- Linked defect: `closeout-bundle-repeat-cycle-reconciliation` has a verified PO receipt and a drafted s02 Business Goal under `full + strict`; implementation is closed.
-- Required sequence: confirm s02, complete s03-s06 and the human gates, implement with TDD, review in two tiers, verify one exact hosted candidate, then repeat parent terminal gates.
+- Linked defect: `closeout-bundle-repeat-cycle-reconciliation` has PO-approved s02 and a drafted s03 recommendation bundle under `full + strict`; implementation is closed.
+- Required sequence: resolve OQ-RCR-001..003, complete s04-s06 and the human gates, implement with TDD, review in two tiers, verify one exact hosted candidate, then repeat parent terminal gates.
 - Branch/worktree: `HOLD_OPEN`; no merge, tag, release publication, install, cleanup, or branch finalization is authorized.

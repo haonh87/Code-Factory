@@ -100,6 +100,15 @@ tags:
 > cycle, and must remain a no-op when the unchanged request is retried. The correction stays
 > bounded to reconciliation and does not redesign human authority, receipts, or the lifecycle.
 
+## Business Goal Review
+```yaml
+status: APPROVED
+reviewed_by: "po"
+reviewed_at: "2026-09-10T01:36:42Z"
+decision_source: "User explicitly approved Business Goal and instructed continuation to s03 Open Questions."
+effect: "s03 authoring is open; no Spec, DoR, Approach, Task Plan, implementation, or terminal gate is implied."
+```
+
 ## Step Contract
 ```yaml
 step: "s02 Business Goal"
@@ -289,11 +298,11 @@ acceptance_draft_mapping:
   - { criteria: ["RCR-02"], metrics: ["KPI-RCR-002", "KPI-RCR-005"] }
   - { criteria: ["RCR-04"], metrics: ["KPI-RCR-003"] }
   - { criteria: ["RCR-05", "RCR-06"], metrics: ["KPI-RCR-005", "KPI-RCR-006"] }
-next_step: "s03 Open Questions after human confirmation of this Business Goal"
+next_step: "s03 Open Questions; Business Goal approved by PO at 2026-09-10T01:36:42Z"
 ```
 
 ## Handoff
 - Pinned user problem: successful closeout receipts do not currently guarantee visible completion or current-cycle audit evidence.
 - Business outcome: zero stale completion prompts, exactly one event per committed cycle, and a zero-write unchanged retry.
 - Non-goals: authority, receipt schema, lifecycle redesign, prior-defect reopening, unrelated CR-008 scope, and external release actions.
-- Condition for s03: human confirms the goal, KPI targets, scope boundary, and non-goals; no implementation path is open.
+- Condition for s03: satisfied by explicit PO approval at `2026-09-10T01:36:42Z`; no implementation path is open.

@@ -27,27 +27,34 @@ spec_refs:
 spec_status: draft
 planning_track: full
 execution_mode: agentic
-execution_roles: []
+execution_roles:
+  - "ba"
+  - "developer"
+  - "qc"
 review_mode: self
 verification_owner: ""
 approval_gates:
   spec: "required"
   contract: "not_applicable"
+  dor: "required"
+  approach: "required"
   foundation: "not_applicable"
+  task_plan: "required"
   uat: "not_applicable"
-  release: "not_applicable"
-  business_acceptance: "not_applicable"
+  release: "required"
+  business_acceptance: "required"
+  dod: "required"
 role_signoffs:
-  spec: []
+  spec: ["ba"]
   contract: []
-  dor: []
-  approach: []
+  dor: ["ba", "qc"]
+  approach: ["developer"]
   foundation: []
-  task_plan: []
+  task_plan: ["developer"]
   uat: []
-  release: []
-  business_acceptance: []
-  dod: []
+  release: ["devops", "qc"]
+  business_acceptance: ["po"]
+  dod: ["qc"]
 gate_reviews:
   spec_reviewed_by: []
   spec_reviewed_at: ""
@@ -80,7 +87,12 @@ artifact_skills:
 upstream_artifacts:
   - "closeout-bundle-repeat-cycle-reconciliation.s01.restate.md"
   - "closeout-bundle-repeat-cycle-reconciliation.s02.business-goal.md"
-linked_artifacts: []
+linked_artifacts:
+  - "closeout-bundle-repeat-cycle-reconciliation.work-item-report.json"
+  - "../adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.s08.verification.md"
+  - "../closeout-bundle-legacy-dod-compatibility/closeout-bundle-legacy-dod-compatibility.s08.verification.md"
+  - "../../packages/workflow-bundle/scripts/work-item-protocol.js"
+  - "../../packages/workflow-bundle/test/work-item-protocol.test.js"
 tags:
   - "agent-ops"
   - "workflow/s03"
@@ -89,44 +101,323 @@ tags:
 # Step 3 - Open Questions
 
 > [!summary]
-> Tóm tắt câu hỏi mở, missing input, conflict và readiness verdict.
+> Input readiness for `s04 Acceptance + DoR` is **BLOCKED** by three decision-bearing questions.
+> The recommendation bundle defines a committed closeout cycle by a new exact receipt/state
+> transition, records one protocol event per committed cycle while preserving coarse audit markers,
+> and reconciles only current-state surfaces to the canonical close action. Existing CR-008
+> authority resolves candidate, rollback, prior-defect, and release-hold questions without asking
+> the user to approve them again.
 
 ## Step Contract
 ```yaml
-step_goal: ""
-input_summary: []
-output_summary: []
-done_when: []
-owner: ""
+step: "s03 Open Questions"
+goal: >-
+  Isolate and disposition every ambiguity that could change the acceptance criteria for repeated
+  closeout reconciliation, while reusing existing authority and avoiding technical design.
+value: >-
+  Prevent s04 from encoding an ambiguous cycle boundary, duplicate-event behavior, or an unsafe
+  cleanup scope, without forcing humans to repeat decisions already locked by CR-008.
+scope_in:
+  - "Business meaning of a new committed closeout cycle versus an unchanged retry"
+  - "Audit semantics for current-cycle evidence and immutable history"
+  - "Mutable state surfaces and canonical post-closeout next action"
+  - "Existing candidate, rollback, prior-defect, and parent-release decisions"
+  - "Input readiness for measurable acceptance criteria and DoR"
+scope_out:
+  - "Selecting a helper, fingerprint algorithm, transaction structure, or code location"
+  - "Changing the receipt schema, signer, authority model, or public command"
+  - "Reopening the resolved legacy mandatory-DoD selector defect"
+  - "Implementing tests or production behavior"
+  - "Publishing, tagging, merging, installing, cleanup, or branch finalization"
+inputs_required:
+  - "PO-approved s02 Business Goal and KPI-RCR-001..006"
+  - "s01 RCR-01..06 and SA/TA drivers"
+  - "F-AG11-001 observed persisted state and root-cause evidence"
+  - "Current closeout reconciliation code and regression fixtures"
+  - "CR-008 exact-candidate and historical-evidence policy"
+outputs_required:
+  - "Three option-based open questions with owners and recommendations"
+  - "Resolved-by-existing-authority decisions"
+  - "Conflict and assumption register"
+  - "Input Readiness verdict using the canonical schema"
+  - "Evidence-based s03 audit and a concrete human action"
+done_when:
+  - "Every ambiguity that changes s04 criteria has an ID, owner, options, and recommendation"
+  - "Existing human decisions are reused instead of reopened"
+  - "Requirement semantics are separated from s05 technical design"
+  - "Readiness is BLOCKED while decision-bearing questions remain unapproved"
+  - "The next human action names the exact bundle, options, roles, and sequence"
+constraints:
+  hard_constraints:
+    - "AI must not infer approval for OQ-RCR-001..003"
+    - "A successful new cycle and an unchanged retry must remain distinguishable"
+    - "Historical receipts and protocol events must remain immutable"
+    - "One human interaction must preserve independent gate authority and receipts"
+    - "Parent release and branch finalization remain blocked by F-AG11-001"
+  soft_constraints:
+    - "Ask only questions that materially change s04 acceptance or readiness"
+    - "Prefer the smallest correction compatible with existing protocol schemas"
+  prohibited_actions:
+    - "Choose the s05 implementation pattern in s03"
+    - "Use global audit-event presence as proof of current-cycle completion"
+    - "Rewrite historical evidence to make the current state look consistent"
+    - "Open s04 as READY before the recommendation bundle is approved"
+  compliance_checks:
+    - "OQ-RCR-001 distinguishes committed transition from invocation and global history"
+    - "OQ-RCR-002 distinguishes per-cycle protocol evidence from coarse audit markers"
+    - "OQ-RCR-003 distinguishes mutable current-state surfaces from immutable history"
+    - "Input Readiness lists OQ-RCR-001..003 as missing decisions"
+    - "Parent and linked-defect handoffs retain the implementation and release holds"
+risks:
+  - id: "R-S03-RC-001"
+    description: "An ambiguous cycle boundary could create either a missing event or duplicates on retry."
+    likelihood: HIGH
+    impact: HIGH
+    severity: HIGH
+    mitigation: "Require an explicit human decision separating committed state transition from command invocation and history."
+    contingency: "Keep s04 blocked and retain F-AG11-001 if the semantics remain ambiguous."
+    owner: "ba/developer/qc"
+    status: OPEN
+  - id: "R-S03-RC-002"
+    description: "Duplicating coarse audit markers could damage idempotency or existing consumers."
+    likelihood: MEDIUM
+    impact: HIGH
+    severity: HIGH
+    mitigation: "Separate append-only per-cycle protocol evidence from the coarse audit marker in the recommendation."
+    contingency: "Require compatibility criteria at s04 before any design is approved."
+    owner: "developer/qc"
+    status: OPEN
+  - id: "R-S03-RC-003"
+    description: "Over-broad cleanup could rewrite historical notes or suppress a valid next action."
+    likelihood: MEDIUM
+    impact: HIGH
+    severity: HIGH
+    mitigation: "Pin current-state mutable surfaces and the canonical close action before acceptance criteria are written."
+    contingency: "Reject any s04 criteria that authorize generic history rewriting."
+    owner: "ba/developer/qc"
+    status: OPEN
+timebox:
+  target_duration: "One evidence and recommendation pass"
+  deadline: "Before s04 Acceptance + DoR authoring"
+  escalation_rule: "Remain BLOCKED if any question changes cycle identity, event evidence, or reconciliation scope."
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
-open_questions: []
-missing_inputs: []
-conflicts: []
-assumptions: []
+open_questions:
+  - id: "OQ-RCR-001"
+    question: "What constitutes a new committed closeout cycle, distinct from an unchanged retry?"
+    decision_type: "requirement semantics"
+    owners: ["ba", "developer", "qc"]
+    status: "WAITING_HUMAN_DECISION"
+    options:
+      - id: "A"
+        statement: "Treat every command invocation as a new cycle."
+        tradeoff: "Simple to observe, but a retry would create duplicate event evidence and violate KPI-RCR-003."
+      - id: "B"
+        statement: "Treat a cycle as new only when the transaction commits at least one new current gate receipt or equivalent current-state transition for the exact artifact and applicable gate set."
+        tradeoff: "Separates committed work from retries while leaving the exact fingerprint mechanism to s05."
+      - id: "C"
+        statement: "Treat the first global CLOSEOUT_BUNDLE_APPROVED marker as the only cycle."
+        tradeoff: "Preserves current code shape but suppresses evidence for every later valid cycle."
+    recommendation: "B"
+    rationale: "It satisfies one event per committed cycle and zero mutation on unchanged retry without selecting an implementation algorithm."
+    acceptance_effect: "s04 must test first cycle, second committed cycle, and unchanged retry as three distinct states."
+  - id: "OQ-RCR-002"
+    question: "How should current-cycle success be recorded while historical evidence stays immutable?"
+    decision_type: "audit contract"
+    owners: ["developer", "qc"]
+    status: "WAITING_HUMAN_DECISION"
+    options:
+      - id: "A"
+        statement: "Append exactly one attributable protocol event for each committed cycle; retain the coarse audit_events marker as a compatibility indicator and do not rewrite history."
+        tradeoff: "Provides cycle-level evidence while preserving existing consumers and receipt history."
+      - id: "B"
+        statement: "Append another identical CLOSEOUT_BUNDLE_APPROVED string to audit_events for every cycle."
+        tradeoff: "Avoids protocol-event semantics but makes the coarse list an ambiguous event log and can break idempotency assumptions."
+      - id: "C"
+        statement: "Replace the previous closeout event with the current one."
+        tradeoff: "Keeps one visible event but destroys immutable audit history."
+    recommendation: "A"
+    rationale: "It separates compatibility markers from per-cycle evidence and works with the existing append-only protocol-event model."
+    acceptance_effect: "s04 must assert one new protocol event for a committed second cycle, no historical mutation, and no event on unchanged retry."
+  - id: "OQ-RCR-003"
+    question: "Which state is reconciled after commit, and what is the canonical next action?"
+    decision_type: "completion boundary"
+    owners: ["ba", "developer", "qc"]
+    status: "WAITING_HUMAN_DECISION"
+    options:
+      - id: "A"
+        statement: "Reconcile the mutable report and s01 protocol mirror semantically, remove satisfied approval blockers/actions regardless of prose form, and leave only the work-item close action with a protocol-close handoff."
+        tradeoff: "Produces one authoritative current state while preserving historical notes, receipts, and events."
+      - id: "B"
+        statement: "Remove only literal approve-closeout-bundle command strings and retain the previous handoff."
+        tradeoff: "Smallest textual change, but repeats the observed F-AG11-001 failure for prose and stale navigation."
+      - id: "C"
+        statement: "Rewrite every historical workflow note so all prior sections show the current state."
+        tradeoff: "Makes search results look uniform but destroys historical meaning and creates a large blast radius."
+    recommendation: "A"
+    rationale: "It makes the current source and mirror agree without converting immutable history into mutable state."
+    acceptance_effect: "s04 must enumerate mutable surfaces, semantic cleanup, canonical close action, and preserved history."
+missing_inputs:
+  - "Human decision for OQ-RCR-001 Option B or an amendment"
+  - "Human decision for OQ-RCR-002 Option A or an amendment"
+  - "Human decision for OQ-RCR-003 Option A or an amendment"
+conflicts:
+  - id: "CONFLICT-RCR-001"
+    sources: ["Global audit-event presence check", "Requirement for one event per committed cycle"]
+    conflict: "Historical success currently suppresses evidence for a later committed cycle."
+    disposition: "Await OQ-RCR-001 and OQ-RCR-002; do not select a dedup mechanism in s03."
+    owner: "developer/qc"
+    blocking: true
+  - id: "CONFLICT-RCR-002"
+    sources: ["Literal command-string cleanup", "KPI-RCR-001 zero stale approval surfaces"]
+    conflict: "Equivalent prose or alternate command formatting survives a successful closeout."
+    disposition: "Await OQ-RCR-003 to lock semantic current-state reconciliation."
+    owner: "ba/developer/qc"
+    blocking: true
+  - id: "CONFLICT-RCR-003"
+    sources: ["Retained pre-closeout handoff", "KPI-RCR-004 post-closeout surface agreement"]
+    conflict: "Receipts say complete while navigation still points to the completed approval."
+    disposition: "Await OQ-RCR-003 to lock the canonical close handoff."
+    owner: "ba/developer/qc"
+    blocking: true
+  - id: "CONFLICT-RCR-004"
+    sources: ["Parent protocol_status=VERIFIED", "QC-reopened s07 delivery lane for F-AG11-001"]
+    conflict: "The enum has no VERIFIED-to-s07 transition, while governance evidence blocks current release authority."
+    disposition: "Retain VERIFIED as a historical protocol projection and enforce BLOCKED through the parent delivery-lane state and artifacts."
+    owner: "qc"
+    blocking: false
+assumptions:
+  - "The public approve-closeout-bundle command and trusted receipt-v1 contract remain unchanged."
+  - "The existing protocol event record can carry attributable cycle evidence; s05 must prove whether extra identity data is necessary."
+  - "The mutable current-state pair is the work-item report plus its synchronized s01 protocol block."
+  - "The canonical post-closeout action remains wfc work-item close for a VERIFIED work item."
+  - "The current CR-008 worktree remains the delivery isolation boundary."
+resolved_by_existing_authority:
+  - id: "RDA-RCR-001"
+    subject: "Candidate and rollback identity"
+    decision: "Build and host one corrected v2.6.2 candidate; retain immutable v2.6.1 as rollback under its known closeout limitation."
+    source: "Prior DevOps/QC release decisions and parent F-AG11-001 hold"
+  - id: "RDA-RCR-002"
+    subject: "Prior missing-DoD defect"
+    decision: "Keep closeout-bundle-legacy-dod-compatibility closed and use it only as regression evidence."
+    source: "Completed linked defect and s01 dedup decision"
+  - id: "RDA-RCR-003"
+    subject: "Public contract and foundation"
+    decision: "No public CLI, receipt, authority, stack, runtime, or deployment contract change is in scope."
+    source: "Approved s01 and s02 scope boundaries"
+  - id: "RDA-RCR-004"
+    subject: "Release authority"
+    decision: "Historical parent terminal receipts do not authorize a corrected candidate; parent gates must be repeated after re-verification."
+    source: "QC F-AG11-001 invalidation and human-controlled gate policy"
+recommendation_bundle:
+  sequence: ["OQ-RCR-001", "OQ-RCR-002", "OQ-RCR-003"]
+  selections:
+    OQ-RCR-001: "B"
+    OQ-RCR-002: "A"
+    OQ-RCR-003: "A"
+  reviewers:
+    OQ-RCR-001: ["ba", "developer", "qc"]
+    OQ-RCR-002: ["developer", "qc"]
+    OQ-RCR-003: ["ba", "developer", "qc"]
+  effect_if_approved: "Resolve blocking conflicts and open s04 Acceptance + DoR authoring; no implementation authority is created."
 ```
 
 ## Input Readiness
 ```yaml
-status: READY|BLOCKED|PARTIAL
-blocking_items: []
-owner_actions: []
+step: "s04 Acceptance + DoR"
+status: BLOCKED
+available_inputs:
+  - "PO-approved Business Goal with KPI-RCR-001..006"
+  - "Approved work-item receipt and complete s01 SA/TA driver set"
+  - "Observed repeated-closeout receipts, stale actions/handoff, and missing current-cycle event"
+  - "Source evidence for literal action filtering, retained handoff, and global event-presence dedup"
+  - "Existing first-cycle, legacy gate-set, atomicity, and exact-candidate regression evidence"
+  - "Existing authority for v2.6.2 candidate, v2.6.1 rollback, and parent release hold"
+missing_inputs:
+  - "Approved OQ-RCR-001 cycle-boundary semantics"
+  - "Approved OQ-RCR-002 audit-event contract"
+  - "Approved OQ-RCR-003 reconciliation boundary and canonical next action"
+invalid_inputs:
+  - "Historical parent DoD, Release, and Business Acceptance receipts are pre-finding evidence only."
+  - "Global CLOSEOUT_BUNDLE_APPROVED presence alone cannot prove current-cycle completion."
+conflicts:
+  - "CONFLICT-RCR-001..003 remain blocking until the recommendation bundle is human-approved or amended."
+  - "CONFLICT-RCR-004 is contained by the parent BLOCKED delivery-lane projection and is non-blocking for child discovery."
+assumptions:
+  - "The correction can remain within existing work-item protocol and test boundaries."
+  - "No public contract or foundation gate becomes applicable unless later evidence contradicts the approved scope."
+risk_level: HIGH
+next_action: "BA, Developer, and QC approve or amend the OQ-RCR-001..003 recommendation bundle in sequence B, A, A."
 ```
 
 ## Audit
 ```yaml
-audit_status: PASS|FAIL|PARTIAL
-notes: []
+step: "s03 Open Questions"
+status: PARTIAL
+checks:
+  - criterion: "Every acceptance-changing ambiguity has an ID, owner, options, and recommendation"
+    result: PASS
+    evidence: "OQ-RCR-001..003 each contain owners, three options, one recommendation, rationale, and acceptance effect."
+  - criterion: "Existing human decisions are reused instead of reopened"
+    result: PASS
+    evidence: "RDA-RCR-001..004 retain candidate, rollback, prior-defect, contract, and release-hold authority."
+  - criterion: "Requirement semantics are separated from technical design"
+    result: PASS
+    evidence: "The bundle specifies observable cycle, event, and state semantics while deferring mechanisms to s05."
+  - criterion: "Readiness remains blocked while decision-bearing questions are unapproved"
+    result: PASS
+    evidence: "Input Readiness is BLOCKED and lists all three missing decisions."
+  - criterion: "Every blocking question has a human decision"
+    result: FAIL
+    evidence: "OQ-RCR-001..003 are WAITING_HUMAN_DECISION."
+constraint_violations: []
+unmitigated_high_risks: []
+timebox_breach: false
+timebox_evidence: "Completed classification and recommendation in one evidence pass; human review remains outside the authoring timebox."
+gaps:
+  - "Human decisions for OQ-RCR-001..003"
+risk_level: HIGH
+next_action: "Approve or amend recommendation sequence OQ-RCR-001=B, OQ-RCR-002=A, OQ-RCR-003=A before s04."
+```
+
+## Governance Context
+```yaml
+governance_ref: "project-context/project-context.md"
+applicable_principles:
+  - "AI proposes; BA, Developer, and QC retain the question decisions assigned to them"
+  - "Current lifecycle state and immutable history have distinct ownership"
+  - "A completed approval must not remain represented as pending"
+  - "Human interaction bundling never collapses independent gate authority"
+required_reviews:
+  - "BA, Developer, and QC review OQ-RCR-001"
+  - "Developer and QC review OQ-RCR-002"
+  - "BA, Developer, and QC review OQ-RCR-003"
+prohibited_actions:
+  - "Infer the recommended options as approved"
+  - "Open s04 readiness before all three decisions are recorded"
+  - "Choose implementation mechanics or edit production code"
+  - "Use historical terminal receipts as current release authority"
+open_governance_questions: ["OQ-RCR-001", "OQ-RCR-002", "OQ-RCR-003"]
 ```
 
 ## Traceability
 ```yaml
-upstream: []
-next_step: ""
+source_inputs:
+  - "PO-approved closeout-bundle-repeat-cycle-reconciliation.s02.business-goal.md"
+  - "F-AG11-001 in parent s07 and s08"
+  - "packages/workflow-bundle/scripts/work-item-protocol.js reconciliation behavior"
+  - "packages/workflow-bundle/test/work-item-protocol.test.js closeout fixtures"
+decision_mapping:
+  - { question: "OQ-RCR-001", drivers: ["DRV-SA-RC-002", "DRV-TA-RC-002"], criteria: ["RCR-02", "RCR-04"], metrics: ["KPI-RCR-002", "KPI-RCR-003"] }
+  - { question: "OQ-RCR-002", drivers: ["DRV-SA-RC-002", "DRV-TA-RC-002"], criteria: ["RCR-02", "RCR-05"], metrics: ["KPI-RCR-002", "KPI-RCR-005"] }
+  - { question: "OQ-RCR-003", drivers: ["DRV-SA-RC-001", "DRV-SA-RC-003", "DRV-TA-RC-001"], criteria: ["RCR-01", "RCR-03"], metrics: ["KPI-RCR-001", "KPI-RCR-004"] }
+next_step: "s04 Acceptance + DoR after OQ-RCR-001..003 are human-approved or amended"
 ```
 
 ## Handoff
-- Trạng thái readiness:
-- Điều cần làm để sang step 4:
+- Readiness status: `BLOCKED`; s03 authoring is complete but the three decision receipts are human statements, not inferred approvals.
+- Recommendation sequence: `OQ-RCR-001 Option B → OQ-RCR-002 Option A → OQ-RCR-003 Option A`.
+- Review roles: BA/Developer/QC for OQ-RCR-001 and OQ-RCR-003; Developer/QC for OQ-RCR-002.
+- Condition for s04: record all three human decisions, update readiness to `READY`, and re-audit s03; implementation remains closed.
