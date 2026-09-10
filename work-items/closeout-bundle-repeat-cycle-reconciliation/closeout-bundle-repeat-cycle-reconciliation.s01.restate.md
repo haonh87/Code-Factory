@@ -480,7 +480,7 @@ work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation"
-current_step: "s04"
+current_step: "s05"
 granted_write_paths: []
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
@@ -493,15 +493,14 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "s04-trusted-receipt-sealing"
-last_transition_action: "s04-spec-dor-human-approved"
-last_transition_at: "2026-09-10T03:09:26Z"
+handoff_target: "s05-approach-review"
+last_transition_action: "s04-receipts-verified-open-s05"
+last_transition_at: "2026-09-10T05:05:26Z"
 required_actions:
-  - "wfc gate approve --work-item closeout-bundle-repeat-cycle-reconciliation --gate spec --reviewed-by ba"
-  - "wfc gate approve --work-item closeout-bundle-repeat-cycle-reconciliation --gate dor --reviewed-by qc"
-  - "After both receipts verify with digest_match=true, continue to s05; implementation remains closed until Approach and Task Plan pass."
+  - "Developer reviews and approves the proposed s05 Technical Approach."
+  - "After human approval, finalize the unchanged s05 host and seal a digest-matched Approach receipt before s06 Task Plan."
 blockers:
-  - "Spec and DoR trusted receipts are not yet sealed against the s04 host artifact."
+  - "Developer Approach approval and a digest-matched trusted receipt are pending."
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -510,7 +509,9 @@ review_notes:
   - "This decision does not substitute for the s03 decisions, Spec, DoR, Approach, Task Plan, or any later gate."
   - "Human reviewers explicitly approved OQ-RCR-001=B, OQ-RCR-002=A, and OQ-RCR-003=A with the assigned BA, Developer, and QC roles at 2026-09-10T02:30:56Z."
   - "s04 was drafted with DoR readiness READY; at that point Spec and DoR still awaited independent human approval and trusted receipt sealing."
-  - "Human BA approved Spec and human BA/QC approved DoR at 2026-09-10T03:09:26Z; the finalized s04 host now awaits independent BA Spec and QC DoR trusted receipts."
+  - "Human BA approved Spec and human BA/QC approved DoR at 2026-09-10T03:09:26Z."
+  - "Trusted Spec receipt APPROVED by BA at 2026-09-10T04:55:23.729Z and trusted DoR receipt APPROVED by QC at 2026-09-10T04:55:36.637Z both match finalized s04 SHA-256 b50db12a977a007b8785baff4153ad54d8049e0003d030deaf4329bebff9f60b."
+  - "The proposed s05 Approach compares three options and recommends operation-delta cycle classification plus one shared journal/event transaction ID; Developer review remains pending."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -533,6 +534,9 @@ audit_events:
   - "OPEN_QUESTIONS_RESOLVED"
   - "S04_ACCEPTANCE_DOR_DRAFTED"
   - "S04_SPEC_DOR_HUMAN_APPROVED_PENDING_RECEIPTS"
+  - "S04_SPEC_RECEIPT_VERIFIED"
+  - "S04_DOR_RECEIPT_VERIFIED"
+  - "S05_TECHNICAL_APPROACH_DRAFTED"
 ```
 
 ## Traceability
@@ -547,13 +551,16 @@ outputs:
   - "SA and TA driver-only handoffs"
   - "Human-approved OQ-RCR-001=B, OQ-RCR-002=A, and OQ-RCR-003=A"
   - "Proposed AC-RCR-01..08 and DoR READY assessment"
-next_step: "Seal BA Spec and QC DoR trusted receipts, then verify both before s05"
+  - "Digest-matched BA Spec and QC DoR trusted receipts"
+  - "Proposed transaction-delta Technical Approach with shared journal/event identity"
+next_step: "Independent Developer Approach review, then finalized-host receipt sealing before s06"
 ```
 
 ## Handoff
 - Clear: closeout receipts succeeded, but current navigation and event evidence did not reconcile.
 - Distinct scope: repeat-cycle/idempotency, not the resolved missing-DoD selector defect.
 - Decision: PO approval is backed by a verified trusted receipt; the completed receipt action has been removed.
-- Current step: BA approved the s04 Spec and BA/QC approved DoR; independent trusted receipt sealing remains pending.
-- Boundary: implementation remains closed until Spec, DoR, Approach, and Task Plan independently pass.
+- Current step: BA Spec and QC DoR receipts both match finalized s04; s05 Technical Approach is proposed for Developer review.
+- Recommendation: transaction-delta closeout projector with one shared journal/event transaction ID and no new public schema.
+- Boundary: implementation remains closed until Developer-approved Approach and Task Plan each receive valid trusted receipts.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.
