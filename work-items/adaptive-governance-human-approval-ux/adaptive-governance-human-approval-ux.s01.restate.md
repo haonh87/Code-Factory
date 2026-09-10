@@ -712,16 +712,16 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "linked-defect-s04-spec-dor-review"
-last_transition_action: "linked-defect-s04-drafted"
-last_transition_at: "2026-09-10T02:30:56Z"
+handoff_target: "linked-defect-s04-receipt-sealing"
+last_transition_action: "linked-defect-s04-human-approved"
+last_transition_at: "2026-09-10T03:09:26Z"
 required_actions:
-  - "BA reviews the linked defect Spec; BA and QC review its DoR and seal the independent trusted receipts."
+  - "Seal and verify the linked defect BA Spec and QC DoR trusted receipts against the finalized s04 host."
   - "Complete the linked defect through Spec, DoR, Approach, Task Plan, TDD implementation, two-tier review, hosted verification, and DoD."
   - "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
 blockers:
   - "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."
-  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is at s04; Spec and DoR receipts block s05."
+  - "Linked defect closeout-bundle-repeat-cycle-reconciliation has human-approved Spec and DoR; their trusted receipts block s05."
 review_notes:
   - "Human review approved."
   - "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local verification matrix and hosted Guardrails run 34322150024."
@@ -737,7 +737,8 @@ review_notes:
   - "The linked defect trusted receipt was verified APPROVED with SHA-256 4ae668c9dc20dfaa1ff8979da9ce43485511c2d19e59e98e18c08427e7485b0d; s02 Business Goal is drafted for review."
   - "Human PO approved the linked defect s02 Business Goal at 2026-09-10T01:36:42Z."
   - "Human BA, Developer, and QC approved linked defect OQ-RCR-001=B, OQ-RCR-002=A, and OQ-RCR-003=A with their assigned role sets at 2026-09-10T02:30:56Z."
-  - "The linked defect s04 Spec and DoR are drafted; implementation and parent release remain blocked pending independent child gates and delivery."
+  - "The linked defect s04 Spec and DoR were drafted; before the current human decision, implementation and parent release remained blocked pending independent child gates and delivery."
+  - "Human BA approved the linked defect Spec and human BA/QC approved its DoR at 2026-09-10T03:09:26Z; independent trusted receipts remain pending."
 refs:
   - "changes/CR-008"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -795,6 +796,7 @@ audit_events:
   - "LINKED_REPEAT_CYCLE_DEFECT_S03_DRAFTED"
   - "LINKED_REPEAT_CYCLE_DEFECT_OPEN_QUESTIONS_RESOLVED"
   - "LINKED_REPEAT_CYCLE_DEFECT_S04_DRAFTED"
+  - "LINKED_REPEAT_CYCLE_DEFECT_S04_HUMAN_APPROVED_PENDING_RECEIPTS"
 ```
 
 ## Current Governance Router Status
@@ -823,11 +825,11 @@ outputs:
   - "clarified adaptive-governance boundary"
   - "AG-01..AG-11 acceptance draft"
   - "SA and TA architecture-driver handoffs"
-next_step: "BA Spec and BA/QC DoR review for the linked defect"
+next_step: "Seal and verify linked defect Spec and DoR receipts"
 ```
 
 ## Handoff
 - Current state: `F-AG11-001` is OPEN and the parent delivery lane is reopened; the prior candidate and terminal receipts are historical pre-finding evidence only.
-- Linked defect: s03 is READY/PASS after human approval of `OQ-RCR-001=B`, `OQ-RCR-002=A`, and `OQ-RCR-003=A`; s04 Spec and DoR are drafted.
-- Next human action: BA reviews Spec; BA and QC review DoR and seal independent trusted receipts; later gates remain independent.
+- Linked defect: BA approved its s04 Spec and BA/QC approved DoR after s03 READY/PASS; both trusted receipts remain pending.
+- Next human action: BA seals Spec and QC seals DoR against the finalized s04 host; later gates remain independent.
 - Branch/worktree decision: `HOLD_OPEN`; no merge, tag, publication, release, cleanup, global install, or branch finalization is authorized.

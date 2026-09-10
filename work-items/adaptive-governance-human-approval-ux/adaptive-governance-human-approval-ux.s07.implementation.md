@@ -117,8 +117,9 @@ tags:
 > digest-valid DoD, Release, and Business Acceptance receipts but retained the pre-closeout action
 > and handoff and omitted a current-cycle protocol event. The linked defect
 > `closeout-bundle-repeat-cycle-reconciliation` has human-approved OQ-RCR-001=B,
-> OQ-RCR-002=A, and OQ-RCR-003=A and is at s04 Acceptance + DoR; Spec, DoR, and later
-> authoring gates remain separate and implementation is closed.
+> OQ-RCR-002=A, and OQ-RCR-003=A and is at s04 Acceptance + DoR. BA approved Spec and
+> BA/QC approved DoR; their trusted receipts and later authoring gates remain separate, so
+> implementation is closed.
 > All earlier implementation/review evidence below is historical pre-finding evidence.
 >
 > CR-008 is ACTIVE in a dedicated enterprise worktree. B0, B1a and B1b are approved. T3/T4 now render
@@ -1158,7 +1159,7 @@ release_effect:
   terminal_receipts: HISTORICAL_PRE_FINDING
   branch_worktree: HOLD_OPEN
   release: BLOCKED
-next_human_action: "BA reviews the linked defect Spec; BA and QC review DoR; later gates remain independent."
+next_human_action: "BA seals the linked defect Spec receipt and QC seals its DoR receipt; later gates remain independent."
 ```
 
 ## Workflow Pack Audit
@@ -1215,7 +1216,7 @@ next_step: "Commit the VERIFIED snapshot and run hosted Guardrails before Releas
 
 ## Handoff
 - Current state: `F-AG11-001` reopened the parent delivery lane; the prior B0-B4 and verification evidence is retained as historical pre-finding evidence.
-- Linked defect: s03 is READY/PASS for `closeout-bundle-repeat-cycle-reconciliation`; its s04 Spec and DoR are drafted but not human-approved, so implementation is not open.
+- Linked defect: s03 is READY/PASS for `closeout-bundle-repeat-cycle-reconciliation`; BA approved its s04 Spec and BA/QC approved DoR, but trusted receipts remain pending, so implementation is not open.
 - Required behavior: a repeated committed closeout must remove every satisfied pending action, set the canonical close-ready handoff, append one current-cycle event, and remain a NOOP on unchanged retry.
 - Release effect: the source `38bb0d1…`, run `34322150024`, candidate `2a5ae701…`, and terminal receipts are historical pre-finding evidence only.
 - Branch/worktree: `HOLD_OPEN`; no publish, tag, merge, install, cleanup, or branch finalization is authorized.

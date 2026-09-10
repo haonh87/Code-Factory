@@ -56,7 +56,7 @@
         "Drafted s01 requirement analysis plus SA/TA driver-only handoff."
       ],
       "blockers": [
-        "Spec and DoR require independent human review and trusted receipts before s05."
+        "Human-approved Spec and DoR require independent trusted receipts before s05."
       ]
     }
   ],
@@ -79,7 +79,8 @@
     "Human PO explicitly approved the s02 Business Goal at 2026-09-10T01:36:42Z.",
     "s03 isolated three decision-bearing questions and reused existing CR-008 authority for candidate identity, scope boundary, and release hold.",
     "Human BA, Developer, and QC approved OQ-RCR-001 Option B; Developer and QC approved OQ-RCR-002 Option A; BA, Developer, and QC approved OQ-RCR-003 Option A at 2026-09-10T02:30:56Z.",
-    "s03 reached READY/PASS and s04 drafted eight measurable acceptance criteria plus a READY DoR recommendation; Spec and DoR remain human-controlled gates."
+    "s03 reached READY/PASS and s04 drafted eight measurable acceptance criteria plus a READY DoR recommendation; Spec and DoR remain human-controlled gates.",
+    "Human BA explicitly approved Spec, and human BA plus QC explicitly approved DoR at 2026-09-10T03:09:26Z; independent trusted receipt sealing remains pending."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -94,10 +95,10 @@
   "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "s04-spec-dor-review",
+  "handoff_target": "s04-trusted-receipt-sealing",
   "required_actions": [
-    "BA reviews and approves Spec in s04.",
-    "BA and QC review and approve DoR in s04; QC seals the trusted DoR receipt after joint approval.",
+    "wfc gate approve --work-item closeout-bundle-repeat-cycle-reconciliation --gate spec --reviewed-by ba",
+    "wfc gate approve --work-item closeout-bundle-repeat-cycle-reconciliation --gate dor --reviewed-by qc",
     "After both receipts verify with digest_match=true, continue to s05; implementation remains closed until Approach and Task Plan pass."
   ],
   "blockers": [
@@ -124,7 +125,8 @@
     "S02_BUSINESS_GOAL_APPROVED",
     "S03_OPEN_QUESTIONS_DRAFTED",
     "OPEN_QUESTIONS_RESOLVED",
-    "S04_ACCEPTANCE_DOR_DRAFTED"
+    "S04_ACCEPTANCE_DOR_DRAFTED",
+    "S04_SPEC_DOR_HUMAN_APPROVED_PENDING_RECEIPTS"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -137,7 +139,8 @@
     "Human PO explicitly approved the s02 Business Goal at 2026-09-10T01:36:42Z.",
     "This decision does not substitute for the s03 decisions, Spec, DoR, Approach, Task Plan, or any later gate.",
     "Human reviewers explicitly approved OQ-RCR-001=B, OQ-RCR-002=A, and OQ-RCR-003=A with the assigned BA, Developer, and QC roles at 2026-09-10T02:30:56Z.",
-    "s04 is drafted with DoR readiness READY; Spec and DoR are still waiting for independent human approval and trusted receipt sealing."
+    "s04 was drafted with DoR readiness READY; at that point Spec and DoR still awaited independent human approval and trusted receipt sealing.",
+    "Human BA approved Spec and human BA/QC approved DoR at 2026-09-10T03:09:26Z; the finalized s04 host now awaits independent BA Spec and QC DoR trusted receipts."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -223,6 +226,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "s03 reached READY/PASS and s04 Acceptance + DoR was drafted; implementation remains closed pending Spec, DoR, Approach, and Task Plan receipts."
+    },
+    {
+      "timestamp": "2026-09-10T03:09:26Z",
+      "action": "s04-spec-dor-human-approved",
+      "actor": "ba/qc",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human BA approved Spec and human BA plus QC approved DoR. Independent trusted receipts remain pending and no Approach, Task Plan, or implementation authority is implied."
     }
   ]
 }

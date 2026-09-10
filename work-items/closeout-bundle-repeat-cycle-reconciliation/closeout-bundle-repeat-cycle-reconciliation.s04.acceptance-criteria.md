@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: final
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
   - "project-context/checklists/strict.md"
@@ -25,7 +25,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -59,12 +59,12 @@ role_signoffs:
   business_acceptance: ["po"]
   dod: ["qc"]
 gate_reviews:
-  spec_reviewed_by: []
-  spec_reviewed_at: ""
+  spec_reviewed_by: ["ba"]
+  spec_reviewed_at: "2026-09-10T03:09:26Z"
   contract_reviewed_by: []
   contract_reviewed_at: ""
-  dor_reviewed_by: []
-  dor_reviewed_at: ""
+  dor_reviewed_by: ["ba", "qc"]
+  dor_reviewed_at: "2026-09-10T03:09:26Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   foundation_reviewed_by: []
@@ -111,8 +111,9 @@ tags:
 > The proposed Spec makes the approved B/A/A decisions testable: each committed closeout cycle
 > contributes one attributable protocol event; an unchanged retry changes nothing; and a successful
 > closeout reconciles the report plus s01 protocol mirror to one close action and a `protocol-close`
-> handoff without rewriting history. Input readiness is `READY`, but Spec and DoR remain independent
-> human-controlled gates for BA and QC.
+> handoff without rewriting history. BA approved Spec, and BA plus QC approved DoR at
+> `2026-09-10T03:09:26Z`. Input readiness is `READY`; the two independent trusted receipts must
+> still be sealed against this finalized host before s05 can open.
 
 ## Step Contract
 ```yaml
@@ -224,7 +225,12 @@ timebox:
 
 ## Requirement Baseline
 ```yaml
-status: READY_FOR_REVIEW
+status: APPROVED
+approved_spec_refs:
+  - "changes/CR-008/spec-delta/srs.delta.md"
+approved_spec_digests:
+  - ref: "changes/CR-008/spec-delta/srs.delta.md"
+    sha256: "01667dd97faff3861534dc0d400ccfff51283de8305d360d69e0982abf1295eb"
 source_refs:
   - "closeout-bundle-repeat-cycle-reconciliation.s01.restate.md"
   - "closeout-bundle-repeat-cycle-reconciliation.s02.business-goal.md"
@@ -247,6 +253,7 @@ decision_notes:
   - "A committed cycle requires at least one new current receipt or equivalent committed current-state transition for the exact artifact and applicable gate set."
   - "Each committed cycle appends one attributable protocol event; CLOSEOUT_BUNDLE_APPROVED remains a coarse compatibility marker."
   - "Only the mutable report and synchronized s01 protocol state are reconciled to the canonical close action and handoff."
+  - "Human BA approved this Spec at 2026-09-10T03:09:26Z; trusted Spec receipt sealing remains pending."
 ```
 
 ## Contract Baseline
@@ -482,23 +489,23 @@ checks:
   - id: "GOV-RCR-07"
     check: "Human gates are not inferred from readiness or audit evidence"
     status: PASS
-    evidence: "Spec and DoR remain WAITING_HUMAN_APPROVAL with empty gate_reviews and no trusted gate receipt."
+    evidence: "The user explicitly approved Spec as BA and DoR as BA/QC; gate_reviews records the human decision while trusted receipts remain separate and pending."
   - id: "GOV-RCR-08"
     check: "No governance exception is required"
     status: PASS
     evidence: "The proposed criteria preserve all strict controls and open no larger boundary."
 blocking_items:
-  - "BA must review and approve the Spec against this unchanged host artifact."
-  - "BA and QC must review and approve DoR; QC then seals the trusted DoR receipt."
+  - "BA must seal the trusted Spec receipt against this finalized host artifact."
+  - "QC must seal the trusted DoR receipt after the recorded joint BA/QC approval."
 owner: "ba/qc"
-next_action: "Review Spec and DoR independently, then seal digest-bound receipts before s05."
+next_action: "Seal independent digest-bound Spec and DoR receipts before s05."
 ```
 
 ## Definition of Ready
 ```yaml
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
 status: READY
-gate_status: WAITING_HUMAN_APPROVAL
+gate_status: APPROVED_PENDING_RECEIPTS
 checks:
   restated_request_clear: PASS
   business_goal_clear: PASS
@@ -517,28 +524,28 @@ residual_risks:
   - "s05 still must compare at least two internal cycle-identity/reconciliation options and select the smallest correct one."
   - "Failure-injection support for newly touched persistence boundaries must be confirmed before s06 closes."
   - "A corrected exact hosted candidate and parent terminal evidence cannot exist before s07/s08."
-next_action: "BA reviews Spec; BA and QC review DoR; after approval, seal independent trusted receipts and verify digest_match=true before s05."
+next_action: "BA seals the Spec receipt and QC seals the DoR receipt; verify both with digest_match=true before s05."
 ```
 
 ## Human Gate Proposal
 ```yaml
 decisions:
   - gate: "spec"
-    status: "WAITING_HUMAN_APPROVAL"
+    status: "HUMAN_APPROVED_PENDING_RECEIPT"
     reviewer_roles: ["ba"]
     receipt_sealer: "ba"
-    decided_by: []
-    decided_at: ""
+    decided_by: ["ba"]
+    decided_at: "2026-09-10T03:09:26Z"
   - gate: "contract"
     status: "NOT_APPLICABLE"
     reviewer_roles: []
     reason: "No public CLI, event, data, UX, receipt, or authority contract changes."
   - gate: "dor"
-    status: "WAITING_HUMAN_APPROVAL"
+    status: "HUMAN_APPROVED_PENDING_RECEIPT"
     reviewer_roles: ["ba", "qc"]
     receipt_sealer: "qc"
-    decided_by: []
-    decided_at: ""
+    decided_by: ["ba", "qc"]
+    decided_at: "2026-09-10T03:09:26Z"
 receipt_model_note: >-
   The receipt schema stores one reviewed_by identity. Joint BA/QC DoR provenance remains in
   gate_reviews; QC seals the cryptographic DoR receipt only after both human roles approve.
@@ -566,12 +573,13 @@ checks:
     evidence: "s03 is READY/PASS, all OQ decisions are recorded, and blocking_gaps/open governance questions are empty."
   - criterion: "Reviewer and s05 entry conditions are exact"
     result: PASS
-    evidence: "The gate proposal assigns BA Spec and BA/QC DoR and requires digest-matched receipts before s05."
+    evidence: "BA Spec and BA/QC DoR approvals are recorded; independent digest-matched receipts remain mandatory before s05."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed in one bounded acceptance and readiness authoring pass."
-gaps: []
+gaps:
+  - "Trusted Spec and DoR receipt sealing is pending."
 risk_level: HIGH
 next_action: "Stop before s05 until BA Spec and QC-sealed DoR receipts verify against this unchanged artifact."
 ```
@@ -595,12 +603,12 @@ outputs:
   - "AC-RCR-01..08"
   - "EDGE-RCR-01..06"
   - "GOV-RCR-01..08"
-  - "DoR READY recommendation pending independent human gates"
+  - "Human-approved Spec and DoR pending independent trusted receipts"
 next_step: "s05 Technical Approach after trusted Spec and DoR receipts verify"
 ```
 
 ## Handoff
 - Mandatory criteria: exact cycle classification, one current-cycle protocol event, semantic state reconciliation, byte-stable retry, immutable history, atomicity, compatibility, and parent exact-candidate re-verification.
 - Edge cases: historical marker with or without older event, prose/format variants, divergent mutable surfaces, changed host/gate set, and concurrent/recovery retry.
-- Gate state: Contract and Foundation are `NOT_APPLICABLE`; Spec and DoR are `WAITING_HUMAN_APPROVAL`.
-- Condition for step 5: BA approves Spec, BA and QC approve DoR, and the independent trusted receipts have `digest_match=true` against this unchanged s04 artifact.
+- Gate state: Contract and Foundation are `NOT_APPLICABLE`; Spec and DoR are `HUMAN_APPROVED_PENDING_RECEIPT`.
+- Condition for step 5: BA seals Spec, QC seals DoR after the recorded joint review, and both trusted receipts have `digest_match=true` against this unchanged s04 artifact.
