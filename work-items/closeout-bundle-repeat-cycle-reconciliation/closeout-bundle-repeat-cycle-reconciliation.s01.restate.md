@@ -106,8 +106,8 @@ tags:
 > Historical `CLOSEOUT_BUNDLE_APPROVED` evidence also suppressed an event for the current cycle.
 > This linked BUG isolates `F-AG11-001`. Spec, DoR, Approach, and Task Plan now have digest-matched
 > trusted receipts. The work item is `ACTIVE` at s07; T1-T4 RED/GREEN are complete at source
-> `a65704aa0be26f99988d6d5c13f632fc76907ddd`. B1 Spec Compliance is ready for QC review;
-> Code Quality remains unopened until that decision passes.
+> `a65704aa0be26f99988d6d5c13f632fc76907ddd`. Human QC approved B1 Spec Compliance at
+> `2026-09-10T11:27:32Z`; B1 Code Quality is now open for Developer and QC review.
 
 ## Step Contract
 ```yaml
@@ -503,11 +503,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "step-s07-owner"
+handoff_target: "s07-b1-code-quality-review"
 last_transition_action: "activate"
 last_transition_at: "2026-09-10T10:13:59.704Z"
 required_actions:
-  - "QC reviews B1 conformance for T1-T4 at source a65704aa0be26f99988d6d5c13f632fc76907ddd before Code Quality may open."
+  - "Developer and QC review B1 Code Quality for T1-T4 at source a65704aa0be26f99988d6d5c13f632fc76907ddd."
 blockers: []
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
@@ -527,6 +527,8 @@ review_notes:
   - "Trusted Task Plan receipt APPROVED by Developer at 2026-09-10T10:11:42.373Z matches finalized s06 SHA-256 7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9."
   - "s07 activated at 2026-09-10T10:13:59.704Z. T0 baseline at source edc9454d38126d51ad9e5a85afc475d2915ac9bd passed both focused suites before production edits."
   - "T1-T4 complete at source a65704aa0be26f99988d6d5c13f632fc76907ddd. B1 Spec Compliance is READY_FOR_REVIEW by QC; B1 Code Quality remains NOT_RUN until that approval."
+  - "Human QC approved B1 Spec Compliance at 2026-09-10T11:27:32Z with no findings. B1 Code Quality is now READY_FOR_REVIEW by Developer and QC; T5 remains blocked."
+  - "B1 Code Quality recommendation PASS was prepared at 2026-09-10T11:32:30Z from focused test, syntax, diff, security, compatibility, performance, and minimal-delta evidence; human Developer/QC verdict remains pending."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -560,6 +562,9 @@ audit_events:
   - "WORK_ITEM_ACTIVATED"
   - "S07_T0_BASELINE_RECORDED"
   - "S07_B1_SPEC_COMPLIANCE_READY_FOR_REVIEW"
+  - "S07_B1_SPEC_COMPLIANCE_APPROVED"
+  - "S07_B1_CODE_QUALITY_OPENED"
+  - "S07_B1_CODE_QUALITY_RECOMMENDATION_PREPARED"
 ```
 
 ## Traceability
@@ -579,7 +584,8 @@ outputs:
   - "Developer-approved and digest-matched T0..T8 TDD, review, compatibility, and exact-candidate Task Plan"
   - "Explicit s07 activation and passing T0 pre-production baseline"
   - "T1-T4 fail-first/green transaction identity and cycle-event implementation"
-next_step: "Human QC reviews B1 Spec Compliance"
+  - "Human QC-approved B1 Spec Compliance"
+next_step: "Human Developer and QC review B1 Code Quality"
 ```
 
 ## Handoff
@@ -589,5 +595,5 @@ next_step: "Human QC reviews B1 Spec Compliance"
 - Current step: s07 is `ACTIVE`; T1-T4 are complete at source `a65704aa0be26f99988d6d5c13f632fc76907ddd`.
 - Recommendation: transaction-delta closeout projector with one shared journal/event transaction ID and no new public schema.
 - Plan: T0..T8 with three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, then one exact-candidate child-to-parent verification path.
-- Boundary: B1 Spec Compliance must pass before B1 Code Quality or T5 may begin.
+- Boundary: B1 Code Quality must pass with Developer and QC before T5 may begin.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.

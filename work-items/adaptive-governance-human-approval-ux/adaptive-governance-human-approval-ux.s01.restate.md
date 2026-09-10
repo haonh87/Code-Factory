@@ -102,7 +102,8 @@ tags:
 > and reduce repeated human approval interactions without weakening high-risk controls. Parent release
 > remains blocked by `F-AG11-001`; the linked defect has all authoring receipts digest-matched,
 > is `ACTIVE` at s07, and T1-T4 RED/GREEN are complete at source
-> `a65704aa0be26f99988d6d5c13f632fc76907ddd`. B1 Spec Compliance is ready for QC review.
+> `a65704aa0be26f99988d6d5c13f632fc76907ddd`. Human QC approved B1 Spec Compliance;
+> B1 Code Quality is now open for Developer and QC review.
 
 ## Step Contract
 ```yaml
@@ -715,16 +716,16 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "linked-defect-s07-tdd-b1"
-last_transition_action: "linked-defect-s07-activated-t0-pass"
-last_transition_at: "2026-09-10T10:18:10Z"
+handoff_target: "linked-defect-b1-code-quality"
+last_transition_action: "linked-defect-b1-spec-compliance-approved"
+last_transition_at: "2026-09-10T11:27:32Z"
 required_actions:
-  - "QC reviews linked defect B1 conformance for T1-T4 before Developer/QC Code Quality may open."
+  - "Developer and QC review linked defect B1 Code Quality for T1-T4."
   - "Continue the linked defect through remaining TDD batches, two-tier review, hosted verification, and DoD."
   - "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
 blockers:
   - "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."
-  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is ACTIVE at s07; B1 conformance and later reviews/verification remain pending."
+  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is ACTIVE at s07; B1 Code Quality and later delivery/verification remain pending."
 review_notes:
   - "Human review approved."
   - "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local verification matrix and hosted Guardrails run 34322150024."
@@ -749,6 +750,8 @@ review_notes:
   - "Human Developer approved the linked defect s06 Task Plan at 2026-09-10T08:56:19Z."
   - "The linked defect Task Plan receipt matches finalized s06 SHA-256 7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9; s07 is ACTIVE and T0 focused baselines pass at source edc9454d38126d51ad9e5a85afc475d2915ac9bd."
   - "Linked defect T1-T4 are complete at source a65704aa0be26f99988d6d5c13f632fc76907ddd. QC B1 Spec Compliance review is next; Code Quality has not started."
+  - "Human QC approved linked defect B1 Spec Compliance at 2026-09-10T11:27:32Z with no findings. B1 Code Quality is now READY_FOR_REVIEW by Developer and QC."
+  - "Linked defect B1 Code Quality recommendation PASS was prepared at 2026-09-10T11:32:30Z; Developer/QC approval remains pending."
 refs:
   - "changes/CR-008"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -817,6 +820,8 @@ audit_events:
   - "LINKED_REPEAT_CYCLE_DEFECT_S07_ACTIVATED"
   - "LINKED_REPEAT_CYCLE_DEFECT_T0_BASELINE_PASS"
   - "LINKED_REPEAT_CYCLE_DEFECT_B1_SPEC_COMPLIANCE_READY"
+  - "LINKED_REPEAT_CYCLE_DEFECT_B1_SPEC_COMPLIANCE_APPROVED"
+  - "LINKED_REPEAT_CYCLE_DEFECT_B1_CODE_QUALITY_OPENED"
 ```
 
 ## Current Governance Router Status
@@ -845,11 +850,11 @@ outputs:
   - "clarified adaptive-governance boundary"
   - "AG-01..AG-11 acceptance draft"
   - "SA and TA architecture-driver handoffs"
-next_step: "Human QC reviews linked defect B1 Spec Compliance; parent release remains blocked"
+next_step: "Human Developer and QC review linked defect B1 Code Quality; parent release remains blocked"
 ```
 
 ## Handoff
 - Current state: `F-AG11-001` is OPEN and the parent delivery lane is reopened; the prior candidate and terminal receipts are historical pre-finding evidence only.
 - Linked defect: all authoring receipts match; T1-T4 RED/GREEN are complete at source `a65704aa0be26f99988d6d5c13f632fc76907ddd`.
-- Next human action: QC reviews B1 Spec Compliance; Code Quality remains unopened.
+- Next human action: Developer and QC review B1 Code Quality; T5 remains blocked.
 - Branch/worktree decision: `HOLD_OPEN`; no merge, tag, publication, release, cleanup, global install, or branch finalization is authorized.

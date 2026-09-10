@@ -110,7 +110,8 @@ tags:
 > T3 produced the expected three-assertion RED, and T4 is GREEN at source
 > `a65704aa0be26f99988d6d5c13f632fc76907ddd`: marker-only history, a later cycle with
 > an older event, deterministic gate order, shared transaction attribution, and two byte-stable
-> retries all pass. B1 Spec Compliance is ready for QC review; Code Quality remains unopened.
+> retries all pass. Human QC approved B1 Spec Compliance at `2026-09-10T11:27:32Z`.
+> B1 Code Quality is now open for Developer and QC review; T5 remains blocked until it passes.
 
 ## Step Contract
 ```yaml
@@ -213,7 +214,8 @@ doc_changes:
   - "Recorded the s07 activation and T0 baseline in child and parent workflow evidence."
 config_changes: []
 review_checkpoints:
-  - "B1 Spec Compliance: READY_FOR_QC_REVIEW; Code Quality: BLOCKED_BY_REVIEW_ORDER"
+  - "B1 Spec Compliance: APPROVED_BY_QC at 2026-09-10T11:27:32Z"
+  - "B1 Code Quality: READY_FOR_DEVELOPER_AND_QC_REVIEW"
   - "B2 after T6: QC Spec Compliance, then Developer/QC Code Quality"
   - "B3 after T7: QC Spec Compliance, then Developer/QC Code Quality"
 known_limitations:
@@ -239,10 +241,11 @@ worktree_refs:
 worktree_reason: "Full planning, multi-session parent history, open HIGH finding, and release/merge risk require the existing isolated worktree."
 review_status: PARTIAL
 review_refs:
-  - "B1 Spec Compliance proposal prepared at 2026-09-10T11:13:29Z for source a65704aa0be26f99988d6d5c13f632fc76907ddd; human QC verdict pending."
-  - "B1 Code Quality is not started because Spec Compliance must pass first."
-spec_compliance_status: PARTIAL
-code_quality_status: NOT_RUN
+  - "B1 Spec Compliance APPROVED_BY_QC at 2026-09-10T11:27:32Z for source a65704aa0be26f99988d6d5c13f632fc76907ddd."
+  - "B1 Code Quality opened only after the Spec Compliance decision was recorded."
+  - "B1 Code Quality recommendation prepared at 2026-09-10T11:32:30Z; Developer/QC verdict pending."
+spec_compliance_status: PASS
+code_quality_status: PARTIAL
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
 independence_refs:
@@ -294,13 +297,30 @@ cleanup_preconditions:
 
 ### Review Plan
 ```yaml
-review_mode: independent
-review_order: ["spec_compliance", "code_quality"]
-batches:
-  - { id: "B1", after: "T4", spec_owner: "qc", quality_owners: ["developer", "qc"] }
-  - { id: "B2", after: "T6", spec_owner: "qc", quality_owners: ["developer", "qc"] }
-  - { id: "B3", after: "T7", spec_owner: "qc", quality_owners: ["developer", "qc"] }
-review_gate: "Do not begin the next implementation batch until both reviews for the current batch pass."
+review_target: "Repeat-cycle transaction identity, classification, projection, and regression batches"
+planning_track: full
+review_mode: INDEPENDENT
+review_order: ["SPEC_COMPLIANCE", "CODE_QUALITY"]
+review_batches:
+  - { batch: "B1", scope: ["T1", "T2", "T3", "T4"], trigger: "Cycle identity and event attribution GREEN", reviewer_role: "QC first; Developer and QC second" }
+  - { batch: "B2", scope: ["T5", "T6"], trigger: "Canonical state projection GREEN", reviewer_role: "QC first; Developer and QC second" }
+  - { batch: "B3", scope: ["T7"], trigger: "Atomicity, concurrency, and compatibility matrix complete", reviewer_role: "QC first; Developer and QC second" }
+required_checks:
+  spec_compliance:
+    - "Match the locked acceptance criteria, approach, task scope, and public-boundary constraints."
+    - "Reject unrecorded spec or governance drift."
+  code_quality:
+    - "Review correctness, readability, duplication, error handling, and smallest-delta discipline."
+    - "Confirm focused tests, syntax checks, and diff checks pass without weakened assertions."
+finding_policy:
+  blocker_threshold: "Any HIGH finding, spec/governance drift, authority regression, atomicity risk, or failing required check blocks the next batch."
+  reopen_conditions:
+    - "A later code change touches a previously reviewed B1/B2 boundary."
+    - "A new fixture disproves an approved review assumption."
+handoff_to_verify:
+  - "All B1-B3 two-tier reviews pass in order."
+  - "s07 Delivery Rule Evidence is complete and T7 full regression is green."
+notes_for_implementation_or_verify: "Do not begin T5 until B1 Code Quality is approved by both Developer and QC."
 ```
 
 ## B1 Review
@@ -309,9 +329,12 @@ batch: B1
 source_sha: "a65704aa0be26f99988d6d5c13f632fc76907ddd"
 scope: ["T1", "T2", "T3", "T4"]
 spec_compliance:
-  status: READY_FOR_REVIEW
-  recommended_verdict: PASS
+  status: APPROVED
+  verdict: PASS
   reviewer_role: qc
+  reviewed_by: qc
+  reviewed_at: "2026-09-10T11:27:32Z"
+  decision_source: "User explicitly approved B1 Spec Compliance with role QC."
   evidence:
     - "AC-RCR-01: first-cycle controls remain green; a changed host commits a later cycle; two unchanged retries are NOOP."
     - "AC-RCR-02: marker-only and older-event histories each append one current event; its note matches transaction_id and ordered gates; marker count stays one."
@@ -324,8 +347,22 @@ spec_compliance:
     - "Both focused suites PASS and all three changed production files pass node --check."
   findings: []
 code_quality:
-  status: NOT_RUN
-  blocked_by: "B1 Spec Compliance human QC approval"
+  status: READY_FOR_REVIEW
+  recommended_verdict: PASS
+  reviewer_roles: ["developer", "qc"]
+  prepared_at: "2026-09-10T11:32:30Z"
+  blocked_by: ""
+  evidence:
+    - "Correctness: event construction follows receipt/pre-event delta classification; the event operation cannot classify itself as a new cycle."
+    - "Atomicity: one validated canonical UUID is reused by lock, journal, staged filenames, result, and event note; the existing rollback/recovery coordinator remains intact."
+    - "Compatibility: omitted transaction_id still generates the existing UUID-shaped result; readiness, rejection, first-cycle, adaptive, legacy, authority, and receipt-v1 tests remain green."
+    - "Security: caller-supplied identity is validated before path creation or writes, preventing path/control-character injection into stage and backup filenames."
+    - "Maintainability: the production delta is limited to 69 additions and 11 deletions across the three approved internal modules; no dependency, schema, config, or public command was added."
+    - "Performance: classification performs at most one extra in-memory reconciliation/render comparison per closeout; unchanged retries avoid transaction persistence."
+    - "Test integrity: RED commits precede GREEN commits, new assertions are additive, both focused suites pass, all changed production files pass node --check, and git diff --check passes."
+  findings: []
+  residual_notes:
+    - "T5-T7 will separately review semantic projection plus the expanded failure/concurrency/full-compatibility matrix."
 ```
 
 ## Traceability
@@ -336,12 +373,12 @@ upstream:
   - "s06 approved T0..T8 Task Plan"
 current:
   - "T0-T4 complete at a65704aa0be26f99988d6d5c13f632fc76907ddd"
-  - "B1 Spec Compliance READY_FOR_REVIEW; B1 Code Quality NOT_RUN"
-next_step: "Human QC reviews B1 Spec Compliance"
+  - "B1 Spec Compliance PASS; B1 Code Quality READY_FOR_REVIEW"
+next_step: "Human Developer and QC review B1 Code Quality"
 ```
 
 ## Handoff
 - Outputs actual: T0-T4 RED/GREEN evidence and B1 Spec Compliance proposal.
-- Known limitations: B1 human reviews and T5-T8 remain pending.
-- Notes for testing: both focused suites pass; do not start T5 until B1 Spec Compliance then Code Quality pass in order.
+- Known limitations: B1 Code Quality and T5-T8 remain pending.
+- Notes for testing: both focused suites pass; do not start T5 until B1 Code Quality passes with Developer and QC.
 - Notes for deployment: none in s07; corrected candidate and rollback binding are T8/s08 work.
