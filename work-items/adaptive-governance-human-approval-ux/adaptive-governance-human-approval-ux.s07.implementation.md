@@ -1149,25 +1149,28 @@ root_cause_evidence:
   - "eventAlreadyRecorded is based on global audit-event presence, so a historical cycle suppresses the current-cycle protocol event."
 linked_work_item:
   slug: "closeout-bundle-repeat-cycle-reconciliation"
-  protocol_status: MATERIALIZED
+  protocol_status: ACTIVE
   approval_status: APPROVED
   trusted_receipt_status: APPROVED
   spec_receipt_status: "APPROVED; digest_match=true"
   dor_receipt_status: "APPROVED; digest_match=true"
-  current_step: s06
+  current_step: s07
   approach_status: "APPROVED; digest_match=true"
   approach_receipt_sha256: "5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a"
-  task_plan_status: HUMAN_APPROVED_PENDING_RECEIPT
+  task_plan_status: "APPROVED; digest_match=true"
+  task_plan_receipt_sha256: "7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9"
   task_plan_reviewed_by: developer
   task_plan_reviewed_at: "2026-09-10T08:56:19Z"
-  implementation_path: CLOSED
+  implementation_path: ACTIVE
+  activation_at: "2026-09-10T10:13:59.704Z"
+  t0_baseline: "PASS at source edc9454d38126d51ad9e5a85afc475d2915ac9bd; both focused suites green"
 release_effect:
   parent_s07: REOPENED
   parent_s08: INVALIDATED_BY_FINDING
   terminal_receipts: HISTORICAL_PRE_FINDING
   branch_worktree: HOLD_OPEN
   release: BLOCKED
-next_human_action: "Seal and verify the linked defect Task Plan receipt; explicit s07 activation remains separate."
+next_human_action: "None until child T1-T4 completes and B1 Spec Compliance is ready for QC review."
 ```
 
 ## Workflow Pack Audit
@@ -1224,7 +1227,7 @@ next_step: "Commit the VERIFIED snapshot and run hosted Guardrails before Releas
 
 ## Handoff
 - Current state: `F-AG11-001` reopened the parent delivery lane; the prior B0-B4 and verification evidence is retained as historical pre-finding evidence.
-- Linked defect: the s05 Approach receipt for `closeout-bundle-repeat-cycle-reconciliation` is digest-matched, and Human Developer approved the s06 Task Plan; its receipt remains pending and implementation is closed.
+- Linked defect: all authoring receipts are digest-matched, s07 is `ACTIVE`, and T0 focused baselines pass at source `edc9454d38126d51ad9e5a85afc475d2915ac9bd`; T1 fail-first tests are next.
 - Required behavior: a repeated committed closeout must remove every satisfied pending action, set the canonical close-ready handoff, append one current-cycle event, and remain a NOOP on unchanged retry.
 - Release effect: the source `38bb0d1…`, run `34322150024`, candidate `2a5ae701…`, and terminal receipts are historical pre-finding evidence only.
 - Branch/worktree: `HOLD_OPEN`; no publish, tag, merge, install, cleanup, or branch finalization is authorized.

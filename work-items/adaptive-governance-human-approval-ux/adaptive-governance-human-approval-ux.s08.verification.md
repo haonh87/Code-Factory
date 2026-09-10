@@ -254,18 +254,21 @@ evidence_effect:
   branch_worktree: HOLD_OPEN
 linked_work_item:
   slug: "closeout-bundle-repeat-cycle-reconciliation"
-  protocol_status: MATERIALIZED
+  protocol_status: ACTIVE
   approval_status: APPROVED
   trusted_receipt_status: APPROVED
   spec_receipt_status: "APPROVED; digest_match=true"
   dor_receipt_status: "APPROVED; digest_match=true"
-  current_step: s06
+  current_step: s07
   approach_status: "APPROVED; digest_match=true"
   approach_receipt_sha256: "5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a"
-  task_plan_status: HUMAN_APPROVED_PENDING_RECEIPT
+  task_plan_status: "APPROVED; digest_match=true"
+  task_plan_receipt_sha256: "7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9"
   task_plan_reviewed_by: developer
   task_plan_reviewed_at: "2026-09-10T08:56:19Z"
-next_human_action: "Seal and verify the linked defect Task Plan receipt; no implementation action is allowed before explicit s07 activation."
+  activation_at: "2026-09-10T10:13:59.704Z"
+  t0_baseline: "PASS at source edc9454d38126d51ad9e5a85afc475d2915ac9bd; both focused suites green"
+next_human_action: "None until child T1-T4 completes and B1 Spec Compliance is ready for QC review."
 ```
 
 ## Main Artifact
@@ -379,7 +382,7 @@ skipped_checks:
   - "ESLint: no executable/config; node --check, full tests and manual diff review are the fallback."
   - "Semgrep: unavailable; canaries, pattern scans, negative tests and manual sensitive-path review are the fallback."
 release_blockers:
-  - "F-AG11-001 is OPEN and linked defect closeout-bundle-repeat-cycle-reconciliation has not passed its s05-s08 delivery gates."
+  - "F-AG11-001 is OPEN and linked defect closeout-bundle-repeat-cycle-reconciliation is ACTIVE at s07 but has not passed B1 review or s08."
   - "The corrected source and exact hosted candidate have not been re-verified."
   - "DoD, Release, and Business Acceptance must be repeated after corrected-candidate Technical Verification."
 status: FAIL
@@ -389,7 +392,7 @@ residual_risks:
   - "npm/gzip compression bytes differ between the local and hosted packaging environments even though the extracted trees and uncompressed tar stream are identical."
   - "Unchanged github-push MCP has one macOS failure from a Windows-only fixture path; CR-008 changes no MCP file."
   - "Telemetry purge scans its local directory linearly; retained scope and CLI execution make current risk LOW."
-recommendation: "Keep release and branch finalization blocked; seal the linked defect Developer-approved Approach, deliver closeout-bundle-repeat-cycle-reconciliation, then build and re-verify one corrected candidate before repeating terminal gates."
+recommendation: "Keep release and branch finalization blocked; complete the active linked defect through TDD and review, then build and re-verify one corrected candidate before repeating terminal gates."
 notes_for_review: "The former parent PASS and all terminal decisions are historical pre-finding evidence. F-AG11-001 overrides them for current closeout."
 historical_technical_verification_decision:
   status: APPROVED
@@ -524,7 +527,7 @@ checklist_applied: ["project-context/checklists/default.md", "project-context/ch
 checks:
   - { check: "Pass/not-pass evidence is explicit", status: PASS, evidence: "Each AG maps to named evidence; QC explicitly approved the current hosted source/run/artifact binding." }
   - { check: "Behavior, docs and release identity are synchronized", status: PASS, evidence: "Policy, runtimes, 42-skill inventories, EN/VI docs and v2.6.2 metadata agree." }
-  - { check: "Remaining gaps have owners", status: FAIL, evidence: "F-AG11-001 is owned by the linked defect at s05 Technical Approach; Approach and later gates remain open." }
+  - { check: "Remaining gaps have owners", status: FAIL, evidence: "F-AG11-001 is owned by the linked defect now ACTIVE at s07; implementation review, s08, and corrected parent evidence remain open." }
   - { check: "Evidence supports release decision", status: FAIL, evidence: "The verified candidate reproduces F-AG11-001 and cannot authorize release." }
   - { check: "Rollback/remediation is viable", status: PASS, evidence: "Published v2.6.1 digest is verified and passes every rollback scenario." }
   - { check: "Exceptions are explicit", status: PASS, evidence: "No CR-008 governance exception or waiver is open." }
@@ -924,7 +927,7 @@ human_decision:
 gaps: ["AG-11 fails for a repeated closeout cycle; linked defect has digest-matched s04 receipts but Approach and later gates remain open."]
 residual_risks: ["Cross-toolchain gzip representation differs.", "ESLint/Semgrep unavailable with documented fallbacks.", "External publication has not been executed."]
 follow_up_items:
-  - "Approve and seal the linked defect Approach, then deliver closeout-bundle-repeat-cycle-reconciliation through s08."
+  - "Complete the active linked defect TDD/review path, then deliver closeout-bundle-repeat-cycle-reconciliation through s08."
   - "Build and host one corrected candidate, then repeat parent Technical Verification and DoD."
   - "Repeat Release, Business Acceptance, and receipt sealing for the corrected candidate."
 next_action: "Developer seals the linked defect Approach receipt; implementation remains closed."
@@ -959,6 +962,6 @@ next_step: "Seal trusted DoD, Release, and Business Acceptance receipts against 
 ## Handoff
 - Overall status: `FAIL/BLOCKED`; `F-AG11-001` proves AG-11 fails on a real repeated closeout cycle.
 - Historical evidence: source `38bb0d1…`, run `34322150024`, hosted SHA-256 `2a5ae701…`, the former Technical Verification/DoD/Release/Business Acceptance decisions, and the receipts sealed at `2026-09-09T09:57:16.873Z` are retained only as pre-finding evidence.
-- Linked defect: `closeout-bundle-repeat-cycle-reconciliation` has digest-matched Spec/DoR receipts and a Human Developer-approved transaction-delta s05 Approach; its Approach receipt is pending and implementation is closed.
+- Linked defect: `closeout-bundle-repeat-cycle-reconciliation` has all authoring receipts digest-matched, s07 is `ACTIVE`, and T0 focused baselines pass; T1 fail-first tests are next.
 - Required sequence: approve and seal s05, complete s06 and its human gate, implement with TDD, review in two tiers, verify one exact hosted candidate, then repeat parent terminal gates.
 - Branch/worktree: `HOLD_OPEN`; no merge, tag, release publication, install, cleanup, or branch finalization is authorized.

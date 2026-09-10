@@ -119,7 +119,8 @@
     "Human Developer approved the linked defect transaction-delta s05 Approach at 2026-09-10T08:12:02Z.",
     "The linked defect Developer Approach receipt at 2026-09-10T08:20:46.196Z verifies digest_match=true against finalized s05 SHA-256 5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a.",
     "The linked defect s06 Task Plan was proposed with T0..T8, three TDD RED/GREEN pairs, B1..B3 two-tier reviews, and one corrected-candidate child-to-parent verification path.",
-    "Human Developer explicitly approved the linked defect s06 Task Plan at 2026-09-10T08:56:19Z; its trusted receipt and explicit s07 activation remain pending.",
+    "Human Developer explicitly approved the linked defect s06 Task Plan at 2026-09-10T08:56:19Z.",
+    "The linked defect Task Plan receipt verifies digest_match=true against finalized s06 SHA-256 7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9; child s07 was explicitly activated and T0 focused baselines passed at source edc9454d38126d51ad9e5a85afc475d2915ac9bd.",
     "The prior source, candidate, Technical Verification, DoD, Release, Business Acceptance, and terminal receipts are historical pre-finding evidence only; release and branch finalization are blocked."
   ],
   "work_item_slug": "adaptive-governance-human-approval-ux",
@@ -153,16 +154,15 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "linked-defect-s06-receipt-sealing",
+  "handoff_target": "linked-defect-s07-tdd-b1",
   "required_actions": [
-    "Seal and verify the linked defect Developer-approved Task Plan receipt against finalized s06.",
-    "Explicitly activate child s07 with the approved bounded write paths after digest_match=true.",
-    "Complete the linked defect through TDD implementation, two-tier review, hosted verification, and DoD.",
+    "Complete linked defect T1-T4 through fail-first implementation, then request B1 Spec Compliance before Code Quality.",
+    "Continue the linked defect through remaining TDD batches, two-tier review, hosted verification, and DoD.",
     "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
   ],
   "blockers": [
     "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event.",
-    "Linked defect closeout-bundle-repeat-cycle-reconciliation is at s06; its Developer-approved Task Plan receipt blocks implementation."
+    "Linked defect closeout-bundle-repeat-cycle-reconciliation is ACTIVE at s07 and has not yet passed B1 review or verification."
   ],
   "refs": [
     "changes/CR-008",
@@ -228,7 +228,10 @@
     "LINKED_REPEAT_CYCLE_DEFECT_S05_HUMAN_APPROVED_PENDING_RECEIPT",
     "LINKED_REPEAT_CYCLE_DEFECT_S05_RECEIPT_VERIFIED",
     "LINKED_REPEAT_CYCLE_DEFECT_S06_DRAFTED",
-    "LINKED_REPEAT_CYCLE_DEFECT_S06_HUMAN_APPROVED_PENDING_RECEIPT"
+    "LINKED_REPEAT_CYCLE_DEFECT_S06_HUMAN_APPROVED_PENDING_RECEIPT",
+    "LINKED_REPEAT_CYCLE_DEFECT_S06_RECEIPT_VERIFIED",
+    "LINKED_REPEAT_CYCLE_DEFECT_S07_ACTIVATED",
+    "LINKED_REPEAT_CYCLE_DEFECT_T0_BASELINE_PASS"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -255,7 +258,8 @@
     "Human Developer approved the linked defect s05 Approach at 2026-09-10T08:12:02Z.",
     "The linked defect Developer Approach receipt at 2026-09-10T08:20:46.196Z matches finalized s05 SHA-256 5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a.",
     "The linked defect s06 Task Plan was proposed for Developer review.",
-    "Human Developer approved the linked defect s06 Task Plan at 2026-09-10T08:56:19Z; its finalized host now awaits a trusted receipt, while child implementation and parent release remain blocked."
+    "Human Developer approved the linked defect s06 Task Plan at 2026-09-10T08:56:19Z.",
+    "The linked defect Task Plan receipt matches finalized s06 SHA-256 7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9; s07 is ACTIVE and T0 focused baselines pass at source edc9454d38126d51ad9e5a85afc475d2915ac9bd. Parent release remains blocked by F-AG11-001."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",

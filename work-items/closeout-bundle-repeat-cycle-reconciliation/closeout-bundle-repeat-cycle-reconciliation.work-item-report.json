@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "MATERIALIZED",
+  "protocol_status": "ACTIVE",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Fix repeated closeout-bundle reconciliation so a successful current approval cycle removes stale pending approval actions and handoffs, records a current-cycle protocol event despite historical evidence, and remains idempotent.",
@@ -55,9 +55,7 @@
         "Scaffolded full brownfield BUG workflow under strict governance.",
         "Drafted s01 requirement analysis plus SA/TA driver-only handoff."
       ],
-      "blockers": [
-        "The Developer-approved s06 Task Plan requires a digest-matched trusted receipt and explicit s07 activation before implementation."
-      ]
+      "blockers": []
     }
   ],
   "decision_log": [
@@ -86,29 +84,32 @@
     "Human Developer explicitly approved the s05 Approach at 2026-09-10T08:12:02Z; trusted receipt sealing remains separate.",
     "Trusted Approach receipt APPROVED by Developer at 2026-09-10T08:20:46.196Z verifies digest_match=true against finalized s05 SHA-256 5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a.",
     "s06 Task Plan was drafted as three TDD/two-tier-review batches plus exact-candidate child-to-parent re-verification.",
-    "Human Developer explicitly approved the s06 Task Plan at 2026-09-10T08:56:19Z; trusted receipt sealing and s07 activation remain separate."
+    "Human Developer explicitly approved the s06 Task Plan at 2026-09-10T08:56:19Z; trusted receipt sealing and s07 activation remain separate.",
+    "Trusted Task Plan receipt APPROVED by Developer at 2026-09-10T10:11:42.373Z verifies digest_match=true against finalized s06 SHA-256 7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9.",
+    "The work item was explicitly activated at s07 on 2026-09-10T10:13:59.704Z with the seven approved write roots.",
+    "T0 froze pre-production source edc9454d38126d51ad9e5a85afc475d2915ac9bd and both focused baseline suites passed before any production edit."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
-  "selected_profile": "full",
-  "sdd_mode": "none",
-  "sdd_preset": "full",
-  "sdd_light_profile": "preview",
-  "sdd_reasons": [],
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation",
-  "current_step": "s06",
-  "granted_write_paths": [],
+  "current_step": "s07",
+  "granted_write_paths": [
+    "packages/workflow-bundle/scripts/work-item-protocol.js",
+    "packages/workflow-bundle/scripts/workflow-gate-review.js",
+    "packages/workflow-bundle/scripts/workflow-approval-transaction.js",
+    "packages/workflow-bundle/test/work-item-protocol.test.js",
+    "packages/workflow-bundle/test/workflow-gate-review.test.js",
+    "work-items/closeout-bundle-repeat-cycle-reconciliation",
+    "work-items/adaptive-governance-human-approval-ux"
+  ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "s06-trusted-receipt-sealing",
+  "handoff_target": "step-s07-owner",
   "required_actions": [
-    "wfc gate approve --work-item closeout-bundle-repeat-cycle-reconciliation --gate task_plan --reviewed-by developer",
-    "After the receipt verifies with digest_match=true, explicitly activate s07 with the approved bounded write paths."
+    "Execute T1 fail-first optional transaction-identity tests before any production change."
   ],
-  "blockers": [
-    "The Developer-approved Task Plan does not yet have a digest-matched trusted receipt."
-  ],
+  "blockers": [],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
     "work-items/adaptive-governance-human-approval-ux",
@@ -138,7 +139,10 @@
     "S05_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT",
     "S05_APPROACH_RECEIPT_VERIFIED",
     "S06_TASK_PLAN_DRAFTED",
-    "S06_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT"
+    "S06_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT",
+    "S06_TASK_PLAN_RECEIPT_VERIFIED",
+    "WORK_ITEM_ACTIVATED",
+    "S07_T0_BASELINE_RECORDED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -158,7 +162,9 @@
     "Human Developer approved the s05 Approach at 2026-09-10T08:12:02Z; the finalized host now awaits a trusted Approach receipt.",
     "Trusted Approach receipt APPROVED by Developer at 2026-09-10T08:20:46.196Z matches finalized s05 SHA-256 5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a.",
     "The proposed s06 Task Plan orders T0..T8, three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, and one exact-candidate child-to-parent verification path.",
-    "Human Developer approved the s06 Task Plan at 2026-09-10T08:56:19Z; the finalized host now awaits a trusted Task Plan receipt."
+    "Human Developer approved the s06 Task Plan at 2026-09-10T08:56:19Z.",
+    "Trusted Task Plan receipt APPROVED by Developer at 2026-09-10T10:11:42.373Z matches finalized s06 SHA-256 7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9.",
+    "s07 activated at 2026-09-10T10:13:59.704Z. T0 baseline at source edc9454d38126d51ad9e5a85afc475d2915ac9bd passed work-item-protocol.test.js and workflow-gate-review.test.js before production edits."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -284,6 +290,22 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Human Developer explicitly approved the finalized T0..T8 Task Plan. Trusted receipt sealing and explicit s07 activation remain separate; implementation is not yet authorized."
+    },
+    {
+      "timestamp": "2026-09-10T10:13:59.704Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-09-10T10:18:10Z",
+      "action": "s07-t0-baseline-recorded",
+      "actor": "agent",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "Verified the digest-matched Task Plan receipt, retained the seven approved write roots, and recorded two passing focused baseline suites at source edc9454d38126d51ad9e5a85afc475d2915ac9bd before production edits."
     }
   ]
 }
