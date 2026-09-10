@@ -271,6 +271,10 @@ function testAtomicCommitAndIndependentReceipts() {
       operations: fixture.operations
     });
     assert(result.status === "COMMITTED", "successful transaction returns COMMITTED");
+    assert(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(result.transaction_id),
+      "an omitted transaction_id preserves the generated canonical UUID result"
+    );
     assert(fs.readFileSync(fixture.statePath, "utf8") === "after\n", "derived protocol state commits with receipts");
     const receiptOne = JSON.parse(fs.readFileSync(fixture.receiptOne, "utf8"));
     const receiptTwo = JSON.parse(fs.readFileSync(fixture.receiptTwo, "utf8"));

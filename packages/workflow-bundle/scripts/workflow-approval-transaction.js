@@ -25,6 +25,17 @@ function normalizeWorkItemSlug(value) {
   return slug;
 }
 
+function normalizeTransactionId(value) {
+  if (value === undefined) {
+    return crypto.randomUUID();
+  }
+  const transactionId = String(value);
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(transactionId)) {
+    throw new Error(`Invalid approval transaction transaction_id '${transactionId}'; expected a canonical UUID.`);
+  }
+  return transactionId;
+}
+
 function normalizeGateRow(row) {
   const normalized = {
     gate: String((row && row.gate) || "").trim(),
@@ -282,12 +293,14 @@ function recoverApprovalTransaction({
 function executeApprovalTransaction({
   plan: planInput,
   transaction_root: transactionRoot,
+  transaction_id: transactionIdInput,
   operations: operationsInput,
   guards: guardsInput,
   fail_at: failAt,
   crash_at: crashAt
 }) {
   const plan = buildApprovalBundlePlan(planInput);
+  const transactionId = normalizeTransactionId(transactionIdInput);
   const paths = getApprovalTransactionPaths({
     transaction_root: transactionRoot,
     work_item_slug: plan.work_item_slug
@@ -311,7 +324,6 @@ function executeApprovalTransaction({
   fs.mkdirSync(paths.transaction_root, { recursive: true });
   let lockFd = null;
   let journal = null;
-  const transactionId = crypto.randomUUID();
   try {
     lockFd = fs.openSync(paths.lock_path, "wx");
     fs.writeFileSync(

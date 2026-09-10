@@ -105,8 +105,9 @@ tags:
 > finalized s06 SHA-256 `7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9`.
 > The work item was explicitly activated at `2026-09-10T10:13:59.704Z`. T0 records a clean
 > pre-production source baseline at `edc9454d38126d51ad9e5a85afc475d2915ac9bd`; both focused
-> baseline suites pass. T1 is next and must establish fail-first transaction-ID evidence before
-> any production change.
+> baseline suites pass. T1 produced the expected four-assertion RED, and T2 is GREEN: the coordinator
+> now validates and reuses an optional canonical UUID while omitted callers retain generated IDs.
+> T3 real closeout-cycle fixtures are next; B1 has not started.
 
 ## Step Contract
 ```yaml
@@ -150,9 +151,11 @@ recommended_design: "Project the current closeout transaction delta and reuse it
 implementation_mode: BUGFIX
 tasks_completed:
   - "T0: verified every authoring receipt, activated s07, inventoried the worktree, and ran both focused baselines"
+  - "T1 RED: four assertions proved supplied-ID reuse and malformed-ID fail-before-write behavior were absent"
+  - "T2 GREEN: added optional canonical UUID validation/reuse and preserved generated-ID defaults"
 tasks_next:
-  - "T1 RED: prove optional supplied transaction-ID validation and reuse are absent"
-  - "T2 GREEN: add the minimum optional validated transaction-ID input"
+  - "T3 RED: reproduce first cycle, later committed cycle, and unchanged retry through the real closeout CLI"
+  - "T4 GREEN: classify only receipt/pre-event state delta, then bind one event to the shared transaction ID"
 bug_repro_evidence:
   - behavior: "A later successful closeout is suppressed when historical CLOSEOUT_BUNDLE_APPROVED evidence exists."
     observed: "reconcileApprovalBundleReport uses report.audit_events.includes(auditEvent) as a global eventAlreadyRecorded condition."
@@ -175,8 +178,18 @@ debug_experiments:
   - goal: "Freeze the pre-change behavior baseline."
     action: "Ran work-item-protocol.test.js and workflow-gate-review.test.js at source edc9454d38126d51ad9e5a85afc475d2915ac9bd."
     result: "Both suites PASS before production edits."
-tdd_evidence: []
-code_changes: []
+tdd_evidence:
+  - behavior: "A caller-supplied valid transaction_id is reused by the journal and COMMITTED result."
+    failing_test: "workflow-gate-review.test.js failed: valid caller-supplied transaction_id was not reused."
+    passing_test: "The same assertion passes after the optional identity input was added."
+  - behavior: "Malformed supplied identity fails before target, journal, lock, or directory writes."
+    failing_test: "Three assertions failed because malformed identity was ignored and the transaction committed writes."
+    passing_test: "Malformed identity now throws a canonical UUID error before transaction-path creation; every no-write assertion passes."
+code_changes:
+  - path: "packages/workflow-bundle/scripts/workflow-approval-transaction.js"
+    change: "Validate an optional canonical UUID before transaction recovery/preflight writes and reuse it for the existing lock, journal, stage, and result identity."
+  - path: "packages/workflow-bundle/test/workflow-gate-review.test.js"
+    change: "Add fail-first valid/invalid supplied-ID cases and pin the existing generated-ID default."
 doc_changes:
   - "Recorded the s07 activation and T0 baseline in child and parent workflow evidence."
 config_changes: []
@@ -185,7 +198,7 @@ review_checkpoints:
   - "B2 after T6: QC Spec Compliance, then Developer/QC Code Quality"
   - "B3 after T7: QC Spec Compliance, then Developer/QC Code Quality"
 known_limitations:
-  - "TDD and production correction have not started; T1 is next."
+  - "T3-T7 cycle/projector, atomicity, compatibility, and review work remains."
   - "F-AG11-001 keeps parent verification, release, protocol close, and branch finalization blocked."
 ```
 
@@ -193,7 +206,9 @@ known_limitations:
 ```yaml
 behavior_change: YES
 tdd_status: PARTIAL
-tdd_test_refs: []
+tdd_test_refs:
+  - "testOptionalTransactionIdentityIsValidatedAndReused"
+  - "testAtomicCommitAndIndependentReceipts generated-ID compatibility assertion"
 tdd_exception_reason: ""
 tdd_alternative_verify_path: []
 change_risk_profile: LARGE_OR_RISKY
