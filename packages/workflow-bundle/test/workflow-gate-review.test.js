@@ -283,6 +283,58 @@ function testAtomicCommitAndIndependentReceipts() {
   }
 }
 
+function testOptionalTransactionIdentityIsValidatedAndReused() {
+  if (typeof executeApprovalTransaction !== "function") return;
+  console.log("\nF-AG11-001 T1: optional transaction identity is validated before writes and reused");
+
+  const validRoot = tempRoot("supplied-identity");
+  const validTransactionRoot = path.join(validRoot, "transactions");
+  const suppliedTransactionId = "11111111-2222-4333-8444-555555555555";
+  try {
+    const fixture = makeOperations(validRoot);
+    const result = executeApprovalTransaction({
+      plan: makePlan(),
+      transaction_root: validTransactionRoot,
+      transaction_id: suppliedTransactionId,
+      operations: fixture.operations
+    });
+    assert(
+      result.transaction_id === suppliedTransactionId,
+      "a valid caller-supplied transaction_id is reused by the committed transaction"
+    );
+  } finally {
+    rmrf(validRoot);
+  }
+
+  const invalidRoot = tempRoot("invalid-identity");
+  const invalidTransactionRoot = path.join(invalidRoot, "transactions");
+  try {
+    const fixture = makeOperations(invalidRoot);
+    expectThrow(
+      () => executeApprovalTransaction({
+        plan: makePlan(),
+        transaction_root: invalidTransactionRoot,
+        transaction_id: "not-a-canonical-uuid",
+        operations: fixture.operations
+      }),
+      /transaction_id|transaction id|uuid/i,
+      "a malformed caller-supplied transaction_id is rejected"
+    );
+    assert(
+      fs.readFileSync(fixture.statePath, "utf8") === "before\n" &&
+        !fs.existsSync(fixture.receiptOne) &&
+        !fs.existsSync(fixture.receiptTwo),
+      "malformed transaction identity is rejected before any target write"
+    );
+    assert(
+      !fs.existsSync(invalidTransactionRoot),
+      "malformed transaction identity is rejected before transaction journal or lock directories exist"
+    );
+  } finally {
+    rmrf(invalidRoot);
+  }
+}
+
 function testCaughtFailureRollsBackFirstVisibleCommit() {
   if (typeof executeApprovalTransaction !== "function") return;
   console.log("\nCR-008 T5: every caught persistence failure rolls every target back");
@@ -410,6 +462,7 @@ if (
 ) {
   testPreflightFailureWritesNothing();
   testAtomicCommitAndIndependentReceipts();
+  testOptionalTransactionIdentityIsValidatedAndReused();
   testCaughtFailureRollsBackFirstVisibleCommit();
   testCrashRecoveryIsIdempotent();
   testCrashAfterVerifiedCommitCompletesIdempotently();
