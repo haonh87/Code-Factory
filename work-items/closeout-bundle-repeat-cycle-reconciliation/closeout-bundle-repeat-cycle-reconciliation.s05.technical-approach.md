@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
 governance_status: ALIGNED
@@ -60,8 +60,8 @@ gate_reviews:
   contract_reviewed_at: ""
   dor_reviewed_by: ["ba", "qc"]
   dor_reviewed_at: "2026-09-10T03:09:26Z"
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
+  approach_reviewed_by: ["developer"]
+  approach_reviewed_at: "2026-09-10T08:12:02Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -106,8 +106,8 @@ tags:
 > design is a transaction-delta closeout projector: derive canonical mutable state before adding cycle
 > evidence, classify a committed cycle from receipt or current-state operations, then append one event
 > carrying the same transaction ID used by the existing journal. Unchanged retries remain true `NOOP`.
-> No public CLI, receipt, event schema, runtime, or deployment boundary changes. Developer Approach
-> approval remains pending.
+> No public CLI, receipt, event schema, runtime, or deployment boundary changes. Developer approved
+> this Approach at `2026-09-10T08:12:02Z`; the finalized host now awaits its trusted receipt.
 
 ## Step Contract
 ```yaml
@@ -243,7 +243,7 @@ assumptions:
   - "An optional internal transaction_id input is compatible because journal and COMMITTED output already expose it"
   - "Using the existing free-form event note for attribution does not change the event schema"
 risk_level: HIGH
-next_action: "Present the proposed Approach for independent Developer review; implementation is not authorized."
+next_action: "Seal and verify the Developer-approved Approach receipt against this finalized host; implementation is not authorized."
 ```
 
 ## Option Analysis
@@ -289,6 +289,10 @@ dev_lane:
     - "No partial state at every failure boundary"
   baseline_context: "Brownfield v2.6.2 candidate line inside the existing approval transaction path."
 options:
+  - "Option A - Transaction-delta projector with shared transaction identity"
+  - "Option B - Persist a cycle fingerprint or ledger"
+  - "Option C - Extend marker/regex heuristics or append per invocation"
+option_details:
   - name: "Option A - Transaction-delta projector with shared transaction identity"
     summary: "Project state before event creation, classify from receipt/state operations, then append one event carrying the journal ID."
     pros: ["Requirement-aligned", "Natural NOOP", "Existing schema/coordinator reuse", "Exact attribution"]
@@ -556,9 +560,9 @@ unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed in one focused option and design pass."
 gaps:
-  - "Independent Developer Approach approval and digest-matched trusted receipt are pending."
+  - "The digest-matched trusted Approach receipt is pending."
 risk_level: HIGH
-next_action: "Developer reviews the Approach; after approval the s05 host is finalized and sealed before s06."
+next_action: "Developer seals the trusted Approach receipt against this unchanged finalized host before s06."
 ```
 
 ## SDD Traceability
@@ -590,12 +594,12 @@ outputs:
   - "Shared journal/event identity"
   - "Canonical closeout current-state projection"
   - "Brownfield failure, compatibility, rollback, observability, and validation design"
-next_step: "s06 Task Plan after Developer Approach approval and digest-matched receipt"
+next_step: "s06 Task Plan after the Developer-approved Approach receives a digest-matched receipt"
 ```
 
 ## Handoff
 - Recommended option: transaction-delta closeout projector with one shared journal/event transaction ID.
 - Accepted trade-off: a small optional coordinator input and focused three-module delta are preferable to a new cycle ledger.
-- Current human review: pending independent Developer approval of this proposed Approach.
-- Condition for step 6: Developer approves the Approach, this host is finalized unchanged, and its trusted receipt has `digest_match=true`.
+- Current human review: Developer approved the Approach at `2026-09-10T08:12:02Z`.
+- Condition for step 6: seal and verify the Developer trusted Approach receipt against this unchanged finalized host.
 - Release note: keep `F-AG11-001` and publication/finalization blocked until the corrected child and one exact parent candidate pass re-verification.

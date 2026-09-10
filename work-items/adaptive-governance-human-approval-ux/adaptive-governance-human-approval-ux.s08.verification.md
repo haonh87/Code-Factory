@@ -110,7 +110,7 @@ tags:
 > lane and recorded `F-AG11-001` as HIGH. The linked defect
 > `closeout-bundle-repeat-cycle-reconciliation` has human-approved OQ-RCR-001=B,
 > OQ-RCR-002=A, and OQ-RCR-003=A. Its BA Spec and QC DoR receipts both match finalized s04,
-> and the transaction-delta s05 Approach is proposed for Developer review. Everything below that
+> and Human Developer approved the transaction-delta s05 Approach; its trusted receipt remains pending. Everything below that
 > declares PASS/DONE/APPROVED for the previous parent candidate is
 > retained as historical pre-finding evidence and does not authorize release or closeout.
 >
@@ -259,8 +259,8 @@ linked_work_item:
   spec_receipt_status: "APPROVED; digest_match=true"
   dor_receipt_status: "APPROVED; digest_match=true"
   current_step: s05
-  approach_status: PROPOSED
-next_human_action: "Developer reviews the linked defect s05 Approach; no implementation action is allowed before later gates pass."
+  approach_status: HUMAN_APPROVED_PENDING_RECEIPT
+next_human_action: "Developer seals the linked defect Approach receipt; no implementation action is allowed before later gates pass."
 ```
 
 ## Main Artifact
@@ -384,7 +384,7 @@ residual_risks:
   - "npm/gzip compression bytes differ between the local and hosted packaging environments even though the extracted trees and uncompressed tar stream are identical."
   - "Unchanged github-push MCP has one macOS failure from a Windows-only fixture path; CR-008 changes no MCP file."
   - "Telemetry purge scans its local directory linearly; retained scope and CLI execution make current risk LOW."
-recommendation: "Keep release and branch finalization blocked; approve and seal the linked defect Approach, deliver closeout-bundle-repeat-cycle-reconciliation, then build and re-verify one corrected candidate before repeating terminal gates."
+recommendation: "Keep release and branch finalization blocked; seal the linked defect Developer-approved Approach, deliver closeout-bundle-repeat-cycle-reconciliation, then build and re-verify one corrected candidate before repeating terminal gates."
 notes_for_review: "The former parent PASS and all terminal decisions are historical pre-finding evidence. F-AG11-001 overrides them for current closeout."
 historical_technical_verification_decision:
   status: APPROVED
@@ -525,7 +525,7 @@ checks:
   - { check: "Exceptions are explicit", status: PASS, evidence: "No CR-008 governance exception or waiver is open." }
 blocking_items:
   - "F-AG11-001 remains OPEN."
-  - "Linked defect Approach approval/receipt and later delivery gates remain open."
+  - "Linked defect Approach receipt and later delivery gates remain open."
 owner: "qc/devops/po"
 next_action: "Approve and deliver the linked defect before creating a corrected verification candidate."
 ```
@@ -922,7 +922,7 @@ follow_up_items:
   - "Approve and seal the linked defect Approach, then deliver closeout-bundle-repeat-cycle-reconciliation through s08."
   - "Build and host one corrected candidate, then repeat parent Technical Verification and DoD."
   - "Repeat Release, Business Acceptance, and receipt sealing for the corrected candidate."
-next_action: "Developer reviews the linked defect s05 Approach; implementation remains closed."
+next_action: "Developer seals the linked defect Approach receipt; implementation remains closed."
 ```
 
 ## SDD Traceability
@@ -954,6 +954,6 @@ next_step: "Seal trusted DoD, Release, and Business Acceptance receipts against 
 ## Handoff
 - Overall status: `FAIL/BLOCKED`; `F-AG11-001` proves AG-11 fails on a real repeated closeout cycle.
 - Historical evidence: source `38bb0d1…`, run `34322150024`, hosted SHA-256 `2a5ae701…`, the former Technical Verification/DoD/Release/Business Acceptance decisions, and the receipts sealed at `2026-09-09T09:57:16.873Z` are retained only as pre-finding evidence.
-- Linked defect: `closeout-bundle-repeat-cycle-reconciliation` has digest-matched Spec and DoR receipts under `full + strict`; its transaction-delta s05 Approach is proposed for Developer review and implementation is closed.
+- Linked defect: `closeout-bundle-repeat-cycle-reconciliation` has digest-matched Spec/DoR receipts and a Human Developer-approved transaction-delta s05 Approach; its Approach receipt is pending and implementation is closed.
 - Required sequence: approve and seal s05, complete s06 and its human gate, implement with TDD, review in two tiers, verify one exact hosted candidate, then repeat parent terminal gates.
 - Branch/worktree: `HOLD_OPEN`; no merge, tag, release publication, install, cleanup, or branch finalization is authorized.

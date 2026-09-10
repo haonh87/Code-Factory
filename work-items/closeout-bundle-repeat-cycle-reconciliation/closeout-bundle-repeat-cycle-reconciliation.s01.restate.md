@@ -493,14 +493,14 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "s05-approach-review"
-last_transition_action: "s04-receipts-verified-open-s05"
-last_transition_at: "2026-09-10T05:05:26Z"
+handoff_target: "s05-trusted-receipt-sealing"
+last_transition_action: "s05-approach-human-approved"
+last_transition_at: "2026-09-10T08:12:02Z"
 required_actions:
-  - "Developer reviews and approves the proposed s05 Technical Approach."
-  - "After human approval, finalize the unchanged s05 host and seal a digest-matched Approach receipt before s06 Task Plan."
+  - "wfc gate approve --work-item closeout-bundle-repeat-cycle-reconciliation --gate approach --reviewed-by developer"
+  - "After the receipt verifies with digest_match=true, continue to s06 Task Plan; implementation remains closed."
 blockers:
-  - "Developer Approach approval and a digest-matched trusted receipt are pending."
+  - "The Developer-approved Approach does not yet have a digest-matched trusted receipt."
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -511,7 +511,8 @@ review_notes:
   - "s04 was drafted with DoR readiness READY; at that point Spec and DoR still awaited independent human approval and trusted receipt sealing."
   - "Human BA approved Spec and human BA/QC approved DoR at 2026-09-10T03:09:26Z."
   - "Trusted Spec receipt APPROVED by BA at 2026-09-10T04:55:23.729Z and trusted DoR receipt APPROVED by QC at 2026-09-10T04:55:36.637Z both match finalized s04 SHA-256 b50db12a977a007b8785baff4153ad54d8049e0003d030deaf4329bebff9f60b."
-  - "The proposed s05 Approach compares three options and recommends operation-delta cycle classification plus one shared journal/event transaction ID; Developer review remains pending."
+  - "The proposed s05 Approach compares three options and recommends operation-delta cycle classification plus one shared journal/event transaction ID."
+  - "Human Developer approved the s05 Approach at 2026-09-10T08:12:02Z; the finalized host now awaits a trusted Approach receipt."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -537,6 +538,7 @@ audit_events:
   - "S04_SPEC_RECEIPT_VERIFIED"
   - "S04_DOR_RECEIPT_VERIFIED"
   - "S05_TECHNICAL_APPROACH_DRAFTED"
+  - "S05_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT"
 ```
 
 ## Traceability
@@ -552,15 +554,15 @@ outputs:
   - "Human-approved OQ-RCR-001=B, OQ-RCR-002=A, and OQ-RCR-003=A"
   - "Proposed AC-RCR-01..08 and DoR READY assessment"
   - "Digest-matched BA Spec and QC DoR trusted receipts"
-  - "Proposed transaction-delta Technical Approach with shared journal/event identity"
-next_step: "Independent Developer Approach review, then finalized-host receipt sealing before s06"
+  - "Developer-approved transaction-delta Technical Approach with shared journal/event identity"
+next_step: "Seal and verify the Developer Approach receipt before s06"
 ```
 
 ## Handoff
 - Clear: closeout receipts succeeded, but current navigation and event evidence did not reconcile.
 - Distinct scope: repeat-cycle/idempotency, not the resolved missing-DoD selector defect.
 - Decision: PO approval is backed by a verified trusted receipt; the completed receipt action has been removed.
-- Current step: BA Spec and QC DoR receipts both match finalized s04; s05 Technical Approach is proposed for Developer review.
+- Current step: Developer approved the finalized s05 Technical Approach; its digest-matched trusted receipt remains pending.
 - Recommendation: transaction-delta closeout projector with one shared journal/event transaction ID and no new public schema.
-- Boundary: implementation remains closed until Developer-approved Approach and Task Plan each receive valid trusted receipts.
+- Boundary: implementation remains closed until Approach and Task Plan each receive valid trusted receipts.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.

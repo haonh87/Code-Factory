@@ -712,16 +712,16 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "linked-defect-s05-approach-review"
-last_transition_action: "linked-defect-s04-receipts-verified-s05-drafted"
-last_transition_at: "2026-09-10T05:05:26Z"
+handoff_target: "linked-defect-s05-receipt-sealing"
+last_transition_action: "linked-defect-s05-human-approved"
+last_transition_at: "2026-09-10T08:12:02Z"
 required_actions:
-  - "Developer reviews the linked defect transaction-delta Technical Approach, then seals its trusted receipt after finalization."
+  - "Seal and verify the linked defect Developer Approach receipt against the finalized s05 host."
   - "Complete the linked defect through Task Plan, TDD implementation, two-tier review, hosted verification, and DoD."
   - "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
 blockers:
   - "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."
-  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is at s05; Developer Approach approval and receipt block s06."
+  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is at s05; its Developer-approved Approach receipt blocks s06."
 review_notes:
   - "Human review approved."
   - "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local verification matrix and hosted Guardrails run 34322150024."
@@ -739,7 +739,8 @@ review_notes:
   - "Human BA, Developer, and QC approved linked defect OQ-RCR-001=B, OQ-RCR-002=A, and OQ-RCR-003=A with their assigned role sets at 2026-09-10T02:30:56Z."
   - "The linked defect s04 Spec and DoR were drafted; before the current human decision, implementation and parent release remained blocked pending independent child gates and delivery."
   - "Human BA approved the linked defect Spec and human BA/QC approved its DoR at 2026-09-10T03:09:26Z."
-  - "The linked defect BA Spec receipt at 2026-09-10T04:55:23.729Z and QC DoR receipt at 2026-09-10T04:55:36.637Z both match finalized s04 SHA-256 b50db12a977a007b8785baff4153ad54d8049e0003d030deaf4329bebff9f60b; s05 is proposed for Developer review."
+  - "The linked defect BA Spec receipt at 2026-09-10T04:55:23.729Z and QC DoR receipt at 2026-09-10T04:55:36.637Z both match finalized s04 SHA-256 b50db12a977a007b8785baff4153ad54d8049e0003d030deaf4329bebff9f60b."
+  - "Human Developer approved the linked defect s05 Approach at 2026-09-10T08:12:02Z; the finalized host now awaits a trusted Approach receipt."
 refs:
   - "changes/CR-008"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -800,6 +801,7 @@ audit_events:
   - "LINKED_REPEAT_CYCLE_DEFECT_S04_HUMAN_APPROVED_PENDING_RECEIPTS"
   - "LINKED_REPEAT_CYCLE_DEFECT_S04_RECEIPTS_VERIFIED"
   - "LINKED_REPEAT_CYCLE_DEFECT_S05_DRAFTED"
+  - "LINKED_REPEAT_CYCLE_DEFECT_S05_HUMAN_APPROVED_PENDING_RECEIPT"
 ```
 
 ## Current Governance Router Status
@@ -828,11 +830,11 @@ outputs:
   - "clarified adaptive-governance boundary"
   - "AG-01..AG-11 acceptance draft"
   - "SA and TA architecture-driver handoffs"
-next_step: "Developer reviews the linked defect s05 Approach; trusted receipt sealing follows finalization"
+next_step: "Seal and verify the linked defect Developer Approach receipt before s06"
 ```
 
 ## Handoff
 - Current state: `F-AG11-001` is OPEN and the parent delivery lane is reopened; the prior candidate and terminal receipts are historical pre-finding evidence only.
-- Linked defect: BA Spec and QC DoR receipts both match finalized s04; the transaction-delta s05 Approach is ready for Developer review.
-- Next human action: Developer approves or rejects the proposed Approach; a trusted Approach receipt follows only after finalization.
+- Linked defect: Human Developer approved the transaction-delta s05 Approach; its finalized host now awaits a trusted receipt.
+- Next human action: Developer seals and verifies the Approach receipt; Task Plan remains a separate later gate.
 - Branch/worktree decision: `HOLD_OPEN`; no merge, tag, publication, release, cleanup, global install, or branch finalization is authorized.

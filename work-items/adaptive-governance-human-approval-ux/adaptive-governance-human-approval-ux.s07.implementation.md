@@ -118,7 +118,8 @@ tags:
 > and handoff and omitted a current-cycle protocol event. The linked defect
 > `closeout-bundle-repeat-cycle-reconciliation` has human-approved OQ-RCR-001=B,
 > OQ-RCR-002=A, and OQ-RCR-003=A. Its BA Spec and QC DoR receipts both match finalized s04,
-> and the transaction-delta s05 Approach is proposed for Developer review; implementation remains closed.
+> and Human Developer approved the transaction-delta s05 Approach. Its trusted receipt remains
+> pending, so implementation remains closed.
 > All earlier implementation/review evidence below is historical pre-finding evidence.
 >
 > CR-008 is ACTIVE in a dedicated enterprise worktree. B0, B1a and B1b are approved. T3/T4 now render
@@ -1153,7 +1154,7 @@ linked_work_item:
   spec_receipt_status: "APPROVED; digest_match=true"
   dor_receipt_status: "APPROVED; digest_match=true"
   current_step: s05
-  approach_status: PROPOSED
+  approach_status: HUMAN_APPROVED_PENDING_RECEIPT
   implementation_path: CLOSED
 release_effect:
   parent_s07: REOPENED
@@ -1161,7 +1162,7 @@ release_effect:
   terminal_receipts: HISTORICAL_PRE_FINDING
   branch_worktree: HOLD_OPEN
   release: BLOCKED
-next_human_action: "Developer reviews the linked defect s05 Approach; trusted receipt sealing follows only after finalization."
+next_human_action: "Developer seals the linked defect Approach receipt against finalized s05; later gates remain independent."
 ```
 
 ## Workflow Pack Audit
@@ -1218,7 +1219,7 @@ next_step: "Commit the VERIFIED snapshot and run hosted Guardrails before Releas
 
 ## Handoff
 - Current state: `F-AG11-001` reopened the parent delivery lane; the prior B0-B4 and verification evidence is retained as historical pre-finding evidence.
-- Linked defect: BA Spec and QC DoR trusted receipts match finalized s04 for `closeout-bundle-repeat-cycle-reconciliation`; its transaction-delta s05 Approach is proposed for Developer review, so implementation remains closed.
+- Linked defect: Human Developer approved the transaction-delta s05 Approach for `closeout-bundle-repeat-cycle-reconciliation`; its trusted receipt remains pending, so implementation is closed.
 - Required behavior: a repeated committed closeout must remove every satisfied pending action, set the canonical close-ready handoff, append one current-cycle event, and remain a NOOP on unchanged retry.
 - Release effect: the source `38bb0d1…`, run `34322150024`, candidate `2a5ae701…`, and terminal receipts are historical pre-finding evidence only.
 - Branch/worktree: `HOLD_OPEN`; no publish, tag, merge, install, cleanup, or branch finalization is authorized.
