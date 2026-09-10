@@ -799,6 +799,14 @@ function testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry()
   const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
   const hostPath = path.join(workflowRoot, `${slug}.s08.verification.md`);
   try {
+    const historicalMarkerOnly = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    historicalMarkerOnly.audit_events.push("CLOSEOUT_BUNDLE_APPROVED");
+    writeFile(reportPath, `${JSON.stringify(historicalMarkerOnly, null, 2)}\n`);
+    assert(
+      !historicalMarkerOnly.protocol_events.some((event) => event.action === "approve-closeout-bundle"),
+      "historical-marker-only fixture starts without a backfilled closeout protocol event"
+    );
+
     const first = runCloseoutFixture({
       slug,
       projectRoot,
@@ -831,6 +839,7 @@ function testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry()
     const cycleEvents = JSON.parse(reportAfterSecond).protocol_events.filter(
       (event) => event.action === "approve-closeout-bundle"
     );
+    const auditEventsAfterSecond = JSON.parse(reportAfterSecond).audit_events;
     assert(cycleEvents.length === 2, "first and later committed closeout cycles each append exactly one protocol event");
     assert(
       cycleEvents[0] && cycleEvents[0].note.includes(firstSummary.transaction.transaction_id),
@@ -844,23 +853,29 @@ function testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry()
       cycleEvents.every((event) => event.note.includes("dod, release, business_acceptance")),
       "every cycle event retains deterministic selected-gate order"
     );
+    assert(
+      auditEventsAfterSecond.filter((event) => event === "CLOSEOUT_BUNDLE_APPROVED").length === 1,
+      "the coarse CLOSEOUT_BUNDLE_APPROVED marker remains deduplicated across committed cycles"
+    );
 
-    const retry = runCloseoutFixture({
-      slug,
-      projectRoot,
-      workflowRoot,
-      approvalRoot,
-      env,
-      extraArgs: ["--reviewed-at", "2026-07-17T03:00:00Z"]
+    ["2026-07-17T03:00:00Z", "2026-07-17T04:00:00Z"].forEach((reviewedAt, index) => {
+      const retry = runCloseoutFixture({
+        slug,
+        projectRoot,
+        workflowRoot,
+        approvalRoot,
+        env,
+        extraArgs: ["--reviewed-at", reviewedAt]
+      });
+      assert(retry.status === 0, `unchanged retry ${index + 1} succeeds (got: ${retry.stderr.split("\n")[0]})`);
+      if (retry.status === 0) {
+        const retrySummary = JSON.parse(retry.stdout);
+        assert(retrySummary.transaction.status === "NOOP", `unchanged retry ${index + 1} allocates no committed transaction`);
+        assert(!retrySummary.transaction.transaction_id, `unchanged retry ${index + 1} exposes no allocated transaction identity`);
+      }
+      assert(fs.readFileSync(reportPath, "utf8") === reportAfterSecond, `unchanged retry ${index + 1} leaves report byte-identical`);
+      assert(fs.readFileSync(s01Path, "utf8") === s01AfterSecond, `unchanged retry ${index + 1} leaves s01 byte-identical`);
     });
-    assert(retry.status === 0, `unchanged retry succeeds (got: ${retry.stderr.split("\n")[0]})`);
-    if (retry.status === 0) {
-      const retrySummary = JSON.parse(retry.stdout);
-      assert(retrySummary.transaction.status === "NOOP", "unchanged retry allocates no committed transaction");
-      assert(!retrySummary.transaction.transaction_id, "unchanged retry exposes no allocated transaction identity");
-    }
-    assert(fs.readFileSync(reportPath, "utf8") === reportAfterSecond, "unchanged retry leaves report byte-identical");
-    assert(fs.readFileSync(s01Path, "utf8") === s01AfterSecond, "unchanged retry leaves s01 byte-identical");
   } finally {
     rmrf(projectRoot);
     rmrf(approvalRoot);

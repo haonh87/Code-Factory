@@ -430,7 +430,10 @@ function isApprovalActionForGate(action, gate) {
   return /\bwfc\s+gate\s+approve\b/.test(text) && new RegExp(`--gate\\s+${gate}(?:\\s|$)`).test(text);
 }
 
-function reconcileApprovalBundleReport(reportInput, { phase, gates, decision, reviewedAt } = {}) {
+function reconcileApprovalBundleReport(
+  reportInput,
+  { phase, gates, decision, reviewedAt, recordProtocolEvent = true, transactionId = "" } = {}
+) {
   const report = normalizeProtocolReport(reportInput);
   const normalizedPhase = String(phase || "").trim();
   const normalizedDecision = String(decision || "").trim().toUpperCase();
@@ -473,14 +476,18 @@ function reconcileApprovalBundleReport(reportInput, { phase, gates, decision, re
     appendAuditEvent(report, auditEvent);
   }
 
-  if (!eventAlreadyRecorded) {
+  const eventTransactionId = String(transactionId || "");
+  const shouldRecordProtocolEvent =
+    recordProtocolEvent && (eventTransactionId ? true : !eventAlreadyRecorded);
+  if (shouldRecordProtocolEvent) {
+    const transactionNote = eventTransactionId ? `; transaction_id: ${eventTransactionId}` : "";
     report.protocol_events.push(
       buildProtocolEvent({
         action: `${normalizedDecision === "APPROVED" ? "approve" : "reject"}-${normalizedPhase}-bundle`,
         actor: "human-review-bundle",
         fromStatus: report.protocol_status,
         toStatus: report.protocol_status,
-        note: `${normalizedDecision} ${normalizedPhase} gates: ${gateList}`,
+        note: `${normalizedDecision} ${normalizedPhase} gates: ${gateList}${transactionNote}`,
         timestamp: reviewedAt
       })
     );

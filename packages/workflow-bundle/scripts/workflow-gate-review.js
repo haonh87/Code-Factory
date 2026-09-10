@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
 const workflowBundlePackage = require("../package.json");
@@ -306,7 +307,15 @@ function renderReconciledS01Content(s01Path, report) {
     : `${content.trim()}\n\n${block}`;
 }
 
-function buildProtocolReconciliationOperations({ protocolReport, phase, gates, decision, reviewedAt }) {
+function buildProtocolReconciliationOperations({
+  protocolReport,
+  phase,
+  gates,
+  decision,
+  reviewedAt,
+  recordProtocolEvent,
+  transactionId
+}) {
   if (!protocolReport) {
     return [];
   }
@@ -314,7 +323,9 @@ function buildProtocolReconciliationOperations({ protocolReport, phase, gates, d
     phase,
     gates,
     decision,
-    reviewedAt
+    reviewedAt,
+    recordProtocolEvent,
+    transactionId
   });
   const operations = [];
   const reportContent = `${JSON.stringify(reconciled, null, 2)}\n`;
@@ -470,15 +481,42 @@ function runGateBundle({ projectRoot, workflowRootBase, workflowRoot, workItemSl
       reviewed_at: built.receipt.reviewed_at
     });
   });
-  operations.push(
-    ...buildProtocolReconciliationOperations({
+  let transactionId;
+  if (phase === "closeout" && decision === "APPROVED") {
+    const preEventOperations = buildProtocolReconciliationOperations({
       protocolReport,
       phase,
       gates,
       decision,
-      reviewedAt
-    })
-  );
+      reviewedAt,
+      recordProtocolEvent: false
+    });
+    const committedCycle = operations.length > 0 || preEventOperations.length > 0;
+    if (committedCycle) {
+      transactionId = crypto.randomUUID();
+      operations.push(
+        ...buildProtocolReconciliationOperations({
+          protocolReport,
+          phase,
+          gates,
+          decision,
+          reviewedAt,
+          recordProtocolEvent: true,
+          transactionId
+        })
+      );
+    }
+  } else {
+    operations.push(
+      ...buildProtocolReconciliationOperations({
+        protocolReport,
+        phase,
+        gates,
+        decision,
+        reviewedAt
+      })
+    );
+  }
 
   const fixtureMode = String(process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE || "").toLowerCase() === "true";
   const failAt = fixtureMode ? normalizeSingleValue(args["transaction-fail-at"] || "") : "";
@@ -487,6 +525,7 @@ function runGateBundle({ projectRoot, workflowRootBase, workflowRoot, workItemSl
     ? executeApprovalTransaction({
         plan: approvalPlan,
         transaction_root: transactionRoot,
+        transaction_id: transactionId,
         operations,
         guards,
         fail_at: failAt,
