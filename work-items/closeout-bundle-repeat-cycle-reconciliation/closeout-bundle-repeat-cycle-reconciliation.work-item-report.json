@@ -56,7 +56,7 @@
         "Drafted s01 requirement analysis plus SA/TA driver-only handoff."
       ],
       "blockers": [
-        "OQ-RCR-001..003 require human decisions before s04 Acceptance + DoR."
+        "Spec and DoR require independent human review and trusted receipts before s05."
       ]
     }
   ],
@@ -77,7 +77,9 @@
     "The trusted work-item receipt was recorded at 2026-09-09T13:53:59.942Z and verified as APPROVED for PO; receipt SHA-256 is 4ae668c9dc20dfaa1ff8979da9ce43485511c2d19e59e98e18c08427e7485b0d.",
     "s02 Business Goal was drafted from RCR-01..06, AG-11, REQ-AG-009, and the F-AG11-001 evidence without selecting a technical approach.",
     "Human PO explicitly approved the s02 Business Goal at 2026-09-10T01:36:42Z.",
-    "s03 isolated three decision-bearing questions and reused existing CR-008 authority for candidate identity, scope boundary, and release hold."
+    "s03 isolated three decision-bearing questions and reused existing CR-008 authority for candidate identity, scope boundary, and release hold.",
+    "Human BA, Developer, and QC approved OQ-RCR-001 Option B; Developer and QC approved OQ-RCR-002 Option A; BA, Developer, and QC approved OQ-RCR-003 Option A at 2026-09-10T02:30:56Z.",
+    "s03 reached READY/PASS and s04 drafted eight measurable acceptance criteria plus a READY DoR recommendation; Spec and DoR remain human-controlled gates."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -88,17 +90,18 @@
   "sdd_light_profile": "preview",
   "sdd_reasons": [],
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation",
-  "current_step": "s03",
+  "current_step": "s04",
   "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "open-question-recommendation-review",
+  "handoff_target": "s04-spec-dor-review",
   "required_actions": [
-    "BA, Developer, and QC approve or amend OQ-RCR-001..003 using the recommendation bundle.",
-    "After the decisions are recorded, draft s04 Acceptance + DoR; do not implement before Spec, DoR, Approach, and Task Plan receipts pass."
+    "BA reviews and approves Spec in s04.",
+    "BA and QC review and approve DoR in s04; QC seals the trusted DoR receipt after joint approval.",
+    "After both receipts verify with digest_match=true, continue to s05; implementation remains closed until Approach and Task Plan pass."
   ],
   "blockers": [
-    "OQ-RCR-001..003 require human decisions before s04 Acceptance + DoR."
+    "Spec and DoR trusted receipts are not yet sealed against the s04 host artifact."
   ],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
@@ -119,7 +122,9 @@
     "TRUSTED_WORK_ITEM_RECEIPT_VERIFIED",
     "S02_BUSINESS_GOAL_DRAFTED",
     "S02_BUSINESS_GOAL_APPROVED",
-    "S03_OPEN_QUESTIONS_DRAFTED"
+    "S03_OPEN_QUESTIONS_DRAFTED",
+    "OPEN_QUESTIONS_RESOLVED",
+    "S04_ACCEPTANCE_DOR_DRAFTED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -130,7 +135,9 @@
     "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z.",
     "Trusted work-item receipt recorded at 2026-09-09T13:53:59.942Z verifies APPROVED for PO with SHA-256 4ae668c9dc20dfaa1ff8979da9ce43485511c2d19e59e98e18c08427e7485b0d.",
     "Human PO explicitly approved the s02 Business Goal at 2026-09-10T01:36:42Z.",
-    "This decision does not substitute for the s03 decisions, Spec, DoR, Approach, Task Plan, or any later gate."
+    "This decision does not substitute for the s03 decisions, Spec, DoR, Approach, Task Plan, or any later gate.",
+    "Human reviewers explicitly approved OQ-RCR-001=B, OQ-RCR-002=A, and OQ-RCR-003=A with the assigned BA, Developer, and QC roles at 2026-09-10T02:30:56Z.",
+    "s04 is drafted with DoR readiness READY; Spec and DoR are still waiting for independent human approval and trusted receipt sealing."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -200,6 +207,22 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Drafted the minimum decision-bearing open-question recommendation bundle; s04 remains blocked until human decisions are recorded."
+    },
+    {
+      "timestamp": "2026-09-10T02:30:56Z",
+      "action": "open-questions-approved",
+      "actor": "ba/developer/qc",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Approved OQ-RCR-001 Option B, OQ-RCR-002 Option A, and OQ-RCR-003 Option A with their assigned roles; no later gate is implied."
+    },
+    {
+      "timestamp": "2026-09-10T02:30:56Z",
+      "action": "open-s04-acceptance-dor",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "s03 reached READY/PASS and s04 Acceptance + DoR was drafted; implementation remains closed pending Spec, DoR, Approach, and Task Plan receipts."
     }
   ]
 }

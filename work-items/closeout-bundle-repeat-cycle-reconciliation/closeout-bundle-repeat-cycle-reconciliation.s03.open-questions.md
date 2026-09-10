@@ -101,12 +101,12 @@ tags:
 # Step 3 - Open Questions
 
 > [!summary]
-> Input readiness for `s04 Acceptance + DoR` is **BLOCKED** by three decision-bearing questions.
-> The recommendation bundle defines a committed closeout cycle by a new exact receipt/state
-> transition, records one protocol event per committed cycle while preserving coarse audit markers,
-> and reconciles only current-state surfaces to the canonical close action. Existing CR-008
-> authority resolves candidate, rollback, prior-defect, and release-hold questions without asking
-> the user to approve them again.
+> Input readiness for `s04 Acceptance + DoR` is **READY**. BA, Developer, and QC approved
+> `OQ-RCR-001 Option B`; Developer and QC approved `OQ-RCR-002 Option A`; BA, Developer, and
+> QC approved `OQ-RCR-003 Option A`. The decisions distinguish a committed cycle from an
+> unchanged retry, preserve coarse audit compatibility while adding one attributable event per
+> committed cycle, and limit reconciliation to mutable current-state surfaces. No implementation
+> authority is created.
 
 ## Step Contract
 ```yaml
@@ -209,7 +209,10 @@ open_questions:
     question: "What constitutes a new committed closeout cycle, distinct from an unchanged retry?"
     decision_type: "requirement semantics"
     owners: ["ba", "developer", "qc"]
-    status: "WAITING_HUMAN_DECISION"
+    status: "APPROVED"
+    decision: "B"
+    reviewed_by: ["ba", "developer", "qc"]
+    reviewed_at: "2026-09-10T02:30:56Z"
     options:
       - id: "A"
         statement: "Treat every command invocation as a new cycle."
@@ -227,7 +230,10 @@ open_questions:
     question: "How should current-cycle success be recorded while historical evidence stays immutable?"
     decision_type: "audit contract"
     owners: ["developer", "qc"]
-    status: "WAITING_HUMAN_DECISION"
+    status: "APPROVED"
+    decision: "A"
+    reviewed_by: ["developer", "qc"]
+    reviewed_at: "2026-09-10T02:30:56Z"
     options:
       - id: "A"
         statement: "Append exactly one attributable protocol event for each committed cycle; retain the coarse audit_events marker as a compatibility indicator and do not rewrite history."
@@ -245,7 +251,10 @@ open_questions:
     question: "Which state is reconciled after commit, and what is the canonical next action?"
     decision_type: "completion boundary"
     owners: ["ba", "developer", "qc"]
-    status: "WAITING_HUMAN_DECISION"
+    status: "APPROVED"
+    decision: "A"
+    reviewed_by: ["ba", "developer", "qc"]
+    reviewed_at: "2026-09-10T02:30:56Z"
     options:
       - id: "A"
         statement: "Reconcile the mutable report and s01 protocol mirror semantically, remove satisfied approval blockers/actions regardless of prose form, and leave only the work-item close action with a protocol-close handoff."
@@ -259,29 +268,26 @@ open_questions:
     recommendation: "A"
     rationale: "It makes the current source and mirror agree without converting immutable history into mutable state."
     acceptance_effect: "s04 must enumerate mutable surfaces, semantic cleanup, canonical close action, and preserved history."
-missing_inputs:
-  - "Human decision for OQ-RCR-001 Option B or an amendment"
-  - "Human decision for OQ-RCR-002 Option A or an amendment"
-  - "Human decision for OQ-RCR-003 Option A or an amendment"
+missing_inputs: []
 conflicts:
   - id: "CONFLICT-RCR-001"
     sources: ["Global audit-event presence check", "Requirement for one event per committed cycle"]
     conflict: "Historical success currently suppresses evidence for a later committed cycle."
-    disposition: "Await OQ-RCR-001 and OQ-RCR-002; do not select a dedup mechanism in s03."
+    disposition: "Resolved by OQ-RCR-001 Option B and OQ-RCR-002 Option A; mechanism selection remains deferred to s05."
     owner: "developer/qc"
-    blocking: true
+    blocking: false
   - id: "CONFLICT-RCR-002"
     sources: ["Literal command-string cleanup", "KPI-RCR-001 zero stale approval surfaces"]
     conflict: "Equivalent prose or alternate command formatting survives a successful closeout."
-    disposition: "Await OQ-RCR-003 to lock semantic current-state reconciliation."
+    disposition: "Resolved by OQ-RCR-003 Option A: reconcile semantic current state rather than literal command text."
     owner: "ba/developer/qc"
-    blocking: true
+    blocking: false
   - id: "CONFLICT-RCR-003"
     sources: ["Retained pre-closeout handoff", "KPI-RCR-004 post-closeout surface agreement"]
     conflict: "Receipts say complete while navigation still points to the completed approval."
-    disposition: "Await OQ-RCR-003 to lock the canonical close handoff."
+    disposition: "Resolved by OQ-RCR-003 Option A: leave the work-item close action and protocol-close handoff."
     owner: "ba/developer/qc"
-    blocking: true
+    blocking: false
   - id: "CONFLICT-RCR-004"
     sources: ["Parent protocol_status=VERIFIED", "QC-reopened s07 delivery lane for F-AG11-001"]
     conflict: "The enum has no VERIFIED-to-s07 transition, while governance evidence blocks current release authority."
@@ -322,12 +328,15 @@ recommendation_bundle:
     OQ-RCR-002: ["developer", "qc"]
     OQ-RCR-003: ["ba", "developer", "qc"]
   effect_if_approved: "Resolve blocking conflicts and open s04 Acceptance + DoR authoring; no implementation authority is created."
+  approval_status: "APPROVED"
+  approved_at: "2026-09-10T02:30:56Z"
+  decision_source: "User explicitly approved all three options with the assigned BA, Developer, and QC roles."
 ```
 
 ## Input Readiness
 ```yaml
 step: "s04 Acceptance + DoR"
-status: BLOCKED
+status: READY
 available_inputs:
   - "PO-approved Business Goal with KPI-RCR-001..006"
   - "Approved work-item receipt and complete s01 SA/TA driver set"
@@ -335,27 +344,27 @@ available_inputs:
   - "Source evidence for literal action filtering, retained handoff, and global event-presence dedup"
   - "Existing first-cycle, legacy gate-set, atomicity, and exact-candidate regression evidence"
   - "Existing authority for v2.6.2 candidate, v2.6.1 rollback, and parent release hold"
-missing_inputs:
-  - "Approved OQ-RCR-001 cycle-boundary semantics"
-  - "Approved OQ-RCR-002 audit-event contract"
-  - "Approved OQ-RCR-003 reconciliation boundary and canonical next action"
+  - "Human-approved OQ-RCR-001 Option B cycle-boundary semantics"
+  - "Human-approved OQ-RCR-002 Option A audit-event contract"
+  - "Human-approved OQ-RCR-003 Option A reconciliation boundary and canonical next action"
+missing_inputs: []
 invalid_inputs:
   - "Historical parent DoD, Release, and Business Acceptance receipts are pre-finding evidence only."
   - "Global CLOSEOUT_BUNDLE_APPROVED presence alone cannot prove current-cycle completion."
 conflicts:
-  - "CONFLICT-RCR-001..003 remain blocking until the recommendation bundle is human-approved or amended."
+  - "CONFLICT-RCR-001..003 are resolved by the approved B/A/A decisions."
   - "CONFLICT-RCR-004 is contained by the parent BLOCKED delivery-lane projection and is non-blocking for child discovery."
 assumptions:
   - "The correction can remain within existing work-item protocol and test boundaries."
   - "No public contract or foundation gate becomes applicable unless later evidence contradicts the approved scope."
-risk_level: HIGH
-next_action: "BA, Developer, and QC approve or amend the OQ-RCR-001..003 recommendation bundle in sequence B, A, A."
+risk_level: MEDIUM
+next_action: "Draft measurable s04 Spec and DoR evidence from the approved B/A/A decisions, then request independent BA and QC gate review."
 ```
 
 ## Audit
 ```yaml
 step: "s03 Open Questions"
-status: PARTIAL
+status: PASS
 checks:
   - criterion: "Every acceptance-changing ambiguity has an ID, owner, options, and recommendation"
     result: PASS
@@ -366,20 +375,19 @@ checks:
   - criterion: "Requirement semantics are separated from technical design"
     result: PASS
     evidence: "The bundle specifies observable cycle, event, and state semantics while deferring mechanisms to s05."
-  - criterion: "Readiness remains blocked while decision-bearing questions are unapproved"
+  - criterion: "Readiness stays blocked until every decision-bearing question is approved"
     result: PASS
-    evidence: "Input Readiness is BLOCKED and lists all three missing decisions."
+    evidence: "The artifact remained BLOCKED until the user explicitly approved OQ-RCR-001=B, OQ-RCR-002=A, and OQ-RCR-003=A with their assigned roles."
   - criterion: "Every blocking question has a human decision"
-    result: FAIL
-    evidence: "OQ-RCR-001..003 are WAITING_HUMAN_DECISION."
+    result: PASS
+    evidence: "All three questions record APPROVED status, exact option, reviewer roles, timestamp, and decision source."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed classification and recommendation in one evidence pass; human review remains outside the authoring timebox."
-gaps:
-  - "Human decisions for OQ-RCR-001..003"
-risk_level: HIGH
-next_action: "Approve or amend recommendation sequence OQ-RCR-001=B, OQ-RCR-002=A, OQ-RCR-003=A before s04."
+gaps: []
+risk_level: MEDIUM
+next_action: "Proceed to s04 Acceptance + DoR authoring; keep Spec and DoR as independent human-controlled gates."
 ```
 
 ## Governance Context
@@ -399,7 +407,7 @@ prohibited_actions:
   - "Open s04 readiness before all three decisions are recorded"
   - "Choose implementation mechanics or edit production code"
   - "Use historical terminal receipts as current release authority"
-open_governance_questions: ["OQ-RCR-001", "OQ-RCR-002", "OQ-RCR-003"]
+open_governance_questions: []
 ```
 
 ## Traceability
@@ -413,11 +421,11 @@ decision_mapping:
   - { question: "OQ-RCR-001", drivers: ["DRV-SA-RC-002", "DRV-TA-RC-002"], criteria: ["RCR-02", "RCR-04"], metrics: ["KPI-RCR-002", "KPI-RCR-003"] }
   - { question: "OQ-RCR-002", drivers: ["DRV-SA-RC-002", "DRV-TA-RC-002"], criteria: ["RCR-02", "RCR-05"], metrics: ["KPI-RCR-002", "KPI-RCR-005"] }
   - { question: "OQ-RCR-003", drivers: ["DRV-SA-RC-001", "DRV-SA-RC-003", "DRV-TA-RC-001"], criteria: ["RCR-01", "RCR-03"], metrics: ["KPI-RCR-001", "KPI-RCR-004"] }
-next_step: "s04 Acceptance + DoR after OQ-RCR-001..003 are human-approved or amended"
+next_step: "s04 Acceptance + DoR"
 ```
 
 ## Handoff
-- Readiness status: `BLOCKED`; s03 authoring is complete but the three decision receipts are human statements, not inferred approvals.
-- Recommendation sequence: `OQ-RCR-001 Option B → OQ-RCR-002 Option A → OQ-RCR-003 Option A`.
-- Review roles: BA/Developer/QC for OQ-RCR-001 and OQ-RCR-003; Developer/QC for OQ-RCR-002.
-- Condition for s04: record all three human decisions, update readiness to `READY`, and re-audit s03; implementation remains closed.
+- Readiness status: `READY`; s03 audit is `PASS` after explicit human decisions.
+- Approved sequence: `OQ-RCR-001 Option B → OQ-RCR-002 Option A → OQ-RCR-003 Option A`.
+- Recorded roles: BA/Developer/QC for OQ-RCR-001 and OQ-RCR-003; Developer/QC for OQ-RCR-002.
+- Next gate: draft s04, then BA reviews Spec and BA/QC review DoR; implementation remains closed.

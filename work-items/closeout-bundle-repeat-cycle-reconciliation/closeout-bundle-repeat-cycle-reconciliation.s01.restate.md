@@ -480,7 +480,7 @@ work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation"
-current_step: "s03"
+current_step: "s04"
 granted_write_paths: []
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
@@ -493,20 +493,23 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "open-question-recommendation-review"
-last_transition_action: "open-s03-open-questions"
-last_transition_at: "2026-09-10T01:36:42Z"
+handoff_target: "s04-spec-dor-review"
+last_transition_action: "open-s04-acceptance-dor"
+last_transition_at: "2026-09-10T02:30:56Z"
 required_actions:
-  - "BA, Developer, and QC approve or amend OQ-RCR-001..003 using the recommendation bundle."
-  - "After the decisions are recorded, draft s04 Acceptance + DoR; do not implement before Spec, DoR, Approach, and Task Plan receipts pass."
+  - "BA reviews and approves Spec in s04."
+  - "BA and QC review and approve DoR in s04; QC seals the trusted DoR receipt after joint approval."
+  - "After both receipts verify with digest_match=true, continue to s05; implementation remains closed until Approach and Task Plan pass."
 blockers:
-  - "OQ-RCR-001..003 require human decisions before s04 Acceptance + DoR."
+  - "Spec and DoR trusted receipts are not yet sealed against the s04 host artifact."
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
   - "Trusted work-item receipt recorded at 2026-09-09T13:53:59.942Z verifies APPROVED for PO with SHA-256 4ae668c9dc20dfaa1ff8979da9ce43485511c2d19e59e98e18c08427e7485b0d."
   - "Human PO explicitly approved the s02 Business Goal at 2026-09-10T01:36:42Z."
   - "This decision does not substitute for the s03 decisions, Spec, DoR, Approach, Task Plan, or any later gate."
+  - "Human reviewers explicitly approved OQ-RCR-001=B, OQ-RCR-002=A, and OQ-RCR-003=A with the assigned BA, Developer, and QC roles at 2026-09-10T02:30:56Z."
+  - "s04 is drafted with DoR readiness READY; Spec and DoR are still waiting for independent human approval and trusted receipt sealing."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -526,6 +529,8 @@ audit_events:
   - "S02_BUSINESS_GOAL_DRAFTED"
   - "S02_BUSINESS_GOAL_APPROVED"
   - "S03_OPEN_QUESTIONS_DRAFTED"
+  - "OPEN_QUESTIONS_RESOLVED"
+  - "S04_ACCEPTANCE_DOR_DRAFTED"
 ```
 
 ## Traceability
@@ -538,13 +543,15 @@ outputs:
   - "repeat-cycle reconciliation BUG scope"
   - "RCR-01..06 acceptance draft"
   - "SA and TA driver-only handoffs"
-next_step: "Human decision on OQ-RCR-001..003, then s04 Acceptance + DoR"
+  - "Human-approved OQ-RCR-001=B, OQ-RCR-002=A, and OQ-RCR-003=A"
+  - "Proposed AC-RCR-01..08 and DoR READY assessment"
+next_step: "BA Spec and BA/QC DoR review in s04"
 ```
 
 ## Handoff
 - Clear: closeout receipts succeeded, but current navigation and event evidence did not reconcile.
 - Distinct scope: repeat-cycle/idempotency, not the resolved missing-DoD selector defect.
 - Decision: PO approval is backed by a verified trusted receipt; the completed receipt action has been removed.
-- Current step: PO approved s02; s03 now awaits decisions on OQ-RCR-001..003.
+- Current step: s03 is READY/PASS after the assigned reviewers approved B/A/A; s04 Spec and DoR are drafted for human review.
 - Boundary: implementation remains closed until Spec, DoR, Approach, and Task Plan independently pass.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.

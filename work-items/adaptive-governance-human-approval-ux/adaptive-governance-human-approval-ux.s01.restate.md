@@ -712,16 +712,16 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "linked-defect-open-question-review"
-last_transition_action: "linked-defect-s03-drafted"
-last_transition_at: "2026-09-10T01:36:42Z"
+handoff_target: "linked-defect-s04-spec-dor-review"
+last_transition_action: "linked-defect-s04-drafted"
+last_transition_at: "2026-09-10T02:30:56Z"
 required_actions:
-  - "BA, Developer, and QC approve or amend OQ-RCR-001..003 for closeout-bundle-repeat-cycle-reconciliation using the recommendation bundle."
+  - "BA reviews the linked defect Spec; BA and QC review its DoR and seal the independent trusted receipts."
   - "Complete the linked defect through Spec, DoR, Approach, Task Plan, TDD implementation, two-tier review, hosted verification, and DoD."
   - "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
 blockers:
   - "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."
-  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is at s03 Open Questions; OQ-RCR-001..003 block s04 readiness."
+  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is at s04; Spec and DoR receipts block s05."
 review_notes:
   - "Human review approved."
   - "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local verification matrix and hosted Guardrails run 34322150024."
@@ -735,7 +735,9 @@ review_notes:
   - "QC recorded F-AG11-001 and reopened the parent delivery lane; release, protocol close, and branch finalization are blocked pending the linked defect and corrected-candidate re-verification."
   - "Human PO approved linked defect closeout-bundle-repeat-cycle-reconciliation at 2026-09-09T13:32:51Z; receipt sealing and every later gate remain separate."
   - "The linked defect trusted receipt was verified APPROVED with SHA-256 4ae668c9dc20dfaa1ff8979da9ce43485511c2d19e59e98e18c08427e7485b0d; s02 Business Goal is drafted for review."
-  - "Human PO approved the linked defect s02 Business Goal at 2026-09-10T01:36:42Z; OQ-RCR-001..003 now await their assigned reviewers."
+  - "Human PO approved the linked defect s02 Business Goal at 2026-09-10T01:36:42Z."
+  - "Human BA, Developer, and QC approved linked defect OQ-RCR-001=B, OQ-RCR-002=A, and OQ-RCR-003=A with their assigned role sets at 2026-09-10T02:30:56Z."
+  - "The linked defect s04 Spec and DoR are drafted; implementation and parent release remain blocked pending independent child gates and delivery."
 refs:
   - "changes/CR-008"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -791,6 +793,8 @@ audit_events:
   - "LINKED_REPEAT_CYCLE_DEFECT_S02_DRAFTED"
   - "LINKED_REPEAT_CYCLE_DEFECT_S02_APPROVED"
   - "LINKED_REPEAT_CYCLE_DEFECT_S03_DRAFTED"
+  - "LINKED_REPEAT_CYCLE_DEFECT_OPEN_QUESTIONS_RESOLVED"
+  - "LINKED_REPEAT_CYCLE_DEFECT_S04_DRAFTED"
 ```
 
 ## Current Governance Router Status
@@ -819,11 +823,11 @@ outputs:
   - "clarified adaptive-governance boundary"
   - "AG-01..AG-11 acceptance draft"
   - "SA and TA architecture-driver handoffs"
-next_step: "Human decisions on linked defect OQ-RCR-001..003"
+next_step: "BA Spec and BA/QC DoR review for the linked defect"
 ```
 
 ## Handoff
 - Current state: `F-AG11-001` is OPEN and the parent delivery lane is reopened; the prior candidate and terminal receipts are historical pre-finding evidence only.
-- Linked defect: PO approved the s02 Business Goal; s03 proposes `OQ-RCR-001=B`, `OQ-RCR-002=A`, and `OQ-RCR-003=A`.
-- Next human action: assigned BA/Developer/QC reviewers approve or amend that bundle; later gates remain independent.
+- Linked defect: s03 is READY/PASS after human approval of `OQ-RCR-001=B`, `OQ-RCR-002=A`, and `OQ-RCR-003=A`; s04 Spec and DoR are drafted.
+- Next human action: BA reviews Spec; BA and QC review DoR and seal independent trusted receipts; later gates remain independent.
 - Branch/worktree decision: `HOLD_OPEN`; no merge, tag, publication, release, cleanup, global install, or branch finalization is authorized.
