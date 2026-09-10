@@ -791,6 +791,82 @@ function testProductReleaseCloseoutKeepsConfiguredAuthority() {
   }
 }
 
+function testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry() {
+  const slug = "proto-repeat-cycle-closeout-item";
+  const gates = ["dod", "release", "business_acceptance"];
+  const { projectRoot, workflowRoot, reportPath } = buildCloseoutProject(slug, gates);
+  const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-repeat-cycle-closeout-approvals-");
+  const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+  const hostPath = path.join(workflowRoot, `${slug}.s08.verification.md`);
+  try {
+    const first = runCloseoutFixture({
+      slug,
+      projectRoot,
+      workflowRoot,
+      approvalRoot,
+      env,
+      extraArgs: ["--reviewed-at", "2026-07-17T01:00:00Z"]
+    });
+    assert(first.status === 0, `first closeout cycle succeeds (got: ${first.stderr.split("\n")[0]})`);
+    if (first.status !== 0) return;
+    const firstSummary = JSON.parse(first.stdout);
+    assert(firstSummary.transaction.status === "COMMITTED", "first closeout cycle commits");
+
+    fs.appendFileSync(hostPath, "\n<!-- second verified candidate -->\n", "utf8");
+    const second = runCloseoutFixture({
+      slug,
+      projectRoot,
+      workflowRoot,
+      approvalRoot,
+      env,
+      extraArgs: ["--reviewed-at", "2026-07-17T02:00:00Z"]
+    });
+    assert(second.status === 0, `later closeout cycle succeeds (got: ${second.stderr.split("\n")[0]})`);
+    if (second.status !== 0) return;
+    const secondSummary = JSON.parse(second.stdout);
+    assert(secondSummary.transaction.status === "COMMITTED", "a new verified host creates a later committed closeout cycle");
+
+    const reportAfterSecond = fs.readFileSync(reportPath, "utf8");
+    const s01AfterSecond = fs.readFileSync(s01Path, "utf8");
+    const cycleEvents = JSON.parse(reportAfterSecond).protocol_events.filter(
+      (event) => event.action === "approve-closeout-bundle"
+    );
+    assert(cycleEvents.length === 2, "first and later committed closeout cycles each append exactly one protocol event");
+    assert(
+      cycleEvents[0] && cycleEvents[0].note.includes(firstSummary.transaction.transaction_id),
+      "the first-cycle event is attributable to its journal transaction_id"
+    );
+    assert(
+      cycleEvents[1] && cycleEvents[1].note.includes(secondSummary.transaction.transaction_id),
+      "the later-cycle event is attributable to its journal transaction_id despite historical event evidence"
+    );
+    assert(
+      cycleEvents.every((event) => event.note.includes("dod, release, business_acceptance")),
+      "every cycle event retains deterministic selected-gate order"
+    );
+
+    const retry = runCloseoutFixture({
+      slug,
+      projectRoot,
+      workflowRoot,
+      approvalRoot,
+      env,
+      extraArgs: ["--reviewed-at", "2026-07-17T03:00:00Z"]
+    });
+    assert(retry.status === 0, `unchanged retry succeeds (got: ${retry.stderr.split("\n")[0]})`);
+    if (retry.status === 0) {
+      const retrySummary = JSON.parse(retry.stdout);
+      assert(retrySummary.transaction.status === "NOOP", "unchanged retry allocates no committed transaction");
+      assert(!retrySummary.transaction.transaction_id, "unchanged retry exposes no allocated transaction identity");
+    }
+    assert(fs.readFileSync(reportPath, "utf8") === reportAfterSecond, "unchanged retry leaves report byte-identical");
+    assert(fs.readFileSync(s01Path, "utf8") === s01AfterSecond, "unchanged retry leaves s01 byte-identical");
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
 function testLegacyMaintenanceCloseoutRestoresImplicitDod() {
   const slug = "proto-legacy-maintenance-closeout-item";
   const { projectRoot, workflowRoot, reportPath, hostPath } = buildLegacyCloseoutProject(slug, [], { omitApprovalGates: true });
@@ -1337,6 +1413,7 @@ testReadyBundlePreflightsEveryReviewerBeforeWriting();
 testRejectReadyBundleKeepsIndependentDecisionEvidence();
 testMaintenanceCloseoutBundlesOnlyDod();
 testProductReleaseCloseoutKeepsConfiguredAuthority();
+testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry();
 testLegacyMaintenanceCloseoutRestoresImplicitDod();
 testLegacyProductReleaseCloseoutRestoresImplicitDod();
 testLegacyCloseoutKeepsOptionalTerminalGatesIndependent();
