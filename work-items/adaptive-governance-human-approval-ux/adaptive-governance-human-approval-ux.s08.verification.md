@@ -276,8 +276,9 @@ linked_work_item:
   t6a_task_plan: "APPROVED_BY_DEVELOPER at 2026-09-11T03:46:13Z; fail-first bounded-alias correction open"
   t6a_red: "EXPECTED_FAIL at 0d1ac48c0adb43279f67503a318187295688a463; exactly one alias-collision assertion failed"
   t6a_green: "PASS at f9533c4de66fdb04e75008382b39b4fc413e3caa; both focused suites, syntax, and diff checks green"
-  refreshed_b2_spec_compliance: "READY_FOR_REVIEW by QC"
-next_human_action: "Human QC reviews refreshed child B2 Spec Compliance for source f9533c4de66fdb04e75008382b39b4fc413e3caa."
+  refreshed_b2_spec_compliance: "APPROVED_BY_QC at 2026-09-11T04:04:57Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa"
+  refreshed_b2_code_quality: "READY_FOR_REVIEW by Developer/QC; recommended PASS"
+next_human_action: "Human Developer and QC review refreshed child B2 Code Quality for source f9533c4de66fdb04e75008382b39b4fc413e3caa."
 ```
 
 ## Main Artifact
@@ -933,13 +934,13 @@ human_decision:
     rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
     receipt_state: READY_TO_SEAL
     execution_effect: "No publish, tag creation or movement, install, merge, or cleanup was executed or authorized by this approval record."
-gaps: ["AG-11 remains blocked; linked defect T6a is GREEN, but HIGH F-RCR-B2-001 stays OPEN until refreshed B2 Spec Compliance and Code Quality pass in order."]
+gaps: ["AG-11 remains blocked; refreshed child B2 Spec Compliance is approved, but HIGH F-RCR-B2-001 stays OPEN until Developer/QC approve refreshed Code Quality."]
 residual_risks: ["Cross-toolchain gzip representation differs.", "ESLint/Semgrep unavailable with documented fallbacks.", "External publication has not been executed."]
 follow_up_items:
   - "Complete the active linked defect TDD/review path, then deliver closeout-bundle-repeat-cycle-reconciliation through s08."
   - "Build and host one corrected candidate, then repeat parent Technical Verification and DoD."
   - "Repeat Release, Business Acceptance, and receipt sealing for the corrected candidate."
-next_action: "Human QC reviews refreshed child B2 Spec Compliance before refreshed Code Quality opens."
+next_action: "Human Developer and QC review refreshed child B2 Code Quality; a PASS resolves F-RCR-B2-001 and opens T7."
 ```
 
 ## SDD Traceability
@@ -972,6 +973,6 @@ next_step: "Seal trusted DoD, Release, and Business Acceptance receipts against 
 - Overall status: `FAIL/BLOCKED`; `F-AG11-001` proves AG-11 fails on a real repeated closeout cycle.
 - Historical evidence: source `38bb0d1…`, run `34322150024`, hosted SHA-256 `2a5ae701…`, the former Technical Verification/DoD/Release/Business Acceptance decisions, and the receipts sealed at `2026-09-09T09:57:16.873Z` are retained only as pre-finding evidence.
 - Linked defect: T1-T6 are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`; B1 passed in order and QC approved B2 Spec Compliance at `2026-09-11T03:20:17Z`.
-- B2 correction: T6a expected RED `0d1ac48` precedes bounded-alias GREEN `f9533c4de66fdb04e75008382b39b4fc413e3caa`; refreshed Spec Compliance is ready for QC and Code Quality remains closed.
+- B2 correction: refreshed Spec Compliance is QC-approved for `f9533c4de66fdb04e75008382b39b4fc413e3caa`; Code Quality recommends PASS and awaits Developer/QC approval.
 - Required sequence: approve refreshed B2 in order, complete T7/B3, verify one exact hosted candidate, then repeat parent terminal gates.
 - Branch/worktree: `HOLD_OPEN`; no merge, tag, release publication, install, cleanup, or branch finalization is authorized.

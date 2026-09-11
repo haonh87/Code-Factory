@@ -473,8 +473,12 @@ batch: B2
 source_sha: "f9533c4de66fdb04e75008382b39b4fc413e3caa"
 scope: ["T5", "T6", "T6a"]
 spec_compliance:
-  status: READY_FOR_REVIEW
+  status: APPROVED
+  verdict: PASS
   reviewer_role: qc
+  reviewed_by: qc
+  reviewed_at: "2026-09-11T04:04:57Z"
+  decision_source: "User explicitly approved refreshed B2 Spec Compliance with role QC for source f9533c4de66fdb04e75008382b39b4fc413e3caa."
   prepared_at: "2026-09-11T03:59:37Z"
   evidence:
     - "AC-RCR-03: approved closeout still projects exactly one work-item close action, protocol-close handoff, selected-terminal blocker cleanup, and report/s01 parity."
@@ -485,8 +489,25 @@ spec_compliance:
     - "work-item-protocol.test.js and workflow-gate-review.test.js PASS; work-item-protocol.js, workflow-gate-review.js, and workflow-approval-transaction.js pass node --check; git diff --check PASS."
   findings: []
 code_quality:
-  status: NOT_OPEN
-  opens_after: "Human QC approves refreshed B2 Spec Compliance for source f9533c4de66fdb04e75008382b39b4fc413e3caa."
+  status: READY_FOR_REVIEW
+  recommended_verdict: PASS
+  reviewer_roles: ["developer", "qc"]
+  opened_at: "2026-09-11T04:04:57Z"
+  prepared_at: "2026-09-11T04:05:58Z"
+  evidence:
+    - "Correctness: bounded matching preserves uat/situation and dod/dodgy canaries while retaining all selected-gate cleanup behavior."
+    - "Security: every dynamic alias is regex-escaped before compilation; no path, command, receipt, authority, or persistence surface changed."
+    - "Compatibility: NFKC/case/separator/whitespace normalization is unchanged, punctuation-delimited aliases remain matchable, and legacy plus adaptive closeout fixtures pass."
+    - "Maintainability: one named helper replaces one raw substring predicate; the T6a production delta is 10 additions and 1 replacement with no new dependency or configuration."
+    - "Performance: one small Unicode regex is evaluated per blocker/selected-alias pair; the terminal gate and blocker sets are bounded and no I/O was added."
+    - "Test integrity: T6a RED 0d1ac48 precedes GREEN f9533c4; the negative fixtures are additive, both focused suites pass, three production syntax checks pass, and the B2 diff is whitespace-clean."
+  findings: []
+  finding_disposition:
+    id: "F-RCR-B2-001"
+    current_status: OPEN
+    recommended_status: RESOLVED
+    resolution_source: "f9533c4de66fdb04e75008382b39b4fc413e3caa"
+    resolution_condition: "Human Developer and QC approve refreshed B2 Code Quality."
 ```
 
 ## Traceability
@@ -502,11 +523,12 @@ current:
   - "B2 Code Quality FAIL approved by Developer/QC; F-RCR-B2-001 OPEN"
   - "QC reopened B2 Spec Compliance and Developer approved T6a"
   - "T6a expected RED at 0d1ac48; bounded-alias GREEN at f9533c4de66fdb04e75008382b39b4fc413e3caa"
-next_step: "Human QC reviews refreshed B2 Spec Compliance; only a PASS opens refreshed B2 Code Quality"
+  - "Refreshed B2 Spec Compliance approved by QC; Code Quality PASS recommendation ready"
+next_step: "Human Developer and QC review refreshed B2 Code Quality; T7 opens only after PASS"
 ```
 
 ## Handoff
-- Outputs actual: T0-T6 plus T6a RED/GREEN evidence, completed B1, historical B2 FAIL/reopen evidence, and refreshed B2 Spec Compliance packet for source `f9533c4de66fdb04e75008382b39b4fc413e3caa`.
-- Known limitations: `F-RCR-B2-001` remains OPEN and blocks T7 until refreshed B2 Spec Compliance and Code Quality pass in order; T7-T8 remain pending.
+- Outputs actual: T0-T6 plus T6a RED/GREEN evidence, completed B1, refreshed B2 Spec Compliance PASS, and a Code Quality PASS recommendation for source `f9533c4de66fdb04e75008382b39b4fc413e3caa`.
+- Known limitations: `F-RCR-B2-001` remains OPEN and T7 remains blocked until Developer/QC approve refreshed B2 Code Quality; T7-T8 remain pending.
 - Notes for testing: the fail-first `uat`/`dod` substring fixture now passes without weakening any existing semantic projection or transaction assertion.
 - Notes for deployment: none in s07; corrected candidate and rollback binding are T8/s08 work.

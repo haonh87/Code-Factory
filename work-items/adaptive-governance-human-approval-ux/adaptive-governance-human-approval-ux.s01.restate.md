@@ -719,16 +719,16 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "linked-defect-b2-spec-compliance-review"
-last_transition_action: "linked-defect-t6a-green-b2-spec-ready"
-last_transition_at: "2026-09-11T03:59:37Z"
+handoff_target: "linked-defect-b2-code-quality-review"
+last_transition_action: "linked-defect-b2-spec-approved-code-quality-ready"
+last_transition_at: "2026-09-11T04:05:58Z"
 required_actions:
-  - "Human QC reviews refreshed child B2 Spec Compliance for source f9533c4de66fdb04e75008382b39b4fc413e3caa."
-  - "Only after child Spec Compliance PASS, Developer and QC review refreshed B2 Code Quality; child T7 and parent re-verification remain blocked until both pass in order."
+  - "Human Developer and QC review the refreshed child B2 Code Quality PASS recommendation for source f9533c4de66fdb04e75008382b39b4fc413e3caa."
+  - "If approved, resolve F-RCR-B2-001 and open child T7; parent re-verification remains blocked until child delivery completes."
   - "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
 blockers:
   - "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."
-  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is ACTIVE at s07; T6a is GREEN at f9533c4de66fdb04e75008382b39b4fc413e3caa, HIGH F-RCR-B2-001 remains OPEN, and refreshed B2/B3, T7-T8, and child verification remain pending."
+  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is ACTIVE at s07; refreshed B2 Spec Compliance is QC-approved for f9533c4de66fdb04e75008382b39b4fc413e3caa, HIGH F-RCR-B2-001 remains OPEN, and Code Quality, B3, T7-T8, and child verification remain pending."
 review_notes:
   - "Human review approved."
   - "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local verification matrix and hosted Guardrails run 34322150024."
@@ -760,6 +760,7 @@ review_notes:
   - "Human QC approved linked defect B2 Spec Compliance at 2026-09-11T03:20:17Z; Code Quality opened next."
   - "Human Developer/QC approved linked defect B2 Code Quality FAIL and opened HIGH F-RCR-B2-001 at 2026-09-11T03:46:13Z; QC reopened child B2 Spec Compliance and Developer approved T6a."
   - "Linked defect T6a RED commit 0d1ac48c0adb43279f67503a318187295688a463 recorded one expected alias-collision failure before bounded-alias GREEN source f9533c4de66fdb04e75008382b39b4fc413e3caa. Refreshed B2 Spec Compliance is ready for QC; parent release remains blocked."
+  - "Human QC approved refreshed child B2 Spec Compliance at 2026-09-11T04:04:57Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. Child Code Quality recommends PASS; Developer/QC approval remains pending and parent release stays blocked."
 refs:
   - "changes/CR-008"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -846,6 +847,9 @@ audit_events:
   - "LINKED_REPEAT_CYCLE_DEFECT_T6A_EXPECTED_RED_RECORDED"
   - "LINKED_REPEAT_CYCLE_DEFECT_T6A_GREEN_RECORDED"
   - "LINKED_REPEAT_CYCLE_DEFECT_B2_SPEC_COMPLIANCE_REFRESHED_READY"
+  - "LINKED_REPEAT_CYCLE_DEFECT_B2_SPEC_COMPLIANCE_REFRESHED_APPROVED"
+  - "LINKED_REPEAT_CYCLE_DEFECT_B2_CODE_QUALITY_REOPENED"
+  - "LINKED_REPEAT_CYCLE_DEFECT_B2_CODE_QUALITY_RECOMMENDATION_PREPARED"
 ```
 
 ## Current Governance Router Status
@@ -874,12 +878,12 @@ outputs:
   - "clarified adaptive-governance boundary"
   - "AG-01..AG-11 acceptance draft"
   - "SA and TA architecture-driver handoffs"
-next_step: "Human QC reviews refreshed linked defect B2 Spec Compliance; parent release remains blocked"
+next_step: "Human Developer and QC review refreshed linked defect B2 Code Quality; parent release remains blocked"
 ```
 
 ## Handoff
 - Current state: `F-AG11-001` is OPEN and the parent delivery lane is reopened; the prior candidate and terminal receipts are historical pre-finding evidence only.
 - Linked defect: all authoring receipts match; T1-T6 RED/GREEN are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`, and QC approved B2 Spec Compliance at `2026-09-11T03:20:17Z`.
 - Code Quality: Developer/QC approved FAIL and opened HIGH `F-RCR-B2-001`; QC reopened B2 Spec Compliance and Developer approved T6a.
-- Next action: QC reviews refreshed B2 Spec Compliance for child source `f9533c4de66fdb04e75008382b39b4fc413e3caa`; Code Quality remains closed until a PASS.
+- Next action: Developer and QC review refreshed B2 Code Quality for child source `f9533c4de66fdb04e75008382b39b4fc413e3caa`; T7 opens only after a PASS.
 - Branch/worktree decision: `HOLD_OPEN`; no merge, tag, publication, release, cleanup, global install, or branch finalization is authorized.
