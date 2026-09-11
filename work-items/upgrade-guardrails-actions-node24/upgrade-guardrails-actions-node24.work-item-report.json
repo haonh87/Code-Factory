@@ -1,0 +1,142 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "MATERIALIZED",
+  "decision_owner": "agent",
+  "protocol_owner": "po",
+  "raw_request_summary": "Upgrade all checkout/setup-node uses in workflow-guardrails.yml to v7 while preserving behavior and proving hosted Node 24 compatibility.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "upgrade-guardrails-actions-node24",
+      "work_item_title": "Upgrade Guardrails Actions Node24",
+      "work_item_type": "CHANGE",
+      "scope_summary": "Bump nine checkout and nine setup-node references to v7 in the existing guardrails workflow without topology drift.",
+      "primary_outcome": "A green hosted guardrails run with zero Node deprecation annotations before the Node 20 runner cutoff.",
+      "in_scope": [
+        "Eighteen action-version references in .github/workflows/workflow-guardrails.yml",
+        "Preservation of release-candidate-build fetch-depth: 0",
+        "Local invariant checks and one hosted run"
+      ],
+      "out_of_scope": [
+        "Validator parallelisation, matrix conversion, or fail-fast changes",
+        "Job topology, trigger, permission, Node matrix, cache, submodule, or credential-policy changes",
+        "Release publication or tagging"
+      ],
+      "planning_track": "quick",
+      "delivery_context": "brownfield",
+      "sdd_mode": "light",
+      "selected_profile": "sdd-light",
+      "sdd_reasons": [],
+      "sdd_preset": "light",
+      "sdd_light_profile": "preview",
+      "governance_profile": "default",
+      "execution_mode": "agentic",
+      "existing_refs": [],
+      "collision_notes": [],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "The bounded one-file maintenance delta does not need a separate change package.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item upgrade-guardrails-actions-node24 --planning-track quick --delivery-context brownfield --sdd-mode light",
+        "npm run validate:workflow -- --workflow-root work-items/upgrade-guardrails-actions-node24 --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=CHANGE",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict",
+    "change_strategy=none",
+    "planning_track=quick",
+    "governance_profile=default",
+    "sdd_preset=light",
+    "selected_profile=sdd-light",
+    "sdd_mode=light",
+    "sdd_escalation_reasons=",
+    "Manual dedup confirmed no existing item owns the checkout/setup-node v7 bump; ci-guardrails-parallelisation owns only later topology restructuring.",
+    "Human PO explicitly approved this work item at 2026-09-11T08:05:37Z; trusted receipt sealing remains separate."
+  ],
+  "work_item_slug": "upgrade-guardrails-actions-node24",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "selected_profile": "sdd-light",
+  "sdd_mode": "light",
+  "sdd_preset": "light",
+  "sdd_light_profile": "preview",
+  "sdd_reasons": [],
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/upgrade-guardrails-actions-node24",
+  "current_step": "s01",
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "trusted-work-item-receipt",
+  "required_actions": [
+    "wfc work-item approve --work-item upgrade-guardrails-actions-node24 --reviewed-by po --note 'PO approved the Node 24 guardrails action upgrade; later gates remain independent.'"
+  ],
+  "blockers": [
+    "The explicit PO decision is recorded, but its trusted work-item receipt is not sealed yet."
+  ],
+  "refs": [
+    "work-items/upgrade-guardrails-actions-node24"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "S01_CLARIFY_LIGHT_DRAFTED",
+    "WORK_ITEM_REVIEW_RECORDED_PENDING_RECEIPT"
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "review_required": true,
+  "approval_status": "PENDING_REVIEW",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-09-11T08:05:37Z",
+  "review_notes": [
+    "Human PO explicitly approved the work item at 2026-09-11T08:05:37Z. This does not approve readiness, implementation, verification, or release."
+  ],
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-11T08:04:34.863Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-09-11T08:04:34.864Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Materialization inputs are ready for scaffold."
+    },
+    {
+      "timestamp": "2026-09-11T08:04:34.901Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Auto-scaffolded workflow artifacts."
+    },
+    {
+      "timestamp": "2026-09-11T08:05:37Z",
+      "action": "work-item-review-recorded",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human PO explicitly approved the work item. Trusted receipt sealing remains a separate TTY action; no later gate is implied."
+    }
+  ]
+}
