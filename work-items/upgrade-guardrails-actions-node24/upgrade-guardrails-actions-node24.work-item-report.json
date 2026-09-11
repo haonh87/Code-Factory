@@ -60,26 +60,25 @@
     "sdd_mode=light",
     "sdd_escalation_reasons=",
     "Manual dedup confirmed no existing item owns the checkout/setup-node v7 bump; ci-guardrails-parallelisation owns only later topology restructuring.",
-    "Human PO explicitly approved this work item at 2026-09-11T08:05:37Z; trusted receipt sealing remains separate."
+    "Human PO explicitly approved this work item at 2026-09-11T08:05:37Z; trusted receipt sealing remains separate.",
+    "Trusted PO work-item receipt recorded at 2026-09-11T08:20:11.420Z verifies APPROVED for this project root.",
+    "Compact s04 and s06 author Spec, DoR, Approach, and Task Plan for one ready-bundle review; implementation remains closed."
   ],
   "work_item_slug": "upgrade-guardrails-actions-node24",
   "work_item_type": "CHANGE",
   "delivery_context": "brownfield",
-  "selected_profile": "sdd-light",
-  "sdd_mode": "light",
-  "sdd_preset": "light",
-  "sdd_light_profile": "preview",
-  "sdd_reasons": [],
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/upgrade-guardrails-actions-node24",
-  "current_step": "s01",
+  "current_step": "s06",
+  "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "trusted-work-item-receipt",
+  "handoff_target": "sdd-light-ready-bundle-review",
   "required_actions": [
-    "wfc work-item approve --work-item upgrade-guardrails-actions-node24 --reviewed-by po --note 'PO approved the Node 24 guardrails action upgrade; later gates remain independent.'"
+    "Developer reviews Spec, Approach, and Task Plan; QC reviews DoR.",
+    "After explicit human decisions and finalized hosts, run wfc gate approve-ready-bundle --work-item upgrade-guardrails-actions-node24."
   ],
   "blockers": [
-    "The explicit PO decision is recorded, but its trusted work-item receipt is not sealed yet."
+    "The four compact readiness gates are not yet human-approved or sealed."
   ],
   "refs": [
     "work-items/upgrade-guardrails-actions-node24"
@@ -92,19 +91,24 @@
     "WORKFLOW_SCAFFOLDED",
     "STEP_OPENED",
     "S01_CLARIFY_LIGHT_DRAFTED",
-    "WORK_ITEM_REVIEW_RECORDED_PENDING_RECEIPT"
+    "WORK_ITEM_REVIEW_RECORDED_PENDING_RECEIPT",
+    "WORK_ITEM_APPROVED",
+    "TRUSTED_WORK_ITEM_RECEIPT_VERIFIED",
+    "SDD_LIGHT_S04_S06_DRAFTED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-09-11T08:20:11.412Z",
+  "review_notes": [
+    "PO approved the Node 24 guardrails action upgrade; later gates remain independent.",
+    "Trusted PO work-item receipt recorded at 2026-09-11T08:20:11.420Z verifies APPROVED for this project root.",
+    "Compact s04 and s06 are drafted; no ready-bundle gate or implementation authority is inferred."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
   "bootstrap_reviewed_by": "",
   "bootstrap_reviewed_at": "",
-  "review_required": true,
-  "approval_status": "PENDING_REVIEW",
-  "reviewed_by": "po",
-  "reviewed_at": "2026-09-11T08:05:37Z",
-  "review_notes": [
-    "Human PO explicitly approved the work item at 2026-09-11T08:05:37Z. This does not approve readiness, implementation, verification, or release."
-  ],
   "protocol_events": [
     {
       "timestamp": "2026-09-11T08:04:34.863Z",
@@ -137,6 +141,22 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Human PO explicitly approved the work item. Trusted receipt sealing remains a separate TTY action; no later gate is implied."
+    },
+    {
+      "timestamp": "2026-09-11T08:20:11.413Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "PO approved the Node 24 guardrails action upgrade; later gates remain independent."
+    },
+    {
+      "timestamp": "2026-09-11T08:26:22Z",
+      "action": "open-sdd-light-ready-bundle",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Verified the trusted PO work-item receipt and drafted compact s04 plus s06 for independent Spec, DoR, Approach, and Task Plan review; implementation remains closed."
     }
   ]
 }

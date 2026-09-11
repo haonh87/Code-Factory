@@ -22,7 +22,7 @@ spec_delta_refs: []
 archive_status: not_ready
 sdd_mode: light
 spec_refs:
-  card: ""
+  card: "product-specs/cards/upgrade-guardrails-actions-node24.md"
 spec_status: draft
 planning_track: quick
 execution_mode: agentic
@@ -54,7 +54,10 @@ content_skills:
 artifact_skills:
   - "obsidian-markdown"
 upstream_artifacts: []
-linked_artifacts: []
+linked_artifacts:
+  - "../../product-specs/cards/upgrade-guardrails-actions-node24.md"
+  - "upgrade-guardrails-actions-node24.work-item-report.json"
+  - "../../.github/workflows/workflow-guardrails.yml"
 tags:
   - "agent-ops"
   - "workflow/s01"
@@ -66,17 +69,18 @@ tags:
 > Upgrade all checkout and Node setup steps in the guardrails workflow to their Node 24 action
 > majors before the GitHub runner cutoff, without changing job topology or the deferred validator
 > parallelisation scope. This is a brownfield, medium-risk CI maintenance change using SDD Light.
-> PO explicitly approved the work item at `2026-09-11T08:05:37Z`; the trusted work-item receipt
-> remains the only blocker before the compact readiness artifacts are authored.
+> PO explicitly approved the work item and its trusted receipt verified at
+> `2026-09-11T08:20:11Z`. The compact Spec/DoR/Approach/Task Plan bundle is now authored for
+> Developer and QC review; implementation remains closed.
 
 ## Router Status
 ```yaml
-current_step: "s01 Clarify"
+current_step: "s06 Task Plan"
 workflow_status: WAITING_APPROVAL
 delivery_context: brownfield
-missing_gates: ["Trusted work-item approval receipt"]
-next_artifact: "PO work-item receipt, then compact s04 and s06 authoring"
-next_human_action: "Seal the trusted work-item receipt as PO"
+missing_gates: ["Spec", "DoR", "Approach", "Task Plan"]
+next_artifact: "Four independent ready-bundle receipts hosted by s04 and s06"
+next_human_action: "Developer reviews Spec/Approach/Task Plan; QC reviews DoR"
 ```
 
 ## Governance Context
@@ -250,13 +254,13 @@ blockers: []
 ## Work Item Protocol
 ```yaml
 protocol_status: MATERIALIZED
-approval_status: PENDING_REVIEW
+approval_status: APPROVED
 review_required: true
 work_item_slug: "upgrade-guardrails-actions-node24"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/upgrade-guardrails-actions-node24"
-current_step: "s01"
+current_step: "s06"
 granted_write_paths: []
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
@@ -268,16 +272,19 @@ change_id: ""
 decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
-reviewed_at: "2026-09-11T08:05:37Z"
-handoff_target: "trusted-work-item-receipt"
-last_transition_action: "materialize"
-last_transition_at: "2026-09-11T08:04:34.901Z"
+reviewed_at: "2026-09-11T08:20:11.412Z"
+handoff_target: "sdd-light-ready-bundle-review"
+last_transition_action: "open-sdd-light-ready-bundle"
+last_transition_at: "2026-09-11T08:26:22Z"
 required_actions:
-  - "wfc work-item approve --work-item upgrade-guardrails-actions-node24 --reviewed-by po --note 'PO approved the Node 24 guardrails action upgrade; later gates remain independent.'"
+  - "Developer reviews Spec, Approach, and Task Plan; QC reviews DoR."
+  - "After explicit human decisions and finalized hosts, run wfc gate approve-ready-bundle --work-item upgrade-guardrails-actions-node24."
 blockers:
-  - "The explicit PO decision is recorded, but its trusted work-item receipt is not sealed yet."
+  - "The four compact readiness gates are not yet human-approved or sealed."
 review_notes:
-  - "Human PO explicitly approved the work item at 2026-09-11T08:05:37Z. This does not approve readiness, implementation, verification, or release."
+  - "PO approved the Node 24 guardrails action upgrade; later gates remain independent."
+  - "Trusted PO work-item receipt recorded at 2026-09-11T08:20:11.420Z verifies APPROVED for this project root."
+  - "Compact s04 and s06 are drafted; no ready-bundle gate or implementation authority is inferred."
 refs:
   - "work-items/upgrade-guardrails-actions-node24"
 audit_events:
@@ -289,6 +296,9 @@ audit_events:
   - "STEP_OPENED"
   - "S01_CLARIFY_LIGHT_DRAFTED"
   - "WORK_ITEM_REVIEW_RECORDED_PENDING_RECEIPT"
+  - "WORK_ITEM_APPROVED"
+  - "TRUSTED_WORK_ITEM_RECEIPT_VERIFIED"
+  - "SDD_LIGHT_S04_S06_DRAFTED"
 ```
 
 ## Audit
@@ -299,10 +309,10 @@ checks:
   - { criterion: "Request and scope are exact", result: PASS, evidence: "Nine checkout and nine setup-node references are identified; topology work is excluded." }
   - { criterion: "Delivery context and Light eligibility are explicit", result: PASS, evidence: "Brownfield + quick + default + agentic/self + medium risk; no hard escalation trigger is present." }
   - { criterion: "Architecture drivers are bounded", result: PASS, evidence: "No system seam moves; SA/TA drivers cover capability ownership, compatibility, and hosted evidence." }
-  - { criterion: "Open questions block authoring", result: PASS, evidence: "No unresolved acceptance-changing question remains; only the trusted work-item receipt blocks continuation." }
+  - { criterion: "Open questions block authoring", result: PASS, evidence: "No unresolved acceptance-changing question remains; the verified PO receipt opens compact s04+s06 authoring." }
 constraint_violations: []
 unmitigated_high_risks: []
-gaps: ["Trusted PO work-item receipt"]
+gaps: []
 risk_level: MEDIUM
-next_action: "Seal the PO work-item receipt, then draft the compact s04 and s06 readiness bundle."
+next_action: "Review the compact Spec, DoR, Approach, and Task Plan; do not implement until four trusted receipts pass and s07 is activated."
 ```

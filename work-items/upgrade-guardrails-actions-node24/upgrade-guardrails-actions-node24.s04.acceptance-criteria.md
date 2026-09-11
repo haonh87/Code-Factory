@@ -22,7 +22,7 @@ spec_delta_refs: []
 archive_status: not_ready
 sdd_mode: light
 spec_refs:
-  card: ""
+  card: "product-specs/cards/upgrade-guardrails-actions-node24.md"
 spec_status: draft
 planning_track: quick
 execution_mode: agentic
@@ -30,11 +30,11 @@ review_mode: self
 approval_gates:
   spec: "required"
 role_signoffs:
-  spec: []
-  dor: []
-  approach: []
-  task_plan: []
-  dod: []
+  spec: ["developer"]
+  dor: ["qc"]
+  approach: ["developer"]
+  task_plan: ["developer"]
+  dod: ["qc"]
 gate_reviews:
   spec_reviewed_by: []
   spec_reviewed_at: ""
@@ -51,11 +51,15 @@ content_skills:
   - "requirement-analysis"
   - "step-goal-contract"
   - "definition-of-ready-gate"
+  - "ci-cd-release"
 artifact_skills:
   - "obsidian-markdown"
 upstream_artifacts:
   - "upgrade-guardrails-actions-node24.s01.restate.md"
-linked_artifacts: []
+linked_artifacts:
+  - "../../product-specs/cards/upgrade-guardrails-actions-node24.md"
+  - "upgrade-guardrails-actions-node24.work-item-report.json"
+  - "../../.github/workflows/workflow-guardrails.yml"
 tags:
   - "agent-ops"
   - "workflow/s04"
@@ -64,54 +68,142 @@ tags:
 # Step 4 - Acceptance + DoR
 
 > [!summary]
-> Tóm tắt acceptance criteria, edge case, DoR và governance checks cho readiness.
+> The Spec Card and this host make the version-only maintenance delta measurable. Input readiness
+> is `READY`: scope, counts, compatibility invariants, rollback, and hosted evidence are explicit.
+> Developer Spec review and QC DoR review remain human-controlled gates and are not inferred from
+> the verified PO work-item receipt.
+
+## Step Contract
+```yaml
+step: "s04 Acceptance + DoR"
+goal: "Lock a testable version-only contract and determine whether the Node 24 action upgrade is ready for compact design and planning."
+value: "Prevent the deadline fix from silently changing workflow behavior or absorbing the deferred parallelisation work item."
+scope_in: ["Spec Card v0.1", "existing workflow baseline", "compatibility and hosted-run criteria"]
+scope_out: ["technical implementation", "gate approval", "workflow execution"]
+done_when:
+  - "Every requirement has a measurable acceptance criterion."
+  - "Brownfield behavior and rollback constraints are explicit."
+  - "No unresolved input blocks Developer Spec or QC DoR review."
+```
 
 ## Existing System Baseline
 ```yaml
-current_behavior_refs: []
-impacted_surfaces: []
-compatibility_constraints: []
-rollback_constraints: []
+baseline_date: "2026-09-11"
+current_behavior_refs:
+  - "workflow-guardrails.yml has 9 checkout@v4 and 9 setup-node@v4 references."
+  - "Eight ordinary jobs use node-version 22; release-candidate-build keeps the existing Node 18/22 matrix."
+  - "release-candidate-build explicitly checks out with fetch-depth: 0; other checkout steps use the default shallow depth."
+  - "The workflow triggers on pull_request, push to main, and workflow_dispatch; it does not use pull_request_target or workflow_run."
+impacted_surfaces:
+  - ".github/workflows/workflow-guardrails.yml action selectors only"
+compatibility_constraints:
+  - "Keep all 9 job identifiers, needs edges, triggers, permissions, runners, Node versions, environment, and commands unchanged."
+  - "Keep fetch-depth: 0 in release-candidate-build and add no submodules or persist-credentials override."
+  - "Add no setup-node cache, registry-url, always-auth, or dependency-file inputs."
+  - "Keep ci-guardrails-parallelisation outside this diff."
+rollback_constraints:
+  - "Before 2026-09-23, one revert may restore @v4 if a v7 incompatibility is discovered."
+  - "After Node 20 removal, reverting to @v4 is not an operational rollback; fix forward to a compatible v7 patch or runner image."
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
-acceptance_criteria: []
-edge_cases: []
-out_of_scope: []
-done_when: []
-behavioral_invariants: []
+acceptance_criteria:
+  - id: "CI-N24-AC-01"
+    criterion: "Every baseline checkout step uses actions/checkout@v7."
+    verification: "Assert exactly 9 @v7 references, zero @v4 references, and the same containing job IDs as baseline."
+  - id: "CI-N24-AC-02"
+    criterion: "Every baseline Node setup step uses actions/setup-node@v7."
+    verification: "Assert exactly 9 @v7 references, zero @v4 references, and the same containing job IDs as baseline."
+  - id: "CI-N24-AC-03"
+    criterion: "The workflow source changes only the 18 action-major tokens and retains release-candidate-build fetch-depth: 0."
+    verification: "Review the focused diff and compare a normalized pre/post workflow with action versions masked; assert identical output."
+  - id: "CI-N24-AC-04"
+    criterion: "The exact changed source has one successful hosted Workflow Guardrails run with zero Node deprecation annotations."
+    verification: "Inspect the run conclusion, required job conclusions, and run annotations for the source commit."
+  - id: "CI-N24-AC-05"
+    criterion: "Validator parallelisation and matrix restructuring remain untouched."
+    verification: "Assert no new strategy matrix or fail-fast key and no job/needs topology change in the source diff."
+edge_cases:
+  - id: "CI-N24-EDGE-01"
+    case: "A bulk replacement updates ordinary jobs but misses release-candidate-build."
+    expected: "Count and job-coverage assertions fail before review."
+  - id: "CI-N24-EDGE-02"
+    case: "The release-candidate checkout loses fetch-depth: 0."
+    expected: "The invariant check fails even if YAML remains syntactically valid."
+  - id: "CI-N24-EDGE-03"
+    case: "setup-node enables automatic caching unexpectedly."
+    expected: "Manifest/input inspection proves no packageManager opt-in and no cache input was added."
+  - id: "CI-N24-EDGE-04"
+    case: "Local checks pass but GitHub emits a Node deprecation annotation."
+    expected: "Technical Verification remains incomplete until hosted annotation count is zero."
+out_of_scope:
+  - "ci-guardrails-parallelisation"
+  - "Application Node runtime changes"
+  - "Release/tag publication"
+done_when:
+  - "CI-N24-AC-01..05 have PASS evidence."
+  - "The exact hosted source run is green with zero Node deprecation annotations."
+behavioral_invariants:
+  - "Same triggers, jobs, needs edges, runners, Node versions, commands, and artifact flow."
+  - "Only checkout/setup-node action majors change."
 ```
 
 ## Governance Checks
 ```yaml
-checklist_applied: []
-checks: []
-blocking_items: []
-owner: ""
-next_action: ""
+checklist_applied: ["project-context/checklists/default.md"]
+checks:
+  - { id: "CI-N24-GOV-01", check: "Scope and non-goals are explicit", result: PASS, evidence: "Spec Card separates the 18-token bump from parallelisation and publication." }
+  - { id: "CI-N24-GOV-02", check: "Acceptance is measurable", result: PASS, evidence: "CI-N24-AC-01..05 cover counts, topology, full history, hosted status, and annotations." }
+  - { id: "CI-N24-GOV-03", check: "Brownfield compatibility and rollback are explicit", result: PASS, evidence: "Baseline, unchanged inputs, pre-cutoff revert, and post-cutoff fix-forward are recorded." }
+  - { id: "CI-N24-GOV-04", check: "Human gates are not inferred", result: PASS, evidence: "PO receipt opens authoring only; Developer Spec and QC DoR reviews remain pending." }
+blocking_items:
+  - "Developer Spec decision and trusted ready-bundle receipt"
+  - "QC DoR decision and trusted ready-bundle receipt"
+owner: "developer/qc"
+next_action: "Review this finalized host together with s06, then seal the four independent readiness receipts in one ready-bundle interaction."
 ```
 
 ## Definition of Ready
 ```yaml
-status: READY|BLOCKED|PARTIAL
+status: READY
 blockers: []
-owners: []
-notes: []
+owners: ["developer", "qc"]
+notes:
+  - "Request, scope, baseline, acceptance, dependencies, rollback, and hosted verify path are complete."
+  - "No acceptance-changing open question remains."
+  - "READY is an authoring verdict, not a human gate pass."
 ```
 
 ## Spec Freeze
 ```yaml
-status: READY|BLOCKED|PARTIAL
-requirement_ids: []
-accepted_assumptions: []
+status: READY
+requirement_ids: ["CI-N24-REQ-001", "CI-N24-REQ-002", "CI-N24-REQ-003", "CI-N24-REQ-004", "CI-N24-REQ-005"]
+accepted_assumptions:
+  - "GitHub-hosted ubuntu-latest runners satisfy the Node 24 action runner requirement."
+  - "No setup-node cache opt-in exists in the root manifest."
+  - "Major aliases @v7 preserve the repository's existing dependency-pin convention."
 blockers: []
 ```
 
 ## SDD Traceability
 ```yaml
-requirement_refs: []
-acceptance_refs: []
-task_refs: []
-test_refs: []
+requirement_refs: ["CI-N24-REQ-001", "CI-N24-REQ-002", "CI-N24-REQ-003", "CI-N24-REQ-004", "CI-N24-REQ-005"]
+acceptance_refs: ["CI-N24-AC-01", "CI-N24-AC-02", "CI-N24-AC-03", "CI-N24-AC-04", "CI-N24-AC-05"]
+task_refs: ["CI-N24-T0", "CI-N24-T1", "CI-N24-T2", "CI-N24-T3", "CI-N24-T4"]
+test_refs: ["CI-N24-V1", "CI-N24-V2", "CI-N24-V3", "CI-N24-V4"]
 ```
+
+## Human Gate Proposal
+```yaml
+spec: { status: "WAITING_APPROVAL", reviewer: "developer", host: "s04" }
+dor: { status: "WAITING_APPROVAL", reviewer: "qc", host: "s04" }
+approach: { status: "WAITING_APPROVAL", reviewer: "developer", host: "s06" }
+task_plan: { status: "WAITING_APPROVAL", reviewer: "developer", host: "s06" }
+bundle_note: "One interaction may seal four independent digest-bound receipts; it does not merge their authority."
+```
+
+## Handoff
+- s04 readiness: `READY` for Developer Spec and QC DoR review.
+- Next paired artifact: s06 contains option analysis, approach, and execution plan.
+- Implementation remains closed until the ready bundle is approved, sealed, verified, and the work item is explicitly activated.
