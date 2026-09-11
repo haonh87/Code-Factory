@@ -298,7 +298,7 @@ state_entry_contract:
     boundary: "Normalization/load adapter before core state-machine logic"
     known_input_rule: "Recognize only an enumerated exact-value or explicit command grammar for protocol-owned legacy strings and emit typed entries."
     unknown_input_rule: "Preserve an unknown string as {kind: legacy, text: <exact original>} and do not semantically clear it."
-    compatibility_rule: "All 12 tracked legacy reports load successfully without an in-place or bulk migration."
+    compatibility_rule: "All 13 tracked legacy reports load successfully without an in-place or bulk migration."
     isolation_rule: "The adapter is the only compatibility boundary allowed to inspect incoming legacy text; emitted objects are handled only by typed selectors."
 event_contract:
   transaction_backed_approval_event:
@@ -480,13 +480,13 @@ acceptance_criteria:
     criterion: "Newly generated blockers and required actions follow the state-entry Contract, and core transitions never inspect their human text."
     given:
       - "Fixtures cover valid typed entries, each invalid generated shape, known protocol-owned legacy strings, and unknown legacy strings."
-      - "The 12 tracked pre-contract reports remain unchanged on disk."
+      - "The 13 tracked pre-contract reports remain unchanged on disk."
     when: "Reports are loaded and closeout reconciliation targets selected gate state."
     then:
       - "Every newly generated entry has valid unique id, canonical kind, non-empty text, and gate exactly when its kind is gate-scoped."
       - "Known legacy strings are translated by the bounded adapter before core logic; unknown strings become preserved legacy objects."
       - "Only exact id or exact kind+gate selectors clear entries; unrelated review, pending, receipt, seal, Unicode, or alias text is never deleted."
-      - "All 12 tracked reports load without bulk or in-place migration and new writes use the typed form."
+      - "All 13 tracked reports load without bulk or in-place migration and new writes use the typed form."
     verification: "Run schema/normalizer unit tests, a table-driven legacy adapter matrix, the corrected latent counterexample, all tracked-report load fixtures, and a static search proving core state transitions do not read entry.text."
   - id: "AC-RCR-10"
     traces_to: ["RCR-10", "OQ-RCR-006", "DRV-SA-RC-006", "DRV-TA-RC-007", "KPI-RCR-002", "KPI-RCR-003"]

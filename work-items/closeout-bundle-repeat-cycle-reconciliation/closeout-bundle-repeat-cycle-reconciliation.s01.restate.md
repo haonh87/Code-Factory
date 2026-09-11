@@ -249,7 +249,7 @@ acceptance_criteria_draft:
   - { id: "RCR-05", description: "First-cycle, legacy gate-set, atomicity, and independent-receipt regressions remain green.", measurable: true }
   - { id: "RCR-06", description: "Corrected source and hosted candidate pass parent AG-01..AG-13 re-verification before reapproval.", measurable: true }
   - { id: "RCR-07", description: "Every newly generated blocker or required action has an explicit typed state-entry shape.", measurable: true }
-  - { id: "RCR-08", description: "Known legacy strings are translated only by a bounded import adapter and all 12 tracked reports remain readable without migration.", measurable: true }
+  - { id: "RCR-08", description: "Known legacy strings are translated only by a bounded import adapter and all 13 tracked reports remain readable without migration.", measurable: true }
   - { id: "RCR-09", description: "Core transitions clear state only by exact id or kind+gate and never infer semantics from human text.", measurable: true }
   - { id: "RCR-10", description: "Every approval-transaction event carries direct transaction_id equality with its committed journal/result; non-transaction events omit it.", measurable: true }
 notes_for_next_step: "s02 quantifies restored trust and interaction completion; no unresolved s03 owner is known."
@@ -499,7 +499,7 @@ drivers:
       statement: "Legacy reports remain readable without a mandatory fleet migration, and unfinished scope exits CR-008 at the deadline."
       origin: { stakeholder: "owner", concern: "A structural correction must not strand existing workflow reports or extend CR-008 indefinitely.", constraint_ref: "No-migration decision and 2026-09-18 timebox" }
       traces_to: ["OBJ-RC-004"]
-      threshold: { status: quantified, value: "12/12 tracked reports load; 0 required bulk migrations; no new CR-008 scope after 2026-09-18.", reason: "" }
+      threshold: { status: quantified, value: "13/13 tracked reports load; 0 required bulk migrations; no new CR-008 scope after 2026-09-18.", reason: "" }
       verification: "Run compatibility validation over every tracked report and enforce the dated stop rule in the delivery plan."
       architectural_significance: "Constrains the contract cutover and rollout boundary."
       priority: high
@@ -539,7 +539,7 @@ metrics:
 handoff:
   to_ba: { applicable: true, reason: "", items: ["Review amended acceptance semantics for the approved bounded legacy adapter."] }
   to_dev: { applicable: true, reason: "", items: ["Keep machine semantics in explicit fields and isolate any legacy translation at one boundary."] }
-  to_qc: { applicable: true, reason: "", items: ["Prove wording mutations do not change structured outcomes and all 12 tracked reports remain readable."] }
+  to_qc: { applicable: true, reason: "", items: ["Prove wording mutations do not change structured outcomes and all 13 tracked reports remain readable."] }
   to_devops: { applicable: false, reason: "owned by /ta", items: [] }
 stop_condition:
   met: true
@@ -576,7 +576,7 @@ drivers:
       statement: "The legacy-input adapter emits typed entries before validator, lifecycle, evidence, renderer, and s01-sync consumers execute."
       origin: { stakeholder: "maintainer", concern: "normalizeArray currently destroys object shape and multiple consumers assume strings.", constraint_ref: "91 state-field references inventoried on 2026-09-11" }
       traces_to: ["OBJ-RC-004"]
-      threshold: { status: quantified, value: "12/12 tracked reports load; 100% newly written entries satisfy the structured contract.", reason: "" }
+      threshold: { status: quantified, value: "13/13 tracked reports load; 100% newly written entries satisfy the structured contract.", reason: "" }
       verification: "Run report inventory, validator, authoring smoke, focused protocol suites, full unit, runtime parity, and package audit."
       architectural_significance: "Locks the single compatibility seam across all consumers."
       priority: high
@@ -681,8 +681,8 @@ protocol_owner: "ba"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
 handoff_target: "amended-s04-human-gates"
-last_transition_action: "block"
-last_transition_at: "2026-09-11T08:02:09.200Z"
+last_transition_action: "refresh-s04-report-inventory"
+last_transition_at: "2026-09-11T11:28:19Z"
 required_actions:
   - "Assigned BA, Developer, and QC reviewers assess all three amended s04 controls."
   - "After explicit human decisions, seal three independent receipts against the unchanged s04 host."
@@ -721,6 +721,7 @@ review_notes:
   - "Owner scope direction reopened discovery for a persisted structured-state contract. Impact analysis opened OQ-RCR-004..006 and suspended T7 before further source changes; no gate approval is inferred."
   - "Human BA/Developer/QC approved OQ-RCR-004=B and human Developer/QC approved OQ-RCR-005=A plus OQ-RCR-006=B at 2026-09-11T07:59:12Z. No downstream gate is implied."
   - "Amended s04 is drafted with typed state-entry and transaction-backed event contracts. Fresh Spec, Contract, DoR, Approach, and Task Plan receipts are required before production work resumes."
+  - "Independent review requested a live compatibility recount. The branch contains 13 tracked work-item reports after Node 24 materialization, so RCR-08 and AC-RCR-09 were refreshed from 12 to 13 before s04 human review."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -783,6 +784,7 @@ audit_events:
   - "S03_STRUCTURAL_CONTRACT_QUESTIONS_OPENED"
   - "S03_STRUCTURAL_CONTRACT_QUESTIONS_APPROVED"
   - "S04_STRUCTURAL_SPEC_CONTRACT_DOR_DRAFTED"
+  - "S04_STRUCTURAL_REPORT_INVENTORY_REFRESHED"
 ```
 
 ## Traceability

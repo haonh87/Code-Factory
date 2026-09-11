@@ -158,7 +158,7 @@ constraints:
     - "One human interaction must preserve independent gate authority and receipts"
     - "Parent release and branch finalization remain blocked by F-AG11-001"
     - "Core clearing and attribution never infer state from text or note"
-    - "No bulk migration is required for the 12 tracked legacy reports"
+    - "No bulk migration is required for the 13 tracked legacy reports"
   soft_constraints:
     - "Ask only questions that materially change s04 acceptance or readiness"
     - "Prefer the smallest correction compatible with existing protocol schemas"
@@ -357,7 +357,7 @@ observed_contract_facts:
     fact: "Approval-event transaction identity is currently embedded in note and tests recover it with note.includes."
     evidence: "packages/workflow-bundle/scripts/work-item-protocol.js:535-545 and packages/workflow-bundle/test/work-item-protocol.test.js:846-854"
   - id: "OBS-RCR-STRUCT-004"
-    fact: "All 12 tracked work-item reports currently store blockers and required_actions as string arrays."
+    fact: "All 13 tracked work-item reports currently store blockers and required_actions as string arrays."
     evidence: "git ls-files work-items/**/*.work-item-report.json plus direct JSON inventory on 2026-09-11"
   - id: "OBS-RCR-STRUCT-005"
     fact: "The proposed 'Peer review ... outstanding' example does not reproduce the current predicate unless it also contains a selected gate alias."
@@ -381,7 +381,7 @@ open_questions:
         tradeoff: "Eliminates dual-read behavior but contradicts the no-migration requirement and cannot cover reports outside this checkout."
     recommendation: "B"
     rationale: "It is the only option that preserves operational compatibility and removes prose inference from the state machine without requiring a fleet migration."
-    acceptance_effect: "The Contract must distinguish adapter-only legacy import from core clearing, require unknown legacy preservation, and prove all 12 tracked reports load without mutation."
+    acceptance_effect: "The Contract must distinguish adapter-only legacy import from core clearing, require unknown legacy preservation, and prove all 13 tracked reports load without mutation."
     selected_option: "B"
     reviewed_by: ["ba", "developer", "qc"]
     reviewed_at: "2026-09-11T07:59:12Z"
