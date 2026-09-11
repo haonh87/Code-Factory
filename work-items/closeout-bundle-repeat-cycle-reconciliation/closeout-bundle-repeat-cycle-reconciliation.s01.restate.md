@@ -66,8 +66,8 @@ gate_reviews:
   contract_reviewed_at: "2026-09-11T11:40:59Z"
   dor_reviewed_by: ["ba", "qc"]
   dor_reviewed_at: "2026-09-11T11:40:59Z"
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
+  approach_reviewed_by: ["developer"]
+  approach_reviewed_at: "2026-09-11T14:34:14Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -108,8 +108,8 @@ tags:
 > for a persisted typed-state and first-class event-identity contract. Human BA approved the amended
 > Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at
 > 2026-09-11T11:40:59Z. Three fresh receipts now verify against s04 SHA-256 26b85c2d....
-> The structural s05 Approach is drafted, but the work item remains BLOCKED until Developer review
-> and a fresh Approach receipt; earlier s05-s06 receipts do not reopen implementation.
+> The structural s05 Approach is approved by human Developer, but the work item remains BLOCKED until
+> its fresh receipt matches the current host; earlier s05-s06 receipts do not reopen implementation.
 
 ## Step Contract
 ```yaml
@@ -648,7 +648,7 @@ timebox_breach: false
 timebox_evidence: "One bounded linked-defect clarification pass."
 gaps: []
 risk_level: HIGH
-next_action: "Developer reviews the amended structural s05 Approach; keep s06 and implementation closed."
+next_action: "Seal and verify the trusted receipt for the unchanged amended s05 host."
 ```
 
 ## Work Item Protocol
@@ -680,11 +680,11 @@ decision_owner: "agent"
 protocol_owner: "ba"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "amended-s05-approach-human-gate"
-last_transition_action: "open-amended-s05-structural-approach"
-last_transition_at: "2026-09-11T13:58:58Z"
+handoff_target: "amended-s05-trusted-receipt"
+last_transition_action: "approve-amended-s05-structural-approach"
+last_transition_at: "2026-09-11T14:34:14Z"
 required_actions:
-  - "Developer reviews the amended structural s05 host; after approval, seal evidence bound to its current digest."
+  - "Seal one fresh digest-bound s05 receipt for the current host using the Developer sealer."
   - "Keep s06 amendment, T7 replacement, production edits, and release work closed."
 blockers:
   - "The current s05 host lacks matching human-controlled gate evidence."
@@ -725,6 +725,7 @@ review_notes:
   - "Human BA approved the amended Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at 2026-09-11T11:40:59Z. Trusted receipt sealing remains separate, and prior s04-s06 receipts remain historical."
   - "Fresh Spec, Contract, and DoR receipts verify digest_match=true against unchanged s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87."
   - "The amended s05 proposes one shared typed-state boundary, a bounded legacy adapter, exact selectors, and direct transaction event identity. Developer Approach approval remains pending."
+  - "Human Developer approved the amended structural s05 Approach at 2026-09-11T14:34:14Z. Trusted receipt sealing remains separate."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -792,6 +793,7 @@ audit_events:
   - "S04_STRUCTURAL_SPEC_CONTRACT_DOR_HUMAN_APPROVED_PENDING_RECEIPTS"
   - "S04_STRUCTURAL_RECEIPTS_VERIFIED"
   - "S05_STRUCTURAL_TECHNICAL_APPROACH_DRAFTED"
+  - "S05_STRUCTURAL_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT"
 ```
 
 ## Traceability
@@ -822,15 +824,15 @@ outputs:
   - "Proposed amended AC-RCR-01..10 and required persisted Data/Event Contract"
   - "Verified fresh Spec, Contract, and DoR receipts for amended s04"
   - "Proposed amended typed-state and direct-event-identity s05 Approach"
-next_step: "Developer reviews amended s05 Approach; then seal its fresh receipt before s06"
+next_step: "Seal and verify the fresh s05 receipt before drafting amended s06"
 ```
 
 ## Handoff
 - Clear: closeout receipts succeeded, but current navigation and event evidence did not reconcile.
 - Distinct scope: repeat-cycle/idempotency, not the resolved missing-DoD selector defect.
 - Decision: PO approval is backed by a verified trusted receipt; the completed receipt action has been removed.
-- Current step: s05 is BLOCKED on Developer Approach review and a fresh trusted receipt.
+- Current step: s05 is BLOCKED only on a fresh digest-matched trusted receipt.
 - Approved discovery direction: bounded legacy adapter, typed state entries, and first-class transaction identity for transaction-backed approval events.
 - Historical implementation: refreshed B2 is complete for `f9533c4de66fdb04e75008382b39b4fc413e3caa`, but T7 is suspended and old s04-s06 receipts cannot authorize replacement work.
-- Next gate: Developer Approach review against the amended s05 host.
+- Next action: seal the current s05 host using the Developer trusted approver.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.

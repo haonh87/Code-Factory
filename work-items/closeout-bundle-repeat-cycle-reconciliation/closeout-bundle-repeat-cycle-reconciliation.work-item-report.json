@@ -103,7 +103,8 @@
     "The existing owner stop rule is clarified as a 2026-09-18 stop-and-reassess checkpoint, not a delivery promise. AC-RCR-06 and AC-RCR-08 stay in scope unless unfinished at the checkpoint, when they are separable follow-ups.",
     "Human BA approved the amended Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at 2026-09-11T11:40:59Z; trusted receipt sealing remains separate.",
     "Fresh Spec, Contract, and DoR receipts verify digest_match=true against unchanged s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87.",
-    "The amended s05 proposes one shared typed-state boundary, a bounded legacy adapter, exact selectors, and direct transaction event identity. Developer Approach approval remains pending."
+    "The amended s05 proposes one shared typed-state boundary, a bounded legacy adapter, exact selectors, and direct transaction event identity. Developer Approach approval remains pending.",
+    "Human Developer approved the amended structural s05 Approach at 2026-09-11T14:34:14Z. Trusted receipt sealing remains separate."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -121,9 +122,9 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "amended-s05-approach-human-gate",
+  "handoff_target": "amended-s05-trusted-receipt",
   "required_actions": [
-    "Developer reviews the amended structural s05 host; after approval, seal evidence bound to its current digest.",
+    "Seal one fresh digest-bound s05 receipt for the current host using the Developer sealer.",
     "Keep s06 amendment, T7 replacement, production edits, and release work closed."
   ],
   "blockers": [
@@ -196,7 +197,8 @@
     "STRUCTURAL_TIMEBOX_CLARIFIED_AS_CHECKPOINT",
     "S04_STRUCTURAL_SPEC_CONTRACT_DOR_HUMAN_APPROVED_PENDING_RECEIPTS",
     "S04_STRUCTURAL_RECEIPTS_VERIFIED",
-    "S05_STRUCTURAL_TECHNICAL_APPROACH_DRAFTED"
+    "S05_STRUCTURAL_TECHNICAL_APPROACH_DRAFTED",
+    "S05_STRUCTURAL_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -238,7 +240,8 @@
     "The review's timebox proposal matches the owner's existing stop rule: 2026-09-18 is a stop-and-reassess checkpoint, not a delivery promise. No acceptance criterion is removed before that checkpoint.",
     "Human BA approved the amended Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at 2026-09-11T11:40:59Z. Prior s04-s06 receipts remain historical.",
     "Fresh Spec receipt by BA at 2026-09-11T13:50:51.020Z, Contract receipt by Developer at 2026-09-11T13:51:06.341Z, and DoR receipt by QC at 2026-09-11T13:51:18.535Z all verify digest_match=true against s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87.",
-    "The amended s05 proposes the smallest complete structural design: shared typed-state utilities, bounded legacy import, exact selectors, structured rendering, and direct transaction event identity. Developer Approach approval remains pending."
+    "The amended s05 proposes the smallest complete structural design: shared typed-state utilities, bounded legacy import, exact selectors, structured rendering, and direct transaction event identity. Developer Approach approval remains pending.",
+    "Human Developer approved the amended structural s05 Approach at 2026-09-11T14:34:14Z. A fresh trusted receipt remains required and no s06 or implementation authority is implied."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -524,6 +527,14 @@
       "from_status": "BLOCKED",
       "to_status": "BLOCKED",
       "note": "Verified fresh Spec, Contract, and DoR receipts against amended s04 and drafted the structural s05 Approach. Developer review and receipt remain pending; s06 and implementation stay closed."
+    },
+    {
+      "timestamp": "2026-09-11T14:34:14Z",
+      "action": "approve-amended-s05-structural-approach",
+      "actor": "developer",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "Human Developer approved the amended structural s05 Approach. Trusted receipt sealing remains separate; s06 and implementation stay closed."
     }
   ]
 }

@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
   - "project-context/checklists/strict.md"
@@ -60,8 +60,8 @@ gate_reviews:
   contract_reviewed_at: "2026-09-11T11:40:59Z"
   dor_reviewed_by: ["ba", "qc"]
   dor_reviewed_at: "2026-09-11T11:40:59Z"
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
+  approach_reviewed_by: ["developer"]
+  approach_reviewed_at: "2026-09-11T14:34:14Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -107,12 +107,12 @@ tags:
 > The proposed design puts one typed-state compatibility adapter in the existing shared protocol
 > utility boundary, converts every new blocker/action writer to structured entries, and limits core
 > transitions to exact id or kind+gate selectors. Human text is render-only. Approval-bundle events
-> carry the coordinator transaction_id as a field; note is never parsed. Developer approval remains
-> an independent pending gate.
+> carry the coordinator transaction_id as a field; note is never parsed. Human Developer approved
+> this amended Approach at 2026-09-11T14:34:14Z; the matching trusted receipt remains separate.
 
 ## Step Contract
 
-~~~yaml
+```yaml
 step: "s05 Technical Approach"
 goal: "Remove prose parsing from protocol state transitions while preserving legacy reports, atomic closeout cycles, and exact transaction attribution."
 value: "End the recurring closeout defect class without migrating historical artifacts or weakening human authority."
@@ -155,11 +155,11 @@ risks:
   - { id: "R-S05-003", risk: "Structured rendering breaks s01 parity.", mitigation: "Stable YAML mappings and parsed equality tests." }
   - { id: "R-S05-004", risk: "Historical events lack truthful transaction IDs.", mitigation: "Preserve as readable pre-contract history; enforce identity for all new writes." }
   - { id: "R-S05-005", risk: "Expanded paths collide with adjacent work.", mitigation: "Amend owned paths in s06 and keep unrelated changes isolated." }
-~~~
+```
 
 ## Input Readiness
 
-~~~yaml
+```yaml
 step: "s05 Technical Approach"
 status: READY
 available_inputs:
@@ -176,11 +176,11 @@ assumptions:
   - "The validation-failure rule governs newly generated/written events; historical unbound events remain readable but never count as compliant new output."
 risk_level: HIGH
 next_action: "Developer reviews this amended Approach; implementation remains closed."
-~~~
+```
 
 ## Option Analysis
 
-~~~yaml
+```yaml
 goal: "Replace prose-derived protocol state with one typed compatibility boundary and direct event identity."
 ba_lane:
   business_goal: "Completed approvals stay completed, unrelated blockers are not lost, and audit evidence stays trustworthy."
@@ -212,39 +212,27 @@ dev_lane:
     - "100% direct identity equality for new approval events"
   baseline_context: "Brownfield CommonJS workflow bundle with filesystem-backed reports and receipts."
 options:
-  - name: "Option A - Extend the shared protocol utility boundary"
-    summary: "Put typed construction, legacy import, validation, selectors, and rendering helpers in work-item-protocol-utils."
-    pros: ["Existing load seam", "One compatibility boundary", "No new module", "Smallest complete change"]
-    cons: ["Utility gains a cohesive state-contract responsibility", "Several writers and tests change"]
-    risks: ["Incomplete producer inventory"]
-  - name: "Option B - Add a dedicated protocol-state module"
-    summary: "Route utilities, writers, validators, and renderers through a new module."
-    pros: ["Conceptual isolation"]
-    cons: ["New abstraction, import surface, packaging, and ownership churn"]
-    risks: ["Two normalization boundaries drift"]
-  - name: "Option C - Convert closeout only and retain text matching elsewhere"
-    summary: "Patch the currently failing selectors."
-    pros: ["Smaller immediate diff"]
-    cons: ["Violates AC-RCR-09", "Preserves the hidden prose schema"]
-    risks: ["Silent deletion and stale-state recurrence"]
+  - { name: "Option A - Extend the shared protocol utility boundary", summary: "Put typed construction, legacy import, validation, selectors, and rendering helpers in work-item-protocol-utils.", pros: ["Existing load seam", "One compatibility boundary", "No new module", "Smallest complete change"], cons: ["Utility gains a cohesive state-contract responsibility", "Several writers and tests change"], risks: ["Incomplete producer inventory"] }
+  - { name: "Option B - Add a dedicated protocol-state module", summary: "Route utilities, writers, validators, and renderers through a new module.", pros: ["Conceptual isolation"], cons: ["New abstraction, import surface, packaging, and ownership churn"], risks: ["Two normalization boundaries drift"] }
+  - { name: "Option C - Convert closeout only and retain text matching elsewhere", summary: "Patch the currently failing selectors.", pros: ["Smaller immediate diff"], cons: ["Violates AC-RCR-09", "Preserves the hidden prose schema"], risks: ["Silent deletion and stale-state recurrence"] }
 recommended_option: "Option A - Extend the shared protocol utility boundary"
 recommendation_reason: "The existing universal load seam is smaller than a new module and complete where a closeout-only patch is not."
 validation_plan:
   - "Fail first on object collapse, unknown legacy deletion, and missing direct event identity."
   - "Run 13-report, text mutation, writer inventory, repeat-cycle, recovery, and package matrices."
 notes_for_next_step: "READY for system design and s06 after human Approach approval."
-~~~
+```
 
 ## Foundation Decision
 
-~~~yaml
+```yaml
 status: NOT_APPLICABLE
 reason: "No stack, runtime, service, deployment model, public API, or authority boundary changes."
-~~~
+```
 
 ## Main Artifact
 
-~~~yaml
+```yaml
 design_problem: "English state strings are recovered with heuristics, object normalization destroys shape, assertions scan prose, and event identity lives in note."
 business_rule_trace:
   - "AC-RCR-01..04 -> classify commit versus NOOP before event append"
@@ -321,11 +309,11 @@ validation_plan:
   - "Build one exact candidate; repeat child and parent hosted verification and terminal gates."
 specialized_followups: []
 notes_for_next_step: "s06 must amend owned paths, use failing-first review batches, quarantine partial T7 WIP, and keep node24 separate."
-~~~
+```
 
 ## Architecture Details
 
-~~~yaml
+```yaml
 state_entry:
   generated_shape: "{id, kind, text, gate?}"
   legacy_shape: "{kind: legacy, text: exact_original}"
@@ -370,11 +358,11 @@ review_batches:
   b1: "typed normalizer, constructor, adapter, validator, renderer"
   b2: "writer conversion, exact transition selectors, gate assertions"
   b3: "event identity, repeat-cycle atomicity, compatibility, package/hosted evidence"
-~~~
+```
 
 ## Brownfield Impact Analysis
 
-~~~yaml
+```yaml
 owned_path_amendment_required: true
 proposed_main_touch_paths:
   - "packages/workflow-bundle/scripts/work-item-protocol-utils.js"
@@ -397,29 +385,29 @@ adjacent_scope_guards:
   - "No architecture-modeling restructure in this branch."
 migration_notes: ["No bulk or in-place migration.", "Load-only checks preserve all 13 original digests."]
 rollback_notes: ["Revert isolated structural commits before release, or restore v2.6.1 after release."]
-~~~
+```
 
 ## Governance Exceptions
 
-~~~yaml
+```yaml
 status: NOT_REQUIRED
 reason: "The design follows the approved strict contract and keeps all human gates independent."
 exceptions: []
-~~~
+```
 
 ## Spec Change
 
-~~~yaml
+```yaml
 status: NOT_REQUIRED
 detected_in_step: "s05"
 reason: "Historical unbound events remain readable, while every newly constructed transaction-backed event requires direct identity; no approved criterion is removed."
 updated_artifacts: []
 required_followups: []
-~~~
+```
 
 ## Audit
 
-~~~yaml
+```yaml
 step: "s05 Technical Approach"
 status: PASS
 checks:
@@ -431,14 +419,14 @@ checks:
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
-gaps: ["Developer Approach review and fresh digest-bound receipt are pending."]
+gaps: ["Fresh digest-bound Approach receipt is pending."]
 risk_level: HIGH
-next_action: "Developer reviews the amended Approach; s06 and implementation remain closed."
-~~~
+next_action: "Seal and verify the Developer trusted receipt against this unchanged s05 host."
+```
 
 ## SDD Traceability
 
-~~~yaml
+```yaml
 requirement_refs: ["RCR-01", "RCR-02", "RCR-03", "RCR-04", "RCR-05", "RCR-06", "RCR-07", "RCR-08", "RCR-09", "RCR-10"]
 acceptance_refs: ["AC-RCR-01", "AC-RCR-02", "AC-RCR-03", "AC-RCR-04", "AC-RCR-05", "AC-RCR-06", "AC-RCR-07", "AC-RCR-08", "AC-RCR-09", "AC-RCR-10"]
 task_refs: []
@@ -451,11 +439,11 @@ test_refs:
   - "repeat-cycle-retry-recovery-concurrency"
   - "13-report-no-migration-compatibility"
   - "exact-candidate-parent-ag01-ag13"
-~~~
+```
 
 ## Traceability
 
-~~~yaml
+```yaml
 upstream:
   - "Amended s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87"
   - "Spec receipt BA 2026-09-11T13:50:51.020Z"
@@ -469,7 +457,7 @@ outputs:
   - "Direct approval-event transaction identity"
   - "Expanded owned-path and validation proposal"
 next_step: "Developer Approach review, trusted receipt, then amended s06 Task Plan"
-~~~
+```
 
 ## Handoff
 
@@ -477,5 +465,6 @@ next_step: "Developer Approach review, trusted receipt, then amended s06 Task Pl
 - Non-negotiable: unknown legacy text is preserved exactly and cannot be semantically cleared.
 - New approval-transaction events carry direct transaction_id; historical unbound events remain immutable pre-contract evidence.
 - s06 must authorize every producer, consumer, validator, renderer, smoke, and focused-test path listed above.
-- Developer Approach approval is required before finalizing this host or drafting s06.
+- Human Developer approved the amended Approach at 2026-09-11T14:34:14Z.
+- A fresh trusted receipt must match this unchanged s05 host before drafting s06.
 - Implementation remains closed; the partial uncommitted T7 test is quarantined as pre-plan WIP.
