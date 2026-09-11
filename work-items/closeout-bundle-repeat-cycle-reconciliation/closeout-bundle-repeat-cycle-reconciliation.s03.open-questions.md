@@ -345,7 +345,7 @@ amendment_id: "RCR-STRUCT-001"
 status: "APPROVED"
 trigger:
   - "Independent root-cause review grouped the closeout defects under prose-derived machine state."
-  - "The owner directed CR-008 to replace that mechanism before the 2026-09-18 timebox ends."
+  - "The owner directed CR-008 to replace that mechanism and set 2026-09-18 as a stop-and-reassess checkpoint rather than a delivery promise."
 observed_contract_facts:
   - id: "OBS-RCR-STRUCT-001"
     fact: "normalizeArray stringifies object entries, so blockers/required_actions cannot adopt objects without a dedicated normalizer."
@@ -458,7 +458,9 @@ scope_boundaries:
     - "New lifecycle states, public commands, approval authority, or receipt-v1 changes"
 timebox:
   deadline: "2026-09-18"
+  interpretation: "Stop-and-reassess checkpoint, not a delivery promise."
   stop_rule: "At the deadline, stop scope growth, land only DONE evidence, and move unfinished work to separate main-branch work items."
+  separable_follow_ups_if_unfinished: ["AC-RCR-06 atomicity across failure boundaries", "AC-RCR-08 parent CR-008 exact-candidate re-verification"]
 ```
 
 ## Input Readiness

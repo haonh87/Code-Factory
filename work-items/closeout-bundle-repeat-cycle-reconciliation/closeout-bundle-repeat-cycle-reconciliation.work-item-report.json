@@ -99,7 +99,8 @@
     "Human Developer and QC approved refreshed B2 Code Quality PASS at 2026-09-11T04:21:48Z for the same source. F-RCR-B2-001 is RESOLVED and T7 is OPEN.",
     "BA, Developer, and QC approved OQ-RCR-004 Option B; Developer and QC approved OQ-RCR-005 Option A and OQ-RCR-006 Option B at 2026-09-11T07:59:12Z.",
     "Amended s04 now proposes AC-RCR-01..10 and a required persisted Data/Event Contract. Prior s04-s06 receipts are historical until fresh gates are reviewed and sealed.",
-    "Independent review requested live counts. The branch contains 13 tracked work-item reports after Node 24 materialization, so the pre-contract compatibility threshold was refreshed from 12 to 13 before s04 human review."
+    "Independent review requested live counts. The branch contains 13 tracked work-item reports after Node 24 materialization, so the pre-contract compatibility threshold was refreshed from 12 to 13 before s04 human review.",
+    "The existing owner stop rule is clarified as a 2026-09-18 stop-and-reassess checkpoint, not a delivery promise. AC-RCR-06 and AC-RCR-08 stay in scope unless unfinished at the checkpoint, when they are separable follow-ups."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -189,7 +190,8 @@
     "S03_STRUCTURAL_CONTRACT_QUESTIONS_OPENED",
     "S03_STRUCTURAL_CONTRACT_QUESTIONS_APPROVED",
     "S04_STRUCTURAL_SPEC_CONTRACT_DOR_DRAFTED",
-    "S04_STRUCTURAL_REPORT_INVENTORY_REFRESHED"
+    "S04_STRUCTURAL_REPORT_INVENTORY_REFRESHED",
+    "STRUCTURAL_TIMEBOX_CLARIFIED_AS_CHECKPOINT"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -227,7 +229,8 @@
     "Owner scope direction reopened discovery for a persisted structured-state contract. Impact analysis opened OQ-RCR-004..006 and suspended T7 before further source changes; no gate approval is inferred.",
     "Human BA/Developer/QC approved OQ-RCR-004=B and human Developer/QC approved OQ-RCR-005=A plus OQ-RCR-006=B at 2026-09-11T07:59:12Z. No downstream gate is implied.",
     "Amended s04 is drafted with typed state-entry and transaction-backed event contracts. Fresh Spec, Contract, DoR, Approach, and Task Plan receipts are required before production work resumes.",
-    "Independent review confirmed the structural invariants and requested two live counts. The workflow has 9 checkout and 9 setup-node references; the tracked report inventory is 13, and the s04 compatibility threshold has been corrected accordingly."
+    "Independent review confirmed the structural invariants and requested two live counts. The workflow has 9 checkout and 9 setup-node references; the tracked report inventory is 13, and the s04 compatibility threshold has been corrected accordingly.",
+    "The review's timebox proposal matches the owner's existing stop rule: 2026-09-18 is a stop-and-reassess checkpoint, not a delivery promise. No acceptance criterion is removed before that checkpoint."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -489,6 +492,14 @@
       "from_status": "BLOCKED",
       "to_status": "BLOCKED",
       "note": "Independent review requested live counts. Confirmed 9 checkout and 9 setup-node references on the branch, and refreshed the structural compatibility contract from 12 to 13 tracked pre-contract reports after Node 24 materialization."
+    },
+    {
+      "timestamp": "2026-09-11T11:34:36Z",
+      "action": "clarify-structural-timebox",
+      "actor": "agent",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "Clarified the existing owner stop rule: 2026-09-18 is a stop-and-reassess checkpoint, not a delivery promise. AC-RCR-06 and AC-RCR-08 remain in scope unless unfinished at that checkpoint."
     }
   ]
 }

@@ -496,10 +496,10 @@ drivers:
       priority: high
     - id: "DRV-SA-RC-006"
       kind: constraint
-      statement: "Legacy reports remain readable without a mandatory fleet migration, and unfinished scope exits CR-008 at the deadline."
-      origin: { stakeholder: "owner", concern: "A structural correction must not strand existing workflow reports or extend CR-008 indefinitely.", constraint_ref: "No-migration decision and 2026-09-18 timebox" }
+      statement: "Legacy reports remain readable without a mandatory fleet migration, and the 2026-09-18 stop-and-reassess checkpoint moves unfinished scope out of CR-008."
+      origin: { stakeholder: "owner", concern: "A structural correction must not strand existing workflow reports or extend CR-008 indefinitely.", constraint_ref: "No-migration decision and 2026-09-18 stop-and-reassess checkpoint" }
       traces_to: ["OBJ-RC-004"]
-      threshold: { status: quantified, value: "13/13 tracked reports load; 0 required bulk migrations; no new CR-008 scope after 2026-09-18.", reason: "" }
+      threshold: { status: quantified, value: "13/13 tracked reports load; 0 required bulk migrations; 0 new CR-008 scope after the 2026-09-18 checkpoint.", reason: "" }
       verification: "Run compatibility validation over every tracked report and enforce the dated stop rule in the delivery plan."
       architectural_significance: "Constrains the contract cutover and rollout boundary."
       priority: high
@@ -681,8 +681,8 @@ protocol_owner: "ba"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
 handoff_target: "amended-s04-human-gates"
-last_transition_action: "refresh-s04-report-inventory"
-last_transition_at: "2026-09-11T11:28:19Z"
+last_transition_action: "clarify-structural-timebox"
+last_transition_at: "2026-09-11T11:34:36Z"
 required_actions:
   - "Assigned BA, Developer, and QC reviewers assess all three amended s04 controls."
   - "After explicit human decisions, seal three independent receipts against the unchanged s04 host."
@@ -722,6 +722,7 @@ review_notes:
   - "Human BA/Developer/QC approved OQ-RCR-004=B and human Developer/QC approved OQ-RCR-005=A plus OQ-RCR-006=B at 2026-09-11T07:59:12Z. No downstream gate is implied."
   - "Amended s04 is drafted with typed state-entry and transaction-backed event contracts. Fresh Spec, Contract, DoR, Approach, and Task Plan receipts are required before production work resumes."
   - "Independent review requested a live compatibility recount. The branch contains 13 tracked work-item reports after Node 24 materialization, so RCR-08 and AC-RCR-09 were refreshed from 12 to 13 before s04 human review."
+  - "The existing owner stop rule is clarified as a 2026-09-18 stop-and-reassess checkpoint, not a delivery promise. AC-RCR-06 and AC-RCR-08 remain in scope unless unfinished at that checkpoint, when they are separable follow-ups."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -785,6 +786,7 @@ audit_events:
   - "S03_STRUCTURAL_CONTRACT_QUESTIONS_APPROVED"
   - "S04_STRUCTURAL_SPEC_CONTRACT_DOR_DRAFTED"
   - "S04_STRUCTURAL_REPORT_INVENTORY_REFRESHED"
+  - "STRUCTURAL_TIMEBOX_CLARIFIED_AS_CHECKPOINT"
 ```
 
 ## Traceability
