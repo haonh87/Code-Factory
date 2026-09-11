@@ -248,6 +248,10 @@ acceptance_criteria_draft:
   - { id: "RCR-04", description: "An unchanged retry returns NOOP and creates no duplicate receipt, event, or derived write.", measurable: true }
   - { id: "RCR-05", description: "First-cycle, legacy gate-set, atomicity, and independent-receipt regressions remain green.", measurable: true }
   - { id: "RCR-06", description: "Corrected source and hosted candidate pass parent AG-01..AG-13 re-verification before reapproval.", measurable: true }
+  - { id: "RCR-07", description: "Every newly generated blocker or required action has an explicit typed state-entry shape.", measurable: true }
+  - { id: "RCR-08", description: "Known legacy strings are translated only by a bounded import adapter and all 12 tracked reports remain readable without migration.", measurable: true }
+  - { id: "RCR-09", description: "Core transitions clear state only by exact id or kind+gate and never infer semantics from human text.", measurable: true }
+  - { id: "RCR-10", description: "Every approval-transaction event carries direct transaction_id equality with its committed journal/result; non-transaction events omit it.", measurable: true }
 notes_for_next_step: "s02 quantifies restored trust and interaction completion; no unresolved s03 owner is known."
 ```
 
@@ -513,8 +517,7 @@ input_issues:
   contested_ownership: []
   untraceable_drivers: []
   unsupported_objectives: []
-  conflicting_drivers:
-    - { pair: ["opaque legacy text", "legacy semantic clearing"], nature: "A legacy entry cannot be both unread by code and automatically classified for gate-state clearing.", owner: "ba/developer/qc" }
+  conflicting_drivers: []
   unquantified_nfrs: []
   ownerless_assumptions: []
   surplus_drivers: []
@@ -529,22 +532,19 @@ metrics:
     - { id: "M-04", name: "NFR quantification", formula: "2/2", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "Both applicable drivers carry numeric outcomes." }
     - { id: "M-05", name: "Verification coverage", formula: "2/2", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "Both drivers define a check." }
     - { id: "M-06", name: "Handoff coverage", formula: "2/2", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "Both drivers map to BA, DEV, or QC handoff." }
-    - { id: "M-07", name: "Open-item ownership", formula: "3/3", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "OQ-RCR-004..006 each name human owners." }
+    - { id: "M-07", name: "Open-item disposition", formula: "3/3", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "OQ-RCR-004..006 are approved with every assigned human role." }
     - { id: "M-08", name: "Option discipline", formula: "0 direction choices", value: "not_applicable", threshold: "100%", calibration: uncalibrated, evidence: "SA does not choose the technical approach." }
     - { id: "M-09", name: "Landscape element ownership", formula: "not produced", value: "not_measured", threshold: "100%", calibration: uncalibrated, evidence: "Active skill registry does not expose architecture-modeling." }
-    - { id: "M-10", name: "Capability ownership clarity", formula: "1/2", value: "50%", threshold: "100%", calibration: uncalibrated, evidence: "Core structured-state ownership is explicit; legacy translation remains OQ-RCR-004." }
+    - { id: "M-10", name: "Capability ownership clarity", formula: "2/2", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "Core structured-state ownership and the adapter-only legacy translation boundary are explicit." }
 handoff:
-  to_ba: { applicable: true, reason: "", items: ["Decide whether the bounded legacy adapter preserves the promised completion behavior without making prose authoritative."] }
+  to_ba: { applicable: true, reason: "", items: ["Review amended acceptance semantics for the approved bounded legacy adapter."] }
   to_dev: { applicable: true, reason: "", items: ["Keep machine semantics in explicit fields and isolate any legacy translation at one boundary."] }
   to_qc: { applicable: true, reason: "", items: ["Prove wording mutations do not change structured outcomes and all 12 tracked reports remain readable."] }
   to_devops: { applicable: false, reason: "owned by /ta", items: [] }
 stop_condition:
-  met: false
-  reason: "Legacy operational compatibility and event identity scope still require human decisions."
-  pushed_to_s03:
-    - { question: "OQ-RCR-004 legacy adapter semantics", owner: "ba/developer/qc" }
-    - { question: "OQ-RCR-005 structured entry identity", owner: "developer/qc" }
-    - { question: "OQ-RCR-006 transactional event identity", owner: "developer/qc" }
+  met: true
+  reason: "OQ-RCR-004..006 approved B/A/B and now bound the amended s04 contract."
+  pushed_to_s03: []
 ```
 
 ## TA Architecture Driver Amendment - Structured State Contract
@@ -603,8 +603,7 @@ input_issues:
   contested_ownership: []
   untraceable_drivers: []
   unsupported_objectives: []
-  conflicting_drivers:
-    - { pair: ["legacy text opacity", "legacy behavior equivalence"], nature: "Exact compatibility needs a declared adapter exception or an accepted behavior reduction.", owner: "ba/developer/qc" }
+  conflicting_drivers: []
   unquantified_nfrs: []
   ownerless_assumptions: []
   surplus_drivers: []
@@ -619,7 +618,7 @@ metrics:
     - { id: "M-04", name: "NFR quantification", formula: "3/3", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "Every TA driver has a numeric threshold." }
     - { id: "M-05", name: "Verification coverage", formula: "3/3", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "Every TA driver names its check." }
     - { id: "M-06", name: "Handoff coverage", formula: "3/3", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "Every TA driver maps to DEV/QC/DevOps." }
-    - { id: "M-07", name: "Open-item ownership", formula: "3/3", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "OQ-RCR-004..006 name owners." }
+    - { id: "M-07", name: "Open-item disposition", formula: "3/3", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "OQ-RCR-004..006 are approved with every assigned human role." }
     - { id: "M-08", name: "Option discipline", formula: "0 direction choices", value: "not_applicable", threshold: "100%", calibration: uncalibrated, evidence: "TA defines constraints before s05." }
     - { id: "M-09", name: "Landscape element ownership", formula: "not produced", value: "not_measured", threshold: "100%", calibration: uncalibrated, evidence: "Active skill registry gap is declared." }
     - { id: "M-10", name: "Capability ownership clarity", formula: "owned by /sa", value: "not_applicable", threshold: "100%", calibration: uncalibrated, evidence: "TA does not allocate system ownership." }
@@ -629,33 +628,27 @@ handoff:
   to_qc: { applicable: true, reason: "", items: ["Test text invariance, legacy read behavior, typed writes, transaction equality, and no partial writes."] }
   to_devops: { applicable: true, reason: "", items: ["Require full runtime/package parity and one hosted candidate after the contract cutover."] }
 stop_condition:
-  met: false
-  reason: "The constraint envelope is measurable, but three contract decisions remain open."
-  pushed_to_s03:
-    - { question: "OQ-RCR-004 legacy adapter semantics", owner: "ba/developer/qc" }
-    - { question: "OQ-RCR-005 structured entry identity", owner: "developer/qc" }
-    - { question: "OQ-RCR-006 transactional event identity", owner: "developer/qc" }
+  met: true
+  reason: "The measurable constraint envelope and B/A/B event/data decisions are ready for s04 contract review."
+  pushed_to_s03: []
 ```
 
 ## Audit
 ```yaml
 step: "s01 Clarify"
-status: PARTIAL
+status: PASS
 checks:
   - { criterion: "Behavior is exact", result: PASS, evidence: "Valid receipts are contrasted with stale navigation and missing current event." }
   - { criterion: "Dedup is resolved", result: PASS, evidence: "Prior child fixed gate selection; this child owns repeated-cycle reconciliation." }
-  - { criterion: "SA/TA drivers are complete", result: PARTIAL, evidence: "Original drivers remain valid; the structural amendment adds five traced drivers but leaves legacy ownership and three contract questions open." }
+  - { criterion: "SA/TA drivers are complete", result: PASS, evidence: "Original drivers remain valid; the structural amendment adds five traced drivers and OQ-RCR-004..006 now lock legacy ownership, structured identity, and transaction identity." }
   - { criterion: "No implementation selected", result: PASS, evidence: "Only scope, constraints, outcomes, and verification seeds are recorded." }
 constraint_violations: []
-unmitigated_high_risks:
-  - "Legacy text cannot be both opaque and semantically clearable until OQ-RCR-004 is decided."
+unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "One bounded linked-defect clarification pass."
-gaps:
-  - "OQ-RCR-004..006 decisions"
-  - "Required contract landscape not produced because architecture-modeling is unavailable in the active skill registry"
+gaps: []
 risk_level: HIGH
-next_action: "Remain at s03; approve or reject the proposed B/A/B recommendation bundle before amended s04 authoring."
+next_action: "Review the amended s04 Spec, Data/Event Contract, and DoR; keep implementation closed pending fresh receipts."
 ```
 
 ## Work Item Protocol
@@ -667,7 +660,7 @@ work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation"
-current_step: "s03"
+current_step: "s04"
 granted_write_paths:
   - "packages/workflow-bundle/scripts/work-item-protocol.js"
   - "packages/workflow-bundle/scripts/workflow-gate-review.js"
@@ -687,18 +680,15 @@ decision_owner: "agent"
 protocol_owner: "ba"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "structural-contract-open-questions"
+handoff_target: "amended-s04-human-gates"
 last_transition_action: "block"
-last_transition_at: "2026-09-11T07:29:33.078Z"
+last_transition_at: "2026-09-11T08:02:09.200Z"
 required_actions:
-  - "BA, Developer, and QC decide OQ-RCR-004 Option B or an explicit alternative for legacy adapter semantics."
-  - "Developer and QC decide OQ-RCR-005 Option A or an explicit alternative for structured entry identity."
-  - "Developer and QC decide OQ-RCR-006 Option B or an explicit alternative for transaction-backed event identity."
-  - "Keep T7, the GitHub Actions bump, amended s04, and all production edits closed until their corresponding gates pass."
+  - "Assigned BA, Developer, and QC reviewers assess all three amended s04 controls."
+  - "After explicit human decisions, seal three independent receipts against the unchanged s04 host."
+  - "Keep s05/s06 amendment, T7 replacement, production edits, and release work closed until their corresponding fresh gates pass."
 blockers:
-  - "OQ-RCR-004 is open: a plain legacy wrapper cannot preserve both opaque text and semantic gate-state clearing."
-  - "OQ-RCR-005 is open: generated state-entry identity and required fields are not approved."
-  - "OQ-RCR-006 is open: transaction_id applicability on protocol events is not approved."
+  - "Fresh amended s04 human decisions and trusted receipts are pending."
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -729,6 +719,8 @@ review_notes:
   - "Human QC approved refreshed B2 Spec Compliance at 2026-09-11T04:04:57Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. Independent Code Quality review recommends PASS with no new findings; Developer/QC approval is pending and F-RCR-B2-001 remains OPEN until that decision."
   - "Human Developer and QC approved refreshed B2 Code Quality PASS at 2026-09-11T04:21:48Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. F-RCR-B2-001 is RESOLVED, T7 is OPEN, and B3 plus all later gates remain independent."
   - "Owner scope direction reopened discovery for a persisted structured-state contract. Impact analysis opened OQ-RCR-004..006 and suspended T7 before further source changes; no gate approval is inferred."
+  - "Human BA/Developer/QC approved OQ-RCR-004=B and human Developer/QC approved OQ-RCR-005=A plus OQ-RCR-006=B at 2026-09-11T07:59:12Z. No downstream gate is implied."
+  - "Amended s04 is drafted with typed state-entry and transaction-backed event contracts. Fresh Spec, Contract, DoR, Approach, and Task Plan receipts are required before production work resumes."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -789,6 +781,8 @@ audit_events:
   - "S07_T7_OPENED"
   - "WORK_ITEM_BLOCKED"
   - "S03_STRUCTURAL_CONTRACT_QUESTIONS_OPENED"
+  - "S03_STRUCTURAL_CONTRACT_QUESTIONS_APPROVED"
+  - "S04_STRUCTURAL_SPEC_CONTRACT_DOR_DRAFTED"
 ```
 
 ## Traceability
@@ -815,15 +809,17 @@ outputs:
   - "T6a expected RED 0d1ac48 and bounded-alias GREEN f9533c4de66fdb04e75008382b39b4fc413e3caa"
   - "Human QC-approved refreshed B2 Spec Compliance and Code Quality PASS recommendation"
   - "Human Developer/QC-approved refreshed B2 Code Quality; F-RCR-B2-001 resolved; T7 open"
-next_step: "Execute T7 matrix, then prepare B3 Spec Compliance for QC"
+  - "Human-approved OQ-RCR-004=B, OQ-RCR-005=A, and OQ-RCR-006=B"
+  - "Proposed amended AC-RCR-01..10 and required persisted Data/Event Contract"
+next_step: "Review and seal amended Spec, Contract, and DoR before amending s05"
 ```
 
 ## Handoff
 - Clear: closeout receipts succeeded, but current navigation and event evidence did not reconcile.
 - Distinct scope: repeat-cycle/idempotency, not the resolved missing-DoD selector defect.
 - Decision: PO approval is backed by a verified trusted receipt; the completed receipt action has been removed.
-- Current step: s07 is `ACTIVE`; T1-T6 are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`.
-- Recommendation: transaction-delta closeout projector with one shared journal/event transaction ID and no new public schema.
-- Plan: T0..T8 with three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, then one exact-candidate child-to-parent verification path.
-- Boundary: refreshed B2 is complete for `f9533c4de66fdb04e75008382b39b4fc413e3caa`; `F-RCR-B2-001` is RESOLVED and T7 is open, while B3 and T8 remain gated.
+- Current step: s04 is `BLOCKED` only on fresh human gates and receipts after the structural contract amendment.
+- Approved discovery direction: bounded legacy adapter, typed state entries, and first-class transaction identity for transaction-backed approval events.
+- Historical implementation: refreshed B2 is complete for `f9533c4de66fdb04e75008382b39b4fc413e3caa`, but T7 is suspended and old s04-s06 receipts cannot authorize replacement work.
+- Next gate: BA Spec, Developer Contract, and BA/QC DoR reviews against the amended s04 host.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.

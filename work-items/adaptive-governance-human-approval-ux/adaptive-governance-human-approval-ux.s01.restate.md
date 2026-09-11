@@ -719,16 +719,16 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "linked-defect-structural-contract-open-questions"
-last_transition_action: "linked-defect-structural-contract-reopened"
-last_transition_at: "2026-09-11T07:29:33.078Z"
+handoff_target: "linked-defect-amended-s04-human-gates"
+last_transition_action: "linked-defect-structural-questions-approved-s04-drafted"
+last_transition_at: "2026-09-11T07:59:12Z"
 required_actions:
-  - "Complete human decisions OQ-RCR-004..006 for the child structural state contract."
-  - "After those decisions, reapprove child Spec, Contract, DoR, Approach, and Task Plan before resuming implementation."
+  - "Complete the three amended child s04 human reviews and seal fresh independent receipts."
+  - "Refresh and approve the child s05/s06 design and execution plan before resuming implementation."
   - "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
 blockers:
   - "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."
-  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s03 after structural scope expansion; OQ-RCR-004..006 and fresh downstream gate receipts are pending."
+  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending."
 review_notes:
   - "Human review approved."
   - "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local verification matrix and hosted Guardrails run 34322150024."
@@ -764,6 +764,7 @@ review_notes:
   - "Human QC approved refreshed child B2 Spec Compliance at 2026-09-11T04:04:57Z. Independent child Code Quality review recommends PASS with no new findings; Developer/QC approval remains pending, F-RCR-B2-001 stays OPEN, and parent release remains blocked."
   - "Human Developer and QC approved refreshed child B2 Code Quality PASS at 2026-09-11T04:21:48Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. F-RCR-B2-001 is RESOLVED and child T7 is OPEN; parent release, protocol close, and branch finalization remain blocked."
   - "Owner scope direction replaced further prose-matching patches with a structured-state contract. Child T7 is suspended and the child is BLOCKED at s03 pending OQ-RCR-004..006 plus fresh Spec, Contract, DoR, Approach, and Task Plan gates."
+  - "Human reviewers approved the child structural B/A/B question bundle at 2026-09-11T07:59:12Z. Amended s04 now awaits fresh independent Spec, Contract, and DoR decisions and receipts; parent release remains blocked."
 refs:
   - "changes/CR-008"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -857,6 +858,8 @@ audit_events:
   - "LINKED_REPEAT_CYCLE_DEFECT_F_RCR_B2_001_RESOLVED"
   - "LINKED_REPEAT_CYCLE_DEFECT_T7_OPENED"
   - "LINKED_REPEAT_CYCLE_DEFECT_STRUCTURAL_CONTRACT_REOPENED"
+  - "LINKED_REPEAT_CYCLE_DEFECT_STRUCTURAL_QUESTIONS_APPROVED"
+  - "LINKED_REPEAT_CYCLE_DEFECT_AMENDED_S04_DRAFTED"
 ```
 
 ## Current Governance Router Status

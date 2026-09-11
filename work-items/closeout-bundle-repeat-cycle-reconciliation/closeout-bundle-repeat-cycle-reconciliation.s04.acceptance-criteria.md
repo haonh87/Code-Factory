@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: final
+status: draft
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: ALIGNED
+governance_status: CHECKS_PENDING
 checklist_refs:
   - "project-context/checklists/default.md"
   - "project-context/checklists/strict.md"
@@ -25,7 +25,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: approved
+spec_status: draft
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -38,7 +38,7 @@ review_mode: independent
 verification_owner: "qc"
 approval_gates:
   spec: "required"
-  contract: "not_applicable"
+  contract: "required"
   dor: "required"
   approach: "required"
   foundation: "not_applicable"
@@ -49,7 +49,7 @@ approval_gates:
   dod: "required"
 role_signoffs:
   spec: ["ba"]
-  contract: []
+  contract: ["developer"]
   dor: ["ba", "qc"]
   approach: ["developer"]
   foundation: []
@@ -59,12 +59,12 @@ role_signoffs:
   business_acceptance: ["po"]
   dod: ["qc"]
 gate_reviews:
-  spec_reviewed_by: ["ba"]
-  spec_reviewed_at: "2026-09-10T03:09:26Z"
+  spec_reviewed_by: []
+  spec_reviewed_at: ""
   contract_reviewed_by: []
   contract_reviewed_at: ""
-  dor_reviewed_by: ["ba", "qc"]
-  dor_reviewed_at: "2026-09-10T03:09:26Z"
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
   approach_reviewed_by: []
   approach_reviewed_at: ""
   foundation_reviewed_by: []
@@ -108,12 +108,12 @@ tags:
 # Step 4 - Acceptance + DoR
 
 > [!summary]
-> The proposed Spec makes the approved B/A/A decisions testable: each committed closeout cycle
-> contributes one attributable protocol event; an unchanged retry changes nothing; and a successful
-> closeout reconciles the report plus s01 protocol mirror to one close action and a `protocol-close`
-> handoff without rewriting history. BA approved Spec, and BA plus QC approved DoR at
-> `2026-09-10T03:09:26Z`. Input readiness is `READY`; the two independent trusted receipts must
-> still be sealed against this finalized host before s05 can open.
+> This amended Spec and Contract combine the approved B/A/A cycle decisions with the approved
+> B/A/B structural-state decisions. Machine state becomes typed and selector-driven; only a bounded
+> import adapter may translate enumerated legacy strings, and transaction-backed approval events
+> carry first-class `transaction_id`. Input readiness is `READY`, but the prior s04 receipts are
+> historical because the host contract changed. BA Spec, Developer Contract, and BA/QC DoR reviews
+> plus fresh trusted receipts are required before s05 may be amended.
 
 ## Step Contract
 ```yaml
@@ -141,11 +141,12 @@ inputs_required:
   - "PO-approved s02 Business Goal and KPI-RCR-001..006"
   - "s01 RCR-01..06 plus SA/TA architecture drivers"
   - "Human-approved OQ-RCR-001 Option B, OQ-RCR-002 Option A, and OQ-RCR-003 Option A"
+  - "Human-approved OQ-RCR-004 Option B, OQ-RCR-005 Option A, and OQ-RCR-006 Option B"
   - "F-AG11-001 observed-state and root-cause evidence"
   - "Current reconciliation source and first-cycle, legacy, retry, and atomicity fixtures"
   - "CR-008 exact-candidate, rollback, and terminal reapproval constraints"
 outputs_required:
-  - "Proposed Requirement and Contract baselines"
+  - "Proposed Requirement and persisted Data/Event Contract baselines"
   - "Brownfield Existing System Baseline"
   - "Measurable acceptance criteria, edge cases, out-of-scope boundaries, and invariants"
   - "Strict governance checklist result"
@@ -155,8 +156,8 @@ done_when:
   - "First cycle, later committed cycle, and unchanged retry are distinguishable"
   - "Mutable current state and immutable history boundaries are explicit"
   - "Atomicity, compatibility, reviewer authority, rollback, and parent release impact are covered"
-  - "No unresolved input or governance conflict blocks independent Spec and DoR review"
-  - "The artifact names exact reviewers and the conditions for entering s05"
+  - "No unresolved input or governance conflict blocks independent Spec, Contract, and DoR review"
+  - "The artifact names exact reviewers and the conditions for amending s05"
 constraints:
   hard_constraints:
     - "A committed closeout cycle contributes exactly one attributable protocol event"
@@ -165,7 +166,7 @@ constraints:
     - "Historical receipts, notes, audit markers, and protocol-event entries are not rewritten"
     - "Every applicable gate retains its independent receipt and configured reviewer authority"
     - "Parent CR-008 remains blocked until one corrected exact candidate passes re-verification and new terminal approvals"
-    - "Implementation remains closed until trusted Spec, DoR, Approach, and Task Plan receipts pass"
+    - "Implementation remains closed until fresh trusted Spec, Contract, DoR, Approach, and Task Plan receipts pass"
   soft_constraints:
     - "Prefer the smallest correct correction inside the existing protocol and test boundaries"
     - "Reuse the current receipt-v1 and append-only protocol-event models"
@@ -225,7 +226,7 @@ timebox:
 
 ## Requirement Baseline
 ```yaml
-status: APPROVED
+status: PROPOSED_AMENDMENT
 approved_spec_refs:
   - "changes/CR-008/spec-delta/srs.delta.md"
 approved_spec_digests:
@@ -249,24 +250,74 @@ approved_decisions:
     option: "A"
     reviewed_by: ["ba", "developer", "qc"]
     reviewed_at: "2026-09-10T02:30:56Z"
+  - id: "OQ-RCR-004"
+    option: "B"
+    reviewed_by: ["ba", "developer", "qc"]
+    reviewed_at: "2026-09-11T07:59:12Z"
+  - id: "OQ-RCR-005"
+    option: "A"
+    reviewed_by: ["developer", "qc"]
+    reviewed_at: "2026-09-11T07:59:12Z"
+  - id: "OQ-RCR-006"
+    option: "B"
+    reviewed_by: ["developer", "qc"]
+    reviewed_at: "2026-09-11T07:59:12Z"
 decision_notes:
   - "A committed cycle requires at least one new current receipt or equivalent committed current-state transition for the exact artifact and applicable gate set."
   - "Each committed cycle appends one attributable protocol event; CLOSEOUT_BUNDLE_APPROVED remains a coarse compatibility marker."
   - "Only the mutable report and synchronized s01 protocol state are reconciled to the canonical close action and handoff."
-  - "Human BA approved this Spec at 2026-09-10T03:09:26Z; trusted Spec receipt sealing remains pending."
+  - "Known protocol-owned legacy strings are translated only at the load/normalization boundary; unknown strings are preserved as legacy objects."
+  - "Generated current-state entries carry explicit id, kind, and text; gate is conditional on gate-scoped kinds, and transitions clear by id or kind+gate."
+  - "Every approval-transaction event carries the coordinator transaction_id as a field; non-transaction lifecycle events omit it and note is never machine-read."
+  - "The 2026-09-10 Spec/DoR decisions and receipts are historical pre-amendment evidence; the changed host requires fresh independent gate decisions."
 ```
 
 ## Contract Baseline
 ```yaml
-status: NOT_APPLICABLE
+status: PROPOSED
 api_contract_refs: []
-event_contract_refs: []
-data_contract_refs: []
+event_contract_refs:
+  - "protocol_events[] internal persisted event contract in the work-item report"
+data_contract_refs:
+  - "blockers[] and required_actions[] internal persisted state-entry contract"
 ux_contract_refs: []
-notes:
+state_entry_contract:
+  generated_entry:
+    required_fields: ["id", "kind", "text"]
+    conditional_fields:
+      gate: "Required for gate-scoped kinds and omitted for non-gate-scoped kinds."
+    constraints:
+      - "id is a non-empty opaque identifier, unique within its containing collection; no semantic parsing of id is permitted."
+      - "kind is a canonical machine-state discriminator from an enumerated set."
+      - "text is non-empty human-readable display content and is never read by core transitions or state assertions."
+    selectors:
+      - "Clear by exact id when a specific entry is targeted."
+      - "Clear by exact kind+gate when a gate-scoped class is targeted."
+      - "Substring, fuzzy alias, Unicode word-boundary, and regex inference over text are prohibited in core transitions."
+  legacy_import:
+    boundary: "Normalization/load adapter before core state-machine logic"
+    known_input_rule: "Recognize only an enumerated exact-value or explicit command grammar for protocol-owned legacy strings and emit typed entries."
+    unknown_input_rule: "Preserve an unknown string as {kind: legacy, text: <exact original>} and do not semantically clear it."
+    compatibility_rule: "All 12 tracked legacy reports load successfully without an in-place or bulk migration."
+    isolation_rule: "The adapter is the only compatibility boundary allowed to inspect incoming legacy text; emitted objects are handled only by typed selectors."
+event_contract:
+  transaction_backed_approval_event:
+    transaction_id: "Required, non-empty, and exactly equal to the committed coordinator journal/result transaction_id."
+    note: "Optional human-readable context; never used to derive identity, deduplication, or lifecycle state."
+  non_transaction_lifecycle_event:
+    transaction_id: "Omitted."
+    note: "Human-readable only."
+  noop: "An unchanged retry appends no event and creates no synthetic transaction_id."
+compatibility_notes:
   - "The public wfc gate approve-closeout-bundle command is unchanged."
   - "Trusted receipt-v1, signer, approval root, reviewer identity, and independent-gate semantics are unchanged."
-  - "The existing protocol-event record is reused; s05 may choose an internal identity mechanism without opening a public contract."
+  - "Legacy readers and validators must accept string entries at the adapter boundary while new writers emit typed entries."
+  - "The exact kind vocabulary, deterministic id construction, and adapter module placement remain s05 design decisions within this contract."
+validation_failures:
+  - "Reject a newly generated entry with missing/empty id, kind, or text."
+  - "Reject duplicate generated ids within the same collection."
+  - "Reject a gate-scoped generated kind without gate, or a non-gate-scoped generated kind carrying gate."
+  - "Reject a transaction-backed approval event without transaction_id or with an identity different from its committed transaction."
 ```
 
 ## Existing System Baseline
@@ -288,9 +339,19 @@ current_behavior_refs:
   - id: "BASE-RCR-005"
     behavior: "The real parent repeat cycle sealed valid receipts but retained stale actions/handoff and omitted the current protocol event."
     evidence: "F-AG11-001 in parent s07 and s08"
+  - id: "BASE-RCR-006"
+    behavior: "blockers and required_actions are normalized as strings; object values currently collapse to [object Object]."
+    evidence: "packages/workflow-bundle/scripts/work-item-protocol-utils.js:56-66,271-272"
+  - id: "BASE-RCR-007"
+    behavior: "Core closeout reconciliation clears mutable state by regex, aliases, and text inclusion."
+    evidence: "packages/workflow-bundle/scripts/work-item-protocol.js:440-540"
+  - id: "BASE-RCR-008"
+    behavior: "Approval transaction identity is embedded in note and test assertions recover it with note.includes."
+    evidence: "packages/workflow-bundle/scripts/work-item-protocol.js:535-545 and packages/workflow-bundle/test/work-item-protocol.test.js:846-854"
 impacted_surfaces:
   - "Closeout bundle current-state reconciliation in work-item-protocol.js"
   - "Protocol report required_actions, blockers, handoff_target, audit_events, and protocol_events"
+  - "Protocol normalization, rendering, validation, runtime copies, and compatibility readers for typed state entries"
   - "Synchronized s01 Work Item Protocol mirror"
   - "Closeout integration fixtures and failure matrix"
   - "CR-008 child and parent verification/release evidence"
@@ -413,6 +474,32 @@ acceptance_criteria:
       - "Historical source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d, run 34322150024, candidate 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5, and terminal receipts remain historical pre-finding evidence."
       - "QC repeats Technical Verification and DoD; DevOps/QC repeat Release; PO repeats Business Acceptance before close, release, or branch finalization."
     verification: "Check source SHA, run ID, candidate digest, AG coverage, new gate-receipt digests/reviewers/timestamps, rollback evidence, and F-AG11-001 disposition."
+  - id: "AC-RCR-09"
+    traces_to: ["RCR-07", "RCR-08", "RCR-09", "OQ-RCR-004", "OQ-RCR-005", "DRV-SA-RC-005", "DRV-TA-RC-005", "DRV-TA-RC-006"]
+    scenario: "Typed current state replaces prose-derived machine decisions without breaking legacy reports"
+    criterion: "Newly generated blockers and required actions follow the state-entry Contract, and core transitions never inspect their human text."
+    given:
+      - "Fixtures cover valid typed entries, each invalid generated shape, known protocol-owned legacy strings, and unknown legacy strings."
+      - "The 12 tracked pre-contract reports remain unchanged on disk."
+    when: "Reports are loaded and closeout reconciliation targets selected gate state."
+    then:
+      - "Every newly generated entry has valid unique id, canonical kind, non-empty text, and gate exactly when its kind is gate-scoped."
+      - "Known legacy strings are translated by the bounded adapter before core logic; unknown strings become preserved legacy objects."
+      - "Only exact id or exact kind+gate selectors clear entries; unrelated review, pending, receipt, seal, Unicode, or alias text is never deleted."
+      - "All 12 tracked reports load without bulk or in-place migration and new writes use the typed form."
+    verification: "Run schema/normalizer unit tests, a table-driven legacy adapter matrix, the corrected latent counterexample, all tracked-report load fixtures, and a static search proving core state transitions do not read entry.text."
+  - id: "AC-RCR-10"
+    traces_to: ["RCR-10", "OQ-RCR-006", "DRV-SA-RC-006", "DRV-TA-RC-007", "KPI-RCR-002", "KPI-RCR-003"]
+    scenario: "Approval-event identity is first-class and truthful"
+    criterion: "Every committed approval-transaction event exposes exact transaction identity as data, while non-transaction events and retries do not invent identity."
+    given:
+      - "Fixtures cover readiness and closeout transaction commits, non-transaction lifecycle events, and unchanged NOOP retries."
+    when: "The coordinator commits or the lifecycle records an event."
+    then:
+      - "Every event committed by the approval transaction coordinator has a required transaction_id exactly matching the journal/result identity."
+      - "Non-transaction lifecycle events omit transaction_id, and a NOOP appends no event."
+      - "Changing note wording cannot affect event attribution, deduplication, reconciliation, tests, or lifecycle status."
+    verification: "Assert event fields directly across transaction/non-transaction/NOOP fixtures and run a static search proving note is not read for machine identity or state."
 edge_cases:
   - id: "EDGE-RCR-01"
     case: "A historical coarse audit marker exists but no historical closeout protocol event exists."
@@ -440,7 +527,7 @@ out_of_scope:
   - "General-purpose prose classification outside closeout current-state reconciliation"
   - "npm publication, GitHub tag/release creation, merge, install, cleanup, or branch finalization"
 done_when:
-  - "AC-RCR-01..08 have PASS evidence bound to corrected source and, where required, one exact hosted candidate."
+  - "AC-RCR-01..10 have PASS evidence bound to corrected source and, where required, one exact hosted candidate."
   - "The repeated-cycle regression fails before implementation for F-AG11-001 and passes after the smallest correct change."
   - "A successful second committed cycle adds one protocol event, reconciles both mutable surfaces, and preserves immutable history."
   - "Twenty repeated executions produce zero report/s01 current-state mismatches."
@@ -469,7 +556,7 @@ checks:
   - id: "GOV-RCR-02"
     check: "Acceptance criteria are measurable and verification-ready"
     status: PASS
-    evidence: "AC-RCR-01..08 each define setup, action, exact outcomes, and a concrete verify path."
+    evidence: "AC-RCR-01..10 each define setup, action, exact outcomes, and a concrete verify path."
   - id: "GOV-RCR-03"
     check: "Required reviewer coverage is explicit"
     status: PASS
@@ -477,7 +564,7 @@ checks:
   - id: "GOV-RCR-04"
     check: "Brownfield compatibility assumptions are recorded"
     status: PASS
-    evidence: "The Existing System Baseline covers first-cycle, legacy, adaptive, readiness, receipt-v1, historical-read, and public CLI compatibility."
+    evidence: "The Existing System Baseline covers first-cycle, legacy-string loading, typed-state impact, adaptive, readiness, receipt-v1, historical-read, and public CLI compatibility."
   - id: "GOV-RCR-05"
     check: "Release impact and rollback expectations are identified"
     status: PASS
@@ -485,27 +572,28 @@ checks:
   - id: "GOV-RCR-06"
     check: "Open questions and high risks have a resolution or owner"
     status: PASS
-    evidence: "OQ-RCR-001..003 are explicitly approved; R-S04-RC-001..004 have mitigations, contingencies, and assigned owners."
+    evidence: "OQ-RCR-001..006 are explicitly approved; R-S04-RC-001..004 have mitigations, contingencies, and assigned owners."
   - id: "GOV-RCR-07"
     check: "Human gates are not inferred from readiness or audit evidence"
     status: PASS
-    evidence: "The user explicitly approved Spec as BA and DoR as BA/QC; gate_reviews records the human decision while trusted receipts remain separate and pending."
+    evidence: "The changed persisted Data/Event Contract invalidates the old host approvals; fresh Spec, Contract, and DoR decisions remain explicitly pending."
   - id: "GOV-RCR-08"
     check: "No governance exception is required"
     status: PASS
     evidence: "The proposed criteria preserve all strict controls and open no larger boundary."
 blocking_items:
-  - "BA must seal the trusted Spec receipt against this finalized host artifact."
-  - "QC must seal the trusted DoR receipt after the recorded joint BA/QC approval."
-owner: "ba/qc"
-next_action: "Seal independent digest-bound Spec and DoR receipts before s05."
+  - "BA must review the amended Spec, then seal its trusted receipt against the finalized host."
+  - "Developer must review the new Data/Event Contract, then seal its trusted receipt against the same host."
+  - "BA and QC must review DoR; QC seals its trusted receipt after the joint decision."
+owner: "ba/developer/qc"
+next_action: "Review Spec, Contract, and DoR independently; then seal all three digest-bound receipts before amending s05."
 ```
 
 ## Definition of Ready
 ```yaml
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
 status: READY
-gate_status: APPROVED_PENDING_RECEIPTS
+gate_status: WAITING_HUMAN_APPROVAL
 checks:
   restated_request_clear: PASS
   business_goal_clear: PASS
@@ -517,35 +605,38 @@ checks:
 blocking_gaps: []
 accepted_assumptions:
   - "The correction can remain inside existing closeout protocol and integration-test boundaries."
-  - "The current protocol-event shape can carry attributable cycle evidence without a public schema change; s05 must validate the internal mechanism."
+  - "The internal persisted state/event contract can evolve compatibly behind the unchanged public CLI and receipt-v1 surface."
   - "The mutable current-state pair remains the report plus synchronized s01 Work Item Protocol block."
   - "The public closeout and work-item close commands remain unchanged."
 residual_risks:
   - "s05 still must compare at least two internal cycle-identity/reconciliation options and select the smallest correct one."
   - "Failure-injection support for newly touched persistence boundaries must be confirmed before s06 closes."
   - "A corrected exact hosted candidate and parent terminal evidence cannot exist before s07/s08."
-next_action: "BA seals the Spec receipt and QC seals the DoR receipt; verify both with digest_match=true before s05."
+next_action: "BA reviews Spec, Developer reviews Contract, and BA/QC review DoR; seal and verify three fresh receipts before s05."
 ```
 
 ## Human Gate Proposal
 ```yaml
 decisions:
   - gate: "spec"
-    status: "HUMAN_APPROVED_PENDING_RECEIPT"
+    status: "WAITING_APPROVAL"
     reviewer_roles: ["ba"]
     receipt_sealer: "ba"
-    decided_by: ["ba"]
-    decided_at: "2026-09-10T03:09:26Z"
+    decided_by: []
+    decided_at: ""
   - gate: "contract"
-    status: "NOT_APPLICABLE"
-    reviewer_roles: []
-    reason: "No public CLI, event, data, UX, receipt, or authority contract changes."
+    status: "WAITING_APPROVAL"
+    reviewer_roles: ["developer"]
+    receipt_sealer: "developer"
+    decided_by: []
+    decided_at: ""
+    reason: "The amendment changes internal persisted blockers/required_actions and protocol-event contracts while preserving public CLI and receipt-v1 compatibility."
   - gate: "dor"
-    status: "HUMAN_APPROVED_PENDING_RECEIPT"
+    status: "WAITING_APPROVAL"
     reviewer_roles: ["ba", "qc"]
     receipt_sealer: "qc"
-    decided_by: ["ba", "qc"]
-    decided_at: "2026-09-10T03:09:26Z"
+    decided_by: []
+    decided_at: ""
 receipt_model_note: >-
   The receipt schema stores one reviewed_by identity. Joint BA/QC DoR provenance remains in
   gate_reviews; QC seals the cryptographic DoR receipt only after both human roles approve.
@@ -558,30 +649,30 @@ status: PASS
 checks:
   - criterion: "Every acceptance criterion is deterministic and evidence-backed"
     result: PASS
-    evidence: "AC-RCR-01..08 each define given, when, then, and verification fields."
+    evidence: "AC-RCR-01..10 each define given, when, then, and verification fields."
   - criterion: "Cycle states and event semantics are distinguishable"
     result: PASS
     evidence: "AC-RCR-01 separates first, later committed, and unchanged retry states; AC-RCR-02 specifies exact event and marker counts."
   - criterion: "Mutable state and immutable history boundaries are explicit"
     result: PASS
-    evidence: "AC-RCR-03 and AC-RCR-05 name the report/s01 mutable projection and preserved historical evidence."
+    evidence: "AC-RCR-03, AC-RCR-05, and AC-RCR-09 name the report/s01 mutable projection, typed-state contract, legacy boundary, and preserved historical evidence."
   - criterion: "Atomicity, compatibility, reviewer authority, rollback, and release are covered"
     result: PASS
     evidence: "AC-RCR-06..08 and GOV-RCR-03..05 cover all strict-profile concerns."
   - criterion: "No unresolved input or governance conflict blocks review"
     result: PASS
-    evidence: "s03 is READY/PASS, all OQ decisions are recorded, and blocking_gaps/open governance questions are empty."
+    evidence: "s03 is READY/PASS, OQ-RCR-001..006 are recorded, and blocking_gaps/open governance questions are empty."
   - criterion: "Reviewer and s05 entry conditions are exact"
     result: PASS
-    evidence: "BA Spec and BA/QC DoR approvals are recorded; independent digest-matched receipts remain mandatory before s05."
+    evidence: "BA, Developer, and BA/QC are named for the amended Spec, Contract, and DoR; their decisions and digest-matched receipts remain mandatory before s05."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed in one bounded acceptance and readiness authoring pass."
 gaps:
-  - "Trusted Spec and DoR receipt sealing is pending."
+  - "Human Spec, Contract, and DoR decisions plus trusted receipt sealing are pending."
 risk_level: HIGH
-next_action: "Stop before s05 until BA Spec and QC-sealed DoR receipts verify against this unchanged artifact."
+next_action: "Stop before s05 until BA Spec, Developer Contract, and QC-sealed DoR receipts verify against this unchanged artifact."
 ```
 
 ## Traceability
@@ -594,21 +685,24 @@ decision_to_acceptance:
   OQ-RCR-001: ["AC-RCR-01", "AC-RCR-04"]
   OQ-RCR-002: ["AC-RCR-02", "AC-RCR-04", "AC-RCR-05"]
   OQ-RCR-003: ["AC-RCR-03", "AC-RCR-05"]
+  OQ-RCR-004: ["AC-RCR-09"]
+  OQ-RCR-005: ["AC-RCR-09"]
+  OQ-RCR-006: ["AC-RCR-10"]
 verification_targets:
   - "packages/workflow-bundle/test/work-item-protocol.test.js repeat-cycle regression and failure matrix"
   - "packages/workflow-bundle test, validator, package, and runtime parity suites"
   - "One corrected local and hosted v2.6.2 candidate"
   - "Parent CR-008 AG-01..AG-13 and new terminal receipts"
 outputs:
-  - "AC-RCR-01..08"
+  - "AC-RCR-01..10"
   - "EDGE-RCR-01..06"
   - "GOV-RCR-01..08"
-  - "Human-approved Spec and DoR pending independent trusted receipts"
-next_step: "s05 Technical Approach after trusted Spec and DoR receipts verify"
+  - "Proposed amended Spec, Data/Event Contract, and DoR pending independent human reviews and trusted receipts"
+next_step: "Amend s05 Technical Approach only after trusted Spec, Contract, and DoR receipts verify"
 ```
 
 ## Handoff
-- Mandatory criteria: exact cycle classification, one current-cycle protocol event, semantic state reconciliation, byte-stable retry, immutable history, atomicity, compatibility, and parent exact-candidate re-verification.
+- Mandatory criteria: exact cycle classification, typed selector-driven state, bounded legacy import, first-class transaction identity, byte-stable retry, immutable history, atomicity, compatibility, and parent exact-candidate re-verification.
 - Edge cases: historical marker with or without older event, prose/format variants, divergent mutable surfaces, changed host/gate set, and concurrent/recovery retry.
-- Gate state: Contract and Foundation are `NOT_APPLICABLE`; Spec and DoR are `HUMAN_APPROVED_PENDING_RECEIPT`.
-- Condition for step 5: BA seals Spec, QC seals DoR after the recorded joint review, and both trusted receipts have `digest_match=true` against this unchanged s04 artifact.
+- Gate state: Foundation is `NOT_APPLICABLE`; amended Spec, Contract, and DoR are `WAITING_APPROVAL`.
+- Condition for step 5: BA seals Spec, Developer seals Contract, QC seals DoR after the joint BA/QC review, and all three receipts have `digest_match=true` against this unchanged s04 artifact.

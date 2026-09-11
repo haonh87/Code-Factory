@@ -96,13 +96,15 @@
     "Human Developer and QC approved B2 Code Quality FAIL and opened HIGH F-RCR-B2-001 at 2026-09-11T03:46:13Z; QC reopened B2 Spec Compliance and Developer approved T6a for fail-first bounded-alias correction.",
     "T6a expected RED commit 0d1ac48c0adb43279f67503a318187295688a463 proved uat/situation and dod/dodgy collisions; bounded-alias GREEN source f9533c4de66fdb04e75008382b39b4fc413e3caa passes both focused suites, syntax, and diff checks.",
     "Human QC approved refreshed B2 Spec Compliance at 2026-09-11T04:04:57Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa.",
-    "Human Developer and QC approved refreshed B2 Code Quality PASS at 2026-09-11T04:21:48Z for the same source. F-RCR-B2-001 is RESOLVED and T7 is OPEN."
+    "Human Developer and QC approved refreshed B2 Code Quality PASS at 2026-09-11T04:21:48Z for the same source. F-RCR-B2-001 is RESOLVED and T7 is OPEN.",
+    "BA, Developer, and QC approved OQ-RCR-004 Option B; Developer and QC approved OQ-RCR-005 Option A and OQ-RCR-006 Option B at 2026-09-11T07:59:12Z.",
+    "Amended s04 now proposes AC-RCR-01..10 and a required persisted Data/Event Contract. Prior s04-s06 receipts are historical until fresh gates are reviewed and sealed."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation",
-  "current_step": "s03",
+  "current_step": "s04",
   "granted_write_paths": [
     "packages/workflow-bundle/scripts/work-item-protocol.js",
     "packages/workflow-bundle/scripts/workflow-gate-review.js",
@@ -114,17 +116,14 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "structural-contract-open-questions",
+  "handoff_target": "amended-s04-human-gates",
   "required_actions": [
-    "BA, Developer, and QC decide OQ-RCR-004 Option B or an explicit alternative for legacy adapter semantics.",
-    "Developer and QC decide OQ-RCR-005 Option A or an explicit alternative for structured entry identity.",
-    "Developer and QC decide OQ-RCR-006 Option B or an explicit alternative for transaction-backed event identity.",
-    "Keep T7, the GitHub Actions bump, amended s04, and all production edits closed until their corresponding gates pass."
+    "Assigned BA, Developer, and QC reviewers assess all three amended s04 controls.",
+    "After explicit human decisions, seal three independent receipts against the unchanged s04 host.",
+    "Keep s05/s06 amendment, T7 replacement, production edits, and release work closed until their corresponding fresh gates pass."
   ],
   "blockers": [
-    "OQ-RCR-004 is open: a plain legacy wrapper cannot preserve both opaque text and semantic gate-state clearing.",
-    "OQ-RCR-005 is open: generated state-entry identity and required fields are not approved.",
-    "OQ-RCR-006 is open: transaction_id applicability on protocol events is not approved."
+    "Fresh amended s04 human decisions and trusted receipts are pending."
   ],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
@@ -186,7 +185,9 @@
     "S07_F_RCR_B2_001_RESOLVED",
     "S07_T7_OPENED",
     "WORK_ITEM_BLOCKED",
-    "S03_STRUCTURAL_CONTRACT_QUESTIONS_OPENED"
+    "S03_STRUCTURAL_CONTRACT_QUESTIONS_OPENED",
+    "S03_STRUCTURAL_CONTRACT_QUESTIONS_APPROVED",
+    "S04_STRUCTURAL_SPEC_CONTRACT_DOR_DRAFTED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -221,7 +222,9 @@
     "T6a RED commit 0d1ac48c0adb43279f67503a318187295688a463 produced exactly one expected assertion failure for uat/situation and dod/dodgy substring collisions. GREEN source f9533c4de66fdb04e75008382b39b4fc413e3caa uses a Unicode letter/number boundary predicate; both focused suites, three syntax checks, and git diff --check pass. Refreshed B2 Spec Compliance is READY_FOR_REVIEW by QC; Code Quality is NOT_OPEN.",
     "Human QC approved refreshed B2 Spec Compliance at 2026-09-11T04:04:57Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. Independent Code Quality review recommends PASS with no new findings; Developer/QC approval is pending and F-RCR-B2-001 remains OPEN until that decision.",
     "Human Developer and QC approved refreshed B2 Code Quality PASS at 2026-09-11T04:21:48Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. F-RCR-B2-001 is RESOLVED, T7 is OPEN, and B3 plus all later gates remain independent.",
-    "Owner scope direction reopened discovery for a persisted structured-state contract. Impact analysis opened OQ-RCR-004..006 and suspended T7 before further source changes; no gate approval is inferred."
+    "Owner scope direction reopened discovery for a persisted structured-state contract. Impact analysis opened OQ-RCR-004..006 and suspended T7 before further source changes; no gate approval is inferred.",
+    "Human BA/Developer/QC approved OQ-RCR-004=B and human Developer/QC approved OQ-RCR-005=A plus OQ-RCR-006=B at 2026-09-11T07:59:12Z. No downstream gate is implied.",
+    "Amended s04 is drafted with typed state-entry and transaction-backed event contracts. Fresh Spec, Contract, DoR, Approach, and Task Plan receipts are required before production work resumes."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -459,6 +462,22 @@
       "from_status": "BLOCKED",
       "to_status": "BLOCKED",
       "note": "Impact analysis found unresolved contract choices: legacy strings cannot both remain opaque and participate in semantic clearing; transaction_id must be scoped to transaction-backed events. Return to s03."
+    },
+    {
+      "timestamp": "2026-09-11T07:59:12Z",
+      "action": "structural-open-questions-approved",
+      "actor": "ba/developer/qc",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "Approved OQ-RCR-004 Option B, OQ-RCR-005 Option A, and OQ-RCR-006 Option B with their assigned roles; no downstream gate is implied."
+    },
+    {
+      "timestamp": "2026-09-11T08:02:09.200Z",
+      "action": "block",
+      "actor": "agent",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "OQ-RCR-004=B, OQ-RCR-005=A, and OQ-RCR-006=B were approved with the assigned roles. Amended s04 is drafted; implementation remains closed pending fresh s04-s06 receipts."
     }
   ]
 }

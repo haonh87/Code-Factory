@@ -101,11 +101,11 @@ tags:
 # Step 3 - Open Questions
 
 > [!summary]
-> Input readiness for amended `s04 Acceptance + DoR` is **BLOCKED**. The earlier B/A/A decisions
-> remain historical and valid for cycle semantics, but the owner-approved structural scope changes
-> the persisted report and event contracts. `OQ-RCR-004..006` must now settle legacy import,
-> structured entry identity, and the applicability of `protocol_events[].transaction_id`. T7 is
-> suspended; no production or CI workflow edit is authorized by this amendment draft.
+> Input readiness for amended `s04 Acceptance + DoR` is **READY**. The earlier B/A/A cycle
+> decisions remain historical and valid, and BA/Developer/QC have now approved the structural
+> B/A/B bundle for legacy import, structured entry identity, and transaction-backed event identity.
+> T7 remains suspended while the amended Spec, Contract, and DoR are authored and independently
+> approved; no production or CI workflow edit is authorized by these question decisions.
 
 ## Step Contract
 ```yaml
@@ -147,12 +147,12 @@ done_when:
   - "Every ambiguity that changes s04 criteria has an ID, owner, options, and recommendation"
   - "Existing human decisions are reused instead of reopened"
   - "Requirement semantics are separated from s05 technical design"
-  - "Readiness is BLOCKED while decision-bearing questions remain unapproved"
-  - "The next human action names the exact bundle, options, roles, and sequence"
+  - "Readiness is BLOCKED while decision-bearing questions remain unapproved and READY after all assigned roles decide"
+  - "The next human action names the amended s04 artifacts and reviewer roles"
   - "Legacy import and transactional-event identity no longer require implementer inference"
 constraints:
   hard_constraints:
-    - "AI must not infer approval for OQ-RCR-001..003"
+    - "AI must not infer approval for any OQ or downstream gate"
     - "A successful new cycle and an unchanged retry must remain distinguishable"
     - "Historical receipts and protocol events must remain immutable"
     - "One human interaction must preserve independent gate authority and receipts"
@@ -166,13 +166,13 @@ constraints:
     - "Choose the s05 implementation pattern in s03"
     - "Use global audit-event presence as proof of current-cycle completion"
     - "Rewrite historical evidence to make the current state look consistent"
-    - "Open s04 as READY before the recommendation bundle is approved"
+    - "Treat s03 approval as approval of the amended Spec, Contract, DoR, Approach, or Task Plan"
     - "Treat the owner scope decision as Spec, Contract, DoR, Approach, or Task Plan approval"
   compliance_checks:
     - "OQ-RCR-001 distinguishes committed transition from invocation and global history"
     - "OQ-RCR-002 distinguishes per-cycle protocol evidence from coarse audit markers"
     - "OQ-RCR-003 distinguishes mutable current-state surfaces from immutable history"
-    - "Input Readiness lists OQ-RCR-001..003 as missing decisions"
+    - "Input Readiness records OQ-RCR-001..006 with their explicit human decisions"
     - "Parent and linked-defect handoffs retain the implementation and release holds"
 risks:
   - id: "R-S03-RC-001"
@@ -342,7 +342,7 @@ recommendation_bundle:
 ## Structural State Contract Amendment
 ```yaml
 amendment_id: "RCR-STRUCT-001"
-status: "WAITING_APPROVAL"
+status: "APPROVED"
 trigger:
   - "Independent root-cause review grouped the closeout defects under prose-derived machine state."
   - "The owner directed CR-008 to replace that mechanism before the 2026-09-18 timebox ends."
@@ -368,7 +368,7 @@ open_questions:
     question: "How can legacy string entries remain operational without returning prose parsing to the core state machine?"
     decision_type: "backward-compatibility contract"
     owners: ["ba", "developer", "qc"]
-    status: "WAITING_APPROVAL"
+    status: "APPROVED"
     options:
       - id: "A"
         statement: "Wrap every string as {kind: legacy, text} and never classify or clear it automatically."
@@ -382,11 +382,15 @@ open_questions:
     recommendation: "B"
     rationale: "It is the only option that preserves operational compatibility and removes prose inference from the state machine without requiring a fleet migration."
     acceptance_effect: "The Contract must distinguish adapter-only legacy import from core clearing, require unknown legacy preservation, and prove all 12 tracked reports load without mutation."
+    selected_option: "B"
+    reviewed_by: ["ba", "developer", "qc"]
+    reviewed_at: "2026-09-11T07:59:12Z"
+    decision_source: "Explicit user approval"
   - id: "OQ-RCR-005"
     question: "What identity contract must a newly generated blocker or required action carry?"
     decision_type: "persisted data contract"
     owners: ["developer", "qc"]
-    status: "WAITING_APPROVAL"
+    status: "APPROVED"
     options:
       - id: "A"
         statement: "Require id, kind, and text on every generated entry; require gate only for gate-scoped kinds; clear by exact id or an explicit kind+gate selector."
@@ -400,11 +404,15 @@ open_questions:
     recommendation: "A"
     rationale: "It makes machine semantics explicit while leaving display text unconstrained."
     acceptance_effect: "The Contract must specify required/conditional fields, uniqueness, stable selectors, and validation failures."
+    selected_option: "A"
+    reviewed_by: ["developer", "qc"]
+    reviewed_at: "2026-09-11T07:59:12Z"
+    decision_source: "Explicit user approval"
   - id: "OQ-RCR-006"
     question: "Which protocol events must carry transaction_id as a first-class field?"
     decision_type: "event contract"
     owners: ["developer", "qc"]
-    status: "WAITING_APPROVAL"
+    status: "APPROVED"
     options:
       - id: "A"
         statement: "Require transaction_id on every protocol event, including lifecycle events that are not produced by a transaction."
@@ -418,6 +426,10 @@ open_questions:
     recommendation: "B"
     rationale: "Required-when-transactional is a stronger and more truthful contract than either globally required or globally optional."
     acceptance_effect: "Approval bundle events must match the committed journal/result transaction_id exactly; tests and production code must never read note for identity."
+    selected_option: "B"
+    reviewed_by: ["developer", "qc"]
+    reviewed_at: "2026-09-11T07:59:12Z"
+    decision_source: "Explicit user approval"
 recommendation_bundle:
   sequence: ["OQ-RCR-004", "OQ-RCR-005", "OQ-RCR-006"]
   selections:
@@ -428,7 +440,9 @@ recommendation_bundle:
     OQ-RCR-004: ["ba", "developer", "qc"]
     OQ-RCR-005: ["developer", "qc"]
     OQ-RCR-006: ["developer", "qc"]
-  approval_status: "WAITING_APPROVAL"
+  approval_status: "APPROVED"
+  approved_at: "2026-09-11T07:59:12Z"
+  approval_source: "Explicit user approval with each assigned role"
   effect_if_approved: "Open amended s04 Spec + Contract + DoR authoring; no Approach, Task Plan, implementation, CI edit, or release authority is created."
 scope_boundaries:
   in:
@@ -450,7 +464,7 @@ timebox:
 ## Input Readiness
 ```yaml
 step: "s04 Acceptance + DoR"
-status: BLOCKED
+status: READY
 available_inputs:
   - "PO-approved Business Goal with KPI-RCR-001..006"
   - "Approved work-item receipt and complete s01 SA/TA driver set"
@@ -461,28 +475,28 @@ available_inputs:
   - "Human-approved OQ-RCR-001 Option B cycle-boundary semantics"
   - "Human-approved OQ-RCR-002 Option A audit-event contract"
   - "Human-approved OQ-RCR-003 Option A reconciliation boundary and canonical next action"
-missing_inputs:
-  - "BA/Developer/QC decision for OQ-RCR-004 legacy adapter semantics"
-  - "Developer/QC decision for OQ-RCR-005 structured entry identity"
-  - "Developer/QC decision for OQ-RCR-006 transaction-backed event identity"
+  - "Human-approved OQ-RCR-004 Option B bounded legacy compatibility adapter"
+  - "Human-approved OQ-RCR-005 Option A structured state-entry identity"
+  - "Human-approved OQ-RCR-006 Option B transaction-backed event identity"
+missing_inputs: []
 invalid_inputs:
   - "Historical parent DoD, Release, and Business Acceptance receipts are pre-finding evidence only."
   - "Global CLOSEOUT_BUNDLE_APPROVED presence alone cannot prove current-cycle completion."
 conflicts:
   - "CONFLICT-RCR-001..003 are resolved by the approved B/A/A decisions."
   - "CONFLICT-RCR-004 is contained by the parent BLOCKED delivery-lane projection and is non-blocking for child discovery."
-  - "A plain {kind: legacy, text} wrapper cannot both keep text opaque and let closeout remove legacy gate-pending state; OQ-RCR-004 must settle the adapter boundary."
+  - "The legacy opacity-versus-clearing conflict is resolved by OQ-RCR-004 Option B: only the bounded import adapter may recognize enumerated legacy grammar; core transitions never inspect text."
 assumptions:
-  - "No bulk report migration is required; the exact legacy read semantics remain undecided."
+  - "No bulk report migration is required; all tracked legacy reports are accepted through the approved boundary adapter."
   - "The public CLI, receipt-v1, authority, stack, runtime, and deployment contracts remain unchanged."
 risk_level: HIGH
-next_action: "Approve or reject the B/A/B recommendation bundle for OQ-RCR-004..006 with the assigned roles before amended s04 authoring."
+next_action: "Draft amended s04 Spec, Contract, and DoR from the approved B/A/B contract decisions; keep implementation closed."
 ```
 
 ## Audit
 ```yaml
 step: "s03 Open Questions"
-status: PARTIAL
+status: PASS
 checks:
   - criterion: "Every acceptance-changing ambiguity has an ID, owner, options, and recommendation"
     result: PASS
@@ -497,18 +511,15 @@ checks:
     result: PASS
     evidence: "The artifact remained BLOCKED until the user explicitly approved OQ-RCR-001=B, OQ-RCR-002=A, and OQ-RCR-003=A with their assigned roles."
   - criterion: "Every blocking question has a human decision"
-    result: FAIL
-    evidence: "OQ-RCR-001..003 remain approved, but the structural contract introduces unapproved OQ-RCR-004..006."
+    result: PASS
+    evidence: "OQ-RCR-001..003 retain their prior approvals; BA/Developer/QC approved OQ-RCR-004=B, and Developer/QC approved OQ-RCR-005=A plus OQ-RCR-006=B at 2026-09-11T07:59:12Z."
 constraint_violations: []
-unmitigated_high_risks:
-  - "Legacy gate-state compatibility is undefined unless OQ-RCR-004 is approved."
-  - "Event identity can be over-broad or remain optional unless OQ-RCR-006 is approved."
+unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed classification and recommendation in one evidence pass; human review remains outside the authoring timebox."
-gaps:
-  - "OQ-RCR-004..006 human decisions"
+gaps: []
 risk_level: HIGH
-next_action: "Remain at s03 and request the B/A/B recommendation bundle approval from BA, Developer, and QC."
+next_action: "Open amended s04 authoring; BA reviews Spec, Developer reviews Contract, and BA/QC review DoR after the host is finalized."
 ```
 
 ## Governance Context
@@ -527,14 +538,10 @@ required_reviews:
   - "Developer and QC review OQ-RCR-005"
   - "Developer and QC review OQ-RCR-006"
 prohibited_actions:
-  - "Infer the recommended options as approved"
-  - "Open s04 readiness before all three decisions are recorded"
+  - "Treat the approved options as Spec, Contract, or DoR approval"
   - "Choose implementation mechanics or edit production code"
   - "Use historical terminal receipts as current release authority"
-open_governance_questions:
-  - "OQ-RCR-004 legacy adapter semantics"
-  - "OQ-RCR-005 structured state-entry identity"
-  - "OQ-RCR-006 transaction-backed event identity"
+open_governance_questions: []
 ```
 
 ## Traceability
@@ -551,11 +558,11 @@ decision_mapping:
   - { question: "OQ-RCR-004", drivers: ["DRV-SA-RC-005", "DRV-TA-RC-006"], criteria: ["RCR-07", "RCR-08"], metrics: ["KPI-RCR-005"] }
   - { question: "OQ-RCR-005", drivers: ["DRV-SA-RC-005", "DRV-TA-RC-005"], criteria: ["RCR-07", "RCR-09"], metrics: ["KPI-RCR-001", "KPI-RCR-004"] }
   - { question: "OQ-RCR-006", drivers: ["DRV-SA-RC-006", "DRV-TA-RC-007"], criteria: ["RCR-10"], metrics: ["KPI-RCR-002", "KPI-RCR-003"] }
-next_step: "Remain at s03 until OQ-RCR-004..006 are approved; then draft amended s04 Spec, Contract, and DoR."
+next_step: "Draft amended s04 Spec, Contract, and DoR; wait for independent human gate approvals and trusted receipts before s05."
 ```
 
 ## Handoff
-- Readiness status: `BLOCKED`; the prior B/A/A bundle remains historical, while the structural amendment is undecided.
-- Proposed sequence: `OQ-RCR-004 Option B → OQ-RCR-005 Option A → OQ-RCR-006 Option B`.
-- Required roles: BA/Developer/QC for OQ-RCR-004; Developer/QC for OQ-RCR-005 and OQ-RCR-006.
-- Next gate after those decisions: draft amended s04, then BA reviews Spec, Developer reviews Contract, and BA/QC review DoR; implementation remains closed.
+- Readiness status: `READY`; OQ-RCR-004=B, OQ-RCR-005=A, and OQ-RCR-006=B are human-approved with the assigned roles.
+- Next artifact: amended s04 Spec + Contract + DoR.
+- Required gate sequence after authoring: BA reviews Spec, Developer reviews Contract, and BA/QC review DoR; each trusted receipt remains independent.
+- Implementation boundary: T7 and production edits remain suspended until refreshed s04-s06 receipts pass.

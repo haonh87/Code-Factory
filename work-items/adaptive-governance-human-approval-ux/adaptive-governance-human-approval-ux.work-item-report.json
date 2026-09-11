@@ -130,7 +130,8 @@
     "Linked defect T6a expected RED commit 0d1ac48c0adb43279f67503a318187295688a463 precedes bounded-alias GREEN source f9533c4de66fdb04e75008382b39b4fc413e3caa; both focused suites, syntax, and diff checks pass.",
     "Human QC approved refreshed child B2 Spec Compliance at 2026-09-11T04:04:57Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa.",
     "Human Developer and QC approved refreshed child B2 Code Quality PASS at 2026-09-11T04:21:48Z for the same source. F-RCR-B2-001 is RESOLVED and child T7 is OPEN; parent release remains blocked.",
-    "The prior source, candidate, Technical Verification, DoD, Release, Business Acceptance, and terminal receipts are historical pre-finding evidence only; release and branch finalization are blocked."
+    "The prior source, candidate, Technical Verification, DoD, Release, Business Acceptance, and terminal receipts are historical pre-finding evidence only; release and branch finalization are blocked.",
+    "BA/Developer/QC approved child OQ-RCR-004=B and Developer/QC approved OQ-RCR-005=A plus OQ-RCR-006=B at 2026-09-11T07:59:12Z. The child amended s04 is drafted; no downstream gate is implied."
   ],
   "work_item_slug": "adaptive-governance-human-approval-ux",
   "work_item_type": "CHANGE",
@@ -163,15 +164,15 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "linked-defect-structural-contract-open-questions",
+  "handoff_target": "linked-defect-amended-s04-human-gates",
   "required_actions": [
-    "Complete human decisions OQ-RCR-004..006 for the child structural state contract.",
-    "After those decisions, reapprove child Spec, Contract, DoR, Approach, and Task Plan before resuming implementation.",
+    "Complete the three amended child s04 human reviews and seal fresh independent receipts.",
+    "Refresh and approve the child s05/s06 design and execution plan before resuming implementation.",
     "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
   ],
   "blockers": [
     "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event.",
-    "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s03 after structural scope expansion; OQ-RCR-004..006 and fresh downstream gate receipts are pending."
+    "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending."
   ],
   "refs": [
     "changes/CR-008",
@@ -266,7 +267,9 @@
     "LINKED_REPEAT_CYCLE_DEFECT_B2_CODE_QUALITY_REFRESHED_APPROVED",
     "LINKED_REPEAT_CYCLE_DEFECT_F_RCR_B2_001_RESOLVED",
     "LINKED_REPEAT_CYCLE_DEFECT_T7_OPENED",
-    "LINKED_REPEAT_CYCLE_DEFECT_STRUCTURAL_CONTRACT_REOPENED"
+    "LINKED_REPEAT_CYCLE_DEFECT_STRUCTURAL_CONTRACT_REOPENED",
+    "LINKED_REPEAT_CYCLE_DEFECT_STRUCTURAL_QUESTIONS_APPROVED",
+    "LINKED_REPEAT_CYCLE_DEFECT_AMENDED_S04_DRAFTED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -306,7 +309,8 @@
     "Linked defect T6a RED commit 0d1ac48c0adb43279f67503a318187295688a463 produced exactly one expected alias-collision assertion failure before bounded-alias GREEN source f9533c4de66fdb04e75008382b39b4fc413e3caa. Both focused suites, three syntax checks, and git diff --check pass; refreshed child B2 Spec Compliance is READY_FOR_REVIEW by QC.",
     "Human QC approved refreshed child B2 Spec Compliance at 2026-09-11T04:04:57Z. Independent child Code Quality review recommends PASS with no new findings; Developer/QC approval remains pending, F-RCR-B2-001 stays OPEN, and parent release remains blocked.",
     "Human Developer and QC approved refreshed child B2 Code Quality PASS at 2026-09-11T04:21:48Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. F-RCR-B2-001 is RESOLVED and child T7 is OPEN; parent release, protocol close, and branch finalization remain blocked.",
-    "Owner scope direction replaced further prose-matching patches with a structured-state contract. Child T7 is suspended and the child is BLOCKED at s03 pending OQ-RCR-004..006 plus fresh Spec, Contract, DoR, Approach, and Task Plan gates."
+    "Owner scope direction replaced further prose-matching patches with a structured-state contract. Child T7 is suspended and the child is BLOCKED at s03 pending OQ-RCR-004..006 plus fresh Spec, Contract, DoR, Approach, and Task Plan gates.",
+    "Human reviewers approved the child structural B/A/B question bundle at 2026-09-11T07:59:12Z. Amended s04 now awaits fresh independent Spec, Contract, and DoR decisions and receipts; parent release remains blocked."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -680,6 +684,14 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "Owner structural scope decision returned the linked defect to s03. OQ-RCR-004..006 and fresh child gate receipts now block T7 and parent re-verification."
+    },
+    {
+      "timestamp": "2026-09-11T07:59:12Z",
+      "action": "linked-defect-structural-questions-approved-s04-drafted",
+      "actor": "ba/developer/qc",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Approved child OQ-RCR-004=B, OQ-RCR-005=A, and OQ-RCR-006=B with the assigned roles. Child amended s04 is drafted; fresh child gates and parent re-verification remain pending."
     }
   ]
 }
