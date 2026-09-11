@@ -1,4 +1,5 @@
 const fs = require("fs");
+const crypto = require("crypto");
 const os = require("os");
 const path = require("path");
 const { execFileSync } = require("child_process");
@@ -882,6 +883,99 @@ function testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry()
   }
 }
 
+function testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss() {
+  const slug = "proto-closeout-canonical-state-item";
+  const gates = ["dod", "release", "business_acceptance"];
+  const { projectRoot, workflowRoot, reportPath } = buildCloseoutProject(slug, gates);
+  const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-closeout-canonical-state-approvals-");
+  const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+  try {
+    const reportBefore = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    reportBefore.handoff_target = "closeout-review";
+    reportBefore.required_actions = [
+      `  WFC   GATE   APPROVE-CLOSEOUT-BUNDLE --work-item ${slug}  `,
+      "Await QC approval for Definition of Done.",
+      "Release approval remains pending with DevOps.",
+      "  Business   Acceptance approval remains pending.  ",
+      `wfc work-item close --work-item ${slug}`
+    ];
+    reportBefore.blockers = [
+      "Closeout bundle approval remains pending for DoD, Release and Business Acceptance.",
+      "Awaiting RELEASE approval by DevOps.",
+      "Security scan is pending for dependency audit."
+    ];
+    reportBefore.audit_events.push("HISTORICAL_AUDIT_CANARY");
+    reportBefore.protocol_events.push({
+      timestamp: "2026-07-16T23:59:00Z",
+      action: "historical-canary",
+      actor: "system",
+      from_status: "VERIFIED",
+      to_status: "VERIFIED",
+      note: "Immutable history canary."
+    });
+    writeFile(reportPath, `${JSON.stringify(reportBefore, null, 2)}\n`);
+
+    const auditPrefixDigest = crypto
+      .createHash("sha256")
+      .update(JSON.stringify(reportBefore.audit_events))
+      .digest("hex");
+    const eventPrefixDigest = crypto
+      .createHash("sha256")
+      .update(JSON.stringify(reportBefore.protocol_events))
+      .digest("hex");
+
+    const outcome = runCloseoutFixture({
+      slug,
+      projectRoot,
+      workflowRoot,
+      approvalRoot,
+      env,
+      extraArgs: ["--reviewed-at", "2026-07-17T05:00:00Z"]
+    });
+    assert(outcome.status === 0, `semantic closeout fixture succeeds (got: ${outcome.stderr.split("\n")[0]})`);
+    if (outcome.status !== 0) return;
+
+    const reportAfter = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    const expectedCloseAction = `wfc work-item close --work-item ${slug}`;
+    assert(
+      JSON.stringify(reportAfter.required_actions) === JSON.stringify([expectedCloseAction]),
+      `approved closeout projects exactly one canonical close action, got ${JSON.stringify(reportAfter.required_actions)}`
+    );
+    assert(
+      reportAfter.handoff_target === "protocol-close",
+      `approved closeout projects protocol-close handoff, got ${reportAfter.handoff_target}`
+    );
+    assert(
+      JSON.stringify(reportAfter.blockers) === JSON.stringify(["Security scan is pending for dependency audit."]),
+      `selected-gate blockers are removed while unrelated blockers remain, got ${JSON.stringify(reportAfter.blockers)}`
+    );
+
+    const auditPrefixAfter = reportAfter.audit_events.slice(0, reportBefore.audit_events.length);
+    const eventPrefixAfter = reportAfter.protocol_events.slice(0, reportBefore.protocol_events.length);
+    assert(
+      crypto.createHash("sha256").update(JSON.stringify(auditPrefixAfter)).digest("hex") === auditPrefixDigest,
+      "approved closeout preserves historical audit-event bytes and order"
+    );
+    assert(
+      crypto.createHash("sha256").update(JSON.stringify(eventPrefixAfter)).digest("hex") === eventPrefixDigest,
+      "approved closeout preserves historical protocol-event bytes and order"
+    );
+    assert(
+      reportAfter.protocol_events.length === reportBefore.protocol_events.length + 1,
+      "approved closeout appends exactly one current-cycle protocol event after history"
+    );
+
+    const s01After = fs.readFileSync(s01Path, "utf8");
+    assert(
+      s01After.includes(renderProtocolBlock(reportAfter)),
+      "s01 protocol block is rendered from the same normalized canonical report projection"
+    );
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
 function testLegacyMaintenanceCloseoutRestoresImplicitDod() {
   const slug = "proto-legacy-maintenance-closeout-item";
   const { projectRoot, workflowRoot, reportPath, hostPath } = buildLegacyCloseoutProject(slug, [], { omitApprovalGates: true });
@@ -1429,6 +1523,7 @@ testRejectReadyBundleKeepsIndependentDecisionEvidence();
 testMaintenanceCloseoutBundlesOnlyDod();
 testProductReleaseCloseoutKeepsConfiguredAuthority();
 testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry();
+testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss();
 testLegacyMaintenanceCloseoutRestoresImplicitDod();
 testLegacyProductReleaseCloseoutRestoresImplicitDod();
 testLegacyCloseoutKeepsOptionalTerminalGatesIndependent();
