@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -23,7 +23,7 @@ archive_status: not_ready
 sdd_mode: light
 spec_refs:
   card: "product-specs/cards/upgrade-guardrails-actions-node24.md"
-spec_status: draft
+spec_status: approved
 planning_track: quick
 execution_mode: agentic
 review_mode: self
@@ -36,10 +36,10 @@ role_signoffs:
   task_plan: ["developer"]
   dod: ["qc"]
 gate_reviews:
-  spec_reviewed_by: []
-  spec_reviewed_at: ""
-  dor_reviewed_by: []
-  dor_reviewed_at: ""
+  spec_reviewed_by: ["developer"]
+  spec_reviewed_at: "2026-09-11T08:32:50Z"
+  dor_reviewed_by: ["qc"]
+  dor_reviewed_at: "2026-09-11T08:32:50Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -70,8 +70,8 @@ tags:
 > [!summary]
 > The Spec Card and this host make the version-only maintenance delta measurable. Input readiness
 > is `READY`: scope, counts, compatibility invariants, rollback, and hosted evidence are explicit.
-> Developer Spec review and QC DoR review remain human-controlled gates and are not inferred from
-> the verified PO work-item receipt.
+> Developer approved Spec and QC approved DoR at `2026-09-11T08:32:50Z`. These decisions finalize
+> the s04 host for receipt sealing but do not imply Approach, Task Plan, implementation, or DoD.
 
 ## Step Contract
 ```yaml
@@ -156,12 +156,11 @@ checks:
   - { id: "CI-N24-GOV-01", check: "Scope and non-goals are explicit", result: PASS, evidence: "Spec Card separates the 18-token bump from parallelisation and publication." }
   - { id: "CI-N24-GOV-02", check: "Acceptance is measurable", result: PASS, evidence: "CI-N24-AC-01..05 cover counts, topology, full history, hosted status, and annotations." }
   - { id: "CI-N24-GOV-03", check: "Brownfield compatibility and rollback are explicit", result: PASS, evidence: "Baseline, unchanged inputs, pre-cutoff revert, and post-cutoff fix-forward are recorded." }
-  - { id: "CI-N24-GOV-04", check: "Human gates are not inferred", result: PASS, evidence: "PO receipt opens authoring only; Developer Spec and QC DoR reviews remain pending." }
+  - { id: "CI-N24-GOV-04", check: "Human gates are not inferred", result: PASS, evidence: "Developer Spec and QC DoR decisions are explicitly recorded; trusted receipts remain separate." }
 blocking_items:
-  - "Developer Spec decision and trusted ready-bundle receipt"
-  - "QC DoR decision and trusted ready-bundle receipt"
+  - "Trusted ready-bundle receipts for the two s04 gates"
 owner: "developer/qc"
-next_action: "Review this finalized host together with s06, then seal the four independent readiness receipts in one ready-bundle interaction."
+next_action: "Seal four independent readiness receipts in one ready-bundle interaction against unchanged s04 and s06 hosts."
 ```
 
 ## Definition of Ready
@@ -196,14 +195,14 @@ test_refs: ["CI-N24-V1", "CI-N24-V2", "CI-N24-V3", "CI-N24-V4"]
 
 ## Human Gate Proposal
 ```yaml
-spec: { status: "WAITING_APPROVAL", reviewer: "developer", host: "s04" }
-dor: { status: "WAITING_APPROVAL", reviewer: "qc", host: "s04" }
-approach: { status: "WAITING_APPROVAL", reviewer: "developer", host: "s06" }
-task_plan: { status: "WAITING_APPROVAL", reviewer: "developer", host: "s06" }
+spec: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "developer", reviewed_at: "2026-09-11T08:32:50Z", host: "s04" }
+dor: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "qc", reviewed_at: "2026-09-11T08:32:50Z", host: "s04" }
+approach: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "developer", reviewed_at: "2026-09-11T08:32:50Z", host: "s06" }
+task_plan: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "developer", reviewed_at: "2026-09-11T08:32:50Z", host: "s06" }
 bundle_note: "One interaction may seal four independent digest-bound receipts; it does not merge their authority."
 ```
 
 ## Handoff
-- s04 readiness: `READY` for Developer Spec and QC DoR review.
+- s04 human reviews: Developer Spec and QC DoR are approved; trusted receipts are pending.
 - Next paired artifact: s06 contains option analysis, approach, and execution plan.
 - Implementation remains closed until the ready bundle is approved, sealed, verified, and the work item is explicitly activated.

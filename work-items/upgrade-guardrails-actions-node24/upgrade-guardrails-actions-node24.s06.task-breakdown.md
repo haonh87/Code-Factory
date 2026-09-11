@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -23,7 +23,7 @@ archive_status: not_ready
 sdd_mode: light
 spec_refs:
   card: "product-specs/cards/upgrade-guardrails-actions-node24.md"
-spec_status: draft
+spec_status: approved
 planning_track: quick
 execution_mode: agentic
 review_mode: self
@@ -40,10 +40,10 @@ gate_reviews:
   spec_reviewed_at: ""
   dor_reviewed_by: []
   dor_reviewed_at: ""
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  approach_reviewed_by: ["developer"]
+  approach_reviewed_at: "2026-09-11T08:32:50Z"
+  task_plan_reviewed_by: ["developer"]
+  task_plan_reviewed_at: "2026-09-11T08:32:50Z"
   dod_reviewed_by: []
   dod_reviewed_at: ""
 content_skills:
@@ -71,8 +71,9 @@ tags:
 > [!summary]
 > Recommend a direct, version-only v4-to-v7 update after reviewing the intermediate major changes.
 > The plan records command-level fail-first evidence, one 18-token production edit, two-tier review,
-> and exact hosted verification. Developer Approach and Task Plan reviews remain pending; no line of
-> the workflow is authorized for editing yet.
+> and exact hosted verification. Developer approved Approach and Task Plan at
+> `2026-09-11T08:32:50Z`; trusted ready-bundle receipts and explicit s07 activation remain pending,
+> so no line of the workflow is authorized for editing yet.
 
 ## Main Artifact
 ```yaml
@@ -181,6 +182,10 @@ dev_lane:
   nfr_notes: ["0 deprecation annotations", "0 topology changes", "18/18 selectors updated"]
   baseline_context: "Brownfield workflow is already green and owns sequential validation plus a Node 18/22 release-candidate matrix."
 options:
+  - "Option A - direct token-only v7 bump"
+  - "Option B - staged v5, v6, then v7 migration"
+  - "Option C - combine v7 bump with workflow parallelisation"
+option_details:
   - name: "Option A - direct token-only v7 bump"
     summary: "Replace all 18 @v4 selectors with @v7 in one focused diff."
     pros: ["Smallest final delta", "One hosted candidate", "Easy review and revert", "Meets deadline directly"]
@@ -272,9 +277,8 @@ checks:
   - { id: "CI-N24-GOV-06", check: "Smallest correct solution", result: PASS, evidence: "One production file and 18 version tokens; no new abstraction or setting." }
   - { id: "CI-N24-GOV-07", check: "Execution plan names paths/order/verify", result: PASS, evidence: "T0..T4 each name paths, dependencies, outputs, checkpoint, and verification." }
   - { id: "CI-N24-GOV-08", check: "Delivery disciplines are explicit", result: PASS, evidence: "Existing worktree, command-level fail-first, two-tier review, no delegation, and hosted DoD evidence are recorded." }
-  - { id: "CI-N24-GOV-09", check: "Human readiness gates", result: PENDING, evidence: "Developer Approach/Task Plan reviews and their ready-bundle receipts are empty." }
+  - { id: "CI-N24-GOV-09", check: "Human readiness gates", result: PASS_PENDING_RECEIPTS, evidence: "Developer explicitly approved Approach and Task Plan; digest-bound receipts remain empty." }
 blocking_items:
-  - "Developer Approach and Task Plan decisions"
   - "Four independent trusted readiness receipts"
 owner: "developer/qc"
 next_action: "Review s04 and s06, record Developer/QC gate provenance, then seal one ready bundle."
@@ -306,8 +310,8 @@ test_refs: ["CI-N24-V1", "CI-N24-V2", "CI-N24-V3", "CI-N24-V4"]
 
 ## Human Gate Proposal
 ```yaml
-approach: { status: "WAITING_APPROVAL", reviewer: "developer", host: "s06" }
-task_plan: { status: "WAITING_APPROVAL", reviewer: "developer", host: "s06" }
+approach: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "developer", reviewed_at: "2026-09-11T08:32:50Z", host: "s06" }
+task_plan: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "developer", reviewed_at: "2026-09-11T08:32:50Z", host: "s06" }
 ready_bundle_reviewers:
   spec: "developer"
   dor: "qc"
@@ -316,6 +320,6 @@ ready_bundle_reviewers:
 ```
 
 ## Handoff
-- The compact s04+s06 ready bundle is complete for human review.
+- Human reviews for the compact s04+s06 bundle are complete; four trusted receipts remain pending.
 - Implementation remains closed until the four receipts are sealed and verified, then the work item is explicitly activated with `.github/workflows/workflow-guardrails.yml` as its write root.
 - `ci-guardrails-parallelisation` remains untouched and must rebase only after this branch merges.

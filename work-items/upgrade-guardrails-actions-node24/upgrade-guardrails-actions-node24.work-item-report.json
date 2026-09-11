@@ -62,7 +62,8 @@
     "Manual dedup confirmed no existing item owns the checkout/setup-node v7 bump; ci-guardrails-parallelisation owns only later topology restructuring.",
     "Human PO explicitly approved this work item at 2026-09-11T08:05:37Z; trusted receipt sealing remains separate.",
     "Trusted PO work-item receipt recorded at 2026-09-11T08:20:11.420Z verifies APPROVED for this project root.",
-    "Compact s04 and s06 author Spec, DoR, Approach, and Task Plan for one ready-bundle review; implementation remains closed."
+    "Compact s04 and s06 author Spec, DoR, Approach, and Task Plan for one ready-bundle review; implementation remains closed.",
+    "Human Developer approved Spec, Approach, and Task Plan; human QC approved DoR at 2026-09-11T08:32:50Z. Receipt sealing and activation remain separate."
   ],
   "work_item_slug": "upgrade-guardrails-actions-node24",
   "work_item_type": "CHANGE",
@@ -74,11 +75,10 @@
   "change_id": "",
   "handoff_target": "sdd-light-ready-bundle-review",
   "required_actions": [
-    "Developer reviews Spec, Approach, and Task Plan; QC reviews DoR.",
-    "After explicit human decisions and finalized hosts, run wfc gate approve-ready-bundle --work-item upgrade-guardrails-actions-node24."
+    "wfc gate approve-ready-bundle --work-item upgrade-guardrails-actions-node24"
   ],
   "blockers": [
-    "The four compact readiness gates are not yet human-approved or sealed."
+    "The four human-approved compact readiness gates are not yet sealed as trusted receipts."
   ],
   "refs": [
     "work-items/upgrade-guardrails-actions-node24"
@@ -94,7 +94,8 @@
     "WORK_ITEM_REVIEW_RECORDED_PENDING_RECEIPT",
     "WORK_ITEM_APPROVED",
     "TRUSTED_WORK_ITEM_RECEIPT_VERIFIED",
-    "SDD_LIGHT_S04_S06_DRAFTED"
+    "SDD_LIGHT_S04_S06_DRAFTED",
+    "SDD_LIGHT_READY_BUNDLE_HUMAN_APPROVED_PENDING_RECEIPTS"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -103,7 +104,8 @@
   "review_notes": [
     "PO approved the Node 24 guardrails action upgrade; later gates remain independent.",
     "Trusted PO work-item receipt recorded at 2026-09-11T08:20:11.420Z verifies APPROVED for this project root.",
-    "Compact s04 and s06 are drafted; no ready-bundle gate or implementation authority is inferred."
+    "Compact s04 and s06 are drafted; no ready-bundle gate or implementation authority is inferred.",
+    "Human Developer approved Spec, Approach, and Task Plan; human QC approved DoR at 2026-09-11T08:32:50Z. Receipt sealing and activation remain separate."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -157,6 +159,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Verified the trusted PO work-item receipt and drafted compact s04 plus s06 for independent Spec, DoR, Approach, and Task Plan review; implementation remains closed."
+    },
+    {
+      "timestamp": "2026-09-11T08:32:50Z",
+      "action": "sdd-light-ready-bundle-human-approved",
+      "actor": "developer/qc",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human Developer approved Spec, Approach, and Task Plan; human QC approved DoR. Four trusted receipts and explicit s07 activation remain separate."
     }
   ]
 }

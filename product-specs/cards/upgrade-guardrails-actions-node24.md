@@ -2,7 +2,7 @@
 artifact_id: "upgrade-guardrails-actions-node24.card"
 artifact_family: product-spec
 spec_type: SPEC_CARD
-spec_status: draft
+spec_status: approved
 spec_version: "0.1"
 owner: "developer"
 reviewers:
@@ -22,8 +22,9 @@ source_refs:
 > [!summary]
 > SDD Light specification for a version-only GitHub Actions maintenance delta. It protects the
 > existing guardrails and release-candidate topology from the Node 20 runner cutoff while keeping
-> `ci-guardrails-parallelisation` fully outside this work item. This draft is not an implementation
-> or gate approval.
+> `ci-guardrails-parallelisation` fully outside this work item. Developer approved Spec, Approach,
+> and Task Plan, while QC approved DoR at `2026-09-11T08:32:50Z`; trusted ready-bundle receipts
+> remain separate and implementation is not yet authorized.
 
 ## Business Goal
 ```yaml
@@ -102,10 +103,10 @@ open_decisions: []
 
 ## Spec Freeze
 ```yaml
-status: draft
+status: approved
 authority: "developer"
-decided_at: ""
-approved_by: ""
+decided_at: "2026-09-11T08:32:50Z"
+approved_by: "developer"
 freeze_requested_at: "2026-09-11"
 spec_version_requested: "0.1"
 ```

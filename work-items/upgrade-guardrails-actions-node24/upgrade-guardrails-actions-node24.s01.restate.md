@@ -23,7 +23,7 @@ archive_status: not_ready
 sdd_mode: light
 spec_refs:
   card: "product-specs/cards/upgrade-guardrails-actions-node24.md"
-spec_status: draft
+spec_status: approved
 planning_track: quick
 execution_mode: agentic
 review_mode: self
@@ -71,16 +71,17 @@ tags:
 > parallelisation scope. This is a brownfield, medium-risk CI maintenance change using SDD Light.
 > PO explicitly approved the work item and its trusted receipt verified at
 > `2026-09-11T08:20:11Z`. The compact Spec/DoR/Approach/Task Plan bundle is now authored for
-> Developer and QC review; implementation remains closed.
+> Developer and QC approved the four readiness decisions at `2026-09-11T08:32:50Z`; implementation
+> remains closed until their independent trusted receipts are sealed and s07 is explicitly activated.
 
 ## Router Status
 ```yaml
 current_step: "s06 Task Plan"
 workflow_status: WAITING_APPROVAL
 delivery_context: brownfield
-missing_gates: ["Spec", "DoR", "Approach", "Task Plan"]
+missing_gates: ["Trusted Spec receipt", "Trusted DoR receipt", "Trusted Approach receipt", "Trusted Task Plan receipt"]
 next_artifact: "Four independent ready-bundle receipts hosted by s04 and s06"
-next_human_action: "Developer reviews Spec/Approach/Task Plan; QC reviews DoR"
+next_human_action: "Seal the four independent receipts with approve-ready-bundle"
 ```
 
 ## Governance Context
@@ -274,17 +275,17 @@ protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-11T08:20:11.412Z"
 handoff_target: "sdd-light-ready-bundle-review"
-last_transition_action: "open-sdd-light-ready-bundle"
-last_transition_at: "2026-09-11T08:26:22Z"
+last_transition_action: "sdd-light-ready-bundle-human-approved"
+last_transition_at: "2026-09-11T08:32:50Z"
 required_actions:
-  - "Developer reviews Spec, Approach, and Task Plan; QC reviews DoR."
-  - "After explicit human decisions and finalized hosts, run wfc gate approve-ready-bundle --work-item upgrade-guardrails-actions-node24."
+  - "wfc gate approve-ready-bundle --work-item upgrade-guardrails-actions-node24"
 blockers:
-  - "The four compact readiness gates are not yet human-approved or sealed."
+  - "The four human-approved compact readiness gates are not yet sealed as trusted receipts."
 review_notes:
   - "PO approved the Node 24 guardrails action upgrade; later gates remain independent."
   - "Trusted PO work-item receipt recorded at 2026-09-11T08:20:11.420Z verifies APPROVED for this project root."
   - "Compact s04 and s06 are drafted; no ready-bundle gate or implementation authority is inferred."
+  - "Human Developer approved Spec, Approach, and Task Plan; human QC approved DoR at 2026-09-11T08:32:50Z. Receipt sealing and activation remain separate."
 refs:
   - "work-items/upgrade-guardrails-actions-node24"
 audit_events:
@@ -299,6 +300,7 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "TRUSTED_WORK_ITEM_RECEIPT_VERIFIED"
   - "SDD_LIGHT_S04_S06_DRAFTED"
+  - "SDD_LIGHT_READY_BUNDLE_HUMAN_APPROVED_PENDING_RECEIPTS"
 ```
 
 ## Audit
