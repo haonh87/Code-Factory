@@ -1164,19 +1164,22 @@ linked_work_item:
   implementation_path: ACTIVE
   activation_at: "2026-09-10T10:13:59.704Z"
   t0_baseline: "PASS at source edc9454d38126d51ad9e5a85afc475d2915ac9bd; both focused suites green"
-  implementation_status: "T1-T6 complete at source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca; B2 Code Quality FAIL approved, F-RCR-B2-001 OPEN, B2 Spec Compliance reopened, T6a approved"
+  implementation_status: "T6a fail-first complete at 0d1ac48; bounded-alias GREEN at f9533c4de66fdb04e75008382b39b4fc413e3caa; refreshed B2 Spec Compliance ready"
   b1_spec_compliance: "APPROVED_BY_QC at 2026-09-10T11:27:32Z"
   b1_code_quality: "APPROVED_BY_DEVELOPER_AND_QC at 2026-09-10T11:38:58Z"
   b2_spec_compliance: "REOPENED_BY_QC at 2026-09-11T03:46:13Z; prior PASS is historical for source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca"
   b2_code_quality: "APPROVED_FAIL_BY_DEVELOPER_AND_QC at 2026-09-11T03:46:13Z; HIGH F-RCR-B2-001 OPEN"
   t6a_task_plan: "APPROVED_BY_DEVELOPER at 2026-09-11T03:46:13Z; fail-first bounded-alias correction open"
+  t6a_red: "EXPECTED_FAIL at 0d1ac48c0adb43279f67503a318187295688a463; exactly one alias-collision assertion failed"
+  t6a_green: "PASS at f9533c4de66fdb04e75008382b39b4fc413e3caa; both focused suites, syntax, and diff checks green"
+  refreshed_b2_spec_compliance: "READY_FOR_REVIEW by QC"
 release_effect:
   parent_s07: REOPENED
   parent_s08: INVALIDATED_BY_FINDING
   terminal_receipts: HISTORICAL_PRE_FINDING
   branch_worktree: HOLD_OPEN
   release: BLOCKED
-next_human_action: "NONE until the refreshed child B2 Spec Compliance packet is ready for QC after T6a RED/GREEN."
+next_human_action: "Human QC reviews refreshed child B2 Spec Compliance for source f9533c4de66fdb04e75008382b39b4fc413e3caa."
 ```
 
 ## Workflow Pack Audit
@@ -1234,7 +1237,7 @@ next_step: "Commit the VERIFIED snapshot and run hosted Guardrails before Releas
 ## Handoff
 - Current state: `F-AG11-001` reopened the parent delivery lane; the prior B0-B4 and verification evidence is retained as historical pre-finding evidence.
 - Linked defect: T1-T6 are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`; B1 passed in order and QC approved B2 Spec Compliance at `2026-09-11T03:20:17Z`.
-- B2 Code Quality: Developer/QC approved FAIL and opened HIGH `F-RCR-B2-001`; QC reopened B2 Spec Compliance and Developer approved T6a. T7 remains blocked pending T6a GREEN and refreshed B2 approvals.
+- B2 correction: T6a expected RED `0d1ac48` precedes bounded-alias GREEN `f9533c4de66fdb04e75008382b39b4fc413e3caa`; refreshed Spec Compliance is ready for QC and Code Quality remains closed.
 - Required behavior: a repeated committed closeout must remove every satisfied pending action, set the canonical close-ready handoff, append one current-cycle event, and remain a NOOP on unchanged retry.
 - Release effect: the source `38bb0d1…`, run `34322150024`, candidate `2a5ae701…`, and terminal receipts are historical pre-finding evidence only.
 - Branch/worktree: `HOLD_OPEN`; no publish, tag, merge, install, cleanup, or branch finalization is authorized.

@@ -460,7 +460,33 @@ verify_path:
 approval_required:
   finding_and_reopen: "qc"
   task_plan_amendment: "developer"
-implementation_status: OPEN_FOR_RED
+implementation_status: COMPLETE
+red_commit: "0d1ac48c0adb43279f67503a318187295688a463"
+red_result: "EXPECTED_FAIL; exactly one assertion proved that selected aliases uat/dod deleted unrelated blockers containing situation/dodgy."
+green_commit: "f9533c4de66fdb04e75008382b39b4fc413e3caa"
+green_result: "PASS; both focused suites, three production syntax checks, and git diff --check are green."
+```
+
+## Refreshed B2 Review
+```yaml
+batch: B2
+source_sha: "f9533c4de66fdb04e75008382b39b4fc413e3caa"
+scope: ["T5", "T6", "T6a"]
+spec_compliance:
+  status: READY_FOR_REVIEW
+  reviewer_role: qc
+  prepared_at: "2026-09-11T03:59:37Z"
+  evidence:
+    - "AC-RCR-03: approved closeout still projects exactly one work-item close action, protocol-close handoff, selected-terminal blocker cleanup, and report/s01 parity."
+    - "AC-RCR-05: fail-first source 0d1ac48 proves uat inside situation and dod inside dodgy were deleted before the correction; GREEN source f9533c4 preserves both unrelated blockers while retaining all prior prose/case/whitespace cleanup fixtures."
+    - "EDGE-RCR-03/04: the existing alternate-form and divergent-state fixtures remain green through the real atomic closeout command."
+    - "TDD order is explicit: T6a RED commit 0d1ac48 precedes T6a GREEN commit f9533c4."
+    - "The correction is limited to one internal bounded-alias predicate in work-item-protocol.js: 10 additions and 1 replacement; no public CLI, schema, receipt, authority, selected-gate, dependency, or config contract changed."
+    - "work-item-protocol.test.js and workflow-gate-review.test.js PASS; work-item-protocol.js, workflow-gate-review.js, and workflow-approval-transaction.js pass node --check; git diff --check PASS."
+  findings: []
+code_quality:
+  status: NOT_OPEN
+  opens_after: "Human QC approves refreshed B2 Spec Compliance for source f9533c4de66fdb04e75008382b39b4fc413e3caa."
 ```
 
 ## Traceability
@@ -475,11 +501,12 @@ current:
   - "T5 RED at 6e16006; T6 GREEN at 9ac8d95d29b0edd9681cfb1320eb848170bd14ca"
   - "B2 Code Quality FAIL approved by Developer/QC; F-RCR-B2-001 OPEN"
   - "QC reopened B2 Spec Compliance and Developer approved T6a"
-next_step: "Execute T6a RED fixture, apply the smallest bounded-alias correction, then prepare refreshed B2 Spec Compliance"
+  - "T6a expected RED at 0d1ac48; bounded-alias GREEN at f9533c4de66fdb04e75008382b39b4fc413e3caa"
+next_step: "Human QC reviews refreshed B2 Spec Compliance; only a PASS opens refreshed B2 Code Quality"
 ```
 
 ## Handoff
-- Outputs actual: T0-T6 RED/GREEN evidence, completed B1, approved B2 Code Quality FAIL, open HIGH `F-RCR-B2-001`, reopened B2 Spec Compliance, and approved T6a.
-- Known limitations: `F-RCR-B2-001` blocks T7 until T6a is GREEN and both refreshed B2 reviews pass in order; T7-T8 remain pending.
-- Notes for testing: add the approved short-alias false-positive fixture first and record the expected RED before production correction.
+- Outputs actual: T0-T6 plus T6a RED/GREEN evidence, completed B1, historical B2 FAIL/reopen evidence, and refreshed B2 Spec Compliance packet for source `f9533c4de66fdb04e75008382b39b4fc413e3caa`.
+- Known limitations: `F-RCR-B2-001` remains OPEN and blocks T7 until refreshed B2 Spec Compliance and Code Quality pass in order; T7-T8 remain pending.
+- Notes for testing: the fail-first `uat`/`dod` substring fixture now passes without weakening any existing semantic projection or transaction assertion.
 - Notes for deployment: none in s07; corrected candidate and rollback binding are T8/s08 work.

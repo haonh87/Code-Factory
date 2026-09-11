@@ -505,12 +505,12 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "s07-t6a-red"
-last_transition_action: "s07-b2-finding-approved-reopen-t6a"
-last_transition_at: "2026-09-11T03:46:13Z"
+handoff_target: "s07-b2-spec-compliance-review"
+last_transition_action: "s07-t6a-green-b2-spec-ready"
+last_transition_at: "2026-09-11T03:59:37Z"
 required_actions:
-  - "Agent executes the approved T6a fail-first fixture before any production correction."
-  - "After T6a GREEN, prepare refreshed B2 Spec Compliance for QC; Code Quality remains closed until that review passes."
+  - "Human QC reviews refreshed B2 Spec Compliance for source f9533c4de66fdb04e75008382b39b4fc413e3caa."
+  - "Only after Spec Compliance PASS, Developer and QC review refreshed B2 Code Quality; T7 remains blocked until both pass in order."
 blockers: []
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
@@ -538,6 +538,7 @@ review_notes:
   - "B2 Code Quality recommends FAIL because uat matches inside situation and removes an unrelated blocker; proposed HIGH F-RCR-B2-001 and T6a await human disposition."
   - "Human Developer and QC approved the B2 Code Quality FAIL verdict and opened HIGH F-RCR-B2-001 at 2026-09-11T03:46:13Z. QC reopened B2 Spec Compliance, preserving its prior PASS as historical evidence for source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca."
   - "Human Developer approved Task Plan amendment T6a at 2026-09-11T03:46:13Z. The implementation path is open only for the fail-first boundary fixture and smallest bounded-alias correction; T7 remains blocked pending refreshed B2 reviews."
+  - "T6a RED commit 0d1ac48c0adb43279f67503a318187295688a463 produced exactly one expected assertion failure for uat/situation and dod/dodgy substring collisions. GREEN source f9533c4de66fdb04e75008382b39b4fc413e3caa uses a Unicode letter/number boundary predicate; both focused suites, three syntax checks, and git diff --check pass. Refreshed B2 Spec Compliance is READY_FOR_REVIEW by QC; Code Quality is NOT_OPEN."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -587,6 +588,9 @@ audit_events:
   - "S07_B2_SPEC_COMPLIANCE_REOPENED"
   - "S07_T6A_TASK_PLAN_APPROVED"
   - "S07_T6A_OPENED"
+  - "S07_T6A_EXPECTED_RED_RECORDED"
+  - "S07_T6A_GREEN_RECORDED"
+  - "S07_B2_SPEC_COMPLIANCE_REFRESHED_READY"
 ```
 
 ## Traceability
@@ -610,7 +614,8 @@ outputs:
   - "Human Developer/QC-approved B1 Code Quality"
   - "T5 expected RED and T6 canonical projection GREEN"
   - "Human-approved B2 Code Quality FAIL, open HIGH F-RCR-B2-001, reopened B2 Spec Compliance, and Developer-approved T6a"
-next_step: "Execute T6a RED fixture, apply the smallest bounded-alias correction, then prepare refreshed B2 Spec Compliance"
+  - "T6a expected RED 0d1ac48 and bounded-alias GREEN f9533c4de66fdb04e75008382b39b4fc413e3caa"
+next_step: "Human QC reviews refreshed B2 Spec Compliance; only a PASS opens refreshed B2 Code Quality"
 ```
 
 ## Handoff
@@ -620,5 +625,5 @@ next_step: "Execute T6a RED fixture, apply the smallest bounded-alias correction
 - Current step: s07 is `ACTIVE`; T1-T6 are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`.
 - Recommendation: transaction-delta closeout projector with one shared journal/event transaction ID and no new public schema.
 - Plan: T0..T8 with three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, then one exact-candidate child-to-parent verification path.
-- Boundary: B2 Code Quality FAIL is approved, `F-RCR-B2-001` is OPEN, B2 Spec Compliance is reopened, and T6a is approved; T7 stays blocked until T6a is GREEN and refreshed B2 reviews pass in order.
+- Boundary: T6a is GREEN at `f9533c4de66fdb04e75008382b39b4fc413e3caa`; `F-RCR-B2-001` remains OPEN and T7 stays blocked until refreshed B2 Spec Compliance and Code Quality pass in order.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.
