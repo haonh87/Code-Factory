@@ -430,6 +430,41 @@ function isApprovalActionForGate(action, gate) {
   return /\bwfc\s+gate\s+approve\b/.test(text) && new RegExp(`--gate\\s+${gate}(?:\\s|$)`).test(text);
 }
 
+const CLOSEOUT_GATE_TEXT_ALIASES = {
+  dod: ["dod", "definition of done"],
+  uat: ["uat", "user acceptance", "user acceptance testing"],
+  release: ["release"],
+  business_acceptance: ["business acceptance"]
+};
+
+function normalizeCloseoutStateText(value) {
+  return String(value || "")
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isSelectedCloseoutApprovalBlocker(entry, gateNames) {
+  const text = normalizeCloseoutStateText(entry);
+  const hasApprovalStateMeaning =
+    /\b(?:approv(?:e|ed|al)|await(?:ing)?|pending|outstanding|review|receipt|seal(?:ing)?)\b/.test(text);
+  if (!hasApprovalStateMeaning) {
+    return false;
+  }
+
+  if (text.includes("closeout bundle")) {
+    return true;
+  }
+
+  return gateNames.some((gate) =>
+    (CLOSEOUT_GATE_TEXT_ALIASES[gate] || [normalizeCloseoutStateText(gate)]).some((alias) =>
+      text.includes(alias)
+    )
+  );
+}
+
 function reconcileApprovalBundleReport(
   reportInput,
   { phase, gates, decision, reviewedAt, recordProtocolEvent = true, transactionId = "" } = {}
@@ -462,7 +497,15 @@ function reconcileApprovalBundleReport(
   const eventAlreadyRecorded = report.audit_events.includes(auditEvent);
   if (normalizedDecision === "APPROVED") {
     appendAuditEvent(report, auditEvent);
-    report.handoff_target = normalizedPhase === "readiness" ? "step-s07-activation" : report.handoff_target;
+    if (normalizedPhase === "readiness") {
+      report.handoff_target = "step-s07-activation";
+    } else {
+      report.blockers = report.blockers.filter(
+        (entry) => !isSelectedCloseoutApprovalBlocker(entry, gateNames)
+      );
+      report.required_actions = [`wfc work-item close --work-item ${report.work_item_slug}`];
+      report.handoff_target = "protocol-close";
+    }
   } else {
     const blocker = `${normalizedPhase === "readiness" ? "Readiness" : "Closeout"} bundle rejected for gates: ${gateList}.`;
     const action = `Resolve rejected ${normalizedPhase} gates before ${normalizedPhase === "readiness" ? "activation" : "completion"}.`;
