@@ -39,7 +39,7 @@ review_mode: independent
 verification_owner: "qc"
 approval_gates:
   spec: "required"
-  contract: "not_applicable"
+  contract: "required"
   dor: "required"
   approach: "required"
   foundation: "not_applicable"
@@ -50,7 +50,7 @@ approval_gates:
   dod: "required"
 role_signoffs:
   spec: ["ba"]
-  contract: []
+  contract: ["developer"]
   dor: ["ba", "qc"]
   approach: ["developer"]
   foundation: []
@@ -61,17 +61,17 @@ role_signoffs:
   dod: ["qc"]
 gate_reviews:
   spec_reviewed_by: ["ba"]
-  spec_reviewed_at: "2026-09-10T03:09:26Z"
-  contract_reviewed_by: []
-  contract_reviewed_at: ""
+  spec_reviewed_at: "2026-09-11T11:40:59Z"
+  contract_reviewed_by: ["developer"]
+  contract_reviewed_at: "2026-09-11T11:40:59Z"
   dor_reviewed_by: ["ba", "qc"]
-  dor_reviewed_at: "2026-09-10T03:09:26Z"
-  approach_reviewed_by: ["developer"]
-  approach_reviewed_at: "2026-09-10T08:12:02Z"
+  dor_reviewed_at: "2026-09-11T11:40:59Z"
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
-  task_plan_reviewed_by: ["developer"]
-  task_plan_reviewed_at: "2026-09-10T08:56:19Z"
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
   uat_reviewed_by: []
   uat_reviewed_at: ""
   release_reviewed_by: []
@@ -104,12 +104,11 @@ tags:
 > A repeated CR-008 closeout sealed three digest-valid receipts, but the report and protocol block
 > still instructed the operator to run the same approval and retained the pre-closeout handoff.
 > Historical `CLOSEOUT_BUNDLE_APPROVED` evidence also suppressed an event for the current cycle.
-> This linked BUG isolates `F-AG11-001`. Spec, DoR, Approach, and Task Plan now have digest-matched
-> trusted receipts. The work item is `ACTIVE` at s07; T1-T4 RED/GREEN are complete at source
-> `a65704aa0be26f99988d6d5c13f632fc76907ddd`. Human QC approved B1 Spec Compliance at
-> `2026-09-10T11:27:32Z`, then Human Developer and QC approved B1 Code Quality at
-> `2026-09-10T11:38:58Z`. T5 recorded the expected RED at `6e16006`; T6 is GREEN at source
-> `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`. B2 Spec Compliance now awaits human QC review.
+> This linked BUG isolates `F-AG11-001`. After B2 completed, root-cause review reopened discovery
+> for a persisted typed-state and first-class event-identity contract. Human BA approved the amended
+> Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at
+> `2026-09-11T11:40:59Z`. The work item remains `BLOCKED` at s04 until three fresh digest-bound
+> receipts verify; the earlier s04-s06 receipts are historical and do not reopen implementation.
 
 ## Step Contract
 ```yaml
@@ -680,15 +679,14 @@ decision_owner: "agent"
 protocol_owner: "ba"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "amended-s04-human-gates"
-last_transition_action: "clarify-structural-timebox"
-last_transition_at: "2026-09-11T11:34:36Z"
+handoff_target: "amended-s04-trusted-receipts"
+last_transition_action: "approve-amended-structural-s04-gates"
+last_transition_at: "2026-09-11T11:40:59Z"
 required_actions:
-  - "Assigned BA, Developer, and QC reviewers assess all three amended s04 controls."
-  - "After explicit human decisions, seal three independent receipts against the unchanged s04 host."
+  - "Seal three fresh digest-bound authoring receipts against the unchanged finalized s04 host using the assigned BA, Developer, and QC sealers."
   - "Keep s05/s06 amendment, T7 replacement, production edits, and release work closed until their corresponding fresh gates pass."
 blockers:
-  - "Fresh amended s04 human decisions and trusted receipts are pending."
+  - "Three fresh digest-bound s04 receipts are pending."
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -723,6 +721,7 @@ review_notes:
   - "Amended s04 is drafted with typed state-entry and transaction-backed event contracts. Fresh Spec, Contract, DoR, Approach, and Task Plan receipts are required before production work resumes."
   - "Independent review requested a live compatibility recount. The branch contains 13 tracked work-item reports after Node 24 materialization, so RCR-08 and AC-RCR-09 were refreshed from 12 to 13 before s04 human review."
   - "The existing owner stop rule is clarified as a 2026-09-18 stop-and-reassess checkpoint, not a delivery promise. AC-RCR-06 and AC-RCR-08 remain in scope unless unfinished at that checkpoint, when they are separable follow-ups."
+  - "Human BA approved the amended Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at 2026-09-11T11:40:59Z. Trusted receipt sealing remains separate, and prior s04-s06 receipts remain historical."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -787,6 +786,7 @@ audit_events:
   - "S04_STRUCTURAL_SPEC_CONTRACT_DOR_DRAFTED"
   - "S04_STRUCTURAL_REPORT_INVENTORY_REFRESHED"
   - "STRUCTURAL_TIMEBOX_CLARIFIED_AS_CHECKPOINT"
+  - "S04_STRUCTURAL_SPEC_CONTRACT_DOR_HUMAN_APPROVED_PENDING_RECEIPTS"
 ```
 
 ## Traceability

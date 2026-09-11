@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: final
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
   - "project-context/checklists/strict.md"
@@ -25,7 +25,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -59,12 +59,12 @@ role_signoffs:
   business_acceptance: ["po"]
   dod: ["qc"]
 gate_reviews:
-  spec_reviewed_by: []
-  spec_reviewed_at: ""
-  contract_reviewed_by: []
-  contract_reviewed_at: ""
-  dor_reviewed_by: []
-  dor_reviewed_at: ""
+  spec_reviewed_by: ["ba"]
+  spec_reviewed_at: "2026-09-11T11:40:59Z"
+  contract_reviewed_by: ["developer"]
+  contract_reviewed_at: "2026-09-11T11:40:59Z"
+  dor_reviewed_by: ["ba", "qc"]
+  dor_reviewed_at: "2026-09-11T11:40:59Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   foundation_reviewed_by: []
@@ -111,9 +111,10 @@ tags:
 > This amended Spec and Contract combine the approved B/A/A cycle decisions with the approved
 > B/A/B structural-state decisions. Machine state becomes typed and selector-driven; only a bounded
 > import adapter may translate enumerated legacy strings, and transaction-backed approval events
-> carry first-class `transaction_id`. Input readiness is `READY`, but the prior s04 receipts are
-> historical because the host contract changed. BA Spec, Developer Contract, and BA/QC DoR reviews
-> plus fresh trusted receipts are required before s05 may be amended.
+> carry first-class `transaction_id`. Input readiness is `READY`; human BA approved the amended
+> Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at
+> `2026-09-11T11:40:59Z`. The prior s04 receipts remain historical because the host contract changed.
+> Three fresh trusted receipts are still required before s05 may be amended.
 
 ## Step Contract
 ```yaml
@@ -226,7 +227,7 @@ timebox:
 
 ## Requirement Baseline
 ```yaml
-status: PROPOSED_AMENDMENT
+status: APPROVED_AMENDMENT_PENDING_RECEIPT
 approved_spec_refs:
   - "changes/CR-008/spec-delta/srs.delta.md"
 approved_spec_digests:
@@ -274,7 +275,7 @@ decision_notes:
 
 ## Contract Baseline
 ```yaml
-status: PROPOSED
+status: APPROVED_PENDING_RECEIPT
 api_contract_refs: []
 event_contract_refs:
   - "protocol_events[] internal persisted event contract in the work-item report"
@@ -576,24 +577,22 @@ checks:
   - id: "GOV-RCR-07"
     check: "Human gates are not inferred from readiness or audit evidence"
     status: PASS
-    evidence: "The changed persisted Data/Event Contract invalidates the old host approvals; fresh Spec, Contract, and DoR decisions remain explicitly pending."
+    evidence: "The changed persisted Data/Event Contract invalidates the old host approvals; the fresh human decisions are recorded and remain non-operative until three new digest-bound receipts are sealed."
   - id: "GOV-RCR-08"
     check: "No governance exception is required"
     status: PASS
     evidence: "The proposed criteria preserve all strict controls and open no larger boundary."
 blocking_items:
-  - "BA must review the amended Spec, then seal its trusted receipt against the finalized host."
-  - "Developer must review the new Data/Event Contract, then seal its trusted receipt against the same host."
-  - "BA and QC must review DoR; QC seals its trusted receipt after the joint decision."
+  - "Seal the BA Spec, Developer Contract, and QC DoR receipts against this unchanged finalized host."
 owner: "ba/developer/qc"
-next_action: "Review Spec, Contract, and DoR independently; then seal all three digest-bound receipts before amending s05."
+next_action: "Seal all three digest-bound receipts, verify digest_match=true, and only then amend s05."
 ```
 
 ## Definition of Ready
 ```yaml
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
 status: READY
-gate_status: WAITING_HUMAN_APPROVAL
+gate_status: HUMAN_APPROVED_PENDING_RECEIPTS
 checks:
   restated_request_clear: PASS
   business_goal_clear: PASS
@@ -612,31 +611,31 @@ residual_risks:
   - "s05 still must compare at least two internal cycle-identity/reconciliation options and select the smallest correct one."
   - "Failure-injection support for newly touched persistence boundaries must be confirmed before s06 closes."
   - "A corrected exact hosted candidate and parent terminal evidence cannot exist before s07/s08."
-next_action: "BA reviews Spec, Developer reviews Contract, and BA/QC review DoR; seal and verify three fresh receipts before s05."
+next_action: "Seal and verify the BA Spec, Developer Contract, and QC DoR receipts before s05."
 ```
 
 ## Human Gate Proposal
 ```yaml
 decisions:
   - gate: "spec"
-    status: "WAITING_APPROVAL"
+    status: "HUMAN_APPROVED_PENDING_RECEIPT"
     reviewer_roles: ["ba"]
     receipt_sealer: "ba"
-    decided_by: []
-    decided_at: ""
+    decided_by: ["ba"]
+    decided_at: "2026-09-11T11:40:59Z"
   - gate: "contract"
-    status: "WAITING_APPROVAL"
+    status: "HUMAN_APPROVED_PENDING_RECEIPT"
     reviewer_roles: ["developer"]
     receipt_sealer: "developer"
-    decided_by: []
-    decided_at: ""
+    decided_by: ["developer"]
+    decided_at: "2026-09-11T11:40:59Z"
     reason: "The amendment changes internal persisted blockers/required_actions and protocol-event contracts while preserving public CLI and receipt-v1 compatibility."
   - gate: "dor"
-    status: "WAITING_APPROVAL"
+    status: "HUMAN_APPROVED_PENDING_RECEIPT"
     reviewer_roles: ["ba", "qc"]
     receipt_sealer: "qc"
-    decided_by: []
-    decided_at: ""
+    decided_by: ["ba", "qc"]
+    decided_at: "2026-09-11T11:40:59Z"
 receipt_model_note: >-
   The receipt schema stores one reviewed_by identity. Joint BA/QC DoR provenance remains in
   gate_reviews; QC seals the cryptographic DoR receipt only after both human roles approve.
@@ -664,13 +663,13 @@ checks:
     evidence: "s03 is READY/PASS, OQ-RCR-001..006 are recorded, and blocking_gaps/open governance questions are empty."
   - criterion: "Reviewer and s05 entry conditions are exact"
     result: PASS
-    evidence: "BA, Developer, and BA/QC are named for the amended Spec, Contract, and DoR; their decisions and digest-matched receipts remain mandatory before s05."
+    evidence: "BA, Developer, and BA/QC approved the amended Spec, Contract, and DoR at 2026-09-11T11:40:59Z; three digest-matched receipts remain mandatory before s05."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed in one bounded acceptance and readiness authoring pass."
 gaps:
-  - "Human Spec, Contract, and DoR decisions plus trusted receipt sealing are pending."
+  - "Trusted Spec, Contract, and DoR receipt sealing is pending."
 risk_level: HIGH
 next_action: "Stop before s05 until BA Spec, Developer Contract, and QC-sealed DoR receipts verify against this unchanged artifact."
 ```
@@ -697,12 +696,12 @@ outputs:
   - "AC-RCR-01..10"
   - "EDGE-RCR-01..06"
   - "GOV-RCR-01..08"
-  - "Proposed amended Spec, Data/Event Contract, and DoR pending independent human reviews and trusted receipts"
+  - "Human-approved amended Spec, Data/Event Contract, and DoR pending independent trusted receipts"
 next_step: "Amend s05 Technical Approach only after trusted Spec, Contract, and DoR receipts verify"
 ```
 
 ## Handoff
 - Mandatory criteria: exact cycle classification, typed selector-driven state, bounded legacy import, first-class transaction identity, byte-stable retry, immutable history, atomicity, compatibility, and parent exact-candidate re-verification.
 - Edge cases: historical marker with or without older event, prose/format variants, divergent mutable surfaces, changed host/gate set, and concurrent/recovery retry.
-- Gate state: Foundation is `NOT_APPLICABLE`; amended Spec, Contract, and DoR are `WAITING_APPROVAL`.
+- Gate state: Foundation is `NOT_APPLICABLE`; amended Spec, Contract, and DoR are `HUMAN_APPROVED_PENDING_RECEIPT`.
 - Condition for step 5: BA seals Spec, Developer seals Contract, QC seals DoR after the joint BA/QC review, and all three receipts have `digest_match=true` against this unchanged s04 artifact.

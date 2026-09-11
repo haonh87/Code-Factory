@@ -100,7 +100,8 @@
     "BA, Developer, and QC approved OQ-RCR-004 Option B; Developer and QC approved OQ-RCR-005 Option A and OQ-RCR-006 Option B at 2026-09-11T07:59:12Z.",
     "Amended s04 now proposes AC-RCR-01..10 and a required persisted Data/Event Contract. Prior s04-s06 receipts are historical until fresh gates are reviewed and sealed.",
     "Independent review requested live counts. The branch contains 13 tracked work-item reports after Node 24 materialization, so the pre-contract compatibility threshold was refreshed from 12 to 13 before s04 human review.",
-    "The existing owner stop rule is clarified as a 2026-09-18 stop-and-reassess checkpoint, not a delivery promise. AC-RCR-06 and AC-RCR-08 stay in scope unless unfinished at the checkpoint, when they are separable follow-ups."
+    "The existing owner stop rule is clarified as a 2026-09-18 stop-and-reassess checkpoint, not a delivery promise. AC-RCR-06 and AC-RCR-08 stay in scope unless unfinished at the checkpoint, when they are separable follow-ups.",
+    "Human BA approved the amended Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at 2026-09-11T11:40:59Z; trusted receipt sealing remains separate."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -118,14 +119,13 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "amended-s04-human-gates",
+  "handoff_target": "amended-s04-trusted-receipts",
   "required_actions": [
-    "Assigned BA, Developer, and QC reviewers assess all three amended s04 controls.",
-    "After explicit human decisions, seal three independent receipts against the unchanged s04 host.",
+    "Seal three fresh digest-bound authoring receipts against the unchanged finalized s04 host using the assigned BA, Developer, and QC sealers.",
     "Keep s05/s06 amendment, T7 replacement, production edits, and release work closed until their corresponding fresh gates pass."
   ],
   "blockers": [
-    "Fresh amended s04 human decisions and trusted receipts are pending."
+    "Three fresh digest-bound s04 receipts are pending."
   ],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
@@ -191,7 +191,8 @@
     "S03_STRUCTURAL_CONTRACT_QUESTIONS_APPROVED",
     "S04_STRUCTURAL_SPEC_CONTRACT_DOR_DRAFTED",
     "S04_STRUCTURAL_REPORT_INVENTORY_REFRESHED",
-    "STRUCTURAL_TIMEBOX_CLARIFIED_AS_CHECKPOINT"
+    "STRUCTURAL_TIMEBOX_CLARIFIED_AS_CHECKPOINT",
+    "S04_STRUCTURAL_SPEC_CONTRACT_DOR_HUMAN_APPROVED_PENDING_RECEIPTS"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -230,7 +231,8 @@
     "Human BA/Developer/QC approved OQ-RCR-004=B and human Developer/QC approved OQ-RCR-005=A plus OQ-RCR-006=B at 2026-09-11T07:59:12Z. No downstream gate is implied.",
     "Amended s04 is drafted with typed state-entry and transaction-backed event contracts. Fresh Spec, Contract, DoR, Approach, and Task Plan receipts are required before production work resumes.",
     "Independent review confirmed the structural invariants and requested two live counts. The workflow has 9 checkout and 9 setup-node references; the tracked report inventory is 13, and the s04 compatibility threshold has been corrected accordingly.",
-    "The review's timebox proposal matches the owner's existing stop rule: 2026-09-18 is a stop-and-reassess checkpoint, not a delivery promise. No acceptance criterion is removed before that checkpoint."
+    "The review's timebox proposal matches the owner's existing stop rule: 2026-09-18 is a stop-and-reassess checkpoint, not a delivery promise. No acceptance criterion is removed before that checkpoint.",
+    "Human BA approved the amended Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at 2026-09-11T11:40:59Z. Prior s04-s06 receipts remain historical; three fresh trusted receipts are still required."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -500,6 +502,14 @@
       "from_status": "BLOCKED",
       "to_status": "BLOCKED",
       "note": "Clarified the existing owner stop rule: 2026-09-18 is a stop-and-reassess checkpoint, not a delivery promise. AC-RCR-06 and AC-RCR-08 remain in scope unless unfinished at that checkpoint."
+    },
+    {
+      "timestamp": "2026-09-11T11:40:59Z",
+      "action": "approve-amended-structural-s04-gates",
+      "actor": "ba/developer/qc",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "BA approved amended Spec, Developer approved amended Contract, and BA/QC approved amended DoR. Three new digest-bound receipts remain required before s05 amendment."
     }
   ]
 }
