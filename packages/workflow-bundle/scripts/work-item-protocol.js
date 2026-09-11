@@ -446,6 +446,15 @@ function normalizeCloseoutStateText(value) {
     .trim();
 }
 
+function hasBoundedCloseoutAlias(text, alias) {
+  const normalizedAlias = normalizeCloseoutStateText(alias);
+  if (!normalizedAlias) {
+    return false;
+  }
+  const escapedAlias = normalizedAlias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(?:^|[^\\p{L}\\p{N}])${escapedAlias}(?=$|[^\\p{L}\\p{N}])`, "u").test(text);
+}
+
 function isSelectedCloseoutApprovalBlocker(entry, gateNames) {
   const text = normalizeCloseoutStateText(entry);
   const hasApprovalStateMeaning =
@@ -460,7 +469,7 @@ function isSelectedCloseoutApprovalBlocker(entry, gateNames) {
 
   return gateNames.some((gate) =>
     (CLOSEOUT_GATE_TEXT_ALIASES[gate] || [normalizeCloseoutStateText(gate)]).some((alias) =>
-      text.includes(alias)
+      hasBoundedCloseoutAlias(text, alias)
     )
   );
 }
