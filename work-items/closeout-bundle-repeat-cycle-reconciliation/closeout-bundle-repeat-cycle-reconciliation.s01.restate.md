@@ -108,7 +108,8 @@ tags:
 > trusted receipts. The work item is `ACTIVE` at s07; T1-T4 RED/GREEN are complete at source
 > `a65704aa0be26f99988d6d5c13f632fc76907ddd`. Human QC approved B1 Spec Compliance at
 > `2026-09-10T11:27:32Z`, then Human Developer and QC approved B1 Code Quality at
-> `2026-09-10T11:38:58Z`. B1 is complete in order and T5 fail-first work is open.
+> `2026-09-10T11:38:58Z`. T5 recorded the expected RED at `6e16006`; T6 is GREEN at source
+> `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`. B2 Spec Compliance now awaits human QC review.
 
 ## Step Contract
 ```yaml
@@ -504,11 +505,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "s07-t5-red"
-last_transition_action: "activate"
-last_transition_at: "2026-09-10T10:13:59.704Z"
+handoff_target: "s07-b2-spec-compliance-review"
+last_transition_action: "s07-b2-spec-compliance-ready-for-review"
+last_transition_at: "2026-09-11T03:08:45Z"
 required_actions:
-  - "Execute T5 fail-first canonical-state and report/s01 parity fixtures before T6 production changes."
+  - "QC reviews B2 Spec Compliance for T5-T6 at source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca before B2 Code Quality may open."
 blockers: []
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
@@ -531,6 +532,7 @@ review_notes:
   - "Human QC approved B1 Spec Compliance at 2026-09-10T11:27:32Z with no findings. B1 Code Quality is now READY_FOR_REVIEW by Developer and QC; T5 remains blocked."
   - "B1 Code Quality recommendation PASS was prepared at 2026-09-10T11:32:30Z from focused test, syntax, diff, security, compatibility, performance, and minimal-delta evidence; human Developer/QC verdict remains pending."
   - "Human Developer and QC approved B1 Code Quality at 2026-09-10T11:38:58Z with no findings. T5 fail-first fixtures are now open; T6 production changes remain blocked until the expected RED is recorded."
+  - "T5 RED commit 6e16006 produced exactly three expected failures for semantic actions, protocol-close handoff, and selected-gate blockers. T6 GREEN source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca passes both focused suites, syntax, and diff checks; B2 Spec Compliance is READY_FOR_REVIEW by QC while Code Quality remains NOT_OPEN."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -569,6 +571,9 @@ audit_events:
   - "S07_B1_CODE_QUALITY_RECOMMENDATION_PREPARED"
   - "S07_B1_CODE_QUALITY_APPROVED"
   - "S07_T5_OPENED"
+  - "S07_T5_EXPECTED_RED_RECORDED"
+  - "S07_T6_GREEN_RECORDED"
+  - "S07_B2_SPEC_COMPLIANCE_READY_FOR_REVIEW"
 ```
 
 ## Traceability
@@ -590,15 +595,16 @@ outputs:
   - "T1-T4 fail-first/green transaction identity and cycle-event implementation"
   - "Human QC-approved B1 Spec Compliance"
   - "Human Developer/QC-approved B1 Code Quality"
-next_step: "Execute T5 fail-first canonical-state and report/s01 parity fixtures"
+  - "T5 expected RED and T6 canonical projection GREEN"
+next_step: "Human QC reviews B2 Spec Compliance"
 ```
 
 ## Handoff
 - Clear: closeout receipts succeeded, but current navigation and event evidence did not reconcile.
 - Distinct scope: repeat-cycle/idempotency, not the resolved missing-DoD selector defect.
 - Decision: PO approval is backed by a verified trusted receipt; the completed receipt action has been removed.
-- Current step: s07 is `ACTIVE`; T1-T4 are complete at source `a65704aa0be26f99988d6d5c13f632fc76907ddd`.
+- Current step: s07 is `ACTIVE`; T1-T6 are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`.
 - Recommendation: transaction-delta closeout projector with one shared journal/event transaction ID and no new public schema.
 - Plan: T0..T8 with three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, then one exact-candidate child-to-parent verification path.
-- Boundary: B1 passed in order; T5 tests may begin, but T6 production edits require the expected RED first.
+- Boundary: B2 Spec Compliance requires human QC review before B2 Code Quality or T7 may begin.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.

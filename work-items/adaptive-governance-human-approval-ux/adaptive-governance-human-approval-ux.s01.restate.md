@@ -104,7 +104,9 @@ tags:
 > is `ACTIVE` at s07, and T1-T4 RED/GREEN are complete at source
 > `a65704aa0be26f99988d6d5c13f632fc76907ddd`. Human QC approved B1 Spec Compliance,
 > then Human Developer and QC approved B1 Code Quality at `2026-09-10T11:38:58Z`.
-> Child T5 fail-first work is open; parent release remains blocked.
+> Child T5 recorded the expected RED at `6e16006`; T6 is GREEN at source
+> `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`. B2 Spec Compliance awaits human QC review;
+> parent release remains blocked.
 
 ## Step Contract
 ```yaml
@@ -717,16 +719,16 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "linked-defect-s07-t5-red"
-last_transition_action: "linked-defect-b1-spec-compliance-approved"
-last_transition_at: "2026-09-10T11:27:32Z"
+handoff_target: "linked-defect-b2-spec-compliance"
+last_transition_action: "linked-defect-b2-spec-compliance-ready"
+last_transition_at: "2026-09-11T03:08:45Z"
 required_actions:
-  - "Execute linked defect T5 fail-first canonical-state and report/s01 parity fixtures before T6 production changes."
-  - "Continue the linked defect through remaining TDD batches, B2/B3 two-tier review, hosted verification, and DoD."
+  - "QC reviews linked defect B2 Spec Compliance for T5-T6 at source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca."
+  - "After B2 passes in order, continue the linked defect through T7, B3 review, hosted verification, and DoD."
   - "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
 blockers:
   - "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."
-  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is ACTIVE at s07; T5-T8, B2/B3, and child verification remain pending."
+  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is ACTIVE at s07; B2/B3, T7-T8, and child verification remain pending."
 review_notes:
   - "Human review approved."
   - "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local verification matrix and hosted Guardrails run 34322150024."
@@ -754,6 +756,7 @@ review_notes:
   - "Human QC approved linked defect B1 Spec Compliance at 2026-09-10T11:27:32Z with no findings. B1 Code Quality is now READY_FOR_REVIEW by Developer and QC."
   - "Linked defect B1 Code Quality recommendation PASS was prepared at 2026-09-10T11:32:30Z; Developer/QC approval remains pending."
   - "Human Developer and QC approved linked defect B1 Code Quality at 2026-09-10T11:38:58Z with no findings. Child T5 fail-first work is open; parent release remains blocked."
+  - "Linked defect T5 recorded exactly three expected RED assertions at 6e16006 before T6 production code. T6 GREEN source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca passes both focused suites; B2 Spec Compliance is READY_FOR_REVIEW by QC and parent release remains blocked."
 refs:
   - "changes/CR-008"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -826,6 +829,9 @@ audit_events:
   - "LINKED_REPEAT_CYCLE_DEFECT_B1_CODE_QUALITY_OPENED"
   - "LINKED_REPEAT_CYCLE_DEFECT_B1_CODE_QUALITY_APPROVED"
   - "LINKED_REPEAT_CYCLE_DEFECT_T5_OPENED"
+  - "LINKED_REPEAT_CYCLE_DEFECT_T5_EXPECTED_RED_RECORDED"
+  - "LINKED_REPEAT_CYCLE_DEFECT_T6_GREEN_RECORDED"
+  - "LINKED_REPEAT_CYCLE_DEFECT_B2_SPEC_COMPLIANCE_READY"
 ```
 
 ## Current Governance Router Status
@@ -854,11 +860,11 @@ outputs:
   - "clarified adaptive-governance boundary"
   - "AG-01..AG-11 acceptance draft"
   - "SA and TA architecture-driver handoffs"
-next_step: "Execute linked defect T5 fail-first fixtures; parent release remains blocked"
+next_step: "Human QC reviews linked defect B2 Spec Compliance; parent release remains blocked"
 ```
 
 ## Handoff
 - Current state: `F-AG11-001` is OPEN and the parent delivery lane is reopened; the prior candidate and terminal receipts are historical pre-finding evidence only.
-- Linked defect: all authoring receipts match; T1-T4 RED/GREEN are complete at source `a65704aa0be26f99988d6d5c13f632fc76907ddd`.
-- Next human action: none until child B2 Spec Compliance; T5 fail-first work is open.
+- Linked defect: all authoring receipts match; T1-T6 RED/GREEN are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`.
+- Next human action: QC reviews child B2 Spec Compliance before Code Quality may open.
 - Branch/worktree decision: `HOLD_OPEN`; no merge, tag, publication, release, cleanup, global install, or branch finalization is authorized.

@@ -112,8 +112,11 @@ tags:
 > an older event, deterministic gate order, shared transaction attribution, and two byte-stable
 > retries all pass. Human QC approved B1 Spec Compliance at `2026-09-10T11:27:32Z`.
 > Human Developer and QC approved B1 Code Quality at `2026-09-10T11:38:58Z` with no findings.
-> B1 is complete in the required order, so T5 fail-first canonical-state and report/s01 parity
-> fixtures are now open; T6 production changes remain blocked until the expected RED is recorded.
+> B1 is complete in the required order. T5 then produced the expected three-assertion RED at
+> `6e16006`, and T6 is GREEN at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`:
+> selected-gate pending state is removed, the exact close action and `protocol-close` handoff are
+> projected, unrelated blockers and ordered history are preserved, and both focused suites pass.
+> B2 Spec Compliance is ready for human QC review; B2 Code Quality remains unopened.
 
 ## Step Contract
 ```yaml
@@ -161,8 +164,10 @@ tasks_completed:
   - "T2 GREEN: added optional canonical UUID validation/reuse and preserved generated-ID defaults"
   - "T3 RED: three assertions proved later-cycle event creation and first/later transaction attribution were absent"
   - "T4 GREEN: classified receipt/pre-event state delta before event construction and bound one event to the shared transaction ID"
+  - "T5 RED: three assertions proved semantic pending-state cleanup, canonical protocol-close handoff, and blocker filtering were absent"
+  - "T6 GREEN: projected exact close-ready current state while preserving unrelated blockers, history prefixes, and report/s01 parity"
 tasks_next:
-  - "T5: write fail-first canonical-state and report/s01 parity fixtures before any T6 production change"
+  - "B2: QC reviews Spec Compliance for T5-T6 before Developer/QC Code Quality review may open"
 bug_repro_evidence:
   - behavior: "A later successful closeout is suppressed when historical CLOSEOUT_BUNDLE_APPROVED evidence exists."
     observed: "reconcileApprovalBundleReport uses report.audit_events.includes(auditEvent) as a global eventAlreadyRecorded condition."
@@ -188,6 +193,9 @@ debug_experiments:
   - goal: "Separate a real current cycle from historical marker/event evidence."
     action: "Ran the real closeout CLI for marker-only history, a later re-verified host, then two unchanged retries."
     result: "Two committed cycles have distinct matching journal/event IDs; both retries are NOOP and report/s01 remain byte-identical."
+  - goal: "Bound semantic cleanup to selected terminal approval meaning."
+    action: "Mixed literal/case/whitespace bundle commands, individual gate prose, an unrelated blocker, divergent s01 input, and audit/event digest canaries in one real closeout fixture."
+    result: "Before T6 exactly three projection assertions failed; after T6 every assertion and both focused suites pass."
 tdd_evidence:
   - behavior: "A caller-supplied valid transaction_id is reused by the journal and COMMITTED result."
     failing_test: "workflow-gate-review.test.js failed: valid caller-supplied transaction_id was not reused."
@@ -201,6 +209,9 @@ tdd_evidence:
   - behavior: "A fully reconciled retry is not a cycle."
     failing_test: "The RED fixture retained existing NOOP behavior as a guard while event attribution failed."
     passing_test: "Two unchanged retries return NOOP with no transaction_id and byte-identical report/s01."
+  - behavior: "Approved closeout exposes one canonical current state without rewriting unrelated or historical evidence."
+    failing_test: "Commit 6e16006 records exactly three failures: stale semantic actions, stale closeout-review handoff, and selected-gate blockers survive."
+    passing_test: "At source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca the exact close command, protocol-close handoff, unrelated blocker canary, history digests, appended event, and s01 parity all pass."
 code_changes:
   - path: "packages/workflow-bundle/scripts/workflow-approval-transaction.js"
     change: "Validate an optional canonical UUID before transaction recovery/preflight writes and reuse it for the existing lock, journal, stage, and result identity."
@@ -209,19 +220,20 @@ code_changes:
   - path: "packages/workflow-bundle/scripts/workflow-gate-review.js"
     change: "Classify closeout from receipt or pre-event report/s01 operations, allocate one identity only for a real cycle, then construct the final event operation."
   - path: "packages/workflow-bundle/scripts/work-item-protocol.js"
-    change: "Allow explicit event sequencing and include shared transaction_id in the existing event note without changing event shape."
+    change: "Allow explicit event sequencing, include shared transaction_id in the existing event note, and canonicalize approved-closeout actions, handoff, and selected-gate blockers without changing event shape."
   - path: "packages/workflow-bundle/test/work-item-protocol.test.js"
-    change: "Add real marker-only, older-event, second-host, exact event-attribution, marker-dedup, and two-retry fixtures."
+    change: "Add real marker-only, older-event, second-host, exact event-attribution, marker-dedup, two-retry, semantic-variant, unrelated-blocker, history-digest, and report/s01-parity fixtures."
 doc_changes:
   - "Recorded the s07 activation and T0 baseline in child and parent workflow evidence."
 config_changes: []
 review_checkpoints:
   - "B1 Spec Compliance: APPROVED_BY_QC at 2026-09-10T11:27:32Z"
   - "B1 Code Quality: APPROVED_BY_DEVELOPER_AND_QC at 2026-09-10T11:38:58Z"
-  - "B2 after T6: QC Spec Compliance, then Developer/QC Code Quality"
+  - "B2 Spec Compliance: READY_FOR_QC_REVIEW at 2026-09-11T03:08:45Z"
+  - "B2 Code Quality: NOT_OPEN until B2 Spec Compliance passes"
   - "B3 after T7: QC Spec Compliance, then Developer/QC Code Quality"
 known_limitations:
-  - "T5-T7 canonical projection, atomicity, compatibility, and later review work remain."
+  - "B2 review plus T7 atomicity, compatibility, B3 review, and T8 exact-candidate work remain."
   - "F-AG11-001 keeps parent verification, release, protocol close, and branch finalization blocked."
 ```
 
@@ -233,6 +245,7 @@ tdd_test_refs:
   - "testOptionalTransactionIdentityIsValidatedAndReused"
   - "testAtomicCommitAndIndependentReceipts generated-ID compatibility assertion"
   - "testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry"
+  - "testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss"
 tdd_exception_reason: ""
 tdd_alternative_verify_path: []
 change_risk_profile: LARGE_OR_RISKY
@@ -246,8 +259,9 @@ review_refs:
   - "B1 Spec Compliance APPROVED_BY_QC at 2026-09-10T11:27:32Z for source a65704aa0be26f99988d6d5c13f632fc76907ddd."
   - "B1 Code Quality opened only after the Spec Compliance decision was recorded."
   - "B1 Code Quality APPROVED_BY_DEVELOPER_AND_QC at 2026-09-10T11:38:58Z for source a65704aa0be26f99988d6d5c13f632fc76907ddd."
-spec_compliance_status: PASS
-code_quality_status: PASS
+  - "B2 Spec Compliance recommendation prepared at 2026-09-11T03:08:45Z for source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca; QC verdict pending."
+spec_compliance_status: PARTIAL
+code_quality_status: PARTIAL
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
 independence_refs:
@@ -322,7 +336,7 @@ finding_policy:
 handoff_to_verify:
   - "All B1-B3 two-tier reviews pass in order."
   - "s07 Delivery Rule Evidence is complete and T7 full regression is green."
-notes_for_implementation_or_verify: "B1 passed in order; begin T5 with failing tests and do not edit T6 production code until the expected RED is recorded."
+notes_for_implementation_or_verify: "T5 RED and T6 GREEN are recorded; do not begin B2 Code Quality or T7 until human QC passes B2 Spec Compliance."
 ```
 
 ## B1 Review
@@ -368,6 +382,32 @@ code_quality:
     - "T5-T7 will separately review semantic projection plus the expanded failure/concurrency/full-compatibility matrix."
 ```
 
+## B2 Review
+```yaml
+batch: B2
+source_sha: "9ac8d95d29b0edd9681cfb1320eb848170bd14ca"
+scope: ["T5", "T6"]
+spec_compliance:
+  status: READY_FOR_REVIEW
+  recommended_verdict: PASS
+  reviewer_role: qc
+  prepared_at: "2026-09-11T03:08:45Z"
+  evidence:
+    - "AC-RCR-03: approved closeout leaves exactly one work-item close action, protocol-close handoff, zero selected-terminal pending blockers/actions, and a synchronized s01 projection."
+    - "AC-RCR-05: prose, case, whitespace, bundle-command, and individual-gate variants are covered; unrelated blocker and ordered audit/protocol-event digest canaries remain unchanged."
+    - "EDGE-RCR-03/04: alternate pending forms and initially divergent report/s01 state converge through one real atomic closeout command."
+    - "TDD order is explicit: T5 RED commit 6e16006 precedes T6 GREEN commit 9ac8d95."
+    - "The production delta is confined to the approved closeout projector in work-item-protocol.js; no public CLI, schema, receipt, authority, gate selection, dependency, or config changes."
+    - "work-item-protocol.test.js and workflow-gate-review.test.js PASS; three production syntax checks and git diff --check PASS."
+  findings: []
+code_quality:
+  status: NOT_OPEN
+  reviewer_roles: ["developer", "qc"]
+  blocked_by: "B2 Spec Compliance requires a human QC PASS first."
+  evidence: []
+  findings: []
+```
+
 ## Traceability
 ```yaml
 upstream:
@@ -377,11 +417,12 @@ upstream:
 current:
   - "T0-T4 complete at a65704aa0be26f99988d6d5c13f632fc76907ddd"
   - "B1 Spec Compliance PASS; B1 Code Quality PASS"
-next_step: "Execute T5 fail-first canonical-state and report/s01 parity fixtures"
+  - "T5 RED at 6e16006; T6 GREEN at 9ac8d95d29b0edd9681cfb1320eb848170bd14ca"
+next_step: "Human QC reviews B2 Spec Compliance"
 ```
 
 ## Handoff
-- Outputs actual: T0-T4 RED/GREEN evidence and completed B1 two-tier review.
-- Known limitations: T5-T8 remain pending.
-- Notes for testing: both focused suites pass; T5 must capture the expected semantic projection RED before T6 production edits.
+- Outputs actual: T0-T6 RED/GREEN evidence, completed B1, and a B2 Spec Compliance review packet.
+- Known limitations: B2 review and T7-T8 remain pending.
+- Notes for testing: both focused suites pass; B2 Code Quality stays unopened until QC passes B2 Spec Compliance.
 - Notes for deployment: none in s07; corrected candidate and rollback binding are T8/s08 work.

@@ -90,7 +90,8 @@
     "T0 froze pre-production source edc9454d38126d51ad9e5a85afc475d2915ac9bd and both focused baseline suites passed before any production edit.",
     "T1/T3 RED commits c6cc787 and bf7b451 precede T2/T4 GREEN commits d80ae43 and a65704a; B1 Spec Compliance is ready for QC review while Code Quality remains unopened.",
     "Human QC explicitly approved B1 Spec Compliance at 2026-09-10T11:27:32Z for source a65704aa0be26f99988d6d5c13f632fc76907ddd; B1 Code Quality opened afterward as the next independent review.",
-    "Human Developer and QC explicitly approved B1 Code Quality at 2026-09-10T11:38:58Z for the same source with no findings; B1 is complete in order and T5 fail-first work is open."
+    "Human Developer and QC explicitly approved B1 Code Quality at 2026-09-10T11:38:58Z for the same source with no findings; B1 is complete in order and T5 fail-first work is open.",
+    "T5 RED commit 6e16006 recorded exactly three AC-RCR-03/05 projection failures before T6 production code; T6 GREEN source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca passes both focused suites and opens B2 Spec Compliance review."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -108,9 +109,9 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "s07-t5-red",
+  "handoff_target": "s07-b2-spec-compliance-review",
   "required_actions": [
-    "Execute T5 fail-first canonical-state and report/s01 parity fixtures before T6 production changes."
+    "QC reviews B2 Spec Compliance for T5-T6 at source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca before B2 Code Quality may open."
   ],
   "blockers": [],
   "refs": [
@@ -151,7 +152,10 @@
     "S07_B1_CODE_QUALITY_OPENED",
     "S07_B1_CODE_QUALITY_RECOMMENDATION_PREPARED",
     "S07_B1_CODE_QUALITY_APPROVED",
-    "S07_T5_OPENED"
+    "S07_T5_OPENED",
+    "S07_T5_EXPECTED_RED_RECORDED",
+    "S07_T6_GREEN_RECORDED",
+    "S07_B2_SPEC_COMPLIANCE_READY_FOR_REVIEW"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -177,7 +181,8 @@
     "T1-T4 complete at source a65704aa0be26f99988d6d5c13f632fc76907ddd. B1 Spec Compliance is READY_FOR_REVIEW by QC; B1 Code Quality remains NOT_RUN until that approval.",
     "Human QC approved B1 Spec Compliance at 2026-09-10T11:27:32Z with no findings. B1 Code Quality is now READY_FOR_REVIEW by Developer and QC; T5 remains blocked.",
     "B1 Code Quality recommendation PASS was prepared at 2026-09-10T11:32:30Z from focused test, syntax, diff, security, compatibility, performance, and minimal-delta evidence; human Developer/QC verdict remains pending.",
-    "Human Developer and QC approved B1 Code Quality at 2026-09-10T11:38:58Z with no findings. T5 fail-first fixtures are now open; T6 production changes remain blocked until the expected RED is recorded."
+    "Human Developer and QC approved B1 Code Quality at 2026-09-10T11:38:58Z with no findings. T5 fail-first fixtures are now open; T6 production changes remain blocked until the expected RED is recorded.",
+    "T5 RED commit 6e16006 produced exactly three expected failures for semantic actions, protocol-close handoff, and selected-gate blockers. T6 GREEN source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca passes both focused suites, syntax, and diff checks; B2 Spec Compliance is READY_FOR_REVIEW by QC while Code Quality remains NOT_OPEN."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -343,6 +348,14 @@
       "from_status": "ACTIVE",
       "to_status": "ACTIVE",
       "note": "Human Developer and QC approved B1 Code Quality for T1-T4 at source a65704aa0be26f99988d6d5c13f632fc76907ddd with no findings. B1 is complete in the required order and T5 fail-first work opens; no later review or DoD is implied."
+    },
+    {
+      "timestamp": "2026-09-11T03:08:45Z",
+      "action": "s07-b2-spec-compliance-ready-for-review",
+      "actor": "agent",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "T5 expected RED at 6e16006 precedes T6 GREEN at source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca. Human QC Spec Compliance review is next; B2 Code Quality and T7 have not started."
     }
   ]
 }

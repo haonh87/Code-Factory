@@ -268,10 +268,10 @@ linked_work_item:
   task_plan_reviewed_at: "2026-09-10T08:56:19Z"
   activation_at: "2026-09-10T10:13:59.704Z"
   t0_baseline: "PASS at source edc9454d38126d51ad9e5a85afc475d2915ac9bd; both focused suites green"
-  implementation_status: "T1-T4 complete at source a65704aa0be26f99988d6d5c13f632fc76907ddd; T5 fail-first work open"
+  implementation_status: "T1-T6 complete at source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca; B2 Spec Compliance ready"
   b1_spec_compliance: "APPROVED_BY_QC at 2026-09-10T11:27:32Z"
   b1_code_quality: "APPROVED_BY_DEVELOPER_AND_QC at 2026-09-10T11:38:58Z"
-next_human_action: "NONE until child B2 Spec Compliance is ready for QC review."
+next_human_action: "QC reviews child B2 Spec Compliance before B2 Code Quality may open."
 ```
 
 ## Main Artifact
@@ -965,6 +965,6 @@ next_step: "Seal trusted DoD, Release, and Business Acceptance receipts against 
 ## Handoff
 - Overall status: `FAIL/BLOCKED`; `F-AG11-001` proves AG-11 fails on a real repeated closeout cycle.
 - Historical evidence: source `38bb0d1…`, run `34322150024`, hosted SHA-256 `2a5ae701…`, the former Technical Verification/DoD/Release/Business Acceptance decisions, and the receipts sealed at `2026-09-09T09:57:16.873Z` are retained only as pre-finding evidence.
-- Linked defect: T1-T4 are complete at source `a65704aa0be26f99988d6d5c13f632fc76907ddd`; B1 Spec Compliance and B1 Code Quality passed in order, so T5 fail-first work is open.
+- Linked defect: T1-T6 are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`; B1 passed in order and B2 Spec Compliance is ready for human QC review.
 - Required sequence: approve and seal s05, complete s06 and its human gate, implement with TDD, review in two tiers, verify one exact hosted candidate, then repeat parent terminal gates.
 - Branch/worktree: `HOLD_OPEN`; no merge, tag, release publication, install, cleanup, or branch finalization is authorized.
