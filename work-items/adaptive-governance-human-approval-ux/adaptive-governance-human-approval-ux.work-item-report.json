@@ -125,6 +125,8 @@
     "Human QC approved linked defect B1 Spec Compliance at 2026-09-10T11:27:32Z; Developer/QC B1 Code Quality is the next review and parent release remains blocked.",
     "Human Developer and QC approved linked defect B1 Code Quality at 2026-09-10T11:38:58Z with no findings; child T5 fail-first work is open while parent release remains blocked.",
     "Linked defect T5 RED commit 6e16006 precedes T6 GREEN source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca; child B2 Spec Compliance is ready for QC review and parent release remains blocked.",
+    "Human QC approved child B2 Spec Compliance at 2026-09-11T03:20:17Z; the independent Code Quality pass then reproduced unrelated blocker deletion from short-alias substring matching.",
+    "F-RCR-B2-001 is proposed HIGH; child T7 and parent re-verification remain blocked pending Developer/QC disposition, QC reopen confirmation, and Developer approval of T6a.",
     "The prior source, candidate, Technical Verification, DoD, Release, Business Acceptance, and terminal receipts are historical pre-finding evidence only; release and branch finalization are blocked."
   ],
   "work_item_slug": "adaptive-governance-human-approval-ux",
@@ -158,15 +160,15 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "linked-defect-b2-spec-compliance",
+  "handoff_target": "linked-defect-b2-code-quality",
   "required_actions": [
-    "QC reviews linked defect B2 Spec Compliance for T5-T6 at source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca.",
-    "After B2 passes in order, continue the linked defect through T7, B3 review, hosted verification, and DoD.",
+    "Developer and QC disposition the linked defect B2 Code Quality FAIL recommendation and proposed HIGH F-RCR-B2-001.",
+    "If accepted, QC reopens child B2 Spec Compliance and Developer approves T6a before correction; then repeat B2 in order.",
     "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
   ],
   "blockers": [
     "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event.",
-    "Linked defect closeout-bundle-repeat-cycle-reconciliation is ACTIVE at s07; B2/B3, T7-T8, and child verification remain pending."
+    "Linked defect closeout-bundle-repeat-cycle-reconciliation is ACTIVE at s07; proposed HIGH F-RCR-B2-001, B2/B3, T7-T8, and child verification remain pending."
   ],
   "refs": [
     "changes/CR-008",
@@ -243,7 +245,10 @@
     "LINKED_REPEAT_CYCLE_DEFECT_T5_OPENED",
     "LINKED_REPEAT_CYCLE_DEFECT_T5_EXPECTED_RED_RECORDED",
     "LINKED_REPEAT_CYCLE_DEFECT_T6_GREEN_RECORDED",
-    "LINKED_REPEAT_CYCLE_DEFECT_B2_SPEC_COMPLIANCE_READY"
+    "LINKED_REPEAT_CYCLE_DEFECT_B2_SPEC_COMPLIANCE_READY",
+    "LINKED_REPEAT_CYCLE_DEFECT_B2_SPEC_COMPLIANCE_APPROVED",
+    "LINKED_REPEAT_CYCLE_DEFECT_B2_CODE_QUALITY_OPENED",
+    "LINKED_REPEAT_CYCLE_DEFECT_B2_CODE_QUALITY_FINDING_PROPOSED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -276,7 +281,9 @@
     "Human QC approved linked defect B1 Spec Compliance at 2026-09-10T11:27:32Z with no findings. B1 Code Quality is now READY_FOR_REVIEW by Developer and QC.",
     "Linked defect B1 Code Quality recommendation PASS was prepared at 2026-09-10T11:32:30Z; Developer/QC approval remains pending.",
     "Human Developer and QC approved linked defect B1 Code Quality at 2026-09-10T11:38:58Z with no findings. Child T5 fail-first work is open; parent release remains blocked.",
-    "Linked defect T5 recorded exactly three expected RED assertions at 6e16006 before T6 production code. T6 GREEN source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca passes both focused suites; B2 Spec Compliance is READY_FOR_REVIEW by QC and parent release remains blocked."
+    "Linked defect T5 recorded exactly three expected RED assertions at 6e16006 before T6 production code. T6 GREEN source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca passes both focused suites; B2 Spec Compliance is READY_FOR_REVIEW by QC and parent release remains blocked.",
+    "Human QC approved linked defect B2 Spec Compliance at 2026-09-11T03:20:17Z; Code Quality opened next.",
+    "Linked defect B2 Code Quality recommends FAIL due the reproducible uat/situation false positive. Proposed HIGH F-RCR-B2-001 blocks T7 and parent re-verification pending human disposition."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -594,6 +601,22 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "Linked defect T5 expected RED at 6e16006 precedes T6 GREEN at source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca. QC B2 Spec Compliance review is next; parent release remains blocked."
+    },
+    {
+      "timestamp": "2026-09-11T03:20:17Z",
+      "action": "linked-defect-b2-spec-compliance-approved",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Human QC approved linked defect B2 Spec Compliance for source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca. B2 Code Quality opened; parent release remains blocked."
+    },
+    {
+      "timestamp": "2026-09-11T03:20:17Z",
+      "action": "linked-defect-b2-code-quality-finding-proposed",
+      "actor": "agent",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Independent B2 Code Quality analysis reproduced unrelated blocker deletion from the uat substring inside situation. Proposed HIGH F-RCR-B2-001 awaits human disposition; parent release remains blocked."
     }
   ]
 }

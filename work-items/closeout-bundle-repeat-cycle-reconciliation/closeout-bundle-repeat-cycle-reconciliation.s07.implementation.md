@@ -116,7 +116,11 @@ tags:
 > `6e16006`, and T6 is GREEN at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`:
 > selected-gate pending state is removed, the exact close action and `protocol-close` handoff are
 > projected, unrelated blockers and ordered history are preserved, and both focused suites pass.
-> B2 Spec Compliance is ready for human QC review; B2 Code Quality remains unopened.
+> Human QC approved B2 Spec Compliance at `2026-09-11T03:20:17Z`. The subsequently opened
+> independent Code Quality review found a bounded-semantics counterexample: selecting gate `uat`
+> removes an unrelated blocker containing the word `situation` because short gate aliases are
+> matched by substring. `F-RCR-B2-001` is therefore proposed as HIGH; T7 remains blocked pending
+> Developer/QC disposition, QC reopen confirmation, and approval of the proposed T6a correction.
 
 ## Step Contract
 ```yaml
@@ -167,7 +171,8 @@ tasks_completed:
   - "T5 RED: three assertions proved semantic pending-state cleanup, canonical protocol-close handoff, and blocker filtering were absent"
   - "T6 GREEN: projected exact close-ready current state while preserving unrelated blockers, history prefixes, and report/s01 parity"
 tasks_next:
-  - "B2: QC reviews Spec Compliance for T5-T6 before Developer/QC Code Quality review may open"
+  - "B2: Developer and QC review the Code Quality FAIL recommendation and disposition F-RCR-B2-001"
+  - "If accepted, QC reopens B2 Spec Compliance and Developer approves T6a before any correction"
 bug_repro_evidence:
   - behavior: "A later successful closeout is suppressed when historical CLOSEOUT_BUNDLE_APPROVED evidence exists."
     observed: "reconcileApprovalBundleReport uses report.audit_events.includes(auditEvent) as a global eventAlreadyRecorded condition."
@@ -196,6 +201,9 @@ debug_experiments:
   - goal: "Bound semantic cleanup to selected terminal approval meaning."
     action: "Mixed literal/case/whitespace bundle commands, individual gate prose, an unrelated blocker, divergent s01 input, and audit/event digest canaries in one real closeout fixture."
     result: "Before T6 exactly three projection assertions failed; after T6 every assertion and both focused suites pass."
+  - goal: "Challenge the selected-gate blocker predicate with an unrelated word containing a short gate alias."
+    action: "Called reconcileApprovalBundleReport in memory for gate uat with one unrelated blocker: 'Security approval remains pending because the situation is unresolved.'"
+    result: "FAIL: blocker count changed from 1 to 0 because 'situation' contains the substring 'uat'."
 tdd_evidence:
   - behavior: "A caller-supplied valid transaction_id is reused by the journal and COMMITTED result."
     failing_test: "workflow-gate-review.test.js failed: valid caller-supplied transaction_id was not reused."
@@ -229,11 +237,12 @@ config_changes: []
 review_checkpoints:
   - "B1 Spec Compliance: APPROVED_BY_QC at 2026-09-10T11:27:32Z"
   - "B1 Code Quality: APPROVED_BY_DEVELOPER_AND_QC at 2026-09-10T11:38:58Z"
-  - "B2 Spec Compliance: READY_FOR_QC_REVIEW at 2026-09-11T03:08:45Z"
-  - "B2 Code Quality: NOT_OPEN until B2 Spec Compliance passes"
+  - "B2 Spec Compliance: APPROVED_BY_QC at 2026-09-11T03:20:17Z"
+  - "B2 Code Quality: READY_FOR_DEVELOPER_QC_REVIEW with recommended FAIL due proposed HIGH F-RCR-B2-001"
   - "B3 after T7: QC Spec Compliance, then Developer/QC Code Quality"
 known_limitations:
-  - "B2 review plus T7 atomicity, compatibility, B3 review, and T8 exact-candidate work remain."
+  - "The current substring predicate can remove unrelated blocker prose containing short aliases such as uat or dod."
+  - "B2 finding disposition/correction plus T7 atomicity, compatibility, B3 review, and T8 exact-candidate work remain."
   - "F-AG11-001 keeps parent verification, release, protocol close, and branch finalization blocked."
 ```
 
@@ -259,8 +268,9 @@ review_refs:
   - "B1 Spec Compliance APPROVED_BY_QC at 2026-09-10T11:27:32Z for source a65704aa0be26f99988d6d5c13f632fc76907ddd."
   - "B1 Code Quality opened only after the Spec Compliance decision was recorded."
   - "B1 Code Quality APPROVED_BY_DEVELOPER_AND_QC at 2026-09-10T11:38:58Z for source a65704aa0be26f99988d6d5c13f632fc76907ddd."
-  - "B2 Spec Compliance recommendation prepared at 2026-09-11T03:08:45Z for source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca; QC verdict pending."
-spec_compliance_status: PARTIAL
+  - "B2 Spec Compliance APPROVED_BY_QC at 2026-09-11T03:20:17Z for source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca."
+  - "B2 Code Quality opened after Spec Compliance; F-RCR-B2-001 is proposed HIGH from a reproducible substring false positive."
+spec_compliance_status: PASS_WITH_REOPEN_RECOMMENDED
 code_quality_status: PARTIAL
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
@@ -336,7 +346,7 @@ finding_policy:
 handoff_to_verify:
   - "All B1-B3 two-tier reviews pass in order."
   - "s07 Delivery Rule Evidence is complete and T7 full regression is green."
-notes_for_implementation_or_verify: "T5 RED and T6 GREEN are recorded; do not begin B2 Code Quality or T7 until human QC passes B2 Spec Compliance."
+notes_for_implementation_or_verify: "B2 Spec Compliance was human-approved, then Code Quality found F-RCR-B2-001. Do not begin T7 or edit production code until the finding, reopen decision, and T6a amendment are human-dispositioned."
 ```
 
 ## B1 Review
@@ -388,9 +398,12 @@ batch: B2
 source_sha: "9ac8d95d29b0edd9681cfb1320eb848170bd14ca"
 scope: ["T5", "T6"]
 spec_compliance:
-  status: READY_FOR_REVIEW
-  recommended_verdict: PASS
+  status: APPROVED
+  verdict: PASS
   reviewer_role: qc
+  reviewed_by: qc
+  reviewed_at: "2026-09-11T03:20:17Z"
+  decision_source: "User explicitly approved B2 Spec Compliance with role QC."
   prepared_at: "2026-09-11T03:08:45Z"
   evidence:
     - "AC-RCR-03: approved closeout leaves exactly one work-item close action, protocol-close handoff, zero selected-terminal pending blockers/actions, and a synchronized s01 projection."
@@ -400,12 +413,46 @@ spec_compliance:
     - "The production delta is confined to the approved closeout projector in work-item-protocol.js; no public CLI, schema, receipt, authority, gate selection, dependency, or config changes."
     - "work-item-protocol.test.js and workflow-gate-review.test.js PASS; three production syntax checks and git diff --check PASS."
   findings: []
+  post_review_status: "REOPEN_RECOMMENDED because the subsequent Code Quality review disproved the unrelated-blocker preservation assumption."
 code_quality:
-  status: NOT_OPEN
+  status: READY_FOR_REVIEW
+  recommended_verdict: FAIL
   reviewer_roles: ["developer", "qc"]
-  blocked_by: "B2 Spec Compliance requires a human QC PASS first."
-  evidence: []
-  findings: []
+  opened_at: "2026-09-11T03:20:17Z"
+  blocked_by: "Human Developer/QC disposition of proposed HIGH finding F-RCR-B2-001."
+  evidence:
+    - "Pure in-memory reproduction: gate uat plus unrelated blocker 'Security approval remains pending because the situation is unresolved.' changes blocker count from 1 to 0."
+    - "Root cause: isSelectedCloseoutApprovalBlocker uses text.includes(alias); the short alias uat occurs inside situation, and dod can likewise occur inside unrelated words."
+    - "Both focused suites still pass, demonstrating a missing negative-boundary fixture rather than invalidating their recorded results."
+  findings:
+    - id: "F-RCR-B2-001"
+      severity: HIGH
+      status: PROPOSED
+      title: "Short gate aliases delete unrelated blockers by substring"
+      criterion: "AC-RCR-05"
+      impact: "A successful closeout can silently erase an unrelated pending blocker, weakening the canonical state and safety evidence."
+      recommendation: "Use token/phrase-bounded alias matching, add fail-first uat/dod false-positive fixtures, and rerun B2 reviews."
+```
+
+## Proposed T6a Amendment
+```yaml
+amendment_id: T6a
+status: PROPOSED
+trigger: "F-RCR-B2-001"
+scope:
+  - "Add a RED fixture proving unrelated words containing uat/dod substrings survive reconciliation."
+  - "Replace raw substring matching for short aliases with the smallest token/phrase-bounded predicate."
+  - "Rerun both focused suites, syntax checks, diff checks, then repeat B2 Spec Compliance and Code Quality in order."
+owned_paths:
+  - "packages/workflow-bundle/scripts/work-item-protocol.js"
+  - "packages/workflow-bundle/test/work-item-protocol.test.js"
+verify_path:
+  - "node packages/workflow-bundle/test/work-item-protocol.test.js"
+  - "node packages/workflow-bundle/test/workflow-gate-review.test.js"
+approval_required:
+  finding_and_reopen: "qc"
+  task_plan_amendment: "developer"
+implementation_status: BLOCKED_PENDING_HUMAN_APPROVAL
 ```
 
 ## Traceability
@@ -418,11 +465,12 @@ current:
   - "T0-T4 complete at a65704aa0be26f99988d6d5c13f632fc76907ddd"
   - "B1 Spec Compliance PASS; B1 Code Quality PASS"
   - "T5 RED at 6e16006; T6 GREEN at 9ac8d95d29b0edd9681cfb1320eb848170bd14ca"
-next_step: "Human QC reviews B2 Spec Compliance"
+  - "B2 Spec Compliance approved by QC; Code Quality opened with proposed HIGH F-RCR-B2-001"
+next_step: "Developer/QC disposition B2 Code Quality; QC confirms reopen and Developer approves T6a if the finding is accepted"
 ```
 
 ## Handoff
-- Outputs actual: T0-T6 RED/GREEN evidence, completed B1, and a B2 Spec Compliance review packet.
-- Known limitations: B2 review and T7-T8 remain pending.
-- Notes for testing: both focused suites pass; B2 Code Quality stays unopened until QC passes B2 Spec Compliance.
+- Outputs actual: T0-T6 RED/GREEN evidence, completed B1, QC-approved B2 Spec Compliance, and a reproducible B2 Code Quality finding proposal.
+- Known limitations: proposed HIGH `F-RCR-B2-001` blocks T7; B2 correction/re-review and T7-T8 remain pending.
+- Notes for testing: both focused suites pass but omit the short-alias false-positive case; proposed T6a adds it fail-first.
 - Notes for deployment: none in s07; corrected candidate and rollback binding are T8/s08 work.

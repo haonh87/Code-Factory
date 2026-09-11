@@ -719,16 +719,16 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "linked-defect-b2-spec-compliance"
-last_transition_action: "linked-defect-b2-spec-compliance-ready"
-last_transition_at: "2026-09-11T03:08:45Z"
+handoff_target: "linked-defect-b2-code-quality"
+last_transition_action: "linked-defect-b2-code-quality-finding-proposed"
+last_transition_at: "2026-09-11T03:20:17Z"
 required_actions:
-  - "QC reviews linked defect B2 Spec Compliance for T5-T6 at source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca."
-  - "After B2 passes in order, continue the linked defect through T7, B3 review, hosted verification, and DoD."
+  - "Developer and QC disposition the linked defect B2 Code Quality FAIL recommendation and proposed HIGH F-RCR-B2-001."
+  - "If accepted, QC reopens child B2 Spec Compliance and Developer approves T6a before correction; then repeat B2 in order."
   - "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
 blockers:
   - "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."
-  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is ACTIVE at s07; B2/B3, T7-T8, and child verification remain pending."
+  - "Linked defect closeout-bundle-repeat-cycle-reconciliation is ACTIVE at s07; proposed HIGH F-RCR-B2-001, B2/B3, T7-T8, and child verification remain pending."
 review_notes:
   - "Human review approved."
   - "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local verification matrix and hosted Guardrails run 34322150024."
@@ -757,6 +757,8 @@ review_notes:
   - "Linked defect B1 Code Quality recommendation PASS was prepared at 2026-09-10T11:32:30Z; Developer/QC approval remains pending."
   - "Human Developer and QC approved linked defect B1 Code Quality at 2026-09-10T11:38:58Z with no findings. Child T5 fail-first work is open; parent release remains blocked."
   - "Linked defect T5 recorded exactly three expected RED assertions at 6e16006 before T6 production code. T6 GREEN source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca passes both focused suites; B2 Spec Compliance is READY_FOR_REVIEW by QC and parent release remains blocked."
+  - "Human QC approved linked defect B2 Spec Compliance at 2026-09-11T03:20:17Z; Code Quality opened next."
+  - "Linked defect B2 Code Quality recommends FAIL due the reproducible uat/situation false positive. Proposed HIGH F-RCR-B2-001 blocks T7 and parent re-verification pending human disposition."
 refs:
   - "changes/CR-008"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -832,6 +834,9 @@ audit_events:
   - "LINKED_REPEAT_CYCLE_DEFECT_T5_EXPECTED_RED_RECORDED"
   - "LINKED_REPEAT_CYCLE_DEFECT_T6_GREEN_RECORDED"
   - "LINKED_REPEAT_CYCLE_DEFECT_B2_SPEC_COMPLIANCE_READY"
+  - "LINKED_REPEAT_CYCLE_DEFECT_B2_SPEC_COMPLIANCE_APPROVED"
+  - "LINKED_REPEAT_CYCLE_DEFECT_B2_CODE_QUALITY_OPENED"
+  - "LINKED_REPEAT_CYCLE_DEFECT_B2_CODE_QUALITY_FINDING_PROPOSED"
 ```
 
 ## Current Governance Router Status
@@ -860,11 +865,12 @@ outputs:
   - "clarified adaptive-governance boundary"
   - "AG-01..AG-11 acceptance draft"
   - "SA and TA architecture-driver handoffs"
-next_step: "Human QC reviews linked defect B2 Spec Compliance; parent release remains blocked"
+next_step: "Developer/QC disposition linked defect B2 Code Quality finding; parent release remains blocked"
 ```
 
 ## Handoff
 - Current state: `F-AG11-001` is OPEN and the parent delivery lane is reopened; the prior candidate and terminal receipts are historical pre-finding evidence only.
-- Linked defect: all authoring receipts match; T1-T6 RED/GREEN are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`.
-- Next human action: QC reviews child B2 Spec Compliance before Code Quality may open.
+- Linked defect: all authoring receipts match; T1-T6 RED/GREEN are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`, and QC approved B2 Spec Compliance at `2026-09-11T03:20:17Z`.
+- Code Quality: proposed HIGH `F-RCR-B2-001` reproduces deletion of an unrelated blocker because `uat` matches inside `situation`.
+- Next human action: Developer/QC disposition the finding; if accepted, QC reopens B2 and Developer approves T6a before correction.
 - Branch/worktree decision: `HOLD_OPEN`; no merge, tag, publication, release, cleanup, global install, or branch finalization is authorized.

@@ -505,11 +505,12 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "s07-b2-spec-compliance-review"
-last_transition_action: "s07-b2-spec-compliance-ready-for-review"
-last_transition_at: "2026-09-11T03:08:45Z"
+handoff_target: "s07-b2-code-quality-review"
+last_transition_action: "s07-b2-code-quality-finding-proposed"
+last_transition_at: "2026-09-11T03:20:17Z"
 required_actions:
-  - "QC reviews B2 Spec Compliance for T5-T6 at source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca before B2 Code Quality may open."
+  - "Developer and QC review the B2 Code Quality FAIL recommendation and disposition proposed HIGH finding F-RCR-B2-001."
+  - "If accepted, QC reopens B2 Spec Compliance and Developer approves proposed T6a before production correction."
 blockers: []
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
@@ -533,6 +534,8 @@ review_notes:
   - "B1 Code Quality recommendation PASS was prepared at 2026-09-10T11:32:30Z from focused test, syntax, diff, security, compatibility, performance, and minimal-delta evidence; human Developer/QC verdict remains pending."
   - "Human Developer and QC approved B1 Code Quality at 2026-09-10T11:38:58Z with no findings. T5 fail-first fixtures are now open; T6 production changes remain blocked until the expected RED is recorded."
   - "T5 RED commit 6e16006 produced exactly three expected failures for semantic actions, protocol-close handoff, and selected-gate blockers. T6 GREEN source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca passes both focused suites, syntax, and diff checks; B2 Spec Compliance is READY_FOR_REVIEW by QC while Code Quality remains NOT_OPEN."
+  - "Human QC approved B2 Spec Compliance at 2026-09-11T03:20:17Z; B2 Code Quality then opened."
+  - "B2 Code Quality recommends FAIL because uat matches inside situation and removes an unrelated blocker; proposed HIGH F-RCR-B2-001 and T6a await human disposition."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -574,6 +577,9 @@ audit_events:
   - "S07_T5_EXPECTED_RED_RECORDED"
   - "S07_T6_GREEN_RECORDED"
   - "S07_B2_SPEC_COMPLIANCE_READY_FOR_REVIEW"
+  - "S07_B2_SPEC_COMPLIANCE_APPROVED"
+  - "S07_B2_CODE_QUALITY_OPENED"
+  - "S07_B2_CODE_QUALITY_FINDING_PROPOSED"
 ```
 
 ## Traceability
@@ -596,7 +602,8 @@ outputs:
   - "Human QC-approved B1 Spec Compliance"
   - "Human Developer/QC-approved B1 Code Quality"
   - "T5 expected RED and T6 canonical projection GREEN"
-next_step: "Human QC reviews B2 Spec Compliance"
+  - "Human QC-approved B2 Spec Compliance and proposed HIGH Code Quality finding F-RCR-B2-001"
+next_step: "Developer/QC disposition the B2 Code Quality finding; QC reopens B2 and Developer approves T6a if accepted"
 ```
 
 ## Handoff
@@ -606,5 +613,5 @@ next_step: "Human QC reviews B2 Spec Compliance"
 - Current step: s07 is `ACTIVE`; T1-T6 are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`.
 - Recommendation: transaction-delta closeout projector with one shared journal/event transaction ID and no new public schema.
 - Plan: T0..T8 with three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, then one exact-candidate child-to-parent verification path.
-- Boundary: B2 Spec Compliance requires human QC review before B2 Code Quality or T7 may begin.
+- Boundary: B2 Spec Compliance is QC-approved, but proposed HIGH `F-RCR-B2-001` blocks T7 pending Developer/QC disposition, QC reopen confirmation, and Developer approval of T6a.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.

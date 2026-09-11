@@ -1164,16 +1164,18 @@ linked_work_item:
   implementation_path: ACTIVE
   activation_at: "2026-09-10T10:13:59.704Z"
   t0_baseline: "PASS at source edc9454d38126d51ad9e5a85afc475d2915ac9bd; both focused suites green"
-  implementation_status: "T1-T6 complete at source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca; B2 Spec Compliance ready"
+  implementation_status: "T1-T6 complete at source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca; B2 Spec Compliance approved, Code Quality finding proposed"
   b1_spec_compliance: "APPROVED_BY_QC at 2026-09-10T11:27:32Z"
   b1_code_quality: "APPROVED_BY_DEVELOPER_AND_QC at 2026-09-10T11:38:58Z"
+  b2_spec_compliance: "APPROVED_BY_QC at 2026-09-11T03:20:17Z"
+  b2_code_quality: "READY_FOR_REVIEW; recommended FAIL due proposed HIGH F-RCR-B2-001"
 release_effect:
   parent_s07: REOPENED
   parent_s08: INVALIDATED_BY_FINDING
   terminal_receipts: HISTORICAL_PRE_FINDING
   branch_worktree: HOLD_OPEN
   release: BLOCKED
-next_human_action: "QC reviews child B2 Spec Compliance before B2 Code Quality may open."
+next_human_action: "Developer/QC disposition F-RCR-B2-001; if accepted, QC reopens B2 and Developer approves T6a."
 ```
 
 ## Workflow Pack Audit
@@ -1230,7 +1232,8 @@ next_step: "Commit the VERIFIED snapshot and run hosted Guardrails before Releas
 
 ## Handoff
 - Current state: `F-AG11-001` reopened the parent delivery lane; the prior B0-B4 and verification evidence is retained as historical pre-finding evidence.
-- Linked defect: T1-T6 are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`; B1 passed in order and B2 Spec Compliance is ready for human QC review.
+- Linked defect: T1-T6 are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`; B1 passed in order and QC approved B2 Spec Compliance at `2026-09-11T03:20:17Z`.
+- B2 Code Quality: proposed HIGH `F-RCR-B2-001` reproduces unrelated blocker deletion through short-alias substring matching; T7 is blocked pending human disposition and proposed T6a approval.
 - Required behavior: a repeated committed closeout must remove every satisfied pending action, set the canonical close-ready handoff, append one current-cycle event, and remain a NOOP on unchanged retry.
 - Release effect: the source `38bb0d1…`, run `34322150024`, candidate `2a5ae701…`, and terminal receipts are historical pre-finding evidence only.
 - Branch/worktree: `HOLD_OPEN`; no publish, tag, merge, install, cleanup, or branch finalization is authorized.
