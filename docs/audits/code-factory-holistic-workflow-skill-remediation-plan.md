@@ -42,8 +42,9 @@ tags:
 > Vietnamese companion: [[code-factory-holistic-workflow-skill-remediation-plan.vi]]. The governed
 > workflow record is in `work-items/code-factory-holistic-audit-remediation/`. OQ-CF-001..005 now
 > have explicit Option C decisions from their assigned authorities, so the master work item has
-> produced a review-ready `s04 Acceptance + DoR` draft. These decisions approve policy inputs only:
-> they do not approve any child work item, Spec, DoR or implementation.
+> produced `s04 Acceptance + DoR`. BA approved its Spec and BA/QC approved its DoR on 2026-09-11;
+> two digest-bound receipts remain before s05. These decisions do not approve any child work item,
+> Approach, Task Plan or implementation.
 
 ## 1. Why This Plan Exists
 
@@ -268,6 +269,9 @@ This approval permits further authoring of the master work item. It does not app
 any child work item, CR-008's artifact amendment, Release, Business Acceptance, DoD, exception or
 waiver.
 
+BA approved the portfolio Spec and BA/QC approved DoR on 2026-09-11. The decisions remain
+non-operative for s05 until the BA Spec and QC DoR receipts match the finalized s04 host.
+
 ## Traceability
 
 ```yaml
@@ -280,5 +284,5 @@ findings:
   - "CF-001..020"
 sequence:
   - "P0.1 -> P0.2 -> P0.3 -> P0.4 -> P0.5 -> P1.1 -> P1.2 -> P1.3 -> P1.4 -> P2.1 -> P3.1 -> P3.2 -> P3.3 -> P4"
-next_artifact: "s04 Acceptance + DoR draft, followed by independent BA Spec and BA/QC DoR review"
+next_artifact: "Digest-bound BA Spec and QC DoR receipts, then s05 Technical Approach authoring"
 ```

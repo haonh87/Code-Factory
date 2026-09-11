@@ -167,8 +167,9 @@ Master plan này là portfolio-level authority cho bốn câu hỏi trên. Workf
 
 ## 7. Gate Hiện Tại
 
-Master work item đã hoàn tất `s03 Open Questions`; bản nháp `s04 Acceptance + DoR` hiện đã sẵn sàng
-cho human review. Năm quyết định policy đã được khóa độc lập:
+Master work item đã hoàn tất `s03 Open Questions`; BA đã phê duyệt Spec và BA/QC đã phê duyệt DoR
+của s04. Hai digest-bound receipt còn thiếu trước khi author s05. Năm quyết định policy đã được khóa
+độc lập:
 
 1. `OQ-CF-001` — PO/Maintainer đã chọn selective promotion cho tài liệu bị ignore.
 2. `OQ-CF-002` — Developer/QC đã chọn classify-first cho legacy work item; không mint receipt hồi tố.
@@ -177,9 +178,9 @@ cho human review. Năm quyết định policy đã được khóa độc lập:
 5. `OQ-CF-005` — PO/BA/DevOps đã chọn policy current/historical cho version và skill inventory,
    đồng thời disposition CF-020.
 
-`OQ-CF-004` đã chốt ngày 2026-09-08; bốn OQ còn lại chốt ngày 2026-09-11. Bước kế tiếp là BA review
-Spec và BA/QC review DoR của bản s04; sau đó mới seal hai trusted receipt. Chưa được nhảy sang
-Technical Approach, Task Plan hoặc implementation.
+`OQ-CF-004` đã chốt ngày 2026-09-08; bốn OQ còn lại chốt ngày 2026-09-11. Spec và DoR cũng đã có
+human decision; bước kế tiếp là BA seal Spec và QC seal DoR. Chưa được nhảy sang Technical Approach,
+Task Plan hoặc implementation trước khi cả hai receipt khớp s04.
 
 ## Traceability
 
@@ -190,6 +191,6 @@ source_request:
 requirements: ["AC-CF-001..011"]
 findings: ["CF-001..020"]
 sequence: ["P0.1 -> P0.2 -> P0.3 -> P0.4 -> P0.5 -> P1 -> P2 -> P3 -> P4"]
-current_step: "s04 Acceptance + DoR review"
-next_human_action: "BA reviews Spec; BA and QC review DoR, then seal two independent trusted receipts."
+current_step: "s04 Acceptance + DoR receipt sealing"
+next_human_action: "BA seals Spec and QC seals DoR against the unchanged finalized s04 host."
 ```

@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: final
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -55,12 +55,12 @@ role_signoffs:
   business_acceptance: []
   dod: ["qc"]
 gate_reviews:
-  spec_reviewed_by: []
-  spec_reviewed_at: ""
+  spec_reviewed_by: ["ba"]
+  spec_reviewed_at: "2026-09-11T13:51:45Z"
   contract_reviewed_by: []
   contract_reviewed_at: ""
-  dor_reviewed_by: []
-  dor_reviewed_at: ""
+  dor_reviewed_by: ["ba", "qc"]
+  dor_reviewed_at: "2026-09-11T13:51:45Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   foundation_reviewed_by: []
@@ -104,7 +104,8 @@ tags:
 > This draft converts the approved OQ-CF-001..005 policies and the canonical master plan into an
 > evidence-based portfolio Spec. It defines eleven measurable closure criteria while preserving the
 > boundary that every remediation child keeps independent human gates. Input readiness is `READY`;
-> human BA Spec and human BA/QC DoR decisions remain pending.
+> human BA approved Spec and human BA/QC approved DoR at `2026-09-11T13:51:45Z`. Two independent
+> digest-bound receipts remain required before s05.
 
 ## Step Contract
 ```yaml
@@ -144,12 +145,15 @@ owner: "ba/qc"
 
 ## Requirement Baseline
 ```yaml
-status: PROPOSED
-spec_refs:
-  - "../../docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md"
-  - "code-factory-holistic-audit-remediation.s01.restate.md"
-  - "code-factory-holistic-audit-remediation.s02.business-goal.md"
-  - "code-factory-holistic-audit-remediation.s03.open-questions.md"
+status: APPROVED_PENDING_RECEIPT
+approved_spec_refs:
+  - "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md"
+  - "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s03.open-questions.md"
+approved_spec_digests:
+  - ref: "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md"
+    sha256: "e9f84613af3ca7b5788ad3d948f56f5c8650fc7d9fbc463076950435d75b7a8d"
+  - ref: "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s03.open-questions.md"
+    sha256: "9402538f7049896970cb86f2d242d23e8b2967b59507a5d60d9c99d84c19b804"
 approved_policy_decisions:
   - { id: "OQ-CF-001", option: "C", reviewed_by: ["po", "maintainer"], reviewed_at: "2026-09-11T11:40:59Z" }
   - { id: "OQ-CF-002", option: "C", reviewed_by: ["developer", "qc"], reviewed_at: "2026-09-11T11:40:59Z" }
@@ -317,16 +321,16 @@ checks:
   - { id: "GOV-CF-05", check: "Verification direction covers semantic, security, runtime, hosted, release, language, and encoding concerns.", status: PASS, evidence: "AC-CF-005..011 plus final DoD checks." }
   - { id: "GOV-CF-06", check: "No governance exception is required for authoring.", status: PASS, evidence: "The portfolio uses existing child gates and does not bypass authority." }
 blocking_items:
-  - "Human BA Spec review and human BA/QC DoR review remain pending."
+  - "Seal the BA Spec and QC DoR receipts against this unchanged finalized host."
 owner: "ba/qc"
-next_action: "Review the proposed Spec first, then DoR; seal independent receipts only after explicit human decisions."
+next_action: "Seal and verify both digest-bound receipts before s05 authoring."
 ```
 
 ## Definition of Ready
 ```yaml
 work_item_slug: "code-factory-holistic-audit-remediation"
 status: READY
-gate_status: WAITING_HUMAN_APPROVAL
+gate_status: HUMAN_APPROVED_PENDING_RECEIPTS
 checks:
   restated_request_clear: PASS
   business_goal_clear: PASS
@@ -342,20 +346,24 @@ accepted_assumptions:
 residual_risks:
   - "Live inventory counts will change as child branches merge; final verification must recount rather than reuse this snapshot."
   - "Independent review findings R-02/R-04/R-06 were not materialized into repository evidence and cannot be invented; they require source recovery or fresh audit evidence."
-next_action: "BA reviews Spec; BA and QC review DoR. Do not start s05 before explicit decisions and trusted receipts."
+next_action: "BA seals Spec and QC seals DoR; do not start s05 before both receipts verify."
 ```
 
 ## Human Gate Proposal
 ```yaml
 decisions:
   - gate: "spec"
-    status: "WAITING_APPROVAL"
+    status: "HUMAN_APPROVED_PENDING_RECEIPT"
     reviewer_roles: ["ba"]
     receipt_sealer: "ba"
+    decided_by: ["ba"]
+    decided_at: "2026-09-11T13:51:45Z"
   - gate: "dor"
-    status: "WAITING_APPROVAL"
+    status: "HUMAN_APPROVED_PENDING_RECEIPT"
     reviewer_roles: ["ba", "qc"]
     receipt_sealer: "qc"
+    decided_by: ["ba", "qc"]
+    decided_at: "2026-09-11T13:51:45Z"
 receipt_model_note: "QC seals the DoR receipt only after both BA and QC approve; the receipt does not grant Approach or Task Plan."
 ```
 
@@ -372,7 +380,7 @@ constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 gaps:
-  - "Human Spec and DoR decisions plus trusted receipts are pending."
+  - "Trusted Spec and DoR receipt sealing is pending."
 risk_level: HIGH
 next_action: "Stop before s05 until Spec and DoR receipts match this finalized host."
 ```
@@ -399,5 +407,6 @@ next_step: "s05 Technical Approach only after human-approved, digest-matched Spe
   documentation truth.
 - Preserve: historical evidence, user-owned WIP, independent receipts, and separate source/runtime/
   hosted/release identities until reconciliation.
-- Condition for step 5: BA approves and seals Spec; BA/QC approve DoR and QC seals its receipt;
-  both receipts verify against the unchanged finalized s04 artifact.
+- Gate state: Spec and DoR are `HUMAN_APPROVED_PENDING_RECEIPT`; Approach and Task Plan remain unopened.
+- Condition for step 5: BA seals Spec and QC seals DoR; both receipts verify against the unchanged
+  finalized s04 artifact.

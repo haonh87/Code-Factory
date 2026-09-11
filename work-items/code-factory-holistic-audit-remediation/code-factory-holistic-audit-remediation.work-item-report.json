@@ -75,7 +75,8 @@
     "The 2026-09-07 s03 amendment expands the recommendation bundle to OQ-CF-001..005 so CF-019/CF-020 and AC-CF-010/011 have explicit decisions, owners and verify paths; all five Option C recommendations remain pending human decisions.",
     "The detailed P0 sequence now closes the linked defect before CF-019 disposition/remediation and parent CR-008 re-verification, removing the former P0.1-to-P1.0 dependency cycle without changing the approved P0-to-P4 phase order.",
     "PO/Maintainer approved OQ-CF-001=C, Developer/QC approved OQ-CF-002=C, BA/PO/QC approved OQ-CF-003=C, and PO/BA/DevOps approved OQ-CF-005=C at 2026-09-11T11:40:59Z. All master OQs are resolved without granting child implementation authority.",
-    "s04 now proposes AC-CF-001..011 and a READY DoR from refreshed clean-main evidence. Human Spec/DoR decisions and trusted receipts remain pending."
+    "s04 now proposes AC-CF-001..011 and a READY DoR from refreshed clean-main evidence. Human Spec/DoR decisions and trusted receipts remain pending.",
+    "Human BA approved Spec and human BA/QC approved DoR at 2026-09-11T13:51:45Z. Two independent trusted receipts remain pending; no later gate is implied."
   ],
   "work_item_slug": "code-factory-holistic-audit-remediation",
   "work_item_type": "RESEARCH",
@@ -85,11 +86,9 @@
   "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "s04-spec-dor-human-gates",
+  "handoff_target": "s04-trusted-receipts",
   "required_actions": [
-    "BA reviews the proposed portfolio Spec AC-CF-001..011.",
-    "BA and QC review the READY DoR recommendation.",
-    "After explicit human decisions, seal independent Spec and DoR receipts against the unchanged finalized host.",
+    "Seal two independent digest-bound s04 receipts against the unchanged finalized host using the assigned BA and QC sealers.",
     "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate spec --reviewed-by <role>",
     "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate dor --reviewed-by <role>",
     "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate approach --reviewed-by <role>",
@@ -97,7 +96,7 @@
     "wfc work-item activate --work-item code-factory-holistic-audit-remediation --step s07 --write-root <path>"
   ],
   "blockers": [
-    "Human Spec and DoR decisions plus trusted receipts are pending."
+    "Two digest-bound s04 receipts are pending."
   ],
   "refs": [
     "work-items/code-factory-holistic-audit-remediation",
@@ -122,7 +121,8 @@
     "OQ_CF_004_OPTION_C_APPROVED",
     "OQ_CF_001_002_003_005_OPTION_C_APPROVED",
     "S03_OPEN_QUESTIONS_COMPLETED",
-    "S04_PORTFOLIO_SPEC_DOR_DRAFTED"
+    "S04_PORTFOLIO_SPEC_DOR_DRAFTED",
+    "S04_PORTFOLIO_SPEC_DOR_HUMAN_APPROVED_PENDING_RECEIPTS"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -134,7 +134,8 @@
     "The detailed P0 dependency cycle was removed: child closeout precedes CF-019 disposition/remediation, which precedes parent CR-008 re-verification; the approved P0-to-P4 phase order is unchanged.",
     "PO, BA, Developer, and QC approved OQ-CF-004 Option C at 2026-09-08T02:23:55Z. CF-019 is accepted as a policy/runtime defect; this decision does not approve its child work item or implementation.",
     "PO/Maintainer approved OQ-CF-001=C, Developer/QC approved OQ-CF-002=C, BA/PO/QC approved OQ-CF-003=C, and PO/BA/DevOps approved OQ-CF-005=C at 2026-09-11T11:40:59Z. s04 authoring may proceed; Spec, DoR, child and implementation gates remain independent.",
-    "s04 now proposes AC-CF-001..011 and a READY DoR using refreshed clean-main evidence: 42 skills, 181 files/177 notes valid, 9 managed/16 legacy protocol inventory, and source v2.6.1 versus installed v2.3.2/40. Human Spec/DoR gates remain pending."
+    "s04 now proposes AC-CF-001..011 and a READY DoR using refreshed clean-main evidence: 42 skills, 181 files/177 notes valid, 9 managed/16 legacy protocol inventory, and source v2.6.1 versus installed v2.3.2/40. Human Spec/DoR gates remain pending.",
+    "Human BA approved Spec and human BA/QC approved DoR at 2026-09-11T13:51:45Z. Two independent trusted receipts remain pending; Approach, Task Plan, and implementation remain closed."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -228,6 +229,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Drafted AC-CF-001..011, brownfield baseline, governance checks, edge cases, and READY DoR. Human BA Spec and BA/QC DoR decisions remain independent and pending."
+    },
+    {
+      "timestamp": "2026-09-11T13:51:45Z",
+      "action": "approve-s04-portfolio-spec-dor",
+      "actor": "ba+qc",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "BA approved Spec and BA/QC approved DoR. Two digest-bound s04 receipts remain required before s05."
     }
   ]
 }
