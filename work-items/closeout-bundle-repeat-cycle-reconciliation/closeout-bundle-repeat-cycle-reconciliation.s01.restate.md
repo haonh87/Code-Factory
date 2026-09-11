@@ -505,12 +505,12 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "s07-b2-code-quality-review"
-last_transition_action: "s07-b2-spec-approved-code-quality-ready"
-last_transition_at: "2026-09-11T04:05:58Z"
+handoff_target: "s07-t7-matrix"
+last_transition_action: "s07-b2-code-quality-approved-open-t7"
+last_transition_at: "2026-09-11T04:21:48Z"
 required_actions:
-  - "Human Developer and QC review the refreshed B2 Code Quality PASS recommendation for source f9533c4de66fdb04e75008382b39b4fc413e3caa."
-  - "If approved, resolve F-RCR-B2-001 and open T7; no later review or DoD is implied."
+  - "Agent executes the approved T7 atomicity, concurrency, twenty-cycle determinism, compatibility, full-unit, and workflow-validator matrix."
+  - "After T7 evidence is complete, prepare B3 Spec Compliance for QC; B3 Code Quality remains closed until that PASS."
 blockers: []
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
@@ -540,6 +540,7 @@ review_notes:
   - "Human Developer approved Task Plan amendment T6a at 2026-09-11T03:46:13Z. The implementation path is open only for the fail-first boundary fixture and smallest bounded-alias correction; T7 remains blocked pending refreshed B2 reviews."
   - "T6a RED commit 0d1ac48c0adb43279f67503a318187295688a463 produced exactly one expected assertion failure for uat/situation and dod/dodgy substring collisions. GREEN source f9533c4de66fdb04e75008382b39b4fc413e3caa uses a Unicode letter/number boundary predicate; both focused suites, three syntax checks, and git diff --check pass. Refreshed B2 Spec Compliance is READY_FOR_REVIEW by QC; Code Quality is NOT_OPEN."
   - "Human QC approved refreshed B2 Spec Compliance at 2026-09-11T04:04:57Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. Independent Code Quality review recommends PASS with no new findings; Developer/QC approval is pending and F-RCR-B2-001 remains OPEN until that decision."
+  - "Human Developer and QC approved refreshed B2 Code Quality PASS at 2026-09-11T04:21:48Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. F-RCR-B2-001 is RESOLVED, T7 is OPEN, and B3 plus all later gates remain independent."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -595,6 +596,9 @@ audit_events:
   - "S07_B2_SPEC_COMPLIANCE_REFRESHED_APPROVED"
   - "S07_B2_CODE_QUALITY_REOPENED"
   - "S07_B2_CODE_QUALITY_RECOMMENDATION_PREPARED"
+  - "S07_B2_CODE_QUALITY_REFRESHED_APPROVED"
+  - "S07_F_RCR_B2_001_RESOLVED"
+  - "S07_T7_OPENED"
 ```
 
 ## Traceability
@@ -620,7 +624,8 @@ outputs:
   - "Human-approved B2 Code Quality FAIL, open HIGH F-RCR-B2-001, reopened B2 Spec Compliance, and Developer-approved T6a"
   - "T6a expected RED 0d1ac48 and bounded-alias GREEN f9533c4de66fdb04e75008382b39b4fc413e3caa"
   - "Human QC-approved refreshed B2 Spec Compliance and Code Quality PASS recommendation"
-next_step: "Human Developer and QC review refreshed B2 Code Quality; T7 opens only after PASS"
+  - "Human Developer/QC-approved refreshed B2 Code Quality; F-RCR-B2-001 resolved; T7 open"
+next_step: "Execute T7 matrix, then prepare B3 Spec Compliance for QC"
 ```
 
 ## Handoff
@@ -630,5 +635,5 @@ next_step: "Human Developer and QC review refreshed B2 Code Quality; T7 opens on
 - Current step: s07 is `ACTIVE`; T1-T6 are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`.
 - Recommendation: transaction-delta closeout projector with one shared journal/event transaction ID and no new public schema.
 - Plan: T0..T8 with three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, then one exact-candidate child-to-parent verification path.
-- Boundary: refreshed B2 Spec Compliance is QC-approved for `f9533c4de66fdb04e75008382b39b4fc413e3caa`; `F-RCR-B2-001` remains OPEN and T7 stays blocked pending Developer/QC Code Quality approval.
+- Boundary: refreshed B2 is complete for `f9533c4de66fdb04e75008382b39b4fc413e3caa`; `F-RCR-B2-001` is RESOLVED and T7 is open, while B3 and T8 remain gated.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.

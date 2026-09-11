@@ -489,9 +489,11 @@ spec_compliance:
     - "work-item-protocol.test.js and workflow-gate-review.test.js PASS; work-item-protocol.js, workflow-gate-review.js, and workflow-approval-transaction.js pass node --check; git diff --check PASS."
   findings: []
 code_quality:
-  status: READY_FOR_REVIEW
-  recommended_verdict: PASS
-  reviewer_roles: ["developer", "qc"]
+  status: APPROVED
+  verdict: PASS
+  reviewed_by: ["developer", "qc"]
+  reviewed_at: "2026-09-11T04:21:48Z"
+  decision_source: "User explicitly approved refreshed B2 Code Quality with roles Developer and QC for source f9533c4de66fdb04e75008382b39b4fc413e3caa."
   opened_at: "2026-09-11T04:04:57Z"
   prepared_at: "2026-09-11T04:05:58Z"
   evidence:
@@ -504,10 +506,28 @@ code_quality:
   findings: []
   finding_disposition:
     id: "F-RCR-B2-001"
-    current_status: OPEN
-    recommended_status: RESOLVED
+    status: RESOLVED
+    resolved_by: ["developer", "qc"]
+    resolved_at: "2026-09-11T04:21:48Z"
     resolution_source: "f9533c4de66fdb04e75008382b39b4fc413e3caa"
-    resolution_condition: "Human Developer and QC approve refreshed B2 Code Quality."
+    resolution_evidence: "Refreshed B2 Code Quality PASS approved after the QC-approved refreshed Spec Compliance."
+```
+
+## T7 Matrix
+```yaml
+task_id: T7
+status: OPEN
+opened_at: "2026-09-11T04:21:48Z"
+dependencies:
+  refreshed_b2_spec_compliance: PASS
+  refreshed_b2_code_quality: PASS
+  finding_F_RCR_B2_001: RESOLVED
+scope:
+  - "Enumerate every supported transaction failure point and confirm rollback/recovery leaves zero partial state."
+  - "Confirm concurrent retry permits at most one commit and later unchanged attempts are NOOP."
+  - "Execute twenty controlled repeat cycles with zero report/s01 mismatch or stale approval prompt."
+  - "Run first-cycle, legacy, adaptive, readiness, rejection, receipt-v1, reviewer, public CLI, full unit, and workflow validator regressions."
+next_review: "B3 Spec Compliance by QC before B3 Code Quality by Developer/QC."
 ```
 
 ## Traceability
@@ -524,11 +544,12 @@ current:
   - "QC reopened B2 Spec Compliance and Developer approved T6a"
   - "T6a expected RED at 0d1ac48; bounded-alias GREEN at f9533c4de66fdb04e75008382b39b4fc413e3caa"
   - "Refreshed B2 Spec Compliance approved by QC; Code Quality PASS recommendation ready"
-next_step: "Human Developer and QC review refreshed B2 Code Quality; T7 opens only after PASS"
+  - "Refreshed B2 Code Quality approved by Developer/QC; F-RCR-B2-001 RESOLVED; T7 OPEN"
+next_step: "Execute T7 atomicity, concurrency, twenty-cycle determinism, compatibility, full-unit, and workflow-validator matrix"
 ```
 
 ## Handoff
-- Outputs actual: T0-T6 plus T6a RED/GREEN evidence, completed B1, refreshed B2 Spec Compliance PASS, and a Code Quality PASS recommendation for source `f9533c4de66fdb04e75008382b39b4fc413e3caa`.
-- Known limitations: `F-RCR-B2-001` remains OPEN and T7 remains blocked until Developer/QC approve refreshed B2 Code Quality; T7-T8 remain pending.
+- Outputs actual: T0-T6 plus T6a RED/GREEN evidence, completed B1, refreshed B2 Spec Compliance and Code Quality PASS, resolved `F-RCR-B2-001`, and opened T7.
+- Known limitations: T7 matrix, B3 reviews, T8 exact candidate, and child/parent verification remain pending.
 - Notes for testing: the fail-first `uat`/`dod` substring fixture now passes without weakening any existing semantic projection or transaction assertion.
 - Notes for deployment: none in s07; corrected candidate and rollback binding are T8/s08 work.

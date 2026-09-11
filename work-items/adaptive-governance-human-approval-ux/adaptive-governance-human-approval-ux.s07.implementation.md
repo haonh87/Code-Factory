@@ -1173,14 +1173,16 @@ linked_work_item:
   t6a_red: "EXPECTED_FAIL at 0d1ac48c0adb43279f67503a318187295688a463; exactly one alias-collision assertion failed"
   t6a_green: "PASS at f9533c4de66fdb04e75008382b39b4fc413e3caa; both focused suites, syntax, and diff checks green"
   refreshed_b2_spec_compliance: "APPROVED_BY_QC at 2026-09-11T04:04:57Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa"
-  refreshed_b2_code_quality: "READY_FOR_REVIEW by Developer/QC; recommended PASS"
+  refreshed_b2_code_quality: "APPROVED_BY_DEVELOPER_AND_QC at 2026-09-11T04:21:48Z"
+  finding_F_RCR_B2_001: RESOLVED
+  t7_status: OPEN
 release_effect:
   parent_s07: REOPENED
   parent_s08: INVALIDATED_BY_FINDING
   terminal_receipts: HISTORICAL_PRE_FINDING
   branch_worktree: HOLD_OPEN
   release: BLOCKED
-next_human_action: "Human Developer and QC review refreshed child B2 Code Quality for source f9533c4de66fdb04e75008382b39b4fc413e3caa."
+next_human_action: "NONE until child B3 Spec Compliance is ready after T7."
 ```
 
 ## Workflow Pack Audit
@@ -1238,7 +1240,7 @@ next_step: "Commit the VERIFIED snapshot and run hosted Guardrails before Releas
 ## Handoff
 - Current state: `F-AG11-001` reopened the parent delivery lane; the prior B0-B4 and verification evidence is retained as historical pre-finding evidence.
 - Linked defect: T1-T6 are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`; B1 passed in order and QC approved B2 Spec Compliance at `2026-09-11T03:20:17Z`.
-- B2 correction: refreshed Spec Compliance is QC-approved for `f9533c4de66fdb04e75008382b39b4fc413e3caa`; Code Quality recommends PASS and awaits Developer/QC approval.
+- B2 correction: refreshed Spec Compliance and Code Quality are approved for `f9533c4de66fdb04e75008382b39b4fc413e3caa`; `F-RCR-B2-001` is resolved and T7 is open.
 - Required behavior: a repeated committed closeout must remove every satisfied pending action, set the canonical close-ready handoff, append one current-cycle event, and remain a NOOP on unchanged retry.
 - Release effect: the source `38bb0d1…`, run `34322150024`, candidate `2a5ae701…`, and terminal receipts are historical pre-finding evidence only.
 - Branch/worktree: `HOLD_OPEN`; no publish, tag, merge, install, cleanup, or branch finalization is authorized.

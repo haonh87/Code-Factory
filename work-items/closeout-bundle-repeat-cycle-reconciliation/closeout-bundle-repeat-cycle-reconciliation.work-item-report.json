@@ -95,7 +95,8 @@
     "Human QC explicitly approved B2 Spec Compliance at 2026-09-11T03:20:17Z for source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca; B2 Code Quality opened afterward.",
     "Human Developer and QC approved B2 Code Quality FAIL and opened HIGH F-RCR-B2-001 at 2026-09-11T03:46:13Z; QC reopened B2 Spec Compliance and Developer approved T6a for fail-first bounded-alias correction.",
     "T6a expected RED commit 0d1ac48c0adb43279f67503a318187295688a463 proved uat/situation and dod/dodgy collisions; bounded-alias GREEN source f9533c4de66fdb04e75008382b39b4fc413e3caa passes both focused suites, syntax, and diff checks.",
-    "Human QC approved refreshed B2 Spec Compliance at 2026-09-11T04:04:57Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. Refreshed B2 Code Quality recommends PASS; Developer/QC approval remains pending and F-RCR-B2-001 stays OPEN."
+    "Human QC approved refreshed B2 Spec Compliance at 2026-09-11T04:04:57Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa.",
+    "Human Developer and QC approved refreshed B2 Code Quality PASS at 2026-09-11T04:21:48Z for the same source. F-RCR-B2-001 is RESOLVED and T7 is OPEN."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -113,10 +114,10 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "s07-b2-code-quality-review",
+  "handoff_target": "s07-t7-matrix",
   "required_actions": [
-    "Human Developer and QC review the refreshed B2 Code Quality PASS recommendation for source f9533c4de66fdb04e75008382b39b4fc413e3caa.",
-    "If approved, resolve F-RCR-B2-001 and open T7; no later review or DoD is implied."
+    "Agent executes the approved T7 atomicity, concurrency, twenty-cycle determinism, compatibility, full-unit, and workflow-validator matrix.",
+    "After T7 evidence is complete, prepare B3 Spec Compliance for QC; B3 Code Quality remains closed until that PASS."
   ],
   "blockers": [],
   "refs": [
@@ -174,7 +175,10 @@
     "S07_B2_SPEC_COMPLIANCE_REFRESHED_READY",
     "S07_B2_SPEC_COMPLIANCE_REFRESHED_APPROVED",
     "S07_B2_CODE_QUALITY_REOPENED",
-    "S07_B2_CODE_QUALITY_RECOMMENDATION_PREPARED"
+    "S07_B2_CODE_QUALITY_RECOMMENDATION_PREPARED",
+    "S07_B2_CODE_QUALITY_REFRESHED_APPROVED",
+    "S07_F_RCR_B2_001_RESOLVED",
+    "S07_T7_OPENED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -207,7 +211,8 @@
     "Human Developer and QC approved the B2 Code Quality FAIL verdict and opened HIGH F-RCR-B2-001 at 2026-09-11T03:46:13Z. QC reopened B2 Spec Compliance, preserving its prior PASS as historical evidence for source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca.",
     "Human Developer approved Task Plan amendment T6a at 2026-09-11T03:46:13Z. The implementation path is open only for the fail-first boundary fixture and smallest bounded-alias correction; T7 remains blocked pending refreshed B2 reviews.",
     "T6a RED commit 0d1ac48c0adb43279f67503a318187295688a463 produced exactly one expected assertion failure for uat/situation and dod/dodgy substring collisions. GREEN source f9533c4de66fdb04e75008382b39b4fc413e3caa uses a Unicode letter/number boundary predicate; both focused suites, three syntax checks, and git diff --check pass. Refreshed B2 Spec Compliance is READY_FOR_REVIEW by QC; Code Quality is NOT_OPEN.",
-    "Human QC approved refreshed B2 Spec Compliance at 2026-09-11T04:04:57Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. Independent Code Quality review recommends PASS with no new findings; Developer/QC approval is pending and F-RCR-B2-001 remains OPEN until that decision."
+    "Human QC approved refreshed B2 Spec Compliance at 2026-09-11T04:04:57Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. Independent Code Quality review recommends PASS with no new findings; Developer/QC approval is pending and F-RCR-B2-001 remains OPEN until that decision.",
+    "Human Developer and QC approved refreshed B2 Code Quality PASS at 2026-09-11T04:21:48Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. F-RCR-B2-001 is RESOLVED, T7 is OPEN, and B3 plus all later gates remain independent."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -421,6 +426,14 @@
       "from_status": "ACTIVE",
       "to_status": "ACTIVE",
       "note": "Human QC approved refreshed B2 Spec Compliance for source f9533c4de66fdb04e75008382b39b4fc413e3caa at 2026-09-11T04:04:57Z. Independent Code Quality review recommends PASS; Developer/QC approval remains pending and T7 stays closed."
+    },
+    {
+      "timestamp": "2026-09-11T04:21:48Z",
+      "action": "s07-b2-code-quality-approved-open-t7",
+      "actor": "developer/qc",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "Human Developer and QC approved refreshed B2 Code Quality PASS for source f9533c4de66fdb04e75008382b39b4fc413e3caa. F-RCR-B2-001 is resolved and T7 opens; B3 and later gates remain independent."
     }
   ]
 }
