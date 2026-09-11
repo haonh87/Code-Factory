@@ -104,11 +104,12 @@ tags:
 > A repeated CR-008 closeout sealed three digest-valid receipts, but the report and protocol block
 > still instructed the operator to run the same approval and retained the pre-closeout handoff.
 > Historical `CLOSEOUT_BUNDLE_APPROVED` evidence also suppressed an event for the current cycle.
-> This linked BUG isolates `F-AG11-001`. After B2 completed, root-cause review reopened discovery
+> This linked BUG isolates F-AG11-001. After B2 completed, root-cause review reopened discovery
 > for a persisted typed-state and first-class event-identity contract. Human BA approved the amended
 > Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at
-> `2026-09-11T11:40:59Z`. The work item remains `BLOCKED` at s04 until three fresh digest-bound
-> receipts verify; the earlier s04-s06 receipts are historical and do not reopen implementation.
+> 2026-09-11T11:40:59Z. Three fresh receipts now verify against s04 SHA-256 26b85c2d....
+> The structural s05 Approach is drafted, but the work item remains BLOCKED until Developer review
+> and a fresh Approach receipt; earlier s05-s06 receipts do not reopen implementation.
 
 ## Step Contract
 ```yaml
@@ -647,7 +648,7 @@ timebox_breach: false
 timebox_evidence: "One bounded linked-defect clarification pass."
 gaps: []
 risk_level: HIGH
-next_action: "Review the amended s04 Spec, Data/Event Contract, and DoR; keep implementation closed pending fresh receipts."
+next_action: "Developer reviews the amended structural s05 Approach; keep s06 and implementation closed."
 ```
 
 ## Work Item Protocol
@@ -659,7 +660,7 @@ work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation"
-current_step: "s04"
+current_step: "s05"
 granted_write_paths:
   - "packages/workflow-bundle/scripts/work-item-protocol.js"
   - "packages/workflow-bundle/scripts/workflow-gate-review.js"
@@ -679,14 +680,14 @@ decision_owner: "agent"
 protocol_owner: "ba"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "amended-s04-trusted-receipts"
-last_transition_action: "approve-amended-structural-s04-gates"
-last_transition_at: "2026-09-11T11:40:59Z"
+handoff_target: "amended-s05-approach-human-gate"
+last_transition_action: "open-amended-s05-structural-approach"
+last_transition_at: "2026-09-11T13:58:58Z"
 required_actions:
-  - "Seal three fresh digest-bound authoring receipts against the unchanged finalized s04 host using the assigned BA, Developer, and QC sealers."
-  - "Keep s05/s06 amendment, T7 replacement, production edits, and release work closed until their corresponding fresh gates pass."
+  - "Developer reviews the amended structural s05 host; after approval, seal evidence bound to its current digest."
+  - "Keep s06 amendment, T7 replacement, production edits, and release work closed."
 blockers:
-  - "Three fresh digest-bound s04 receipts are pending."
+  - "The current s05 host lacks matching human-controlled gate evidence."
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -722,6 +723,8 @@ review_notes:
   - "Independent review requested a live compatibility recount. The branch contains 13 tracked work-item reports after Node 24 materialization, so RCR-08 and AC-RCR-09 were refreshed from 12 to 13 before s04 human review."
   - "The existing owner stop rule is clarified as a 2026-09-18 stop-and-reassess checkpoint, not a delivery promise. AC-RCR-06 and AC-RCR-08 remain in scope unless unfinished at that checkpoint, when they are separable follow-ups."
   - "Human BA approved the amended Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at 2026-09-11T11:40:59Z. Trusted receipt sealing remains separate, and prior s04-s06 receipts remain historical."
+  - "Fresh Spec, Contract, and DoR receipts verify digest_match=true against unchanged s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87."
+  - "The amended s05 proposes one shared typed-state boundary, a bounded legacy adapter, exact selectors, and direct transaction event identity. Developer Approach approval remains pending."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -787,6 +790,8 @@ audit_events:
   - "S04_STRUCTURAL_REPORT_INVENTORY_REFRESHED"
   - "STRUCTURAL_TIMEBOX_CLARIFIED_AS_CHECKPOINT"
   - "S04_STRUCTURAL_SPEC_CONTRACT_DOR_HUMAN_APPROVED_PENDING_RECEIPTS"
+  - "S04_STRUCTURAL_RECEIPTS_VERIFIED"
+  - "S05_STRUCTURAL_TECHNICAL_APPROACH_DRAFTED"
 ```
 
 ## Traceability
@@ -815,15 +820,17 @@ outputs:
   - "Human Developer/QC-approved refreshed B2 Code Quality; F-RCR-B2-001 resolved; T7 open"
   - "Human-approved OQ-RCR-004=B, OQ-RCR-005=A, and OQ-RCR-006=B"
   - "Proposed amended AC-RCR-01..10 and required persisted Data/Event Contract"
-next_step: "Review and seal amended Spec, Contract, and DoR before amending s05"
+  - "Verified fresh Spec, Contract, and DoR receipts for amended s04"
+  - "Proposed amended typed-state and direct-event-identity s05 Approach"
+next_step: "Developer reviews amended s05 Approach; then seal its fresh receipt before s06"
 ```
 
 ## Handoff
 - Clear: closeout receipts succeeded, but current navigation and event evidence did not reconcile.
 - Distinct scope: repeat-cycle/idempotency, not the resolved missing-DoD selector defect.
 - Decision: PO approval is backed by a verified trusted receipt; the completed receipt action has been removed.
-- Current step: s04 is `BLOCKED` only on fresh human gates and receipts after the structural contract amendment.
+- Current step: s05 is BLOCKED on Developer Approach review and a fresh trusted receipt.
 - Approved discovery direction: bounded legacy adapter, typed state entries, and first-class transaction identity for transaction-backed approval events.
 - Historical implementation: refreshed B2 is complete for `f9533c4de66fdb04e75008382b39b4fc413e3caa`, but T7 is suspended and old s04-s06 receipts cannot authorize replacement work.
-- Next gate: BA Spec, Developer Contract, and BA/QC DoR reviews against the amended s04 host.
+- Next gate: Developer Approach review against the amended s05 host.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.

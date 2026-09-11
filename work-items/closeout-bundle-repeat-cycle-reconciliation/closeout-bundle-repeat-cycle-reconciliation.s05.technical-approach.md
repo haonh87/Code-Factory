@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: approved
+status: draft
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: ALIGNED
+governance_status: CHECKS_PENDING
 checklist_refs:
   - "project-context/checklists/default.md"
   - "project-context/checklists/strict.md"
@@ -33,7 +33,7 @@ review_mode: independent
 verification_owner: "qc"
 approval_gates:
   spec: "required"
-  contract: "not_applicable"
+  contract: "required"
   dor: "required"
   approach: "required"
   foundation: "not_applicable"
@@ -44,7 +44,7 @@ approval_gates:
   dod: "required"
 role_signoffs:
   spec: ["ba"]
-  contract: []
+  contract: ["developer"]
   dor: ["ba", "qc"]
   approach: ["developer"]
   foundation: []
@@ -55,13 +55,13 @@ role_signoffs:
   dod: ["qc"]
 gate_reviews:
   spec_reviewed_by: ["ba"]
-  spec_reviewed_at: "2026-09-10T03:09:26Z"
-  contract_reviewed_by: []
-  contract_reviewed_at: ""
+  spec_reviewed_at: "2026-09-11T11:40:59Z"
+  contract_reviewed_by: ["developer"]
+  contract_reviewed_at: "2026-09-11T11:40:59Z"
   dor_reviewed_by: ["ba", "qc"]
-  dor_reviewed_at: "2026-09-10T03:09:26Z"
-  approach_reviewed_by: ["developer"]
-  approach_reviewed_at: "2026-09-10T08:12:02Z"
+  dor_reviewed_at: "2026-09-11T11:40:59Z"
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -86,13 +86,14 @@ upstream_artifacts:
   - "closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md"
 linked_artifacts:
   - "closeout-bundle-repeat-cycle-reconciliation.work-item-report.json"
-  - "../adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.s07.implementation.md"
-  - "../adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.s08.verification.md"
+  - "../../packages/workflow-bundle/scripts/work-item-protocol-utils.js"
   - "../../packages/workflow-bundle/scripts/work-item-protocol.js"
+  - "../../packages/workflow-bundle/scripts/materialize-work-item.js"
   - "../../packages/workflow-bundle/scripts/workflow-gate-review.js"
+  - "../../packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js"
+  - "../../packages/workflow-bundle/scripts/validate-work-item-protocol.js"
   - "../../packages/workflow-bundle/scripts/workflow-approval-transaction.js"
-  - "../../packages/workflow-bundle/test/work-item-protocol.test.js"
-  - "../../packages/workflow-bundle/test/workflow-gate-review.test.js"
+  - "../../packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
 tags:
   - "agent-ops"
   - "workflow/s05"
@@ -101,505 +102,380 @@ tags:
 # Step 5 - Technical Approach
 
 > [!summary]
-> Spec and DoR trusted receipts are valid against the unchanged s04 SHA-256
-> `b50db12a977a007b8785baff4153ad54d8049e0003d030deaf4329bebff9f60b`. The recommended
-> design is a transaction-delta closeout projector: derive canonical mutable state before adding cycle
-> evidence, classify a committed cycle from receipt or current-state operations, then append one event
-> carrying the same transaction ID used by the existing journal. Unchanged retries remain true `NOOP`.
-> No public CLI, receipt, event schema, runtime, or deployment boundary changes. Developer approved
-> this Approach at `2026-09-10T08:12:02Z`; the finalized host now awaits its trusted receipt.
+> The amended s04 Spec, Data/Event Contract, and DoR have three verified trusted receipts bound to
+> SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87.
+> The proposed design puts one typed-state compatibility adapter in the existing shared protocol
+> utility boundary, converts every new blocker/action writer to structured entries, and limits core
+> transitions to exact id or kind+gate selectors. Human text is render-only. Approval-bundle events
+> carry the coordinator transaction_id as a field; note is never parsed. Developer approval remains
+> an independent pending gate.
 
 ## Step Contract
-```yaml
+
+~~~yaml
 step: "s05 Technical Approach"
-goal: >-
-  Lock the smallest correction that gives every committed closeout cycle one attributable event and
-  one canonical current-state projection while an unchanged retry remains byte-stable and inert.
-value: >-
-  Close F-AG11-001 at its source without weakening human authority, history immutability,
-  transaction atomicity, compatibility, or parent release controls.
+goal: "Remove prose parsing from protocol state transitions while preserving legacy reports, atomic closeout cycles, and exact transaction attribution."
+value: "End the recurring closeout defect class without migrating historical artifacts or weakening human authority."
 scope_in:
-  - "Committed-cycle classification from planned receipt and current-state mutations"
-  - "Canonical closeout projection for required_actions, blockers, and handoff_target"
-  - "One protocol event attributable to the existing approval transaction ID"
-  - "Atomic report and s01 synchronization through the existing coordinator"
-  - "First/second cycle, semantic variant, retry, recovery, and concurrency test design"
-  - "Corrected v2.6.2 candidate and parent CR-008 re-verification handoff"
+  - "Typed blockers[] and required_actions[] normalization, validation, writing, selection, and rendering"
+  - "One bounded adapter for known protocol-owned legacy strings"
+  - "Direct transaction_id on newly emitted approval-transaction events"
+  - "Existing transaction-delta cycle classification and atomic report/s01 synchronization"
+  - "13-report compatibility, full regression, package, hosted, and parent evidence"
 scope_out:
-  - "Public CLI, receipt-v1, protocol-event schema, signer, trusted root, or reviewer-authority changes"
-  - "Generic natural-language classification outside closeout current-state fields"
-  - "New lifecycle states or legacy terminal-gate selector redesign"
-  - "New service, database, config, telemetry field, runtime, or deployment topology"
-  - "Implementation, publication, tagging, merge, install, cleanup, or branch finalization"
-inputs_required:
-  - "Digest-matched BA Spec and QC DoR receipts for the finalized s04 host"
-  - "AC-RCR-01..08, EDGE-RCR-01..06, and approved OQ-RCR-001=B/OQ-RCR-002=A/OQ-RCR-003=A"
-  - "F-AG11-001 observed state and source-level root-cause evidence"
-  - "Existing receipt planning, reconciliation, report/s01 rendering, and journal behavior"
-  - "Existing closeout, retry, failure/recovery, and compatibility fixtures"
-outputs_required:
-  - "Option analysis with one recommended and two rejected directions"
-  - "System design covering components, flow, interfaces, failures, compatibility, rollback, and observability"
-  - "Brownfield impact analysis with exact touchpoints"
-  - "Validation direction sufficient for s06 Task Plan"
-  - "Reviewable Developer Approach proposal"
+  - "Public CLI, receipt-v1, signer, approval root, or reviewer authority changes"
+  - "Bulk or in-place migration of existing reports"
+  - "Semantic interpretation or clearing of unknown legacy prose"
+  - "New service, database, runtime, deployment topology, or public schema"
+  - "Validator parallelisation, publication, tagging, merge, install, cleanup, or branch finalization"
 done_when:
-  - "Receipt delta, current-state delta, and unchanged retry are distinct"
-  - "One committed-cycle event is atomically bound to the existing transaction identity"
-  - "Mutable current state and immutable history have explicit ownership"
-  - "Exact production and test touchpoints are known without a new public boundary"
-  - "Failure, compatibility, rollback, observability, and parent re-verification are plan-ready"
-  - "No unresolved technical decision blocks s06 after Approach approval and receipt verification"
+  - "No core transition or state assertion reads state-entry text"
+  - "Unknown legacy strings remain exact legacy entries and cannot be semantically cleared"
+  - "Every new state writer emits a valid typed entry"
+  - "Every new approval-transaction event has direct coordinator identity"
+  - "Historical reports and events remain readable without rewrite or inferred identity"
+  - "s06 can order TDD, review, and verification without redesign"
 constraints:
-  hard_constraints:
-    - "One committed closeout cycle contributes exactly one attributable protocol event"
-    - "An unchanged retry contributes zero persistent mutation or transaction residue"
-    - "Successful state exposes the canonical work-item close action and protocol-close handoff"
-    - "Historical receipts, notes, markers, and events remain immutable and ordered"
-    - "All new receipt, event, report, and s01 writes use the existing atomic transaction"
-    - "First-cycle, legacy, adaptive, readiness, receipt-v1, and reviewer behavior remain compatible"
-    - "Parent authority requires one corrected exact candidate and repeated terminal gates"
-  soft_constraints:
-    - "Prefer pure projection and operation deltas over persisted cycle metadata"
-    - "Keep the correction within existing modules and fixture conventions"
-  prohibited_actions:
-    - "Use global CLOSEOUT_BUNDLE_APPROVED presence as current-cycle identity"
-    - "Append an event for every invocation or manufacture a cycle from the event itself"
-    - "Use an unbounded prose classifier or rewrite historical artifacts"
-    - "Introduce receipt-v2, event-v2, a cycle ledger, or another coordinator"
-    - "Open implementation before Approach and Task Plan receipts pass"
-  compliance_checks:
-    - "Cycle classification happens before event append"
-    - "Event and journal/summary share one transaction ID"
-    - "Only report/s01 current-state surfaces are reconciled"
-    - "Every compatibility lane remains in the regression plan"
-    - "No governance exception or foundation decision is needed"
+  hard:
+    - "text and note are human-only"
+    - "Core selectors use exact id or exact kind+gate only"
+    - "Legacy interpretation occurs once at the load/normalization boundary"
+    - "All newly generated entries have unique deterministic ids"
+    - "Committed approval events equal journal/result transaction_id"
+    - "An unchanged retry is a byte-stable NOOP"
+    - "2026-09-18 is a stop-and-reassess checkpoint, not a delivery promise"
+  prohibited:
+    - "Regex, substring, fuzzy alias, or Unicode-boundary inference over text in core logic"
+    - "Recover transaction identity from note"
+    - "Backfill IDs or transaction IDs into historical evidence"
+    - "Continue partial T7 before fresh s05/s06 receipts and activation"
 risks:
-  - id: "R-S05-RC-001"
-    description: "Counting the event itself as a state delta could turn every retry into a new cycle."
-    likelihood: HIGH
-    impact: HIGH
-    severity: HIGH
-    mitigation: "Compare receipt and pre-event state operations first; only those may open a cycle."
-    contingency: "QC retains F-AG11-001 if an unchanged retry is not NOOP."
-    owner: "developer/qc"
-    status: MONITORING
-  - id: "R-S05-RC-002"
-    description: "Canonical cleanup could erase an unrelated blocker or immutable evidence."
-    likelihood: MEDIUM
-    impact: HIGH
-    severity: HIGH
-    mitigation: "Limit changes to mutable fields, use selected-gate semantics for blockers, and assert unrelated canaries plus historical digests."
-    contingency: "Revert the projector and retain individual terminal approvals."
-    owner: "developer/qc"
-    status: MONITORING
-  - id: "R-S05-RC-003"
-    description: "The event identity could differ from the journal and CLI transaction result."
-    likelihood: MEDIUM
-    impact: HIGH
-    severity: HIGH
-    mitigation: "Preallocate one validated ID and pass it to event construction and the coordinator."
-    contingency: "Fail AC-RCR-02 and keep release blocked."
-    owner: "developer/qc"
-    status: MONITORING
-  - id: "R-S05-RC-004"
-    description: "Concurrent retries may calculate from the same pre-commit state."
-    likelihood: MEDIUM
-    impact: HIGH
-    severity: HIGH
-    mitigation: "Retain lock, expected-digest guards, recovery, and prove at most one commit followed by NOOP."
-    contingency: "Reject attempts while the work-item lock is live and rerun after recovery."
-    owner: "developer/qc"
-    status: MONITORING
-  - id: "R-S05-RC-005"
-    description: "A corrected child could be promoted using stale parent evidence."
-    likelihood: MEDIUM
-    impact: HIGH
-    severity: HIGH
-    mitigation: "Build one new v2.6.2 candidate, bind its full SHA-256, rerun AG-01..13, and repeat terminal approvals."
-    contingency: "Keep F-AG11-001 open and v2.6.1 as guarded rollback only."
-    owner: "devops/qc/po"
-    status: MONITORING
-timebox:
-  target_duration: "One focused option and design pass"
-  deadline: "Before s06 Task Plan"
-  escalation_rule: "Return to s04 if a public contract, persisted cycle schema, or broader lifecycle semantic is required."
-```
+  - { id: "R-S05-001", risk: "An unconverted writer continues emitting strings.", mitigation: "Inventory every assignment/push/unshift and enforce typed output." }
+  - { id: "R-S05-002", risk: "The adapter becomes another fuzzy state machine.", mitigation: "Exact values or full-string anchored command grammar only." }
+  - { id: "R-S05-003", risk: "Structured rendering breaks s01 parity.", mitigation: "Stable YAML mappings and parsed equality tests." }
+  - { id: "R-S05-004", risk: "Historical events lack truthful transaction IDs.", mitigation: "Preserve as readable pre-contract history; enforce identity for all new writes." }
+  - { id: "R-S05-005", risk: "Expanded paths collide with adjacent work.", mitigation: "Amend owned paths in s06 and keep unrelated changes isolated." }
+~~~
 
 ## Input Readiness
-```yaml
+
+~~~yaml
 step: "s05 Technical Approach"
 status: READY
 available_inputs:
-  - "Spec receipt APPROVED by BA at 2026-09-10T04:55:23.729Z with digest_match=true"
-  - "DoR receipt APPROVED by QC at 2026-09-10T04:55:36.637Z with digest_match=true"
-  - "Both receipts bind s04 SHA-256 b50db12a977a007b8785baff4153ad54d8049e0003d030deaf4329bebff9f60b"
-  - "Approved B/A/A decisions, AC-RCR-01..08, source evidence, and regression fixtures"
+  - "Spec receipt BA at 2026-09-11T13:50:51.020Z, digest_match=true"
+  - "Contract receipt Developer at 2026-09-11T13:51:06.341Z, digest_match=true"
+  - "DoR receipt QC at 2026-09-11T13:51:18.535Z, digest_match=true"
+  - "All three bind s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87"
+  - "Live inventory: 13 report files and two historical approval-bundle events without direct transaction_id"
 missing_inputs: []
 invalid_inputs:
-  - "Parent candidate 2a5ae701... and terminal receipts are historical pre-finding evidence only"
+  - "Prior s05/s06 receipts and implementation reviews are historical pre-contract evidence"
 conflicts: []
 assumptions:
-  - "An optional internal transaction_id input is compatible because journal and COMMITTED output already expose it"
-  - "Using the existing free-form event note for attribution does not change the event schema"
+  - "The validation-failure rule governs newly generated/written events; historical unbound events remain readable but never count as compliant new output."
 risk_level: HIGH
-next_action: "Seal and verify the Developer-approved Approach receipt against this finalized host; implementation is not authorized."
-```
+next_action: "Developer reviews this amended Approach; implementation remains closed."
+~~~
 
 ## Option Analysis
-```yaml
-goal: "Make repeated closeout reconciliation cycle-aware, auditable, canonical, atomic, and retry-idempotent."
+
+~~~yaml
+goal: "Replace prose-derived protocol state with one typed compatibility boundary and direct event identity."
 ba_lane:
-  business_goal: "A successful terminal approval must stop appearing pending, and every real committed cycle must be auditable."
+  business_goal: "Completed approvals stay completed, unrelated blockers are not lost, and audit evidence stays trustworthy."
   user_scenarios:
-    - "A first closeout seals current receipts and exposes only the close transition."
-    - "A later cycle after authority or mutable-state change appends one attributable event."
-    - "An unchanged retry returns NOOP with byte-identical state."
-    - "A v2.6.1 rollback uses guarded bundle behavior and individual terminal approvals."
+    - "A typed pending approval clears by exact gate semantics."
+    - "An unknown legacy sentence containing review, pending, receipt, or a gate alias is preserved."
+    - "A later closeout cycle adds one directly attributable event; an unchanged retry adds nothing."
   business_rules:
-    - "Committed authority/current-state transition defines a cycle; invocation does not."
-    - "One committed cycle produces one event; one unchanged retry produces none."
-    - "Report/s01 current state is mutable; historical evidence is preserved."
-    - "Successful closeout exposes the canonical close action and protocol-close handoff."
-  scope_notes:
-    - "Resolve F-AG11-001 only; the prior missing-DoD child remains closed compatibility evidence."
-    - "Reuse existing transaction and protocol-event shapes."
+    - "Human wording is display content, not machine state."
+    - "Historical evidence is immutable."
+    - "Compatibility means read without migration, not guess semantics."
+  scope_notes: ["The internal persisted contract changes; public approval behavior does not."]
   open_questions: []
 dev_lane:
   repo_constraints:
-    - "workflow-gate-review.js builds receipt and protocol operations before one transaction call."
-    - "workflow-approval-transaction.js owns lock, journal, transaction_id, staging, rollback, and recovery."
-    - "work-item-protocol.js currently combines text cleanup with global-marker event suppression."
-    - "s01 is rendered from the normalized protocol report."
-    - "Node.js/CommonJS, filesystem artifacts, and receipt-v1 are the baseline."
+    - "normalizeProtocolReport is the existing shared load boundary."
+    - "work-item-protocol-utils currently stringifies objects and renders scalar lists."
+    - "Writers exist in protocol transition and materialization paths."
+    - "workflow-gate-evidence-utils currently asserts state from text."
   technical_risks:
-    - "Event-first delta calculation creates non-idempotency."
-    - "Broad text matching can delete unrelated evidence."
-    - "A cycle ledger duplicates the journal and adds migration risk."
-  integration_points:
-    - "runGateBundle receipt operation planning"
-    - "reconcileApprovalBundleReport current-state projection"
-    - "executeApprovalTransaction identity and persistence"
-    - "renderReconciledS01Content report-to-s01 projection"
-    - "work-item-protocol.test.js and workflow-gate-review.test.js"
+    - "Closeout-only conversion leaves mixed state elsewhere."
+    - "A standalone model module adds a boundary without reducing migration risk."
+    - "Broad legacy matching recreates the root cause."
+  integration_points: ["normalizer/renderer", "writers/selectors", "gate evidence/validator", "bundle transaction", "tests/package/hosted verification"]
   nfr_notes:
-    - "Twenty repeated executions with zero report/s01 mismatch"
-    - "Two unchanged retries with zero file mutation"
-    - "At most one committed event under concurrency/recovery"
-    - "No partial state at every failure boundary"
-  baseline_context: "Brownfield v2.6.2 candidate line inside the existing approval transaction path."
+    - "13/13 reports load unchanged"
+    - "0 text/note reads in core behavior"
+    - "20 wording mutations produce 0 semantic changes"
+    - "100% direct identity equality for new approval events"
+  baseline_context: "Brownfield CommonJS workflow bundle with filesystem-backed reports and receipts."
 options:
-  - "Option A - Transaction-delta projector with shared transaction identity"
-  - "Option B - Persist a cycle fingerprint or ledger"
-  - "Option C - Extend marker/regex heuristics or append per invocation"
-option_details:
-  - name: "Option A - Transaction-delta projector with shared transaction identity"
-    summary: "Project state before event creation, classify from receipt/state operations, then append one event carrying the journal ID."
-    pros: ["Requirement-aligned", "Natural NOOP", "Existing schema/coordinator reuse", "Exact attribution"]
-    cons: ["Focused changes across three internal modules", "Strict operation ordering required"]
-    risks: ["Wrong ordering could append on retry or mismatch identity"]
-  - name: "Option B - Persist a cycle fingerprint or ledger"
-    summary: "Add cycle metadata derived from host/gates/reviewer state plus a sequence or fingerprint."
-    pros: ["Explicit queryable cycle state", "Possible future analytics"]
-    cons: ["New schema and migration", "Duplicates journal/event evidence", "Larger rollback boundary"]
-    risks: ["Ambiguous legacy backfill semantics"]
-  - name: "Option C - Extend marker/regex heuristics or append per invocation"
-    summary: "Keep global marker control, broaden string matching, or append whenever the command succeeds."
-    pros: ["Fewest local lines", "No coordinator input change"]
-    cons: ["History cannot identify a later cycle", "Invocation violates retry idempotency", "Regex may delete unrelated prose"]
-    risks: ["Missing or duplicate events and accidental cleanup"]
-recommended_option: "Option A - Transaction-delta projector with shared transaction identity"
-recommendation_reason: >-
-  The existing operation plan already knows whether authority/current state changes, and the journal
-  already persists a transaction ID. Reuse satisfies identity and attribution without a new schema.
-  Option B solves a larger future problem; Option C cannot satisfy later-cycle evidence and NOOP together.
+  - name: "Option A - Extend the shared protocol utility boundary"
+    summary: "Put typed construction, legacy import, validation, selectors, and rendering helpers in work-item-protocol-utils."
+    pros: ["Existing load seam", "One compatibility boundary", "No new module", "Smallest complete change"]
+    cons: ["Utility gains a cohesive state-contract responsibility", "Several writers and tests change"]
+    risks: ["Incomplete producer inventory"]
+  - name: "Option B - Add a dedicated protocol-state module"
+    summary: "Route utilities, writers, validators, and renderers through a new module."
+    pros: ["Conceptual isolation"]
+    cons: ["New abstraction, import surface, packaging, and ownership churn"]
+    risks: ["Two normalization boundaries drift"]
+  - name: "Option C - Convert closeout only and retain text matching elsewhere"
+    summary: "Patch the currently failing selectors."
+    pros: ["Smaller immediate diff"]
+    cons: ["Violates AC-RCR-09", "Preserves the hidden prose schema"]
+    risks: ["Silent deletion and stale-state recurrence"]
+recommended_option: "Option A - Extend the shared protocol utility boundary"
+recommendation_reason: "The existing universal load seam is smaller than a new module and complete where a closeout-only patch is not."
 validation_plan:
-  - "RED: second valid cycle with historical marker/event currently suppresses its event."
-  - "RED: prose/case/whitespace pending forms and old handoff currently survive."
-  - "GREEN: summary/journal and appended event share one transaction ID."
-  - "GREEN: canonical report/s01 state and historical digests remain exact."
-  - "Run twenty repeats, two byte-identical retries, failure/recovery, concurrency, and compatibility cases."
-notes_for_next_step: "READY for system design and s06 planning; no option blocker remains."
-```
+  - "Fail first on object collapse, unknown legacy deletion, and missing direct event identity."
+  - "Run 13-report, text mutation, writer inventory, repeat-cycle, recovery, and package matrices."
+notes_for_next_step: "READY for system design and s06 after human Approach approval."
+~~~
 
 ## Foundation Decision
-```yaml
+
+~~~yaml
 status: NOT_APPLICABLE
-solution_class: "Brownfield correction inside the existing approval-bundle reconciliation path"
-selected_stack: ["Existing Node.js/CommonJS modules"]
-selected_runtime: ["Existing wfc CLI and filesystem-backed trusted approval transaction"]
-decision_notes:
-  - "No stack, service, database, runtime, deployment, or public contract decision changes."
-  - "The optional identity input reuses an existing journal/output field; it is not a new authority source."
-```
+reason: "No stack, runtime, service, deployment model, public API, or authority boundary changes."
+~~~
 
 ## Main Artifact
-```yaml
-design_problem: >-
-  Global marker history is currently used as cycle identity, cleanup only recognizes literal commands,
-  and successful closeout retains the old handoff. A later valid receipt transaction can therefore
-  commit while current state remains pending and no event is attributable to that transaction.
+
+~~~yaml
+design_problem: "English state strings are recovered with heuristics, object normalization destroys shape, assertions scan prose, and event identity lives in note."
 business_rule_trace:
-  - "AC-RCR-01/OQ-RCR-001 -> receipt or pre-event state operations classify a cycle"
-  - "AC-RCR-02/OQ-RCR-002 -> one event carries the transaction ID and ordered gate set"
-  - "AC-RCR-03/OQ-RCR-003 -> canonical report/s01 close action and protocol-close handoff"
-  - "AC-RCR-04 -> no receipt or pre-event state operation means NOOP and no event"
-  - "AC-RCR-05 -> current fields mutate; prior evidence remains immutable"
-  - "AC-RCR-06 -> receipts, event, report, and s01 use one atomic coordinator"
-  - "AC-RCR-07 -> first-cycle, legacy, adaptive, readiness, receipt-v1, and authority compatibility"
-  - "AC-RCR-08 -> one corrected candidate and repeated parent gates"
+  - "AC-RCR-01..04 -> classify commit versus NOOP before event append"
+  - "AC-RCR-03/05/09 -> typed current state and exact selectors only"
+  - "AC-RCR-06 -> receipts, event, report, and s01 remain atomic"
+  - "AC-RCR-07/09 -> 13 reports load through one adapter without rewrite"
+  - "AC-RCR-10 -> new approval events carry journal/result transaction_id"
 design_options:
-  - name: "Transaction-delta projector"
-    summary: "Use planned operations as cycle evidence and reuse the journal ID in the event."
-    pros: ["No new schema", "Natural NOOP", "Atomic attribution"]
-    cons: ["Three focused internal touchpoints"]
-    risks: ["Ordering and identity need strong tests"]
-  - name: "Persisted cycle ledger"
-    summary: "Add explicit cycle metadata and migration semantics."
-    pros: ["Queryable cycles"]
-    cons: ["Larger state boundary"]
-    risks: ["Legacy ambiguity"]
-  - name: "Marker/regex heuristic"
-    summary: "Extend the current surface logic."
-    pros: ["Few lines"]
-    cons: ["Cannot meet later-cycle and retry requirements together"]
-    risks: ["Duplicate/missing events"]
+  - { name: "Shared utility boundary", summary: "Recommended smallest complete structural fix." }
+  - { name: "Dedicated model module", summary: "Valid but larger." }
+  - { name: "Closeout text patch", summary: "Rejected root-cause preservation." }
 rejected_options:
-  - name: "Persisted cycle ledger"
-    reason: "The existing journal/event pair already provides identity; a schema/backfill is unnecessary."
-  - name: "Marker/regex heuristic"
-    reason: "Global history cannot prove a current transaction, while invocation cannot distinguish retry from commit."
+  - { name: "Dedicated model module", reason: "No separate lifecycle boundary requires it." }
+  - { name: "Closeout text patch", reason: "Cannot satisfy the approved contract or predicted data-loss case." }
 recommended_design: >-
-  Keep gate derivation, authority preflight, receipt-v1, and the coordinator as owners. For approved
-  closeout only, first build a canonical report without a per-cycle event: remove satisfied selected-
-  terminal approval blockers, replace actions with the exact work-item close command, set handoff to
-  protocol-close, and keep the coarse marker deduplicated. Compare that projection with report/s01 and
-  combine it with planned receipt writes. If neither exists, return NOOP. Otherwise preallocate one
-  transaction ID, append exactly one event containing that ID and ordered gates, render report/s01 from
-  the same projection, and pass all operations plus that ID through executeApprovalTransaction.
-recommendation_reason: >-
-  The design maps acceptance semantics to mechanisms the architecture already has. It prevents circular
-  event-driven commits, preserves atomicity and retry behavior, and avoids a ledger, schema, command,
-  or lifecycle abstraction.
+  Extend work-item-protocol-utils as the single persisted-state boundary. It accepts typed entries and
+  translates only known legacy strings by enumerated exact values or anchored command grammar. Unknown
+  strings become {kind: legacy, text: exact_original}. All writers use one constructor. Core behavior
+  receives normalized entries and clears only by exact id or kind+gate; text is never read. Rendering
+  emits stable YAML mappings. Newly emitted approval-transaction events carry direct transaction_id,
+  while cycle classification remains before event creation.
+recommendation_reason: "This removes the root cause across consumers with no new public boundary or historical migration."
 component_changes:
-  - component: "work-item-protocol.js"
-    change: "Canonical approved-closeout projection independent of global marker; append a cycle event only when instructed."
-    ownership: "developer"
-  - component: "workflow-gate-review.js"
-    change: "Classify from receipt/pre-event state operations, allocate one ID for real mutation, and bind final report/s01 operations."
-    ownership: "developer"
-  - component: "workflow-approval-transaction.js"
-    change: "Accept a validated optional transaction ID; preserve generated-ID behavior for other callers."
-    ownership: "developer"
-  - component: "work-item-protocol.test.js"
-    change: "Add first/second/retry, semantic state, history, parity, repeated, recovery, and concurrency CLI fixtures."
-    ownership: "developer/qc"
-  - component: "workflow-gate-review.test.js"
-    change: "Lock optional ID validation/reuse and unchanged coordinator behavior."
-    ownership: "developer/qc"
+  - { component: "work-item-protocol-utils.js", change: "Enums, deterministic constructor, bounded adapter, shape validation, exact selectors, event normalization, structured renderer." }
+  - { component: "work-item-protocol.js", change: "Typed writers and exact transition selectors; remove prose semantics." }
+  - { component: "materialize-work-item.js", change: "Typed initial report blockers/actions and structure-preserving rendering." }
+  - { component: "workflow-gate-review.js", change: "Pre-event cycle classification and direct transaction_id event." }
+  - { component: "workflow-gate-evidence-utils.js", change: "Typed kind/gate assertions instead of text claims." }
+  - { component: "validate-work-item-protocol.js", change: "Shape, unique ID, conditional gate, and new event identity checks." }
+  - { component: "workflow-approval-transaction.js", change: "Retain validated supplied ID and generated default." }
+  - { component: "smoke and focused tests", change: "Structured state, legacy, mutations, identity, atomicity, and parity." }
 data_flow:
-  - "Gate contexts -> receipt match -> planned receipt operations"
-  - "Loaded report -> canonical pre-event projection -> report/s01 state-operation diff"
-  - "receipt operations OR pre-event state operations -> committed_cycle=true"
-  - "committed_cycle=false -> no ID, event, or file operations -> NOOP"
-  - "committed_cycle=true -> one ID -> one event -> final report/s01 operations"
-  - "All operations -> existing lock/journal/stage/commit/verify/recovery coordinator"
+  - "Raw report -> normalizeProtocolReport -> typed plus preserved legacy entries"
+  - "Typed entries -> validator/core exact selectors; text is not a semantic input"
+  - "Typed entries -> renderer -> stable YAML mappings in s01"
+  - "Receipt or pre-event state delta -> committed cycle -> one ID -> journal/result/event"
+  - "All changed receipts/report/s01 -> existing atomic coordinator"
 interface_changes:
-  - "No public CLI, output field, receipt field, event field, config, or artifact schema change."
-  - "Internal executeApprovalTransaction accepts optional validated transaction_id; existing callers remain compatible."
-  - "Existing event note records transaction_id and ordered gates; the event object shape is unchanged."
+  - "New blockers[] and required_actions[] writes change from strings to state-entry objects."
+  - "New approval-transaction events add required transaction_id."
+  - "Public CLI, receipt-v1, reviewer authority, and transaction output remain unchanged."
 failure_modes:
-  - scenario: "Event operation participates in classification."
-    impact: "Every retry commits a duplicate event."
-    guardrail: "Classify before event append and assert two byte-identical NOOP retries."
-  - scenario: "Event and journal identities differ."
-    impact: "Cycle evidence is not attributable."
-    guardrail: "Pass one validated ID to both paths and assert exact equality."
-  - scenario: "Projection removes unrelated blocker evidence."
-    impact: "The work item appears closable despite another issue."
-    guardrail: "Use selected-gate semantics for blockers and preserve unrelated canaries."
-  - scenario: "Report and s01 are derived independently."
-    impact: "Current-state surfaces diverge."
-    guardrail: "Render s01 from one normalized report and stage both atomically."
-  - scenario: "Failure or crash occurs during persistence."
-    impact: "Partial authority/evidence becomes visible."
-    guardrail: "Retain expected-digest guards and the full journal failure/recovery matrix."
-  - scenario: "Two commands race from the same state."
-    impact: "Two events or inconsistent receipts are attempted."
-    guardrail: "Per-item lock and expected digests allow at most one commit; follow-up completes as NOOP."
-  - scenario: "Readiness/rejection enters the new path."
-    impact: "Activation or rework regresses."
-    guardrail: "Branch on closeout+APPROVED and run existing bundle tests unchanged."
+  - { scenario: "Unknown legacy text is interpreted by similarity.", impact: "Silent blocker loss.", guardrail: "kind=legacy and selectors never target legacy." }
+  - { scenario: "Adapter grammar is unanchored.", impact: "Substring becomes state.", guardrail: "Exact table or full-string command grammar." }
+  - { scenario: "A producer still writes a string.", impact: "New output bypasses contract.", guardrail: "Writer inventory and raw output validation." }
+  - { scenario: "Renderer flattens objects.", impact: "s01 loses parity.", guardrail: "Mapping render and parsed equality." }
+  - { scenario: "Note supplies identity.", impact: "Ambiguous attribution.", guardrail: "Direct equality tests and zero note reads." }
+  - { scenario: "Historical identity is backfilled.", impact: "Evidence corruption.", guardrail: "Preserve immutable pre-contract events." }
+  - { scenario: "Event participates in classification.", impact: "Retry commits.", guardrail: "Receipt/pre-event state deltas only." }
 compatibility_impact:
-  - "Adaptive and legacy gate selection remain unchanged."
-  - "Readiness approval and readiness/closeout rejection remain unchanged."
-  - "Receipt-v1 signatures, digest matching, reviewer roles, and paths remain unchanged."
-  - "Existing transaction callers still receive generated IDs by default."
-  - "Historical marker/event order remains unchanged; one event is appended only for a real cycle."
-  - "Public CLI and error behavior remain backward compatible."
+  - "13 reports stay byte-unchanged during load-only validation."
+  - "Known strings normalize in memory; unknown strings preserve exact text."
+  - "Historical event order/bytes stay unchanged; no identity is inferred."
+  - "New writes are structured; this bundle reads both shapes."
+  - "First-cycle, readiness/rejection, gate selection, receipt-v1, recovery, and authority remain compatible."
 rollback_impact:
-  - "Before publication, revert only the focused production/test delta if regression appears."
-  - "After release, reinstall immutable v2.6.1 with bundle closeout disabled or guarded."
-  - "Use individual terminal gate commands after rollback and verify each receipt digest."
-  - "Never delete or rewrite historical receipts/events."
+  - "Before publication, revert the isolated structural implementation commits."
+  - "After publication, restore immutable v2.6.1 and guard bundled closeout."
+  - "Use individual terminal gates after rollback; never rewrite historical evidence."
 observability_hooks:
-  - "transaction.status distinguishes COMMITTED from NOOP."
-  - "transaction.transaction_id equals the ID in the new event note."
-  - "sealed_gates exposes exact gate order, reviewer, host, and digest."
-  - "Report/s01 actions, blockers, handoff, and marker expose canonical state."
-  - "Focused test names expose later-cycle, retry, semantic, concurrency, and recovery outcomes."
-  - "Hosted Guardrails binds corrected source, run ID, candidate SHA-256, and parent AG evidence."
-constraints_applied:
-  - "Smallest correct brownfield delta"
-  - "TDD for behavior change"
-  - "Targeted review in order Spec Compliance then Code Quality"
-  - "Independent QC verification and human-controlled terminal gates"
+  - "Validator names collection/index/id/kind/gate without parsing text."
+  - "Transaction output/journal/event expose exact transaction_id equality."
+  - "COMMITTED versus NOOP plus parsed report/s01 parity expose cycle correctness."
+  - "Compatibility reports 13/13 load and zero digest changes."
+  - "Hosted evidence binds source SHA, run ID, artifact SHA-256, and parent AG-01..13."
+constraints_applied: ["Strict brownfield smallest-correct delta", "TDD", "Independent two-tier review", "No migration", "No text-derived semantics"]
 validation_plan:
-  - "Write failing second-cycle and semantic-state CLI fixtures first."
-  - "Implement the minimum pre-event delta, shared ID, and projection changes."
-  - "Run focused protocol/coordinator tests after each TDD cycle."
-  - "Run all readiness, rejection, adaptive, legacy, receipt, recovery, and validator regressions."
-  - "Run twenty repeats, two byte-identical retries, concurrent-at-most-one-commit, and UTF-8 checks."
-  - "Run full workflow-bundle checks, static/security/performance heuristics, pack audit, and authoring smoke."
-  - "Build one corrected v2.6.2 candidate, verify local/hosted/rollback, rerun parent AG-01..13, and repeat terminal gates."
+  - "RED then GREEN for typed boundary, unknown legacy canary, and direct event identity."
+  - "Exercise every producer and reject invalid generated shapes."
+  - "Run at least 20 text/note mutations with identical semantic outcomes."
+  - "Load 13 reports without mutation; preserve historical event prefixes."
+  - "Run repeat cycle, two retries, concurrency, all failure/recovery boundaries, and report/s01 parity."
+  - "Run full tests, syntax/static/security/performance review, validators, smoke, pack audit, UTF-8, and package smoke."
+  - "Build one exact candidate; repeat child and parent hosted verification and terminal gates."
 specialized_followups: []
-notes_for_next_step: "s06 must put failing fixtures before production changes and retain child-to-parent re-verification ordering."
-```
+notes_for_next_step: "s06 must amend owned paths, use failing-first review batches, quarantine partial T7 WIP, and keep node24 separate."
+~~~
 
 ## Architecture Details
-```yaml
-architecture_style: "Focused internal adapter correction in the existing approval transaction path"
-authority_boundaries:
-  gate_selection: "deriveBundleGates"
-  receipt_authority: "trusted receipt-v1 plus configured gate reviewer"
-  current_state: "work-item report, with s01 as synchronized projection"
-  transaction_identity: "journal transaction_id"
-  immutable_history: "finalized notes, prior receipts, markers, and events"
-cycle_classifier:
-  receipt_delta: "At least one current receipt operation is planned."
-  state_delta: "The pre-event canonical report or s01 differs from loaded mutable state."
-  committed_cycle: "receipt_delta OR state_delta"
-  unchanged_retry: "NOT receipt_delta AND NOT state_delta"
-  excluded_signal: "The new event operation itself."
-canonical_closeout_projection:
-  required_actions: ["wfc work-item close --work-item closeout-bundle-repeat-cycle-reconciliation"]
-  handoff_target: "protocol-close"
-  blockers: "Remove only selected-terminal approval or closeout-bundle blockers; preserve unrelated entries."
-  audit_events: "Keep CLOSEOUT_BUNDLE_APPROVED deduplicated."
-  protocol_events: "Append one approve-closeout-bundle event only for committed_cycle=true."
-event_attribution:
-  source: "Same validated transaction_id passed to executeApprovalTransaction"
-  context: "Ordered gate names in the existing note field"
-  timestamp: "Normalized reviewedAt"
-  schema_change: false
+
+~~~yaml
+state_entry:
+  generated_shape: "{id, kind, text, gate?}"
+  legacy_shape: "{kind: legacy, text: exact_original}"
+  id_rule: "se:<full SHA-256 of collection + kind + gate-or-empty + exact source key>; opaque and never parsed"
+  unique_rule: "Reject duplicate non-legacy ids in each collection."
+  text_rule: "Required display content; renderer-only."
+kind_vocabulary:
+  gate_scoped: ["approval_pending", "gate_approval"]
+  non_gate_scoped:
+    - "readiness_bundle_approval"
+    - "closeout_bundle_approval"
+    - "readiness_bundle_rejected"
+    - "closeout_bundle_rejected"
+    - "resolve_readiness_rejection"
+    - "resolve_closeout_rejection"
+    - "work_item_activation"
+    - "work_item_close"
+    - "work_item_resume"
+    - "blocker_resolution"
+    - "workflow_followup"
+    - "delivery_blocker"
+    - "legacy"
+legacy_adapter:
+  location: "normalizeProtocolReport in work-item-protocol-utils.js"
+  known: "Enumerated exact protocol phrases or full-string anchored wfc command grammar."
+  unknown: "Preserve exact original as kind=legacy; never semantic-clear."
+  forbidden: "Substring, fuzzy alias, Unicode boundary, or normalized-sentence inference."
+selectors:
+  specific: "exact id"
+  gate_class: "exact kind plus exact gate"
+  set_class: "explicit finite set of exact kinds"
+  forbidden_input: ["text", "note"]
+event_identity:
+  new_transaction_event: "transaction_id required and equals coordinator journal/result"
+  historical_unbound_event: "readable immutable pre-contract evidence; no inferred identity"
+  noop: "no event and no transaction_id"
 atomic_boundary:
-  operations: ["Changed gate receipts", "Reconciled report", "Synchronized s01 projection"]
+  operations: ["new receipts", "typed report", "structured s01 mirror"]
   coordinator: "executeApprovalTransaction"
-  guards: ["Host SHA-256", "Expected target SHA-256", "Live lock", "Journal rollback/recovery"]
-review_boundaries:
-  batch_b1: "Cycle classification, event attribution, transaction identity"
-  batch_b2: "Canonical current-state projection and report/s01 parity"
-  batch_b3: "Failure/recovery, compatibility, candidate, and parent re-verification"
-```
+  classification: "receipt delta OR pre-event typed-state delta"
+review_batches:
+  b1: "typed normalizer, constructor, adapter, validator, renderer"
+  b2: "writer conversion, exact transition selectors, gate assertions"
+  b3: "event identity, repeat-cycle atomicity, compatibility, package/hosted evidence"
+~~~
 
 ## Brownfield Impact Analysis
-```yaml
-impacted_modules:
-  - { path: "packages/workflow-bundle/scripts/work-item-protocol.js", impact: "Approved-closeout projection and event control only." }
-  - { path: "packages/workflow-bundle/scripts/workflow-gate-review.js", impact: "Operation-delta classification, identity, and sequencing." }
-  - { path: "packages/workflow-bundle/scripts/workflow-approval-transaction.js", impact: "Optional validated ID; generated-ID default retained." }
-  - { path: "packages/workflow-bundle/test/work-item-protocol.test.js", impact: "Repeat-cycle, semantic, parity, history, recovery, and concurrency fixtures." }
-  - { path: "packages/workflow-bundle/test/workflow-gate-review.test.js", impact: "Coordinator identity compatibility tests." }
-  - { path: "work-items/closeout-bundle-repeat-cycle-reconciliation/*.md", impact: "Traceability and evidence only." }
-compatibility_risks:
-  - "Readiness/rejection could regress if the new branch is not isolated."
-  - "An over-broad matcher could remove unrelated blockers."
-  - "Existing coordinator callers could break if transaction_id becomes mandatory."
-  - "Wrong delta ordering could turn retry into COMMITTED."
-migration_notes:
-  - "No report, receipt, event, config, database, or artifact migration."
-  - "No backfill, re-signing, reordering, or deletion of history."
-rollback_notes:
-  - "Revert only the focused source/test delta before publication if needed."
-  - "For v2.6.1 rollback, guard bundled closeout and use individual terminal approvals."
-  - "Prior candidate 2a5ae701... remains historical pre-finding evidence only."
-```
+
+~~~yaml
+owned_path_amendment_required: true
+proposed_main_touch_paths:
+  - "packages/workflow-bundle/scripts/work-item-protocol-utils.js"
+  - "packages/workflow-bundle/scripts/work-item-protocol.js"
+  - "packages/workflow-bundle/scripts/materialize-work-item.js"
+  - "packages/workflow-bundle/scripts/workflow-gate-review.js"
+  - "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js"
+  - "packages/workflow-bundle/scripts/validate-work-item-protocol.js"
+  - "packages/workflow-bundle/scripts/workflow-approval-transaction.js"
+  - "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
+  - "packages/workflow-bundle/test/work-item-protocol.test.js"
+  - "packages/workflow-bundle/test/workflow-gate-review.test.js"
+  - "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js"
+  - "packages/workflow-bundle/test/validate-work-item-protocol.test.js"
+  - "packages/workflow-bundle/test/materialize-work-item.test.js"
+existing_wip_rule: "Do not stage the current partial T7 test until s06 replaces or explicitly adopts it."
+adjacent_scope_guards:
+  - "Node24 bump remains one separate 18-token-only commit."
+  - "Validator matrix parallelisation remains with ci-guardrails-parallelisation."
+  - "No architecture-modeling restructure in this branch."
+migration_notes: ["No bulk or in-place migration.", "Load-only checks preserve all 13 original digests."]
+rollback_notes: ["Revert isolated structural commits before release, or restore v2.6.1 after release."]
+~~~
 
 ## Governance Exceptions
-```yaml
+
+~~~yaml
 status: NOT_REQUIRED
-reason: "The design restores AC-RCR-01..08 inside the approved strict brownfield boundary."
+reason: "The design follows the approved strict contract and keeps all human gates independent."
 exceptions: []
-```
+~~~
 
 ## Spec Change
-```yaml
+
+~~~yaml
 status: NOT_REQUIRED
 detected_in_step: "s05"
-current_spec_refs:
-  - "closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md"
-  - "changes/CR-008/spec-delta/srs.delta.md"
-reason: "The design implements the approved B/A/A semantics without changing scope or contract."
+reason: "Historical unbound events remain readable, while every newly constructed transaction-backed event requires direct identity; no approved criterion is removed."
 updated_artifacts: []
 required_followups: []
-```
+~~~
 
 ## Audit
-```yaml
+
+~~~yaml
 step: "s05 Technical Approach"
 status: PASS
 checks:
-  - { criterion: "Cycle states are distinct", result: PASS, evidence: "Architecture Details defines receipt_delta, state_delta, committed_cycle, retry, and event exclusion." }
-  - { criterion: "Event is transaction-attributable", result: PASS, evidence: "One ID is shared by the event note and coordinator journal/summary." }
-  - { criterion: "Mutable and immutable ownership is explicit", result: PASS, evidence: "Only report/s01 current state changes; historical evidence is preserved." }
-  - { criterion: "Exact touchpoints and verification are plan-ready", result: PASS, evidence: "Five exact source/test paths and three review batches are named." }
-  - { criterion: "Failures, compatibility, rollback, and observability are covered", result: PASS, evidence: "Main Artifact covers retry, identity, blockers, parity, atomicity, concurrency, and candidate evidence." }
-  - { criterion: "No unnecessary boundary is introduced", result: PASS, evidence: "No public schema, command, service, runtime, or migration is proposed." }
+  - { criterion: "Contract preserved", result: PASS, evidence: "text/note are render-only; unknown legacy is preserved; core selectors are exact." }
+  - { criterion: "Smallest sufficient design", result: PASS, evidence: "Existing shared boundary is extended; no new module or public interface." }
+  - { criterion: "All consumers covered", result: PASS, evidence: "Normalizer, writers, transitions, assertions, validator, renderer, transaction, tests, and packaging are named." }
+  - { criterion: "Compatibility is honest", result: PASS, evidence: "13 reports and historical events remain unchanged; no backfill." }
+  - { criterion: "Failure and release concerns covered", result: PASS, evidence: "Retry, recovery, rollback, observability, package, and hosted evidence are explicit." }
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
-timebox_evidence: "Completed in one focused option and design pass."
-gaps:
-  - "The digest-matched trusted Approach receipt is pending."
+gaps: ["Developer Approach review and fresh digest-bound receipt are pending."]
 risk_level: HIGH
-next_action: "Developer seals the trusted Approach receipt against this unchanged finalized host before s06."
-```
+next_action: "Developer reviews the amended Approach; s06 and implementation remain closed."
+~~~
 
 ## SDD Traceability
-```yaml
-requirement_refs: ["REQ-AG-009", "RCR-01", "RCR-02", "RCR-03", "RCR-04", "RCR-05", "RCR-06"]
-acceptance_refs: ["AC-RCR-01", "AC-RCR-02", "AC-RCR-03", "AC-RCR-04", "AC-RCR-05", "AC-RCR-06", "AC-RCR-07", "AC-RCR-08"]
+
+~~~yaml
+requirement_refs: ["RCR-01", "RCR-02", "RCR-03", "RCR-04", "RCR-05", "RCR-06", "RCR-07", "RCR-08", "RCR-09", "RCR-10"]
+acceptance_refs: ["AC-RCR-01", "AC-RCR-02", "AC-RCR-03", "AC-RCR-04", "AC-RCR-05", "AC-RCR-06", "AC-RCR-07", "AC-RCR-08", "AC-RCR-09", "AC-RCR-10"]
 task_refs: []
 test_refs:
-  - "repeat-closeout-first-second-retry"
-  - "closeout-semantic-current-state-matrix"
-  - "closeout-immutable-history-and-s01-parity"
-  - "closeout-failure-recovery-concurrency-matrix"
-  - "existing-readiness-adaptive-legacy-receipt-regression"
-  - "corrected-v2.6.2-candidate-and-parent-ag01-ag13"
-```
+  - "typed-state-contract-red-green"
+  - "legacy-known-unknown-adapter-matrix"
+  - "writer-inventory-and-invalid-shapes"
+  - "text-note-invariance-20"
+  - "direct-transaction-event-identity"
+  - "repeat-cycle-retry-recovery-concurrency"
+  - "13-report-no-migration-compatibility"
+  - "exact-candidate-parent-ag01-ag13"
+~~~
 
 ## Traceability
-```yaml
+
+~~~yaml
 upstream:
-  - "closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md"
-  - "Spec receipt BA 2026-09-10T04:55:23.729Z / SHA-256 b50db12a977a007b8785baff4153ad54d8049e0003d030deaf4329bebff9f60b"
-  - "DoR receipt QC 2026-09-10T04:55:36.637Z / SHA-256 b50db12a977a007b8785baff4153ad54d8049e0003d030deaf4329bebff9f60b"
-  - "F-AG11-001 in parent s07 and s08"
-  - "packages/workflow-bundle/scripts/work-item-protocol.js"
-  - "packages/workflow-bundle/scripts/workflow-gate-review.js"
-  - "packages/workflow-bundle/scripts/workflow-approval-transaction.js"
+  - "Amended s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87"
+  - "Spec receipt BA 2026-09-11T13:50:51.020Z"
+  - "Contract receipt Developer 2026-09-11T13:51:06.341Z"
+  - "DoR receipt QC 2026-09-11T13:51:18.535Z"
+  - "F-AG11-001 and structural root-cause review"
 outputs:
-  - "Recommended Option A transaction-delta projector"
-  - "Shared journal/event identity"
-  - "Canonical closeout current-state projection"
-  - "Brownfield failure, compatibility, rollback, observability, and validation design"
-next_step: "s06 Task Plan after the Developer-approved Approach receives a digest-matched receipt"
-```
+  - "Recommended shared protocol utility boundary"
+  - "Exact state-entry vocabulary and deterministic identity"
+  - "Bounded legacy adapter and exact selectors"
+  - "Direct approval-event transaction identity"
+  - "Expanded owned-path and validation proposal"
+next_step: "Developer Approach review, trusted receipt, then amended s06 Task Plan"
+~~~
 
 ## Handoff
-- Recommended option: transaction-delta closeout projector with one shared journal/event transaction ID.
-- Accepted trade-off: a small optional coordinator input and focused three-module delta are preferable to a new cycle ledger.
-- Current human review: Developer approved the Approach at `2026-09-10T08:12:02Z`.
-- Condition for step 6: seal and verify the Developer trusted Approach receipt against this unchanged finalized host.
-- Release note: keep `F-AG11-001` and publication/finalization blocked until the corrected child and one exact parent candidate pass re-verification.
+
+- Recommended option: extend the existing shared protocol utility boundary; do not add another model layer.
+- Non-negotiable: unknown legacy text is preserved exactly and cannot be semantically cleared.
+- New approval-transaction events carry direct transaction_id; historical unbound events remain immutable pre-contract evidence.
+- s06 must authorize every producer, consumer, validator, renderer, smoke, and focused-test path listed above.
+- Developer Approach approval is required before finalizing this host or drafting s06.
+- Implementation remains closed; the partial uncommitted T7 test is quarantined as pre-plan WIP.

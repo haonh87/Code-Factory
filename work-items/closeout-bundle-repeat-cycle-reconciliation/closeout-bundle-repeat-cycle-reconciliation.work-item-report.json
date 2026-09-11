@@ -101,13 +101,15 @@
     "Amended s04 now proposes AC-RCR-01..10 and a required persisted Data/Event Contract. Prior s04-s06 receipts are historical until fresh gates are reviewed and sealed.",
     "Independent review requested live counts. The branch contains 13 tracked work-item reports after Node 24 materialization, so the pre-contract compatibility threshold was refreshed from 12 to 13 before s04 human review.",
     "The existing owner stop rule is clarified as a 2026-09-18 stop-and-reassess checkpoint, not a delivery promise. AC-RCR-06 and AC-RCR-08 stay in scope unless unfinished at the checkpoint, when they are separable follow-ups.",
-    "Human BA approved the amended Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at 2026-09-11T11:40:59Z; trusted receipt sealing remains separate."
+    "Human BA approved the amended Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at 2026-09-11T11:40:59Z; trusted receipt sealing remains separate.",
+    "Fresh Spec, Contract, and DoR receipts verify digest_match=true against unchanged s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87.",
+    "The amended s05 proposes one shared typed-state boundary, a bounded legacy adapter, exact selectors, and direct transaction event identity. Developer Approach approval remains pending."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation",
-  "current_step": "s04",
+  "current_step": "s05",
   "granted_write_paths": [
     "packages/workflow-bundle/scripts/work-item-protocol.js",
     "packages/workflow-bundle/scripts/workflow-gate-review.js",
@@ -119,13 +121,13 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "amended-s04-trusted-receipts",
+  "handoff_target": "amended-s05-approach-human-gate",
   "required_actions": [
-    "Seal three fresh digest-bound authoring receipts against the unchanged finalized s04 host using the assigned BA, Developer, and QC sealers.",
-    "Keep s05/s06 amendment, T7 replacement, production edits, and release work closed until their corresponding fresh gates pass."
+    "Developer reviews the amended structural s05 host; after approval, seal evidence bound to its current digest.",
+    "Keep s06 amendment, T7 replacement, production edits, and release work closed."
   ],
   "blockers": [
-    "Three fresh digest-bound s04 receipts are pending."
+    "The current s05 host lacks matching human-controlled gate evidence."
   ],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
@@ -192,7 +194,9 @@
     "S04_STRUCTURAL_SPEC_CONTRACT_DOR_DRAFTED",
     "S04_STRUCTURAL_REPORT_INVENTORY_REFRESHED",
     "STRUCTURAL_TIMEBOX_CLARIFIED_AS_CHECKPOINT",
-    "S04_STRUCTURAL_SPEC_CONTRACT_DOR_HUMAN_APPROVED_PENDING_RECEIPTS"
+    "S04_STRUCTURAL_SPEC_CONTRACT_DOR_HUMAN_APPROVED_PENDING_RECEIPTS",
+    "S04_STRUCTURAL_RECEIPTS_VERIFIED",
+    "S05_STRUCTURAL_TECHNICAL_APPROACH_DRAFTED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -232,7 +236,9 @@
     "Amended s04 is drafted with typed state-entry and transaction-backed event contracts. Fresh Spec, Contract, DoR, Approach, and Task Plan receipts are required before production work resumes.",
     "Independent review confirmed the structural invariants and requested two live counts. The workflow has 9 checkout and 9 setup-node references; the tracked report inventory is 13, and the s04 compatibility threshold has been corrected accordingly.",
     "The review's timebox proposal matches the owner's existing stop rule: 2026-09-18 is a stop-and-reassess checkpoint, not a delivery promise. No acceptance criterion is removed before that checkpoint.",
-    "Human BA approved the amended Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at 2026-09-11T11:40:59Z. Prior s04-s06 receipts remain historical; three fresh trusted receipts are still required."
+    "Human BA approved the amended Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at 2026-09-11T11:40:59Z. Prior s04-s06 receipts remain historical.",
+    "Fresh Spec receipt by BA at 2026-09-11T13:50:51.020Z, Contract receipt by Developer at 2026-09-11T13:51:06.341Z, and DoR receipt by QC at 2026-09-11T13:51:18.535Z all verify digest_match=true against s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87.",
+    "The amended s05 proposes the smallest complete structural design: shared typed-state utilities, bounded legacy import, exact selectors, structured rendering, and direct transaction event identity. Developer Approach approval remains pending."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -510,6 +516,14 @@
       "from_status": "BLOCKED",
       "to_status": "BLOCKED",
       "note": "BA approved amended Spec, Developer approved amended Contract, and BA/QC approved amended DoR. Three new digest-bound receipts remain required before s05 amendment."
+    },
+    {
+      "timestamp": "2026-09-11T13:58:58Z",
+      "action": "open-amended-s05-structural-approach",
+      "actor": "agent",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "Verified fresh Spec, Contract, and DoR receipts against amended s04 and drafted the structural s05 Approach. Developer review and receipt remain pending; s06 and implementation stay closed."
     }
   ]
 }
