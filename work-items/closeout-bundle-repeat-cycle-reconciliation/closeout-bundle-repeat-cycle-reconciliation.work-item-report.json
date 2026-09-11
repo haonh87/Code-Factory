@@ -1,8 +1,8 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "BLOCKED",
   "decision_owner": "agent",
-  "protocol_owner": "developer",
+  "protocol_owner": "ba",
   "raw_request_summary": "Fix repeated closeout-bundle reconciliation so a successful current approval cycle removes stale pending approval actions and handoffs, records a current-cycle protocol event despite historical evidence, and remains idempotent.",
   "request_source": "user",
   "candidate_count": 1,
@@ -102,7 +102,7 @@
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation",
-  "current_step": "s07",
+  "current_step": "s03",
   "granted_write_paths": [
     "packages/workflow-bundle/scripts/work-item-protocol.js",
     "packages/workflow-bundle/scripts/workflow-gate-review.js",
@@ -114,12 +114,18 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "s07-t7-matrix",
+  "handoff_target": "structural-contract-open-questions",
   "required_actions": [
-    "Agent executes the approved T7 atomicity, concurrency, twenty-cycle determinism, compatibility, full-unit, and workflow-validator matrix.",
-    "After T7 evidence is complete, prepare B3 Spec Compliance for QC; B3 Code Quality remains closed until that PASS."
+    "BA, Developer, and QC decide OQ-RCR-004 Option B or an explicit alternative for legacy adapter semantics.",
+    "Developer and QC decide OQ-RCR-005 Option A or an explicit alternative for structured entry identity.",
+    "Developer and QC decide OQ-RCR-006 Option B or an explicit alternative for transaction-backed event identity.",
+    "Keep T7, the GitHub Actions bump, amended s04, and all production edits closed until their corresponding gates pass."
   ],
-  "blockers": [],
+  "blockers": [
+    "OQ-RCR-004 is open: a plain legacy wrapper cannot preserve both opaque text and semantic gate-state clearing.",
+    "OQ-RCR-005 is open: generated state-entry identity and required fields are not approved.",
+    "OQ-RCR-006 is open: transaction_id applicability on protocol events is not approved."
+  ],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
     "work-items/adaptive-governance-human-approval-ux",
@@ -178,7 +184,9 @@
     "S07_B2_CODE_QUALITY_RECOMMENDATION_PREPARED",
     "S07_B2_CODE_QUALITY_REFRESHED_APPROVED",
     "S07_F_RCR_B2_001_RESOLVED",
-    "S07_T7_OPENED"
+    "S07_T7_OPENED",
+    "WORK_ITEM_BLOCKED",
+    "S03_STRUCTURAL_CONTRACT_QUESTIONS_OPENED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -212,7 +220,8 @@
     "Human Developer approved Task Plan amendment T6a at 2026-09-11T03:46:13Z. The implementation path is open only for the fail-first boundary fixture and smallest bounded-alias correction; T7 remains blocked pending refreshed B2 reviews.",
     "T6a RED commit 0d1ac48c0adb43279f67503a318187295688a463 produced exactly one expected assertion failure for uat/situation and dod/dodgy substring collisions. GREEN source f9533c4de66fdb04e75008382b39b4fc413e3caa uses a Unicode letter/number boundary predicate; both focused suites, three syntax checks, and git diff --check pass. Refreshed B2 Spec Compliance is READY_FOR_REVIEW by QC; Code Quality is NOT_OPEN.",
     "Human QC approved refreshed B2 Spec Compliance at 2026-09-11T04:04:57Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. Independent Code Quality review recommends PASS with no new findings; Developer/QC approval is pending and F-RCR-B2-001 remains OPEN until that decision.",
-    "Human Developer and QC approved refreshed B2 Code Quality PASS at 2026-09-11T04:21:48Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. F-RCR-B2-001 is RESOLVED, T7 is OPEN, and B3 plus all later gates remain independent."
+    "Human Developer and QC approved refreshed B2 Code Quality PASS at 2026-09-11T04:21:48Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. F-RCR-B2-001 is RESOLVED, T7 is OPEN, and B3 plus all later gates remain independent.",
+    "Owner scope direction reopened discovery for a persisted structured-state contract. Impact analysis opened OQ-RCR-004..006 and suspended T7 before further source changes; no gate approval is inferred."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -434,6 +443,22 @@
       "from_status": "ACTIVE",
       "to_status": "ACTIVE",
       "note": "Human Developer and QC approved refreshed B2 Code Quality PASS for source f9533c4de66fdb04e75008382b39b4fc413e3caa. F-RCR-B2-001 is resolved and T7 opens; B3 and later gates remain independent."
+    },
+    {
+      "timestamp": "2026-09-11T07:26:14.837Z",
+      "action": "block",
+      "actor": "agent",
+      "from_status": "ACTIVE",
+      "to_status": "BLOCKED",
+      "note": "Owner scope decision replaces prose-parsing closeout patches with a structured-state contract; s07 is suspended and returns to s04."
+    },
+    {
+      "timestamp": "2026-09-11T07:29:33.078Z",
+      "action": "block",
+      "actor": "agent",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "Impact analysis found unresolved contract choices: legacy strings cannot both remain opaque and participate in semantic clearing; transaction_id must be scoped to transaction-backed events. Return to s03."
     }
   ]
 }

@@ -116,11 +116,12 @@ tags:
 > `6e16006`, and T6 is GREEN at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`:
 > selected-gate pending state is removed, the exact close action and `protocol-close` handoff are
 > projected, unrelated blockers and ordered history are preserved, and both focused suites pass.
-> Human QC approved B2 Spec Compliance at `2026-09-11T03:20:17Z`. The subsequently opened
-> independent Code Quality review found a bounded-semantics counterexample: selecting gate `uat`
-> removes an unrelated blocker containing the word `situation` because short gate aliases are
-> matched by substring. `F-RCR-B2-001` is therefore proposed as HIGH; T7 remains blocked pending
-> Developer/QC disposition, QC reopen confirmation, and approval of the proposed T6a correction.
+> B2 later failed on the `uat`/`situation` alias collision, then T6a recorded an expected RED and
+> the bounded-alias GREEN source `f9533c4de66fdb04e75008382b39b4fc413e3caa`. Human QC approved
+> refreshed Spec Compliance, followed by Human Developer/QC approval of refreshed Code Quality;
+> `F-RCR-B2-001` is resolved. T7 began and its focused 20-cycle fixture passed, but the owner then
+> expanded scope to a persisted structured-state contract. The work item is now `BLOCKED` at s03;
+> T7 and all production edits are suspended pending OQ-RCR-004..006 and fresh s04-s06 receipts.
 
 ## Step Contract
 ```yaml
@@ -171,8 +172,8 @@ tasks_completed:
   - "T5 RED: three assertions proved semantic pending-state cleanup, canonical protocol-close handoff, and blocker filtering were absent"
   - "T6 GREEN: projected exact close-ready current state while preserving unrelated blockers, history prefixes, and report/s01 parity"
 tasks_next:
-  - "B2: Developer and QC review the Code Quality FAIL recommendation and disposition F-RCR-B2-001"
-  - "If accepted, QC reopens B2 Spec Compliance and Developer approves T6a before any correction"
+  - "Resolve OQ-RCR-004..006 with the assigned BA, Developer, and QC roles."
+  - "Draft and reapprove amended Spec, Contract, DoR, Approach, and Task Plan before replacing T7."
 bug_repro_evidence:
   - behavior: "A later successful closeout is suppressed when historical CLOSEOUT_BUNDLE_APPROVED evidence exists."
     observed: "reconcileApprovalBundleReport uses report.audit_events.includes(auditEvent) as a global eventAlreadyRecorded condition."
@@ -237,12 +238,14 @@ config_changes: []
 review_checkpoints:
   - "B1 Spec Compliance: APPROVED_BY_QC at 2026-09-10T11:27:32Z"
   - "B1 Code Quality: APPROVED_BY_DEVELOPER_AND_QC at 2026-09-10T11:38:58Z"
-  - "B2 Spec Compliance: APPROVED_BY_QC at 2026-09-11T03:20:17Z"
-  - "B2 Code Quality: READY_FOR_DEVELOPER_QC_REVIEW with recommended FAIL due proposed HIGH F-RCR-B2-001"
-  - "B3 after T7: QC Spec Compliance, then Developer/QC Code Quality"
+  - "B2 historical pass was reopened after F-RCR-B2-001."
+  - "Refreshed B2 Spec Compliance: APPROVED_BY_QC for f9533c4de66fdb04e75008382b39b4fc413e3caa."
+  - "Refreshed B2 Code Quality: APPROVED_BY_DEVELOPER_AND_QC; F-RCR-B2-001 RESOLVED."
+  - "B3 is withdrawn pending the replacement structured-state plan and reviews."
 known_limitations:
-  - "The current substring predicate can remove unrelated blocker prose containing short aliases such as uat or dod."
-  - "B2 finding disposition/correction plus T7 atomicity, compatibility, B3 review, and T8 exact-candidate work remain."
+  - "The bounded-alias patch resolves the observed collision but leaves prose as machine state; the owner rejected further patching in favor of a structural contract."
+  - "Legacy adapter semantics, structured entry identity, and transaction-backed event identity remain open."
+  - "The uncommitted 20-cycle fixture still reads identity from note and is not a valid baseline for the proposed contract."
   - "F-AG11-001 keeps parent verification, release, protocol close, and branch finalization blocked."
 ```
 
@@ -516,8 +519,9 @@ code_quality:
 ## T7 Matrix
 ```yaml
 task_id: T7
-status: OPEN
+status: SUSPENDED_BY_SCOPE_AMENDMENT
 opened_at: "2026-09-11T04:21:48Z"
+suspended_at: "2026-09-11T07:26:14.837Z"
 dependencies:
   refreshed_b2_spec_compliance: PASS
   refreshed_b2_code_quality: PASS
@@ -527,7 +531,16 @@ scope:
   - "Confirm concurrent retry permits at most one commit and later unchanged attempts are NOOP."
   - "Execute twenty controlled repeat cycles with zero report/s01 mismatch or stale approval prompt."
   - "Run first-cycle, legacy, adaptive, readiness, rejection, receipt-v1, reviewer, public CLI, full unit, and workflow validator regressions."
-next_review: "B3 Spec Compliance by QC before B3 Code Quality by Developer/QC."
+partial_evidence_before_suspension:
+  - "An uncommitted 20-cycle deterministic fixture passed the focused work-item-protocol suite."
+  - "The fixture still reads transaction identity from event.note, so it must not be committed as the structural contract baseline."
+  - "Focused transaction, recovery, and lock suites passed."
+  - "Full unit reached one runtime-parity failure caused by two ignored, byte-identical generated files named workflow-artifact-naming 2.md; source files were unchanged."
+scope_change:
+  - "Owner directed replacement of prose-derived state with structured blockers/required_actions and first-class approval-event transaction identity."
+  - "The change opens a persisted Contract and invalidates the assumptions that kept the prior s04 Contract gate not_applicable."
+  - "OQ-RCR-004..006 plus fresh Spec, Contract, DoR, Approach, and Task Plan receipts are required before any T7 replacement or production edit."
+next_review: "None in s07. Return to s03 and then follow the amended authoring gates in order."
 ```
 
 ## Traceability
@@ -545,11 +558,13 @@ current:
   - "T6a expected RED at 0d1ac48; bounded-alias GREEN at f9533c4de66fdb04e75008382b39b4fc413e3caa"
   - "Refreshed B2 Spec Compliance approved by QC; Code Quality PASS recommendation ready"
   - "Refreshed B2 Code Quality approved by Developer/QC; F-RCR-B2-001 RESOLVED; T7 OPEN"
-next_step: "Execute T7 atomicity, concurrency, twenty-cycle determinism, compatibility, full-unit, and workflow-validator matrix"
+  - "Owner structural scope decision suspended T7 and returned the work item to s03 for OQ-RCR-004..006"
+next_step: "Approve the structural contract questions, then re-seal amended s04-s06 before resuming s07."
 ```
 
 ## Handoff
-- Outputs actual: T0-T6 plus T6a RED/GREEN evidence, completed B1, refreshed B2 Spec Compliance and Code Quality PASS, resolved `F-RCR-B2-001`, and opened T7.
-- Known limitations: T7 matrix, B3 reviews, T8 exact candidate, and child/parent verification remain pending.
+- Outputs actual: T0-T6 plus T6a RED/GREEN evidence, completed B1, refreshed B2 reviews, resolved `F-RCR-B2-001`, and partial pre-amendment T7 evidence.
+- Current boundary: T7 is suspended; the child is `BLOCKED` at s03 until OQ-RCR-004..006 and fresh s04-s06 receipts pass.
+- Known limitations: structural contract authoring, replacement TDD/reviews, T8 exact candidate, and child/parent verification remain pending.
 - Notes for testing: the fail-first `uat`/`dod` substring fixture now passes without weakening any existing semantic projection or transaction assertion.
 - Notes for deployment: none in s07; corrected candidate and rollback binding are T8/s08 work.

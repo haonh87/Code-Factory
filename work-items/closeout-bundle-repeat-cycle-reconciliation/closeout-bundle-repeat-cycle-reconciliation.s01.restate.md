@@ -458,34 +458,216 @@ stop_condition:
   pushed_to_s03: []
 ```
 
+## SA Architecture Driver Amendment - Structured State Contract
+```yaml
+invocation:
+  skill: sa
+  directives_parsed: []
+  directives_unresolved: []
+  selected_profile: driver+landscape
+  profile_source: escalated
+  escalation_reasons:
+    - "blockers, required_actions, and protocol event identity are persisted data/event contracts"
+objectives:
+  applicable: true
+  reason: ""
+  items:
+    - id: "OBJ-RC-004"
+      statement: "End the closeout defect cluster by making machine state independent of human wording."
+      measure: "0 core state transitions or tests infer identity/semantics from text or note; 100% newly generated state entries are structured."
+      source: "owner scope decision, 2026-09-11"
+      confidence: stated
+drivers:
+  applicable: true
+  reason: ""
+  items:
+    - id: "DRV-SA-RC-005"
+      kind: data_ownership
+      statement: "Structured id/kind/gate fields own workflow semantics; text and note are human presentation only."
+      origin: { stakeholder: "owner/qc", concern: "Prose-matching fixes repeatedly expose another silent state defect.", constraint_ref: "RCR structural root-cause decision" }
+      traces_to: ["OBJ-RC-004"]
+      threshold: { status: quantified, value: "0 core reads of text/note for clearing, deduplication, or attribution.", reason: "" }
+      verification: "Scan production and test consumers, then execute negative wording mutations with unchanged state outcomes."
+      architectural_significance: "Moves source of truth from mutable wording to explicit machine fields."
+      priority: high
+    - id: "DRV-SA-RC-006"
+      kind: constraint
+      statement: "Legacy reports remain readable without a mandatory fleet migration, and unfinished scope exits CR-008 at the deadline."
+      origin: { stakeholder: "owner", concern: "A structural correction must not strand existing workflow reports or extend CR-008 indefinitely.", constraint_ref: "No-migration decision and 2026-09-18 timebox" }
+      traces_to: ["OBJ-RC-004"]
+      threshold: { status: quantified, value: "12/12 tracked reports load; 0 required bulk migrations; no new CR-008 scope after 2026-09-18.", reason: "" }
+      verification: "Run compatibility validation over every tracked report and enforce the dated stop rule in the delivery plan."
+      architectural_significance: "Constrains the contract cutover and rollout boundary."
+      priority: high
+landscape:
+  applicable: true
+  reason: "A persisted data/event contract changes and has multiple in-process consumers."
+  question_answered: "Which protocol consumers own machine semantics, and where is legacy text translated before report and s01 projection?"
+  render_format: drawio
+  view_axis: system
+  quality_checks: []
+  manual_steps: []
+  produced_by: ""
+input_issues:
+  unanchored_drivers: []
+  contested_ownership: []
+  untraceable_drivers: []
+  unsupported_objectives: []
+  conflicting_drivers:
+    - { pair: ["opaque legacy text", "legacy semantic clearing"], nature: "A legacy entry cannot be both unread by code and automatically classified for gate-state clearing.", owner: "ba/developer/qc" }
+  unquantified_nfrs: []
+  ownerless_assumptions: []
+  surplus_drivers: []
+  missing_capability:
+    - "The canonical repo architecture-modeling package exists, but it is not exposed in this session's active skill registry; the required landscape question is recorded and no substitute drawing is produced."
+metrics:
+  applicable: true
+  items:
+    - { id: "M-01", name: "Objective traceability", formula: "2/2", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "DRV-SA-RC-005..006 trace to OBJ-RC-004." }
+    - { id: "M-02", name: "Objective support", formula: "1/1", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "OBJ-RC-004 is supported by two drivers." }
+    - { id: "M-03", name: "Driver provenance", formula: "2/2", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "Both drivers name stakeholder concern and constraint source." }
+    - { id: "M-04", name: "NFR quantification", formula: "2/2", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "Both applicable drivers carry numeric outcomes." }
+    - { id: "M-05", name: "Verification coverage", formula: "2/2", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "Both drivers define a check." }
+    - { id: "M-06", name: "Handoff coverage", formula: "2/2", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "Both drivers map to BA, DEV, or QC handoff." }
+    - { id: "M-07", name: "Open-item ownership", formula: "3/3", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "OQ-RCR-004..006 each name human owners." }
+    - { id: "M-08", name: "Option discipline", formula: "0 direction choices", value: "not_applicable", threshold: "100%", calibration: uncalibrated, evidence: "SA does not choose the technical approach." }
+    - { id: "M-09", name: "Landscape element ownership", formula: "not produced", value: "not_measured", threshold: "100%", calibration: uncalibrated, evidence: "Active skill registry does not expose architecture-modeling." }
+    - { id: "M-10", name: "Capability ownership clarity", formula: "1/2", value: "50%", threshold: "100%", calibration: uncalibrated, evidence: "Core structured-state ownership is explicit; legacy translation remains OQ-RCR-004." }
+handoff:
+  to_ba: { applicable: true, reason: "", items: ["Decide whether the bounded legacy adapter preserves the promised completion behavior without making prose authoritative."] }
+  to_dev: { applicable: true, reason: "", items: ["Keep machine semantics in explicit fields and isolate any legacy translation at one boundary."] }
+  to_qc: { applicable: true, reason: "", items: ["Prove wording mutations do not change structured outcomes and all 12 tracked reports remain readable."] }
+  to_devops: { applicable: false, reason: "owned by /ta", items: [] }
+stop_condition:
+  met: false
+  reason: "Legacy operational compatibility and event identity scope still require human decisions."
+  pushed_to_s03:
+    - { question: "OQ-RCR-004 legacy adapter semantics", owner: "ba/developer/qc" }
+    - { question: "OQ-RCR-005 structured entry identity", owner: "developer/qc" }
+    - { question: "OQ-RCR-006 transactional event identity", owner: "developer/qc" }
+```
+
+## TA Architecture Driver Amendment - Structured State Contract
+```yaml
+invocation:
+  skill: ta
+  directives_parsed: []
+  directives_unresolved: []
+  selected_profile: driver+landscape
+  profile_source: escalated
+  escalation_reasons:
+    - "blockers, required_actions, and protocol event identity are persisted data/event contracts"
+objectives: { applicable: false, reason: "owned by /sa", items: [] }
+drivers:
+  applicable: true
+  reason: ""
+  items:
+    - id: "DRV-TA-RC-005"
+      kind: quality_attribute
+      statement: "Core reconciliation is invariant under arbitrary changes to human-readable text and note fields."
+      origin: { stakeholder: "qc", concern: "Regex and substring improvements have produced repeated correctness defects.", constraint_ref: "RCR root-cause analysis" }
+      traces_to: ["OBJ-RC-004"]
+      threshold: { status: quantified, value: "0 semantic outcome changes across at least 20 text/note mutation cases.", reason: "" }
+      verification: "Mutate wording, Unicode, aliases, and sentence order while keeping id/kind/gate/transaction_id fixed."
+      architectural_significance: "Prevents display prose from acting as a hidden schema."
+      priority: high
+    - id: "DRV-TA-RC-006"
+      kind: integration
+      statement: "The legacy-input adapter emits typed entries before validator, lifecycle, evidence, renderer, and s01-sync consumers execute."
+      origin: { stakeholder: "maintainer", concern: "normalizeArray currently destroys object shape and multiple consumers assume strings.", constraint_ref: "91 state-field references inventoried on 2026-09-11" }
+      traces_to: ["OBJ-RC-004"]
+      threshold: { status: quantified, value: "12/12 tracked reports load; 100% newly written entries satisfy the structured contract.", reason: "" }
+      verification: "Run report inventory, validator, authoring smoke, focused protocol suites, full unit, runtime parity, and package audit."
+      architectural_significance: "Locks the single compatibility seam across all consumers."
+      priority: high
+    - id: "DRV-TA-RC-007"
+      kind: integration
+      statement: "Every approval-transaction protocol event carries the coordinator transaction_id as a direct field; non-transaction lifecycle events carry no synthetic identity."
+      origin: { stakeholder: "developer/qc", concern: "Identity currently lives in note and is optional beside a history-based inference path.", constraint_ref: "transaction journal/result and protocol event contract" }
+      traces_to: ["OBJ-RC-004"]
+      threshold: { status: quantified, value: "100% equality among journal, result, and event transaction_id for committed approval transactions; 0 note reads.", reason: "" }
+      verification: "Assert direct field equality for first/later cycles, recovery, concurrency, and unchanged NOOP retries."
+      architectural_significance: "Makes causality machine-readable at the transaction boundary."
+      priority: high
+landscape:
+  applicable: true
+  reason: "The event/data contract crosses normalizer, transaction, validator, renderer, and runtime packaging consumers."
+  question_answered: "Where does legacy text stop, which component issues structured identity, and which consumers may read each field?"
+  render_format: drawio
+  view_axis: system
+  quality_checks: []
+  manual_steps: []
+  produced_by: ""
+input_issues:
+  unanchored_drivers: []
+  contested_ownership: []
+  untraceable_drivers: []
+  unsupported_objectives: []
+  conflicting_drivers:
+    - { pair: ["legacy text opacity", "legacy behavior equivalence"], nature: "Exact compatibility needs a declared adapter exception or an accepted behavior reduction.", owner: "ba/developer/qc" }
+  unquantified_nfrs: []
+  ownerless_assumptions: []
+  surplus_drivers: []
+  missing_capability:
+    - "architecture-modeling is not exposed in the active skill registry; no landscape was produced."
+metrics:
+  applicable: true
+  items:
+    - { id: "M-01", name: "Objective traceability", formula: "3/3", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "DRV-TA-RC-005..007 trace to OBJ-RC-004." }
+    - { id: "M-02", name: "Objective support", formula: "owned by /sa", value: "not_applicable", threshold: "100%", calibration: uncalibrated, evidence: "TA does not fill objectives." }
+    - { id: "M-03", name: "Driver provenance", formula: "3/3", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "Every TA driver names concern and constraint." }
+    - { id: "M-04", name: "NFR quantification", formula: "3/3", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "Every TA driver has a numeric threshold." }
+    - { id: "M-05", name: "Verification coverage", formula: "3/3", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "Every TA driver names its check." }
+    - { id: "M-06", name: "Handoff coverage", formula: "3/3", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "Every TA driver maps to DEV/QC/DevOps." }
+    - { id: "M-07", name: "Open-item ownership", formula: "3/3", value: "100%", threshold: "100%", calibration: uncalibrated, evidence: "OQ-RCR-004..006 name owners." }
+    - { id: "M-08", name: "Option discipline", formula: "0 direction choices", value: "not_applicable", threshold: "100%", calibration: uncalibrated, evidence: "TA defines constraints before s05." }
+    - { id: "M-09", name: "Landscape element ownership", formula: "not produced", value: "not_measured", threshold: "100%", calibration: uncalibrated, evidence: "Active skill registry gap is declared." }
+    - { id: "M-10", name: "Capability ownership clarity", formula: "owned by /sa", value: "not_applicable", threshold: "100%", calibration: uncalibrated, evidence: "TA does not allocate system ownership." }
+handoff:
+  to_ba: { applicable: false, reason: "owned by /sa", items: [] }
+  to_dev: { applicable: true, reason: "", items: ["Design one typed state boundary, one bounded legacy adapter, and direct event transaction identity after contract approval."] }
+  to_qc: { applicable: true, reason: "", items: ["Test text invariance, legacy read behavior, typed writes, transaction equality, and no partial writes."] }
+  to_devops: { applicable: true, reason: "", items: ["Require full runtime/package parity and one hosted candidate after the contract cutover."] }
+stop_condition:
+  met: false
+  reason: "The constraint envelope is measurable, but three contract decisions remain open."
+  pushed_to_s03:
+    - { question: "OQ-RCR-004 legacy adapter semantics", owner: "ba/developer/qc" }
+    - { question: "OQ-RCR-005 structured entry identity", owner: "developer/qc" }
+    - { question: "OQ-RCR-006 transactional event identity", owner: "developer/qc" }
+```
+
 ## Audit
 ```yaml
 step: "s01 Clarify"
-status: PASS
+status: PARTIAL
 checks:
   - { criterion: "Behavior is exact", result: PASS, evidence: "Valid receipts are contrasted with stale navigation and missing current event." }
   - { criterion: "Dedup is resolved", result: PASS, evidence: "Prior child fixed gate selection; this child owns repeated-cycle reconciliation." }
-  - { criterion: "SA/TA drivers are complete", result: PASS, evidence: "Eight drivers have provenance, thresholds, verification, traceability, and handoff." }
+  - { criterion: "SA/TA drivers are complete", result: PARTIAL, evidence: "Original drivers remain valid; the structural amendment adds five traced drivers but leaves legacy ownership and three contract questions open." }
   - { criterion: "No implementation selected", result: PASS, evidence: "Only scope, constraints, outcomes, and verification seeds are recorded." }
 constraint_violations: []
-unmitigated_high_risks: []
+unmitigated_high_risks:
+  - "Legacy text cannot be both opaque and semantically clearable until OQ-RCR-004 is decided."
 timebox_breach: false
 timebox_evidence: "One bounded linked-defect clarification pass."
-gaps: []
+gaps:
+  - "OQ-RCR-004..006 decisions"
+  - "Required contract landscape not produced because architecture-modeling is unavailable in the active skill registry"
 risk_level: HIGH
-next_action: "Review the drafted s02 Business Goal before s03 proceeds."
+next_action: "Remain at s03; approve or reject the proposed B/A/B recommendation bundle before amended s04 authoring."
 ```
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: BLOCKED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation"
-current_step: "s07"
+current_step: "s03"
 granted_write_paths:
   - "packages/workflow-bundle/scripts/work-item-protocol.js"
   - "packages/workflow-bundle/scripts/workflow-gate-review.js"
@@ -502,16 +684,21 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: "developer"
+protocol_owner: "ba"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "s07-t7-matrix"
-last_transition_action: "s07-b2-code-quality-approved-open-t7"
-last_transition_at: "2026-09-11T04:21:48Z"
+handoff_target: "structural-contract-open-questions"
+last_transition_action: "block"
+last_transition_at: "2026-09-11T07:29:33.078Z"
 required_actions:
-  - "Agent executes the approved T7 atomicity, concurrency, twenty-cycle determinism, compatibility, full-unit, and workflow-validator matrix."
-  - "After T7 evidence is complete, prepare B3 Spec Compliance for QC; B3 Code Quality remains closed until that PASS."
-blockers: []
+  - "BA, Developer, and QC decide OQ-RCR-004 Option B or an explicit alternative for legacy adapter semantics."
+  - "Developer and QC decide OQ-RCR-005 Option A or an explicit alternative for structured entry identity."
+  - "Developer and QC decide OQ-RCR-006 Option B or an explicit alternative for transaction-backed event identity."
+  - "Keep T7, the GitHub Actions bump, amended s04, and all production edits closed until their corresponding gates pass."
+blockers:
+  - "OQ-RCR-004 is open: a plain legacy wrapper cannot preserve both opaque text and semantic gate-state clearing."
+  - "OQ-RCR-005 is open: generated state-entry identity and required fields are not approved."
+  - "OQ-RCR-006 is open: transaction_id applicability on protocol events is not approved."
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -523,24 +710,25 @@ review_notes:
   - "Human BA approved Spec and human BA/QC approved DoR at 2026-09-10T03:09:26Z."
   - "Trusted Spec receipt APPROVED by BA at 2026-09-10T04:55:23.729Z and trusted DoR receipt APPROVED by QC at 2026-09-10T04:55:36.637Z both match finalized s04 SHA-256 b50db12a977a007b8785baff4153ad54d8049e0003d030deaf4329bebff9f60b."
   - "The proposed s05 Approach compares three options and recommends operation-delta cycle classification plus one shared journal/event transaction ID."
-  - "Human Developer approved the s05 Approach at 2026-09-10T08:12:02Z."
+  - "Human Developer approved the s05 Approach at 2026-09-10T08:12:02Z; the finalized host now awaits a trusted Approach receipt."
   - "Trusted Approach receipt APPROVED by Developer at 2026-09-10T08:20:46.196Z matches finalized s05 SHA-256 5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a."
   - "The proposed s06 Task Plan orders T0..T8, three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, and one exact-candidate child-to-parent verification path."
   - "Human Developer approved the s06 Task Plan at 2026-09-10T08:56:19Z."
   - "Trusted Task Plan receipt APPROVED by Developer at 2026-09-10T10:11:42.373Z matches finalized s06 SHA-256 7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9."
-  - "s07 activated at 2026-09-10T10:13:59.704Z. T0 baseline at source edc9454d38126d51ad9e5a85afc475d2915ac9bd passed both focused suites before production edits."
+  - "s07 activated at 2026-09-10T10:13:59.704Z. T0 baseline at source edc9454d38126d51ad9e5a85afc475d2915ac9bd passed work-item-protocol.test.js and workflow-gate-review.test.js before production edits."
   - "T1-T4 complete at source a65704aa0be26f99988d6d5c13f632fc76907ddd. B1 Spec Compliance is READY_FOR_REVIEW by QC; B1 Code Quality remains NOT_RUN until that approval."
   - "Human QC approved B1 Spec Compliance at 2026-09-10T11:27:32Z with no findings. B1 Code Quality is now READY_FOR_REVIEW by Developer and QC; T5 remains blocked."
   - "B1 Code Quality recommendation PASS was prepared at 2026-09-10T11:32:30Z from focused test, syntax, diff, security, compatibility, performance, and minimal-delta evidence; human Developer/QC verdict remains pending."
   - "Human Developer and QC approved B1 Code Quality at 2026-09-10T11:38:58Z with no findings. T5 fail-first fixtures are now open; T6 production changes remain blocked until the expected RED is recorded."
   - "T5 RED commit 6e16006 produced exactly three expected failures for semantic actions, protocol-close handoff, and selected-gate blockers. T6 GREEN source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca passes both focused suites, syntax, and diff checks; B2 Spec Compliance is READY_FOR_REVIEW by QC while Code Quality remains NOT_OPEN."
   - "Human QC approved B2 Spec Compliance at 2026-09-11T03:20:17Z; B2 Code Quality then opened."
-  - "B2 Code Quality recommends FAIL because uat matches inside situation and removes an unrelated blocker; proposed HIGH F-RCR-B2-001 and T6a await human disposition."
+  - "B2 Code Quality recommends FAIL: the pure in-memory uat/situation counterexample changes unrelated blocker count from 1 to 0. Proposed HIGH F-RCR-B2-001 and T6a require human disposition before any code change or T7."
   - "Human Developer and QC approved the B2 Code Quality FAIL verdict and opened HIGH F-RCR-B2-001 at 2026-09-11T03:46:13Z. QC reopened B2 Spec Compliance, preserving its prior PASS as historical evidence for source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca."
   - "Human Developer approved Task Plan amendment T6a at 2026-09-11T03:46:13Z. The implementation path is open only for the fail-first boundary fixture and smallest bounded-alias correction; T7 remains blocked pending refreshed B2 reviews."
   - "T6a RED commit 0d1ac48c0adb43279f67503a318187295688a463 produced exactly one expected assertion failure for uat/situation and dod/dodgy substring collisions. GREEN source f9533c4de66fdb04e75008382b39b4fc413e3caa uses a Unicode letter/number boundary predicate; both focused suites, three syntax checks, and git diff --check pass. Refreshed B2 Spec Compliance is READY_FOR_REVIEW by QC; Code Quality is NOT_OPEN."
   - "Human QC approved refreshed B2 Spec Compliance at 2026-09-11T04:04:57Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. Independent Code Quality review recommends PASS with no new findings; Developer/QC approval is pending and F-RCR-B2-001 remains OPEN until that decision."
   - "Human Developer and QC approved refreshed B2 Code Quality PASS at 2026-09-11T04:21:48Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa. F-RCR-B2-001 is RESOLVED, T7 is OPEN, and B3 plus all later gates remain independent."
+  - "Owner scope direction reopened discovery for a persisted structured-state contract. Impact analysis opened OQ-RCR-004..006 and suspended T7 before further source changes; no gate approval is inferred."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -599,6 +787,8 @@ audit_events:
   - "S07_B2_CODE_QUALITY_REFRESHED_APPROVED"
   - "S07_F_RCR_B2_001_RESOLVED"
   - "S07_T7_OPENED"
+  - "WORK_ITEM_BLOCKED"
+  - "S03_STRUCTURAL_CONTRACT_QUESTIONS_OPENED"
 ```
 
 ## Traceability
