@@ -505,12 +505,12 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "s07-b2-code-quality-review"
-last_transition_action: "s07-b2-code-quality-finding-proposed"
-last_transition_at: "2026-09-11T03:20:17Z"
+handoff_target: "s07-t6a-red"
+last_transition_action: "s07-b2-finding-approved-reopen-t6a"
+last_transition_at: "2026-09-11T03:46:13Z"
 required_actions:
-  - "Developer and QC review the B2 Code Quality FAIL recommendation and disposition proposed HIGH finding F-RCR-B2-001."
-  - "If accepted, QC reopens B2 Spec Compliance and Developer approves proposed T6a before production correction."
+  - "Agent executes the approved T6a fail-first fixture before any production correction."
+  - "After T6a GREEN, prepare refreshed B2 Spec Compliance for QC; Code Quality remains closed until that review passes."
 blockers: []
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
@@ -536,6 +536,8 @@ review_notes:
   - "T5 RED commit 6e16006 produced exactly three expected failures for semantic actions, protocol-close handoff, and selected-gate blockers. T6 GREEN source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca passes both focused suites, syntax, and diff checks; B2 Spec Compliance is READY_FOR_REVIEW by QC while Code Quality remains NOT_OPEN."
   - "Human QC approved B2 Spec Compliance at 2026-09-11T03:20:17Z; B2 Code Quality then opened."
   - "B2 Code Quality recommends FAIL because uat matches inside situation and removes an unrelated blocker; proposed HIGH F-RCR-B2-001 and T6a await human disposition."
+  - "Human Developer and QC approved the B2 Code Quality FAIL verdict and opened HIGH F-RCR-B2-001 at 2026-09-11T03:46:13Z. QC reopened B2 Spec Compliance, preserving its prior PASS as historical evidence for source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca."
+  - "Human Developer approved Task Plan amendment T6a at 2026-09-11T03:46:13Z. The implementation path is open only for the fail-first boundary fixture and smallest bounded-alias correction; T7 remains blocked pending refreshed B2 reviews."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -580,6 +582,11 @@ audit_events:
   - "S07_B2_SPEC_COMPLIANCE_APPROVED"
   - "S07_B2_CODE_QUALITY_OPENED"
   - "S07_B2_CODE_QUALITY_FINDING_PROPOSED"
+  - "S07_B2_CODE_QUALITY_FAILED"
+  - "S07_F_RCR_B2_001_OPENED"
+  - "S07_B2_SPEC_COMPLIANCE_REOPENED"
+  - "S07_T6A_TASK_PLAN_APPROVED"
+  - "S07_T6A_OPENED"
 ```
 
 ## Traceability
@@ -602,8 +609,8 @@ outputs:
   - "Human QC-approved B1 Spec Compliance"
   - "Human Developer/QC-approved B1 Code Quality"
   - "T5 expected RED and T6 canonical projection GREEN"
-  - "Human QC-approved B2 Spec Compliance and proposed HIGH Code Quality finding F-RCR-B2-001"
-next_step: "Developer/QC disposition the B2 Code Quality finding; QC reopens B2 and Developer approves T6a if accepted"
+  - "Human-approved B2 Code Quality FAIL, open HIGH F-RCR-B2-001, reopened B2 Spec Compliance, and Developer-approved T6a"
+next_step: "Execute T6a RED fixture, apply the smallest bounded-alias correction, then prepare refreshed B2 Spec Compliance"
 ```
 
 ## Handoff
@@ -613,5 +620,5 @@ next_step: "Developer/QC disposition the B2 Code Quality finding; QC reopens B2 
 - Current step: s07 is `ACTIVE`; T1-T6 are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`.
 - Recommendation: transaction-delta closeout projector with one shared journal/event transaction ID and no new public schema.
 - Plan: T0..T8 with three TDD RED/GREEN pairs, B1..B3 Spec Compliance before Code Quality, then one exact-candidate child-to-parent verification path.
-- Boundary: B2 Spec Compliance is QC-approved, but proposed HIGH `F-RCR-B2-001` blocks T7 pending Developer/QC disposition, QC reopen confirmation, and Developer approval of T6a.
+- Boundary: B2 Code Quality FAIL is approved, `F-RCR-B2-001` is OPEN, B2 Spec Compliance is reopened, and T6a is approved; T7 stays blocked until T6a is GREEN and refreshed B2 reviews pass in order.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.

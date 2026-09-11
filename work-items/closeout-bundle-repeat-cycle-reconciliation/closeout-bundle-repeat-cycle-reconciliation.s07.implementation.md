@@ -346,7 +346,7 @@ finding_policy:
 handoff_to_verify:
   - "All B1-B3 two-tier reviews pass in order."
   - "s07 Delivery Rule Evidence is complete and T7 full regression is green."
-notes_for_implementation_or_verify: "B2 Spec Compliance was human-approved, then Code Quality found F-RCR-B2-001. Do not begin T7 or edit production code until the finding, reopen decision, and T6a amendment are human-dispositioned."
+notes_for_implementation_or_verify: "B2 Code Quality is human-approved FAIL, F-RCR-B2-001 is OPEN, QC reopened B2 Spec Compliance, and Developer approved T6a. Execute T6a with a fail-first fixture before the bounded production correction; T7 remains blocked until refreshed B2 reviews pass in order."
 ```
 
 ## B1 Review
@@ -398,12 +398,16 @@ batch: B2
 source_sha: "9ac8d95d29b0edd9681cfb1320eb848170bd14ca"
 scope: ["T5", "T6"]
 spec_compliance:
-  status: APPROVED
-  verdict: PASS
+  status: REOPENED
+  prior_verdict: PASS
   reviewer_role: qc
   reviewed_by: qc
   reviewed_at: "2026-09-11T03:20:17Z"
   decision_source: "User explicitly approved B2 Spec Compliance with role QC."
+  reopened_by: qc
+  reopened_at: "2026-09-11T03:46:13Z"
+  reopen_source: "User explicitly approved reopening B2 Spec Compliance with role QC."
+  reopen_reason: "F-RCR-B2-001 disproved the prior unrelated-blocker preservation evidence; the PASS remains historical for source 9ac8d95d29b0edd9681cfb1320eb848170bd14ca."
   prepared_at: "2026-09-11T03:08:45Z"
   evidence:
     - "AC-RCR-03: approved closeout leaves exactly one work-item close action, protocol-close handoff, zero selected-terminal pending blockers/actions, and a synchronized s01 projection."
@@ -413,13 +417,14 @@ spec_compliance:
     - "The production delta is confined to the approved closeout projector in work-item-protocol.js; no public CLI, schema, receipt, authority, gate selection, dependency, or config changes."
     - "work-item-protocol.test.js and workflow-gate-review.test.js PASS; three production syntax checks and git diff --check PASS."
   findings: []
-  post_review_status: "REOPEN_RECOMMENDED because the subsequent Code Quality review disproved the unrelated-blocker preservation assumption."
+  post_review_status: "REOPENED; a refreshed Spec Compliance review is required after T6a GREEN."
 code_quality:
-  status: READY_FOR_REVIEW
-  recommended_verdict: FAIL
-  reviewer_roles: ["developer", "qc"]
+  status: APPROVED
+  verdict: FAIL
+  reviewed_by: ["developer", "qc"]
+  reviewed_at: "2026-09-11T03:46:13Z"
+  decision_source: "User explicitly approved the B2 Code Quality FAIL verdict with roles Developer and QC."
   opened_at: "2026-09-11T03:20:17Z"
-  blocked_by: "Human Developer/QC disposition of proposed HIGH finding F-RCR-B2-001."
   evidence:
     - "Pure in-memory reproduction: gate uat plus unrelated blocker 'Security approval remains pending because the situation is unresolved.' changes blocker count from 1 to 0."
     - "Root cause: isSelectedCloseoutApprovalBlocker uses text.includes(alias); the short alias uat occurs inside situation, and dod can likewise occur inside unrelated words."
@@ -427,18 +432,21 @@ code_quality:
   findings:
     - id: "F-RCR-B2-001"
       severity: HIGH
-      status: PROPOSED
+      status: OPEN
       title: "Short gate aliases delete unrelated blockers by substring"
       criterion: "AC-RCR-05"
       impact: "A successful closeout can silently erase an unrelated pending blocker, weakening the canonical state and safety evidence."
       recommendation: "Use token/phrase-bounded alias matching, add fail-first uat/dod false-positive fixtures, and rerun B2 reviews."
 ```
 
-## Proposed T6a Amendment
+## T6a Amendment
 ```yaml
 amendment_id: T6a
-status: PROPOSED
+status: APPROVED
 trigger: "F-RCR-B2-001"
+reviewed_by: developer
+reviewed_at: "2026-09-11T03:46:13Z"
+decision_source: "User explicitly approved Task Plan amendment T6a with role Developer."
 scope:
   - "Add a RED fixture proving unrelated words containing uat/dod substrings survive reconciliation."
   - "Replace raw substring matching for short aliases with the smallest token/phrase-bounded predicate."
@@ -452,7 +460,7 @@ verify_path:
 approval_required:
   finding_and_reopen: "qc"
   task_plan_amendment: "developer"
-implementation_status: BLOCKED_PENDING_HUMAN_APPROVAL
+implementation_status: OPEN_FOR_RED
 ```
 
 ## Traceability
@@ -465,12 +473,13 @@ current:
   - "T0-T4 complete at a65704aa0be26f99988d6d5c13f632fc76907ddd"
   - "B1 Spec Compliance PASS; B1 Code Quality PASS"
   - "T5 RED at 6e16006; T6 GREEN at 9ac8d95d29b0edd9681cfb1320eb848170bd14ca"
-  - "B2 Spec Compliance approved by QC; Code Quality opened with proposed HIGH F-RCR-B2-001"
-next_step: "Developer/QC disposition B2 Code Quality; QC confirms reopen and Developer approves T6a if the finding is accepted"
+  - "B2 Code Quality FAIL approved by Developer/QC; F-RCR-B2-001 OPEN"
+  - "QC reopened B2 Spec Compliance and Developer approved T6a"
+next_step: "Execute T6a RED fixture, apply the smallest bounded-alias correction, then prepare refreshed B2 Spec Compliance"
 ```
 
 ## Handoff
-- Outputs actual: T0-T6 RED/GREEN evidence, completed B1, QC-approved B2 Spec Compliance, and a reproducible B2 Code Quality finding proposal.
-- Known limitations: proposed HIGH `F-RCR-B2-001` blocks T7; B2 correction/re-review and T7-T8 remain pending.
-- Notes for testing: both focused suites pass but omit the short-alias false-positive case; proposed T6a adds it fail-first.
+- Outputs actual: T0-T6 RED/GREEN evidence, completed B1, approved B2 Code Quality FAIL, open HIGH `F-RCR-B2-001`, reopened B2 Spec Compliance, and approved T6a.
+- Known limitations: `F-RCR-B2-001` blocks T7 until T6a is GREEN and both refreshed B2 reviews pass in order; T7-T8 remain pending.
+- Notes for testing: add the approved short-alias false-positive fixture first and record the expected RED before production correction.
 - Notes for deployment: none in s07; corrected candidate and rollback binding are T8/s08 work.
