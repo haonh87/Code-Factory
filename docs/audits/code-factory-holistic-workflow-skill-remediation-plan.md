@@ -13,7 +13,7 @@ approved_by: po
 approved_at: 2026-09-03T01:34:46.476Z
 human_decision_at: 2026-09-03T01:32:13Z
 date: 2026-09-02
-last_updated: 2026-09-07
+last_updated: 2026-09-11
 delivery_context: brownfield
 planning_track: full
 governance_profile: strict
@@ -40,12 +40,10 @@ tags:
 
 > [!info] Current navigation
 > Vietnamese companion: [[code-factory-holistic-workflow-skill-remediation-plan.vi]]. The governed
-> workflow record is in `work-items/code-factory-holistic-audit-remediation/`. This plan remains at
-> `s03 Open Questions`; the portfolio sequence is approved, but four policy decisions in §9
-> still require their named human authorities before `s04` can be authored. The approval dated
-> 2026-09-03 covers `CF-001..018`. PO/BA/Developer/QC subsequently approved OQ-CF-004 Option C
-> on 2026-09-08, accepting `CF-019` as a defect without approving a child work item or implementation.
-> `CF-020` remains a proposal and does not inherit either approval.
+> workflow record is in `work-items/code-factory-holistic-audit-remediation/`. OQ-CF-001..005 now
+> have explicit Option C decisions from their assigned authorities, so the master work item has
+> produced a review-ready `s04 Acceptance + DoR` draft. These decisions approve policy inputs only:
+> they do not approve any child work item, Spec, DoR or implementation.
 
 ## 1. Why This Plan Exists
 
@@ -129,12 +127,12 @@ The 2026-09-02 table is retained as the audit snapshot. The authoritative delta 
 | CF-004 | HIGH | CHANGE-005 contains stale prerequisite claims and has not reached a truthful execution state. | Report says CHANGE-004 not verified although it is `DONE`; Playwright remains missing; s08 is draft. | Developer/QC | `OPEN` | Reconciled report, re-run T0, explicit route decision and valid transition. |
 | CF-005 | MEDIUM | `decouple-tests-from-tree-layout` still reads a live work-item note in the cross-file assertion. | `workflow-gate-evidence-utils.test.js`; s06 T2/T3. | Developer/QC | `OPEN` | Fixture-controlled test, negative test and equal two-tree result. |
 | CF-006 | HIGH | No current security baseline covers skills, hooks, MCP and adapters. | Trending plan WI-1 has no work item, report or scan artifact. | Security reviewer/QC | `OPEN` | Approved ephemeral scan, SARIF/Markdown evidence and triage. |
-| CF-007 | MEDIUM | Seventeen legacy work items are skipped by protocol validation and display misleading pending status. | `wfc protocol` and `wfc work-item list`. | Developer/QC | `OPEN_DECISION` | Approved migration/retirement policy and zero unexplained legacy status. |
-| CF-008 | LOW | Empty `work-items/wfc-demo/` is an invalid inventory entry. | `wfc work-item list` warning. | Maintainer | `OPEN` | Remove through an approved recoverable cleanup or create its missing canonical artifact. |
-| CF-009 | HIGH | SA/TA threshold schema contradicts its own rules: schema omits `binary`; skill and metric rules require it. | `sa|ta/references/output-schema.md`, `SKILL.md`, `metric-table.md`. | Developer/QC | `OPEN` | One canonical enum, schema tests and byte-identical SA/TA references. |
-| CF-010 | HIGH | Mechanical pack audit passes despite CF-009, exposing a semantic audit blind spot. | Current `WORKFLOW_PACK_AUDIT=PASS`. | Developer/QC | `OPEN` | Regression fixture makes mismatch red, then passes after repair. |
-| CF-011 | MEDIUM | Three live planning/research artifacts are hidden by `docs/plans/` and `docs/research/` ignore rules. | `.gitignore`; memory, SA/TA metrics and trending plans. | PO/maintainer | `OPEN_DECISION` | Track canonical copies or explicitly retire them with replacement links. |
-| CF-012 | MEDIUM | Public EN/VI language has no systematic naturalness, duplication or role-friction quality gate. | Encoding is checked; semantic language quality is not. | PO/BA | `OPEN` | Approved rubric, full entry-path review, sampled skill review and human evidence. |
+| CF-007 | MEDIUM | Sixteen legacy work items in clean tracked main are skipped by protocol validation and can display misleading pending status. | `wfc protocol` and `wfc work-item list` at `2e3aade`; OQ-CF-002 Option C approved on 2026-09-11. | Developer/QC | `ACCEPTED_PENDING_CHILD` | Apply the classify-first policy with zero retrospective receipts and zero unexplained legacy status. |
+| CF-008 | LOW | The prior empty `work-items/wfc-demo/` entry made listing invalid. | At clean tracked main `2e3aade`, the path is absent and `wfc work-item list` reports 25 valid entries. | Maintainer | `RESOLVED` | Absence check and valid list output are captured in the s04 baseline. |
+| CF-009 | HIGH | SA/TA threshold schema previously contradicted its binary-threshold rule. | Canonical EN/VI schemas now declare `quantified|binary|not_quantified`; the contract test asserts the enum. | Developer/QC | `RESOLVED` | Source schemas and semantic contract test agree at `2e3aade`. |
+| CF-010 | HIGH | The pack-audit command can still pass without running the existing SA/TA semantic contract test. | `architecture-role-skills-contract.test.js` detects the corrected enum, while `validate:workflow:pack-audit` remains a narrower mechanical command. | Developer/QC | `PARTIAL` | Wire the semantic contract into the standard pack-audit/hosted validation path and prove a negative fixture fails. |
+| CF-011 | MEDIUM | Three live planning/research artifacts are hidden by `docs/plans/` and `docs/research/` ignore rules. | `.gitignore`; memory, SA/TA metrics and trending plans; OQ-CF-001 Option C approved on 2026-09-11. | PO/maintainer | `ACCEPTED_PENDING_CLASSIFICATION` | Selectively promote current authority and explicitly disposition every superseded or historical input. |
+| CF-012 | MEDIUM | Public EN/VI language has no systematic naturalness, duplication or role-friction quality gate. | Encoding is checked; semantic language quality is not; OQ-CF-003 Option C approved on 2026-09-11. | PO/BA/QC | `ACCEPTED_PENDING_CHILD` | Apply the BA-owned rubric, full entry-path review, sampled skill review and QC evidence. |
 | CF-013 | MEDIUM | Memory authority, freshness, retention and retrieval contracts remain unapproved. | Memory Standardization Plan P0-P2 checkboxes open. | PO/Developer/QC | `OPEN_DECISION` | Approve a reduced contract, split child items, or retire the umbrella plan. |
 | CF-014 | LOW | SA/TA competency thresholds and scoring weights are unvalidated proposals. | Deep-dive §9 and five unchecked follow-ups. | Architecture lead/PO | `OPEN_EXPERIMENT` | One-quarter calibration or explicit retirement as non-product guidance. |
 | CF-015 | LOW | Rationalizations/anatomy pilot has no matching implementation evidence. | Trending plan WI-3; repository search finds no pilot block. | Developer | `OPEN_DECISION` | Governed pilot with review evidence or recorded supersession. |
@@ -142,7 +140,7 @@ The 2026-09-02 table is retained as the audit snapshot. The authoritative delta 
 | CF-017 | HIGH | Exact `.tgz` bytes are not reproducible across local and GitHub-hosted packaging environments, so content-equivalent builds receive different release digests. | Local SHA `ec000...`; hosted SHA `8ddcb...`; identical extracted trees and uncompressed tar SHA `e82afa...`. | Developer/DevOps/QC | `OPEN` | One deterministic packaging environment or canonical content identity, plus a release policy/test that prevents ambiguous digest binding. |
 | CF-018 | MEDIUM | Hosted Guardrails relies on `actions/checkout@v4` and `actions/setup-node@v4` actions whose Node 20 runtime is deprecated; GitHub currently forces Node 24 and emits warnings in every job. | Run `33703233050` annotations. | DevOps | `OPEN` | Upgrade to supported action majors, pin/update policy as appropriate, and obtain one warning-free hosted run. |
 | CF-019 | HIGH | Authority prose conflicts on SA/TA applicability: the adaptive hard rule says maintenance must not add SA/TA without a trigger, but the generic Skill Requirement says to use both throughout `s01-s04`. | `policies/codex/AGENTS.global.md` under `Adaptive Admission And Applicability` and `Skill Requirement`; OQ-CF-004 Option C approved by PO/BA/Developer/QC on 2026-09-08. | PO/BA/Developer/QC | `ACCEPTED_PENDING_CHILD` | Approve an independent child; rewrite the generic rule as applicability-conditional, add a semantic regression fixture, sync both runtimes, and verify zero irrelevant maintenance SA/TA actions. |
-| CF-020 | MEDIUM | Current-facing documentation still carries stale `v2.1.1`/36-skill claims beside the `v2.6.2`/42-skill candidate surface. | `docs/vi/README.md`, `docs/release/community-pack-readme*.md`, and `docs/release/community-pack-positioning*.md`. | PO/BA/DevOps | `PROPOSED_FINDING` | Human classifies the affected files as current or historical; current files align to the released version/inventory, historical files are labeled and removed from current onboarding. |
+| CF-020 | MEDIUM | Current-facing documentation still carries stale `v2.1.1`/36-skill claims beside the `v2.6.2`/42-skill candidate surface. | `docs/vi/README.md`, `docs/release/community-pack-readme*.md`, and `docs/release/community-pack-positioning*.md`; OQ-CF-005 Option C approved on 2026-09-11. | PO/BA/DevOps | `ACCEPTED_PENDING_CLASSIFICATION` | Classify affected files as current or historical; align current files only to released state and label/remove historical files from current onboarding. |
 
 ## 6. Execution Sequence
 
@@ -182,9 +180,9 @@ boundary; completion of one does not approve the next.
    - Remove or repair the empty demo item through a recoverable action.
    - Add a portfolio reconciliation check that distinguishes legacy completion evidence from pending protocol.
 8. **P1.3 — SA/TA schema and audit coverage** (`CF-009`, `CF-010`).
-   - First add a failing semantic fixture for the threshold enum mismatch.
-   - Repair the canonical schema and sync both skill copies/runtime mirrors.
-   - Extend pack audit so the conflict cannot return behind a green mechanical result.
+   - Preserve the resolved canonical `quantified|binary|not_quantified` schema and its contract test.
+   - Extend the standard pack-audit/hosted path so the semantic contract cannot regress behind a
+     green mechanical-only result.
 9. **P1.4 — Hosted action-runtime hygiene** (`CF-018`).
    - Upgrade the deprecated Node 20-based GitHub action majors in a separate CI child work item.
    - Verify the complete Guardrails matrix without runtime-deprecation annotations.
@@ -244,8 +242,9 @@ No child may use this portfolio's approval receipt as its own receipt.
 | AC-CF-010 | Role-skill instructions never require a role that the authoritative applicability decision omitted. | Policy/runtime semantic fixture plus maintenance and product-delivery routing matrix. |
 | AC-CF-011 | Every current-facing onboarding and positioning document identifies the same released version and managed-skill inventory; historical assets are labeled. | Version/inventory scan with an allowlisted historical scope. |
 
-`AC-CF-010` and `AC-CF-011` are proposed additions from the 2026-09-05 delta. They are not part of
-the 2026-09-03 human approval and must be reviewed before the s04 requirement baseline is locked.
+`AC-CF-010` and `AC-CF-011` were proposed in the 2026-09-05 delta. OQ-CF-004 and OQ-CF-005
+subsequently approved their policy directions; the criteria themselves remain subject to the
+independent s04 Spec and DoR gates.
 
 ## 9. Current Decision Gate
 
@@ -256,20 +255,14 @@ The user explicitly approved the master plan on 2026-09-03. That decision approv
 1. the master work-item boundary and finding register;
 2. the P0 → P4 sequencing.
 
-The 2026-09-03 approval did not approve the new `CF-019`, `CF-020`, `AC-CF-010`, or `AC-CF-011`
-proposals added by the 2026-09-05 evidence refresh.
+The trusted work-item receipt was sealed by `po` at `2026-09-03T01:34:46.476Z`. The five policy
+decisions are now closed independently:
 
-PO/BA/Developer/QC approved OQ-CF-004 Option C on 2026-09-08. This accepts `CF-019` and the
-proposed `AC-CF-010` direction, but still does not approve a child work item, implementation,
-Release, Business Acceptance, DoD, exception or waiver. `CF-020` and `AC-CF-011` remain proposals.
-
-The trusted work-item receipt was sealed by `po` at `2026-09-03T01:34:46.476Z`. These decisions
-remain open for s03 and were not resolved by approving the plan:
-
-1. OQ-CF-001 document authority;
-2. OQ-CF-002 legacy migration policy;
-3. OQ-CF-003 public-language quality ownership;
-4. OQ-CF-005 current-versus-historical version/inventory policy and CF-020 disposition.
+1. OQ-CF-001 Option C — PO/Maintainer approved selective promotion on 2026-09-11.
+2. OQ-CF-002 Option C — Developer/QC approved classify-first legacy handling on 2026-09-11.
+3. OQ-CF-003 Option C — BA/PO/QC approved the BA-owned language rubric on 2026-09-11.
+4. OQ-CF-004 Option C — PO/BA/Developer/QC approved conditional SA/TA applicability on 2026-09-08.
+5. OQ-CF-005 Option C — PO/BA/DevOps approved current-versus-historical classification on 2026-09-11.
 
 This approval permits further authoring of the master work item. It does not approve implementation,
 any child work item, CR-008's artifact amendment, Release, Business Acceptance, DoD, exception or
@@ -287,5 +280,5 @@ findings:
   - "CF-001..020"
 sequence:
   - "P0.1 -> P0.2 -> P0.3 -> P0.4 -> P0.5 -> P1.1 -> P1.2 -> P1.3 -> P1.4 -> P2.1 -> P3.1 -> P3.2 -> P3.3 -> P4"
-next_artifact: "s03 human decisions for OQ-CF-001..005, then s04 Acceptance + DoR"
+next_artifact: "s04 Acceptance + DoR draft, followed by independent BA Spec and BA/QC DoR review"
 ```

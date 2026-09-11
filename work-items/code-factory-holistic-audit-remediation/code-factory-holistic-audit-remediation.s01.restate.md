@@ -100,6 +100,8 @@ tags:
 > source skills, runtime mirrors, adapters, CI/release controls, language quality and every open
 > finding. Existing plans are fragmented, several are ignored by Git, and the mechanical audit can
 > pass while semantic and lifecycle contradictions remain.
+> OQ-CF-001..005 now have explicit Option C decisions from their assigned human authorities, so
+> the master work item has a review-ready s04 draft without opening any child implementation gate.
 
 ## Step Contract
 ```yaml
@@ -543,10 +545,15 @@ decision_source: "User explicitly stated: tôi đồng ý master plan"
 human_decision_at: "2026-09-03T01:32:13Z"
 trusted_receipt_status: APPROVED
 trusted_receipt_recorded_at: "2026-09-03T01:34:46.483Z"
+subsequent_decisions:
+  - "OQ-CF-004 Option C approved by PO/BA/Developer/QC at 2026-09-08T02:23:55Z."
+  - "OQ-CF-001 Option C approved by PO/Maintainer at 2026-09-11T11:40:59Z."
+  - "OQ-CF-002 Option C approved by Developer/QC at 2026-09-11T11:40:59Z."
+  - "OQ-CF-003 Option C approved by BA/PO/QC at 2026-09-11T11:40:59Z."
+  - "OQ-CF-005 Option C approved by PO/BA/DevOps at 2026-09-11T11:40:59Z."
 not_approved:
-  - "OQ-CF-001..005 resolutions"
-  - "CF-019, CF-020, AC-CF-010 and AC-CF-011 proposed by the 2026-09-05 evidence refresh"
   - "Any child work-item or child gate"
+  - "Implementation of CF-019, CF-020, AC-CF-010 or AC-CF-011"
   - "CR-008 hosted artifact-binding amendment"
   - "Release, Business Acceptance, DoD, exception or waiver"
 next_action: "Proceed to s02 Business Goal; no child gate is implied."
@@ -561,7 +568,7 @@ work_item_slug: "code-factory-holistic-audit-remediation"
 work_item_type: RESEARCH
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/code-factory-holistic-audit-remediation"
-current_step: "s03"
+current_step: "s04"
 granted_write_paths: []
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
@@ -574,30 +581,27 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-03T01:34:46.476Z"
-handoff_target: "cf-019-child-work-item-proposal"
-last_transition_action: "approve-oq-cf-004-option-c"
-last_transition_at: "2026-09-08T02:23:55Z"
+handoff_target: "s04-spec-dor-human-gates"
+last_transition_action: "author-s04-portfolio-spec-dor"
+last_transition_at: "2026-09-11T13:29:37Z"
 required_actions:
-  - "Resolve OQ-CF-001 document authority with PO/maintainer."
-  - "Resolve OQ-CF-002 legacy migration policy with Developer/QC."
-  - "Resolve OQ-CF-003 public-language quality ownership with PO/BA."
-  - "Propose an independent CF-019 child work item; do not infer work-item or implementation approval from OQ-CF-004."
-  - "Resolve OQ-CF-005 current-versus-historical public documentation policy with PO/BA/DevOps."
+  - "BA reviews the proposed portfolio Spec AC-CF-001..011."
+  - "BA and QC review the READY DoR recommendation."
+  - "After explicit human decisions, seal independent Spec and DoR receipts against the unchanged finalized host."
   - "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate spec --reviewed-by <role>"
   - "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate dor --reviewed-by <role>"
   - "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate approach --reviewed-by <role>"
   - "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate task_plan --reviewed-by <role>"
   - "wfc work-item activate --work-item code-factory-holistic-audit-remediation --step s07 --write-root <path>"
 blockers:
-  - "OQ-CF-001 document authority has no human decision."
-  - "OQ-CF-002 legacy reconciliation policy has no human decision."
-  - "OQ-CF-003 public-language ownership and rubric have no human decision."
-  - "OQ-CF-005 public version/inventory classification has no human decision."
+  - "Human Spec and DoR decisions plus trusted receipts are pending."
 review_notes:
   - "Human review approved."
   - "The s03 bundle was amended at 2026-09-07T14:33:29Z so proposed findings CF-019/CF-020 and AC-CF-010/011 have explicit OQ-CF-004/005 decisions; no finding or option was self-approved."
   - "The detailed P0 dependency cycle was removed: child closeout precedes CF-019 disposition/remediation, which precedes parent CR-008 re-verification; the approved P0-to-P4 phase order is unchanged."
   - "PO, BA, Developer, and QC approved OQ-CF-004 Option C at 2026-09-08T02:23:55Z. CF-019 is accepted as a policy/runtime defect; this decision does not approve its child work item or implementation."
+  - "PO/Maintainer approved OQ-CF-001=C, Developer/QC approved OQ-CF-002=C, BA/PO/QC approved OQ-CF-003=C, and PO/BA/DevOps approved OQ-CF-005=C at 2026-09-11T11:40:59Z. All five master OQs are resolved; child and implementation gates remain independent."
+  - "s04 now proposes AC-CF-001..011 and a READY DoR from refreshed clean-main evidence: 42 skills, 181 files/177 notes valid, 9 managed/16 legacy protocol inventory, and source v2.6.1 versus installed v2.3.2/40. Human Spec/DoR gates remain pending."
 refs:
   - "work-items/code-factory-holistic-audit-remediation"
   - "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md"
@@ -618,6 +622,9 @@ audit_events:
   - "OQ_RECOMMENDATION_BUNDLE_AMENDED_CF_019_CF_020"
   - "PORTFOLIO_DEPENDENCY_CYCLE_REMOVED"
   - "OQ_CF_004_OPTION_C_APPROVED"
+  - "OQ_CF_001_002_003_005_OPTION_C_APPROVED"
+  - "S03_OPEN_QUESTIONS_COMPLETED"
+  - "S04_PORTFOLIO_SPEC_DOR_DRAFTED"
 ```
 
 ## Traceability
@@ -626,13 +633,15 @@ source_inputs:
   - "User review and sequencing request"
   - "Current repository, worktree, protocol, Git and runtime evidence captured 2026-09-02"
   - "Prior plan and audit artifacts listed in Work Item Materialization.existing_refs"
-next_step: "Human reviews this s01 boundary and the linked portfolio plan before s02 Business Goal."
+next_step: "Human BA reviews s04 Spec; BA/QC review DoR before s05 Technical Approach."
 ```
 
 ## Handoff
 - Clear: one master portfolio is a distinct research/control item, not a duplicate of any narrow remediation item.
-- Track: document authority, legacy migration, language-quality ownership and public
-  version/inventory classification remain OQ-CF-001/002/003/005. OQ-CF-004 is approved as Option C.
+- Track: OQ-CF-001..005 are all approved as Option C by their assigned human authorities.
 - Human decision: master boundary, finding register and P0 → P4 sequencing approved at `2026-09-03T01:32:13Z`.
 - Human decision: PO/BA/Developer/QC approved OQ-CF-004 Option C at `2026-09-08T02:23:55Z`; CF-019 implementation remains gated independently.
-- Condition for s02: met; trusted work-item receipt is approved and verified. No child implementation gate is implied.
+- Human decision: the remaining OQ-CF-001/002/003/005 Option C policies were approved at
+  `2026-09-11T11:40:59Z`; no Spec, DoR, child or implementation approval is inherited.
+- Current handoff: s04 is review-ready; BA Spec and BA/QC DoR decisions plus trusted receipts are
+  required before s05. No child implementation gate is implied.
