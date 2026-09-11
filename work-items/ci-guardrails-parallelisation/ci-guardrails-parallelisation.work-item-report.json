@@ -1,0 +1,95 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "BLOCKED",
+  "decision_owner": "coordinator",
+  "protocol_owner": "po",
+  "raw_request_summary": "",
+  "request_source": "legacy-scaffold",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [],
+  "decision_log": [
+    "bootstrap_from_existing_s01=true"
+  ],
+  "work_item_slug": "ci-guardrails-parallelisation",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/ci-guardrails-parallelisation",
+  "current_step": "s07",
+  "granted_write_paths": [
+    ".github/workflows/workflow-guardrails.yml",
+    "work-items/ci-guardrails-parallelisation"
+  ],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "blocker-owner",
+  "required_actions": [
+    "Resolve blockers before resuming the work item."
+  ],
+  "blockers": [
+    "GOV-EX-002: T3 collides with codex/adaptive-governance-human-approval-ux ownership of .github/workflows/workflow-guardrails.yml (+60/-2). REQ-002 transferred to that branch as work item upgrade-guardrails-actions-node24."
+  ],
+  "refs": [
+    "work-items/ci-guardrails-parallelisation"
+  ],
+  "audit_events": [
+    "REPORT_BOOTSTRAPPED",
+    "WORK_ITEM_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "WORK_ITEM_BLOCKED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-09-11T05:05:20.242Z",
+  "review_notes": [
+    "Human review approved."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-11T05:05:14.422Z",
+      "action": "bootstrap",
+      "actor": "system",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Bootstrapped read-only report from existing scaffold."
+    },
+    {
+      "timestamp": "2026-09-11T05:05:14.423Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-09-11T05:05:20.243Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-09-11T05:05:41.423Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-09-11T11:42:18.861Z",
+      "action": "block",
+      "actor": "devops",
+      "from_status": "ACTIVE",
+      "to_status": "BLOCKED",
+      "note": "Work item blocked."
+    }
+  ]
+}
