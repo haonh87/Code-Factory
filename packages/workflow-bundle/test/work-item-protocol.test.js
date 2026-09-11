@@ -885,7 +885,7 @@ function testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry()
 
 function testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss() {
   const slug = "proto-closeout-canonical-state-item";
-  const gates = ["dod", "release", "business_acceptance"];
+  const gates = ["dod", "uat", "release", "business_acceptance"];
   const { projectRoot, workflowRoot, reportPath } = buildCloseoutProject(slug, gates);
   const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-closeout-canonical-state-approvals-");
   const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
@@ -902,7 +902,9 @@ function testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss() {
     reportBefore.blockers = [
       "Closeout bundle approval remains pending for DoD, Release and Business Acceptance.",
       "Awaiting RELEASE approval by DevOps.",
-      "Security scan is pending for dependency audit."
+      "Security scan is pending for dependency audit.",
+      "Security approval remains pending because the situation is unresolved.",
+      "Security approval remains pending while a dodgy dependency is investigated."
     ];
     reportBefore.audit_events.push("HISTORICAL_AUDIT_CANARY");
     reportBefore.protocol_events.push({
@@ -946,7 +948,12 @@ function testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss() {
       `approved closeout projects protocol-close handoff, got ${reportAfter.handoff_target}`
     );
     assert(
-      JSON.stringify(reportAfter.blockers) === JSON.stringify(["Security scan is pending for dependency audit."]),
+      JSON.stringify(reportAfter.blockers) ===
+        JSON.stringify([
+          "Security scan is pending for dependency audit.",
+          "Security approval remains pending because the situation is unresolved.",
+          "Security approval remains pending while a dodgy dependency is investigated."
+        ]),
       `selected-gate blockers are removed while unrelated blockers remain, got ${JSON.stringify(reportAfter.blockers)}`
     );
 
