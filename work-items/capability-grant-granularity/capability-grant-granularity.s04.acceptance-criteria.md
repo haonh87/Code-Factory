@@ -201,7 +201,7 @@ checks:
   - "Scope changed materially after s01 - recorded, and it is why DoR is BLOCKED"
 blocking_items: []
 owner: "ba"
-next_action: "Write a Spec Card against the layer-3 scope, then seal Spec, Contract and DoR"
+next_action: "Seal Spec, Contract and DoR against this s04 note. sdd_mode is none, so there is no separate Spec Card; the spec artifact is this note."
 ```
 
 ## Definition of Ready
