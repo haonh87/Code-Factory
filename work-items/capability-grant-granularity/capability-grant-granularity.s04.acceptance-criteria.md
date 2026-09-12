@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -41,23 +41,38 @@ approval_gates:
   release: "not_applicable"
   business_acceptance: "not_applicable"
 role_signoffs:
-  spec: []
-  contract: []
-  dor: []
-  approach: []
+  spec:
+    - "ba"
+  contract:
+    - "ba"
+    - "devops"
+  dor:
+    - "ba"
+    - "qc"
+  approach:
+    - "developer"
   foundation: []
-  task_plan: []
+  task_plan:
+    - "developer"
   uat: []
-  release: []
+  release:
+    - "devops"
+    - "qc"
   business_acceptance: []
-  dod: []
+  dod:
+    - "qc"
 gate_reviews:
-  spec_reviewed_by: []
-  spec_reviewed_at: ""
-  contract_reviewed_by: []
-  contract_reviewed_at: ""
-  dor_reviewed_by: []
-  dor_reviewed_at: ""
+  spec_reviewed_by:
+    - "ba"
+  spec_reviewed_at: "2026-09-12T07:57:37.000Z"
+  contract_reviewed_by:
+    - "ba"
+    - "devops"
+  contract_reviewed_at: "2026-09-12T07:57:37.000Z"
+  dor_reviewed_by:
+    - "ba"
+    - "qc"
+  dor_reviewed_at: "2026-09-12T07:57:37.000Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   foundation_reviewed_by: []

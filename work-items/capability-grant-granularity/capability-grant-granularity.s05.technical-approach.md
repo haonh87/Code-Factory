@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -41,16 +41,26 @@ approval_gates:
   release: "not_applicable"
   business_acceptance: "not_applicable"
 role_signoffs:
-  spec: []
-  contract: []
-  dor: []
-  approach: []
+  spec:
+    - "ba"
+  contract:
+    - "ba"
+    - "devops"
+  dor:
+    - "ba"
+    - "qc"
+  approach:
+    - "developer"
   foundation: []
-  task_plan: []
+  task_plan:
+    - "developer"
   uat: []
-  release: []
+  release:
+    - "devops"
+    - "qc"
   business_acceptance: []
-  dod: []
+  dod:
+    - "qc"
 gate_reviews:
   spec_reviewed_by: []
   spec_reviewed_at: ""
@@ -58,8 +68,9 @@ gate_reviews:
   contract_reviewed_at: ""
   dor_reviewed_by: []
   dor_reviewed_at: ""
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
+  approach_reviewed_by:
+    - "developer"
+  approach_reviewed_at: "2026-09-12T07:57:37.000Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -149,7 +160,7 @@ option_details:
       - "Larger change than Option A: activate gains a derivation path and a confirmation step."
     risks:
       - "A work item with no s06, or an s06 whose owned_paths are empty, has nothing to derive from and must fall back to explicit paths."
-recommendation: "Option C"
+recommended_option: "Option C - derive from s06, confirm or amend"
 recommendation_reason: >-
   Option A is smaller and is the obvious answer, but it is not the smallest solution that is
   correct. It adds cost to the author and buys a reason field that s02 R3 predicts will be filled
