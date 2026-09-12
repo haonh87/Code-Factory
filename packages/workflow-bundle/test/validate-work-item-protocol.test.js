@@ -16,6 +16,7 @@
 // Work item: worktree-and-closure-integrity, requirement REQ-001, task T2.
 
 const path = require("path");
+const strictAssert = require("node:assert/strict");
 const { isEquivalentWorkflowRoot } = require("../scripts/validate-work-item-protocol");
 
 let failures = 0;
@@ -152,6 +153,38 @@ testEdge003WrongRootStillRejected();
 testMissingAndMalformed();
 testNonNormalisedInput();
 testWorkflowRootOutsideProjectRoot();
+
+// RCR TS1: the production validator must reject malformed typed state, not
+// stringify it away. Keep these assertions separate from path-equivalence tests.
+{
+  const validator = require("../scripts/validate-work-item-protocol");
+  assert(typeof validator.validateProtocolStateCollections === "function", "typed collection validator is exported");
+  assert(typeof validator.validateProtocolBlockSync === "function", "protocol mirror validator is exported");
+  if (typeof validator.validateProtocolStateCollections === "function" && typeof validator.validateProtocolBlockSync === "function") {
+    const utils = require("../scripts/work-item-protocol-utils");
+    const pending = { id: "r1", kind: "approval_pending", text: "Release pending", gate: "release" };
+    const errors = [];
+    validator.validateProtocolStateCollections({ blockers: [pending, pending], required_actions: [{ id: "r2", kind: "workflow_followup", gate: "release", text: "Follow up" }] }, "report.json", errors);
+    assert(errors.some(e => /blockers\[1\].*duplicate.*id/i.test(e)), "duplicate IDs name collection/index");
+    assert(errors.some(e => /required_actions\[0\].*gate/.test(e)), "non-gate kind cannot carry gate");
+    const valid = utils.normalizeProtocolReport({ blockers: [pending], required_actions: [] });
+    const syncErrors = [];
+    validator.validateProtocolBlockSync(utils.renderProtocolBlock(valid), valid, "s01.md", syncErrors);
+    strictAssert.deepEqual(syncErrors, []);
+    const mismatched = utils.renderProtocolBlock(valid).replace('"Release pending"', '"Changed display"');
+    const mismatchErrors = [];
+    validator.validateProtocolBlockSync(mismatched, valid, "s01.md", mismatchErrors);
+    assert(mismatchErrors.some(e => /blockers.*out of sync/i.test(e)), "structured mirror mismatch is rejected");
+    const legacy = { blockers: [" Unknown review "], required_actions: ["wfc work-item close --work-item demo"] };
+    const legacyBlock = utils.renderProtocolBlock(legacy).replace(/  - \{[^\n]+\}/g, line => {
+      const entry = JSON.parse(line.slice(4));
+      return "  - " + JSON.stringify(entry.text);
+    });
+    const legacyErrors = [];
+    validator.validateProtocolBlockSync(legacyBlock, utils.normalizeProtocolReport(legacy), "legacy-s01.md", legacyErrors);
+    strictAssert.deepEqual(legacyErrors, [], "legacy scalar mirror loads without migration");
+  }
+}
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in validate-work-item-protocol.test.js`);

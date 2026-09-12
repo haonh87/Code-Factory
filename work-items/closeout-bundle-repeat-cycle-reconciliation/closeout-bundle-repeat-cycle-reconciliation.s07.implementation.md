@@ -120,8 +120,11 @@ tags:
 > the bounded-alias GREEN source `f9533c4de66fdb04e75008382b39b4fc413e3caa`. Human QC approved
 > refreshed Spec Compliance, followed by Human Developer/QC approval of refreshed Code Quality;
 > `F-RCR-B2-001` is resolved. T7 began and its focused 20-cycle fixture passed, but the owner then
-> expanded scope to a persisted structured-state contract. The work item is now `BLOCKED` at s03;
-> T7 and all production edits are suspended pending OQ-RCR-004..006 and fresh s04-s06 receipts.
+> expanded scope to a persisted structured-state contract. Those patch reviews remain historical.
+> Current structural execution resumed at s07/ACTIVE on 2026-09-12T06:06:04.440Z with sixteen
+> explicitly approved roots and five digest-matched authoring receipts. The existing partial T7
+> test remains quarantined until TS7. The structural execution contract below supersedes the
+> earlier patch execution contract; new RCR-SB1/2/3 reviews remain independent.
 
 ## Step Contract
 ```yaml
@@ -564,7 +567,109 @@ next_step: "Approve the structural contract questions, then re-seal amended s04-
 
 ## Handoff
 - Outputs actual: T0-T6 plus T6a RED/GREEN evidence, completed B1, refreshed B2 reviews, resolved `F-RCR-B2-001`, and partial pre-amendment T7 evidence.
-- Current boundary: T7 is suspended; the child is `BLOCKED` at s03 until OQ-RCR-004..006 and fresh s04-s06 receipts pass.
+- Historical boundary: the patch-oriented T7 was suspended by the structural amendment.
+
+## Structural Execution Contract
+
+```yaml
+step: "s07 Implement"
+goal: "Remove prose-derived state through TS0..TS8 with fail-first boundary, producer and event batches."
+value: "Preserve unrelated and unknown blockers while making current approval state and transaction attribution explicit."
+scope_in: ["Approved sixteen roots", "TS0..TS8", "RCR-SB1/2/3 ordered independent reviews"]
+scope_out: ["CI action upgrade", "Skill restructure", "Public CLI/signer/receipt-v1 changes", "Publish/tag/install/merge/cleanup"]
+inputs_required: ["Five current digest-matched authoring receipts", "PO work-item receipt", "Approved s04/s05/s06", "Explicit s07 resume with sixteen roots"]
+outputs_required: ["TS0 baseline", "RED/GREEN tests", "Typed contract and exact consumers", "Direct event identity", "Compatibility/atomicity evidence", "Independent review handoffs"]
+done_when: ["TS0..TS8 evidence complete", "Each batch passes Spec Compliance before Code Quality", "QC explicitly opens s08 after implementation review"]
+constraints:
+  hard_constraints: ["text/note human-only", "Exact typed selectors", "Unknown legacy exact preservation", "Immutable historical evidence", "WIP quarantined until TS7"]
+  soft_constraints: ["Existing shared utility boundary", "Smallest sufficient delta"]
+  prohibited_actions: ["Fuzzy text semantics in core", "Historical identity backfill", "Unapproved gate or scope inheritance", "Self-declared DoD"]
+  compliance_checks: ["Boundary/producer/event negative tests", "Legacy canaries", "Historical prefix/digest checks", "WIP digest comparison", "Review receipt/subject order"]
+risks:
+  - { id: "R-STRUCT-01", description: "Mixed writers/consumers remain between structural batches.", likelihood: HIGH, impact: HIGH, severity: HIGH, mitigation: "No candidate/release until TS7 full regression and all structural reviews.", contingency: "Stop at each review boundary; retain individual gates.", owner: "developer/qc", status: MONITORING }
+timebox:
+  target_duration: "One reviewable structural batch per execution pass"
+  deadline: "2026-09-18 stop-and-reassess checkpoint"
+  escalation_rule: "Reassess unfinished scope with the owner; never silently cut AC-RCR-06/08."
+```
+
+## Structural Input Readiness
+
+```yaml
+step: "s07 Implement"
+status: READY
+available_inputs: ["PO receipt APPROVED", "Spec/Contract/DoR s04 digest_match=true", "Approach s05 digest_match=true", "Task Plan s06 digest_match=true", "s07 ACTIVE with all sixteen approved roots"]
+missing_inputs: []
+invalid_inputs: []
+conflicts: []
+assumptions: ["Existing patch reviews are historical, not structural-batch approval."]
+risk_level: HIGH
+next_action: "TS0 baseline, TS1 RED, TS2 GREEN, then RCR-SB1 Spec Compliance before Code Quality."
+```
+
+## Structural Implementation Notes
+
+```yaml
+worktree_target: "closeout-bundle-repeat-cycle-reconciliation"
+planning_track: full
+risk_signals: ["Multi-session", "Shared CR-008 branch", "Sixteen owned roots", "State/event contract regression risk"]
+worktree_decision: REQUIRED
+decision_reason: ["Continue in the existing isolated worktree inside the repository; no main mutation."]
+isolation_strategy:
+  branch_name: "codex/adaptive-governance-human-approval-ux"
+  worktree_path: ".claude/worktrees/cr-008-adaptive-governance"
+  owned_paths: ["The sixteen exact roots in approved s06 and current report grant"]
+  expected_duration: "Through child and parent verification"
+execution_guards: ["Protected s04/s05/s06 digests immutable", "WIP file and diff digests frozen", "No adjacent Node24/parallelisation/restructure work"]
+skip_reason: ""
+cleanup_preconditions: ["Child and parent verification", "Applicable independent terminal gates", "Separate finalization authority"]
+notes_for_implementation: "Keep this shared branch/worktree HOLD_OPEN."
+```
+
+```yaml
+review_target: "Structural RCR implementation"
+planning_track: full
+review_mode: INDEPENDENT
+review_order: ["SPEC_COMPLIANCE", "CODE_QUALITY"]
+review_batches:
+  - { batch: "RCR-SB1", scope: ["TS1", "TS2"], trigger: "Typed boundary GREEN", reviewer_role: "QC then Developer/QC" }
+  - { batch: "RCR-SB2", scope: ["TS3", "TS4"], trigger: "All writers/selectors GREEN", reviewer_role: "QC then Developer/QC" }
+  - { batch: "RCR-SB3", scope: ["TS5", "TS6", "TS7"], trigger: "Identity and full matrix GREEN", reviewer_role: "QC then Developer/QC" }
+required_checks:
+  spec_compliance: ["Approved AC/contract/scope", "Exact legacy preservation", "No authority or semantic drift"]
+  code_quality: ["TDD integrity", "No hidden text inference", "Failure/compatibility regression", "Focused syntax/static/security checks"]
+finding_policy:
+  blocker_threshold: "Any HIGH finding or contract/authority drift blocks the next batch."
+  reopen_conditions: ["Reviewed boundary changes", "New evidence disproves a prior result"]
+handoff_to_verify: ["All three review pairs passed", "TS7 full evidence complete", "QC explicit s08 opening"]
+notes_for_implementation_or_verify: "No TS3 before the independent RCR-SB1 review pair."
+```
+
+## Structural TS0 Evidence
+
+- Baseline source: `096c2ffc69e965c9dd531f03195799f55bbb8537`.
+- [structural-ts0-baseline.json](structural-ts0-baseline.json) freezes thirteen report digests,
+  ordered event counts/digests and both historical unbound approval events.
+- The resume appends one lifecycle event and updates only current report/s01 scope; this is not
+  a load-only compatibility check and does not rewrite the frozen historical prefix.
+- `work-item-protocol.test.js` and `workflow-gate-review.test.js`: baseline PASS.
+- WIP file SHA-256: `8b0d15de455cae2f0aed5603916e49c610e3b5acb6edda219764de5f0142ee1e`;
+  diff SHA-256: `554af6e279da86bec7634585a4fa5cb08d47d04c59abd7302180b4fec46efb91`.
+- s04/s05/s06 remain bound respectively to `26b85c2d…`, `d075290f…`, `ae1a733d…`.
+- No production edit, WIP adoption, new event identity or terminal verdict is claimed by TS0.
+
+## Structural TS1 RED
+
+- New isolated `work-item-protocol-state.test.js`: 8 tests, 0 PASS / 8 expected FAIL.
+  The first failure proves `{id,kind,text,gate}` becomes `"[object Object]"`.
+  Other failures pin exact legacy preservation, constructor/selector availability, invalid-shape
+  rejection, known import, structured rendering and load-only behavior.
+- An initial load fixture used a relative workflow root resolved against the process directory.
+  The fixture was corrected to its absolute temporary root and rerun; the remaining failure is
+  the expected legacy-object assertion, not a missing-file/setup error.
+- `validate-work-item-protocol.test.js`: existing path-equivalence assertions PASS;
+  two expected assertions FAIL because typed-collection and mirror validators are not exposed.
+- No production code was changed before these RED runs. TS2 is now permitted by the approved plan.
 - Known limitations: structural contract authoring, replacement TDD/reviews, T8 exact candidate, and child/parent verification remain pending.
 - Notes for testing: the fail-first `uat`/`dod` substring fixture now passes without weakening any existing semantic projection or transaction assertion.
 - Notes for deployment: none in s07; corrected candidate and rollback binding are T8/s08 work.

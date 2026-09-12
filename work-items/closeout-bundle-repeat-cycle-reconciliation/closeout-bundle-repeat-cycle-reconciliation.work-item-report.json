@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "BLOCKED",
+  "protocol_status": "ACTIVE",
   "decision_owner": "agent",
   "protocol_owner": "ba",
   "raw_request_summary": "Fix repeated closeout-bundle reconciliation so a successful current approval cycle removes stale pending approval actions and handoffs, records a current-cycle protocol event despite historical evidence, and remains idempotent.",
@@ -114,26 +114,32 @@
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation",
-  "current_step": "s06",
+  "current_step": "s07",
   "granted_write_paths": [
+    "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
     "packages/workflow-bundle/scripts/work-item-protocol.js",
+    "packages/workflow-bundle/scripts/materialize-work-item.js",
     "packages/workflow-bundle/scripts/workflow-gate-review.js",
+    "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js",
+    "packages/workflow-bundle/scripts/validate-work-item-protocol.js",
     "packages/workflow-bundle/scripts/workflow-approval-transaction.js",
+    "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js",
+    "packages/workflow-bundle/test/work-item-protocol-state.test.js",
     "packages/workflow-bundle/test/work-item-protocol.test.js",
     "packages/workflow-bundle/test/workflow-gate-review.test.js",
+    "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js",
+    "packages/workflow-bundle/test/validate-work-item-protocol.test.js",
+    "packages/workflow-bundle/test/materialize-work-item.test.js",
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
     "work-items/adaptive-governance-human-approval-ux"
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "s07-structural-scope-resume",
+  "handoff_target": "s07-structural-TS0",
   "required_actions": [
-    "Explicitly resume closeout-bundle-repeat-cycle-reconciliation at s07 with all 16 human-approved write roots; do not reuse the old seven-root grant.",
-    "Keep production edits and partial T7 adoption closed until resume; s08 and release actions remain independent."
+    "Continue active execution from the current step."
   ],
-  "blockers": [
-    "Execution has not been explicitly resumed with the 16 human-approved write roots."
-  ],
+  "blockers": [],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
     "work-items/adaptive-governance-human-approval-ux",
@@ -206,7 +212,8 @@
     "S05_STRUCTURAL_APPROACH_RECEIPT_VERIFIED",
     "S06_STRUCTURAL_TASK_PLAN_DRAFTED",
     "S06_STRUCTURAL_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT",
-    "S06_STRUCTURAL_TASK_PLAN_RECEIPT_VERIFIED"
+    "S06_STRUCTURAL_TASK_PLAN_RECEIPT_VERIFIED",
+    "WORK_ITEM_RESUMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -571,6 +578,14 @@
       "from_status": "BLOCKED",
       "to_status": "BLOCKED",
       "note": "Verified matching Developer Task Plan and all prerequisite authoring receipts. Explicit s07 resume with all 16 approved write roots remains required; no source/WIP/grant change is made."
+    },
+    {
+      "timestamp": "2026-09-12T06:06:04.440Z",
+      "action": "resume",
+      "actor": "developer",
+      "from_status": "BLOCKED",
+      "to_status": "ACTIVE",
+      "note": "Human Developer explicitly authorized s07 resume with all sixteen approved structural write roots; batch review and terminal gates remain independent."
     }
   ]
 }

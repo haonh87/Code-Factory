@@ -654,20 +654,29 @@ next_action: "Developer reviews the amended s06 TS0..TS8 plan; implementation st
 
 ## Work Item Protocol
 ```yaml
-protocol_status: BLOCKED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation"
-current_step: "s06"
+current_step: "s07"
 granted_write_paths:
+  - "packages/workflow-bundle/scripts/work-item-protocol-utils.js"
   - "packages/workflow-bundle/scripts/work-item-protocol.js"
+  - "packages/workflow-bundle/scripts/materialize-work-item.js"
   - "packages/workflow-bundle/scripts/workflow-gate-review.js"
+  - "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js"
+  - "packages/workflow-bundle/scripts/validate-work-item-protocol.js"
   - "packages/workflow-bundle/scripts/workflow-approval-transaction.js"
+  - "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
+  - "packages/workflow-bundle/test/work-item-protocol-state.test.js"
   - "packages/workflow-bundle/test/work-item-protocol.test.js"
   - "packages/workflow-bundle/test/workflow-gate-review.test.js"
+  - "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js"
+  - "packages/workflow-bundle/test/validate-work-item-protocol.test.js"
+  - "packages/workflow-bundle/test/materialize-work-item.test.js"
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
 materialization_status: READY
@@ -681,14 +690,12 @@ decision_owner: "agent"
 protocol_owner: "ba"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "s07-structural-scope-resume"
-last_transition_action: "verify-amended-s06-receipt-await-resume"
-last_transition_at: "2026-09-12T05:54:27Z"
+handoff_target: "s07-structural-TS0"
+last_transition_action: "resume"
+last_transition_at: "2026-09-12T06:06:04.440Z"
 required_actions:
-  - "Explicitly resume closeout-bundle-repeat-cycle-reconciliation at s07 with all 16 human-approved write roots; do not reuse the old seven-root grant."
-  - "Keep production edits and partial T7 adoption closed until resume; s08 and release actions remain independent."
-blockers:
-  - "Execution has not been explicitly resumed with the 16 human-approved write roots."
+  - "Continue active execution from the current step."
+blockers: []
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -721,14 +728,14 @@ review_notes:
   - "Owner scope direction reopened discovery for a persisted structured-state contract. Impact analysis opened OQ-RCR-004..006 and suspended T7 before further source changes; no gate approval is inferred."
   - "Human BA/Developer/QC approved OQ-RCR-004=B and human Developer/QC approved OQ-RCR-005=A plus OQ-RCR-006=B at 2026-09-11T07:59:12Z. No downstream gate is implied."
   - "Amended s04 is drafted with typed state-entry and transaction-backed event contracts. Fresh Spec, Contract, DoR, Approach, and Task Plan receipts are required before production work resumes."
-  - "Independent review requested a live compatibility recount. The branch contains 13 tracked work-item reports after Node 24 materialization, so RCR-08 and AC-RCR-09 were refreshed from 12 to 13 before s04 human review."
-  - "The existing owner stop rule is clarified as a 2026-09-18 stop-and-reassess checkpoint, not a delivery promise. AC-RCR-06 and AC-RCR-08 remain in scope unless unfinished at that checkpoint, when they are separable follow-ups."
-  - "Human BA approved the amended Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at 2026-09-11T11:40:59Z. Trusted receipt sealing remains separate, and prior s04-s06 receipts remain historical."
-  - "Fresh Spec, Contract, and DoR receipts verify digest_match=true against unchanged s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87."
-  - "The amended s05 proposes one shared typed-state boundary, a bounded legacy adapter, exact selectors, and direct transaction event identity. Developer Approach approval remains pending."
-  - "Human Developer approved the amended structural s05 Approach at 2026-09-11T14:34:14Z. Trusted receipt sealing remains separate."
+  - "Independent review confirmed the structural invariants and requested two live counts. The workflow has 9 checkout and 9 setup-node references; the tracked report inventory is 13, and the s04 compatibility threshold has been corrected accordingly."
+  - "The review's timebox proposal matches the owner's existing stop rule: 2026-09-18 is a stop-and-reassess checkpoint, not a delivery promise. No acceptance criterion is removed before that checkpoint."
+  - "Human BA approved the amended Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at 2026-09-11T11:40:59Z. Prior s04-s06 receipts remain historical."
+  - "Fresh Spec receipt by BA at 2026-09-11T13:50:51.020Z, Contract receipt by Developer at 2026-09-11T13:51:06.341Z, and DoR receipt by QC at 2026-09-11T13:51:18.535Z all verify digest_match=true against s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87."
+  - "The amended s05 proposes the smallest complete structural design: shared typed-state utilities, bounded legacy import, exact selectors, structured rendering, and direct transaction event identity. Developer Approach approval remains pending."
+  - "Human Developer approved the amended structural s05 Approach at 2026-09-11T14:34:14Z. A fresh trusted receipt remains required and no s06 or implementation authority is implied."
   - "Developer Approach receipt APPROVED at 2026-09-11T14:38:00.519Z verifies digest_match=true against s05 SHA-256 d075290f151a9596d029a79fa1cf2eab72b08a179c196d35a046d2d7a8187001."
-  - "Amended s06 TS0..TS8 and RCR-SB1/2/3 are drafted with 16 proposed, ungranted write roots. Partial T7 WIP remains untouched until TS7."
+  - "Amended s06 TS0..TS8 and RCR-SB1/2/3 are drafted with 16 proposed write roots. No new roots are granted; partial T7 WIP remains untouched."
   - "Human Developer approved the amended Task Plan and all 16 proposed write roots at 2026-09-12T05:44:54Z. The finalized host awaits a matching trusted receipt and explicit s07 resume; no production edit, WIP adoption, or terminal gate is opened."
   - "Developer Task Plan receipt APPROVED at 2026-09-12T05:51:29.267Z matches finalized s06 SHA-256 ae1a733dab2cc709f61334050b0435160d34d88385ca4dba5ff7960632f11238. No authoring receipt is missing; protocol remains BLOCKED until explicit s07 resume grants all 16 roots. Existing grants and partial T7 WIP are unchanged."
 refs:
@@ -803,6 +810,7 @@ audit_events:
   - "S06_STRUCTURAL_TASK_PLAN_DRAFTED"
   - "S06_STRUCTURAL_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT"
   - "S06_STRUCTURAL_TASK_PLAN_RECEIPT_VERIFIED"
+  - "WORK_ITEM_RESUMED"
 ```
 
 ## Traceability
