@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: approved
+status: draft
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: ALIGNED
+governance_status: CHECKS_PENDING
 checklist_refs:
   - "project-context/checklists/default.md"
   - "project-context/checklists/strict.md"
@@ -33,7 +33,7 @@ review_mode: independent
 verification_owner: "qc"
 approval_gates:
   spec: "required"
-  contract: "not_applicable"
+  contract: "required"
   dor: "required"
   approach: "required"
   foundation: "not_applicable"
@@ -44,7 +44,7 @@ approval_gates:
   dod: "required"
 role_signoffs:
   spec: ["ba"]
-  contract: []
+  contract: ["developer"]
   dor: ["ba", "qc"]
   approach: ["developer"]
   foundation: []
@@ -55,17 +55,17 @@ role_signoffs:
   dod: ["qc"]
 gate_reviews:
   spec_reviewed_by: ["ba"]
-  spec_reviewed_at: "2026-09-10T03:09:26Z"
-  contract_reviewed_by: []
-  contract_reviewed_at: ""
+  spec_reviewed_at: "2026-09-11T11:40:59Z"
+  contract_reviewed_by: ["developer"]
+  contract_reviewed_at: "2026-09-11T11:40:59Z"
   dor_reviewed_by: ["ba", "qc"]
-  dor_reviewed_at: "2026-09-10T03:09:26Z"
+  dor_reviewed_at: "2026-09-11T11:40:59Z"
   approach_reviewed_by: ["developer"]
-  approach_reviewed_at: "2026-09-10T08:12:02Z"
+  approach_reviewed_at: "2026-09-11T14:34:14Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
-  task_plan_reviewed_by: ["developer"]
-  task_plan_reviewed_at: "2026-09-10T08:56:19Z"
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
   uat_reviewed_by: []
   uat_reviewed_at: ""
   release_reviewed_by: []
@@ -86,13 +86,9 @@ upstream_artifacts:
   - "closeout-bundle-repeat-cycle-reconciliation.s05.technical-approach.md"
 linked_artifacts:
   - "closeout-bundle-repeat-cycle-reconciliation.work-item-report.json"
-  - "../adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.s07.implementation.md"
+  - "closeout-bundle-repeat-cycle-reconciliation.s07.implementation.md"
+  - "closeout-bundle-repeat-cycle-reconciliation.s08.verification.md"
   - "../adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.s08.verification.md"
-  - "../../packages/workflow-bundle/scripts/work-item-protocol.js"
-  - "../../packages/workflow-bundle/scripts/workflow-gate-review.js"
-  - "../../packages/workflow-bundle/scripts/workflow-approval-transaction.js"
-  - "../../packages/workflow-bundle/test/work-item-protocol.test.js"
-  - "../../packages/workflow-bundle/test/workflow-gate-review.test.js"
 tags:
   - "agent-ops"
   - "workflow/s06"
@@ -101,454 +97,443 @@ tags:
 # Step 6 - Task Plan
 
 > [!summary]
-> The Developer-approved s05 Approach is backed by a trusted receipt at
-> `2026-09-10T08:20:46.196Z`; its digest matches s05 SHA-256
-> `5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a`.
-> Human Developer approved this Task Plan at `2026-09-10T08:56:19Z`. It executes the
-> transaction-delta projector in the existing CR-008 worktree through
-> three TDD and review batches: shared cycle identity, canonical state projection, then
-> failure/compatibility and exact-candidate evidence. The finalized host now awaits its trusted
-> receipt; implementation remains closed until that receipt matches and s07 is explicitly activated.
+> The amended Approach receipt is APPROVED by Developer at 2026-09-11T14:38:00.519Z and matches s05
+> SHA-256 d075290f151a9596d029a79fa1cf2eab72b08a179c196d35a046d2d7a8187001.
+> This amendment replaces the patch-oriented remaining T7/T8 with TS0..TS8: typed-state boundary,
+> writer/selector conversion, then direct event identity and full atomic/compatibility evidence.
+> RCR-SB1, RCR-SB2, and RCR-SB3 each require Spec Compliance before Code Quality. The proposed
+> 16 write roots are not granted yet. Developer Task Plan approval, a matching receipt, and explicit
+> s07 resume remain separate requirements.
 
 ## Step Contract
+
 ```yaml
 step: "s06 Task Plan"
-goal: >-
-  Convert the approved transaction-delta projector into an ordered, path-owned, TDD-first plan that
-  can close F-AG11-001 without re-inferring cycle, projection, transaction, or release semantics.
-value: >-
-  Give Developer, QC, DevOps, and PO an unambiguous execution and evidence path while preserving
-  human authority, immutable history, atomicity, compatibility, and parent CR-008 release controls.
+goal: "Turn the approved structural Approach into a path-owned, failing-first execution plan without redesign."
+value: "End the prose-state defect class with complete compatibility and exact-candidate evidence."
 scope_in:
-  - "Shared transaction identity for a real committed closeout cycle"
-  - "Receipt/pre-event state-delta classification before event construction"
-  - "Canonical closeout projection for report and synchronized s01 state"
-  - "First/later/retry, semantic, failure/recovery, concurrency, and compatibility tests"
-  - "Mandatory early review in Spec Compliance then Code Quality order"
-  - "One corrected v2.6.2 candidate and child-to-parent re-verification handoff"
+  - "Approved typed entry vocabulary, opaque deterministic IDs, bounded legacy import, and exact selectors"
+  - "All new report blocker/action producers and core state assertions"
+  - "Direct identity on new readiness/closeout approval-transaction events"
+  - "Structured report/s01 parity, 13-report no-migration compatibility, and failure/recovery"
+  - "Three independent two-tier review checkpoints"
+  - "One corrected v2.6.2 candidate and child-to-parent verification handoff"
 scope_out:
-  - "Public CLI, receipt-v1, protocol-event, artifact, config, runtime, or deployment schema changes"
-  - "New lifecycle state, persisted cycle ledger, generic prose engine, service, or dependency"
-  - "Legacy terminal-gate selection already owned by closeout-bundle-legacy-dod-compatibility"
-  - "Publication, tag creation, merge, install, cleanup, or branch/worktree finalization"
+  - "Public CLI, receipt-v1, signer, reviewer authority, runtime, or deployment changes"
+  - "Unknown legacy semantic guessing or bulk/in-place migration"
+  - "Validator parallelisation or architecture skill restructure"
+  - "Node24 implementation inside an RCR structural commit"
+  - "Publish, tag, merge, install, cleanup, or branch/worktree finalization"
 inputs_required:
-  - "Digest-matched Spec and DoR receipts for s04 SHA-256 b50db12a977a007b8785baff4153ad54d8049e0003d030deaf4329bebff9f60b"
-  - "Digest-matched Approach receipt for s05 SHA-256 5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a"
-  - "AC-RCR-01..08, EDGE-RCR-01..06, and approved OQ-RCR-001=B/OQ-RCR-002=A/OQ-RCR-003=A"
-  - "Approved Option A and the existing closeout transaction, report/s01, and fixture boundaries"
+  - "Amended s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87 and three matching receipts"
+  - "Amended s05 SHA-256 d075290f151a9596d029a79fa1cf2eab72b08a179c196d35a046d2d7a8187001 and matching Developer receipt"
+  - "AC-RCR-01..10, EDGE-RCR-01..06, and approved B/A/B structural questions"
 outputs_required:
-  - "Exact tasks, owned paths, dependencies, RED/GREEN points, review checkpoints, and verify commands"
-  - "Brownfield regression, rollback, exact-candidate, and parent re-verification sequence"
+  - "TS0..TS8 with exact paths, dependencies, RED/GREEN, review, and verify commands"
+  - "Explicit 16-root scope amendment and WIP disposition"
 done_when:
-  - "Every AC and edge class maps to a task and deterministic verification path"
-  - "Every behavior change has a fail-first test before its minimum production delta"
-  - "Batch boundaries and Spec Compliance before Code Quality review are explicit"
-  - "No placeholder, unresolved design choice, or unowned release checkpoint remains"
+  - "Every AC/edge class maps to executable work and evidence"
+  - "Every production behavior change is gated by its expected RED"
+  - "No unknown legacy state or historical event is silently cleared or backfilled"
+  - "Every risky batch stops for ordered human review"
+  - "Source ownership and parent release ordering are explicit"
 constraints:
   hard_constraints:
-    - "T1/T3/T5 RED evidence must precede the corresponding T2/T4/T6 production change"
-    - "A cycle is receipt_delta OR pre-event state_delta; the new event is never its own trigger"
-    - "One validated transaction ID is shared by the event and existing journal/summary"
-    - "An unchanged retry has no ID allocation, event, operation, journal, lock, or file mutation"
-    - "Only mutable report/s01 current state changes; historical notes, receipts, markers, and events remain immutable"
-    - "The existing CR-008 worktree stays open until child and parent s08 decisions permit finalization"
-  soft_constraints:
-    - "Prefer small pure helpers and existing fixture builders over a new abstraction surface"
-    - "Keep source deltas within the three approved internal modules"
+    - "Unknown input is preserved as {kind: legacy, text: exact_original}; never semantic-clear"
+    - "Core transitions/assertions never inspect text or note"
+    - "IDs are opaque; exact comparison is allowed, semantic parsing is prohibited"
+    - "Cycle classification precedes event creation"
+    - "New event.transaction_id equals journal/result identity"
+    - "2026-09-18 is a stop-and-reassess checkpoint; AC-RCR-06/08 remain in scope until reassessed"
   prohibited_actions:
-    - "Code before Task Plan approval, receipt verification, and explicit s07 activation"
-    - "Use CLOSEOUT_BUNDLE_APPROVED history or command invocation as cycle identity"
-    - "Make transaction_id mandatory for existing callers"
-    - "Delete, rewrite, reorder, or backfill historical authority or audit evidence"
-    - "Use a subagent for the tightly coupled coordinator/projector/test path"
-  compliance_checks:
-    - "TDD evidence records expected RED and GREEN for each behavior batch"
-    - "Independent review records Spec Compliance before Code Quality for B1, B2, and B3"
-    - "Strict workflow validators, compatibility, security, performance, and UTF-8 checks pass"
-    - "Child and parent evidence bind one corrected exact candidate before terminal decisions repeat"
-risks:
-  - id: "R-S06-RC-001"
-    description: "An event operation enters the classifier and converts unchanged retries into commits."
-    mitigation: "Classify only receipt and pre-event report/s01 operations; assert two byte-identical NOOP retries."
-  - id: "R-S06-RC-002"
-    description: "Semantic cleanup removes an unrelated blocker or rewrites immutable history."
-    mitigation: "Use selected-gate semantics only on mutable fields and retain unrelated/history digest canaries."
-  - id: "R-S06-RC-003"
-    description: "Event, journal, and CLI transaction identities diverge."
-    mitigation: "Preallocate one validated ID and assert exact equality across all observable surfaces."
-  - id: "R-S06-RC-004"
-    description: "Concurrent or recovered retries commit duplicate cycles."
-    mitigation: "Retain the live lock, expected digests, rollback/recovery matrix, and at-most-one-commit assertion."
-  - id: "R-S06-RC-005"
-    description: "The parent is closed using stale pre-finding candidate evidence."
-    mitigation: "Build once after review, bind full SHA-256 locally and hosted, rerun AG-01..13, and repeat terminal gates."
-timebox:
-  target_duration: "One focused TDD and review batch at a time"
-  deadline: "Before any corrected v2.6.2 publication or branch finalization"
-  escalation_rule: "Return to s05/s04 before changing a public contract, persisted schema, lifecycle state, or accepted behavior."
+    - "Use old s06 receipts to resume implementation"
+    - "Stage current partial T7 test before its TS7 replacement task opens"
+    - "Grant proposed new roots before approved Task Plan and trusted receipt"
+    - "Introduce another model module, schema version, dependency, or prose classifier"
+```
+
+## Input Readiness
+
+```yaml
+step: "s06 Task Plan"
+status: READY
+available_inputs:
+  - "Developer Approach receipt APPROVED at 2026-09-11T14:38:00.519Z with digest_match=true"
+  - "Current s04 Spec/Contract/DoR receipts already verified"
+  - "Approved component, kind, adapter, identity, failure, compatibility, and rollback boundaries"
+  - "Existing isolated CR-008 worktree and exact dirty-path inventory"
+missing_inputs: []
+invalid_inputs:
+  - "Old s06 receipt binds pre-structural SHA-256 7fbb8b9d... and is historical only"
+conflicts: []
+next_action: "Developer reviews this amended Task Plan."
+```
+
+## Historical Plan Disposition
+
+```yaml
+prior_host_sha256: "7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9"
+prior_human_approval: "Developer 2026-09-10T08:56:19Z"
+disposition:
+  - "Old T0..T6 and T6a RED/GREEN/reviews remain historical evidence in git and s07."
+  - "Old B1/B2 approvals apply only to their recorded sources, latest f9533c4de66fdb04e75008382b39b4fc413e3caa."
+  - "Old remaining T7/T8 are superseded by TS0..TS8; their receipts do not authorize structural work."
+partial_t7_wip:
+  path: "packages/workflow-bundle/test/work-item-protocol.test.js"
+  current_delta: "69 uncommitted lines for testTwentyCloseoutCyclesRemainDeterministic"
+  rule: "Preserve untouched through planning and TS0; adopt/update only at TS7 after earlier review gates pass."
 ```
 
 ## Main Artifact
+
 ```yaml
-implementation_goal: >-
-  Make every real repeated closeout cycle canonical and transaction-attributable while unchanged
-  retries remain byte-stable NOOPs, then re-establish child and parent evidence on one candidate.
+implementation_goal: "Replace prose-derived state with typed entries, exact selectors, and truthful transaction identity; then re-establish child/parent evidence."
 ba_lane:
   acceptance_coverage:
-    - "AC-RCR-01/02/EDGE-RCR-01/02/05 -> T3, T4, B1 review"
-    - "AC-RCR-03/05/EDGE-RCR-03/04 -> T5, T6, B2 review"
-    - "AC-RCR-04/06/EDGE-RCR-06 -> T3, T5, T7"
-    - "AC-RCR-07 -> T7 compatibility and full workflow-bundle regression"
-    - "AC-RCR-08 -> T8 exact candidate, hosted evidence, child s08, and parent re-verification"
+    - "AC-RCR-09 -> TS1/TS2 boundary; TS3/TS4 producers/selectors; TS7 13-report compatibility"
+    - "AC-RCR-03/05 and EDGE-RCR-03/04 -> TS3/TS4 known legacy approval cleanup and structured parity"
+    - "AC-RCR-01/02/04/10 and EDGE-RCR-01/02/05 -> TS5/TS6 cycle and direct identity"
+    - "AC-RCR-06/07 and EDGE-RCR-06 -> TS7 atomicity, concurrency, legacy/adaptive/readiness/receipt regression"
+    - "AC-RCR-08 -> TS8 candidate and child/parent evidence sequence"
   scope_guards:
-    - "Do not change gate selection, reviewer authority, receipt-v1 signing, or trusted-root behavior."
-    - "Do not introduce a public field, action, flag, schema, config value, database, service, or dependency."
-    - "Do not edit finalized s04/s05 or historical parent/child receipts as implementation output."
-    - "Do not absorb unrelated CR-008 scope or reopen the resolved legacy-DoD selector defect."
-    - "Do not publish, tag, install, merge, clean, or finalize the branch/worktree in s07."
+    - "Known protocol-owned pending entries can clear; unknown/unrelated legacy entries never clear by prose resemblance."
+    - "The canonical-only close fixture contains only satisfied protocol-owned actions; canary fixtures separately prove unknown entries survive."
+    - "No historical event identity backfill and no load-only report rewrite."
+    - "No public CLI or trusted receipt authority changes."
+    - "Node24 remains a separate linked work item and token-only commit."
   human_review_points:
-    - "Developer approves and seals this Task Plan before s07 activation."
-    - "QC reviews B1/B2/B3 Spec Compliance before Developer/QC review Code Quality."
-    - "QC controls child Technical Verification and DoD."
-    - "QC re-verifies parent Technical Verification/DoD; DevOps/QC repeat Release; PO repeats Business Acceptance."
+    - "Developer approves and seals Task Plan before explicit s07 resume."
+    - "Each RCR-SB1/2/3: QC Spec Compliance, then Developer/QC Code Quality."
+    - "QC controls child Technical Verification/DoD and parent exact-candidate re-verification."
+    - "DevOps/QC control Release; PO controls Business Acceptance separately."
 dev_lane:
   path_map:
-    - owner: "Closeout current-state projector and event construction"
-      paths: ["packages/workflow-bundle/scripts/work-item-protocol.js"]
-    - owner: "Cycle classifier, operation sequencing, and transaction binding"
-      paths: ["packages/workflow-bundle/scripts/workflow-gate-review.js"]
-    - owner: "Optional validated transaction identity"
-      paths: ["packages/workflow-bundle/scripts/workflow-approval-transaction.js"]
-    - owner: "Real CLI repeat-cycle, projection, failure, and compatibility fixtures"
-      paths: ["packages/workflow-bundle/test/work-item-protocol.test.js"]
-    - owner: "Coordinator identity, atomicity, and compatibility fixtures"
-      paths: ["packages/workflow-bundle/test/workflow-gate-review.test.js"]
-    - owner: "Child and parent trace/evidence"
-      paths:
-        - "work-items/closeout-bundle-repeat-cycle-reconciliation/*.s07.*"
-        - "work-items/closeout-bundle-repeat-cycle-reconciliation/*.s08.*"
-        - "work-items/adaptive-governance-human-approval-ux/*.s07.*"
-        - "work-items/adaptive-governance-human-approval-ux/*.s08.*"
+    - { owner: "typed contract boundary", paths: ["scripts/work-item-protocol-utils.js", "scripts/validate-work-item-protocol.js", "test/work-item-protocol-state.test.js", "test/validate-work-item-protocol.test.js"] }
+    - { owner: "writers and exact semantic consumers", paths: ["scripts/work-item-protocol.js", "scripts/materialize-work-item.js", "scripts/workflow-gate-evidence-utils.js", "scripts/run-workflow-authoring-smoke.js", "test/work-item-protocol.test.js", "test/materialize-work-item.test.js", "test/workflow-gate-evidence-utils.test.js"] }
+    - { owner: "transaction event identity", paths: ["scripts/workflow-gate-review.js", "scripts/workflow-approval-transaction.js", "scripts/work-item-protocol-utils.js", "test/workflow-gate-review.test.js", "test/work-item-protocol.test.js"] }
+    - { owner: "traceability", paths: ["work-items/closeout-bundle-repeat-cycle-reconciliation", "work-items/adaptive-governance-human-approval-ux"] }
   technical_sequence:
-    - "T0 baseline -> T1 RED -> T2 GREEN -> T3 RED -> T4 GREEN -> B1 review -> T5 RED -> T6 GREEN -> B2 review -> T7 matrix/B3 review -> T8 candidate and s08 handoff"
+    - "TS0 -> TS1 RED -> TS2 GREEN -> RCR-SB1 reviews -> TS3 RED -> TS4 GREEN -> RCR-SB2 reviews -> TS5 RED -> TS6 GREEN -> TS7 matrix -> RCR-SB3 reviews -> TS8"
   tdd_targets:
-    - "T1 proves supplied transaction ID validation/reuse is absent before T2."
-    - "T3 proves second-cycle event attribution and unchanged retry semantics fail before T4."
-    - "T5 proves prose/case/whitespace cleanup, canonical handoff, and report/s01 parity fail before T6."
-    - "Any new behavior discovered in T7 receives its own RED before a correction."
+    - "TS1: object collapse, invalid shape, duplicate ID, conditional gate, exact known/unknown adapter, structured rendering"
+    - "TS3: raw new writer output, latent unknown-state deletion, text invariance, exact gate/work-item/change assertions"
+    - "TS5: missing direct transaction identity, note invariance, historical event preservation, NOOP"
 task_breakdown:
-  - id: "T0"
+  - id: "TS0"
     owner_role: "developer"
-    name: "Freeze receipt, source, and worktree baseline"
-    objective: "Record the trusted authoring inputs, existing test baseline, dirty paths, and the exact implementation boundary before any production edit."
+    name: "Freeze structural baseline and reconcile approved ownership"
+    objective: "Verify all current receipts, preserve WIP, and freeze report/event/source digests before any production edit."
     paths_in_scope:
-      - ".claude/worktrees/cr-008-adaptive-governance"
-      - "work-items/closeout-bundle-repeat-cycle-reconciliation/*.s07.*"
+      - "work-items/closeout-bundle-repeat-cycle-reconciliation"
+      - "work-items/adaptive-governance-human-approval-ux"
+      - "packages/workflow-bundle/test/work-item-protocol.test.js (read-only WIP inventory)"
+    dependencies: ["Human Task Plan approval", "matching trusted receipt", "explicit resume with the 16 roots below"]
+    outputs_expected:
+      - "Current work-item and Spec/Contract/DoR/Approach/Task Plan receipt status and full digests"
+      - "13 tracked report raw digests and ordered historical event snapshots"
+      - "WIP diff digest preserved unchanged; no test lines staged"
+      - "Focused pre-structural suites and source SHA recorded in s07"
+    review_checkpoint: "Stop if another owner modified any proposed root or a current receipt digest mismatches."
+    verification_hint: "wfc work-item/gate status; git status/diff; node test/work-item-protocol.test.js and test/workflow-gate-review.test.js."
+  - id: "TS1"
+    owner_role: "developer"
+    name: "Write failing typed-boundary contract tests"
+    objective: "Reproduce destructive object normalization and pin all valid/invalid state-entry and bounded-import rules."
+    paths_in_scope:
+      - "packages/workflow-bundle/test/work-item-protocol-state.test.js"
+      - "packages/workflow-bundle/test/validate-work-item-protocol.test.js"
+      - "work-items/closeout-bundle-repeat-cycle-reconciliation"
+    dependencies: ["TS0"]
+    outputs_expected:
+      - "Expected RED for typed object preservation and required id/kind/text validation"
+      - "Duplicate ID and conditional gate rejection cases"
+      - "Deterministic full SHA-256 IDs from a canonical JSON tuple; display wording is not a semantic source"
+      - "Exact-value/anchored-command import matrix plus unknown strings preserving accents, Unicode, case, and whitespace exactly"
+      - "Stable YAML mappings and report/s01 collection equality expectations"
+    review_checkpoint: "RCR-SB1 seed: no fuzzy grammar and no automatic historical migration."
+    verification_hint: "Run the new isolated state test and protocol-validator test; retain expected assertion failures, not syntax/setup failures."
+  - id: "TS2"
+    owner_role: "developer"
+    name: "Implement the shared typed contract boundary"
+    objective: "Add the approved enum, constructor, adapter, exact selectors, validation, and mapping renderer in existing utilities."
+    paths_in_scope:
+      - "packages/workflow-bundle/scripts/work-item-protocol-utils.js"
+      - "packages/workflow-bundle/scripts/validate-work-item-protocol.js"
+      - "packages/workflow-bundle/test/work-item-protocol-state.test.js"
+      - "packages/workflow-bundle/test/validate-work-item-protocol.test.js"
+      - "work-items/closeout-bundle-repeat-cycle-reconciliation"
+    dependencies: ["TS1 expected RED"]
+    outputs_expected:
+      - "Generated entries validate and unique IDs are enforced per collection"
+      - "Unknown legacy maps only to {kind: legacy, text: exact_original}"
+      - "Known legacy interpretation exists only in the normalizer adapter"
+      - "Renderer preserves structured state instead of [object Object]"
+      - "Load-only checks do not persist adapted reports"
+    review_checkpoint: "RCR-SB1 Spec Compliance must PASS before Developer/QC Code Quality; both gate TS3."
+    verification_hint: "Rerun isolated state/validator tests to GREEN; node --check both scripts; git diff --check; review adapter rule table."
+  - id: "TS3"
+    owner_role: "developer"
+    name: "Write failing producer and exact-selector tests"
+    objective: "Pin typed output for every writer and prove arbitrary human wording cannot change transitions or assertions."
+    paths_in_scope:
+      - "packages/workflow-bundle/test/work-item-protocol.test.js (do not stage/adopt partial T7 function)"
+      - "packages/workflow-bundle/test/materialize-work-item.test.js"
+      - "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js"
+      - "packages/workflow-bundle/test/work-item-protocol-state.test.js"
+      - "work-items/closeout-bundle-repeat-cycle-reconciliation"
+    dependencies: ["RCR-SB1 Spec Compliance PASS", "RCR-SB1 Code Quality PASS"]
+    outputs_expected:
+      - "Expected RED for raw new materialize/approve/reject/block/resume/cancel/bundle state entries"
+      - "Latent counterexample: Peer review of the migration script is outstanding remains preserved"
+      - "Unknown blocker and required-action canaries survive selected-gate closeout"
+      - "At least 20 wording/Unicode/alias mutations with id/kind/gate fixed yield identical core outcomes"
+      - "Gate, work-item, and change approval contradictions are tested using exact typed identity, never text"
+    review_checkpoint: "RCR-SB2 seed: distinguish known imported pending state from opaque legacy canaries."
+    verification_hint: "Run producer/gate-evidence suites; record assertions identifying string output or prose-dependent outcome."
+  - id: "TS4"
+    owner_role: "developer"
+    name: "Convert all writers and semantic consumers"
+    objective: "Replace new string emission and text predicates with constructors plus exact id or kind+gate selectors."
+    paths_in_scope:
+      - "packages/workflow-bundle/scripts/work-item-protocol.js"
+      - "packages/workflow-bundle/scripts/materialize-work-item.js"
+      - "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js"
+      - "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
+      - "packages/workflow-bundle/test/work-item-protocol.test.js"
+      - "packages/workflow-bundle/test/materialize-work-item.test.js"
+      - "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js"
+      - "packages/workflow-bundle/test/work-item-protocol-state.test.js"
+      - "work-items/closeout-bundle-repeat-cycle-reconciliation"
+    dependencies: ["TS3 expected RED"]
+    outputs_expected:
+      - "Every new report blocker/action uses the shared constructor"
+      - "Core closeout/readiness/rejection and approval-state assertions use exact selectors"
+      - "Non-gate work-item/change followups use approved non-gate kinds with deterministic purpose IDs compared exactly, not parsed"
+      - "Unknown legacy and unrelated delivery blockers/actions remain intact"
+      - "Canonical close command and protocol-close handoff are structured and report/s01 agree"
+      - "Existing display assertions are updated to typed fields without dropping behavioral checks"
+    review_checkpoint: "RCR-SB2 Spec Compliance first, then Developer/QC Code Quality; both gate TS5."
+    verification_hint: "Producer/evidence suites and authoring smoke GREEN; inventory all assignments/push/unshift; static review proves no core entry.text or note semantic reads."
+  - id: "TS5"
+    owner_role: "developer"
+    name: "Write failing direct event-identity tests"
+    objective: "Require truthful fields for newly emitted readiness/closeout approval/rejection events and preserve historical event prefixes."
+    paths_in_scope:
+      - "packages/workflow-bundle/test/workflow-gate-review.test.js"
+      - "packages/workflow-bundle/test/work-item-protocol.test.js"
+      - "packages/workflow-bundle/test/work-item-protocol-state.test.js"
+      - "work-items/closeout-bundle-repeat-cycle-reconciliation"
+    dependencies: ["RCR-SB2 Spec Compliance PASS", "RCR-SB2 Code Quality PASS"]
+    outputs_expected:
+      - "Expected RED: new transaction event without direct transaction_id is rejected"
+      - "Direct event/journal/result equality across readiness, closeout, approve, and reject"
+      - "Note mutation does not change identity, deduplication, or state"
+      - "Non-transaction lifecycle events omit identity and NOOP appends no event"
+      - "Two historical unbound bundle events remain exact immutable prefixes"
+    review_checkpoint: "RCR-SB3 seed: legacy readability is not permission for a new unbound event."
+    verification_hint: "Run event/gate-review suites; direct field assertions replace note.includes identity recovery."
+  - id: "TS6"
+    owner_role: "developer"
+    name: "Implement first-class event identity"
+    objective: "Pass one coordinator identity to every new transaction-backed protocol event and remove note/history inference."
+    paths_in_scope:
+      - "packages/workflow-bundle/scripts/work-item-protocol-utils.js"
       - "packages/workflow-bundle/scripts/work-item-protocol.js"
       - "packages/workflow-bundle/scripts/workflow-gate-review.js"
       - "packages/workflow-bundle/scripts/workflow-approval-transaction.js"
-      - "packages/workflow-bundle/test/work-item-protocol.test.js"
       - "packages/workflow-bundle/test/workflow-gate-review.test.js"
-    dependencies: ["Developer Task Plan approval", "digest-matched Task Plan receipt", "explicit s07 activation"]
-    outputs_expected:
-      - "All work-item, Spec, DoR, Approach, and Task Plan receipts verified against their current hosts"
-      - "Branch/worktree, source SHA, and dirty-path inventory preserving unrelated CR-008 evidence"
-      - "Focused pre-change tests and Delivery Rule Evidence baseline"
-    review_checkpoint: "Confirm the five code/test paths and child/parent evidence paths are the only writable defect scope."
-    verification_hint: "Run wfc work-item/gate status, git status/diff, both focused tests, and record exact results in child s07."
-  - id: "T1"
-    owner_role: "developer"
-    name: "Write failing optional transaction-identity tests"
-    objective: "Prove the coordinator cannot yet validate and reuse one caller-supplied transaction ID while preserving generated-ID defaults."
-    paths_in_scope:
-      - "packages/workflow-bundle/test/workflow-gate-review.test.js"
-      - "work-items/closeout-bundle-repeat-cycle-reconciliation/*.s07.*"
-    dependencies: ["T0"]
-    outputs_expected:
-      - "Expected RED for valid supplied ID reuse"
-      - "Expected RED for malformed supplied ID rejection before writes"
-      - "Compatibility assertion that omitted ID still generates the existing transaction shape"
-    review_checkpoint: "B1 Spec Compliance seed: tests must express AC-RCR-02/06 without creating a new public contract."
-    verification_hint: "Run workflow-gate-review.test.js and retain failures naming supplied-ID behavior rather than syntax or fixture setup."
-  - id: "T2"
-    owner_role: "developer"
-    name: "Add optional validated coordinator identity"
-    objective: "Accept and reuse one internal transaction ID while leaving every existing caller and output shape unchanged."
-    paths_in_scope:
-      - "packages/workflow-bundle/scripts/workflow-approval-transaction.js"
-      - "packages/workflow-bundle/test/workflow-gate-review.test.js"
-      - "work-items/closeout-bundle-repeat-cycle-reconciliation/*.s07.*"
-    dependencies: ["T1 expected RED"]
-    outputs_expected:
-      - "Validated optional transaction_id input"
-      - "Exact ID reuse in journal and transaction result"
-      - "Generated-ID default and failure-before-write behavior remain green"
-    review_checkpoint: "B1 Code Quality later checks that identity validation is narrow and no authority or schema surface changes."
-    verification_hint: "Rerun workflow-gate-review.test.js to GREEN and node --check the changed coordinator."
-  - id: "T3"
-    owner_role: "developer"
-    name: "Write failing cycle and event-attribution fixtures"
-    objective: "Reproduce first cycle, later committed cycle, and unchanged retry through the real closeout CLI before changing classification."
-    paths_in_scope:
       - "packages/workflow-bundle/test/work-item-protocol.test.js"
-      - "work-items/closeout-bundle-repeat-cycle-reconciliation/*.s07.*"
-    dependencies: ["T2"]
+      - "packages/workflow-bundle/test/work-item-protocol-state.test.js"
+      - "work-items/closeout-bundle-repeat-cycle-reconciliation"
+    dependencies: ["TS5 expected RED"]
     outputs_expected:
-      - "Historical marker without event and marker with older event fixtures"
-      - "Expected RED: later commit lacks exactly one current event sharing the transaction ID and ordered gates"
-      - "Expected RED or guard assertion proving unchanged retries must not allocate identity or append evidence"
-    review_checkpoint: "B1 Spec Compliance maps the three outcomes to AC-RCR-01/02/04 and EDGE-RCR-01/02/05."
-    verification_hint: "Run work-item-protocol.test.js and preserve the second-cycle/event failures plus pre/post counts and digests."
-  - id: "T4"
+      - "New transaction event constructor requires validated transaction_id"
+      - "Normalizer preserves direct identity; human note remains display-only"
+      - "Receipt/pre-event state deltas classify cycles before ID/event allocation"
+      - "Readiness/closeout approval/rejection all use the same transaction boundary"
+      - "Omitted coordinator ID still preserves existing generated-ID behavior for other callers"
+    review_checkpoint: "No RCR-SB3 verdict until TS7 regression and failure matrix is complete."
+    verification_hint: "All focused suites GREEN; direct identity equality; two unchanged byte-digest NOOP retries; node --check changed scripts."
+  - id: "TS7"
     owner_role: "developer"
-    name: "Implement pre-event cycle classification and event sequencing"
-    objective: "Classify a committed cycle from receipt or pre-event state operations, then allocate one ID and append one attributable event only for that cycle."
-    paths_in_scope:
-      - "packages/workflow-bundle/scripts/workflow-gate-review.js"
-      - "packages/workflow-bundle/scripts/work-item-protocol.js"
-      - "packages/workflow-bundle/test/work-item-protocol.test.js"
-      - "packages/workflow-bundle/test/workflow-gate-review.test.js"
-      - "work-items/closeout-bundle-repeat-cycle-reconciliation/*.s07.*"
-    dependencies: ["T3 expected RED"]
-    outputs_expected:
-      - "receipt_delta and pre-event state_delta decide committed_cycle before event construction"
-      - "One event note contains the shared transaction ID and deterministic selected-gate order"
-      - "The coarse CLOSEOUT_BUNDLE_APPROVED marker stays deduplicated"
-      - "An unchanged retry produces no transaction residue"
-    review_checkpoint: "B1 requires QC Spec Compliance PASS before Developer/QC Code Quality review begins."
-    verification_hint: "Run both focused tests, assert event ID equals transaction result, and run two unchanged retries with byte-digest comparison."
-  - id: "T5"
-    owner_role: "developer"
-    name: "Write failing canonical-state and parity fixtures"
-    objective: "Reproduce stale literal/prose/case/whitespace approval instructions, unrelated blocker canaries, old handoff, and report/s01 divergence."
-    paths_in_scope:
-      - "packages/workflow-bundle/test/work-item-protocol.test.js"
-      - "work-items/closeout-bundle-repeat-cycle-reconciliation/*.s07.*"
-    dependencies: ["B1 Spec Compliance PASS", "B1 Code Quality PASS"]
-    outputs_expected:
-      - "Expected RED for semantic selected-gate cleanup"
-      - "Expected RED for exact work-item close action and protocol-close handoff"
-      - "Expected RED for report/s01 parity while preserving unrelated blockers and history digests"
-    review_checkpoint: "B2 Spec Compliance seed: fixture variants must cover EDGE-RCR-03/04 and immutable-history canaries."
-    verification_hint: "Run work-item-protocol.test.js and retain only failures attributable to AC-RCR-03/05 rather than B1 behavior."
-  - id: "T6"
-    owner_role: "developer"
-    name: "Implement the canonical approved-closeout projection"
-    objective: "Project selected terminal gates to the exact close action and protocol-close handoff on both mutable surfaces without rewriting history."
-    paths_in_scope:
-      - "packages/workflow-bundle/scripts/work-item-protocol.js"
-      - "packages/workflow-bundle/scripts/workflow-gate-review.js"
-      - "packages/workflow-bundle/test/work-item-protocol.test.js"
-      - "work-items/closeout-bundle-repeat-cycle-reconciliation/*.s07.*"
-    dependencies: ["T5 expected RED"]
-    outputs_expected:
-      - "Selected terminal approval blockers/actions removed by bounded semantics"
-      - "required_actions equals the exact close command and handoff_target equals protocol-close"
-      - "s01 is rendered from the normalized report projection in the same transaction"
-      - "Unrelated current blockers and every historical byte/order canary remain unchanged"
-    review_checkpoint: "B2 requires QC Spec Compliance PASS before Developer/QC Code Quality review begins."
-    verification_hint: "Rerun the semantic matrix to GREEN, parse report/s01 for parity, and compare immutable history digests and event prefixes."
-  - id: "T7"
-    owner_role: "developer/qc"
-    name: "Prove atomicity, concurrency, compatibility, and repeat determinism"
-    objective: "Exercise the complete delta at every transaction boundary and across all supported brownfield protocol shapes before candidate creation."
+    name: "Complete atomicity and no-migration regression"
+    objective: "Prove the whole structural delta across all report shapes and transaction boundaries before candidate build."
     paths_in_scope:
       - "packages/workflow-bundle/test/work-item-protocol.test.js"
       - "packages/workflow-bundle/test/workflow-gate-review.test.js"
-      - "packages/workflow-bundle/scripts/work-item-protocol.js"
-      - "packages/workflow-bundle/scripts/workflow-gate-review.js"
-      - "packages/workflow-bundle/scripts/workflow-approval-transaction.js"
-      - "work-items/closeout-bundle-repeat-cycle-reconciliation/*.s07.*"
-    dependencies: ["B2 Spec Compliance PASS", "B2 Code Quality PASS"]
+      - "packages/workflow-bundle/test/work-item-protocol-state.test.js"
+      - "packages/workflow-bundle/test/validate-work-item-protocol.test.js"
+      - "work-items/closeout-bundle-repeat-cycle-reconciliation"
+    dependencies: ["TS6 GREEN"]
     outputs_expected:
-      - "Receipt/event/report/s01 failure matrix with zero partial state and deterministic recovery"
-      - "Concurrent retry permits at most one commit and leaves later attempts as NOOP"
-      - "Twenty repeated-cycle executions have zero report/s01 mismatch or stale approval prompt"
-      - "First-cycle, legacy, adaptive, readiness, rejection, receipt-v1, reviewer, and public CLI regressions remain green"
-      - "Separate B3 Spec Compliance and Code Quality verdicts with no unresolved high finding"
-    review_checkpoint: "QC performs B3 Spec Compliance first; Developer/QC perform Code Quality only after that PASS or an explicit exception."
-    verification_hint: "Run both focused suites, enumerate every supported transaction failure point, execute 20 controlled runs, then run full unit and workflow validators."
-  - id: "T8"
-    owner_role: "developer/qc/devops/po"
-    name: "Build one corrected candidate and hand off child-to-parent verification"
-    objective: "Bind all remaining release evidence to one immutable corrected v2.6.2 candidate without publishing it."
+      - "Partial T7 WIP adopted only now and updated to structured assertions after diff review"
+      - "20 controlled repeated cycles, zero report/s01 mismatches, one event per real cycle"
+      - "13/13 frozen reports load with zero raw digest changes"
+      - "Every supported fail/crash/recovery point has zero partial authority/state or residue"
+      - "Concurrency permits at most one commit and completed retries are NOOP"
+      - "Legacy mandatory DoD, adaptive gates, readiness/rejection, signer, receipt-v1, and public CLI remain green"
+    review_checkpoint: "RCR-SB3 QC Spec Compliance, then Developer/QC Code Quality; any behavior defect gets a new RED before code correction."
+    verification_hint: "Focused suites, full run-all.js, authoring smoke, workflow validators, static/security/performance review, UTF-8 and diff checks."
+  - id: "TS8"
+    owner_role: "qc"
+    name: "Bind one candidate and route child then parent verification"
+    objective: "Establish exact local/hosted v2.6.2 evidence without publishing or inferring terminal gates."
     paths_in_scope:
-      - "packages/workflow-bundle/**"
-      - ".github/workflows/workflow-guardrails.yml (verify unchanged unless approved drift is required)"
-      - "work-items/closeout-bundle-repeat-cycle-reconciliation/*.s07.*"
-      - "work-items/closeout-bundle-repeat-cycle-reconciliation/*.s08.*"
-      - "work-items/adaptive-governance-human-approval-ux/*.s07.*"
-      - "work-items/adaptive-governance-human-approval-ux/*.s08.*"
-    dependencies: ["T7 matrix PASS", "B3 Spec Compliance PASS", "B3 Code Quality PASS"]
+      - "work-items/closeout-bundle-repeat-cycle-reconciliation"
+      - "work-items/adaptive-governance-human-approval-ux"
+      - "packages/workflow-bundle (read-only package/build input)"
+      - ".github/workflows/workflow-guardrails.yml (read-only for RCR)"
+    dependencies: ["TS7 PASS", "RCR-SB3 Spec Compliance PASS", "RCR-SB3 Code Quality PASS", "QC explicit s08 opening"]
     outputs_expected:
-      - "Workflow validators, full unit, pack audit, bundle smoke, candidate smoke, static/security/performance, and UTF-8 results"
-      - "One corrected v2.6.2 tarball with full SHA-256 reused by local and hosted Node 18/22"
-      - "Child AC-RCR-01..08 Technical Verification and DoD evidence"
-      - "Parent AG-01..AG-13 at 13/13 for the same candidate and F-AG11-001 disposition"
-      - "Separate QC DoD, DevOps/QC Release, and PO Business Acceptance decision points"
-      - "Immutable v2.6.1 rollback SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
-    review_checkpoint: "Reject any evidence with candidate-digest drift, a failed/skipped required job, or an inferred terminal approval."
-    verification_hint: "Build once after B3, verify supplied checksum and extracted payload, run hosted Guardrails on the same source/candidate, then bind child and parent s08 evidence before human gates."
+      - "One candidate built from reviewed source and full SHA-256 reused for all candidate tests"
+      - "Pack, extracted-payload, local and hosted Node 18/22 results with no failed/skipped required job"
+      - "Child AC-RCR-01..10 evidence with parent-bound AC-RCR-08 tracked as mandatory downstream contribution, not self-declared complete"
+      - "QC child Technical Verification/DoD, then exact-candidate parent AG-01..13 at 13/13"
+      - "Separate parent QC Technical Verification/DoD, DevOps/QC Release, and PO Business Acceptance"
+      - "Rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+    review_checkpoint: "F-AG11-001 stays open until parent contribution and terminal evidence conclude; digest drift triggers rebind review."
+    verification_hint: "Build once after review; validate supplied candidate checksum/payload; inspect hosted job outcomes; bind source/run/digest and gate receipts in child/parent s08."
 dependencies_global:
-  - "T0 cannot start until the Developer-approved Task Plan has a digest-matched receipt and s07 is explicitly activated."
-  - "Each RED task gates its paired production task: T1->T2, T3->T4, and T5->T6."
-  - "B1 and B2 each require Spec Compliance before Code Quality; both gate the next behavior batch."
-  - "B3 closes early review before T8 creates the exact candidate."
-  - "Child Technical Verification/DoD precedes parent AG-01..13 re-verification and repeated terminal decisions."
+  - "Task Plan human decision + matching receipt + explicit resume precede TS0."
+  - "TS1 RED gates TS2; TS3 RED gates TS4; TS5 RED gates TS6."
+  - "Each RCR-SB1/2 review pair gates the next batch; RCR-SB3 gates TS8."
+  - "Child verification precedes parent exact-candidate re-verification and repeated terminal gates."
 risk_notes:
-  - "The event itself must never count as a state delta."
-  - "Semantic cleanup is bounded to selected terminal-gate meaning in mutable current-state fields."
-  - "No subagent is planned because the classifier, projector, coordinator, and shared fixtures are tightly coupled."
-  - "v2.6.1 remains rollback-only; bundled closeout stays guarded there and individual terminal approvals are used."
+  - "Unknown legacy required actions must survive too; do not replace an entire collection to erase them."
+  - "Historical unbound events stay readable; newly emitted unbound events are invalid."
+  - "No delegation: state boundary, writers, coordinator, and fixtures are tightly coupled."
+  - "Keep node24 a standalone 18-token commit for cheap contingency cherry-pick; no parallelisation."
 verification_plan:
-  - "Focused TDD RED/GREEN for optional ID, cycle/event, and canonical-state behavior"
-  - "Real CLI first/second/retry, semantic variants, report/s01 parity, immutable history, failure/recovery, and concurrency"
-  - "Legacy/adaptive/readiness/rejection/receipt-v1/reviewer/public-CLI compatibility"
-  - "Separate B1/B2/B3 Spec Compliance then Code Quality review evidence"
-  - "wfc validate/plan/protocol, full unit, pack audit, authoring/bundle/candidate smoke, diff and syntax checks"
-  - "Security/performance heuristics and UTF-8 decoding for changed text"
-  - "One full corrected v2.6.2 SHA-256 across local/hosted Node 18/22 plus immutable v2.6.1 rollback"
-  - "Child AC-RCR-01..08 then parent AG-01..13 and separate terminal human gates"
-notes_for_implementation: >-
-  Execute sequentially in the existing dedicated CR-008 worktree. Preserve unrelated parent evidence,
-  record each expected RED before the paired minimum production change, stop on spec/governance drift,
-  and keep the worktree open. The plan intentionally uses one agentic implementation lane because its
-  production paths and fixtures share one transaction boundary; QC/Developer reviews remain independent.
+  - "Three explicit RED/GREEN pairs and three ordered two-tier review pairs"
+  - "Typed shape, producer inventory, bounded adapter, latent canary, 20 wording mutations"
+  - "13-report no-migration and historical prefix checks"
+  - "20 cycles, two retries, concurrency, every supported fail/crash/recovery boundary"
+  - "Full affected tests, workflow validators, smoke, pack audit, package, UTF-8, static/security/performance"
+  - "One candidate, child/parent hosted evidence, rollback, and independent terminal decisions"
+notes_for_implementation: "Execute sequentially in the existing CR-008 worktree. Do not edit finalized s04/s05, silently expand roots, or stage partial T7 before TS7."
+```
+
+## Owned Scope Amendment
+
+```yaml
+status: PROPOSED_NOT_GRANTED
+grant_condition: "Human Task Plan approval, matching receipt, and explicit s07 resume"
+proposed_write_roots:
+  - "packages/workflow-bundle/scripts/work-item-protocol-utils.js"
+  - "packages/workflow-bundle/scripts/work-item-protocol.js"
+  - "packages/workflow-bundle/scripts/materialize-work-item.js"
+  - "packages/workflow-bundle/scripts/workflow-gate-review.js"
+  - "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js"
+  - "packages/workflow-bundle/scripts/validate-work-item-protocol.js"
+  - "packages/workflow-bundle/scripts/workflow-approval-transaction.js"
+  - "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
+  - "packages/workflow-bundle/test/work-item-protocol-state.test.js"
+  - "packages/workflow-bundle/test/work-item-protocol.test.js"
+  - "packages/workflow-bundle/test/workflow-gate-review.test.js"
+  - "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js"
+  - "packages/workflow-bundle/test/validate-work-item-protocol.test.js"
+  - "packages/workflow-bundle/test/materialize-work-item.test.js"
+  - "work-items/closeout-bundle-repeat-cycle-reconciliation"
+  - "work-items/adaptive-governance-human-approval-ux"
+new_test_registration: "run-all.js auto-discovers every test/*.test.js; no runner edit."
+excluded_write_roots: [".github/workflows", "skills", "packages/workflow-bundle/runtime", "changes/CR-008"]
+generated_drift_rule: "Inspect sync/prepack output; do not commit generated drift outside approved roots."
 ```
 
 ## Verification Plan
 
-- Focused TDD: `node packages/workflow-bundle/test/workflow-gate-review.test.js` and `node packages/workflow-bundle/test/work-item-protocol.test.js` at each RED/GREEN boundary.
-- Syntax/static: `node --check` for changed JavaScript, `git diff --check`, and changed-file inspection.
-- Workflow: `npm run validate:workflow -- --workflow-root work-items --project-root .`, `validate:workflow:planning`, `validate:workflow:protocol`, `validate:workflow:fixtures`, and SDD/change/execution validators.
-- Package: `npm run validate:workflow:unit`, `validate:workflow:pack-audit`, `validate:workflow:authoring-smoke`, `validate:workflow:bundle-smoke`, and `validate:workflow:release-candidate`.
-- Security/performance: inspect ID validation, path/lock ownership, fixture-only failure injection, secret logging, dependency drift, repeated file reads/writes, and unbounded matching.
-- Encoding: decode every changed Markdown, JSON, YAML, and JavaScript file as UTF-8 and reject replacement bytes.
-- Release: build once after B3; bind the same full candidate digest to local/hosted Node 18/22 and retain the immutable v2.6.1 rollback. No publication or tag in s07.
-
-## Governance Checks
-```yaml
-checklist_applied:
-  - "project-context/checklists/default.md"
-  - "project-context/checklists/strict.md"
-checks:
-  - id: "GOV-S06-RC-001"
-    result: PASS
-    evidence: "Every AC-RCR criterion and EDGE-RCR class maps to a named task and deterministic verification."
-  - id: "GOV-S06-RC-002"
-    result: PASS
-    evidence: "T1/T3/T5 enforce RED before T2/T4/T6, and B1/B2/B3 enforce Spec Compliance before Code Quality."
-  - id: "GOV-S06-RC-003"
-    result: PASS
-    evidence: "The existing dedicated worktree is retained; exact owned paths, rollback, and finalization hold are explicit."
-  - id: "GOV-S06-RC-004"
-    result: PASS
-    evidence: "Agentic sequential execution is selected because the shared transaction and fixture boundary is not independently delegable."
-  - id: "GOV-S06-RC-005"
-    result: PASS
-    evidence: "No public contract, dependency, migration, lifecycle, runtime, deployment, or governance exception is planned."
-  - id: "GOV-S06-RC-006"
-    result: PASS
-    evidence: "T8 preserves exact-candidate provenance, v2.6.1 rollback, parent re-verification, and independent human terminal gates."
-blocking_items:
-  - "Digest-matched trusted Task Plan receipt"
-  - "Explicit s07 activation with bounded write paths"
-owner: "developer/qc"
-next_action: "Seal and verify the Developer-approved Task Plan receipt against this finalized host, then explicitly activate s07."
-```
+- Focused: run each named file with node from packages/workflow-bundle/test; all new tests are auto-discovered by run-all.js.
+- Workflow: wfc validate, protocol, plan, sdd, change, exec, and fixtures with workflow-root work-items and project-root as supported.
+- Complete regression: npm run validate:workflow:unit; inspect any runtime sync drift before staging.
+- Pack/smoke: npm run validate:workflow:pack-audit; validate:workflow:authoring-smoke; validate:workflow:bundle-smoke.
+- Candidate: release-candidate-artifact-smoke.test.js against one supplied built tarball/checksum for final identity evidence; self-pack is smoke-only, not the final candidate identity.
+- Static/security/performance: node --check for changed JS, git diff --check, exact-selector/adapter review, path/lock/signing/failure-injection/secret-logging review, and repeated I/O bounds.
+- Encoding: fatal UTF-8 decode of every changed text file; reject malformed bytes, not only replacement characters.
 
 ## Brownfield Delivery Plan
+
 ```yaml
-regression_checkpoints:
-  - "T0 source, receipt, focused-test, and dirty-path baseline before production edits"
-  - "T1/T2 optional identity RED/GREEN"
-  - "T3/T4 cycle/event RED/GREEN followed by B1 review"
-  - "T5/T6 canonical projection RED/GREEN followed by B2 review"
-  - "T7 atomicity, recovery, concurrency, 20x determinism, compatibility, and B3 review"
-  - "T8 full repository/package matrix and exact-candidate handoff"
+regression_checkpoints: ["TS0 baseline", "TS1/2 boundary", "TS3/4 writers/selectors", "TS5/6 event identity", "TS7 full matrix", "TS8 exact candidate"]
 compatibility_checkpoints:
-  - "First-cycle maintenance and product closeout retain exact gate/reviewer behavior"
-  - "Legacy mandatory DoD and adaptive declared-gate selection remain unchanged"
-  - "Readiness approval and readiness/closeout rejection remain unchanged"
-  - "Receipt-v1 signature, digest, reviewer authority, trusted-root, and public CLI behavior remain unchanged"
-  - "Existing coordinator callers continue to receive generated transaction IDs by default"
-  - "Historical notes, receipts, markers, events, and v2.6.1 artifacts remain byte/order stable"
+  - "13 original report digests unchanged on load"
+  - "Known legacy translated only at import; unknown legacy never cleared"
+  - "Existing historical events/receipts/notes remain byte/order stable"
+  - "First-cycle, adaptive/legacy gate selection, readiness/rejection, receipt-v1, reviewer and CLI exact"
 migration_or_backfill_steps: []
 rollback_or_restore_steps:
-  - "Before publication, revert only the focused source/test delta if a required regression or review fails."
-  - "Do not rewrite or delete historical receipts, events, markers, notes, or prior candidate evidence."
-  - "For runtime rollback, reinstall immutable v2.6.1, guard or disable bundled closeout, and use individual terminal gate commands."
-  - "Keep F-AG11-001 and branch/worktree HOLD_OPEN until corrected child and parent evidence pass."
+  - "Before release, revert isolated structural implementation commits if necessary."
+  - "After release, restore immutable v2.6.1 with bundled closeout guarded; use individual terminal gates."
+  - "Never rewrite historical reports/events/receipts."
+timebox_checkpoint: "2026-09-18 stop-and-reassess"
+release_contingency: "Node24 owner contingency near 2026-09-20 remains independent of CR-008; no automatic main write."
 ```
 
-## SDD Traceability
+## Governance Checks
+
 ```yaml
-requirement_refs: ["REQ-AG-009", "RCR-01", "RCR-02", "RCR-03", "RCR-04", "RCR-05", "RCR-06"]
-acceptance_refs: ["AC-RCR-01", "AC-RCR-02", "AC-RCR-03", "AC-RCR-04", "AC-RCR-05", "AC-RCR-06", "AC-RCR-07", "AC-RCR-08"]
-task_refs: ["T0", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8"]
-test_refs:
-  - "optional-transaction-id-red-green"
-  - "repeat-closeout-first-second-retry-red-green"
-  - "closeout-semantic-current-state-matrix-red-green"
-  - "closeout-immutable-history-and-s01-parity"
-  - "closeout-failure-recovery-concurrency-matrix"
-  - "existing-readiness-adaptive-legacy-receipt-regression"
-  - "corrected-v2.6.2-candidate-and-parent-ag01-ag13"
+checks:
+  - { id: "GOV-TS-01", result: PASS, evidence: "All ten ACs and six edge classes are mapped." }
+  - { id: "GOV-TS-02", result: PASS, evidence: "Three RED/GREEN pairs precede production changes." }
+  - { id: "GOV-TS-03", result: PASS, evidence: "RCR-SB1/2/3 each enforce Spec Compliance before Code Quality." }
+  - { id: "GOV-TS-04", result: PASS, evidence: "16 exact roots proposed, not granted; WIP and adjacent ownership preserved." }
+  - { id: "GOV-TS-05", result: PASS, evidence: "Unknown legacy, historical identity, rollback and parent evidence remain safe." }
+blocking_items: ["Human Task Plan decision", "matching trusted receipt", "explicit s07 resume"]
+```
+
+## Spec Change
+
+```yaml
+status: NOT_REQUIRED
+reason: "The plan executes the approved structural contract and s05, with no new model module, kind vocabulary, public interface, migration, or weakened invariant."
+updated_artifacts: []
+required_followups: []
 ```
 
 ## Audit
+
 ```yaml
 step: "s06 Task Plan"
 status: PASS
 checks:
-  - criterion: "Executable ownership and order"
-    result: PASS
-    evidence: "T0..T8 identify exact source, test, evidence, worktree, dependency, output, review, and verify paths."
-  - criterion: "Acceptance and edge coverage"
-    result: PASS
-    evidence: "The BA lane maps AC-RCR-01..08 and EDGE-RCR-01..06 to behavior, regression, and release tasks."
-  - criterion: "TDD and early two-tier review"
-    result: PASS
-    evidence: "Three explicit RED/GREEN pairs and B1/B2/B3 Spec Compliance before Code Quality are ordered in the critical path."
-  - criterion: "Brownfield compatibility and rollback"
-    result: PASS
-    evidence: "Existing authority, CLI, receipt, gate, readiness, history, coordinator, and v2.6.1 rollback boundaries are preserved."
-  - criterion: "Exact candidate and parent handoff"
-    result: PASS
-    evidence: "T8 binds child and parent evidence to one local/hosted candidate before independent terminal decisions."
-  - criterion: "No placeholders or design reinference"
-    result: PASS
-    evidence: "Every task names its objective, paths, outputs, dependencies, review checkpoint, and deterministic verification hint."
+  - { criterion: "Executable plan", result: PASS, evidence: "TS0..TS8 specify paths, dependency, objective, outputs, review and verification." }
+  - { criterion: "Acceptance coverage", result: PASS, evidence: "AC-RCR-01..10 and EDGE-RCR-01..06 mapped to tests and evidence." }
+  - { criterion: "No hidden redesign", result: PASS, evidence: "Existing utility boundary and approved kind vocabulary retained." }
+  - { criterion: "WIP and scope safety", result: PASS, evidence: "Partial T7 preserved until TS7; no proposed roots granted yet." }
+  - { criterion: "Release integrity", result: PASS, evidence: "One candidate and child/parent/rollback/terminal ordering explicit." }
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
-timebox_evidence: "Completed in one focused planning pass after the s05 trusted receipt verified."
-gaps:
-  - "The digest-matched trusted Task Plan receipt and explicit s07 activation remain pending."
+gaps: ["Developer Task Plan decision and fresh receipt are pending."]
 risk_level: HIGH
-next_action: "Seal and verify the Developer-approved Task Plan receipt; no production code is authorized yet."
+next_action: "Developer reviews amended Task Plan; implementation remains closed."
+```
+
+## SDD Traceability
+
+```yaml
+requirement_refs: ["RCR-01", "RCR-02", "RCR-03", "RCR-04", "RCR-05", "RCR-06", "RCR-07", "RCR-08", "RCR-09", "RCR-10"]
+acceptance_refs: ["AC-RCR-01", "AC-RCR-02", "AC-RCR-03", "AC-RCR-04", "AC-RCR-05", "AC-RCR-06", "AC-RCR-07", "AC-RCR-08", "AC-RCR-09", "AC-RCR-10"]
+task_refs: ["TS0", "TS1", "TS2", "TS3", "TS4", "TS5", "TS6", "TS7", "TS8"]
+test_refs: ["typed-contract", "bounded-legacy-import", "writer-inventory", "latent-canary", "text-note-invariance", "direct-event-identity", "13-report-no-migration", "repeat-cycle-atomicity", "exact-candidate-parent"]
 ```
 
 ## Traceability
+
 ```yaml
 upstream:
-  - "closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md"
-  - "closeout-bundle-repeat-cycle-reconciliation.s05.technical-approach.md"
-  - "Approach receipt Developer 2026-09-10T08:20:46.196Z / SHA-256 5635bebed29077d34cec2a8cf0883ea5af6ff59146656e09a5283b6d86f33d5a"
-  - "F-AG11-001 in parent s07 and s08"
-outputs:
-  - "T0..T8 execution plan"
-  - "Three TDD RED/GREEN pairs and B1/B2/B3 two-tier reviews"
-  - "Brownfield regression, rollback, exact-candidate, and child-to-parent verification sequence"
-next_step: "s07 only after Developer approval, digest-matched Task Plan receipt, and explicit activation"
+  - "Amended s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87"
+  - "Amended s05 SHA-256 d075290f151a9596d029a79fa1cf2eab72b08a179c196d35a046d2d7a8187001"
+  - "Approach receipt Developer 2026-09-11T14:38:00.519Z, digest_match=true"
+outputs: ["TS0..TS8", "RCR-SB1/2/3", "16-root proposed amendment", "legacy/WIP/parent release safety"]
+next_step: "Human Developer Task Plan approval, fresh receipt, then explicit s07 resume"
 ```
 
 ## Handoff
 
-- First action after activation: T0 verifies every trusted input and freezes the existing worktree/source baseline.
-- Behavior sequence: T1/T2 optional identity, T3/T4 cycle/event attribution, then T5/T6 canonical state projection.
-- Review sequence: B1, B2, and B3 each record Spec Compliance before Code Quality.
-- Final evidence: T7 completes atomic/compatibility regression; T8 builds one candidate and routes child then parent s08 decisions.
-- Delegation: none; the coordinator, classifier, projector, and shared fixtures are tightly coupled.
-- Current gate: Human Developer approved Task Plan at `2026-09-10T08:56:19Z`; its trusted receipt remains pending and implementation is closed.
-- Branch/worktree: `HOLD_OPEN`; no publication, tag, merge, install, cleanup, or finalization is authorized.
+- Current step: s06; Task Plan draft ready for Developer review.
+- Implementation stays closed until a matching receipt and explicit resume grant the proposed 16 roots.
+- Unknown legacy text is never semantic-cleared; core transitions/assertions do not read text or note.
+- Old patch B1/B2 evidence remains historical; the structural batches have distinct RCR-SB1/2/3 review identities.
+- Partial T7 WIP is preserved and may only be adopted at TS7.
+- Node24 remains a separate token-only commit; validator parallelisation and architecture restructure remain excluded.
+- Worktree stays HOLD_OPEN until child and parent verification plus applicable human closeout gates conclude.

@@ -104,13 +104,15 @@
     "Human BA approved the amended Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at 2026-09-11T11:40:59Z; trusted receipt sealing remains separate.",
     "Fresh Spec, Contract, and DoR receipts verify digest_match=true against unchanged s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87.",
     "The amended s05 proposes one shared typed-state boundary, a bounded legacy adapter, exact selectors, and direct transaction event identity. Developer Approach approval remains pending.",
-    "Human Developer approved the amended structural s05 Approach at 2026-09-11T14:34:14Z. Trusted receipt sealing remains separate."
+    "Human Developer approved the amended structural s05 Approach at 2026-09-11T14:34:14Z. Trusted receipt sealing remains separate.",
+    "Developer Approach receipt APPROVED at 2026-09-11T14:38:00.519Z verifies digest_match=true against s05 SHA-256 d075290f151a9596d029a79fa1cf2eab72b08a179c196d35a046d2d7a8187001.",
+    "Amended s06 TS0..TS8 and RCR-SB1/2/3 are drafted with 16 proposed, ungranted write roots. Partial T7 WIP remains untouched until TS7."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation",
-  "current_step": "s05",
+  "current_step": "s06",
   "granted_write_paths": [
     "packages/workflow-bundle/scripts/work-item-protocol.js",
     "packages/workflow-bundle/scripts/workflow-gate-review.js",
@@ -122,13 +124,13 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "amended-s05-trusted-receipt",
+  "handoff_target": "amended-s06-task-plan-human-gate",
   "required_actions": [
-    "Seal one fresh digest-bound s05 receipt for the current host using the Developer sealer.",
-    "Keep s06 amendment, T7 replacement, production edits, and release work closed."
+    "Developer reviews the current s06 TS0..TS8 host and proposed 16 write roots; matching trusted evidence and explicit resume remain separate.",
+    "Keep production edits, partial T7 adoption, and release work closed."
   ],
   "blockers": [
-    "The current s05 host lacks matching human-controlled gate evidence."
+    "The current s06 host lacks matching human-controlled gate evidence."
   ],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
@@ -198,7 +200,9 @@
     "S04_STRUCTURAL_SPEC_CONTRACT_DOR_HUMAN_APPROVED_PENDING_RECEIPTS",
     "S04_STRUCTURAL_RECEIPTS_VERIFIED",
     "S05_STRUCTURAL_TECHNICAL_APPROACH_DRAFTED",
-    "S05_STRUCTURAL_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT"
+    "S05_STRUCTURAL_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT",
+    "S05_STRUCTURAL_APPROACH_RECEIPT_VERIFIED",
+    "S06_STRUCTURAL_TASK_PLAN_DRAFTED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -241,7 +245,9 @@
     "Human BA approved the amended Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at 2026-09-11T11:40:59Z. Prior s04-s06 receipts remain historical.",
     "Fresh Spec receipt by BA at 2026-09-11T13:50:51.020Z, Contract receipt by Developer at 2026-09-11T13:51:06.341Z, and DoR receipt by QC at 2026-09-11T13:51:18.535Z all verify digest_match=true against s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87.",
     "The amended s05 proposes the smallest complete structural design: shared typed-state utilities, bounded legacy import, exact selectors, structured rendering, and direct transaction event identity. Developer Approach approval remains pending.",
-    "Human Developer approved the amended structural s05 Approach at 2026-09-11T14:34:14Z. A fresh trusted receipt remains required and no s06 or implementation authority is implied."
+    "Human Developer approved the amended structural s05 Approach at 2026-09-11T14:34:14Z. A fresh trusted receipt remains required and no s06 or implementation authority is implied.",
+    "Developer Approach receipt APPROVED at 2026-09-11T14:38:00.519Z verifies digest_match=true against s05 SHA-256 d075290f151a9596d029a79fa1cf2eab72b08a179c196d35a046d2d7a8187001.",
+    "Amended s06 TS0..TS8 and RCR-SB1/2/3 are drafted with 16 proposed write roots. No new roots are granted; partial T7 WIP remains untouched."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -535,6 +541,14 @@
       "from_status": "BLOCKED",
       "to_status": "BLOCKED",
       "note": "Human Developer approved the amended structural s05 Approach. Trusted receipt sealing remains separate; s06 and implementation stay closed."
+    },
+    {
+      "timestamp": "2026-09-12T05:28:30Z",
+      "action": "open-amended-s06-structural-task-plan",
+      "actor": "agent",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "Verified the digest-matched Developer Approach receipt and drafted amended TS0..TS8 plus 16 proposed roots. Current Task Plan review, trusted receipt, and explicit resume remain separate; production is closed."
     }
   ]
 }

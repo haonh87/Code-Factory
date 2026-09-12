@@ -108,8 +108,9 @@ tags:
 > for a persisted typed-state and first-class event-identity contract. Human BA approved the amended
 > Spec, human Developer approved the amended Contract, and human BA/QC approved the amended DoR at
 > 2026-09-11T11:40:59Z. Three fresh receipts now verify against s04 SHA-256 26b85c2d....
-> The structural s05 Approach is approved by human Developer, but the work item remains BLOCKED until
-> its fresh receipt matches the current host; earlier s05-s06 receipts do not reopen implementation.
+> The structural s05 Approach now has a digest-matched Developer receipt. Amended s06 TS0..TS8 is
+> drafted with 16 proposed write roots, but the work item remains BLOCKED on the current Task Plan
+> human gate and receipt; earlier s06 evidence does not reopen implementation.
 
 ## Step Contract
 ```yaml
@@ -648,7 +649,7 @@ timebox_breach: false
 timebox_evidence: "One bounded linked-defect clarification pass."
 gaps: []
 risk_level: HIGH
-next_action: "Seal and verify the trusted receipt for the unchanged amended s05 host."
+next_action: "Developer reviews the amended s06 TS0..TS8 plan; implementation stays closed."
 ```
 
 ## Work Item Protocol
@@ -660,7 +661,7 @@ work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation"
-current_step: "s05"
+current_step: "s06"
 granted_write_paths:
   - "packages/workflow-bundle/scripts/work-item-protocol.js"
   - "packages/workflow-bundle/scripts/workflow-gate-review.js"
@@ -680,14 +681,14 @@ decision_owner: "agent"
 protocol_owner: "ba"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "amended-s05-trusted-receipt"
-last_transition_action: "approve-amended-s05-structural-approach"
-last_transition_at: "2026-09-11T14:34:14Z"
+handoff_target: "amended-s06-task-plan-human-gate"
+last_transition_action: "open-amended-s06-structural-task-plan"
+last_transition_at: "2026-09-12T05:28:30Z"
 required_actions:
-  - "Seal one fresh digest-bound s05 receipt for the current host using the Developer sealer."
-  - "Keep s06 amendment, T7 replacement, production edits, and release work closed."
+  - "Developer reviews the current s06 TS0..TS8 host and proposed 16 write roots; matching trusted evidence and explicit resume remain separate."
+  - "Keep production edits, partial T7 adoption, and release work closed."
 blockers:
-  - "The current s05 host lacks matching human-controlled gate evidence."
+  - "The current s06 host lacks matching human-controlled gate evidence."
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -726,6 +727,8 @@ review_notes:
   - "Fresh Spec, Contract, and DoR receipts verify digest_match=true against unchanged s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87."
   - "The amended s05 proposes one shared typed-state boundary, a bounded legacy adapter, exact selectors, and direct transaction event identity. Developer Approach approval remains pending."
   - "Human Developer approved the amended structural s05 Approach at 2026-09-11T14:34:14Z. Trusted receipt sealing remains separate."
+  - "Developer Approach receipt APPROVED at 2026-09-11T14:38:00.519Z verifies digest_match=true against s05 SHA-256 d075290f151a9596d029a79fa1cf2eab72b08a179c196d35a046d2d7a8187001."
+  - "Amended s06 TS0..TS8 and RCR-SB1/2/3 are drafted with 16 proposed, ungranted write roots. Partial T7 WIP remains untouched until TS7."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -794,6 +797,8 @@ audit_events:
   - "S04_STRUCTURAL_RECEIPTS_VERIFIED"
   - "S05_STRUCTURAL_TECHNICAL_APPROACH_DRAFTED"
   - "S05_STRUCTURAL_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT"
+  - "S05_STRUCTURAL_APPROACH_RECEIPT_VERIFIED"
+  - "S06_STRUCTURAL_TASK_PLAN_DRAFTED"
 ```
 
 ## Traceability
@@ -824,15 +829,15 @@ outputs:
   - "Proposed amended AC-RCR-01..10 and required persisted Data/Event Contract"
   - "Verified fresh Spec, Contract, and DoR receipts for amended s04"
   - "Proposed amended typed-state and direct-event-identity s05 Approach"
-next_step: "Seal and verify the fresh s05 receipt before drafting amended s06"
+next_step: "Developer reviews amended s06; trusted receipt and explicit s07 resume follow independently"
 ```
 
 ## Handoff
 - Clear: closeout receipts succeeded, but current navigation and event evidence did not reconcile.
 - Distinct scope: repeat-cycle/idempotency, not the resolved missing-DoD selector defect.
 - Decision: PO approval is backed by a verified trusted receipt; the completed receipt action has been removed.
-- Current step: s05 is BLOCKED only on a fresh digest-matched trusted receipt.
+- Current step: s06 is BLOCKED on its current human gate and receipt.
 - Approved discovery direction: bounded legacy adapter, typed state entries, and first-class transaction identity for transaction-backed approval events.
 - Historical implementation: refreshed B2 is complete for `f9533c4de66fdb04e75008382b39b4fc413e3caa`, but T7 is suspended and old s04-s06 receipts cannot authorize replacement work.
-- Next action: seal the current s05 host using the Developer trusted approver.
+- Next action: Developer reviews TS0..TS8 and the proposed 16-root scope amendment.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.
