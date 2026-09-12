@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -59,8 +59,8 @@ gate_reviews:
   contract_reviewed_at: ""
   dor_reviewed_by: ["ba", "qc"]
   dor_reviewed_at: "2026-09-11T13:51:45Z"
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
+  approach_reviewed_by: ["developer"]
+  approach_reviewed_at: "2026-09-12T05:44:54Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -101,7 +101,8 @@ tags:
 > freeze approved snapshots, record live coverage/disposition in supporting audit artifacts, reuse
 > existing remediation children, and propose only missing bounded children. Each child retains its
 > own gates. Source, unmerged branch, hosted candidate, release, and installed runtime are separate
-> evidence tiers until reconciled. Developer Approach approval is pending.
+> evidence tiers until reconciled. Human Developer approved this Approach at 2026-09-12T05:44:54Z.
+> A matching trusted receipt is still required before s06; no audit execution or child gate is opened.
 
 ## Step Contract
 
@@ -319,6 +320,20 @@ reason: "Existing child governance is retained and no delivery gate is bypassed.
 exceptions: []
 ```
 
+## Human Decision Record
+
+```yaml
+decision: APPROVED
+gate: "approach"
+reviewed_by: "developer"
+reviewed_at: "2026-09-12T05:44:54Z"
+decision_source: "User explicitly approved the Approach for code-factory-holistic-audit-remediation."
+decision_scope: ["Evidence-led portfolio coordinator", "five proposed audit sidecars", "independent child reuse/proposals", "frozen/current evidence and source/candidate/release/install separation"]
+trusted_receipt_status: "NOT_YET_MATCHING_CURRENT_HOST"
+not_approved: ["Master Task Plan or audit execution", "any child work-item or child gate", "production changes", "release/tag/install/deletion/branch finalization"]
+next_action: "Human Developer seals the finalized Approach host in an interactive TTY, then s06 authoring may proceed."
+```
+
 ## Audit
 
 ```yaml
@@ -333,9 +348,9 @@ checks:
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
-gaps: ["Human Developer Approach decision is pending."]
+gaps: ["A fresh digest-matching Approach receipt is still required before s06."]
 risk_level: HIGH
-next_action: "Developer reviews master Approach; no master/child implementation is open."
+next_action: "Seal the finalized Approach host as Developer; no master/child implementation is open."
 ```
 
 ## Traceability
@@ -343,12 +358,12 @@ next_action: "Developer reviews master Approach; no master/child implementation 
 ```yaml
 upstream: ["s04 SHA-256 41078181e9b0e8186c900b8d1908ca9f52820d6b763b37467681325edc389f29", "Spec receipt BA 2026-09-11T14:33:43.972Z", "DoR receipt QC 2026-09-11T14:33:56.365Z", "approved master plan and Option C policies"]
 outputs: ["evidence-led coordinator", "five audit artifacts", "child reuse/proposals", "frozen/current evidence split", "identity and release guards"]
-next_step: "Human Developer Approach decision and matching receipt, then s06"
+next_step: "Matching Approach receipt, then s06 Task Plan authoring"
 ```
 
 ## Handoff
 
-- Master s05 is drafted; Developer approval remains independent.
+- Master s05 is finalized from human Developer approval at 2026-09-12T05:44:54Z; a matching receipt is still required before s06.
 - Approved s04 and its plan/spec digests remain untouched; current progress belongs to unsealed state and sidecars.
 - Audit all source skills semantically; language sampling is a separate quality task, not a substitute for semantic coverage.
 - Do not duplicate existing children or absorb their production scope.

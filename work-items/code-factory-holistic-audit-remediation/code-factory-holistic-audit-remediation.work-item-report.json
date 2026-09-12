@@ -78,7 +78,8 @@
     "s04 now proposes AC-CF-001..011 and a READY DoR from refreshed clean-main evidence. Human Spec/DoR decisions and trusted receipts remain pending.",
     "Human BA approved Spec and human BA/QC approved DoR at 2026-09-11T13:51:45Z. Two independent trusted receipts remain pending; no later gate is implied.",
     "BA Spec receipt 2026-09-11T14:33:43.972Z and QC DoR receipt 2026-09-11T14:33:56.365Z both verify against s04 SHA-256 41078181e9b0e8186c900b8d1908ca9f52820d6b763b37467681325edc389f29.",
-    "Master s05 proposes bounded evidence-led coordination, five audit sidecars, independent child reuse/proposals, and separate source/candidate/release/install tiers. Developer review remains independent."
+    "Master s05 proposes bounded evidence-led coordination, five audit sidecars, independent child reuse/proposals, and separate source/candidate/release/install tiers. Developer review remains independent.",
+    "Human Developer approved the master evidence-led Approach at 2026-09-12T05:44:54Z. The finalized s05 host awaits a matching trusted receipt before s06; no audit execution, child gate, or write grant is opened."
   ],
   "work_item_slug": "code-factory-holistic-audit-remediation",
   "work_item_type": "RESEARCH",
@@ -88,13 +89,13 @@
   "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "s05-portfolio-approach-human-gate",
+  "handoff_target": "s05-portfolio-approach-trusted-receipt",
   "required_actions": [
-    "Developer reviews the current s05 evidence-led portfolio host; matching trusted evidence follows independently.",
+    "Seal the finalized current s05 host as Developer; matching trusted evidence is required before s06 authoring.",
     "Keep s06, master audit execution, child implementation, and release actions closed."
   ],
   "blockers": [
-    "The current s05 host lacks human-controlled gate evidence."
+    "The current s05 content has no matching trusted receipt."
   ],
   "refs": [
     "work-items/code-factory-holistic-audit-remediation",
@@ -122,7 +123,8 @@
     "S04_PORTFOLIO_SPEC_DOR_DRAFTED",
     "S04_PORTFOLIO_SPEC_DOR_HUMAN_APPROVED_PENDING_RECEIPTS",
     "S04_PORTFOLIO_RECEIPTS_VERIFIED",
-    "S05_PORTFOLIO_APPROACH_DRAFTED"
+    "S05_PORTFOLIO_APPROACH_DRAFTED",
+    "S05_PORTFOLIO_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -137,7 +139,8 @@
     "s04 now proposes AC-CF-001..011 and a READY DoR using refreshed clean-main evidence: 42 skills, 181 files/177 notes valid, 9 managed/16 legacy protocol inventory, and source v2.6.1 versus installed v2.3.2/40. Human Spec/DoR gates remain pending.",
     "Human BA approved Spec and human BA/QC approved DoR at 2026-09-11T13:51:45Z. Two independent trusted receipts remain pending; Approach, Task Plan, and implementation remain closed.",
     "BA Spec receipt 2026-09-11T14:33:43.972Z and QC DoR receipt 2026-09-11T14:33:56.365Z both verify against s04 SHA-256 41078181e9b0e8186c900b8d1908ca9f52820d6b763b37467681325edc389f29.",
-    "Master s05 is drafted with five audit sidecars, child gate independence, frozen/current evidence separation, and release/runtime identity guards. No execution or child gate is granted."
+    "Master s05 is drafted with five audit sidecars, child gate independence, frozen/current evidence separation, and release/runtime identity guards. No execution or child gate is granted.",
+    "Human Developer approved the evidence-led master Approach at 2026-09-12T05:44:54Z. A matching trusted receipt is still required before s06; no audit execution, child gate, or write grant is opened."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -247,6 +250,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Verified BA Spec and QC DoR receipts against unchanged s04 and drafted master s05. Developer review and matching trusted receipt remain independent; no master/child execution is open."
+    },
+    {
+      "timestamp": "2026-09-12T05:44:54Z",
+      "action": "approve-s05-portfolio-approach",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human Developer approved the evidence-led portfolio Approach. The finalized host awaits a matching trusted receipt before s06; master/child execution and all write grants stay closed."
     }
   ]
 }

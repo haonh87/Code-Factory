@@ -65,8 +65,8 @@ gate_reviews:
   contract_reviewed_at: ""
   dor_reviewed_by: ["ba", "qc"]
   dor_reviewed_at: "2026-09-11T13:51:45Z"
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
+  approach_reviewed_by: ["developer"]
+  approach_reviewed_at: "2026-09-12T05:44:54Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -557,12 +557,13 @@ subsequent_decisions:
   - "OQ-CF-002 Option C approved by Developer/QC at 2026-09-11T11:40:59Z."
   - "OQ-CF-003 Option C approved by BA/PO/QC at 2026-09-11T11:40:59Z."
   - "OQ-CF-005 Option C approved by PO/BA/DevOps at 2026-09-11T11:40:59Z."
+  - "Master s05 Approach approved by Developer at 2026-09-12T05:44:54Z; matching trusted receipt remains separate."
 not_approved:
   - "Any child work-item or child gate"
   - "Implementation of CF-019, CF-020, AC-CF-010 or AC-CF-011"
   - "CR-008 hosted artifact-binding amendment"
   - "Release, Business Acceptance, DoD, exception or waiver"
-next_action: "Developer reviews the master s05 evidence-led portfolio Approach; no child gate is implied."
+next_action: "Human Developer seals the finalized master s05 host before s06; no child gate is implied."
 ```
 
 ## Work Item Protocol
@@ -587,14 +588,14 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-03T01:34:46.476Z"
-handoff_target: "s05-portfolio-approach-human-gate"
-last_transition_action: "verify-s04-receipts-open-s05-portfolio-approach"
-last_transition_at: "2026-09-12T05:34:10Z"
+handoff_target: "s05-portfolio-approach-trusted-receipt"
+last_transition_action: "approve-s05-portfolio-approach"
+last_transition_at: "2026-09-12T05:44:54Z"
 required_actions:
-  - "Developer reviews the current s05 evidence-led portfolio host; matching trusted evidence follows independently."
+  - "Seal the finalized current s05 host as Developer; matching trusted evidence is required before s06 authoring."
   - "Keep s06, master audit execution, child implementation, and release actions closed."
 blockers:
-  - "The current s05 host lacks human-controlled gate evidence."
+  - "The current s05 content has no matching trusted receipt."
 review_notes:
   - "Human review approved."
   - "The s03 bundle was amended at 2026-09-07T14:33:29Z so proposed findings CF-019/CF-020 and AC-CF-010/011 have explicit OQ-CF-004/005 decisions; no finding or option was self-approved."
@@ -605,6 +606,7 @@ review_notes:
   - "Human BA approved Spec and human BA/QC approved DoR at 2026-09-11T13:51:45Z. Two independent trusted receipts remain pending; Approach, Task Plan, and implementation remain closed."
   - "BA Spec receipt 2026-09-11T14:33:43.972Z and QC DoR receipt 2026-09-11T14:33:56.365Z both verify against s04 SHA-256 41078181e9b0e8186c900b8d1908ca9f52820d6b763b37467681325edc389f29."
   - "Master s05 proposes bounded evidence-led coordination, five audit sidecars, independent child reuse/proposals, and separate source/candidate/release/install tiers. Developer review remains independent."
+  - "Human Developer approved the evidence-led master Approach at 2026-09-12T05:44:54Z. A matching trusted receipt is still required before s06; no audit execution, child gate, or write grant is opened."
 refs:
   - "work-items/code-factory-holistic-audit-remediation"
   - "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md"
@@ -631,6 +633,7 @@ audit_events:
   - "S04_PORTFOLIO_SPEC_DOR_HUMAN_APPROVED_PENDING_RECEIPTS"
   - "S04_PORTFOLIO_RECEIPTS_VERIFIED"
   - "S05_PORTFOLIO_APPROACH_DRAFTED"
+  - "S05_PORTFOLIO_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT"
 ```
 
 ## Traceability
@@ -639,7 +642,7 @@ source_inputs:
   - "User review and sequencing request"
   - "Current repository, worktree, protocol, Git and runtime evidence captured 2026-09-02"
   - "Prior plan and audit artifacts listed in Work Item Materialization.existing_refs"
-next_step: "Developer reviews master s05 Approach, then seals matching receipt before s06."
+next_step: "Seal the finalized master s05 host as Developer before s06 Task Plan authoring."
 ```
 
 ## Handoff
@@ -649,5 +652,5 @@ next_step: "Developer reviews master s05 Approach, then seals matching receipt b
 - Human decision: PO/BA/Developer/QC approved OQ-CF-004 Option C at `2026-09-08T02:23:55Z`; CF-019 implementation remains gated independently.
 - Human decision: the remaining OQ-CF-001/002/003/005 Option C policies were approved at
   `2026-09-11T11:40:59Z`; no Spec, DoR, child or implementation approval is inherited.
-- Current handoff: s04 receipts are verified and s05 is drafted for Developer review.
+- Current handoff: s04 receipts are verified and Developer approved the finalized s05 at 2026-09-12T05:44:54Z.
   A matching Approach receipt is required before s06. No master or child execution is open.
