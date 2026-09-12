@@ -126,12 +126,25 @@ success_metrics:
     metric: "Concurrent ACTIVE work items whose granted paths intersect packages/workflow-bundle"
     baseline: "1 - measured 2026-09-11 to 2026-09-12. Any second work item is refused a footprint."
     target: "2 or more, whenever the real footprints are disjoint"
-    why: "This is the outcome. Everything else in this work item is a means to it."
+    why: "The outcome, but not one this work item delivers alone."
+    revised_2026_09_12: >-
+      This work item contributes to M-01; it does not achieve it. A narrow grant only enables
+      concurrency once a grant is reconciled against what actually changed, which is
+      capability-grant-reconciliation. Measuring this work item against M-01 alone would either
+      credit it for another item's effect or fail it for that item's absence.
   - id: M-02
     metric: "Declared-to-touched ratio of a completed work item, counted in files"
-    baseline: "adaptive-governance-human-approval-ux declares two directories holding 37+ files and touches 12. Ratio is at best 3 to 1, and unbounded in principle because a directory grant also covers files that do not exist yet."
-    target: "Median at or below 1.5 to 1 across work items completed after the change"
-    why: "A forecast is allowed to be wrong. It is not allowed to be a blanket."
+    status: WITHDRAWN_2026_09_12
+    why_withdrawn: >-
+      Not computable. The measurement on 2026-09-12 showed one branch carries five work items, so a
+      per-work-item ratio cannot be derived from a branch diff. The ratio becomes computable only
+      after capability-grant-reconciliation establishes a branch-to-work-item association, at which
+      point it belongs to that work item rather than this one.
+  - id: M-05
+    metric: "Share of source-directory grants that carry a stated reason"
+    baseline: "Not applicable - no reason is required today, and 1 of 13 work items declares a source directory"
+    target: "100 percent of source-directory grants carry a reason a reviewer can disagree with"
+    why: "This is what this work item can be held to on its own, independent of whether reconciliation exists."
   - id: M-03
     metric: "Time between a work item being blocked by a grant and that fact being visible"
     baseline: "Unbounded. There is no report. The current instance was found by a human reading granted_write_paths in a JSON file."
@@ -170,3 +183,4 @@ next_step: "s03 Open Questions"
 - Non-goals: tidiness and compliance are excluded by name, because they are the easy substitutes for the real measure and both would let this work item pass while changing nothing.
 - Counter-metric recorded as M-04: if amendments rise, the rule is punishing honest forecasts and must be softened rather than tightened.
 - Condition to enter s03: none. The assumption that one measured case is representative is the first thing s03 should test.
+- Revised 2026-09-12 after s04: M-01 is a shared outcome, not this work item's own. M-02 is withdrawn as not computable and M-05 replaces it. This work item now depends on capability-grant-reconciliation.

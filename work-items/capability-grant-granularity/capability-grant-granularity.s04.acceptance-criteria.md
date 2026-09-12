@@ -165,28 +165,21 @@ reframed_problem:
     note: "This is the problem the work item was opened on. The measurements demote it. Narrowing a declaration that nothing checks produces a tidier field and no behavioural change."
 
 acceptance_criteria:
-  - id: AC-01
-    layer: 1
-    description: "Closing a work item reports every file its branch changed that no grant covers, and the report names the files rather than counting them."
-    measurable: true
-    baseline: "No such report exists. The 13 uncovered files were found by an ad-hoc script during review, not by the system."
-  - id: AC-02
-    layer: 1
-    description: "A reconciliation that finds uncovered files produces a recorded outcome: grant amended, exception raised, or files disowned. Silence is not an outcome."
-    measurable: true
-  - id: AC-03
-    layer: 2
-    description: "Reconciliation resolves against the union of grants of every work item the branch carries, not against one grant. A branch carrying five work items is checked against five grants."
-    measurable: true
-    note: "Requires a branch-to-work-item mapping that does not exist today. This is the substantive engineering in the work item."
   - id: AC-04
     layer: 3
-    description: "A source-directory grant is accepted only with a stated reason; the four legitimate directory classes from s03 are unaffected."
+    description: "A source-directory grant is accepted only with a stated reason. The four legitimate directory classes from s03 - own artifact directory, own worktree, generated output, test and fixture directories - are unaffected."
     measurable: true
-  - id: AC-05
-    description: "Two work items with disjoint real footprints can both be ACTIVE. This is M-01 from s02 and remains the outcome measure."
+    baseline: "1 of 13 work items declares a source directory, and no reason is required or recorded."
+  - id: AC-06
+    layer: 3
+    description: "The reason on a source-directory grant is one a reviewer can disagree with: it names why the file set is not knowable at activation, rather than restating that a directory was convenient."
     measurable: true
-    note: "AC-04 alone does not achieve this. AC-01 through AC-03 are what make a narrow grant mean anything."
+    note: "Judgement criterion, checked by the human sealing the activation, not by a validator."
+  - id: AC-07
+    layer: 3
+    description: "s06 owned_paths and the activation grant are compared, and a divergence is reported. The information already exists one step earlier and is currently discarded."
+    measurable: true
+    note: "This is the cheapest thing in the work item and does not depend on reconciliation, because it compares two declarations rather than a declaration against a diff."
 
 edge_cases:
   - "A file legitimately shared by two work items on one branch, for example package.json touched by both a version bump and a script addition."
@@ -206,34 +199,28 @@ checks:
   - "Brownfield baseline recorded with measurements - PASS"
   - "Smallest correct option - DEFERRED to s05; the three layers may be three work items"
   - "Scope changed materially after s01 - recorded, and it is why DoR is BLOCKED"
-blocking_items:
-  - "The work item was opened on layer 3 and the measurements make layer 1 primary. A human must decide whether this stays one work item or splits."
+blocking_items: []
 owner: "ba"
-next_action: "Human decides re-scope, then a Spec Card is written against the chosen scope"
+next_action: "Write a Spec Card against the layer-3 scope, then seal Spec, Contract and DoR"
 ```
 
 ## Definition of Ready
 ```yaml
-status: BLOCKED
-blockers:
+status: READY
+blockers: []
+owners: ["ba"]
+resolved_2026_09_12:
   - id: B-01
-    blocker: "The problem statement changed between s01 and s04. Acceptance above describes layers 1 and 2, which s01 does not mention. Sealing Spec against s01 would freeze a problem the data has already demoted."
-    owner: "ba"
-    options:
-      - "Re-scope this work item to layers 1 and 2, and open layer 3 separately once a grant means something."
-      - "Keep this work item on layer 3 only, and open layers 1 and 2 as a separate, higher-priority item."
-      - "Rewrite s01 and s02 against the reframed problem and re-run this step."
-    recommendation: >-
-      The second option. Layer 3 is small, well understood, and already has a taxonomy. Layers 1 and
-      2 are the substantive engineering and deserve their own business goal, which is not the one
-      written in s02 - s02 measures concurrency, while layers 1 and 2 measure whether a declaration
-      corresponds to reality. Two different goals should not share one work item.
+    resolution: >-
+      Split, per the recommendation. Layers 1 and 2 move to capability-grant-reconciliation, which
+      has its own business goal - that a declaration corresponds to reality. This work item keeps
+      layer 3 only: grants declare what they need.
   - id: B-02
-    blocker: "M-02 in s02 sets a declared-to-touched ratio target. The measurement shows that ratio is not computable per work item while branches carry several. M-02 needs replacing or deferring."
-    owner: "ba"
+    resolution: "M-02 withdrawn as not computable while a branch carries several work items. M-05 replaces it and is measurable by this work item alone."
 notes:
-  - "Everything else is ready. The blockers are about scope, not about missing information."
-  - "This is the third correction to this work item's framing in three steps. Each step measured and corrected the one before it, which is the process working rather than failing."
+  - "Depends on capability-grant-reconciliation. A narrow grant changes no behaviour until a grant is reconciled against what actually changed. AC-07 is the exception and can land independently, because it compares two declarations rather than a declaration against a diff."
+  - "This work item is now small and well understood. It should not be started before the item it depends on."
+  - "READY is an authoring verdict, not a human gate pass."
 ```
 
 ## Traceability
@@ -242,11 +229,11 @@ upstream:
   - "capability-grant-granularity.s01.restate.md"
   - "capability-grant-granularity.s02.business-goal.md"
   - "capability-grant-granularity.s03.open-questions.md"
-next_step: "Blocked. Human decides re-scope before s05."
+next_step: "s05 Technical Approach, after a Spec Card and after capability-grant-reconciliation settles its approach."
 ```
 
 ## Handoff
 - Measured: 111 files changed on the parent branch, 66 covered by its grant, 45 not. Of those 45, 32 belong to four other work items and 13 have no covering grant at all.
 - Reframed: the control is advisory, and its unit does not match the unit of change. Granularity is real but third.
-- DoR is BLOCKED on a scope decision, not on missing information. Recommendation is to split, keeping this work item on layer 3 and opening layers 1 and 2 with their own business goal.
+- Split taken. Layers 1 and 2 are now capability-grant-reconciliation. This work item is layer 3 only, and depends on that one.
 - Condition to enter s05: the scope decision, then a Spec Card written against whichever scope is chosen.
