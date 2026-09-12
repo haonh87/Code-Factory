@@ -125,8 +125,9 @@ tags:
 > explicitly approved roots and five digest-matched authoring receipts. The existing partial T7
 > test remains quarantined until TS7. The structural execution contract below supersedes the
 > earlier patch execution contract; new RCR-SB1/2/3 reviews remain independent.
-> TS0..TS2 are ready for batch-level Spec Compliance review at source
-> `964e1c7cf879c6d244253b3ee294f9cdaff60f77`. The protocol is BLOCKED on the RCR-SB1 pair.
+> QC explicitly approved TS0..TS2 Spec Compliance for source
+> `964e1c7cf879c6d244253b3ee294f9cdaff60f77`. Code Quality is now open with AI recommendation
+> FAIL for proposed F-RCR-SB1-001; Developer/QC verdict is pending and the protocol remains BLOCKED.
 > Full regression is not GREEN: three existing protocol assertions await TS3/TS4 conversion.
 
 ## Step Contract
@@ -693,7 +694,7 @@ safe_refactor_notes: ["normalizeArray unchanged for unrelated metadata; only sta
 code_changes: ["work-item-protocol-utils.js", "validate-work-item-protocol.js"]
 doc_changes: ["structural-ts0-baseline.json", "Current s01/report/s07"]
 config_changes: []
-review_checkpoints: ["RCR-SB1 QC Spec Compliance READY_FOR_REVIEW", "Code Quality NOT_OPEN"]
+review_checkpoints: ["RCR-SB1 QC Spec Compliance APPROVED", "Code Quality OPEN awaiting Developer/QC"]
 outputs_actual: ["Approved enum", "Canonical tuple SHA-256 IDs", "Shape/unique-ID validation", "Exact constants and command grammar", "Text-free selectors", "Stable YAML flow mappings and dual-read mirror equality"]
 known_limitations: ["TS3/TS4 writers and assertions unconverted", "TS5/TS6 direct event identity pending", "Old protocol suite: 3 unresolved integration assertions", "TS7/TS8 full matrix and candidate/parent evidence pending"]
 follow_up_items: ["Independent RCR-SB1 review pair", "Remaining approved batches"]
@@ -707,8 +708,8 @@ behavior_change: true
 tdd_status: PASS
 worktree_status: PASS
 review_status: PENDING
-spec_compliance_status: READY_FOR_REVIEW
-code_quality_status: NOT_OPEN
+spec_compliance_status: PASS
+code_quality_status: PENDING
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
 merge_path: "No merge in s07; shared worktree HOLD_OPEN."
@@ -727,12 +728,12 @@ batch: "RCR-SB1"
 source_sha: "964e1c7cf879c6d244253b3ee294f9cdaff60f77"
 scope: ["TS1", "TS2"]
 spec_compliance:
-  status: READY_FOR_REVIEW
+  status: PASS
   recommendation: "PASS within this boundary batch; complete AC-RCR-09 remains PARTIAL until producer/core conversion."
   reviewer_role: "qc"
-  human_decision: PENDING
-  reviewed_by: []
-  reviewed_at: ""
+  human_decision: APPROVED
+  reviewed_by: ["qc"]
+  reviewed_at: "2026-09-12T07:45:41Z"
   checks:
     - { criterion: "Approved utility/vocabulary", result: PASS, evidence: "No new module/dependency/kind; shared boundary for both collections." }
     - { criterion: "Typed shape and ID contract", result: PASS, evidence: "Required fields, gate conditions, duplicate-ID rejection and stable JSON-tuple SHA-256 IDs." }
@@ -742,9 +743,81 @@ spec_compliance:
     - { criterion: "Compatibility/history", result: PASS, evidence: "13 frozen/live loads, zero file changes; historical prefix intact, no identity backfill." }
     - { criterion: "Correct scope and incomplete-work boundary", result: PASS, evidence: "Only TS1/TS2 claimed; all later batches independent and T7 WIP preserved." }
 code_quality:
-  status: NOT_OPEN
-  reason: "Independent QC Spec Compliance must pass first."
-next_action: "QC reviews this source; only then open Developer/QC Code Quality."
+  status: OPEN
+  human_decision: PENDING
+  reviewed_by: []
+  reviewed_at: ""
+  reason: "Human QC approved Spec Compliance for this exact source; independent Developer/QC verdict remains required."
+next_action: "Review Code Quality for the same source; no TS3 execution before Developer/QC PASS."
+```
+
+## RCR-SB1 Code Quality
+
+```yaml
+batch: "RCR-SB1"
+source_sha: "964e1c7cf879c6d244253b3ee294f9cdaff60f77"
+spec_compliance_precondition: "Human QC APPROVED for this exact source at 2026-09-12T07:45:41Z"
+review_mode: INDEPENDENT
+recommendation: FAIL
+human_decision: PENDING
+reviewer_roles: ["developer", "qc"]
+reviewed_by: []
+reviewed_at: ""
+evidence_ref: "rcr-sb1-code-quality-evidence.json"
+findings:
+  - id: "F-RCR-SB1-001"
+    severity: MEDIUM
+    confidence: HIGH
+    category: "Correctness / fail-open mirror validation"
+    disposition: PROPOSED
+    path: "packages/workflow-bundle/scripts/validate-work-item-protocol.js:82"
+    issue: "First-key-only parsing ignores duplicate collections and invalid entries after blockers: [], producing a false PASS."
+    evidence: "Control and both malformed in-memory mirrors return zero errors."
+    recommendation: "Approve same-batch TS2a fail-first repair and reopen Spec Compliance for the corrected source; no new dependency or relaxed legacy rule."
+verification:
+  isolated_state: "9/9 PASS"
+  validator_unit: PASS
+  gate_review_unit: PASS
+  syntax: PASS
+  old_protocol_integration: "3 known FAIL assertions, TS3/TS4 pending"
+  static_analysis: "SKIP: ESLint unavailable/no configured wrapper; manual review is not lint"
+  security: "SKIP: Semgrep unavailable; no new scanner installation"
+  performance: "Manual linear-work heuristic only; no benchmark"
+authority: "AI recommendation only; independent human Developer/QC verdict remains required."
+next_action: "Developer/QC decide Code Quality verdict and finding; QC decides whether to reopen Spec Compliance; Developer approves amendment before repair."
+```
+
+[Machine-readable evidence and exact repro](rcr-sb1-code-quality-evidence.json). No code or test was changed during this review. The previously approved Spec Compliance remains historical/current for source `964e1c7cf879c6d244253b3ee294f9cdaff60f77`; it is not silently revoked by an AI recommendation. TS3 is still closed.
+
+### Pre-handoff Scan Summary
+
+```yaml
+scan_target: "RCR-SB1 source 964e1c7cf879c6d244253b3ee294f9cdaff60f77"
+scan_scope:
+  mode: DIFF_ONLY
+  changed_files: ["scripts/work-item-protocol-utils.js", "scripts/validate-work-item-protocol.js", "test/work-item-protocol-state.test.js", "test/validate-work-item-protocol.test.js"]
+  affected_modules: ["packages/workflow-bundle protocol typed-state boundary"]
+language_stack: ["JavaScript", "Node.js"]
+available_scan_tools: ["node --check", "Existing isolated and validator/gate test wrappers"]
+false_positive_policy: "Diff-aware, evidence-based, dismiss only with reason"
+scan_plan:
+  syntax: ["Native Node syntax check of both changed scripts"]
+  static_analysis: ["Inspect existing wrapper/config/tool availability", "Targeted manual boundary review"]
+  security: ["Inspect Semgrep availability", "Manual bounded-import/subject/display invariance review"]
+  performance_heuristic: ["Collection loops, hashing, serialization and hot-path I/O"]
+syntax_scan_results:
+  - { command: "node --check (both changed scripts)", scope: ["Two production scripts"], status: PASS, evidence: "Both exit 0", blocker_files: [] }
+static_analysis_results:
+  - { command: "ESLint", config_used: "None configured; binary absent", scope: ["Changed scripts"], status: SKIP, findings: [], new_blockers: [] }
+  - { command: "Manual parser review plus in-memory negative repro (not automated lint)", config_used: "Approved TS2 contract", scope: ["validateProtocolBlockSync"], status: FAIL, findings: ["F-RCR-SB1-001"], new_blockers: ["Malformed/duplicate mirror input silently ignored"] }
+security_scan_results:
+  - { command_or_check: "Semgrep", scope: ["Changed scripts"], status: SKIP, findings: [] }
+performance_heuristic_results:
+  - { check: "Manual linear-work/serialization review", scope: ["New helpers and mirror reader"], status: PASS, expected_impact: LOW, confidence: MEDIUM, trigger_condition: "Large state collections", evidence: "Per-entry validation/hash and linear mirror traversal; no new process execution or hot-path I/O. No benchmark." }
+skipped_scans: ["ESLint unavailable/no configured lint wrapper", "Semgrep unavailable; no scanner installed", "Runtime benchmark not performed; heuristic only"]
+overall_status: FAIL
+remediation_actions: ["Human verdict/finding/amendment decision", "Fail-first bounded mirror-reader repair if approved", "Fresh ordered review", "Formal s08 static/security evidence remains pending"]
+notes_for_verify: "This is s07 pre-handoff evidence. Manual review does not replace lint/security scans; focused GREEN does not override three known integration failures or establish DoD."
 ```
 
 ### File Identity
@@ -772,8 +845,8 @@ notes: "Semantic checklist reviewed for changed scripts/notes; source-only audit
 
 ### Current Structural Handoff
 
-- Protocol BLOCKED at s07, retaining sixteen roots; next human action is QC RCR-SB1 Spec Compliance.
-- Developer/QC Code Quality is NOT_OPEN. TS3 requires both verdicts in order.
+- Protocol BLOCKED at s07, retaining sixteen roots; QC Spec Compliance is explicitly approved for source 964e1c7cf879c6d244253b3ee294f9cdaff60f77.
+- Developer/QC Code Quality is OPEN. TS3 still requires its separate PASS and resume.
 - Old protocol suite has three failures: readiness gate cleanup, readiness s01 mirror assertion,
   and old prose-based selected-closeout blocker expectation. TS3/TS4 must convert behavior and
   assertions while preserving unknown canaries; no cosmetic green run.

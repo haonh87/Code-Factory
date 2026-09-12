@@ -690,14 +690,13 @@ decision_owner: "agent"
 protocol_owner: "ba"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "RCR-SB1-spec-compliance-review"
-last_transition_action: "block"
-last_transition_at: "2026-09-12T06:17:30.153Z"
+handoff_target: "RCR-SB1-code-quality-review"
+last_transition_action: "prepare-RCR-SB1-code-quality-finding"
+last_transition_at: "2026-09-12T07:55:14Z"
 required_actions:
-  - {"id":"se:6eb92a675681d8b1aaba6d0b92e2e29ce4399951360c80d41706bc595d5db3ff","kind":"workflow_followup","text":"QC reviews RCR-SB1 Spec Compliance for source 964e1c7cf879c6d244253b3ee294f9cdaff60f77; TS3 remains closed."}
-  - {"id":"se:1917be13b82ec7f62fede812afb0fd84c48d22641f717b566ede05c98fe24ee1","kind":"workflow_followup","text":"Only after QC Spec Compliance PASS, open RCR-SB1 Code Quality for Developer and QC."}
+  - {"id":"se:1917be13b82ec7f62fede812afb0fd84c48d22641f717b566ede05c98fe24ee1","kind":"workflow_followup","text":"Developer/QC decide RCR-SB1 Code Quality proposed FAIL and F-RCR-SB1-001; QC decides Spec Compliance reopening and Developer approves TS2a amendment before repair. TS3 remains closed."}
 blockers:
-  - {"id":"se:f0fd44b95fd8acb24868085df99d3de1fdde3beb312946c2129f29fc766303fc","kind":"delivery_blocker","text":"The independent RCR-SB1 review pair has not passed; next-batch and candidate delivery remain closed."}
+  - {"id":"se:f0fd44b95fd8acb24868085df99d3de1fdde3beb312946c2129f29fc766303fc","kind":"delivery_blocker","text":"QC Spec Compliance is approved, but Developer/QC Code Quality is pending with proposed parser finding F-RCR-SB1-001; next-batch and candidate delivery remain closed."}
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -846,7 +845,7 @@ outputs:
   - "Proposed amended typed-state and direct-event-identity s05 Approach"
   - "Human Developer-approved TS0..TS8 Task Plan and 16-root scope amendment, not yet granted"
   - "Digest-matching amended Task Plan and prerequisite receipts; explicit resume still required"
-next_step: "QC RCR-SB1 Spec Compliance for source 964e1c7cf879c6d244253b3ee294f9cdaff60f77; Code Quality opens only after that PASS"
+next_step: "Developer/QC RCR-SB1 Code Quality for source 964e1c7cf879c6d244253b3ee294f9cdaff60f77; QC Spec Compliance is approved"
 ```
 
 ## Handoff
@@ -856,5 +855,5 @@ next_step: "QC RCR-SB1 Spec Compliance for source 964e1c7cf879c6d244253b3ee294f9
 - Current step: s07 resumed with all sixteen roots; TS0..TS2 reached the independent RCR-SB1 review boundary and protocol is now BLOCKED on that review pair.
 - Approved discovery direction: bounded legacy adapter, typed state entries, and first-class transaction identity for transaction-backed approval events.
 - Historical implementation: refreshed B2 is complete for `f9533c4de66fdb04e75008382b39b4fc413e3caa`, but T7 is suspended and old s04-s06 receipts cannot authorize replacement work.
-- Next action: QC reviews RCR-SB1 Spec Compliance for `964e1c7cf879c6d244253b3ee294f9cdaff60f77`; Developer/QC Code Quality is NOT_OPEN until that PASS. TS3 and candidate delivery remain closed.
+- Next action: Developer/QC review RCR-SB1 Code Quality for `964e1c7cf879c6d244253b3ee294f9cdaff60f77`; QC Spec Compliance was explicitly approved. TS3 and candidate delivery remain closed.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.

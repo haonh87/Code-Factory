@@ -109,7 +109,9 @@
     "Amended s06 TS0..TS8 and RCR-SB1/2/3 are drafted with 16 proposed, ungranted write roots. Partial T7 WIP remains untouched until TS7.",
     "Human Developer approved the amended TS0..TS8 Task Plan, including all 16 proposed write roots, at 2026-09-12T05:44:54Z. A matching trusted receipt and explicit s07 resume remain separate; granted_write_paths is unchanged.",
     "Developer Task Plan receipt APPROVED at 2026-09-12T05:51:29.267Z verifies digest_match=true against s06 SHA-256 ae1a733dab2cc709f61334050b0435160d34d88385ca4dba5ff7960632f11238. All authoring receipts match; explicit s07 resume with all 16 approved roots is still required.",
-    "Human Developer authorized s07 resume with sixteen roots. TS0 baseline, TS1 RED 35ec1a2 and TS2 GREEN 964e1c7cf879c6d244253b3ee294f9cdaff60f77 are recorded. The work item is now BLOCKED at RCR-SB1 Spec Compliance; Code Quality is NOT_OPEN and TS3/candidate delivery remain closed."
+    "Human Developer authorized s07 resume with sixteen roots. TS0 baseline, TS1 RED 35ec1a2 and TS2 GREEN 964e1c7cf879c6d244253b3ee294f9cdaff60f77 are recorded. The work item is now BLOCKED at RCR-SB1 Spec Compliance; Code Quality is NOT_OPEN and TS3/candidate delivery remain closed.",
+    "Human QC explicitly approved RCR-SB1 Spec Compliance for source 964e1c7cf879c6d244253b3ee294f9cdaff60f77 at 2026-09-12T07:45:41Z. Code Quality is now open for Developer/QC; no verdict or TS3 resume is inferred.",
+    "Code Quality pre-handoff review of exact source 964e1c7cf879c6d244253b3ee294f9cdaff60f77 reproduced ignored duplicate state collection and invalid trailing typed entry. F-RCR-SB1-001 and FAIL are AI recommendations pending Developer/QC; Spec Compliance reopening and TS2a are proposals, not approvals."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -136,24 +138,19 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "RCR-SB1-spec-compliance-review",
+  "handoff_target": "RCR-SB1-code-quality-review",
   "required_actions": [
-    {
-      "id": "se:6eb92a675681d8b1aaba6d0b92e2e29ce4399951360c80d41706bc595d5db3ff",
-      "kind": "workflow_followup",
-      "text": "QC reviews RCR-SB1 Spec Compliance for source 964e1c7cf879c6d244253b3ee294f9cdaff60f77; TS3 remains closed."
-    },
     {
       "id": "se:1917be13b82ec7f62fede812afb0fd84c48d22641f717b566ede05c98fe24ee1",
       "kind": "workflow_followup",
-      "text": "Only after QC Spec Compliance PASS, open RCR-SB1 Code Quality for Developer and QC."
+      "text": "Developer/QC decide RCR-SB1 Code Quality proposed FAIL and F-RCR-SB1-001; QC decides Spec Compliance reopening and Developer approves TS2a amendment before repair. TS3 remains closed."
     }
   ],
   "blockers": [
     {
       "id": "se:f0fd44b95fd8acb24868085df99d3de1fdde3beb312946c2129f29fc766303fc",
       "kind": "delivery_blocker",
-      "text": "The independent RCR-SB1 review pair has not passed; next-batch and candidate delivery remain closed."
+      "text": "QC Spec Compliance is approved, but Developer/QC Code Quality is pending with proposed parser finding F-RCR-SB1-001; next-batch and candidate delivery remain closed."
     }
   ],
   "refs": [
@@ -611,6 +608,22 @@
       "from_status": "ACTIVE",
       "to_status": "BLOCKED",
       "note": "TS0/TS1/TS2 reached the approved RCR-SB1 boundary. Wait for QC Spec Compliance first, then Developer and QC Code Quality; no next-batch or delivery authority is inferred."
+    },
+    {
+      "timestamp": "2026-09-12T07:45:41Z",
+      "action": "approve-RCR-SB1-spec-compliance",
+      "actor": "qc",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "QC explicitly approved the exact TS1/TS2 source 964e1c7cf879c6d244253b3ee294f9cdaff60f77; Developer/QC Code Quality is the next independent gate."
+    },
+    {
+      "timestamp": "2026-09-12T07:55:14Z",
+      "action": "prepare-RCR-SB1-code-quality-finding",
+      "actor": "agent",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "Prepared proposed FAIL/F-RCR-SB1-001 with exact in-memory repro, focused test results, known integration failures and explicit scanner gaps. No code/test/gate/resume change."
     }
   ]
 }
