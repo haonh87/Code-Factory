@@ -125,6 +125,9 @@ tags:
 > explicitly approved roots and five digest-matched authoring receipts. The existing partial T7
 > test remains quarantined until TS7. The structural execution contract below supersedes the
 > earlier patch execution contract; new RCR-SB1/2/3 reviews remain independent.
+> TS0..TS2 are ready for batch-level Spec Compliance review at source
+> `964e1c7cf879c6d244253b3ee294f9cdaff60f77`. The protocol is BLOCKED on the RCR-SB1 pair.
+> Full regression is not GREEN: three existing protocol assertions await TS3/TS4 conversion.
 
 ## Step Contract
 ```yaml
@@ -670,6 +673,112 @@ notes_for_implementation_or_verify: "No TS3 before the independent RCR-SB1 revie
 - `validate-work-item-protocol.test.js`: existing path-equivalence assertions PASS;
   two expected assertions FAIL because typed-collection and mirror validators are not exposed.
 - No production code was changed before these RED runs. TS2 is now permitted by the approved plan.
+
+## Structural TS2 GREEN
+
+```yaml
+recommended_design: "One shared typed-state normalizer/constructor/adapter/selector/renderer boundary."
+implementation_mode: BUGFIX
+tasks_completed: ["TS0 baseline", "TS1 expected RED", "TS2 shared boundary GREEN"]
+bug_repro_evidence: ["35ec1a2: 8/8 isolated tests FAIL; object collapses to [object Object]", "Two validator export assertions FAIL"]
+hypothesis_log:
+  - { assumption: "Generic scalar normalization destroys typed state.", status: CONFIRMED, evidence: "TS1 deep-equality RED and TS2 preservation GREEN." }
+  - { assumption: "Overly broad options classify unrelated command input.", status: CONFIRMED, evidence: "Additional guard RED on gate --write-root; verb-specific whitelist GREEN." }
+debug_experiments:
+  - { goal: "Pin bounded import.", action: "Full-consumption, owning-subject and unsupported-option tests.", result: "Unknown/foreign text stays exact legacy." }
+tdd_evidence:
+  - { behavior: "Typed boundary", failing_test: "35ec1a2: 8/8 isolated FAIL and two validator assertions FAIL", passing_test: "964e1c7: 9/9 isolated PASS; validator suite PASS" }
+  - { behavior: "Bounded option grammar", failing_test: "Added guard RED: gate command accepts unrelated --write-root", passing_test: "Verb-specific options and exact subject binding GREEN" }
+safe_refactor_notes: ["normalizeArray unchanged for unrelated metadata; only state collections use the new boundary."]
+code_changes: ["work-item-protocol-utils.js", "validate-work-item-protocol.js"]
+doc_changes: ["structural-ts0-baseline.json", "Current s01/report/s07"]
+config_changes: []
+review_checkpoints: ["RCR-SB1 QC Spec Compliance READY_FOR_REVIEW", "Code Quality NOT_OPEN"]
+outputs_actual: ["Approved enum", "Canonical tuple SHA-256 IDs", "Shape/unique-ID validation", "Exact constants and command grammar", "Text-free selectors", "Stable YAML flow mappings and dual-read mirror equality"]
+known_limitations: ["TS3/TS4 writers and assertions unconverted", "TS5/TS6 direct event identity pending", "Old protocol suite: 3 unresolved integration assertions", "TS7/TS8 full matrix and candidate/parent evidence pending"]
+follow_up_items: ["Independent RCR-SB1 review pair", "Remaining approved batches"]
+notes_for_testing: "9/9 isolated and validator suite PASS; 13 frozen/live reports load with zero disk changes; gate-review suite PASS. No full verification/DoD."
+```
+
+## Structural Delivery Rule Evidence
+
+```yaml
+behavior_change: true
+tdd_status: PASS
+worktree_status: PASS
+review_status: PENDING
+spec_compliance_status: READY_FOR_REVIEW
+code_quality_status: NOT_OPEN
+delegation_mode: agentic
+independence_status: NOT_APPLICABLE
+merge_path: "No merge in s07; shared worktree HOLD_OPEN."
+verify_path: "TS2 focused tests/syntax/compatibility/encoding; TS7 full regression and TS8 child/parent candidate later."
+evidence:
+  - "RED 35ec1a2 precedes GREEN 964e1c7."
+  - "WIP T7 file/diff digests unchanged and unstaged."
+  - "Historical RCR event prefix deep-equal to frozen source."
+  - "Three old integration assertions remain visible; they were not weakened to pass this batch."
+```
+
+## RCR-SB1 Spec Compliance
+
+```yaml
+batch: "RCR-SB1"
+source_sha: "964e1c7cf879c6d244253b3ee294f9cdaff60f77"
+scope: ["TS1", "TS2"]
+spec_compliance:
+  status: READY_FOR_REVIEW
+  recommendation: "PASS within this boundary batch; complete AC-RCR-09 remains PARTIAL until producer/core conversion."
+  reviewer_role: "qc"
+  human_decision: PENDING
+  reviewed_by: []
+  reviewed_at: ""
+  checks:
+    - { criterion: "Approved utility/vocabulary", result: PASS, evidence: "No new module/dependency/kind; shared boundary for both collections." }
+    - { criterion: "Typed shape and ID contract", result: PASS, evidence: "Required fields, gate conditions, duplicate-ID rejection and stable JSON-tuple SHA-256 IDs." }
+    - { criterion: "Unknown exact legacy preservation", result: PASS, evidence: "Accent/case/Unicode/whitespace/empty input preserved; legacy objects never reinterpreted." }
+    - { criterion: "Bounded adapter", result: PASS, evidence: "Exact constants/full consumed commands only, verb-specific flags and subject binding." }
+    - { criterion: "Text-free selectors and mirror", result: PASS, evidence: "Throwing display getter cannot affect selection; stable flow maps and legacy scalar parity." }
+    - { criterion: "Compatibility/history", result: PASS, evidence: "13 frozen/live loads, zero file changes; historical prefix intact, no identity backfill." }
+    - { criterion: "Correct scope and incomplete-work boundary", result: PASS, evidence: "Only TS1/TS2 claimed; all later batches independent and T7 WIP preserved." }
+code_quality:
+  status: NOT_OPEN
+  reason: "Independent QC Spec Compliance must pass first."
+next_action: "QC reviews this source; only then open Developer/QC Code Quality."
+```
+
+### File Identity
+
+| Path | SHA-256 |
+| --- | --- |
+| work-item-protocol-utils.js | d9dda155f663e07eebd9aed7e1c9dad261f5c50820ece6abe283659c4298c0b7 |
+| validate-work-item-protocol.js | 9482fdcb46bc52e2fae403eba1dee4942a9a1fe73f0760172618f721d910a63a |
+| work-item-protocol-state.test.js | 4bfde7a118ee12ceee5a22586606a686f37383bc47a39f688cd8360449b19d42 |
+| validate-work-item-protocol.test.js | a33ce3a10b669989d06f88b348005da74614d5d3e89f716191d2bbe5fe2dfdd8 |
+
+### Scoped Pack Audit
+
+```yaml
+audit_scope: "TS1/TS2 script/note boundary; no source-skill or policy rewrite."
+checks:
+  - { id: "mechanical", status: PASS, evidence: "WORKFLOW_PACK_AUDIT=PASS" }
+  - { id: "template_scope", status: PASS, evidence: "Existing step/implementation/discipline schemas retained; no new skill/schema catalog boundary." }
+  - { id: "semantic_completion", status: WARN, evidence: "Legacy text consumers remain in the next approved batch; mechanical PASS is not semantic completion." }
+findings: []
+overall_status: PARTIAL
+follow_up_actions: ["Complete TS3..TS8 and independent reviews before candidate/release."]
+notes: "Semantic checklist reviewed for changed scripts/notes; source-only audit does not resolve external skill overrides."
+```
+
+### Current Structural Handoff
+
+- Protocol BLOCKED at s07, retaining sixteen roots; next human action is QC RCR-SB1 Spec Compliance.
+- Developer/QC Code Quality is NOT_OPEN. TS3 requires both verdicts in order.
+- Old protocol suite has three failures: readiness gate cleanup, readiness s01 mirror assertion,
+  and old prose-based selected-closeout blocker expectation. TS3/TS4 must convert behavior and
+  assertions while preserving unknown canaries; no cosmetic green run.
+- Full unit/static/security/package/hosted/parent verification remains pending in later tasks.
+  No candidate build, Technical Verification, DoD or finalization is opened by this handoff.
 - Known limitations: structural contract authoring, replacement TDD/reviews, T8 exact candidate, and child/parent verification remain pending.
 - Notes for testing: the fail-first `uat`/`dod` substring fixture now passes without weakening any existing semantic projection or transaction assertion.
 - Notes for deployment: none in s07; corrected candidate and rollback binding are T8/s08 work.

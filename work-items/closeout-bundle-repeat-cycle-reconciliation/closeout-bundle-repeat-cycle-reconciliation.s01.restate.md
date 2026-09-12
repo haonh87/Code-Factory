@@ -654,7 +654,7 @@ next_action: "Developer reviews the amended s06 TS0..TS8 plan; implementation st
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: BLOCKED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
@@ -690,12 +690,14 @@ decision_owner: "agent"
 protocol_owner: "ba"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "s07-structural-TS0"
-last_transition_action: "resume"
-last_transition_at: "2026-09-12T06:06:04.440Z"
+handoff_target: "RCR-SB1-spec-compliance-review"
+last_transition_action: "block"
+last_transition_at: "2026-09-12T06:17:30.153Z"
 required_actions:
-  - "Continue active execution from the current step."
-blockers: []
+  - {"id":"se:6eb92a675681d8b1aaba6d0b92e2e29ce4399951360c80d41706bc595d5db3ff","kind":"workflow_followup","text":"QC reviews RCR-SB1 Spec Compliance for source 964e1c7cf879c6d244253b3ee294f9cdaff60f77; TS3 remains closed."}
+  - {"id":"se:1917be13b82ec7f62fede812afb0fd84c48d22641f717b566ede05c98fe24ee1","kind":"workflow_followup","text":"Only after QC Spec Compliance PASS, open RCR-SB1 Code Quality for Developer and QC."}
+blockers:
+  - {"id":"se:f0fd44b95fd8acb24868085df99d3de1fdde3beb312946c2129f29fc766303fc","kind":"delivery_blocker","text":"The independent RCR-SB1 review pair has not passed; next-batch and candidate delivery remain closed."}
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -738,6 +740,7 @@ review_notes:
   - "Amended s06 TS0..TS8 and RCR-SB1/2/3 are drafted with 16 proposed write roots. No new roots are granted; partial T7 WIP remains untouched."
   - "Human Developer approved the amended Task Plan and all 16 proposed write roots at 2026-09-12T05:44:54Z. The finalized host awaits a matching trusted receipt and explicit s07 resume; no production edit, WIP adoption, or terminal gate is opened."
   - "Developer Task Plan receipt APPROVED at 2026-09-12T05:51:29.267Z matches finalized s06 SHA-256 ae1a733dab2cc709f61334050b0435160d34d88385ca4dba5ff7960632f11238. No authoring receipt is missing; protocol remains BLOCKED until explicit s07 resume grants all 16 roots. Existing grants and partial T7 WIP are unchanged."
+  - "Current structural boundary: TS0..TS2 complete for batch-level review, 9/9 isolated state tests and protocol-validator suite PASS, 13-report load-only compatibility PASS with zero file changes, protected host/WIP digests unchanged. Existing protocol suite has three unresolved integration assertions scheduled for TS3/TS4; no full verification or DoD is claimed."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -843,15 +846,15 @@ outputs:
   - "Proposed amended typed-state and direct-event-identity s05 Approach"
   - "Human Developer-approved TS0..TS8 Task Plan and 16-root scope amendment, not yet granted"
   - "Digest-matching amended Task Plan and prerequisite receipts; explicit resume still required"
-next_step: "Explicit s07 resume with all 16 human-approved write roots"
+next_step: "QC RCR-SB1 Spec Compliance for source 964e1c7cf879c6d244253b3ee294f9cdaff60f77; Code Quality opens only after that PASS"
 ```
 
 ## Handoff
 - Clear: closeout receipts succeeded, but current navigation and event evidence did not reconcile.
 - Distinct scope: repeat-cycle/idempotency, not the resolved missing-DoD selector defect.
 - Decision: PO approval is backed by a verified trusted receipt; the completed receipt action has been removed.
-- Current step: s06 authoring receipts all match; protocol remains BLOCKED on explicit resume and the 16-root execution grant.
+- Current step: s07 resumed with all sixteen roots; TS0..TS2 reached the independent RCR-SB1 review boundary and protocol is now BLOCKED on that review pair.
 - Approved discovery direction: bounded legacy adapter, typed state entries, and first-class transaction identity for transaction-backed approval events.
 - Historical implementation: refreshed B2 is complete for `f9533c4de66fdb04e75008382b39b4fc413e3caa`, but T7 is suspended and old s04-s06 receipts cannot authorize replacement work.
-- Next action: explicitly resume at s07 with all 16 approved roots; do not silently reuse the old seven-root grant.
+- Next action: QC reviews RCR-SB1 Spec Compliance for `964e1c7cf879c6d244253b3ee294f9cdaff60f77`; Developer/QC Code Quality is NOT_OPEN until that PASS. TS3 and candidate delivery remain closed.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.

@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "BLOCKED",
   "decision_owner": "agent",
   "protocol_owner": "ba",
   "raw_request_summary": "Fix repeated closeout-bundle reconciliation so a successful current approval cycle removes stale pending approval actions and handoffs, records a current-cycle protocol event despite historical evidence, and remains idempotent.",
@@ -108,7 +108,8 @@
     "Developer Approach receipt APPROVED at 2026-09-11T14:38:00.519Z verifies digest_match=true against s05 SHA-256 d075290f151a9596d029a79fa1cf2eab72b08a179c196d35a046d2d7a8187001.",
     "Amended s06 TS0..TS8 and RCR-SB1/2/3 are drafted with 16 proposed, ungranted write roots. Partial T7 WIP remains untouched until TS7.",
     "Human Developer approved the amended TS0..TS8 Task Plan, including all 16 proposed write roots, at 2026-09-12T05:44:54Z. A matching trusted receipt and explicit s07 resume remain separate; granted_write_paths is unchanged.",
-    "Developer Task Plan receipt APPROVED at 2026-09-12T05:51:29.267Z verifies digest_match=true against s06 SHA-256 ae1a733dab2cc709f61334050b0435160d34d88385ca4dba5ff7960632f11238. All authoring receipts match; explicit s07 resume with all 16 approved roots is still required."
+    "Developer Task Plan receipt APPROVED at 2026-09-12T05:51:29.267Z verifies digest_match=true against s06 SHA-256 ae1a733dab2cc709f61334050b0435160d34d88385ca4dba5ff7960632f11238. All authoring receipts match; explicit s07 resume with all 16 approved roots is still required.",
+    "Human Developer authorized s07 resume with sixteen roots. TS0 baseline, TS1 RED 35ec1a2 and TS2 GREEN 964e1c7cf879c6d244253b3ee294f9cdaff60f77 are recorded. The work item is now BLOCKED at RCR-SB1 Spec Compliance; Code Quality is NOT_OPEN and TS3/candidate delivery remain closed."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -135,11 +136,26 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "s07-structural-TS0",
+  "handoff_target": "RCR-SB1-spec-compliance-review",
   "required_actions": [
-    "Continue active execution from the current step."
+    {
+      "id": "se:6eb92a675681d8b1aaba6d0b92e2e29ce4399951360c80d41706bc595d5db3ff",
+      "kind": "workflow_followup",
+      "text": "QC reviews RCR-SB1 Spec Compliance for source 964e1c7cf879c6d244253b3ee294f9cdaff60f77; TS3 remains closed."
+    },
+    {
+      "id": "se:1917be13b82ec7f62fede812afb0fd84c48d22641f717b566ede05c98fe24ee1",
+      "kind": "workflow_followup",
+      "text": "Only after QC Spec Compliance PASS, open RCR-SB1 Code Quality for Developer and QC."
+    }
   ],
-  "blockers": [],
+  "blockers": [
+    {
+      "id": "se:f0fd44b95fd8acb24868085df99d3de1fdde3beb312946c2129f29fc766303fc",
+      "kind": "delivery_blocker",
+      "text": "The independent RCR-SB1 review pair has not passed; next-batch and candidate delivery remain closed."
+    }
+  ],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
     "work-items/adaptive-governance-human-approval-ux",
@@ -260,7 +276,8 @@
     "Developer Approach receipt APPROVED at 2026-09-11T14:38:00.519Z verifies digest_match=true against s05 SHA-256 d075290f151a9596d029a79fa1cf2eab72b08a179c196d35a046d2d7a8187001.",
     "Amended s06 TS0..TS8 and RCR-SB1/2/3 are drafted with 16 proposed write roots. No new roots are granted; partial T7 WIP remains untouched.",
     "Human Developer approved the amended Task Plan and all 16 proposed write roots at 2026-09-12T05:44:54Z. The finalized host awaits a matching trusted receipt and explicit s07 resume; no production edit, WIP adoption, or terminal gate is opened.",
-    "Developer Task Plan receipt APPROVED at 2026-09-12T05:51:29.267Z matches finalized s06 SHA-256 ae1a733dab2cc709f61334050b0435160d34d88385ca4dba5ff7960632f11238. No authoring receipt is missing; protocol remains BLOCKED until explicit s07 resume grants all 16 roots. Existing grants and partial T7 WIP are unchanged."
+    "Developer Task Plan receipt APPROVED at 2026-09-12T05:51:29.267Z matches finalized s06 SHA-256 ae1a733dab2cc709f61334050b0435160d34d88385ca4dba5ff7960632f11238. No authoring receipt is missing; protocol remains BLOCKED until explicit s07 resume grants all 16 roots. Existing grants and partial T7 WIP are unchanged.",
+    "Current structural boundary: TS0..TS2 complete for batch-level review, 9/9 isolated state tests and protocol-validator suite PASS, 13-report load-only compatibility PASS with zero file changes, protected host/WIP digests unchanged. Existing protocol suite has three unresolved integration assertions scheduled for TS3/TS4; no full verification or DoD is claimed."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -586,6 +603,14 @@
       "from_status": "BLOCKED",
       "to_status": "ACTIVE",
       "note": "Human Developer explicitly authorized s07 resume with all sixteen approved structural write roots; batch review and terminal gates remain independent."
+    },
+    {
+      "timestamp": "2026-09-12T06:17:30.153Z",
+      "action": "block",
+      "actor": "coordinator",
+      "from_status": "ACTIVE",
+      "to_status": "BLOCKED",
+      "note": "TS0/TS1/TS2 reached the approved RCR-SB1 boundary. Wait for QC Spec Compliance first, then Developer and QC Code Quality; no next-batch or delivery authority is inferred."
     }
   ]
 }
