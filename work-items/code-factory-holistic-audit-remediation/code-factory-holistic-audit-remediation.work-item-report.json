@@ -82,7 +82,8 @@
     "Human Developer approved the master evidence-led Approach at 2026-09-12T05:44:54Z. The finalized s05 host awaits a matching trusted receipt before s06; no audit execution, child gate, or write grant is opened.",
     "Developer Approach receipt APPROVED at 2026-09-12T05:51:55.282Z verifies digest_match=true against s05 SHA-256 10b4015018013eebc9a623c5651148f3b4e648c46717f83b1c401b1df2048f8b.",
     "Master s06 M0..M11 is drafted with five audit sidecars, six proposed audit-only roots, full semantic coverage, two ordered review pairs and direct child/integration/released/installed closure dependencies. No execution or child authority is granted.",
-    "Human Developer approved M0..M11 and all six audit-only roots at 2026-09-12T06:04:23Z. The finalized host awaits a matching receipt; no execution or child write authority is granted."
+    "Human Developer approved M0..M11 and all six audit-only roots at 2026-09-12T06:04:23Z. The finalized host awaits a matching receipt; no execution or child write authority is granted.",
+    "Developer Task Plan receipt APPROVED at 2026-09-12T06:23:55.010Z verifies digest_match=true against unchanged s06 SHA-256 5e27d9630ad5d502709069103f5deb22952604b30ab52115c5a03917ad9b4bb5. Spec, DoR and Approach receipts also match; only separately authorized master activation with six approved audit-only roots remains. No master/child execution or write grant is opened."
   ],
   "work_item_slug": "code-factory-holistic-audit-remediation",
   "work_item_type": "RESEARCH",
@@ -92,13 +93,13 @@
   "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "s06-portfolio-task-plan-receipt-seal",
+  "handoff_target": "s07-portfolio-audit-only-activation",
   "required_actions": [
-    "Human Developer seals the Task Plan receipt against the finalized s06 host; verify its digest before separately authorized audit-only activation with six approved roots.",
+    "Developer confirms master activation at s07 with the six approved audit-only roots; receipt sealing is complete and must not be requested again.",
     "Keep master audit execution, child implementation and release actions closed."
   ],
   "blockers": [
-    "The finalized s06 host awaits a matching trusted Task Plan receipt and separately authorized audit-only activation."
+    "Master audit execution is waiting for explicit activation with its six approved roots; no authoring receipt is missing."
   ],
   "refs": [
     "work-items/code-factory-holistic-audit-remediation",
@@ -130,7 +131,8 @@
     "S05_PORTFOLIO_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT",
     "S05_PORTFOLIO_APPROACH_RECEIPT_VERIFIED",
     "S06_PORTFOLIO_TASK_PLAN_DRAFTED",
-    "S06_PORTFOLIO_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT"
+    "S06_PORTFOLIO_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT",
+    "S06_PORTFOLIO_TASK_PLAN_RECEIPT_VERIFIED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -149,7 +151,8 @@
     "Human Developer approved the evidence-led master Approach at 2026-09-12T05:44:54Z. A matching trusted receipt is still required before s06; no audit execution, child gate, or write grant is opened.",
     "Developer Approach receipt APPROVED at 2026-09-12T05:51:55.282Z matches finalized s05 SHA-256 10b4015018013eebc9a623c5651148f3b4e648c46717f83b1c401b1df2048f8b.",
     "Master s06 M0..M11 is drafted with six proposed audit-only roots, five sidecars, full source semantic coverage, separate BA language evidence, child gate independence and final identity/closure requirements. Task Plan decision, trusted evidence and activation remain independent.",
-    "Human Developer approved M0..M11 and all six audit-only roots at 2026-09-12T06:04:23Z. The finalized host awaits a matching receipt; no execution or child write authority is granted."
+    "Human Developer approved M0..M11 and all six audit-only roots at 2026-09-12T06:04:23Z. The finalized host awaits a matching receipt; no execution or child write authority is granted.",
+    "Developer Task Plan receipt APPROVED at 2026-09-12T06:23:55.010Z verifies digest_match=true against unchanged s06 SHA-256 5e27d9630ad5d502709069103f5deb22952604b30ab52115c5a03917ad9b4bb5. Spec, DoR and Approach receipts also match; only separately authorized master activation with six approved audit-only roots remains. No master/child execution or write grant is opened."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -283,6 +286,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Human Developer approved the audit-only Task Plan and all six proposed roots. A matching trusted receipt and explicit activation remain required; no execution or child authority is granted."
+    },
+    {
+      "timestamp": "2026-09-12T06:24:42Z",
+      "action": "verify-s06-portfolio-task-plan-receipt",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Developer Task Plan receipt APPROVED at 2026-09-12T06:23:55.010Z verifies digest_match=true against unchanged s06 SHA-256 5e27d9630ad5d502709069103f5deb22952604b30ab52115c5a03917ad9b4bb5. Spec, DoR and Approach receipts also match; only separately authorized master activation with six approved audit-only roots remains. No master/child execution or write grant is opened."
     }
   ]
 }

@@ -564,7 +564,7 @@ not_approved:
   - "Implementation of CF-019, CF-020, AC-CF-010 or AC-CF-011"
   - "CR-008 hosted artifact-binding amendment"
   - "Release, Business Acceptance, DoD, exception or waiver"
-next_action: "Seal and verify the master Task Plan receipt; explicit audit-only activation remains separate and no child gate is implied."
+next_action: "Developer confirms explicit master activation at s07 with the six approved audit-only roots; no child gate is implied."
 ```
 
 ## Work Item Protocol
@@ -589,14 +589,14 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-03T01:34:46.476Z"
-handoff_target: "s06-portfolio-task-plan-receipt-seal"
-last_transition_action: "approve-s06-portfolio-task-plan"
-last_transition_at: "2026-09-12T06:04:23Z"
+handoff_target: "s07-portfolio-audit-only-activation"
+last_transition_action: "verify-s06-portfolio-task-plan-receipt"
+last_transition_at: "2026-09-12T06:24:42Z"
 required_actions:
-  - "Human Developer seals the Task Plan receipt against the finalized s06 host; verify its digest before separately authorized audit-only activation with six approved roots."
+  - "Developer confirms master activation at s07 with the six approved audit-only roots; receipt sealing is complete and must not be requested again."
   - "Keep master audit execution, child implementation and release actions closed."
 blockers:
-  - "The finalized s06 host awaits a matching trusted Task Plan receipt and separately authorized audit-only activation."
+  - "Master audit execution is waiting for explicit activation with its six approved roots; no authoring receipt is missing."
 review_notes:
   - "Human review approved."
   - "The s03 bundle was amended at 2026-09-07T14:33:29Z so proposed findings CF-019/CF-020 and AC-CF-010/011 have explicit OQ-CF-004/005 decisions; no finding or option was self-approved."
@@ -611,6 +611,7 @@ review_notes:
   - "Developer Approach receipt APPROVED at 2026-09-12T05:51:55.282Z matches finalized s05 SHA-256 10b4015018013eebc9a623c5651148f3b4e648c46717f83b1c401b1df2048f8b."
   - "Master s06 M0..M11 is drafted with six proposed audit-only roots, five sidecars, full source semantic coverage, separate BA language evidence, child gate independence and final identity/closure requirements. Task Plan decision, trusted evidence and activation remain independent."
   - "Human Developer approved M0..M11 and all six audit-only roots at 2026-09-12T06:04:23Z. The finalized host awaits a matching receipt; no execution or child write authority is granted."
+  - "Developer Task Plan receipt APPROVED at 2026-09-12T06:23:55.010Z verifies digest_match=true against unchanged s06 SHA-256 5e27d9630ad5d502709069103f5deb22952604b30ab52115c5a03917ad9b4bb5. Spec, DoR and Approach receipts also match; only separately authorized master activation with six approved audit-only roots remains. No master/child execution or write grant is opened."
 refs:
   - "work-items/code-factory-holistic-audit-remediation"
   - "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md"
@@ -641,6 +642,7 @@ audit_events:
   - "S05_PORTFOLIO_APPROACH_RECEIPT_VERIFIED"
   - "S06_PORTFOLIO_TASK_PLAN_DRAFTED"
   - "S06_PORTFOLIO_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT"
+  - "S06_PORTFOLIO_TASK_PLAN_RECEIPT_VERIFIED"
 ```
 
 ## Traceability
@@ -649,7 +651,7 @@ source_inputs:
   - "User review and sequencing request"
   - "Current repository, worktree, protocol, Git and runtime evidence captured 2026-09-02"
   - "Prior plan and audit artifacts listed in Work Item Materialization.existing_refs"
-next_step: "Seal and verify master Task Plan trusted evidence; audit-only activation follows independently."
+next_step: "Explicit master audit-only activation with six approved roots; then M0/M1 in the master lane"
 ```
 
 ## Handoff
@@ -660,4 +662,5 @@ next_step: "Seal and verify master Task Plan trusted evidence; audit-only activa
 - Human decision: the remaining OQ-CF-001/002/003/005 Option C policies were approved at
   `2026-09-11T11:40:59Z`; no Spec, DoR, child or implementation approval is inherited.
 - Current handoff: Spec, DoR and Approach receipts match; Developer approved master s06 M0..M11 and its six audit-only roots.
-  The Task Plan receipt and explicit activation remain required. No master or child execution is open.
+  The Task Plan receipt also matches. Only explicit activation remains required; no master or child execution is open.
+- RCR remains independently BLOCKED on RCR-SB1 Spec Compliance for source `964e1c7cf879c6d244253b3ee294f9cdaff60f77`; no review verdict is inferred from running the master sealing command.
