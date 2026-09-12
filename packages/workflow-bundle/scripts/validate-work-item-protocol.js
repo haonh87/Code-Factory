@@ -12,6 +12,9 @@ const {
   BOOTSTRAP_GATE_PASSED,
   BOOTSTRAP_GATE_STATUSES,
   PROTOCOL_STATUSES,
+  STATE_COLLECTIONS,
+  getStateCollectionErrors,
+  normalizeStateCollection,
   getWorkItemPaths,
   isAllowedProtocolTransition,
   loadProtocolControl,
@@ -72,6 +75,37 @@ function validateProtocolBlockSync(s01Content, report, s01Path, errors) {
     }
   });
 
+  // Mirror checks read serialized YAML data, never infer state from its text.
+  // The current renderer uses JSON-compatible YAML flow mappings; pre-contract
+  // scalar lists remain readable without changing their files.
+  const lines = section.split("\n");
+  STATE_COLLECTIONS.forEach(collection => {
+    const start = lines.findIndex(line => line === collection + ":" || line === collection + ": []");
+    if (start < 0) {
+      errors.push(`${collection} out of sync in ${s01Path}: missing collection.`);
+      return;
+    }
+    const entries = [];
+    try {
+      if (lines[start] !== collection + ": []") {
+        for (let i = start + 1; i < lines.length && lines[i].startsWith("  - "); i++) {
+          const value = lines[i].slice(4);
+          // Canonical flow maps/quoted scalars are JSON; bare legacy scalars
+          // remain exact input rather than being semantically interpreted here.
+          entries.push(value.startsWith("{") || value.startsWith('"') ? JSON.parse(value) : value);
+        }
+      }
+      const normalized = normalizeStateCollection(entries, collection, { workItemSlug: report.work_item_slug, changeId: report.change_id });
+      // Compare structural fields without making object key order meaningful.
+      const canonical = values => values.map(entry => [entry.id, entry.kind, entry.gate, entry.text]);
+      if (JSON.stringify(canonical(normalized)) !== JSON.stringify(canonical(report[collection]))) {
+        errors.push(`${collection} out of sync in ${s01Path}: collection differs from report.`);
+      }
+    } catch (error) {
+      errors.push(`${collection} out of sync in ${s01Path}: ${error.message}`);
+    }
+  });
+
   if (report.artifact_shape === "adaptive_v1") {
     [
       `artifact_shape: adaptive_v1`,
@@ -86,6 +120,13 @@ function validateProtocolBlockSync(s01Content, report, s01Path, errors) {
       }
     });
   }
+}
+
+function validateProtocolStateCollections(report, reportPath, errors) {
+  STATE_COLLECTIONS.forEach(collection => {
+    getStateCollectionErrors(report[collection] === undefined ? [] : report[collection], collection)
+      .forEach(error => errors.push(`${error} Report: ${reportPath}`));
+  });
 }
 
 function validateProtocolEvents(report, reportPath, errors) {
@@ -429,7 +470,16 @@ function validateWorkItemProtocol({ args }) {
       return;
     }
 
-    const report = normalizeProtocolReport(rawReport);
+    const stateErrorCount = errors.length;
+    validateProtocolStateCollections(rawReport, paths.reportPath, errors);
+    if (errors.length !== stateErrorCount) return;
+    let report;
+    try {
+      report = normalizeProtocolReport(rawReport);
+    } catch (error) {
+      errors.push(`Invalid state collection in ${paths.reportPath}: ${error.message}`);
+      return;
+    }
     validateProtocolState(report, {
       slug: entry.slug,
       projectRoot,
@@ -472,5 +522,7 @@ if (require.main === module) {
 
 module.exports = {
   isEquivalentWorkflowRoot,
+  validateProtocolStateCollections,
+  validateProtocolBlockSync,
   validateWorkItemProtocol
 };

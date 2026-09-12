@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { createHash } = require("crypto");
 const {
   ensureDirectory,
   getFrontmatterLines,
@@ -59,6 +60,156 @@ const PROTOCOL_TRANSITIONS = {
   ARCHIVED: [],
   CANCELLED: []
 };
+
+const STATE_COLLECTIONS = ["blockers", "required_actions"];
+const STATE_GATE_KEYS = ["bootstrap", "spec", "contract", "dor", "approach", "foundation", "task_plan", "uat", "release", "business_acceptance", "dod"];
+const GATE_SCOPED_STATE_KINDS = ["approval_pending", "gate_approval"];
+const STATE_ENTRY_KINDS = [
+  ...GATE_SCOPED_STATE_KINDS,
+  "readiness_bundle_approval", "closeout_bundle_approval",
+  "readiness_bundle_rejected", "closeout_bundle_rejected",
+  "resolve_readiness_rejection", "resolve_closeout_rejection",
+  "work_item_activation", "work_item_close", "work_item_resume",
+  "blocker_resolution", "workflow_followup", "delivery_blocker", "legacy"
+];
+
+function getStateCollectionErrors(values, collection) {
+  if (!Array.isArray(values)) return [`${collection} must be an array.`];
+  const errors = [], seenIds = new Set();
+  values.forEach((entry, index) => {
+    const location = `${collection}[${index}]`;
+    // Raw strings are accepted only as pre-contract input to the load adapter.
+    if (typeof entry === "string") return;
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      errors.push(`${location} must be a state-entry object or legacy string.`);
+      return;
+    }
+    if (!STATE_ENTRY_KINDS.includes(entry.kind)) errors.push(`${location} has an unknown kind.`);
+    if (typeof entry.text !== "string" || (entry.kind !== "legacy" && !entry.text.trim())) {
+      errors.push(`${location} text must be non-empty display content (legacy text is preserved exactly).`);
+    }
+    if (entry.kind === "legacy") {
+      if (Object.keys(entry).some(key => key !== "kind" && key !== "text")) {
+        errors.push(`${location} legacy entry must contain only kind and text.`);
+      }
+      return;
+    }
+    if (typeof entry.id !== "string" || !entry.id.trim()) errors.push(`${location} id must be a non-empty opaque string.`);
+    else if (seenIds.has(entry.id)) errors.push(`${location} has duplicate id '${entry.id}'.`);
+    else seenIds.add(entry.id);
+    if (GATE_SCOPED_STATE_KINDS.includes(entry.kind)) {
+      if (!STATE_GATE_KEYS.includes(entry.gate)) errors.push(`${location} gate must name a canonical gate for this kind.`);
+    } else if (Object.hasOwn(entry, "gate")) errors.push(`${location} gate must be omitted for non-gate kinds.`);
+    if (Object.keys(entry).some(key => !["id", "kind", "text", "gate"].includes(key))) {
+      errors.push(`${location} contains unsupported state-entry fields.`);
+    }
+  });
+  return errors;
+}
+
+function createStateEntry({ collection, kind, text, gate, sourceKey }) {
+  if (!STATE_COLLECTIONS.includes(collection)) throw new Error("State entry collection must be blockers or required_actions.");
+  if (typeof sourceKey !== "string" || !sourceKey.trim()) throw new Error("State entry requires a non-empty sourceKey.");
+  if (kind === "legacy") throw new Error("Newly generated state cannot use the legacy kind.");
+  const id = "se:" + createHash("sha256").update(JSON.stringify([collection, kind, gate || "", sourceKey])).digest("hex");
+  const entry = { id, kind, text, ...(gate !== undefined ? { gate } : {}) };
+  const errors = getStateCollectionErrors([entry], collection);
+  if (errors.length) throw new Error(errors.join("\n"));
+  return entry;
+}
+
+// The ONLY legacy prose interpretation boundary. This deliberately recognizes
+// exact protocol-owned constants, not synonyms, substring matches or casing.
+const LEGACY_STATE_VALUES = new Map([
+  ["Review and continue workflow backbone s01 -> s08.", "workflow_followup"],
+  ["Continue active execution from step 7 onward.", "workflow_followup"],
+  ["Continue active execution from the current step.", "workflow_followup"],
+  ["Resolve blockers before resuming the work item.", "blocker_resolution"],
+  ["Resolve review feedback before resuming ACTIVE delivery.", "blocker_resolution"],
+  ["Collect DoD evidence and close the work item when ready.", "workflow_followup"],
+  ["Archive the work item when all downstream lifecycle actions are complete.", "workflow_followup"],
+  ["Resolve rejected readiness gates before activation.", "resolve_readiness_rejection"],
+  ["Resolve rejected closeout gates before completion.", "resolve_closeout_rejection"],
+  ["Readiness bundle rejected for gates: spec, dor, approach, task_plan.", "readiness_bundle_rejected"],
+  ["Closeout bundle rejected for gates: release, business_acceptance.", "closeout_bundle_rejected"],
+  ["Closeout bundle rejected for gates: dod, release, business_acceptance.", "closeout_bundle_rejected"],
+  ["Closeout bundle rejected for gates: dod, uat, release, business_acceptance.", "closeout_bundle_rejected"]
+]);
+
+function importLegacyStateEntry(text, collection, { workItemSlug = "", changeId = "" } = {}) {
+  const exactKind = LEGACY_STATE_VALUES.get(text);
+  if (exactKind) return createStateEntry({ collection, kind: exactKind, text, sourceKey: "legacy:" + text });
+
+  // Explicit full-string wfc grammar. Each option is consumed as a key/value
+  // pair; unknown/duplicate flags or extra prose make the entire input opaque.
+  const match = /^wfc[ \t]+(gate|work-item|change-item)[ \t]+(approve|reject|approve-ready-bundle|reject-ready-bundle|approve-closeout-bundle|reject-closeout-bundle|activate|close|resume)((?:[ \t]+--[a-z-]+[ \t]+[^\s]+)+)$/.exec(text);
+  if (!match || match[0] !== text) return { kind: "legacy", text };
+  const optionTokens = match[3].trim().split(/[ \t]+/), options = {};
+  const allowed = new Set(["--workflow-root", "--project-root"]);
+  if (match[1] === "change-item") {
+    if (match[2] !== "approve") return { kind: "legacy", text };
+    allowed.add("--change-id"); allowed.add("--reviewed-by");
+  } else {
+    allowed.add("--work-item");
+    if (match[1] === "gate" && ["approve", "reject"].includes(match[2])) {
+      ["--gate", "--reviewed-by", "--ref"].forEach(key => allowed.add(key));
+    } else if (match[1] === "work-item" && match[2] === "approve") allowed.add("--reviewed-by");
+    else if (match[1] === "work-item" && ["activate", "resume"].includes(match[2])) {
+      allowed.add("--step"); allowed.add("--write-root");
+    }
+  }
+  for (let i = 0; i < optionTokens.length; i += 2) {
+    const key = optionTokens[i], value = optionTokens[i + 1];
+    if (!allowed.has(key) || (Object.hasOwn(options, key) && key !== "--write-root") || !value || value.startsWith("--")) return { kind: "legacy", text };
+    options[key] = value;
+  }
+  const slug = options["--work-item"];
+  if (match[1] !== "change-item" && (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || (workItemSlug && slug !== workItemSlug))) return { kind: "legacy", text };
+  if (options["--step"] && !/^s0[1-8]$/.test(options["--step"])) return { kind: "legacy", text };
+  let kind, gate, sourceKey = "legacy:" + text;
+  if (match[1] === "change-item") {
+    const id = options["--change-id"];
+    if (!id || !/^[A-Z]+-[0-9]+$/.test(id) || (changeId && id !== changeId)) return { kind: "legacy", text };
+    kind = "workflow_followup"; sourceKey = "change-approval:" + id;
+  } else if (match[1] === "gate") {
+    if (match[2] === "approve" || match[2] === "reject") {
+      gate = options["--gate"];
+      if (!STATE_GATE_KEYS.includes(gate)) return { kind: "legacy", text };
+      kind = "gate_approval";
+    } else if (["approve-ready-bundle", "reject-ready-bundle"].includes(match[2])) kind = "readiness_bundle_approval";
+    else if (["approve-closeout-bundle", "reject-closeout-bundle"].includes(match[2])) kind = "closeout_bundle_approval";
+  } else {
+    kind = { approve: "workflow_followup", activate: "work_item_activation", close: "work_item_close", resume: "work_item_resume" }[match[2]];
+    if (match[2] === "approve") sourceKey = "work-item-approval:" + slug;
+  }
+  if (!kind || (gate === undefined && Object.hasOwn(options, "--gate"))) return { kind: "legacy", text };
+  return createStateEntry({ collection, kind, gate, text, sourceKey });
+}
+
+function normalizeStateCollection(values, collection, context) {
+  const raw = values === undefined ? [] : values;
+  const rawErrors = getStateCollectionErrors(raw, collection);
+  if (rawErrors.length) throw new Error(rawErrors.join("\n"));
+  const normalized = raw.map(entry => typeof entry === "string"
+    ? importLegacyStateEntry(entry, collection, context)
+    : { ...entry });
+  const errors = getStateCollectionErrors(normalized, collection);
+  if (errors.length) throw new Error(errors.join("\n"));
+  return normalized;
+}
+
+function matchesStateEntry(entry, { id, kind, gate, kinds } = {}) {
+  if (!entry || entry.kind === "legacy") return false;
+  if (id !== undefined) return entry.id === id;
+  const selectedKinds = kinds || (kind !== undefined ? [kind] : []);
+  if (!selectedKinds.length || !selectedKinds.includes(entry.kind)) return false;
+  if (GATE_SCOPED_STATE_KINDS.includes(entry.kind)) return gate !== undefined && entry.gate === gate;
+  return gate === undefined;
+}
+
+function buildStateYamlList(key, values) {
+  return values.length ? [key + ":", ...values.map(entry => "  - " + JSON.stringify(entry))] : [key + ": []"];
+}
 
 function normalizeSingleValue(value) {
   if (Array.isArray(value)) {
@@ -268,8 +419,8 @@ function normalizeProtocolReport(report) {
     change_strategy: String(report.change_strategy || "none").trim(),
     change_id: String(report.change_id || "").trim(),
     handoff_target: String(report.handoff_target || "").trim(),
-    required_actions: normalizeArray(report.required_actions),
-    blockers: normalizeArray(report.blockers),
+    required_actions: normalizeStateCollection(report.required_actions, "required_actions", { workItemSlug: report.work_item_slug, changeId: report.change_id }),
+    blockers: normalizeStateCollection(report.blockers, "blockers", { workItemSlug: report.work_item_slug, changeId: report.change_id }),
     refs: normalizeArray(report.refs),
     audit_events: normalizeArray(report.audit_events),
     review_required:
@@ -455,8 +606,8 @@ function renderProtocolBlock(reportInput) {
     `handoff_target: ${quoteYamlString(report.handoff_target)}`,
     `last_transition_action: ${quoteYamlString(lastEvent ? lastEvent.action : "")}`,
     `last_transition_at: ${quoteYamlString(lastEvent ? lastEvent.timestamp : "")}`,
-    ...buildYamlList("required_actions", report.required_actions),
-    ...buildYamlList("blockers", report.blockers),
+    ...buildStateYamlList("required_actions", report.required_actions),
+    ...buildStateYamlList("blockers", report.blockers),
     ...buildYamlList("review_notes", report.review_notes),
     ...buildYamlList("refs", report.refs),
     ...buildYamlList("audit_events", report.audit_events),
@@ -508,6 +659,15 @@ function isAllowedProtocolTransition(fromStatus, toStatus) {
 }
 
 module.exports = {
+  STATE_COLLECTIONS,
+  STATE_GATE_KEYS,
+  STATE_ENTRY_KINDS,
+  GATE_SCOPED_STATE_KINDS,
+  createStateEntry,
+  getStateCollectionErrors,
+  normalizeStateCollection,
+  matchesStateEntry,
+  buildStateYamlList,
   APPROVAL_GATE_PASSED,
   APPROVAL_STATUSES,
   BOOTSTRAP_GATE_PASSED,

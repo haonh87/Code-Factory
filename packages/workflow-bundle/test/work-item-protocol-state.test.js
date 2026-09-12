@@ -98,6 +98,22 @@ test("selectors use exact ID or kind+gate and never read display text", () => {
   assert.equal(utils.matchesStateEntry(semantic, { gate: "release" }), false);
 });
 
+test("legacy command grammar consumes the whole input and binds commands to their owning subject", () => {
+  const command = "wfc gate approve --work-item demo --gate release";
+  const normalize = text => utils.normalizeProtocolReport({ work_item_slug: "demo", change_id: "CR-008", required_actions: [text] }).required_actions[0];
+  for (const text of [command + "\n", command + " --write-root unrelated", "wfc work-item close --work-item demo --ref unrelated", command.replace("demo", "other")]) {
+    assert.deepEqual(normalize(text), { kind: "legacy", text });
+  }
+  const approve = normalize("wfc work-item approve --work-item demo --reviewed-by <role>");
+  assert.equal(approve.kind, "workflow_followup");
+  assert.equal(approve.id, utils.createStateEntry({ collection: "required_actions", kind: "workflow_followup", sourceKey: "work-item-approval:demo", text: "Different display" }).id);
+  const change = normalize("wfc change-item approve --change-id CR-008 --reviewed-by <role>");
+  assert.equal(change.kind, "workflow_followup");
+  assert.equal(change.id, utils.createStateEntry({ collection: "required_actions", kind: "workflow_followup", sourceKey: "change-approval:CR-008", text: "Different display" }).id);
+  const foreign = "wfc change-item approve --change-id CR-009 --reviewed-by <role>";
+  assert.deepEqual(normalize(foreign), { kind: "legacy", text: foreign });
+});
+
 test("renderer emits stable YAML flow mappings with normalized report collection equality", () => {
   const raw = report([entry, "Peer review is outstanding"], [{ id: "a2", kind: "workflow_followup", text: "line\nwith \"quotes\" and é" }]);
   const normalized = utils.normalizeProtocolReport(raw);
