@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
   - "project-context/checklists/strict.md"
@@ -64,8 +64,8 @@ gate_reviews:
   approach_reviewed_at: "2026-09-11T14:34:14Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  task_plan_reviewed_by: ["developer"]
+  task_plan_reviewed_at: "2026-09-12T05:44:54Z"
   uat_reviewed_by: []
   uat_reviewed_at: ""
   release_reviewed_by: []
@@ -101,9 +101,10 @@ tags:
 > SHA-256 d075290f151a9596d029a79fa1cf2eab72b08a179c196d35a046d2d7a8187001.
 > This amendment replaces the patch-oriented remaining T7/T8 with TS0..TS8: typed-state boundary,
 > writer/selector conversion, then direct event identity and full atomic/compatibility evidence.
-> RCR-SB1, RCR-SB2, and RCR-SB3 each require Spec Compliance before Code Quality. The proposed
-> 16 write roots are not granted yet. Developer Task Plan approval, a matching receipt, and explicit
-> s07 resume remain separate requirements.
+> RCR-SB1, RCR-SB2, and RCR-SB3 each require Spec Compliance before Code Quality.
+> Human Developer approved TS0..TS8 and all 16 proposed write roots at 2026-09-12T05:44:54Z.
+> The roots are approved but not granted yet. A matching trusted receipt and explicit s07 resume
+> remain separate requirements; production edits and partial T7 adoption stay closed.
 
 ## Step Contract
 
@@ -416,8 +417,10 @@ notes_for_implementation: "Execute sequentially in the existing CR-008 worktree.
 ## Owned Scope Amendment
 
 ```yaml
-status: PROPOSED_NOT_GRANTED
-grant_condition: "Human Task Plan approval, matching receipt, and explicit s07 resume"
+status: HUMAN_APPROVED_NOT_GRANTED
+approved_by: "developer"
+approved_at: "2026-09-12T05:44:54Z"
+grant_condition: "Matching Task Plan receipt and explicit s07 resume; human scope approval is recorded below"
 proposed_write_roots:
   - "packages/workflow-bundle/scripts/work-item-protocol-utils.js"
   - "packages/workflow-bundle/scripts/work-item-protocol.js"
@@ -475,9 +478,9 @@ checks:
   - { id: "GOV-TS-01", result: PASS, evidence: "All ten ACs and six edge classes are mapped." }
   - { id: "GOV-TS-02", result: PASS, evidence: "Three RED/GREEN pairs precede production changes." }
   - { id: "GOV-TS-03", result: PASS, evidence: "RCR-SB1/2/3 each enforce Spec Compliance before Code Quality." }
-  - { id: "GOV-TS-04", result: PASS, evidence: "16 exact roots proposed, not granted; WIP and adjacent ownership preserved." }
+  - { id: "GOV-TS-04", result: PASS, evidence: "Human Developer approved 16 exact roots; grant awaits matching receipt and explicit resume. WIP and adjacent ownership preserved." }
   - { id: "GOV-TS-05", result: PASS, evidence: "Unknown legacy, historical identity, rollback and parent evidence remain safe." }
-blocking_items: ["Human Task Plan decision", "matching trusted receipt", "explicit s07 resume"]
+blocking_items: ["matching trusted receipt", "explicit s07 resume"]
 ```
 
 ## Spec Change
@@ -489,6 +492,21 @@ updated_artifacts: []
 required_followups: []
 ```
 
+## Human Decision Record
+
+```yaml
+decision: APPROVED
+gate: "task_plan"
+reviewed_by: "developer"
+reviewed_at: "2026-09-12T05:44:54Z"
+decision_source: "User explicitly approved the amended Task Plan for closeout-bundle-repeat-cycle-reconciliation, including all 16 proposed write roots."
+decision_scope: ["TS0..TS8", "RCR-SB1/2/3 ordered reviews", "16 write roots listed in Owned Scope Amendment"]
+trusted_receipt_status: "NOT_YET_MATCHING_CURRENT_HOST"
+execution_grant_status: "NOT_RESUMED"
+not_approved: ["Implementation review verdicts", "s08 opening or terminal gates", "publish/tag/merge/install/cleanup", "adjacent work-item scope"]
+next_action: "Human Developer seals the finalized Task Plan host in an interactive TTY; explicit resume remains separate."
+```
+
 ## Audit
 
 ```yaml
@@ -498,14 +516,14 @@ checks:
   - { criterion: "Executable plan", result: PASS, evidence: "TS0..TS8 specify paths, dependency, objective, outputs, review and verification." }
   - { criterion: "Acceptance coverage", result: PASS, evidence: "AC-RCR-01..10 and EDGE-RCR-01..06 mapped to tests and evidence." }
   - { criterion: "No hidden redesign", result: PASS, evidence: "Existing utility boundary and approved kind vocabulary retained." }
-  - { criterion: "WIP and scope safety", result: PASS, evidence: "Partial T7 preserved until TS7; no proposed roots granted yet." }
+  - { criterion: "WIP and scope safety", result: PASS, evidence: "Partial T7 preserved until TS7; the 16 human-approved roots are not granted yet." }
   - { criterion: "Release integrity", result: PASS, evidence: "One candidate and child/parent/rollback/terminal ordering explicit." }
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
-gaps: ["Developer Task Plan decision and fresh receipt are pending."]
+gaps: ["Fresh digest-matching Task Plan receipt and explicit s07 resume are still required."]
 risk_level: HIGH
-next_action: "Developer reviews amended Task Plan; implementation remains closed."
+next_action: "Seal the finalized Task Plan host as Developer, then explicitly resume the approved scope; implementation remains closed."
 ```
 
 ## SDD Traceability
@@ -524,13 +542,13 @@ upstream:
   - "Amended s04 SHA-256 26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87"
   - "Amended s05 SHA-256 d075290f151a9596d029a79fa1cf2eab72b08a179c196d35a046d2d7a8187001"
   - "Approach receipt Developer 2026-09-11T14:38:00.519Z, digest_match=true"
-outputs: ["TS0..TS8", "RCR-SB1/2/3", "16-root proposed amendment", "legacy/WIP/parent release safety"]
-next_step: "Human Developer Task Plan approval, fresh receipt, then explicit s07 resume"
+outputs: ["TS0..TS8", "RCR-SB1/2/3", "16-root human-approved amendment, not granted", "legacy/WIP/parent release safety"]
+next_step: "Fresh matching Task Plan receipt, then explicit s07 resume"
 ```
 
 ## Handoff
 
-- Current step: s06; Task Plan draft ready for Developer review.
+- Current step: s06; human Developer approved the amended Task Plan and its 16 roots at 2026-09-12T05:44:54Z.
 - Implementation stays closed until a matching receipt and explicit resume grant the proposed 16 roots.
 - Unknown legacy text is never semantic-cleared; core transitions/assertions do not read text or note.
 - Old patch B1/B2 evidence remains historical; the structural batches have distinct RCR-SB1/2/3 review identities.
