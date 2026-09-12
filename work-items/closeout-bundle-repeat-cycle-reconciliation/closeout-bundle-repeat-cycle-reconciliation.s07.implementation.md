@@ -789,6 +789,43 @@ next_action: "Developer/QC decide Code Quality verdict and finding; QC decides w
 
 [Machine-readable evidence and exact repro](rcr-sb1-code-quality-evidence.json). No code or test was changed during this review. The previously approved Spec Compliance remains historical/current for source `964e1c7cf879c6d244253b3ee294f9cdaff60f77`; it is not silently revoked by an AI recommendation. TS3 is still closed.
 
+### Pre-handoff Testing Evidence
+
+```yaml
+verification_target: "RCR-SB1 TS1/TS2 boundary source 964e1c7cf879c6d244253b3ee294f9cdaff60f77; not full-work-item verification"
+risk_ranked_test_matrix:
+  - { risk: "Unknown legacy blocker silently cleared", severity: HIGH, required_evidence: ["Exact unknown-text preservation", "Text-free selector tests", "TS3/TS4 full-transition canary later"] }
+  - { risk: "Invalid/desynchronized mirror accepted", severity: MEDIUM, required_evidence: ["Shape/unique-ID tests", "Mirror mismatch tests", "Malformed/duplicate mirror negative repro"] }
+  - { risk: "Read-only compatibility mutates old reports", severity: HIGH, required_evidence: ["Load-only byte equality", "13-report frozen compatibility", "Historical prefix/WIP integrity"] }
+test_strategy:
+  unit_test: { required: true, rationale: "Pure constructor/normalizer/selector and mirror validation behavior" }
+  integration_test: { required: true, rationale: "Gate transaction/report/s01 integration and legacy compatibility; three old assertions remain failing until TS3/TS4" }
+  database_test: { required: false, rationale: "No database/schema change" }
+  feature_test: { required: false, rationale: "Full CLI/candidate/parent acceptance belongs to later approved batches, not this scoped review" }
+negative_cases: ["Unknown exact legacy strings", "Missing/invalid fields", "Duplicate IDs", "Foreign subject/unsupported command option", "Throwing display getter", "Duplicate mirror collection", "Invalid entry after empty collection"]
+regression_targets: ["Legacy report byte preservation", "Stable structured rendering", "Gate authority/receipt-v1 transaction tests", "Quarantined T7 WIP"]
+manual_exploration:
+  flows_checked: ["In-memory canonical mirror control", "Duplicate blockers key", "Invalid trailing mapping after blockers: []", "Available lint/security tools"]
+  issues_found: ["F-RCR-SB1-001: both malformed mirrors return zero errors"]
+criteria_results:
+  - { criterion: "TS2 valid typed boundary and exact legacy preservation", result: PASS, evidence: "9/9 isolated tests and validator unit suite" }
+  - { criterion: "TS2 fail-closed mirror validation", result: FAIL, evidence: "F-RCR-SB1-001 negative repro" }
+  - { criterion: "Complete AC-RCR-09", result: PARTIAL, evidence: "Core producers/assertions remain TS3/TS4; no complete claim" }
+test_evidence:
+  unit_test: ["State 9/9 PASS", "Validator suite PASS"]
+  integration_test: ["Gate review suite PASS", "Protocol suite 3 known FAIL assertions", "Historical source/WIP integrity PASS"]
+  database_test: []
+  feature_test: []
+commands_run: ["work-item-protocol-state.test.js", "validate-work-item-protocol.test.js", "workflow-gate-review.test.js", "work-item-protocol.test.js", "node --check x2", "wfc validate/protocol/plan", "UTF-8 and diff checks", "In-memory mirror diagnostic"]
+skipped_checks: ["Full regression/package/hosted/parent acceptance are later-batch work", "ESLint and Semgrep unavailable; no scanner installation"]
+release_blockers: ["RCR-SB1 independent Code Quality decision pending", "Proposed F-RCR-SB1-001", "Remaining TS3..TS8 and parent exact-candidate verification"]
+status: FAIL
+gaps: ["Mirror parser completeness", "Remaining structural integration", "Formal static/security/final-candidate evidence"]
+residual_risks: ["Incomplete core conversion is intentionally not released"]
+recommendation: "Human Developer/QC verdict and proposed TS2a repair/review decisions before more RCR implementation"
+notes_for_review: "AI pre-handoff test conclusion only; not QC Technical Verification, DoD or an inferred human Code Quality verdict."
+```
+
 ### Pre-handoff Scan Summary
 
 ```yaml
