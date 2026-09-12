@@ -183,4 +183,5 @@ next_step: "s03 Open Questions"
 - Non-goals: tidiness and compliance are excluded by name, because they are the easy substitutes for the real measure and both would let this work item pass while changing nothing.
 - Counter-metric recorded as M-04: if amendments rise, the rule is punishing honest forecasts and must be softened rather than tightened.
 - Condition to enter s03: none. The assumption that one measured case is representative is the first thing s03 should test.
-- Revised 2026-09-12 after s04: M-01 is a shared outcome, not this work item's own. M-02 is withdrawn as not computable and M-05 replaces it. This work item now depends on capability-grant-reconciliation.
+- Revised 2026-09-12 after s04: M-01 is a shared outcome, not this work item's own. M-02 is withdrawn as not computable and M-05 replaces it.
+- Revised again 2026-09-12 after capability-grant-reconciliation s04: this work item runs **first**, not second. The earlier note had the dependency backwards. Reconciliation can be satisfied by widening the scope it checks; granularity cannot, because a validator sees the shape of a path at declaration time without needing any diff.

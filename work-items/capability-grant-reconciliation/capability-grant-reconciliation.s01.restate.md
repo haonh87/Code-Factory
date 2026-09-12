@@ -212,5 +212,5 @@ next_step: "s02 Business Goal"
 ## Handoff
 - Settled: L1 and L2 are one work item. L2 has no independent value and exists to make L1 correct.
 - Still open: OQ-02 decides how much force the mechanism has; OQ-03 decides whether shared files break the model.
-- Relationship to `capability-grant-granularity`: that work item depends on this one. Narrowing a declaration nothing reconciles changes no behaviour.
+- Relationship to `capability-grant-granularity`: **reversed at s04 on 2026-09-12**. That work item runs first and this one depends on it, because reconciliation alone can be satisfied by widening the scope it checks, while granularity is enforceable at declaration time.
 - Condition to start execution: D1.

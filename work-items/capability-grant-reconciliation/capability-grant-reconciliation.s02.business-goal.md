@@ -160,7 +160,7 @@ non_goals:
   - "One work item per branch. That is a working-agreement change. This work item makes the current practice observable, not illegal."
   - "Retroactive reconciliation of closed work items. The debt is stopped, not repaid."
   - "Audit tidiness. If every work item reconciles cleanly and nothing about delivery changes, the mechanism has cost time and bought a report."
-  - "Grant granularity. Separate work item, and it depends on this one."
+  - "Grant granularity. Separate work item. Direction reversed at s04 on 2026-09-12: it runs first and this work item depends on it."
 
 constraints:
   - "Implementation sits inside packages/workflow-bundle, held in full by adaptive-governance-human-approval-ux. Carried from s01 C1."

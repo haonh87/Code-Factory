@@ -218,8 +218,9 @@ resolved_2026_09_12:
   - id: B-02
     resolution: "M-02 withdrawn as not computable while a branch carries several work items. M-05 replaces it and is measurable by this work item alone."
 notes:
-  - "Depends on capability-grant-reconciliation. A narrow grant changes no behaviour until a grant is reconciled against what actually changed. AC-07 is the exception and can land independently, because it compares two declarations rather than a declaration against a diff."
-  - "This work item is now small and well understood. It should not be started before the item it depends on."
+  - "Runs FIRST, ahead of capability-grant-reconciliation. Corrected 2026-09-12 at that work item's s04. AC-04 and AC-07 are both enforceable at declaration time - one checks the shape of a path, the other compares s06 owned_paths against the activation grant - so neither needs a diff or a branch association."
+  - "The earlier note said this work item ran second. That was wrong. Reconciliation shipped alone is defeatable by widening a grant until it passes, so granularity has to exist before reconciliation has teeth."
+  - "Neither work item may claim M-01, concurrency, alone. It is a joint DoD condition."
   - "READY is an authoring verdict, not a human gate pass."
 ```
 
