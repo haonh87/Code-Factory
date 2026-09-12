@@ -558,12 +558,13 @@ subsequent_decisions:
   - "OQ-CF-003 Option C approved by BA/PO/QC at 2026-09-11T11:40:59Z."
   - "OQ-CF-005 Option C approved by PO/BA/DevOps at 2026-09-11T11:40:59Z."
   - "Master s05 Approach approved by Developer at 2026-09-12T05:44:54Z; matching trusted receipt remains separate."
+  - "Master s06 Task Plan and six audit-only roots approved by Developer at 2026-09-12T06:04:23Z; receipt and activation remain separate."
 not_approved:
   - "Any child work-item or child gate"
   - "Implementation of CF-019, CF-020, AC-CF-010 or AC-CF-011"
   - "CR-008 hosted artifact-binding amendment"
   - "Release, Business Acceptance, DoD, exception or waiver"
-next_action: "Developer reviews master s06 M0..M11 and six proposed audit-only roots; no child gate is implied."
+next_action: "Seal and verify the master Task Plan receipt; explicit audit-only activation remains separate and no child gate is implied."
 ```
 
 ## Work Item Protocol
@@ -588,14 +589,14 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-03T01:34:46.476Z"
-handoff_target: "s06-portfolio-task-plan-human-gate"
-last_transition_action: "verify-s05-receipt-open-s06-portfolio-task-plan"
-last_transition_at: "2026-09-12T05:54:27Z"
+handoff_target: "s06-portfolio-task-plan-receipt-seal"
+last_transition_action: "approve-s06-portfolio-task-plan"
+last_transition_at: "2026-09-12T06:04:23Z"
 required_actions:
-  - "Developer reviews the current s06 M0..M11 host and six proposed audit-only write roots; matching trusted evidence and explicit activation follow independently."
+  - "Human Developer seals the Task Plan receipt against the finalized s06 host; verify its digest before separately authorized audit-only activation with six approved roots."
   - "Keep master audit execution, child implementation and release actions closed."
 blockers:
-  - "The current s06 host lacks human-controlled gate evidence."
+  - "The finalized s06 host awaits a matching trusted Task Plan receipt and separately authorized audit-only activation."
 review_notes:
   - "Human review approved."
   - "The s03 bundle was amended at 2026-09-07T14:33:29Z so proposed findings CF-019/CF-020 and AC-CF-010/011 have explicit OQ-CF-004/005 decisions; no finding or option was self-approved."
@@ -609,6 +610,7 @@ review_notes:
   - "Human Developer approved the evidence-led master Approach at 2026-09-12T05:44:54Z. A matching trusted receipt is still required before s06; no audit execution, child gate, or write grant is opened."
   - "Developer Approach receipt APPROVED at 2026-09-12T05:51:55.282Z matches finalized s05 SHA-256 10b4015018013eebc9a623c5651148f3b4e648c46717f83b1c401b1df2048f8b."
   - "Master s06 M0..M11 is drafted with six proposed audit-only roots, five sidecars, full source semantic coverage, separate BA language evidence, child gate independence and final identity/closure requirements. Task Plan decision, trusted evidence and activation remain independent."
+  - "Human Developer approved M0..M11 and all six audit-only roots at 2026-09-12T06:04:23Z. The finalized host awaits a matching receipt; no execution or child write authority is granted."
 refs:
   - "work-items/code-factory-holistic-audit-remediation"
   - "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md"
@@ -638,6 +640,7 @@ audit_events:
   - "S05_PORTFOLIO_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT"
   - "S05_PORTFOLIO_APPROACH_RECEIPT_VERIFIED"
   - "S06_PORTFOLIO_TASK_PLAN_DRAFTED"
+  - "S06_PORTFOLIO_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT"
 ```
 
 ## Traceability
@@ -646,7 +649,7 @@ source_inputs:
   - "User review and sequencing request"
   - "Current repository, worktree, protocol, Git and runtime evidence captured 2026-09-02"
   - "Prior plan and audit artifacts listed in Work Item Materialization.existing_refs"
-next_step: "Developer reviews master s06 M0..M11; trusted evidence and audit-only activation follow independently."
+next_step: "Seal and verify master Task Plan trusted evidence; audit-only activation follows independently."
 ```
 
 ## Handoff
@@ -656,5 +659,5 @@ next_step: "Developer reviews master s06 M0..M11; trusted evidence and audit-onl
 - Human decision: PO/BA/Developer/QC approved OQ-CF-004 Option C at `2026-09-08T02:23:55Z`; CF-019 implementation remains gated independently.
 - Human decision: the remaining OQ-CF-001/002/003/005 Option C policies were approved at
   `2026-09-11T11:40:59Z`; no Spec, DoR, child or implementation approval is inherited.
-- Current handoff: Spec, DoR and Approach receipts match; master s06 M0..M11 is drafted for Developer review.
-  Six audit-only roots are proposed, not granted. No master or child execution is open.
+- Current handoff: Spec, DoR and Approach receipts match; Developer approved master s06 M0..M11 and its six audit-only roots.
+  The Task Plan receipt and explicit activation remain required. No master or child execution is open.

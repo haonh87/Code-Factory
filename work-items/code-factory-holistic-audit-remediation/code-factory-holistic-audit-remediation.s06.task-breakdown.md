@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -63,8 +63,8 @@ gate_reviews:
   approach_reviewed_at: "2026-09-12T05:44:54Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  task_plan_reviewed_by: ["developer"]
+  task_plan_reviewed_at: "2026-09-12T06:04:23Z"
   uat_reviewed_by: []
   uat_reviewed_at: ""
   release_reviewed_by: []
@@ -100,8 +100,9 @@ tags:
 > SHA-256 10b4015018013eebc9a623c5651148f3b4e648c46717f83b1c401b1df2048f8b.
 > M0..M11 turn the portfolio into five audit artifacts, complete source-skill semantic coverage,
 > independently governed child handoffs, and final exact-identity verification.
-> The proposed six write roots cover audit artifacts only. Task Plan approval, a matching receipt,
-> and explicit activation remain required; no child implementation or release action is opened.
+> Developer approved this Task Plan and its six audit-only write roots at 2026-09-12T06:04:23Z.
+> A matching trusted receipt and explicit activation remain required; no master execution,
+> child implementation or release action is opened.
 
 ## Step Contract
 
@@ -386,8 +387,8 @@ notes_for_implementation: "Execute audit-only in the existing master worktree. C
 ## Evidence Contract and Owned Scope
 
 ```yaml
-scope_status: PROPOSED_NOT_GRANTED
-grant_condition: "Human Task Plan approval, matching receipt, explicit master activation"
+scope_status: HUMAN_APPROVED_NOT_GRANTED
+grant_condition: "Matching Task Plan receipt and explicit master activation with these six approved roots"
 proposed_write_roots:
   - "work-items/code-factory-holistic-audit-remediation"
   - "docs/audits/code-factory-holistic-inventory.json"
@@ -441,9 +442,9 @@ checks:
   - { id: "GOV-M-03", status: PASS, evidence: "CF-MB1/2 require Spec Compliance before Code Quality." }
   - { id: "GOV-M-04", status: PASS, evidence: "Full semantic coverage, mechanical checks, language rubric and security evidence are separate." }
   - { id: "GOV-M-05", status: PASS, evidence: "Final twenty-finding/eleven-AC/identity closure is not inferred from branch progress." }
-blocking_items: ["Human Developer Task Plan decision", "matching trusted receipt", "explicit activation"]
+blocking_items: ["matching trusted Task Plan receipt", "explicit activation"]
 owner: "developer/qc"
-next_action: "Developer reviews this audit-only Task Plan and its six proposed write roots."
+next_action: "Seal and verify the Developer Task Plan receipt against this finalized host; activation remains separate."
 ```
 
 ## Spec Change
@@ -470,9 +471,9 @@ constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "s06 completed in one authoring pass; CR-008 checkpoint preserved separately."
-gaps: ["Human Task Plan decision, matching receipt and explicit activation remain required; execution results are not claimed."]
+gaps: ["Matching Task Plan receipt and explicit activation remain required; execution results are not claimed."]
 risk_level: HIGH
-next_action: "Human Developer reviews the draft Task Plan; keep master/child execution closed."
+next_action: "Seal and verify the Developer Task Plan receipt; keep master/child execution closed until independently authorized."
 ```
 
 ## Traceability
@@ -484,14 +485,29 @@ upstream:
   - "Developer Approach receipt 2026-09-12T05:51:55.282Z, digest_match=true"
   - "Frozen master plan/s03 and approved OQ-CF-001..005 policies"
 outputs: ["M0..M11", "five audit artifacts", "CF-MB1/2", "six-root proposal", "existing-child handoffs and final closure dependencies"]
-next_step: "Developer Task Plan decision, matching trusted receipt, then explicit audit-only activation"
+next_step: "Matching Developer Task Plan receipt, then explicit audit-only activation"
 ```
 
 ## Handoff
 
 - First task after activation: M0 admission and protected-digest snapshot, then M1 inventory.
-- Six write roots are proposed, not granted; the audit worktree remains isolated.
+- Developer approved all six audit-only write roots; they remain ungranted until receipt verification and explicit activation.
 - All 42 baseline source skills require semantic review; final verification recounts the live snapshot.
 - Read-only evidence may expose later-phase findings, but child remediation follows P0 -> P4 and independent gates.
 - RCR requires its own explicit resume; Node24 still requires its own readiness receipts and activation.
 - Master closure waits for direct twenty-finding/eleven-AC and released/installed truth; no production/release/cleanup authority is inferred.
+
+## Human Decision Record
+
+```yaml
+decision: APPROVED
+gate: "task_plan"
+reviewed_by: ["developer"]
+reviewed_at: "2026-09-12T06:04:23Z"
+decision_source: "User explicitly approved the master Task Plan including six audit-only write roots."
+decision_scope: ["M0..M11", "CF-MB1/CF-MB2 ordered review pairs", "six audit-only roots listed in Evidence Contract and Owned Scope"]
+trusted_receipt_status: PENDING_SEAL
+scope_status: HUMAN_APPROVED_NOT_GRANTED
+not_approved: ["Master activation", "Child materialization or implementation", "Review or terminal gate verdicts", "Publish/tag/install/merge/cleanup"]
+next_action: "Human Developer seals a digest-bound Task Plan receipt; explicit audit-only activation follows independently."
+```
