@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -39,28 +39,32 @@ verification_owner: "qc"
 approval_gates:
   spec: "required"
   contract: "not_applicable"
+  dor: "required"
+  approach: "required"
   foundation: "not_applicable"
+  task_plan: "required"
   uat: "not_applicable"
   release: "not_applicable"
   business_acceptance: "not_applicable"
+  dod: "required"
 role_signoffs:
-  spec: []
+  spec: ["ba"]
   contract: []
-  dor: []
-  approach: []
+  dor: ["ba", "qc"]
+  approach: ["developer"]
   foundation: []
-  task_plan: []
+  task_plan: ["developer"]
   uat: []
   release: []
   business_acceptance: []
-  dod: []
+  dod: ["qc"]
 gate_reviews:
-  spec_reviewed_by: []
-  spec_reviewed_at: ""
+  spec_reviewed_by: ["ba"]
+  spec_reviewed_at: "2026-09-11T13:51:45Z"
   contract_reviewed_by: []
   contract_reviewed_at: ""
-  dor_reviewed_by: []
-  dor_reviewed_at: ""
+  dor_reviewed_by: ["ba", "qc"]
+  dor_reviewed_at: "2026-09-11T13:51:45Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   foundation_reviewed_by: []
@@ -101,7 +105,8 @@ tags:
 > finding. Existing plans are fragmented, several are ignored by Git, and the mechanical audit can
 > pass while semantic and lifecycle contradictions remain.
 > OQ-CF-001..005 now have explicit Option C decisions from their assigned human authorities, so
-> the master s04 Spec and DoR are human-approved and await two digest-bound receipts; no child
+> the master s04 Spec and DoR are human-approved with two verified digest-matched receipts. The
+> evidence-led portfolio s05 Approach is drafted for Developer review; no master or child
 > implementation gate has been opened.
 
 ## Step Contract
@@ -557,7 +562,7 @@ not_approved:
   - "Implementation of CF-019, CF-020, AC-CF-010 or AC-CF-011"
   - "CR-008 hosted artifact-binding amendment"
   - "Release, Business Acceptance, DoD, exception or waiver"
-next_action: "Proceed to s02 Business Goal; no child gate is implied."
+next_action: "Developer reviews the master s05 evidence-led portfolio Approach; no child gate is implied."
 ```
 
 ## Work Item Protocol
@@ -569,7 +574,7 @@ work_item_slug: "code-factory-holistic-audit-remediation"
 work_item_type: RESEARCH
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/code-factory-holistic-audit-remediation"
-current_step: "s04"
+current_step: "s05"
 granted_write_paths: []
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
@@ -582,18 +587,14 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-03T01:34:46.476Z"
-handoff_target: "s04-trusted-receipts"
-last_transition_action: "approve-s04-portfolio-spec-dor"
-last_transition_at: "2026-09-11T13:51:45Z"
+handoff_target: "s05-portfolio-approach-human-gate"
+last_transition_action: "verify-s04-receipts-open-s05-portfolio-approach"
+last_transition_at: "2026-09-12T05:34:10Z"
 required_actions:
-  - "Seal two independent digest-bound s04 receipts against the unchanged finalized host using the assigned BA and QC sealers."
-  - "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate spec --reviewed-by <role>"
-  - "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate dor --reviewed-by <role>"
-  - "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate approach --reviewed-by <role>"
-  - "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate task_plan --reviewed-by <role>"
-  - "wfc work-item activate --work-item code-factory-holistic-audit-remediation --step s07 --write-root <path>"
+  - "Developer reviews the current s05 evidence-led portfolio host; matching trusted evidence follows independently."
+  - "Keep s06, master audit execution, child implementation, and release actions closed."
 blockers:
-  - "Two digest-bound s04 receipts are pending."
+  - "The current s05 host lacks human-controlled gate evidence."
 review_notes:
   - "Human review approved."
   - "The s03 bundle was amended at 2026-09-07T14:33:29Z so proposed findings CF-019/CF-020 and AC-CF-010/011 have explicit OQ-CF-004/005 decisions; no finding or option was self-approved."
@@ -602,6 +603,8 @@ review_notes:
   - "PO/Maintainer approved OQ-CF-001=C, Developer/QC approved OQ-CF-002=C, BA/PO/QC approved OQ-CF-003=C, and PO/BA/DevOps approved OQ-CF-005=C at 2026-09-11T11:40:59Z. All five master OQs are resolved; child and implementation gates remain independent."
   - "s04 now proposes AC-CF-001..011 and a READY DoR from refreshed clean-main evidence: 42 skills, 181 files/177 notes valid, 9 managed/16 legacy protocol inventory, and source v2.6.1 versus installed v2.3.2/40. Human Spec/DoR gates remain pending."
   - "Human BA approved Spec and human BA/QC approved DoR at 2026-09-11T13:51:45Z. Two independent trusted receipts remain pending; Approach, Task Plan, and implementation remain closed."
+  - "BA Spec receipt 2026-09-11T14:33:43.972Z and QC DoR receipt 2026-09-11T14:33:56.365Z both verify against s04 SHA-256 41078181e9b0e8186c900b8d1908ca9f52820d6b763b37467681325edc389f29."
+  - "Master s05 proposes bounded evidence-led coordination, five audit sidecars, independent child reuse/proposals, and separate source/candidate/release/install tiers. Developer review remains independent."
 refs:
   - "work-items/code-factory-holistic-audit-remediation"
   - "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md"
@@ -626,6 +629,8 @@ audit_events:
   - "S03_OPEN_QUESTIONS_COMPLETED"
   - "S04_PORTFOLIO_SPEC_DOR_DRAFTED"
   - "S04_PORTFOLIO_SPEC_DOR_HUMAN_APPROVED_PENDING_RECEIPTS"
+  - "S04_PORTFOLIO_RECEIPTS_VERIFIED"
+  - "S05_PORTFOLIO_APPROACH_DRAFTED"
 ```
 
 ## Traceability
@@ -634,7 +639,7 @@ source_inputs:
   - "User review and sequencing request"
   - "Current repository, worktree, protocol, Git and runtime evidence captured 2026-09-02"
   - "Prior plan and audit artifacts listed in Work Item Materialization.existing_refs"
-next_step: "Human BA reviews s04 Spec; BA/QC review DoR before s05 Technical Approach."
+next_step: "Developer reviews master s05 Approach, then seals matching receipt before s06."
 ```
 
 ## Handoff
@@ -644,5 +649,5 @@ next_step: "Human BA reviews s04 Spec; BA/QC review DoR before s05 Technical App
 - Human decision: PO/BA/Developer/QC approved OQ-CF-004 Option C at `2026-09-08T02:23:55Z`; CF-019 implementation remains gated independently.
 - Human decision: the remaining OQ-CF-001/002/003/005 Option C policies were approved at
   `2026-09-11T11:40:59Z`; no Spec, DoR, child or implementation approval is inherited.
-- Current handoff: s04 is review-ready; BA Spec and BA/QC DoR decisions plus trusted receipts are
-  required before s05. No child implementation gate is implied.
+- Current handoff: s04 receipts are verified and s05 is drafted for Developer review.
+  A matching Approach receipt is required before s06. No master or child execution is open.
