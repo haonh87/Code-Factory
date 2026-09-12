@@ -681,14 +681,14 @@ decision_owner: "agent"
 protocol_owner: "ba"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "amended-s06-task-plan-trusted-receipt"
-last_transition_action: "approve-amended-s06-structural-task-plan"
-last_transition_at: "2026-09-12T05:44:54Z"
+handoff_target: "s07-structural-scope-resume"
+last_transition_action: "verify-amended-s06-receipt-await-resume"
+last_transition_at: "2026-09-12T05:54:27Z"
 required_actions:
-  - "Seal the finalized current s06 host as Developer; prior trusted evidence does not match this content. Explicit resume of the 16 approved roots follows independently."
-  - "Keep production edits, partial T7 adoption, and release work closed."
+  - "Explicitly resume closeout-bundle-repeat-cycle-reconciliation at s07 with all 16 human-approved write roots; do not reuse the old seven-root grant."
+  - "Keep production edits and partial T7 adoption closed until resume; s08 and release actions remain independent."
 blockers:
-  - "The current s06 content has no matching trusted receipt; execution is not resumed."
+  - "Execution has not been explicitly resumed with the 16 human-approved write roots."
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -730,6 +730,7 @@ review_notes:
   - "Developer Approach receipt APPROVED at 2026-09-11T14:38:00.519Z verifies digest_match=true against s05 SHA-256 d075290f151a9596d029a79fa1cf2eab72b08a179c196d35a046d2d7a8187001."
   - "Amended s06 TS0..TS8 and RCR-SB1/2/3 are drafted with 16 proposed, ungranted write roots. Partial T7 WIP remains untouched until TS7."
   - "Human Developer approved the amended Task Plan and all 16 proposed write roots at 2026-09-12T05:44:54Z. The finalized host awaits a matching trusted receipt and explicit s07 resume; no production edit, WIP adoption, or terminal gate is opened."
+  - "Developer Task Plan receipt APPROVED at 2026-09-12T05:51:29.267Z matches finalized s06 SHA-256 ae1a733dab2cc709f61334050b0435160d34d88385ca4dba5ff7960632f11238. No authoring receipt is missing; protocol remains BLOCKED until explicit s07 resume grants all 16 roots. Existing grants and partial T7 WIP are unchanged."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -801,6 +802,7 @@ audit_events:
   - "S05_STRUCTURAL_APPROACH_RECEIPT_VERIFIED"
   - "S06_STRUCTURAL_TASK_PLAN_DRAFTED"
   - "S06_STRUCTURAL_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT"
+  - "S06_STRUCTURAL_TASK_PLAN_RECEIPT_VERIFIED"
 ```
 
 ## Traceability
@@ -832,15 +834,16 @@ outputs:
   - "Verified fresh Spec, Contract, and DoR receipts for amended s04"
   - "Proposed amended typed-state and direct-event-identity s05 Approach"
   - "Human Developer-approved TS0..TS8 Task Plan and 16-root scope amendment, not yet granted"
-next_step: "Seal the current s06 host as Developer; explicit s07 resume follows independently"
+  - "Digest-matching amended Task Plan and prerequisite receipts; explicit resume still required"
+next_step: "Explicit s07 resume with all 16 human-approved write roots"
 ```
 
 ## Handoff
 - Clear: closeout receipts succeeded, but current navigation and event evidence did not reconcile.
 - Distinct scope: repeat-cycle/idempotency, not the resolved missing-DoD selector defect.
 - Decision: PO approval is backed by a verified trusted receipt; the completed receipt action has been removed.
-- Current step: s06 is BLOCKED on matching trusted evidence and explicit resume; Developer's amended Task Plan decision is recorded.
+- Current step: s06 authoring receipts all match; protocol remains BLOCKED on explicit resume and the 16-root execution grant.
 - Approved discovery direction: bounded legacy adapter, typed state entries, and first-class transaction identity for transaction-backed approval events.
 - Historical implementation: refreshed B2 is complete for `f9533c4de66fdb04e75008382b39b4fc413e3caa`, but T7 is suspended and old s04-s06 receipts cannot authorize replacement work.
-- Next action: human Developer seals the finalized s06 host; explicit resume then grants the approved 16-root scope.
+- Next action: explicitly resume at s07 with all 16 approved roots; do not silently reuse the old seven-root grant.
 - Parent: `F-AG11-001` blocks release, tag, merge, install, cleanup, and branch finalization.
