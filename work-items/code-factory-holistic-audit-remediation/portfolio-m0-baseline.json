@@ -1,0 +1,90 @@
+{
+  "observed_at": "2026-09-12T07:45:41Z",
+  "master": {
+    "source_sha": "5b85d7f943fff4fc9e0f559faed43e79f9483b12",
+    "branch": "codex/code-factory-holistic-audit-remediation",
+    "worktree": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/code-factory-holistic-audit-remediation",
+    "status": " M work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s01.restate.md\n M work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.work-item-report.json\n?? docs/audits/code-factory-holistic-coverage-matrix.md\n?? docs/audits/code-factory-holistic-finding-disposition.md\n?? docs/audits/code-factory-holistic-inventory.json\n?? docs/audits/code-factory-holistic-language-review.md\n?? docs/audits/code-factory-holistic-legacy-document-classification.md",
+    "protected": [
+      {
+        "path": "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md",
+        "artifact_sha256": "e9f84613af3ca7b5788ad3d948f56f5c8650fc7d9fbc463076950435d75b7a8d"
+      },
+      {
+        "path": "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s03.open-questions.md",
+        "artifact_sha256": "9402538f7049896970cb86f2d242d23e8b2967b59507a5d60d9c99d84c19b804"
+      },
+      {
+        "path": "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s04.acceptance-criteria.md",
+        "artifact_sha256": "41078181e9b0e8186c900b8d1908ca9f52820d6b763b37467681325edc389f29"
+      },
+      {
+        "path": "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s05.technical-approach.md",
+        "artifact_sha256": "10b4015018013eebc9a623c5651148f3b4e648c46717f83b1c401b1df2048f8b"
+      },
+      {
+        "path": "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s06.task-breakdown.md",
+        "artifact_sha256": "5e27d9630ad5d502709069103f5deb22952604b30ab52115c5a03917ad9b4bb5"
+      }
+    ]
+  },
+  "main": {
+    "source_sha": "2e3aaded1779787d993b7e5cacc96bfae008b3bc",
+    "clean_tracked_tree_only": true,
+    "working_checkout": "No clean main worktree asserted"
+  },
+  "root": {
+    "branch": "docs/work-items-2026-09-11",
+    "source_sha": "dd9ce88c6880309b8a64724b393401638866bb32",
+    "status": "?? \"New Core FnB Technical.md\"\n?? changes/CHANGE-005/\n?? changes/CR-008/\n?? docs/release/community-pack-readme-en.md\n?? work-items/adaptive-governance-human-approval-ux/\n?? work-items/add-diagram-design-adapter/"
+  },
+  "rcr": {
+    "source_sha": "9617d183d8a63a79b32f58beba82ab8babca53bb",
+    "approved_batch_source": "964e1c7cf879c6d244253b3ee294f9cdaff60f77",
+    "branch": "codex/adaptive-governance-human-approval-ux",
+    "status": " M packages/workflow-bundle/test/work-item-protocol.test.js\n M work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s01.restate.md\n M work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s07.implementation.md\n M work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.work-item-report.json",
+    "wip": {
+      "path": "packages/workflow-bundle/test/work-item-protocol.test.js",
+      "artifact_sha256": "8b0d15de455cae2f0aed5603916e49c610e3b5acb6edda219764de5f0142ee1e",
+      "diff_sha256": "554af6e279da86bec7634585a4fa5cb08d47d04c59abd7302180b4fec46efb91"
+    }
+  },
+  "anchor_correction": {
+    "old": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/code-factory-holistic-audit-remediation",
+    "current": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/code-factory-holistic-audit-remediation/work-items/code-factory-holistic-audit-remediation",
+    "reason": "Lifecycle activation consulted stale root notes despite gate status matching worktree receipts.",
+    "sealed_hosts_modified": false
+  },
+  "admission": {
+    "protocol_status": "ACTIVE",
+    "current_step": "s07",
+    "write_root_count": 6,
+    "scope": "audit-only; no child mutation/production/merge/publish/install",
+    "receipts": [
+      {
+        "gate": "spec",
+        "reviewed_by": "ba",
+        "reviewed_at": "2026-09-11T14:33:43.972Z",
+        "digest_match": true
+      },
+      {
+        "gate": "dor",
+        "reviewed_by": "qc",
+        "reviewed_at": "2026-09-11T14:33:56.365Z",
+        "digest_match": true
+      },
+      {
+        "gate": "approach",
+        "reviewed_by": "developer",
+        "reviewed_at": "2026-09-12T05:51:55.282Z",
+        "digest_match": true
+      },
+      {
+        "gate": "task_plan",
+        "reviewed_by": "developer",
+        "reviewed_at": "2026-09-12T06:23:55.010Z",
+        "digest_match": true
+      }
+    ]
+  }
+}

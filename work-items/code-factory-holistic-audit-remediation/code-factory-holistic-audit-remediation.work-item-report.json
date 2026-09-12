@@ -1,8 +1,8 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "MATERIALIZED",
+  "protocol_status": "ACTIVE",
   "decision_owner": "agent",
-  "protocol_owner": "po",
+  "protocol_owner": "developer",
   "raw_request_summary": "Process the recommended sequence and create the missing holistic Code-Factory workflow/skill review plan.",
   "request_source": "user",
   "candidate_count": 1,
@@ -83,24 +83,30 @@
     "Developer Approach receipt APPROVED at 2026-09-12T05:51:55.282Z verifies digest_match=true against s05 SHA-256 10b4015018013eebc9a623c5651148f3b4e648c46717f83b1c401b1df2048f8b.",
     "Master s06 M0..M11 is drafted with five audit sidecars, six proposed audit-only roots, full semantic coverage, two ordered review pairs and direct child/integration/released/installed closure dependencies. No execution or child authority is granted.",
     "Human Developer approved M0..M11 and all six audit-only roots at 2026-09-12T06:04:23Z. The finalized host awaits a matching receipt; no execution or child write authority is granted.",
-    "Developer Task Plan receipt APPROVED at 2026-09-12T06:23:55.010Z verifies digest_match=true against unchanged s06 SHA-256 5e27d9630ad5d502709069103f5deb22952604b30ab52115c5a03917ad9b4bb5. Spec, DoR and Approach receipts also match; only separately authorized master activation with six approved audit-only roots remains. No master/child execution or write grant is opened."
+    "Developer Task Plan receipt APPROVED at 2026-09-12T06:23:55.010Z verifies digest_match=true against unchanged s06 SHA-256 5e27d9630ad5d502709069103f5deb22952604b30ab52115c5a03917ad9b4bb5. Spec, DoR and Approach receipts also match; only separately authorized master activation with six approved audit-only roots remains. No master/child execution or write grant is opened.",
+    "Developer explicitly activated master s07 with six approved audit-only roots. Metadata anchor was rebound to this worktree after the CLI consulted stale root drafts; four sealed hosts/receipts unchanged.",
+    "M0/M1 produced exact source/main/WIP identities, 42 canonical skills, seven groups, 227 supporting files, eight surface families, both installed 2.3.2/40 inventories and nine local overlay-root observations. M2 has begun with four SKILL.md reads and three architecture-modeling operative EN references; no full semantic, finding, language or final identity closure is claimed."
   ],
   "work_item_slug": "code-factory-holistic-audit-remediation",
   "work_item_type": "RESEARCH",
   "delivery_context": "brownfield",
-  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/code-factory-holistic-audit-remediation",
-  "current_step": "s06",
-  "granted_write_paths": [],
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/code-factory-holistic-audit-remediation/work-items/code-factory-holistic-audit-remediation",
+  "current_step": "s07",
+  "granted_write_paths": [
+    "work-items/code-factory-holistic-audit-remediation",
+    "docs/audits/code-factory-holistic-inventory.json",
+    "docs/audits/code-factory-holistic-coverage-matrix.md",
+    "docs/audits/code-factory-holistic-finding-disposition.md",
+    "docs/audits/code-factory-holistic-legacy-document-classification.md",
+    "docs/audits/code-factory-holistic-language-review.md"
+  ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "s07-portfolio-audit-only-activation",
+  "handoff_target": "s07-portfolio-M2-full-semantic-review",
   "required_actions": [
-    "Developer confirms master activation at s07 with the six approved audit-only roots; receipt sealing is complete and must not be requested again.",
-    "Keep master audit execution, child implementation and release actions closed."
+    "Continue M2 full semantic coverage and M3/M4 classifications/dispositions; CF-MB1 opens only after all required evidence is complete."
   ],
-  "blockers": [
-    "Master audit execution is waiting for explicit activation with its six approved roots; no authoring receipt is missing."
-  ],
+  "blockers": [],
   "refs": [
     "work-items/code-factory-holistic-audit-remediation",
     "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md",
@@ -132,7 +138,8 @@
     "S05_PORTFOLIO_APPROACH_RECEIPT_VERIFIED",
     "S06_PORTFOLIO_TASK_PLAN_DRAFTED",
     "S06_PORTFOLIO_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT",
-    "S06_PORTFOLIO_TASK_PLAN_RECEIPT_VERIFIED"
+    "S06_PORTFOLIO_TASK_PLAN_RECEIPT_VERIFIED",
+    "WORK_ITEM_ACTIVATED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -294,6 +301,22 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Developer Task Plan receipt APPROVED at 2026-09-12T06:23:55.010Z verifies digest_match=true against unchanged s06 SHA-256 5e27d9630ad5d502709069103f5deb22952604b30ab52115c5a03917ad9b4bb5. Spec, DoR and Approach receipts also match; only separately authorized master activation with six approved audit-only roots remains. No master/child execution or write grant is opened."
+    },
+    {
+      "timestamp": "2026-09-12T07:45:40.860Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Human Developer explicitly confirmed master activation at s07 with the six approved audit-only roots; child implementation and terminal gates remain independent."
+    },
+    {
+      "timestamp": "2026-09-12T07:55:14Z",
+      "action": "record-M0-M1-and-open-M2-evidence",
+      "actor": "agent",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "M0/M1 inventory and scoped artifact checks recorded; M2 read-only semantic review started. No child/source/main/receipt/publish/install mutation from master authority."
     }
   ]
 }

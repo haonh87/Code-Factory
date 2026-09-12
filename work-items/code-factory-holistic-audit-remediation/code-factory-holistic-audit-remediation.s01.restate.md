@@ -105,9 +105,9 @@ tags:
 > finding. Existing plans are fragmented, several are ignored by Git, and the mechanical audit can
 > pass while semantic and lifecycle contradictions remain.
 > OQ-CF-001..005 now have explicit Option C decisions from their assigned human authorities, so
-> the master s04 Spec and DoR are human-approved with two verified digest-matched receipts. The
-> evidence-led portfolio s05 Approach is drafted for Developer review; no master or child
-> implementation gate has been opened.
+> the master authoring gates now have four verified digest-matched receipts. Developer explicitly
+> activated s07 with six audit-only roots. M0/M1 are materialized and M2 semantic review has begun;
+> no child production, release, install or branch-finalization authority is inherited.
 
 ## Step Contract
 ```yaml
@@ -569,15 +569,21 @@ next_action: "Developer confirms explicit master activation at s07 with the six 
 
 ## Work Item Protocol
 ```yaml
-protocol_status: MATERIALIZED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "code-factory-holistic-audit-remediation"
 work_item_type: RESEARCH
 delivery_context: brownfield
-workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/code-factory-holistic-audit-remediation"
-current_step: "s06"
-granted_write_paths: []
+workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/code-factory-holistic-audit-remediation/work-items/code-factory-holistic-audit-remediation"
+current_step: "s07"
+granted_write_paths:
+  - "work-items/code-factory-holistic-audit-remediation"
+  - "docs/audits/code-factory-holistic-inventory.json"
+  - "docs/audits/code-factory-holistic-coverage-matrix.md"
+  - "docs/audits/code-factory-holistic-finding-disposition.md"
+  - "docs/audits/code-factory-holistic-legacy-document-classification.md"
+  - "docs/audits/code-factory-holistic-language-review.md"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -586,27 +592,25 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: "po"
+protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-03T01:34:46.476Z"
-handoff_target: "s07-portfolio-audit-only-activation"
-last_transition_action: "verify-s06-portfolio-task-plan-receipt"
-last_transition_at: "2026-09-12T06:24:42Z"
+handoff_target: "s07-portfolio-M2-full-semantic-review"
+last_transition_action: "record-M0-M1-and-open-M2-evidence"
+last_transition_at: "2026-09-12T07:55:14Z"
 required_actions:
-  - "Developer confirms master activation at s07 with the six approved audit-only roots; receipt sealing is complete and must not be requested again."
-  - "Keep master audit execution, child implementation and release actions closed."
-blockers:
-  - "Master audit execution is waiting for explicit activation with its six approved roots; no authoring receipt is missing."
+  - "Continue M2 full semantic coverage and M3/M4 classifications/dispositions; CF-MB1 opens only after all required evidence is complete."
+blockers: []
 review_notes:
   - "Human review approved."
   - "The s03 bundle was amended at 2026-09-07T14:33:29Z so proposed findings CF-019/CF-020 and AC-CF-010/011 have explicit OQ-CF-004/005 decisions; no finding or option was self-approved."
   - "The detailed P0 dependency cycle was removed: child closeout precedes CF-019 disposition/remediation, which precedes parent CR-008 re-verification; the approved P0-to-P4 phase order is unchanged."
   - "PO, BA, Developer, and QC approved OQ-CF-004 Option C at 2026-09-08T02:23:55Z. CF-019 is accepted as a policy/runtime defect; this decision does not approve its child work item or implementation."
-  - "PO/Maintainer approved OQ-CF-001=C, Developer/QC approved OQ-CF-002=C, BA/PO/QC approved OQ-CF-003=C, and PO/BA/DevOps approved OQ-CF-005=C at 2026-09-11T11:40:59Z. All five master OQs are resolved; child and implementation gates remain independent."
-  - "s04 now proposes AC-CF-001..011 and a READY DoR from refreshed clean-main evidence: 42 skills, 181 files/177 notes valid, 9 managed/16 legacy protocol inventory, and source v2.6.1 versus installed v2.3.2/40. Human Spec/DoR gates remain pending."
+  - "PO/Maintainer approved OQ-CF-001=C, Developer/QC approved OQ-CF-002=C, BA/PO/QC approved OQ-CF-003=C, and PO/BA/DevOps approved OQ-CF-005=C at 2026-09-11T11:40:59Z. s04 authoring may proceed; Spec, DoR, child and implementation gates remain independent."
+  - "s04 now proposes AC-CF-001..011 and a READY DoR using refreshed clean-main evidence: 42 skills, 181 files/177 notes valid, 9 managed/16 legacy protocol inventory, and source v2.6.1 versus installed v2.3.2/40. Human Spec/DoR gates remain pending."
   - "Human BA approved Spec and human BA/QC approved DoR at 2026-09-11T13:51:45Z. Two independent trusted receipts remain pending; Approach, Task Plan, and implementation remain closed."
   - "BA Spec receipt 2026-09-11T14:33:43.972Z and QC DoR receipt 2026-09-11T14:33:56.365Z both verify against s04 SHA-256 41078181e9b0e8186c900b8d1908ca9f52820d6b763b37467681325edc389f29."
-  - "Master s05 proposes bounded evidence-led coordination, five audit sidecars, independent child reuse/proposals, and separate source/candidate/release/install tiers. Developer review remains independent."
+  - "Master s05 is drafted with five audit sidecars, child gate independence, frozen/current evidence separation, and release/runtime identity guards. No execution or child gate is granted."
   - "Human Developer approved the evidence-led master Approach at 2026-09-12T05:44:54Z. A matching trusted receipt is still required before s06; no audit execution, child gate, or write grant is opened."
   - "Developer Approach receipt APPROVED at 2026-09-12T05:51:55.282Z matches finalized s05 SHA-256 10b4015018013eebc9a623c5651148f3b4e648c46717f83b1c401b1df2048f8b."
   - "Master s06 M0..M11 is drafted with six proposed audit-only roots, five sidecars, full source semantic coverage, separate BA language evidence, child gate independence and final identity/closure requirements. Task Plan decision, trusted evidence and activation remain independent."
@@ -643,6 +647,7 @@ audit_events:
   - "S06_PORTFOLIO_TASK_PLAN_DRAFTED"
   - "S06_PORTFOLIO_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT"
   - "S06_PORTFOLIO_TASK_PLAN_RECEIPT_VERIFIED"
+  - "WORK_ITEM_ACTIVATED"
 ```
 
 ## Traceability
@@ -651,7 +656,7 @@ source_inputs:
   - "User review and sequencing request"
   - "Current repository, worktree, protocol, Git and runtime evidence captured 2026-09-02"
   - "Prior plan and audit artifacts listed in Work Item Materialization.existing_refs"
-next_step: "Explicit master audit-only activation with six approved roots; then M0/M1 in the master lane"
+next_step: "Continue M2 full semantic coverage and M3/M4 classifications/dispositions; CF-MB1 remains unopened until complete"
 ```
 
 ## Handoff
@@ -661,6 +666,5 @@ next_step: "Explicit master audit-only activation with six approved roots; then 
 - Human decision: PO/BA/Developer/QC approved OQ-CF-004 Option C at `2026-09-08T02:23:55Z`; CF-019 implementation remains gated independently.
 - Human decision: the remaining OQ-CF-001/002/003/005 Option C policies were approved at
   `2026-09-11T11:40:59Z`; no Spec, DoR, child or implementation approval is inherited.
-- Current handoff: Spec, DoR and Approach receipts match; Developer approved master s06 M0..M11 and its six audit-only roots.
-  The Task Plan receipt also matches. Only explicit activation remains required; no master or child execution is open.
-- RCR remains independently BLOCKED on RCR-SB1 Spec Compliance for source `964e1c7cf879c6d244253b3ee294f9cdaff60f77`; no review verdict is inferred from running the master sealing command.
+- Current handoff: master ACTIVE at s07 with six audit-only roots. M0/M1 are complete; M2 has begun with four canonical skill reads and three architecture-modeling references. All four authoring receipts remain bound to unchanged hosts.
+- RCR remains independently BLOCKED: QC explicitly approved RCR-SB1 Spec Compliance for source `964e1c7cf879c6d244253b3ee294f9cdaff60f77`; Code Quality has proposed FAIL/F-RCR-SB1-001 and awaits Developer/QC. TS3 remains closed.
