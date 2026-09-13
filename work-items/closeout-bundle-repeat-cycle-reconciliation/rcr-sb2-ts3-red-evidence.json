@@ -27,6 +27,15 @@
     }
   ],
   "production_changes_before_red": false,
+  "supplemental_ts4_canary_red": {
+    "test": "work-item rejection replaces only its own feedback and preserves unrelated state",
+    "command": "node --test --test-name-pattern='work-item rejection replaces only' packages/workflow-bundle/test/work-item-protocol-state.test.js",
+    "exit_code": 1,
+    "failures": 1,
+    "reason": "ACTIVE work-item rejection replaced both collections and discarded opaque/unrelated feedback.",
+    "repair_before_red": false,
+    "scope": "Approved TS4 rejection-selector preservation; other TS4 production work was already in progress."
+  },
   "mutation_cases": 20,
   "canaries": [
     "Peer review of the migration script is outstanding",

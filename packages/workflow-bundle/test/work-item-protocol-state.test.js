@@ -178,6 +178,22 @@ test("work-item approval clears only its exact purpose IDs and preserves opaque 
   assert.deepEqual(after.required_actions, [foreign, canary]);
 });
 
+test("work-item rejection replaces only its own feedback and preserves unrelated state", () => {
+  const canary = { kind: "legacy", text: wordingMutations[0] };
+  const blocker = stateEntry("blockers", "delivery_blocker", "migration-peer-review", "Review remains outstanding");
+  const action = stateEntry("required_actions", "workflow_followup", "migration-peer-review", "Review release before close");
+  const ownFeedback = key => stateEntry(key, key === "blockers" ? "delivery_blocker" : "blocker_resolution", "work-item-rejection:demo", "Earlier rejected feedback");
+  const before = { work_item_slug: "demo", protocol_status: "ACTIVE", approval_status: "APPROVED", blockers: [canary, blocker, ownFeedback("blockers")], required_actions: [canary, action, ownFeedback("required_actions")] };
+  const after = protocol.applyAction(before, "reject", { "reviewed-by": "qc", note: "New feedback" });
+  assert.deepEqual(after.blockers.slice(0, 2), [canary, blocker]);
+  assert.deepEqual(after.required_actions.slice(0, 2), [canary, action]);
+  for (const key of ["blockers", "required_actions"]) {
+    assert.deepEqual(utils.getStateCollectionErrors(after[key], key), []);
+    assert.equal(after[key].filter(entry => entry.id === ownFeedback(key).id).length, 1);
+  }
+  assert.deepEqual(before.blockers, [canary, blocker, ownFeedback("blockers")], "rejection preserves input");
+});
+
 test("closeout clears selected typed gates but preserves unknown blockers and actions across 20 display mutations", () => {
   const canary = wordingMutations[0], actionCanary = "Review the release migration before close";
   let stableOutcome;
