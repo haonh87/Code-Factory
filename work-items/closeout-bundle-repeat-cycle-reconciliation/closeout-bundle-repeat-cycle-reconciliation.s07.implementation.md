@@ -103,6 +103,15 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
+> Current structural handoff: RCR-SB2 Spec Compliance and Developer/QC Code Quality PASS are explicitly approved for `c4c51f1`; scanner gaps remain PARTIAL.
+> TS5 RED and two bounded validation RED canaries precede TS6 GREEN. TS7 functional regression passes at source `08a3d12e5482a6aa40cfc5b40318ab965626db31`: 45/45 unit files, 19/19 state tests, 20 cycles, 64 failure/crash cases, 10 races, 13 load-only reports and authoring smoke 13/13.
+> Protocol is BLOCKED awaiting independent QC RCR-SB3 Spec Compliance. Code Quality and TS8/s08 remain NOT_OPEN. No candidate, terminal approval, finding closure, publication or finalization is inferred.
+> A concurrent loser may fail closed with a transient managed-file read error; settled authority, winning identity, parity/retries/residue pass, but reader isolation is not claimed. Automated scanners and unmeasured large-history cost remain explicit gaps/advisories.
+> CR-008 is NOT_DONE and the branch stays HOLD_OPEN. The earlier patch summary below is historical, not current authority.
+
+## Historical Implementation Summary — Superseded Checkpoints
+
+> [!summary]
 > The Developer Task Plan receipt was sealed at `2026-09-10T10:11:42.373Z` and matches
 > finalized s06 SHA-256 `7fbb8b9d55027293cd806f51edfdad6d339406718edff42b24e24eae7cb0d3d9`.
 > The work item was explicitly activated at `2026-09-10T10:13:59.704Z`. T0 records a clean
@@ -179,6 +188,26 @@ owner: "developer"
 ```
 
 ## Main Artifact
+```yaml
+recommended_design: "Frozen amended typed-state boundary plus first-class transaction event identity; no prose-driven core transitions."
+implementation_mode: "BUGFIX"
+tasks_completed: ["TS5 RED","TS6 GREEN including strict field and coordinator binding canaries","TS7 tested functional regression at 08a3d12e5482a6aa40cfc5b40318ab965626db31"]
+bug_repro_evidence: ["rcr-sb3-ts5-red-evidence.json","rcr-sb3-ts6-validation-red-evidence.json","rcr-sb3-ts6-binding-red-evidence.json"]
+hypothesis_log: [{"assumption":"Historical marker/name inference and note-derived identity must not decide new cycles.","status":"CONFIRMED","evidence":"All four decisions use receipt/pre-event deltas before ID allocation; constructor and coordinator reject unbound/mismatched new events."},{"assumption":"Compatibility load may retain absent historical IDs but must not generate explicit invalid persisted identity.","status":"CONFIRMED","evidence":"Validation canary RED/GREEN; 19 state tests plus 13 frozen/live zero-write loads."}]
+debug_experiments: [{"goal":"Require truthful ID before mutation","action":"Five invalid suffix fixtures and field-shape tests before coordinator fix","result":"Expected RED then GREEN, zero report/journal/lock writes on rejection"},{"goal":"Classify concurrent contender without prose assumptions","action":"Two real CLI processes compete, then settle and run two retries; repeat ten times","result":"One winning bound event; competitor NOOP or fails closed with no successful authority output, parity and zero residue. Native read refusal retained as advisory."}]
+tdd_evidence: [{"behavior":"TS5/TS6","failing_test":"740c5970017e212bee772882dc396cbb63af4d7a / rcr-sb3-ts5-red-evidence.json","passing_test":"e894db1bf5d70eab3b4c174e985fefabff1bf09b; final source 08a3d12e5482a6aa40cfc5b40318ab965626db31"},{"behavior":"TS6 strict field canary","failing_test":"1aeee227a4bcfdd26d248dd3b51395c756c04ba4 / rcr-sb3-ts6-validation-red-evidence.json","passing_test":"e410510253688725233ed51f60976fc0ecdfd378; final source 08a3d12e5482a6aa40cfc5b40318ab965626db31"},{"behavior":"TS6 coordinator binding canary","failing_test":"f81d9f7817d0262382144851756753a2e47fd2ff / rcr-sb3-ts6-binding-red-evidence.json","passing_test":"cfc756889d080d2a40926bc290f1f336ce64955b; final source 08a3d12e5482a6aa40cfc5b40318ab965626db31"}]
+safe_refactor_notes: ["Same four approved coordinator/state scripts; shared canonical UUID validation retains generated-ID default for other callers.","Historical unbound events never backfilled; known legacy import remains sole state-text interpretation boundary.","T7 WIP preserved until TS6 GREEN and adopted only at TS7; outcome assertions retained."]
+code_changes: ["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js","packages/workflow-bundle/test/work-item-protocol-state.test.js","packages/workflow-bundle/test/work-item-protocol.test.js","packages/workflow-bundle/test/workflow-gate-review.test.js"]
+doc_changes: ["This s07 note, report/s01 protocol handoff, rcr-sb3-evidence.json and three RED evidence files"]
+config_changes: []
+review_checkpoints: ["SB1 refreshed pair APPROVED at 3e0b9728","SB2 QC Spec and Developer/QC Quality PASS APPROVED at c4c51f1 with scan gaps retained","SB3 QC Spec Compliance PENDING at 08a3d12e5482a6aa40cfc5b40318ab965626db31; Code Quality NOT_OPEN"]
+outputs_actual: ["Direct event ID equals journal/result for all four decisions","New binding mismatch rejected before transaction writes","45/45 unit files, 19 state cases, 20 cycles, 64 boundary cases, 10 races, 13 load-only reports, authoring smoke and validators pass"]
+known_limitations: ["Node v26.5.0 used for this local supporting regression; supported Node 18/22 candidate evidence is still TS8","Existing ignored runtime parity failed without generation prerequisite; a pristine archived source with that existing prerequisite passes all 45 test files. No working-tree runtime mutation or test skip.","Earlier f7b06c4/cfc7568 snapshots and initial race wording assertion failures are historical checkpoints, superseded by the final exact source","Scanner overall PARTIAL; no tool installation/benchmark/dependency/CI action upgrade/parallelisation performed","A refused concurrent contender may observe transient ENOENT while the winner replaces a managed file; settled authority/identity/parity/retries/residue are verified, read isolation is not claimed","Automatic scans PARTIAL; very large history cost unmeasured"]
+follow_up_items: ["Separate Developer/QC SB3 Code Quality only after QC Spec Compliance","Retain automated scanner gaps and concurrent transient-read/large-history advisories","QC explicit s08 opening; build and bind one v2.6.2 candidate at reviewed source","Node 18/22, package/extracted payload, hosted results for same full SHA-256","Child Technical Verification/DoD, mandatory AC-RCR-08 parent contribution","Parent AG-01..13 exact-candidate re-verification and independent Technical Verification/DoD/Release/Business Acceptance","F-AG11-001 remains OPEN; historical source/run/candidate approvals do not close it"]
+notes_for_testing: "Functional batch evidence only, not whole-work-item/candidate verification. Supporting scans PARTIAL; QC SB3 Spec first, then independent Code Quality, explicit s08 and mandatory child/parent same-candidate gates."
+```
+
+### Historical Patch Main Artifact
 ```yaml
 recommended_design: "Project the current closeout transaction delta and reuse its validated identity; never use global event history as cycle identity."
 implementation_mode: BUGFIX
@@ -1029,15 +1058,13 @@ notes: "Semantic checklist reviewed for changed scripts/notes; source-only audit
 
 ### Current Structural Handoff
 
-- Protocol ACTIVE at s07 after coordinator resume, retaining the sixteen approved/granted roots. QC approved SB2 Spec Compliance at 2026-09-13T11:34:46Z and Developer/QC approved SB2 Code Quality PASS at 2026-09-13T12:05:44Z; the current handoff is RCR-SB3-TS5.
-- RCR-SB1 refreshed Spec Compliance and Code Quality are explicitly approved for source 3e0b9728d82204e38b06668e08cc895294109986; F-RCR-SB1-001 is RESOLVED. The 964e1c7 review is historical.
-- TS3 RED and supplemental rejection RED precede the corresponding TS4 repairs. RCR-SB2 source is c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3; Both QC Spec Compliance and Developer/QC Code Quality PASS are explicitly APPROVED, with all disclosed scan gaps and TS7/s08 obligations retained.
-- The previous three owned protocol assertions now pass. The entire committed protocol test source passes against this source; the local file also includes the unchanged sixty-nine-line T7 WIP and has exactly twenty WIP string-assertion failures, with no other observed failure. WIP is not silently adopted, altered, or staged.
-- Full unit/static/security/package/hosted/parent verification remains pending in later tasks.
-  No candidate build, Technical Verification, DoD or finalization is opened by this handoff.
-- Known limitations: TS5..TS8, full regression and child/parent exact-candidate verification remain pending; approved structural authoring is not reopened by this proposal.
-- Notes for testing: retain unknown legacy canaries and transaction assertions; state-selector text independence is proved, but direct event identity and note independence remain TS5/TS6. Do not report whole-regression PASS.
-- Notes for deployment: none in s07; corrected candidate and rollback binding are TS8/s08 work.
+- Protocol BLOCKED at s07 with the unchanged sixteen approved/granted roots; current handoff RCR-SB3-spec-compliance.
+- SB2 QC Spec Compliance and Developer/QC Code Quality PASS are explicitly approved at source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3, with scanner/WIP/TS7/s08 duties retained.
+- TS5/TS6 and bounded validation canaries have RED-before-GREEN evidence. T7 WIP was adopted only at TS7 after GREEN; the full local file now passes structured/direct-ID assertions.
+- Final reviewed-source proposal: 08a3d12e5482a6aa40cfc5b40318ab965626db31. Full runner is 45/45 GREEN in a pristine tracked-source fixture after its existing runtime generation prerequisite; source hashes match the working tree, which was not runtime-synced.
+- Supporting scan coverage remains PARTIAL. Concurrent native read refusal and unmeasured large-history cost are disclosed; at most one committed event, settled parity, zero residue and completed NOOP retries are proved.
+- QC Spec Compliance decision is pending. Developer/QC Code Quality remains NOT_OPEN; TS8 and explicit s08 opening are later independent controls.
+- No corrected release candidate or child/parent exact-candidate/terminal verdict yet. AC-RCR-08 and F-AG11-001 parent verification remain mandatory; branch HOLD_OPEN.
 
 ## Structural TS3 RED
 
@@ -1247,3 +1274,87 @@ This is pre-handoff evidence under `code-scan-review`, not final Technical Verif
 - Two existing repeated-cycle assertions now use event.transaction_id; selected-gate order comes from the structured approval plan, not prose.
 - Pre-existing T7 function hash 14616b5522fcdfd0d02a05220985ec935c8a9f13cb5361fb81d0101af624f0c4 and invocation remain unchanged and excluded from TS5 staging.
 - Evidence: rcr-sb3-ts5-red-evidence.json. TS6 is the next approved dependency; TS7, SB3 reviews and s08 remain required.
+
+## Structural TS6/TS7 — Exact-Source Evidence
+
+- TS5 RED `740c597` precedes initial TS6 GREEN `e894db1`.
+- Strict persisted-field canary RED `1aeee22` precedes GREEN `e410510`; missing historical fields remain omitted, but explicitly invalid/non-string fields cannot generate an identity.
+- Binding canary RED `f81d9f7` precedes GREEN `cfc7568`; the coordinator validates exactly one new event suffix matching its action/transaction_id before writes and again before commit. The generic fixture is accurately named state:fixture; actual protocol operations remain protocol:report JSON.
+- TS7 adopted the sixty-nine-line WIP only after GREEN at commit `f7b06c4`. Its obsolete string/note assertions became canonical constructor/direct-field assertions; no behavioral check was removed.
+- Race assertion refinement `08a3d12` tests exit status and absence of a successful authority summary rather than inferring failure semantics from prose. Earlier EEXIST/ENOENT wording failures are disclosed harness checkpoints, not final GREEN evidence; native transient read refusal remains a limitation.
+- Full runner uses pristine tracked source and the existing runtime generation prerequisite only inside /private/tmp/cf-rcr-sb3-bound-sUwIIb. No tracked/installed working-tree runtime, new dependency, CI token, parallelisation or release candidate was generated here.
+- Final source 08a3d12e5482a6aa40cfc5b40318ab965626db31 is bound by seven source SHA-256 hashes in rcr-sb3-evidence.json. Do not reuse earlier checkpoint results for a different source/candidate.
+
+## Implementation Notes — RCR-SB3 Review Routing
+
+```yaml
+review_target: "RCR-SB3 TS5/TS6/TS7 at 08a3d12e5482a6aa40cfc5b40318ab965626db31"
+planning_track: "full"
+review_mode: "INDEPENDENT"
+review_order: ["SPEC_COMPLIANCE","CODE_QUALITY"]
+review_batches: [{"batch":"RCR-SB3","scope":["First-class identity and validation canaries","Typed-state whole regression, twenty cycles and sixty-four boundaries","No-migration, authority, frozen hosts and concurrency outcome evidence"],"trigger":"TS7 tested regression complete; separate QC human decision pending","reviewer_role":"QC Spec Compliance first, then Developer/QC Code Quality"}]
+required_checks: {"spec_compliance":["Frozen s04/s05/s06/16-root parity","Constructor and coordinator direct identity including mismatch rejection","Unknown legacy preservation and no history backfill","TS7 full runner/prerequisite/20 cycles/64 boundaries/10 races","Mandatory AC-RCR-08 and candidate/terminal followups retained"],"code_quality":["Only after Spec Compliance approval","Four-lane scan coverage and disclosed skips","Transient concurrent read refusal and large-history advisories","Minimal delta and bounded coordinator JSON suffix checks"]}
+finding_policy: {"blocker_threshold":"Any HIGH/CRITICAL finding, scope drift or failing mandatory functional invariant blocks continuation","reopen_conditions":["Reviewed source or authoring host changes","Identity/preservation/parity/atomicity violation","A finding needs new contract or scope"]}
+handoff_to_verify: ["TS8 closed pending ordered SB3 pair and explicit QC s08 opening","One same-digest child/parent candidate and Node 18/22 hosted evidence","Separate QC Technical Verification/DoD, DevOps/QC Release and PO Business Acceptance"]
+notes_for_implementation_or_verify: "Independent human QC verdict is not inferred from AI self-check/test success. Scanner gaps and native contender read-refusal advisory remain; no read-isolation or release completion is claimed."
+recommendation: "PASS_FOR_BATCH_WITH_MANDATORY_DOWNSTREAM_FOLLOWUP"
+human_approval: "PENDING"
+reviewed_by: []
+reviewed_at: ""
+code_quality: "NOT_OPEN"
+source_sha: "08a3d12e5482a6aa40cfc5b40318ab965626db31"
+evidence_ref: "rcr-sb3-evidence.json"
+whole_work_item_status: "NOT_DONE"
+branch_decision: "HOLD_OPEN"
+```
+
+## RCR-SB3 Batch Test Evidence — s07 Contribution Only
+
+```yaml
+verification_target: "TS5/TS6/TS7 tested implementation contribution at 08a3d12e5482a6aa40cfc5b40318ab965626db31"
+risk_ranked_test_matrix: [{"risk":"Missing/untruthful new identity","severity":"HIGH","required_evidence":["Constructor and reader negative canaries","Four phase/decision direct journal/event/result comparisons","Five coordinator binding rejection cases with zero write"]},{"risk":"Repeated cycles, failure atomicity and concurrent duplicate authority","severity":"HIGH","required_evidence":["Twenty committed cycles and twenty NOOP retries","64 failure/crash/recovery combinations","Ten real concurrent races with one winning later cycle and two completed retries each"]},{"risk":"Legacy data loss or historical migration","severity":"HIGH","required_evidence":["Thirteen frozen/live load-only reports","Two unchanged historical unbound events","Unknown legacy and unrelated typed state preservation","Five trusted frozen authoring receipts unchanged"]}]
+test_strategy: {"unit_test":{"required":true,"rationale":"Event/state constructors, adapter, selectors and validation"},"integration_test":{"required":true,"rationale":"Journal/receipt/report/mirror atomicity, recovery and concurrent CLI persistence"},"database_test":{"required":false,"rationale":"No database boundary"},"feature_test":{"required":true,"rationale":"Public authoring/bootstrap/adaptive/legacy CLI regression"}}
+negative_cases: ["Missing/malformed/non-string direct ID","Identity different from committed transaction","Wrong phase/action","Zero/two new events","Changed human notes","Historical coarse marker and unbound events","Eight caught failures and eight crash boundaries per decision","Concurrent contender emits no successful authority summary"]
+regression_targets: ["Unknown legacy canaries survive","Legacy mandatory DoD","Adaptive/readiness/rejection gates","Receipt-v1/signers/role and artifact digest guards","Frozen report/s01 compatibility","Twenty cycles and byte-stable retries"]
+manual_exploration: {"flows_checked":["Exact seven-file snapshot hashes","Note/text inference inventory","Bounded import/constructor/coordinator guards","Scope, protected authoring hosts and external owners"],"issues_found":["Two bounded validation canaries repaired after RED under the locked event contract","Over-restrictive concurrency error-wording assertion corrected to EDGE-RCR-06 outcome checks; native transient read refusal remains a disclosed advisory"]}
+criteria_results: [{"criterion":"AC-RCR-01..07, AC-RCR-09 and AC-RCR-10 tested contribution","result":"PASS","evidence":"Focused and full-suite regression, direct identity and negative bindings, exact preservation, 20 cycles, 64 atomicity cases and repeated races"}]
+test_evidence: {"unit_test":["19/19 state tests","Gate-review and all other unit files inside full 45-file runner"],"integration_test":["Four direct journal/event/recovery cases plus two note-changing retries each","64 failure/crash cases","20 cycles / 20 retries","10 concurrent CLI races with one winner and two retries","13 frozen/live report loads; zero writes; ordered prefixes and two historical events unchanged"],"database_test":[],"feature_test":["Authoring smoke 13/13 PASS","45/45 full runner PASS in exact-source fixture after generated-runtime prerequisite","Workflow/protocol/planning validators PASS"]}
+commands_run: ["node --test packages/workflow-bundle/test/work-item-protocol-state.test.js","node packages/workflow-bundle/test/workflow-gate-review.test.js","git archive 08a3d12e5482a6aa40cfc5b40318ab965626db31 | tar -x -C /private/tmp/cf-rcr-sb3-bound-sUwIIb","node packages/workflow-bundle/scripts/sync-workflow-bundle-runtime.js (isolated fixture only)","node packages/workflow-bundle/test/run-all.js (isolated fixture only)","node -e 'const fs=require(\"node:fs\"),path=require(\"node:path\"),Module=require(\"node:module\");\nconst filename=path.resolve(\"packages/workflow-bundle/test/work-item-protocol.test.js\"),source=fs.readFileSync(filename,\"utf8\"),at=source.lastIndexOf('\\''console.log(\"Running work-item-protocol (Light) tests...'\\'');\nif(at<0)throw Error(\"Expected test bootstrap missing\");\nconst isolated=source.slice(0,at)+'\\''\\nfor(let race=0;race<10;race++) testConcurrentCloseoutCommandsCommitAtMostOneLaterCycle();\\nif(failures)process.exit(1);console.log(\"OK: 10 real concurrent races PASS\");\\n'\\'';\nconst m=new Module(filename,module);m.filename=filename;m.paths=Module._nodeModulePaths(path.dirname(filename));m._compile(isolated,filename);'","node packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js --repo-root .","wfc validate / protocol / plan","Source/load-only assertions preserved in rcr-sb3-evidence.json"]
+skipped_checks: ["Automated static/security tools unavailable; supporting scan remains PARTIAL","No benchmark/profiling","Node 18/22, candidate pack/extracted payload and hosted child/parent verification are TS8 duties, not this batch's proof"]
+release_blockers: []
+status: "PASS"
+gaps: ["PASS only the tested batch contribution; no whole-work-item or release verdict","AC-RCR-08 parent exact-candidate re-verification remains mandatory downstream","Installed/checked-in ignored runtime was not modified; pristine tracked source requires its existing generate-runtime prerequisite"]
+residual_risks: ["A refused concurrent contender may observe transient ENOENT while the winner replaces a managed file; settled authority/identity/parity/retries/residue are verified, read isolation is not claimed","Automatic scans PARTIAL; very large history cost unmeasured"]
+recommendation: "Submit QC RCR-SB3 Spec Compliance first. Do not open Code Quality or TS8/s08 without independent required human decisions."
+notes_for_review: "Supporting batch test status does not close F-AG11-001 or satisfy AC-RCR-08/terminal gates. No automatic scan result is promoted to PASS."
+```
+
+## RCR-SB3 Supporting Scan Context — s07 Only
+
+```yaml
+scan_target: "RCR-SB3 s07 supporting self-check at 08a3d12e5482a6aa40cfc5b40318ab965626db31"
+scan_scope: {"mode":"DIFF_ONLY","changed_files":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js","packages/workflow-bundle/test/work-item-protocol-state.test.js","packages/workflow-bundle/test/work-item-protocol.test.js","packages/workflow-bundle/test/workflow-gate-review.test.js"],"affected_modules":["Direct protocol-event construction/normalization","Receipt/pre-event cycle classification for all bundle decisions","Coordinator new-suffix identity validation","Atomicity, repeated cycles, load-only compatibility and race tests"]}
+language_stack: ["JavaScript CommonJS / Node.js v26.5.0"]
+available_scan_tools: ["Native Node parser","Source-bound assertions","Existing Node test suites","Git SHA/diff checks"]
+false_positive_policy: "Evidence-based and diff-aware; native race refusal is assessed against cycle/authority/retry/residue, not error prose. Do not invent automated scanner or read-isolation coverage."
+scan_plan: {"syntax":["node --check seven affected JavaScript files"],"static_analysis":["Configured wrapper/tool discovery","Exact-source, import/export and field/predicate review"],"security":["Semgrep discovery","Supplemental fixed-field validation, authority/atomicity guards and diff-aware manual review"],"performance_heuristic":["Allocation, JSON parsing, synchronous file reads, cycle classification and collection/event growth"]}
+syntax_scan_results: [{"command":"node --check <each affected file>","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js","packages/workflow-bundle/test/work-item-protocol-state.test.js","packages/workflow-bundle/test/work-item-protocol.test.js","packages/workflow-bundle/test/workflow-gate-review.test.js"],"status":"PASS","evidence":"Seven parser checks pass; working tree and generated-runtime regression snapshot match exact source hashes.","blocker_files":[]}]
+static_analysis_results: [{"command":"Existing configured ESLint/typecheck wrapper","config_used":"No corresponding wrapper/config or installed eslint/tsc binary","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js"],"status":"SKIP","findings":[],"new_blockers":[]},{"command":"Source-bound assertions and supplemental import/field/predicate review","config_used":"Frozen s04 event contract and source-integrity assertions","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js"],"status":"PASS","findings":[],"new_blockers":[]}]
+security_scan_results: [{"command_or_check":"Semgrep","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js"],"status":"SKIP","findings":[]},{"command_or_check":"Supplemental manual trust/input/write review and negative authority tests","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js"],"status":"PASS","findings":[],"evidence":"No new network/subprocess/target/permission/signer/trusted-receipt schema surface. The added coordinator check parses a reserved internal protocol:report JSON operation, inspects only its new structured event suffix and rejects absent/mismatched identity or action before transaction writes. The UUID input validator is shared; new constructor/read paths cannot generate a missing ID. All eight failure/crash boundaries across all four decisions, malformed binding canaries, legacy signer/receipt-v1 authority and settled concurrency invariants pass. This is strong limited supporting evidence, not a deterministic security scan or final s08 approval."}]
+performance_heuristic_results: [{"check":"Allocation, report JSON parsing and synchronous read cost","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js"],"status":"PASS","expected_impact":"LOW","confidence":"MEDIUM","trigger_condition":"Long report history/large state collections increase parse/copy cost; no measured scale threshold.","evidence":"No new benchmark is claimed. The coordinator adds report JSON parsing and current-report reads twice (initial and pre-commit guards) for a reserved protocol operation; cost is linear in report size. Cycle classification still occurs before UUID allocation; NOOP adds no transaction writes. Retain large-history allocation/I/O as advisory."}]
+skipped_scans: ["ESLint/typecheck unavailable globally/locally; no matching configured wrapper. Parsing/manual/test evidence is not equivalent coverage.","Semgrep unavailable; no new tool installed. Sensitive transaction scope has targeted negative/atomicity/authority coverage and limited manual supporting review only.","No benchmark/profiling; performance findings are heuristics."]
+overall_status: "PARTIAL"
+remediation_actions: ["Reassess automated static/security scan coverage at separate SB3 Code Quality and s08.","Retain concurrent transient native read refusal and large-history cost; no read-isolation claim."]
+notes_for_verify: "s07 supporting evidence only; formal Technical Verification/DoD/release remain NOT_OPEN."
+```
+
+## RCR-SB3 Scoped Pack Audit
+
+```yaml
+audit_scope: "TS6/TS7 scripts, tests and current s07 handoff; no skill/authority/template/runtime restructuring"
+checks: [{"id":"mechanical","status":"PASS","evidence":"WORKFLOW_PACK_AUDIT=PASS; 170 flat-layout cross-references"},{"id":"semantic_changed_boundary","status":"PASS","evidence":"Step 7 Main Artifact and specialized discipline/test/scan-context schemas retained; frozen authoring hosts, public CLI and receipt-v1 unchanged"},{"id":"whole_pack_release","status":"WARN","evidence":"Supporting scans PARTIAL; external skill override and whole-pack candidate/release remediation are outside this batch"}]
+findings: []
+overall_status: "PARTIAL"
+follow_up_actions: ["Separate Developer/QC SB3 Code Quality only after QC Spec Compliance","Retain automated scanner gaps and concurrent transient-read/large-history advisories","QC explicit s08 opening; build and bind one v2.6.2 candidate at reviewed source","Node 18/22, package/extracted payload, hosted results for same full SHA-256","Child Technical Verification/DoD, mandatory AC-RCR-08 parent contribution","Parent AG-01..13 exact-candidate re-verification and independent Technical Verification/DoD/Release/Business Acceptance","F-AG11-001 remains OPEN; historical source/run/candidate approvals do not close it"]
+notes: "Mechanical PASS and local regression are not independent human gate approval or full release readiness."
+```
