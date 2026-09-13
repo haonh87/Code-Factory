@@ -341,9 +341,11 @@ function executeApprovalTransaction({
 
   fs.mkdirSync(paths.transaction_root, { recursive: true });
   let lockFd = null;
+  let lockAcquired = false;
   let journal = null;
   try {
     lockFd = fs.openSync(paths.lock_path, "wx");
+    lockAcquired = true;
     fs.writeFileSync(
       lockFd,
       `${JSON.stringify({ schema_version: 1, transaction_id: transactionId, pid: process.pid, started_at: new Date().toISOString() })}\n`,
@@ -425,6 +427,8 @@ function executeApprovalTransaction({
       committed_paths: journal.operations.map((entry) => entry.target_path)
     };
   } catch (error) {
+    // A losing wx contender owns neither the live lock nor another journal.
+    if (!lockAcquired) throw error;
     if (lockFd !== null) {
       try {
         fs.closeSync(lockFd);
