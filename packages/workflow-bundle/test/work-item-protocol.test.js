@@ -934,6 +934,168 @@ function testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry()
   }
 }
 
+function testTwentyCloseoutCyclesRemainDeterministic() {
+  const failuresBefore = failures;
+  const slug = "proto-twenty-cycle-closeout-item";
+  const gates = ["dod", "release", "business_acceptance"];
+  const { projectRoot, workflowRoot, reportPath } = buildCloseoutProject(slug, gates);
+  const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-twenty-cycle-closeout-approvals-");
+  const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+  const hostPath = path.join(workflowRoot, `${slug}.s08.verification.md`);
+  const expectedCloseAction = createStateEntry({ collection: "required_actions", kind: "work_item_close", sourceKey: `work-item-close:${slug}`, text: `wfc work-item close --work-item ${slug}` });
+  try {
+    for (let cycle = 0; cycle < 20; cycle += 1) {
+      if (cycle > 0) {
+        fs.appendFileSync(hostPath, `\n<!-- deterministic closeout cycle ${cycle + 1} -->\n`, "utf8");
+      }
+      const reviewedAt = `2026-07-18T00:00:${String(cycle).padStart(2, "0")}Z`;
+      const committed = runCloseoutFixture({
+        slug,
+        projectRoot,
+        workflowRoot,
+        approvalRoot,
+        env,
+        extraArgs: ["--reviewed-at", reviewedAt]
+      });
+      assert(committed.status === 0, `determinism cycle ${cycle + 1} succeeds (got: ${committed.stderr.split("\n")[0]})`);
+      if (committed.status !== 0) return;
+
+      const committedSummary = JSON.parse(committed.stdout);
+      const reportAfterCommitText = fs.readFileSync(reportPath, "utf8");
+      const s01AfterCommit = fs.readFileSync(s01Path, "utf8");
+      const reportAfterCommit = JSON.parse(reportAfterCommitText);
+      const closeoutEvents = reportAfterCommit.protocol_events.filter(
+        (event) => event.action === "approve-closeout-bundle"
+      );
+      assert(committedSummary.transaction.status === "COMMITTED", `determinism cycle ${cycle + 1} commits exactly once`);
+      assert(
+        reportAfterCommit.required_actions.length === 1 && JSON.stringify(reportAfterCommit.required_actions[0]) === JSON.stringify(expectedCloseAction),
+        `determinism cycle ${cycle + 1} retains only the canonical close action`
+      );
+      assert(reportAfterCommit.handoff_target === "protocol-close", `determinism cycle ${cycle + 1} retains protocol-close handoff`);
+      assert(reportAfterCommit.blockers.length === 0, `determinism cycle ${cycle + 1} retains no stale approval blocker`);
+      assert(s01AfterCommit.includes(renderProtocolBlock(reportAfterCommit)), `determinism cycle ${cycle + 1} keeps report/s01 parity`);
+      assert(closeoutEvents.length === cycle + 1, `determinism cycle ${cycle + 1} appends exactly one attributable event`);
+      assert(
+        closeoutEvents[cycle] && closeoutEvents[cycle].transaction_id === committedSummary.transaction.transaction_id,
+        `determinism cycle ${cycle + 1} event carries its transaction identity`
+      );
+
+      const retry = runCloseoutFixture({
+        slug,
+        projectRoot,
+        workflowRoot,
+        approvalRoot,
+        env,
+        extraArgs: ["--reviewed-at", reviewedAt]
+      });
+      assert(retry.status === 0, `determinism retry ${cycle + 1} succeeds (got: ${retry.stderr.split("\n")[0]})`);
+      if (retry.status !== 0) return;
+      const retrySummary = JSON.parse(retry.stdout);
+      assert(retrySummary.transaction.status === "NOOP", `determinism retry ${cycle + 1} performs no second commit`);
+      assert(!retrySummary.transaction.transaction_id, `determinism retry ${cycle + 1} allocates no transaction identity`);
+      assert(fs.readFileSync(reportPath, "utf8") === reportAfterCommitText, `determinism retry ${cycle + 1} leaves report byte-identical`);
+      assert(fs.readFileSync(s01Path, "utf8") === s01AfterCommit, `determinism retry ${cycle + 1} leaves s01 byte-identical`);
+    }
+    if (failures === failuresBefore) console.log("  PASS: twenty real cycles, twenty NOOP retries, direct event identities and report/mirror parity");
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testEveryBundleDecisionFailureAndCrashBoundaryIsAtomic() {
+  const script = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  let cases = 0;
+  for (const phase of ["readiness", "closeout"]) for (const decision of ["approve", "reject"]) {
+    for (const mode of ["fail", "crash"]) for (const boundary of APPROVAL_TRANSACTION_FAILURE_POINTS) {
+      const label = `${phase}/${decision}/${mode}/${boundary}`;
+      const slug = `proto-matrix-${phase}-${decision}-${mode}-${boundary.replace(/_/g, "-")}`;
+      const context = phase === "readiness" ? buildLightProject(slug) : buildCloseoutProject(slug, ["dod", "release", "business_acceptance"]);
+      const { projectRoot, workflowRoot } = context;
+      const reportPath = context.reportPath || writeReadinessProtocolReport({ projectRoot, workflowRoot, slug });
+      const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+      const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-all-boundaries-");
+      try {
+        const reportBefore = fs.readFileSync(reportPath, "utf8"), s01Before = fs.readFileSync(s01Path, "utf8");
+        const command = `${decision}-${phase === "readiness" ? "ready" : "closeout"}-bundle`;
+        const args = [command, "--work-item", slug, "--project-root", projectRoot, "--workflow-root", path.dirname(workflowRoot), "--approval-root", approvalRoot];
+        const outcome = runGateCommand(script, [...args, `--transaction-${mode}-at`, boundary], env);
+        assert(outcome.status !== 0 && outcome.stderr.includes(boundary), `${label}: requested boundary is observed`);
+        let committedId;
+        const completedCrash = mode === "crash" && boundary === "after_verified_commit";
+        if (mode === "crash") {
+          const recoveryPath = listFilesRecursively(approvalRoot).find(file => file.endsWith(".journal.json") || file.endsWith(".lock"));
+          assert(Boolean(recoveryPath), `${label}: recoverable residue exists`);
+          if (!recoveryPath) continue;
+          const recovered = recoverApprovalTransaction({ transaction_root: path.dirname(recoveryPath), work_item_slug: slug, refuse_if_live: true });
+          assert(recovered.status === (completedCrash ? "COMPLETED" : boundary === "after_lock" ? "STALE_LOCK_REMOVED" : "ROLLED_BACK"), `${label}: recovery has the expected complete/rollback result`);
+          committedId = recovered.transaction_id;
+          assert(recoverApprovalTransaction({ transaction_root: path.dirname(recoveryPath), work_item_slug: slug }).status === "NOOP", `${label}: second recovery is NOOP`);
+        }
+        const gates = phase === "readiness" ? ["spec", "dor", "approach", "task_plan"] : ["dod", "release", "business_acceptance"];
+        if (completedCrash) {
+          const actual = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+          const old = JSON.parse(reportBefore);
+          assert(actual.protocol_events.length === old.protocol_events.length + 1 && actual.protocol_events.at(-1).transaction_id === committedId, `${label}: exactly one complete identity-bound event survives`);
+          assert(JSON.stringify(actual.protocol_events.slice(0, old.protocol_events.length)) === JSON.stringify(old.protocol_events), `${label}: historical prefix survives`);
+          assert(fs.readFileSync(s01Path, "utf8").includes(renderProtocolBlock(actual)), `${label}: mirror matches complete report`);
+          gates.forEach(gate => { const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate }); assert(loaded.receipt && loaded.receipt.approval_status === (decision === "approve" ? "APPROVED" : "REJECTED"), `${label}: ${gate} authority is complete`); });
+          const bytes = JSON.stringify([reportPath, s01Path, ...gates.map(gate => loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate }).receiptPath)].map(file => crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex")));
+          const retry = runGateCommand(script, args, env);
+          assert(retry.status === 0 && JSON.parse(retry.stdout).transaction.status === "NOOP", `${label}: completed command retry is NOOP`);
+          const after = JSON.stringify([reportPath, s01Path, ...gates.map(gate => loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate }).receiptPath)].map(file => crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex")));
+          assert(after === bytes, `${label}: completed retry changes no authority or report bytes`);
+        } else {
+          assert(fs.readFileSync(reportPath, "utf8") === reportBefore && fs.readFileSync(s01Path, "utf8") === s01Before, `${label}: rollback leaves report/mirror byte-identical`);
+          gates.forEach(gate => { const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate }); assert(!loaded.receipt, `${label}: no partial ${gate} authority`); });
+        }
+        const residue = listFilesRecursively(projectRoot).concat(listFilesRecursively(approvalRoot)).filter(file => /\.(journal\.json(?:\.tmp)?|lock|stage|backup)$/.test(file));
+        assert(residue.length === 0, `${label}: zero transaction residue`);
+        cases += 1;
+      } finally { rmrf(projectRoot); rmrf(approvalRoot); }
+    }
+  }
+  assert(cases === 64, "four phase/decision combinations cover all eight failure/crash boundaries");
+  console.log(`  PASS: all-bundle atomicity matrix completed ${cases}/64 cases`);
+}
+
+function testConcurrentCloseoutCommandsCommitAtMostOneLaterCycle() {
+  const failuresBefore = failures;
+  const slug = "proto-concurrent-closeout";
+  const { projectRoot, workflowRoot, reportPath } = buildCloseoutProject(slug, ["dod", "release", "business_acceptance"]);
+  const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-concurrent-approvals-");
+  try {
+    const first = runCloseoutFixture({ slug, projectRoot, workflowRoot, approvalRoot, env });
+    assert(first.status === 0, "concurrency fixture initializes the signer and first cycle");
+    if (first.status !== 0) return;
+    const before = JSON.parse(fs.readFileSync(reportPath, "utf8")).protocol_events;
+    fs.appendFileSync(path.join(workflowRoot, `${slug}.s08.verification.md`), "\n<!-- shared next candidate -->\n", "utf8");
+    const args = [path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js"), "approve-closeout-bundle", "--work-item", slug, "--project-root", projectRoot, "--workflow-root", path.dirname(workflowRoot), "--approval-root", approvalRoot];
+    const harness = `const {spawn}=require("node:child_process");const args=JSON.parse(process.argv[1]);Promise.all([0,1].map(()=>new Promise((resolve,reject)=>{const child=spawn(process.execPath,args,{env:process.env});let out="",err="";child.stdout.on("data",s=>out+=s);child.stderr.on("data",s=>err+=s);child.on("error",reject);child.on("close",status=>resolve({status,out,err}));}))).then(results=>console.log(JSON.stringify(results))).catch(error=>{console.error(error);process.exitCode=1;});`;
+    const results = JSON.parse(execFileSync(process.execPath, ["-e", harness, JSON.stringify(args)], { env, encoding: "utf8", timeout: 20000 }));
+    const committed = results.filter(result => result.status === 0 && JSON.parse(result.out).transaction.status === "COMMITTED");
+    assert(committed.length === 1, "two real concurrent CLI processes commit exactly one later cycle");
+    results.filter(result => !committed.includes(result)).forEach(result => {
+      // A simultaneous wx lock acquisition may expose the native EEXIST refusal.
+      // Accept only that exact lock path, not an unrelated filesystem failure.
+      const exclusiveLockRefusal = result.err.startsWith("ERROR: EEXIST: file already exists, open '") && result.err.trim().endsWith(`/transactions/${slug}.lock'`);
+      assert(result.status === 0 ? JSON.parse(result.out).transaction.status === "NOOP" : exclusiveLockRefusal || /in progress|preflight|digest mismatch/i.test(result.err), `competing command is NOOP or refused by lock/optimistic guard (status=${result.status}; error=${result.err.trim()})`);
+    });
+    const after = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert(committed.length === 1 && after.protocol_events.length === before.length + 1 && after.protocol_events.at(-1).transaction_id === JSON.parse(committed[0].out).transaction.transaction_id, "race appends only one event with winning identity");
+    const reportBytes = fs.readFileSync(reportPath, "utf8"), s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`), mirrorBytes = fs.readFileSync(s01Path, "utf8");
+    assert(mirrorBytes.includes(renderProtocolBlock(after)), "winning concurrent report/mirror agree");
+    for (let retry = 0; retry < 2; retry += 1) {
+      const outcome = runCloseoutFixture({ slug, projectRoot, workflowRoot, approvalRoot, env });
+      assert(outcome.status === 0 && JSON.parse(outcome.stdout).transaction.status === "NOOP", "completed concurrent-cycle retry is NOOP");
+      assert(fs.readFileSync(reportPath, "utf8") === reportBytes && fs.readFileSync(s01Path, "utf8") === mirrorBytes, "concurrent-cycle retry changes no report/mirror bytes");
+    }
+    assert(!listFilesRecursively(approvalRoot).some(file => /\.(journal\.json(?:\.tmp)?|lock|stage|backup)$/.test(file)), "concurrent commands leave no residue");
+    if (failures === failuresBefore) console.log("  PASS: real concurrent CLI race and two completed retries");
+  } finally { rmrf(projectRoot); rmrf(approvalRoot); }
+}
+
 function testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss() {
   const slug = "proto-closeout-canonical-state-item";
   const gates = ["dod", "uat", "release", "business_acceptance"];
@@ -1612,6 +1774,9 @@ testMaintenanceCloseoutBundlesOnlyDod();
 testProductReleaseCloseoutKeepsConfiguredAuthority();
 testAllBundleDecisionsBindEventJournalAndResultWithNoteIndependentRetries();
 testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry();
+testTwentyCloseoutCyclesRemainDeterministic();
+testEveryBundleDecisionFailureAndCrashBoundaryIsAtomic();
+testConcurrentCloseoutCommandsCommitAtMostOneLaterCycle();
 testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss();
 testLegacyMaintenanceCloseoutRestoresImplicitDod();
 testLegacyProductReleaseCloseoutRestoresImplicitDod();
