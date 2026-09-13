@@ -508,21 +508,30 @@
   },
   "spec_compliance": {
     "recommendation": "PASS_FOR_BATCH_WITH_MANDATORY_DOWNSTREAM_FOLLOWUP",
-    "human_approval": "APPROVED",
+    "human_approval": "REOPENED",
     "reviewed_by": [
       "qc"
     ],
-    "reviewed_at": "2026-09-13T12:46:11Z",
+    "reviewed_at": "2026-09-13T14:04:14Z",
     "source_sha": "08a3d12e5482a6aa40cfc5b40318ab965626db31",
     "findings": [],
-    "scope_note": "No authoring host/scope amendment. Validation canaries implement already-locked s04 rejection rules within TS6 roots. Native contender transient-read refusal is a disclosed advisory, not an inferred approval of read isolation."
+    "scope_note": "No authoring host/scope amendment. Validation canaries implement already-locked s04 rejection rules within TS6 roots. Native contender transient-read refusal is a disclosed advisory, not an inferred approval of read isolation.",
+    "historical_approval": {
+      "human_approval": "APPROVED",
+      "reviewed_by": [
+        "qc"
+      ],
+      "reviewed_at": "2026-09-13T12:46:11Z",
+      "source_sha": "08a3d12e5482a6aa40cfc5b40318ab965626db31"
+    },
+    "reopen_reason": "Human accepted lock-ownership repair; refreshed corrected-source review required."
   },
   "authority": {
-    "protocol_status": "BLOCKED",
-    "handoff_target": "RCR-SB3-code-quality",
-    "missing_gate": "Developer/QC RCR-SB3 Code Quality",
-    "next_human_action": "Developer/QC decide proposed Code Quality FAIL and F-RCR-SB3-001; QC reopening and Developer TS6a remain separate proposals",
-    "code_quality": "PENDING",
+    "protocol_status": "ACTIVE",
+    "handoff_target": "RCR-SB3-TS6a-repair",
+    "missing_gate": "NONE for authorized TS6a repair",
+    "next_human_action": "NONE for authorized TS6a; QC refreshed Spec Compliance after GREEN",
+    "code_quality": "EXPLICIT_HUMAN_FAIL",
     "TS8": "CLOSED",
     "s08": "NOT_OPEN",
     "technical_verification": "NOT_OPEN",
@@ -533,13 +542,8 @@
     "tag": false,
     "merge": false,
     "cleanup": false,
-    "blockers": [
-      {
-        "id": "se:a756c005a3de2d1c4c67d4565ff397ce7b0ef2448d261b7f2ddd53b09b46168c",
-        "kind": "delivery_blocker",
-        "text": "Developer/QC RCR-SB3 Code Quality decision and proposed HIGH F-RCR-SB3-001 disposition are pending for 08a3d12e5482a6aa40cfc5b40318ab965626db31; recommendation FAIL on unowned live-lock deletion. TS6a not authorized; TS8/s08 closed."
-      }
-    ]
+    "blockers": [],
+    "TS6a": "APPROVED_RED_RECORDED"
   },
   "mandatory_followups": [
     "Separate Developer/QC SB3 Code Quality only after QC Spec Compliance",
@@ -573,7 +577,7 @@
     "s01_parity": "Native protocol validator PASS",
     "owner_scope": "Same16roots; root dirty status/master audit worktree unchanged; no runtime/source mutation after review SHA",
     "encoding": "PASS: fatal UTF-8 decode on all six artifacts; native parse of review canary; git diff --check",
-    "human_review": "QC Spec Compliance APPROVED; Developer/QC Code Quality FAIL recommendation PENDING; F-RCR-SB3-001 PROPOSED; TS6a not authorized and TS8/s08 NOT_OPEN",
+    "human_review": "Developer/QC FAIL and OPEN finding, QC Spec reopening, Developer TS6a accepted at 2026-09-13T14:04:14Z; no future gates",
     "latest_approval_review_validation": "2026-09-13T12:53:13Z"
   },
   "code_quality_evidence_ref": "rcr-sb3-code-quality-evidence.json",

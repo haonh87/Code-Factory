@@ -87,6 +87,7 @@ artifact_skills:
 upstream_artifacts:
   - "closeout-bundle-repeat-cycle-reconciliation.s06.task-breakdown.md"
 linked_artifacts:
+  - "rcr-sb3-ts6a-evidence.json"
   - "rcr-sb3-code-quality-evidence.json"
   - "rcr-sb3-lock-acquisition-review-repro.js"
   - "closeout-bundle-repeat-cycle-reconciliation.work-item-report.json"
@@ -105,12 +106,11 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> Current structural handoff: RCR-SB2 Spec Compliance and Developer/QC Code Quality PASS are explicitly approved for `c4c51f1`; scanner gaps remain PARTIAL.
-> TS5 RED and two bounded validation RED canaries precede TS6 GREEN. TS7 functional regression passes at source `08a3d12e5482a6aa40cfc5b40318ab965626db31`: 45/45 unit files, 19/19 state tests, 20 cycles, 64 failure/crash cases, 10 races, 13 load-only reports and authoring smoke 13/13.
-> QC explicitly approved RCR-SB3 Spec Compliance for the exact source at 2026-09-13T12:46:11Z. Protocol remains BLOCKED awaiting Developer/QC Code Quality; TS8/s08 remain NOT_OPEN. No candidate, terminal approval, finding closure, publication or finalization is inferred.
-> Code Quality recommends FAIL: proposed HIGH F-RCR-SB3-001 reproduces unowned live-lock deletion after native wx acquisition loss. Developer/QC verdict and bounded TS6a authorization remain PENDING; existing regression is still 45/45 GREEN.
-> A concurrent loser may fail closed with a transient managed-file read error; settled authority, winning identity, parity/retries/residue pass, but reader isolation is not claimed. Automated scanners and unmeasured large-history cost remain explicit gaps/advisories.
-> CR-008 is NOT_DONE and the branch stays HOLD_OPEN. The earlier patch summary below is historical, not current authority.
+> User accepted Developer/QC RCR-SB3 Code Quality FAIL and OPEN HIGH F-RCR-SB3-001, QC SB3 Spec reopening and Developer bounded TS6a at 2026-09-13T14:04:14Z.
+> Coordinator resumed ACTIVE at 2026-09-13T14:05:08.299Z in the unchanged sixteen roots. Five trusted authoring receipts match their unchanged sealed hosts.
+> TS6a native wx RED produces exactly two foreign-lock preservation failures; native-error/journal/no-authority and acquired-lock write-failure controls pass. Production fix has not started.
+> Supporting historical TS7 regression is 45/45 GREEN at 08a3d12; it does not clear the new ownership finding. Automated scan gaps, transient read-refusal and unmeasured history cost remain explicit.
+> Corrected-source QC Spec Compliance then Developer/QC Code Quality are independent later decisions; F-RCR-SB3-001 and parent F-AG11-001 remain OPEN. TS8/s08 and terminal gates remain closed; branch HOLD_OPEN, CR-008 NOT_DONE.
 
 ## Historical Implementation Summary — Superseded Checkpoints
 
@@ -203,7 +203,7 @@ safe_refactor_notes: ["Same four approved coordinator/state scripts; shared cano
 code_changes: ["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js","packages/workflow-bundle/test/work-item-protocol-state.test.js","packages/workflow-bundle/test/work-item-protocol.test.js","packages/workflow-bundle/test/workflow-gate-review.test.js"]
 doc_changes: ["This s07 note, report/s01 protocol handoff, rcr-sb3-evidence.json and three RED evidence files"]
 config_changes: []
-review_checkpoints: ["SB1 refreshed pair APPROVED at 3e0b9728","SB2 QC Spec and Developer/QC Quality PASS APPROVED at c4c51f1 with scan gaps retained","SB3 QC Spec Compliance APPROVED by QC at 2026-09-13T12:46:11Z for 08a3d12e5482a6aa40cfc5b40318ab965626db31; Developer/QC Code Quality PENDING; FAIL recommendation and HIGH F-RCR-SB3-001 PROPOSED"]
+review_checkpoints: ["SB1 refreshed pair APPROVED at 3e0b9728","SB2 QC Spec and Developer/QC Quality PASS APPROVED at c4c51f1 with scan gaps retained","SB3 QC Spec REOPENED; Developer/QC FAIL and OPEN F-RCR-SB3-001 explicitly accepted; TS6a RED recorded before correction; refreshed pair pending"]
 outputs_actual: ["Direct event ID equals journal/result for all four decisions","New binding mismatch rejected before transaction writes","45/45 unit files, 19 state cases, 20 cycles, 64 boundary cases, 10 races, 13 load-only reports, authoring smoke and validators pass"]
 known_limitations: ["Node v26.5.0 used for this local supporting regression; supported Node 18/22 candidate evidence is still TS8","Existing ignored runtime parity failed without generation prerequisite; a pristine archived source with that existing prerequisite passes all 45 test files. No working-tree runtime mutation or test skip.","Earlier f7b06c4/cfc7568 snapshots and initial race wording assertion failures are historical checkpoints, superseded by the final exact source","Scanner overall PARTIAL; no tool installation/benchmark/dependency/CI action upgrade/parallelisation performed","A refused concurrent contender may observe transient ENOENT while the winner replaces a managed file; settled authority/identity/parity/retries/residue are verified, read isolation is not claimed","Automatic scans PARTIAL; very large history cost unmeasured"]
 follow_up_items: ["Separate Developer/QC SB3 Code Quality only after QC Spec Compliance","Retain automated scanner gaps and concurrent transient-read/large-history advisories","QC explicit s08 opening; build and bind one v2.6.2 candidate at reviewed source","Node 18/22, package/extracted payload, hosted results for same full SHA-256","Child Technical Verification/DoD, mandatory AC-RCR-08 parent contribution","Parent AG-01..13 exact-candidate re-verification and independent Technical Verification/DoD/Release/Business Acceptance","F-AG11-001 remains OPEN; historical source/run/candidate approvals do not close it"]
@@ -1061,13 +1061,13 @@ notes: "Semantic checklist reviewed for changed scripts/notes; source-only audit
 
 ### Current Structural Handoff
 
-- Protocol BLOCKED at s07 with the unchanged sixteen approved/granted roots; current handoff RCR-SB3-code-quality.
+- Protocol ACTIVE at s07 for approved TS6a repair only, with unchanged sixteen roots; corrected-source review handoff remains later.
 - SB2 QC Spec Compliance and Developer/QC Code Quality PASS are explicitly approved at source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3, with scanner/WIP/TS7/s08 duties retained.
 - TS5/TS6 and bounded validation canaries have RED-before-GREEN evidence. T7 WIP was adopted only at TS7 after GREEN; the full local file now passes structured/direct-ID assertions.
 - Final reviewed-source proposal: 08a3d12e5482a6aa40cfc5b40318ab965626db31. Full runner is 45/45 GREEN in a pristine tracked-source fixture after its existing runtime generation prerequisite; source hashes match the working tree, which was not runtime-synced.
 - Supporting scan coverage remains PARTIAL. Concurrent native read refusal and unmeasured large-history cost are disclosed; at most one committed event, settled parity, zero residue and completed NOOP retries are proved.
-- QC Spec Compliance is explicitly APPROVED at 2026-09-13T12:46:11Z for 08a3d12e5482a6aa40cfc5b40318ab965626db31. Developer/QC Code Quality is PENDING; TS8 and explicit s08 opening remain later independent controls.
-- Code Quality recommends FAIL with proposed HIGH F-RCR-SB3-001; no finding disposition, Spec reopening or TS6a repair is approved. The existing TS7 functional snapshot is not proof against the new lock-acquisition timing canary.
+- Prior QC Spec Compliance PASS at 08a3d12 is historical after explicit reopening. Developer/QC accepted FAIL and OPEN F-RCR-SB3-001; Developer approved TS6a. Refreshed corrected-source Spec/Quality and explicit QC s08 opening remain separate.
+- Human Developer/QC approved Code Quality FAIL and OPEN F-RCR-SB3-001; QC reopened Spec Compliance and Developer approved TS6a. The repair is allowed only after coordinator resume and RED; no later finding closure/review/s08 approval.
 - No corrected release candidate or child/parent exact-candidate/terminal verdict yet. AC-RCR-08 and F-AG11-001 parent verification remain mandatory; branch HOLD_OPEN.
 
 ## Structural TS3 RED
@@ -1289,7 +1289,7 @@ This is pre-handoff evidence under `code-scan-review`, not final Technical Verif
 - Full runner uses pristine tracked source and the existing runtime generation prerequisite only inside /private/tmp/cf-rcr-sb3-bound-sUwIIb. No tracked/installed working-tree runtime, new dependency, CI token, parallelisation or release candidate was generated here.
 - Final source 08a3d12e5482a6aa40cfc5b40318ab965626db31 is bound by seven source SHA-256 hashes in rcr-sb3-evidence.json. Do not reuse earlier checkpoint results for a different source/candidate.
 
-## Implementation Notes — RCR-SB3 Review Routing
+## Historical RCR-SB3 Initial Spec Review Routing
 
 ```yaml
 review_target: "RCR-SB3 TS5/TS6/TS7 at 08a3d12e5482a6aa40cfc5b40318ab965626db31"
@@ -1363,7 +1363,7 @@ follow_up_actions: ["Separate Developer/QC SB3 Code Quality only after QC Spec C
 notes: "Mechanical PASS and local regression are not independent human gate approval or full release readiness."
 ```
 
-## Implementation Notes — RCR-SB3 Code Quality Preparation
+## Historical RCR-SB3 Code Quality Preparation — Before Human Disposition
 
 ```yaml
 review_target: "RCR-SB3 Code Quality at 08a3d12e5482a6aa40cfc5b40318ab965626db31"
@@ -1431,3 +1431,27 @@ overall_status: "FAIL"
 remediation_actions: ["Reassess automated static/security scan coverage at separate SB3 Code Quality and s08.","Retain concurrent transient native read refusal and large-history cost; no read-isolation claim.","Human disposition and bounded fail-first repair of proposed HIGH F-RCR-SB3-001 before continuation; automatic scan gaps remain SKIP."]
 notes_for_verify: "New reproduced lock ownership finding blocks this Code Quality recommendation. Previous automatic scan coverage remains PARTIAL; this FAIL is supported by the manual/native timing canary, not claimed automatic scanner coverage. TS8/s08 and parent exact-candidate evidence remain closed."
 ```
+
+## TS6a Amendment — Human Accepted
+
+```yaml
+amendment_id: "TS6a"
+status: "APPROVED"
+trigger: "F-RCR-SB3-001"
+reviewed_by: "developer"
+reviewed_at: "2026-09-13T14:04:14Z"
+decision_source: "User accepted the immediately preceding explicit Developer/QC FAIL/finding, QC reopening and Developer TS6a bundle."
+plan_relationship: "Bounded transaction lock-ownership repair within approved TS6/TS7, including TS7's explicit behavior-defect RED-before-correction rule. No requirement/design/root change; sealed s04/s05/s06 unchanged, as for TS2a."
+owned_paths: ["packages/workflow-bundle/scripts/workflow-approval-transaction.js","packages/workflow-bundle/test/workflow-gate-review.test.js","packages/workflow-bundle/test/work-item-protocol.test.js","work-items/closeout-bundle-repeat-cycle-reconciliation"]
+execution_order: ["Add native wx-acquisition interleaving tests preserving foreign live lock bytes and any winner-owned journal/state; verify EXPECTED_RED before production edits.","Track successful native lock acquisition separately from the closed descriptor; only an acquired lock may enter rollback/cleanup on this contender's failure.","Verify GREEN with failed-acquisition controls plus own-lock write/after_lock failures, all 64 failure/crash points and generated/default ID behavior.","Refresh exact-source full 45-file regression in a fresh isolated generated-runtime fixture, 20 cycles, 10 races, 13 frozen/live zero-write report/history loads, 5 receipts, parser/UTF-8/native validators and pack audit.","QC refreshed RCR-SB3 Spec Compliance first, then Developer/QC refreshed Code Quality. Finding remains OPEN until human disposition; TS8 requires separate QC opening."]
+verify_path: ["node packages/workflow-bundle/test/workflow-gate-review.test.js","node work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-lock-acquisition-review-repro.js","node --test packages/workflow-bundle/test/work-item-protocol-state.test.js","Full run-all.js only in fresh tracked-source fixture after existing runtime sync prerequisite","Ten real concurrent CLI races; 20-cycle and 64-case matrix inside owned protocol suite","Workflow/protocol/planning/native parser/UTF-8/pack audit; exact frozen report/history/host digests"]
+constraints: ["Preserve unknown legacy exact text and never infer lifecycle or identity from prose.","No lock format, receipt-v1, signer/session/passphrase/root, transaction ID validation or public CLI change.","No reader isolation, friendly error-text requirement, Node24 action upgrade or validator parallelisation.","Same sixteen grants; no production changes before RED; no s08/candidate/terminal authority or finding closure implied."]
+implementation_status: "RED_RECORDED_PENDING_GREEN"
+review_after_green: "QC refreshed Spec Compliance then Developer/QC refreshed Code Quality; only later explicit QC s08 opening unlocks TS8."
+```
+
+### TS6a RED Checkpoint
+
+- Native wx losing acquisition is reproduced for a winner with and without a prepared journal; exactly two lock-byte preservation assertions fail.
+- All winner-journal/no-loser-authority controls and own-acquired-lock write-failure cleanup pass.
+- [RED evidence](rcr-sb3-ts6a-evidence.json) was authored before the production repair. Sealed s04/s05/s06 and the sixteen grants remain unchanged.

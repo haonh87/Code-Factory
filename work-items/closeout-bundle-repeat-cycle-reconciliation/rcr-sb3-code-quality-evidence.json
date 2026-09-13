@@ -15,20 +15,23 @@
     "evidence_ref": "rcr-sb3-evidence.json"
   },
   "recommendation": "FAIL",
-  "human_decision": "PENDING",
+  "human_decision": "FAIL",
   "reviewer_roles": [
     "developer",
     "qc"
   ],
-  "reviewed_by": [],
-  "reviewed_at": "",
+  "reviewed_by": [
+    "developer",
+    "qc"
+  ],
+  "reviewed_at": "2026-09-13T14:04:14Z",
   "findings": [
     {
       "id": "F-RCR-SB3-001",
       "severity": "HIGH",
       "confidence": "HIGH",
       "category": "Concurrency / unowned approval-transaction lock cleanup",
-      "disposition": "PROPOSED",
+      "disposition": "OPEN",
       "source_sha": "08a3d12e5482a6aa40cfc5b40318ab965626db31",
       "path": "packages/workflow-bundle/scripts/workflow-approval-transaction.js:441",
       "issue": "When another transaction creates the lock after the last existence check but before this contender's wx open, native EEXIST reaches catch with no acquired lock and no journal; unconditional cleanup deletes the other transaction's live lock.",
@@ -41,7 +44,12 @@
         "Deterministic in-process interleaving with a different transaction ID and a live PID; not proof of two committed real CLI transactions or production data loss.",
         "Existing 45/45 suite, 64 fail/crash cases and ordinary two-contender races remain passing snapshots; they do not cover this lock-acquisition interleaving."
       ],
-      "recommendation": "Developer/QC decide FAIL and the finding; QC decide reopening SB3 Spec Compliance, and Developer decide a bounded TS6a Task Plan amendment. Proposed repair tracks actual acquired-lock ownership and never cleans another transaction's lock on failed acquisition; new RED first, GREEN, TS7 refresh and separate refreshed reviews. No fix is authorized here."
+      "recommendation": "Developer/QC decide FAIL and the finding; QC decide reopening SB3 Spec Compliance, and Developer decide a bounded TS6a Task Plan amendment. Proposed repair tracks actual acquired-lock ownership and never cleans another transaction's lock on failed acquisition; new RED first, GREEN, TS7 refresh and separate refreshed reviews. No fix is authorized here.",
+      "opened_by": [
+        "developer",
+        "qc"
+      ],
+      "opened_at": "2026-09-13T14:04:14Z"
     }
   ],
   "checks": [
@@ -486,11 +494,11 @@
     "notes_for_verify": "New reproduced lock ownership finding blocks this Code Quality recommendation. Previous automatic scan coverage remains PARTIAL; this FAIL is supported by the manual/native timing canary, not claimed automatic scanner coverage. TS8/s08 and parent exact-candidate evidence remain closed."
   },
   "proposed_next_actions": {
-    "code_quality_fail_and_finding": "Developer/QC approval PENDING",
-    "reopen_spec_compliance": "QC approval PENDING; the current explicit QC source-bound approval remains recorded",
+    "code_quality_fail_and_finding": "Explicit human Developer/QC FAIL and OPEN at 2026-09-13T14:04:14Z",
+    "reopen_spec_compliance": "Explicit QC REOPENED at 2026-09-13T14:04:14Z; original source-bound approval preserved as historical evidence",
     "task_plan_amendment": {
       "id": "TS6a",
-      "status": "PROPOSED",
+      "status": "APPROVED",
       "approver": "developer",
       "scope": "Only existing workflow-approval-transaction.js lock-ownership cleanup and owned regression tests; same sixteen roots",
       "execution_order": [
@@ -506,15 +514,21 @@
         "Node24 action upgrade",
         "Validator parallelisation",
         "Candidate/release/branch finalization"
-      ]
+      ],
+      "reviewed_by": [
+        "developer"
+      ],
+      "reviewed_at": "2026-09-13T14:04:14Z",
+      "plan_relationship": "Bounded transaction lock-ownership repair within approved TS6/TS7, including TS7's explicit behavior-defect RED-before-correction rule. No requirement/design/root change; sealed s04/s05/s06 unchanged, as for TS2a.",
+      "red_evidence_ref": "rcr-sb3-ts6a-evidence.json"
     }
   },
   "authority": {
-    "protocol_status": "BLOCKED",
-    "handoff_target": "RCR-SB3-code-quality",
-    "missing_gate": "Developer/QC RCR-SB3 Code Quality",
-    "next_human_action": "Developer/QC decide proposed Code Quality FAIL and F-RCR-SB3-001; QC reopening and Developer TS6a remain separate proposals",
-    "code_quality": "PENDING",
+    "protocol_status": "ACTIVE",
+    "handoff_target": "RCR-SB3-TS6a-repair",
+    "missing_gate": "NONE for authorized TS6a repair",
+    "next_human_action": "NONE for authorized TS6a; QC refreshed Spec Compliance after GREEN",
+    "code_quality": "EXPLICIT_HUMAN_FAIL",
     "TS8": "CLOSED",
     "s08": "NOT_OPEN",
     "technical_verification": "NOT_OPEN",
@@ -525,15 +539,9 @@
     "tag": false,
     "merge": false,
     "cleanup": false,
-    "blockers": [
-      {
-        "id": "se:a756c005a3de2d1c4c67d4565ff397ce7b0ef2448d261b7f2ddd53b09b46168c",
-        "kind": "delivery_blocker",
-        "text": "Developer/QC RCR-SB3 Code Quality decision and proposed HIGH F-RCR-SB3-001 disposition are pending for 08a3d12e5482a6aa40cfc5b40318ab965626db31; recommendation FAIL on unowned live-lock deletion. TS6a not authorized; TS8/s08 closed."
-      }
-    ],
-    "finding_disposition": "PROPOSED",
-    "TS6a": "NOT_AUTHORIZED",
+    "blockers": [],
+    "finding_disposition": "OPEN",
+    "TS6a": "APPROVED_RED_RECORDED",
     "F_AG11_001": "OPEN"
   },
   "mandatory_followups": [
@@ -561,7 +569,24 @@
     "encoding": "PASS: fatal UTF-8 decode on all six artifacts; native parse of review canary; git diff --check",
     "s01_parity": "PASS",
     "external_owner_worktrees": "UNCHANGED",
-    "authority": "QC Spec APPROVED; Developer/QC Code Quality FAIL recommendation PENDING; F-RCR-SB3-001 PROPOSED; TS6a not authorized; TS8/s08 closed",
+    "authority": "Developer/QC FAIL and OPEN finding, QC Spec reopening, Developer TS6a accepted at 2026-09-13T14:04:14Z; no future gates",
     "test_interpretation": "45 existing unit files PASS; new native lock acquisition canary FAIL, expected exit 1. Authoring-validator PASS does not clear the finding."
+  },
+  "spec_compliance_reopening": {
+    "status": "REOPENED",
+    "reviewed_by": [
+      "qc"
+    ],
+    "reviewed_at": "2026-09-13T14:04:14Z",
+    "historical_approval": {
+      "status": "APPROVED",
+      "reviewed_by": [
+        "qc"
+      ],
+      "reviewed_at": "2026-09-13T12:46:11Z",
+      "source_sha": "08a3d12e5482a6aa40cfc5b40318ab965626db31",
+      "evidence_ref": "rcr-sb3-evidence.json"
+    },
+    "corrected_source_review": "PENDING_AFTER_GREEN"
   }
 }

@@ -491,7 +491,90 @@ function testPerWorkItemLockRefusesConcurrentTransaction() {
     );
     assert(!fs.existsSync(fixture.receiptOne), "concurrent refusal writes no receipt");
     assert(fs.readFileSync(fixture.statePath, "utf8") === "before\n", "concurrent refusal leaves derived state unchanged");
+    assert(fs.readFileSync(paths.lock_path, "utf8") === "active\n", "early concurrent refusal preserves the existing lock");
   } finally {
+    rmrf(root);
+  }
+}
+
+function testFailedLockAcquisitionPreservesForeignTransaction() {
+  console.log("\nTS6a: native wx acquisition loss preserves the foreign live lock and journal");
+  for (const withJournal of [false, true]) {
+    const root = tempRoot("acquisition-race");
+    const transactionRoot = path.join(root, "transactions");
+    const paths = getApprovalTransactionPaths({ transaction_root: transactionRoot, work_item_slug: "transaction-item" });
+    const nativeOpen = fs.openSync;
+    try {
+      const fixture = makeOperations(root);
+      fs.mkdirSync(transactionRoot);
+      const winnerId = "b2335a13-5c90-4dc4-b851-bd14793f7c5f";
+      const winnerLock = JSON.stringify({ schema_version: 1, transaction_id: winnerId, pid: process.pid, started_at: new Date().toISOString() }) + "\n";
+      const winnerJournal = JSON.stringify({ schema_version: 1, transaction_id: winnerId, work_item_slug: "transaction-item", phase: "readiness", decision: "APPROVED", state: "PREPARED", committed_count: 0,
+        operations: fixture.operations.map(operation => {
+          const base = path.basename(operation.target_path), directory = path.dirname(operation.target_path);
+          return { id: operation.id, target_path: operation.target_path, stage_path: path.join(directory, `.${base}.${winnerId}.stage`), backup_path: path.join(directory, `.${base}.${winnerId}.backup`), existed_before: fs.existsSync(operation.target_path), mode_before: fs.existsSync(operation.target_path) ? fs.statSync(operation.target_path).mode & 0o777 : null, content_sha256: sha256(operation.content) };
+        }) }) + "\n";
+      let injected = 0;
+      // Model the winner running between the last exists check and native wx.
+      // EEXIST is produced by the filesystem, not a manufactured error.
+      fs.openSync = function (file, flags, ...rest) {
+        if (path.resolve(String(file)) === paths.lock_path && flags === "wx") {
+          injected += 1;
+          const fd = nativeOpen(paths.lock_path, "wx");
+          fs.writeFileSync(fd, winnerLock, "utf8");
+          fs.closeSync(fd);
+          if (withJournal) fs.writeFileSync(paths.journal_path, winnerJournal, "utf8");
+        }
+        return nativeOpen(file, flags, ...rest);
+      };
+      let error;
+      try {
+        executeApprovalTransaction({ plan: makePlan(), transaction_root: transactionRoot, transaction_id: "a1335a13-5c90-4dc4-b851-bd14793f7c5f", operations: fixture.operations });
+      } catch (caught) { error = caught; }
+      finally { fs.openSync = nativeOpen; }
+      assert(injected === 1 && error && error.code === "EEXIST", `journal=${withJournal}: the native losing wx open fails before ownership`);
+      assert(fs.existsSync(paths.lock_path) && fs.readFileSync(paths.lock_path, "utf8") === winnerLock, `journal=${withJournal}: failed acquisition preserves the foreign live lock bytes`);
+      assert(withJournal ? fs.existsSync(paths.journal_path) && fs.readFileSync(paths.journal_path, "utf8") === winnerJournal : !fs.existsSync(paths.journal_path), `journal=${withJournal}: failed acquisition preserves the winner journal state`);
+      assert(fs.readFileSync(fixture.statePath, "utf8") === "before\n" && !fs.existsSync(fixture.receiptOne) && !fs.existsSync(fixture.receiptTwo), `journal=${withJournal}: failed acquisition writes no current authority or state`);
+    } finally {
+      fs.openSync = nativeOpen;
+      rmrf(root);
+    }
+  }
+}
+
+function testAcquiredLockWriteFailureCleansOwnLock() {
+  console.log("\nTS6a: failure writing a successfully acquired lock still cleans its own lock");
+  const root = tempRoot("acquired-lock-write");
+  const transactionRoot = path.join(root, "transactions");
+  const paths = getApprovalTransactionPaths({ transaction_root: transactionRoot, work_item_slug: "transaction-item" });
+  const nativeOpen = fs.openSync, nativeWrite = fs.writeFileSync;
+  let acquiredFd = null;
+  try {
+    const fixture = makeOperations(root);
+    fs.openSync = function (file, flags, ...rest) {
+      const fd = nativeOpen(file, flags, ...rest);
+      if (path.resolve(String(file)) === paths.lock_path && flags === "wx") acquiredFd = fd;
+      return fd;
+    };
+    fs.writeFileSync = function (file, ...rest) {
+      if (acquiredFd !== null && file === acquiredFd) {
+        const error = new Error("Injected acquired-lock payload write failure");
+        error.code = "EIO";
+        throw error;
+      }
+      return nativeWrite(file, ...rest);
+    };
+    let error;
+    try { executeApprovalTransaction({ plan: makePlan(), transaction_root: transactionRoot, operations: fixture.operations }); }
+    catch (caught) { error = caught; }
+    finally { fs.openSync = nativeOpen; fs.writeFileSync = nativeWrite; }
+    assert(acquiredFd !== null && error && error.code === "EIO", "lock payload write fails after native acquisition");
+    assert(!fs.existsSync(paths.lock_path) && !fs.existsSync(paths.journal_path), "own acquired lock is cleaned when payload writing fails");
+    assert(fs.readFileSync(fixture.statePath, "utf8") === "before\n" && !fs.existsSync(fixture.receiptOne) && !fs.existsSync(fixture.receiptTwo), "acquired-lock failure writes no authority or derived state");
+  } finally {
+    fs.openSync = nativeOpen;
+    fs.writeFileSync = nativeWrite;
     rmrf(root);
   }
 }
@@ -523,6 +606,8 @@ if (
   testCrashRecoveryIsIdempotent();
   testCrashAfterVerifiedCommitCompletesIdempotently();
   testPerWorkItemLockRefusesConcurrentTransaction();
+  testFailedLockAcquisitionPreservesForeignTransaction();
+  testAcquiredLockWriteFailureCleansOwnLock();
 }
 
 if (failures > 0) {

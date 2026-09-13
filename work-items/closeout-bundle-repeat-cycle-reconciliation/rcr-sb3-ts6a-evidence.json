@@ -1,0 +1,53 @@
+{
+  "amendment": "TS6a",
+  "finding": "F-RCR-SB3-001",
+  "status": "EXPECTED_RED",
+  "baseline_source_sha": "08a3d12e5482a6aa40cfc5b40318ab965626db31",
+  "human_acceptance_at": "2026-09-13T14:04:14Z",
+  "code_quality_decision": "EXPLICIT_DEVELOPER_QC_FAIL",
+  "finding_disposition": "OPEN",
+  "QC_spec_review": "REOPENED",
+  "authoring_hosts": "UNCHANGED_AND_SEALED",
+  "protocol": {
+    "status": "ACTIVE",
+    "roots": 16,
+    "blockers": [],
+    "required_actions": [
+      {
+        "id": "se:2db776cd66b0f279593ff88c165a05422878625c8646363d21f46d5043ec7f26",
+        "kind": "workflow_followup",
+        "text": "Continue active execution from the current step."
+      }
+    ],
+    "transition": {
+      "timestamp": "2026-09-13T14:05:08.299Z",
+      "action": "resume",
+      "actor": "coordinator",
+      "from_status": "BLOCKED",
+      "to_status": "ACTIVE",
+      "note": "Explicit user acceptance approves Developer/QC FAIL and OPEN F-RCR-SB3-001, QC SB3 Spec reopening and Developer bounded TS6a. Resume repair only in unchanged sixteen granted roots; native wx timing RED precedes minimal ownership GREEN. No future review, finding closure, s08 or terminal gate is approved."
+    },
+    "test_sha256": "b73c541fa9c736f7e5203bf8e93cafc35ae0682128ff442d8413a71d2a0f071a"
+  },
+  "command": "node packages/workflow-bundle/test/workflow-gate-review.test.js",
+  "exit_code": 1,
+  "expected_failure_count": 2,
+  "failures": [
+    "  FAIL: journal=false: failed acquisition preserves the foreign live lock bytes",
+    "  FAIL: journal=true: failed acquisition preserves the foreign live lock bytes"
+  ],
+  "controls": "Native EEXIST, winner journal state, no loser authority/state write and acquired-lock payload failure cleanup all PASS; existing suite assertions otherwise PASS.",
+  "tdd_rule": "Production fix has not been applied; this RED checkpoint is recorded before the minimal ownership GREEN.",
+  "write_scope": "One owned unit test plus RCR acceptance/RED artifacts; same sixteen grants; production sources and frozen authoring hosts unchanged.",
+  "green": "NOT_STARTED",
+  "authority": {
+    "TS8": "CLOSED",
+    "s08": "NOT_OPEN",
+    "F_AG11_001": "OPEN",
+    "finding_close": "NOT_APPROVED",
+    "publish": false,
+    "tag": false,
+    "merge": false,
+    "cleanup": false
+  }
+}
