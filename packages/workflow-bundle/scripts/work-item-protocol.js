@@ -17,13 +17,16 @@ const {
   APPROVAL_GATE_PASSED,
   BOOTSTRAP_GATE_PASSED,
   buildProtocolEvent,
+  createStateEntry,
   getWorkItemPaths,
   isAllowedProtocolTransition,
   loadProtocolControl,
   loadProtocolReport,
+  matchesStateEntry,
   normalizeArray,
   normalizeProtocolReport,
   normalizeSingleValue,
+  normalizeStateCollection,
   resolveWorkflowRootBase,
   syncProtocolArtifacts
 } = require("./work-item-protocol-utils");
@@ -311,11 +314,15 @@ function transitionReport(reportInput, options) {
   }
 
   if (Array.isArray(blockers)) {
-    report.blockers = blockers;
+    report.blockers = normalizeStateCollection(blockers.map((entry, index) => typeof entry === "string"
+      ? createStateEntry({ collection: "blockers", kind: "delivery_blocker", sourceKey: `transition:${action}:${report.work_item_slug}:${index}`, text: entry })
+      : entry), "blockers");
   }
 
   if (Array.isArray(requiredActions)) {
-    report.required_actions = requiredActions;
+    report.required_actions = normalizeStateCollection(requiredActions.map((entry, index) => typeof entry === "string"
+      ? createStateEntry({ collection: "required_actions", kind: "workflow_followup", sourceKey: `transition:${action}:${report.work_item_slug}:${index}`, text: entry })
+      : entry), "required_actions");
   }
 
   if (Array.isArray(grantedWritePaths)) {
@@ -357,6 +364,10 @@ function applyApprove(reportInput, args) {
   if (report.review_notes.length === 0) {
     report.review_notes = [noteText];
   }
+  for (const collection of ["blockers", "required_actions"]) {
+    const pending = createStateEntry({ collection, kind: "workflow_followup", sourceKey: "work-item-approval:" + report.work_item_slug, text: "Work-item approval" });
+    report[collection] = report[collection].filter(entry => !matchesStateEntry(entry, { id: pending.id }));
+  }
   if (!report.protocol_owner) {
     report.protocol_owner = reviewedBy;
   }
@@ -394,8 +405,14 @@ function applyReject(reportInput, args) {
   appendAuditEvent(report, "WORK_ITEM_REJECTED");
 
   if (report.protocol_status === "ACTIVE") {
-    report.blockers = [`Approval rejected: ${noteText}`];
-    report.required_actions = ["Resolve review feedback before resuming ACTIVE delivery."];
+    const feedback = {
+      blockers: createStateEntry({ collection: "blockers", kind: "delivery_blocker", sourceKey: "work-item-rejection:" + report.work_item_slug, text: `Approval rejected: ${noteText}` }),
+      required_actions: createStateEntry({ collection: "required_actions", kind: "blocker_resolution", sourceKey: "work-item-rejection:" + report.work_item_slug, text: "Resolve review feedback before resuming ACTIVE delivery." })
+    };
+    for (const collection of ["blockers", "required_actions"]) {
+      report[collection] = report[collection].filter(entry => !matchesStateEntry(entry, { id: feedback[collection].id }));
+      report[collection].push(feedback[collection]);
+    }
     report.handoff_target = handoffTarget;
     report.protocol_status = "BLOCKED";
     report.protocol_events.push(
@@ -425,55 +442,6 @@ function applyReject(reportInput, args) {
   return report;
 }
 
-function isApprovalActionForGate(action, gate) {
-  const text = String(action || "");
-  return /\bwfc\s+gate\s+approve\b/.test(text) && new RegExp(`--gate\\s+${gate}(?:\\s|$)`).test(text);
-}
-
-const CLOSEOUT_GATE_TEXT_ALIASES = {
-  dod: ["dod", "definition of done"],
-  uat: ["uat", "user acceptance", "user acceptance testing"],
-  release: ["release"],
-  business_acceptance: ["business acceptance"]
-};
-
-function normalizeCloseoutStateText(value) {
-  return String(value || "")
-    .normalize("NFKC")
-    .toLowerCase()
-    .replace(/[_-]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function hasBoundedCloseoutAlias(text, alias) {
-  const normalizedAlias = normalizeCloseoutStateText(alias);
-  if (!normalizedAlias) {
-    return false;
-  }
-  const escapedAlias = normalizedAlias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return new RegExp(`(?:^|[^\\p{L}\\p{N}])${escapedAlias}(?=$|[^\\p{L}\\p{N}])`, "u").test(text);
-}
-
-function isSelectedCloseoutApprovalBlocker(entry, gateNames) {
-  const text = normalizeCloseoutStateText(entry);
-  const hasApprovalStateMeaning =
-    /\b(?:approv(?:e|ed|al)|await(?:ing)?|pending|outstanding|review|receipt|seal(?:ing)?)\b/.test(text);
-  if (!hasApprovalStateMeaning) {
-    return false;
-  }
-
-  if (text.includes("closeout bundle")) {
-    return true;
-  }
-
-  return gateNames.some((gate) =>
-    (CLOSEOUT_GATE_TEXT_ALIASES[gate] || [normalizeCloseoutStateText(gate)]).some((alias) =>
-      hasBoundedCloseoutAlias(text, alias)
-    )
-  );
-}
-
 function reconcileApprovalBundleReport(
   reportInput,
   { phase, gates, decision, reviewedAt, recordProtocolEvent = true, transactionId = "" } = {}
@@ -494,13 +462,11 @@ function reconcileApprovalBundleReport(
 
   const eventPrefix = normalizedPhase.toUpperCase();
   const gateList = gateNames.join(", ");
-  report.blockers = report.blockers.filter((entry) => !/readiness bundle rejected|closeout bundle rejected/i.test(entry));
-  report.required_actions = report.required_actions.filter(
-    (entry) =>
-      !/\bwfc\s+gate\s+(?:approve|reject)-(?:ready|closeout)-bundle\b/.test(String(entry || "")) &&
-      !gateNames.some((gate) => isApprovalActionForGate(entry, gate)) &&
-      !/resolve rejected (?:readiness|closeout)/i.test(String(entry || ""))
-  );
+  const phaseKinds = [normalizedPhase + "_bundle_approval", normalizedPhase + "_bundle_rejected", "resolve_" + normalizedPhase + "_rejection"];
+  const selected = entry => matchesStateEntry(entry, { kinds: phaseKinds }) ||
+    gateNames.some(gate => matchesStateEntry(entry, { kinds: ["approval_pending", "gate_approval"], gate }));
+  report.blockers = report.blockers.filter(entry => !selected(entry));
+  report.required_actions = report.required_actions.filter(entry => !selected(entry));
 
   const auditEvent = `${eventPrefix}_BUNDLE_${normalizedDecision}`;
   const eventAlreadyRecorded = report.audit_events.includes(auditEvent);
@@ -509,21 +475,23 @@ function reconcileApprovalBundleReport(
     if (normalizedPhase === "readiness") {
       report.handoff_target = "step-s07-activation";
     } else {
-      report.blockers = report.blockers.filter(
-        (entry) => !isSelectedCloseoutApprovalBlocker(entry, gateNames)
-      );
-      report.required_actions = [`wfc work-item close --work-item ${report.work_item_slug}`];
+      report.required_actions = report.required_actions.filter(entry => !matchesStateEntry(entry, { kind: "work_item_close" }));
+      report.required_actions.push(createStateEntry({ collection: "required_actions", kind: "work_item_close", sourceKey: "work-item-close:" + report.work_item_slug, text: `wfc work-item close --work-item ${report.work_item_slug}` }));
       report.handoff_target = "protocol-close";
     }
   } else {
     const blocker = `${normalizedPhase === "readiness" ? "Readiness" : "Closeout"} bundle rejected for gates: ${gateList}.`;
     const action = `Resolve rejected ${normalizedPhase} gates before ${normalizedPhase === "readiness" ? "activation" : "completion"}.`;
-    report.blockers.push(blocker);
+    const sourceKey = `bundle:${normalizedPhase}:${report.work_item_slug}`;
+    report.blockers.push(createStateEntry({ collection: "blockers", kind: normalizedPhase + "_bundle_rejected", sourceKey, text: blocker }));
     const retryAction =
       normalizedPhase === "readiness"
         ? `wfc gate approve-ready-bundle --work-item ${report.work_item_slug}`
         : `wfc gate approve-closeout-bundle --work-item ${report.work_item_slug}`;
-    report.required_actions.unshift(action, retryAction);
+    report.required_actions.unshift(
+      createStateEntry({ collection: "required_actions", kind: "resolve_" + normalizedPhase + "_rejection", sourceKey, text: action }),
+      createStateEntry({ collection: "required_actions", kind: normalizedPhase + "_bundle_approval", sourceKey, text: retryAction })
+    );
     report.handoff_target = `${normalizedPhase}-rework`;
     appendAuditEvent(report, auditEvent);
   }

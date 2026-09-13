@@ -38,6 +38,8 @@ const {
 } = require("./workflow-adaptive-governance");
 const {
   buildProtocolEvent,
+  buildStateYamlList,
+  createStateEntry,
   getDefaultApprovalState,
   inferDeliveryContext,
   renderProtocolBlock
@@ -755,10 +757,10 @@ function buildBootstrapGate({
     ref: "",
     reviewedBy: "",
     reviewedAt: "",
-    blocker: "Greenfield bootstrap gate chưa được human approve; chưa được scaffold work item implementation đầu tiên.",
+    blocker: createStateEntry({ collection: "blockers", kind: "approval_pending", gate: "bootstrap", sourceKey: "bootstrap:" + workItemSlug, text: "Greenfield bootstrap gate chưa được human approve; chưa được scaffold work item implementation đầu tiên." }),
     requiredActions: [
-      "Hoàn tất `Spec`, `Contract` khi có, `Approach` và `Foundation Decision` cho project mới.",
-      `Rerun materialization sau khi human approve bootstrap gate bằng \`wfc gate approve --work-item ${workItemSlug} --gate bootstrap --ref <path> --reviewed-by <role>\`.`
+      createStateEntry({ collection: "required_actions", kind: "workflow_followup", sourceKey: "bootstrap-prerequisites:" + workItemSlug, text: "Hoàn tất `Spec`, `Contract` khi có, `Approach` và `Foundation Decision` cho project mới." }),
+      createStateEntry({ collection: "required_actions", kind: "gate_approval", gate: "bootstrap", sourceKey: "bootstrap:" + workItemSlug, text: `Rerun materialization sau khi human approve bootstrap gate bằng \`wfc gate approve --work-item ${workItemSlug} --gate bootstrap --ref <path> --reviewed-by <role>\`.` })
     ]
   };
 }
@@ -798,40 +800,41 @@ function buildScaffoldActions(item, projectRoot) {
   return actions;
 }
 
+function buildScaffoldStateActions(item) {
+  return item.scaffold_actions.map((text, index) => createStateEntry({ collection: "required_actions", kind: "workflow_followup", sourceKey: `scaffold:${item.work_item_slug}:${index}`, text }));
+}
+
 function buildPostMaterializationActions(report, item) {
+  const followup = (sourceKey, text) => createStateEntry({ collection: "required_actions", kind: "workflow_followup", sourceKey, text });
+  const approval = (gate, reviewer) => createStateEntry({ collection: "required_actions", kind: "gate_approval", gate, sourceKey: "gate-approval:" + item.work_item_slug, text: `wfc gate approve --work-item ${item.work_item_slug} --gate ${gate} --reviewed-by ${reviewer}` });
+  const activation = () => createStateEntry({ collection: "required_actions", kind: "work_item_activation", sourceKey: "work-item-activation:" + item.work_item_slug, text: `wfc work-item activate --work-item ${item.work_item_slug} --step s07 --write-root <path>` });
   if (!report.review_required) {
-    return ["Điền nội dung thực tế cho s01 Clarify.", "Tiếp tục workflow backbone s01 -> s08."];
+    return [followup("clarify:" + item.work_item_slug, "Điền nội dung thực tế cho s01 Clarify."), followup("workflow-backbone:" + item.work_item_slug, "Tiếp tục workflow backbone s01 -> s08.")];
   }
 
   const actions = [];
   if (item.change_id) {
-    actions.push(`wfc change-item approve --change-id ${item.change_id} --reviewed-by <role>`);
+    actions.push(followup("change-approval:" + item.change_id, `wfc change-item approve --change-id ${item.change_id} --reviewed-by <role>`));
   }
-  actions.push(`wfc work-item approve --work-item ${item.work_item_slug} --reviewed-by <role>`);
+  actions.push(followup("work-item-approval:" + item.work_item_slug, `wfc work-item approve --work-item ${item.work_item_slug} --reviewed-by <role>`));
   if (report.artifact_shape === "adaptive_v1") {
     const readinessGates = new Set(["spec", "contract", "dor", "approach", "foundation", "task_plan"]);
     report.gates
       .filter((entry) => readinessGates.has(entry.gate))
       .forEach((entry) => {
-        actions.push(
-          `wfc gate approve --work-item ${item.work_item_slug} --gate ${entry.gate} ` +
-            `--reviewed-by ${entry.reviewer_roles[0]}`
-        );
+        actions.push(approval(entry.gate, entry.reviewer_roles[0]));
       });
-    actions.push(`wfc work-item activate --work-item ${item.work_item_slug} --step s07 --write-root <path>`);
+    actions.push(activation());
     return actions;
   }
   // Light compact: seal 4 authoring gates trong một batch (reviewer đọc từ
   // gate_reviews). Non-light: 4 gate approve riêng lẽ như cũ.
   if (item.sdd_mode === "light") {
-    actions.push(`wfc gate approve-ready-bundle --work-item ${item.work_item_slug}`);
+    actions.push(createStateEntry({ collection: "required_actions", kind: "readiness_bundle_approval", sourceKey: "readiness-bundle:" + item.work_item_slug, text: `wfc gate approve-ready-bundle --work-item ${item.work_item_slug}` }));
   } else {
-    actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate spec --reviewed-by <role>`);
-    actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate dor --reviewed-by <role>`);
-    actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate approach --reviewed-by <role>`);
-    actions.push(`wfc gate approve --work-item ${item.work_item_slug} --gate task_plan --reviewed-by <role>`);
+    ["spec", "dor", "approach", "task_plan"].forEach(gate => actions.push(approval(gate, "<role>")));
   }
-  actions.push(`wfc work-item activate --work-item ${item.work_item_slug} --step s07 --write-root <path>`);
+  actions.push(activation());
   return actions;
 }
 
@@ -905,7 +908,7 @@ function renderMaterializationBlock(report, item) {
     `change_id: ${quoteYamlString(item.change_id)}`,
     ...buildYamlList("decision_reason", report.decision_log),
     ...buildYamlList("existing_refs", item.existing_refs),
-    ...buildYamlList("blockers", item.blockers),
+    ...buildStateYamlList("blockers", item.blockers),
     "```"
   ].join("\n");
 }
@@ -1004,25 +1007,26 @@ function analyzeRequest(options) {
   }
 
   const blockers = [];
+  const addBlocker = (purpose, text) => blockers.push(createStateEntry({ collection: "blockers", kind: "delivery_blocker", sourceKey: `materialize:${workItemSlug}:${purpose}`, text }));
 
   if (!workItemSlug || !WORK_ITEM_PATTERN.test(workItemSlug)) {
-    blockers.push("Không suy ra được work_item_slug hợp lệ từ raw request.");
+    addBlocker("invalid-slug", "Không suy ra được work_item_slug hợp lệ từ raw request.");
   }
 
   if (splitDecision === "defer") {
-    blockers.push("Scope còn quá rộng hoặc quá mơ hồ để auto-scaffold.");
+    addBlocker("scope-deferred", "Scope còn quá rộng hoặc quá mơ hồ để auto-scaffold.");
   }
 
   if (splitDecision === "split") {
-    blockers.push("Request có dấu hiệu chứa nhiều outcome; cần split trước khi scaffold.");
+    addBlocker("split-required", "Request có dấu hiệu chứa nhiều outcome; cần split trước khi scaffold.");
   }
 
   if (workItemMatches.exactMatch) {
-    blockers.push(`Work item đã tồn tại: ${workItemMatches.exactMatch.slug}`);
+    addBlocker("existing-work-item", `Work item đã tồn tại: ${workItemMatches.exactMatch.slug}`);
   }
 
   if (!workItemMatches.exactMatch && workItemMatches.nearMatches.length > 0) {
-    blockers.push(
+    addBlocker("near-match-review",
       `Có work item gần nghĩa cần review: ${workItemMatches.nearMatches
         .slice(0, 3)
         .map((item) => item.slug)
@@ -1031,7 +1035,7 @@ function analyzeRequest(options) {
   }
 
   if (changeStrategy === "reuse_existing" && !changeMatches.exactMatch) {
-    blockers.push("change_strategy=reuse_existing nhưng chưa tìm được change package active phù hợp.");
+    addBlocker("missing-reusable-change", "change_strategy=reuse_existing nhưng chưa tìm được change package active phù hợp.");
   }
 
   const bootstrapGate = buildBootstrapGate({
@@ -1107,11 +1111,11 @@ function analyzeRequest(options) {
 
   const requiredActions =
     materializationStatus === "READY"
-      ? [...item.scaffold_actions]
+      ? buildScaffoldStateActions(item)
       : [
           ...bootstrapGate.requiredActions,
-          "Làm rõ scope để chốt single hay split.",
-          "Review existing work-items/changes trước khi scaffold."
+          createStateEntry({ collection: "required_actions", kind: "workflow_followup", sourceKey: "clarify-scope:" + workItemSlug, text: "Làm rõ scope để chốt single hay split." }),
+          createStateEntry({ collection: "required_actions", kind: "workflow_followup", sourceKey: "review-existing:" + workItemSlug, text: "Review existing work-items/changes trước khi scaffold." })
         ];
 
   const auditEvents = ["REQUEST_CAPTURED", "CANDIDATE_PROPOSED"];
@@ -1423,7 +1427,7 @@ function materializeWorkItem(options) {
         .join(" ");
     });
     if (report.materialization_status === "READY") {
-      report.required_actions = [...item.scaffold_actions];
+      report.required_actions = buildScaffoldStateActions(item);
     }
   }
 
