@@ -654,7 +654,7 @@ next_action: "Developer reviews the amended s06 TS0..TS8 plan; implementation st
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: BLOCKED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
@@ -687,15 +687,16 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: "developer"
+protocol_owner: "qc"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "s07-TS2a-approved-repair"
-last_transition_action: "resume"
-last_transition_at: "2026-09-13T05:27:41.770Z"
+handoff_target: "RCR-SB1-TS2a-refreshed-spec-compliance"
+last_transition_action: "block"
+last_transition_at: "2026-09-13T05:34:26.143Z"
 required_actions:
-  - {"id":"se:4579aac266916040531c1b2193ea063387ab75da9b8e28430b2e657c8f741cc7","kind":"workflow_followup","text":"Continue active execution from the current step."}
-blockers: []
+  - {"id":"se:34b64b8ec1610a35e0b4c01833b5be3e7b349ea70e06e14233c451ff3884fc02","kind":"blocker_resolution","text":"Resolve blockers before resuming the work item."}
+blockers:
+  - {"kind":"legacy","text":"Refreshed QC RCR-SB1 Spec Compliance is pending for corrected source 3e0b9728d82204e38b06668e08cc895294109986; Code Quality and TS3 remain closed."}
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."

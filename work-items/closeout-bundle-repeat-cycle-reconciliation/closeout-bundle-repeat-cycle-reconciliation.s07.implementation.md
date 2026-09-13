@@ -128,6 +128,7 @@ tags:
 > QC explicitly approved TS0..TS2 Spec Compliance for source
 > `964e1c7cf879c6d244253b3ee294f9cdaff60f77`. Developer/QC accepted Code Quality FAIL and
 > opened F-RCR-SB1-001; QC reopened Spec Compliance and Developer approved the bounded TS2a repair.
+> TS2a RED `94d252f` precedes GREEN `3e0b9728d82204e38b06668e08cc895294109986`; refreshed QC Spec Compliance is pending.
 > Full regression is not GREEN: three existing protocol assertions await TS3/TS4 conversion.
 
 ## Step Contract
@@ -820,7 +821,65 @@ constraints:
   - "No new parser dependency, text-state inference or historical receipt/event rewrite."
   - "Partial T7 WIP remains untouched/unstaged; TS3 and candidate delivery stay closed."
 review_after_green: "QC refreshed Spec Compliance first, then Developer/QC Code Quality. Approval of this repair is not approval of its eventual result."
-implementation_status: NOT_STARTED
+implementation_status: GREEN_PENDING_REVIEW
+red_commit: "94d252ff010bd812ae3451c4b541273109bf6bc1"
+red_result: "EXPECTED_FAIL: sixteen assertions expose duplicate keys, empty collection bodies, malformed indentation and ignored tails. All thirty negative cases run; canonical/legacy controls remain valid."
+green_commit: "3e0b9728d82204e38b06668e08cc895294109986"
+green_result: "PASS: thirty negative assertions, canonical and legacy controls, state 9/9, gate-review, native syntax, workflow/protocol/planning, thirteen load-only/history checks and WIP/host digests."
+evidence_ref: "rcr-sb1-ts2a-evidence.json"
+```
+
+## Refreshed RCR-SB1 Spec Compliance — TS2a
+
+```yaml
+batch: RCR-SB1
+source_sha: "3e0b9728d82204e38b06668e08cc895294109986"
+scope: ["TS1", "TS2", "TS2a"]
+spec_compliance:
+  recommendation: PASS
+  human_decision: PENDING
+  reviewer_role: qc
+  reviewed_by: []
+  reviewed_at: ""
+  checks:
+    - { criterion: "Bounded fully consumed mirror structure", result: PASS, evidence: "Thirty negative assertions reject duplicate/invalid/non-contiguous collections across both fields." }
+    - { criterion: "Required shape and report parity", result: PASS, evidence: "Existing mismatch/shape/duplicate-ID assertions and canonical controls remain green." }
+    - { criterion: "Exact unknown legacy preservation", result: PASS, evidence: "Canary, accented/escaped/newline display, quoted and bare legacy scalar controls pass; no prose classifier was added." }
+    - { criterion: "Scope and authority", result: PASS, evidence: "One existing production script; no dependency, new root, receipt or s04/s05/s06 edit." }
+    - { criterion: "Compatibility/history/isolation", result: PASS, evidence: "13 frozen normalizations and live load-only checks, all historical prefixes, two unbound events and T7 WIP digests unchanged." }
+code_quality:
+  status: NOT_OPEN
+  human_decision: PENDING
+  reason: "Await refreshed human QC Spec Compliance; old source FAIL remains historical."
+finding:
+  id: F-RCR-SB1-001
+  disposition: OPEN
+  remediation: "Implemented and locally verified; closure remains subject to refreshed review."
+next_action: "Human QC reviews this exact source first. Only afterward reopen Developer/QC Code Quality; TS3 stays closed."
+```
+
+### TS2a Pre-handoff Verification
+
+The evidence below is scoped s07 self-check, not Technical Verification or DoD. The original-source test/scan sections following it remain historical evidence.
+
+```yaml
+verification_target: "TS2a bounded mirror reader at 3e0b9728d82204e38b06668e08cc895294109986"
+criteria_results:
+  - { criterion: "Approved TS2a repair", result: PASS, evidence: "94d252f expected RED precedes 3e0b972 GREEN; duplicate/header/body/tail inputs fail closed." }
+  - { criterion: "Complete AC-RCR-09", result: PARTIAL, evidence: "TS3/TS4 producer and core-selector conversion remains required." }
+test_evidence:
+  unit_test: ["Validator suite with 30 negative assertions PASS", "State 9/9 PASS"]
+  integration_test: ["Gate-review PASS", "13 report load-only/history checks PASS", "Protocol suite retains the same 3 known FAIL assertions"]
+commands_run: ["Focused validator/state/gate-review/protocol suites", "node --check", "wfc validate/protocol/plan", "pack audit", "UTF-8/diff/frozen-host/WIP/history assertions"]
+skipped_checks:
+  - "ESLint absent and no configured lint wrapper; manual diff review is not lint."
+  - "Semgrep absent; no scanner installed. Native parsing and manual bounded-grammar review do not constitute security clearance."
+  - "Full unit, smoke, package and hosted candidate/parent verification belong to TS7/TS8; current mixed producer state is not released."
+release_blockers: ["Refreshed RCR-SB1 review pair", "F-RCR-SB1-001 still OPEN pending review", "Remaining TS3..TS8", "Parent F-AG11-001 exact-candidate and terminal closeout"]
+status: FAIL
+gaps: ["Remaining structural integration", "Formal static/security and final-candidate evidence"]
+recommendation: "QC refreshed Spec Compliance first; no inferred Code Quality PASS, TS3 resume or DoD."
+notes_for_review: "Scoped repair is GREEN; the full work item remains incomplete and release-blocked."
 ```
 
 ### Pre-handoff Testing Evidence
