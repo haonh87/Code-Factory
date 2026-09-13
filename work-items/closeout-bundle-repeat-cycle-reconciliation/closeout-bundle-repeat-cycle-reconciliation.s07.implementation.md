@@ -128,7 +128,8 @@ tags:
 > QC explicitly approved TS0..TS2 Spec Compliance for source
 > `964e1c7cf879c6d244253b3ee294f9cdaff60f77`. Developer/QC accepted Code Quality FAIL and
 > opened F-RCR-SB1-001; QC reopened Spec Compliance and Developer approved the bounded TS2a repair.
-> TS2a RED `94d252f` precedes GREEN `3e0b9728d82204e38b06668e08cc895294109986`; refreshed QC Spec Compliance is pending.
+> TS2a RED `94d252f` precedes GREEN `3e0b9728d82204e38b06668e08cc895294109986`; QC accepted refreshed Spec Compliance at 2026-09-13T05:37:26Z.
+> Developer/QC Code Quality opens next for that same source; TS3 remains closed.
 > Full regression is not GREEN: three existing protocol assertions await TS3/TS4 conversion.
 
 ## Step Contract
@@ -709,8 +710,8 @@ behavior_change: true
 tdd_status: PASS
 worktree_status: PASS
 review_status: PENDING
-spec_compliance_status: REOPENED
-code_quality_status: FAIL
+spec_compliance_status: PASS
+code_quality_status: PENDING
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
 merge_path: "No merge in s07; shared worktree HOLD_OPEN."
@@ -837,10 +838,11 @@ source_sha: "3e0b9728d82204e38b06668e08cc895294109986"
 scope: ["TS1", "TS2", "TS2a"]
 spec_compliance:
   recommendation: PASS
-  human_decision: PENDING
+  human_decision: APPROVED
   reviewer_role: qc
-  reviewed_by: []
-  reviewed_at: ""
+  reviewed_by: ["qc"]
+  reviewed_at: "2026-09-13T05:37:26Z"
+  decision_source: "User accepted the immediately preceding explicit QC refreshed Spec Compliance request for this exact source."
   checks:
     - { criterion: "Bounded fully consumed mirror structure", result: PASS, evidence: "Thirty negative assertions reject duplicate/invalid/non-contiguous collections across both fields." }
     - { criterion: "Required shape and report parity", result: PASS, evidence: "Existing mismatch/shape/duplicate-ID assertions and canonical controls remain green." }
@@ -848,14 +850,49 @@ spec_compliance:
     - { criterion: "Scope and authority", result: PASS, evidence: "One existing production script; no dependency, new root, receipt or s04/s05/s06 edit." }
     - { criterion: "Compatibility/history/isolation", result: PASS, evidence: "13 frozen normalizations and live load-only checks, all historical prefixes, two unbound events and T7 WIP digests unchanged." }
 code_quality:
-  status: NOT_OPEN
+  status: OPEN
   human_decision: PENDING
-  reason: "Await refreshed human QC Spec Compliance; old source FAIL remains historical."
+  recommendation: PASS
+  evidence_ref: "rcr-sb1-ts2a-code-quality-evidence.json"
+  reason: "QC explicitly accepted refreshed Spec Compliance for this exact source; the scoped AI Code Quality PASS recommendation awaits independent Developer/QC decision."
 finding:
   id: F-RCR-SB1-001
   disposition: OPEN
   remediation: "Implemented and locally verified; closure remains subject to refreshed review."
-next_action: "Human QC reviews this exact source first. Only afterward reopen Developer/QC Code Quality; TS3 stays closed."
+next_action: "Developer/QC decide scoped Code Quality PASS and the proposed resolution of F-RCR-SB1-001 for the same source before TS3."
+```
+
+## Refreshed RCR-SB1 Code Quality — TS2a
+
+```yaml
+batch: RCR-SB1
+source_sha: "3e0b9728d82204e38b06668e08cc895294109986"
+scope: ["TS1", "TS2", "TS2a"]
+spec_compliance_precondition: "QC APPROVED this exact source at 2026-09-13T05:37:26Z."
+review_mode: INDEPENDENT
+evidence_prepared_by: "AI targeted review; not an independent human verdict."
+recommendation: PASS
+human_decision: PENDING
+reviewer_roles: ["developer", "qc"]
+evidence_ref: "rcr-sb1-ts2a-code-quality-evidence.json"
+checks:
+  - { criterion: "TDD and focused correction", result: PASS, evidence: "94d252f expected RED precedes 3e0b972 GREEN; existing parser tightened without new dependency or production boundary." }
+  - { criterion: "Fail-closed mirror reader", result: PASS, evidence: "All matching keys counted; complete bounded collection body consumed; 30 malformed/duplicate negative assertions pass." }
+  - { criterion: "No semantic display parsing", result: PASS, evidence: "Selectors use ID or kind/gate only. Unknown legacy text remains exact and is never semantically cleared; mirror text comparison is serialization parity, not transition inference." }
+  - { criterion: "History, scope and isolation", result: PASS, evidence: "13 frozen/live reports load without writes; event prefixes and two unbound events unchanged; protected hosts and quarantined WIP hashes unchanged." }
+findings:
+  new_confirmed_findings: []
+  proposed_resolution: "F-RCR-SB1-001: RESOLVED on Developer/QC approval; currently OPEN."
+scan_evidence:
+  syntax: PASS
+  static_analysis: "SKIP: ESLint unavailable; no configured lint wrapper. Manual review is supplemental only."
+  security: "SKIP: Semgrep unavailable; manual no-eval/no-new-I/O and bounded grammar review is not scanner clearance."
+  performance: "Linear-work heuristic only; no benchmark."
+known_limits:
+  - "Exactly three protocol integration assertions remain failing in planned TS3/TS4 conversion; they were not hidden or weakened."
+  - "Formal static/security, full regression/package and exact-candidate child/parent verification remain mandatory later-batch work."
+authority: "Recommendation only. No human Code Quality verdict, finding closure, TS3 resume, Technical Verification, DoD or release is inferred."
+next_action: "Developer/QC review the scoped PASS and proposed finding resolution; retain BLOCKED until their explicit decision."
 ```
 
 ### TS2a Pre-handoff Verification
@@ -878,7 +915,7 @@ skipped_checks:
 release_blockers: ["Refreshed RCR-SB1 review pair", "F-RCR-SB1-001 still OPEN pending review", "Remaining TS3..TS8", "Parent F-AG11-001 exact-candidate and terminal closeout"]
 status: FAIL
 gaps: ["Remaining structural integration", "Formal static/security and final-candidate evidence"]
-recommendation: "QC refreshed Spec Compliance first; no inferred Code Quality PASS, TS3 resume or DoD."
+recommendation: "QC refreshed Spec Compliance is approved; scoped Code Quality PASS is proposed, not human-passed. No TS3 resume or DoD."
 notes_for_review: "Scoped repair is GREEN; the full work item remains incomplete and release-blocked."
 ```
 
@@ -975,13 +1012,13 @@ notes: "Semantic checklist reviewed for changed scripts/notes; source-only audit
 
 ### Current Structural Handoff
 
-- Protocol BLOCKED at s07, retaining sixteen roots; QC Spec Compliance is explicitly approved for source 964e1c7cf879c6d244253b3ee294f9cdaff60f77.
-- Developer/QC Code Quality is OPEN. TS3 still requires its separate PASS and resume.
+- Protocol BLOCKED at s07, retaining sixteen roots; QC refreshed Spec Compliance is explicitly approved for source 3e0b9728d82204e38b06668e08cc895294109986. The 964e1c7 review is historical.
+- Developer/QC refreshed Code Quality is OPEN with a scoped PASS recommendation and proposed F-RCR-SB1-001 resolution. TS3 still requires the explicit decision and resume.
 - Old protocol suite has three failures: readiness gate cleanup, readiness s01 mirror assertion,
   and old prose-based selected-closeout blocker expectation. TS3/TS4 must convert behavior and
   assertions while preserving unknown canaries; no cosmetic green run.
 - Full unit/static/security/package/hosted/parent verification remains pending in later tasks.
   No candidate build, Technical Verification, DoD or finalization is opened by this handoff.
-- Known limitations: structural contract authoring, replacement TDD/reviews, T8 exact candidate, and child/parent verification remain pending.
-- Notes for testing: the fail-first `uat`/`dod` substring fixture now passes without weakening any existing semantic projection or transaction assertion.
-- Notes for deployment: none in s07; corrected candidate and rollback binding are T8/s08 work.
+- Known limitations: remaining TS3..TS8 implementation/reviews, full regression and child/parent exact-candidate verification remain pending; approved structural authoring is not reopened by this review.
+- Notes for testing: retain unknown legacy canaries and all existing transaction assertions through the remaining conversion; focused TS2a GREEN is not full regression PASS.
+- Notes for deployment: none in s07; corrected candidate and rollback binding are TS8/s08 work.

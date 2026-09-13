@@ -687,16 +687,16 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: "qc"
+protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "RCR-SB1-TS2a-refreshed-spec-compliance"
-last_transition_action: "block"
-last_transition_at: "2026-09-13T05:34:26.143Z"
+handoff_target: "RCR-SB1-TS2a-code-quality-review"
+last_transition_action: "prepare-RCR-SB1-TS2a-code-quality-recommendation"
+last_transition_at: "2026-09-13T05:41:32Z"
 required_actions:
-  - {"id":"se:34b64b8ec1610a35e0b4c01833b5be3e7b349ea70e06e14233c451ff3884fc02","kind":"blocker_resolution","text":"Resolve blockers before resuming the work item."}
+  - {"id":"se:36c0ea9a71e787f9c047c6a3ce50bc274411264a585f4be2dc3e0003fc5a2576","kind":"workflow_followup","text":"Developer/QC review scoped refreshed RCR-SB1 Code Quality PASS and proposed F-RCR-SB1-001 resolution for source 3e0b9728d82204e38b06668e08cc895294109986 before TS3. QC Spec Compliance is already approved."}
 blockers:
-  - {"kind":"legacy","text":"Refreshed QC RCR-SB1 Spec Compliance is pending for corrected source 3e0b9728d82204e38b06668e08cc895294109986; Code Quality and TS3 remain closed."}
+  - {"id":"se:a251ce80464cc418402cccfeaef37ba213fb1a8ccff5a92acc62a19ff7d146fd","kind":"delivery_blocker","text":"QC refreshed RCR-SB1 Spec Compliance is approved. Developer/QC Code Quality is pending; TS3 and candidate delivery remain closed."}
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -817,6 +817,9 @@ audit_events:
   - "S07_F_RCR_SB1_001_OPENED"
   - "S07_RCR_SB1_SPEC_COMPLIANCE_REOPENED"
   - "S07_TS2A_TASK_PLAN_APPROVED"
+  - "S07_RCR_SB1_TS2A_SPEC_COMPLIANCE_APPROVED"
+  - "S07_RCR_SB1_TS2A_CODE_QUALITY_OPENED"
+  - "S07_RCR_SB1_TS2A_CODE_QUALITY_RECOMMENDATION_PREPARED"
 ```
 
 ## Traceability

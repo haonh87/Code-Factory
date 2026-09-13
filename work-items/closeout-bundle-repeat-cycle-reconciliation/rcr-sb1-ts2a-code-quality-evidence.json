@@ -1,0 +1,156 @@
+{
+  "batch": "RCR-SB1",
+  "amendment": "TS2a",
+  "observed_at": "2026-09-13T05:41:32Z",
+  "source_sha": "3e0b9728d82204e38b06668e08cc895294109986",
+  "scope": [
+    "TS1",
+    "TS2",
+    "TS2a"
+  ],
+  "spec_compliance": {
+    "human_decision": "APPROVED",
+    "reviewed_by": [
+      "qc"
+    ],
+    "reviewed_at": "2026-09-13T05:37:26Z",
+    "decision_source": "User accepted the immediately preceding explicit refreshed QC Spec Compliance request for this exact source."
+  },
+  "code_quality": {
+    "recommendation": "PASS",
+    "human_decision": "PENDING",
+    "reviewer_roles": [
+      "developer",
+      "qc"
+    ],
+    "review_mode": "INDEPENDENT",
+    "evidence_prepared_by": "AI_TARGETED_PREPARATION_FOR_INDEPENDENT_HUMAN_REVIEW",
+    "meaning": "Scoped batch recommendation only; not a full-work-item test PASS or terminal verdict."
+  },
+  "file_identity": [
+    {
+      "path": "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
+      "sha256": "d9dda155f663e07eebd9aed7e1c9dad261f5c50820ece6abe283659c4298c0b7",
+      "matches_source": true
+    },
+    {
+      "path": "packages/workflow-bundle/scripts/validate-work-item-protocol.js",
+      "sha256": "020e39c0d43a0da79c43c84fe31bf75cb104254f51499ae7b687bc18a5f0fb79",
+      "matches_source": true
+    },
+    {
+      "path": "packages/workflow-bundle/test/work-item-protocol-state.test.js",
+      "sha256": "4bfde7a118ee12ceee5a22586606a686f37383bc47a39f688cd8360449b19d42",
+      "matches_source": true
+    },
+    {
+      "path": "packages/workflow-bundle/test/validate-work-item-protocol.test.js",
+      "sha256": "704c95d54133ac7544e1ff44c589c1e550fde26f3bcddd0599311b846bf80069",
+      "matches_source": true
+    }
+  ],
+  "checks": [
+    {
+      "command": "node packages/workflow-bundle/test/validate-work-item-protocol.test.js",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "node packages/workflow-bundle/test/work-item-protocol-state.test.js",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "node packages/workflow-bundle/test/workflow-gate-review.test.js",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "node packages/workflow-bundle/test/work-item-protocol.test.js",
+      "exit_code": 1,
+      "result": "FAIL: three known TS3/TS4 integration assertions; not waived"
+    },
+    {
+      "command": "node --check packages/workflow-bundle/scripts/work-item-protocol-utils.js",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "node --check packages/workflow-bundle/scripts/validate-work-item-protocol.js",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "node packages/workflow-bundle/bin/wfc.js validate --workflow-root work-items --project-root .",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "node packages/workflow-bundle/bin/wfc.js protocol --workflow-root work-items --project-root .",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "node packages/workflow-bundle/bin/wfc.js plan --workflow-root work-items --project-root .",
+      "exit_code": 0,
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "PASS"
+    }
+  ],
+  "manual_review": {
+    "parser": "Counts all collection headers; rejects duplicate/noncanonical headers; consumes the bounded collection body and rejects malformed, interrupted or empty entries. Canonical flow maps and pre-contract scalar forms remain supported; not a general YAML parser.",
+    "state_contract": "One constructor derives full SHA-256 opaque IDs from a JSON tuple without display text. Required fields, kind/gate conditions and per-collection unique IDs are enforced.",
+    "legacy_rule": "Unknown strings retain exact original text as kind legacy. Already-legacy objects are not reclassified; no semantic clearing of unknown entries.",
+    "transition_boundary": "Selectors read exact ID or kind/gate only; throwing-display-getter test passes. Regex over serialization keys and data equality for mirror parity are not semantic inference over display prose.",
+    "security_supplement": "No eval, new process execution, new dependency or new hot-path I/O in the reviewed production delta. Legacy command adapter uses full consumption, verb-specific flag whitelist and owning-subject binding; supplemental manual review, not a security scanner.",
+    "performance_heuristic": "Two fixed collection scans plus bounded body traversal and per-entry validation/hash are linear in mirror/collection size. No benchmark."
+  },
+  "tdd": {
+    "red_commit": "94d252ff010bd812ae3451c4b541273109bf6bc1",
+    "green_commit": "3e0b9728d82204e38b06668e08cc895294109986",
+    "red_expected_failures": 16,
+    "negative_assertions": 30,
+    "green": "30/30 negative assertions and valid/unknown legacy controls PASS"
+  },
+  "compatibility": {
+    "frozen_reports": 13,
+    "live_loads_without_writes": 13,
+    "historical_prefixes": "UNCHANGED",
+    "unbound_events_unchanged": 2,
+    "protected_hosts_unchanged": 3,
+    "quarantined_T7_file_and_diff": "UNCHANGED_UNSTAGED",
+    "utf8": "Fatal UTF-8 decode PASS for changed tracked text; final artifact checks required after materialization."
+  },
+  "finding": {
+    "id": "F-RCR-SB1-001",
+    "disposition": "OPEN",
+    "proposed_disposition": "RESOLVED",
+    "condition": "Explicit Developer/QC approval for the corrected-source scoped review and finding resolution.",
+    "new_confirmed_findings": []
+  },
+  "skipped_checks": [
+    "ESLint absent, no configured lint wrapper; manual review is not lint.",
+    "Semgrep absent; no scanner installation or security clearance.",
+    "Full regression/package/hosted candidate and parent verification remain TS7/TS8; no terminal gate is open.",
+    "No performance benchmark."
+  ],
+  "known_integration_failures": [
+    "Readiness reconciliation retains pending gate actions.",
+    "Readiness s01 protocol mirror assertion expects old scalar representation.",
+    "Selected closeout blockers still use old prose consumers."
+  ],
+  "authority": {
+    "protocol_status": "BLOCKED",
+    "granted_write_roots": 16,
+    "ts3": "CLOSED",
+    "finding_closure": "PENDING_HUMAN",
+    "technical_verification": "NOT_OPEN",
+    "dod": "NOT_PASSED",
+    "release_finalization": "NOT_OPEN",
+    "whole_work_item": "NOT_DONE"
+  }
+}
