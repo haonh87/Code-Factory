@@ -80,15 +80,37 @@ function validateProtocolBlockSync(s01Content, report, s01Path, errors) {
   // scalar lists remain readable without changing their files.
   const lines = section.split("\n");
   STATE_COLLECTIONS.forEach(collection => {
-    const start = lines.findIndex(line => line === collection + ":" || line === collection + ": []");
-    if (start < 0) {
+    const starts = [];
+    lines.forEach((line, index) => {
+      const key = line.match(/^([a-z_]+)\s*:/);
+      if (key && key[1] === collection) starts.push(index);
+    });
+    if (starts.length === 0) {
       errors.push(`${collection} out of sync in ${s01Path}: missing collection.`);
       return;
     }
+    if (starts.length !== 1) {
+      errors.push(`${collection} out of sync in ${s01Path}: duplicate collection keys.`);
+      return;
+    }
+    const start = starts[0];
     const entries = [];
     try {
-      if (lines[start] !== collection + ": []") {
-        for (let i = start + 1; i < lines.length && lines[i].startsWith("  - "); i++) {
+      if (lines[start] !== collection + ":" && lines[start] !== collection + ": []") {
+        throw new Error("collection must use the canonical block list or empty [] header.");
+      }
+      // A collection owns every line up to the next top-level mapping or fence.
+      // Never stop at a blank/comment/malformed line and silently drop its tail.
+      let end = start + 1;
+      while (end < lines.length && !/^[a-z_]+\s*:/.test(lines[end]) && lines[end] !== "```") end++;
+      if (lines[start] === collection + ": []") {
+        if (end !== start + 1) throw new Error("empty [] collection cannot have trailing entries or continuation.");
+      } else {
+        if (end === start + 1) throw new Error("empty collection must use [].");
+        for (let i = start + 1; i < end; i++) {
+          if (!lines[i].startsWith("  - ")) {
+            throw new Error("malformed or non-contiguous collection entry at mirror line " + (i + 1) + ".");
+          }
           const value = lines[i].slice(4);
           // Canonical flow maps/quoted scalars are JSON; bare legacy scalars
           // remain exact input rather than being semantically interpreted here.
