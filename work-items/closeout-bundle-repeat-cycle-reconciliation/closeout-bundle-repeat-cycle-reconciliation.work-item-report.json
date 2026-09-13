@@ -1,8 +1,8 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "BLOCKED",
+  "protocol_status": "ACTIVE",
   "decision_owner": "agent",
-  "protocol_owner": "developer/qc",
+  "protocol_owner": "developer",
   "raw_request_summary": "Fix repeated closeout-bundle reconciliation so a successful current approval cycle removes stale pending approval actions and handoffs, records a current-cycle protocol event despite historical evidence, and remains idempotent.",
   "request_source": "user",
   "candidate_count": 1,
@@ -117,7 +117,8 @@
     "Prepared scoped refreshed RCR-SB1 Code Quality PASS recommendation for exact source 3e0b9728d82204e38b06668e08cc895294109986 after QC Spec Compliance approval. F-RCR-SB1-001 resolution is proposed only; Developer/QC decision, TS3 resume and all terminal gates remain pending. Three planned integration failures and missing formal scanners are disclosed.",
     "Human Developer and QC explicitly approved refreshed RCR-SB1 Code Quality PASS and resolved F-RCR-SB1-001 for source 3e0b9728d82204e38b06668e08cc895294109986 at 2026-09-13T05:46:55Z. RCR-SB1 is complete in order; coordinator may resume TS3 in the existing approved sixteen roots. No new scope, later review or terminal gate is approved.",
     "Human QC explicitly approved RCR-SB2 Spec Compliance for exact source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 at 2026-09-13T11:34:46Z. Open Code Quality review preparation only; no Code Quality verdict, TS5 resume, new scope or terminal approval is inferred.",
-    "Prepared RCR-SB2 Code Quality scoped PASS recommendation for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 after explicit QC Spec Compliance. No new finding; automatic static/security scans SKIP and scan overall PARTIAL, T7 WIP has twenty unchanged string-assertion failures. Human Developer/QC verdict, TS5 and all terminal gates remain pending."
+    "Prepared RCR-SB2 Code Quality scoped PASS recommendation for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 after explicit QC Spec Compliance. No new finding; automatic static/security scans SKIP and scan overall PARTIAL, T7 WIP has twenty unchanged string-assertion failures. Human Developer/QC verdict, TS5 and all terminal gates remain pending.",
+    "Human Developer and QC explicitly approved RCR-SB2 Code Quality PASS for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 at 2026-09-13T12:05:44Z. All disclosed static/security/performance scan gaps, T7 WIP quarantine and TS7/s08 duties are retained. This completes SB2 review dependencies only; no SB3, s08 or terminal approval."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -144,21 +145,15 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "RCR-SB2-code-quality",
+  "handoff_target": "RCR-SB3-TS5",
   "required_actions": [
     {
-      "id": "se:844d07c10fe6153bfebadd0f96af89bff16a374c2cbb19f19f1c55139b454e5c",
+      "id": "se:2db776cd66b0f279593ff88c165a05422878625c8646363d21f46d5043ec7f26",
       "kind": "workflow_followup",
-      "text": "Review the RCR-SB2 Code Quality evidence; Developer and QC must decide before TS5."
+      "text": "Continue active execution from the current step."
     }
   ],
-  "blockers": [
-    {
-      "id": "se:cc563dce4f68cfb31495fc0316aa0f8138394d8d934ec12a80fe99f272ec928b",
-      "kind": "delivery_blocker",
-      "text": "Developer/QC RCR-SB2 Code Quality decision is pending for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3; TS5 remains closed."
-    }
-  ],
+  "blockers": [],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
     "work-items/adaptive-governance-human-approval-ux",
@@ -242,7 +237,8 @@
     "S07_RCR_SB1_TS2A_CODE_QUALITY_RECOMMENDATION_PREPARED",
     "S07_RCR_SB1_TS2A_CODE_QUALITY_APPROVED",
     "S07_F_RCR_SB1_001_RESOLVED",
-    "S07_RCR_SB2_SPEC_COMPLIANCE_APPROVED"
+    "S07_RCR_SB2_SPEC_COMPLIANCE_APPROVED",
+    "S07_RCR_SB2_CODE_QUALITY_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -292,7 +288,8 @@
     "Developer Task Plan receipt APPROVED at 2026-09-12T05:51:29.267Z matches finalized s06 SHA-256 ae1a733dab2cc709f61334050b0435160d34d88385ca4dba5ff7960632f11238. No authoring receipt is missing; protocol remains BLOCKED until explicit s07 resume grants all 16 roots. Existing grants and partial T7 WIP are unchanged.",
     "Current structural boundary: TS0..TS2 complete for batch-level review, 9/9 isolated state tests and protocol-validator suite PASS, 13-report load-only compatibility PASS with zero file changes, protected host/WIP digests unchanged. Existing protocol suite has three unresolved integration assertions scheduled for TS3/TS4; no full verification or DoD is claimed.",
     "Human QC explicitly approved RCR-SB2 Spec Compliance for exact source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 at 2026-09-13T11:34:46Z. Open Code Quality review preparation only; no Code Quality verdict, TS5 resume, new scope or terminal approval is inferred.",
-    "Prepared RCR-SB2 Code Quality scoped PASS recommendation for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 after explicit QC Spec Compliance. No new finding; automatic static/security scans SKIP and scan overall PARTIAL, T7 WIP has twenty unchanged string-assertion failures. Human Developer/QC verdict, TS5 and all terminal gates remain pending."
+    "Prepared RCR-SB2 Code Quality scoped PASS recommendation for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 after explicit QC Spec Compliance. No new finding; automatic static/security scans SKIP and scan overall PARTIAL, T7 WIP has twenty unchanged string-assertion failures. Human Developer/QC verdict, TS5 and all terminal gates remain pending.",
+    "Human Developer and QC explicitly approved RCR-SB2 Code Quality PASS for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 at 2026-09-13T12:05:44Z. All disclosed static/security/performance scan gaps, T7 WIP quarantine and TS7/s08 duties are retained. This completes SB2 review dependencies only; no SB3, s08 or terminal approval."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -722,6 +719,22 @@
       "from_status": "BLOCKED",
       "to_status": "BLOCKED",
       "note": "Prepared RCR-SB2 Code Quality scoped PASS recommendation for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 after explicit QC Spec Compliance. No new finding; automatic static/security scans SKIP and scan overall PARTIAL, T7 WIP has twenty unchanged string-assertion failures. Human Developer/QC verdict, TS5 and all terminal gates remain pending."
+    },
+    {
+      "timestamp": "2026-09-13T12:05:44Z",
+      "action": "approve-RCR-SB2-code-quality",
+      "actor": "developer/qc",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "Human Developer and QC explicitly approved RCR-SB2 Code Quality PASS for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 at 2026-09-13T12:05:44Z. All disclosed static/security/performance scan gaps, T7 WIP quarantine and TS7/s08 duties are retained. This completes SB2 review dependencies only; no SB3, s08 or terminal approval."
+    },
+    {
+      "timestamp": "2026-09-13T12:05:55.148Z",
+      "action": "resume",
+      "actor": "coordinator",
+      "from_status": "BLOCKED",
+      "to_status": "ACTIVE",
+      "note": "Explicit Developer/QC RCR-SB2 Code Quality PASS for c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 clears the SB2 blocker. Resume approved TS5/TS6/TS7 within the same sixteen roots; scanner gaps, T7 quarantine until TS7 and s08 duties are retained. No later review or terminal gate is approved."
     }
   ]
 }

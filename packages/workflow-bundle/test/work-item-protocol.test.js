@@ -15,7 +15,7 @@ const {
   getProtocolStateContradictionErrors,
   getTrustedReceiptArtifactErrors
 } = require("../scripts/workflow-gate-evidence-utils");
-const { APPROVAL_TRANSACTION_FAILURE_POINTS } = require("../scripts/workflow-approval-transaction");
+const { APPROVAL_TRANSACTION_FAILURE_POINTS, recoverApprovalTransaction } = require("../scripts/workflow-approval-transaction");
 
 const governanceFixtureRoot = path.join(__dirname, "..", "tests", "fixtures", "workflow-governance");
 
@@ -792,6 +792,57 @@ function testProductReleaseCloseoutKeepsConfiguredAuthority() {
   }
 }
 
+function testAllBundleDecisionsBindEventJournalAndResultWithNoteIndependentRetries() {
+  const script = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  for (const phase of ["readiness", "closeout"]) for (const decision of ["approve", "reject"]) {
+    const slug = `proto-identity-${phase}-${decision}`;
+    const context = phase === "readiness" ? buildLightProject(slug) : buildCloseoutProject(slug, ["dod", "release", "business_acceptance"]);
+    const { projectRoot, workflowRoot } = context;
+    const reportPath = context.reportPath || writeReadinessProtocolReport({ projectRoot, workflowRoot, slug });
+    const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+    const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-direct-identity-");
+    const command = `${decision}-${phase === "readiness" ? "ready" : "closeout"}-bundle`;
+    const eventAction = `${decision}-${phase}-bundle`;
+    const args = [command, "--work-item", slug, "--project-root", projectRoot, "--workflow-root", path.dirname(workflowRoot), "--approval-root", approvalRoot];
+    try {
+      const before = JSON.parse(fs.readFileSync(reportPath, "utf8")).protocol_events;
+      const crashed = runGateCommand(script, [...args, "--transaction-crash-at", "after_verified_commit"], env);
+      assert(crashed.status !== 0 && /crash/i.test(crashed.stderr), `${eventAction}: fixture stops after verified commit`);
+      const journalPath = listFilesRecursively(approvalRoot).find(file => file.endsWith(".journal.json"));
+      assert(Boolean(journalPath), `${eventAction}: recovery journal exists`);
+      if (!journalPath) continue;
+      const journal = JSON.parse(fs.readFileSync(journalPath, "utf8"));
+      const committed = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+      const event = committed.protocol_events.at(-1);
+      assert(committed.protocol_events.length === before.length + 1 && event.action === eventAction, `${eventAction}: exactly one event is committed`);
+      assert(event.transaction_id === journal.transaction_id, `${eventAction}: direct event identity equals committed journal identity`);
+      assert(JSON.stringify(committed.protocol_events.slice(0, before.length)) === JSON.stringify(before), `${eventAction}: historical prefix is immutable`);
+      const recovered = recoverApprovalTransaction({ transaction_root: path.dirname(journalPath), work_item_slug: slug });
+      assert(recovered.status === "COMPLETED" && recovered.transaction_id === event.transaction_id, `${eventAction}: result, journal and event expose one identity`);
+      const projection = value => JSON.stringify({ blockers: value.blockers, required_actions: value.required_actions, audit_events: value.audit_events, handoff_target: value.handoff_target, protocol_status: value.protocol_status });
+      const expected = projection(committed);
+      committed.protocol_events.at(-1).note = "Peer review is outstanding; transaction_id: another-id; Chờ QC – 漢字";
+      writeFile(reportPath, `${JSON.stringify(committed, null, 2)}\n`);
+      // The mirror omits event history; mutating human context needs no mirror change.
+      const files = listFilesRecursively(approvalRoot);
+      const snapshot = () => JSON.stringify([reportPath, s01Path, ...files].map(file => [file, crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex")]));
+      const bytes = snapshot();
+      for (let retry = 0; retry < 2; retry += 1) {
+        const outcome = runGateCommand(script, [...args, "--reviewed-at", `2026-09-13T01:00:0${retry}Z`, "--note", "Completely different human context"], env);
+        assert(outcome.status === 0, `${eventAction}: changed-note retry ${retry + 1} succeeds`);
+        if (outcome.status !== 0) continue;
+        const summary = JSON.parse(outcome.stdout);
+        assert(summary.transaction.status === "NOOP" && !summary.transaction.transaction_id, `${eventAction}: retry creates no transaction identity`);
+        const actual = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+        assert(actual.protocol_events.length === committed.protocol_events.length, `${eventAction}: retry adds no event`);
+        assert(actual.protocol_events.at(-1).transaction_id === journal.transaction_id, `${eventAction}: note mutation cannot change identity`);
+        assert(projection(actual) === expected && snapshot() === bytes, `${eventAction}: retry preserves state, receipts and exact report/mirror bytes`);
+        assert(listFilesRecursively(approvalRoot).length === files.length, `${eventAction}: retry creates no transaction residue`);
+      }
+    } finally { rmrf(projectRoot); rmrf(approvalRoot); }
+  }
+}
+
 function testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry() {
   const slug = "proto-repeat-cycle-closeout-item";
   const gates = ["dod", "release", "business_acceptance"];
@@ -843,16 +894,16 @@ function testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry()
     const auditEventsAfterSecond = JSON.parse(reportAfterSecond).audit_events;
     assert(cycleEvents.length === 2, "first and later committed closeout cycles each append exactly one protocol event");
     assert(
-      cycleEvents[0] && cycleEvents[0].note.includes(firstSummary.transaction.transaction_id),
+      cycleEvents[0] && cycleEvents[0].transaction_id === firstSummary.transaction.transaction_id,
       "the first-cycle event is attributable to its journal transaction_id"
     );
     assert(
-      cycleEvents[1] && cycleEvents[1].note.includes(secondSummary.transaction.transaction_id),
+      cycleEvents[1] && cycleEvents[1].transaction_id === secondSummary.transaction.transaction_id,
       "the later-cycle event is attributable to its journal transaction_id despite historical event evidence"
     );
     assert(
-      cycleEvents.every((event) => event.note.includes("dod, release, business_acceptance")),
-      "every cycle event retains deterministic selected-gate order"
+      secondSummary.approval_plan.gates.map(value => value.gate).join(",") === gates.join(","),
+      "the structured approval plan retains deterministic selected-gate order"
     );
     assert(
       auditEventsAfterSecond.filter((event) => event === "CLOSEOUT_BUNDLE_APPROVED").length === 1,
@@ -1559,6 +1610,7 @@ testReadyBundlePreflightsEveryReviewerBeforeWriting();
 testRejectReadyBundleKeepsIndependentDecisionEvidence();
 testMaintenanceCloseoutBundlesOnlyDod();
 testProductReleaseCloseoutKeepsConfiguredAuthority();
+testAllBundleDecisionsBindEventJournalAndResultWithNoteIndependentRetries();
 testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry();
 testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss();
 testLegacyMaintenanceCloseoutRestoresImplicitDod();

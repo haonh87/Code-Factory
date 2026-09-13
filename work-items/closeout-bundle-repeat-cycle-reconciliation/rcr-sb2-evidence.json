@@ -283,7 +283,7 @@
     "The quarantined T7 fixture has not been adopted or corrected early."
   ],
   "authority": {
-    "protocol_status": "BLOCKED",
+    "protocol_status": "ACTIVE",
     "spec_compliance": {
       "recommendation": "PASS_FOR_BATCH",
       "human_approval": "APPROVED",
@@ -291,10 +291,10 @@
       "reviewed_at": "2026-09-13T11:34:46Z",
       "approval_basis": "Explicit user QC approval for the full source SHA; this does not approve Code Quality or later gates."
     },
-    "code_quality": "PENDING_DEVELOPER_QC_VERDICT",
+    "code_quality": "EXPLICIT_DEVELOPER_QC_PASS",
     "code_quality_evidence": "rcr-sb2-code-quality-evidence.json",
     "code_quality_prepared_at": "2026-09-13T11:37:56Z",
-    "TS5": "CLOSED",
+    "TS5": "OPEN_UNDER_APPROVED_TASK_PLAN",
     "technical_verification": "NOT_OPEN",
     "dod": "NOT_OPEN",
     "release": "NOT_OPEN",
@@ -303,7 +303,13 @@
     "publish": false,
     "tag": false,
     "merge": false,
-    "cleanup": false
+    "cleanup": false,
+    "code_quality_reviewed_by": [
+      "developer",
+      "qc"
+    ],
+    "code_quality_reviewed_at": "2026-09-13T12:05:44Z",
+    "operational_resume": "Coordinator resumed approved TS5/TS6/TS7 within existing sixteen roots; no later gate approval."
   },
   "release_blockers": [
     "SB2 and SB3 ordered human review pairs",

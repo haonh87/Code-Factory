@@ -654,7 +654,7 @@ next_action: "Developer reviews the amended s06 TS0..TS8 plan; implementation st
 
 ## Work Item Protocol
 ```yaml
-protocol_status: BLOCKED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
@@ -687,16 +687,15 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: "developer/qc"
+protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "RCR-SB2-code-quality"
-last_transition_action: "prepare-RCR-SB2-code-quality-recommendation"
-last_transition_at: "2026-09-13T11:37:56Z"
+handoff_target: "RCR-SB3-TS5"
+last_transition_action: "resume"
+last_transition_at: "2026-09-13T12:05:55.148Z"
 required_actions:
-  - {"id":"se:844d07c10fe6153bfebadd0f96af89bff16a374c2cbb19f19f1c55139b454e5c","kind":"workflow_followup","text":"Review the RCR-SB2 Code Quality evidence; Developer and QC must decide before TS5."}
-blockers:
-  - {"id":"se:cc563dce4f68cfb31495fc0316aa0f8138394d8d934ec12a80fe99f272ec928b","kind":"delivery_blocker","text":"Developer/QC RCR-SB2 Code Quality decision is pending for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3; TS5 remains closed."}
+  - {"id":"se:2db776cd66b0f279593ff88c165a05422878625c8646363d21f46d5043ec7f26","kind":"workflow_followup","text":"Continue active execution from the current step."}
+blockers: []
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -742,6 +741,7 @@ review_notes:
   - "Current structural boundary: TS0..TS2 complete for batch-level review, 9/9 isolated state tests and protocol-validator suite PASS, 13-report load-only compatibility PASS with zero file changes, protected host/WIP digests unchanged. Existing protocol suite has three unresolved integration assertions scheduled for TS3/TS4; no full verification or DoD is claimed."
   - "Human QC explicitly approved RCR-SB2 Spec Compliance for exact source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 at 2026-09-13T11:34:46Z. Open Code Quality review preparation only; no Code Quality verdict, TS5 resume, new scope or terminal approval is inferred."
   - "Prepared RCR-SB2 Code Quality scoped PASS recommendation for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 after explicit QC Spec Compliance. No new finding; automatic static/security scans SKIP and scan overall PARTIAL, T7 WIP has twenty unchanged string-assertion failures. Human Developer/QC verdict, TS5 and all terminal gates remain pending."
+  - "Human Developer and QC explicitly approved RCR-SB2 Code Quality PASS for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 at 2026-09-13T12:05:44Z. All disclosed static/security/performance scan gaps, T7 WIP quarantine and TS7/s08 duties are retained. This completes SB2 review dependencies only; no SB3, s08 or terminal approval."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -825,6 +825,7 @@ audit_events:
   - "S07_RCR_SB1_TS2A_CODE_QUALITY_APPROVED"
   - "S07_F_RCR_SB1_001_RESOLVED"
   - "S07_RCR_SB2_SPEC_COMPLIANCE_APPROVED"
+  - "S07_RCR_SB2_CODE_QUALITY_APPROVED"
 ```
 
 ## Traceability

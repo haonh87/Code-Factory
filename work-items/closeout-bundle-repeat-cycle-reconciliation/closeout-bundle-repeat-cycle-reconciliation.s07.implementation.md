@@ -1029,13 +1029,13 @@ notes: "Semantic checklist reviewed for changed scripts/notes; source-only audit
 
 ### Current Structural Handoff
 
-- Protocol BLOCKED at s07, retaining the sixteen previously approved/granted roots. QC explicitly approved SB2 Spec Compliance at 2026-09-13T11:34:46Z; the current handoff is RCR-SB2-code-quality.
+- Protocol ACTIVE at s07 after coordinator resume, retaining the sixteen approved/granted roots. QC approved SB2 Spec Compliance at 2026-09-13T11:34:46Z and Developer/QC approved SB2 Code Quality PASS at 2026-09-13T12:05:44Z; the current handoff is RCR-SB3-TS5.
 - RCR-SB1 refreshed Spec Compliance and Code Quality are explicitly approved for source 3e0b9728d82204e38b06668e08cc895294109986; F-RCR-SB1-001 is RESOLVED. The 964e1c7 review is historical.
-- TS3 RED and supplemental rejection RED precede the corresponding TS4 repairs. RCR-SB2 source is c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3; QC Spec Compliance is APPROVED, and the Code Quality evidence is ready for Developer/QC with a scoped PASS recommendation, disclosed scan gaps, and no human verdict.
+- TS3 RED and supplemental rejection RED precede the corresponding TS4 repairs. RCR-SB2 source is c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3; Both QC Spec Compliance and Developer/QC Code Quality PASS are explicitly APPROVED, with all disclosed scan gaps and TS7/s08 obligations retained.
 - The previous three owned protocol assertions now pass. The entire committed protocol test source passes against this source; the local file also includes the unchanged sixty-nine-line T7 WIP and has exactly twenty WIP string-assertion failures, with no other observed failure. WIP is not silently adopted, altered, or staged.
 - Full unit/static/security/package/hosted/parent verification remains pending in later tasks.
   No candidate build, Technical Verification, DoD or finalization is opened by this handoff.
-- Known limitations: SB2 reviews, TS5..TS8, full regression and child/parent exact-candidate verification remain pending; approved structural authoring is not reopened by this proposal.
+- Known limitations: TS5..TS8, full regression and child/parent exact-candidate verification remain pending; approved structural authoring is not reopened by this proposal.
 - Notes for testing: retain unknown legacy canaries and transaction assertions; state-selector text independence is proved, but direct event identity and note independence remain TS5/TS6. Do not report whole-regression PASS.
 - Notes for deployment: none in s07; corrected candidate and rollback binding are TS8/s08 work.
 
@@ -1118,7 +1118,7 @@ release_blockers: []
 status: PASS
 gaps: ["PASS is only this batch's tested contribution; complete AC-RCR-09 and CR-008 remain pending", "Local test file with quarantined T7 WIP has twenty old-string assertion failures"]
 residual_risks: ["Mixed state/event architecture until TS6", "Final failure/concurrency matrix pending"]
-recommendation: "QC Spec Compliance is explicitly approved; submit the separate Developer/QC Code Quality decision. Do not open TS5, release or terminal verification without the corresponding authority."
+recommendation: "Both SB2 review lanes are explicitly approved for the same source. Resume only the already-approved TS5/TS6/TS7 work; candidate and terminal gates remain independent and NOT_OPEN."
 notes_for_review: "No release blocker is assessed away by this batch-scoped test status. Whole-work-item release blockers remain listed in rcr-sb2-evidence.json."
 ```
 
@@ -1144,8 +1144,8 @@ human_approval: APPROVED
 reviewer_role: qc
 reviewed_by: ["qc"]
 reviewed_at: "2026-09-13T11:34:46Z"
-code_quality_status: PENDING_DEVELOPER_QC_VERDICT
-ts5: CLOSED
+code_quality_status: EXPLICIT_DEVELOPER_QC_PASS
+ts5: OPEN_AFTER_OPERATIONAL_RESUME
 whole_work_item_status: NOT_DONE
 evidence_ref: "rcr-sb2-evidence.json"
 ```
@@ -1171,7 +1171,7 @@ notes: "Mechanical PASS does not clear external skill overrides or establish who
 - Waiting for independent approvals, hosted access, or new findings can extend elapsed time. 2026-09-18 remains a stop-and-reassess checkpoint, not a promised delivery date.
 - No percentage or calendar ETA is inferred from historical terminal approvals; CR-008 is still NOT_DONE.
 
-## RCR-SB2 Code Quality — Decision Pending
+## RCR-SB2 Code Quality — Developer/QC Approved
 
 ```yaml
 review_target: "RCR-SB2 TS3/TS4 at c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3"
@@ -1191,20 +1191,21 @@ finding_policy:
   blocker_threshold: "Any new HIGH/CRITICAL quality finding or spec drift blocks continuation"
   reopen_conditions: ["Reviewed production source changes", "Preservation/parity/identity guard failure", "A finding requires contract or scope change"]
 handoff_to_verify: ["Not open: TS5/TS6 and TS7 must finish", "Later independent SB3 pair", "QC explicit s08 opening"]
-notes_for_implementation_or_verify: "AI review assistance is not an independent human verdict or a final s08 scan. Human Developer/QC decision remains required; unavailable automatic scanner gaps and T7 WIP are retained."
+notes_for_implementation_or_verify: "AI review assistance is not an independent human verdict or a final s08 scan. Human Developer/QC explicitly approved scoped PASS; unavailable automatic scanner gaps, T7 WIP quarantine until TS7, and all TS7/s08 duties are retained."
 prepared_at: "2026-09-13T11:37:56Z"
 recommendation: PASS_FOR_BATCH_WITH_DISCLOSED_SCAN_GAPS
-human_approval: PENDING
+human_approval: APPROVED
+verdict: PASS
 reviewer_roles: ["developer", "qc"]
-reviewed_by: []
-reviewed_at: ""
+reviewed_by: ["developer", "qc"]
+reviewed_at: "2026-09-13T12:05:44Z"
 findings: []
 scan_overall_status: PARTIAL
 evidence_ref: "rcr-sb2-code-quality-evidence.json"
 tests: ["Isolated state 15/15 PASS", "Materializer PASS", "Gate evidence PASS", "Gate review PASS", "Entire committed protocol test source PASS", "Authoring smoke 13/13 PASS", "13 frozen/live report loads and historical prefixes unchanged"]
 skipped_scans: ["ESLint/typecheck absent with no matching configured wrapper", "Semgrep absent", "No benchmark/profiling"]
 quarantined_wip: "Local full test file has exactly twenty unchanged T7 string-assertion failures and no other observed failure; the sixty-nine pre-existing lines remain unstaged. Do not call full regression GREEN."
-ts5: CLOSED
+ts5: OPEN_UNDER_APPROVED_TASK_PLAN
 candidate_build: NOT_OPEN
 whole_work_item_status: NOT_DONE
 branch_decision: HOLD_OPEN
@@ -1230,3 +1231,19 @@ notes_for_verify: "s07 supporting evidence only. Any scoped human Code Quality P
 ```
 
 This is pre-handoff evidence under `code-scan-review`, not final Technical Verification or DoD. The human Code Quality decision may only accept the scoped recommendation with the named automatic-scan gaps retained for TS7/s08.
+
+## SB2 Human Decision and Approved TS5 Resume
+
+- Developer and QC explicitly approved RCR-SB2 Code Quality PASS for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 at 2026-09-13T12:05:44Z.
+- Scan status remains PARTIAL: unavailable ESLint/typecheck/Semgrep and no benchmark are not silently promoted to PASS.
+- Coordinator resumed s07 under the same sixteen roots; TS5 RED must precede TS6 production changes. T7 WIP remains quarantined until TS7.
+- Later RCR-SB3 reviews, TS7 matrix, explicit QC s08 opening, candidate binding and child/parent terminal gates remain independent and required.
+
+## Structural TS5 RED
+
+- Before any TS6 production edit, the fifteen existing state tests PASS and three new event-contract tests FAIL for missing constructor validation, dropped identity and absent direct event fields.
+- Gate/coordinator tests have eight expected identity failures across readiness/closeout approve/reject. The owned protocol suite has eighteen expected direct-field failures; no unrelated failure was observed.
+- All four integration cases preserve the committed journal and compare its identity to the event and recovery result, then run two changed-note retry snapshots.
+- Two existing repeated-cycle assertions now use event.transaction_id; selected-gate order comes from the structured approval plan, not prose.
+- Pre-existing T7 function hash 14616b5522fcdfd0d02a05220985ec935c8a9f13cb5361fb81d0101af624f0c4 and invocation remain unchanged and excluded from TS5 staging.
+- Evidence: rcr-sb3-ts5-red-evidence.json. TS6 is the next approved dependency; TS7, SB3 reviews and s08 remain required.

@@ -1,0 +1,57 @@
+{
+  "batch": "RCR-SB3",
+  "task": "TS5",
+  "status": "EXPECTED_RED",
+  "observed_at": "2026-09-13T12:08:26Z",
+  "production_baseline_sha": "c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3",
+  "precondition": {
+    "SB2_spec": "QC_APPROVED",
+    "SB2_quality": "DEVELOPER_QC_PASS",
+    "quality_approved_at": "2026-09-13T12:05:44Z",
+    "retained_scan_status": "PARTIAL",
+    "protocol": "ACTIVE",
+    "granted_roots": 16
+  },
+  "checks": [
+    {
+      "command": "node --test packages/workflow-bundle/test/work-item-protocol-state.test.js",
+      "exit_code": 1,
+      "pass": 15,
+      "expected_failed_tests": 3,
+      "reasons": [
+        "Constructor does not reject missing identity",
+        "Normalizer drops direct identity and trims historical human note",
+        "Reconciler emits no direct field"
+      ]
+    },
+    {
+      "command": "node packages/workflow-bundle/test/workflow-gate-review.test.js",
+      "exit_code": 1,
+      "expected_failed_assertions": 8,
+      "reason": "Event identity missing across four phase/decision journal/recovery fixtures"
+    },
+    {
+      "command": "node -e 'const fs=require(\"node:fs\"),assert=require(\"node:assert/strict\"),crypto=require(\"node:crypto\"),path=require(\"node:path\"),Module=require(\"node:module\");\nconst p=\"packages/workflow-bundle/test/work-item-protocol.test.js\",filename=path.resolve(p),full=fs.readFileSync(p,\"utf8\"),begin=full.indexOf(\"function testTwentyCloseoutCyclesRemainDeterministic()\"),end=full.indexOf(\"function testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss()\",begin);\nassert.equal(crypto.createHash(\"sha256\").update(full.slice(begin,end)).digest(\"hex\"),\"14616b5522fcdfd0d02a05220985ec935c8a9f13cb5361fb81d0101af624f0c4\");\nconst owned=(full.slice(0,begin)+full.slice(end)).replace(\"testTwentyCloseoutCyclesRemainDeterministic();\\n\",\"\");\nconst m=new Module(filename,module);m.filename=filename;m.paths=Module._nodeModulePaths(path.dirname(filename));m._compile(owned,filename);'",
+      "exit_code": 1,
+      "expected_failed_assertions": 18,
+      "reason": "Direct event/journal/result equality and four-case retries have no event field; two repeated closeout cycles still expose identity only in note"
+    }
+  ],
+  "quarantined_wip": {
+    "function_sha256": "14616b5522fcdfd0d02a05220985ec935c8a9f13cb5361fb81d0101af624f0c4",
+    "pre_existing_lines": 69,
+    "adopted": false,
+    "staged": false
+  },
+  "scope": {
+    "production_unchanged": true,
+    "owned_test_deltas": [
+      "work-item-protocol-state.test.js",
+      "workflow-gate-review.test.js",
+      "work-item-protocol.test.js (57 additions/5 deletions; excludes quarantined WIP)"
+    ],
+    "next": "TS6 minimum implementation; TS7 matrix still required; no SB3 verdict or s08 opening"
+  },
+  "whole_work_item_status": "NOT_DONE",
+  "branch_decision": "HOLD_OPEN"
+}

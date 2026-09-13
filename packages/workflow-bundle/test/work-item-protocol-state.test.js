@@ -9,6 +9,54 @@ const utils = require("../scripts/work-item-protocol-utils");
 const entry = { id: "opaque-1", kind: "approval_pending", text: "Release awaits review", gate: "release" };
 const report = (blockers = [], required_actions = []) => ({ blockers, required_actions });
 
+const transactionId = "12345678-1234-4234-9234-123456789abc";
+const bundleActions = ["approve-readiness-bundle", "reject-readiness-bundle", "approve-closeout-bundle", "reject-closeout-bundle"];
+
+test("new bundle events require a direct canonical transaction identity; lifecycle events omit it", () => {
+  for (const action of bundleActions) {
+    const args = { action, actor: "human-review-bundle", fromStatus: "ACTIVE", toStatus: "ACTIVE", note: "Human context" };
+    for (const invalid of [undefined, "", null, "not-a-uuid", " " + transactionId]) {
+      assert.throws(() => utils.buildProtocolEvent({ ...args, transactionId: invalid }), /transaction_id|transaction.*identity|UUID/i, action + " rejects missing/invalid identity");
+    }
+    const event = utils.buildProtocolEvent({ ...args, transactionId });
+    assert.equal(event.transaction_id, transactionId);
+    assert.equal(event.note.includes(transactionId), false, "identity need not be hidden in display text");
+  }
+  assert.equal(Object.hasOwn(utils.buildProtocolEvent({ action: "resume", actor: "coordinator" }), "transaction_id"), false);
+});
+
+test("normalization preserves direct identity and exact human notes without backfilling historical events", () => {
+  const historical = bundleActions.slice(0, 2).map(action => ({ timestamp: "2026-09-01T00:00:00Z", action, actor: "human-review-bundle", from_status: "ACTIVE", to_status: "ACTIVE", note: "Historical transaction_id: " + transactionId }));
+  const current = { ...historical[0], transaction_id: transactionId, note: "  Human-only – 漢字\nexact  " };
+  const raw = { protocol_events: [...historical, current] };
+  assert.deepEqual(utils.normalizeProtocolReport(raw).protocol_events, raw.protocol_events);
+  assert.deepEqual(raw.protocol_events.slice(0, 2), historical, "input historical prefix remains immutable");
+  for (const old of utils.normalizeProtocolReport(raw).protocol_events.slice(0, 2)) assert.equal(Object.hasOwn(old, "transaction_id"), false);
+});
+
+test("all bundle decisions append direct identity independent of note wording and coarse audit history", () => {
+  for (const phase of ["readiness", "closeout"]) for (const decision of ["APPROVED", "REJECTED"]) {
+    const action = (decision === "APPROVED" ? "approve" : "reject") + "-" + phase + "-bundle";
+    const options = { phase, decision, gates: [phase === "readiness" ? "spec" : "release"], reviewedAt: "2026-09-13T00:00:00Z", transactionId };
+    const old = { timestamp: "2026-09-01T00:00:00Z", action, actor: "human-review-bundle", from_status: "ACTIVE", to_status: "ACTIVE", note: "Historical context" };
+    const base = { work_item_slug: "identity-fixture", protocol_status: "ACTIVE", audit_events: [phase.toUpperCase() + "_BUNDLE_" + decision], protocol_events: [old], blockers: [], required_actions: [] };
+    const projection = value => ({ blockers: value.blockers, actions: value.required_actions, handoff: value.handoff_target, audit: value.audit_events, status: value.protocol_status });
+    const expected = protocol.reconcileApprovalBundleReport(base, options);
+    assert.equal(expected.protocol_events.length, 2, "a real new cycle is not suppressed by a historical marker");
+    assert.equal(expected.protocol_events.at(-1).transaction_id, transactionId);
+    for (const note of ["", "Peer review is outstanding", "transaction_id: fake-id", "approve closeout rejected readiness", " Chờ QC – 漢字 "]) {
+      const mutated = { ...base, protocol_events: [{ ...old, note }] };
+      const actual = protocol.reconcileApprovalBundleReport(mutated, options);
+      assert.deepEqual(projection(actual), projection(expected));
+      assert.deepEqual(actual.protocol_events[0], mutated.protocol_events[0]);
+      assert.equal(actual.protocol_events.at(-1).transaction_id, transactionId);
+    }
+    assert.throws(() => protocol.reconcileApprovalBundleReport(base, { ...options, transactionId: undefined }), /transaction_id|transaction.*identity|UUID/i);
+    const preEvent = protocol.reconcileApprovalBundleReport(base, { ...options, transactionId: undefined, recordProtocolEvent: false });
+    assert.deepEqual(preEvent.protocol_events, base.protocol_events, "pre-event projection allocates no event or identity");
+  }
+});
+
 test("typed entries survive normalization, including display whitespace", () => {
   const display = { ...entry, text: "  Chờ phê duyệt – 漢字\nexact  " };
   const raw = report([display], [{ id: "opaque-2", kind: "workflow_followup", text: "Continue" }]);

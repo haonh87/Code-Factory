@@ -12,6 +12,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { validateSnapshotAuthority } = require("../scripts/workflow-gate-review");
+const { buildProtocolEvent, normalizeProtocolReport } = require("../scripts/work-item-protocol-utils");
 
 let approvalTransaction = {};
 try {
@@ -287,6 +288,28 @@ function testAtomicCommitAndIndependentReceipts() {
   }
 }
 
+function testBundleEventIdentitySurvivesCoordinatorCommitAndRecovery() {
+  for (const phase of ["readiness", "closeout"]) for (const decision of ["APPROVED", "REJECTED"]) {
+    const root = tempRoot(`direct-id-${phase}-${decision.toLowerCase()}`);
+    const transactionRoot = path.join(root, "transactions");
+    try {
+      const id = crypto.randomUUID();
+      const action = `${decision === "APPROVED" ? "approve" : "reject"}-${phase}-bundle`;
+      const event = buildProtocolEvent({ action, actor: "human-review-bundle", fromStatus: "ACTIVE", toStatus: "ACTIVE", transactionId: id, note: "Display is independent" });
+      const target = path.join(root, "report.json");
+      const plan = buildApprovalBundlePlan({ ...makePlan(), phase, decision });
+      expectThrow(() => executeApprovalTransaction({ plan, transaction_root: transactionRoot, transaction_id: id, operations: [{ id: "protocol:report", target_path: target, expected_sha256: null, content: JSON.stringify({ protocol_events: [event] }) }], crash_at: "after_verified_commit" }), /crash/i, `${action}: preserve a committed journal for direct comparison`);
+      const paths = getApprovalTransactionPaths({ transaction_root: transactionRoot, work_item_slug: plan.work_item_slug });
+      const journal = JSON.parse(fs.readFileSync(paths.journal_path, "utf8"));
+      const stored = normalizeProtocolReport(JSON.parse(fs.readFileSync(target, "utf8"))).protocol_events[0];
+      assert(stored.transaction_id === id && stored.transaction_id === journal.transaction_id, `${action}: normalized event matches journal identity directly`);
+      const result = recoverApprovalTransaction({ transaction_root: transactionRoot, work_item_slug: plan.work_item_slug });
+      assert(result.status === "COMPLETED" && result.transaction_id === stored.transaction_id, `${action}: recovery result shares exact event/journal identity`);
+      assert(recoverApprovalTransaction({ transaction_root: transactionRoot, work_item_slug: plan.work_item_slug }).status === "NOOP", `${action}: completed recovery retry appends nothing`);
+    } finally { rmrf(root); }
+  }
+}
+
 function testOptionalTransactionIdentityIsValidatedAndReused() {
   if (typeof executeApprovalTransaction !== "function") return;
   console.log("\nF-AG11-001 T1: optional transaction identity is validated before writes and reused");
@@ -466,6 +489,7 @@ if (
 ) {
   testPreflightFailureWritesNothing();
   testAtomicCommitAndIndependentReceipts();
+  testBundleEventIdentitySurvivesCoordinatorCommitAndRecovery();
   testOptionalTransactionIdentityIsValidatedAndReused();
   testCaughtFailureRollsBackFirstVisibleCommit();
   testCrashRecoveryIsIdempotent();
