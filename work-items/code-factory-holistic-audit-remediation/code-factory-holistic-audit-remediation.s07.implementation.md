@@ -91,8 +91,9 @@ tags:
 > [!summary]
 > Master activated at s07 with six approved audit-only roots. M0 admission and M1 inventory
 > are complete: 42 canonical skills, seven groups, 227 supporting files and eight surface families.
-> Both installed harnesses remain 2.3.2/40; full semantic, lifecycle, language and final identity
-> review remain open. No child production or release authority is inherited.
+> M2 now records 25/42 canonical skill reads, 25/69 operative English refs, 13 agent files
+> and three scripts; M3 classifies 16 legacy entries and starts a 27-document allowlist. Both
+> installed harnesses remain 2.3.2/40; full semantic, prior-plan, language and final identity review remain open. No child production or release authority is inherited.
 
 ## Step Contract
 
@@ -145,7 +146,7 @@ next_action: "Continue M2 full semantic and M3 direct lifecycle/document classif
 ```yaml
 recommended_design: "Evidence-led audit-only portfolio with independent remediation children."
 implementation_mode: HARDENING
-tasks_completed: ["M0 admission and protected snapshot", "M1 42-skill/eight-family inventory"]
+tasks_completed: ["M0 admission and protected snapshot", "M1 42-skill/eight-family inventory", "Bounded M2 25 canonical skills/25 EN refs/13 agents/3 scripts read", "M3 16 legacy entries and starter 27-document allowlist classified; full M3 not complete"]
 bug_repro_evidence: ["M0 lifecycle activation consulted stale repo-root notes despite matching worktree gate receipts; anchor metadata corrected, no production fix."]
 hypothesis_log:
   - { assumption: "Installed state differs from source.", status: CONFIRMED, evidence: "Both harnesses 2.3.2/40; source 2.6.1/42." }
@@ -154,11 +155,11 @@ debug_experiments:
 tdd_evidence: []
 safe_refactor_notes: ["Documentation/research only; no behavior change or production refactor."]
 code_changes: []
-doc_changes: ["M0 baseline", "Five audit sidecars", "Current s01/report/s07 metadata"]
+doc_changes: ["M0 baseline", "Five audit sidecars", "Current s01/report/s07 metadata", "66-file M2 source read log and 11 observations", "M3 exact legacy/current/historical/receipt classifications"]
 config_changes: []
 review_checkpoints: ["CF-MB1 after M2/M3/M4; QC Spec Compliance before Developer/QC Code Quality", "CF-MB2 later"]
 outputs_actual: ["42 exact skill identities", "227 supporting file identities", "Eight surface families", "Manifest snapshots", "Both installed inventories", "Nine local discovery-root observations", "15-pair language sample scope"]
-known_limitations: ["Full semantic M2 pending", "M3/M4 classifications/dispositions pending", "No effective discovery trace", "No hosted/released identity observed", "No human language score"]
+known_limitations: ["17 canonical skills and 44 operative English refs unread; cross-boundary M2 pending", "Full prior-plan/successor M3 and original twenty M4 dispositions pending", "No effective discovery trace", "No hosted/released identity observed", "No human language score"]
 follow_up_items: ["Continue M2/M3/M4", "CF-MB1 ordered review pair", "Independent child dependencies"]
 notes_for_testing: "Inventory assertions, UTF-8, protected hashes, standard workflow/planning/protocol and read-only pack tests. No whole-portfolio PASS/DoD."
 ```
@@ -230,15 +231,19 @@ notes_for_implementation_or_verify: "AI recommendations never fabricate independ
 ## Bounded Artifact Verification
 
 ```yaml
-scope: "M0/M1 inventory and started M2 evidence; not final portfolio verification"
+scope: "M0/M1 inventory, bounded M2 25-skill reads and partial M3 classifications; not final portfolio verification"
 checks:
   - { id: "workflow", result: PASS, evidence: "181 naming files / 177 governance notes" }
   - { id: "protocol", result: PASS, evidence: "9 managed / 16 legacy; ACTIVE with six roots" }
   - { id: "planning", result: PASS, evidence: "177 notes" }
   - { id: "inventory", result: PASS, evidence: "JSON.parse; 42 unique names/paths/full source SHA-256; 227 supporting files; 8 families; installed 2.3.2/40 x2" }
-  - { id: "encoding", result: PASS, evidence: "Fatal UTF-8 decode of all nine changed/new text artifacts and git diff --check" }
+  - { id: "encoding", result: PASS, evidence: "Initial nine admission artifacts and current five M2/M3 changed artifacts pass fatal UTF-8 decode; git diff --check PASS." }
+  - { id: "M2-read-log", result: PASS, evidence: "66 unique source paths/hashes; 25 SKILL.md and 25 operative EN refs; remaining 17 skill rows retain NOT_REVIEWED." }
+  - { id: "M3-legacy", result: PASS, evidence: "16 unique legacy rows: 8 LEGACY_CLOSED, 1 actionable, 7 ambiguous; 0 empty-invalid; no retrospective receipt." }
+  - { id: "targeted-tests", result: PASS, evidence: "Existing architecture-role-skills-contract.test.js and architecture-modeling-drawio.test.js PASS; in-memory off-canvas diagnostic exposes missing automated geometry coverage." }
   - { id: "protected", result: PASS, evidence: "Five protected master digests match baseline; RCR source and quarantined T7 file/diff digests unchanged" }
 pending: ["Full semantic M2", "M3/M4", "CF-MB1/2", "Independent child verification/security/language", "M10 exact integrated identity", "M11 s08/DoD"]
+skipped_checks: ["Full unit/build/hosted/security execution not part of this docs-only bounded audit delta; independently required child/final checks remain pending, not waived."]
 ```
 
 ## Pack Audit (Admission/Inventory Scope)
@@ -249,11 +254,14 @@ checks:
   - { id: "mechanical", status: PASS, evidence: "WORKFLOW_PACK_AUDIT=PASS; 166 resolved cross-references" }
   - { id: "SA-TA-contract", status: PASS, evidence: "architecture-role-skills-contract.test.js PASS" }
   - { id: "artifact-template", status: PASS, evidence: "Standard s07 Step Contract/Main Artifact/Implementation Notes/Delivery Rule Evidence retained" }
-  - { id: "semantic-completeness", status: WARN, evidence: "Four skill reads and three operative references; all rows remain PARTIAL until required dimensions and cross-boundary review are complete" }
-findings: []
-overall_status: PARTIAL
+  - { id: "semantic-completeness", status: WARN, evidence: "25 canonical skill reads, 25 EN refs, 13 agent metadata, 3 scripts; full cross-boundary M2 and remaining 17 skills/44 refs pending. Known semantic observations retain FAIL/PARTIAL." }
+findings:
+  - { severity: MEDIUM, area: SKILL, path: "skills/analysis/sa/references/landscape-quality-bar.md", issue: "Pack availability claim conflicts with canonical source", recommendation: "M4 bounded capability-wording proposal; keep installed/released tiers distinct" }
+  - { severity: MEDIUM, area: SCRIPT, path: "skills/architecture/architecture-modeling/scripts/drawio-layout.js", issue: "12 cross-domain route diagnostic admits 8 off-canvas points while automated PASS", recommendation: "Bounded negative fixture/layout-canvas repair in independent owner scope" }
+  - { severity: MEDIUM, area: SKILL, path: "skills/guardrails/artifact-governance/SKILL.md", issue: "Blanket machine enforcement not-built wording is stale", recommendation: "Evidence-bound enforcement matrix and source wording proposal" }
+overall_status: FAIL
 follow_up_actions: ["Finish M2 full semantic coverage", "Disposition M2 observations at M4", "No green mechanical audit clears installed/source drift"]
-notes: "Semantic checklist reviewed for admission/inventory boundary; full source semantics are explicitly not declared complete."
+notes: "Mechanical baseline remains PASS; current source semantic observations include FAIL. This is an AI evidence assessment, not a human CF-MB1 verdict or DoD. M2/M3/M4 remain incomplete."
 ```
 
 ## Traceability
@@ -267,7 +275,16 @@ next_step: "M2/M3/M4; CF-MB1 only after complete snapshot"
 ## Handoff
 
 - Master ACTIVE at s07; six audit-only roots, no missing authoring gate.
-- M0/M1 complete. M2 semantic cells remain explicitly NOT_REVIEWED; inventory completeness is not portfolio completion.
+- M0/M1 complete. M2 has 25/42 main skill reads and 25/69 operative EN reference reads; 17 skills/44 refs plus cross-boundary contracts remain. Known semantic observations are not cleared by mechanical PASS.
+- M3: 16/16 legacy classified (8 LEGACY_CLOSED, 1 actionable, 7 ambiguous); 27-document starter allowlist and eight managed DoD + eight terminal receipts checked. Full prior-plan/navigation/child state coverage remains.
 - Canonical architecture-modeling is the tracked 7697-byte source with three Draw.io scripts and agents/openai.yaml. The reported local 18KB duplicate is absent from current observed roots; historical provenance and effective precedence are unresolved.
 - Both harnesses lack architecture-modeling/artifact-governance and differ from source in codex-workflow-chain/sa/ta. Independent release/installation evidence remains required.
 - No child source was edited by master authority. RCR and deadline-bound Node24 stay in their independent governed lanes.
+
+## Continued M2/M3 Evidence — 2026-09-13
+
+A zero-write representative-model diagnostic with twelve distinct cross-domain relationships returns automated PASS while eight route points are outside the computed canvas (min_y=-40). Existing Draw.io and SA/TA contract tests still pass; QC first-open is not claimed. All 66 source read-log identities match the pinned audit SHA.
+
+M3 has eight historical LEGACY_CLOSED, one actionable and seven ambiguous entries. Eight historical managed DoD receipts and eight applicable Release/Business Acceptance receipts match their exact s08 hosts. Current-facing documentation can be stale even when those receipts are valid; no terminal receipt is revoked or fabricated.
+
+RCR remains independently BLOCKED at RCR-SB1 Code Quality: QC Spec Compliance for source 964e1c7cf879c6d244253b3ee294f9cdaff60f77 is retained, proposed F-RCR-SB1-001/FAIL and TS2a repair authority remain human-pending. 'Continue' does not approve that verdict or open TS3. No RCR or Node24 production file is edited here.

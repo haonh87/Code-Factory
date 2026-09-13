@@ -4427,5 +4427,572 @@
     "current_project_overlay_count": 0,
     "historical_18KB_overlay": "Reported independent review input; absent from current observed roots. Original content/digest/precedence not recovered.",
     "deletion_authorized": false
+  },
+  "semantic_review": {
+    "observed_at": "2026-09-13T04:42:42Z",
+    "source_identity": "5b85d7f943fff4fc9e0f559faed43e79f9483b12",
+    "evidence_tier": "unmerged-child",
+    "status": "IN_PROGRESS",
+    "canonical_skill_reads": 25,
+    "total_skills": 42,
+    "operative_english_reference_reads": 25,
+    "total_operative_english_references": 69,
+    "agent_metadata_reads": 13,
+    "bundled_script_reads": 3,
+    "remaining_skill_reads": 17,
+    "remaining_operative_english_reference_reads": 44,
+    "closure_rule": "Reading progress is not semantic PASS, CF-MB1 approval, Technical Verification or DoD. Full backbone/runtime/adapter/hook/MCP/CI cross-contract audit remains.",
+    "read_log": [
+      {
+        "path": "skills/analysis/brainstorming/SKILL.md",
+        "sha256": "f3a3c71711f284f625d4f4773bce9fbfaaf3a657ff751ce38e7d33f1044acdcf",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/product-thinking/SKILL.md",
+        "sha256": "6385f2a8a0a7ec9c54e7d0ae8c8c6195c35659490e962cb60f0920f59fcf1dd2",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/requirement-analysis/SKILL.md",
+        "sha256": "41970076eb955cb17272f17193d58a5a268dd1e6ebb291c3c305b67afb020263",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/requirement-analysis/references/example.md",
+        "sha256": "946b60807bb6fa687396b626b0e42257c10b385dbcd0676846229d1eeb98eedb",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/sa/SKILL.md",
+        "sha256": "187bcdf48d657ad31079aa7c09171543b480ec32779ecad41db4ea5812cfb9ca",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/sa/references/block-ownership.md",
+        "sha256": "288e1cb51ef4deb241fff410c30b4a64c3371c6d0d36ddfab65e30d9f8b85ae3",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/sa/references/design-readiness-checklist.md",
+        "sha256": "be8635bf063ad6d349d26a1fad2481b2cb4e487ef8a67296135a588f7caccd4d",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/sa/references/example.md",
+        "sha256": "3a844c87699f73666bcbf8c0c062b44ce06343aea0e1888477084ebbc833c15a",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/sa/references/invocation-rules.md",
+        "sha256": "818a85c0b2a9fa696df78d0f389398eda48b4438fa4ff0c886fa4d64b740d5fa",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/sa/references/landscape-quality-bar.md",
+        "sha256": "1fb8607e14579d396feb3d1ca8436b79fa9de41c63ffebcfa530ca774dcc7afb",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/sa/references/metric-table.md",
+        "sha256": "0224dd7b257cade7d41347bd29f6581f630ee5584aaf8ca6020c3c16193e7a49",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/sa/references/output-schema.md",
+        "sha256": "0fbb698e269f7cb7a31679190daed49c5c4905f34b1af7abb4a344d00f5d411a",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/sa/references/visual-encoding.md",
+        "sha256": "0f1546b3b6b9f47e0ab41c286772beb1eb42e753cc9825d67ca7926f839b1b55",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/system-design/SKILL.md",
+        "sha256": "c5d6dd213e11b346c0ab06febdfce9aa2aae08bbbf4c2b6501e1425e2d14e457",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/ta/SKILL.md",
+        "sha256": "4a258ef7eabd584a6e5d99e12f45811f81dd5de262ff8cdb31568bab7dbaf8de",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/ta/references/block-ownership.md",
+        "sha256": "288e1cb51ef4deb241fff410c30b4a64c3371c6d0d36ddfab65e30d9f8b85ae3",
+        "source_bytes_match": true,
+        "read_scope": "byte-identical copy of fully reviewed SA reference"
+      },
+      {
+        "path": "skills/analysis/ta/references/design-readiness-checklist.md",
+        "sha256": "be8635bf063ad6d349d26a1fad2481b2cb4e487ef8a67296135a588f7caccd4d",
+        "source_bytes_match": true,
+        "read_scope": "byte-identical copy of fully reviewed SA reference"
+      },
+      {
+        "path": "skills/analysis/ta/references/example.md",
+        "sha256": "a9ab09dedb10f0ff7d7d435dcf2c7764b9f99bff67a246f17af4ec3f0e253b6d",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/ta/references/invocation-rules.md",
+        "sha256": "818a85c0b2a9fa696df78d0f389398eda48b4438fa4ff0c886fa4d64b740d5fa",
+        "source_bytes_match": true,
+        "read_scope": "byte-identical copy of fully reviewed SA reference"
+      },
+      {
+        "path": "skills/analysis/ta/references/landscape-quality-bar.md",
+        "sha256": "1fb8607e14579d396feb3d1ca8436b79fa9de41c63ffebcfa530ca774dcc7afb",
+        "source_bytes_match": true,
+        "read_scope": "byte-identical copy of fully reviewed SA reference"
+      },
+      {
+        "path": "skills/analysis/ta/references/metric-table.md",
+        "sha256": "0224dd7b257cade7d41347bd29f6581f630ee5584aaf8ca6020c3c16193e7a49",
+        "source_bytes_match": true,
+        "read_scope": "byte-identical copy of fully reviewed SA reference"
+      },
+      {
+        "path": "skills/analysis/ta/references/output-schema.md",
+        "sha256": "0fbb698e269f7cb7a31679190daed49c5c4905f34b1af7abb4a344d00f5d411a",
+        "source_bytes_match": true,
+        "read_scope": "byte-identical copy of fully reviewed SA reference"
+      },
+      {
+        "path": "skills/analysis/ta/references/visual-encoding.md",
+        "sha256": "0f1546b3b6b9f47e0ab41c286772beb1eb42e753cc9825d67ca7926f839b1b55",
+        "source_bytes_match": true,
+        "read_scope": "byte-identical copy of fully reviewed SA reference"
+      },
+      {
+        "path": "skills/architecture/architecture-modeling/SKILL.md",
+        "sha256": "5704eb55f680a7d9ff3d678a9de2ff5e6cd108df53b15b54287c5028f2913049",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/architecture/architecture-modeling/references/model-contract.md",
+        "sha256": "4c76ecd34b1e3232218b4d9c9647f1f99be832a0bca82b8d1cac4baef4f9683f",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/architecture/architecture-modeling/references/quality-contract.md",
+        "sha256": "a9d63158f7a539090ead33ad576fb2921d66c1939d1f326f3d47159c700a5923",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/architecture/architecture-modeling/references/render-routing.md",
+        "sha256": "8609f26595caea19a3a0d898239956acdb38b2b5f23a9519b003db51c92208c7",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/architecture/database-design/SKILL.md",
+        "sha256": "3994394bcb9f920c3b8434e351e6c18a249b93325a8575a3ed405af1c2fc3a00",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/architecture/domain-architecture/SKILL.md",
+        "sha256": "567a646c22a20c8d84c97ae6ba9d7861d355ecde46c469af0fd7ccc1b973cc15",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/architecture/domain-architecture/references/dod-pattern.md",
+        "sha256": "e32f882f50f88274b81dd53c4ed02cf1b7aa62a8c2183f127bf7c621fae214cf",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/architecture/frontend-architecture/SKILL.md",
+        "sha256": "62be931eb633bc492f20aec9f39ee9d5559af4abc2208ceacfd19d2977593bd4",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/architecture/frontend-architecture/references/module-first-pattern.md",
+        "sha256": "fa587523de2e8710c05dfb2ba702f48e275b1c5bc970c92ef3a1e030456f69c6",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/architecture/frontend-experience-design/SKILL.md",
+        "sha256": "2751993eaae72d7edea2705ca49cd1977aa7c64f8b1b14f14c4d2a5c970c26eb",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/orchestration/workflow-governance-router/SKILL.md",
+        "sha256": "775308b6f157d03fbc19d022e21efa96d2ee272379a33f79e19d1aaba8379354",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/brainstorming/agents/openai.yaml",
+        "sha256": "e8f6408824d5e4cbeb9bd2efa454139e4bf1067c16be71541d02a3996f7f5cc3",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/sa/agents/openai.yaml",
+        "sha256": "39f21b8ed2f076006fea194056b2599f4e83fa42b5392f7d2ddbb81131ba8926",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/system-design/agents/openai.yaml",
+        "sha256": "b76ef4dab50418a68f42628aeaf3ae50dea5e988a5409303526deb21d535489c",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/analysis/ta/agents/openai.yaml",
+        "sha256": "150d7904544a16ec4cdc6f47bb1a79dddf69c9aefded391f7a0e561c3496a8d5",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/architecture/architecture-modeling/agents/openai.yaml",
+        "sha256": "7f33ba4bd97d5545e91ab88f657ce320df9869332c30aa4fd56dbb1f8e2cb5c0",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/architecture/frontend-architecture/agents/openai.yaml",
+        "sha256": "9198c3ebdee81dc4ae6a362fd25032d6e6faf27bf3992daba267ea4cfe6ac1f2",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/architecture/frontend-experience-design/agents/openai.yaml",
+        "sha256": "942856bc663a98305302a29988419aaf49644755a451d24fff6b86ace41e60c9",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/architecture/architecture-modeling/scripts/drawio-layout.js",
+        "sha256": "877c7e9fac210cbc750ed83e152dff75ae816b9988692989a87b1b6924743edb",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/architecture/architecture-modeling/scripts/render-drawio.js",
+        "sha256": "92f6f8a4750473e8c165a5603c6f17b661ac316c1861c467b94fc6f1afee4e06",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/architecture/architecture-modeling/scripts/validate-drawio.js",
+        "sha256": "7981af540ec62f1e6202db93e4036592933d790cb03f68df18791f9b50f0df3b",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/delivery/branch-finish-discipline/SKILL.md",
+        "sha256": "9e0696b94eb03835d17dae04c82374bf2f9e825987130f1ecbffdce64d60a74e",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/delivery/branch-finish-discipline/agents/openai.yaml",
+        "sha256": "2a0c1427e0af8de136cc4768cfe9ec919a0cc2a9cc1d31ce86b5a4fd5c990662",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/delivery/implementation/SKILL.md",
+        "sha256": "2fbd387ace66a3d78f11be37c4638e8e1f757c60927b934d0a86583bd1f69a13",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/delivery/implementation/agents/openai.yaml",
+        "sha256": "8595a101880430937f5d87c8f43d5dca72243207ab8f65a27d5be3008bd55fc2",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/delivery/review-discipline/SKILL.md",
+        "sha256": "5ee9fd8407dbc3d240d1cbf226ad1fa63c06fff388f81789c5dc660bcc264c33",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/delivery/review-discipline/agents/openai.yaml",
+        "sha256": "ed35aca831f20e6ae6f8cc68ada0786cbbf5da91b88db68e60519ab091159249",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/delivery/testing/SKILL.md",
+        "sha256": "919b5e0d3e9338f67a78750a0106df59635add52b4ffeda14d23dc14616b843a",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/delivery/testing/agents/openai.yaml",
+        "sha256": "417bcca926d82274686f3db77756a13872c1ab0afdb99db1f5a29ade85ee29d0",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/delivery/worktree-discipline/SKILL.md",
+        "sha256": "740fba02797b8de1d4f92d213267ba4f54dc8ccc8974995a62c9b05091b6fda5",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/delivery/worktree-discipline/agents/openai.yaml",
+        "sha256": "34efb67e7061c465a8ce23cd671bf4621dbf05140831c2b58866a75d62ec30b7",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/guardrails/artifact-governance/SKILL.md",
+        "sha256": "8e24ac94092fab8d89936c4a814084855e5bf5060855b2cddf60de5ddc06db5e",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/guardrails/artifact-governance/references/ownership-table.md",
+        "sha256": "ff8b7a9caf538ea358a81626e447f610389cb6f5ce89b7f20dff6d434aab9e31",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/guardrails/artifact-governance/references/worked-example.md",
+        "sha256": "6409a7def845fe5cee140a1b0f96d70e14a8f6e689fa407346c2ac2e61928c52",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/guardrails/definition-of-done-gate/SKILL.md",
+        "sha256": "bf3c6b9508794cb11a8a262fe5b742c0df834fb913d15b762e82517e59dc8e9d",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/guardrails/definition-of-ready-gate/SKILL.md",
+        "sha256": "f876c20b7b9461d98bc574cf90e7e07042be60620e56dd89529e960a96440f52",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/guardrails/input-readiness-assessor/SKILL.md",
+        "sha256": "aaf3ee5228ad08140531df6ffeb62df2d76999ead1b971015bfff01f2b9786a0",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/guardrails/karpathy-coding-discipline/SKILL.md",
+        "sha256": "8a7d314f276c7d47d8920269959625412c59de9d05b677b30c10c497bce180ca",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/guardrails/step-goal-auditor/SKILL.md",
+        "sha256": "9b39f321c336028c027ee62f581f83ae7c693ea46cf1de3995b065391020c5d9",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/guardrails/step-goal-contract/SKILL.md",
+        "sha256": "ffdb8723aa1ffdb8af37ad8e9e1a3ca4d1b3f6fc946596b86ec41d70ffdf674a",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/guardrails/workflow-pack-audit/SKILL.md",
+        "sha256": "94ca54703e25be687d6e8353277396b79e7222bfef4311f8d73a7e34ea9eaaae",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/guardrails/workflow-pack-audit/references/checklist.md",
+        "sha256": "417e13f34db40119da2d6f0f2ceb362a67b04d2a1311b7e465667efdc6b4f73e",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      },
+      {
+        "path": "skills/guardrails/workflow-pack-audit/agents/openai.yaml",
+        "sha256": "0bd2bacf5aa63e1c1ca14e83a4f69b1f955aa03602992be5c1d5106d543e6677",
+        "source_bytes_match": true,
+        "read_scope": "full"
+      }
+    ],
+    "observations": [
+      {
+        "id": "M2-OBS-01",
+        "result": "FAIL",
+        "severity": "MEDIUM",
+        "owner": "developer/maintainer",
+        "subject": "Source capability wording",
+        "evidence": "SA/TA Out Of Scope and landscape-quality-bar say architecture-modeling is not shipped; the tracked canonical skill and manifest/prepack mapping include it.",
+        "guard": "Source contract only; do not infer installed/released membership.",
+        "next": "M4 bounded wording/capability proposal after the complete M2 snapshot."
+      },
+      {
+        "id": "M2-OBS-02",
+        "result": "PARTIAL",
+        "severity": "MEDIUM",
+        "owner": "BA/developer",
+        "subject": "Landscape lifecycle boundary",
+        "evidence": "SA/TA invocation and landscape references commission views at s01-s04; architecture-modeling explicitly runs at s05 after acceptance and boundary decisions.",
+        "guard": "A request for a future view must not silently open an early model/render gate.",
+        "next": "Define commission versus execution stage in a bounded child; no gate exception inferred."
+      },
+      {
+        "id": "M2-OBS-03",
+        "result": "PARTIAL",
+        "severity": "HIGH",
+        "owner": "developer/QC",
+        "subject": "CF-019 snapshot separation",
+        "evidence": "Pinned master/main source predates Adaptive Admission; the later applicability repair belongs to the unmerged RCR branch.",
+        "guard": "Do not fabricate the two-clause contradiction in this older snapshot or claim unmerged DONE is installed closure.",
+        "next": "M4 evidence-tier revalidation against the named child and parent."
+      },
+      {
+        "id": "M2-OBS-04",
+        "result": "FAIL",
+        "severity": "LOW",
+        "owner": "BA/maintainer",
+        "subject": "English authority versus skill language defaults",
+        "evidence": "brainstorming, product-thinking and system-design Quality Rules default conversation/documentation to Vietnamese; operative authority defaults to English. Their agents prompts also use Vietnamese.",
+        "guard": "The user's Vietnamese preference is valid; the conflict is the source default, not this conversation.",
+        "next": "M4/M7 language/default alignment proposal, preserving explicit user overrides."
+      },
+      {
+        "id": "M2-OBS-05",
+        "result": "FAIL",
+        "severity": "MEDIUM",
+        "owner": "developer/BA",
+        "subject": "Read-only request boundary",
+        "evidence": "requirement-analysis SKILL.md:31 excludes directly modifying code unless the user only asks for summary/analysis and the change is clear.",
+        "guard": "This confusing exception does not override higher authority; no executed production-write or receipt bypass is demonstrated.",
+        "next": "Propose an unambiguous read-only Out Of Scope rule and a routing negative fixture."
+      },
+      {
+        "id": "M2-OBS-06",
+        "result": "PARTIAL",
+        "severity": "LOW",
+        "owner": "BA/developer",
+        "subject": "Unmodeled option confirmation",
+        "evidence": "brainstorming requires a user-confirmed option analysis and one question per turn; system-design correctly consumes a valid earlier comparison without repeating it.",
+        "guard": "Clarification is legitimate; no separate receipt-backed option gate or automatic approval is inferred.",
+        "next": "Reconcile the confirmation with Approach approval and adaptive interaction policy; measure duplicate interactions at M7."
+      },
+      {
+        "id": "M2-OBS-07",
+        "result": "PARTIAL",
+        "severity": "MEDIUM",
+        "owner": "developer/QC",
+        "subject": "Example versus escalation contract",
+        "evidence": "SA/TA worked examples use a customer app plus kitchen display and emit driver-only/no landscape, while invocation-rules require landscape when more than one system is touched.",
+        "guard": "The baseline may group surfaces under one system; the examples do not explain that exemption. Treat as a contract clarification gap, not proven runtime bypass.",
+        "next": "Make the system/touched-scope assumption explicit or amend example profile; require a negative escalation fixture."
+      },
+      {
+        "id": "M2-OBS-08",
+        "result": "FAIL",
+        "severity": "MEDIUM",
+        "owner": "developer/QC",
+        "subject": "Draw.io automated geometry blind spot",
+        "evidence": "A zero-write diagnostic on the representative model with 12 distinct cross-domain relationships returns automated PASS/PARTIAL while 8 route points are outside the canvas and min_y=-40. buildEdges uses corridorStartY-index*corridorGapY; canvas bounds ignore edge points.",
+        "guard": "Existing Draw.io tests pass. No first-open visual repair/clipping claim is made without QC viewing; automated PASS is not complete geometry evidence.",
+        "next": "M4 route into the architecture-quality owner: bounded negative canvas/route fixture and layout/canvas correction, no master production edit."
+      },
+      {
+        "id": "M2-OBS-09",
+        "result": "PARTIAL",
+        "severity": "LOW",
+        "owner": "maintainer",
+        "subject": "Optional performance capability discovery",
+        "evidence": "database-design SKILL.md:132 hands uncertain performance risk to database-change-review or query-performance; query-performance is absent from the 42 canonical skill names.",
+        "guard": "The shipped database-change-review alternative exists, so this is unclear optional-capability guidance, not a hard blocker.",
+        "next": "Document the external optional lane or use the shipped fallback; no new skill proposed for hypothetical needs."
+      },
+      {
+        "id": "M2-OBS-10",
+        "result": "PARTIAL",
+        "severity": "LOW",
+        "owner": "BA/QC",
+        "subject": "Gate assessment versus human verdict wording",
+        "evidence": "definition-of-done-gate evaluation concludes DONE/PARTIAL/BLOCKED but its local output schema and decision rules do not name the human approver/receipt. Higher workflow authority explicitly forbids AI passing DoD.",
+        "guard": "AI may assess readiness/evidence; no human gate or self-declared DONE is inferred from that local schema.",
+        "next": "Clarify proposed assessment versus human-sealed verdict in the language/authority child; preserve independent gate semantics."
+      },
+      {
+        "id": "M2-OBS-11",
+        "result": "FAIL",
+        "severity": "MEDIUM",
+        "owner": "developer/maintainer",
+        "subject": "Artifact-governance enforcement status is stale",
+        "evidence": "artifact-governance SKILL.md says rules are not machine-checked and wfc validate enforcement is not yet built. validate-workflow-governance.js implements layer-root placement and five ownership-duplication checks; validate-workflow-execution.js validates plural assignments/handoffs and orphan merge IDs. v2.5.0 release record lists this machine enforcement.",
+        "guard": "Some governance concerns may still be manual. This observation proves that blanket 'not built' wording is stale, not that every governance rule is enforced.",
+        "next": "M4 evidence-bound enforcement capability matrix and bounded wording proposal, with standard-path negative fixtures; no validator or sealed host rewrite by master."
+      }
+    ],
+    "diagnostics": [
+      {
+        "diagnostic": "parallel-cross-domain-routes",
+        "writes": false,
+        "relationships": 12,
+        "automated_status": "PASS",
+        "status": "PARTIAL",
+        "canvas": {
+          "width": 1180,
+          "height": 410
+        },
+        "min_y": -40,
+        "outside_canvas_points": 8,
+        "metrics": {
+          "named_ownership_rate": 1,
+          "overlap_count": 0,
+          "non_endpoint_intersection_count": 0,
+          "unanalyzed_two_way_arrow_count": 0,
+          "vague_aggregate_box_count": 0,
+          "engineering_element_count": 6,
+          "delete_test_failure_count": 0,
+          "containment_error_count": 0
+        },
+        "source_path": "skills/architecture/architecture-modeling/scripts/drawio-layout.js",
+        "evidence_scope": "In-memory diagnostic only; no artifact emitted or QC first-open claimed."
+      }
+    ],
+    "mechanical_checks": [
+      {
+        "name": "architecture-role-skills-contract.test.js",
+        "result": "PASS"
+      },
+      {
+        "name": "architecture-modeling-drawio.test.js",
+        "result": "PASS"
+      },
+      {
+        "name": "workflow-pack-audit",
+        "result": "PASS",
+        "resolved_cross_references": 166
+      }
+    ]
   }
 }
