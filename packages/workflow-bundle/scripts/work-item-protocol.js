@@ -444,7 +444,7 @@ function applyReject(reportInput, args) {
 
 function reconcileApprovalBundleReport(
   reportInput,
-  { phase, gates, decision, reviewedAt, recordProtocolEvent = true, transactionId = "" } = {}
+  { phase, gates, decision, reviewedAt, recordProtocolEvent = true, transactionId } = {}
 ) {
   const report = normalizeProtocolReport(reportInput);
   const normalizedPhase = String(phase || "").trim();
@@ -469,7 +469,6 @@ function reconcileApprovalBundleReport(
   report.required_actions = report.required_actions.filter(entry => !selected(entry));
 
   const auditEvent = `${eventPrefix}_BUNDLE_${normalizedDecision}`;
-  const eventAlreadyRecorded = report.audit_events.includes(auditEvent);
   if (normalizedDecision === "APPROVED") {
     appendAuditEvent(report, auditEvent);
     if (normalizedPhase === "readiness") {
@@ -496,19 +495,18 @@ function reconcileApprovalBundleReport(
     appendAuditEvent(report, auditEvent);
   }
 
-  const eventTransactionId = String(transactionId || "");
-  const shouldRecordProtocolEvent =
-    recordProtocolEvent && (eventTransactionId ? true : !eventAlreadyRecorded);
-  if (shouldRecordProtocolEvent) {
-    const transactionNote = eventTransactionId ? `; transaction_id: ${eventTransactionId}` : "";
+  // The coordinator classifies committed cycles from receipt/pre-event deltas.
+  // Coarse audit markers and human notes are never event identity or dedup keys.
+  if (recordProtocolEvent) {
     report.protocol_events.push(
       buildProtocolEvent({
         action: `${normalizedDecision === "APPROVED" ? "approve" : "reject"}-${normalizedPhase}-bundle`,
         actor: "human-review-bundle",
         fromStatus: report.protocol_status,
         toStatus: report.protocol_status,
-        note: `${normalizedDecision} ${normalizedPhase} gates: ${gateList}${transactionNote}`,
-        timestamp: reviewedAt
+        note: `${normalizedDecision} ${normalizedPhase} gates: ${gateList}`,
+        timestamp: reviewedAt,
+        transactionId
       })
     );
   }

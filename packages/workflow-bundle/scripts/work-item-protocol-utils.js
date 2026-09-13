@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { createHash } = require("crypto");
+const { normalizeTransactionId } = require("./workflow-approval-transaction");
 const {
   ensureDirectory,
   getFrontmatterLines,
@@ -44,6 +45,10 @@ const PROTOCOL_STATUSES = [
 ];
 
 const APPROVAL_STATUSES = ["PENDING_REVIEW", "APPROVED", "REJECTED", "NOT_REQUIRED"];
+const TRANSACTION_BUNDLE_ACTIONS = new Set([
+  "approve-readiness-bundle", "reject-readiness-bundle",
+  "approve-closeout-bundle", "reject-closeout-bundle"
+]);
 const APPROVAL_GATE_PASSED = new Set(["APPROVED"]);
 const BOOTSTRAP_GATE_STATUSES = ["PENDING_REVIEW", "APPROVED", "NOT_REQUIRED"];
 const BOOTSTRAP_GATE_PASSED = new Set(["APPROVED", "NOT_REQUIRED"]);
@@ -262,15 +267,22 @@ function buildProtocolEvent({
   fromStatus,
   toStatus,
   note,
-  timestamp
+  timestamp,
+  transactionId
 }) {
+  const normalizedAction = String(action || "").trim();
+  const transactionBacked = TRANSACTION_BUNDLE_ACTIONS.has(normalizedAction);
+  if (transactionBacked && transactionId === undefined) {
+    throw new Error("New approval bundle event requires a direct transaction_id.");
+  }
   return {
     timestamp: timestamp || new Date().toISOString(),
-    action: String(action || "").trim(),
+    action: normalizedAction,
     actor: String(actor || "").trim(),
     from_status: String(fromStatus || "").trim(),
     to_status: String(toStatus || "").trim(),
-    note: String(note || "").trim()
+    note: String(note || "").trim(),
+    ...(transactionBacked ? { transaction_id: normalizeTransactionId(transactionId) } : {})
   };
 }
 
@@ -375,7 +387,9 @@ function normalizeProtocolEvent(event) {
     actor: String(event.actor || "").trim(),
     from_status: String(event.from_status || "").trim(),
     to_status: String(event.to_status || "").trim(),
-    note: String(event.note || "").trim()
+    // History is load-only. Missing legacy identity is never inferred from prose.
+    note: String(event.note || ""),
+    ...(Object.hasOwn(event, "transaction_id") ? { transaction_id: normalizeTransactionId(event.transaction_id) } : {})
   };
 }
 

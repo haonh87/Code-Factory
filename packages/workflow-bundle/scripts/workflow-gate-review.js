@@ -482,38 +482,26 @@ function runGateBundle({ projectRoot, workflowRootBase, workflowRoot, workItemSl
     });
   });
   let transactionId;
-  if (phase === "closeout" && decision === "APPROVED") {
-    const preEventOperations = buildProtocolReconciliationOperations({
-      protocolReport,
-      phase,
-      gates,
-      decision,
-      reviewedAt,
-      recordProtocolEvent: false
-    });
-    const committedCycle = operations.length > 0 || preEventOperations.length > 0;
-    if (committedCycle) {
-      transactionId = crypto.randomUUID();
-      operations.push(
-        ...buildProtocolReconciliationOperations({
-          protocolReport,
-          phase,
-          gates,
-          decision,
-          reviewedAt,
-          recordProtocolEvent: true,
-          transactionId
-        })
-      );
-    }
-  } else {
+  const preEventOperations = buildProtocolReconciliationOperations({
+    protocolReport,
+    phase,
+    gates,
+    decision,
+    reviewedAt,
+    recordProtocolEvent: false
+  });
+  const committedCycle = operations.length > 0 || preEventOperations.length > 0;
+  if (committedCycle) {
+    transactionId = crypto.randomUUID();
     operations.push(
       ...buildProtocolReconciliationOperations({
         protocolReport,
         phase,
         gates,
         decision,
-        reviewedAt
+        reviewedAt,
+        recordProtocolEvent: true,
+        transactionId
       })
     );
   }

@@ -430,5 +430,6 @@ module.exports = {
   buildApprovalBundlePlan,
   executeApprovalTransaction,
   getApprovalTransactionPaths,
+  normalizeTransactionId,
   recoverApprovalTransaction
 };
