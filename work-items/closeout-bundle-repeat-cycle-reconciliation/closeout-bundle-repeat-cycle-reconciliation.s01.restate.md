@@ -654,7 +654,7 @@ next_action: "Developer reviews the amended s06 TS0..TS8 plan; implementation st
 
 ## Work Item Protocol
 ```yaml
-protocol_status: BLOCKED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
@@ -687,16 +687,15 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: "ba"
+protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "RCR-SB1-code-quality-review"
-last_transition_action: "prepare-RCR-SB1-code-quality-finding"
-last_transition_at: "2026-09-12T07:55:14Z"
+handoff_target: "s07-TS2a-approved-repair"
+last_transition_action: "resume"
+last_transition_at: "2026-09-13T05:27:41.770Z"
 required_actions:
-  - {"id":"se:1917be13b82ec7f62fede812afb0fd84c48d22641f717b566ede05c98fe24ee1","kind":"workflow_followup","text":"Developer/QC decide RCR-SB1 Code Quality proposed FAIL and F-RCR-SB1-001; QC decides Spec Compliance reopening and Developer approves TS2a amendment before repair. TS3 remains closed."}
-blockers:
-  - {"id":"se:f0fd44b95fd8acb24868085df99d3de1fdde3beb312946c2129f29fc766303fc","kind":"delivery_blocker","text":"QC Spec Compliance is approved, but Developer/QC Code Quality is pending with proposed parser finding F-RCR-SB1-001; next-batch and candidate delivery remain closed."}
+  - {"id":"se:4579aac266916040531c1b2193ea063387ab75da9b8e28430b2e657c8f741cc7","kind":"workflow_followup","text":"Continue active execution from the current step."}
+blockers: []
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -813,6 +812,10 @@ audit_events:
   - "S06_STRUCTURAL_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT"
   - "S06_STRUCTURAL_TASK_PLAN_RECEIPT_VERIFIED"
   - "WORK_ITEM_RESUMED"
+  - "S07_RCR_SB1_CODE_QUALITY_FAILED"
+  - "S07_F_RCR_SB1_001_OPENED"
+  - "S07_RCR_SB1_SPEC_COMPLIANCE_REOPENED"
+  - "S07_TS2A_TASK_PLAN_APPROVED"
 ```
 
 ## Traceability

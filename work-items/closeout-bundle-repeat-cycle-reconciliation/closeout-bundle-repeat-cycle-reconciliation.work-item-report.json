@@ -1,8 +1,8 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "BLOCKED",
+  "protocol_status": "ACTIVE",
   "decision_owner": "agent",
-  "protocol_owner": "ba",
+  "protocol_owner": "developer",
   "raw_request_summary": "Fix repeated closeout-bundle reconciliation so a successful current approval cycle removes stale pending approval actions and handoffs, records a current-cycle protocol event despite historical evidence, and remains idempotent.",
   "request_source": "user",
   "candidate_count": 1,
@@ -111,7 +111,8 @@
     "Developer Task Plan receipt APPROVED at 2026-09-12T05:51:29.267Z verifies digest_match=true against s06 SHA-256 ae1a733dab2cc709f61334050b0435160d34d88385ca4dba5ff7960632f11238. All authoring receipts match; explicit s07 resume with all 16 approved roots is still required.",
     "Human Developer authorized s07 resume with sixteen roots. TS0 baseline, TS1 RED 35ec1a2 and TS2 GREEN 964e1c7cf879c6d244253b3ee294f9cdaff60f77 are recorded. The work item is now BLOCKED at RCR-SB1 Spec Compliance; Code Quality is NOT_OPEN and TS3/candidate delivery remain closed.",
     "Human QC explicitly approved RCR-SB1 Spec Compliance for source 964e1c7cf879c6d244253b3ee294f9cdaff60f77 at 2026-09-12T07:45:41Z. Code Quality is now open for Developer/QC; no verdict or TS3 resume is inferred.",
-    "Code Quality pre-handoff review of exact source 964e1c7cf879c6d244253b3ee294f9cdaff60f77 reproduced ignored duplicate state collection and invalid trailing typed entry. F-RCR-SB1-001 and FAIL are AI recommendations pending Developer/QC; Spec Compliance reopening and TS2a are proposals, not approvals."
+    "Code Quality pre-handoff review of exact source 964e1c7cf879c6d244253b3ee294f9cdaff60f77 reproduced ignored duplicate state collection and invalid trailing typed entry. F-RCR-SB1-001 and FAIL are AI recommendations pending Developer/QC; Spec Compliance reopening and TS2a are proposals, not approvals.",
+    "User accepted the named RCR-SB1 recommendation bundle: Developer/QC Code Quality FAIL and OPEN F-RCR-SB1-001; QC reopened Spec Compliance; Developer approved TS2a bounded fail-first repair within TS2 and the same sixteen roots. No TS3, future review or terminal gate approval. Accepted at 2026-09-13T05:25:28Z."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -138,21 +139,15 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "RCR-SB1-code-quality-review",
+  "handoff_target": "s07-TS2a-approved-repair",
   "required_actions": [
     {
-      "id": "se:1917be13b82ec7f62fede812afb0fd84c48d22641f717b566ede05c98fe24ee1",
+      "id": "se:4579aac266916040531c1b2193ea063387ab75da9b8e28430b2e657c8f741cc7",
       "kind": "workflow_followup",
-      "text": "Developer/QC decide RCR-SB1 Code Quality proposed FAIL and F-RCR-SB1-001; QC decides Spec Compliance reopening and Developer approves TS2a amendment before repair. TS3 remains closed."
+      "text": "Continue active execution from the current step."
     }
   ],
-  "blockers": [
-    {
-      "id": "se:f0fd44b95fd8acb24868085df99d3de1fdde3beb312946c2129f29fc766303fc",
-      "kind": "delivery_blocker",
-      "text": "QC Spec Compliance is approved, but Developer/QC Code Quality is pending with proposed parser finding F-RCR-SB1-001; next-batch and candidate delivery remain closed."
-    }
-  ],
+  "blockers": [],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
     "work-items/adaptive-governance-human-approval-ux",
@@ -226,7 +221,11 @@
     "S06_STRUCTURAL_TASK_PLAN_DRAFTED",
     "S06_STRUCTURAL_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT",
     "S06_STRUCTURAL_TASK_PLAN_RECEIPT_VERIFIED",
-    "WORK_ITEM_RESUMED"
+    "WORK_ITEM_RESUMED",
+    "S07_RCR_SB1_CODE_QUALITY_FAILED",
+    "S07_F_RCR_SB1_001_OPENED",
+    "S07_RCR_SB1_SPEC_COMPLIANCE_REOPENED",
+    "S07_TS2A_TASK_PLAN_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -624,6 +623,22 @@
       "from_status": "BLOCKED",
       "to_status": "BLOCKED",
       "note": "Prepared proposed FAIL/F-RCR-SB1-001 with exact in-memory repro, focused test results, known integration failures and explicit scanner gaps. No code/test/gate/resume change."
+    },
+    {
+      "timestamp": "2026-09-13T05:25:28Z",
+      "action": "accept-RCR-SB1-fail-finding-reopen-TS2a",
+      "actor": "human-user/developer-qc",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "User accepted the named RCR-SB1 recommendation bundle: Developer/QC Code Quality FAIL and OPEN F-RCR-SB1-001; QC reopened Spec Compliance; Developer approved TS2a bounded fail-first repair within TS2 and the same sixteen roots. No TS3, future review or terminal gate approval."
+    },
+    {
+      "timestamp": "2026-09-13T05:27:41.770Z",
+      "action": "resume",
+      "actor": "developer",
+      "from_status": "BLOCKED",
+      "to_status": "ACTIVE",
+      "note": "User accepted TS2a bounded repair within approved TS2 and the same sixteen roots; F-RCR-SB1-001 remains open and refreshed reviews, TS3 and terminal gates remain independent."
     }
   ]
 }

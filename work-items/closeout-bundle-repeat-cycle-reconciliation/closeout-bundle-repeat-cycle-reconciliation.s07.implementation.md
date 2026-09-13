@@ -126,8 +126,8 @@ tags:
 > test remains quarantined until TS7. The structural execution contract below supersedes the
 > earlier patch execution contract; new RCR-SB1/2/3 reviews remain independent.
 > QC explicitly approved TS0..TS2 Spec Compliance for source
-> `964e1c7cf879c6d244253b3ee294f9cdaff60f77`. Code Quality is now open with AI recommendation
-> FAIL for proposed F-RCR-SB1-001; Developer/QC verdict is pending and the protocol remains BLOCKED.
+> `964e1c7cf879c6d244253b3ee294f9cdaff60f77`. Developer/QC accepted Code Quality FAIL and
+> opened F-RCR-SB1-001; QC reopened Spec Compliance and Developer approved the bounded TS2a repair.
 > Full regression is not GREEN: three existing protocol assertions await TS3/TS4 conversion.
 
 ## Step Contract
@@ -708,8 +708,8 @@ behavior_change: true
 tdd_status: PASS
 worktree_status: PASS
 review_status: PENDING
-spec_compliance_status: PASS
-code_quality_status: PENDING
+spec_compliance_status: REOPENED
+code_quality_status: FAIL
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
 merge_path: "No merge in s07; shared worktree HOLD_OPEN."
@@ -734,6 +734,9 @@ spec_compliance:
   human_decision: APPROVED
   reviewed_by: ["qc"]
   reviewed_at: "2026-09-12T07:45:41Z"
+  post_review_status: REOPENED
+  reopened_by: ["qc"]
+  reopened_at: "2026-09-13T05:25:28Z"
   checks:
     - { criterion: "Approved utility/vocabulary", result: PASS, evidence: "No new module/dependency/kind; shared boundary for both collections." }
     - { criterion: "Typed shape and ID contract", result: PASS, evidence: "Required fields, gate conditions, duplicate-ID rejection and stable JSON-tuple SHA-256 IDs." }
@@ -743,12 +746,12 @@ spec_compliance:
     - { criterion: "Compatibility/history", result: PASS, evidence: "13 frozen/live loads, zero file changes; historical prefix intact, no identity backfill." }
     - { criterion: "Correct scope and incomplete-work boundary", result: PASS, evidence: "Only TS1/TS2 claimed; all later batches independent and T7 WIP preserved." }
 code_quality:
-  status: OPEN
-  human_decision: PENDING
-  reviewed_by: []
-  reviewed_at: ""
-  reason: "Human QC approved Spec Compliance for this exact source; independent Developer/QC verdict remains required."
-next_action: "Review Code Quality for the same source; no TS3 execution before Developer/QC PASS."
+  status: FAIL
+  human_decision: FAIL
+  reviewed_by: ["developer", "qc"]
+  reviewed_at: "2026-09-13T05:25:28Z"
+  reason: "User accepted Code Quality FAIL and F-RCR-SB1-001 after the historical Spec Compliance PASS."
+next_action: "Execute approved TS2a RED/GREEN, then refresh Spec Compliance before reopening Code Quality; TS3 remains closed."
 ```
 
 ## RCR-SB1 Code Quality
@@ -759,17 +762,17 @@ source_sha: "964e1c7cf879c6d244253b3ee294f9cdaff60f77"
 spec_compliance_precondition: "Human QC APPROVED for this exact source at 2026-09-12T07:45:41Z"
 review_mode: INDEPENDENT
 recommendation: FAIL
-human_decision: PENDING
+human_decision: FAIL
 reviewer_roles: ["developer", "qc"]
-reviewed_by: []
-reviewed_at: ""
+reviewed_by: ["developer", "qc"]
+reviewed_at: "2026-09-13T05:25:28Z"
 evidence_ref: "rcr-sb1-code-quality-evidence.json"
 findings:
   - id: "F-RCR-SB1-001"
     severity: MEDIUM
     confidence: HIGH
     category: "Correctness / fail-open mirror validation"
-    disposition: PROPOSED
+    disposition: OPEN
     path: "packages/workflow-bundle/scripts/validate-work-item-protocol.js:82"
     issue: "First-key-only parsing ignores duplicate collections and invalid entries after blockers: [], producing a false PASS."
     evidence: "Control and both malformed in-memory mirrors return zero errors."
@@ -783,11 +786,42 @@ verification:
   static_analysis: "SKIP: ESLint unavailable/no configured wrapper; manual review is not lint"
   security: "SKIP: Semgrep unavailable; no new scanner installation"
   performance: "Manual linear-work heuristic only; no benchmark"
-authority: "AI recommendation only; independent human Developer/QC verdict remains required."
-next_action: "Developer/QC decide Code Quality verdict and finding; QC decides whether to reopen Spec Compliance; Developer approves amendment before repair."
+authority: "Explicit user acceptance of the immediately preceding named Developer/QC FAIL/finding, QC reopening and Developer TS2a bundle."
+next_action: "Approved TS2a repair only; refreshed Spec Compliance then Code Quality remain independent human reviews."
 ```
 
-[Machine-readable evidence and exact repro](rcr-sb1-code-quality-evidence.json). No code or test was changed during this review. The previously approved Spec Compliance remains historical/current for source `964e1c7cf879c6d244253b3ee294f9cdaff60f77`; it is not silently revoked by an AI recommendation. TS3 is still closed.
+[Machine-readable evidence and exact repro](rcr-sb1-code-quality-evidence.json). No code or test was changed during the original review. The Spec Compliance approval for source `964e1c7cf879c6d244253b3ee294f9cdaff60f77` remains historical; QC explicitly reopened the current batch through the user's acceptance. TS3 is still closed.
+
+## TS2a Amendment
+
+```yaml
+amendment_id: TS2a
+status: APPROVED
+trigger: "F-RCR-SB1-001"
+reviewed_by: developer
+reviewed_at: "2026-09-13T05:25:28Z"
+decision_source: "User accepted the immediately preceding named RCR recommendation bundle."
+plan_relationship: "Bounded repair within approved TS2 mirror validation; no new requirement, architectural boundary or write root. Sealed s04/s05/s06 remain unchanged."
+owned_paths:
+  - "packages/workflow-bundle/test/validate-work-item-protocol.test.js"
+  - "packages/workflow-bundle/scripts/validate-work-item-protocol.js"
+  - "work-items/closeout-bundle-repeat-cycle-reconciliation"
+execution_order:
+  - "Add duplicate-key, invalid-empty-list-tail, malformed-structure and non-contiguous-entry tests; run to expected RED before production edits."
+  - "Make the existing reader fully consume its bounded flow-map/legacy-scalar serialization; reject malformed structure and duplicate collection keys."
+  - "Run tests to GREEN, syntax, workflow, compatibility/history, encoding and WIP checks; hand corrected source to QC Spec Compliance."
+verify_path:
+  - "node packages/workflow-bundle/test/validate-work-item-protocol.test.js"
+  - "node packages/workflow-bundle/test/work-item-protocol-state.test.js"
+  - "node packages/workflow-bundle/test/workflow-gate-review.test.js"
+  - "wfc validate/protocol/plan; native syntax; UTF-8; frozen hosts and WIP digests"
+constraints:
+  - "Unknown legacy input remains kind: legacy with exact original text and is never semantically cleared."
+  - "No new parser dependency, text-state inference or historical receipt/event rewrite."
+  - "Partial T7 WIP remains untouched/unstaged; TS3 and candidate delivery stay closed."
+review_after_green: "QC refreshed Spec Compliance first, then Developer/QC Code Quality. Approval of this repair is not approval of its eventual result."
+implementation_status: NOT_STARTED
+```
 
 ### Pre-handoff Testing Evidence
 

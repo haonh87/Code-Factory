@@ -9,7 +9,10 @@
     "reviewed_at": "2026-09-12T07:45:41Z"
   },
   "code_quality": {
-    "human_decision": "PENDING",
+    "human_decision": "FAIL",
+    "reviewed_by": ["developer", "qc"],
+    "reviewed_at": "2026-09-13T05:25:28Z",
+    "decision_source": "User accepted the immediately preceding named RCR verdict/finding/reopen/TS2a bundle.",
     "reviewer_roles": [
       "developer",
       "qc"
@@ -22,7 +25,7 @@
       "severity": "MEDIUM",
       "confidence": "HIGH",
       "category": "Correctness / fail-open mirror validation",
-      "disposition": "PROPOSED",
+      "disposition": "OPEN",
       "file": "packages/workflow-bundle/scripts/validate-work-item-protocol.js",
       "lines": [
         82,
