@@ -687,16 +687,16 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: "qc"
+protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "RCR-SB3-spec-compliance"
-last_transition_action: "prepare-RCR-SB3-spec-compliance"
-last_transition_at: "2026-09-13T12:37:03Z"
+handoff_target: "RCR-SB3-code-quality"
+last_transition_action: "prepare-RCR-SB3-code-quality"
+last_transition_at: "2026-09-13T12:50:11Z"
 required_actions:
-  - {"id":"se:db5d8be1d4745b7d5c65756f934c394b7c0acc88c1095ca9892636f4e806a55d","kind":"workflow_followup","text":"QC review RCR-SB3 Spec Compliance at 08a3d12e5482a6aa40cfc5b40318ab965626db31; Developer/QC Code Quality remains a separate later decision."}
+  - {"id":"se:162caab40b01718e87efb6544477728d511be3bde6df51e58de7b82a8fa4af1d","kind":"workflow_followup","text":"Developer/QC decide RCR-SB3 Code Quality FAIL and F-RCR-SB3-001; QC decide Spec Compliance reopening and Developer decide proposed TS6a bounded lock-ownership repair. No repair or later gate is authorized."}
 blockers:
-  - {"id":"se:00972ab68c999552323ef1abd39276f7c7eb9a2e0e408061afd002faade1528c","kind":"delivery_blocker","text":"QC RCR-SB3 Spec Compliance is pending for source 08a3d12e5482a6aa40cfc5b40318ab965626db31; Code Quality is NOT_OPEN and TS8 remains closed."}
+  - {"id":"se:a756c005a3de2d1c4c67d4565ff397ce7b0ef2448d261b7f2ddd53b09b46168c","kind":"delivery_blocker","text":"Developer/QC RCR-SB3 Code Quality decision and proposed HIGH F-RCR-SB3-001 disposition are pending for 08a3d12e5482a6aa40cfc5b40318ab965626db31; recommendation FAIL on unowned live-lock deletion. TS6a not authorized; TS8/s08 closed."}
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -744,6 +744,8 @@ review_notes:
   - "Prepared RCR-SB2 Code Quality scoped PASS recommendation for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 after explicit QC Spec Compliance. No new finding; automatic static/security scans SKIP and scan overall PARTIAL, T7 WIP has twenty unchanged string-assertion failures. Human Developer/QC verdict, TS5 and all terminal gates remain pending."
   - "Human Developer and QC explicitly approved RCR-SB2 Code Quality PASS for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 at 2026-09-13T12:05:44Z. All disclosed static/security/performance scan gaps, T7 WIP quarantine and TS7/s08 duties are retained. This completes SB2 review dependencies only; no SB3, s08 or terminal approval."
   - "Prepared RCR-SB3 Spec Compliance evidence for exact source 08a3d12e5482a6aa40cfc5b40318ab965626db31 after TS7 functional regression. Human QC decision PENDING; Code Quality/TS8/s08 NOT_OPEN. Scan gaps and transient native read-refusal/large-history advisories retained; F-AG11-001 OPEN and parent exact-candidate duties mandatory."
+  - "Human QC explicitly approved RCR-SB3 Spec Compliance for exact source 08a3d12e5482a6aa40cfc5b40318ab965626db31 at 2026-09-13T12:46:11Z. Open separate Developer/QC Code Quality preparation only; no Code Quality verdict, TS8/s08 opening, finding closure or terminal approval. All scan gaps and concurrent transient-read/large-history advisories are retained."
+  - "Prepared RCR-SB3 Code Quality FAIL recommendation at 2026-09-13T12:50:11Z for exact source 08a3d12e5482a6aa40cfc5b40318ab965626db31 after explicit QC Spec Compliance. Newly identified pre-existing HIGH F-RCR-SB3-001: native wx loser deletes a foreign live lock. Fresh 45/45 suite remains PASS; deterministic ownership canary FAIL. Developer/QC disposition, QC reopening and Developer TS6a are PENDING proposals; no correction, finding closure, s08 or terminal approval."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -829,6 +831,8 @@ audit_events:
   - "S07_RCR_SB2_SPEC_COMPLIANCE_APPROVED"
   - "S07_RCR_SB2_CODE_QUALITY_APPROVED"
   - "S07_RCR_SB3_SPEC_COMPLIANCE_READY"
+  - "S07_RCR_SB3_SPEC_COMPLIANCE_APPROVED"
+  - "S07_RCR_SB3_CODE_QUALITY_READY"
 ```
 
 ## Traceability
