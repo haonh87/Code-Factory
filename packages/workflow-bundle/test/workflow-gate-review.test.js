@@ -112,7 +112,7 @@ function makeOperations(root) {
         expected_sha256: null
       },
       {
-        id: "protocol:report",
+        id: "state:fixture",
         target_path: statePath,
         content: "after\n",
         expected_sha256: sha256("before\n")
@@ -310,6 +310,33 @@ function testBundleEventIdentitySurvivesCoordinatorCommitAndRecovery() {
   }
 }
 
+function testCoordinatorRejectsNewUnboundOrMismatchedProtocolEventsBeforeWriting() {
+  const action = "approve-readiness-bundle";
+  const id = "12345678-1234-4234-9234-123456789abc";
+  const valid = { timestamp: "2026-09-13T00:00:00Z", action, actor: "human-review-bundle", from_status: "ACTIVE", to_status: "ACTIVE", note: "Display only", transaction_id: id };
+  const historical = { ...valid }; delete historical.transaction_id;
+  const invalidSuffixes = [[], [{ ...valid, transaction_id: undefined }], [{ ...valid, transaction_id: "12345678-1234-4234-9234-123456789abd" }], [{ ...valid, action: "approve-closeout-bundle" }], [valid, valid]];
+  for (const suffix of invalidSuffixes) {
+    const root = tempRoot("reject-event-binding");
+    const target = path.join(root, "report.json"), transactionRoot = path.join(root, "transactions");
+    const before = JSON.stringify({ protocol_events: [historical] });
+    fs.writeFileSync(target, before);
+    try {
+      expectThrow(() => executeApprovalTransaction({ plan: makePlan(), transaction_root: transactionRoot, transaction_id: id, operations: [{ id: "protocol:report", target_path: target, expected_sha256: sha256(before), content: JSON.stringify({ protocol_events: [historical, ...suffix] }) }] }), /transaction_id|protocol event|identity/i, "invalid new event suffix is rejected before transaction writes");
+      assert(fs.readFileSync(target, "utf8") === before && !fs.existsSync(transactionRoot), "invalid event binding leaves history/state unchanged with zero journal/lock writes");
+    } finally { rmrf(root); }
+  }
+  const root = tempRoot("bound-event-after-legacy-history");
+  try {
+    const target = path.join(root, "report.json");
+    const before = JSON.stringify({ protocol_events: [historical] }); fs.writeFileSync(target, before);
+    const result = executeApprovalTransaction({ plan: makePlan(), transaction_root: path.join(root, "transactions"), transaction_id: id, operations: [{ id: "protocol:report", target_path: target, expected_sha256: sha256(before), content: JSON.stringify({ protocol_events: [historical, valid] }) }] });
+    const after = JSON.parse(fs.readFileSync(target, "utf8"));
+    assert(result.status === "COMMITTED" && after.protocol_events[1].transaction_id === result.transaction_id, "valid bound suffix commits after unbound legacy history");
+    assert(JSON.stringify(after.protocol_events[0]) === JSON.stringify(historical), "coordinator does not backfill historical identity");
+  } finally { rmrf(root); }
+}
+
 function testOptionalTransactionIdentityIsValidatedAndReused() {
   if (typeof executeApprovalTransaction !== "function") return;
   console.log("\nF-AG11-001 T1: optional transaction identity is validated before writes and reused");
@@ -490,6 +517,7 @@ if (
   testPreflightFailureWritesNothing();
   testAtomicCommitAndIndependentReceipts();
   testBundleEventIdentitySurvivesCoordinatorCommitAndRecovery();
+  testCoordinatorRejectsNewUnboundOrMismatchedProtocolEventsBeforeWriting();
   testOptionalTransactionIdentityIsValidatedAndReused();
   testCaughtFailureRollsBackFirstVisibleCommit();
   testCrashRecoveryIsIdempotent();
