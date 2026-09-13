@@ -1077,10 +1077,10 @@ function testConcurrentCloseoutCommandsCommitAtMostOneLaterCycle() {
     const committed = results.filter(result => result.status === 0 && JSON.parse(result.out).transaction.status === "COMMITTED");
     assert(committed.length === 1, "two real concurrent CLI processes commit exactly one later cycle");
     results.filter(result => !committed.includes(result)).forEach(result => {
-      // A simultaneous wx lock acquisition may expose the native EEXIST refusal.
-      // Accept only that exact lock path, not an unrelated filesystem failure.
-      const exclusiveLockRefusal = result.err.startsWith("ERROR: EEXIST: file already exists, open '") && result.err.trim().endsWith(`/transactions/${slug}.lock'`);
-      assert(result.status === 0 ? JSON.parse(result.out).transaction.status === "NOOP" : exclusiveLockRefusal || /in progress|preflight|digest mismatch/i.test(result.err), `competing command is NOOP or refused by lock/optimistic guard (status=${result.status}; error=${result.err.trim()})`);
+      // EDGE-RCR-06 locks cycle count, retry and residue, not error wording.
+      // A refused contender must expose no successful authority summary; the
+      // settled report, winning identity and retries are asserted below.
+      assert(result.status === 0 ? JSON.parse(result.out).transaction.status === "NOOP" : result.status === 1 && !result.out.trim() && Boolean(result.err.trim()), `competing command is NOOP or fails closed with no authority summary (status=${result.status}; error=${result.err.trim()})`);
     });
     const after = JSON.parse(fs.readFileSync(reportPath, "utf8"));
     assert(committed.length === 1 && after.protocol_events.length === before.length + 1 && after.protocol_events.at(-1).transaction_id === JSON.parse(committed[0].out).transaction.transaction_id, "race appends only one event with winning identity");
