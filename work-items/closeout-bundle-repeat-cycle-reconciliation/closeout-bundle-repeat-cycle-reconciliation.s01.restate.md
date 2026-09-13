@@ -654,7 +654,7 @@ next_action: "Developer reviews the amended s06 TS0..TS8 plan; implementation st
 
 ## Work Item Protocol
 ```yaml
-protocol_status: BLOCKED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
@@ -690,13 +690,12 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "RCR-SB1-TS2a-code-quality-review"
-last_transition_action: "prepare-RCR-SB1-TS2a-code-quality-recommendation"
-last_transition_at: "2026-09-13T05:41:32Z"
+handoff_target: "RCR-SB2-TS3"
+last_transition_action: "resume"
+last_transition_at: "2026-09-13T05:48:58.326Z"
 required_actions:
-  - {"id":"se:36c0ea9a71e787f9c047c6a3ce50bc274411264a585f4be2dc3e0003fc5a2576","kind":"workflow_followup","text":"Developer/QC review scoped refreshed RCR-SB1 Code Quality PASS and proposed F-RCR-SB1-001 resolution for source 3e0b9728d82204e38b06668e08cc895294109986 before TS3. QC Spec Compliance is already approved."}
-blockers:
-  - {"id":"se:a251ce80464cc418402cccfeaef37ba213fb1a8ccff5a92acc62a19ff7d146fd","kind":"delivery_blocker","text":"QC refreshed RCR-SB1 Spec Compliance is approved. Developer/QC Code Quality is pending; TS3 and candidate delivery remain closed."}
+  - {"id":"se:4579aac266916040531c1b2193ea063387ab75da9b8e28430b2e657c8f741cc7","kind":"workflow_followup","text":"Continue active execution from the current step."}
+blockers: []
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -820,6 +819,8 @@ audit_events:
   - "S07_RCR_SB1_TS2A_SPEC_COMPLIANCE_APPROVED"
   - "S07_RCR_SB1_TS2A_CODE_QUALITY_OPENED"
   - "S07_RCR_SB1_TS2A_CODE_QUALITY_RECOMMENDATION_PREPARED"
+  - "S07_RCR_SB1_TS2A_CODE_QUALITY_APPROVED"
+  - "S07_F_RCR_SB1_001_RESOLVED"
 ```
 
 ## Traceability

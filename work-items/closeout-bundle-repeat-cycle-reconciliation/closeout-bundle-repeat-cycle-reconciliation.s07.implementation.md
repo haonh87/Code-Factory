@@ -129,7 +129,7 @@ tags:
 > `964e1c7cf879c6d244253b3ee294f9cdaff60f77`. Developer/QC accepted Code Quality FAIL and
 > opened F-RCR-SB1-001; QC reopened Spec Compliance and Developer approved the bounded TS2a repair.
 > TS2a RED `94d252f` precedes GREEN `3e0b9728d82204e38b06668e08cc895294109986`; QC accepted refreshed Spec Compliance at 2026-09-13T05:37:26Z.
-> Developer/QC Code Quality opens next for that same source; TS3 remains closed.
+> Developer/QC explicitly approved refreshed Code Quality PASS and closed F-RCR-SB1-001 for that same source at 2026-09-13T05:46:55Z. RCR-SB1 is complete; TS3 is the next approved task, subject to protocol resume in the existing sixteen roots.
 > Full regression is not GREEN: three existing protocol assertions await TS3/TS4 conversion.
 
 ## Step Contract
@@ -711,7 +711,7 @@ tdd_status: PASS
 worktree_status: PASS
 review_status: PENDING
 spec_compliance_status: PASS
-code_quality_status: PENDING
+code_quality_status: PASS
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
 merge_path: "No merge in s07; shared worktree HOLD_OPEN."
@@ -850,16 +850,20 @@ spec_compliance:
     - { criterion: "Scope and authority", result: PASS, evidence: "One existing production script; no dependency, new root, receipt or s04/s05/s06 edit." }
     - { criterion: "Compatibility/history/isolation", result: PASS, evidence: "13 frozen normalizations and live load-only checks, all historical prefixes, two unbound events and T7 WIP digests unchanged." }
 code_quality:
-  status: OPEN
-  human_decision: PENDING
+  status: PASS
+  human_decision: APPROVED
+  reviewed_by: ["developer", "qc"]
+  reviewed_at: "2026-09-13T05:46:55Z"
   recommendation: PASS
   evidence_ref: "rcr-sb1-ts2a-code-quality-evidence.json"
-  reason: "QC explicitly accepted refreshed Spec Compliance for this exact source; the scoped AI Code Quality PASS recommendation awaits independent Developer/QC decision."
+  reason: "Explicit user Developer/QC PASS for this exact source, following QC Spec Compliance approval."
 finding:
   id: F-RCR-SB1-001
-  disposition: OPEN
-  remediation: "Implemented and locally verified; closure remains subject to refreshed review."
-next_action: "Developer/QC decide scoped Code Quality PASS and the proposed resolution of F-RCR-SB1-001 for the same source before TS3."
+  disposition: RESOLVED
+  resolved_by: ["developer", "qc"]
+  resolved_at: "2026-09-13T05:46:55Z"
+  remediation: "Implemented, locally verified, and explicitly accepted for closure by Developer/QC."
+next_action: "Resume in the existing approved/granted scope; execute TS3 RED, then TS4 GREEN and separate RCR-SB2 reviews."
 ```
 
 ## Refreshed RCR-SB1 Code Quality — TS2a
@@ -872,7 +876,10 @@ spec_compliance_precondition: "QC APPROVED this exact source at 2026-09-13T05:37
 review_mode: INDEPENDENT
 evidence_prepared_by: "AI targeted review; not an independent human verdict."
 recommendation: PASS
-human_decision: PENDING
+human_decision: APPROVED
+reviewed_by: ["developer", "qc"]
+reviewed_at: "2026-09-13T05:46:55Z"
+decision_source: "User explicitly approved refreshed RCR-SB1 Code Quality PASS and closure of F-RCR-SB1-001 for the exact source."
 reviewer_roles: ["developer", "qc"]
 evidence_ref: "rcr-sb1-ts2a-code-quality-evidence.json"
 checks:
@@ -882,7 +889,7 @@ checks:
   - { criterion: "History, scope and isolation", result: PASS, evidence: "13 frozen/live reports load without writes; event prefixes and two unbound events unchanged; protected hosts and quarantined WIP hashes unchanged." }
 findings:
   new_confirmed_findings: []
-  proposed_resolution: "F-RCR-SB1-001: RESOLVED on Developer/QC approval; currently OPEN."
+  resolution: "F-RCR-SB1-001: RESOLVED by explicit Developer/QC approval at 2026-09-13T05:46:55Z."
 scan_evidence:
   syntax: PASS
   static_analysis: "SKIP: ESLint unavailable; no configured lint wrapper. Manual review is supplemental only."
@@ -891,8 +898,8 @@ scan_evidence:
 known_limits:
   - "Exactly three protocol integration assertions remain failing in planned TS3/TS4 conversion; they were not hidden or weakened."
   - "Formal static/security, full regression/package and exact-candidate child/parent verification remain mandatory later-batch work."
-authority: "Recommendation only. No human Code Quality verdict, finding closure, TS3 resume, Technical Verification, DoD or release is inferred."
-next_action: "Developer/QC review the scoped PASS and proposed finding resolution; retain BLOCKED until their explicit decision."
+authority: "Explicit human scoped Code Quality PASS and finding closure only. Coordinator resume uses the existing approved Task Plan and sixteen grants; no later review, Technical Verification, DoD or release is inferred."
+next_action: "Resume the existing scope and execute approved TS3/TS4; RCR-SB2 reviews remain separate."
 ```
 
 ### TS2a Pre-handoff Verification
@@ -912,10 +919,10 @@ skipped_checks:
   - "ESLint absent and no configured lint wrapper; manual diff review is not lint."
   - "Semgrep absent; no scanner installed. Native parsing and manual bounded-grammar review do not constitute security clearance."
   - "Full unit, smoke, package and hosted candidate/parent verification belong to TS7/TS8; current mixed producer state is not released."
-release_blockers: ["Refreshed RCR-SB1 review pair", "F-RCR-SB1-001 still OPEN pending review", "Remaining TS3..TS8", "Parent F-AG11-001 exact-candidate and terminal closeout"]
+release_blockers: ["Remaining TS3..TS8 and their reviews", "Parent F-AG11-001 exact-candidate and terminal closeout"]
 status: FAIL
 gaps: ["Remaining structural integration", "Formal static/security and final-candidate evidence"]
-recommendation: "QC refreshed Spec Compliance is approved; scoped Code Quality PASS is proposed, not human-passed. No TS3 resume or DoD."
+recommendation: "RCR-SB1 review pair is explicitly approved; proceed through the approved remaining tasks. No full verification or DoD."
 notes_for_review: "Scoped repair is GREEN; the full work item remains incomplete and release-blocked."
 ```
 
@@ -1012,8 +1019,9 @@ notes: "Semantic checklist reviewed for changed scripts/notes; source-only audit
 
 ### Current Structural Handoff
 
-- Protocol BLOCKED at s07, retaining sixteen roots; QC refreshed Spec Compliance is explicitly approved for source 3e0b9728d82204e38b06668e08cc895294109986. The 964e1c7 review is historical.
-- Developer/QC refreshed Code Quality is OPEN with a scoped PASS recommendation and proposed F-RCR-SB1-001 resolution. TS3 still requires the explicit decision and resume.
+- Protocol ACTIVE at s07 after coordinator resume at 2026-09-13T05:48:58.326Z, retaining the sixteen previously approved/granted roots.
+- RCR-SB1 refreshed Spec Compliance and Code Quality are explicitly approved for source 3e0b9728d82204e38b06668e08cc895294109986; F-RCR-SB1-001 is RESOLVED. The 964e1c7 review is historical.
+- TS3 tests reproduce typed-writer and exact-selector/assertion gaps before any TS4 production edit. TS4 follows this RED; RCR-SB2 reviews remain independent.
 - Old protocol suite has three failures: readiness gate cleanup, readiness s01 mirror assertion,
   and old prose-based selected-closeout blocker expectation. TS3/TS4 must convert behavior and
   assertions while preserving unknown canaries; no cosmetic green run.
@@ -1022,3 +1030,25 @@ notes: "Semantic checklist reviewed for changed scripts/notes; source-only audit
 - Known limitations: remaining TS3..TS8 implementation/reviews, full regression and child/parent exact-candidate verification remain pending; approved structural authoring is not reopened by this review.
 - Notes for testing: retain unknown legacy canaries and all existing transaction assertions through the remaining conversion; focused TS2a GREEN is not full regression PASS.
 - Notes for deployment: none in s07; corrected candidate and rollback binding are TS8/s08 work.
+
+## Structural TS3 RED
+
+```yaml
+scope: ["TS3", "Approved TS3/TS4 behavior boundary"]
+baseline_production_source: "3e0b9728d82204e38b06668e08cc895294109986"
+preconditions: ["QC refreshed RCR-SB1 Spec Compliance APPROVED", "Developer/QC refreshed Code Quality PASS", "F-RCR-SB1-001 RESOLVED", "Coordinator resume in unchanged sixteen roots"]
+tests_added:
+  - "Raw reject/block/cancel output and exact work-item approval purpose IDs."
+  - "Raw activate/resume/verify/close followups; archive intentionally remains terminal with no action."
+  - "Initial and post-scaffold materialization output, including adaptive writer."
+  - "Selected typed gates versus unknown blocker/action and unrelated followup canaries; twenty display mutations."
+  - "Typed phase rejection/retry cleanup and unrelated-phase preservation."
+  - "Exact gate and non-gate purpose approval contradictions; legacy prose is opaque."
+fixture_corrections:
+  - "Post-scaffold fixture output moved from protected root report.json into its canonical workflow root; EACCES was not counted as behavior RED."
+  - "Archive followup assertion corrected to the existing empty terminal contract; no new archive behavior is required."
+expected_red: ["State suite: original 9 PASS and new 5 FAIL", "Materializer: 18 desired typed-output assertions FAIL", "Protocol suite: 18 typed-state/contradiction assertions FAIL"]
+evidence_ref: "rcr-sb2-ts3-red-evidence.json"
+quarantine: "Pre-existing partial T7 twenty-cycle function and invocation remain byte-for-byte unchanged and excluded from staging. TS3 may edit other approved parts of the same test file."
+next_action: "Approved TS4 constructor/selector conversion; do not modify event identity before TS5 RED."
+```

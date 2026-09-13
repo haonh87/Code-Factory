@@ -10,7 +10,7 @@ const {
   normalizeTrustedApprovalReceipt,
   resolveGateArtifact
 } = require("../scripts/workflow-trusted-approval-utils");
-const { normalizeProtocolReport, renderProtocolBlock } = require("../scripts/work-item-protocol-utils");
+const { createStateEntry, normalizeProtocolReport, renderProtocolBlock } = require("../scripts/work-item-protocol-utils");
 const {
   getProtocolStateContradictionErrors,
   getTrustedReceiptArtifactErrors
@@ -578,13 +578,13 @@ function testApproveReadyBundleSealsFourIndependentReceipts() {
 
     const reconciled = JSON.parse(fs.readFileSync(reportPath, "utf8"));
     assert(
-      reconciled.required_actions.length === 1 && /work-item activate/.test(reconciled.required_actions[0]),
+      reconciled.required_actions.length === 1 && reconciled.required_actions[0].kind === "work_item_activation",
       `readiness reconciliation must leave only the activation action, got ${JSON.stringify(reconciled.required_actions)}`
     );
     assert(reconciled.blockers.length === 0, "approved readiness reconciliation must leave no stale gate blocker");
     assert(reconciled.audit_events.includes("READINESS_BUNDLE_APPROVED"), "protocol report records the atomic readiness approval event");
     const s01 = fs.readFileSync(path.join(workflowRoot, `${slug}.s01.restate.md`), "utf8");
-    assert(!/wfc gate approve/.test(s01) && /wfc work-item activate/.test(s01), "s01 protocol block is reconciled in the same transaction");
+    assert(s01.includes(renderProtocolBlock(reconciled)) && !reconciled.required_actions.some(value => value.kind === "gate_approval"), "s01 protocol block is reconciled in the same transaction");
 
     const firstTelemetryFiles = fs.readdirSync(telemetryRoot).filter((name) => name.endsWith(".json"));
     assert(firstTelemetryFiles.length === 1, `committed approval bundle emits one opt-in event, got ${firstTelemetryFiles.length}`);
@@ -713,8 +713,8 @@ function testRejectReadyBundleKeepsIndependentDecisionEvidence() {
       assert(loaded.receipt && loaded.receipt.approval_status === "REJECTED", `rejection keeps independent ${gate} evidence`);
     });
     const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
-    assert(report.blockers.some((entry) => /readiness bundle rejected/i.test(entry)), "rejected bundle adds an explicit activation blocker");
-    assert(report.required_actions.some((entry) => /resolve rejected readiness/i.test(entry)), "rejected bundle records a concrete rework action");
+    assert(report.blockers.some((entry) => entry.kind === "readiness_bundle_rejected"), "rejected bundle adds an explicit activation blocker");
+    assert(report.required_actions.some((entry) => entry.kind === "resolve_readiness_rejection"), "rejected bundle records a concrete rework action");
   } finally {
     rmrf(projectRoot);
     rmrf(approvalRoot);
@@ -748,7 +748,7 @@ function testMaintenanceCloseoutBundlesOnlyDod() {
       assert(!loaded.receipt, `maintenance closeout emits no ${gate} receipt`);
     });
     const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
-    assert(report.required_actions.length === 1 && /work-item close/.test(report.required_actions[0]), "maintenance reconciliation leaves only the close transition");
+    assert(report.required_actions.length === 1 && report.required_actions[0].kind === "work_item_close", "maintenance reconciliation leaves only the close transition");
     assert(report.audit_events.includes("CLOSEOUT_BUNDLE_APPROVED"), "maintenance report records closeout bundle approval");
   } finally {
     rmrf(projectRoot);
@@ -785,7 +785,7 @@ function testProductReleaseCloseoutKeepsConfiguredAuthority() {
       assert(loaded.receipt && loaded.receipt.reviewed_by === expectedReviewers[gate], `${gate} retains its configured reviewer authority`);
     });
     const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
-    assert(report.required_actions.length === 1 && /work-item close/.test(report.required_actions[0]), "product closeout removes every stale terminal gate action");
+    assert(report.required_actions.length === 1 && report.required_actions[0].kind === "work_item_close", "product closeout removes every stale terminal gate action");
   } finally {
     rmrf(projectRoot);
     rmrf(approvalRoot);
@@ -892,16 +892,17 @@ function testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss() {
   try {
     const reportBefore = JSON.parse(fs.readFileSync(reportPath, "utf8"));
     reportBefore.handoff_target = "closeout-review";
+    const typed = (collection, kind, sourceKey, text, gate) => createStateEntry({ collection, kind, sourceKey, text, gate });
     reportBefore.required_actions = [
-      `  WFC   GATE   APPROVE-CLOSEOUT-BUNDLE --work-item ${slug}  `,
-      "Await QC approval for Definition of Done.",
-      "Release approval remains pending with DevOps.",
-      "  Business   Acceptance approval remains pending.  ",
+      typed("required_actions", "closeout_bundle_approval", "bundle", `  WFC   GATE   APPROVE-CLOSEOUT-BUNDLE --work-item ${slug}  `),
+      typed("required_actions", "gate_approval", "dod", "Await QC approval for Definition of Done.", "dod"),
+      typed("required_actions", "gate_approval", "release", "Release approval remains pending with DevOps.", "release"),
+      typed("required_actions", "gate_approval", "business", "  Business   Acceptance approval remains pending.  ", "business_acceptance"),
       `wfc work-item close --work-item ${slug}`
     ];
     reportBefore.blockers = [
-      "Closeout bundle approval remains pending for DoD, Release and Business Acceptance.",
-      "Awaiting RELEASE approval by DevOps.",
+      typed("blockers", "closeout_bundle_approval", "bundle", "Closeout bundle approval remains pending for DoD, Release and Business Acceptance."),
+      typed("blockers", "approval_pending", "release", "Awaiting RELEASE approval by DevOps.", "release"),
       "Security scan is pending for dependency audit.",
       "Security approval remains pending because the situation is unresolved.",
       "Security approval remains pending while a dodgy dependency is investigated."
@@ -938,7 +939,7 @@ function testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss() {
     if (outcome.status !== 0) return;
 
     const reportAfter = JSON.parse(fs.readFileSync(reportPath, "utf8"));
-    const expectedCloseAction = `wfc work-item close --work-item ${slug}`;
+    const expectedCloseAction = createStateEntry({ collection: "required_actions", kind: "work_item_close", sourceKey: "work-item-close:" + slug, text: `wfc work-item close --work-item ${slug}` });
     assert(
       JSON.stringify(reportAfter.required_actions) === JSON.stringify([expectedCloseAction]),
       `approved closeout projects exactly one canonical close action, got ${JSON.stringify(reportAfter.required_actions)}`
@@ -953,7 +954,7 @@ function testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss() {
           "Security scan is pending for dependency audit.",
           "Security approval remains pending because the situation is unresolved.",
           "Security approval remains pending while a dodgy dependency is investigated."
-        ]),
+        ].map(text => ({ kind: "legacy", text }))),
       `selected-gate blockers are removed while unrelated blockers remain, got ${JSON.stringify(reportAfter.blockers)}`
     );
 
@@ -1039,7 +1040,7 @@ function testLegacyProductReleaseCloseoutRestoresImplicitDod() {
     const s01After = fs.readFileSync(s01Path, "utf8");
     const normalizedAfter = JSON.parse(reportAfter);
     assert(
-      normalizedAfter.required_actions.length === 1 && /work-item close/.test(normalizedAfter.required_actions[0]),
+      normalizedAfter.required_actions.length === 1 && normalizedAfter.required_actions[0].kind === "work_item_close",
       "legacy product reconciliation removes every terminal gate action"
     );
     assert(
@@ -1224,6 +1225,25 @@ function testStaleDigestFixtureIsRejected() {
   console.log("  PASS: stale trusted-receipt digest fixture is rejected");
 }
 
+function testAllLifecycleFollowupWritersEmitTypedState() {
+  const ctx = buildProjectAtVerified("ts3-lifecycle-writer-item");
+  const { applyAction } = require("../scripts/work-item-protocol");
+  const previousRoot = process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
+  process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = ctx.approvalRoot;
+  try {
+    for (const [action, from] of [["activate", "MATERIALIZED"], ["resume", "BLOCKED"], ["verify", "ACTIVE"], ["close", "VERIFIED"], ["archive", "DONE"]]) {
+      const after = applyAction({ ...ctx.report, protocol_status: from }, action, { "project-root": ctx.projectRoot });
+      assert(action === "archive" ? after.required_actions.length === 0 : after.required_actions.length > 0, `TS3: ${action} preserves its existing followup/terminal contract`);
+      assert(after.required_actions.every(value => typeof value === "object" && value.kind !== "legacy" && value.id), `TS3: ${action} emits typed followups without load adaptation`);
+    }
+  } finally {
+    if (previousRoot === undefined) delete process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
+    else process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = previousRoot;
+    rmrf(ctx.projectRoot);
+    rmrf(ctx.approvalRoot);
+  }
+}
+
 function testContradictoryProtocolStateFixtureIsRejected() {
   const fixture = JSON.parse(
     fs.readFileSync(path.join(governanceFixtureRoot, "contradictory-protocol-state.json"), "utf8")
@@ -1232,7 +1252,17 @@ function testContradictoryProtocolStateFixtureIsRejected() {
     ...fixture.receipt_state,
     approvedGates: new Set(fixture.receipt_state.approvedGates)
   };
-  const errors = getProtocolStateContradictionErrors(fixture.report, receiptState, "protocol-report.json");
+  assert(getProtocolStateContradictionErrors(fixture.report, receiptState, "protocol-report.json").length === 0, "unknown legacy fixture prose is opaque, not inferred as approval state");
+  const typedReport = {
+    ...fixture.report,
+    blockers: [
+      createStateEntry({ collection: "blockers", kind: "workflow_followup", sourceKey: "work-item-approval:example", text: fixture.report.blockers[0] }),
+      createStateEntry({ collection: "blockers", kind: "workflow_followup", sourceKey: "change-approval:CHANGE-999", text: fixture.report.blockers[1] }),
+      createStateEntry({ collection: "blockers", kind: "approval_pending", gate: "task_plan", sourceKey: "gate", text: fixture.report.blockers[2] })
+    ],
+    required_actions: [createStateEntry({ collection: "required_actions", kind: "approval_pending", gate: "spec", sourceKey: "gate", text: fixture.report.required_actions[0] })]
+  };
+  const errors = getProtocolStateContradictionErrors(typedReport, receiptState, "protocol-report.json");
   assert(errors.some((error) => /work-item approval.*APPROVED/i.test(error)), `work-item contradiction missing: ${JSON.stringify(errors)}`);
   assert(errors.some((error) => /CHANGE-999.*APPROVED/i.test(error)), `change contradiction missing: ${JSON.stringify(errors)}`);
   assert(errors.some((error) => /task_plan.*APPROVED/i.test(error)), `task-plan contradiction missing: ${JSON.stringify(errors)}`);
@@ -1538,6 +1568,7 @@ testLegacyProductCloseoutFailureMatrixLeavesNoPartialState();
 testWorkItemLifecycleAdapterEmitsBoundedTelemetry();
 testFailedVerifyDoesNotLeavePrematureS08();
 testStaleDigestFixtureIsRejected();
+testAllLifecycleFollowupWritersEmitTypedState();
 testContradictoryProtocolStateFixtureIsRejected();
 testEbCleanTreeStillReachesDone();
 testEbDirtyDeclaredPathRefusedAtTransition();

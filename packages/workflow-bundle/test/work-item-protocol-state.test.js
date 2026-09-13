@@ -144,3 +144,95 @@ test("load-only adapter reads a legacy report without rewriting its bytes", () =
     fs.rmSync(dir, { recursive: true, force: true });
   }
 });
+
+// TS3: producer/consumer behavior; TS5/TS6 transaction identity is deliberately separate.
+const protocol = require("../scripts/work-item-protocol");
+const evidence = require("../scripts/workflow-gate-evidence-utils");
+const stateEntry = (collection, kind, sourceKey, text, gate) => utils.createStateEntry({ collection, kind, sourceKey, text, gate });
+const wordingMutations = [
+  "Peer review of the migration script is outstanding", "release", "RELEASE",
+  "Pending release review", "Definition of Done", "dodgy situation", "uat",
+  "business_acceptance", "business acceptance", "Chờ phê duyệt", "漢字",
+  "réview\u00a0release", "ＲＥＬＥＡＳＥ", "review\nrelease", "await receipt",
+  "seal outstanding", "approval not passed", "wfc gate approve --gate dod",
+  "Comment: reject-closeout-bundle", "  unrelated text  "
+];
+
+test("new reject/block/cancel writers emit valid typed state, not adapted legacy strings", () => {
+  const base = { work_item_slug: "demo", protocol_status: "ACTIVE", approval_status: "APPROVED", delivery_context: "brownfield" };
+  for (const action of ["reject", "block", "cancel"]) {
+    const after = protocol.applyAction(base, action, { "reviewed-by": "qc", note: "Review is outstanding", blocker: ["Peer review is outstanding"], reason: "Owner cancelled", "project-root": process.cwd() });
+    for (const key of ["blockers", "required_actions"]) {
+      assert.deepEqual(utils.getStateCollectionErrors(after[key], key), []);
+      assert.ok(after[key].every(value => typeof value === "object" && value.kind !== "legacy"), action + " emits typed " + key);
+    }
+  }
+});
+
+test("work-item approval clears only its exact purpose IDs and preserves opaque feedback", () => {
+  const canary = { kind: "legacy", text: wordingMutations[0] };
+  const pending = key => stateEntry(key, "workflow_followup", "work-item-approval:demo", "Work-item approval is pending");
+  const foreign = stateEntry("required_actions", "workflow_followup", "work-item-approval:other", "demo approval is pending");
+  const after = protocol.applyAction({ work_item_slug: "demo", blockers: [pending("blockers"), canary], required_actions: [pending("required_actions"), foreign, canary] }, "approve", { "reviewed-by": "po" });
+  assert.deepEqual(after.blockers, [canary]);
+  assert.deepEqual(after.required_actions, [foreign, canary]);
+});
+
+test("closeout clears selected typed gates but preserves unknown blockers and actions across 20 display mutations", () => {
+  const canary = wordingMutations[0], actionCanary = "Review the release migration before close";
+  let stableOutcome;
+  for (const text of wordingMutations) {
+    const pending = stateEntry("blockers", "approval_pending", "selected", text, "release");
+    const unrelated = stateEntry("blockers", "approval_pending", "unselected", text, "spec");
+    const selectedAction = stateEntry("required_actions", "gate_approval", "selected", text, "release");
+    const unrelatedAction = stateEntry("required_actions", "workflow_followup", "peer-review", text);
+    const before = { work_item_slug: "demo", blockers: [pending, unrelated, canary], required_actions: [selectedAction, unrelatedAction, actionCanary] };
+    const after = protocol.reconcileApprovalBundleReport(before, { phase: "closeout", gates: ["release"], decision: "APPROVED", recordProtocolEvent: false });
+    assert.deepEqual(after.blockers, [unrelated, { kind: "legacy", text: canary }]);
+    assert.ok(after.required_actions.some(value => value.id === unrelatedAction.id), "unrelated typed followup preserved");
+    assert.ok(after.required_actions.some(value => value.kind === "legacy" && value.text === actionCanary), "unknown action preserved");
+    assert.equal(after.required_actions.filter(value => value.kind === "work_item_close").length, 1);
+    assert.equal(after.handoff_target, "protocol-close");
+    const shape = value => ({ id: value.id, kind: value.kind, gate: value.gate });
+    const outcome = { blockers: after.blockers.map(shape), actions: after.required_actions.map(shape), handoff: after.handoff_target };
+    if (stableOutcome) assert.deepEqual(outcome, stableOutcome, "display changes cannot affect core outcomes");
+    stableOutcome = outcome;
+    assert.deepEqual(before.blockers, [pending, unrelated, canary], "core does not mutate input");
+  }
+});
+
+test("bundle rejection emits unique typed markers/actions and approval clears only its own phase", () => {
+  const base = { work_item_slug: "demo", blockers: [wordingMutations[0]], required_actions: ["Peer review the release"] };
+  for (const phase of ["readiness", "closeout"]) {
+    const gate = phase === "readiness" ? "spec" : "release";
+    const options = { phase, gates: [gate], decision: "REJECTED", recordProtocolEvent: false };
+    const rejected = protocol.reconcileApprovalBundleReport(base, options);
+    for (const key of ["blockers", "required_actions"]) assert.deepEqual(utils.getStateCollectionErrors(rejected[key], key), []);
+    assert.ok(rejected.blockers.some(value => value.kind === phase + "_bundle_rejected"));
+    assert.ok(rejected.required_actions.some(value => value.kind === "resolve_" + phase + "_rejection"));
+    const retry = protocol.reconcileApprovalBundleReport(rejected, options);
+    assert.equal(retry.blockers.filter(value => value.kind === phase + "_bundle_rejected").length, 1);
+    const other = phase === "readiness" ? "closeout" : "readiness";
+    const otherMarker = stateEntry("blockers", other + "_bundle_rejected", "other", "Review remains outstanding");
+    const approved = protocol.reconcileApprovalBundleReport({ ...rejected, blockers: [...rejected.blockers, otherMarker] }, { ...options, decision: "APPROVED" });
+    assert.ok(approved.blockers.some(value => value.id === otherMarker.id), "unrelated phase rejection preserved");
+    assert.ok(approved.blockers.some(value => value.kind === "legacy" && value.text === wordingMutations[0]));
+    assert.equal(approved.blockers.some(value => value.kind === phase + "_bundle_rejected"), false);
+  }
+});
+
+test("approval contradictions use exact gate or non-gate purpose identity, not wording or aliases", () => {
+  for (const text of wordingMutations) {
+    const blockers = [
+      stateEntry("blockers", "workflow_followup", "work-item-approval:demo", text),
+      stateEntry("blockers", "workflow_followup", "change-approval:CR-008", text),
+      stateEntry("blockers", "approval_pending", "gate", text, "task_plan")
+    ];
+    const required_actions = [stateEntry("required_actions", "approval_pending", "gate", text, "spec")];
+    const receipts = { workItemApproved: true, changeApproved: true, approvedGates: new Set(["spec", "task_plan"]) };
+    const errors = evidence.getProtocolStateContradictionErrors({ work_item_slug: "demo", change_id: "CR-008", blockers, required_actions }, receipts, "fixture.json");
+    assert.equal(errors.length, 4, "four exact contradictions for display: " + text);
+    const unrelated = { work_item_slug: "demo", change_id: "CR-008", blockers: [stateEntry("blockers", "workflow_followup", "peer-review", text), wordingMutations[0]], required_actions: [stateEntry("required_actions", "workflow_followup", "change-approval:CR-009", text)] };
+    assert.deepEqual(evidence.getProtocolStateContradictionErrors(unrelated, receipts, "fixture.json"), []);
+  }
+});

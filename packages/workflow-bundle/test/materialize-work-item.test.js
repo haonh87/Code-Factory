@@ -4,6 +4,7 @@ const path = require("path");
 const { materializeWorkItem } = require("../scripts/materialize-work-item");
 const { SDD_LIGHT_PROFILE } = require("../scripts/workflow-sdd-definitions");
 const { validateWorkItemProtocol } = require("../scripts/validate-work-item-protocol");
+const { getStateCollectionErrors } = require("../scripts/work-item-protocol-utils");
 
 let failures = 0;
 const ADAPTIVE_ACTIVATION_ARGS = {
@@ -52,6 +53,11 @@ function runMaterialize(projectRoot, extraArgs) {
       ...extraArgs
     }
   });
+  for (const key of ["blockers", "required_actions"]) {
+    assert(getStateCollectionErrors(result.report[key], key).length === 0, `TS3: materialization emits valid ${key}`);
+    assert(result.report[key].every(value => typeof value === "object" && value.kind !== "legacy"), `TS3: new ${key} are typed without relying on the load adapter`);
+  }
+  assert(result.report.work_items[0].blockers.every(value => typeof value === "object" && value.kind !== "legacy"), "TS3: materialization candidate blockers are typed");
   return result.report;
 }
 
@@ -333,11 +339,11 @@ function testAdaptiveMaintenanceAutoScaffoldKeepsAdapterParity() {
     assert(result.report.roles.map((entry) => entry.role).join(",") === "developer,qc", "report roles must match kernel");
     assert(result.report.gates.map((entry) => entry.gate).join(",") === "task_plan,dod", "report gates must match kernel");
     assert(
-      result.report.required_actions.some((action) => /--gate task_plan --reviewed-by developer/.test(action)),
+      result.report.required_actions.some((action) => action.kind === "gate_approval" && action.gate === "task_plan"),
       "maintenance actions must request only the applicable readiness gate"
     );
     assert(
-      !result.report.required_actions.some((action) => /--gate (?:spec|dor|approach)/.test(action)),
+      !result.report.required_actions.some((action) => action.kind === "gate_approval" && ["spec", "dor", "approach"].includes(action.gate)),
       `not_applicable readiness gates must create zero action, got ${JSON.stringify(result.report.required_actions)}`
     );
     const s01 = fs.readFileSync(
@@ -378,6 +384,24 @@ function testAdaptiveWriterFlagOffKeepsLegacyShape() {
 }
 
 // ---------- Output 1: preset passthrough + selected-profile result ----------
+
+function testPostMaterializationWritersEmitTypedState() {
+  for (const adaptive of [false, true]) {
+    const projectRoot = buildProject();
+    try {
+      const report = runMaterialize(projectRoot, {
+        "work-item": "ts3-materialized-writer",
+        output: "work-items/ts3-materialized-writer/ts3-materialized-writer.work-item-report.json",
+        "delivery-context": "brownfield",
+        "auto-scaffold": true,
+        ...(adaptive ? { "adaptive-writes": "true", "request-lane": "maintenance", ...ADAPTIVE_ACTIVATION_ARGS } : {})
+      });
+      assert(report.protocol_status === "MATERIALIZED", "TS3: fixture reaches post-materialization writer");
+      assert(report.required_actions.some(value => value.kind === "work_item_activation"), "TS3: activation hint has exact machine kind");
+      assert(report.required_actions.some(value => value.kind === "gate_approval" || value.kind === "readiness_bundle_approval"), "TS3: readiness approval hint has exact machine kind");
+    } finally { rmrf(projectRoot); }
+  }
+}
 
 function testLightEligibleSelectsLightProfile() {
   const projectRoot = buildProject();
@@ -622,6 +646,7 @@ testAuditedHumanOverrideOpensNonDeliveryMaterialization();
 testAdaptiveMaterializeSkewFailsBeforeEveryWrite();
 testAdaptiveMaintenanceAutoScaffoldKeepsAdapterParity();
 testAdaptiveWriterFlagOffKeepsLegacyShape();
+testPostMaterializationWritersEmitTypedState();
 testLightEligibleSelectsLightProfile();
 testPresetFullShortCircuitsToFull();
 testGreenfieldEscalatesWithReason();

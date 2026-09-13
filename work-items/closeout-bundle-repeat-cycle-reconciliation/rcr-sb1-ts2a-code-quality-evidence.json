@@ -18,7 +18,10 @@
   },
   "code_quality": {
     "recommendation": "PASS",
-    "human_decision": "PENDING",
+    "human_decision": "APPROVED",
+    "reviewed_by": ["developer", "qc"],
+    "reviewed_at": "2026-09-13T05:46:55Z",
+    "decision_source": "User explicitly approved refreshed RCR-SB1 Code Quality PASS and closure of F-RCR-SB1-001 for this exact source.",
     "reviewer_roles": [
       "developer",
       "qc"
@@ -127,9 +130,11 @@
   },
   "finding": {
     "id": "F-RCR-SB1-001",
-    "disposition": "OPEN",
+    "disposition": "RESOLVED",
+    "resolved_by": ["developer", "qc"],
+    "resolved_at": "2026-09-13T05:46:55Z",
     "proposed_disposition": "RESOLVED",
-    "condition": "Explicit Developer/QC approval for the corrected-source scoped review and finding resolution.",
+    "condition": "Satisfied by explicit user Developer/QC approval of the corrected-source scoped review and finding resolution.",
     "new_confirmed_findings": []
   },
   "skipped_checks": [
@@ -147,7 +152,7 @@
     "protocol_status": "BLOCKED",
     "granted_write_roots": 16,
     "ts3": "CLOSED",
-    "finding_closure": "PENDING_HUMAN",
+    "finding_closure": "EXPLICITLY_APPROVED",
     "technical_verification": "NOT_OPEN",
     "dod": "NOT_PASSED",
     "release_finalization": "NOT_OPEN",

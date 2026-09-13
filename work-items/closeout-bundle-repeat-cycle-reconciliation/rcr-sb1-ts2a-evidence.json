@@ -90,17 +90,21 @@
       ]
     },
     "code_quality": {
-      "status": "OPEN",
-      "human_decision": "PENDING",
+      "status": "PASS",
+      "human_decision": "APPROVED",
+      "reviewed_by": ["developer", "qc"],
+      "reviewed_at": "2026-09-13T05:46:55Z",
       "recommendation": "PASS",
       "evidence_ref": "rcr-sb1-ts2a-code-quality-evidence.json",
-      "reason": "Refreshed QC Spec Compliance APPROVED; scoped AI Code Quality PASS and finding resolution are proposed, pending independent Developer/QC decision."
+      "reason": "User explicitly approved refreshed Code Quality PASS and F-RCR-SB1-001 closure for the exact source after QC Spec Compliance approval. Later batches and terminal gates remain independent."
     }
   },
   "finding": {
     "id": "F-RCR-SB1-001",
-    "disposition": "OPEN",
-    "remediation": "IMPLEMENTED_PENDING_REVIEW",
+    "disposition": "RESOLVED",
+    "remediation": "REVIEWED_AND_EXPLICITLY_APPROVED",
+    "resolved_by": ["developer", "qc"],
+    "resolved_at": "2026-09-13T05:46:55Z",
     "fixed_scope": "Bounded collection structure only; not full producer/event conversion"
   },
   "scan_pre_handoff": {
