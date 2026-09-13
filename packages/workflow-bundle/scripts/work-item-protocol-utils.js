@@ -272,8 +272,8 @@ function buildProtocolEvent({
 }) {
   const normalizedAction = String(action || "").trim();
   const transactionBacked = TRANSACTION_BUNDLE_ACTIONS.has(normalizedAction);
-  if (transactionBacked && transactionId === undefined) {
-    throw new Error("New approval bundle event requires a direct transaction_id.");
+  if (transactionBacked && typeof transactionId !== "string") {
+    throw new Error("New approval bundle event requires a direct string transaction_id.");
   }
   return {
     timestamp: timestamp || new Date().toISOString(),
@@ -379,6 +379,10 @@ function getWorkItemPaths({ projectRoot, workflowRootBase, workItemSlug }) {
 function normalizeProtocolEvent(event) {
   if (!event || typeof event !== "object" || Array.isArray(event)) {
     return null;
+  }
+
+  if (Object.hasOwn(event, "transaction_id") && typeof event.transaction_id !== "string") {
+    throw new Error("Persisted approval event transaction_id must be a canonical string UUID.");
   }
 
   return {
