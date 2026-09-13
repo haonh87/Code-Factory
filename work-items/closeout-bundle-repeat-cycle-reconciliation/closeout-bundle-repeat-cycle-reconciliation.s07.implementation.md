@@ -79,6 +79,8 @@ content_skills:
   - "implementation"
   - "worktree-discipline"
   - "review-discipline"
+  - "testing"
+  - "code-scan-review"
   - "step-goal-contract"
 artifact_skills:
   - "obsidian-markdown"
@@ -132,7 +134,11 @@ tags:
 > Developer/QC explicitly approved refreshed Code Quality PASS and closed F-RCR-SB1-001 for that same source at 2026-09-13T05:46:55Z. RCR-SB1 is complete. Coordinator resumed the unchanged sixteen roots at 2026-09-13T05:48:58.326Z.
 > TS3 RED `b65b921` and supplemental rejection-canary RED `3956e68` precede TS4 GREEN
 > `c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3`. The protocol returned to BLOCKED at
-> 2026-09-13T11:25:26.110Z for independent QC RCR-SB2 Spec Compliance. Code Quality is NOT_OPEN.
+> 2026-09-13T11:25:26.110Z for independent QC RCR-SB2 Spec Compliance. QC explicitly approved
+> that review for the full source SHA at 2026-09-13T11:34:46Z. Code Quality evidence is ready
+> with a scoped batch PASS recommendation and no new findings. Automatic static/security scans
+> are SKIP (tools/config absent), so scan coverage is PARTIAL. The human Developer/QC verdict
+> and TS5 remain pending; this does not establish whole-work-item verification.
 > Scoped suites and authoring smoke pass; full regression is not GREEN. The unchanged, unstaged
 > T7 function still has twenty canonical-close string assertions to adopt only at TS7.
 
@@ -1023,9 +1029,9 @@ notes: "Semantic checklist reviewed for changed scripts/notes; source-only audit
 
 ### Current Structural Handoff
 
-- Protocol BLOCKED at s07 after coordinator handoff at 2026-09-13T11:25:26.110Z, retaining the sixteen previously approved/granted roots.
+- Protocol BLOCKED at s07, retaining the sixteen previously approved/granted roots. QC explicitly approved SB2 Spec Compliance at 2026-09-13T11:34:46Z; the current handoff is RCR-SB2-code-quality.
 - RCR-SB1 refreshed Spec Compliance and Code Quality are explicitly approved for source 3e0b9728d82204e38b06668e08cc895294109986; F-RCR-SB1-001 is RESOLVED. The 964e1c7 review is historical.
-- TS3 RED and supplemental rejection RED precede the corresponding TS4 repairs. RCR-SB2 source is c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3; QC Spec Compliance is pending and Code Quality remains NOT_OPEN.
+- TS3 RED and supplemental rejection RED precede the corresponding TS4 repairs. RCR-SB2 source is c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3; QC Spec Compliance is APPROVED, and the Code Quality evidence is ready for Developer/QC with a scoped PASS recommendation, disclosed scan gaps, and no human verdict.
 - The previous three owned protocol assertions now pass. The entire committed protocol test source passes against this source; the local file also includes the unchanged sixty-nine-line T7 WIP and has exactly twenty WIP string-assertion failures, with no other observed failure. WIP is not silently adopted, altered, or staged.
 - Full unit/static/security/package/hosted/parent verification remains pending in later tasks.
   No candidate build, Technical Verification, DoD or finalization is opened by this handoff.
@@ -1106,17 +1112,17 @@ test_evidence:
   integration_test: ["Entire committed protocol test source PASS", "Gate-review suite PASS", "13 frozen/live report loads without writes", "Two historical unbound events unchanged"]
   database_test: []
   feature_test: ["Authoring smoke 13/13 PASS", "Workflow/protocol/planning validators PASS"]
-commands_run: ["See exact commands and source/test SHA-256 values in rcr-sb2-evidence.json"]
-skipped_checks: ["Code Quality/security/performance lane NOT_OPEN until QC Spec Compliance", "Full run-all/package/hosted/parent verification belongs to TS7/TS8", "T7 WIP adoption deferred per approved plan"]
+commands_run: ["Original TS4 commands/source hashes: rcr-sb2-evidence.json", "Fresh Code Quality test reruns after explicit QC approval: rcr-sb2-code-quality-evidence.json"]
+skipped_checks: ["Automatic ESLint/typecheck and Semgrep unavailable; supplemental scan coverage PARTIAL", "Full run-all/package/hosted/parent verification belongs to TS7/TS8", "T7 WIP adoption deferred per approved plan"]
 release_blockers: []
 status: PASS
 gaps: ["PASS is only this batch's tested contribution; complete AC-RCR-09 and CR-008 remain pending", "Local test file with quarantined T7 WIP has twenty old-string assertion failures"]
 residual_risks: ["Mixed state/event architecture until TS6", "Final failure/concurrency matrix pending"]
-recommendation: "Submit QC Spec Compliance first; do not open Code Quality, TS5, release, or terminal verification."
+recommendation: "QC Spec Compliance is explicitly approved; submit the separate Developer/QC Code Quality decision. Do not open TS5, release or terminal verification without the corresponding authority."
 notes_for_review: "No release blocker is assessed away by this batch-scoped test status. Whole-work-item release blockers remain listed in rcr-sb2-evidence.json."
 ```
 
-### RCR-SB2 Spec Compliance Proposal
+### RCR-SB2 Spec Compliance — QC Approved
 
 ```yaml
 review_target: "RCR-SB2 TS3/TS4 at c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3"
@@ -1127,18 +1133,18 @@ review_batches:
   - { batch: "RCR-SB2", scope: ["TS3", "TS4"], trigger: "Typed writer/selector contribution GREEN", reviewer_role: "QC first; Developer/QC only after QC Spec Compliance" }
 required_checks:
   spec_compliance: ["Locked s04/s05/s06 and sixteen-root scope", "Raw constructor writers", "Unknown/unrelated canaries and exact selectors", "Structured projection and historical preservation", "T7 quarantine and TS5 identity boundary"]
-  code_quality: ["NOT_OPEN; no code-quality verdict is proposed before independent Spec Compliance"]
+  code_quality: ["Four-lane diff-aware scan", "Preservation and exact identity tests", "Minimal delta and input immutability", "Historical integrity and WIP quarantine", "Explicit Developer/QC human verdict"]
 finding_policy:
   blocker_threshold: "Any spec drift or unresolved HIGH/CRITICAL finding blocks continuation"
   reopen_conditions: ["Changed reviewed production source", "Contract or scope drift", "A failing preservation or parity guard"]
 handoff_to_verify: ["Later SB3 review pair and TS7 matrix", "QC explicit s08 opening", "Separate exact-candidate child/parent and terminal gates"]
-notes_for_implementation_or_verify: "This is an AI evidence-backed batch PASS recommendation, not human approval. Existing explicit lifecycle replacements remain unchanged; generic lifecycle redesign is out of scope."
+notes_for_implementation_or_verify: "Human QC explicitly approved this batch review for the full source SHA. Existing explicit lifecycle replacements remain unchanged; generic lifecycle redesign is out of scope. Code Quality and TS5 are not approved by this decision."
 recommendation: PASS_FOR_BATCH
-human_approval: PENDING
+human_approval: APPROVED
 reviewer_role: qc
-reviewed_by: []
-reviewed_at: ""
-code_quality_status: NOT_OPEN
+reviewed_by: ["qc"]
+reviewed_at: "2026-09-13T11:34:46Z"
+code_quality_status: PENDING_DEVELOPER_QC_VERDICT
 ts5: CLOSED
 whole_work_item_status: NOT_DONE
 evidence_ref: "rcr-sb2-evidence.json"
@@ -1164,3 +1170,63 @@ notes: "Mechanical PASS does not clear external skill overrides or establish who
 - TS5/TS6 direct transaction identity: roughly one to two days; TS7 regression/failure matrix: roughly one to two days; TS8 hosted candidate and child/parent closeout: roughly half to one day. These ranges are approximate and not strict additive commitments.
 - Waiting for independent approvals, hosted access, or new findings can extend elapsed time. 2026-09-18 remains a stop-and-reassess checkpoint, not a promised delivery date.
 - No percentage or calendar ETA is inferred from historical terminal approvals; CR-008 is still NOT_DONE.
+
+## RCR-SB2 Code Quality — Decision Pending
+
+```yaml
+review_target: "RCR-SB2 TS3/TS4 at c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3"
+planning_track: full
+review_mode: INDEPENDENT
+review_order: ["SPEC_COMPLIANCE", "CODE_QUALITY"]
+spec_compliance:
+  human_approval: APPROVED
+  reviewed_by: ["qc"]
+  reviewed_at: "2026-09-13T11:34:46Z"
+review_batches:
+  - { batch: "RCR-SB2", scope: ["Four TS4 scripts", "Three owned test deltas"], trigger: "Explicit QC Spec Compliance approval for the full source SHA", reviewer_role: "Developer and QC" }
+required_checks:
+  spec_compliance: ["QC-approved source and sixteen-root baseline remain unchanged"]
+  code_quality: ["Syntax and import/constructor review", "Exact selector and preservation evidence", "Diff-aware security review", "Performance heuristics", "Historical integrity and T7 quarantine"]
+finding_policy:
+  blocker_threshold: "Any new HIGH/CRITICAL quality finding or spec drift blocks continuation"
+  reopen_conditions: ["Reviewed production source changes", "Preservation/parity/identity guard failure", "A finding requires contract or scope change"]
+handoff_to_verify: ["Not open: TS5/TS6 and TS7 must finish", "Later independent SB3 pair", "QC explicit s08 opening"]
+notes_for_implementation_or_verify: "AI review assistance is not an independent human verdict or a final s08 scan. Human Developer/QC decision remains required; unavailable automatic scanner gaps and T7 WIP are retained."
+prepared_at: "2026-09-13T11:37:56Z"
+recommendation: PASS_FOR_BATCH_WITH_DISCLOSED_SCAN_GAPS
+human_approval: PENDING
+reviewer_roles: ["developer", "qc"]
+reviewed_by: []
+reviewed_at: ""
+findings: []
+scan_overall_status: PARTIAL
+evidence_ref: "rcr-sb2-code-quality-evidence.json"
+tests: ["Isolated state 15/15 PASS", "Materializer PASS", "Gate evidence PASS", "Gate review PASS", "Entire committed protocol test source PASS", "Authoring smoke 13/13 PASS", "13 frozen/live report loads and historical prefixes unchanged"]
+skipped_scans: ["ESLint/typecheck absent with no matching configured wrapper", "Semgrep absent", "No benchmark/profiling"]
+quarantined_wip: "Local full test file has exactly twenty unchanged T7 string-assertion failures and no other observed failure; the sixty-nine pre-existing lines remain unstaged. Do not call full regression GREEN."
+ts5: CLOSED
+candidate_build: NOT_OPEN
+whole_work_item_status: NOT_DONE
+branch_decision: HOLD_OPEN
+```
+
+## Scan Summary — s07 Supporting Evidence Only
+
+```yaml
+scan_target: "RCR-SB2 pre-handoff Code Quality at c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3"
+scan_scope: {"mode":"DIFF_ONLY","changed_files":["packages/workflow-bundle/scripts/materialize-work-item.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js","packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"],"affected_modules":["Report state emission and semantic reconciliation","Approval-state contradictions","Greenfield/adaptive authoring assertions"]}
+language_stack: ["JavaScript (CommonJS) / Node.js"]
+available_scan_tools: ["Node.js v26.5.0 native parser","Git diff/source verification","Existing Node test suites"]
+false_positive_policy: "Diff-aware, evidence-based, dismiss only with reason; no automatic scanner or benchmark result is inferred."
+scan_plan: {"syntax":["node --check for all four changed scripts"],"static_analysis":["Existing wrappers/config/tool discovery","Source-bound predicate and no-core-entry.text assertions","Manual constructor/export/import and object-shape review"],"security":["Check Semgrep availability","Supplement with diff-aware manual trust/input/render/write review and existing authority tests"],"performance_heuristic":["Review allocation, synchronous I/O, gate/collection loops and report-history normalization"]}
+syntax_scan_results: [{"command":"node --check <each of the four changed JavaScript scripts>","scope":["packages/workflow-bundle/scripts/materialize-work-item.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js","packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"],"status":"PASS","evidence":"All four native parser checks exit 0; production source matches the QC-approved SHA.","blocker_files":[]}]
+static_analysis_results: [{"command":"Existing configured ESLint/typecheck wrapper","config_used":"No corresponding project script/config or installed eslint/tsc found","scope":["packages/workflow-bundle/scripts/materialize-work-item.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js","packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"],"status":"SKIP","findings":[],"new_blockers":[]},{"command":"Source assertions plus manual constructor/import/selector review","config_used":"Approved state-entry Contract and source-bound Node assertions, not a lint configuration","scope":["packages/workflow-bundle/scripts/materialize-work-item.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js","packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"],"status":"PASS","findings":[],"new_blockers":[]}]
+security_scan_results: [{"command_or_check":"Semgrep","scope":["packages/workflow-bundle/scripts/materialize-work-item.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js","packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"],"status":"SKIP","findings":[]},{"command_or_check":"Supplemental manual diff-aware trust/input/render/write review","scope":["packages/workflow-bundle/scripts/materialize-work-item.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js","packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"],"status":"PASS","findings":[],"evidence":"No new file target, shell execution, dynamic evaluation, signer/trusted-root mutation, or permission bypass in the production diff. Machine kinds/purposes come from fixed metadata, not display text. JSON-backed flow mappings escape display text. Existing malformed-input, receipt-v1, wrong-authority/stale-digest, preflight/rollback and lock tests pass. This is manual supporting evidence, not a deterministic security scan."}]
+performance_heuristic_results: [{"check":"Allocation, synchronous hashing, exact gate-selection loops and normalization","scope":["packages/workflow-bundle/scripts/materialize-work-item.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js","packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"],"status":"PASS","expected_impact":"LOW","confidence":"MEDIUM","trigger_condition":"Very large state collections or long protocol-event history increase normalization/cloning work; no runtime benchmark or scale threshold is established in this batch.","evidence":"Filtering scales with collection size and the finite canonical gate list; constructor hashing is local and deterministic. No new filesystem/network/subprocess operation on the production reconciliation path. Approval assertions re-normalize the report (including history); retain this as an advisory residual risk for unusually large reports, not an observed blocker."}]
+skipped_scans: ["ESLint/typecheck: binaries, local tool dependencies and matching configured wrappers are absent. Native parsing and manual/test evidence are a fallback, not equivalent coverage.","Semgrep: binary/config absent; no new tool was installed during review. Sensitive receipt/signer/filesystem execution boundaries are unchanged by this delta, and manual diff checks plus existing authority/atomicity tests support this limited early review.","Benchmarks/profiling: not run; performance evidence is a heuristic only."]
+overall_status: "PARTIAL"
+remediation_actions: ["Reassess automated static/security coverage in TS7/s08; do not promote this early scan to final release verification."]
+notes_for_verify: "s07 supporting evidence only. Any scoped human Code Quality PASS must explicitly retain scanner gaps, quarantined WIP and later full verification obligations."
+```
+
+This is pre-handoff evidence under `code-scan-review`, not final Technical Verification or DoD. The human Code Quality decision may only accept the scoped recommendation with the named automatic-scan gaps retained for TS7/s08.

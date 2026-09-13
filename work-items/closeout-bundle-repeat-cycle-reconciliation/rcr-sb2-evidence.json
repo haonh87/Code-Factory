@@ -286,10 +286,14 @@
     "protocol_status": "BLOCKED",
     "spec_compliance": {
       "recommendation": "PASS_FOR_BATCH",
-      "human_approval": "PENDING",
-      "reviewer": "qc"
+      "human_approval": "APPROVED",
+      "reviewer": "qc",
+      "reviewed_at": "2026-09-13T11:34:46Z",
+      "approval_basis": "Explicit user QC approval for the full source SHA; this does not approve Code Quality or later gates."
     },
-    "code_quality": "NOT_OPEN",
+    "code_quality": "PENDING_DEVELOPER_QC_VERDICT",
+    "code_quality_evidence": "rcr-sb2-code-quality-evidence.json",
+    "code_quality_prepared_at": "2026-09-13T11:37:56Z",
     "TS5": "CLOSED",
     "technical_verification": "NOT_OPEN",
     "dod": "NOT_OPEN",
