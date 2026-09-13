@@ -147,6 +147,23 @@ function normalizeOperations(operationsInput) {
   });
 }
 
+function assertProtocolEventBindings(operations, plan, transactionId) {
+  const action = `${plan.decision === "APPROVED" ? "approve" : "reject"}-${plan.phase}-bundle`;
+  for (const operation of operations.filter(entry => entry.id === "protocol:report")) {
+    const next = JSON.parse(operation.content.toString("utf8"));
+    const before = fs.existsSync(operation.target_path) ? JSON.parse(fs.readFileSync(operation.target_path, "utf8")) : {};
+    if (!Array.isArray(next.protocol_events) || (before.protocol_events !== undefined && !Array.isArray(before.protocol_events))) {
+      throw new Error("Approval transaction protocol event history must be an array.");
+    }
+    // Only the new suffix is transaction-backed. Historical unbound entries are
+    // preserved, never inferred or backfilled from human context.
+    const appended = next.protocol_events.slice((before.protocol_events || []).length);
+    if (appended.length !== 1 || appended[0].action !== action || appended[0].transaction_id !== transactionId) {
+      throw new Error("Approval transaction requires exactly one new protocol event with matching action and transaction_id.");
+    }
+  }
+}
+
 function normalizeGuards(guardsInput) {
   return (Array.isArray(guardsInput) ? guardsInput : []).map((guard, index) => {
     if (!guard || !guard.path) {
@@ -320,6 +337,7 @@ function executeApprovalTransaction({
   const operations = normalizeOperations(operationsInput);
   const guards = normalizeGuards(guardsInput);
   assertPreflight(operations, guards);
+  assertProtocolEventBindings(operations, plan, transactionId);
 
   fs.mkdirSync(paths.transaction_root, { recursive: true });
   let lockFd = null;
@@ -376,6 +394,7 @@ function executeApprovalTransaction({
     injectBoundary("after_staging", failAt, crashAt);
 
     assertPreflight(operations, guards);
+    assertProtocolEventBindings(operations, plan, transactionId);
     journal.state = "COMMITTING";
     writeJournal(paths.journal_path, journal);
     journal.operations.forEach((entry, index) => {
