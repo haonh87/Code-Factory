@@ -1,0 +1,331 @@
+{
+  "batch": "RCR-SB2",
+  "tasks": [
+    "TS3",
+    "TS4"
+  ],
+  "source_sha": "c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3",
+  "observed_at": "2026-09-13T11:25:26Z",
+  "baseline_production_source": "3e0b9728d82204e38b06668e08cc895294109986",
+  "tdd": {
+    "red_source": "b65b9214697c36a341bde31d7530acfa0dcc0aa4",
+    "supplemental_rejection_red_source": "3956e683e1fa4f5994c2ea89b607257fdaa840c6",
+    "green_source": "c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3",
+    "red_evidence": "rcr-sb2-ts3-red-evidence.json",
+    "red_before_corresponding_production_repair": true
+  },
+  "preconditions": {
+    "SB1_spec_compliance": "EXPLICIT_QC_APPROVED",
+    "SB1_code_quality": "EXPLICIT_DEVELOPER_QC_PASS",
+    "F_RCR_SB1_001": "RESOLVED",
+    "authoring_receipts": [
+      {
+        "gate": "spec",
+        "approved": true,
+        "digestMatch": true
+      },
+      {
+        "gate": "contract",
+        "approved": true,
+        "digestMatch": true
+      },
+      {
+        "gate": "dor",
+        "approved": true,
+        "digestMatch": true
+      },
+      {
+        "gate": "approach",
+        "approved": true,
+        "digestMatch": true
+      },
+      {
+        "gate": "task_plan",
+        "approved": true,
+        "digestMatch": true
+      }
+    ],
+    "granted_write_roots": 16
+  },
+  "writer_inventory": [
+    {
+      "path": "scripts/materialize-work-item.js",
+      "sites": [
+        "bootstrap blocker/actions",
+        "initial candidate blockers",
+        "scaffold followups",
+        "post-scaffold work-item/change approval purpose IDs",
+        "classic/adaptive/Light readiness hints",
+        "activation hint"
+      ],
+      "result": "All newly emitted state entries use createStateEntry; command metadata remains display-only strings."
+    },
+    {
+      "path": "scripts/work-item-protocol.js",
+      "sites": [
+        "transitionReport blocker/action assignment",
+        "work-item approval exact purpose ID cleanup",
+        "work-item rejection feedback replacement by exact ID",
+        "readiness/closeout approval/rejection collection filtering and push/unshift"
+      ],
+      "result": "Shared constructor for new state; semantic reconciliation uses exact typed selectors, with unknown/unrelated canaries retained."
+    },
+    {
+      "path": "scripts/workflow-gate-evidence-utils.js",
+      "sites": [
+        "getProtocolStateContradictionErrors"
+      ],
+      "result": "Exact gate-scoped selectors and deterministic work-item/change purpose IDs; no prose aliases."
+    },
+    {
+      "path": "scripts/run-workflow-authoring-smoke.js",
+      "sites": [
+        "greenfield proposal assertions"
+      ],
+      "result": "Exact typed bootstrap/prerequisite identity."
+    },
+    {
+      "path": "scripts/work-item-protocol-utils.js",
+      "sites": [
+        "buildBootstrapReport legacy scaffold adapter"
+      ],
+      "result": "Unchanged read-only legacy scaffold import is normalized at the adapter boundary; no new persistent writer or SB1-boundary edit."
+    }
+  ],
+  "sources": [
+    {
+      "path": "packages/workflow-bundle/scripts/materialize-work-item.js",
+      "sha256": "85e257b455fc4ebe0c0031954e5372e98c5013ce949bf1653123afc4807370cc"
+    },
+    {
+      "path": "packages/workflow-bundle/scripts/work-item-protocol.js",
+      "sha256": "4eb054fc17637e9445739f71500d197177391685e0688576b5314d6944b72180"
+    },
+    {
+      "path": "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js",
+      "sha256": "773a512163349ab07a6077f2a6ab6c1da242afe2c6de8de0845a3518ebbf224a"
+    },
+    {
+      "path": "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js",
+      "sha256": "5280622c8eb9d5887715c2dfa3e3601b001bdb67051c920e5ffa683bae78199a"
+    },
+    {
+      "path": "packages/workflow-bundle/test/work-item-protocol-state.test.js",
+      "sha256": "2ee00795545f8b75bdc9866ec1ca39ae6b00d5ebb05668ca344c1d0b8d01a45f"
+    },
+    {
+      "path": "packages/workflow-bundle/test/materialize-work-item.test.js",
+      "sha256": "6c83e67026922a3e9e9ed3bb7987c61c5b08fdae3b3e98c514bc4693186561e2"
+    },
+    {
+      "path": "packages/workflow-bundle/test/work-item-protocol.test.js",
+      "sha256": "72e4e28a1f58284fd22840646e35b53916c75451971f98ff7f41d2aebf279d5d"
+    }
+  ],
+  "criteria_results": [
+    {
+      "criterion": "AC-RCR-09 TS3/TS4 producer and semantic-consumer contribution",
+      "result": "PASS",
+      "evidence": "Raw constructor output, opaque blocker/action canaries, exact identity contradictions, phase isolation, work-item rejection preservation, 20 display mutations and structured s01 projection."
+    },
+    {
+      "criterion": "AC-RCR-03/05 and EDGE-RCR-03/04 batch contribution",
+      "result": "PASS",
+      "evidence": "Owned protocol suite verifies canonical close action, protocol-close handoff, same normalized report/s01 block and unchanged historical prefixes."
+    },
+    {
+      "criterion": "Complete AC-RCR-09/07 compatibility regression",
+      "result": "PARTIAL",
+      "evidence": "13 frozen/live reports load without writes; final TS7 whole-package matrix remains pending."
+    },
+    {
+      "criterion": "AC-RCR-10 direct transaction identity and note invariance",
+      "result": "PARTIAL",
+      "evidence": "Deliberately unchanged in TS4; TS5 RED and TS6 implementation remain closed pending SB2 review pair."
+    },
+    {
+      "criterion": "AC-RCR-06/08 and complete CR-008",
+      "result": "PARTIAL",
+      "evidence": "Full failure/recovery/concurrency matrix, corrected candidate, parent AG-01..13 and terminal approvals remain pending."
+    }
+  ],
+  "checks": [
+    {
+      "name": "isolated_state",
+      "command": "node --test packages/workflow-bundle/test/work-item-protocol-state.test.js",
+      "exit_code": 0,
+      "passed": 15,
+      "failed": 0
+    },
+    {
+      "name": "materialize",
+      "command": "node packages/workflow-bundle/test/materialize-work-item.test.js",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "owned_protocol",
+      "command": "node -e 'const cp=require(\"node:child_process\"),path=require(\"node:path\"),Module=require(\"node:module\");\nconst test=\"packages/workflow-bundle/test/work-item-protocol.test.js\",filename=path.resolve(test);\nconst source=cp.execFileSync(\"git\",[\"show\",\"c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3:\"+test],{encoding:\"utf8\"});\nif(source.includes(\"function testTwentyCloseoutCyclesRemainDeterministic\")||source.includes(\"testTwentyCloseoutCyclesRemainDeterministic();\"))throw Error(\"Quarantined WIP entered committed test source\");\nconsole.log(\"Owned committed TS3 test source; live TS4 production; pre-existing T7 WIP is not in HEAD.\");\nconst m=new Module(filename,module);m.filename=filename;m.paths=Module._nodeModulePaths(path.dirname(filename));m._compile(source,filename);'",
+      "exit_code": 0,
+      "status": "PASS",
+      "scope": "Entire committed protocol test source at the reviewed SHA, compiled with its original module path against the same production checkout. The pre-existing unstaged T7 function is not part of that committed source; no owned assertion is removed or rewritten."
+    },
+    {
+      "name": "gate_review",
+      "command": "node packages/workflow-bundle/test/workflow-gate-review.test.js",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "gate_evidence",
+      "command": "node packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "authoring_smoke",
+      "command": "node packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js --repo-root .",
+      "exit_code": 0,
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "name": "workflow_validator",
+      "command": "node packages/workflow-bundle/bin/wfc.js validate --workflow-root work-items --project-root .",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "protocol_validator",
+      "command": "node packages/workflow-bundle/bin/wfc.js protocol --workflow-root work-items --project-root .",
+      "exit_code": 0,
+      "managed_items": 13,
+      "legacy_skipped": 16
+    },
+    {
+      "name": "planning_validator",
+      "command": "node packages/workflow-bundle/bin/wfc.js plan --workflow-root work-items --project-root .",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "syntax",
+      "command": "node --check <each of four TS4 scripts>",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "state_selector_static_inspection",
+      "status": "PASS",
+      "removed_prose_predicates": 5,
+      "core_entry_text_reads": 0,
+      "scope": "State-entry selectors in protocol/evidence only. No whole-repo claim about note identity: TS5/TS6 are pending."
+    },
+    {
+      "name": "pack_audit",
+      "command": "node packages/workflow-bundle/scripts/audit-workflow-pack.js --repo-root .",
+      "exit_code": 0,
+      "cross_references": 170,
+      "status": "PASS",
+      "scope": "Mechanical source-pack audit; semantic completion remains PARTIAL until TS5..TS8. External skill overrides are outside this scan."
+    },
+    {
+      "name": "compatibility_history_hosts_encoding",
+      "status": "PASS",
+      "frozen_reports": 13,
+      "live_loads": 13,
+      "load_only_writes": 0,
+      "unbound_historical_events_unchanged": 2,
+      "protected_hosts_unchanged": 3,
+      "utf8_decode": "FATAL_DECODER_PASS"
+    },
+    {
+      "name": "diff",
+      "command": "git diff --check",
+      "exit_code": 0,
+      "status": "PASS"
+    }
+  ],
+  "quarantine": {
+    "path": "packages/workflow-bundle/test/work-item-protocol.test.js",
+    "function": "testTwentyCloseoutCyclesRemainDeterministic",
+    "function_sha256": "14616b5522fcdfd0d02a05220985ec935c8a9f13cb5361fb81d0101af624f0c4",
+    "unstaged_added_lines": 69,
+    "unstaged_removed_lines": 0,
+    "committed": false,
+    "changed": false,
+    "local_full_file": {
+      "command": "node packages/workflow-bundle/test/work-item-protocol.test.js",
+      "exit_code": 1,
+      "failed_assertions": 20,
+      "all_failures": "Unchanged quarantined T7 canonical-close string assertions; no other failing assertion observed."
+    },
+    "adoption_task": "TS7 only",
+    "whole_regression_green": false
+  },
+  "manual_exploration": {
+    "flows_checked": [
+      "Selected and unselected gates with identical display text",
+      "Unknown migration-review blocker/action",
+      "Rejection replaces only its own feedback identity",
+      "Readiness versus closeout rejection isolation",
+      "Raw materialize/bootstrap/adaptive output",
+      "Report/s01 parity and immutable history prefixes"
+    ],
+    "issues_found": [
+      "Supplemental rejection canary first failed, then was repaired inside approved TS4 and is GREEN."
+    ],
+    "scope_boundary": "Generic lifecycle redesign is excluded. Explicit lifecycle commands retain their existing collection-replacement semantics; this batch removes prose-dependent semantic cleanup and tests its unknown-entry preservation."
+  },
+  "skipped_checks": [
+    "Formal code-quality/security/performance review is NOT_OPEN until QC SB2 Spec Compliance approves.",
+    "Full run-all/package/runtime/extracted-payload/hosted/parent verification is scheduled for TS7/TS8 and not claimed.",
+    "The quarantined T7 fixture has not been adopted or corrected early."
+  ],
+  "authority": {
+    "protocol_status": "BLOCKED",
+    "spec_compliance": {
+      "recommendation": "PASS_FOR_BATCH",
+      "human_approval": "PENDING",
+      "reviewer": "qc"
+    },
+    "code_quality": "NOT_OPEN",
+    "TS5": "CLOSED",
+    "technical_verification": "NOT_OPEN",
+    "dod": "NOT_OPEN",
+    "release": "NOT_OPEN",
+    "business_acceptance": "NOT_OPEN",
+    "candidate_build": false,
+    "publish": false,
+    "tag": false,
+    "merge": false,
+    "cleanup": false
+  },
+  "release_blockers": [
+    "SB2 and SB3 ordered human review pairs",
+    "TS5/TS6 required direct transaction identity",
+    "TS7 whole regression including quarantined WIP and failure matrix",
+    "TS8 child/parent exact-candidate evidence and separate terminal approvals",
+    "Parent F-AG11-001 remains open"
+  ],
+  "whole_work_item_status": "NOT_DONE",
+  "branch_decision": "HOLD_OPEN",
+  "remaining_time_estimate": {
+    "working_days": [
+      3,
+      5
+    ],
+    "confidence": "LOW",
+    "breakdown": [
+      "TS5/TS6 identity: roughly 1–2 working days",
+      "TS7 matrix and defect resolution: roughly 1–2 working days",
+      "TS8 hosted and child/parent closeout: roughly 0.5–1 working day"
+    ],
+    "conditions": [
+      "No new blocking defect or scope change",
+      "CI access and required jobs available",
+      "Timely independent human gate decisions"
+    ],
+    "date_2026_09_18": "Stop-and-reassess checkpoint, not delivery commitment; unattended runtime and human waiting time are not a promise."
+  }
+}

@@ -654,7 +654,7 @@ next_action: "Developer reviews the amended s06 TS0..TS8 plan; implementation st
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: BLOCKED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
@@ -687,15 +687,16 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: "developer"
+protocol_owner: "qc"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "RCR-SB2-TS3"
-last_transition_action: "resume"
-last_transition_at: "2026-09-13T05:48:58.326Z"
+handoff_target: "RCR-SB2-spec-compliance"
+last_transition_action: "block"
+last_transition_at: "2026-09-13T11:25:26.110Z"
 required_actions:
-  - {"id":"se:4579aac266916040531c1b2193ea063387ab75da9b8e28430b2e657c8f741cc7","kind":"workflow_followup","text":"Continue active execution from the current step."}
-blockers: []
+  - {"id":"se:db5d8be1d4745b7d5c65756f934c394b7c0acc88c1095ca9892636f4e806a55d","kind":"workflow_followup","text":"Resolve blockers before resuming the work item."}
+blockers:
+  - {"id":"se:00972ab68c999552323ef1abd39276f7c7eb9a2e0e408061afd002faade1528c","kind":"delivery_blocker","text":"QC RCR-SB2 Spec Compliance is pending for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3; Code Quality remains NOT_OPEN."}
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."

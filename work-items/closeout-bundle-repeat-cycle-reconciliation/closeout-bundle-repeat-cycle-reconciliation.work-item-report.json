@@ -1,8 +1,8 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "BLOCKED",
   "decision_owner": "agent",
-  "protocol_owner": "developer",
+  "protocol_owner": "qc",
   "raw_request_summary": "Fix repeated closeout-bundle reconciliation so a successful current approval cycle removes stale pending approval actions and handoffs, records a current-cycle protocol event despite historical evidence, and remains idempotent.",
   "request_source": "user",
   "candidate_count": 1,
@@ -142,15 +142,21 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "RCR-SB2-TS3",
+  "handoff_target": "RCR-SB2-spec-compliance",
   "required_actions": [
     {
-      "id": "se:4579aac266916040531c1b2193ea063387ab75da9b8e28430b2e657c8f741cc7",
+      "id": "se:db5d8be1d4745b7d5c65756f934c394b7c0acc88c1095ca9892636f4e806a55d",
       "kind": "workflow_followup",
-      "text": "Continue active execution from the current step."
+      "text": "Resolve blockers before resuming the work item."
     }
   ],
-  "blockers": [],
+  "blockers": [
+    {
+      "id": "se:00972ab68c999552323ef1abd39276f7c7eb9a2e0e408061afd002faade1528c",
+      "kind": "delivery_blocker",
+      "text": "QC RCR-SB2 Spec Compliance is pending for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3; Code Quality remains NOT_OPEN."
+    }
+  ],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
     "work-items/adaptive-governance-human-approval-ux",
@@ -687,6 +693,14 @@
       "from_status": "BLOCKED",
       "to_status": "ACTIVE",
       "note": "Explicit Developer/QC refreshed RCR-SB1 PASS and F-RCR-SB1-001 resolution clear the review blocker; resume approved TS3/TS4 within the existing sixteen granted roots. No future review or terminal gate approval."
+    },
+    {
+      "timestamp": "2026-09-13T11:25:26.110Z",
+      "action": "block",
+      "actor": "coordinator",
+      "from_status": "ACTIVE",
+      "to_status": "BLOCKED",
+      "note": "TS3 RED and TS4 scoped GREEN are recorded; stop at the independent QC Spec Compliance boundary. TS5, candidate build and terminal gates remain closed."
     }
   ]
 }

@@ -129,8 +129,12 @@ tags:
 > `964e1c7cf879c6d244253b3ee294f9cdaff60f77`. Developer/QC accepted Code Quality FAIL and
 > opened F-RCR-SB1-001; QC reopened Spec Compliance and Developer approved the bounded TS2a repair.
 > TS2a RED `94d252f` precedes GREEN `3e0b9728d82204e38b06668e08cc895294109986`; QC accepted refreshed Spec Compliance at 2026-09-13T05:37:26Z.
-> Developer/QC explicitly approved refreshed Code Quality PASS and closed F-RCR-SB1-001 for that same source at 2026-09-13T05:46:55Z. RCR-SB1 is complete; TS3 is the next approved task, subject to protocol resume in the existing sixteen roots.
-> Full regression is not GREEN: three existing protocol assertions await TS3/TS4 conversion.
+> Developer/QC explicitly approved refreshed Code Quality PASS and closed F-RCR-SB1-001 for that same source at 2026-09-13T05:46:55Z. RCR-SB1 is complete. Coordinator resumed the unchanged sixteen roots at 2026-09-13T05:48:58.326Z.
+> TS3 RED `b65b921` and supplemental rejection-canary RED `3956e68` precede TS4 GREEN
+> `c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3`. The protocol returned to BLOCKED at
+> 2026-09-13T11:25:26.110Z for independent QC RCR-SB2 Spec Compliance. Code Quality is NOT_OPEN.
+> Scoped suites and authoring smoke pass; full regression is not GREEN. The unchanged, unstaged
+> T7 function still has twenty canonical-close string assertions to adopt only at TS7.
 
 ## Step Contract
 ```yaml
@@ -1019,16 +1023,14 @@ notes: "Semantic checklist reviewed for changed scripts/notes; source-only audit
 
 ### Current Structural Handoff
 
-- Protocol ACTIVE at s07 after coordinator resume at 2026-09-13T05:48:58.326Z, retaining the sixteen previously approved/granted roots.
+- Protocol BLOCKED at s07 after coordinator handoff at 2026-09-13T11:25:26.110Z, retaining the sixteen previously approved/granted roots.
 - RCR-SB1 refreshed Spec Compliance and Code Quality are explicitly approved for source 3e0b9728d82204e38b06668e08cc895294109986; F-RCR-SB1-001 is RESOLVED. The 964e1c7 review is historical.
-- TS3 tests reproduce typed-writer and exact-selector/assertion gaps before any TS4 production edit. TS4 follows this RED; RCR-SB2 reviews remain independent.
-- Old protocol suite has three failures: readiness gate cleanup, readiness s01 mirror assertion,
-  and old prose-based selected-closeout blocker expectation. TS3/TS4 must convert behavior and
-  assertions while preserving unknown canaries; no cosmetic green run.
+- TS3 RED and supplemental rejection RED precede the corresponding TS4 repairs. RCR-SB2 source is c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3; QC Spec Compliance is pending and Code Quality remains NOT_OPEN.
+- The previous three owned protocol assertions now pass. The entire committed protocol test source passes against this source; the local file also includes the unchanged sixty-nine-line T7 WIP and has exactly twenty WIP string-assertion failures, with no other observed failure. WIP is not silently adopted, altered, or staged.
 - Full unit/static/security/package/hosted/parent verification remains pending in later tasks.
   No candidate build, Technical Verification, DoD or finalization is opened by this handoff.
-- Known limitations: remaining TS3..TS8 implementation/reviews, full regression and child/parent exact-candidate verification remain pending; approved structural authoring is not reopened by this review.
-- Notes for testing: retain unknown legacy canaries and all existing transaction assertions through the remaining conversion; focused TS2a GREEN is not full regression PASS.
+- Known limitations: SB2 reviews, TS5..TS8, full regression and child/parent exact-candidate verification remain pending; approved structural authoring is not reopened by this proposal.
+- Notes for testing: retain unknown legacy canaries and transaction assertions; state-selector text independence is proved, but direct event identity and note independence remain TS5/TS6. Do not report whole-regression PASS.
 - Notes for deployment: none in s07; corrected candidate and rollback binding are TS8/s08 work.
 
 ## Structural TS3 RED
@@ -1052,3 +1054,113 @@ evidence_ref: "rcr-sb2-ts3-red-evidence.json"
 quarantine: "Pre-existing partial T7 twenty-cycle function and invocation remain byte-for-byte unchanged and excluded from staging. TS3 may edit other approved parts of the same test file."
 next_action: "Approved TS4 constructor/selector conversion; do not modify event identity before TS5 RED."
 ```
+
+## Structural TS4 GREEN
+
+```yaml
+scope: ["TS3", "TS4", "Previously approved sixteen write roots"]
+red_sources: ["b65b9214697c36a341bde31d7530acfa0dcc0aa4", "3956e683e1fa4f5994c2ea89b607257fdaa840c6"]
+green_source: "c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3"
+production_paths_changed:
+  - "packages/workflow-bundle/scripts/materialize-work-item.js"
+  - "packages/workflow-bundle/scripts/work-item-protocol.js"
+  - "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js"
+  - "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
+changes:
+  - "Initial/bootstrap/scaffold/classic/Light/adaptive state writers use the shared constructor."
+  - "Work-item approval compares exact purpose IDs; rejection replaces only its own feedback IDs."
+  - "Bundle cleanup selects exact typed phase/gate state and retains opaque/unrelated canaries."
+  - "Approval contradictions compare exact gate state and non-gate work-item/change purpose IDs."
+  - "Canonical close action and protocol-close handoff render from the same normalized report."
+supplemental_tdd: "ACTIVE work-item rejection first discarded unrelated feedback (one failing canary); RED commit 3956e68 precedes the exact-ID preservation repair."
+writer_inventory: "rcr-sb2-evidence.json"
+semantic_boundary: "No entry.text reads in protocol state selectors or approval contradictions; the bounded import adapter remains the only legacy interpreter. Generic lifecycle redesign is excluded, and existing explicit lifecycle collection-replacement semantics are unchanged."
+event_boundary: "Direct transaction identity and note independence remain TS5/TS6; no premature whole-core completion claim."
+quarantine: "T7 function SHA-256 14616b5522fcdfd0d02a05220985ec935c8a9f13cb5361fb81d0101af624f0c4 and invocation unchanged; 69 added lines remain unstaged, and the committed protocol test source contains neither."
+authority: "BLOCKED for QC SB2 Spec Compliance; Code Quality NOT_OPEN, TS5 and all terminal gates CLOSED."
+```
+
+### RCR-SB2 Batch Test Evidence
+
+```yaml
+verification_target: "TS3/TS4 implementation contribution at c4c51f1, not whole CR-008 release verification"
+risk_ranked_test_matrix:
+  - { risk: "Unknown migration review silently deleted", severity: HIGH, required_evidence: ["Exact blocker/action canary preservation", "Twenty fixed-identity display mutations", "Rejection feedback isolation"] }
+  - { risk: "Raw new string state bypasses the contract", severity: HIGH, required_evidence: ["Constructor/raw writer guards", "Initial and post-scaffold classic/adaptive/Light coverage"] }
+  - { risk: "Prose still drives approval contradictions", severity: HIGH, required_evidence: ["Exact gate and non-gate purpose IDs", "Opaque legacy and foreign-purpose controls"] }
+test_strategy:
+  unit_test: { required: true, rationale: "Typed writer and exact-selector semantics" }
+  integration_test: { required: true, rationale: "Receipt/report/s01 parity and history preservation" }
+  database_test: { required: false, rationale: "No database boundary" }
+  feature_test: { required: true, rationale: "Authoring/bootstrap/adaptive CLI regression" }
+negative_cases: ["Unknown legacy blockers/actions", "Identical unrelated display", "Unselected gates", "Other rejection phase", "Repeated rejection duplicate IDs", "Foreign approval purpose", "Previously rejected feedback"]
+regression_targets: ["Readiness cleanup", "Canonical close", "Structured s01 parity", "Receipt-v1 and uncommitted-delivery checks", "Bootstrap and adaptive materialization"]
+manual_exploration:
+  flows_checked: ["Writer assignment/push/unshift inventory", "Selected and unrelated state", "Historical-prefix and protected-host checks"]
+  issues_found: ["Supplemental rejection canary was RED, repaired in approved TS4, then GREEN"]
+criteria_results:
+  - { criterion: "AC-RCR-09 TS3/TS4 contribution", result: PASS, evidence: "Raw typed writers, exact selectors and twenty wording controls" }
+  - { criterion: "AC-RCR-03/05 and EDGE-RCR-03/04 contribution", result: PASS, evidence: "Owned protocol suite confirms canonical projection/parity and preserved history" }
+test_evidence:
+  unit_test: ["15/15 isolated state tests", "Materializer suite PASS", "Gate-evidence suite PASS"]
+  integration_test: ["Entire committed protocol test source PASS", "Gate-review suite PASS", "13 frozen/live report loads without writes", "Two historical unbound events unchanged"]
+  database_test: []
+  feature_test: ["Authoring smoke 13/13 PASS", "Workflow/protocol/planning validators PASS"]
+commands_run: ["See exact commands and source/test SHA-256 values in rcr-sb2-evidence.json"]
+skipped_checks: ["Code Quality/security/performance lane NOT_OPEN until QC Spec Compliance", "Full run-all/package/hosted/parent verification belongs to TS7/TS8", "T7 WIP adoption deferred per approved plan"]
+release_blockers: []
+status: PASS
+gaps: ["PASS is only this batch's tested contribution; complete AC-RCR-09 and CR-008 remain pending", "Local test file with quarantined T7 WIP has twenty old-string assertion failures"]
+residual_risks: ["Mixed state/event architecture until TS6", "Final failure/concurrency matrix pending"]
+recommendation: "Submit QC Spec Compliance first; do not open Code Quality, TS5, release, or terminal verification."
+notes_for_review: "No release blocker is assessed away by this batch-scoped test status. Whole-work-item release blockers remain listed in rcr-sb2-evidence.json."
+```
+
+### RCR-SB2 Spec Compliance Proposal
+
+```yaml
+review_target: "RCR-SB2 TS3/TS4 at c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3"
+planning_track: full
+review_mode: INDEPENDENT
+review_order: ["SPEC_COMPLIANCE", "CODE_QUALITY"]
+review_batches:
+  - { batch: "RCR-SB2", scope: ["TS3", "TS4"], trigger: "Typed writer/selector contribution GREEN", reviewer_role: "QC first; Developer/QC only after QC Spec Compliance" }
+required_checks:
+  spec_compliance: ["Locked s04/s05/s06 and sixteen-root scope", "Raw constructor writers", "Unknown/unrelated canaries and exact selectors", "Structured projection and historical preservation", "T7 quarantine and TS5 identity boundary"]
+  code_quality: ["NOT_OPEN; no code-quality verdict is proposed before independent Spec Compliance"]
+finding_policy:
+  blocker_threshold: "Any spec drift or unresolved HIGH/CRITICAL finding blocks continuation"
+  reopen_conditions: ["Changed reviewed production source", "Contract or scope drift", "A failing preservation or parity guard"]
+handoff_to_verify: ["Later SB3 review pair and TS7 matrix", "QC explicit s08 opening", "Separate exact-candidate child/parent and terminal gates"]
+notes_for_implementation_or_verify: "This is an AI evidence-backed batch PASS recommendation, not human approval. Existing explicit lifecycle replacements remain unchanged; generic lifecycle redesign is out of scope."
+recommendation: PASS_FOR_BATCH
+human_approval: PENDING
+reviewer_role: qc
+reviewed_by: []
+reviewed_at: ""
+code_quality_status: NOT_OPEN
+ts5: CLOSED
+whole_work_item_status: NOT_DONE
+evidence_ref: "rcr-sb2-evidence.json"
+```
+
+### TS4 Workflow Pack Audit
+
+```yaml
+audit_scope: "Four TS4 scripts and this s07 handoff; no skill/policy/template/runtime install mutation"
+checks:
+  - { id: "mechanical", status: PASS, evidence: "WORKFLOW_PACK_AUDIT=PASS; 170 cross-references" }
+  - { id: "schema_and_authority_scope", status: PASS, evidence: "Approved Contract/Approach/Task Plan hosts and five trusted receipt digests unchanged; no catalog or authority rewrite" }
+  - { id: "semantic_completion", status: WARN, evidence: "State selector conversion is tested; direct transaction identity and full candidate regression remain later approved tasks" }
+findings: []
+overall_status: PARTIAL
+follow_up_actions: ["SB2 ordered reviews", "TS5..TS8 and parent exact-candidate verification"]
+notes: "Mechanical PASS does not clear external skill overrides or establish whole-pack semantic completion."
+```
+
+### Remaining-Time Estimate
+
+- Low-confidence estimate: three to five working days of remaining execution if no new blocking defect appears and CI/gate decisions are available promptly.
+- TS5/TS6 direct transaction identity: roughly one to two days; TS7 regression/failure matrix: roughly one to two days; TS8 hosted candidate and child/parent closeout: roughly half to one day. These ranges are approximate and not strict additive commitments.
+- Waiting for independent approvals, hosted access, or new findings can extend elapsed time. 2026-09-18 remains a stop-and-reassess checkpoint, not a promised delivery date.
+- No percentage or calendar ETA is inferred from historical terminal approvals; CR-008 is still NOT_DONE.
