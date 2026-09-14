@@ -109,7 +109,7 @@ tags:
 > [!summary]
 > Human accepted Developer/QC prior RCR-SB3 Code Quality FAIL and OPEN HIGH F-RCR-SB3-001, QC Spec reopening and Developer TS6a; all sixteen grants and sealed authoring hosts remain unchanged.
 > TS6a RED commit fe2b417 produced exactly two native foreign-lock failures before minimal four-line ownership GREEN at 04eed2f8b2098bddf513d0f96fd129e835686dd7. Fresh same-source regression passes 45 files, 19 state tests, 20 cycles, 64 boundaries, 10 races, 13 legacy no-write loads and smoke13/13.
-> QC refreshed Spec Compliance is APPROVED at 2026-09-14T02:32:17Z; Developer/QC refreshed Code Quality PASS and F-RCR-SB3-001 resolution are explicitly APPROVED at 2026-09-14T02:39:29Z for exact source 04eed2f8b2098bddf513d0f96fd129e835686dd7. Protocol remains BLOCKED only for separate QC TS8/s08 opening; no candidate/terminal approval is inferred.
+> QC refreshed Spec Compliance is APPROVED at 2026-09-14T02:32:17Z; Developer/QC refreshed Code Quality PASS and F-RCR-SB3-001 resolution are explicitly APPROVED at 2026-09-14T02:39:29Z for exact source 04eed2f8b2098bddf513d0f96fd129e835686dd7. QC explicitly opened TS8/s08 at 2026-09-14T02:45:55Z; protocol is ACTIVE at s08 for Verify only, no candidate/terminal approval is inferred.
 > Automated scan coverage remains PARTIAL; transient native read refusal, unmeasured history cost and supported Node18/22/package/hosted/parent exact-candidate duties remain explicit.
 > All RCR-SB1/2/3 review pairs are approved; current SB3 PASS retains disclosed scan gaps and native-read/history advisories.
 > F-RCR-SB3-001 is RESOLVED by explicit Developer/QC decision. Parent F-AG11-001 remains OPEN; CR-008 is NOT_DONE and branch HOLD_OPEN.
@@ -1083,11 +1083,11 @@ notes: "Semantic checklist reviewed for changed scripts/notes; source-only audit
 
 ### Current Structural Handoff
 
-- BLOCKED at RCR-TS8-s08-opening for exact reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7; ordered refreshed Spec/Code Quality pair APPROVED, F-RCR-SB3-001 RESOLVED at 2026-09-14T02:39:29Z; separate QC opening PENDING.
+- ACTIVE at s08/RCR-TS8-verify for exact reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7; QC explicitly approved opening at 2026-09-14T02:45:55Z, refreshed pair APPROVED and F-RCR-SB3-001 RESOLVED.
 - Accepted TS6a RED/GREEN repair and same-source TS7 regression PASS; all sixteen grants and five sealed authoring receipts unchanged.
 - F-RCR-SB3-001 is explicitly RESOLVED by Developer/QC for 04eed2f8b2098bddf513d0f96fd129e835686dd7. Parent F-AG11-001 remains OPEN and mandatory AC-RCR-08 same-candidate re-verification remains required.
 - Automatic scan coverage PARTIAL; native concurrent read refusal and unmeasured large-history cost retained. No reader-isolation/public-surface/CI action upgrade/parallelisation scope.
-- TS8/s08 and child/parent terminal gates remain independently closed; no package/hosted candidate/publish/tag/merge/install/cleanup/finalization.
+- TS8/s08 Verify execution is explicitly OPEN; child/parent Technical Verification/DoD/Release/Business Acceptance remain independent and unapproved. No publish/tag/merge/install/cleanup/finalization.
 
 ## Structural TS3 RED
 
@@ -1495,8 +1495,8 @@ source_sha: "04eed2f8b2098bddf513d0f96fd129e835686dd7"
 evidence_ref: "rcr-sb3-ts6a-evidence.json"
 code_quality: "APPROVED_PASS"
 F_RCR_SB3_001: "RESOLVED"
-TS8: "CLOSED"
-s08: "NOT_OPEN"
+TS8: "OPEN"
+s08: "VERIFY_IN_PROGRESS"
 whole_work_item_status: "NOT_DONE"
 branch_decision: "HOLD_OPEN"
 ```
@@ -1575,28 +1575,39 @@ reviewed_by: ["developer","qc"]
 reviewed_at: "2026-09-14T02:39:29Z"
 finding_disposition: "RESOLVED"
 scan_coverage: "PARTIAL"
-TS8: "CLOSED"
-s08: "NOT_OPEN"
+TS8: "OPEN"
+s08: "VERIFY_IN_PROGRESS"
 whole_work_item_status: "NOT_DONE"
 branch_decision: "HOLD_OPEN"
 historical_resolution_proposal: "RESOLVE_F-RCR-SB3-001_ONLY_IF_DEVELOPER_QC_EXPLICITLY_APPROVE"
 finding_resolution: "EXPLICIT_DEVELOPER_QC_RESOLVED"
 ```
 
-[Corrected-source Code Quality evidence](rcr-sb3-ts6a-code-quality-evidence.json) retains the fresh test/scan observations at 2026-09-14T02:34:04Z. Developer/QC explicitly approved PASS and resolved F-RCR-SB3-001 at 2026-09-14T02:39:29Z. Original FAIL at 08a3d12 and RED are historical; scan coverage stays PARTIAL, parent finding OPEN and TS8/s08 closed.
+[Corrected-source Code Quality evidence](rcr-sb3-ts6a-code-quality-evidence.json) retains the fresh test/scan observations at 2026-09-14T02:34:04Z. Developer/QC explicitly approved PASS and resolved F-RCR-SB3-001 at 2026-09-14T02:39:29Z. Original FAIL at 08a3d12 and RED are historical; scan coverage stays PARTIAL and parent finding OPEN; the later explicit QC TS8/s08 opening is recorded below.
 
-### TS8/s08 Opening Request — No Candidate Built
+### TS8/s08 Opening — Explicit QC Decision
+
+```yaml
+source_sha: "04eed2f8b2098bddf513d0f96fd129e835686dd7"
+human_approval: "APPROVED"
+reviewed_by: ["qc"]
+reviewed_at: "2026-09-14T02:45:55Z"
+scope: "TS8/s08 Verify execution only"
+protocol_status: "ACTIVE"
+TS8: "OPEN"
+s08: "VERIFY_IN_PROGRESS"
+evidence_ref: "rcr-ts8-evidence.json"
+terminal_approvals: "NOT_INFERRED"
+F_AG11_001: "OPEN"
+```
+
+## TS8 Handoff
 
 ```yaml
 reviewed_source: "04eed2f8b2098bddf513d0f96fd129e835686dd7"
-review_pair: APPROVED
-F_RCR_SB3_001: RESOLVED
-requested_by: agent
-approval_owner: qc
-human_approval: PENDING
-protocol_status: BLOCKED
-TS8: CLOSED
-s08: NOT_OPEN
-required_after_opening: ["Build one v2.6.2 candidate from reviewed source; bind the full SHA-256 and reuse identical bytes","Supported Node18/22, package/extracted/local/hosted evidence; no skipped required job","Child AC-RCR-01..10, mandatory AC-RCR-08 parent AG-01..13 exact-candidate re-verification","Independent Technical Verification, DoD, Release and Business Acceptance gates","Retain scan gaps, native transient-read/history advisories and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"]
-forbidden_without_further_authority: ["Publish","Tag","Merge","Install","Cleanup","Branch/worktree finalization"]
+protocol_status: "ACTIVE"
+handoff_target: "RCR-TS8-verify"
+authority: "QC opening at 2026-09-14T02:45:55Z only"
+evidence_ref: "rcr-ts8-evidence.json"
+terminal_gates: "Separate pending decisions after evidence; branch HOLD_OPEN"
 ```

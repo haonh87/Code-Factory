@@ -654,14 +654,14 @@ next_action: "Developer reviews the amended s06 TS0..TS8 plan; implementation st
 
 ## Work Item Protocol
 ```yaml
-protocol_status: BLOCKED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - "packages/workflow-bundle/scripts/work-item-protocol-utils.js"
   - "packages/workflow-bundle/scripts/work-item-protocol.js"
@@ -690,13 +690,12 @@ decision_owner: "agent"
 protocol_owner: "qc"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "RCR-TS8-s08-opening"
-last_transition_action: "resolve-F-RCR-SB3-001"
-last_transition_at: "2026-09-14T02:39:29Z"
+handoff_target: "RCR-TS8-verify"
+last_transition_action: "resume"
+last_transition_at: "2026-09-14T02:48:34.993Z"
 required_actions:
-  - {"id":"se:050516753a17ff7b2b1a5c615e6f47cc6b4b9393c140efce03972d65dc64ba5f","kind":"workflow_followup","text":"QC approve opening TS8/s08 for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7, retaining automated scan gaps, Node18/22 package/extracted/hosted candidate verification, mandatory AC-RCR-08 parent AG-01..13 re-verification and independent terminal gates."}
-blockers:
-  - {"id":"se:b9b9b2a0b8270868537876d44e4a304f4bbb30e51a2668c321b37580abfb2b90","kind":"delivery_blocker","text":"QC separate approval to open TS8/s08 is pending for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7. Refreshed RCR-SB3 Spec and Code Quality are approved, F-RCR-SB3-001 resolved. Scan gaps and mandatory same-candidate child/parent verification remain; no Verify or terminal gate is approved."}
+  - {"id":"se:2db776cd66b0f279593ff88c165a05422878625c8646363d21f46d5043ec7f26","kind":"workflow_followup","text":"Continue active execution from the current step."}
+blockers: []
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -752,6 +751,7 @@ review_notes:
   - "Prepared separate refreshed RCR-SB3 Code Quality at 2026-09-14T02:34:04Z after explicit QC refreshed Spec Compliance (2026-09-14T02:32:17Z) for source 04eed2f8b2098bddf513d0f96fd129e835686dd7. Fresh full45, native ownership, ten real races, exact-source/legacy/five receipt guards PASS; recommendation PASS_FOR_BATCH_WITH_DISCLOSED_SCAN_GAPS_AND_ADVISORIES only. Developer/QC human verdict PENDING; F-RCR-SB3-001 closure PROPOSED and disposition OPEN. Original 08a3d12 FAIL retained; scans PARTIAL, F-AG11-001 OPEN; no TS8/s08/terminal/publish/tag/merge/cleanup approval."
   - "Developer and QC explicitly approved refreshed RCR-SB3 Code Quality PASS at 2026-09-14T02:39:29Z for exact source 04eed2f8b2098bddf513d0f96fd129e835686dd7, retaining scan coverage PARTIAL, native transient-read and unmeasured-history advisories and all TS8/s08 obligations. Refreshed QC Spec approval at 2026-09-14T02:32:17Z precedes this verdict. No Verify opening, Technical Verification/DoD/Release/Business Acceptance, publish/tag/merge/install/cleanup approval is inferred."
   - "Developer and QC explicitly closed F-RCR-SB3-001 at 2026-09-14T02:39:29Z for remediation source 04eed2f8b2098bddf513d0f96fd129e835686dd7 based on the native lock-ownership repair and source-bound refreshed evidence. Current disposition RESOLVED; original 08a3d12 FAIL and RED remain historical. Parent F-AG11-001 stays OPEN and AC-RCR-08 exact-candidate re-verification remains mandatory; separate QC TS8/s08 opening is next."
+  - "QC explicitly approved opening TS8/s08 at 2026-09-14T02:45:55Z for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7; scan coverage PARTIAL and mandatory exact-candidate child/parent verification are retained. The ordered refreshed review pair is approved and F-RCR-SB3-001 resolved. This opens Verify execution only, not Technical Verification/DoD/Release/Business Acceptance, parent finding closure or publish/tag/merge/install/cleanup."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -848,6 +848,7 @@ audit_events:
   - "S07_RCR_SB3_REFRESHED_CODE_QUALITY_READY"
   - "S07_RCR_SB3_REFRESHED_CODE_QUALITY_PASS_APPROVED"
   - "S07_F_RCR_SB3_001_RESOLVED"
+  - "S08_RCR_TS8_OPENING_APPROVED"
 ```
 
 ## Traceability

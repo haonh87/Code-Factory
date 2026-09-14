@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "BLOCKED",
+  "protocol_status": "ACTIVE",
   "decision_owner": "agent",
   "protocol_owner": "qc",
   "raw_request_summary": "Fix repeated closeout-bundle reconciliation so a successful current approval cycle removes stale pending approval actions and handoffs, records a current-cycle protocol event despite historical evidence, and remains idempotent.",
@@ -127,13 +127,14 @@
     "QC explicitly approved refreshed RCR-SB3 Spec Compliance at 2026-09-14T02:32:17Z for exact corrected source 04eed2f8b2098bddf513d0f96fd129e835686dd7. Developer/QC refreshed Code Quality and F-RCR-SB3-001 disposition remain PENDING. Historical Code Quality FAIL at 08a3d12 is preserved. Scan coverage PARTIAL, both findings OPEN, sixteen grants and sealed authoring receipts unchanged; no TS8/s08/candidate/terminal/publish/tag/merge/cleanup approval.",
     "Prepared separate refreshed RCR-SB3 Code Quality at 2026-09-14T02:34:04Z after explicit QC refreshed Spec Compliance (2026-09-14T02:32:17Z) for source 04eed2f8b2098bddf513d0f96fd129e835686dd7. Fresh full45, native ownership, ten real races, exact-source/legacy/five receipt guards PASS; recommendation PASS_FOR_BATCH_WITH_DISCLOSED_SCAN_GAPS_AND_ADVISORIES only. Developer/QC human verdict PENDING; F-RCR-SB3-001 closure PROPOSED and disposition OPEN. Original 08a3d12 FAIL retained; scans PARTIAL, F-AG11-001 OPEN; no TS8/s08/terminal/publish/tag/merge/cleanup approval.",
     "Developer and QC explicitly approved refreshed RCR-SB3 Code Quality PASS at 2026-09-14T02:39:29Z for exact source 04eed2f8b2098bddf513d0f96fd129e835686dd7, retaining scan coverage PARTIAL, native transient-read and unmeasured-history advisories and all TS8/s08 obligations. Refreshed QC Spec approval at 2026-09-14T02:32:17Z precedes this verdict. No Verify opening, Technical Verification/DoD/Release/Business Acceptance, publish/tag/merge/install/cleanup approval is inferred.",
-    "Developer and QC explicitly closed F-RCR-SB3-001 at 2026-09-14T02:39:29Z for remediation source 04eed2f8b2098bddf513d0f96fd129e835686dd7 based on the native lock-ownership repair and source-bound refreshed evidence. Current disposition RESOLVED; original 08a3d12 FAIL and RED remain historical. Parent F-AG11-001 stays OPEN and AC-RCR-08 exact-candidate re-verification remains mandatory; separate QC TS8/s08 opening is next."
+    "Developer and QC explicitly closed F-RCR-SB3-001 at 2026-09-14T02:39:29Z for remediation source 04eed2f8b2098bddf513d0f96fd129e835686dd7 based on the native lock-ownership repair and source-bound refreshed evidence. Current disposition RESOLVED; original 08a3d12 FAIL and RED remain historical. Parent F-AG11-001 stays OPEN and AC-RCR-08 exact-candidate re-verification remains mandatory; separate QC TS8/s08 opening is next.",
+    "QC explicitly approved opening TS8/s08 at 2026-09-14T02:45:55Z for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7; scan coverage PARTIAL and mandatory exact-candidate child/parent verification are retained. The ordered refreshed review pair is approved and F-RCR-SB3-001 resolved. This opens Verify execution only, not Technical Verification/DoD/Release/Business Acceptance, parent finding closure or publish/tag/merge/install/cleanup."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/closeout-bundle-repeat-cycle-reconciliation",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
     "packages/workflow-bundle/scripts/work-item-protocol.js",
@@ -154,21 +155,15 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "RCR-TS8-s08-opening",
+  "handoff_target": "RCR-TS8-verify",
   "required_actions": [
     {
-      "id": "se:050516753a17ff7b2b1a5c615e6f47cc6b4b9393c140efce03972d65dc64ba5f",
+      "id": "se:2db776cd66b0f279593ff88c165a05422878625c8646363d21f46d5043ec7f26",
       "kind": "workflow_followup",
-      "text": "QC approve opening TS8/s08 for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7, retaining automated scan gaps, Node18/22 package/extracted/hosted candidate verification, mandatory AC-RCR-08 parent AG-01..13 re-verification and independent terminal gates."
+      "text": "Continue active execution from the current step."
     }
   ],
-  "blockers": [
-    {
-      "id": "se:b9b9b2a0b8270868537876d44e4a304f4bbb30e51a2668c321b37580abfb2b90",
-      "kind": "delivery_blocker",
-      "text": "QC separate approval to open TS8/s08 is pending for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7. Refreshed RCR-SB3 Spec and Code Quality are approved, F-RCR-SB3-001 resolved. Scan gaps and mandatory same-candidate child/parent verification remain; no Verify or terminal gate is approved."
-    }
-  ],
+  "blockers": [],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
     "work-items/adaptive-governance-human-approval-ux",
@@ -265,7 +260,8 @@
     "S07_RCR_SB3_REFRESHED_SPEC_COMPLIANCE_APPROVED",
     "S07_RCR_SB3_REFRESHED_CODE_QUALITY_READY",
     "S07_RCR_SB3_REFRESHED_CODE_QUALITY_PASS_APPROVED",
-    "S07_F_RCR_SB3_001_RESOLVED"
+    "S07_F_RCR_SB3_001_RESOLVED",
+    "S08_RCR_TS8_OPENING_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -325,7 +321,8 @@
     "QC explicitly approved refreshed RCR-SB3 Spec Compliance at 2026-09-14T02:32:17Z for exact corrected source 04eed2f8b2098bddf513d0f96fd129e835686dd7. Developer/QC refreshed Code Quality and F-RCR-SB3-001 disposition remain PENDING. Historical Code Quality FAIL at 08a3d12 is preserved. Scan coverage PARTIAL, both findings OPEN, sixteen grants and sealed authoring receipts unchanged; no TS8/s08/candidate/terminal/publish/tag/merge/cleanup approval.",
     "Prepared separate refreshed RCR-SB3 Code Quality at 2026-09-14T02:34:04Z after explicit QC refreshed Spec Compliance (2026-09-14T02:32:17Z) for source 04eed2f8b2098bddf513d0f96fd129e835686dd7. Fresh full45, native ownership, ten real races, exact-source/legacy/five receipt guards PASS; recommendation PASS_FOR_BATCH_WITH_DISCLOSED_SCAN_GAPS_AND_ADVISORIES only. Developer/QC human verdict PENDING; F-RCR-SB3-001 closure PROPOSED and disposition OPEN. Original 08a3d12 FAIL retained; scans PARTIAL, F-AG11-001 OPEN; no TS8/s08/terminal/publish/tag/merge/cleanup approval.",
     "Developer and QC explicitly approved refreshed RCR-SB3 Code Quality PASS at 2026-09-14T02:39:29Z for exact source 04eed2f8b2098bddf513d0f96fd129e835686dd7, retaining scan coverage PARTIAL, native transient-read and unmeasured-history advisories and all TS8/s08 obligations. Refreshed QC Spec approval at 2026-09-14T02:32:17Z precedes this verdict. No Verify opening, Technical Verification/DoD/Release/Business Acceptance, publish/tag/merge/install/cleanup approval is inferred.",
-    "Developer and QC explicitly closed F-RCR-SB3-001 at 2026-09-14T02:39:29Z for remediation source 04eed2f8b2098bddf513d0f96fd129e835686dd7 based on the native lock-ownership repair and source-bound refreshed evidence. Current disposition RESOLVED; original 08a3d12 FAIL and RED remain historical. Parent F-AG11-001 stays OPEN and AC-RCR-08 exact-candidate re-verification remains mandatory; separate QC TS8/s08 opening is next."
+    "Developer and QC explicitly closed F-RCR-SB3-001 at 2026-09-14T02:39:29Z for remediation source 04eed2f8b2098bddf513d0f96fd129e835686dd7 based on the native lock-ownership repair and source-bound refreshed evidence. Current disposition RESOLVED; original 08a3d12 FAIL and RED remain historical. Parent F-AG11-001 stays OPEN and AC-RCR-08 exact-candidate re-verification remains mandatory; separate QC TS8/s08 opening is next.",
+    "QC explicitly approved opening TS8/s08 at 2026-09-14T02:45:55Z for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7; scan coverage PARTIAL and mandatory exact-candidate child/parent verification are retained. The ordered refreshed review pair is approved and F-RCR-SB3-001 resolved. This opens Verify execution only, not Technical Verification/DoD/Release/Business Acceptance, parent finding closure or publish/tag/merge/install/cleanup."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -867,6 +864,22 @@
       "from_status": "BLOCKED",
       "to_status": "BLOCKED",
       "note": "Developer and QC explicitly closed F-RCR-SB3-001 at 2026-09-14T02:39:29Z for remediation source 04eed2f8b2098bddf513d0f96fd129e835686dd7 based on the native lock-ownership repair and source-bound refreshed evidence. Current disposition RESOLVED; original 08a3d12 FAIL and RED remain historical. Parent F-AG11-001 stays OPEN and AC-RCR-08 exact-candidate re-verification remains mandatory; separate QC TS8/s08 opening is next."
+    },
+    {
+      "timestamp": "2026-09-14T02:45:55Z",
+      "action": "approve-RCR-TS8-s08-opening",
+      "actor": "qc",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "QC explicitly approved opening TS8/s08 at 2026-09-14T02:45:55Z for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7; scan coverage PARTIAL and mandatory exact-candidate child/parent verification are retained. The ordered refreshed review pair is approved and F-RCR-SB3-001 resolved. This opens Verify execution only, not Technical Verification/DoD/Release/Business Acceptance, parent finding closure or publish/tag/merge/install/cleanup."
+    },
+    {
+      "timestamp": "2026-09-14T02:48:34.993Z",
+      "action": "resume",
+      "actor": "coordinator",
+      "from_status": "BLOCKED",
+      "to_status": "ACTIVE",
+      "note": "Execute only explicitly QC-opened TS8/s08 for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7; same sixteen granted roots and five frozen receipts. No candidate or terminal verdict is inferred."
     }
   ]
 }

@@ -524,14 +524,14 @@
     }
   },
   "authority": {
-    "protocol_status": "BLOCKED",
-    "handoff_target": "RCR-TS8-s08-opening",
-    "missing_gate": "Separate QC approval to open TS8/s08",
-    "next_human_action": "QC approve opening TS8/s08 for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "protocol_status": "ACTIVE",
+    "handoff_target": "RCR-TS8-verify",
+    "missing_gate": "NONE for TS8 Verify execution",
+    "next_human_action": "NONE while Verify executes; QC Technical Verification review follows evidence",
     "code_quality": "APPROVED_PASS",
-    "TS8": "CLOSED",
-    "s08": "NOT_OPEN",
-    "technical_verification": "NOT_OPEN",
+    "TS8": "OPEN",
+    "s08": "VERIFY_IN_PROGRESS",
+    "technical_verification": "PENDING_EVIDENCE",
     "dod": "NOT_OPEN",
     "release": "NOT_OPEN",
     "business_acceptance": "NOT_OPEN",
@@ -539,13 +539,7 @@
     "tag": false,
     "merge": false,
     "cleanup": false,
-    "blockers": [
-      {
-        "id": "se:b9b9b2a0b8270868537876d44e4a304f4bbb30e51a2668c321b37580abfb2b90",
-        "kind": "delivery_blocker",
-        "text": "QC separate approval to open TS8/s08 is pending for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7. Refreshed RCR-SB3 Spec and Code Quality are approved, F-RCR-SB3-001 resolved. Scan gaps and mandatory same-candidate child/parent verification remain; no Verify or terminal gate is approved."
-      }
-    ],
+    "blockers": [],
     "finding_disposition": "RESOLVED",
     "TS6a": "GREEN_REFRESHED_REVIEW_PAIR_APPROVED",
     "F_AG11_001": "OPEN",
@@ -566,6 +560,15 @@
       ],
       "reviewed_at": "2026-09-14T02:39:29Z",
       "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7"
+    },
+    "ts8_opening": {
+      "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+      "human_approval": "APPROVED",
+      "reviewed_by": [
+        "qc"
+      ],
+      "reviewed_at": "2026-09-14T02:45:55Z",
+      "scope": "TS8/s08 Verify execution only"
     }
   },
   "mandatory_followups": [
@@ -614,7 +617,7 @@
     "corrected_source_review": "PENDING_AFTER_GREEN"
   },
   "current_refreshed_review_evidence_ref": "rcr-sb3-ts6a-evidence.json",
-  "current_authority_observed_at": "2026-09-14T02:39:29Z",
+  "current_authority_observed_at": "2026-09-14T02:45:55Z",
   "current_refreshed_code_quality_evidence_ref": "rcr-sb3-ts6a-code-quality-evidence.json",
   "current_refreshed_code_quality": {
     "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
@@ -643,5 +646,6 @@
     "resolved_at": "2026-09-14T02:39:29Z",
     "evidence_ref": "rcr-sb3-ts6a-code-quality-evidence.json",
     "basis": "Explicit human approval, not inferred from tests."
-  }
+  },
+  "ts8_evidence_ref": "rcr-ts8-evidence.json"
 }
