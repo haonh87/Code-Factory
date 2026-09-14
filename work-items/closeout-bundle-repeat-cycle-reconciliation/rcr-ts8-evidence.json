@@ -1,7 +1,7 @@
 {
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "task": "TS8",
-  "status": "BLOCKED_HOSTED_SDD",
+  "status": "VERIFY_IN_PROGRESS",
   "opened_at": "2026-09-14T02:45:55Z",
   "opening": {
     "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
@@ -23,15 +23,16 @@
       "One v2.6.2 package candidate, source/payload/full SHA-256 and hosted job binding",
       "Supported Node18/22, full regression, extracted/installed artifact smoke, static/security/performance context and UTF-8",
       "Child AC-RCR-01..10 evidence; AC-RCR-08 parent followup stays mandatory",
-      "Prepare QC Technical Verification and DoD evidence without approving either"
+      "Prepare QC Technical Verification and DoD evidence without approving either",
+      "TS8-M1 accepted metadata-only repair of exactly product-specs/cards/upgrade-guardrails-actions-node24.md; requirements/origin/original decision authority preserved"
     ],
     "scope_out": [
-      "Production/test/design/authoring-host changes",
+      "Production/test/design and sealed RCR s04-s06 authoring-host changes; only the accepted Node24 card metadata exception is allowed",
       "CI action upgrade or validator parallelisation",
       "Publication, tag, merge, main update, global install, cleanup or branch/worktree finalization"
     ],
     "inputs_required": [
-      "Five approved frozen authoring receipts and unchanged sixteen roots",
+      "Five approved frozen RCR authoring receipts; sixteen original roots plus exactly the accepted TS8-M1 card path",
       "Ordered RCR-SB1/2/3 reviews; corrected SB3 pair at 04eed2f8b2098bddf513d0f96fd129e835686dd7 and F-RCR-SB3-001 RESOLVED",
       "Explicit QC TS8/s08 opening at 2026-09-14T02:45:55Z",
       "Read-only package/pipeline and known-good rollback v2.6.1"
@@ -49,7 +50,7 @@
     ],
     "constraints": {
       "hard_constraints": [
-        "Use the approved sixteen roots only; package and pipeline inputs read-only",
+        "Use the sixteen approved roots plus exactly one TS8-M1 metadata-only card path; package/pipeline inputs read-only",
         "Core transitions cannot infer state/identity from human text; preserve unknown legacy and history",
         "Build once per candidate context; never call self-pack during exact-artifact consumption",
         "Opening Verify never passes DoD/Release/Business Acceptance or closes parent finding"
@@ -70,7 +71,8 @@
         "Seven reviewed source hashes / five authoring receipts / frozen host digests",
         "Exact report/s01 mirror and protected history prefixes",
         "Candidate digest and extracted payload comparisons; all required hosted job outcomes",
-        "Blank terminal reviewers/receipts unless explicitly approved"
+        "Blank terminal reviewers/receipts unless explicitly approved",
+        "Card pre/post comparison masks only five normalized provenance scalars plus freeze status and removes added origin notes; all remaining bytes identical"
       ]
     },
     "risks": [
@@ -259,8 +261,8 @@
       "Hosted downstream jobs skipped by failed SDD dependency; this is a blocker, not an accepted waiver"
     ],
     "release_blockers": [
-      "Hosted run 34800821538 failed Workflow SDD: Node24 Spec Card has five invalid provenance fields and invalid Spec Freeze status; candidate build and matrix consumers were skipped. The card is outside the approved sixteen RCR write roots.",
-      "Mandatory AC-RCR-08 parent contribution/F-AG11-001 and separate terminal gates"
+      "Hosted exact candidate and required Node18/22 matrix job evidence pending",
+      "Mandatory AC-RCR-08 parent contribution and independent terminal gates"
     ],
     "status": "PARTIAL",
     "gaps": [
@@ -271,7 +273,7 @@
     "residual_risks": [
       "Native transient-read refusal and linear history cost are retained advisories"
     ],
-    "recommendation": "Authorize only the metadata-only Node24 Spec Card correction/additive root, retain origin and decision authority, then rerun all existing hosted jobs. Do not weaken validator, alter CI or approve terminal gates.",
+    "recommendation": "Execute existing hosted Verify for the metadata-corrected commit; bind actual full candidate SHA-256 before separate QC Technical Verification.",
     "notes_for_review": "Nine implementation criteria have passing evidence; AC-RCR-08 is incomplete. RCR-SB3 finding RESOLVED by explicit Dev/QC approval; parent finding OPEN. QC opening remains valid but is not a Verify verdict."
   },
   "scan": {
@@ -415,7 +417,7 @@
     "overall_status": "PARTIAL",
     "remediation_actions": [
       "Retain fresh confirmed automatic static/security tool gaps for QC review; no scanner installed or coverage invented",
-      "Resolve V-RCR-TS8-001 through additive metadata-only card authority; do not weaken validation or expand CI/production scope",
+      "Accepted TS8-M1 resolves local SDD schema; retain failed hosted attempt and require complete fresh hosted run",
       "Retain native transient-read and linear history advisories"
     ],
     "notes_for_verify": "Fresh discovery/parser/source assertions and limited native lock delta review at 2026-09-14T03:04:14Z. Earlier whole-batch scan observations remain historical; no automated scanner PASS or benchmark claim.",
@@ -506,110 +508,16 @@
     "pack_invocations": 1
   },
   "hosted": {
-    "status": "COMPLETED_FAILURE",
-    "source_sha": "59c3c3e0149fe022df9a0f34b0c599805a726bfb",
-    "reviewed_code_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
-    "run_id": 34800821538,
-    "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538",
-    "event": "pull_request",
-    "observed_at": "2026-09-14T03:04:14Z",
-    "conclusion": "failure",
+    "status": "PENDING_METADATA_CORRECTED_RERUN",
+    "branch": "codex/adaptive-governance-human-approval-ux",
     "pr": 2,
-    "jobs": [
-      {
-        "name": "Workflow Tooling",
-        "conclusion": "success",
-        "status": "completed",
-        "job_id": 103842980341,
-        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103842980341"
-      },
-      {
-        "name": "Workflow Artifacts",
-        "conclusion": "success",
-        "status": "completed",
-        "job_id": 103843011346,
-        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843011346"
-      },
-      {
-        "name": "Workflow SDD",
-        "conclusion": "failure",
-        "status": "completed",
-        "job_id": 103843031984,
-        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843031984"
-      },
-      {
-        "name": "Workflow Execution",
-        "conclusion": "skipped",
-        "status": "completed",
-        "job_id": 103843050674,
-        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843050674"
-      },
-      {
-        "name": "Workflow Changes",
-        "conclusion": "skipped",
-        "status": "completed",
-        "job_id": 103843050680,
-        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843050680"
-      },
-      {
-        "name": "Workflow Planning",
-        "conclusion": "skipped",
-        "status": "completed",
-        "job_id": 103843051048,
-        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843051048"
-      },
-      {
-        "name": "Workflow Authoring Smoke",
-        "conclusion": "skipped",
-        "status": "completed",
-        "job_id": 103843051506,
-        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843051506"
-      },
-      {
-        "name": "Release Candidate (Node ${{ matrix.node }})",
-        "conclusion": "skipped",
-        "status": "completed",
-        "job_id": 103843051653,
-        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843051653"
-      },
-      {
-        "name": "Build Exact Release Candidate",
-        "conclusion": "skipped",
-        "status": "completed",
-        "job_id": 103843051702,
-        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843051702"
-      }
-    ],
-    "job_counts": {
-      "materialized": 9,
-      "success": 2,
-      "failure": 1,
-      "skipped": 6,
-      "required_expanded_when_build_runs": 10
-    },
-    "matrix_note": "The skipped matrix appears as one unexpanded placeholder, not two passing Node jobs.",
+    "reviewed_code_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "previous_failed_run_id": 34800821538,
     "artifact": {
       "created": false,
-      "total_count": 0,
       "sha256": null
     },
-    "source_binding": {
-      "metadata_only_diff_paths": [
-        "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s01.restate.md",
-        "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s07.implementation.md",
-        "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s08.verification.md",
-        "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.work-item-report.json",
-        "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-code-quality-evidence.json",
-        "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-evidence.json",
-        "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-ts6a-code-quality-evidence.json",
-        "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-ts6a-evidence.json",
-        "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-ts8-evidence.json"
-      ],
-      "package_build_inputs": "UNCHANGED",
-      "reviewed_scripts_tests": "SEVEN_HASHES_EXACT"
-    },
-    "blocker": "Hosted run 34800821538 failed Workflow SDD: Node24 Spec Card has five invalid provenance fields and invalid Spec Freeze status; candidate build and matrix consumers were skipped. The card is outside the approved sixteen RCR write roots.",
-    "local_hosted_checksum_comparison": "NOT_RUN: hosted candidate not created; local bytes are not claimed to be hosted-verified."
+    "required_expanded_jobs": 10
   },
   "definition_of_done": {
     "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
@@ -623,8 +531,8 @@
       "residual_risks_documented": "PASS"
     },
     "gaps": [
-      "Hosted run 34800821538 failed Workflow SDD: Node24 Spec Card has five invalid provenance fields and invalid Spec Freeze status; candidate build and matrix consumers were skipped. The card is outside the approved sixteen RCR write roots.",
-      "QC artifact binding/Technical Verification/DoD remain separate; mandatory parent exact-candidate followup"
+      "Hosted exact candidate and required Node18/22 matrix job evidence pending",
+      "Mandatory AC-RCR-08 parent contribution and independent terminal gates"
     ],
     "residual_risks": [
       "Native transient-read refusal and linear history cost are retained advisories"
@@ -632,7 +540,7 @@
     "follow_up_items": [
       "Mandatory AC-RCR-08 parent exact-candidate AG-01..13 and terminal decisions"
     ],
-    "next_action": "Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun."
+    "next_action": "Execute existing hosted Verify for the metadata-corrected commit; bind actual full candidate SHA-256 before separate QC Technical Verification."
   },
   "branch_finish": {
     "finish_target": "codex/adaptive-governance-human-approval-ux",
@@ -669,9 +577,9 @@
     "notes_for_closeout": "Workflow-pack audit confirms mechanical170 references; semantic whole-pack scope is not claimed. Branch-finish discipline holds open: hosted verification failed, DoD not approved and parent finding OPEN."
   },
   "authority": {
-    "protocol_status": "BLOCKED",
-    "TS8": "OPEN_EXECUTION_BLOCKED",
-    "s08": "BLOCKED_HOSTED_SDD",
+    "protocol_status": "ACTIVE",
+    "TS8": "OPEN",
+    "s08": "VERIFY_IN_PROGRESS",
     "technical_verification": "PENDING_EVIDENCE",
     "dod": "NOT_APPROVED",
     "release": "NOT_APPROVED",
@@ -682,7 +590,7 @@
     "tag": false,
     "merge": false,
     "cleanup": false,
-    "next_human_action": "Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun."
+    "next_human_action": "NONE while hosted Verify executes; exact artifact binding/Technical Verification/DoD and parent gates remain independent"
   },
   "rollback": {
     "version": "v2.6.1",
@@ -756,8 +664,8 @@
       "Automated static/security gaps remain PARTIAL",
       "CI action Node24 upgrade and validator parallelisation remain separate scopes"
     ],
-    "pipeline_recommendation": "BLOCKED",
-    "notes_for_implementation_or_ops": "Hosted source 59c3c3e0149fe022df9a0f34b0c599805a726bfb/run 34800821538 failed before candidate build. No artifact to bind/promote. Correct card metadata only after additive authority; existing job topology and CI tokens remain untouched."
+    "pipeline_recommendation": "READY_WITH_GUARDS",
+    "notes_for_implementation_or_ops": "Accepted TS8-M1 metadata-only card repair passes six validator wrappers; existing CI topology untouched. Hosted rerun will identify actual source/run/artifact, not reuse old failure as proof."
   },
   "local_execution": {
     "status": "PASS_REQUIRED_LOCAL_CHECKS",
@@ -852,7 +760,7 @@
   "verification_blockers": [
     {
       "id": "V-RCR-TS8-001",
-      "status": "OPEN_OBSERVED",
+      "status": "METADATA_CORRECTED_PENDING_HOSTED_VERIFICATION",
       "kind": "HOSTED_SDD_ARTIFACT_SCHEMA",
       "owner": "developer",
       "file": "product-specs/cards/upgrade-guardrails-actions-node24.md",
@@ -861,7 +769,8 @@
       "pre_existing": true,
       "first_seen_commit": "5cb70f33e67e18038b9bf743cbaf85867f7facfc",
       "scope_boundary": "Card excluded from the sixteen approved RCR roots.",
-      "next_human_action": "Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun."
+      "next_human_action": "Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun.",
+      "resolution_evidence": "rcr-ts8-node24-card-metadata-evidence.json"
     }
   ],
   "schema_proposal": {
@@ -936,5 +845,288 @@
     "artifact_scope": "10RCRowned artifacts only;Node24 card,CI,package/test/master/parent/locked s04-s06 hosts unchanged",
     "candidate": "Local exact full SHA af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f;no hosted artifact exists",
     "authority": "QC opening retained; hosted VerifyBLOCKED; terminal authority not inferred"
-  }
+  },
+  "scope_addendum": {
+    "id": "TS8-M1",
+    "kind": "METADATA_ONLY_SCOPE_ADDITION",
+    "status": "APPROVED",
+    "reviewed_by": [
+      "developer",
+      "qc"
+    ],
+    "reviewed_at": "2026-09-14T03:14:22Z",
+    "source": "User replied accept to the explicit Developer/QC card correction, additive write scope and hosted Verify question.",
+    "owned_path": "product-specs/cards/upgrade-guardrails-actions-node24.md",
+    "allowed_changes": [
+      "Five provenance scalars -> BASELINE; exact origin prose preserved in provenance_note",
+      "Spec Freeze status -> FROZEN; existing spec status/version, authority, approved_by and decided_at unchanged",
+      "Record scoped approval and resume hosted Verify"
+    ],
+    "excluded_changes": [
+      "Requirements/acceptance meaning",
+      "CI action versions/topology/parallelisation",
+      "Node24 readiness sealing/activation or broader implementation",
+      "RCR production/tests/locked authoring hosts",
+      "Hosted binding/Technical Verification/DoD/Release/Business Acceptance or parent finding closure"
+    ],
+    "completed_at": "2026-09-14T03:16:42Z",
+    "metadata_check": {
+      "status": "PASS",
+      "card": "product-specs/cards/upgrade-guardrails-actions-node24.md",
+      "before_sha256": "650acfe759cc16e4468bc219ae7641e12a34b1965f2777ff4fea02e8d31b9f2c",
+      "after_sha256": "73d6ea970ef878a69d6150e5c2d2f2a5cd9fe7cbed76938bc9620fa7c3458a8d",
+      "normalized_scalars": 6,
+      "origin_notes_preserved": 5,
+      "all_other_bytes": "EXACT_UNCHANGED",
+      "requirements_acceptance_freeze_authority_time": "UNCHANGED",
+      "trusted_authoring_receipts": [
+        {
+          "gate": "spec",
+          "status": "APPROVED_UNCHANGED"
+        },
+        {
+          "gate": "contract",
+          "status": "APPROVED_UNCHANGED"
+        },
+        {
+          "gate": "dor",
+          "status": "APPROVED_UNCHANGED"
+        },
+        {
+          "gate": "approach",
+          "status": "APPROVED_UNCHANGED"
+        },
+        {
+          "gate": "task_plan",
+          "status": "APPROVED_UNCHANGED"
+        }
+      ],
+      "node24_readiness_sealing_activation": "NOT_PERFORMED",
+      "utf8": "PASS"
+    },
+    "validators": {
+      "validate": {
+        "exit_code": 0,
+        "summary": "OK: validated workflow naming (208 files) and governance (204 notes) under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+      },
+      "sdd": {
+        "exit_code": 0,
+        "summary": "OK: validated SDD for 44 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+      },
+      "change": {
+        "exit_code": 0,
+        "summary": "OK: validated change layer for 42 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+      },
+      "exec": {
+        "exit_code": 0,
+        "summary": "OK: validated execution runtime for 204 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+      },
+      "plan": {
+        "exit_code": 0,
+        "summary": "OK: validated planning track for 204 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+      },
+      "protocol": {
+        "exit_code": 0,
+        "summary": "OK: validated 13 protocol-managed work items under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items (skipped legacy: 16)"
+      }
+    }
+  },
+  "initial_contract": {
+    "step": "s08 Verify + DoD — TS8",
+    "goal": "Source-bound evidence establishes the corrected candidate and makes child verification reviewable while mandatory parent contribution and terminal authority remain separate.",
+    "value": "Prevent stale candidate authority or mismatched local/hosted bytes from closing CR-008.",
+    "scope_in": [
+      "QC-approved TS8 opening at reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7",
+      "One v2.6.2 package candidate, source/payload/full SHA-256 and hosted job binding",
+      "Supported Node18/22, full regression, extracted/installed artifact smoke, static/security/performance context and UTF-8",
+      "Child AC-RCR-01..10 evidence; AC-RCR-08 parent followup stays mandatory",
+      "Prepare QC Technical Verification and DoD evidence without approving either"
+    ],
+    "scope_out": [
+      "Production/test/design/authoring-host changes",
+      "CI action upgrade or validator parallelisation",
+      "Publication, tag, merge, main update, global install, cleanup or branch/worktree finalization"
+    ],
+    "inputs_required": [
+      "Five approved frozen authoring receipts and unchanged sixteen roots",
+      "Ordered RCR-SB1/2/3 reviews; corrected SB3 pair at 04eed2f8b2098bddf513d0f96fd129e835686dd7 and F-RCR-SB3-001 RESOLVED",
+      "Explicit QC TS8/s08 opening at 2026-09-14T02:45:55Z",
+      "Read-only package/pipeline and known-good rollback v2.6.1"
+    ],
+    "outputs_required": [
+      "rcr-ts8-evidence.json",
+      "Current s08 testing/scan/coverage/DevOps/audit/DoD preparation blocks",
+      "Source SHA, hosted run ID, full candidate SHA-256 and explicit gaps"
+    ],
+    "done_when": [
+      "Required child implementation checks pass at reviewed source",
+      "Candidate checksum/payload and Node18/22 local/hosted evidence bind identical bytes or divergent evidence stays explicitly historical",
+      "AC-RCR-08 is retained as mandatory downstream parent contribution, not marked fulfilled prematurely",
+      "QC can review Technical Verification; no terminal approval is inferred"
+    ],
+    "constraints": {
+      "hard_constraints": [
+        "Use the approved sixteen roots only; package and pipeline inputs read-only",
+        "Core transitions cannot infer state/identity from human text; preserve unknown legacy and history",
+        "Build once per candidate context; never call self-pack during exact-artifact consumption",
+        "Opening Verify never passes DoD/Release/Business Acceptance or closes parent finding"
+      ],
+      "soft_constraints": [
+        "Use existing wrappers and isolated private/tmp build/test fixtures",
+        "Retain disclosed automatic scan and native-read/history advisories"
+      ],
+      "prohibited_actions": [
+        "Publish",
+        "Tag",
+        "Merge",
+        "Edit CI",
+        "Install globally",
+        "Finalize branch/worktree"
+      ],
+      "compliance_checks": [
+        "Seven reviewed source hashes / five authoring receipts / frozen host digests",
+        "Exact report/s01 mirror and protected history prefixes",
+        "Candidate digest and extracted payload comparisons; all required hosted job outcomes",
+        "Blank terminal reviewers/receipts unless explicitly approved"
+      ]
+    },
+    "risks": [
+      {
+        "id": "TS8-CANDIDATE-DRIFT",
+        "description": "Hosted/local package bytes or source diverge.",
+        "likelihood": "MEDIUM",
+        "impact": "HIGH",
+        "severity": "HIGH",
+        "mitigation": "Compare full checksum and payload source; preserve divergent local pre-host evidence and request explicit hosted artifact rebind when needed.",
+        "contingency": "Do not promote or close; bind one exact hosted candidate before QC review.",
+        "owner": "qc",
+        "status": "MONITORING"
+      },
+      {
+        "id": "TS8-PARENT-AUTHORITY",
+        "description": "Child evidence is mistaken for parent/terminal acceptance.",
+        "likelihood": "MEDIUM",
+        "impact": "HIGH",
+        "severity": "HIGH",
+        "mitigation": "Track AC-RCR-08 and F-AG11-001 as mandatory OPEN downstream parent contribution.",
+        "contingency": "Hold branch open and request separate parent Technical Verification/DoD/Release/Business Acceptance.",
+        "owner": "qc",
+        "status": "OPEN"
+      }
+    ],
+    "timebox": {
+      "target_duration": "This Verify session; report actual hosted or environment blockers without inventing completion.",
+      "deadline": "2026-09-18 stop-and-reassess checkpoint (not a delivery promise)",
+      "escalation_rule": "Stop scope growth and reassess at the owner checkpoint; no AC cuts without owner approval."
+    }
+  },
+  "scope_addition_recorded_at": "2026-09-14T03:14:22Z",
+  "hosted_attempts": [
+    {
+      "status": "COMPLETED_FAILURE",
+      "source_sha": "59c3c3e0149fe022df9a0f34b0c599805a726bfb",
+      "reviewed_code_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+      "run_id": 34800821538,
+      "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538",
+      "event": "pull_request",
+      "observed_at": "2026-09-14T03:04:14Z",
+      "conclusion": "failure",
+      "pr": 2,
+      "jobs": [
+        {
+          "name": "Workflow Tooling",
+          "conclusion": "success",
+          "status": "completed",
+          "job_id": 103842980341,
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103842980341"
+        },
+        {
+          "name": "Workflow Artifacts",
+          "conclusion": "success",
+          "status": "completed",
+          "job_id": 103843011346,
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843011346"
+        },
+        {
+          "name": "Workflow SDD",
+          "conclusion": "failure",
+          "status": "completed",
+          "job_id": 103843031984,
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843031984"
+        },
+        {
+          "name": "Workflow Execution",
+          "conclusion": "skipped",
+          "status": "completed",
+          "job_id": 103843050674,
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843050674"
+        },
+        {
+          "name": "Workflow Changes",
+          "conclusion": "skipped",
+          "status": "completed",
+          "job_id": 103843050680,
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843050680"
+        },
+        {
+          "name": "Workflow Planning",
+          "conclusion": "skipped",
+          "status": "completed",
+          "job_id": 103843051048,
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843051048"
+        },
+        {
+          "name": "Workflow Authoring Smoke",
+          "conclusion": "skipped",
+          "status": "completed",
+          "job_id": 103843051506,
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843051506"
+        },
+        {
+          "name": "Release Candidate (Node ${{ matrix.node }})",
+          "conclusion": "skipped",
+          "status": "completed",
+          "job_id": 103843051653,
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843051653"
+        },
+        {
+          "name": "Build Exact Release Candidate",
+          "conclusion": "skipped",
+          "status": "completed",
+          "job_id": 103843051702,
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843051702"
+        }
+      ],
+      "job_counts": {
+        "materialized": 9,
+        "success": 2,
+        "failure": 1,
+        "skipped": 6,
+        "required_expanded_when_build_runs": 10
+      },
+      "matrix_note": "The skipped matrix appears as one unexpanded placeholder, not two passing Node jobs.",
+      "artifact": {
+        "created": false,
+        "total_count": 0,
+        "sha256": null
+      },
+      "source_binding": {
+        "metadata_only_diff_paths": [
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s01.restate.md",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s07.implementation.md",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s08.verification.md",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.work-item-report.json",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-code-quality-evidence.json",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-evidence.json",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-ts6a-code-quality-evidence.json",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-ts6a-evidence.json",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-ts8-evidence.json"
+        ],
+        "package_build_inputs": "UNCHANGED",
+        "reviewed_scripts_tests": "SEVEN_HASHES_EXACT"
+      },
+      "blocker": "Hosted run 34800821538 failed Workflow SDD: Node24 Spec Card has five invalid provenance fields and invalid Spec Freeze status; candidate build and matrix consumers were skipped. The card is outside the approved sixteen RCR write roots.",
+      "local_hosted_checksum_comparison": "NOT_RUN: hosted candidate not created; local bytes are not claimed to be hosted-verified."
+    }
+  ]
 }

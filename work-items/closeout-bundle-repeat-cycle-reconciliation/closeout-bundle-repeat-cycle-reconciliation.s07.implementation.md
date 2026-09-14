@@ -107,9 +107,9 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> RCR-SB1/2/3 ordered review pairs remain approved; corrected SB3 source is `04eed2f8b2098bddf513d0f96fd129e835686dd7` and F-RCR-SB3-001 is RESOLVED.
-> QC explicitly opened TS8/s08; local exact candidate checks pass on Node18/22. Hosted run `34800821538` stopped at the Node24 Spec Card SDD validator before build.
-> Current protocol is BLOCKED at s08 pending additive metadata-only card authority. Scan PARTIAL, parent F-AG11-001 OPEN; no terminal or branch-finalization authority.
+> RCR-SB1/2/3 ordered reviews approved; corrected SB3 source remains `04eed2f8b2098bddf513d0f96fd129e835686dd7`, F-RCR-SB3-001 RESOLVED.
+> QC opened TS8/s08; local exact candidate checks pass per Node18/22. Failed hosted SDD attempt retained as historical.
+> Accepted TS8-M1 card metadata repair and all six validators pass; current protocol ACTIVE at s08 for hosted rerun only. Scan PARTIAL, parent F-AG11-001 OPEN; no terminal/branch-finalization authority.
 
 ## Historical Implementation Summary — Superseded Checkpoints
 
@@ -1615,3 +1615,33 @@ evidence_ref: "rcr-ts8-evidence.json"
 - Next Human Action: Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun.
 - Same16roots; s03 QC owner metadata corrected within owned scope. Card/CI/locked authoring hosts/production source unchanged.
 - Scan gaps and mandatory child/parent exact-candidate verification retained; F-AG11-001 OPEN.
+
+## TS8-M1 — Accepted Metadata-only Scope Addition
+
+```yaml
+id: "TS8-M1"
+kind: "METADATA_ONLY_SCOPE_ADDITION"
+status: "APPROVED"
+reviewed_by: ["developer","qc"]
+reviewed_at: "2026-09-14T03:14:22Z"
+source: "User replied accept to the explicit Developer/QC card correction, additive write scope and hosted Verify question."
+owned_path: "product-specs/cards/upgrade-guardrails-actions-node24.md"
+allowed_changes: ["Five provenance scalars -> BASELINE; exact origin prose preserved in provenance_note","Spec Freeze status -> FROZEN; existing spec status/version, authority, approved_by and decided_at unchanged","Record scoped approval and resume hosted Verify"]
+excluded_changes: ["Requirements/acceptance meaning","CI action versions/topology/parallelisation","Node24 readiness sealing/activation or broader implementation","RCR production/tests/locked authoring hosts","Hosted binding/Technical Verification/DoD/Release/Business Acceptance or parent finding closure"]
+```
+
+This addendum authorizes only the card metadata repair discovered by TS8. It does not amend the RCR production design or sealed s04-s06 hosts, and does not activate the Node24 action-token work item. TDD is not applicable to this metadata-only artifact delta; existing failing SDD validation plus mechanical semantic equivalence and full validator rerun are the verify path.
+
+## TS8-M1 — Completion and Current Verify Handoff
+
+```yaml
+completed_at: "2026-09-14T03:16:42Z"
+protocol_status: "ACTIVE"
+current_step: "s08"
+granted_roots: 17
+metadata_semantic_check: {"status":"PASS","card":"product-specs/cards/upgrade-guardrails-actions-node24.md","before_sha256":"650acfe759cc16e4468bc219ae7641e12a34b1965f2777ff4fea02e8d31b9f2c","after_sha256":"73d6ea970ef878a69d6150e5c2d2f2a5cd9fe7cbed76938bc9620fa7c3458a8d","normalized_scalars":6,"origin_notes_preserved":5,"all_other_bytes":"EXACT_UNCHANGED","requirements_acceptance_freeze_authority_time":"UNCHANGED","trusted_authoring_receipts":[{"gate":"spec","status":"APPROVED_UNCHANGED"},{"gate":"contract","status":"APPROVED_UNCHANGED"},{"gate":"dor","status":"APPROVED_UNCHANGED"},{"gate":"approach","status":"APPROVED_UNCHANGED"},{"gate":"task_plan","status":"APPROVED_UNCHANGED"}],"node24_readiness_sealing_activation":"NOT_PERFORMED","utf8":"PASS"}
+validators: {"validate":{"exit_code":0,"summary":"OK: validated workflow naming (208 files) and governance (204 notes) under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"},"sdd":{"exit_code":0,"summary":"OK: validated SDD for 44 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"},"change":{"exit_code":0,"summary":"OK: validated change layer for 42 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"},"exec":{"exit_code":0,"summary":"OK: validated execution runtime for 204 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"},"plan":{"exit_code":0,"summary":"OK: validated planning track for 204 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"},"protocol":{"exit_code":0,"summary":"OK: validated 13 protocol-managed work items under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items (skipped legacy: 16)"}}
+hosted: "PENDING_RERUN"
+terminal_authority: "NOT_APPROVED"
+parent_finding: "F-AG11-001 OPEN"
+```

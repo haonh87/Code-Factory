@@ -46,23 +46,28 @@ out_scope:
 requirements:
   - id: "CI-N24-REQ-001"
     description: "Every checkout step in workflow-guardrails.yml uses the Node 24-backed v7 major."
-    provenance: "Transferred deadline-bound owner request"
+    provenance: "BASELINE"
+    provenance_note: "Transferred deadline-bound owner request"
     cr_required: false
   - id: "CI-N24-REQ-002"
     description: "Every setup-node step in workflow-guardrails.yml uses the Node 24-backed v7 major."
-    provenance: "Transferred deadline-bound owner request"
+    provenance: "BASELINE"
+    provenance_note: "Transferred deadline-bound owner request"
     cr_required: false
   - id: "CI-N24-REQ-003"
     description: "The action upgrade changes no workflow behavior other than the two action-major selections; release-candidate-build retains full-history checkout."
-    provenance: "Owner scope boundary"
+    provenance: "BASELINE"
+    provenance_note: "Owner scope boundary"
     cr_required: false
   - id: "CI-N24-REQ-004"
     description: "A hosted Workflow Guardrails run for the changed source completes successfully with zero Node deprecation annotations."
-    provenance: "Owner verification requirement"
+    provenance: "BASELINE"
+    provenance_note: "Owner verification requirement"
     cr_required: false
   - id: "CI-N24-REQ-005"
     description: "The separate ci-guardrails-parallelisation scope remains deferred and untouched."
-    provenance: "Scope-transfer decision"
+    provenance: "BASELINE"
+    provenance_note: "Scope-transfer decision"
     cr_required: false
 ```
 
@@ -103,7 +108,7 @@ open_decisions: []
 
 ## Spec Freeze
 ```yaml
-status: approved
+status: FROZEN
 authority: "developer"
 decided_at: "2026-09-11T08:32:50Z"
 approved_by: "developer"

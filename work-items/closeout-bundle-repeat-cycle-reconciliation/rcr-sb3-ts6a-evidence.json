@@ -650,16 +650,16 @@
     "resolved_at": "2026-09-14T02:39:29Z"
   },
   "authority": {
-    "protocol_status": "BLOCKED",
-    "handoff_target": "RCR-TS8-node24-card-metadata-scope",
-    "missing_gate": "Additive Node24 Spec Card metadata write authority; hosted Verify incomplete",
-    "next_human_action": "Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun.",
+    "protocol_status": "ACTIVE",
+    "handoff_target": "RCR-TS8-hosted-rerun",
+    "missing_gate": "NONE for accepted metadata correction/TS8 execution",
+    "next_human_action": "NONE while hosted Verify executes; exact artifact binding/Technical Verification/DoD and parent gates remain independent",
     "code_quality": "APPROVED_PASS",
     "historical_code_quality": "EXPLICIT_DEVELOPER_QC_FAIL at 08a3d12",
     "finding_disposition": "RESOLVED",
     "TS6a": "GREEN_REFRESHED_REVIEW_PAIR_APPROVED",
-    "TS8": "OPEN_EXECUTION_BLOCKED",
-    "s08": "BLOCKED_HOSTED_SDD",
+    "TS8": "OPEN",
+    "s08": "VERIFY_IN_PROGRESS",
     "technical_verification": "PENDING_EVIDENCE",
     "dod": "NOT_OPEN",
     "release": "NOT_OPEN",
@@ -669,13 +669,7 @@
     "tag": false,
     "merge": false,
     "cleanup": false,
-    "blockers": [
-      {
-        "id": "se:f275f545e190c3f4295b025b241b7879dbfe72977e9099050a75fd1952bd39de",
-        "kind": "delivery_blocker",
-        "text": "Hosted run 34800821538 failed Workflow SDD: Node24 Spec Card has five invalid provenance fields and invalid Spec Freeze status; candidate build and matrix consumers were skipped. The card is outside the approved sixteen RCR write roots."
-      }
-    ],
+    "blockers": [],
     "refreshed_spec_compliance": {
       "human_approval": "APPROVED",
       "reviewed_by": [
@@ -732,7 +726,7 @@
     "authority_superseded_at": "2026-09-14T02:39:29Z",
     "current_authority": "Developer/QC Code Quality PASS and F-RCR-SB3-001 RESOLVED at 2026-09-14T02:39:29Z for 04eed2f8b2098bddf513d0f96fd129e835686dd7; parent F-AG11-001 OPEN, scan PARTIAL, QC TS8/s08 opening PENDING, terminal gates closed"
   },
-  "current_authority_observed_at": "2026-09-14T03:04:14Z",
+  "current_authority_observed_at": "2026-09-14T03:16:42Z",
   "code_quality_evidence_ref": "rcr-sb3-ts6a-code-quality-evidence.json",
   "current_refreshed_code_quality": {
     "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
@@ -772,5 +766,15 @@
     "hosted_status": "FAIL_SDD_BEFORE_BUILD",
     "candidate_created": false,
     "next_human_action": "Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun."
+  },
+  "ts8_m1_metadata_correction": {
+    "status": "PASS_LOCAL_PENDING_HOSTED",
+    "accepted_by": [
+      "developer",
+      "qc"
+    ],
+    "accepted_at": "2026-09-14T03:14:22Z",
+    "evidence": "rcr-ts8-node24-card-metadata-evidence.json",
+    "granted_roots": 17
   }
 }

@@ -654,7 +654,7 @@ next_action: "Developer reviews the amended s06 TS0..TS8 plan; implementation st
 
 ## Work Item Protocol
 ```yaml
-protocol_status: BLOCKED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
@@ -679,6 +679,7 @@ granted_write_paths:
   - "packages/workflow-bundle/test/materialize-work-item.test.js"
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
+  - "product-specs/cards/upgrade-guardrails-actions-node24.md"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -690,13 +691,12 @@ decision_owner: "agent"
 protocol_owner: "qc"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "RCR-TS8-node24-card-metadata-scope"
-last_transition_action: "block"
-last_transition_at: "2026-09-14T03:04:14Z"
+handoff_target: "RCR-TS8-hosted-rerun"
+last_transition_action: "resume"
+last_transition_at: "2026-09-14T03:16:42Z"
 required_actions:
-  - {"id":"se:0b254d0120a3b0f53df308441c8395de517dca1503ce356f1f37136d75a4ae68","kind":"blocker_resolution","text":"Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun."}
-blockers:
-  - {"id":"se:f275f545e190c3f4295b025b241b7879dbfe72977e9099050a75fd1952bd39de","kind":"delivery_blocker","text":"Hosted run 34800821538 failed Workflow SDD: Node24 Spec Card has five invalid provenance fields and invalid Spec Freeze status; candidate build and matrix consumers were skipped. The card is outside the approved sixteen RCR write roots."}
+  - {"id":"se:2db776cd66b0f279593ff88c165a05422878625c8646363d21f46d5043ec7f26","kind":"workflow_followup","text":"Continue active execution from the current step."}
+blockers: []
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -754,6 +754,7 @@ review_notes:
   - "Developer and QC explicitly closed F-RCR-SB3-001 at 2026-09-14T02:39:29Z for remediation source 04eed2f8b2098bddf513d0f96fd129e835686dd7 based on the native lock-ownership repair and source-bound refreshed evidence. Current disposition RESOLVED; original 08a3d12 FAIL and RED remain historical. Parent F-AG11-001 stays OPEN and AC-RCR-08 exact-candidate re-verification remains mandatory; separate QC TS8/s08 opening is next."
   - "QC explicitly approved opening TS8/s08 at 2026-09-14T02:45:55Z for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7; scan coverage PARTIAL and mandatory exact-candidate child/parent verification are retained. The ordered refreshed review pair is approved and F-RCR-SB3-001 resolved. This opens Verify execution only, not Technical Verification/DoD/Release/Business Acceptance, parent finding closure or publish/tag/merge/install/cleanup."
   - "TS8/s08 explicitly opened by QC; exact local v2.6.2 candidate regression45, artifact4 and retained rollback4 PASS per Node18/22. Hosted run 34800821538 failed Node24 Spec Card SDD validation before build. Same16roots, reviewed code 04eed2f8b2098bddf513d0f96fd129e835686dd7 unchanged; next action requires additive metadata-only card authority, not a production fix. Scan PARTIAL; child/parent exact-candidate verification and separate terminal gates remain."
+  - "Human Developer/QC accepted TS8-M1 at 2026-09-14T03:14:22Z; exact additive card root and six-field metadata normalization only. Preserve origin, requirements and original freeze decision. Existing authoring receipts and Node24 pending readiness/activation remain unchanged."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -852,6 +853,8 @@ audit_events:
   - "S07_F_RCR_SB3_001_RESOLVED"
   - "S08_RCR_TS8_OPENING_APPROVED"
   - "S08_RCR_TS8_HOSTED_SDD_BLOCKED"
+  - "S08_RCR_TS8_M1_CARD_METADATA_APPROVED"
+  - "S08_RCR_TS8_M1_LOCAL_SDD_FIXED"
 ```
 
 ## Traceability
