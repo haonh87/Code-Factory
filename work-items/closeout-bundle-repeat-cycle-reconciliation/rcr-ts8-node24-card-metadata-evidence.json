@@ -194,5 +194,16 @@
     "run_id": 34802149041,
     "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
     "technical_verification": "PENDING_QC"
+  },
+  "current_technical_verification": {
+    "approved_at": "2026-09-14T07:26:16.002Z",
+    "reviewed_by": [
+      "qc"
+    ],
+    "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "run_id": 34802149041,
+    "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+    "dod": "PENDING_QC",
+    "node24_activation": "NOT_PERFORMED"
   }
 }

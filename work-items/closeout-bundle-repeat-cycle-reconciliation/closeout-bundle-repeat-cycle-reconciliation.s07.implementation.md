@@ -109,7 +109,7 @@ tags:
 > [!summary]
 > RCR-SB1/2/3 ordered reviews approved; corrected SB3 source remains `04eed2f8b2098bddf513d0f96fd129e835686dd7`, F-RCR-SB3-001 RESOLVED.
 > QC opened TS8/s08; local exact candidate checks pass per Node18/22. Failed hosted SDD attempt retained as historical.
-> Accepted TS8-M1 card metadata repair and validators pass. Hosted run 34802149041 succeeds10/10; exact downloaded/local candidate equality verified. QC amended hosted binding is explicitly approved; current protocol BLOCKED for separate Technical Verification. Scan PARTIAL, parent F-AG11-001 OPEN; no terminal/branch-finalization authority.
+> Accepted TS8-M1 card metadata repair and validators pass. Hosted run 34802149041 succeeds10/10; exact downloaded/local candidate equality verified. QC hosted binding and Technical Verification explicitly approved; protocol VERIFIED, separate child DoD PENDING. Scan PARTIAL, parent F-AG11-001 OPEN; no later terminal/branch-finalization authority.
 
 ## Historical Implementation Summary — Superseded Checkpoints
 
@@ -1685,5 +1685,24 @@ recommendation: "PASS_FOR_CHILD_TECHNICAL_VERIFICATION_WITH_DISCLOSED_SCAN_GAPS_
 next_human_action: "QC review Technical Verification for closeout-bundle-repeat-cycle-reconciliation, source af70276fe14317417365c06dd06186da1996c401, run 34802149041, hosted v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; retain disclosed scan gaps, local pre-host evidence, rollback v2.6.1 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9 and mandatory AC-RCR-08 parent followup. DoD remains separate."
 dod: "NOT_APPROVED"
 parent_contribution: "AC-RCR-08 mandatory after child Technical Verification/DoD;F-AG11-001 OPEN"
+branch_decision: "HOLD_OPEN"
+```
+
+## TS8 — Current Child DoD Handoff
+
+```yaml
+observed_at: "2026-09-14T07:26:16.002Z"
+protocol_status: "VERIFIED"
+router_status: "WAITING_APPROVAL"
+current_step: "s08"
+handoff_target: "RCR-TS8-definition-of-done"
+source_sha: "af70276fe14317417365c06dd06186da1996c401"
+run_id: 34802149041
+candidate_sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+technical_verification: {"status":"APPROVED","reviewed_by":["qc"],"reviewed_at":"2026-09-14T07:26:16.002Z"}
+dod: "PENDING_QC"
+checkpoint_readiness: "SIX_PASS_CHECKS"
+parent_contribution: "PARTIAL_MANDATORY_DOWNSTREAM after child DoD;F-AG11-001 OPEN"
+next_human_action: "QC review DoD for closeout-bundle-repeat-cycle-reconciliation on approved Technical Verification: source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; preserve scan gaps and mandatory AC-RCR-08 parent exact-candidate AG-01..13 followup. Parent F-AG11-001 remains OPEN; Release/Business Acceptance and branch finalization stay separate."
 branch_decision: "HOLD_OPEN"
 ```
