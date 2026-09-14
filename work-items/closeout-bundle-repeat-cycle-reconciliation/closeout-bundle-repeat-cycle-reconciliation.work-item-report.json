@@ -133,7 +133,9 @@
     "Human Developer/QC accepted TS8-M1 at 2026-09-14T03:14:22Z; exact additive card root and six-field metadata normalization only. Preserve origin, requirements and original freeze decision. Existing authoring receipts and Node24 pending readiness/activation remain unchanged.",
     "TS8-M1 completed at 2026-09-14T03:16:42Z: six scalar fields normalized and five exact origin notes preserved; all other card bytes, seven reviewed sources and five frozen authoring receipts unchanged. SDD44/workflow204/protocol13/execution204/planning204/change42 PASS. Resume existing hosted Verify, not terminal approval.",
     "QC explicitly approved amended hosted artifact binding recorded at 2026-09-14T03:40:31.291Z for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; preserve local pre-host evidence and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Approval covers artifact identity only, not Technical Verification, DoD, Release, Business Acceptance, parent F-AG11-001 closure or publish/tag/merge/cleanup.",
-    "Explicit QC Technical Verification APPROVED for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f recorded at 2026-09-14T07:26:16.002Z. Mandatory parent verification and scan gaps remain."
+    "Explicit QC Technical Verification APPROVED for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f recorded at 2026-09-14T07:26:16.002Z. Mandatory parent verification and scan gaps remain.",
+    "QC explicitly approved child DoD at 2026-09-14T07:35:25.955Z for af70276fe14317417365c06dd06186da1996c401 / run 34802149041 / SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; scan gaps and mandatory AC-RCR-08 parent verification retained. Trusted receipt MISSING, no parent or later terminal approval inferred.",
+    "Maintainer/QC decide the shared s08-host boundary before trusted DoD sealing. QC DoD is already explicitly approved; do not request it again or run a seal command against a draft host. Required child Release (DevOps/QC) and Business Acceptance (PO) reviews are still unapproved; changing their applicability would require explicit approved authoring amendments. Preserve mandatory AC-RCR-08 parent exact-candidate verification, scan gaps and F-AG11-001 OPEN."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -161,15 +163,26 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "RCR-TS8-definition-of-done",
+  "handoff_target": "RCR-TS8-child-dod-shared-host-boundary",
   "required_actions": [
     {
-      "id": "se:1e2b94dff855f7db01673c20b1aaaa1dbe8a5449922eb46ec83de1371585bc22",
+      "id": "se:be5dc64361135cc0202ff0087e8fe274560e7f29363e1a097d970b6a69366966",
       "kind": "workflow_followup",
-      "text": "QC review DoD for closeout-bundle-repeat-cycle-reconciliation on approved Technical Verification: source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; preserve scan gaps and mandatory AC-RCR-08 parent exact-candidate AG-01..13 followup. Parent F-AG11-001 remains OPEN; Release/Business Acceptance and branch finalization stay separate."
+      "text": "Maintainer/QC decide the shared s08-host boundary before trusted DoD sealing. QC DoD is already explicitly approved; do not request it again or run a seal command against a draft host. Required child Release (DevOps/QC) and Business Acceptance (PO) reviews are still unapproved; changing their applicability would require explicit approved authoring amendments. Preserve mandatory AC-RCR-08 parent exact-candidate verification, scan gaps and F-AG11-001 OPEN."
+    },
+    {
+      "id": "se:02f867797dfbd461087f98032647dc6be876c5c72d55f6d4728c805f047e9b1f",
+      "kind": "workflow_followup",
+      "text": "MANDATORY AC-RCR-08: after the child DoD gate is validly sealed, re-verify parent AG-01..AG-13 for exact source af70276fe14317417365c06dd06186da1996c401, run 34802149041, candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; repeat separate parent QC Technical Verification/DoD, DevOps/QC Release and PO Business Acceptance before closing F-AG11-001 or CR-008. No historical parent approval is current authority."
     }
   ],
-  "blockers": [],
+  "blockers": [
+    {
+      "id": "se:4051976e3a5ded61673fb1cbc5ce3d7d05cd8709f64b20d4f5e484b9ac65207d",
+      "kind": "delivery_blocker",
+      "text": "Trusted child DoD receipt MISSING despite explicit QC human approval. Current s08 host must stay draft while required Release/Business Acceptance human reviews are absent; draft host cannot be sealed. Boundary confirmed read-only; no new production finding or gate waiver."
+    }
+  ],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
     "work-items/adaptive-governance-human-approval-ux",
@@ -276,7 +289,8 @@
     "S08_RCR_TS8_TECHNICAL_VERIFICATION_PREPARED",
     "S08_RCR_TS8_TECHNICAL_VERIFICATION_APPROVED",
     "VERIFICATION_CONFIRMED",
-    "S08_RCR_TS8_DOD_PREPARED"
+    "S08_RCR_TS8_DOD_PREPARED",
+    "RCR_TS8_DOD_HUMAN_APPROVAL_RECORDED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -977,6 +991,22 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "Prepared child DoD after explicit QC Technical Verification. Six checkpoint-readiness checks PASS; human DoD PENDING. AC-RCR-08 given clause places child Technical Verification/DoD before parent re-verification, so full parent contribution remains mandatory downstream and PARTIAL; it is not waived or closed. No later terminal or branch-finalization authority."
+    },
+    {
+      "timestamp": "2026-09-14T07:35:25.955Z",
+      "action": "record-RCR-TS8-dod-human-approval",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Explicit user QC DoD approval for closeout-bundle-repeat-cycle-reconciliation based on the already approved Technical Verification, retaining scan gaps and mandatory AC-RCR-08 parent exact-candidate verification. Receipt pending; parent F-AG11-001 remains OPEN."
+    },
+    {
+      "timestamp": "2026-09-14T07:35:25.955Z",
+      "action": "record-RCR-TS8-dod-shared-host-boundary",
+      "actor": "agent",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Read-only boundary check confirms draft sealing refusal and required child dod/release/business_acceptance reviews. No production defect disposition, gate applicability amendment, receipt signing or protocol close."
     }
   ]
 }

@@ -109,7 +109,7 @@ tags:
 > [!summary]
 > RCR-SB1/2/3 ordered reviews approved; corrected SB3 source remains `04eed2f8b2098bddf513d0f96fd129e835686dd7`, F-RCR-SB3-001 RESOLVED.
 > QC opened TS8/s08; local exact candidate checks pass per Node18/22. Failed hosted SDD attempt retained as historical.
-> Accepted TS8-M1 card metadata repair and validators pass. Hosted run 34802149041 succeeds10/10; exact downloaded/local candidate equality verified. QC hosted binding and Technical Verification explicitly approved; protocol VERIFIED, separate child DoD PENDING. Scan PARTIAL, parent F-AG11-001 OPEN; no later terminal/branch-finalization authority.
+> Accepted TS8-M1 card metadata repair and validators pass. Hosted run 34802149041 succeeds10/10; exact downloaded/local candidate equality verified. QC hosted binding and Technical Verification explicitly approved; protocol VERIFIED, child DoD human decision APPROVED; trusted receipt pending at shared draft s08-host boundary. Scan PARTIAL, parent F-AG11-001 OPEN; no later terminal/branch-finalization authority.
 
 ## Historical Implementation Summary — Superseded Checkpoints
 
@@ -1706,3 +1706,28 @@ parent_contribution: "PARTIAL_MANDATORY_DOWNSTREAM after child DoD;F-AG11-001 OP
 next_human_action: "QC review DoD for closeout-bundle-repeat-cycle-reconciliation on approved Technical Verification: source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; preserve scan gaps and mandatory AC-RCR-08 parent exact-candidate AG-01..13 followup. Parent F-AG11-001 remains OPEN; Release/Business Acceptance and branch finalization stay separate."
 branch_decision: "HOLD_OPEN"
 ```
+
+## Current Child DoD — Explicit QC Approval and Receipt Boundary
+
+```yaml
+gate: "dod"
+human_approval: "APPROVED"
+human_decision: "DONE_CHILD_TECHNICAL_CHECKPOINT"
+reviewed_by: ["qc"]
+reviewed_at: "2026-09-14T07:35:25.955Z"
+source_sha: "af70276fe14317417365c06dd06186da1996c401"
+run_id: 34802149041
+candidate_sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+approval_source: "Explicit user QC DoD approval for closeout-bundle-repeat-cycle-reconciliation based on the already approved Technical Verification, retaining scan gaps and mandatory AC-RCR-08 parent exact-candidate verification."
+scope: "Child DoD human decision only; no parent DoD/Release/Business Acceptance/finding closure/publish/tag/merge/cleanup authority."
+trusted_receipt_status: "MISSING"
+host_status: "draft"
+completion_boundary: "Human decision recorded; trusted gate sealing and terminal work-item closure are not complete."
+workflow_status: "BLOCKED"
+handoff_target: "RCR-TS8-child-dod-shared-host-boundary"
+next_human_action: "Maintainer/QC decide the shared s08-host boundary before trusted DoD sealing. QC DoD is already explicitly approved; do not request it again or run a seal command against a draft host. Required child Release (DevOps/QC) and Business Acceptance (PO) reviews are still unapproved; changing their applicability would require explicit approved authoring amendments. Preserve mandatory AC-RCR-08 parent exact-candidate verification, scan gaps and F-AG11-001 OPEN."
+scan: "PARTIAL_RETAINED"
+mandatory_parent: "AC-RCR-08 same-candidate AG-01..13 and new independent terminal authority; F-AG11-001 OPEN"
+```
+
+Older implementation/TS8 authority blocks are historical checkpoints. This approval does not change reviewed production, tests, frozen s04-s06 hosts, granted paths, signer or parent finding authority.
