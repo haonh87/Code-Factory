@@ -528,10 +528,10 @@
   },
   "authority": {
     "protocol_status": "BLOCKED",
-    "handoff_target": "RCR-SB3-refreshed-code-quality",
-    "missing_gate": "Developer/QC refreshed RCR-SB3 Code Quality and finding disposition",
-    "next_human_action": "Developer and QC decide refreshed Code Quality and F-RCR-SB3-001 disposition for corrected source 04eed2f8b2098bddf513d0f96fd129e835686dd7",
-    "code_quality": "PENDING",
+    "handoff_target": "RCR-TS8-s08-opening",
+    "missing_gate": "Separate QC approval to open TS8/s08",
+    "next_human_action": "QC approve opening TS8/s08 for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "code_quality": "APPROVED_PASS",
     "TS8": "CLOSED",
     "s08": "NOT_OPEN",
     "technical_verification": "NOT_OPEN",
@@ -544,14 +544,14 @@
     "cleanup": false,
     "blockers": [
       {
-        "id": "se:6edb159b6296c28b5e8ad1058edb448fc85ab997585a1b26c065c4e869112f39",
+        "id": "se:b9b9b2a0b8270868537876d44e4a304f4bbb30e51a2668c321b37580abfb2b90",
         "kind": "delivery_blocker",
-        "text": "Developer/QC refreshed RCR-SB3 Code Quality and explicit F-RCR-SB3-001 disposition are pending for source 04eed2f8b2098bddf513d0f96fd129e835686dd7 after QC refreshed Spec Compliance approval. Scan coverage remains PARTIAL; TS8/s08 and terminal gates are not approved."
+        "text": "QC separate approval to open TS8/s08 is pending for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7. Refreshed RCR-SB3 Spec and Code Quality are approved, F-RCR-SB3-001 resolved. Scan gaps and mandatory same-candidate child/parent verification remain; no Verify or terminal gate is approved."
       }
     ],
-    "TS6a": "GREEN_SPEC_APPROVED_PENDING_CODE_QUALITY",
+    "TS6a": "GREEN_REFRESHED_REVIEW_PAIR_APPROVED",
     "historical_code_quality": "EXPLICIT_DEVELOPER_QC_FAIL at 08a3d12",
-    "finding_disposition": "OPEN",
+    "finding_disposition": "RESOLVED",
     "F_AG11_001": "OPEN",
     "refreshed_spec_compliance": {
       "human_approval": "APPROVED",
@@ -559,6 +559,15 @@
         "qc"
       ],
       "reviewed_at": "2026-09-14T02:32:17Z",
+      "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7"
+    },
+    "refreshed_code_quality": {
+      "human_decision": "PASS",
+      "reviewed_by": [
+        "developer",
+        "qc"
+      ],
+      "reviewed_at": "2026-09-14T02:39:29Z",
       "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7"
     }
   },
@@ -611,19 +620,34 @@
     ],
     "reviewed_at": "2026-09-14T02:32:17Z"
   },
-  "current_authority_observed_at": "2026-09-14T02:32:17Z",
+  "current_authority_observed_at": "2026-09-14T02:39:29Z",
   "current_refreshed_code_quality_evidence_ref": "rcr-sb3-ts6a-code-quality-evidence.json",
   "current_refreshed_code_quality": {
     "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
     "evidence_ref": "rcr-sb3-ts6a-code-quality-evidence.json",
     "recommendation": "PASS_FOR_BATCH_WITH_DISCLOSED_SCAN_GAPS_AND_ADVISORIES",
-    "human_decision": "PENDING",
+    "human_decision": "PASS",
     "reviewer_roles": [
       "developer",
       "qc"
     ],
-    "reviewed_by": [],
-    "reviewed_at": "",
-    "finding_disposition": "OPEN"
+    "reviewed_by": [
+      "developer",
+      "qc"
+    ],
+    "reviewed_at": "2026-09-14T02:39:29Z",
+    "finding_disposition": "RESOLVED"
+  },
+  "current_finding_resolution": {
+    "id": "F-RCR-SB3-001",
+    "disposition": "RESOLVED",
+    "remediation_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "resolved_by": [
+      "developer",
+      "qc"
+    ],
+    "resolved_at": "2026-09-14T02:39:29Z",
+    "evidence_ref": "rcr-sb3-ts6a-code-quality-evidence.json",
+    "basis": "Explicit human approval, not inferred from tests."
   }
 }

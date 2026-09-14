@@ -109,10 +109,10 @@ tags:
 > [!summary]
 > Human accepted Developer/QC prior RCR-SB3 Code Quality FAIL and OPEN HIGH F-RCR-SB3-001, QC Spec reopening and Developer TS6a; all sixteen grants and sealed authoring hosts remain unchanged.
 > TS6a RED commit fe2b417 produced exactly two native foreign-lock failures before minimal four-line ownership GREEN at 04eed2f8b2098bddf513d0f96fd129e835686dd7. Fresh same-source regression passes 45 files, 19 state tests, 20 cycles, 64 boundaries, 10 races, 13 legacy no-write loads and smoke13/13.
-> QC explicitly approved refreshed RCR-SB3 Spec Compliance for 04eed2f8b2098bddf513d0f96fd129e835686dd7 at 2026-09-14T02:32:17Z. Protocol remains BLOCKED for separate Developer/QC Code Quality and finding disposition; TS8/s08/candidate/terminal approval is not inferred.
+> QC refreshed Spec Compliance is APPROVED at 2026-09-14T02:32:17Z; Developer/QC refreshed Code Quality PASS and F-RCR-SB3-001 resolution are explicitly APPROVED at 2026-09-14T02:39:29Z for exact source 04eed2f8b2098bddf513d0f96fd129e835686dd7. Protocol remains BLOCKED only for separate QC TS8/s08 opening; no candidate/terminal approval is inferred.
 > Automated scan coverage remains PARTIAL; transient native read refusal, unmeasured history cost and supported Node18/22/package/hosted/parent exact-candidate duties remain explicit.
-> Refreshed Code Quality evidence supports a batch PASS recommendation with disclosed gaps; Developer/QC verdict and F-RCR-SB3-001 resolution are PENDING.
-> F-RCR-SB3-001 and parent F-AG11-001 remain OPEN. CR-008 is NOT_DONE and branch HOLD_OPEN.
+> All RCR-SB1/2/3 review pairs are approved; current SB3 PASS retains disclosed scan gaps and native-read/history advisories.
+> F-RCR-SB3-001 is RESOLVED by explicit Developer/QC decision. Parent F-AG11-001 remains OPEN; CR-008 is NOT_DONE and branch HOLD_OPEN.
 
 ## Historical Implementation Summary — Superseded Checkpoints
 
@@ -205,10 +205,10 @@ safe_refactor_notes: ["Acquisition ownership remains true after the descriptor c
 code_changes: ["packages/workflow-bundle/scripts/workflow-approval-transaction.js","packages/workflow-bundle/test/workflow-gate-review.test.js"]
 doc_changes: ["RCR report/s01/s07 and SB3/TS6a evidence; review-only repro source label"]
 config_changes: []
-review_checkpoints: ["Developer/QC prior SB3 FAIL and OPEN finding accepted","QC SB3 Spec reopened; Developer TS6a approved","QC corrected-source Spec APPROVED at 2026-09-14T02:32:17Z; Developer/QC Code Quality PENDING"]
+review_checkpoints: ["Developer/QC prior SB3 FAIL and OPEN finding accepted","QC SB3 Spec reopened; Developer TS6a approved","QC corrected-source Spec APPROVED at 2026-09-14T02:32:17Z; Developer/QC Code Quality PASS and F-RCR-SB3-001 RESOLVED at 2026-09-14T02:39:29Z"]
 outputs_actual: ["Four production lines prevent unowned cleanup","45 unit files; 19 state tests; 20 cycles; 64 boundaries; 10 races; 13 zero-write legacy loads; smoke13/13; frozen receipts/scope/history/native validators PASS at 04eed2f8b2098bddf513d0f96fd129e835686dd7"]
 known_limitations: ["Automated static/security scans SKIP, supporting scan PARTIAL; no benchmark","Native concurrent read refusal and large-history parse cost remain advisories, not reader-isolation scope","Local Node26 only; supported Node18/22/package/extracted/hosted exact-candidate proof belongs to TS8"]
-follow_up_items: ["Developer/QC refreshed Code Quality and explicit finding disposition after approved QC refreshed Spec Compliance","Separate QC s08 opening and one exact v2.6.2 child/parent candidate","Mandatory AC-RCR-08/parent AG-01..13 and independent terminal gates; F-AG11-001 remains OPEN"]
+follow_up_items: ["Separate QC TS8/s08 opening after approved refreshed review pair and explicit finding resolution","Separate QC s08 opening and one exact v2.6.2 child/parent candidate","Mandatory AC-RCR-08/parent AG-01..13 and independent terminal gates; F-AG11-001 remains OPEN"]
 notes_for_testing: "No DoD/release/closeout or branch finalization; CR-008 NOT_DONE and HOLD_OPEN."
 ```
 
@@ -1083,9 +1083,9 @@ notes: "Semantic checklist reviewed for changed scripts/notes; source-only audit
 
 ### Current Structural Handoff
 
-- BLOCKED at RCR-SB3-refreshed-code-quality for exact corrected source 04eed2f8b2098bddf513d0f96fd129e835686dd7; QC refreshed Spec APPROVED at 2026-09-14T02:32:17Z, Developer/QC Code Quality and finding disposition PENDING.
+- BLOCKED at RCR-TS8-s08-opening for exact reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7; ordered refreshed Spec/Code Quality pair APPROVED, F-RCR-SB3-001 RESOLVED at 2026-09-14T02:39:29Z; separate QC opening PENDING.
 - Accepted TS6a RED/GREEN repair and same-source TS7 regression PASS; all sixteen grants and five sealed authoring receipts unchanged.
-- F-RCR-SB3-001 is locally remediated but remains OPEN pending human review/disposition. Parent F-AG11-001 and mandatory AC-RCR-08 same-candidate re-verification remain OPEN/required.
+- F-RCR-SB3-001 is explicitly RESOLVED by Developer/QC for 04eed2f8b2098bddf513d0f96fd129e835686dd7. Parent F-AG11-001 remains OPEN and mandatory AC-RCR-08 same-candidate re-verification remains required.
 - Automatic scan coverage PARTIAL; native concurrent read refusal and unmeasured large-history cost retained. No reader-isolation/public-surface/CI action upgrade/parallelisation scope.
 - TS8/s08 and child/parent terminal gates remain independently closed; no package/hosted candidate/publish/tag/merge/install/cleanup/finalization.
 
@@ -1465,7 +1465,7 @@ owned_paths: ["packages/workflow-bundle/scripts/workflow-approval-transaction.js
 execution_order: ["Add native wx-acquisition interleaving tests preserving foreign live lock bytes and any winner-owned journal/state; verify EXPECTED_RED before production edits.","Track successful native lock acquisition separately from the closed descriptor; only an acquired lock may enter rollback/cleanup on this contender's failure.","Verify GREEN with failed-acquisition controls plus own-lock write/after_lock failures, all 64 failure/crash points and generated/default ID behavior.","Refresh exact-source full 45-file regression in a fresh isolated generated-runtime fixture, 20 cycles, 10 races, 13 frozen/live zero-write report/history loads, 5 receipts, parser/UTF-8/native validators and pack audit.","QC refreshed RCR-SB3 Spec Compliance first, then Developer/QC refreshed Code Quality. Finding remains OPEN until human disposition; TS8 requires separate QC opening."]
 verify_path: ["node packages/workflow-bundle/test/workflow-gate-review.test.js","node work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-lock-acquisition-review-repro.js","node --test packages/workflow-bundle/test/work-item-protocol-state.test.js","Full run-all.js only in fresh tracked-source fixture after existing runtime sync prerequisite","Ten real concurrent CLI races; 20-cycle and 64-case matrix inside owned protocol suite","Workflow/protocol/planning/native parser/UTF-8/pack audit; exact frozen report/history/host digests"]
 constraints: ["Preserve unknown legacy exact text and never infer lifecycle or identity from prose.","No lock format, receipt-v1, signer/session/passphrase/root, transaction ID validation or public CLI change.","No reader isolation, friendly error-text requirement, Node24 action upgrade or validator parallelisation.","Same sixteen grants; no production changes before RED; no s08/candidate/terminal authority or finding closure implied."]
-implementation_status: "GREEN_SPEC_APPROVED_PENDING_REFRESHED_CODE_QUALITY"
+implementation_status: "GREEN_REFRESHED_REVIEW_PAIR_APPROVED_PENDING_TS8_OPENING"
 review_after_green: "QC refreshed Spec Compliance then Developer/QC refreshed Code Quality; only later explicit QC s08 opening unlocks TS8."
 ```
 
@@ -1493,15 +1493,15 @@ reviewed_by: ["qc"]
 reviewed_at: "2026-09-14T02:32:17Z"
 source_sha: "04eed2f8b2098bddf513d0f96fd129e835686dd7"
 evidence_ref: "rcr-sb3-ts6a-evidence.json"
-code_quality: "PENDING"
-F_RCR_SB3_001: "OPEN"
+code_quality: "APPROVED_PASS"
+F_RCR_SB3_001: "RESOLVED"
 TS8: "CLOSED"
 s08: "NOT_OPEN"
 whole_work_item_status: "NOT_DONE"
 branch_decision: "HOLD_OPEN"
 ```
 
-[Source-bound RED/GREEN and refreshed evidence](rcr-sb3-ts6a-evidence.json). QC explicitly approved refreshed Spec Compliance at 2026-09-14T02:32:17Z for 04eed2f8b2098bddf513d0f96fd129e835686dd7. Separate Developer/QC Code Quality is PENDING; F-RCR-SB3-001 remains OPEN until an explicit human disposition.
+[Source-bound RED/GREEN and refreshed evidence](rcr-sb3-ts6a-evidence.json). QC refreshed Spec approval precedes Developer/QC refreshed Code Quality PASS and explicit F-RCR-SB3-001 resolution at 2026-09-14T02:39:29Z. Separate QC TS8/s08 opening remains PENDING.
 
 ## TS6a Refreshed Batch Test Evidence — s07 Only
 
@@ -1520,11 +1520,11 @@ release_blockers: []
 status: "PASS"
 gaps: ["PASS only the tested batch contribution; no whole-work-item or release verdict","AC-RCR-08 parent exact-candidate re-verification remains mandatory downstream","Installed/checked-in ignored runtime was not modified; pristine tracked source requires its existing generate-runtime prerequisite"]
 residual_risks: ["A refused concurrent contender may observe transient ENOENT while the winner replaces a managed file; settled authority/identity/parity/retries/residue are verified, read isolation is not claimed","Automatic scans PARTIAL; very large history cost unmeasured"]
-recommendation: "Submit separate Developer/QC refreshed Code Quality for the QC-approved corrected source; no finding closure or TS8/s08 approval."
-notes_for_review: "PASS only this tested implementation contribution. F-RCR-SB3-001 remains OPEN; automated scans PARTIAL and mandatory AC-RCR-08 child/parent exact-candidate and all terminal gates remain future controls."
+recommendation: "Batch review pair approved and finding explicitly resolved; next is separate QC TS8/s08 opening. Test PASS is not whole candidate/parent/DoD proof."
+notes_for_review: "Test observations retain original timestamps. Current finding authority: F-RCR-SB3-001 explicitly RESOLVED at 2026-09-14T02:39:29Z; parent F-AG11-001 OPEN, scans PARTIAL and mandatory child/parent exact-candidate and terminal gates remain."
 ```
 
-## TS6a Supporting Scan Context — Not s08
+## Historical TS6a Supporting Scan Context — Before Code Quality Approval
 
 ```yaml
 scan_target: "TS6a refreshed s07 supporting context at 04eed2f8b2098bddf513d0f96fd129e835686dd7; not a formal Code Quality/s08 verdict"
@@ -1564,22 +1564,39 @@ review_order: ["SPEC_COMPLIANCE","CODE_QUALITY"]
 review_batches: [{"batch":"RCR-SB3","scope":["Accepted TS6a acquisition ownership repair and source-bound TS7 regression"],"trigger":"QC refreshed Spec Compliance explicitly APPROVED at 2026-09-14T02:32:17Z","reviewer_role":"Developer and QC; AI evidence preparation is not an independent human verdict"}]
 required_checks: {"spec_compliance":["Explicit QC refreshed Spec Compliance APPROVED for exact source 04eed2f8b2098bddf513d0f96fd129e835686dd7 at 2026-09-14T02:32:17Z","Same sixteen grants and five approved frozen authoring receipts; no requirement/design drift"],"code_quality":["Native failed-wx path never owns the lock or another journal and exits before cleanup","Successful acquisition is tracked before payload write and survives descriptor closure; own EIO/failure cleanup remains intact","Catch/crash/recovery guards, four decisions, direct identity and legacy-prefix preservation unchanged","45-file full regression in exact-source archived fixture plus 10 real CLI races, native interleaving canary and source/receipt/history assertions","Wrapper-first automatic scanner discovery; explicit SKIP/PARTIAL, no benchmark/read-isolation or supported-node/candidate claim"]}
 finding_policy: {"blocker_threshold":"Any unhandled HIGH/CRITICAL or scope/contract drift prevents handoff. Remediation evidence is not a human finding closure.","reopen_conditions":["Source or sealed authoring host change","Native ownership/authority/legacy/atomicity regression"]}
-handoff_to_verify: ["Developer/QC must explicitly decide refreshed Code Quality and F-RCR-SB3-001 disposition for this source","Only after the ordered pair and finding disposition may a separate QC approval open TS8/s08","Retain automated scan gaps; supported Node18/22, package/extracted/hosted exact candidate, AC-RCR-08 parent AG-01..13 and independent terminal gates"]
-notes_for_implementation_or_verify: "Source-bound AI preparation/recommendation only. Both findings OPEN, TS8 CLOSED, s08 NOT_OPEN, CR-008 NOT_DONE; no publication/tag/merge/install/cleanup."
+handoff_to_verify: ["Ordered refreshed review pair is APPROVED for exact source 04eed2f8b2098bddf513d0f96fd129e835686dd7; F-RCR-SB3-001 explicitly RESOLVED by Developer/QC at 2026-09-14T02:39:29Z","Only after the ordered pair and finding disposition may a separate QC approval open TS8/s08","Retain automated scan gaps; supported Node18/22, package/extracted/hosted exact candidate, AC-RCR-08 parent AG-01..13 and independent terminal gates"]
+notes_for_implementation_or_verify: "Developer/QC explicitly approved batch PASS and finding resolution at 2026-09-14T02:39:29Z. Scan PARTIAL and native-read/history advisories retained. Parent finding OPEN; separate QC TS8/s08 opening and same-candidate child/parent plus independent terminal gates remain mandatory."
 source_sha: "04eed2f8b2098bddf513d0f96fd129e835686dd7"
 evidence_ref: "rcr-sb3-ts6a-code-quality-evidence.json"
 spec_compliance_precondition: {"source_sha":"04eed2f8b2098bddf513d0f96fd129e835686dd7","human_approval":"APPROVED","reviewed_by":["qc"],"reviewed_at":"2026-09-14T02:32:17Z","evidence_ref":"rcr-sb3-ts6a-evidence.json"}
 recommendation: "PASS_FOR_BATCH_WITH_DISCLOSED_SCAN_GAPS_AND_ADVISORIES"
-human_decision: "PENDING"
-reviewed_by: []
-reviewed_at: ""
-finding_disposition: "OPEN"
-proposed_finding_resolution: "RESOLVE_F-RCR-SB3-001_ONLY_IF_DEVELOPER_QC_EXPLICITLY_APPROVE"
+human_decision: "PASS"
+reviewed_by: ["developer","qc"]
+reviewed_at: "2026-09-14T02:39:29Z"
+finding_disposition: "RESOLVED"
 scan_coverage: "PARTIAL"
 TS8: "CLOSED"
 s08: "NOT_OPEN"
 whole_work_item_status: "NOT_DONE"
 branch_decision: "HOLD_OPEN"
+historical_resolution_proposal: "RESOLVE_F-RCR-SB3-001_ONLY_IF_DEVELOPER_QC_EXPLICITLY_APPROVE"
+finding_resolution: "EXPLICIT_DEVELOPER_QC_RESOLVED"
 ```
 
-[Separate corrected-source Code Quality evidence](rcr-sb3-ts6a-code-quality-evidence.json) records fresh checks at 2026-09-14T02:34:04Z. Its recommendation is not a human verdict. The original FAIL at 08a3d12 remains historical; F-RCR-SB3-001 resolution is PROPOSED, both findings remain OPEN, scan coverage PARTIAL and TS8/s08 closed.
+[Corrected-source Code Quality evidence](rcr-sb3-ts6a-code-quality-evidence.json) retains the fresh test/scan observations at 2026-09-14T02:34:04Z. Developer/QC explicitly approved PASS and resolved F-RCR-SB3-001 at 2026-09-14T02:39:29Z. Original FAIL at 08a3d12 and RED are historical; scan coverage stays PARTIAL, parent finding OPEN and TS8/s08 closed.
+
+### TS8/s08 Opening Request — No Candidate Built
+
+```yaml
+reviewed_source: "04eed2f8b2098bddf513d0f96fd129e835686dd7"
+review_pair: APPROVED
+F_RCR_SB3_001: RESOLVED
+requested_by: agent
+approval_owner: qc
+human_approval: PENDING
+protocol_status: BLOCKED
+TS8: CLOSED
+s08: NOT_OPEN
+required_after_opening: ["Build one v2.6.2 candidate from reviewed source; bind the full SHA-256 and reuse identical bytes","Supported Node18/22, package/extracted/local/hosted evidence; no skipped required job","Child AC-RCR-01..10, mandatory AC-RCR-08 parent AG-01..13 exact-candidate re-verification","Independent Technical Verification, DoD, Release and Business Acceptance gates","Retain scan gaps, native transient-read/history advisories and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"]
+forbidden_without_further_authority: ["Publish","Tag","Merge","Install","Cleanup","Branch/worktree finalization"]
+```
