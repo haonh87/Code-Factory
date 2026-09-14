@@ -109,7 +109,7 @@ tags:
 > [!summary]
 > RCR-SB1/2/3 ordered reviews approved; corrected SB3 source remains `04eed2f8b2098bddf513d0f96fd129e835686dd7`, F-RCR-SB3-001 RESOLVED.
 > QC opened TS8/s08; local exact candidate checks pass per Node18/22. Failed hosted SDD attempt retained as historical.
-> Accepted TS8-M1 card metadata repair and validators pass. Hosted run 34802149041 succeeds10/10; exact downloaded/local candidate equality verified. Current protocol BLOCKED for QC amended hosted binding; scan PARTIAL, parent F-AG11-001 OPEN; no terminal/branch-finalization authority.
+> Accepted TS8-M1 card metadata repair and validators pass. Hosted run 34802149041 succeeds10/10; exact downloaded/local candidate equality verified. QC amended hosted binding is explicitly approved; current protocol BLOCKED for separate Technical Verification. Scan PARTIAL, parent F-AG11-001 OPEN; no terminal/branch-finalization authority.
 
 ## Historical Implementation Summary — Superseded Checkpoints
 
@@ -1666,5 +1666,24 @@ next_human_action: "QC review amended hosted artifact binding for source af70276
 technical_verification: "PENDING_REVIEW"
 dod: "NOT_APPROVED"
 parent_finding: "F-AG11-001 OPEN"
+branch_decision: "HOLD_OPEN"
+```
+
+## TS8 — Current Technical Verification Handoff
+
+```yaml
+observed_at: "2026-09-14T03:40:31.291Z"
+protocol_status: "BLOCKED"
+current_step: "s08"
+handoff_target: "RCR-TS8-technical-verification"
+source_sha: "af70276fe14317417365c06dd06186da1996c401"
+run_id: 34802149041
+candidate_sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+hosted_artifact_binding: {"status":"APPROVED","reviewed_by":["qc"],"reviewed_at":"2026-09-14T03:40:31.291Z","source_sha":"af70276fe14317417365c06dd06186da1996c401","reviewed_code_source_sha":"04eed2f8b2098bddf513d0f96fd129e835686dd7","run_id":34802149041,"version":"2.6.2","candidate_sha256":"af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f","rollback":{"version":"v2.6.1","sha256":"7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"},"local_pre_host_relation":"BYTES_IDENTICAL; local build remains historical pre-host source-bound evidence","prepared_at":"2026-09-14T03:32:59.441Z","scope":"Hosted artifact identity binding only; Technical Verification, DoD and parent/terminal authority remain separate","human_approval":"APPROVED","human_approval_source":"Explicit user QC approval of amended hosted artifact binding for the exact source/run/full package SHA-256 and retained rollback; not Technical Verification or DoD.","approval_note":"Preserve local pre-host evidence and retained rollback v2.6.1. No later gate is approved."}
+technical_verification: "PENDING_QC"
+recommendation: "PASS_FOR_CHILD_TECHNICAL_VERIFICATION_WITH_DISCLOSED_SCAN_GAPS_AND_MANDATORY_PARENT_FOLLOWUP"
+next_human_action: "QC review Technical Verification for closeout-bundle-repeat-cycle-reconciliation, source af70276fe14317417365c06dd06186da1996c401, run 34802149041, hosted v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; retain disclosed scan gaps, local pre-host evidence, rollback v2.6.1 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9 and mandatory AC-RCR-08 parent followup. DoD remains separate."
+dod: "NOT_APPROVED"
+parent_contribution: "AC-RCR-08 mandatory after child Technical Verification/DoD;F-AG11-001 OPEN"
 branch_decision: "HOLD_OPEN"
 ```

@@ -691,13 +691,13 @@ decision_owner: "agent"
 protocol_owner: "qc"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "RCR-TS8-hosted-artifact-binding"
-last_transition_action: "block"
-last_transition_at: "2026-09-14T03:32:59.441Z"
+handoff_target: "RCR-TS8-technical-verification"
+last_transition_action: "prepare-RCR-TS8-technical-verification"
+last_transition_at: "2026-09-14T03:40:31.291Z"
 required_actions:
-  - {"id":"se:bba268537b016154c7eea44843b6b09aaee5c4a72a6f391f9341ec7a01d20657","kind":"workflow_followup","text":"QC review amended hosted artifact binding for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; retain reviewed-source local pre-host evidence and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Technical Verification and DoD remain separate next reviews."}
+  - {"id":"se:1a02d56c8b4aa537fb4c88c415f2f3c2505d860f81cdf0b29938b8e297fd3e65","kind":"workflow_followup","text":"QC review Technical Verification for closeout-bundle-repeat-cycle-reconciliation, source af70276fe14317417365c06dd06186da1996c401, run 34802149041, hosted v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; retain disclosed scan gaps, local pre-host evidence, rollback v2.6.1 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9 and mandatory AC-RCR-08 parent followup. DoD remains separate."}
 blockers:
-  - {"id":"se:543e5268ca62afafcf82ac6b8f433a80249f4cf6bf8edf5c14d6140647bde476","kind":"delivery_blocker","text":"QC amended hosted artifact binding is pending for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f."}
+  - {"id":"se:a3999ee3dc44c192f564ba333a7b328bd901e5eb2f8acafa89b034d9f146cb18","kind":"delivery_blocker","text":"QC Technical Verification approval is pending for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f. Hosted artifact binding is explicitly QC approved."}
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -857,6 +857,8 @@ audit_events:
   - "S08_RCR_TS8_M1_CARD_METADATA_APPROVED"
   - "S08_RCR_TS8_M1_LOCAL_SDD_FIXED"
   - "S08_RCR_TS8_HOSTED_EVIDENCE_PREPARED"
+  - "S08_RCR_TS8_HOSTED_ARTIFACT_BINDING_APPROVED"
+  - "S08_RCR_TS8_TECHNICAL_VERIFICATION_PREPARED"
 ```
 
 ## Traceability

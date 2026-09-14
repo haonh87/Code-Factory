@@ -131,7 +131,8 @@
     "QC explicitly approved opening TS8/s08 at 2026-09-14T02:45:55Z for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7; scan coverage PARTIAL and mandatory exact-candidate child/parent verification are retained. The ordered refreshed review pair is approved and F-RCR-SB3-001 resolved. This opens Verify execution only, not Technical Verification/DoD/Release/Business Acceptance, parent finding closure or publish/tag/merge/install/cleanup.",
     "TS8/s08 explicitly opened by QC; exact local v2.6.2 candidate regression45, artifact4 and retained rollback4 PASS per Node18/22. Hosted run 34800821538 failed Node24 Spec Card SDD validation before build. Same16roots, reviewed code 04eed2f8b2098bddf513d0f96fd129e835686dd7 unchanged; next action requires additive metadata-only card authority, not a production fix. Scan PARTIAL; child/parent exact-candidate verification and separate terminal gates remain.",
     "Human Developer/QC accepted TS8-M1 at 2026-09-14T03:14:22Z; exact additive card root and six-field metadata normalization only. Preserve origin, requirements and original freeze decision. Existing authoring receipts and Node24 pending readiness/activation remain unchanged.",
-    "TS8-M1 completed at 2026-09-14T03:16:42Z: six scalar fields normalized and five exact origin notes preserved; all other card bytes, seven reviewed sources and five frozen authoring receipts unchanged. SDD44/workflow204/protocol13/execution204/planning204/change42 PASS. Resume existing hosted Verify, not terminal approval."
+    "TS8-M1 completed at 2026-09-14T03:16:42Z: six scalar fields normalized and five exact origin notes preserved; all other card bytes, seven reviewed sources and five frozen authoring receipts unchanged. SDD44/workflow204/protocol13/execution204/planning204/change42 PASS. Resume existing hosted Verify, not terminal approval.",
+    "QC explicitly approved amended hosted artifact binding recorded at 2026-09-14T03:40:31.291Z for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; preserve local pre-host evidence and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Approval covers artifact identity only, not Technical Verification, DoD, Release, Business Acceptance, parent F-AG11-001 closure or publish/tag/merge/cleanup."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -159,19 +160,19 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "RCR-TS8-hosted-artifact-binding",
+  "handoff_target": "RCR-TS8-technical-verification",
   "required_actions": [
     {
-      "id": "se:bba268537b016154c7eea44843b6b09aaee5c4a72a6f391f9341ec7a01d20657",
+      "id": "se:1a02d56c8b4aa537fb4c88c415f2f3c2505d860f81cdf0b29938b8e297fd3e65",
       "kind": "workflow_followup",
-      "text": "QC review amended hosted artifact binding for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; retain reviewed-source local pre-host evidence and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Technical Verification and DoD remain separate next reviews."
+      "text": "QC review Technical Verification for closeout-bundle-repeat-cycle-reconciliation, source af70276fe14317417365c06dd06186da1996c401, run 34802149041, hosted v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; retain disclosed scan gaps, local pre-host evidence, rollback v2.6.1 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9 and mandatory AC-RCR-08 parent followup. DoD remains separate."
     }
   ],
   "blockers": [
     {
-      "id": "se:543e5268ca62afafcf82ac6b8f433a80249f4cf6bf8edf5c14d6140647bde476",
+      "id": "se:a3999ee3dc44c192f564ba333a7b328bd901e5eb2f8acafa89b034d9f146cb18",
       "kind": "delivery_blocker",
-      "text": "QC amended hosted artifact binding is pending for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f."
+      "text": "QC Technical Verification approval is pending for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f. Hosted artifact binding is explicitly QC approved."
     }
   ],
   "refs": [
@@ -275,7 +276,9 @@
     "S08_RCR_TS8_HOSTED_SDD_BLOCKED",
     "S08_RCR_TS8_M1_CARD_METADATA_APPROVED",
     "S08_RCR_TS8_M1_LOCAL_SDD_FIXED",
-    "S08_RCR_TS8_HOSTED_EVIDENCE_PREPARED"
+    "S08_RCR_TS8_HOSTED_EVIDENCE_PREPARED",
+    "S08_RCR_TS8_HOSTED_ARTIFACT_BINDING_APPROVED",
+    "S08_RCR_TS8_TECHNICAL_VERIFICATION_PREPARED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -928,6 +931,22 @@
       "from_status": "ACTIVE",
       "to_status": "BLOCKED",
       "note": "TS8 hosted run 34802149041 succeeds 10/10 required jobs at af70276fe14317417365c06dd06186da1996c401; downloaded package SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f equals local pre-host bytes. Source/hash/parser/legacy/receipt checks and Node18/22 exact artifact/retained rollback pass. Prepare QC amended artifact binding only; no Technical Verification/DoD/Release/Business Acceptance or parent finding closure."
+    },
+    {
+      "timestamp": "2026-09-14T03:40:31.291Z",
+      "action": "approve-RCR-TS8-hosted-artifact-binding",
+      "actor": "qc",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "QC explicitly approved amended hosted artifact binding recorded at 2026-09-14T03:40:31.291Z for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; preserve local pre-host evidence and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Approval covers artifact identity only, not Technical Verification, DoD, Release, Business Acceptance, parent F-AG11-001 closure or publish/tag/merge/cleanup."
+    },
+    {
+      "timestamp": "2026-09-14T03:40:31.291Z",
+      "action": "prepare-RCR-TS8-technical-verification",
+      "actor": "agent",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "Prepared separate QC Technical Verification after explicit hosted artifact binding. Nine implementation ACs and child exact-candidate checks pass; AC-RCR-08 parent contribution is mandatory downstream after child Technical Verification/DoD. Scan PARTIAL and F-AG11-001 OPEN. No technical/terminal human approval inferred."
     }
   ]
 }

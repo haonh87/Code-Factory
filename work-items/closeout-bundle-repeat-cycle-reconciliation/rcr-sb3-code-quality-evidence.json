@@ -525,12 +525,12 @@
   },
   "authority": {
     "protocol_status": "BLOCKED",
-    "handoff_target": "RCR-TS8-hosted-artifact-binding",
-    "missing_gate": "QC amended hosted artifact binding",
-    "next_human_action": "QC review amended hosted artifact binding for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; retain reviewed-source local pre-host evidence and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Technical Verification and DoD remain separate next reviews.",
+    "handoff_target": "RCR-TS8-technical-verification",
+    "missing_gate": "QC Technical Verification",
+    "next_human_action": "QC review Technical Verification for closeout-bundle-repeat-cycle-reconciliation, source af70276fe14317417365c06dd06186da1996c401, run 34802149041, hosted v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; retain disclosed scan gaps, local pre-host evidence, rollback v2.6.1 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9 and mandatory AC-RCR-08 parent followup. DoD remains separate.",
     "code_quality": "APPROVED_PASS",
     "TS8": "OPEN",
-    "s08": "WAITING_QC_HOSTED_ARTIFACT_BINDING",
+    "s08": "WAITING_QC_TECHNICAL_VERIFICATION",
     "technical_verification": "PENDING_REVIEW",
     "dod": "NOT_OPEN",
     "release": "NOT_OPEN",
@@ -541,9 +541,9 @@
     "cleanup": false,
     "blockers": [
       {
-        "id": "se:543e5268ca62afafcf82ac6b8f433a80249f4cf6bf8edf5c14d6140647bde476",
+        "id": "se:a3999ee3dc44c192f564ba333a7b328bd901e5eb2f8acafa89b034d9f146cb18",
         "kind": "delivery_blocker",
-        "text": "QC amended hosted artifact binding is pending for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f."
+        "text": "QC Technical Verification approval is pending for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f. Hosted artifact binding is explicitly QC approved."
       }
     ],
     "finding_disposition": "RESOLVED",
@@ -576,7 +576,7 @@
       "reviewed_at": "2026-09-14T02:45:55Z",
       "scope": "TS8/s08 Verify execution only"
     },
-    "hosted_artifact_binding": "PENDING_QC"
+    "hosted_artifact_binding": "APPROVED"
   },
   "mandatory_followups": [
     "Retain every static/security/performance scan gap and transient-read/large-history advisory",
@@ -624,7 +624,7 @@
     "corrected_source_review": "PENDING_AFTER_GREEN"
   },
   "current_refreshed_review_evidence_ref": "rcr-sb3-ts6a-evidence.json",
-  "current_authority_observed_at": "2026-09-14T03:32:59.441Z",
+  "current_authority_observed_at": "2026-09-14T03:40:31.291Z",
   "current_refreshed_code_quality_evidence_ref": "rcr-sb3-ts6a-code-quality-evidence.json",
   "current_refreshed_code_quality": {
     "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
@@ -684,5 +684,16 @@
     "artifact_binding": "PENDING_QC",
     "terminal_gates": "NOT_APPROVED",
     "evidence_ref": "rcr-ts8-evidence.json"
+  },
+  "ts8_technical_verification_handoff": {
+    "prepared_at": "2026-09-14T03:40:31.291Z",
+    "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "run_id": 34802149041,
+    "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+    "artifact_binding": "APPROVED",
+    "technical_verification": "PENDING_QC",
+    "recommendation": "PASS_FOR_CHILD_TECHNICAL_VERIFICATION_WITH_DISCLOSED_SCAN_GAPS_AND_MANDATORY_PARENT_FOLLOWUP",
+    "evidence_ref": "rcr-ts8-evidence.json",
+    "terminal_gates": "NOT_APPROVED"
   }
 }
