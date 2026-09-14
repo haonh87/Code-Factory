@@ -524,11 +524,11 @@
     }
   },
   "authority": {
-    "protocol_status": "ACTIVE",
-    "handoff_target": "RCR-SB3-TS6a-repair",
-    "missing_gate": "NONE for authorized TS6a repair",
-    "next_human_action": "NONE for authorized TS6a; QC refreshed Spec Compliance after GREEN",
-    "code_quality": "EXPLICIT_HUMAN_FAIL",
+    "protocol_status": "BLOCKED",
+    "handoff_target": "RCR-SB3-refreshed-spec-compliance",
+    "missing_gate": "QC refreshed RCR-SB3 Spec Compliance",
+    "next_human_action": "QC decide refreshed Spec Compliance for corrected source 04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "code_quality": "NOT_OPEN",
     "TS8": "CLOSED",
     "s08": "NOT_OPEN",
     "technical_verification": "NOT_OPEN",
@@ -539,10 +539,17 @@
     "tag": false,
     "merge": false,
     "cleanup": false,
-    "blockers": [],
+    "blockers": [
+      {
+        "id": "se:00972ab68c999552323ef1abd39276f7c7eb9a2e0e408061afd002faade1528c",
+        "kind": "delivery_blocker",
+        "text": "QC refreshed RCR-SB3 Spec Compliance is pending for corrected source 04eed2f8b2098bddf513d0f96fd129e835686dd7 after approved TS6a RED/GREEN and fresh regression. F-RCR-SB3-001 remains OPEN; Code Quality, TS8/s08 and terminal gates are not approved."
+      }
+    ],
     "finding_disposition": "OPEN",
-    "TS6a": "APPROVED_RED_RECORDED",
-    "F_AG11_001": "OPEN"
+    "TS6a": "GREEN_PENDING_REVIEW",
+    "F_AG11_001": "OPEN",
+    "historical_code_quality": "EXPLICIT_DEVELOPER_QC_FAIL at 08a3d12"
   },
   "mandatory_followups": [
     "Retain every static/security/performance scan gap and transient-read/large-history advisory",
@@ -569,7 +576,7 @@
     "encoding": "PASS: fatal UTF-8 decode on all six artifacts; native parse of review canary; git diff --check",
     "s01_parity": "PASS",
     "external_owner_worktrees": "UNCHANGED",
-    "authority": "Developer/QC FAIL and OPEN finding, QC Spec reopening, Developer TS6a accepted at 2026-09-13T14:04:14Z; no future gates",
+    "authority": "Prior Developer/QC FAIL accepted; QC refreshed Spec PENDING at 04eed2f8b2098bddf513d0f96fd129e835686dd7; Code Quality and TS8/s08 NOT_OPEN",
     "test_interpretation": "45 existing unit files PASS; new native lock acquisition canary FAIL, expected exit 1. Authoring-validator PASS does not clear the finding."
   },
   "spec_compliance_reopening": {
@@ -588,5 +595,6 @@
       "evidence_ref": "rcr-sb3-evidence.json"
     },
     "corrected_source_review": "PENDING_AFTER_GREEN"
-  }
+  },
+  "current_refreshed_review_evidence_ref": "rcr-sb3-ts6a-evidence.json"
 }

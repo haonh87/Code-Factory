@@ -654,7 +654,7 @@ next_action: "Developer reviews the amended s06 TS0..TS8 plan; implementation st
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: BLOCKED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
@@ -687,15 +687,16 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: "developer"
+protocol_owner: "qc"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "RCR-SB3-TS6a-repair"
-last_transition_action: "resume"
-last_transition_at: "2026-09-13T14:05:08.299Z"
+handoff_target: "RCR-SB3-refreshed-spec-compliance"
+last_transition_action: "prepare-RCR-SB3-refreshed-spec-compliance"
+last_transition_at: "2026-09-13T14:09:29Z"
 required_actions:
-  - {"id":"se:2db776cd66b0f279593ff88c165a05422878625c8646363d21f46d5043ec7f26","kind":"workflow_followup","text":"Continue active execution from the current step."}
-blockers: []
+  - {"id":"se:db5d8be1d4745b7d5c65756f934c394b7c0acc88c1095ca9892636f4e806a55d","kind":"workflow_followup","text":"QC review refreshed RCR-SB3 Spec Compliance for corrected source 04eed2f8b2098bddf513d0f96fd129e835686dd7. Code Quality is NOT_OPEN until that approval; retain scan gaps and OPEN findings, with TS8/s08 requiring separate later decisions."}
+blockers:
+  - {"id":"se:00972ab68c999552323ef1abd39276f7c7eb9a2e0e408061afd002faade1528c","kind":"delivery_blocker","text":"QC refreshed RCR-SB3 Spec Compliance is pending for corrected source 04eed2f8b2098bddf513d0f96fd129e835686dd7 after approved TS6a RED/GREEN and fresh regression. F-RCR-SB3-001 remains OPEN; Code Quality, TS8/s08 and terminal gates are not approved."}
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -746,6 +747,7 @@ review_notes:
   - "Human QC explicitly approved RCR-SB3 Spec Compliance for exact source 08a3d12e5482a6aa40cfc5b40318ab965626db31 at 2026-09-13T12:46:11Z. Open separate Developer/QC Code Quality preparation only; no Code Quality verdict, TS8/s08 opening, finding closure or terminal approval. All scan gaps and concurrent transient-read/large-history advisories are retained."
   - "Prepared RCR-SB3 Code Quality FAIL recommendation at 2026-09-13T12:50:11Z for exact source 08a3d12e5482a6aa40cfc5b40318ab965626db31 after explicit QC Spec Compliance. Newly identified pre-existing HIGH F-RCR-SB3-001: native wx loser deletes a foreign live lock. Fresh 45/45 suite remains PASS; deterministic ownership canary FAIL. Developer/QC disposition, QC reopening and Developer TS6a are PENDING proposals; no correction, finding closure, s08 or terminal approval."
   - "User accepted the immediately preceding named bundle at 2026-09-13T14:04:14Z: Developer/QC Code Quality FAIL and OPEN HIGH F-RCR-SB3-001 for source 08a3d12e5482a6aa40cfc5b40318ab965626db31; QC reopened RCR-SB3 Spec Compliance; Developer approved bounded TS6a in unchanged sixteen roots. Sealed authoring hosts/receipts remain unchanged. No corrected-source review, finding closure, s08 opening or terminal approval."
+  - "Prepared refreshed RCR-SB3 Spec Compliance after approved TS6a at exact source 04eed2f8b2098bddf513d0f96fd129e835686dd7 on 2026-09-13T14:09:29Z: native ownership canaries, 45 unit files, state19, 20 cycles, 64 boundaries, 10 races, smoke13, 13 no-write legacy loads/history and 5 unchanged sealed receipts pass. QC human review PENDING; Code Quality NOT_OPEN; F-RCR-SB3-001 and F-AG11-001 OPEN. Automated scan coverage PARTIAL, concurrent native read refusal/history cost retained; no s08/candidate/terminal authority."
 refs:
   - "work-items/closeout-bundle-repeat-cycle-reconciliation"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -836,6 +838,8 @@ audit_events:
   - "S07_RCR_SB3_CODE_QUALITY_FAIL_APPROVED"
   - "S07_RCR_SB3_SPEC_COMPLIANCE_REOPENED"
   - "S07_RCR_SB3_TS6A_APPROVED"
+  - "S07_RCR_SB3_TS6A_GREEN"
+  - "S07_RCR_SB3_REFRESHED_SPEC_COMPLIANCE_READY"
 ```
 
 ## Traceability
