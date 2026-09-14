@@ -1,0 +1,695 @@
+{
+  "artifact_id": "closeout-bundle-repeat-cycle-reconciliation.ts8-checkpoint-amendment",
+  "artifact_family": "review-packet",
+  "artifact_role": "supporting",
+  "source_of_truth": false,
+  "status": "QC_AMENDED_DOD_BINDING_APPROVED_PENDING_TRUSTED_CHECKPOINT_RECEIPT",
+  "amendment_id": "RCR-TS8-CP-001",
+  "canonical_scope_decision": "closeout-bundle-repeat-cycle-reconciliation.s03.open-questions.md#Checkpoint-Scope-Amendment",
+  "authority": {
+    "scope": "APPROVED",
+    "source": "Human accept to the immediately preceding Option B proposal with PO/BA/Developer/QC",
+    "recorded_at": "2026-09-14T08:20:49Z",
+    "roles": [
+      "po",
+      "ba",
+      "developer",
+      "qc"
+    ],
+    "amended_authoring_gates": "APPROVED_VALID_FIVE_TRUSTED_RECEIPTS",
+    "original_qc_technical_verification": "PRESERVED",
+    "original_qc_dod_decision": "PRESERVED_QUALIFIED_CHILD_CHECKPOINT",
+    "amended_dod_binding": "APPROVED_HUMAN_QC_BINDING_ONLY",
+    "trusted_dod_receipt": "MISSING",
+    "parent_AG13": "MANDATORY_PENDING",
+    "parent_terminal_gates": "MANDATORY_NEW_INDEPENDENT_REVIEWS_PENDING",
+    "F_AG11_001": "OPEN",
+    "protocol_DONE": false,
+    "amended_dod_binding_recorded_at": "2026-09-14T13:51:10Z"
+  },
+  "amendment": {
+    "child_release": "not_applicable",
+    "child_business_acceptance": "not_applicable",
+    "parent_release": "required",
+    "parent_business_acceptance": "required",
+    "scope": "Checkpoint sequencing/applicability only; no runtime, persisted Contract, production or CI change",
+    "unmodified_acceptance_criteria": [
+      "AC-RCR-01",
+      "AC-RCR-02",
+      "AC-RCR-03",
+      "AC-RCR-04",
+      "AC-RCR-05",
+      "AC-RCR-06",
+      "AC-RCR-07",
+      "AC-RCR-09",
+      "AC-RCR-10"
+    ],
+    "AC_RCR_08": "Clarify child technical-checkpoint prerequisite; full parent13/13 and independent terminal decisions remain mandatory before final closure",
+    "contract_content_sha256_excluding_status": "ab616eeed9008323ef81fb78d87ade545f2aefdde1694aa3c8a8aa4434f26114",
+    "unknown_legacy_rule": "Preserve an unknown string as {kind: legacy, text: <exact original>} and do not semantically clear it."
+  },
+  "candidate": {
+    "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "reviewed_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "run_id": 34802149041,
+    "sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+    "rebuild": false
+  },
+  "rollback": {
+    "version": "v2.6.1",
+    "sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+  },
+  "actual_authoring_hosts": [
+    {
+      "path": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s01.restate.md",
+      "sha256": "1b468790acbeec2c71406aeaa75cbb259a83e8ee837d24929b4d2ed0e61f54ff"
+    },
+    {
+      "path": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s02.business-goal.md",
+      "sha256": "61361ae522249286b82b3b551ae4465ae752e8d60fe70dd69be091fd242b8357"
+    },
+    {
+      "path": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s03.open-questions.md",
+      "sha256": "01ce8e79a9fdffe464352027f0dc81efb492e8797e8181c4da66101275dbdd40"
+    },
+    {
+      "path": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md",
+      "sha256": "65db50a20610c2d35ed4bbedd386b60386731dba038025949dfc52e1283e88b9"
+    },
+    {
+      "path": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s05.technical-approach.md",
+      "sha256": "8bbd92fd60124dc6738e70a91e2249809b2a34c56372dce8156ef33e4c383cf6"
+    },
+    {
+      "path": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s06.task-breakdown.md",
+      "sha256": "471eefd0f30189d4f08d1f564fdd23d08055cd6ebec2d1cea42a7ee7f6c16c21"
+    },
+    {
+      "path": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s07.implementation.md",
+      "sha256": "e8f5a36bca64eecccf958d413854a64843ec87c6e27b69abf28fb4f38b15f7ad"
+    },
+    {
+      "path": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s08.verification.md",
+      "sha256": "e3159a438678242069c8045058b3d1c1664fa6451207a37cec123cfb8736af2e"
+    }
+  ],
+  "receipt_renewal_matrix": [
+    {
+      "gate": "spec",
+      "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md",
+      "current_sha256": "65db50a20610c2d35ed4bbedd386b60386731dba038025949dfc52e1283e88b9",
+      "current_status": "APPROVED_CURRENT_SIGNATURE_VALID",
+      "historical_receipt": {
+        "status": "APPROVED",
+        "reviewed_by": "ba",
+        "reviewed_at": "2026-09-11T13:50:51.020Z",
+        "artifact_sha256": "26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87"
+      },
+      "current_digest_match": true,
+      "reviewer_roles": [
+        "ba"
+      ],
+      "current_review": {
+        "gate": "spec",
+        "status": "final",
+        "spec_status": "approved",
+        "reviewed_by": [
+          "ba"
+        ],
+        "reviewed_at": "2026-09-14T13:33:15Z",
+        "receipt_sealer": "ba"
+      },
+      "current_receipt": {
+        "status": "APPROVED",
+        "reviewed_by": "ba",
+        "reviewed_at": "2026-09-14T13:38:13.862Z",
+        "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md",
+        "artifact_sha256": "65db50a20610c2d35ed4bbedd386b60386731dba038025949dfc52e1283e88b9",
+        "signature_valid": true,
+        "digest_match": true
+      },
+      "historical_rule": "The historical_receipt entry above retains pre-amendment approval metadata; current authority comes only from the actual current receipt."
+    },
+    {
+      "gate": "contract",
+      "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md",
+      "current_sha256": "65db50a20610c2d35ed4bbedd386b60386731dba038025949dfc52e1283e88b9",
+      "current_status": "APPROVED_CURRENT_SIGNATURE_VALID",
+      "historical_receipt": {
+        "status": "APPROVED",
+        "reviewed_by": "developer",
+        "reviewed_at": "2026-09-11T13:51:06.341Z",
+        "artifact_sha256": "26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87"
+      },
+      "current_digest_match": true,
+      "reviewer_roles": [
+        "developer"
+      ],
+      "current_review": {
+        "gate": "contract",
+        "status": "final",
+        "spec_status": "approved",
+        "reviewed_by": [
+          "developer"
+        ],
+        "reviewed_at": "2026-09-14T13:33:15Z",
+        "receipt_sealer": "developer"
+      },
+      "current_receipt": {
+        "status": "APPROVED",
+        "reviewed_by": "developer",
+        "reviewed_at": "2026-09-14T13:38:24.847Z",
+        "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md",
+        "artifact_sha256": "65db50a20610c2d35ed4bbedd386b60386731dba038025949dfc52e1283e88b9",
+        "signature_valid": true,
+        "digest_match": true
+      },
+      "historical_rule": "The historical_receipt entry above retains pre-amendment approval metadata; current authority comes only from the actual current receipt."
+    },
+    {
+      "gate": "dor",
+      "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md",
+      "current_sha256": "65db50a20610c2d35ed4bbedd386b60386731dba038025949dfc52e1283e88b9",
+      "current_status": "APPROVED_CURRENT_SIGNATURE_VALID",
+      "historical_receipt": {
+        "status": "APPROVED",
+        "reviewed_by": "qc",
+        "reviewed_at": "2026-09-11T13:51:18.535Z",
+        "artifact_sha256": "26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87"
+      },
+      "current_digest_match": true,
+      "reviewer_roles": [
+        "ba",
+        "qc"
+      ],
+      "current_review": {
+        "gate": "dor",
+        "status": "final",
+        "spec_status": "approved",
+        "reviewed_by": [
+          "qc",
+          "ba"
+        ],
+        "reviewed_at": "2026-09-14T13:33:15Z",
+        "receipt_sealer": "qc"
+      },
+      "current_receipt": {
+        "status": "APPROVED",
+        "reviewed_by": "qc",
+        "reviewed_at": "2026-09-14T13:38:13.862Z",
+        "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md",
+        "artifact_sha256": "65db50a20610c2d35ed4bbedd386b60386731dba038025949dfc52e1283e88b9",
+        "signature_valid": true,
+        "digest_match": true
+      },
+      "historical_rule": "The historical_receipt entry above retains pre-amendment approval metadata; current authority comes only from the actual current receipt."
+    },
+    {
+      "gate": "approach",
+      "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s05.technical-approach.md",
+      "current_sha256": "8bbd92fd60124dc6738e70a91e2249809b2a34c56372dce8156ef33e4c383cf6",
+      "current_status": "APPROVED_CURRENT_SIGNATURE_VALID",
+      "historical_receipt": {
+        "status": "APPROVED",
+        "reviewed_by": "developer",
+        "reviewed_at": "2026-09-11T14:38:00.519Z",
+        "artifact_sha256": "d075290f151a9596d029a79fa1cf2eab72b08a179c196d35a046d2d7a8187001"
+      },
+      "current_digest_match": true,
+      "reviewer_roles": [
+        "developer"
+      ],
+      "current_review": {
+        "gate": "approach",
+        "status": "final",
+        "spec_status": "approved",
+        "reviewed_by": [
+          "developer"
+        ],
+        "reviewed_at": "2026-09-14T13:33:15Z",
+        "receipt_sealer": "developer"
+      },
+      "current_receipt": {
+        "status": "APPROVED",
+        "reviewed_by": "developer",
+        "reviewed_at": "2026-09-14T13:38:13.862Z",
+        "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s05.technical-approach.md",
+        "artifact_sha256": "8bbd92fd60124dc6738e70a91e2249809b2a34c56372dce8156ef33e4c383cf6",
+        "signature_valid": true,
+        "digest_match": true
+      },
+      "historical_rule": "The historical_receipt entry above retains pre-amendment approval metadata; current authority comes only from the actual current receipt."
+    },
+    {
+      "gate": "task_plan",
+      "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s06.task-breakdown.md",
+      "current_sha256": "471eefd0f30189d4f08d1f564fdd23d08055cd6ebec2d1cea42a7ee7f6c16c21",
+      "current_status": "APPROVED_CURRENT_SIGNATURE_VALID",
+      "historical_receipt": {
+        "status": "APPROVED",
+        "reviewed_by": "developer",
+        "reviewed_at": "2026-09-12T05:51:29.267Z",
+        "artifact_sha256": "ae1a733dab2cc709f61334050b0435160d34d88385ca4dba5ff7960632f11238"
+      },
+      "current_digest_match": true,
+      "reviewer_roles": [
+        "developer"
+      ],
+      "current_review": {
+        "gate": "task_plan",
+        "status": "final",
+        "spec_status": "approved",
+        "reviewed_by": [
+          "developer"
+        ],
+        "reviewed_at": "2026-09-14T13:33:15Z",
+        "receipt_sealer": "developer"
+      },
+      "current_receipt": {
+        "status": "APPROVED",
+        "reviewed_by": "developer",
+        "reviewed_at": "2026-09-14T13:38:13.862Z",
+        "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s06.task-breakdown.md",
+        "artifact_sha256": "471eefd0f30189d4f08d1f564fdd23d08055cd6ebec2d1cea42a7ee7f6c16c21",
+        "signature_valid": true,
+        "digest_match": true
+      },
+      "historical_rule": "The historical_receipt entry above retains pre-amendment approval metadata; current authority comes only from the actual current receipt."
+    }
+  ],
+  "protocol": {
+    "status": "VERIFIED",
+    "current_step": "s08",
+    "events_before": 81,
+    "events_after": 86,
+    "old_events_preserved": true,
+    "grants_unchanged": 17,
+    "legacy_text_not_cleared": true,
+    "ordinary_event_omits_transaction_id": true,
+    "router_status": "WAITING_APPROVAL",
+    "router_current_step": "s08 qualified checkpoint trusted DoD receipt sealing",
+    "lifecycle_reopen": false,
+    "events_before_this_record": 85,
+    "previous_82_events_preserved": true,
+    "previous_84_events_preserved": true,
+    "previous_84_events_sha256": "45c50f29cf31bf486852a8e44b960734e950fe60840fc08869e816982d2496f6",
+    "previous_85_events_preserved": true,
+    "previous_85_events_sha256": "770e345c70174d399ff66cd630554b8d5466766668ccba6d299f577909a7a3d6"
+  },
+  "closure_sequence": [
+    "COMPLETED: five amended authoring human approvals and actual signature-valid/current trusted receipts; keep signed s04/s05/s06 bytes unchanged",
+    "COMPLETED: explicit human QC amended whole-s08 artifact binding approval only; original qualified DoD/Technical Verification decisions preserved",
+    "Commit the approved finalized owned child artifacts, read-only verify native clean-scope/signature/digest guards, then human independently signs the single trusted checkpoint DoD receipt; no waiver or final child protocol DONE",
+    "Valid child technical checkpoint -> full same-candidate parent AG-01..AG-13 at 13/13; no repack, historical approval substitution or premature child protocol DONE",
+    "New independent parent QC Technical Verification/DoD, DevOps/QC Release and PO Business Acceptance; keep final child contribution and bindings current",
+    "Reconcile final child/parent protocol, F-AG11-001 and CR-008 ledgers only with full current evidence; publication/tag/merge/install/cleanup remain separately authorized"
+  ],
+  "signing_notes": "Five actual authoring receipts are already valid; do not request or repeat those approvals/commands. Signed s04/s05/s06 hosts remain immutable. QC must separately review the amended whole-s08 DoD artifact binding, preserving the original qualified child decision. Finalize/hash and commit owned evidence before human-TTY checkpoint DoD signing. No private-key/passphrase access, non-interactive fixture, uncommitted waiver or CR-008 completion is authorized.",
+  "verification": {
+    "status": "PASS_STRUCTURAL_GUARDS",
+    "contract_body": "UNCHANGED_EXCLUDING_REVIEW_STATUS",
+    "nine_other_AC": "BYTE_IDENTICAL",
+    "events": "85_PREVIOUS_PRESERVED_PLUS_ONE_HUMAN_BINDING_APPROVAL_EVENT",
+    "protocol_mirror": "PASS",
+    "outside_child_delta": "NONE",
+    "retained_packages": [
+      {
+        "path": "/private/tmp/cf-rcr-ts8-hosted-MdHnYG/workflow-bundle-2.6.2.tgz",
+        "sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+        "status": "PASS_RETAINED_BYTES"
+      },
+      {
+        "path": "/private/tmp/cf-rcr-ts8-source-tQ3GPc/workflow-bundle-2.6.1.tgz",
+        "sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9",
+        "status": "PASS_RETAINED_BYTES"
+      }
+    ],
+    "validators": [
+      {
+        "id": "validate",
+        "exit_code": 0,
+        "status": "PASS",
+        "output": "OK: validated workflow naming (208 files) and governance (204 notes) under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+      },
+      {
+        "id": "protocol",
+        "exit_code": 0,
+        "status": "PASS",
+        "output": "OK: validated 13 protocol-managed work items under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items (skipped legacy: 16)"
+      },
+      {
+        "id": "sdd",
+        "exit_code": 0,
+        "status": "PASS",
+        "output": "OK: validated SDD for 44 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+      },
+      {
+        "id": "change",
+        "exit_code": 0,
+        "status": "PASS",
+        "output": "OK: validated change layer for 42 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+      },
+      {
+        "id": "exec",
+        "exit_code": 0,
+        "status": "PASS",
+        "output": "OK: validated execution runtime for 204 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+      },
+      {
+        "id": "plan",
+        "exit_code": 0,
+        "status": "PASS",
+        "output": "OK: validated planning track for 204 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+      }
+    ],
+    "UTF8": "PASS_12_CHANGED_ARTIFACTS",
+    "behavior_tests": "NOT_RERUN_DOCUMENT_ONLY",
+    "scan": "RETAINED_PARTIAL_NOT_WAIVED",
+    "initial_draft_error": {
+      "rule": "Illegal transition VERIFIED -> BLOCKED",
+      "disposition": "Corrected uncommitted draft: protocol lifecycle remains VERIFIED/s08; appended scope record is an ordinary VERIFIED->VERIFIED event. No original historical event, transition table or validator was changed.",
+      "current_gate_hold": "Five actual authoring receipts remain current; amended QC checkpoint DoD artifact binding is explicitly approved. Trusted checkpoint receipt still missing; commit approved evidence before human signing. Full parent AC-RCR-08 contribution remains mandatory and incomplete."
+    },
+    "YAML": "PASS_8_FRONTMATTER_AND_155_FENCED_BLOCKS",
+    "diff_check": "PASS",
+    "recorded_at": "2026-09-14T13:56:08Z",
+    "completion_claim": "All six validators, native QC finalized-host authority, five trusted signatures/digests, source/payload/Contract/nine AC/history/mirror/UTF-8/YAML guards PASS. Human QC amended binding approval recorded. Trusted checkpoint receipt and full mandatory parent13/13/new independent parent terminal gates remain pending. No full child DONE, new behavior/hosted/scanner execution or CR-008 closure claimed.",
+    "review_filename_draft_error": {
+      "rule": "Supporting Markdown filename did not match the required work-item workflow filename format.",
+      "disposition": "All review content was preserved in canonical s04; only the agent-created untracked duplicate draft was removed. No validator exemption or naming rule changed.",
+      "workflow_validator_after_correction": "PASS_208_NAMING_FILES_204_GOVERNANCE_NOTES"
+    },
+    "native_gate_records": "PASS_5_FINAL_HOSTS_CORRECT_REVIEWERS_AND_RECORD_TIME",
+    "copied_reviewer_draft_correction": {
+      "rule": "Copied Contract reviewer metadata on s02/s07 had no configured Contract signoff.",
+      "disposition": "Cleared Contract reviewer metadata only in these two non-host reference notes; actual approved Contract authority remains in canonical s04. No gate applicability or reviewer authority expanded.",
+      "scope": "AUTHORING_METADATA_ONLY"
+    },
+    "original_readiness_transaction_id": "b2aca790-8ce1-4d78-a179-2fa645221953",
+    "actual_fresh_authoring_receipt_signatures": "PASS_5",
+    "actual_fresh_authoring_host_digests": "PASS_5",
+    "signed_authoring_hosts": "UNCHANGED",
+    "source_test_hashes": "PASS_7_EXACT_REVIEWED_SOURCE",
+    "core_package_payload_hashes": "PASS_4_EXACT",
+    "native_syntax": "PASS_7_SUPPORTED_NODE22",
+    "finalization_coverage_projection": {
+      "first_validator_failure": "Finalized s08 requires a non-empty Spec Coverage evidence list, even for this legacy sdd_mode=none host",
+      "disposition": "Added an exact projection of existing reviewed ten criterion results, with nine PASS and AC-RCR-08 PARTIAL; no production/Contract/AC/decision/test result or validator change",
+      "proof": "PASS_NATIVE_FINALIZED_VALIDATION; nine PASS, AC-RCR-08 PARTIAL"
+    }
+  },
+  "summary_vi": "QC đã phê duyệt amended DoD artifact binding; năm receipt authoring vẫn hợp lệ, code/Contract/candidate không đổi. Cần commit hồ sơ và ký receipt checkpoint DoD trong terminal. Full parent13/13 và nghiệm thu độc lập còn bắt buộc; child và CR-008 chưa DONE.",
+  "human_review_summary": {
+    "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md",
+    "heading": "Amended Authoring Review — RCR-TS8-CP-001",
+    "source_of_truth": "Canonical s04 hosts the review summary; this JSON is supporting evidence, not gate approval."
+  },
+  "authoring_gate_approval": {
+    "source": "Human accept explicitly answering the immediately preceding five-gate amended-authoring proposal",
+    "recorded_at": "2026-09-14T13:33:15Z",
+    "timestamp_semantics": "Decision recorded at this time; message-send time is not inferred.",
+    "gates": [
+      {
+        "gate": "spec",
+        "status": "final",
+        "spec_status": "approved",
+        "reviewed_by": [
+          "ba"
+        ],
+        "reviewed_at": "2026-09-14T13:33:15Z",
+        "receipt_sealer": "ba"
+      },
+      {
+        "gate": "contract",
+        "status": "final",
+        "spec_status": "approved",
+        "reviewed_by": [
+          "developer"
+        ],
+        "reviewed_at": "2026-09-14T13:33:15Z",
+        "receipt_sealer": "developer"
+      },
+      {
+        "gate": "dor",
+        "status": "final",
+        "spec_status": "approved",
+        "reviewed_by": [
+          "qc",
+          "ba"
+        ],
+        "reviewed_at": "2026-09-14T13:33:15Z",
+        "receipt_sealer": "qc"
+      },
+      {
+        "gate": "approach",
+        "status": "final",
+        "spec_status": "approved",
+        "reviewed_by": [
+          "developer"
+        ],
+        "reviewed_at": "2026-09-14T13:33:15Z",
+        "receipt_sealer": "developer"
+      },
+      {
+        "gate": "task_plan",
+        "status": "final",
+        "spec_status": "approved",
+        "reviewed_by": [
+          "developer"
+        ],
+        "reviewed_at": "2026-09-14T13:33:15Z",
+        "receipt_sealer": "developer"
+      }
+    ],
+    "scope": "Authoring review/finalization only; original qualified child QC Technical Verification/DoD decision preserved; new DoD artifact binding and full exact-candidate parent contribution are separate.",
+    "trusted_authority": "ALL_FIVE_APPROVED_SIGNATURE_VALID_AND_CURRENT",
+    "receipt_verified_at": "2026-09-14T13:45:07Z"
+  },
+  "operator_commands": {
+    "working_directory": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance",
+    "supported_node": "/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node",
+    "commands": [
+      "/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js gate approve --work-item closeout-bundle-repeat-cycle-reconciliation --gate contract --workflow-root work-items --project-root . --reviewed-by developer --note \"Human approved RCR-TS8-CP-001 amended Contract; unchanged Contract body, new finalized host binding.\"",
+      "/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js gate approve-ready-bundle --work-item closeout-bundle-repeat-cycle-reconciliation --workflow-root work-items --project-root . --note \"Human approved RCR-TS8-CP-001 Spec BA, DoR BA/QC, Approach and Task Plan Developer; separate receipts, no DoD or parent approval.\""
+    ],
+    "canonical_human_instructions": "closeout-bundle-repeat-cycle-reconciliation.s06.task-breakdown.md#Human-TTY-Receipt-Sealing",
+    "status": "AUTHORING_RECEIPTS_COMPLETED_AND_VERIFIED",
+    "execution_note": "Original proposed commands are retained for traceability, not as an observed shell transcript or claimed execution order. Actual current receipts and the structured readiness transaction event are authoritative.",
+    "next_action": "After approved owned evidence is committed, human signs the qualified checkpoint DoD receipt; do not rerun authoring commands or request original QC decisions again.",
+    "checkpoint_dod_command": "/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js gate approve --work-item closeout-bundle-repeat-cycle-reconciliation --gate dod --workflow-root work-items --project-root . --reviewed-by qc --note \"QC approved amended binding for qualified child checkpoint; full AC-RCR-08 parent contribution remains mandatory.\"",
+    "checkpoint_dod_command_status": "PENDING_HUMAN_TTY_AFTER_COMMIT"
+  },
+  "current_checkpoint_dod_binding": {
+    "review_id": "RCR-TS8-CP-001-DOD-BINDING",
+    "review_kind": "amended_artifact_binding",
+    "status": "HUMAN_QC_BINDING_APPROVED_PENDING_TRUSTED_RECEIPT",
+    "human_approval": "APPROVED",
+    "reviewer_roles": [
+      "qc"
+    ],
+    "reviewed_by": [
+      "qc"
+    ],
+    "reviewed_at": "2026-09-14T13:51:10Z",
+    "prepared_at": "2026-09-14T13:42:10Z",
+    "canonical_note": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s08.verification.md",
+    "canonical_heading": "QC Amended DoD Binding Review — RCR-TS8-CP-001",
+    "hash_semantics": "Reviewed draft hash retained; final host includes approved review/finalization metadata only. Independent human receipt must bind final committed bytes; post-commit native clean-scope check is mandatory, with no waiver.",
+    "scope": "Approved checkpoint applicability/sequencing and updated authoring authority change the whole s08 binding only. Existing qualified QC decisions, package, public/receipt/state/event Contract, nine other AC, scan gaps and full AC-RCR-08 parent scope remain unchanged.",
+    "original_qualified_qc_dod_recorded_at": "2026-09-14T07:35:25.955Z",
+    "original_qc_technical_verification_recorded_at": "2026-09-14T07:26:16.002Z",
+    "candidate": {
+      "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+      "reviewed_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+      "run_id": 34802149041,
+      "sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "rebuild": false
+    },
+    "rollback": {
+      "version": "v2.6.1",
+      "sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+    },
+    "fresh_authoring_receipts": "VALID_ALL_FIVE",
+    "source_package_guard": {
+      "status": "PASS",
+      "sources": [
+        {
+          "path": "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
+          "sha256": "21f8ad0ecedf99f8afbbd7c45cce4c8da38059795e5ece65bb5bf106c57d7cf6",
+          "reviewed_source": "EXACT_MATCH",
+          "payload_sha256": "21f8ad0ecedf99f8afbbd7c45cce4c8da38059795e5ece65bb5bf106c57d7cf6"
+        },
+        {
+          "path": "packages/workflow-bundle/scripts/work-item-protocol.js",
+          "sha256": "53de371f8fd9d82a466364be55048332f9ec80ca0fc5df9b3102e07a515c5d7a",
+          "reviewed_source": "EXACT_MATCH",
+          "payload_sha256": "53de371f8fd9d82a466364be55048332f9ec80ca0fc5df9b3102e07a515c5d7a"
+        },
+        {
+          "path": "packages/workflow-bundle/scripts/workflow-gate-review.js",
+          "sha256": "0450ca110a060ae79d7b39af9466aef84f6aa323395938c6bdb247c858b61588",
+          "reviewed_source": "EXACT_MATCH",
+          "payload_sha256": "0450ca110a060ae79d7b39af9466aef84f6aa323395938c6bdb247c858b61588"
+        },
+        {
+          "path": "packages/workflow-bundle/scripts/workflow-approval-transaction.js",
+          "sha256": "77d5278edf0fa5e4d7c488c9a9060d41eb00b116f900237a2105e4ff5dc71cdf",
+          "reviewed_source": "EXACT_MATCH",
+          "payload_sha256": "77d5278edf0fa5e4d7c488c9a9060d41eb00b116f900237a2105e4ff5dc71cdf"
+        },
+        {
+          "path": "packages/workflow-bundle/test/work-item-protocol-state.test.js",
+          "sha256": "70051a906da2b247a4d00d8aa6b165a5f30bc287b24c7236e2dfec57ef00dec0",
+          "reviewed_source": "EXACT_MATCH",
+          "payload_sha256": null
+        },
+        {
+          "path": "packages/workflow-bundle/test/work-item-protocol.test.js",
+          "sha256": "b55714247cd240cd14dd800110d5ee03c158a905546b939ee4e463a0d37b06ce",
+          "reviewed_source": "EXACT_MATCH",
+          "payload_sha256": null
+        },
+        {
+          "path": "packages/workflow-bundle/test/workflow-gate-review.test.js",
+          "sha256": "b73c541fa9c736f7e5203bf8e93cafc35ae0682128ff442d8413a71d2a0f071a",
+          "reviewed_source": "EXACT_MATCH",
+          "payload_sha256": null
+        }
+      ],
+      "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "rollback_sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9",
+      "production_or_payload_change": false,
+      "hosted_execution": "RETAINED_NOT_RERUN"
+    },
+    "pre_seal_guard": {
+      "error_count": 1,
+      "waived": false,
+      "commit_required": true,
+      "reason": "Approved owned metadata evidence must be committed before DoD signing; no waiver selected.",
+      "observed_phase": "BEFORE_OWNED_EVIDENCE_COMMIT",
+      "observed_at": "2026-09-14T13:56:08Z",
+      "post_commit_rule": "Read-only native getUncommittedDeliveryErrors must return zero errors on actual committed branch bytes; do not modify tracked evidence merely to insert its own commit SHA."
+    },
+    "protocol_DONE": false,
+    "parent_AC_RCR_08": "MANDATORY_PENDING",
+    "F_AG11_001": "OPEN",
+    "approval_source": "Human accept to the immediately preceding QC amended DoD artifact binding proposal",
+    "reviewed_draft_s08_sha256": "e8bfa56df88def12724e289f272b6273005f319bc182d579c87ccd3c16cb8e10",
+    "final_s08_sha256": "e3159a438678242069c8045058b3d1c1664fa6451207a37cec123cfb8736af2e",
+    "host_status": "final",
+    "trusted_receipt_status": "MISSING",
+    "native_finalized_gate_authority": "PASS_QC",
+    "current_precommit_verification": {
+      "observed_at": "2026-09-14T13:56:08Z",
+      "validators": 6,
+      "UTF8": "PASS",
+      "YAML": {
+        "status": "PASS",
+        "frontmatter": 8,
+        "fenced_yaml_blocks": 155
+      },
+      "authoring_receipt_signatures": "PASS_ALL_FIVE",
+      "authoring_receipt_digests": "PASS_ALL_FIVE",
+      "reviewed_source_hashes": 7,
+      "package_core_payload_hashes": 4,
+      "native_syntax": "PASS_7_SUPPORTED_NODE22",
+      "coverage": {
+        "total": 10,
+        "pass": 9,
+        "partial": 1,
+        "status": "PARTIAL"
+      },
+      "original_85_events_preserved": true,
+      "grants_unchanged": 17,
+      "Contract_unchanged": true,
+      "other_AC_unchanged": 9,
+      "parent_action_unchanged": true,
+      "protocol_DONE": false,
+      "hosted_execution": "RETAINED_NOT_RERUN",
+      "behavior_tests": "NOT_RERUN_METADATA_ONLY",
+      "scan": "PARTIAL_RETAINED_NOT_WAIVED"
+    }
+  },
+  "prior_binding_review_verification": {
+    "status": "PASS_STRUCTURAL_GUARDS",
+    "contract_body": "UNCHANGED_EXCLUDING_REVIEW_STATUS",
+    "nine_other_AC": "BYTE_IDENTICAL",
+    "events": "84_PREVIOUS_EVENTS_PRESERVED_PLUS_ONE_AGENT_RECEIPT_VERIFICATION_RECORD",
+    "protocol_mirror": "PASS",
+    "outside_child_delta": "NONE",
+    "retained_packages": [
+      {
+        "path": "/private/tmp/cf-rcr-ts8-hosted-MdHnYG/workflow-bundle-2.6.2.tgz",
+        "sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+        "status": "PASS_RETAINED_BYTES"
+      },
+      {
+        "path": "/private/tmp/cf-rcr-ts8-source-tQ3GPc/workflow-bundle-2.6.1.tgz",
+        "sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9",
+        "status": "PASS_RETAINED_BYTES"
+      }
+    ],
+    "validators": [
+      {
+        "id": "validate",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "id": "protocol",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "id": "sdd",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "id": "change",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "id": "exec",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "id": "plan",
+        "exit_code": 0,
+        "status": "PASS"
+      }
+    ],
+    "UTF8": "PASS_12_CHANGED_ARTIFACTS",
+    "behavior_tests": "NOT_RERUN_DOCUMENT_ONLY",
+    "scan": "RETAINED_PARTIAL_NOT_WAIVED",
+    "initial_draft_error": {
+      "rule": "Illegal transition VERIFIED -> BLOCKED",
+      "disposition": "Corrected uncommitted draft: protocol lifecycle remains VERIFIED/s08; appended scope record is an ordinary VERIFIED->VERIFIED event. No original historical event, transition table or validator was changed.",
+      "current_gate_hold": "All five actual authoring receipts are now valid and protocol validation passes. Separate amended QC checkpoint DoD artifact binding and trusted DoD receipt remain pending; full parent contribution is still mandatory."
+    },
+    "YAML": "PASS_8_FRONTMATTER_AND_154_FENCED_BLOCKS",
+    "diff_check": "PASS",
+    "recorded_at": "2026-09-14T13:45:07Z",
+    "completion_claim": "All six validators and signatures/digests/source/payload/history/mirror/Contract/AC/UTF-8/YAML guards pass. Current QC amended DoD artifact binding and actual child checkpoint receipt remain pending; full parent AC-RCR-08/AG13 and independent terminal chain are mandatory. No new behavior suite/hosted/scanner run or CR-008 completion claimed.",
+    "review_filename_draft_error": {
+      "rule": "Supporting Markdown filename did not match the required work-item workflow filename format.",
+      "disposition": "All review content was preserved in canonical s04; only the agent-created untracked duplicate draft was removed. No validator exemption or naming rule changed.",
+      "workflow_validator_after_correction": "PASS_208_NAMING_FILES_204_GOVERNANCE_NOTES"
+    },
+    "native_gate_records": "PASS_5_FINAL_HOSTS_CORRECT_REVIEWERS_AND_RECORD_TIME",
+    "copied_reviewer_draft_correction": {
+      "rule": "Copied Contract reviewer metadata on s02/s07 had no configured Contract signoff.",
+      "disposition": "Cleared Contract reviewer metadata only in these two non-host reference notes; actual approved Contract authority remains in canonical s04. No gate applicability or reviewer authority expanded.",
+      "scope": "AUTHORING_METADATA_ONLY"
+    },
+    "original_readiness_transaction_id": "b2aca790-8ce1-4d78-a179-2fa645221953",
+    "actual_fresh_authoring_receipt_signatures": "PASS_5",
+    "actual_fresh_authoring_host_digests": "PASS_5",
+    "signed_authoring_hosts": "UNCHANGED",
+    "source_test_hashes": "PASS_7_EXACT_REVIEWED_SOURCE",
+    "core_package_payload_hashes": "PASS_4_EXACT",
+    "native_syntax": "PASS_7_SUPPORTED_NODE22"
+  }
+}

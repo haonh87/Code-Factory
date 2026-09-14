@@ -39,8 +39,8 @@ approval_gates:
   foundation: "not_applicable"
   task_plan: "required"
   uat: "not_applicable"
-  release: "required"
-  business_acceptance: "required"
+  release: "not_applicable"
+  business_acceptance: "not_applicable"
   dod: "required"
 role_signoffs:
   spec: ["ba"]
@@ -50,22 +50,22 @@ role_signoffs:
   foundation: []
   task_plan: ["developer"]
   uat: []
-  release: ["devops", "qc"]
-  business_acceptance: ["po"]
+  release: []
+  business_acceptance: []
   dod: ["qc"]
 gate_reviews:
   spec_reviewed_by: ["ba"]
-  spec_reviewed_at: "2026-09-10T03:09:26Z"
+  spec_reviewed_at: "2026-09-14T13:33:15Z"
   contract_reviewed_by: []
   contract_reviewed_at: ""
-  dor_reviewed_by: ["ba", "qc"]
-  dor_reviewed_at: "2026-09-10T03:09:26Z"
+  dor_reviewed_by: ["qc","ba"]
+  dor_reviewed_at: "2026-09-14T13:33:15Z"
   approach_reviewed_by: ["developer"]
-  approach_reviewed_at: "2026-09-10T08:12:02Z"
+  approach_reviewed_at: "2026-09-14T13:33:15Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: ["developer"]
-  task_plan_reviewed_at: "2026-09-10T08:56:19Z"
+  task_plan_reviewed_at: "2026-09-14T13:33:15Z"
   uat_reviewed_by: []
   uat_reviewed_at: ""
   release_reviewed_by: []
@@ -1731,3 +1731,34 @@ mandatory_parent: "AC-RCR-08 same-candidate AG-01..13 and new independent termin
 ```
 
 Older implementation/TS8 authority blocks are historical checkpoints. This approval does not change reviewed production, tests, frozen s04-s06 hosts, granted paths, signer or parent finding authority.
+
+
+## Checkpoint Scope Amendment — RCR-TS8-CP-001
+
+The human explicitly accepted Option B in response to the immediately preceding PO/BA/Developer/QC proposal, recorded at 2026-09-14T08:20:49Z. This approval authorizes only the checkpoint-scope and authoring-applicability amendment: this correction child's Release/Business Acceptance are not_applicable; all parent AC-RCR-08, AG-01..AG-13 and independent terminal gates remain mandatory. It does not approve any gate on the amended bytes, sign a receipt, complete AC-RCR-08, close F-AG11-001 or authorize protocol DONE, production edits, publication/tag/merge/install/cleanup.
+
+Original source reviews, QC Technical Verification and qualified child DoD decision remain historical evidence for unchanged candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f. The later human accept approved all five amended authoring gates, recorded at 2026-09-14T13:33:15Z. Fresh trusted authoring receipts and QC amended DoD artifact binding remain pending; old whole-host receipts cannot be reused. See `rcr-ts8-checkpoint-amendment.json` for exact hashes, receipt impact and the full child-to-parent closure sequence.
+
+## Human Approval Record — RCR-TS8-CP-001
+
+The later human reply `accept` explicitly answered the immediately preceding five-gate amended-authoring proposal, separate from the earlier Option B scope-only approval. Role labels are approved reviewer capacities; time below is the decision-recording time, not an inferred message-send time.
+
+```yaml
+amendment_id: RCR-TS8-CP-001
+recorded_at: "2026-09-14T13:33:15Z"
+approval_source: "Human accept to the immediately preceding five-gate proposal"
+authoring_gates:
+  spec: {status: HUMAN_APPROVED_PENDING_RECEIPT, reviewed_by: ["ba"]}
+  contract: {status: HUMAN_APPROVED_PENDING_RECEIPT, reviewed_by: ["developer"]}
+  dor: {status: HUMAN_APPROVED_PENDING_RECEIPT, reviewed_by: ["qc","ba"]}
+  approach: {status: HUMAN_APPROVED_PENDING_RECEIPT, reviewed_by: ["developer"]}
+  task_plan: {status: HUMAN_APPROVED_PENDING_RECEIPT, reviewed_by: ["developer"]}
+canonical_gate_hosts: {spec: s04, contract: s04, dor: s04, approach: s05, task_plan: s06}
+trusted_receipts: PENDING_FIVE_FRESH_WHOLE_HOST_RECEIPTS
+amended_dod_artifact_binding: PENDING_SEPARATE_QC_REVIEW
+original_qc_technical_checkpoint_decision: PRESERVED
+parent_AC_RCR_08: MANDATORY_PENDING
+protocol_DONE: false
+```
+
+All nine other AC, persisted Contract content, runtime source, candidate and rollback remain unchanged. Current gate authority still requires fresh trusted receipts; full same-candidate parent AG-01..AG-13 and new independent parent terminal gates remain mandatory before final closure.

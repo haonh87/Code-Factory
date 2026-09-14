@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -40,8 +40,8 @@ approval_gates:
   foundation: "not_applicable"
   task_plan: "required"
   uat: "not_applicable"
-  release: "required"
-  business_acceptance: "required"
+  release: "not_applicable"
+  business_acceptance: "not_applicable"
   dod: "required"
 role_signoffs:
   spec: ["ba"]
@@ -51,22 +51,22 @@ role_signoffs:
   foundation: []
   task_plan: ["developer"]
   uat: []
-  release: ["devops", "qc"]
-  business_acceptance: ["po"]
+  release: []
+  business_acceptance: []
   dod: ["qc"]
 gate_reviews:
-  spec_reviewed_by: []
-  spec_reviewed_at: ""
+  spec_reviewed_by: ["ba"]
+  spec_reviewed_at: "2026-09-14T13:33:15Z"
   contract_reviewed_by: []
   contract_reviewed_at: ""
-  dor_reviewed_by: []
-  dor_reviewed_at: ""
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
+  dor_reviewed_by: ["qc","ba"]
+  dor_reviewed_at: "2026-09-14T13:33:15Z"
+  approach_reviewed_by: ["developer"]
+  approach_reviewed_at: "2026-09-14T13:33:15Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  task_plan_reviewed_by: ["developer"]
+  task_plan_reviewed_at: "2026-09-14T13:33:15Z"
   uat_reviewed_by: []
   uat_reviewed_at: ""
   release_reviewed_by: []
@@ -231,10 +231,10 @@ success_outcome:
   - "One unchanged retry produces zero new receipts, zero new events, and zero derived-state writes."
   - "Historical receipts and events remain byte-preserved and independently readable."
   - "Legacy gate-set, first-cycle, atomicity, authority, and receipt-attribution regressions remain green."
-  - "The corrected source and one hosted candidate pass parent AG-01..AG-13 before new DoD, Release, or Business Acceptance decisions."
+  - "The corrected child first receives a valid QC technical-checkpoint DoD binding; one exact hosted candidate then passes parent AG-01..AG-13 before new parent DoD, Release, or Business Acceptance decisions. Child and parent final closure still require the complete contribution."
   - "F-AG11-001, release hold, and branch hold remain visible until the corrected evidence chain is complete."
 non_goals:
-  - "Do not redesign human-controlled gates or reduce the number of independent decisions."
+  - "Do not redesign human-controlled gate runtime or reduce independent parent decisions. The explicitly accepted RCR-TS8-CP-001 scope amendment makes only this correction child's Release/Business Acceptance not_applicable; every required parent verification and terminal decision remains independent."
   - "Do not change receipt-v1, signer identity, passphrase handling, trusted roots, or secret storage."
   - "Do not revisit the resolved missing-DoD gate selector except through regression checks."
   - "Do not add a generic reopen transition or redesign protocol lifecycle states."
@@ -306,3 +306,34 @@ next_step: "s03 Open Questions; Business Goal approved by PO at 2026-09-10T01:36
 - Business outcome: zero stale completion prompts, exactly one event per committed cycle, and a zero-write unchanged retry.
 - Non-goals: authority, receipt schema, lifecycle redesign, prior-defect reopening, unrelated CR-008 scope, and external release actions.
 - Condition for s03: satisfied by explicit PO approval at `2026-09-10T01:36:42Z`; no implementation path is open.
+
+
+## Checkpoint Scope Amendment — RCR-TS8-CP-001
+
+The human explicitly accepted Option B in response to the immediately preceding PO/BA/Developer/QC proposal, recorded at 2026-09-14T08:20:49Z. This approval authorizes only the checkpoint-scope and authoring-applicability amendment: this correction child's Release/Business Acceptance are not_applicable; all parent AC-RCR-08, AG-01..AG-13 and independent terminal gates remain mandatory. It does not approve any gate on the amended bytes, sign a receipt, complete AC-RCR-08, close F-AG11-001 or authorize protocol DONE, production edits, publication/tag/merge/install/cleanup.
+
+Original source reviews, QC Technical Verification and qualified child DoD decision remain historical evidence for unchanged candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f. The later human accept approved all five amended authoring gates, recorded at 2026-09-14T13:33:15Z. Fresh trusted authoring receipts and QC amended DoD artifact binding remain pending; old whole-host receipts cannot be reused. See `rcr-ts8-checkpoint-amendment.json` for exact hashes, receipt impact and the full child-to-parent closure sequence.
+
+## Human Approval Record — RCR-TS8-CP-001
+
+The later human reply `accept` explicitly answered the immediately preceding five-gate amended-authoring proposal, separate from the earlier Option B scope-only approval. Role labels are approved reviewer capacities; time below is the decision-recording time, not an inferred message-send time.
+
+```yaml
+amendment_id: RCR-TS8-CP-001
+recorded_at: "2026-09-14T13:33:15Z"
+approval_source: "Human accept to the immediately preceding five-gate proposal"
+authoring_gates:
+  spec: {status: HUMAN_APPROVED_PENDING_RECEIPT, reviewed_by: ["ba"]}
+  contract: {status: HUMAN_APPROVED_PENDING_RECEIPT, reviewed_by: ["developer"]}
+  dor: {status: HUMAN_APPROVED_PENDING_RECEIPT, reviewed_by: ["qc","ba"]}
+  approach: {status: HUMAN_APPROVED_PENDING_RECEIPT, reviewed_by: ["developer"]}
+  task_plan: {status: HUMAN_APPROVED_PENDING_RECEIPT, reviewed_by: ["developer"]}
+canonical_gate_hosts: {spec: s04, contract: s04, dor: s04, approach: s05, task_plan: s06}
+trusted_receipts: PENDING_FIVE_FRESH_WHOLE_HOST_RECEIPTS
+amended_dod_artifact_binding: PENDING_SEPARATE_QC_REVIEW
+original_qc_technical_checkpoint_decision: PRESERVED
+parent_AC_RCR_08: MANDATORY_PENDING
+protocol_DONE: false
+```
+
+All nine other AC, persisted Contract content, runtime source, candidate and rollback remain unchanged. Current gate authority still requires fresh trusted receipts; full same-candidate parent AG-01..AG-13 and new independent parent terminal gates remain mandatory before final closure.

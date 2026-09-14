@@ -1,7 +1,167 @@
 {
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "task": "TS8",
-  "status": "BLOCKED_CHILD_DOD_TRUSTED_RECEIPT_SHARED_HOST",
+  "status": "BLOCKED_TRUSTED_CHECKPOINT_DOD_RECEIPT_AND_FULL_PARENT_CONTRIBUTION",
+  "checkpoint_amendment": {
+    "id": "RCR-TS8-CP-001",
+    "scope_decision": "APPROVED_OPTION_B",
+    "review_packet": "rcr-ts8-checkpoint-amendment.json",
+    "snapshot_rule": "Historical test, frozen receipt and original QC observations remain source-bound evidence. Five actual fresh authoring receipts remain signature-valid, approved and current. Human QC amended DoD binding is explicitly approved; trusted checkpoint receipt and mandatory full parent contribution remain pending. Original qualified QC decisions, scan gaps and package identities are unchanged.",
+    "parent_AC_RCR_08": "MANDATORY_PENDING",
+    "protocol_done": false,
+    "authoring_gate_decision": "HUMAN_APPROVED_AND_FIVE_TRUSTED_RECEIPTS_VALID",
+    "authoring_recorded_at": "2026-09-14T13:33:15Z",
+    "authoring_receipt_verified_at": "2026-09-14T13:42:10Z",
+    "actual_authoring_receipts": [
+      {
+        "gate": "spec",
+        "exists": true,
+        "signature_valid": true,
+        "approved": true,
+        "status": "APPROVED",
+        "reviewed_by": "ba",
+        "reviewed_at": "2026-09-14T13:38:13.862Z",
+        "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md",
+        "artifact_sha256": "65db50a20610c2d35ed4bbedd386b60386731dba038025949dfc52e1283e88b9",
+        "current_sha256": "65db50a20610c2d35ed4bbedd386b60386731dba038025949dfc52e1283e88b9",
+        "digest_match": true
+      },
+      {
+        "gate": "contract",
+        "exists": true,
+        "signature_valid": true,
+        "approved": true,
+        "status": "APPROVED",
+        "reviewed_by": "developer",
+        "reviewed_at": "2026-09-14T13:38:24.847Z",
+        "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md",
+        "artifact_sha256": "65db50a20610c2d35ed4bbedd386b60386731dba038025949dfc52e1283e88b9",
+        "current_sha256": "65db50a20610c2d35ed4bbedd386b60386731dba038025949dfc52e1283e88b9",
+        "digest_match": true
+      },
+      {
+        "gate": "dor",
+        "exists": true,
+        "signature_valid": true,
+        "approved": true,
+        "status": "APPROVED",
+        "reviewed_by": "qc",
+        "reviewed_at": "2026-09-14T13:38:13.862Z",
+        "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md",
+        "artifact_sha256": "65db50a20610c2d35ed4bbedd386b60386731dba038025949dfc52e1283e88b9",
+        "current_sha256": "65db50a20610c2d35ed4bbedd386b60386731dba038025949dfc52e1283e88b9",
+        "digest_match": true
+      },
+      {
+        "gate": "approach",
+        "exists": true,
+        "signature_valid": true,
+        "approved": true,
+        "status": "APPROVED",
+        "reviewed_by": "developer",
+        "reviewed_at": "2026-09-14T13:38:13.862Z",
+        "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s05.technical-approach.md",
+        "artifact_sha256": "8bbd92fd60124dc6738e70a91e2249809b2a34c56372dce8156ef33e4c383cf6",
+        "current_sha256": "8bbd92fd60124dc6738e70a91e2249809b2a34c56372dce8156ef33e4c383cf6",
+        "digest_match": true
+      },
+      {
+        "gate": "task_plan",
+        "exists": true,
+        "signature_valid": true,
+        "approved": true,
+        "status": "APPROVED",
+        "reviewed_by": "developer",
+        "reviewed_at": "2026-09-14T13:38:13.862Z",
+        "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s06.task-breakdown.md",
+        "artifact_sha256": "471eefd0f30189d4f08d1f564fdd23d08055cd6ebec2d1cea42a7ee7f6c16c21",
+        "current_sha256": "471eefd0f30189d4f08d1f564fdd23d08055cd6ebec2d1cea42a7ee7f6c16c21",
+        "digest_match": true
+      }
+    ],
+    "amended_dod_artifact_binding": "APPROVED_HUMAN_QC_BINDING_ONLY",
+    "amended_dod_binding_recorded_at": "2026-09-14T13:51:10Z",
+    "finalized_s08_sha256": "e3159a438678242069c8045058b3d1c1664fa6451207a37cec123cfb8736af2e",
+    "reviewed_draft_s08_sha256": "e8bfa56df88def12724e289f272b6273005f319bc182d579c87ccd3c16cb8e10",
+    "next_action": "Commit approved owned child evidence, then human-TTY seal the single qualified checkpoint DoD receipt without an uncommitted waiver. Full AC-RCR-08 parent13/13 and new independent terminal gates remain mandatory.",
+    "trusted_checkpoint_dod_receipt": "MISSING",
+    "binding_human_approval": {
+      "status": "APPROVED",
+      "reviewed_by": [
+        "qc"
+      ],
+      "recorded_at": "2026-09-14T13:51:10Z",
+      "source": "Human accept to preceding amended binding proposal",
+      "original_qc_dod_preserved": true,
+      "original_qc_technical_verification_preserved": true,
+      "final_protocol_done": false,
+      "parent_contribution": "MANDATORY_PENDING"
+    },
+    "coverage_projection": {
+      "implementation_pass": 9,
+      "mandatory_parent_partial": 1,
+      "status": "PARTIAL",
+      "test_execution": "RETAINED_NOT_RERUN"
+    },
+    "binding_finalization_validation": {
+      "observed_at": "2026-09-14T13:56:08Z",
+      "validators": [
+        {
+          "id": "validate",
+          "exit_code": 0,
+          "status": "PASS",
+          "output": "OK: validated workflow naming (208 files) and governance (204 notes) under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+        },
+        {
+          "id": "protocol",
+          "exit_code": 0,
+          "status": "PASS",
+          "output": "OK: validated 13 protocol-managed work items under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items (skipped legacy: 16)"
+        },
+        {
+          "id": "sdd",
+          "exit_code": 0,
+          "status": "PASS",
+          "output": "OK: validated SDD for 44 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+        },
+        {
+          "id": "change",
+          "exit_code": 0,
+          "status": "PASS",
+          "output": "OK: validated change layer for 42 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+        },
+        {
+          "id": "exec",
+          "exit_code": 0,
+          "status": "PASS",
+          "output": "OK: validated execution runtime for 204 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+        },
+        {
+          "id": "plan",
+          "exit_code": 0,
+          "status": "PASS",
+          "output": "OK: validated planning track for 204 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+        }
+      ],
+      "UTF8": "PASS_12_CHANGED_ARTIFACTS",
+      "YAML": {
+        "status": "PASS",
+        "frontmatter": 8,
+        "fenced_yaml_blocks": 155
+      },
+      "diff_check": "PASS",
+      "finalized_native_gate_authority": "PASS_QC",
+      "trusted_authoring_receipts": "PASS_ALL_FIVE_SIGNATURE_AND_DIGEST",
+      "source_hashes": 7,
+      "package_payload_hashes": 4,
+      "original_history_prefix": 85,
+      "protocol_status": "VERIFIED",
+      "protocol_done": false,
+      "checkpoint_dod_receipt": "MISSING",
+      "parent_AC_RCR_08": "MANDATORY_PENDING",
+      "full_behavior_hosted_security_performance": "NOT_RERUN_METADATA_ONLY"
+    }
+  },
   "opened_at": "2026-09-14T02:45:55Z",
   "opening": {
     "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
