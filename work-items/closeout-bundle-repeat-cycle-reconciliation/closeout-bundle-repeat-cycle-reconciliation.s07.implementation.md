@@ -107,12 +107,9 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> Human accepted Developer/QC prior RCR-SB3 Code Quality FAIL and OPEN HIGH F-RCR-SB3-001, QC Spec reopening and Developer TS6a; all sixteen grants and sealed authoring hosts remain unchanged.
-> TS6a RED commit fe2b417 produced exactly two native foreign-lock failures before minimal four-line ownership GREEN at 04eed2f8b2098bddf513d0f96fd129e835686dd7. Fresh same-source regression passes 45 files, 19 state tests, 20 cycles, 64 boundaries, 10 races, 13 legacy no-write loads and smoke13/13.
-> QC refreshed Spec Compliance is APPROVED at 2026-09-14T02:32:17Z; Developer/QC refreshed Code Quality PASS and F-RCR-SB3-001 resolution are explicitly APPROVED at 2026-09-14T02:39:29Z for exact source 04eed2f8b2098bddf513d0f96fd129e835686dd7. QC explicitly opened TS8/s08 at 2026-09-14T02:45:55Z; protocol is ACTIVE at s08 for Verify only, no candidate/terminal approval is inferred.
-> Automated scan coverage remains PARTIAL; transient native read refusal, unmeasured history cost and supported Node18/22/package/hosted/parent exact-candidate duties remain explicit.
-> All RCR-SB1/2/3 review pairs are approved; current SB3 PASS retains disclosed scan gaps and native-read/history advisories.
-> F-RCR-SB3-001 is RESOLVED by explicit Developer/QC decision. Parent F-AG11-001 remains OPEN; CR-008 is NOT_DONE and branch HOLD_OPEN.
+> RCR-SB1/2/3 ordered review pairs remain approved; corrected SB3 source is `04eed2f8b2098bddf513d0f96fd129e835686dd7` and F-RCR-SB3-001 is RESOLVED.
+> QC explicitly opened TS8/s08; local exact candidate checks pass on Node18/22. Hosted run `34800821538` stopped at the Node24 Spec Card SDD validator before build.
+> Current protocol is BLOCKED at s08 pending additive metadata-only card authority. Scan PARTIAL, parent F-AG11-001 OPEN; no terminal or branch-finalization authority.
 
 ## Historical Implementation Summary — Superseded Checkpoints
 
@@ -1477,6 +1474,8 @@ review_after_green: "QC refreshed Spec Compliance then Developer/QC refreshed Co
 
 ## Implementation Notes — Refreshed RCR-SB3 Spec Compliance (TS6a)
 
+> Review/opening blocks below retain their original human decision snapshots. Current blocked TS8 authority is recorded in TS8 Handoff and rcr-ts8-evidence.json.
+
 ```yaml
 review_target: "RCR-SB3 refreshed Spec Compliance at 04eed2f8b2098bddf513d0f96fd129e835686dd7"
 planning_track: "full"
@@ -1604,10 +1603,15 @@ F_AG11_001: "OPEN"
 ## TS8 Handoff
 
 ```yaml
-reviewed_source: "04eed2f8b2098bddf513d0f96fd129e835686dd7"
-protocol_status: "ACTIVE"
-handoff_target: "RCR-TS8-verify"
-authority: "QC opening at 2026-09-14T02:45:55Z only"
+protocol_status: "BLOCKED"
+TS8: "OPEN_EXECUTION_BLOCKED"
+s08: "BLOCKED_HOSTED_SDD"
 evidence_ref: "rcr-ts8-evidence.json"
-terminal_gates: "Separate pending decisions after evidence; branch HOLD_OPEN"
 ```
+
+- QC opening APPROVED at `2026-09-14T02:45:55Z` for reviewed source `04eed2f8b2098bddf513d0f96fd129e835686dd7`; current status BLOCKED at s08.
+- Local exact candidate `af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f`: full45, artifact4, retained rollback4 PASS per Node18/22.
+- Hosted source `59c3c3e0149fe022df9a0f34b0c599805a726bfb`, run `34800821538`: SDD FAIL on Node24 card; no candidate or matrix jobs.
+- Next Human Action: Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun.
+- Same16roots; s03 QC owner metadata corrected within owned scope. Card/CI/locked authoring hosts/production source unchanged.
+- Scan gaps and mandatory child/parent exact-candidate verification retained; F-AG11-001 OPEN.

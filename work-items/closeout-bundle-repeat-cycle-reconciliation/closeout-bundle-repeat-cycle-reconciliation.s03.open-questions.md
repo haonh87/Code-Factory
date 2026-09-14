@@ -32,7 +32,7 @@ execution_roles:
   - "developer"
   - "qc"
 review_mode: independent
-verification_owner: ""
+verification_owner: "qc"
 approval_gates:
   spec: "required"
   contract: "required"

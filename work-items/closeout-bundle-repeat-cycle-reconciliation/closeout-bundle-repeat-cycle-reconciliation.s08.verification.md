@@ -99,7 +99,9 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> PARTIAL initial execution: QC explicitly opened TS8/s08 at 2026-09-14T02:45:55Z for reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7. Candidate/hosted checks are not yet complete; automatic scan gaps and mandatory exact-candidate child/parent contribution remain. DoD BLOCKED, parent F-AG11-001 OPEN, branch HOLD_OPEN.
+> QC opened TS8/s08 at reviewed code `04eed2f8b2098bddf513d0f96fd129e835686dd7`. Local exact candidate passes full45, artifact4 and retained rollback4 per Node18/22.
+> Hosted run `34800821538` failed Node24 Spec Card SDD validation before build; no hosted artifact or matrix Verify exists.
+> Status is BLOCKED pending additive metadata-only card authority. Scan stays PARTIAL; parent F-AG11-001 OPEN and no terminal gate approved.
 
 ## Step Contract
 
@@ -135,57 +137,57 @@ risk_ranked_test_matrix: [{"risk":"Duplicate or lost approval authority, legacy 
 test_strategy: {"unit_test":{"required":true,"rationale":"Constructors/selectors/event identity and guards"},"integration_test":{"required":true,"rationale":"Receipt/report/mirror transactions, rollback/recovery and real CLI races"},"database_test":{"required":false,"rationale":"No database scope"},"feature_test":{"required":true,"rationale":"Package artifact and source install/update CLI smoke in disposable fixtures"}}
 negative_cases: ["Malformed/missing/mismatched direct ID","Unknown legacy/state text preservation","NOOP byte stability","Failed-wx foreign lock preservation and own payload-write cleanup","64 failure/crash boundaries"]
 regression_targets: ["Legacy mandatory DoD","Adaptive/readiness/rejection/receipt-v1 authority","First/later cycle and report/s01 parity"]
-manual_exploration: {"flows_checked":["Reviewed source hashes and sealed authoring receipts"],"issues_found":[]}
-criteria_results: [{"criterion":"AC-RCR-01","result":"PARTIAL","evidence":"TS8 execution pending; earlier SB3 source-bound batch evidence is retained separately."},{"criterion":"AC-RCR-02","result":"PARTIAL","evidence":"TS8 execution pending; earlier SB3 source-bound batch evidence is retained separately."},{"criterion":"AC-RCR-03","result":"PARTIAL","evidence":"TS8 execution pending; earlier SB3 source-bound batch evidence is retained separately."},{"criterion":"AC-RCR-04","result":"PARTIAL","evidence":"TS8 execution pending; earlier SB3 source-bound batch evidence is retained separately."},{"criterion":"AC-RCR-05","result":"PARTIAL","evidence":"TS8 execution pending; earlier SB3 source-bound batch evidence is retained separately."},{"criterion":"AC-RCR-06","result":"PARTIAL","evidence":"TS8 execution pending; earlier SB3 source-bound batch evidence is retained separately."},{"criterion":"AC-RCR-07","result":"PARTIAL","evidence":"TS8 execution pending; earlier SB3 source-bound batch evidence is retained separately."},{"criterion":"AC-RCR-08","result":"PARTIAL","evidence":"Mandatory child/parent same-candidate contribution remains downstream; no parent closure inferred."},{"criterion":"AC-RCR-09","result":"PARTIAL","evidence":"TS8 execution pending; earlier SB3 source-bound batch evidence is retained separately."},{"criterion":"AC-RCR-10","result":"PARTIAL","evidence":"TS8 execution pending; earlier SB3 source-bound batch evidence is retained separately."}]
-test_evidence: {"unit_test":[],"integration_test":[],"database_test":[],"feature_test":[]}
-commands_run: []
-skipped_checks: ["Automatic ESLint/typecheck and Semgrep were unavailable in prior disclosed scan; rediscover at Verify","No benchmark/profiling"]
-release_blockers: ["TS8 candidate/hosted evidence not yet complete","Mandatory parent AC-RCR-08/F-AG11-001 and independent terminal gates"]
+manual_exploration: {"flows_checked":["Seven exact hashes/native parser","13 legacy/load-only historical prefixes","Metadata-only hosted commit/source diff","Node24 card validator enum vs actual scalar fields","Read-only in-memory proposed six-field normalization"],"issues_found":["V-RCR-TS8-001 hosted SDD schema blocker","RCR s03 missing verification_owner corrected to existing QC authority within scope"]}
+criteria_results: [{"criterion":"AC-RCR-01","result":"PASS","evidence":"Full45 on Node18/22: first/later committed cycles and unchanged retries; earlier reviewed20-cycle contribution retained.","scope":"Reviewed implementation-level evidence; not a terminal approval"},{"criterion":"AC-RCR-02","result":"PASS","evidence":"Full45 on Node18/22: each committed cycle appends one direct transaction-bound event independent of coarse audit markers.","scope":"Reviewed implementation-level evidence; not a terminal approval"},{"criterion":"AC-RCR-03","result":"PASS","evidence":"Full45 on Node18/22: typed canonical close action/report-s01 parity; repeated-cycle coverage passes.","scope":"Reviewed implementation-level evidence; not a terminal approval"},{"criterion":"AC-RCR-04","result":"PASS","evidence":"Full45 on Node18/22: unchanged approval retry is byte-stable and emits no extra authority.","scope":"Reviewed implementation-level evidence; not a terminal approval"},{"criterion":"AC-RCR-05","result":"PASS","evidence":"Full45 and fresh13 load-only/history-prefix checks: selected typed projection cleanup and immutable historical authority.","scope":"Reviewed implementation-level evidence; not a terminal approval"},{"criterion":"AC-RCR-06","result":"PASS","evidence":"Full45 on Node18/22: 64/64 caught/crash boundaries per Node plus native failed-wx ownership preservation and own cleanup control.","scope":"Reviewed implementation-level evidence; not a terminal approval"},{"criterion":"AC-RCR-07","result":"PASS","evidence":"Full45 per Node; fresh13 frozen/live no-write compatibility; legacy mandatory DoD/readiness/rejection/trusted receipt guards.","scope":"Reviewed implementation-level evidence; not a terminal approval"},{"criterion":"AC-RCR-08","result":"PARTIAL","evidence":"BLOCKED: local exact af49a958... checks pass but hosted build did not run; parent AG-01..13 same-candidate and child/parent terminal authority remain mandatory downstream.","scope":"Mandatory local/hosted and parent contribution incomplete"},{"criterion":"AC-RCR-09","result":"PASS","evidence":"State contract tests in full45 per Node and13 legacy loads/history preservation: unknown legacy text remains exact; core selectors use typed fields.","scope":"Reviewed implementation-level evidence; not a terminal approval"},{"criterion":"AC-RCR-10","result":"PASS","evidence":"Source7 exact/parser assertions and full45 per Node: direct UUID binding and new-suffix coordinator validation; note/text inference prohibited.","scope":"Reviewed implementation-level evidence; not a terminal approval"}]
+test_evidence: {"unit_test":["Node18.20.8 full45 PASS","Node22.23.2 full45 PASS"],"integration_test":["64/64 caught/crash boundaries per Node","First/later cycle, NOOP, native lock ownership and real concurrent CLI guard inside full suites","Exact candidate -> retained v2.6.1 rollback 4/4 per Node"],"database_test":[],"feature_test":["Exact af49a958... artifact install/update 4/4 per Node18/22","Source bundle smoke Node22 PASS"]}
+commands_run: ["npm pack once in git archive of reviewed source; isolated generated-runtime prerequisite","Full run-all.js on Node18/22 with exact candidate AND exact retained rollback environment","Exact artifact smoke Node18/22","Exact rollback transition Node18/22","Mechanical workflow pack audit PASS170"]
+skipped_checks: ["Automatic ESLint/typecheck/Semgrep: fresh discovery confirms no configs/wrappers/binaries/modules","No benchmark/profiling","Hosted downstream jobs skipped by failed SDD dependency; this is a blocker, not an accepted waiver"]
+release_blockers: ["Hosted run 34800821538 failed Workflow SDD: Node24 Spec Card has five invalid provenance fields and invalid Spec Freeze status; candidate build and matrix consumers were skipped. The card is outside the approved sixteen RCR write roots.","Mandatory AC-RCR-08 parent contribution/F-AG11-001 and separate terminal gates"]
 status: "PARTIAL"
-gaps: ["Initial execution artifact, not a completed Verify verdict"]
+gaps: ["No hosted candidate; exact local/hosted comparison and required Node matrix jobs did not run","Automatic ESLint/typecheck/Semgrep unavailable; no benchmark/read-isolation claim","Parent exact-candidate contribution and independent terminal authority remain mandatory"]
 residual_risks: ["Native transient-read refusal and linear history cost are retained advisories"]
-recommendation: "Execute approved TS8; do not approve Technical Verification, DoD or other terminal gates."
-notes_for_review: "QC opening at 2026-09-14T02:45:55Z only."
+recommendation: "Authorize only the metadata-only Node24 Spec Card correction/additive root, retain origin and decision authority, then rerun all existing hosted jobs. Do not weaken validator, alter CI or approve terminal gates."
+notes_for_review: "Nine implementation criteria have passing evidence; AC-RCR-08 is incomplete. RCR-SB3 finding RESOLVED by explicit Dev/QC approval; parent finding OPEN. QC opening remains valid but is not a Verify verdict."
 ```
 
 ## Governance Checks
 
 ```yaml
 checklist_applied: ["default","strict"]
-checks: ["Five frozen authoring receipts approved; sixteen roots unchanged","Refreshed SB3 pair approved and F-RCR-SB3-001 resolved","QC TS8/s08 opening explicit"]
-blocking_items: ["Required Verify evidence pending, terminal approvals not inferred"]
+checks: ["Five frozen approved authoring receipts and16roots unchanged","Explicit QC opening; reviewed code source unchanged","RCR s03 verification_owner qc metadata correction"]
+blocking_items: ["Hosted run 34800821538 failed Workflow SDD: Node24 Spec Card has five invalid provenance fields and invalid Spec Freeze status; candidate build and matrix consumers were skipped. The card is outside the approved sixteen RCR write roots."]
 owner: "qc"
-next_action: "Run TS8 exact-candidate checks"
+next_action: "Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun."
 ```
 
 ## Regression & Compatibility Summary
 
 ```yaml
-regression_status: "PARTIAL"
-compatibility_status: "PARTIAL"
+regression_status: "PASS_LOCAL_SOURCE_EXACT"
+compatibility_status: "PASS_LOCAL_SOURCE_EXACT"
 breaking_changes: []
-rollback_readiness: "PARTIAL"
-notes: ["Fresh TS8 execution pending; prior same-source SB3 snapshots retained"]
+rollback_readiness: "PASS_LOCAL_EXACT_RETAINED_ASSET"
+notes: ["Full45 per Node18/22; artifact4 and rollback4 per Node","13 frozen/live no-write loads and history prefixes; seven source hashes exact","Hosted candidate not created; no local/hosted equality or parent closure claimed"]
 ```
 
 ## Scan Summary
 
 ```yaml
-scan_target: "TS8 Verify: reviewed affected modules; fresh scan execution pending"
+scan_target: "TS8 at reviewed code 04eed2f8b2098bddf513d0f96fd129e835686dd7; fresh parser/source/tool discovery with limited diff-aware supplemental review"
 scan_scope: {"mode":"DIFF_ONLY","changed_files":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js","packages/workflow-bundle/test/work-item-protocol-state.test.js","packages/workflow-bundle/test/work-item-protocol.test.js","packages/workflow-bundle/test/workflow-gate-review.test.js"],"affected_modules":["Direct protocol-event construction/normalization","Receipt/pre-event cycle classification for all bundle decisions","Coordinator new-suffix identity validation","Atomicity, repeated cycles, load-only compatibility and race tests"]}
-language_stack: ["JavaScript CommonJS / Node.js v26.5.0"]
+language_stack: ["JavaScript CommonJS / Node22.23.2 parser; supported Node18.20.8 and22.23.2 regression"]
 available_scan_tools: ["Native Node parser","Source-bound assertions","Existing Node test suites","Git SHA/diff checks"]
 false_positive_policy: "Evidence-based and diff-aware; native race refusal is assessed against cycle/authority/retry/residue, not error prose. Do not invent automated scanner or read-isolation coverage."
 scan_plan: {"syntax":["node --check seven affected JavaScript files"],"static_analysis":["Configured wrapper/tool discovery","Exact-source, import/export and field/predicate review"],"security":["Semgrep discovery","Supplemental fixed-field validation, authority/atomicity guards and diff-aware manual review"],"performance_heuristic":["Allocation, JSON parsing, synchronous file reads, cycle classification and collection/event growth"]}
-syntax_scan_results: [{"command":"node --check <each affected file>","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js","packages/workflow-bundle/test/work-item-protocol-state.test.js","packages/workflow-bundle/test/work-item-protocol.test.js","packages/workflow-bundle/test/workflow-gate-review.test.js"],"status":"SKIP","evidence":"Fresh TS8 parser/source checks pending","blocker_files":[]}]
-static_analysis_results: [{"command":"Existing configured ESLint/typecheck wrapper","config_used":"No corresponding wrapper/config or installed eslint/tsc binary","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js"],"status":"SKIP","findings":[],"new_blockers":[]},{"command":"Source-bound assertions and supplemental import/field/predicate review","config_used":"Frozen s04 event contract and source-integrity assertions","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js"],"status":"SKIP","findings":[],"new_blockers":[]}]
-security_scan_results: [{"command_or_check":"Semgrep","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js"],"status":"SKIP","findings":[]},{"command_or_check":"Supplemental manual trust/input/write review and negative authority tests","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js"],"status":"SKIP","findings":[],"evidence":"No new network/subprocess/target/permission/signer/trusted-receipt schema surface. The added coordinator check parses a reserved internal protocol:report JSON operation, inspects only its new structured event suffix and rejects absent/mismatched identity or action before transaction writes. The UUID input validator is shared; new constructor/read paths cannot generate a missing ID. All eight failure/crash boundaries across all four decisions, malformed binding canaries, legacy signer/receipt-v1 authority and settled concurrency invariants pass. This is strong limited supporting evidence, not a deterministic security scan or final s08 approval. TS6a native losing-acquisition canaries preserve the other live lock and prepared journal; acquired-lock payload failure still cleans only its own lock. Only a successfully acquired lock enters this contender's failure cleanup. F-RCR-SB3-001 remains OPEN pending human refreshed reviews; this evidence does not close it."}]
-performance_heuristic_results: [{"check":"Allocation, report JSON parsing and synchronous read cost","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js"],"status":"SKIP","expected_impact":"LOW","confidence":"MEDIUM","trigger_condition":"Long report history/large state collections increase parse/copy cost; no measured scale threshold.","evidence":"Fresh heuristic review pending"}]
+syntax_scan_results: [{"command":"node --check <each affected file>","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js","packages/workflow-bundle/test/work-item-protocol-state.test.js","packages/workflow-bundle/test/work-item-protocol.test.js","packages/workflow-bundle/test/workflow-gate-review.test.js"],"status":"PASS","evidence":"Seven exact-source native Node22 parser checks passed; full45 also executed on Node18/22.","blocker_files":[]}]
+static_analysis_results: [{"command":"Existing configured ESLint/typecheck wrapper","config_used":"No corresponding wrapper/config or installed eslint/tsc binary","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js"],"status":"SKIP","findings":[],"new_blockers":[]},{"command":"Source-bound assertions and supplemental import/field/predicate review","config_used":"Frozen s04 event contract and source-integrity assertions","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js"],"status":"PASS","findings":[],"new_blockers":[],"evidence":"Seven reviewed hashes exact, core reconciliation selects kind/gate/id and never reads entry.text or event.note; direct binding assertions and import paths pass. Limited supplemental review is not ESLint/typecheck."}]
+security_scan_results: [{"command_or_check":"Semgrep","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js"],"status":"SKIP","findings":[]},{"command_or_check":"Supplemental manual trust/input/write review and negative authority tests","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js"],"status":"PARTIAL","findings":[],"evidence":"Reviewed the four-line native lock ownership delta: lockAcquired only after successful wx; losing acquisition bypasses foreign cleanup; own payload-write failure cleanup remains. Exact-source negative UUID/suffix/authority tests,64 caught/crash cases and ownership canaries pass per Node18/22. No new target/signer/receipt/public surface in this delta. This limited manual/test evidence does not replace Semgrep. F-RCR-SB3-001 explicitly RESOLVED at 2026-09-14T02:39:29Z; parent F-AG11-001 OPEN."}]
+performance_heuristic_results: [{"check":"Allocation, report JSON parsing and synchronous read cost","scope":["packages/workflow-bundle/scripts/work-item-protocol-utils.js","packages/workflow-bundle/scripts/work-item-protocol.js","packages/workflow-bundle/scripts/workflow-gate-review.js","packages/workflow-bundle/scripts/workflow-approval-transaction.js"],"status":"PARTIAL","expected_impact":"LOW","confidence":"MEDIUM","trigger_condition":"Long report history/large state collections increase parse/copy cost; no measured scale threshold.","evidence":"The four-line mutex delta adds one boolean/branch, no new repeated I/O or report parsing. Existing source still has synchronous file operations and linear report/history work; no scale benchmark or reader-isolation guarantee. Retained advisories, not measured performance PASS."}]
 skipped_scans: ["ESLint/typecheck unavailable globally/locally; no matching configured wrapper. Parsing/manual/test evidence is not equivalent coverage.","Semgrep unavailable; no new tool installed. Sensitive transaction scope has targeted negative/atomicity/authority coverage and limited manual supporting review only.","No benchmark/profiling; performance findings are heuristics."]
 overall_status: "PARTIAL"
-remediation_actions: ["Developer/QC decide refreshed Code Quality and F-RCR-SB3-001 disposition using corrected native ownership canaries; no automatic closure","Retain configured-tool gaps and reassess automated static/security scan coverage at TS8/s08","Retain native transient-read/large-history advisories; no reader-isolation/public-surface requirement added"]
-notes_for_verify: "Initial schema only. Rediscover tools and run parser/manual scoped checks; prior PARTIAL context retained, not re-dated as fresh results."
-authority_snapshot_note: "Pre-approval scan text remains the original source-bound supporting observation; current reviewer/finding authority is recorded separately at 2026-09-14T02:39:29Z. PARTIAL is not promoted to PASS."
+remediation_actions: ["Retain fresh confirmed automatic static/security tool gaps for QC review; no scanner installed or coverage invented","Resolve V-RCR-TS8-001 through additive metadata-only card authority; do not weaken validation or expand CI/production scope","Retain native transient-read and linear history advisories"]
+notes_for_verify: "Fresh discovery/parser/source assertions and limited native lock delta review at 2026-09-14T03:04:14Z. Earlier whole-batch scan observations remain historical; no automated scanner PASS or benchmark claim."
+authority_snapshot_note: "Refreshed Code Quality human PASS and F-RCR-SB3-001 closure remain at 2026-09-14T02:39:29Z; scan stays PARTIAL. Current hosted blocker is separate."
 ```
 
 ## Technical Verification
@@ -202,11 +204,11 @@ scope: "TS8 source/candidate evidence only"
 ```yaml
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
 status: "BLOCKED"
-checks: {"acceptance_criteria_evidenced":"FAIL","implementation_recorded":"PASS","required_verification_completed":"FAIL","code_scan_completed_or_justified":"FAIL","traceability_complete":"FAIL","residual_risks_documented":"PASS"}
-gaps: ["Candidate/hosted and required supported Node evidence pending","QC Technical Verification and DoD are separate unapproved human gates"]
+checks: {"acceptance_criteria_evidenced":"FAIL","implementation_recorded":"PASS","required_verification_completed":"FAIL","code_scan_completed_or_justified":"PARTIAL","traceability_complete":"PARTIAL","residual_risks_documented":"PASS"}
+gaps: ["Hosted run 34800821538 failed Workflow SDD: Node24 Spec Card has five invalid provenance fields and invalid Spec Freeze status; candidate build and matrix consumers were skipped. The card is outside the approved sixteen RCR write roots.","QC artifact binding/Technical Verification/DoD remain separate; mandatory parent exact-candidate followup"]
 residual_risks: ["Native transient-read refusal and linear history cost are retained advisories"]
 follow_up_items: ["Mandatory AC-RCR-08 parent exact-candidate AG-01..13 and terminal decisions"]
-next_action: "Execute TS8 checks before submitting QC Technical Verification."
+next_action: "Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun."
 ```
 
 ## Audit
@@ -215,20 +217,20 @@ next_action: "Execute TS8 checks before submitting QC Technical Verification."
 finish_target: "codex/adaptive-governance-human-approval-ux"
 workspace_kind: "BOTH"
 verify_inputs: ["rcr-ts8-evidence.json","closeout-bundle-repeat-cycle-reconciliation.s08.verification.md"]
-finish_gate_checks: {"verify_complete":"PENDING","dod_complete":"PENDING","findings_closed":"FAIL","exceptions_resolved":"PENDING"}
-allowed_actions: ["Approved TS8 build/test/evidence in owned scope"]
+finish_gate_checks: {"verify_complete":"FAIL","dod_complete":"PENDING","findings_closed":"FAIL","exceptions_resolved":"PENDING"}
+allowed_actions: ["Owned Verify evidence/diagnostics only while blocked"]
 blocked_actions: ["Merge","Cleanup","Branch/worktree finalization","Publish","Tag"]
 cleanup_sequence: []
 merge_conditions: ["Child/parent exact-candidate verification and terminal authority complete"]
 residual_risks: ["Parent F-AG11-001 OPEN","Native transient-read refusal and linear history cost are retained advisories"]
 final_recommendation: "HOLD_OPEN"
-notes_for_closeout: "No closeout authority follows from opening Verify."
+notes_for_closeout: "Workflow-pack audit confirms mechanical170 references; semantic whole-pack scope is not claimed. Branch-finish discipline holds open: hosted verification failed, DoD not approved and parent finding OPEN."
 ```
 
 ## Traceability
 
 ```yaml
-upstream: ["closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md","closeout-bundle-repeat-cycle-reconciliation.s05.system-design.md","closeout-bundle-repeat-cycle-reconciliation.s06.task-breakdown.md","closeout-bundle-repeat-cycle-reconciliation.s07.implementation.md"]
+upstream: ["closeout-bundle-repeat-cycle-reconciliation.s04.acceptance-criteria.md","closeout-bundle-repeat-cycle-reconciliation.s05.technical-approach.md","closeout-bundle-repeat-cycle-reconciliation.s06.task-breakdown.md","closeout-bundle-repeat-cycle-reconciliation.s07.implementation.md"]
 code_source: "04eed2f8b2098bddf513d0f96fd129e835686dd7"
 verify_evidence: "rcr-ts8-evidence.json"
 mandatory_downstream: "Parent AC-RCR-08 / F-AG11-001 exact-candidate contribution and independent terminal gates"
@@ -236,8 +238,8 @@ mandatory_downstream: "Parent AC-RCR-08 / F-AG11-001 exact-candidate contributio
 
 ## Handoff
 
-- Status: Verify execution OPEN; no terminal gate passed.
-- Next: Execute TS8 and present source/run/digest evidence for QC Technical Verification.
+- Status: BLOCKED at s08; QC opening retained, no terminal gate passed.
+- Next Human Action: Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun.
 - Parent contribution: AC-RCR-08 mandatory, F-AG11-001 OPEN.
 
 ## Candidate — Local Pre-host Evidence
@@ -248,7 +250,7 @@ version: "2.6.2"
 sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
 size: 962605
 source_sha: "04eed2f8b2098bddf513d0f96fd129e835686dd7"
-status: "LOCAL_PACKED_PENDING_HOSTED_COMPARISON"
+status: "LOCAL_VERIFIED_HOSTED_NOT_BUILT"
 build_node: "v22.23.2"
 build_npm: "10.9.8"
 files: 545
@@ -269,6 +271,35 @@ approval_controls: ["QC approved opening TS8/s08 at 2026-09-14T02:45:55Z only","
 release_controls: {"pre_release":["No publication/registry/tag/main changes in this Verify scope","Exact child/parent candidate binding and approved terminal receipts required"],"post_release":["Actual release/post-deploy flow is not authorized by this opening"]}
 rollback_controls: ["Retained v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9","Disposable Codex/Claude x global/project rollback transitions on Node18/22"]
 pipeline_risks: ["Hosted PR previously pointed at 38bb0d... and is historical, not this Verify source","Local/hosted tarball byte equality must be measured, not assumed","Automated static/security gaps remain PARTIAL","CI action Node24 upgrade and validator parallelisation remain separate scopes"]
-pipeline_recommendation: "READY_WITH_GUARDS"
-notes_for_implementation_or_ops: "Ready to execute existing candidate Verify flow only; no release readiness or human terminal approval inferred."
+pipeline_recommendation: "BLOCKED"
+notes_for_implementation_or_ops: "Hosted source 59c3c3e0149fe022df9a0f34b0c599805a726bfb/run 34800821538 failed before candidate build. No artifact to bind/promote. Correct card metadata only after additive authority; existing job topology and CI tokens remain untouched."
+```
+
+## Hosted Attempt — Failed Before Candidate Build
+
+```yaml
+status: "COMPLETED_FAILURE"
+source_sha: "59c3c3e0149fe022df9a0f34b0c599805a726bfb"
+reviewed_code_source_sha: "04eed2f8b2098bddf513d0f96fd129e835686dd7"
+run_id: 34800821538
+url: "https://github.com/haonh87/Code-Factory/actions/runs/34800821538"
+event: "pull_request"
+observed_at: "2026-09-14T03:04:14Z"
+conclusion: "failure"
+pr: 2
+jobs: [{"name":"Workflow Tooling","conclusion":"success","status":"completed","job_id":103842980341,"url":"https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103842980341"},{"name":"Workflow Artifacts","conclusion":"success","status":"completed","job_id":103843011346,"url":"https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843011346"},{"name":"Workflow SDD","conclusion":"failure","status":"completed","job_id":103843031984,"url":"https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843031984"},{"name":"Workflow Execution","conclusion":"skipped","status":"completed","job_id":103843050674,"url":"https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843050674"},{"name":"Workflow Changes","conclusion":"skipped","status":"completed","job_id":103843050680,"url":"https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843050680"},{"name":"Workflow Planning","conclusion":"skipped","status":"completed","job_id":103843051048,"url":"https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843051048"},{"name":"Workflow Authoring Smoke","conclusion":"skipped","status":"completed","job_id":103843051506,"url":"https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843051506"},{"name":"Release Candidate (Node ${{ matrix.node }})","conclusion":"skipped","status":"completed","job_id":103843051653,"url":"https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843051653"},{"name":"Build Exact Release Candidate","conclusion":"skipped","status":"completed","job_id":103843051702,"url":"https://github.com/haonh87/Code-Factory/actions/runs/34800821538/job/103843051702"}]
+job_counts: {"materialized":9,"success":2,"failure":1,"skipped":6,"required_expanded_when_build_runs":10}
+matrix_note: "The skipped matrix appears as one unexpanded placeholder, not two passing Node jobs."
+artifact: {"created":false,"total_count":0,"sha256":null}
+source_binding: {"metadata_only_diff_paths":["work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s01.restate.md","work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s07.implementation.md","work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s08.verification.md","work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.work-item-report.json","work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-code-quality-evidence.json","work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-evidence.json","work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-ts6a-code-quality-evidence.json","work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-ts6a-evidence.json","work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-ts8-evidence.json"],"package_build_inputs":"UNCHANGED","reviewed_scripts_tests":"SEVEN_HASHES_EXACT"}
+blocker: "Hosted run 34800821538 failed Workflow SDD: Node24 Spec Card has five invalid provenance fields and invalid Spec Freeze status; candidate build and matrix consumers were skipped. The card is outside the approved sixteen RCR write roots."
+local_hosted_checksum_comparison: "NOT_RUN: hosted candidate not created; local bytes are not claimed to be hosted-verified."
+```
+
+## Verification Blocker and Scope Request
+
+```yaml
+verification_blockers: [{"id":"V-RCR-TS8-001","status":"OPEN_OBSERVED","kind":"HOSTED_SDD_ARTIFACT_SCHEMA","owner":"developer","file":"product-specs/cards/upgrade-guardrails-actions-node24.md","evidence":"18 validator diagnostics = 6 distinct invalid scalar fields repeated through 3 Light host references.","root_cause":"Five provenance values are prose where the validator requires BASELINE or canonical CR id. Spec Freeze status uses approved where only draft|FROZEN is valid.","pre_existing":true,"first_seen_commit":"5cb70f33e67e18038b9bf743cbaf85867f7facfc","scope_boundary":"Card excluded from the sixteen approved RCR roots.","next_human_action":"Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun."}]
+read_only_schema_proposal: {"kind":"READ_ONLY_IN_MEMORY_SCHEMA_PROPOSAL_NOT_ACTUAL_PASS","simulated_fields":"5 provenance -> BASELINE and freeze status -> FROZEN only","intercepted_reads":6,"result":{"ok":true,"errors":[],"validatedCount":44,"workflowRoot":"/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"},"actual_file_unchanged":true}
+step_audit: {"status":"PARTIAL","goal_contract":"s08 Verify + DoD — TS8","evidence":["Local exact candidate45/4/4 PASS per supported Node","Source7/legacy13/native parser PASS","Hosted SDD failure and zero artifacts confirmed"],"gaps":["Hosted bytes/required jobs","Additive Node24 card metadata authority","Mandatory parent/terminal followups"],"next_step_allowed":false,"next_action":"Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun."}
 ```
