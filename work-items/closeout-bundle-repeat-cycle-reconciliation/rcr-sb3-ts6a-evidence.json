@@ -1,7 +1,7 @@
 {
   "amendment": "TS6a",
   "batch": "RCR-SB3",
-  "status": "GREEN_PENDING_REFRESHED_SPEC_COMPLIANCE",
+  "status": "GREEN_SPEC_APPROVED_PENDING_REFRESHED_CODE_QUALITY",
   "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
   "observed_at": "2026-09-13T14:09:29Z",
   "human_acceptance_at": "2026-09-13T14:04:14Z",
@@ -241,7 +241,7 @@
     "review_checkpoints": [
       "Developer/QC prior SB3 FAIL and OPEN finding accepted",
       "QC SB3 Spec reopened; Developer TS6a approved",
-      "QC corrected-source Spec PENDING; Code Quality NOT_OPEN"
+      "QC corrected-source Spec APPROVED at 2026-09-14T02:32:17Z; Developer/QC Code Quality PENDING"
     ],
     "outputs_actual": [
       "Four production lines prevent unowned cleanup",
@@ -253,7 +253,7 @@
       "Local Node26 only; supported Node18/22/package/extracted/hosted exact-candidate proof belongs to TS8"
     ],
     "follow_up_items": [
-      "QC refreshed Spec Compliance, then Developer/QC Code Quality and explicit finding disposition",
+      "Developer/QC refreshed Code Quality and explicit finding disposition after approved QC refreshed Spec Compliance",
       "Separate QC s08 opening and one exact v2.6.2 child/parent candidate",
       "Mandatory AC-RCR-08/parent AG-01..13 and independent terminal gates; F-AG11-001 remains OPEN"
     ],
@@ -400,7 +400,7 @@
       "A refused concurrent contender may observe transient ENOENT while the winner replaces a managed file; settled authority/identity/parity/retries/residue are verified, read isolation is not claimed",
       "Automatic scans PARTIAL; very large history cost unmeasured"
     ],
-    "recommendation": "Submit QC refreshed RCR-SB3 Spec Compliance for exact corrected source; no Code Quality finding closure or TS8/s08 approval.",
+    "recommendation": "Submit separate Developer/QC refreshed Code Quality for the QC-approved corrected source; no finding closure or TS8/s08 approval.",
     "notes_for_review": "PASS only this tested implementation contribution. F-RCR-SB3-001 remains OPEN; automated scans PARTIAL and mandatory AC-RCR-08 child/parent exact-candidate and all terminal gates remain future controls."
   },
   "supporting_scan": {
@@ -601,7 +601,7 @@
         "No public/receipt/signer/lock-format change; scan gaps and parent AC-RCR-08 duty retained"
       ],
       "code_quality": [
-        "NOT_OPEN until explicit QC refreshed Spec Compliance"
+        "Prepare separate Developer/QC refreshed Code Quality after explicit QC approval at 2026-09-14T02:32:17Z"
       ]
     },
     "finding_policy": {
@@ -617,12 +617,14 @@
     ],
     "notes_for_implementation_or_verify": "AI prepares source-bound evidence only; no reviewer verdict, finding closure or next-stage opening is inferred.",
     "recommendation": "PASS_FOR_IMPLEMENTED_BATCH_WITH_MANDATORY_DOWNSTREAM_FOLLOWUP",
-    "human_approval": "PENDING",
-    "reviewed_by": [],
-    "reviewed_at": "",
+    "human_approval": "APPROVED",
+    "reviewed_by": [
+      "qc"
+    ],
+    "reviewed_at": "2026-09-14T02:32:17Z",
     "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
     "evidence_ref": "rcr-sb3-ts6a-evidence.json",
-    "code_quality": "NOT_OPEN",
+    "code_quality": "PENDING",
     "F_RCR_SB3_001": "OPEN",
     "TS8": "CLOSED",
     "s08": "NOT_OPEN",
@@ -645,13 +647,13 @@
   },
   "authority": {
     "protocol_status": "BLOCKED",
-    "handoff_target": "RCR-SB3-refreshed-spec-compliance",
-    "missing_gate": "QC refreshed RCR-SB3 Spec Compliance",
-    "next_human_action": "QC decide refreshed Spec Compliance for corrected source 04eed2f8b2098bddf513d0f96fd129e835686dd7",
-    "code_quality": "NOT_OPEN",
+    "handoff_target": "RCR-SB3-refreshed-code-quality",
+    "missing_gate": "Developer/QC refreshed RCR-SB3 Code Quality and finding disposition",
+    "next_human_action": "Developer and QC decide refreshed Code Quality and F-RCR-SB3-001 disposition for corrected source 04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "code_quality": "PENDING",
     "historical_code_quality": "EXPLICIT_DEVELOPER_QC_FAIL at 08a3d12",
     "finding_disposition": "OPEN",
-    "TS6a": "GREEN_PENDING_REVIEW",
+    "TS6a": "GREEN_SPEC_APPROVED_PENDING_CODE_QUALITY",
     "TS8": "CLOSED",
     "s08": "NOT_OPEN",
     "technical_verification": "NOT_OPEN",
@@ -665,11 +667,19 @@
     "cleanup": false,
     "blockers": [
       {
-        "id": "se:00972ab68c999552323ef1abd39276f7c7eb9a2e0e408061afd002faade1528c",
+        "id": "se:6edb159b6296c28b5e8ad1058edb448fc85ab997585a1b26c065c4e869112f39",
         "kind": "delivery_blocker",
-        "text": "QC refreshed RCR-SB3 Spec Compliance is pending for corrected source 04eed2f8b2098bddf513d0f96fd129e835686dd7 after approved TS6a RED/GREEN and fresh regression. F-RCR-SB3-001 remains OPEN; Code Quality, TS8/s08 and terminal gates are not approved."
+        "text": "Developer/QC refreshed RCR-SB3 Code Quality and explicit F-RCR-SB3-001 disposition are pending for source 04eed2f8b2098bddf513d0f96fd129e835686dd7 after QC refreshed Spec Compliance approval. Scan coverage remains PARTIAL; TS8/s08 and terminal gates are not approved."
       }
-    ]
+    ],
+    "refreshed_spec_compliance": {
+      "human_approval": "APPROVED",
+      "reviewed_by": [
+        "qc"
+      ],
+      "reviewed_at": "2026-09-14T02:32:17Z",
+      "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7"
+    }
   },
   "mandatory_followups": [
     "QC refreshed Spec Compliance, then Developer/QC Code Quality and explicit finding disposition",
@@ -696,6 +706,23 @@
     "encoding": "PASS: fatal UTF-8 decode for all six handoff artifacts plus git diff --check",
     "s01_parity": "PASS",
     "external_owner_worktrees": "UNCHANGED",
-    "authority": "QC refreshed Spec PENDING at 04eed2f8b2098bddf513d0f96fd129e835686dd7; Code Quality NOT_OPEN; both findings OPEN; TS8/s08 and terminal gates closed"
+    "authority": "QC refreshed Spec PENDING at 04eed2f8b2098bddf513d0f96fd129e835686dd7; Code Quality NOT_OPEN; both findings OPEN; TS8/s08 and terminal gates closed",
+    "authority_superseded_at": "2026-09-14T02:32:17Z",
+    "current_authority": "QC refreshed Spec APPROVED at 2026-09-14T02:32:17Z for 04eed2f8b2098bddf513d0f96fd129e835686dd7; Developer/QC Code Quality PENDING; both findings OPEN; TS8/s08 and terminal gates closed"
+  },
+  "current_authority_observed_at": "2026-09-14T02:32:17Z",
+  "code_quality_evidence_ref": "rcr-sb3-ts6a-code-quality-evidence.json",
+  "current_refreshed_code_quality": {
+    "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "evidence_ref": "rcr-sb3-ts6a-code-quality-evidence.json",
+    "recommendation": "PASS_FOR_BATCH_WITH_DISCLOSED_SCAN_GAPS_AND_ADVISORIES",
+    "human_decision": "PENDING",
+    "reviewer_roles": [
+      "developer",
+      "qc"
+    ],
+    "reviewed_by": [],
+    "reviewed_at": "",
+    "finding_disposition": "OPEN"
   }
 }

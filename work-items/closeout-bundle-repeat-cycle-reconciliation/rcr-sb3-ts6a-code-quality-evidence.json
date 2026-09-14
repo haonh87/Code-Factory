@@ -1,0 +1,626 @@
+{
+  "batch": "RCR-SB3",
+  "amendment": "TS6a",
+  "review_lane": "CODE_QUALITY",
+  "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+  "observed_at": "2026-09-14T02:34:04Z",
+  "review_mode": "INDEPENDENT",
+  "preparation_mode": "AI_SOURCE_BOUND_SELF_CHECK_FOR_INDEPENDENT_HUMAN_REVIEW",
+  "spec_compliance_precondition": {
+    "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "human_approval": "APPROVED",
+    "reviewed_by": [
+      "qc"
+    ],
+    "reviewed_at": "2026-09-14T02:32:17Z",
+    "evidence_ref": "rcr-sb3-ts6a-evidence.json"
+  },
+  "recommendation": "PASS_FOR_BATCH_WITH_DISCLOSED_SCAN_GAPS_AND_ADVISORIES",
+  "human_decision": "PENDING",
+  "reviewer_roles": [
+    "developer",
+    "qc"
+  ],
+  "reviewed_by": [],
+  "reviewed_at": "",
+  "review_discipline": {
+    "review_target": "Refreshed RCR-SB3 Code Quality (TS6a) at 04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "planning_track": "full",
+    "review_mode": "INDEPENDENT",
+    "review_order": [
+      "SPEC_COMPLIANCE",
+      "CODE_QUALITY"
+    ],
+    "review_batches": [
+      {
+        "batch": "RCR-SB3",
+        "scope": [
+          "Accepted TS6a acquisition ownership repair and source-bound TS7 regression"
+        ],
+        "trigger": "QC refreshed Spec Compliance explicitly APPROVED at 2026-09-14T02:32:17Z",
+        "reviewer_role": "Developer and QC; AI evidence preparation is not an independent human verdict"
+      }
+    ],
+    "required_checks": {
+      "spec_compliance": [
+        "Explicit QC refreshed Spec Compliance APPROVED for exact source 04eed2f8b2098bddf513d0f96fd129e835686dd7 at 2026-09-14T02:32:17Z",
+        "Same sixteen grants and five approved frozen authoring receipts; no requirement/design drift"
+      ],
+      "code_quality": [
+        "Native failed-wx path never owns the lock or another journal and exits before cleanup",
+        "Successful acquisition is tracked before payload write and survives descriptor closure; own EIO/failure cleanup remains intact",
+        "Catch/crash/recovery guards, four decisions, direct identity and legacy-prefix preservation unchanged",
+        "45-file full regression in exact-source archived fixture plus 10 real CLI races, native interleaving canary and source/receipt/history assertions",
+        "Wrapper-first automatic scanner discovery; explicit SKIP/PARTIAL, no benchmark/read-isolation or supported-node/candidate claim"
+      ]
+    },
+    "finding_policy": {
+      "blocker_threshold": "Any unhandled HIGH/CRITICAL or scope/contract drift prevents handoff. Remediation evidence is not a human finding closure.",
+      "reopen_conditions": [
+        "Source or sealed authoring host change",
+        "Native ownership/authority/legacy/atomicity regression"
+      ]
+    },
+    "handoff_to_verify": [
+      "Developer/QC must explicitly decide refreshed Code Quality and F-RCR-SB3-001 disposition for this source",
+      "Only after the ordered pair and finding disposition may a separate QC approval open TS8/s08",
+      "Retain automated scan gaps; supported Node18/22, package/extracted/hosted exact candidate, AC-RCR-08 parent AG-01..13 and independent terminal gates"
+    ],
+    "notes_for_implementation_or_verify": "Source-bound AI preparation/recommendation only. Both findings OPEN, TS8 CLOSED, s08 NOT_OPEN, CR-008 NOT_DONE; no publication/tag/merge/install/cleanup.",
+    "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "evidence_ref": "rcr-sb3-ts6a-code-quality-evidence.json",
+    "spec_compliance_precondition": {
+      "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+      "human_approval": "APPROVED",
+      "reviewed_by": [
+        "qc"
+      ],
+      "reviewed_at": "2026-09-14T02:32:17Z",
+      "evidence_ref": "rcr-sb3-ts6a-evidence.json"
+    },
+    "recommendation": "PASS_FOR_BATCH_WITH_DISCLOSED_SCAN_GAPS_AND_ADVISORIES",
+    "human_decision": "PENDING",
+    "reviewed_by": [],
+    "reviewed_at": "",
+    "finding_disposition": "OPEN",
+    "proposed_finding_resolution": "RESOLVE_F-RCR-SB3-001_ONLY_IF_DEVELOPER_QC_EXPLICITLY_APPROVE",
+    "scan_coverage": "PARTIAL",
+    "TS8": "CLOSED",
+    "s08": "NOT_OPEN",
+    "whole_work_item_status": "NOT_DONE",
+    "branch_decision": "HOLD_OPEN"
+  },
+  "checks": [
+    {
+      "check": "fullFinal",
+      "status": "PASS",
+      "exit_code": 0,
+      "evidence": "PASS: all-bundle atomicity matrix completed 64/64 cases\n  PASS: real concurrent CLI race and two completed retries\n  PASS: failed verify leaves no premature s08 note (AC-05)\n  PASS: a stale host digest is rejected during preflight (got: Approval transaction preflight failed: digest mismatch for guard: expected b53f24a04941a64abefe80d2403fa55f866)\n  PASS: journal=false: failed acquisition preserves the foreign live lock bytes\n  PASS: journal=false: failed acquisition preserves the winner journal state\n  PASS: journal=false: failed acquisition writes no current authority or state\n  PASS: journal=true: failed acquisition preserves the foreign live lock bytes\n  PASS: journal=true: failed acquisition preserves the winner journal state\n  PASS: journal=true: failed acquisition writes no current authority or state\nOK: 45 workflow-bundle unit test file(s) passed"
+    },
+    {
+      "check": "racesFinal",
+      "status": "PASS",
+      "exit_code": 0,
+      "evidence": "PASS: real concurrent CLI race and two completed retries\n  PASS: real concurrent CLI race and two completed retries\n  PASS: real concurrent CLI race and two completed retries\n  PASS: real concurrent CLI race and two completed retries\n  PASS: real concurrent CLI race and two completed retries\n  PASS: real concurrent CLI race and two completed retries\n  PASS: real concurrent CLI race and two completed retries\nOK: 10 real concurrent races PASS"
+    },
+    {
+      "check": "integrity",
+      "status": "PASS",
+      "exit_code": 0,
+      "evidence": "{\"status\":\"PASS\",\"source_sha\":\"04eed2f8b2098bddf513d0f96fd129e835686dd7\",\"sources\":[{\"path\":\"packages/workflow-bundle/scripts/work-item-protocol-utils.js\",\"sha256\":\"21f8ad0ecedf99f8afbbd7c45cce4c8da38059795e5ece65bb5bf106c57d7cf6\"},{\"path\":\"packages/workflow-bundle/scripts/work-item-protocol.js\",\"sha256\":\"53de371f8fd9d82a466364be55048332f9ec80ca0fc5df9b3102e07a515c5d7a\"},{\"path\":\"packages/workflow-bundle/scripts/workflow-gate-review.js\",\"sha256\":\"0450ca110a060ae79d7b39af9466aef84f6aa323395938c6bdb247c858b61588\"},{\"path\":\"packages/workflow-bundle/scripts/workflow-approval-transaction.js\",\"sha256\":\"77d5278edf0fa5e4d7c488c9a9060d41eb00b116f900237a2105e4ff5dc71cdf\"},{\"path\":\"packages/workflow-bundle/test/work-item-protocol-state.test.js\",\"sha256\":\"70051a906da2b247a4d00d8aa6b165a5f30bc287b24c7236e2dfec57ef00dec0\"},{\"path\":\"packages/workflow-bundle/test/work-item-protocol.test.js\",\"sha256\":\"b55714247cd240cd14dd800110d5ee03c158a905546b939ee4e463a0d37b06ce\"},{\"path\":\"packages/workflow-bundle/test/workflow-gate-review.test.js\",\"sha256\":\"b73c541fa9c736f7e5203bf8e93cafc35ae0682128ff442d8413a71d2a0f071a\"}],\"source_snapshot\":\"EXACT_MATCH\",\"native_parse\":7,\"note_identity_inference\":\"NONE\",\"core_text_inference\":\"NONE in reconciliation; adapter remains the sole import boundary\",\"owner_worktrees\":\"UNCHANGED\"}"
+    },
+    {
+      "check": "compatibility",
+      "status": "PASS",
+      "exit_code": 0,
+      "evidence": "{\"status\":\"PASS\",\"frozen_reports\":13,\"live_loads\":13,\"historical_prefixes\":\"UNCHANGED\",\"unbound_events\":2,\"protected_hosts\":3,\"changed_utf8_files\":29}"
+    },
+    {
+      "check": "native-canary",
+      "status": "PASS",
+      "exit_code": 0,
+      "evidence": "{\"historical_failure_source_sha\":\"08a3d12e5482a6aa40cfc5b40318ab965626db31\",\"executed_module_sha256\":\"77d5278edf0fa5e4d7c488c9a9060d41eb00b116f900237a2105e4ff5dc71cdf\",\"scenario\":\"Competing transaction acquires real wx lock between last existence check and losing wx open\",\"injection\":\"Only timing at native openSync; EEXIST comes from native filesystem\",\"contender_transaction_id\":\"a1335a13-5c90-4dc4-b851-bd14793f7c5f\",\"winner_transaction_id\":\"b2335a13-5c90-4dc4-b851-bd14793f7c5f\",\"winner_pid\":81776,\"winner_pid_live\":true,\"loser_error_code\":\"EEXIST\",\"winner_lock_preserved\":true,\"target_unchanged\":true,\"loser_journal_absent\":true,\"fixture\":\"/private/tmp/cf-rcr-sb3-lock-review-svYcr4\",\"contract_expectation\":\"A transaction which failed lock acquisition must not remove another transaction's live lock\"}"
+    },
+    {
+      "check": "gate-review",
+      "status": "PASS",
+      "exit_code": 0,
+      "evidence": "  PASS: early concurrent refusal preserves the existing lock\n\nTS6a: native wx acquisition loss preserves the foreign live lock and journal\n  PASS: journal=false: the native losing wx open fails before ownership\n  PASS: journal=false: failed acquisition preserves the foreign live lock bytes\n  PASS: journal=false: failed acquisition preserves the winner journal state\n  PASS: journal=false: failed acquisition writes no current authority or state\n  PASS: journal=true: the native losing wx open fails before ownership\n  PASS: journal=true: failed acquisition preserves the foreign live lock bytes\n  PASS: journal=true: failed acquisition preserves the winner journal state\n  PASS: journal=true: failed acquisition writes no current authority or state\n\nTS6a: failure writing a successfully acquired lock still cleans its own lock\n  PASS: lock payload write fails after native acquisition\n  PASS: own acquired lock is cleaned when payload writing fails\n  PASS: acquired-lock failure writes no authority or derived state\n\nAll workflow-gate-review tests passed.\n"
+    },
+    {
+      "check": "receipts",
+      "status": "PASS",
+      "exit_code": 0,
+      "evidence": "{\"source\":\"749c51d582cfc1cd170b76376419bb296bdc7016\",\"gates\":[{\"gate\":\"spec\",\"approved\":true,\"digestMatch\":true},{\"gate\":\"contract\",\"approved\":true,\"digestMatch\":true},{\"gate\":\"dor\",\"approved\":true,\"digestMatch\":true},{\"gate\":\"approach\",\"approved\":true,\"digestMatch\":true},{\"gate\":\"task_plan\",\"approved\":true,\"digestMatch\":true}],\"granted_roots\":[\"packages/workflow-bundle/scripts/work-item-protocol-utils.js\",\"packages/workflow-bundle/scripts/work-item-protocol.js\",\"packages/workflow-bundle/scripts/materialize-work-item.js\",\"packages/workflow-bundle/scripts/workflow-gate-review.js\",\"packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js\",\"packages/workflow-bundle/scripts/validate-work-item-protocol.js\",\"packages/workflow-bundle/scripts/workflow-approval-transaction.js\",\"packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js\",\"packages/workflow-bundle/test/work-item-protocol-state.test.js\",\"packages/workflow-bundle/test/work-item-protocol.test.js\",\"packages/workflow-bundle/test/workflow-gate-review.test.js\",\"packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js\",\"packages/workflow-bundle/test/validate-work-item-protocol.test.js\",\"packages/workflow-bundle/test/materialize-work-item.test.js\",\"work-items/closeout-bundle-repeat-cycle-reconciliation\",\"work-items/adaptive-governance-human-approval-ux\"],\"protocol_status\":\"BLOCKED\",\"handoff_target\":\"RCR-SB3-refreshed-code-quality\",\"sources\":[{\"path\":\"packages/workflow-bundle/scripts/materialize-work-item.js\",\"sha256\":\"85e257b455fc4ebe0c0031954e5372e98c5013ce949bf1653123afc4807370cc\"},{\"path\":\"packages/workflow-bundle/scripts/work-item-protocol.js\",\"sha256\":\"53de371f8fd9d82a466364be55048332f9ec80ca0fc5df9b3102e07a515c5d7a\"},{\"path\":\"packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js\",\"sha256\":\"773a512163349ab07a6077f2a6ab6c1da242afe2c6de8de0845a3518ebbf224a\"},{\"path\":\"packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js\",\"sha256\":\"5280622c8eb9d5887715c2dfa3e3601b001bdb67051c920e5ffa683bae78199a\"},{\"path\":\"packages/workflow-bundle/test/work-item-protocol-state.test.js\",\"sha256\":\"70051a906da2b247a4d00d8aa6b165a5f30bc287b24c7236e2dfec57ef00dec0\"},{\"path\":\"packages/workflow-bundle/test/materialize-work-item.test.js\",\"sha256\":\"6c83e67026922a3e9e9ed3bb7987c61c5b08fdae3b3e98c514bc4693186561e2\"},{\"path\":\"packages/workflow-bundle/test/work-item-protocol.test.js\",\"sha256\":\"b55714247cd240cd14dd800110d5ee03c158a905546b939ee4e463a0d37b06ce\"}]}"
+    }
+  ],
+  "manual_review": [
+    {
+      "check": "Delta/ownership",
+      "result": "PASS",
+      "evidence": "08a3d12 -> 04eed2f production diff contains exactly four added lines: acquisition boolean, set immediately after native wx success, comment and early rethrow if unacquired. No lock/receipt/signer/UUID/public surface change."
+    },
+    {
+      "check": "Negative and resource paths",
+      "result": "PASS",
+      "evidence": "Foreign-lock tests cover winner with/without PREPARED journal; native EEXIST is generated by the filesystem. Separate own-acquired lock payload EIO plus post-lock caught/crash cases preserve existing cleanup/recovery semantics. Boolean outlives descriptor closure, avoiding fd-null as ownership inference."
+    },
+    {
+      "check": "Baseline classification",
+      "result": "PASS",
+      "evidence": "F-RCR-SB3-001 was pre-existing in c4c51f1, not introduced by the direct-identity refactor. Original 08a3d12 FAIL and witness are immutable history. Native timing canary is not proof of two committed real transactions or observed production data loss."
+    },
+    {
+      "check": "Review boundaries",
+      "result": "PASS",
+      "evidence": "No production/test/authoring-host change since corrected source; only current owned RCR review artifacts updated. Independent human verdicts and finding closure remain unrecorded."
+    }
+  ],
+  "findings": [],
+  "finding_resolution_proposal": {
+    "id": "F-RCR-SB3-001",
+    "severity": "HIGH",
+    "current_disposition": "OPEN",
+    "proposed_disposition": "RESOLVED",
+    "human_resolution": "PENDING",
+    "resolved_by": [],
+    "resolved_at": "",
+    "remediation_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "evidence": "Native loser preserves foreign live lock/journal and does not write authority; own acquired failure cleanup plus full45/races10 pass. Resolution is proposed, never inferred from GREEN."
+  },
+  "historical_code_quality": {
+    "source_sha": "08a3d12e5482a6aa40cfc5b40318ab965626db31",
+    "human_decision": "FAIL",
+    "reviewed_by": [
+      "developer",
+      "qc"
+    ],
+    "reviewed_at": "2026-09-13T14:04:14Z",
+    "evidence_ref": "rcr-sb3-code-quality-evidence.json"
+  },
+  "test_summary": {
+    "verification_target": "TS6a corrected-source implementation contribution at 04eed2f8b2098bddf513d0f96fd129e835686dd7; not whole candidate/release verification",
+    "risk_ranked_test_matrix": [
+      {
+        "risk": "Missing/untruthful new identity",
+        "severity": "HIGH",
+        "required_evidence": [
+          "Constructor and reader negative canaries",
+          "Four phase/decision direct journal/event/result comparisons",
+          "Five coordinator binding rejection cases with zero write"
+        ]
+      },
+      {
+        "risk": "Repeated cycles, failure atomicity and concurrent duplicate authority",
+        "severity": "HIGH",
+        "required_evidence": [
+          "Twenty committed cycles and twenty NOOP retries",
+          "64 failure/crash/recovery combinations",
+          "Ten real concurrent races with one winning later cycle and two completed retries each"
+        ]
+      },
+      {
+        "risk": "Legacy data loss or historical migration",
+        "severity": "HIGH",
+        "required_evidence": [
+          "Thirteen frozen/live load-only reports",
+          "Two unchanged historical unbound events",
+          "Unknown legacy and unrelated typed state preservation",
+          "Five trusted frozen authoring receipts unchanged"
+        ]
+      }
+    ],
+    "test_strategy": {
+      "unit_test": {
+        "required": true,
+        "rationale": "Event/state constructors, adapter, selectors and validation"
+      },
+      "integration_test": {
+        "required": true,
+        "rationale": "Journal/receipt/report/mirror atomicity, recovery and concurrent CLI persistence"
+      },
+      "database_test": {
+        "required": false,
+        "rationale": "No database boundary"
+      },
+      "feature_test": {
+        "required": true,
+        "rationale": "Public authoring/bootstrap/adaptive/legacy CLI regression"
+      }
+    },
+    "negative_cases": [
+      "Missing/malformed/non-string direct ID",
+      "Identity different from committed transaction",
+      "Wrong phase/action",
+      "Zero/two new events",
+      "Changed human notes",
+      "Historical coarse marker and unbound events",
+      "Eight caught failures and eight crash boundaries per decision",
+      "Concurrent contender emits no successful authority summary",
+      "Native wx acquisition loses to a foreign live transaction, with/without winner journal",
+      "Payload write failure after actual lock acquisition"
+    ],
+    "regression_targets": [
+      "Unknown legacy canaries survive",
+      "Legacy mandatory DoD",
+      "Adaptive/readiness/rejection gates",
+      "Receipt-v1/signers/role and artifact digest guards",
+      "Frozen report/s01 compatibility",
+      "Twenty cycles and byte-stable retries"
+    ],
+    "manual_exploration": {
+      "flows_checked": [
+        "Exact seven-file snapshot hashes",
+        "Note/text inference inventory",
+        "Bounded import/constructor/coordinator guards",
+        "Scope, protected authoring hosts and external owners"
+      ],
+      "issues_found": [
+        "Two bounded validation canaries repaired after RED under the locked event contract",
+        "Over-restrictive concurrency error-wording assertion corrected to EDGE-RCR-06 outcome checks; native transient read refusal remains a disclosed advisory",
+        "F-RCR-SB3-001 was reproduced before repair; four production lines track actual acquisition ownership. Corrected canaries pass, human finding closure not inferred."
+      ]
+    },
+    "criteria_results": [
+      {
+        "criterion": "Approved TS6a native lock ownership repair",
+        "result": "PASS",
+        "evidence": "Two native losing-acquisition cases preserve foreign lock bytes, winner journal and unchanged loser authority; own-acquired payload failure cleanup passes."
+      },
+      {
+        "criterion": "Existing TS7 identity/preservation/atomicity/concurrency contribution",
+        "result": "PASS",
+        "evidence": "Fresh 45-file fixture, 19 state tests, 20 cycles, 64 boundaries, 10 races, 13 no-write loads and smoke 13/13 at exact corrected source."
+      }
+    ],
+    "test_evidence": {
+      "unit_test": [
+        "19/19 state tests",
+        "Gate-review and all other unit files inside full 45-file runner"
+      ],
+      "integration_test": [
+        "Four direct journal/event/recovery cases plus two note-changing retries each",
+        "64 failure/crash cases",
+        "20 cycles / 20 retries",
+        "10 concurrent CLI races with one winner and two retries",
+        "13 frozen/live report loads; zero writes; ordered prefixes and two historical events unchanged"
+      ],
+      "database_test": [],
+      "feature_test": [
+        "Authoring smoke 13/13 PASS",
+        "45/45 full runner PASS in exact-source fixture after generated-runtime prerequisite",
+        "Workflow/protocol/planning validators PASS"
+      ]
+    },
+    "commands_run": [
+      "node packages/workflow-bundle/test/workflow-gate-review.test.js",
+      "node work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-lock-acquisition-review-repro.js",
+      "node packages/workflow-bundle/test/run-all.js (existing exact-source archived/generated fixture only)",
+      "Ten real CLI races via in-memory isolated invocation of the owned protocol test helper",
+      "Read-only seven-source/parser, frozen/live history and trusted receipt assertions",
+      "wfc validate / protocol / plan --workflow-root work-items"
+    ],
+    "skipped_checks": [
+      "Automated static/security tools unavailable; supporting scan remains PARTIAL",
+      "No benchmark/profiling",
+      "Node 18/22, candidate pack/extracted payload and hosted child/parent verification are TS8 duties, not this batch's proof"
+    ],
+    "release_blockers": [],
+    "status": "PASS",
+    "gaps": [
+      "PASS only the tested batch contribution; no whole-work-item or release verdict",
+      "AC-RCR-08 parent exact-candidate re-verification remains mandatory downstream",
+      "Installed/checked-in ignored runtime was not modified; pristine tracked source requires its existing generate-runtime prerequisite"
+    ],
+    "residual_risks": [
+      "A refused concurrent contender may observe transient ENOENT while the winner replaces a managed file; settled authority/identity/parity/retries/residue are verified, read isolation is not claimed",
+      "Automatic scans PARTIAL; very large history cost unmeasured"
+    ],
+    "recommendation": "The approved TS6a repair and tested TS7 contribution support a batch Code Quality PASS recommendation with disclosed gaps. Developer/QC verdict and finding resolution remain pending; this is not a whole-work-item release verdict.",
+    "notes_for_review": "Fresh full45/native ownership/races10/source/legacy/receipt checks at 2026-09-14T02:34:04Z. State19, smoke13 and mechanical/semantic pack context remain prior same-source TS6a snapshots; not re-dated as new standalone runs. Both findings OPEN; automatic scans PARTIAL; TS8/parent proof still mandatory."
+  },
+  "supporting_scan": {
+    "scan_target": "Refreshed RCR-SB3 (TS6a) s07 Code Quality supporting context at 04eed2f8b2098bddf513d0f96fd129e835686dd7; not formal s08 scan",
+    "scan_scope": {
+      "mode": "DIFF_ONLY",
+      "changed_files": [
+        "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
+        "packages/workflow-bundle/scripts/work-item-protocol.js",
+        "packages/workflow-bundle/scripts/workflow-gate-review.js",
+        "packages/workflow-bundle/scripts/workflow-approval-transaction.js",
+        "packages/workflow-bundle/test/work-item-protocol-state.test.js",
+        "packages/workflow-bundle/test/work-item-protocol.test.js",
+        "packages/workflow-bundle/test/workflow-gate-review.test.js"
+      ],
+      "affected_modules": [
+        "Direct protocol-event construction/normalization",
+        "Receipt/pre-event cycle classification for all bundle decisions",
+        "Coordinator new-suffix identity validation",
+        "Atomicity, repeated cycles, load-only compatibility and race tests"
+      ]
+    },
+    "language_stack": [
+      "JavaScript CommonJS / Node.js v26.5.0"
+    ],
+    "available_scan_tools": [
+      "Native Node parser",
+      "Source-bound assertions",
+      "Existing Node test suites",
+      "Git SHA/diff checks"
+    ],
+    "false_positive_policy": "Evidence-based and diff-aware; native race refusal is assessed against cycle/authority/retry/residue, not error prose. Do not invent automated scanner or read-isolation coverage.",
+    "scan_plan": {
+      "syntax": [
+        "node --check seven affected JavaScript files"
+      ],
+      "static_analysis": [
+        "Configured wrapper/tool discovery",
+        "Exact-source, import/export and field/predicate review"
+      ],
+      "security": [
+        "Semgrep discovery",
+        "Supplemental fixed-field validation, authority/atomicity guards and diff-aware manual review"
+      ],
+      "performance_heuristic": [
+        "Allocation, JSON parsing, synchronous file reads, cycle classification and collection/event growth"
+      ]
+    },
+    "syntax_scan_results": [
+      {
+        "command": "node --check <each affected file>",
+        "scope": [
+          "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
+          "packages/workflow-bundle/scripts/work-item-protocol.js",
+          "packages/workflow-bundle/scripts/workflow-gate-review.js",
+          "packages/workflow-bundle/scripts/workflow-approval-transaction.js",
+          "packages/workflow-bundle/test/work-item-protocol-state.test.js",
+          "packages/workflow-bundle/test/work-item-protocol.test.js",
+          "packages/workflow-bundle/test/workflow-gate-review.test.js"
+        ],
+        "status": "PASS",
+        "evidence": "Seven parser checks pass; working tree and generated-runtime regression snapshot match exact source hashes.",
+        "blocker_files": []
+      }
+    ],
+    "static_analysis_results": [
+      {
+        "command": "Existing configured ESLint/typecheck wrapper",
+        "config_used": "No corresponding wrapper/config or installed eslint/tsc binary",
+        "scope": [
+          "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
+          "packages/workflow-bundle/scripts/work-item-protocol.js",
+          "packages/workflow-bundle/scripts/workflow-gate-review.js",
+          "packages/workflow-bundle/scripts/workflow-approval-transaction.js"
+        ],
+        "status": "SKIP",
+        "findings": [],
+        "new_blockers": []
+      },
+      {
+        "command": "Source-bound assertions and supplemental import/field/predicate review",
+        "config_used": "Frozen s04 event contract and source-integrity assertions",
+        "scope": [
+          "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
+          "packages/workflow-bundle/scripts/work-item-protocol.js",
+          "packages/workflow-bundle/scripts/workflow-gate-review.js",
+          "packages/workflow-bundle/scripts/workflow-approval-transaction.js"
+        ],
+        "status": "PASS",
+        "findings": [],
+        "new_blockers": []
+      }
+    ],
+    "security_scan_results": [
+      {
+        "command_or_check": "Semgrep",
+        "scope": [
+          "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
+          "packages/workflow-bundle/scripts/work-item-protocol.js",
+          "packages/workflow-bundle/scripts/workflow-gate-review.js",
+          "packages/workflow-bundle/scripts/workflow-approval-transaction.js"
+        ],
+        "status": "SKIP",
+        "findings": []
+      },
+      {
+        "command_or_check": "Supplemental manual trust/input/write review and negative authority tests",
+        "scope": [
+          "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
+          "packages/workflow-bundle/scripts/work-item-protocol.js",
+          "packages/workflow-bundle/scripts/workflow-gate-review.js",
+          "packages/workflow-bundle/scripts/workflow-approval-transaction.js"
+        ],
+        "status": "PASS",
+        "findings": [],
+        "evidence": "No new network/subprocess/target/permission/signer/trusted-receipt schema surface. The added coordinator check parses a reserved internal protocol:report JSON operation, inspects only its new structured event suffix and rejects absent/mismatched identity or action before transaction writes. The UUID input validator is shared; new constructor/read paths cannot generate a missing ID. All eight failure/crash boundaries across all four decisions, malformed binding canaries, legacy signer/receipt-v1 authority and settled concurrency invariants pass. This is strong limited supporting evidence, not a deterministic security scan or final s08 approval. TS6a native losing-acquisition canaries preserve the other live lock and prepared journal; acquired-lock payload failure still cleans only its own lock. Only a successfully acquired lock enters this contender's failure cleanup. F-RCR-SB3-001 remains OPEN pending human refreshed reviews; this evidence does not close it."
+      }
+    ],
+    "performance_heuristic_results": [
+      {
+        "check": "Allocation, report JSON parsing and synchronous read cost",
+        "scope": [
+          "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
+          "packages/workflow-bundle/scripts/work-item-protocol.js",
+          "packages/workflow-bundle/scripts/workflow-gate-review.js",
+          "packages/workflow-bundle/scripts/workflow-approval-transaction.js"
+        ],
+        "status": "PASS",
+        "expected_impact": "LOW",
+        "confidence": "MEDIUM",
+        "trigger_condition": "Long report history/large state collections increase parse/copy cost; no measured scale threshold.",
+        "evidence": "No new benchmark is claimed. The coordinator adds report JSON parsing and current-report reads twice (initial and pre-commit guards) for a reserved protocol operation; cost is linear in report size. Cycle classification still occurs before UUID allocation; NOOP adds no transaction writes. Retain large-history allocation/I/O as advisory."
+      }
+    ],
+    "skipped_scans": [
+      "ESLint/typecheck unavailable globally/locally; no matching configured wrapper. Parsing/manual/test evidence is not equivalent coverage.",
+      "Semgrep unavailable; no new tool installed. Sensitive transaction scope has targeted negative/atomicity/authority coverage and limited manual supporting review only.",
+      "No benchmark/profiling; performance findings are heuristics."
+    ],
+    "overall_status": "PARTIAL",
+    "remediation_actions": [
+      "Developer/QC decide refreshed Code Quality and F-RCR-SB3-001 disposition using corrected native ownership canaries; no automatic closure",
+      "Retain configured-tool gaps and reassess automated static/security scan coverage at TS8/s08",
+      "Retain native transient-read/large-history advisories; no reader-isolation/public-surface requirement added"
+    ],
+    "notes_for_verify": "Syntax/source assertions and targeted manual/negative/atomicity evidence support this limited review. ESLint/typecheck and Semgrep still ABSENT globally/locally with no corresponding configured root/package wrappers; coverage stays PARTIAL. Node26 only, no benchmark/install or supported-node/candidate/hosted claim."
+  },
+  "source_integrity": {
+    "status": "PASS",
+    "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "sources": [
+      {
+        "path": "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
+        "sha256": "21f8ad0ecedf99f8afbbd7c45cce4c8da38059795e5ece65bb5bf106c57d7cf6"
+      },
+      {
+        "path": "packages/workflow-bundle/scripts/work-item-protocol.js",
+        "sha256": "53de371f8fd9d82a466364be55048332f9ec80ca0fc5df9b3102e07a515c5d7a"
+      },
+      {
+        "path": "packages/workflow-bundle/scripts/workflow-gate-review.js",
+        "sha256": "0450ca110a060ae79d7b39af9466aef84f6aa323395938c6bdb247c858b61588"
+      },
+      {
+        "path": "packages/workflow-bundle/scripts/workflow-approval-transaction.js",
+        "sha256": "77d5278edf0fa5e4d7c488c9a9060d41eb00b116f900237a2105e4ff5dc71cdf"
+      },
+      {
+        "path": "packages/workflow-bundle/test/work-item-protocol-state.test.js",
+        "sha256": "70051a906da2b247a4d00d8aa6b165a5f30bc287b24c7236e2dfec57ef00dec0"
+      },
+      {
+        "path": "packages/workflow-bundle/test/work-item-protocol.test.js",
+        "sha256": "b55714247cd240cd14dd800110d5ee03c158a905546b939ee4e463a0d37b06ce"
+      },
+      {
+        "path": "packages/workflow-bundle/test/workflow-gate-review.test.js",
+        "sha256": "b73c541fa9c736f7e5203bf8e93cafc35ae0682128ff442d8413a71d2a0f071a"
+      }
+    ],
+    "source_snapshot": "EXACT_MATCH",
+    "native_parse": 7,
+    "note_identity_inference": "NONE",
+    "core_text_inference": "NONE in reconciliation; adapter remains the sole import boundary",
+    "owner_worktrees": "UNCHANGED"
+  },
+  "compatibility": {
+    "status": "PASS",
+    "frozen_reports": 13,
+    "live_loads": 13,
+    "historical_prefixes": "UNCHANGED",
+    "unbound_events": 2,
+    "protected_hosts": 3,
+    "changed_utf8_files": 29
+  },
+  "trusted_authoring_receipts": [
+    {
+      "gate": "spec",
+      "approved": true,
+      "digestMatch": true
+    },
+    {
+      "gate": "contract",
+      "approved": true,
+      "digestMatch": true
+    },
+    {
+      "gate": "dor",
+      "approved": true,
+      "digestMatch": true
+    },
+    {
+      "gate": "approach",
+      "approved": true,
+      "digestMatch": true
+    },
+    {
+      "gate": "task_plan",
+      "approved": true,
+      "digestMatch": true
+    }
+  ],
+  "retained_prior_source_bound_evidence": {
+    "evidence_ref": "rcr-sb3-ts6a-evidence.json",
+    "observed_at": "2026-09-13T14:09:29Z",
+    "status": "HISTORICAL_SAME_SOURCE_SNAPSHOT",
+    "contents": [
+      "RED fe2b417 before GREEN 04eed2f",
+      "State19, smoke13, 20 cycles and 64 boundaries",
+      "13 load-only report prefixes and 2 unbound historical events",
+      "Scoped pack audit PARTIAL/mechanical PASS; no whole-pack release conclusion"
+    ]
+  },
+  "advisories": [
+    {
+      "id": "RCR-SB3-NATIVE-READ-REFUSAL",
+      "disposition": "RETAINED_ADVISORY",
+      "issue": "A refused contender may see native transient ENOENT while the winner replaces a managed file; settled cycle/authority/parity/retry/residue pass. No read isolation or friendly error wording promised."
+    },
+    {
+      "id": "RCR-SB3-HISTORY-COST",
+      "disposition": "RETAINED_ADVISORY",
+      "issue": "Coordinator parses/reads internal protocol JSON twice; linear history cost remains unmeasured. No benchmark or scale guarantee."
+    }
+  ],
+  "authority": {
+    "protocol_status": "BLOCKED",
+    "handoff_target": "RCR-SB3-refreshed-code-quality",
+    "missing_gate": "Developer/QC refreshed RCR-SB3 Code Quality and finding disposition",
+    "next_human_action": "Developer and QC decide refreshed Code Quality and F-RCR-SB3-001 disposition for corrected source 04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "code_quality": "PENDING",
+    "historical_code_quality": "EXPLICIT_DEVELOPER_QC_FAIL at 08a3d12",
+    "finding_disposition": "OPEN",
+    "TS6a": "GREEN_SPEC_APPROVED_PENDING_CODE_QUALITY",
+    "TS8": "CLOSED",
+    "s08": "NOT_OPEN",
+    "technical_verification": "NOT_OPEN",
+    "dod": "NOT_OPEN",
+    "release": "NOT_OPEN",
+    "business_acceptance": "NOT_OPEN",
+    "F_AG11_001": "OPEN",
+    "publish": false,
+    "tag": false,
+    "merge": false,
+    "cleanup": false,
+    "blockers": [
+      {
+        "id": "se:6edb159b6296c28b5e8ad1058edb448fc85ab997585a1b26c065c4e869112f39",
+        "kind": "delivery_blocker",
+        "text": "Developer/QC refreshed RCR-SB3 Code Quality and explicit F-RCR-SB3-001 disposition are pending for source 04eed2f8b2098bddf513d0f96fd129e835686dd7 after QC refreshed Spec Compliance approval. Scan coverage remains PARTIAL; TS8/s08 and terminal gates are not approved."
+      }
+    ],
+    "refreshed_spec_compliance": {
+      "human_approval": "APPROVED",
+      "reviewed_by": [
+        "qc"
+      ],
+      "reviewed_at": "2026-09-14T02:32:17Z",
+      "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7"
+    }
+  },
+  "mandatory_followups": [
+    "QC refreshed Spec Compliance, then Developer/QC Code Quality and explicit finding disposition",
+    "Separate QC s08 opening and one exact v2.6.2 child/parent candidate",
+    "Mandatory AC-RCR-08/parent AG-01..13 and independent terminal gates; F-AG11-001 remains OPEN"
+  ],
+  "rollback": {
+    "version": "v2.6.1",
+    "sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+  },
+  "whole_work_item_status": "NOT_DONE",
+  "branch_decision": "HOLD_OPEN",
+  "handoff_checks": {
+    "observed_at": "2026-09-14T02:36:09Z",
+    "workflow_validator": "PASS: 208 files / 204 notes",
+    "protocol_validator": "PASS: 13 managed / 16 legacy skipped",
+    "planning_validator": "PASS: 204 notes",
+    "source_integrity": "Seven affected file hashes unchanged and equal corrected source plus archived regression fixture",
+    "trusted_authoring_receipts": "5 APPROVED / protected frozen host digests unchanged",
+    "encoding": "PASS: seven changed/new owned RCR artifacts decode as fatal UTF-8; git diff --check",
+    "s01_mirror": "EXACT",
+    "protocol_history": "Existing event/audit prefixes unchanged; appended explicit QC refreshed Spec approval then AI Code Quality preparation only",
+    "historical_code_quality": "Original 08a3d12 human FAIL and TS6a RED history unchanged",
+    "artifact_scope": "Seven RCR review artifacts only; no production/test/parent/CI/master edits",
+    "authority": "QC refreshed Spec APPROVED; Developer/QC refreshed Code Quality and finding closure PENDING; both findings OPEN, scan PARTIAL, TS8/s08 and terminal gates closed"
+  }
+}
