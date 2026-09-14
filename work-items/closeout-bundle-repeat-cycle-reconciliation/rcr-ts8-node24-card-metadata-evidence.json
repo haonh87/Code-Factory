@@ -1,7 +1,7 @@
 {
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "task": "TS8-M1",
-  "status": "PASS_METADATA_CORRECTION_PENDING_HOSTED_VERIFY",
+  "status": "PASS_METADATA_CORRECTION_AND_HOSTED_SDD",
   "approved_at": "2026-09-14T03:14:22Z",
   "completed_at": "2026-09-14T03:16:42Z",
   "approval": {
@@ -174,5 +174,15 @@
     "terminal_gates": "NOT_APPROVED",
     "parent_finding": "F-AG11-001 OPEN",
     "node24_action_implementation": "NOT_ACTIVATED"
+  },
+  "initial_status": "PASS_METADATA_CORRECTION_PENDING_HOSTED_VERIFY",
+  "hosted_verification_result": {
+    "observed_at": "2026-09-14T03:32:59.441Z",
+    "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "run_id": 34802149041,
+    "workflow_sdd": "PASS",
+    "required_jobs": "10/10 PASS",
+    "artifact_binding": "PENDING_QC",
+    "card_package_excluded": true
   }
 }

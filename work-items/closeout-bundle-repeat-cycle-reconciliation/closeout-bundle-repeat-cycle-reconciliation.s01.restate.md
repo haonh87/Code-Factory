@@ -654,7 +654,7 @@ next_action: "Developer reviews the amended s06 TS0..TS8 plan; implementation st
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: BLOCKED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
@@ -691,12 +691,13 @@ decision_owner: "agent"
 protocol_owner: "qc"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "RCR-TS8-hosted-rerun"
-last_transition_action: "resume"
-last_transition_at: "2026-09-14T03:16:42Z"
+handoff_target: "RCR-TS8-hosted-artifact-binding"
+last_transition_action: "block"
+last_transition_at: "2026-09-14T03:32:59.441Z"
 required_actions:
-  - {"id":"se:2db776cd66b0f279593ff88c165a05422878625c8646363d21f46d5043ec7f26","kind":"workflow_followup","text":"Continue active execution from the current step."}
-blockers: []
+  - {"id":"se:bba268537b016154c7eea44843b6b09aaee5c4a72a6f391f9341ec7a01d20657","kind":"workflow_followup","text":"QC review amended hosted artifact binding for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; retain reviewed-source local pre-host evidence and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Technical Verification and DoD remain separate next reviews."}
+blockers:
+  - {"id":"se:543e5268ca62afafcf82ac6b8f433a80249f4cf6bf8edf5c14d6140647bde476","kind":"delivery_blocker","text":"QC amended hosted artifact binding is pending for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f."}
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -855,6 +856,7 @@ audit_events:
   - "S08_RCR_TS8_HOSTED_SDD_BLOCKED"
   - "S08_RCR_TS8_M1_CARD_METADATA_APPROVED"
   - "S08_RCR_TS8_M1_LOCAL_SDD_FIXED"
+  - "S08_RCR_TS8_HOSTED_EVIDENCE_PREPARED"
 ```
 
 ## Traceability

@@ -575,17 +575,17 @@
     }
   ],
   "authority": {
-    "protocol_status": "ACTIVE",
-    "handoff_target": "RCR-TS8-hosted-rerun",
-    "missing_gate": "NONE for accepted metadata correction/TS8 execution",
-    "next_human_action": "NONE while hosted Verify executes; exact artifact binding/Technical Verification/DoD and parent gates remain independent",
+    "protocol_status": "BLOCKED",
+    "handoff_target": "RCR-TS8-hosted-artifact-binding",
+    "missing_gate": "QC amended hosted artifact binding",
+    "next_human_action": "QC review amended hosted artifact binding for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; retain reviewed-source local pre-host evidence and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Technical Verification and DoD remain separate next reviews.",
     "code_quality": "APPROVED_PASS",
     "historical_code_quality": "EXPLICIT_DEVELOPER_QC_FAIL at 08a3d12",
     "finding_disposition": "RESOLVED",
     "TS6a": "GREEN_REFRESHED_REVIEW_PAIR_APPROVED",
     "TS8": "OPEN",
-    "s08": "VERIFY_IN_PROGRESS",
-    "technical_verification": "PENDING_EVIDENCE",
+    "s08": "WAITING_QC_HOSTED_ARTIFACT_BINDING",
+    "technical_verification": "PENDING_REVIEW",
     "dod": "NOT_OPEN",
     "release": "NOT_OPEN",
     "business_acceptance": "NOT_OPEN",
@@ -594,7 +594,13 @@
     "tag": false,
     "merge": false,
     "cleanup": false,
-    "blockers": [],
+    "blockers": [
+      {
+        "id": "se:543e5268ca62afafcf82ac6b8f433a80249f4cf6bf8edf5c14d6140647bde476",
+        "kind": "delivery_blocker",
+        "text": "QC amended hosted artifact binding is pending for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f."
+      }
+    ],
     "refreshed_spec_compliance": {
       "human_approval": "APPROVED",
       "reviewed_by": [
@@ -620,7 +626,8 @@
       ],
       "reviewed_at": "2026-09-14T02:45:55Z",
       "scope": "TS8/s08 Verify execution only"
-    }
+    },
+    "hosted_artifact_binding": "PENDING_QC"
   },
   "mandatory_followups": [
     "QC refreshed Spec Compliance, then Developer/QC Code Quality and explicit finding disposition",
@@ -650,7 +657,7 @@
     "current_authority": "Developer/QC Code Quality PASS and F-RCR-SB3-001 RESOLVED at 2026-09-14T02:39:29Z for 04eed2f8b2098bddf513d0f96fd129e835686dd7; parent F-AG11-001 OPEN, scan PARTIAL, QC TS8/s08 opening PENDING, terminal gates closed"
   },
   "human_approval_note": "Developer and QC explicitly approved refreshed RCR-SB3 Code Quality PASS at 2026-09-14T02:39:29Z for exact source 04eed2f8b2098bddf513d0f96fd129e835686dd7, retaining scan coverage PARTIAL, native transient-read and unmeasured-history advisories and all TS8/s08 obligations. Refreshed QC Spec approval at 2026-09-14T02:32:17Z precedes this verdict. No Verify opening, Technical Verification/DoD/Release/Business Acceptance, publish/tag/merge/install/cleanup approval is inferred.",
-  "current_authority_observed_at": "2026-09-14T03:16:42Z",
+  "current_authority_observed_at": "2026-09-14T03:32:59.441Z",
   "current_finding_resolution": {
     "id": "F-RCR-SB3-001",
     "disposition": "RESOLVED",
@@ -704,5 +711,15 @@
     "accepted_at": "2026-09-14T03:14:22Z",
     "evidence": "rcr-ts8-node24-card-metadata-evidence.json",
     "granted_roots": 17
+  },
+  "ts8_hosted_binding_handoff": {
+    "prepared_at": "2026-09-14T03:32:59.441Z",
+    "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "run_id": 34802149041,
+    "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+    "hosted_required_jobs": "10/10 PASS",
+    "artifact_binding": "PENDING_QC",
+    "terminal_gates": "NOT_APPROVED",
+    "evidence_ref": "rcr-ts8-evidence.json"
   }
 }

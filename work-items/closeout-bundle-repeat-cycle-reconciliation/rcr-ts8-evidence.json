@@ -1,7 +1,7 @@
 {
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "task": "TS8",
-  "status": "VERIFY_IN_PROGRESS",
+  "status": "WAITING_QC_HOSTED_ARTIFACT_BINDING",
   "opened_at": "2026-09-14T02:45:55Z",
   "opening": {
     "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
@@ -106,7 +106,7 @@
     }
   },
   "test_summary": {
-    "verification_target": "TS8 exact v2.6.2 candidate at reviewed source 04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "verification_target": "TS8 hosted v2.6.2 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f at af70276fe14317417365c06dd06186da1996c401 / run 34802149041; reviewed code 04eed2f8b2098bddf513d0f96fd129e835686dd7",
     "risk_ranked_test_matrix": [
       {
         "risk": "Duplicate or lost approval authority, legacy deletion, unbound events",
@@ -163,11 +163,14 @@
         "13 legacy/load-only historical prefixes",
         "Metadata-only hosted commit/source diff",
         "Node24 card validator enum vs actual scalar fields",
-        "Read-only in-memory proposed six-field normalization"
+        "Read-only in-memory proposed six-field normalization",
+        "Actual downloaded hosted package checksum/545 paths/42 skills per grouped runtime/core hashes",
+        "Accepted card excluded from tarball; reviewed-to-hosted source diff metadata-only"
       ],
       "issues_found": [
         "V-RCR-TS8-001 hosted SDD schema blocker",
-        "RCR s03 missing verification_owner corrected to existing QC authority within scope"
+        "RCR s03 missing verification_owner corrected to existing QC authority within scope",
+        "V-RCR-TS8-001 corrected under accepted TS8-M1 and fresh hosted SDD PASS; no production finding reopened"
       ]
     },
     "criteria_results": [
@@ -216,8 +219,8 @@
       {
         "criterion": "AC-RCR-08",
         "result": "PARTIAL",
-        "evidence": "BLOCKED: local exact af49a958... checks pass but hosted build did not run; parent AG-01..13 same-candidate and child/parent terminal authority remain mandatory downstream.",
-        "scope": "Mandatory local/hosted and parent contribution incomplete"
+        "evidence": "PASS child exact-candidate portion: hosted10/10, measured local/hosted af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f equality, Node18/22 full45 and artifact4; downloaded candidate -> retained v2.6.1 rollback4 per Node. QC binding/Technical Verification/DoD and mandatory parent AG-01..13 same-candidate contribution remain independent and incomplete.",
+        "scope": "PARTIAL mandatory downstream parent contribution; child Technical Verification/DoD precede parent re-verification by locked AC-RCR-08 sequencing."
       },
       {
         "criterion": "AC-RCR-09",
@@ -235,17 +238,20 @@
     "test_evidence": {
       "unit_test": [
         "Node18.20.8 full45 PASS",
-        "Node22.23.2 full45 PASS"
+        "Node22.23.2 full45 PASS",
+        "Hosted Node18.20.8/22.23.2:45/45 source unit test files pass (same reviewed seven hashes)"
       ],
       "integration_test": [
         "64/64 caught/crash boundaries per Node",
         "First/later cycle, NOOP, native lock ownership and real concurrent CLI guard inside full suites",
-        "Exact candidate -> retained v2.6.1 rollback 4/4 per Node"
+        "Exact candidate -> retained v2.6.1 rollback 4/4 per Node",
+        "Fresh downloaded hosted candidate -> retained v2.6.1 rollback4/4 per Node18/22"
       ],
       "database_test": [],
       "feature_test": [
         "Exact af49a958... artifact install/update 4/4 per Node18/22",
-        "Source bundle smoke Node22 PASS"
+        "Source bundle smoke Node22 PASS",
+        "Hosted Node18/22 exact artifact4/4 per matrix job; fresh downloaded hosted artifact4/4 per Node"
       ]
     },
     "commands_run": [
@@ -253,28 +259,29 @@
       "Full run-all.js on Node18/22 with exact candidate AND exact retained rollback environment",
       "Exact artifact smoke Node18/22",
       "Exact rollback transition Node18/22",
-      "Mechanical workflow pack audit PASS170"
+      "Mechanical workflow pack audit PASS170",
+      "gh run view/download for run 34802149041; actual tar checksum and reviewed payload comparison",
+      "Downloaded hosted tarball artifact/retained rollback tests on supported Node18/22 without self-pack"
     ],
     "skipped_checks": [
       "Automatic ESLint/typecheck/Semgrep: fresh discovery confirms no configs/wrappers/binaries/modules",
-      "No benchmark/profiling",
-      "Hosted downstream jobs skipped by failed SDD dependency; this is a blocker, not an accepted waiver"
+      "No benchmark/profiling"
     ],
     "release_blockers": [
-      "Hosted exact candidate and required Node18/22 matrix job evidence pending",
-      "Mandatory AC-RCR-08 parent contribution and independent terminal gates"
+      "Explicit QC amended hosted artifact binding, then separate Technical Verification/DoD",
+      "Mandatory AC-RCR-08 parent same-candidate contribution and independent terminal decisions"
     ],
     "status": "PARTIAL",
     "gaps": [
-      "No hosted candidate; exact local/hosted comparison and required Node matrix jobs did not run",
+      "QC hosted identity/Technical Verification/DoD pending",
       "Automatic ESLint/typecheck/Semgrep unavailable; no benchmark/read-isolation claim",
-      "Parent exact-candidate contribution and independent terminal authority remain mandatory"
+      "AC-RCR-08 parent same-candidate contribution remains mandatory downstream, after child Technical Verification/DoD"
     ],
     "residual_risks": [
       "Native transient-read refusal and linear history cost are retained advisories"
     ],
-    "recommendation": "Execute existing hosted Verify for the metadata-corrected commit; bind actual full candidate SHA-256 before separate QC Technical Verification.",
-    "notes_for_review": "Nine implementation criteria have passing evidence; AC-RCR-08 is incomplete. RCR-SB3 finding RESOLVED by explicit Dev/QC approval; parent finding OPEN. QC opening remains valid but is not a Verify verdict."
+    "recommendation": "QC review amended hosted artifact binding for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; retain reviewed-source local pre-host evidence and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Technical Verification and DoD remain separate next reviews.",
+    "notes_for_review": "Nine implementation ACs PASS; AC-RCR-08 child candidate checks PASS and parent contribution PARTIAL. Current hosted run10/10 succeeds, old SDD failure retained as history. Scan remains PARTIAL. No human terminal approval inferred."
   },
   "scan": {
     "scan_target": "TS8 at reviewed code 04eed2f8b2098bddf513d0f96fd129e835686dd7; fresh parser/source/tool discovery with limited diff-aware supplemental review",
@@ -417,11 +424,11 @@
     "overall_status": "PARTIAL",
     "remediation_actions": [
       "Retain fresh confirmed automatic static/security tool gaps for QC review; no scanner installed or coverage invented",
-      "Accepted TS8-M1 resolves local SDD schema; retain failed hosted attempt and require complete fresh hosted run",
+      "Accepted TS8-M1 and actual hosted SDD pass; retain failed attempt as immutable history",
       "Retain native transient-read and linear history advisories"
     ],
     "notes_for_verify": "Fresh discovery/parser/source assertions and limited native lock delta review at 2026-09-14T03:04:14Z. Earlier whole-batch scan observations remain historical; no automated scanner PASS or benchmark claim.",
-    "authority_snapshot_note": "Refreshed Code Quality human PASS and F-RCR-SB3-001 closure remain at 2026-09-14T02:39:29Z; scan stays PARTIAL. Current hosted blocker is separate."
+    "authority_snapshot_note": "Refreshed Code Quality PASS and F-RCR-SB3-001 resolution retain original human timestamp; scan remains PARTIAL. Hosted SDD is now PASS; current blocker is independent QC artifact binding."
   },
   "source_integrity": {
     "status": "PASS",
@@ -464,12 +471,12 @@
     "observed_at": "2026-09-14T03:04:14Z"
   },
   "candidate": {
-    "path": "/private/tmp/cf-rcr-ts8-source-tQ3GPc/workflow-bundle-2.6.2.tgz",
+    "path": "/private/tmp/cf-rcr-ts8-hosted-MdHnYG/workflow-bundle-2.6.2.tgz",
     "version": "2.6.2",
     "sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
     "size": 962605,
-    "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
-    "status": "LOCAL_VERIFIED_HOSTED_NOT_BUILT",
+    "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "status": "HOSTED_VERIFIED_PENDING_QC_BINDING",
     "build_node": "v22.23.2",
     "build_npm": "10.9.8",
     "files": 545,
@@ -505,19 +512,983 @@
         "status": "EXACT_REVIEWED_SOURCE"
       }
     ],
-    "pack_invocations": 1
+    "pack_invocations": 1,
+    "reviewed_code_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "run_id": 34802149041,
+    "local_bytes_identical": true,
+    "artifact_id": 10330854659
   },
   "hosted": {
-    "status": "PENDING_METADATA_CORRECTED_RERUN",
+    "status": "COMPLETED_SUCCESS",
+    "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "reviewed_code_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "run_id": 34802149041,
+    "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041",
+    "event": "pull_request",
     "branch": "codex/adaptive-governance-human-approval-ux",
     "pr": 2,
-    "reviewed_code_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
-    "previous_failed_run_id": 34800821538,
-    "artifact": {
-      "created": false,
-      "sha256": null
+    "conclusion": "success",
+    "observed_at": "2026-09-14T03:32:59.441Z",
+    "jobs": [
+      {
+        "completedAt": "2026-09-14T03:18:25Z",
+        "conclusion": "success",
+        "databaseId": 103846790005,
+        "name": "Workflow Tooling",
+        "startedAt": "2026-09-14T03:18:19Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-09-14T03:18:20Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-09-14T03:18:19Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:21Z",
+            "conclusion": "success",
+            "name": "Checkout repository",
+            "number": 2,
+            "startedAt": "2026-09-14T03:18:20Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:22Z",
+            "conclusion": "success",
+            "name": "Setup Node.js",
+            "number": 3,
+            "startedAt": "2026-09-14T03:18:21Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:22Z",
+            "conclusion": "success",
+            "name": "Show runtime versions",
+            "number": 4,
+            "startedAt": "2026-09-14T03:18:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:22Z",
+            "conclusion": "success",
+            "name": "Validate workflow fixture suite",
+            "number": 5,
+            "startedAt": "2026-09-14T03:18:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:22Z",
+            "conclusion": "success",
+            "name": "Post Setup Node.js",
+            "number": 9,
+            "startedAt": "2026-09-14T03:18:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:22Z",
+            "conclusion": "success",
+            "name": "Post Checkout repository",
+            "number": 10,
+            "startedAt": "2026-09-14T03:18:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:22Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-09-14T03:18:22Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103846790005"
+      },
+      {
+        "completedAt": "2026-09-14T03:18:39Z",
+        "conclusion": "success",
+        "databaseId": 103846815193,
+        "name": "Workflow Artifacts",
+        "startedAt": "2026-09-14T03:18:29Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-09-14T03:18:31Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-09-14T03:18:30Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:32Z",
+            "conclusion": "success",
+            "name": "Checkout repository",
+            "number": 2,
+            "startedAt": "2026-09-14T03:18:31Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:36Z",
+            "conclusion": "success",
+            "name": "Setup Node.js",
+            "number": 3,
+            "startedAt": "2026-09-14T03:18:32Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:36Z",
+            "conclusion": "success",
+            "name": "Show runtime versions",
+            "number": 4,
+            "startedAt": "2026-09-14T03:18:36Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:37Z",
+            "conclusion": "success",
+            "name": "Validate canonical workflow artifact root",
+            "number": 5,
+            "startedAt": "2026-09-14T03:18:36Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:37Z",
+            "conclusion": "success",
+            "name": "Post Setup Node.js",
+            "number": 9,
+            "startedAt": "2026-09-14T03:18:37Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:37Z",
+            "conclusion": "success",
+            "name": "Post Checkout repository",
+            "number": 10,
+            "startedAt": "2026-09-14T03:18:37Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:37Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-09-14T03:18:37Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103846815193"
+      },
+      {
+        "completedAt": "2026-09-14T03:18:50Z",
+        "conclusion": "success",
+        "databaseId": 103846856627,
+        "name": "Workflow SDD",
+        "startedAt": "2026-09-14T03:18:42Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-09-14T03:18:44Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-09-14T03:18:43Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:45Z",
+            "conclusion": "success",
+            "name": "Checkout repository",
+            "number": 2,
+            "startedAt": "2026-09-14T03:18:44Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:47Z",
+            "conclusion": "success",
+            "name": "Setup Node.js",
+            "number": 3,
+            "startedAt": "2026-09-14T03:18:45Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:47Z",
+            "conclusion": "success",
+            "name": "Show runtime versions",
+            "number": 4,
+            "startedAt": "2026-09-14T03:18:47Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:47Z",
+            "conclusion": "success",
+            "name": "Validate SDD artifacts and references",
+            "number": 5,
+            "startedAt": "2026-09-14T03:18:47Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:48Z",
+            "conclusion": "success",
+            "name": "Post Setup Node.js",
+            "number": 9,
+            "startedAt": "2026-09-14T03:18:47Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:48Z",
+            "conclusion": "success",
+            "name": "Post Checkout repository",
+            "number": 10,
+            "startedAt": "2026-09-14T03:18:48Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:48Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-09-14T03:18:48Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103846856627"
+      },
+      {
+        "completedAt": "2026-09-14T03:19:01Z",
+        "conclusion": "success",
+        "databaseId": 103846884878,
+        "name": "Workflow Changes",
+        "startedAt": "2026-09-14T03:18:54Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-09-14T03:18:56Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-09-14T03:18:55Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:57Z",
+            "conclusion": "success",
+            "name": "Checkout repository",
+            "number": 2,
+            "startedAt": "2026-09-14T03:18:56Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:58Z",
+            "conclusion": "success",
+            "name": "Setup Node.js",
+            "number": 3,
+            "startedAt": "2026-09-14T03:18:57Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:58Z",
+            "conclusion": "success",
+            "name": "Show runtime versions",
+            "number": 4,
+            "startedAt": "2026-09-14T03:18:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:58Z",
+            "conclusion": "success",
+            "name": "Validate change packages and change-linked workflow artifacts",
+            "number": 5,
+            "startedAt": "2026-09-14T03:18:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:58Z",
+            "conclusion": "success",
+            "name": "Post Setup Node.js",
+            "number": 9,
+            "startedAt": "2026-09-14T03:18:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:59Z",
+            "conclusion": "success",
+            "name": "Post Checkout repository",
+            "number": 10,
+            "startedAt": "2026-09-14T03:18:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:18:59Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-09-14T03:18:59Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103846884878"
+      },
+      {
+        "completedAt": "2026-09-14T03:19:10Z",
+        "conclusion": "success",
+        "databaseId": 103846913712,
+        "name": "Workflow Execution",
+        "startedAt": "2026-09-14T03:19:04Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-09-14T03:19:06Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-09-14T03:19:05Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:07Z",
+            "conclusion": "success",
+            "name": "Checkout repository",
+            "number": 2,
+            "startedAt": "2026-09-14T03:19:06Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:08Z",
+            "conclusion": "success",
+            "name": "Setup Node.js",
+            "number": 3,
+            "startedAt": "2026-09-14T03:19:07Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:08Z",
+            "conclusion": "success",
+            "name": "Show runtime versions",
+            "number": 4,
+            "startedAt": "2026-09-14T03:19:08Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:08Z",
+            "conclusion": "success",
+            "name": "Validate execution runtime artifacts and multi-agent contracts",
+            "number": 5,
+            "startedAt": "2026-09-14T03:19:08Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:08Z",
+            "conclusion": "success",
+            "name": "Post Setup Node.js",
+            "number": 9,
+            "startedAt": "2026-09-14T03:19:08Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:08Z",
+            "conclusion": "success",
+            "name": "Post Checkout repository",
+            "number": 10,
+            "startedAt": "2026-09-14T03:19:08Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:08Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-09-14T03:19:08Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103846913712"
+      },
+      {
+        "completedAt": "2026-09-14T03:19:20Z",
+        "conclusion": "success",
+        "databaseId": 103846935951,
+        "name": "Workflow Planning",
+        "startedAt": "2026-09-14T03:19:13Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-09-14T03:19:15Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-09-14T03:19:15Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:17Z",
+            "conclusion": "success",
+            "name": "Checkout repository",
+            "number": 2,
+            "startedAt": "2026-09-14T03:19:15Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:17Z",
+            "conclusion": "success",
+            "name": "Setup Node.js",
+            "number": 3,
+            "startedAt": "2026-09-14T03:19:17Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:17Z",
+            "conclusion": "success",
+            "name": "Show runtime versions",
+            "number": 4,
+            "startedAt": "2026-09-14T03:19:17Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:18Z",
+            "conclusion": "success",
+            "name": "Validate planning tracks and routing presets",
+            "number": 5,
+            "startedAt": "2026-09-14T03:19:17Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:18Z",
+            "conclusion": "success",
+            "name": "Post Setup Node.js",
+            "number": 9,
+            "startedAt": "2026-09-14T03:19:18Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:18Z",
+            "conclusion": "success",
+            "name": "Post Checkout repository",
+            "number": 10,
+            "startedAt": "2026-09-14T03:19:18Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:18Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-09-14T03:19:18Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103846935951"
+      },
+      {
+        "completedAt": "2026-09-14T03:19:34Z",
+        "conclusion": "success",
+        "databaseId": 103846964734,
+        "name": "Workflow Authoring Smoke",
+        "startedAt": "2026-09-14T03:19:23Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-09-14T03:19:25Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-09-14T03:19:24Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:27Z",
+            "conclusion": "success",
+            "name": "Checkout repository",
+            "number": 2,
+            "startedAt": "2026-09-14T03:19:25Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:27Z",
+            "conclusion": "success",
+            "name": "Setup Node.js",
+            "number": 3,
+            "startedAt": "2026-09-14T03:19:27Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:27Z",
+            "conclusion": "success",
+            "name": "Show runtime versions",
+            "number": 4,
+            "startedAt": "2026-09-14T03:19:27Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:31Z",
+            "conclusion": "success",
+            "name": "Validate scaffold -> validate authoring flow",
+            "number": 5,
+            "startedAt": "2026-09-14T03:19:27Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:31Z",
+            "conclusion": "success",
+            "name": "Post Setup Node.js",
+            "number": 9,
+            "startedAt": "2026-09-14T03:19:31Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:31Z",
+            "conclusion": "success",
+            "name": "Post Checkout repository",
+            "number": 10,
+            "startedAt": "2026-09-14T03:19:31Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:32Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-09-14T03:19:32Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103846964734"
+      },
+      {
+        "completedAt": "2026-09-14T03:19:48Z",
+        "conclusion": "success",
+        "databaseId": 103847003640,
+        "name": "Build Exact Release Candidate",
+        "startedAt": "2026-09-14T03:19:37Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-09-14T03:19:38Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-09-14T03:19:37Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:39Z",
+            "conclusion": "success",
+            "name": "Checkout repository",
+            "number": 2,
+            "startedAt": "2026-09-14T03:19:38Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:43Z",
+            "conclusion": "success",
+            "name": "Setup Node.js",
+            "number": 3,
+            "startedAt": "2026-09-14T03:19:39Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:46Z",
+            "conclusion": "success",
+            "name": "Pack candidate once and record its digest",
+            "number": 4,
+            "startedAt": "2026-09-14T03:19:43Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:47Z",
+            "conclusion": "success",
+            "name": "Upload immutable candidate and digest",
+            "number": 5,
+            "startedAt": "2026-09-14T03:19:46Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:47Z",
+            "conclusion": "success",
+            "name": "Post Setup Node.js",
+            "number": 9,
+            "startedAt": "2026-09-14T03:19:47Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:47Z",
+            "conclusion": "success",
+            "name": "Post Checkout repository",
+            "number": 10,
+            "startedAt": "2026-09-14T03:19:47Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:47Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-09-14T03:19:47Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103847003640"
+      },
+      {
+        "completedAt": "2026-09-14T03:20:36Z",
+        "conclusion": "success",
+        "databaseId": 103847043856,
+        "name": "Release Candidate (Node 22)",
+        "startedAt": "2026-09-14T03:19:53Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-09-14T03:19:56Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-09-14T03:19:54Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:57Z",
+            "conclusion": "success",
+            "name": "Checkout repository",
+            "number": 2,
+            "startedAt": "2026-09-14T03:19:56Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:00Z",
+            "conclusion": "success",
+            "name": "Setup Node.js",
+            "number": 3,
+            "startedAt": "2026-09-14T03:19:57Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:00Z",
+            "conclusion": "success",
+            "name": "Show runtime versions",
+            "number": 4,
+            "startedAt": "2026-09-14T03:20:00Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:01Z",
+            "conclusion": "success",
+            "name": "Download the exact candidate built once",
+            "number": 5,
+            "startedAt": "2026-09-14T03:20:00Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:01Z",
+            "conclusion": "success",
+            "name": "Resolve and verify candidate digest",
+            "number": 6,
+            "startedAt": "2026-09-14T03:20:01Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:28Z",
+            "conclusion": "success",
+            "name": "Run workflow-bundle unit and regression suite",
+            "number": 7,
+            "startedAt": "2026-09-14T03:20:01Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:28Z",
+            "conclusion": "success",
+            "name": "Audit workflow pack integration",
+            "number": 8,
+            "startedAt": "2026-09-14T03:20:28Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:30Z",
+            "conclusion": "success",
+            "name": "Run source install and update smoke",
+            "number": 9,
+            "startedAt": "2026-09-14T03:20:28Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:34Z",
+            "conclusion": "success",
+            "name": "Install and smoke the exact candidate artifact",
+            "number": 10,
+            "startedAt": "2026-09-14T03:20:30Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:34Z",
+            "conclusion": "success",
+            "name": "Post Setup Node.js",
+            "number": 19,
+            "startedAt": "2026-09-14T03:20:34Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:34Z",
+            "conclusion": "success",
+            "name": "Post Checkout repository",
+            "number": 20,
+            "startedAt": "2026-09-14T03:20:34Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:34Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 21,
+            "startedAt": "2026-09-14T03:20:34Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103847043856"
+      },
+      {
+        "completedAt": "2026-09-14T03:20:34Z",
+        "conclusion": "success",
+        "databaseId": 103847043935,
+        "name": "Release Candidate (Node 18)",
+        "startedAt": "2026-09-14T03:19:51Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-09-14T03:19:53Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-09-14T03:19:52Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:54Z",
+            "conclusion": "success",
+            "name": "Checkout repository",
+            "number": 2,
+            "startedAt": "2026-09-14T03:19:53Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:58Z",
+            "conclusion": "success",
+            "name": "Setup Node.js",
+            "number": 3,
+            "startedAt": "2026-09-14T03:19:54Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:58Z",
+            "conclusion": "success",
+            "name": "Show runtime versions",
+            "number": 4,
+            "startedAt": "2026-09-14T03:19:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:59Z",
+            "conclusion": "success",
+            "name": "Download the exact candidate built once",
+            "number": 5,
+            "startedAt": "2026-09-14T03:19:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:19:59Z",
+            "conclusion": "success",
+            "name": "Resolve and verify candidate digest",
+            "number": 6,
+            "startedAt": "2026-09-14T03:19:59Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:28Z",
+            "conclusion": "success",
+            "name": "Run workflow-bundle unit and regression suite",
+            "number": 7,
+            "startedAt": "2026-09-14T03:19:59Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:29Z",
+            "conclusion": "success",
+            "name": "Audit workflow pack integration",
+            "number": 8,
+            "startedAt": "2026-09-14T03:20:28Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:31Z",
+            "conclusion": "success",
+            "name": "Run source install and update smoke",
+            "number": 9,
+            "startedAt": "2026-09-14T03:20:29Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:33Z",
+            "conclusion": "success",
+            "name": "Install and smoke the exact candidate artifact",
+            "number": 10,
+            "startedAt": "2026-09-14T03:20:31Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:33Z",
+            "conclusion": "success",
+            "name": "Post Setup Node.js",
+            "number": 19,
+            "startedAt": "2026-09-14T03:20:33Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:33Z",
+            "conclusion": "success",
+            "name": "Post Checkout repository",
+            "number": 20,
+            "startedAt": "2026-09-14T03:20:33Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-09-14T03:20:33Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 21,
+            "startedAt": "2026-09-14T03:20:33Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103847043935"
+      }
+    ],
+    "job_counts": {
+      "required_expanded": 10,
+      "success": 10,
+      "failure": 0,
+      "skipped": 0
     },
-    "required_expanded_jobs": 10
+    "artifact": {
+      "created": true,
+      "id": 10330854659,
+      "name": "workflow-bundle-candidate",
+      "package_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "package_size": 962605,
+      "storage_archive_sha256": "sha256:c4df5d4c42d97f93bd646764a08ca28c3aebf5f5ffe2034cee06041e441ea369",
+      "storage_archive_size": 954383,
+      "created_at": "2026-09-14T03:19:47Z",
+      "expires_at": "2026-09-21T03:19:46Z",
+      "digest_note": "The GitHub storage archive digest is not the package tarball digest."
+    },
+    "integrity": {
+      "status": "PASS",
+      "checked_at": "2026-09-14T03:26:00.563Z",
+      "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+      "reviewed_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+      "run_id": 34802149041,
+      "tarball": "/private/tmp/cf-rcr-ts8-hosted-MdHnYG/workflow-bundle-2.6.2.tgz",
+      "sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "declared_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "local_bytes_identical": true,
+      "size": 962605,
+      "version": "2.6.2",
+      "file_count": 545,
+      "skills": [
+        {
+          "mode": "codex",
+          "count": 42
+        },
+        {
+          "mode": "claude",
+          "count": 42
+        }
+      ],
+      "core_payload": [
+        {
+          "path": "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
+          "sha256": "21f8ad0ecedf99f8afbbd7c45cce4c8da38059795e5ece65bb5bf106c57d7cf6"
+        },
+        {
+          "path": "packages/workflow-bundle/scripts/work-item-protocol.js",
+          "sha256": "53de371f8fd9d82a466364be55048332f9ec80ca0fc5df9b3102e07a515c5d7a"
+        },
+        {
+          "path": "packages/workflow-bundle/scripts/workflow-gate-review.js",
+          "sha256": "0450ca110a060ae79d7b39af9466aef84f6aa323395938c6bdb247c858b61588"
+        },
+        {
+          "path": "packages/workflow-bundle/scripts/workflow-approval-transaction.js",
+          "sha256": "77d5278edf0fa5e4d7c488c9a9060d41eb00b116f900237a2105e4ff5dc71cdf"
+        }
+      ],
+      "metadata_only_diff": [
+        "product-specs/cards/upgrade-guardrails-actions-node24.md",
+        "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s01.restate.md",
+        "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s03.open-questions.md",
+        "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s07.implementation.md",
+        "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s08.verification.md",
+        "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.work-item-report.json",
+        "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-code-quality-evidence.json",
+        "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-evidence.json",
+        "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-ts6a-code-quality-evidence.json",
+        "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-ts6a-evidence.json",
+        "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-ts8-evidence.json",
+        "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-ts8-node24-card-metadata-evidence.json"
+      ],
+      "card_excluded_from_package": true,
+      "diagnostic_note": "A discarded count probe assumed flat skill paths; corrected read-only probe counts actual grouped SKILL.md paths without modifying package or expectation."
+    },
+    "required_expanded_jobs": 10,
+    "log_evidence": [
+      {
+        "id": 103847003640,
+        "lines": [
+          "Build Exact Release Candidate\tSetup Node.js\t2026-09-14T03:19:43.4548443Z node: v22.23.2"
+        ]
+      },
+      {
+        "id": 103847043856,
+        "lines": [
+          "Release Candidate (Node 22)\tSetup Node.js\t2026-09-14T03:20:00.3205281Z node: v22.23.2",
+          "Release Candidate (Node 22)\tShow runtime versions\t2026-09-14T03:20:00.3526891Z v22.23.2",
+          "Release Candidate (Node 22)\tRun workflow-bundle unit and regression suite\t2026-09-14T03:20:19.3191604Z   PASS: all-bundle atomicity matrix completed 64/64 cases",
+          "Release Candidate (Node 22)\tRun workflow-bundle unit and regression suite\t2026-09-14T03:20:19.7068535Z   PASS: real concurrent CLI race and two completed retries",
+          "Release Candidate (Node 22)\tRun workflow-bundle unit and regression suite\t2026-09-14T03:20:28.3271311Z OK: 45 workflow-bundle unit test file(s) passed",
+          "Release Candidate (Node 22)\tInstall and smoke the exact candidate artifact\t2026-09-14T03:20:34.1912464Z   PASS: sha256=af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+          "Release Candidate (Node 22)\tInstall and smoke the exact candidate artifact\t2026-09-14T03:20:34.1913073Z   PASS: wfc version=2.6.2; Codex/Claude x global/project=4/4"
+        ]
+      },
+      {
+        "id": 103847043935,
+        "lines": [
+          "Release Candidate (Node 18)\tSetup Node.js\t2026-09-14T03:19:58.6246976Z node: v18.20.8",
+          "Release Candidate (Node 18)\tShow runtime versions\t2026-09-14T03:19:58.6589641Z v18.20.8",
+          "Release Candidate (Node 18)\tRun workflow-bundle unit and regression suite\t2026-09-14T03:20:19.6306508Z   PASS: all-bundle atomicity matrix completed 64/64 cases",
+          "Release Candidate (Node 18)\tRun workflow-bundle unit and regression suite\t2026-09-14T03:20:19.9944958Z   PASS: real concurrent CLI race and two completed retries",
+          "Release Candidate (Node 18)\tRun workflow-bundle unit and regression suite\t2026-09-14T03:20:28.9600922Z OK: 45 workflow-bundle unit test file(s) passed",
+          "Release Candidate (Node 18)\tInstall and smoke the exact candidate artifact\t2026-09-14T03:20:33.1569519Z   PASS: sha256=af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+          "Release Candidate (Node 18)\tInstall and smoke the exact candidate artifact\t2026-09-14T03:20:33.1570184Z   PASS: wfc version=2.6.2; Codex/Claude x global/project=4/4"
+        ]
+      }
+    ],
+    "local_hosted_checksum_comparison": "PASS: actual downloaded tarball == hosted declared package checksum == local pre-host tarball",
+    "artifact_binding": {
+      "status": "PENDING_QC",
+      "reviewed_by": [],
+      "reviewed_at": "",
+      "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+      "reviewed_code_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+      "run_id": 34802149041,
+      "version": "2.6.2",
+      "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "rollback": {
+        "version": "v2.6.1",
+        "sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+      },
+      "local_pre_host_relation": "BYTES_IDENTICAL; local build remains historical pre-host source-bound evidence",
+      "prepared_at": "2026-09-14T03:32:59.441Z",
+      "scope": "Hosted artifact identity binding only; Technical Verification, DoD and parent/terminal authority remain separate"
+    },
+    "scan_annotation_note": "Node24 CI action-token work is not activated by TS8-M1; this Verify does not claim its zero-Node-deprecation-annotation AC."
   },
   "definition_of_done": {
     "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
@@ -526,21 +1497,28 @@
       "acceptance_criteria_evidenced": "FAIL",
       "implementation_recorded": "PASS",
       "required_verification_completed": "FAIL",
-      "code_scan_completed_or_justified": "PARTIAL",
-      "traceability_complete": "PARTIAL",
+      "code_scan_completed_or_justified": "PASS",
+      "traceability_complete": "PASS",
       "residual_risks_documented": "PASS"
     },
+    "check_notes": {
+      "acceptance_criteria_evidenced": "Nine implementation ACs PASS; AC-RCR-08 child exact-candidate tests PASS and mandatory downstream parent contribution still PARTIAL. This full-contribution checklist does not reorder parent before child DoD.",
+      "required_verification_completed": "All required executable child tests PASS; separate QC hosted binding and Technical Verification not yet approved.",
+      "code_scan_completed_or_justified": "Tools/config unavailable; skips, negative-test/manual alternatives and residual limitations documented for QC. Overall scan stays PARTIAL, not an automated static/security PASS.",
+      "traceability_complete": "Child business/design/code/test chain and mandatory parent owner/followup linked; downstream fulfillment not falsely asserted."
+    },
     "gaps": [
-      "Hosted exact candidate and required Node18/22 matrix job evidence pending",
-      "Mandatory AC-RCR-08 parent contribution and independent terminal gates"
+      "QC hosted identity/Technical Verification/DoD pending",
+      "Automatic ESLint/typecheck/Semgrep unavailable; no benchmark/read-isolation claim",
+      "AC-RCR-08 parent same-candidate contribution remains mandatory downstream, after child Technical Verification/DoD"
     ],
     "residual_risks": [
       "Native transient-read refusal and linear history cost are retained advisories"
     ],
     "follow_up_items": [
-      "Mandatory AC-RCR-08 parent exact-candidate AG-01..13 and terminal decisions"
+      "After child Technical Verification/DoD: mandatory AC-RCR-08 parent AG-01..13 same-candidate verification and new parent terminal decisions; F-AG11-001 remains OPEN"
     ],
-    "next_action": "Execute existing hosted Verify for the metadata-corrected commit; bind actual full candidate SHA-256 before separate QC Technical Verification."
+    "next_action": "QC review amended hosted artifact binding for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; retain reviewed-source local pre-host evidence and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Technical Verification and DoD remain separate next reviews."
   },
   "branch_finish": {
     "finish_target": "codex/adaptive-governance-human-approval-ux",
@@ -551,12 +1529,12 @@
     ],
     "finish_gate_checks": {
       "verify_complete": "FAIL",
-      "dod_complete": "PENDING",
+      "dod_complete": "FAIL",
       "findings_closed": "FAIL",
-      "exceptions_resolved": "PENDING"
+      "exceptions_resolved": "PASS"
     },
     "allowed_actions": [
-      "Owned Verify evidence/diagnostics only while blocked"
+      "Owned evidence review and read-only diagnostics; no execution beyond unapproved human gates"
     ],
     "blocked_actions": [
       "Merge",
@@ -574,13 +1552,13 @@
       "Native transient-read refusal and linear history cost are retained advisories"
     ],
     "final_recommendation": "HOLD_OPEN",
-    "notes_for_closeout": "Workflow-pack audit confirms mechanical170 references; semantic whole-pack scope is not claimed. Branch-finish discipline holds open: hosted verification failed, DoD not approved and parent finding OPEN."
+    "notes_for_closeout": "Executable hosted/local tests PASS; QC identity/Technical Verification/DoD pending, parent F-AG11-001 OPEN. Accepted metadata exception completed; no outstanding scope exception. Mechanical audit170 references is not whole-pack semantic coverage. HOLD_OPEN."
   },
   "authority": {
-    "protocol_status": "ACTIVE",
+    "protocol_status": "BLOCKED",
     "TS8": "OPEN",
-    "s08": "VERIFY_IN_PROGRESS",
-    "technical_verification": "PENDING_EVIDENCE",
+    "s08": "WAITING_QC_HOSTED_ARTIFACT_BINDING",
+    "technical_verification": "PENDING_REVIEW",
     "dod": "NOT_APPROVED",
     "release": "NOT_APPROVED",
     "business_acceptance": "NOT_APPROVED",
@@ -590,7 +1568,8 @@
     "tag": false,
     "merge": false,
     "cleanup": false,
-    "next_human_action": "NONE while hosted Verify executes; exact artifact binding/Technical Verification/DoD and parent gates remain independent"
+    "next_human_action": "QC review amended hosted artifact binding for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; retain reviewed-source local pre-host evidence and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Technical Verification and DoD remain separate next reviews.",
+    "hosted_artifact_binding": "PENDING_QC"
   },
   "rollback": {
     "version": "v2.6.1",
@@ -636,11 +1615,13 @@
       "provenance_controls": [
         "Reviewed code source 04eed2f8b2098bddf513d0f96fd129e835686dd7; later Verify metadata-only commits must not change package/build inputs",
         "Exact source/payload/hash and local/hosted digest comparison",
-        "If bytes differ, preserve local pre-host snapshot and bind one hosted candidate through separate QC artifact review"
+        "If bytes differ, preserve local pre-host snapshot and bind one hosted candidate through separate QC artifact review",
+        "Actual measured downloaded hosted/local tar SHA identical; source diff is metadata-only outside package inputs"
       ]
     },
     "promotion_flow": [],
     "approval_controls": [
+      "Explicit QC amended hosted identity binding pending for af70276fe14317417365c06dd06186da1996c401 / 34802149041 / af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
       "QC approved opening TS8/s08 at 2026-09-14T02:45:55Z only",
       "QC Technical Verification then DoD remain separate",
       "Parent AG01..13 and DevOps/QC Release then PO acceptance independent"
@@ -665,7 +1646,7 @@
       "CI action Node24 upgrade and validator parallelisation remain separate scopes"
     ],
     "pipeline_recommendation": "READY_WITH_GUARDS",
-    "notes_for_implementation_or_ops": "Accepted TS8-M1 metadata-only card repair passes six validator wrappers; existing CI topology untouched. Hosted rerun will identify actual source/run/artifact, not reuse old failure as proof."
+    "notes_for_implementation_or_ops": "Existing CI unchanged; hosted10/10 and exact downloaded/local package equality verified. Build once in hosted context; consumers never self-pack. Binding/technical/terminal human decisions remain independent."
   },
   "local_execution": {
     "status": "PASS_REQUIRED_LOCAL_CHECKS",
@@ -712,7 +1693,7 @@
       }
     ]
   },
-  "observed_at": "2026-09-14T03:04:14Z",
+  "observed_at": "2026-09-14T03:32:59.441Z",
   "compatibility": {
     "status": "PASS",
     "frozen_reports": 13,
@@ -760,7 +1741,7 @@
   "verification_blockers": [
     {
       "id": "V-RCR-TS8-001",
-      "status": "METADATA_CORRECTED_PENDING_HOSTED_VERIFICATION",
+      "status": "CORRECTED_HOSTED_SDD_PASS",
       "kind": "HOSTED_SDD_ARTIFACT_SCHEMA",
       "owner": "developer",
       "file": "product-specs/cards/upgrade-guardrails-actions-node24.md",
@@ -768,9 +1749,11 @@
       "root_cause": "Five provenance values are prose where the validator requires BASELINE or canonical CR id. Spec Freeze status uses approved where only draft|FROZEN is valid.",
       "pre_existing": true,
       "first_seen_commit": "5cb70f33e67e18038b9bf743cbaf85867f7facfc",
-      "scope_boundary": "Card excluded from the sixteen approved RCR roots.",
-      "next_human_action": "Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun.",
-      "resolution_evidence": "rcr-ts8-node24-card-metadata-evidence.json"
+      "scope_boundary": "Sixteen original roots plus accepted exact TS8-M1 card root",
+      "next_human_action": "NONE for this metadata defect",
+      "resolution_evidence": "Accepted TS8-M1 plus current run 34802149041 Workflow SDD success",
+      "resolved_at": "2026-09-14T03:32:59.441Z",
+      "initial_scope_boundary": "Card excluded from the sixteen approved RCR roots."
     }
   ],
   "schema_proposal": {
@@ -814,37 +1797,52 @@
     }
   },
   "step_audit": {
+    "step": "s08 Verify + DoD — TS8",
     "status": "PARTIAL",
-    "goal_contract": "s08 Verify + DoD — TS8",
-    "evidence": [
-      "Local exact candidate45/4/4 PASS per supported Node",
-      "Source7/legacy13/native parser PASS",
-      "Hosted SDD failure and zero artifacts confirmed"
+    "checks": {
+      "goal_met": "FAIL",
+      "value_delivered": "PASS",
+      "scope_respected": "PASS",
+      "inputs_complete": "PASS",
+      "outputs_complete": "PASS",
+      "done_criteria_met": "FAIL",
+      "constraints_respected": "PASS",
+      "risks_mitigated": "FAIL",
+      "timebox_respected": "PASS"
+    },
+    "constraint_violations": [],
+    "unmitigated_high_risks": [
+      "Parent F-AG11-001 OPEN; mandatory AC-RCR-08 contribution after child Technical Verification/DoD"
     ],
+    "timebox_breach": false,
+    "timebox_evidence": "Observed 2026-09-14T03:32:59.441Z before 2026-09-18 stop-and-reassess checkpoint; not a delivery promise.",
     "gaps": [
-      "Hosted bytes/required jobs",
-      "Additive Node24 card metadata authority",
-      "Mandatory parent/terminal followups"
+      "QC hosted identity/Technical Verification/DoD pending",
+      "Automatic ESLint/typecheck/Semgrep unavailable; no benchmark/read-isolation claim",
+      "AC-RCR-08 parent same-candidate contribution remains mandatory downstream, after child Technical Verification/DoD"
     ],
+    "risk_level": "HIGH",
+    "next_action": "QC review amended hosted artifact binding for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; retain reviewed-source local pre-host evidence and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Technical Verification and DoD remain separate next reviews.",
     "next_step_allowed": false,
-    "next_action": "Developer/QC authorize metadata-only normalization of product-specs/cards/upgrade-guardrails-actions-node24.md (five provenance fields to BASELINE with origin text preserved; freeze status to FROZEN preserving existing decision identity/time), with the additive card write root; review/reseal affected Node24 evidence as required before hosted rerun."
+    "evidence": [
+      "Local full45/64 boundaries per Node",
+      "Hosted10/10; full45/64 boundaries and artifact4 per Node",
+      "Actual downloaded package/local checksums equal; core payload unchanged",
+      "Downloaded exact artifact4 and retained rollback4 per supported Node",
+      "13 load-only histories and five frozen receipts unchanged"
+    ]
   },
   "handoff_checks": {
-    "observed_at": "2026-09-14T03:08:43Z",
-    "workflow": "PASS:208files/204notes",
-    "protocol": "PASS:13managed/16legacy-skipped",
-    "execution": "PASS:204notes after in-scope existing QC owner metadata correction",
-    "planning": "PASS:204notes",
-    "sdd": "FAIL:18 diagnostics on6 distinct Node24 card scalar fields",
-    "change": "PASS:42notes; retained legacy CHANGE-003/006 advisories",
-    "source": "PASS:7 exact reviewed code/test hashes and parser checks; owner root/master unchanged",
-    "authoring_receipts": "PASS:5APPROVED frozen host hashes exact;16grants unchanged",
-    "encoding": "PASS:fatalUTF8decode all10 changed owned artifacts and git diff --check",
-    "mirror": "EXACT",
-    "history": "Existing report event/audit/decision/review prefixes unchanged; original historical s07 summary preserved",
-    "artifact_scope": "10RCRowned artifacts only;Node24 card,CI,package/test/master/parent/locked s04-s06 hosts unchanged",
-    "candidate": "Local exact full SHA af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f;no hosted artifact exists",
-    "authority": "QC opening retained; hosted VerifyBLOCKED; terminal authority not inferred"
+    "observed_at": "2026-09-14T03:34:27.140Z",
+    "validators": "PASS: workflow208files/204notes,SDD44,change42,execution204,planning204,protocol13managed/16legacy-skipped",
+    "source": "PASS:7 exact reviewed source/test hashes and native parser checks; owner root/master unchanged",
+    "authoring_receipts": "PASS:5 approved frozen authoring receipts exact;17 grants unchanged from accepted TS8-M1",
+    "candidate": "Hosted run 34802149041 at source af70276fe14317417365c06dd06186da1996c401:10/10 required jobs PASS; actual package af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f equals local bytes",
+    "artifact_consumption": "Downloaded hosted tarball artifact4/4 and exact retained rollback4/4 per Node18/22; no repack",
+    "encoding": "PASS: fatalUTF8decode10 changed owned RCR artifacts and git diff --check",
+    "mirror": "EXACT; generated with canonical renderer",
+    "authority": "BLOCKED for explicit QC amended hosted binding; all technical/terminal approvals pending",
+    "history": "Existing event/audit/decision/review prefixes preserved; prior failure and scan gaps remain historical"
   },
   "scope_addendum": {
     "id": "TS8-M1",
@@ -1127,6 +2125,1244 @@
       },
       "blocker": "Hosted run 34800821538 failed Workflow SDD: Node24 Spec Card has five invalid provenance fields and invalid Spec Freeze status; candidate build and matrix consumers were skipped. The card is outside the approved sixteen RCR write roots.",
       "local_hosted_checksum_comparison": "NOT_RUN: hosted candidate not created; local bytes are not claimed to be hosted-verified."
+    },
+    {
+      "status": "COMPLETED_SUCCESS",
+      "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+      "reviewed_code_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+      "run_id": 34802149041,
+      "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041",
+      "event": "pull_request",
+      "branch": "codex/adaptive-governance-human-approval-ux",
+      "pr": 2,
+      "conclusion": "success",
+      "observed_at": "2026-09-14T03:32:59.441Z",
+      "jobs": [
+        {
+          "completedAt": "2026-09-14T03:18:25Z",
+          "conclusion": "success",
+          "databaseId": 103846790005,
+          "name": "Workflow Tooling",
+          "startedAt": "2026-09-14T03:18:19Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-09-14T03:18:20Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-09-14T03:18:19Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:21Z",
+              "conclusion": "success",
+              "name": "Checkout repository",
+              "number": 2,
+              "startedAt": "2026-09-14T03:18:20Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:22Z",
+              "conclusion": "success",
+              "name": "Setup Node.js",
+              "number": 3,
+              "startedAt": "2026-09-14T03:18:21Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:22Z",
+              "conclusion": "success",
+              "name": "Show runtime versions",
+              "number": 4,
+              "startedAt": "2026-09-14T03:18:22Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:22Z",
+              "conclusion": "success",
+              "name": "Validate workflow fixture suite",
+              "number": 5,
+              "startedAt": "2026-09-14T03:18:22Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:22Z",
+              "conclusion": "success",
+              "name": "Post Setup Node.js",
+              "number": 9,
+              "startedAt": "2026-09-14T03:18:22Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:22Z",
+              "conclusion": "success",
+              "name": "Post Checkout repository",
+              "number": 10,
+              "startedAt": "2026-09-14T03:18:22Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:22Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 11,
+              "startedAt": "2026-09-14T03:18:22Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103846790005"
+        },
+        {
+          "completedAt": "2026-09-14T03:18:39Z",
+          "conclusion": "success",
+          "databaseId": 103846815193,
+          "name": "Workflow Artifacts",
+          "startedAt": "2026-09-14T03:18:29Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-09-14T03:18:31Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-09-14T03:18:30Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:32Z",
+              "conclusion": "success",
+              "name": "Checkout repository",
+              "number": 2,
+              "startedAt": "2026-09-14T03:18:31Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:36Z",
+              "conclusion": "success",
+              "name": "Setup Node.js",
+              "number": 3,
+              "startedAt": "2026-09-14T03:18:32Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:36Z",
+              "conclusion": "success",
+              "name": "Show runtime versions",
+              "number": 4,
+              "startedAt": "2026-09-14T03:18:36Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:37Z",
+              "conclusion": "success",
+              "name": "Validate canonical workflow artifact root",
+              "number": 5,
+              "startedAt": "2026-09-14T03:18:36Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:37Z",
+              "conclusion": "success",
+              "name": "Post Setup Node.js",
+              "number": 9,
+              "startedAt": "2026-09-14T03:18:37Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:37Z",
+              "conclusion": "success",
+              "name": "Post Checkout repository",
+              "number": 10,
+              "startedAt": "2026-09-14T03:18:37Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:37Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 11,
+              "startedAt": "2026-09-14T03:18:37Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103846815193"
+        },
+        {
+          "completedAt": "2026-09-14T03:18:50Z",
+          "conclusion": "success",
+          "databaseId": 103846856627,
+          "name": "Workflow SDD",
+          "startedAt": "2026-09-14T03:18:42Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-09-14T03:18:44Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-09-14T03:18:43Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:45Z",
+              "conclusion": "success",
+              "name": "Checkout repository",
+              "number": 2,
+              "startedAt": "2026-09-14T03:18:44Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:47Z",
+              "conclusion": "success",
+              "name": "Setup Node.js",
+              "number": 3,
+              "startedAt": "2026-09-14T03:18:45Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:47Z",
+              "conclusion": "success",
+              "name": "Show runtime versions",
+              "number": 4,
+              "startedAt": "2026-09-14T03:18:47Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:47Z",
+              "conclusion": "success",
+              "name": "Validate SDD artifacts and references",
+              "number": 5,
+              "startedAt": "2026-09-14T03:18:47Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:48Z",
+              "conclusion": "success",
+              "name": "Post Setup Node.js",
+              "number": 9,
+              "startedAt": "2026-09-14T03:18:47Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:48Z",
+              "conclusion": "success",
+              "name": "Post Checkout repository",
+              "number": 10,
+              "startedAt": "2026-09-14T03:18:48Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:48Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 11,
+              "startedAt": "2026-09-14T03:18:48Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103846856627"
+        },
+        {
+          "completedAt": "2026-09-14T03:19:01Z",
+          "conclusion": "success",
+          "databaseId": 103846884878,
+          "name": "Workflow Changes",
+          "startedAt": "2026-09-14T03:18:54Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-09-14T03:18:56Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-09-14T03:18:55Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:57Z",
+              "conclusion": "success",
+              "name": "Checkout repository",
+              "number": 2,
+              "startedAt": "2026-09-14T03:18:56Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:58Z",
+              "conclusion": "success",
+              "name": "Setup Node.js",
+              "number": 3,
+              "startedAt": "2026-09-14T03:18:57Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:58Z",
+              "conclusion": "success",
+              "name": "Show runtime versions",
+              "number": 4,
+              "startedAt": "2026-09-14T03:18:58Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:58Z",
+              "conclusion": "success",
+              "name": "Validate change packages and change-linked workflow artifacts",
+              "number": 5,
+              "startedAt": "2026-09-14T03:18:58Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:58Z",
+              "conclusion": "success",
+              "name": "Post Setup Node.js",
+              "number": 9,
+              "startedAt": "2026-09-14T03:18:58Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:59Z",
+              "conclusion": "success",
+              "name": "Post Checkout repository",
+              "number": 10,
+              "startedAt": "2026-09-14T03:18:58Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:18:59Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 11,
+              "startedAt": "2026-09-14T03:18:59Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103846884878"
+        },
+        {
+          "completedAt": "2026-09-14T03:19:10Z",
+          "conclusion": "success",
+          "databaseId": 103846913712,
+          "name": "Workflow Execution",
+          "startedAt": "2026-09-14T03:19:04Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-09-14T03:19:06Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-09-14T03:19:05Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:07Z",
+              "conclusion": "success",
+              "name": "Checkout repository",
+              "number": 2,
+              "startedAt": "2026-09-14T03:19:06Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:08Z",
+              "conclusion": "success",
+              "name": "Setup Node.js",
+              "number": 3,
+              "startedAt": "2026-09-14T03:19:07Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:08Z",
+              "conclusion": "success",
+              "name": "Show runtime versions",
+              "number": 4,
+              "startedAt": "2026-09-14T03:19:08Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:08Z",
+              "conclusion": "success",
+              "name": "Validate execution runtime artifacts and multi-agent contracts",
+              "number": 5,
+              "startedAt": "2026-09-14T03:19:08Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:08Z",
+              "conclusion": "success",
+              "name": "Post Setup Node.js",
+              "number": 9,
+              "startedAt": "2026-09-14T03:19:08Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:08Z",
+              "conclusion": "success",
+              "name": "Post Checkout repository",
+              "number": 10,
+              "startedAt": "2026-09-14T03:19:08Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:08Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 11,
+              "startedAt": "2026-09-14T03:19:08Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103846913712"
+        },
+        {
+          "completedAt": "2026-09-14T03:19:20Z",
+          "conclusion": "success",
+          "databaseId": 103846935951,
+          "name": "Workflow Planning",
+          "startedAt": "2026-09-14T03:19:13Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-09-14T03:19:15Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-09-14T03:19:15Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:17Z",
+              "conclusion": "success",
+              "name": "Checkout repository",
+              "number": 2,
+              "startedAt": "2026-09-14T03:19:15Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:17Z",
+              "conclusion": "success",
+              "name": "Setup Node.js",
+              "number": 3,
+              "startedAt": "2026-09-14T03:19:17Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:17Z",
+              "conclusion": "success",
+              "name": "Show runtime versions",
+              "number": 4,
+              "startedAt": "2026-09-14T03:19:17Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:18Z",
+              "conclusion": "success",
+              "name": "Validate planning tracks and routing presets",
+              "number": 5,
+              "startedAt": "2026-09-14T03:19:17Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:18Z",
+              "conclusion": "success",
+              "name": "Post Setup Node.js",
+              "number": 9,
+              "startedAt": "2026-09-14T03:19:18Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:18Z",
+              "conclusion": "success",
+              "name": "Post Checkout repository",
+              "number": 10,
+              "startedAt": "2026-09-14T03:19:18Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:18Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 11,
+              "startedAt": "2026-09-14T03:19:18Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103846935951"
+        },
+        {
+          "completedAt": "2026-09-14T03:19:34Z",
+          "conclusion": "success",
+          "databaseId": 103846964734,
+          "name": "Workflow Authoring Smoke",
+          "startedAt": "2026-09-14T03:19:23Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-09-14T03:19:25Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-09-14T03:19:24Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:27Z",
+              "conclusion": "success",
+              "name": "Checkout repository",
+              "number": 2,
+              "startedAt": "2026-09-14T03:19:25Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:27Z",
+              "conclusion": "success",
+              "name": "Setup Node.js",
+              "number": 3,
+              "startedAt": "2026-09-14T03:19:27Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:27Z",
+              "conclusion": "success",
+              "name": "Show runtime versions",
+              "number": 4,
+              "startedAt": "2026-09-14T03:19:27Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:31Z",
+              "conclusion": "success",
+              "name": "Validate scaffold -> validate authoring flow",
+              "number": 5,
+              "startedAt": "2026-09-14T03:19:27Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:31Z",
+              "conclusion": "success",
+              "name": "Post Setup Node.js",
+              "number": 9,
+              "startedAt": "2026-09-14T03:19:31Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:31Z",
+              "conclusion": "success",
+              "name": "Post Checkout repository",
+              "number": 10,
+              "startedAt": "2026-09-14T03:19:31Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:32Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 11,
+              "startedAt": "2026-09-14T03:19:32Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103846964734"
+        },
+        {
+          "completedAt": "2026-09-14T03:19:48Z",
+          "conclusion": "success",
+          "databaseId": 103847003640,
+          "name": "Build Exact Release Candidate",
+          "startedAt": "2026-09-14T03:19:37Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-09-14T03:19:38Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-09-14T03:19:37Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:39Z",
+              "conclusion": "success",
+              "name": "Checkout repository",
+              "number": 2,
+              "startedAt": "2026-09-14T03:19:38Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:43Z",
+              "conclusion": "success",
+              "name": "Setup Node.js",
+              "number": 3,
+              "startedAt": "2026-09-14T03:19:39Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:46Z",
+              "conclusion": "success",
+              "name": "Pack candidate once and record its digest",
+              "number": 4,
+              "startedAt": "2026-09-14T03:19:43Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:47Z",
+              "conclusion": "success",
+              "name": "Upload immutable candidate and digest",
+              "number": 5,
+              "startedAt": "2026-09-14T03:19:46Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:47Z",
+              "conclusion": "success",
+              "name": "Post Setup Node.js",
+              "number": 9,
+              "startedAt": "2026-09-14T03:19:47Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:47Z",
+              "conclusion": "success",
+              "name": "Post Checkout repository",
+              "number": 10,
+              "startedAt": "2026-09-14T03:19:47Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:47Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 11,
+              "startedAt": "2026-09-14T03:19:47Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103847003640"
+        },
+        {
+          "completedAt": "2026-09-14T03:20:36Z",
+          "conclusion": "success",
+          "databaseId": 103847043856,
+          "name": "Release Candidate (Node 22)",
+          "startedAt": "2026-09-14T03:19:53Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-09-14T03:19:56Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-09-14T03:19:54Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:57Z",
+              "conclusion": "success",
+              "name": "Checkout repository",
+              "number": 2,
+              "startedAt": "2026-09-14T03:19:56Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:00Z",
+              "conclusion": "success",
+              "name": "Setup Node.js",
+              "number": 3,
+              "startedAt": "2026-09-14T03:19:57Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:00Z",
+              "conclusion": "success",
+              "name": "Show runtime versions",
+              "number": 4,
+              "startedAt": "2026-09-14T03:20:00Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:01Z",
+              "conclusion": "success",
+              "name": "Download the exact candidate built once",
+              "number": 5,
+              "startedAt": "2026-09-14T03:20:00Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:01Z",
+              "conclusion": "success",
+              "name": "Resolve and verify candidate digest",
+              "number": 6,
+              "startedAt": "2026-09-14T03:20:01Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:28Z",
+              "conclusion": "success",
+              "name": "Run workflow-bundle unit and regression suite",
+              "number": 7,
+              "startedAt": "2026-09-14T03:20:01Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:28Z",
+              "conclusion": "success",
+              "name": "Audit workflow pack integration",
+              "number": 8,
+              "startedAt": "2026-09-14T03:20:28Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:30Z",
+              "conclusion": "success",
+              "name": "Run source install and update smoke",
+              "number": 9,
+              "startedAt": "2026-09-14T03:20:28Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:34Z",
+              "conclusion": "success",
+              "name": "Install and smoke the exact candidate artifact",
+              "number": 10,
+              "startedAt": "2026-09-14T03:20:30Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:34Z",
+              "conclusion": "success",
+              "name": "Post Setup Node.js",
+              "number": 19,
+              "startedAt": "2026-09-14T03:20:34Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:34Z",
+              "conclusion": "success",
+              "name": "Post Checkout repository",
+              "number": 20,
+              "startedAt": "2026-09-14T03:20:34Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:34Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 21,
+              "startedAt": "2026-09-14T03:20:34Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103847043856"
+        },
+        {
+          "completedAt": "2026-09-14T03:20:34Z",
+          "conclusion": "success",
+          "databaseId": 103847043935,
+          "name": "Release Candidate (Node 18)",
+          "startedAt": "2026-09-14T03:19:51Z",
+          "status": "completed",
+          "steps": [
+            {
+              "completedAt": "2026-09-14T03:19:53Z",
+              "conclusion": "success",
+              "name": "Set up job",
+              "number": 1,
+              "startedAt": "2026-09-14T03:19:52Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:54Z",
+              "conclusion": "success",
+              "name": "Checkout repository",
+              "number": 2,
+              "startedAt": "2026-09-14T03:19:53Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:58Z",
+              "conclusion": "success",
+              "name": "Setup Node.js",
+              "number": 3,
+              "startedAt": "2026-09-14T03:19:54Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:58Z",
+              "conclusion": "success",
+              "name": "Show runtime versions",
+              "number": 4,
+              "startedAt": "2026-09-14T03:19:58Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:59Z",
+              "conclusion": "success",
+              "name": "Download the exact candidate built once",
+              "number": 5,
+              "startedAt": "2026-09-14T03:19:58Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:19:59Z",
+              "conclusion": "success",
+              "name": "Resolve and verify candidate digest",
+              "number": 6,
+              "startedAt": "2026-09-14T03:19:59Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:28Z",
+              "conclusion": "success",
+              "name": "Run workflow-bundle unit and regression suite",
+              "number": 7,
+              "startedAt": "2026-09-14T03:19:59Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:29Z",
+              "conclusion": "success",
+              "name": "Audit workflow pack integration",
+              "number": 8,
+              "startedAt": "2026-09-14T03:20:28Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:31Z",
+              "conclusion": "success",
+              "name": "Run source install and update smoke",
+              "number": 9,
+              "startedAt": "2026-09-14T03:20:29Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:33Z",
+              "conclusion": "success",
+              "name": "Install and smoke the exact candidate artifact",
+              "number": 10,
+              "startedAt": "2026-09-14T03:20:31Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:33Z",
+              "conclusion": "success",
+              "name": "Post Setup Node.js",
+              "number": 19,
+              "startedAt": "2026-09-14T03:20:33Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:33Z",
+              "conclusion": "success",
+              "name": "Post Checkout repository",
+              "number": 20,
+              "startedAt": "2026-09-14T03:20:33Z",
+              "status": "completed"
+            },
+            {
+              "completedAt": "2026-09-14T03:20:33Z",
+              "conclusion": "success",
+              "name": "Complete job",
+              "number": 21,
+              "startedAt": "2026-09-14T03:20:33Z",
+              "status": "completed"
+            }
+          ],
+          "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041/job/103847043935"
+        }
+      ],
+      "job_counts": {
+        "required_expanded": 10,
+        "success": 10,
+        "failure": 0,
+        "skipped": 0
+      },
+      "artifact": {
+        "created": true,
+        "id": 10330854659,
+        "name": "workflow-bundle-candidate",
+        "package_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+        "package_size": 962605,
+        "storage_archive_sha256": "sha256:c4df5d4c42d97f93bd646764a08ca28c3aebf5f5ffe2034cee06041e441ea369",
+        "storage_archive_size": 954383,
+        "created_at": "2026-09-14T03:19:47Z",
+        "expires_at": "2026-09-21T03:19:46Z",
+        "digest_note": "The GitHub storage archive digest is not the package tarball digest."
+      },
+      "integrity": {
+        "status": "PASS",
+        "checked_at": "2026-09-14T03:26:00.563Z",
+        "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+        "reviewed_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+        "run_id": 34802149041,
+        "tarball": "/private/tmp/cf-rcr-ts8-hosted-MdHnYG/workflow-bundle-2.6.2.tgz",
+        "sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+        "declared_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+        "local_bytes_identical": true,
+        "size": 962605,
+        "version": "2.6.2",
+        "file_count": 545,
+        "skills": [
+          {
+            "mode": "codex",
+            "count": 42
+          },
+          {
+            "mode": "claude",
+            "count": 42
+          }
+        ],
+        "core_payload": [
+          {
+            "path": "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
+            "sha256": "21f8ad0ecedf99f8afbbd7c45cce4c8da38059795e5ece65bb5bf106c57d7cf6"
+          },
+          {
+            "path": "packages/workflow-bundle/scripts/work-item-protocol.js",
+            "sha256": "53de371f8fd9d82a466364be55048332f9ec80ca0fc5df9b3102e07a515c5d7a"
+          },
+          {
+            "path": "packages/workflow-bundle/scripts/workflow-gate-review.js",
+            "sha256": "0450ca110a060ae79d7b39af9466aef84f6aa323395938c6bdb247c858b61588"
+          },
+          {
+            "path": "packages/workflow-bundle/scripts/workflow-approval-transaction.js",
+            "sha256": "77d5278edf0fa5e4d7c488c9a9060d41eb00b116f900237a2105e4ff5dc71cdf"
+          }
+        ],
+        "metadata_only_diff": [
+          "product-specs/cards/upgrade-guardrails-actions-node24.md",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s01.restate.md",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s03.open-questions.md",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s07.implementation.md",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s08.verification.md",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.work-item-report.json",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-code-quality-evidence.json",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-evidence.json",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-ts6a-code-quality-evidence.json",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-sb3-ts6a-evidence.json",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-ts8-evidence.json",
+          "work-items/closeout-bundle-repeat-cycle-reconciliation/rcr-ts8-node24-card-metadata-evidence.json"
+        ],
+        "card_excluded_from_package": true,
+        "diagnostic_note": "A discarded count probe assumed flat skill paths; corrected read-only probe counts actual grouped SKILL.md paths without modifying package or expectation."
+      },
+      "required_expanded_jobs": 10,
+      "log_evidence": [
+        {
+          "id": 103847003640,
+          "lines": [
+            "Build Exact Release Candidate\tSetup Node.js\t2026-09-14T03:19:43.4548443Z node: v22.23.2"
+          ]
+        },
+        {
+          "id": 103847043856,
+          "lines": [
+            "Release Candidate (Node 22)\tSetup Node.js\t2026-09-14T03:20:00.3205281Z node: v22.23.2",
+            "Release Candidate (Node 22)\tShow runtime versions\t2026-09-14T03:20:00.3526891Z v22.23.2",
+            "Release Candidate (Node 22)\tRun workflow-bundle unit and regression suite\t2026-09-14T03:20:19.3191604Z   PASS: all-bundle atomicity matrix completed 64/64 cases",
+            "Release Candidate (Node 22)\tRun workflow-bundle unit and regression suite\t2026-09-14T03:20:19.7068535Z   PASS: real concurrent CLI race and two completed retries",
+            "Release Candidate (Node 22)\tRun workflow-bundle unit and regression suite\t2026-09-14T03:20:28.3271311Z OK: 45 workflow-bundle unit test file(s) passed",
+            "Release Candidate (Node 22)\tInstall and smoke the exact candidate artifact\t2026-09-14T03:20:34.1912464Z   PASS: sha256=af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+            "Release Candidate (Node 22)\tInstall and smoke the exact candidate artifact\t2026-09-14T03:20:34.1913073Z   PASS: wfc version=2.6.2; Codex/Claude x global/project=4/4"
+          ]
+        },
+        {
+          "id": 103847043935,
+          "lines": [
+            "Release Candidate (Node 18)\tSetup Node.js\t2026-09-14T03:19:58.6246976Z node: v18.20.8",
+            "Release Candidate (Node 18)\tShow runtime versions\t2026-09-14T03:19:58.6589641Z v18.20.8",
+            "Release Candidate (Node 18)\tRun workflow-bundle unit and regression suite\t2026-09-14T03:20:19.6306508Z   PASS: all-bundle atomicity matrix completed 64/64 cases",
+            "Release Candidate (Node 18)\tRun workflow-bundle unit and regression suite\t2026-09-14T03:20:19.9944958Z   PASS: real concurrent CLI race and two completed retries",
+            "Release Candidate (Node 18)\tRun workflow-bundle unit and regression suite\t2026-09-14T03:20:28.9600922Z OK: 45 workflow-bundle unit test file(s) passed",
+            "Release Candidate (Node 18)\tInstall and smoke the exact candidate artifact\t2026-09-14T03:20:33.1569519Z   PASS: sha256=af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+            "Release Candidate (Node 18)\tInstall and smoke the exact candidate artifact\t2026-09-14T03:20:33.1570184Z   PASS: wfc version=2.6.2; Codex/Claude x global/project=4/4"
+          ]
+        }
+      ],
+      "local_hosted_checksum_comparison": "PASS: actual downloaded tarball == hosted declared package checksum == local pre-host tarball",
+      "artifact_binding": {
+        "status": "PENDING_QC",
+        "reviewed_by": [],
+        "reviewed_at": "",
+        "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+        "reviewed_code_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+        "run_id": 34802149041,
+        "version": "2.6.2",
+        "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+        "rollback": {
+          "version": "v2.6.1",
+          "sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+        },
+        "local_pre_host_relation": "BYTES_IDENTICAL; local build remains historical pre-host source-bound evidence",
+        "prepared_at": "2026-09-14T03:32:59.441Z",
+        "scope": "Hosted artifact identity binding only; Technical Verification, DoD and parent/terminal authority remain separate"
+      },
+      "scan_annotation_note": "Node24 CI action-token work is not activated by TS8-M1; this Verify does not claim its zero-Node-deprecation-annotation AC."
     }
-  ]
+  ],
+  "local_pre_host_candidate": {
+    "path": "/private/tmp/cf-rcr-ts8-source-tQ3GPc/workflow-bundle-2.6.2.tgz",
+    "version": "2.6.2",
+    "sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+    "size": 962605,
+    "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "status": "LOCAL_PRE_HOST_VERIFIED",
+    "build_node": "v22.23.2",
+    "build_npm": "10.9.8",
+    "files": 545,
+    "runtime_skill_counts": [
+      {
+        "mode": "codex",
+        "skills": 42
+      },
+      {
+        "mode": "claude",
+        "skills": 42
+      }
+    ],
+    "extracted_core_sources": [
+      {
+        "path": "scripts/work-item-protocol-utils.js",
+        "sha256": "21f8ad0ecedf99f8afbbd7c45cce4c8da38059795e5ece65bb5bf106c57d7cf6",
+        "status": "EXACT_REVIEWED_SOURCE"
+      },
+      {
+        "path": "scripts/work-item-protocol.js",
+        "sha256": "53de371f8fd9d82a466364be55048332f9ec80ca0fc5df9b3102e07a515c5d7a",
+        "status": "EXACT_REVIEWED_SOURCE"
+      },
+      {
+        "path": "scripts/workflow-gate-review.js",
+        "sha256": "0450ca110a060ae79d7b39af9466aef84f6aa323395938c6bdb247c858b61588",
+        "status": "EXACT_REVIEWED_SOURCE"
+      },
+      {
+        "path": "scripts/workflow-approval-transaction.js",
+        "sha256": "77d5278edf0fa5e4d7c488c9a9060d41eb00b116f900237a2105e4ff5dc71cdf",
+        "status": "EXACT_REVIEWED_SOURCE"
+      }
+    ],
+    "pack_invocations": 1,
+    "initial_status": "LOCAL_VERIFIED_HOSTED_NOT_BUILT",
+    "hosted_relation": "MEASURED_BYTES_IDENTICAL"
+  },
+  "hosted_artifact_binding": {
+    "status": "PENDING_QC",
+    "reviewed_by": [],
+    "reviewed_at": "",
+    "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "reviewed_code_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "run_id": 34802149041,
+    "version": "2.6.2",
+    "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+    "rollback": {
+      "version": "v2.6.1",
+      "sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+    },
+    "local_pre_host_relation": "BYTES_IDENTICAL; local build remains historical pre-host source-bound evidence",
+    "prepared_at": "2026-09-14T03:32:59.441Z",
+    "scope": "Hosted artifact identity binding only; Technical Verification, DoD and parent/terminal authority remain separate"
+  },
+  "hosted_artifact_consumption": {
+    "status": "PASS",
+    "no_repack": true,
+    "checks": {
+      "artifact18": {
+        "command": "env PATH=/private/tmp/cf-rcr-ts8-source-tQ3GPc/node18-cache/_npx/00073ba5d7c1f8bc/node_modules/node/bin:/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin:/opt/homebrew/bin:/usr/bin:/bin WORKFLOW_BUNDLE_CANDIDATE_TARBALL=/private/tmp/cf-rcr-ts8-hosted-MdHnYG/workflow-bundle-2.6.2.tgz WORKFLOW_BUNDLE_CANDIDATE_SHA256=af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f WORKFLOW_BUNDLE_ROLLBACK_TARBALL=/private/tmp/cf-rcr-ts8-source-tQ3GPc/workflow-bundle-2.6.1.tgz WORKFLOW_BUNDLE_ROLLBACK_SHA256=7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9 /private/tmp/cf-rcr-ts8-source-tQ3GPc/node18-cache/_npx/00073ba5d7c1f8bc/node_modules/node/bin/node packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js",
+        "chunk_id": "7697a9",
+        "wall_time_seconds": 7.09e-7,
+        "session_id": 75118,
+        "original_token_count": 69,
+        "output": "  PASS: tarball=/private/tmp/cf-rcr-ts8-hosted-MdHnYG/workflow-bundle-2.6.2.tgz\n  PASS: sha256=af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f\n  PASS: wfc version=2.6.2; Codex/Claude x global/project=4/4\n\nOK: release-candidate-artifact-smoke.test.js passed\n",
+        "exit_code": 0,
+        "completed_at": "2026-09-14T03:30:23.381Z"
+      },
+      "artifact22": {
+        "command": "env PATH=/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin:/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin:/opt/homebrew/bin:/usr/bin:/bin WORKFLOW_BUNDLE_CANDIDATE_TARBALL=/private/tmp/cf-rcr-ts8-hosted-MdHnYG/workflow-bundle-2.6.2.tgz WORKFLOW_BUNDLE_CANDIDATE_SHA256=af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f WORKFLOW_BUNDLE_ROLLBACK_TARBALL=/private/tmp/cf-rcr-ts8-source-tQ3GPc/workflow-bundle-2.6.1.tgz WORKFLOW_BUNDLE_ROLLBACK_SHA256=7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9 /Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js",
+        "chunk_id": "82f2e5",
+        "wall_time_seconds": 6.25e-7,
+        "session_id": 76078,
+        "original_token_count": 69,
+        "output": "  PASS: tarball=/private/tmp/cf-rcr-ts8-hosted-MdHnYG/workflow-bundle-2.6.2.tgz\n  PASS: sha256=af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f\n  PASS: wfc version=2.6.2; Codex/Claude x global/project=4/4\n\nOK: release-candidate-artifact-smoke.test.js passed\n",
+        "exit_code": 0,
+        "completed_at": "2026-09-14T03:30:23.387Z"
+      },
+      "rollback18": {
+        "command": "env PATH=/private/tmp/cf-rcr-ts8-source-tQ3GPc/node18-cache/_npx/00073ba5d7c1f8bc/node_modules/node/bin:/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin:/opt/homebrew/bin:/usr/bin:/bin WORKFLOW_BUNDLE_CANDIDATE_TARBALL=/private/tmp/cf-rcr-ts8-hosted-MdHnYG/workflow-bundle-2.6.2.tgz WORKFLOW_BUNDLE_CANDIDATE_SHA256=af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f WORKFLOW_BUNDLE_ROLLBACK_TARBALL=/private/tmp/cf-rcr-ts8-source-tQ3GPc/workflow-bundle-2.6.1.tgz WORKFLOW_BUNDLE_ROLLBACK_SHA256=7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9 /private/tmp/cf-rcr-ts8-source-tQ3GPc/node18-cache/_npx/00073ba5d7c1f8bc/node_modules/node/bin/node packages/workflow-bundle/test/release-rollback-smoke.test.js",
+        "chunk_id": "d3580f",
+        "wall_time_seconds": 2.08e-7,
+        "session_id": 57995,
+        "original_token_count": 142,
+        "output": "  PASS: codex/global installed_version=2.6.1, managed_skills=42, unmanaged_markers=1\n  PASS: codex/project installed_version=2.6.1, managed_skills=42, unmanaged_markers=2\n  PASS: claude/global installed_version=2.6.1, managed_skills=42, unmanaged_markers=1\n  PASS: claude/project installed_version=2.6.1, managed_skills=42, unmanaged_markers=2\n  PASS: candidate_sha256=af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f\n  PASS: rollback_sha256=7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9\n\nOK: release-rollback-smoke.test.js passed\n",
+        "exit_code": 0,
+        "completed_at": "2026-09-14T03:30:23.387Z"
+      },
+      "rollback22": {
+        "command": "env PATH=/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin:/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin:/opt/homebrew/bin:/usr/bin:/bin WORKFLOW_BUNDLE_CANDIDATE_TARBALL=/private/tmp/cf-rcr-ts8-hosted-MdHnYG/workflow-bundle-2.6.2.tgz WORKFLOW_BUNDLE_CANDIDATE_SHA256=af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f WORKFLOW_BUNDLE_ROLLBACK_TARBALL=/private/tmp/cf-rcr-ts8-source-tQ3GPc/workflow-bundle-2.6.1.tgz WORKFLOW_BUNDLE_ROLLBACK_SHA256=7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9 /Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/test/release-rollback-smoke.test.js",
+        "chunk_id": "9e66ba",
+        "wall_time_seconds": 2.5e-7,
+        "session_id": 96968,
+        "original_token_count": 142,
+        "output": "  PASS: codex/global installed_version=2.6.1, managed_skills=42, unmanaged_markers=1\n  PASS: codex/project installed_version=2.6.1, managed_skills=42, unmanaged_markers=2\n  PASS: claude/global installed_version=2.6.1, managed_skills=42, unmanaged_markers=1\n  PASS: claude/project installed_version=2.6.1, managed_skills=42, unmanaged_markers=2\n  PASS: candidate_sha256=af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f\n  PASS: rollback_sha256=7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9\n\nOK: release-rollback-smoke.test.js passed\n",
+        "exit_code": 0,
+        "completed_at": "2026-09-14T03:30:23.388Z"
+      }
+    }
+  },
+  "prior_handoff_checks": {
+    "observed_at": "2026-09-14T03:08:43Z",
+    "workflow": "PASS:208files/204notes",
+    "protocol": "PASS:13managed/16legacy-skipped",
+    "execution": "PASS:204notes after in-scope existing QC owner metadata correction",
+    "planning": "PASS:204notes",
+    "sdd": "FAIL:18 diagnostics on6 distinct Node24 card scalar fields",
+    "change": "PASS:42notes; retained legacy CHANGE-003/006 advisories",
+    "source": "PASS:7 exact reviewed code/test hashes and parser checks; owner root/master unchanged",
+    "authoring_receipts": "PASS:5APPROVED frozen host hashes exact;16grants unchanged",
+    "encoding": "PASS:fatalUTF8decode all10 changed owned artifacts and git diff --check",
+    "mirror": "EXACT",
+    "history": "Existing report event/audit/decision/review prefixes unchanged; original historical s07 summary preserved",
+    "artifact_scope": "10RCRowned artifacts only;Node24 card,CI,package/test/master/parent/locked s04-s06 hosts unchanged",
+    "candidate": "Local exact full SHA af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f;no hosted artifact exists",
+    "authority": "QC opening retained; hosted VerifyBLOCKED; terminal authority not inferred"
+  },
+  "final_validation": {
+    "at": "2026-09-14T03:34:27.140Z",
+    "validators": {
+      "validate": {
+        "command": "/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js validate --workflow-root work-items --project-root .",
+        "exit_code": 0,
+        "summary": "OK: validated workflow naming (208 files) and governance (204 notes) under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items",
+        "advisories": ""
+      },
+      "sdd": {
+        "command": "/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js sdd --workflow-root work-items --project-root .",
+        "exit_code": 0,
+        "summary": "OK: validated SDD for 44 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items",
+        "advisories": ""
+      },
+      "change": {
+        "command": "/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js change --workflow-root work-items --project-root .",
+        "exit_code": 0,
+        "summary": "OK: validated change layer for 42 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items",
+        "advisories": "Legacy CHANGE vocabulary advisories retained; no migration"
+      },
+      "exec": {
+        "command": "/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js exec --workflow-root work-items --project-root .",
+        "exit_code": 0,
+        "summary": "OK: validated execution runtime for 204 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items",
+        "advisories": ""
+      },
+      "plan": {
+        "command": "/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js plan --workflow-root work-items --project-root .",
+        "exit_code": 0,
+        "summary": "OK: validated planning track for 204 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items",
+        "advisories": ""
+      },
+      "protocol": {
+        "command": "/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js protocol --workflow-root work-items --project-root .",
+        "exit_code": 0,
+        "summary": "OK: validated 13 protocol-managed work items under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items (skipped legacy: 16)",
+        "advisories": ""
+      }
+    },
+    "guards": {
+      "integrity": {
+        "status": "PASS",
+        "source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+        "sources": [
+          {
+            "path": "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
+            "sha256": "21f8ad0ecedf99f8afbbd7c45cce4c8da38059795e5ece65bb5bf106c57d7cf6"
+          },
+          {
+            "path": "packages/workflow-bundle/scripts/work-item-protocol.js",
+            "sha256": "53de371f8fd9d82a466364be55048332f9ec80ca0fc5df9b3102e07a515c5d7a"
+          },
+          {
+            "path": "packages/workflow-bundle/scripts/workflow-gate-review.js",
+            "sha256": "0450ca110a060ae79d7b39af9466aef84f6aa323395938c6bdb247c858b61588"
+          },
+          {
+            "path": "packages/workflow-bundle/scripts/workflow-approval-transaction.js",
+            "sha256": "77d5278edf0fa5e4d7c488c9a9060d41eb00b116f900237a2105e4ff5dc71cdf"
+          },
+          {
+            "path": "packages/workflow-bundle/test/work-item-protocol-state.test.js",
+            "sha256": "70051a906da2b247a4d00d8aa6b165a5f30bc287b24c7236e2dfec57ef00dec0"
+          },
+          {
+            "path": "packages/workflow-bundle/test/work-item-protocol.test.js",
+            "sha256": "b55714247cd240cd14dd800110d5ee03c158a905546b939ee4e463a0d37b06ce"
+          },
+          {
+            "path": "packages/workflow-bundle/test/workflow-gate-review.test.js",
+            "sha256": "b73c541fa9c736f7e5203bf8e93cafc35ae0682128ff442d8413a71d2a0f071a"
+          }
+        ],
+        "source_snapshot": "EXACT_MATCH",
+        "native_parse": 7,
+        "note_identity_inference": "NONE",
+        "core_text_inference": "NONE in reconciliation; adapter remains the sole import boundary",
+        "owner_worktrees": "UNCHANGED"
+      },
+      "compatibility": {
+        "status": "PASS",
+        "frozen_reports": 13,
+        "live_loads": 13,
+        "historical_prefixes": "UNCHANGED",
+        "unbound_events": 2,
+        "protected_hosts": 3,
+        "changed_utf8_files": 35
+      },
+      "metadata": {
+        "status": "PASS",
+        "card": "product-specs/cards/upgrade-guardrails-actions-node24.md",
+        "before_sha256": "650acfe759cc16e4468bc219ae7641e12a34b1965f2777ff4fea02e8d31b9f2c",
+        "after_sha256": "73d6ea970ef878a69d6150e5c2d2f2a5cd9fe7cbed76938bc9620fa7c3458a8d",
+        "normalized_scalars": 6,
+        "origin_notes_preserved": 5,
+        "all_other_bytes": "EXACT_UNCHANGED",
+        "requirements_acceptance_freeze_authority_time": "UNCHANGED",
+        "trusted_authoring_receipts": [
+          {
+            "gate": "spec",
+            "status": "APPROVED_UNCHANGED"
+          },
+          {
+            "gate": "contract",
+            "status": "APPROVED_UNCHANGED"
+          },
+          {
+            "gate": "dor",
+            "status": "APPROVED_UNCHANGED"
+          },
+          {
+            "gate": "approach",
+            "status": "APPROVED_UNCHANGED"
+          },
+          {
+            "gate": "task_plan",
+            "status": "APPROVED_UNCHANGED"
+          }
+        ],
+        "node24_readiness_sealing_activation": "NOT_PERFORMED",
+        "utf8": "PASS"
+      }
+    },
+    "invariant": {
+      "status": "PASS",
+      "base_sha": "af70276fe14317417365c06dd06186da1996c401",
+      "changed_files": 10,
+      "scope": "OWNED_RCR_ARTIFACTS_ONLY",
+      "utf8": "PASS",
+      "mirror": "EXACT",
+      "protected_history": "UNCHANGED",
+      "terminal_authority": "NOT_APPROVED",
+      "parent_finding": "OPEN",
+      "checksums": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "reviewed_source": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+      "hosted_source": "af70276fe14317417365c06dd06186da1996c401",
+      "hosted_run": 34802149041
+    }
+  }
 }

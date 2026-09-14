@@ -109,7 +109,7 @@ tags:
 > [!summary]
 > RCR-SB1/2/3 ordered reviews approved; corrected SB3 source remains `04eed2f8b2098bddf513d0f96fd129e835686dd7`, F-RCR-SB3-001 RESOLVED.
 > QC opened TS8/s08; local exact candidate checks pass per Node18/22. Failed hosted SDD attempt retained as historical.
-> Accepted TS8-M1 card metadata repair and all six validators pass; current protocol ACTIVE at s08 for hosted rerun only. Scan PARTIAL, parent F-AG11-001 OPEN; no terminal/branch-finalization authority.
+> Accepted TS8-M1 card metadata repair and validators pass. Hosted run 34802149041 succeeds10/10; exact downloaded/local candidate equality verified. Current protocol BLOCKED for QC amended hosted binding; scan PARTIAL, parent F-AG11-001 OPEN; no terminal/branch-finalization authority.
 
 ## Historical Implementation Summary — Superseded Checkpoints
 
@@ -1644,4 +1644,27 @@ validators: {"validate":{"exit_code":0,"summary":"OK: validated workflow naming 
 hosted: "PENDING_RERUN"
 terminal_authority: "NOT_APPROVED"
 parent_finding: "F-AG11-001 OPEN"
+```
+
+## TS8 — Current Hosted Binding Handoff
+
+```yaml
+observed_at: "2026-09-14T03:32:59.441Z"
+protocol_status: "BLOCKED"
+current_step: "s08"
+handoff_target: "RCR-TS8-hosted-artifact-binding"
+reviewed_source_sha: "04eed2f8b2098bddf513d0f96fd129e835686dd7"
+hosted_source_sha: "af70276fe14317417365c06dd06186da1996c401"
+run_id: 34802149041
+candidate_sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+required_jobs: "10/10 PASS"
+local_hosted_package_bytes: "MEASURED_IDENTICAL"
+downloaded_artifact_and_retained_rollback: "4/4 each per supported Node18/22"
+trusted_authoring_receipts: "FIVE_APPROVED_UNCHANGED"
+granted_roots: 17
+next_human_action: "QC review amended hosted artifact binding for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; retain reviewed-source local pre-host evidence and rollback v2.6.1 SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Technical Verification and DoD remain separate next reviews."
+technical_verification: "PENDING_REVIEW"
+dod: "NOT_APPROVED"
+parent_finding: "F-AG11-001 OPEN"
+branch_decision: "HOLD_OPEN"
 ```
