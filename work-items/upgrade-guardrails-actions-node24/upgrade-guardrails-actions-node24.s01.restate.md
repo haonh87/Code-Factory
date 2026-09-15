@@ -254,15 +254,17 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: MATERIALIZED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "upgrade-guardrails-actions-node24"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/upgrade-guardrails-actions-node24"
-current_step: "s06"
-granted_write_paths: []
+current_step: "s07"
+granted_write_paths:
+  - ".github/workflows/workflow-guardrails.yml"
+  - "work-items/upgrade-guardrails-actions-node24"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -274,13 +276,12 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-11T08:20:11.412Z"
-handoff_target: "sdd-light-ready-bundle-review"
-last_transition_action: "sdd-light-ready-bundle-human-approved"
-last_transition_at: "2026-09-11T08:32:50Z"
+handoff_target: "step-s07-owner"
+last_transition_action: "activate"
+last_transition_at: "2026-09-15T07:54:40.347Z"
 required_actions:
-  - "wfc gate approve-ready-bundle --work-item upgrade-guardrails-actions-node24"
-blockers:
-  - "The four human-approved compact readiness gates are not yet sealed as trusted receipts."
+  - {"id":"se:ca223a3cf266be57f1803141b5b122dabb6e02ee9f25e403369504b6c6f57280","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
+blockers: []
 review_notes:
   - "PO approved the Node 24 guardrails action upgrade; later gates remain independent."
   - "Trusted PO work-item receipt recorded at 2026-09-11T08:20:11.420Z verifies APPROVED for this project root."
@@ -301,6 +302,8 @@ audit_events:
   - "TRUSTED_WORK_ITEM_RECEIPT_VERIFIED"
   - "SDD_LIGHT_S04_S06_DRAFTED"
   - "SDD_LIGHT_READY_BUNDLE_HUMAN_APPROVED_PENDING_RECEIPTS"
+  - "READINESS_BUNDLE_APPROVED"
+  - "WORK_ITEM_ACTIVATED"
 ```
 
 ## Audit

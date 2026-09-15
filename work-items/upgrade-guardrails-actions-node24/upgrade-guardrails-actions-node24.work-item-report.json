@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "MATERIALIZED",
+  "protocol_status": "ACTIVE",
   "decision_owner": "agent",
   "protocol_owner": "po",
   "raw_request_summary": "Upgrade all checkout/setup-node uses in workflow-guardrails.yml to v7 while preserving behavior and proving hosted Node 24 compatibility.",
@@ -69,17 +69,22 @@
   "work_item_type": "CHANGE",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/upgrade-guardrails-actions-node24",
-  "current_step": "s06",
-  "granted_write_paths": [],
+  "current_step": "s07",
+  "granted_write_paths": [
+    ".github/workflows/workflow-guardrails.yml",
+    "work-items/upgrade-guardrails-actions-node24"
+  ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "sdd-light-ready-bundle-review",
+  "handoff_target": "step-s07-owner",
   "required_actions": [
-    "wfc gate approve-ready-bundle --work-item upgrade-guardrails-actions-node24"
+    {
+      "id": "se:ca223a3cf266be57f1803141b5b122dabb6e02ee9f25e403369504b6c6f57280",
+      "kind": "workflow_followup",
+      "text": "Continue active execution from step 7 onward."
+    }
   ],
-  "blockers": [
-    "The four human-approved compact readiness gates are not yet sealed as trusted receipts."
-  ],
+  "blockers": [],
   "refs": [
     "work-items/upgrade-guardrails-actions-node24"
   ],
@@ -95,7 +100,9 @@
     "WORK_ITEM_APPROVED",
     "TRUSTED_WORK_ITEM_RECEIPT_VERIFIED",
     "SDD_LIGHT_S04_S06_DRAFTED",
-    "SDD_LIGHT_READY_BUNDLE_HUMAN_APPROVED_PENDING_RECEIPTS"
+    "SDD_LIGHT_READY_BUNDLE_HUMAN_APPROVED_PENDING_RECEIPTS",
+    "READINESS_BUNDLE_APPROVED",
+    "WORK_ITEM_ACTIVATED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -167,6 +174,23 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Human Developer approved Spec, Approach, and Task Plan; human QC approved DoR. Four trusted receipts and explicit s07 activation remain separate."
+    },
+    {
+      "timestamp": "2026-09-15T07:53:21.932Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "3e1a4065-b112-48dd-b825-cc15319ac495"
+    },
+    {
+      "timestamp": "2026-09-15T07:54:40.347Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
     }
   ]
 }
