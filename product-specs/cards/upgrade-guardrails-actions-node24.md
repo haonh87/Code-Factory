@@ -2,7 +2,7 @@
 artifact_id: "upgrade-guardrails-actions-node24.card"
 artifact_family: product-spec
 spec_type: SPEC_CARD
-spec_status: draft
+spec_status: approved
 spec_version: "0.2"
 owner: "developer"
 reviewers:
@@ -27,7 +27,8 @@ source_refs:
 > zero-deprecation criterion because upload-artifact@v4 and download-artifact@v4 also target Node 20.
 > Developer/QC approved finding `F-N24-H1` and Developer approved amendment direction `T4a` at
 > `2026-09-15T09:14:23Z`. This v0.2 draft adds the smallest two selectors that close the finding;
-> fresh Spec, DoR, Approach, and Task Plan approvals and receipts remain mandatory before editing.
+> Developer approved amended Spec v0.2, Approach, and Task Plan T4a, while QC approved amended DoR
+> at `2026-09-15T09:27:44Z`. Fresh digest-bound receipts and explicit resume remain mandatory before editing.
 
 ## Business Goal
 ```yaml
@@ -130,10 +131,10 @@ open_decisions:
 
 ## Spec Freeze
 ```yaml
-status: draft
+status: FROZEN
 authority: "developer"
-decided_at: ""
-approved_by: ""
+decided_at: "2026-09-15T09:27:44Z"
+approved_by: "developer"
 freeze_requested_at: "2026-09-15"
 spec_version_requested: "0.2"
 ```

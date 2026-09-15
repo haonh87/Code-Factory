@@ -290,6 +290,7 @@ review_notes:
   - "Human Developer approved Spec, Approach, and Task Plan; human QC approved DoR at 2026-09-11T08:32:50Z. Receipt sealing and activation remain separate."
   - "Hosted run 34947061938 exposed F-N24-H1: three Node 20 annotations from upload/download-artifact@v4 despite 10/10 job success."
   - "Human Developer/QC approved F-N24-H1 and readiness rework; Developer approved Option A Task Plan amendment T4a and the Spec Card authoring path at 2026-09-15T09:14:23Z. Amended gate approvals and production edits remain separate."
+  - "Human Developer approved amended Spec v0.2, Approach, and Task Plan T4a; human QC approved amended DoR at 2026-09-15T09:27:44Z. Fresh receipt sealing and resume remain separate."
 refs:
   - "work-items/upgrade-guardrails-actions-node24"
 audit_events:
@@ -309,6 +310,7 @@ audit_events:
   - "WORK_ITEM_ACTIVATED"
   - "WORK_ITEM_BLOCKED"
   - "F_N24_H1_AND_T4A_DIRECTION_APPROVED"
+  - "AMENDED_READINESS_GATES_HUMAN_APPROVED_PENDING_RECEIPTS"
 ```
 
 ## Audit

@@ -282,11 +282,18 @@ recommended_amendment:
     - "Do not adopt upload direct mode or download v8 digest-mismatch behavior."
   implementation_method: "New fail-first warning/action-count assertion, two-token commit, refreshed Spec Compliance then Code Quality, second exact hosted run."
 required_human_decisions:
-  - "Developer re-approves amended Spec, Approach, and Task Plan; QC re-approves amended DoR."
   - "Trusted ready-bundle receipts are resealed before the two production tokens change."
 authorized_authoring_path:
   - "product-specs/cards/upgrade-guardrails-actions-node24.md"
 decision_note: "Developer/QC approved F-N24-H1 and readiness rework; Developer approved Task Plan amendment T4a Option A and the added Spec Card authoring path. This is not approval of the amended gate artifacts or production edits."
+amended_gate_decision:
+  status: HUMAN_APPROVED_PENDING_RECEIPTS
+  reviewed_at: "2026-09-15T09:27:44Z"
+  spec: { reviewer: "developer", verdict: APPROVED, version: "0.2" }
+  dor: { reviewer: "qc", verdict: APPROVED }
+  approach: { reviewer: "developer", verdict: APPROVED }
+  task_plan: { reviewer: "developer", verdict: APPROVED, amendment: "T4a" }
+  boundary: "No production edit, resume, Technical Verification, DoD, release, tag, or publication is implied."
 references:
   - "https://github.com/actions/upload-artifact/releases/tag/v6.0.0"
   - "https://github.com/actions/download-artifact/releases/tag/v7.0.0"

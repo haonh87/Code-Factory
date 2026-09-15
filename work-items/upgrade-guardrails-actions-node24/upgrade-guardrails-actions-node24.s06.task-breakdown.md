@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
 governance_status: ALIGNED
@@ -23,7 +23,7 @@ archive_status: not_ready
 sdd_mode: light
 spec_refs:
   card: "product-specs/cards/upgrade-guardrails-actions-node24.md"
-spec_status: draft
+spec_status: approved
 planning_track: quick
 execution_mode: agentic
 review_mode: self
@@ -40,10 +40,10 @@ gate_reviews:
   spec_reviewed_at: ""
   dor_reviewed_by: []
   dor_reviewed_at: ""
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  approach_reviewed_by: ["developer"]
+  approach_reviewed_at: "2026-09-15T09:27:44Z"
+  task_plan_reviewed_by: ["developer"]
+  task_plan_reviewed_at: "2026-09-15T09:27:44Z"
   dod_reviewed_by: []
   dod_reviewed_at: ""
 content_skills:
@@ -74,7 +74,8 @@ tags:
 > require Node 24 majors to satisfy unchanged AC-04. Developer/QC approved the finding and Developer
 > approved Option A/T4a at `2026-09-15T09:14:23Z`. This draft adds exactly one upload-artifact@v6,
 > one download-artifact@v7, the Spec Card authoring path, refreshed review, and a second hosted run;
-> no production edit is authorized until the four amended gates receive fresh receipts.
+> Developer approved the amended Approach and Task Plan T4a at `2026-09-15T09:27:44Z`; no production
+> edit is authorized until all four amended gates receive fresh receipts and the work item is resumed.
 
 ## Main Artifact
 ```yaml
@@ -299,9 +300,8 @@ checks:
   - { id: "CI-N24-GOV-06", check: "Smallest correct solution", result: PASS, evidence: "One production file and 20 original-baseline version tokens; the two-token amendment uses the first Node 24-default artifact majors and adds no setting." }
   - { id: "CI-N24-GOV-07", check: "Execution plan names paths/order/verify", result: PASS, evidence: "T0..T4 each name paths, dependencies, outputs, checkpoint, and verification." }
   - { id: "CI-N24-GOV-08", check: "Delivery disciplines are explicit", result: PASS, evidence: "Existing worktree, command-level fail-first, two-tier review, no delegation, and hosted DoD evidence are recorded." }
-  - { id: "CI-N24-GOV-09", check: "Human readiness gates", result: PENDING_AMENDED_REVIEW, evidence: "Developer/QC approved F-N24-H1 and Developer approved amendment direction T4a; amended gate decisions and fresh receipts remain separate." }
+  - { id: "CI-N24-GOV-09", check: "Human readiness gates", result: PASS_PENDING_RECEIPTS, evidence: "Developer approved amended Spec/Approach/Task Plan and QC approved amended DoR at 2026-09-15T09:27:44Z; fresh receipts remain separate." }
 blocking_items:
-  - "Developer amended Spec/Approach/Task Plan and QC amended DoR reviews"
   - "Four fresh independent trusted readiness receipts"
 owner: "developer/qc"
 next_action: "Review amended Spec/DoR/Approach/Task Plan, record Developer/QC provenance, then seal one fresh ready bundle and explicitly resume with all three roots."
@@ -334,8 +334,8 @@ test_refs: ["CI-N24-V1", "CI-N24-V2", "CI-N24-V3", "CI-N24-V4A", "CI-N24-V4"]
 
 ## Human Gate Proposal
 ```yaml
-approach: { status: "PENDING_AMENDED_HUMAN_REVIEW", reviewer: "developer", host: "s06" }
-task_plan: { status: "PENDING_AMENDED_HUMAN_REVIEW", reviewer: "developer", host: "s06" }
+approach: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "developer", reviewed_at: "2026-09-15T09:27:44Z", host: "s06" }
+task_plan: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "developer", reviewed_at: "2026-09-15T09:27:44Z", host: "s06" }
 ready_bundle_reviewers:
   spec: "developer"
   dor: "qc"
@@ -344,6 +344,6 @@ ready_bundle_reviewers:
 ```
 
 ## Handoff
-- Original compact reviews and receipts are historical; amended Spec, DoR, Approach, and Task Plan reviews are pending.
+- Original compact reviews and receipts are historical; amended Spec, DoR, Approach, and Task Plan are human-approved and await fresh receipts.
 - Implementation remains blocked until four fresh receipts are sealed and verified, then the work item is explicitly resumed with the Spec Card, workflow, and work-item roots.
 - `ci-guardrails-parallelisation` remains untouched and must rebase only after this branch merges.

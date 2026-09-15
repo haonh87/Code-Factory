@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
 governance_status: ALIGNED
@@ -23,7 +23,7 @@ archive_status: not_ready
 sdd_mode: light
 spec_refs:
   card: "product-specs/cards/upgrade-guardrails-actions-node24.md"
-spec_status: draft
+spec_status: approved
 planning_track: quick
 execution_mode: agentic
 review_mode: self
@@ -36,10 +36,10 @@ role_signoffs:
   task_plan: ["developer"]
   dod: ["qc"]
 gate_reviews:
-  spec_reviewed_by: []
-  spec_reviewed_at: ""
-  dor_reviewed_by: []
-  dor_reviewed_at: ""
+  spec_reviewed_by: ["developer"]
+  spec_reviewed_at: "2026-09-15T09:27:44Z"
+  dor_reviewed_by: ["qc"]
+  dor_reviewed_at: "2026-09-15T09:27:44Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -72,7 +72,8 @@ tags:
 > emitted three Node 20 deprecation annotations from upload/download-artifact@v4, proving that the
 > approved 18-token scope and AC-04 cannot both hold. Developer/QC approved the finding and
 > Developer approved Option A/T4a at `2026-09-15T09:14:23Z`. This draft expands the original
-> baseline by exactly two selectors; amended Spec and DoR human reviews remain pending.
+> baseline by exactly two selectors. Developer approved amended Spec v0.2 and QC approved amended
+> DoR at `2026-09-15T09:27:44Z`; fresh receipts and the s06 gates remain separate.
 
 ## Step Contract
 ```yaml
@@ -177,7 +178,7 @@ next_action: "Seal four independent readiness receipts in one ready-bundle inter
 
 ## Definition of Ready
 ```yaml
-status: READY_FOR_REVIEW
+status: READY
 blockers: []
 owners: ["developer", "qc"]
 notes:
@@ -208,14 +209,14 @@ test_refs: ["CI-N24-V1", "CI-N24-V2", "CI-N24-V3", "CI-N24-V4", "CI-N24-V4A"]
 
 ## Human Gate Proposal
 ```yaml
-spec: { status: "PENDING_AMENDED_HUMAN_REVIEW", reviewer: "developer", host: "s04" }
-dor: { status: "PENDING_AMENDED_HUMAN_REVIEW", reviewer: "qc", host: "s04" }
-approach: { status: "PENDING_AMENDED_HUMAN_REVIEW", reviewer: "developer", host: "s06" }
-task_plan: { status: "PENDING_AMENDED_HUMAN_REVIEW", reviewer: "developer", host: "s06" }
+spec: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "developer", reviewed_at: "2026-09-15T09:27:44Z", host: "s04" }
+dor: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "qc", reviewed_at: "2026-09-15T09:27:44Z", host: "s04" }
+approach: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "developer", reviewed_at: "2026-09-15T09:27:44Z", host: "s06" }
+task_plan: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "developer", reviewed_at: "2026-09-15T09:27:44Z", host: "s06" }
 bundle_note: "One interaction may seal four independent digest-bound receipts; it does not merge their authority."
 ```
 
 ## Handoff
-- Finding direction: F-N24-H1 and Option A/T4a are human-approved; this is not an amended gate pass.
-- Next review: Developer amended Spec and QC amended DoR, followed by amended s06 Approach and Task Plan.
+- Finding direction and all four amended authoring gates are human-approved; trusted receipts remain separate.
+- Next action: seal fresh Spec, DoR, Approach, and Task Plan receipts against the finalized s04/s06 hosts.
 - Production remains blocked until all four fresh receipts match the amended hosts and the work item is explicitly resumed with the Spec Card path added.
