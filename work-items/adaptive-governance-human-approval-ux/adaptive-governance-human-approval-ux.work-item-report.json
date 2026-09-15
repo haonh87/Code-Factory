@@ -131,7 +131,9 @@
     "Human QC approved refreshed child B2 Spec Compliance at 2026-09-11T04:04:57Z for source f9533c4de66fdb04e75008382b39b4fc413e3caa.",
     "Human Developer and QC approved refreshed child B2 Code Quality PASS at 2026-09-11T04:21:48Z for the same source. F-RCR-B2-001 is RESOLVED and child T7 is OPEN; parent release remains blocked.",
     "The prior source, candidate, Technical Verification, DoD, Release, Business Acceptance, and terminal receipts are historical pre-finding evidence only; release and branch finalization are blocked.",
-    "BA/Developer/QC approved child OQ-RCR-004=B and Developer/QC approved OQ-RCR-005=A plus OQ-RCR-006=B at 2026-09-11T07:59:12Z. The child amended s04 is drafted; no downstream gate is implied."
+    "BA/Developer/QC approved child OQ-RCR-004=B and Developer/QC approved OQ-RCR-005=A plus OQ-RCR-006=B at 2026-09-11T07:59:12Z. The child amended s04 is drafted; no downstream gate is implied.",
+    "Qualified child checkpoint trusted DoD receipt is current and valid. Parent exact-candidate refresh for source af70276fe14317417365c06dd06186da1996c401, run 34802149041 and candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f initially found two ignored runtime duplicates and blocked AG-13; existing legacy strings remained byte-preserved and opaque.",
+    "After explicit Maintainer approval, the two byte-identical ignored duplicates were isolated recoverably under /private/tmp/cf-cr008-runtime-parity-backup.H1ZWX1. Fresh real-worktree Node 18 and Node 22 full suites each passed 45/45, including parity, exact candidate and rollback. AG-01..AG-13 evidence is 13/13 PASS and awaits independent current QC review; no terminal gate is inferred."
   ],
   "work_item_slug": "adaptive-governance-human-approval-ux",
   "work_item_type": "CHANGE",
@@ -164,15 +166,25 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "linked-defect-amended-s04-human-gates",
+  "handoff_target": "parent-exact-candidate-QC-binding-review",
   "required_actions": [
     "Complete the three amended child s04 human reviews and seal fresh independent receipts.",
     "Refresh and approve the child s05/s06 design and execution plan before resuming implementation.",
-    "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
+    "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization.",
+    {
+      "id": "se:6bff872b1ec110f421ab4be71e8a2c08535a5d8a1a0e25b93e50d841486bdfab",
+      "kind": "workflow_followup",
+      "text": "QC reviews the current parent artifact binding and Technical Verification for source af70276fe14317417365c06dd06186da1996c401, run 34802149041 and candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; DoD, Release and Business Acceptance remain later independent gates."
+    }
   ],
   "blockers": [
     "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event.",
-    "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending."
+    "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending.",
+    {
+      "id": "se:9099dbc3f27490fc6b16a65e265df0a52396886fa1efc32f37b78577d90155e7",
+      "kind": "delivery_blocker",
+      "text": "Parent AG-01..AG-13 evidence is prepared at 13/13 PASS for the exact candidate. Current QC artifact-binding/Technical Verification, QC DoD, DevOps/QC Release and PO Business Acceptance remain pending; no closeout, Release or branch finalization is authorized."
+    }
   ],
   "refs": [
     "changes/CR-008",
@@ -269,7 +281,9 @@
     "LINKED_REPEAT_CYCLE_DEFECT_T7_OPENED",
     "LINKED_REPEAT_CYCLE_DEFECT_STRUCTURAL_CONTRACT_REOPENED",
     "LINKED_REPEAT_CYCLE_DEFECT_STRUCTURAL_QUESTIONS_APPROVED",
-    "LINKED_REPEAT_CYCLE_DEFECT_AMENDED_S04_DRAFTED"
+    "LINKED_REPEAT_CYCLE_DEFECT_AMENDED_S04_DRAFTED",
+    "PARENT_EXACT_CANDIDATE_REFRESH_BLOCKED_RUNTIME_PARITY",
+    "PARENT_EXACT_CANDIDATE_13_OF_13_EVIDENCE_PREPARED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -692,6 +706,22 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "Approved child OQ-RCR-004=B, OQ-RCR-005=A, and OQ-RCR-006=B with the assigned roles. Child amended s04 is drafted; fresh child gates and parent re-verification remain pending."
+    },
+    {
+      "timestamp": "2026-09-14T14:34:14Z",
+      "action": "record-parent-exact-candidate-refresh-blocked-runtime-parity",
+      "actor": "agent",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Fresh evidence has 12 AG criteria PASS and AG-13 PARTIAL because real-worktree parity detects two preserved ignored duplicates absent from the exact candidate. Current parent terminal gates remain pending; no release or closeout inferred."
+    },
+    {
+      "timestamp": "2026-09-15T02:06:06.548Z",
+      "action": "record-parent-exact-candidate-13-of-13-evidence-prepared",
+      "actor": "agent",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Maintainer-approved recoverable isolation resolved real-worktree parity. Node 18/22 full suites each passed 45/45 for the unchanged source/run/candidate/rollback binding. AG-01..AG-13 evidence is ready for current QC review; no parent gate approval inferred."
     }
   ]
 }

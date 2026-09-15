@@ -141,7 +141,9 @@
     "Fresh authoring receipts, amended child DoD artifact binding/receipt and full exact-candidate parent AC-RCR-08/AG13/independent terminal decisions remain pending. Production source, candidate, unknown-legacy rule and granted write paths are unchanged.",
     "Fresh RCR-TS8-CP-001 authoring receipts verified at 2026-09-14T13:42:10Z: all five APPROVED, signature_valid=true and digest_match=true. Spec/DoR/Approach/Task Plan bundle receipts 2026-09-14T13:38:13.862Z; Contract receipt 2026-09-14T13:38:24.847Z. Signed s04/s05/s06 hosts remain unchanged.",
     "QC amended DoD artifact binding review prepared on unchanged hosted candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f. Original qualified Technical Verification/DoD authority is preserved, not repeated. Trusted child DoD receipt and full AC-RCR-08 parent AG13/new independent terminal contribution remain pending.",
-    "Human QC accepted amended DoD artifact binding for RCR-TS8-CP-001 at 2026-09-14T13:51:10Z (recorded_at, not inferred message-send time). Original qualified child DoD 2026-09-14T07:35:25.955Z and Technical Verification 2026-09-14T07:26:16.002Z remain preserved. Finalized owned evidence must be committed before independent human-TTY DoD receipt signing; no full child DONE, parent PASS/terminal approval, F-AG11-001 closure or CR-008 completion inferred."
+    "Human QC accepted amended DoD artifact binding for RCR-TS8-CP-001 at 2026-09-14T13:51:10Z (recorded_at, not inferred message-send time). Original qualified child DoD 2026-09-14T07:35:25.955Z and Technical Verification 2026-09-14T07:26:16.002Z remain preserved. Finalized owned evidence must be committed before independent human-TTY DoD receipt signing; no full child DONE, parent PASS/terminal approval, F-AG11-001 closure or CR-008 completion inferred.",
+    "Trusted child DoD receipt verified at 2026-09-14T14:01:49.356Z: QC, APPROVED, signature-valid and digest-current for finalized child s08 e3159a438678242069c8045058b3d1c1664fa6451207a37cec123cfb8736af2e. This closes only the qualified child checkpoint gate; full AC-RCR-08 parent contribution remains mandatory.",
+    "Maintainer-approved recoverable isolation moved the two ignored duplicate runtime files to /private/tmp/cf-cr008-runtime-parity-backup.H1ZWX1. Fresh real-worktree full suites passed 45/45 on Node 18 and Node 22 against the unchanged candidate and rollback; parent AG-01..AG-13 evidence is now 13/13 PASS and awaits independent current QC review."
   ],
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "work_item_type": "BUG",
@@ -169,12 +171,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "RCR-TS8-CP-001-trusted-checkpoint-DoD-receipt-sealing",
+  "handoff_target": "parent-exact-candidate-QC-binding-review",
   "required_actions": [
     {
       "id": "se:be5dc64361135cc0202ff0087e8fe274560e7f29363e1a097d970b6a69366966",
       "kind": "workflow_followup",
-      "text": "Commit only the approved RCR-TS8-CP-001 owned child evidence, then verify the native uncommitted-delivery guard has no errors and human-TTY sign the independent qualified child gate dod receipt. QC binding is explicitly approved; do not repeat original DoD or authoring decisions, infer parent acceptance, waive uncommitted delivery, or mark full child DONE. Signed s04/s05/s06 remain unchanged."
+      "text": "Qualified child checkpoint receipt is valid and mandatory parent exact-candidate AG-01..AG-13 evidence is prepared at 13/13 PASS. Request independent parent QC artifact-binding and Technical Verification review; do not infer parent DoD/Release/Business Acceptance, close F-AG11-001, or mark CR-008 DONE."
     },
     {
       "id": "se:02f867797dfbd461087f98032647dc6be876c5c72d55f6d4728c805f047e9b1f",
@@ -186,7 +188,7 @@
     {
       "id": "se:4051976e3a5ded61673fb1cbc5ce3d7d05cd8709f64b20d4f5e484b9ac65207d",
       "kind": "delivery_blocker",
-      "text": "QC amended DoD artifact binding APPROVED; all five authoring receipts remain approved, current and signature-valid. Trusted qualified child checkpoint DoD receipt is still MISSING and requires committed owned evidence before human-TTY signing. Original QC decisions are preserved; final child protocol DONE, F-AG11-001 closure and full CR-008 still require mandatory AC-RCR-08 parent exact-candidate contribution."
+      "text": "Qualified child checkpoint DoD receipt is current and parent exact-candidate AG-01..AG-13 evidence is prepared at 13/13 PASS. Current parent QC Technical Verification/DoD, DevOps/QC Release, PO Business Acceptance, F-AG11-001 closure and final child protocol DONE remain mandatory."
     }
   ],
   "refs": [
@@ -301,7 +303,9 @@
     "RCR_TS8_CP_001_AUTHORING_APPROVED",
     "READINESS_BUNDLE_APPROVED",
     "RCR_TS8_CP_001_AUTHORING_RECEIPTS_VERIFIED",
-    "RCR_TS8_CP_001_DOD_BINDING_APPROVED"
+    "RCR_TS8_CP_001_DOD_BINDING_APPROVED",
+    "RCR_TS8_CP_001_TRUSTED_DOD_RECEIPT_VERIFIED",
+    "PARENT_EXACT_CANDIDATE_13_OF_13_EVIDENCE_PREPARED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -1059,6 +1063,22 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "Explicit human accept approves amended artifact binding only. Original qualified QC decisions, five current authoring receipts, exact package and scan gaps preserved. Trusted checkpoint DoD receipt and full mandatory AC-RCR-08 parent AG13/new independent terminal contribution remain pending; no transaction signing or final DONE inferred."
+    },
+    {
+      "timestamp": "2026-09-14T14:34:14Z",
+      "action": "record-RCR-TS8-CP-001-trusted-DoD-receipt-verified",
+      "actor": "agent",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Read-only verification observed the explicit QC trusted child checkpoint DoD receipt as APPROVED, signature-valid and digest-current. Full parent AG-01..AG-13 and independent terminal gates remain pending; no final DONE or parent approval inferred."
+    },
+    {
+      "timestamp": "2026-09-15T02:06:06.548Z",
+      "action": "record-parent-exact-candidate-13-of-13-evidence-prepared",
+      "actor": "agent",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "After explicit Maintainer approval, two ignored duplicates were isolated recoverably. Real-worktree Node 18/22 full suites each passed 45/45 with runtime parity, exact candidate and rollback. Parent Technical Verification and later human gates remain pending."
     }
   ]
 }

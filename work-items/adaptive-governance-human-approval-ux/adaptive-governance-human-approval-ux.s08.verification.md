@@ -70,12 +70,12 @@ gate_reviews:
   task_plan_reviewed_at: "2026-08-28T15:08:10Z"
   uat_reviewed_by: []
   uat_reviewed_at: ""
-  release_reviewed_by: ["devops", "qc"]
-  release_reviewed_at: "2026-09-09T08:47:09Z"
-  business_acceptance_reviewed_by: ["po"]
-  business_acceptance_reviewed_at: "2026-09-09T09:00:31Z"
-  dod_reviewed_by: ["qc"]
-  dod_reviewed_at: "2026-09-09T08:19:40Z"
+  release_reviewed_by: []
+  release_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: []
+  dod_reviewed_at: ""
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -978,3 +978,100 @@ next_step: "Seal trusted DoD, Release, and Business Acceptance receipts against 
 - B2 correction: refreshed Spec Compliance and Code Quality are approved for `f9533c4de66fdb04e75008382b39b4fc413e3caa`; `F-RCR-B2-001` is resolved and T7 is open.
 - Required sequence: approve refreshed B2 in order, complete T7/B3, verify one exact hosted candidate, then repeat parent terminal gates.
 - Branch/worktree: `HOLD_OPEN`; no merge, tag, release publication, install, cleanup, or branch finalization is authorized.
+
+## Current Parent Exact-Candidate Refresh — 2026-09-14T14:34:14Z
+
+> [!warning]
+> Current verdict: **BLOCKED**. The qualified child checkpoint receipt is valid. AG-01..AG-12
+> pass, but AG-13 is PARTIAL because real-worktree parity detects two preserved ignored
+> generated-runtime duplicates. Historical parent terminal approvals are not current authority.
+
+| Criterion | Verdict | Current evidence |
+| --- | --- | --- |
+| AG-01 | PASS | Non-delivery zero-write and audited override regression. |
+| AG-02 | PASS | Maintenance applicability omits unnecessary roles. |
+| AG-03 | PASS | Eight lanes and deterministic 20-run routing. |
+| AG-04 | PASS | Six hard triggers and mixed-intent fail-closed. |
+| AG-05 | PASS | Non-applicable gates produce no actions, blockers or receipts. |
+| AG-06 | PASS | Independent trusted reviewer/time/digest receipts and ready-bundle. |
+| AG-07 | PASS | 64/64 failure/crash boundaries plus concurrency and idempotent recovery. |
+| AG-08 | PASS | Legacy DoD and independent terminal gate enforcement. |
+| AG-09 | PASS | Legacy/adaptive dual-read, receipt-v1 and rollback compatibility. |
+| AG-10 | PASS | Telemetry disable, allowlist, pseudonym, retention and secret-canary controls. |
+| AG-11 | PASS | 20 commit cycles, 20 NOOP retries, transaction identity and report/s01 parity. |
+| AG-12 | PASS | 20 controlled fixtures: median 7 to 3 interactions (57.14%), one bundle per phase and 0% retry; this is not production telemetry. |
+| AG-13 | PARTIAL | Candidate and clean archive pass parity/skew/rollback; real-worktree parity correctly blocks on two ignored duplicates. |
+
+```yaml
+identity:
+  reviewed_source_sha: "04eed2f8b2098bddf513d0f96fd129e835686dd7"
+  hosted_source_sha: "af70276fe14317417365c06dd06186da1996c401"
+  hosted_run_id: 34802149041
+  hosted_candidate_sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+  rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+checks:
+  clean_source_archive_node18: "45/45 PASS"
+  clean_source_archive_node22: "45/45 PASS"
+  real_worktree_node18: "FAIL runtime-parity only"
+  real_worktree_node22: "FAIL runtime-parity only"
+  targeted_closeout: "20 cycles, 20 NOOP retries, 64/64 atomicity PASS"
+  hosted_run: "10/10 jobs SUCCESS; retained provenance re-read, not rerun"
+  pack_audit: "PASS; 170 cross-references; 42 canonical skills"
+  syntax: "13/13 affected JavaScript files PASS"
+  static_security: "SKIPPED; no configured wrapper and semgrep unavailable"
+coverage: { pass: 12, partial: 1, fail: 0, total: 13 }
+gates:
+  technical_verification: NOT_REVIEWED_CURRENT_CANDIDATE
+  dod: NOT_REVIEWED_CURRENT_CANDIDATE
+  release: NOT_REVIEWED_CURRENT_CANDIDATE
+  business_acceptance: NOT_REVIEWED_CURRENT_CANDIDATE
+release_readiness: HOLD
+branch_finish: HOLD_OPEN
+evidence_ref: "rcr-parent-exact-candidate-evidence.json"
+```
+
+The two ignored files are absent from the immutable candidate and clean archive; neither file was
+deleted or altered. Activation and Release remain blocked. Maintainer authority is required for
+recoverable isolation, followed by fresh real-worktree verification and independent parent gates.
+
+### Parity remediation and refreshed verdict — 2026-09-15T02:06:06.548Z
+
+> [!success]
+> Maintainer approved recoverable isolation. Both files were moved to
+> `/private/tmp/cf-cr008-runtime-parity-backup.H1ZWX1`; their original
+> SHA-256 `76878225fe139b9f3b9448f021fe58788469e7271595a6072bdca62954cc7479`
+> is preserved. No tracked source, candidate or rollback artifact changed.
+
+```yaml
+status: READY_FOR_PARENT_QC_BINDING_REVIEW
+acceptance_coverage: "AG-01..AG-13: 13/13 PASS"
+real_worktree:
+  node18:
+    result: "45/45 PASS"
+    started_at: "2026-09-15T02:05:38.118Z"
+    finished_at: "2026-09-15T02:06:06.548Z"
+  node22:
+    result: "45/45 PASS"
+    started_at: "2026-09-15T02:05:38.111Z"
+    finished_at: "2026-09-15T02:06:03.864Z"
+  runtime_parity: PASS
+  exact_candidate: PASS
+  rollback: PASS
+artifact_binding:
+  hosted_source_sha: "af70276fe14317417365c06dd06186da1996c401"
+  hosted_run_id: 34802149041
+  candidate_sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+  rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+current_human_authority:
+  artifact_binding: PENDING_QC
+  technical_verification: PENDING_QC
+  dod: PENDING_QC
+  release: PENDING_DEVOPS_AND_QC
+  business_acceptance: PENDING_PO
+release_readiness: HOLD_PENDING_HUMAN_GATES
+branch_finish: HOLD_OPEN
+```
+
+Recommendation: QC may now review the exact current parent artifact binding and Technical
+Verification. This recommendation does not approve Technical Verification, DoD, Release or
+Business Acceptance and does not close F-AG11-001 or CR-008.
