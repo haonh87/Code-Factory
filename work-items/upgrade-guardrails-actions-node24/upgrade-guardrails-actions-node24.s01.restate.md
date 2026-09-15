@@ -265,6 +265,7 @@ current_step: "s07"
 granted_write_paths:
   - ".github/workflows/workflow-guardrails.yml"
   - "work-items/upgrade-guardrails-actions-node24"
+  - "product-specs/cards/upgrade-guardrails-actions-node24.md"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -276,13 +277,13 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-11T08:20:11.412Z"
-handoff_target: "s06-amendment-review"
+handoff_target: "developer-qc-review-t4b"
 last_transition_action: "block"
-last_transition_at: "2026-09-15T09:08:15.067Z"
+last_transition_at: "2026-09-15T09:59:45.552Z"
 required_actions:
   - {"id":"se:cb6c94e2cd9962c48052a22d0fd2861d67320173553c30085b95fbd2fffa6a6a","kind":"workflow_followup","text":"Resolve blockers before resuming the work item."}
 blockers:
-  - {"id":"se:85ebc8cd4ff42d2ca3b37a28f6ff6b15112cbc4f809f35f55c098cc699549690","kind":"delivery_blocker","text":"F-N24-H1: hosted run 34947061938 passed 10/10 jobs but emitted three Node 20 deprecation annotations from upload-artifact@v4 and download-artifact@v4; the 18-token scope cannot satisfy AC-04."}
+  - {"id":"se:85ebc8cd4ff42d2ca3b37a28f6ff6b15112cbc4f809f35f55c098cc699549690","kind":"delivery_blocker","text":"F-N24-T4A-001: existing release-candidate smoke and release-surface tests still assert upload/download-artifact@v4; their two test files are outside the approved write roots, so the full unit suite cannot pass until a bounded Task Plan amendment authorizes those expectation updates."}
 review_notes:
   - "PO approved the Node 24 guardrails action upgrade; later gates remain independent."
   - "Trusted PO work-item receipt recorded at 2026-09-11T08:20:11.420Z verifies APPROVED for this project root."
@@ -311,6 +312,7 @@ audit_events:
   - "WORK_ITEM_BLOCKED"
   - "F_N24_H1_AND_T4A_DIRECTION_APPROVED"
   - "AMENDED_READINESS_GATES_HUMAN_APPROVED_PENDING_RECEIPTS"
+  - "WORK_ITEM_RESUMED"
 ```
 
 ## Audit

@@ -76,6 +76,9 @@ tags:
 > all 10 jobs, but AC-04 failed because upload-artifact@v4 emitted one Node 20 warning and
 > download-artifact@v4 emitted one warning in each matrix job. No scope expansion is authorized;
 > finding `F-N24-H1` blocks verification pending a human-approved Spec/DoR/Approach/Task Plan amendment.
+> That amendment was approved, sealed, and resumed. The bounded T4a production edit now passes its
+> focused invariant, but the full unit suite exposed `F-N24-T4A-001`: two existing tests lock the old
+> artifact-action majors and are outside the granted roots. Execution is blocked pending T4b.
 
 ## Main Artifact
 ```yaml
@@ -315,4 +318,33 @@ remaining_obligations:
   - "Resolve F-N24-H1 through an approved and digest-bound readiness amendment."
   - "Implement and review the bounded two-token delta, then repeat exact hosted verification."
   - "QC Technical Verification and DoD only after AC-04 reaches zero annotations."
+```
+
+## Finding F-N24-T4A-001
+```yaml
+finding_id: "F-N24-T4A-001"
+status: TASK_PLAN_AMENDMENT_REVIEW_REQUIRED
+severity: MEDIUM
+detected_at: "2026-09-15T09:59:45Z"
+production_delta:
+  result: PASS
+  workflow_sha256: "b72a0cb172d8a11c5d2e96acc6a31bdd9c22b00f48b0a8fd0e643ae0d3ad0f30"
+  normalized_head_sha256: "85a3e531510b5752fe33da3a0181b257040dd707a42ef60e0f350229fcf9ff58"
+  normalized_worktree_sha256: "85a3e531510b5752fe33da3a0181b257040dd707a42ef60e0f350229fcf9ff58"
+  exact_diff: "One upload-artifact@v4 -> @v6 and one download-artifact@v4 -> @v7; no other workflow line changed."
+red_evidence:
+  command: "npm run validate:workflow:unit"
+  result: FAIL_EXPECTED_AFTER_APPROVED_SELECTOR_CHANGE
+  failed_files:
+    - "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js"
+    - "packages/workflow-bundle/test/release-surface.test.js"
+  root_cause: "Both existing release-contract tests still assert upload/download-artifact@v4."
+scope_conflict: "The two test files are not in the T4a granted_write_paths, so they cannot be edited under current authority."
+recommended_amendment:
+  id: "T4b"
+  approach_delta: "None. Preserve the approved action-major choice, artifact flow, and validation design."
+  task_plan_delta: "Grant the two existing test paths and update only four expectation tokens: two upload v4->v6 and two download v4->v7."
+  prohibited_changes: ["new test file", "test logic change", "fixture change", "workflow topology change", "parallelisation"]
+  verify: "Rerun the same full unit suite plus existing local and hosted verification paths."
+required_human_action: "Developer approves the unchanged-semantic Approach receipt refresh and Task Plan amendment T4b; then seal fresh approach/task_plan receipts and resume with both test paths."
 ```

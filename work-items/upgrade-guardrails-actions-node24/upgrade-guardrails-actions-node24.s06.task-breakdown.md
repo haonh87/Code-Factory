@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: approved
+status: draft
 governance_ref: "project-context/project-context.md"
 governance_profile: default
 governance_status: ALIGNED
@@ -40,10 +40,10 @@ gate_reviews:
   spec_reviewed_at: ""
   dor_reviewed_by: []
   dor_reviewed_at: ""
-  approach_reviewed_by: ["developer"]
-  approach_reviewed_at: "2026-09-15T09:27:44Z"
-  task_plan_reviewed_by: ["developer"]
-  task_plan_reviewed_at: "2026-09-15T09:27:44Z"
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
   dod_reviewed_by: []
   dod_reviewed_at: ""
 content_skills:
@@ -74,8 +74,11 @@ tags:
 > require Node 24 majors to satisfy unchanged AC-04. Developer/QC approved the finding and Developer
 > approved Option A/T4a at `2026-09-15T09:14:23Z`. This draft adds exactly one upload-artifact@v6,
 > one download-artifact@v7, the Spec Card authoring path, refreshed review, and a second hosted run;
-> Developer approved the amended Approach and Task Plan T4a at `2026-09-15T09:27:44Z`; no production
-> edit is authorized until all four amended gates receive fresh receipts and the work item is resumed.
+> Developer approved the amended Approach and Task Plan T4a at `2026-09-15T09:27:44Z`. During T4a,
+> the full unit suite exposed `F-N24-T4A-001`: two existing release-contract tests still assert the
+> superseded v4 artifact selectors. Amendment T4b adds only those two existing test files and four
+> expectation-token updates; because Approach and Task Plan share this physical s06 host, both need
+> fresh Developer approval and digest-bound receipts before test edits or resume.
 
 ## Main Artifact
 ```yaml
@@ -89,6 +92,7 @@ ba_lane:
   scope_guards:
     - "Exactly one production path: .github/workflows/workflow-guardrails.yml; Spec Card and work-item notes are authoring/evidence only."
     - "Exactly 20 selector changes from the original baseline: the reviewed 18 plus upload@v6 and download@v7."
+    - "Exactly two existing test paths may change, limited to four v4-to-approved-major expectation tokens; no test logic, fixtures, or coverage boundary changes."
     - "No matrix, parallelisation, fail-fast, job, needs, trigger, Node-version, action-input, cache, submodule, or credential changes."
     - "No release or tag action."
   human_review_points:
@@ -99,6 +103,8 @@ dev_lane:
   path_map:
     - { path: ".github/workflows/workflow-guardrails.yml", purpose: "20 action-major replacements from original baseline; preserve every other token (18 reviewed, 2 amendment-pending)." }
     - { path: "product-specs/cards/upgrade-guardrails-actions-node24.md", purpose: "Amended Spec Card v0.2 for F-N24-H1; no production behavior." }
+    - { path: "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js", purpose: "Update the existing exact-candidate action-version expectations from artifact v4 to the approved v6/v7 majors." }
+    - { path: "packages/workflow-bundle/test/release-surface.test.js", purpose: "Update the existing release-surface tokens from artifact v4 to the approved v6/v7 majors." }
     - { path: "work-items/upgrade-guardrails-actions-node24/upgrade-guardrails-actions-node24.s07.implementation.md", purpose: "Lazy-created implementation and fail-first/review evidence." }
     - { path: "work-items/upgrade-guardrails-actions-node24/upgrade-guardrails-actions-node24.s08.verification.md", purpose: "Lazy-created local/hosted evidence and DoD proposal." }
   technical_sequence:
@@ -106,12 +112,14 @@ dev_lane:
     - "Materialize amended Spec/DoR/Approach/Task Plan and reseal all four receipts."
     - "Resume with the Spec Card, workflow, and work-item roots; record RED for the two artifact selectors."
     - "Replace only upload-artifact@v4 with @v6 and download-artifact@v4 with @v7."
+    - "Run the full unit suite, capture F-N24-T4A-001 RED, then update only four stale version expectations across the two approved existing test files."
     - "Run local invariant, syntax, diff, and workflow-pack checks; complete refreshed two-tier review."
     - "Commit/push the two-token recovery and bind a second hosted run with zero annotations."
   tdd_targets:
     - "Command-level fail-first: exact v7 counts fail on the v4 baseline, then pass after the token-only edit."
-    - "A persistent test file is intentionally not added because the selected major is release metadata and the hosted runner is the behavior harness; s07 must preserve the RED command/output as alternative TDD evidence."
+    - "No new persistent test file is added; the two existing release-contract tests are updated because they already own the action-version contract and fail on the approved selector majors."
     - "T4A adds a RED assertion expecting upload@v6/download@v7 and zero v4 artifact selectors; run unchanged after the two-token edit for GREEN."
+    - "T4B uses the full unit suite failure as RED, then reruns the same suite after only four existing expectation tokens are updated."
 task_breakdown:
   - id: "CI-N24-T0"
     owner_role: "developer"
@@ -167,9 +175,19 @@ task_breakdown:
     outputs_expected: ["1 upload-artifact@v6", "1 download-artifact@v7", "0 v4 artifact selectors", "unchanged artifact inputs/order", "refreshed two-tier PASS", "second exact hosted run with 0 Node deprecation annotations"]
     review_checkpoint: "Developer/QC approve refreshed Spec Compliance before refreshed Code Quality for the two-token source digest."
     verification_hint: "RED/GREEN exact selector assertion; normalize all four action selectors; compare upload/download step maps and order; full local checks; inspect annotations for every check-run."
+  - id: "CI-N24-T4B"
+    owner_role: "developer"
+    name: "Rebind existing release-contract expectations"
+    objective: "Resolve F-N24-T4A-001 by aligning two existing test contracts to the already-approved upload v6/download v7 selectors without changing their logic or coverage."
+    paths_in_scope: ["packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js", "packages/workflow-bundle/test/release-surface.test.js", "work-items/upgrade-guardrails-actions-node24"]
+    dependencies: ["F-N24-T4A-001 recorded", "Developer approves amended Approach and Task Plan T4b", "fresh s06 approach/task_plan receipts digest-match", "explicit resume grants both test paths"]
+    outputs_expected: ["2 upload-artifact expectations use @v6", "2 download-artifact expectations use @v7", "0 other test-line changes", "full unit suite PASS"]
+    review_checkpoint: "Refreshed Spec Compliance confirms test-only contract alignment before refreshed Code Quality."
+    verification_hint: "Use the captured full-suite RED; inspect a zero-context four-line test diff; rerun the same full suite plus pack, authoring, scoped validators, YAML, diff, and UTF-8 checks."
 dependencies_global:
   - "The work item must be activated with .github/workflows/workflow-guardrails.yml as the granted write root."
   - "Resume after amendment with product-specs/cards/upgrade-guardrails-actions-node24.md, the workflow, and work-items/upgrade-guardrails-actions-node24 as granted roots."
+  - "Resume after T4b with both packages/workflow-bundle/test release-contract files added to the granted roots."
   - "Hosted verification requires a pushed source commit and GitHub Actions availability."
 risk_notes:
   - "Direct three-major jump is bounded by release-note review and exact invariant tests."
@@ -328,14 +346,14 @@ rollback_or_restore_steps:
 ```yaml
 requirement_refs: ["CI-N24-REQ-001", "CI-N24-REQ-002", "CI-N24-REQ-003", "CI-N24-REQ-004", "CI-N24-REQ-005", "CI-N24-REQ-006"]
 acceptance_refs: ["CI-N24-AC-01", "CI-N24-AC-02", "CI-N24-AC-03", "CI-N24-AC-04", "CI-N24-AC-05", "CI-N24-AC-06"]
-task_refs: ["CI-N24-T0", "CI-N24-T1", "CI-N24-T2", "CI-N24-T3", "CI-N24-T4A", "CI-N24-T4"]
-test_refs: ["CI-N24-V1", "CI-N24-V2", "CI-N24-V3", "CI-N24-V4A", "CI-N24-V4"]
+task_refs: ["CI-N24-T0", "CI-N24-T1", "CI-N24-T2", "CI-N24-T3", "CI-N24-T4A", "CI-N24-T4B", "CI-N24-T4"]
+test_refs: ["CI-N24-V1", "CI-N24-V2", "CI-N24-V3", "CI-N24-V4A", "CI-N24-V4B", "CI-N24-V4"]
 ```
 
 ## Human Gate Proposal
 ```yaml
-approach: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "developer", reviewed_at: "2026-09-15T09:27:44Z", host: "s06" }
-task_plan: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "developer", reviewed_at: "2026-09-15T09:27:44Z", host: "s06" }
+approach: { status: "REVIEW_REQUIRED", reviewer: "developer", reviewed_at: "", host: "s06", semantic_delta: "None; receipt refresh is required because T4b changes the shared host artifact." }
+task_plan: { status: "REVIEW_REQUIRED", reviewer: "developer", reviewed_at: "", host: "s06", amendment: "T4b" }
 ready_bundle_reviewers:
   spec: "developer"
   dor: "qc"

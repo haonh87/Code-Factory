@@ -75,11 +75,12 @@
   "current_step": "s07",
   "granted_write_paths": [
     ".github/workflows/workflow-guardrails.yml",
-    "work-items/upgrade-guardrails-actions-node24"
+    "work-items/upgrade-guardrails-actions-node24",
+    "product-specs/cards/upgrade-guardrails-actions-node24.md"
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "s06-amendment-review",
+  "handoff_target": "developer-qc-review-t4b",
   "required_actions": [
     {
       "id": "se:cb6c94e2cd9962c48052a22d0fd2861d67320173553c30085b95fbd2fffa6a6a",
@@ -91,7 +92,7 @@
     {
       "id": "se:85ebc8cd4ff42d2ca3b37a28f6ff6b15112cbc4f809f35f55c098cc699549690",
       "kind": "delivery_blocker",
-      "text": "F-N24-H1: hosted run 34947061938 passed 10/10 jobs but emitted three Node 20 deprecation annotations from upload-artifact@v4 and download-artifact@v4; the 18-token scope cannot satisfy AC-04."
+      "text": "F-N24-T4A-001: existing release-candidate smoke and release-surface tests still assert upload/download-artifact@v4; their two test files are outside the approved write roots, so the full unit suite cannot pass until a bounded Task Plan amendment authorizes those expectation updates."
     }
   ],
   "refs": [
@@ -114,7 +115,8 @@
     "WORK_ITEM_ACTIVATED",
     "WORK_ITEM_BLOCKED",
     "F_N24_H1_AND_T4A_DIRECTION_APPROVED",
-    "AMENDED_READINESS_GATES_HUMAN_APPROVED_PENDING_RECEIPTS"
+    "AMENDED_READINESS_GATES_HUMAN_APPROVED_PENDING_RECEIPTS",
+    "WORK_ITEM_RESUMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -214,6 +216,31 @@
       "from_status": "ACTIVE",
       "to_status": "BLOCKED",
       "note": "Hosted candidate exposed the approved scope/spec conflict. Stop production edits and return for a bounded Node 24 artifact-action amendment."
+    },
+    {
+      "timestamp": "2026-09-15T09:35:25.621Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "1ef4708a-e6dc-44d8-a166-f6153c4f6ed0"
+    },
+    {
+      "timestamp": "2026-09-15T09:54:16.513Z",
+      "action": "resume",
+      "actor": "coordinator",
+      "from_status": "BLOCKED",
+      "to_status": "ACTIVE",
+      "note": "F-N24-H1 readiness amendment has four fresh digest-matched receipts; resume only bounded T4a two-token implementation and refreshed review."
+    },
+    {
+      "timestamp": "2026-09-15T09:59:45.552Z",
+      "action": "block",
+      "actor": "coordinator",
+      "from_status": "ACTIVE",
+      "to_status": "BLOCKED",
+      "note": "T4a production delta is exactly two selectors and its normalized workflow is unchanged, but full unit verification exposed two stale v4 expectations. Stop test edits pending a bounded T4b scope amendment and fresh s06 receipts."
     }
   ]
 }
