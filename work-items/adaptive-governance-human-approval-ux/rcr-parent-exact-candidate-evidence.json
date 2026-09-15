@@ -4,8 +4,8 @@
   "artifact_family": "verification-evidence",
   "artifact_role": "supporting",
   "source_of_truth": false,
-  "status": "BUSINESS_ACCEPTANCE_HUMAN_APPROVED_FINAL_RECEIPTS_PENDING",
-  "observed_at": "2026-09-14T14:34:14Z",
+  "status": "FINAL_RECONCILIATION_PASS_PROTOCOL_CLOSE_READY",
+  "observed_at": "2026-09-15T06:47:56Z",
   "work_item_slug": "adaptive-governance-human-approval-ux",
   "change_id": "CR-008",
   "identity": {
@@ -514,7 +514,7 @@
     }
   ],
   "release_readiness": {
-    "status": "HUMAN_GATES_APPROVED_NOT_PUBLISHED_RECEIPTS_PENDING",
+    "status": "HUMAN_GATES_AND_CURRENT_RECEIPTS_APPROVED_NOT_PUBLISHED",
     "publish": false,
     "tag": false,
     "merge": false,
@@ -537,5 +537,74 @@
     "unknown_legacy_text_preserved": true,
     "production_source_changed": false
   },
-  "next_action": "Seal trusted DoD, Release and Business Acceptance receipts against the finalized parent s08 host, then reconcile F-AG11-001 and both protocols. Publication, tagging, merge and cleanup remain separately unauthorized."
+  "final_reconciliation": {
+    "status": "PASS",
+    "reconciled_at": "2026-09-15T06:47:56Z",
+    "parent_s08_sha256": "e994f4292829e77d06ba809e897c3efd6d2c6cff562b579ed1536f5e92d0cc93",
+    "receipts": {
+      "dod": {
+        "status": "APPROVED_VALID_CURRENT",
+        "reviewed_by": "qc",
+        "reviewed_at": "2026-09-15T06:35:16.290Z"
+      },
+      "release": {
+        "status": "APPROVED_VALID_CURRENT",
+        "reviewed_by": "devops",
+        "reviewed_at": "2026-09-15T06:35:27.640Z"
+      },
+      "business_acceptance": {
+        "status": "APPROVED_VALID_CURRENT",
+        "reviewed_by": "po",
+        "reviewed_at": "2026-09-15T06:35:58.981Z"
+      }
+    },
+    "closeout_transaction": {
+      "status": "COMMITTED",
+      "transaction_id": "597aa5f9-1043-447e-b762-b6a7858f1b9c",
+      "event_action": "approve-closeout-bundle",
+      "event_timestamp": "2026-09-15T06:41:47.032Z",
+      "selected_gates": [
+        "dod",
+        "release",
+        "business_acceptance"
+      ],
+      "direct_event_identity": "PASS"
+    },
+    "finding": {
+      "id": "F-AG11-001",
+      "status": "RESOLVED_BY_RECEIPT_BACKED_RECONCILIATION",
+      "authority_basis": "Explicit QC exact-candidate Technical Verification and DoD with AG-01..AG-13 at 13/13 PASS, followed by current independent terminal receipts and one directly attributed closeout transaction event.",
+      "legacy_rule": "Legacy entries remain exact opaque historical input and are not read by core transitions or current-state assertions."
+    },
+    "definition_of_done": {
+      "status": "DONE",
+      "checks": {
+        "acceptance_criteria_evidenced": "PASS",
+        "implementation_recorded": "PASS",
+        "required_verification_completed": "PASS",
+        "code_scan_completed_or_justified": "PASS",
+        "traceability_complete": "PASS",
+        "residual_risks_documented": "PASS"
+      },
+      "gaps": [],
+      "residual_risks": [
+        "Automated static/security tools remain unavailable; approved scan coverage remains PARTIAL."
+      ]
+    },
+    "branch_finish": {
+      "verify_complete": "PASS",
+      "dod_complete": "PASS",
+      "findings_closed": "PASS",
+      "exceptions_resolved": "PASS",
+      "final_recommendation": "HOLD_OPEN_UNTIL_CHILD_THEN_PARENT_PROTOCOL_CLOSE",
+      "blocked_actions": [
+        "publish",
+        "tag",
+        "merge",
+        "cleanup",
+        "global install"
+      ]
+    }
+  },
+  "next_action": "Close the linked child protocol, then close the parent protocol. Publication, tagging, merge and cleanup remain separately unauthorized."
 }

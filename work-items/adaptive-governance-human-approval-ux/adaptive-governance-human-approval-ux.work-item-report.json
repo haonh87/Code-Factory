@@ -138,13 +138,23 @@
     "Human QC then approved current parent Technical Verification at 2026-09-15T02:25:27Z with AG-01..AG-13 at 13/13 PASS. DoD, Release and Business Acceptance remain separate unapproved gates; no closeout or branch finalization is inferred.",
     "Human QC approved the separate current parent DoD decision at 2026-09-15T02:52:30Z for source af70276fe14317417365c06dd06186da1996c401, run 34802149041 and candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f, retaining scan gaps. Release and Business Acceptance remain independent unapproved gates; the shared s08 receipt is deferred until its final host is stable.",
     "Human DevOps and QC approved current parent Release at 2026-09-15T06:04:23Z for v2.6.2, source af70276fe14317417365c06dd06186da1996c401, run 34802149041, candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f and rollback v2.6.1 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Scan gaps remain. This decision did not publish or tag; PO Business Acceptance remains independently pending.",
-    "Human PO approved current parent Business Acceptance at 2026-09-15T06:19:52Z for v2.6.2, source af70276fe14317417365c06dd06186da1996c401, run 34802149041 and candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f, based on approved Technical Verification, DoD and Release. Scan gaps remain. No publish, tag, merge or cleanup is inferred; trusted terminal receipts and ledger reconciliation remain pending."
+    "Human PO approved current parent Business Acceptance at 2026-09-15T06:19:52Z for v2.6.2, source af70276fe14317417365c06dd06186da1996c401, run 34802149041 and candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f, based on approved Technical Verification, DoD and Release. Scan gaps remain. No publish, tag, merge or cleanup is inferred; trusted terminal receipts and ledger reconciliation remain pending.",
+    "Read-only reconciliation at 2026-09-15T06:47:56Z verified current DoD, Release and Business Acceptance receipts against finalized parent s08 SHA-256 e994f4292829e77d06ba809e897c3efd6d2c6cff562b579ed1536f5e92d0cc93 and verified the committed closeout transaction event 597aa5f9-1043-447e-b762-b6a7858f1b9c. The explicit QC Technical Verification/DoD evidence for AG-01..AG-13 and the receipt-backed current-cycle state projection resolve F-AG11-001 without inferring publication, tagging, merge or cleanup."
   ],
   "work_item_slug": "adaptive-governance-human-approval-ux",
   "work_item_type": "CHANGE",
   "delivery_context": "brownfield",
   "workflow_root": "work-items/adaptive-governance-human-approval-ux",
   "current_step": "s08",
+  "delivery_lane_state": {
+    "workflow_status": "VERIFIED",
+    "current_step": "s08",
+    "finding": "F-AG11-001",
+    "finding_status": "RESOLVED_BY_RECEIPT_BACKED_RECONCILIATION",
+    "reconciled_at": "2026-09-15T06:47:56Z",
+    "protocol_projection_status": "VERIFIED_READY_TO_CLOSE",
+    "projection_note": "Current exact-candidate Technical Verification, DoD, Release and Business Acceptance are human-approved; all three terminal receipts are current and the closeout transaction has a direct transaction_id. Opaque legacy entries remain preserved as historical input and are not read as current state."
+  },
   "granted_write_paths": [
     "policies/codex/AGENTS.global.md",
     "skills/orchestration",
@@ -177,11 +187,6 @@
       "text": "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
     },
     {
-      "id": "se:6bff872b1ec110f421ab4be71e8a2c08535a5d8a1a0e25b93e50d841486bdfab",
-      "kind": "workflow_followup",
-      "text": "After this finalized parent s08 metadata is committed, seal trusted DoD, Release and Business Acceptance receipts in a human TTY for the same exact candidate. Then verify all three digests before F-AG11-001 or protocol reconciliation; do not infer publish, tag, merge or cleanup."
-    },
-    {
       "id": "se:f66a31120c5886068c5ebfe1df5678bb68ba8401843c99c49e88f8f3dacb6452",
       "kind": "work_item_close",
       "text": "wfc work-item close --work-item adaptive-governance-human-approval-ux"
@@ -195,11 +200,6 @@
     {
       "kind": "legacy",
       "text": "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending."
-    },
-    {
-      "id": "se:9099dbc3f27490fc6b16a65e265df0a52396886fa1efc32f37b78577d90155e7",
-      "kind": "delivery_blocker",
-      "text": "Parent hosted artifact binding, Technical Verification, DoD, Release and Business Acceptance human decisions are approved for the exact candidate with AG-01..AG-13 at 13/13 PASS. Trusted terminal receipts, F-AG11-001 reconciliation and both protocol closeouts remain pending; no publication, tag, merge, cleanup or branch finalization is authorized."
     }
   ],
   "refs": [
@@ -304,7 +304,9 @@
     "PARENT_CURRENT_TECHNICAL_VERIFICATION_APPROVED",
     "PARENT_CURRENT_DOD_HUMAN_DECISION_APPROVED",
     "PARENT_CURRENT_RELEASE_HUMAN_DECISION_APPROVED",
-    "PARENT_CURRENT_BUSINESS_ACCEPTANCE_HUMAN_DECISION_APPROVED"
+    "PARENT_CURRENT_BUSINESS_ACCEPTANCE_HUMAN_DECISION_APPROVED",
+    "PARENT_CURRENT_TERMINAL_RECEIPTS_VERIFIED",
+    "F_AG11_001_RECONCILED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -792,6 +794,14 @@
       "to_status": "VERIFIED",
       "note": "APPROVED closeout gates: dod, release, business_acceptance",
       "transaction_id": "597aa5f9-1043-447e-b762-b6a7858f1b9c"
+    },
+    {
+      "timestamp": "2026-09-15T06:47:56Z",
+      "action": "reconcile-F-AG11-001",
+      "actor": "agent",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "Read-only receipt and transaction verification reconciled F-AG11-001 against the explicit current QC Technical Verification/DoD, DevOps/QC Release and PO Business Acceptance decisions. The parent closeout event is directly bound to transaction 597aa5f9-1043-447e-b762-b6a7858f1b9c; all three receipts match finalized s08 SHA-256 e994f4292829e77d06ba809e897c3efd6d2c6cff562b579ed1536f5e92d0cc93. Opaque legacy entries are preserved and not interpreted as current state. No new human approval, publish, tag, merge or cleanup is inferred."
     }
   ]
 }

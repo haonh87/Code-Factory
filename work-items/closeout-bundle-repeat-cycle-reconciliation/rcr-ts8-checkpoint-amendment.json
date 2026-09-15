@@ -3,7 +3,7 @@
   "artifact_family": "review-packet",
   "artifact_role": "supporting",
   "source_of_truth": false,
-  "status": "QUALIFIED_CHILD_CHECKPOINT_VALID_PARENT_HUMAN_GATES_APPROVED_RECEIPTS_PENDING",
+  "status": "FULL_PARENT_CONTRIBUTION_PASS_PROTOCOL_CLOSE_READY",
   "amendment_id": "RCR-TS8-CP-001",
   "canonical_scope_decision": "closeout-bundle-repeat-cycle-reconciliation.s03.open-questions.md#Checkpoint-Scope-Amendment",
   "authority": {
@@ -837,5 +837,34 @@
     "source_test_hashes": "PASS_7_EXACT_REVIEWED_SOURCE",
     "core_package_payload_hashes": "PASS_4_EXACT",
     "native_syntax": "PASS_7_SUPPORTED_NODE22"
+  },
+  "final_reconciliation": {
+    "status": "PASS",
+    "reconciled_at": "2026-09-15T06:47:56Z",
+    "child_dod_receipt": {
+      "status": "APPROVED_VALID_CURRENT",
+      "reviewed_by": "qc",
+      "reviewed_at": "2026-09-14T14:01:49.356Z",
+      "host_sha256": "e3159a438678242069c8045058b3d1c1664fa6451207a37cec123cfb8736af2e"
+    },
+    "parent_contribution": {
+      "criterion": "AC-RCR-08",
+      "status": "PASS",
+      "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+      "run_id": 34802149041,
+      "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "coverage": "AG-01..AG-13 13/13 PASS",
+      "terminal_receipts": "DOD_RELEASE_BUSINESS_ACCEPTANCE_APPROVED_VALID_CURRENT",
+      "closeout_transaction_id": "597aa5f9-1043-447e-b762-b6a7858f1b9c"
+    },
+    "finding": {
+      "id": "F-AG11-001",
+      "status": "RESOLVED_BY_RECEIPT_BACKED_RECONCILIATION"
+    },
+    "protocol_status": "VERIFIED_READY_TO_CLOSE",
+    "publication_authorized": false,
+    "tag_authorized": false,
+    "merge_authorized": false,
+    "cleanup_authorized": false
   }
 }

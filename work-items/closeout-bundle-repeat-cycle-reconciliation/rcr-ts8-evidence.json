@@ -1,13 +1,13 @@
 {
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "task": "TS8",
-  "status": "QUALIFIED_CHILD_CHECKPOINT_VALID_PARENT_HUMAN_GATES_APPROVED_RECEIPTS_PENDING",
+  "status": "FULL_PARENT_CONTRIBUTION_PASS_PROTOCOL_CLOSE_READY",
   "checkpoint_amendment": {
     "id": "RCR-TS8-CP-001",
     "scope_decision": "APPROVED_OPTION_B",
     "review_packet": "rcr-ts8-checkpoint-amendment.json",
     "snapshot_rule": "Historical test, frozen receipt and original QC observations remain source-bound evidence. Five fresh authoring receipts and the child checkpoint DoD receipt remain signature-valid, approved and current. Parent hosted artifact binding, Technical Verification and DoD are approved by QC; Release is approved by DevOps/QC and Business Acceptance by PO. No publish, tag, merge or cleanup occurred. Parent terminal receipts, scan gaps and package identities remain explicit.",
-    "parent_AC_RCR_08": "ALL_HUMAN_DECISIONS_APPROVED_13_OF_13_RECEIPTS_PENDING",
+    "parent_AC_RCR_08": "PASS_EXACT_CANDIDATE_AND_CURRENT_TERMINAL_RECEIPTS",
     "protocol_done": false,
     "authoring_gate_decision": "HUMAN_APPROVED_AND_FIVE_TRUSTED_RECEIPTS_VALID",
     "authoring_recorded_at": "2026-09-14T13:33:15Z",
@@ -4184,5 +4184,55 @@
     "encoding": "PASS_FATAL_UTF8",
     "scope": "Metadata-only explicit QC DoD approval and read-only shared-host boundary check. No fresh full-suite, hosted run, repack, scanner PASS, receipt signing or parent verification completion is claimed.",
     "retained_warnings": "Legacy CHANGE vocabulary warnings retained; no migration. Scan PARTIAL and mandatory parent exact-candidate contribution unchanged."
+  },
+  "final_reconciliation": {
+    "status": "PASS",
+    "reconciled_at": "2026-09-15T06:47:56Z",
+    "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "hosted_run_id": 34802149041,
+    "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+    "rollback_sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9",
+    "child_dod": {
+      "decision": "QC_APPROVED",
+      "receipt": "APPROVED_VALID_CURRENT",
+      "host_sha256": "e3159a438678242069c8045058b3d1c1664fa6451207a37cec123cfb8736af2e"
+    },
+    "parent_exact_candidate": {
+      "technical_verification": "QC_APPROVED",
+      "coverage": "AG-01..AG-13 13/13 PASS",
+      "dod_receipt": "APPROVED_VALID_CURRENT",
+      "release_receipt": "APPROVED_VALID_CURRENT",
+      "business_acceptance_receipt": "APPROVED_VALID_CURRENT",
+      "s08_sha256": "e994f4292829e77d06ba809e897c3efd6d2c6cff562b579ed1536f5e92d0cc93",
+      "closeout_transaction_id": "597aa5f9-1043-447e-b762-b6a7858f1b9c"
+    },
+    "spec_coverage": {
+      "total": 10,
+      "pass": 10,
+      "partial": 0,
+      "fail": 0,
+      "status": "PASS"
+    },
+    "finding": {
+      "id": "F-AG11-001",
+      "status": "RESOLVED_BY_RECEIPT_BACKED_RECONCILIATION"
+    },
+    "definition_of_done": {
+      "status": "DONE",
+      "checks": {
+        "acceptance_criteria_evidenced": "PASS",
+        "implementation_recorded": "PASS",
+        "required_verification_completed": "PASS",
+        "code_scan_completed_or_justified": "PASS",
+        "traceability_complete": "PASS",
+        "residual_risks_documented": "PASS"
+      },
+      "gaps": [],
+      "residual_risks": [
+        "Scan coverage remains PARTIAL with unavailable automated static/security tools.",
+        "Native transient-read refusal and linear history cost remain documented advisories."
+      ]
+    },
+    "next_action": "Close child protocol, then parent protocol; do not publish, tag, merge or cleanup."
   }
 }
