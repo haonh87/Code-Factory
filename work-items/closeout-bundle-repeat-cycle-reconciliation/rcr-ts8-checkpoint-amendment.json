@@ -3,7 +3,7 @@
   "artifact_family": "review-packet",
   "artifact_role": "supporting",
   "source_of_truth": false,
-  "status": "FULL_PARENT_CONTRIBUTION_PASS_PROTOCOL_CLOSE_READY",
+  "status": "DONE_FULL_PARENT_CONTRIBUTION_PASS",
   "amendment_id": "RCR-TS8-CP-001",
   "canonical_scope_decision": "closeout-bundle-repeat-cycle-reconciliation.s03.open-questions.md#Checkpoint-Scope-Amendment",
   "authority": {
@@ -861,7 +861,11 @@
       "id": "F-AG11-001",
       "status": "RESOLVED_BY_RECEIPT_BACKED_RECONCILIATION"
     },
-    "protocol_status": "VERIFIED_READY_TO_CLOSE",
+    "protocol_status": "DONE",
+    "protocol_closed_at": "2026-09-15T06:54:27.675Z",
+    "parent_protocol_status": "DONE",
+    "parent_protocol_closed_at": "2026-09-15T06:54:27.736Z",
+    "archive_executed": false,
     "publication_authorized": false,
     "tag_authorized": false,
     "merge_authorized": false,

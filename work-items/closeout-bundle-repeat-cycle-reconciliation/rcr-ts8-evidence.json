@@ -1,14 +1,14 @@
 {
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "task": "TS8",
-  "status": "FULL_PARENT_CONTRIBUTION_PASS_PROTOCOL_CLOSE_READY",
+  "status": "DONE_FULL_PARENT_CONTRIBUTION_PASS",
   "checkpoint_amendment": {
     "id": "RCR-TS8-CP-001",
     "scope_decision": "APPROVED_OPTION_B",
     "review_packet": "rcr-ts8-checkpoint-amendment.json",
     "snapshot_rule": "Historical test, frozen receipt and original QC observations remain source-bound evidence. Five fresh authoring receipts and the child checkpoint DoD receipt remain signature-valid, approved and current. Parent hosted artifact binding, Technical Verification and DoD are approved by QC; Release is approved by DevOps/QC and Business Acceptance by PO. No publish, tag, merge or cleanup occurred. Parent terminal receipts, scan gaps and package identities remain explicit.",
     "parent_AC_RCR_08": "PASS_EXACT_CANDIDATE_AND_CURRENT_TERMINAL_RECEIPTS",
-    "protocol_done": false,
+    "protocol_done": true,
     "authoring_gate_decision": "HUMAN_APPROVED_AND_FIVE_TRUSTED_RECEIPTS_VALID",
     "authoring_recorded_at": "2026-09-14T13:33:15Z",
     "authoring_receipt_verified_at": "2026-09-14T13:42:10Z",
@@ -4233,6 +4233,21 @@
         "Native transient-read refusal and linear history cost remain documented advisories."
       ]
     },
-    "next_action": "Close child protocol, then parent protocol; do not publish, tag, merge or cleanup."
+    "protocol_close": {
+      "child_status": "DONE",
+      "child_closed_at": "2026-09-15T06:54:27.675Z",
+      "parent_status": "DONE",
+      "parent_closed_at": "2026-09-15T06:54:27.736Z",
+      "uncommitted_delivery_waiver": false,
+      "archive_executed": false
+    },
+    "branch_finish": {
+      "verify_complete": "PASS",
+      "dod_complete": "PASS",
+      "findings_closed": "PASS",
+      "exceptions_resolved": "PASS",
+      "final_recommendation": "MERGE_ALLOWED_NOT_EXECUTED"
+    },
+    "next_action": "Await explicit user direction for merge/finalization; publication, tag, cleanup and archive remain unexecuted."
   }
 }

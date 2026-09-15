@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "qc",
   "raw_request_summary": "Fix repeated closeout-bundle reconciliation so a successful current approval cycle removes stale pending approval actions and handoffs, records a current-cycle protocol event despite historical evidence, and remains idempotent.",
@@ -176,12 +176,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "protocol-close",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "id": "se:0590818dec18b9aac8b1c4663b2d6bfcd00b0a5ddb06a65af27942b0af867122",
-      "kind": "work_item_close",
-      "text": "wfc work-item close --work-item closeout-bundle-repeat-cycle-reconciliation"
+      "id": "se:65e43f396e06347d934d0dbe004e1196c3a4e7151b58e789f7d8bac020109bb7",
+      "kind": "workflow_followup",
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -305,7 +305,8 @@
     "PARENT_CURRENT_RELEASE_HUMAN_DECISION_APPROVED",
     "PARENT_CURRENT_BUSINESS_ACCEPTANCE_HUMAN_DECISION_APPROVED",
     "AC_RCR_08_PARENT_CONTRIBUTION_CONFIRMED",
-    "F_AG11_001_RECONCILED"
+    "F_AG11_001_RECONCILED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -1119,6 +1120,14 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "Read-only reconciliation verified the current parent DoD, Release and Business Acceptance receipts against finalized parent s08 SHA-256 e994f4292829e77d06ba809e897c3efd6d2c6cff562b579ed1536f5e92d0cc93 and the direct closeout transaction event 597aa5f9-1043-447e-b762-b6a7858f1b9c. Together with the current QC AG-01..AG-13 Technical Verification/DoD and qualified child DoD receipt, AC-RCR-08 is fully contributed and F-AG11-001 is reconciled. No new human approval, publish, tag, merge or cleanup is inferred."
+    },
+    {
+      "timestamp": "2026-09-15T06:54:27.675Z",
+      "action": "close",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Definition of Done confirmed after full AC-RCR-08 parent contribution and F-AG11-001 reconciliation."
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Introduce adaptive request-lane admission, context-based role and gate routing, bundled human approvals, and interaction telemetry so non-product requests avoid unnecessary role ceremony while high-risk controls remain human-controlled.",
@@ -146,15 +146,6 @@
   "delivery_context": "brownfield",
   "workflow_root": "work-items/adaptive-governance-human-approval-ux",
   "current_step": "s08",
-  "delivery_lane_state": {
-    "workflow_status": "VERIFIED",
-    "current_step": "s08",
-    "finding": "F-AG11-001",
-    "finding_status": "RESOLVED_BY_RECEIPT_BACKED_RECONCILIATION",
-    "reconciled_at": "2026-09-15T06:47:56Z",
-    "protocol_projection_status": "VERIFIED_READY_TO_CLOSE",
-    "projection_note": "Current exact-candidate Technical Verification, DoD, Release and Business Acceptance are human-approved; all three terminal receipts are current and the closeout transaction has a direct transaction_id. Opaque legacy entries remain preserved as historical input and are not read as current state."
-  },
   "granted_write_paths": [
     "policies/codex/AGENTS.global.md",
     "skills/orchestration",
@@ -172,24 +163,12 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "protocol-close",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "kind": "legacy",
-      "text": "Complete the three amended child s04 human reviews and seal fresh independent receipts."
-    },
-    {
-      "kind": "legacy",
-      "text": "Refresh and approve the child s05/s06 design and execution plan before resuming implementation."
-    },
-    {
-      "kind": "legacy",
-      "text": "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
-    },
-    {
-      "id": "se:f66a31120c5886068c5ebfe1df5678bb68ba8401843c99c49e88f8f3dacb6452",
-      "kind": "work_item_close",
-      "text": "wfc work-item close --work-item adaptive-governance-human-approval-ux"
+      "id": "se:6c8ae76aa0846919cf13ca32a2d718bf7832739cd59be075f8cdd17fb0d9c1a6",
+      "kind": "workflow_followup",
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [
@@ -306,7 +285,8 @@
     "PARENT_CURRENT_RELEASE_HUMAN_DECISION_APPROVED",
     "PARENT_CURRENT_BUSINESS_ACCEPTANCE_HUMAN_DECISION_APPROVED",
     "PARENT_CURRENT_TERMINAL_RECEIPTS_VERIFIED",
-    "F_AG11_001_RECONCILED"
+    "F_AG11_001_RECONCILED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -802,6 +782,14 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "Read-only receipt and transaction verification reconciled F-AG11-001 against the explicit current QC Technical Verification/DoD, DevOps/QC Release and PO Business Acceptance decisions. The parent closeout event is directly bound to transaction 597aa5f9-1043-447e-b762-b6a7858f1b9c; all three receipts match finalized s08 SHA-256 e994f4292829e77d06ba809e897c3efd6d2c6cff562b579ed1536f5e92d0cc93. Opaque legacy entries are preserved and not interpreted as current state. No new human approval, publish, tag, merge or cleanup is inferred."
+    },
+    {
+      "timestamp": "2026-09-15T06:54:27.736Z",
+      "action": "close",
+      "actor": "developer",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Definition of Done and all required terminal gates confirmed for the exact v2.6.2 candidate after receipt-backed F-AG11-001 reconciliation."
     }
   ]
 }

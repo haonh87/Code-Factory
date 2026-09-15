@@ -654,7 +654,7 @@ next_action: "Developer reviews the amended s06 TS0..TS8 plan; implementation st
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
@@ -691,11 +691,11 @@ decision_owner: "agent"
 protocol_owner: "qc"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "protocol-close"
-last_transition_action: "reconcile-parent-exact-candidate-contribution"
-last_transition_at: "2026-09-15T06:47:56Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-09-15T06:54:27.675Z"
 required_actions:
-  - {"id":"se:0590818dec18b9aac8b1c4663b2d6bfcd00b0a5ddb06a65af27942b0af867122","kind":"work_item_close","text":"wfc work-item close --work-item closeout-bundle-repeat-cycle-reconciliation"}
+  - {"id":"se:65e43f396e06347d934d0dbe004e1196c3a4e7151b58e789f7d8bac020109bb7","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
@@ -873,6 +873,9 @@ audit_events:
   - "PARENT_CURRENT_DOD_HUMAN_DECISION_APPROVED"
   - "PARENT_CURRENT_RELEASE_HUMAN_DECISION_APPROVED"
   - "PARENT_CURRENT_BUSINESS_ACCEPTANCE_HUMAN_DECISION_APPROVED"
+  - "AC_RCR_08_PARENT_CONTRIBUTION_CONFIRMED"
+  - "F_AG11_001_RECONCILED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Traceability

@@ -686,7 +686,7 @@ test_refs:
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "adaptive-governance-human-approval-ux"
@@ -719,14 +719,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "protocol-close"
-last_transition_action: "reconcile-F-AG11-001"
-last_transition_at: "2026-09-15T06:47:56Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-09-15T06:54:27.736Z"
 required_actions:
-  - {"kind":"legacy","text":"Complete the three amended child s04 human reviews and seal fresh independent receipts."}
-  - {"kind":"legacy","text":"Refresh and approve the child s05/s06 design and execution plan before resuming implementation."}
-  - {"kind":"legacy","text":"Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."}
-  - {"id":"se:f66a31120c5886068c5ebfe1df5678bb68ba8401843c99c49e88f8f3dacb6452","kind":"work_item_close","text":"wfc work-item close --work-item adaptive-governance-human-approval-ux"}
+  - {"id":"se:6c8ae76aa0846919cf13ca32a2d718bf7832739cd59be075f8cdd17fb0d9c1a6","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers:
   - {"kind":"legacy","text":"F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."}
   - {"kind":"legacy","text":"Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending."}
@@ -868,6 +865,9 @@ audit_events:
   - "PARENT_CURRENT_DOD_HUMAN_DECISION_APPROVED"
   - "PARENT_CURRENT_RELEASE_HUMAN_DECISION_APPROVED"
   - "PARENT_CURRENT_BUSINESS_ACCEPTANCE_HUMAN_DECISION_APPROVED"
+  - "PARENT_CURRENT_TERMINAL_RECEIPTS_VERIFIED"
+  - "F_AG11_001_RECONCILED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Current Governance Router Status

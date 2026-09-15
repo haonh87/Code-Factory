@@ -4,7 +4,7 @@
   "artifact_family": "verification-evidence",
   "artifact_role": "supporting",
   "source_of_truth": false,
-  "status": "FINAL_RECONCILIATION_PASS_PROTOCOL_CLOSE_READY",
+  "status": "CR_008_PROTOCOL_DONE_BRANCH_FINALIZATION_READY",
   "observed_at": "2026-09-15T06:47:56Z",
   "work_item_slug": "adaptive-governance-human-approval-ux",
   "change_id": "CR-008",
@@ -596,15 +596,31 @@
       "dod_complete": "PASS",
       "findings_closed": "PASS",
       "exceptions_resolved": "PASS",
-      "final_recommendation": "HOLD_OPEN_UNTIL_CHILD_THEN_PARENT_PROTOCOL_CLOSE",
+      "child_protocol": "DONE",
+      "parent_protocol": "DONE",
+      "final_recommendation": "MERGE_ALLOWED_NOT_EXECUTED",
+      "allowed_actions": [
+        "Present branch finalization handoff",
+        "Request explicit merge or cleanup authority"
+      ],
       "blocked_actions": [
         "publish",
         "tag",
-        "merge",
-        "cleanup",
+        "execute merge without explicit user instruction",
+        "cleanup before explicit user instruction",
         "global install"
       ]
+    },
+    "protocol_close": {
+      "sequence": [
+        "closeout-bundle-repeat-cycle-reconciliation VERIFIED -> DONE",
+        "adaptive-governance-human-approval-ux VERIFIED -> DONE"
+      ],
+      "child_closed_at": "2026-09-15T06:54:27.675Z",
+      "parent_closed_at": "2026-09-15T06:54:27.736Z",
+      "uncommitted_delivery_waiver": false,
+      "archive_executed": false
     }
   },
-  "next_action": "Close the linked child protocol, then close the parent protocol. Publication, tagging, merge and cleanup remain separately unauthorized."
+  "next_action": "Await explicit user direction for branch merge/finalization and any separate publication or tag action; none has been executed."
 }
