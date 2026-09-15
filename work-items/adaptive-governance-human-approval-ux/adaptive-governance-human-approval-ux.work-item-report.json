@@ -135,7 +135,8 @@
     "Qualified child checkpoint trusted DoD receipt is current and valid. Parent exact-candidate refresh for source af70276fe14317417365c06dd06186da1996c401, run 34802149041 and candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f initially found two ignored runtime duplicates and blocked AG-13; existing legacy strings remained byte-preserved and opaque.",
     "After explicit Maintainer approval, the two byte-identical ignored duplicates were isolated recoverably under /private/tmp/cf-cr008-runtime-parity-backup.H1ZWX1. Fresh real-worktree Node 18 and Node 22 full suites each passed 45/45, including parity, exact candidate and rollback. AG-01..AG-13 evidence is 13/13 PASS and awaits independent current QC review; no terminal gate is inferred.",
     "Human QC approved the current parent hosted artifact binding first at 2026-09-15T02:25:27Z for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f and rollback 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Scan gaps and later independent gates are preserved.",
-    "Human QC then approved current parent Technical Verification at 2026-09-15T02:25:27Z with AG-01..AG-13 at 13/13 PASS. DoD, Release and Business Acceptance remain separate unapproved gates; no closeout or branch finalization is inferred."
+    "Human QC then approved current parent Technical Verification at 2026-09-15T02:25:27Z with AG-01..AG-13 at 13/13 PASS. DoD, Release and Business Acceptance remain separate unapproved gates; no closeout or branch finalization is inferred.",
+    "Human QC approved the separate current parent DoD decision at 2026-09-15T02:52:30Z for source af70276fe14317417365c06dd06186da1996c401, run 34802149041 and candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f, retaining scan gaps. Release and Business Acceptance remain independent unapproved gates; the shared s08 receipt is deferred until its final host is stable."
   ],
   "work_item_slug": "adaptive-governance-human-approval-ux",
   "work_item_type": "CHANGE",
@@ -149,7 +150,7 @@
     "reopened_at": "2026-09-09T10:12:13Z",
     "finding": "F-AG11-001",
     "protocol_projection_status": "VERIFIED",
-    "projection_note": "Implementation and exact-candidate Technical Verification are complete. Retain protocol VERIFIED while current DoD, Release and Business Acceptance remain independent pending gates."
+    "projection_note": "Implementation, exact-candidate Technical Verification and the human DoD decision are complete. Retain protocol VERIFIED while Release and Business Acceptance remain independent pending gates."
   },
   "granted_write_paths": [
     "policies/codex/AGENTS.global.md",
@@ -168,7 +169,7 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "parent-current-DoD-QC-review",
+  "handoff_target": "parent-current-Release-DevOps-QC-review",
   "required_actions": [
     "Complete the three amended child s04 human reviews and seal fresh independent receipts.",
     "Refresh and approve the child s05/s06 design and execution plan before resuming implementation.",
@@ -176,7 +177,7 @@
     {
       "id": "se:6bff872b1ec110f421ab4be71e8a2c08535a5d8a1a0e25b93e50d841486bdfab",
       "kind": "workflow_followup",
-      "text": "QC reviews current parent DoD for the already approved hosted artifact binding and Technical Verification on source af70276fe14317417365c06dd06186da1996c401, run 34802149041 and candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; Release and Business Acceptance remain later independent gates."
+      "text": "DevOps and QC review current parent Release for source af70276fe14317417365c06dd06186da1996c401, run 34802149041 and candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f after approved Technical Verification and DoD; Business Acceptance remains a later independent gate."
     }
   ],
   "blockers": [
@@ -185,7 +186,7 @@
     {
       "id": "se:9099dbc3f27490fc6b16a65e265df0a52396886fa1efc32f37b78577d90155e7",
       "kind": "delivery_blocker",
-      "text": "Parent hosted artifact binding and Technical Verification are approved by QC with AG-01..AG-13 at 13/13 PASS for the exact candidate. QC DoD, DevOps/QC Release and PO Business Acceptance remain pending; no closeout, Release or branch finalization is authorized."
+      "text": "Parent hosted artifact binding, Technical Verification and the DoD human decision are approved by QC with AG-01..AG-13 at 13/13 PASS for the exact candidate. DevOps/QC Release and PO Business Acceptance remain pending; no closeout, Release or branch finalization is authorized."
     }
   ],
   "refs": [
@@ -287,7 +288,8 @@
     "PARENT_EXACT_CANDIDATE_REFRESH_BLOCKED_RUNTIME_PARITY",
     "PARENT_EXACT_CANDIDATE_13_OF_13_EVIDENCE_PREPARED",
     "PARENT_CURRENT_HOSTED_ARTIFACT_BINDING_APPROVED",
-    "PARENT_CURRENT_TECHNICAL_VERIFICATION_APPROVED"
+    "PARENT_CURRENT_TECHNICAL_VERIFICATION_APPROVED",
+    "PARENT_CURRENT_DOD_HUMAN_DECISION_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -742,6 +744,14 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "After artifact-binding approval, QC explicitly approved current parent Technical Verification with AG-01..AG-13 at 13/13 PASS. Scan gaps remain; DoD, Release and Business Acceptance are separate pending gates."
+    },
+    {
+      "timestamp": "2026-09-15T02:52:30Z",
+      "action": "record-parent-current-dod-human-decision-approved",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "QC explicitly approved current parent DoD based on the approved exact-candidate Technical Verification with AG-01..AG-13 at 13/13 PASS. Scan gaps remain. Release and Business Acceptance are separate pending gates; no receipt sealing, closeout or branch finalization is inferred."
     }
   ]
 }

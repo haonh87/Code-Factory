@@ -4,7 +4,7 @@
   "artifact_family": "verification-evidence",
   "artifact_role": "supporting",
   "source_of_truth": false,
-  "status": "TECHNICAL_VERIFICATION_APPROVED_DOD_PENDING",
+  "status": "DOD_HUMAN_APPROVED_RELEASE_PENDING",
   "observed_at": "2026-09-14T14:34:14Z",
   "work_item_slug": "adaptive-governance-human-approval-ux",
   "change_id": "CR-008",
@@ -417,7 +417,9 @@
     "artifact_binding": "APPROVED_BY_QC",
     "technical_verification": "APPROVED_BY_QC",
     "technical_verification_reviewed_at": "2026-09-15T02:25:27Z",
-    "dod": "NOT_REVIEWED_CURRENT_CANDIDATE",
+    "dod": "HUMAN_APPROVED_BY_QC_RECEIPT_PENDING_FINAL_HOST",
+    "dod_reviewed_at": "2026-09-15T02:52:30Z",
+    "dod_reviewed_parent_s08_draft_sha256": "ff3a5fe7a5ee5e9070f79d3096cfd51d07dd97f4ee5b36dc015bbb53e922a481",
     "release": "NOT_REVIEWED_CURRENT_CANDIDATE",
     "business_acceptance": "NOT_REVIEWED_CURRENT_CANDIDATE",
     "historical_receipts": "SIGNATURE_VALID_BUT_DIGEST_STALE_NOT_CURRENT_AUTHORITY"
@@ -442,6 +444,22 @@
       "scan_gaps": "RETAINED_PARTIAL_NOT_WAIVED",
       "later_gates": [
         "dod",
+        "release",
+        "business_acceptance"
+      ]
+    },
+    {
+      "order": 3,
+      "decision": "DOD_HUMAN_DECISION_APPROVED",
+      "reviewed_by": "qc",
+      "recorded_at": "2026-09-15T02:52:30Z",
+      "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+      "run_id": 34802149041,
+      "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "coverage": "AG-01..AG-13 13/13 PASS",
+      "scan_gaps": "RETAINED_PARTIAL_NOT_WAIVED",
+      "trusted_receipt": "MISSING_PENDING_FINAL_SHARED_S08_HOST",
+      "later_gates": [
         "release",
         "business_acceptance"
       ]
@@ -471,5 +489,5 @@
     "unknown_legacy_text_preserved": true,
     "production_source_changed": false
   },
-  "next_action": "QC reviews parent DoD for the approved exact-candidate Technical Verification; Release and Business Acceptance remain later independent gates."
+  "next_action": "DevOps and QC review parent Release for the DoD-approved exact candidate; Business Acceptance remains a later independent gate."
 }

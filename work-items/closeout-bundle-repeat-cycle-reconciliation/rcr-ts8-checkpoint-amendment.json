@@ -3,7 +3,7 @@
   "artifact_family": "review-packet",
   "artifact_role": "supporting",
   "source_of_truth": false,
-  "status": "QUALIFIED_CHILD_CHECKPOINT_VALID_PARENT_TECHNICAL_VERIFICATION_APPROVED_DOD_PENDING",
+  "status": "QUALIFIED_CHILD_CHECKPOINT_VALID_PARENT_DOD_HUMAN_APPROVED_RELEASE_PENDING",
   "amendment_id": "RCR-TS8-CP-001",
   "canonical_scope_decision": "closeout-bundle-repeat-cycle-reconciliation.s03.open-questions.md#Checkpoint-Scope-Amendment",
   "authority": {
@@ -24,7 +24,8 @@
     "parent_AG13": "VERIFIED_APPROVED_BY_QC_13_OF_13",
     "parent_artifact_binding": "APPROVED_BY_QC",
     "parent_technical_verification": "APPROVED_BY_QC",
-    "parent_terminal_gates": "DOD_RELEASE_BUSINESS_ACCEPTANCE_PENDING",
+    "parent_dod": "HUMAN_APPROVED_BY_QC_RECEIPT_PENDING_FINAL_HOST",
+    "parent_terminal_gates": "RELEASE_BUSINESS_ACCEPTANCE_PENDING",
     "F_AG11_001": "OPEN",
     "protocol_DONE": false,
     "amended_dod_binding_recorded_at": "2026-09-14T13:51:10Z"
@@ -48,6 +49,22 @@
       "release",
       "business_acceptance"
     ],
+    "scan_gaps": "RETAINED_PARTIAL_NOT_WAIVED"
+  },
+  "parent_dod_transition": {
+    "recorded_at": "2026-09-15T02:52:30Z",
+    "workflow_status": "WAITING_APPROVAL",
+    "current_step": "s08",
+    "decision": "DOD_HUMAN_DECISION_APPROVED",
+    "parent_protocol_events_before": 51,
+    "parent_protocol_events_after": 52,
+    "parent_preserved_event_prefix_sha256": "154c9c38f14446738868f328d40126a640cc8e304873b605d964f724681fe645",
+    "child_protocol_events_before": 89,
+    "child_protocol_events_after": 90,
+    "child_preserved_event_prefix_sha256": "8ac9866176bb144432dddf2586562652795c89df0c86204307e8921e8b354c10",
+    "trusted_parent_dod_receipt": "MISSING_PENDING_FINAL_SHARED_S08_HOST",
+    "next_human_action": "DevOps and QC review parent Release",
+    "later_independent_gate": "business_acceptance",
     "scan_gaps": "RETAINED_PARTIAL_NOT_WAIVED"
   },
   "amendment": {
@@ -502,7 +519,7 @@
     "canonical_human_instructions": "closeout-bundle-repeat-cycle-reconciliation.s06.task-breakdown.md#Human-TTY-Receipt-Sealing",
     "status": "AUTHORING_RECEIPTS_COMPLETED_AND_VERIFIED",
     "execution_note": "Original proposed commands are retained for traceability, not as an observed shell transcript or claimed execution order. Actual current receipts and the structured readiness transaction event are authoritative.",
-    "next_action": "QC reviews current parent DoD for the approved exact-candidate Technical Verification; Release and Business Acceptance remain independent.",
+    "next_action": "DevOps and QC review current parent Release after the approved DoD human decision; Business Acceptance remains independent.",
     "checkpoint_dod_command": "/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js gate approve --work-item closeout-bundle-repeat-cycle-reconciliation --gate dod --workflow-root work-items --project-root . --reviewed-by qc --note \"QC approved amended binding for qualified child checkpoint; full AC-RCR-08 parent contribution remains mandatory.\"",
     "checkpoint_dod_command_status": "COMPLETED_HUMAN_TTY_RECEIPT_VERIFIED"
   },
@@ -598,7 +615,7 @@
       "post_commit_rule": "Read-only native getUncommittedDeliveryErrors must return zero errors on actual committed branch bytes; do not modify tracked evidence merely to insert its own commit SHA."
     },
     "protocol_DONE": false,
-    "parent_AC_RCR_08": "TECHNICAL_VERIFICATION_APPROVED_13_OF_13_DOD_PENDING",
+    "parent_AC_RCR_08": "DOD_HUMAN_APPROVED_13_OF_13_RELEASE_PENDING",
     "F_AG11_001": "OPEN",
     "approval_source": "Human accept to the immediately preceding QC amended DoD artifact binding proposal",
     "reviewed_draft_s08_sha256": "e8bfa56df88def12724e289f272b6273005f319bc182d579c87ccd3c16cb8e10",
@@ -620,7 +637,7 @@
       "reason": ""
     },
     "parent_exact_candidate_refresh": {
-      "status": "TECHNICAL_VERIFICATION_APPROVED_DOD_PENDING",
+      "status": "DOD_HUMAN_APPROVED_RELEASE_PENDING",
       "coverage": "AG-01..AG-13 13/13 PASS",
       "node18": "45/45 PASS",
       "node22": "45/45 PASS",
@@ -630,7 +647,10 @@
       "artifact_binding_reviewed_by": "qc",
       "technical_verification_reviewed_by": "qc",
       "reviewed_at": "2026-09-15T02:25:27Z",
-      "next_gate": "dod",
+      "dod_reviewed_by": "qc",
+      "dod_reviewed_at": "2026-09-15T02:52:30Z",
+      "trusted_dod_receipt": "MISSING_PENDING_FINAL_SHARED_S08_HOST",
+      "next_gate": "release",
       "terminal_gates_inferred": false
     },
     "native_finalized_gate_authority": "PASS_QC",
