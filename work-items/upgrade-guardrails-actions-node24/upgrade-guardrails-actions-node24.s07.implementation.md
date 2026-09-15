@@ -13,7 +13,7 @@ source_of_truth: true
 status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: ALIGNED
+governance_status: BLOCKED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -72,8 +72,10 @@ tags:
 > setup-node selectors now use v7, while the masked workflow fingerprint remains identical.
 > Local implementation checks pass and Developer/QC approved Spec Compliance for the exact
 > workflow artifact. Developer/QC then approved Code Quality for the same workflow and production
-> diff digests. The production-only source commit is `5baea95`; hosted verification, Technical
-> Verification, and DoD remain separate.
+> diff digests. The production-only source commit is `5baea95`. Hosted run `34947061938` passed
+> all 10 jobs, but AC-04 failed because upload-artifact@v4 emitted one Node 20 warning and
+> download-artifact@v4 emitted one warning in each matrix job. No scope expansion is authorized;
+> finding `F-N24-H1` blocks verification pending a human-approved Spec/DoR/Approach/Task Plan amendment.
 
 ## Main Artifact
 ```yaml
@@ -141,7 +143,7 @@ checks:
   - { check: "scoped SDD validation", result: PASS }
   - { check: "scoped planning validation", result: PASS }
   - { check: "scoped execution validation", result: PASS }
-hosted_check: "PENDING after human two-tier review, commit, and push"
+hosted_check: "FAIL for AC-04 on run 34947061938: 10/10 jobs PASS, 3 Node 20 deprecation annotations"
 ```
 
 ## Major-Version Compatibility Review
@@ -233,10 +235,63 @@ code_quality:
   pending: "None for s07 review; hosted CI-N24-AC-04 remains an s08 verification obligation."
 ```
 
+## Hosted Finding F-N24-H1
+```yaml
+finding_id: "F-N24-H1"
+status: OPEN_PENDING_HUMAN_DECISION
+severity: HIGH
+source_commit: "ae6df04aff58de39a5f2f9f703598ad6d2b4c257"
+workflow_change_commit: "5baea95"
+run_id: 34947061938
+run_url: "https://github.com/haonh87/Code-Factory/actions/runs/34947061938"
+job_summary: "10/10 PASS"
+annotation_summary:
+  total_node_deprecation: 3
+  upload_artifact_v4: 1
+  download_artifact_v4: 2
+evidence:
+  - "Build Exact Release Candidate: upload-artifact@v4 targets Node 20 and is forced to Node 24."
+  - "Release Candidate (Node 18): download-artifact@v4 targets Node 20 and is forced to Node 24."
+  - "Release Candidate (Node 22): download-artifact@v4 targets Node 20 and is forced to Node 24."
+root_cause: "The approved 18-token scope covered checkout/setup-node only, while AC-04 requires zero Node deprecation annotations across the complete workflow."
+spec_conflict:
+  - "CI-N24-AC-04 requires zero Node deprecation annotations."
+  - "CI-N24-AC-03 and the scope guard currently permit only 18 checkout/setup-node selector changes."
+  - "Both constraints cannot be satisfied simultaneously on the hosted runner."
+options:
+  - id: A
+    direction: "Add two minimal Node 24 selector changes: upload-artifact@v4 -> @v6 and download-artifact@v4 -> @v7."
+    assessment: "RECOMMENDED"
+    reason: "These are the first majors that run on Node 24 by default; current name/path inputs are compatible, and download v8's new digest-mismatch default is avoided."
+  - id: B
+    direction: "Move to latest upload-artifact@v7 and download-artifact@v8."
+    assessment: "REJECTED"
+    reason: "Adds unnecessary direct-upload/ESM surface and a download digest-mismatch behavior change beyond the deadline requirement."
+  - id: C
+    direction: "Waive or narrow AC-04 to ignore artifact-action warnings."
+    assessment: "REJECTED"
+    reason: "Leaves a known Node 20 dependency that becomes non-operational at the published cutoff."
+recommended_amendment:
+  scope: "20 selector changes relative to the original baseline: the approved 18 plus one upload-artifact@v6 and one download-artifact@v7."
+  behavior_guards:
+    - "Preserve artifact name, path, retention, digest file, and upload/download ordering."
+    - "Continue downloading by artifact name, so the historical by-ID path breaking change is not applicable."
+    - "Do not adopt upload direct mode or download v8 digest-mismatch behavior."
+  implementation_method: "New fail-first warning/action-count assertion, two-token commit, refreshed Spec Compliance then Code Quality, second exact hosted run."
+required_human_decisions:
+  - "Developer/QC approve F-N24-H1 and return to readiness amendment."
+  - "Developer re-approves amended Spec, Approach, and Task Plan; QC re-approves amended DoR."
+  - "Trusted ready-bundle receipts are resealed before the two production tokens change."
+references:
+  - "https://github.com/actions/upload-artifact/releases/tag/v6.0.0"
+  - "https://github.com/actions/download-artifact/releases/tag/v7.0.0"
+  - "https://github.com/actions/download-artifact/releases/tag/v8.0.0"
+```
+
 ## Audit
 ```yaml
 step: "s07 Implement"
-status: PASS
+status: BLOCKED_REWORK
 review_order: ["Spec Compliance", "Code Quality"]
 reviewed_artifact_sha256: "a059d1a379076ca8773fc78fab5b3d0ab13c07a7dfaf78028705ff16970bb99e"
 reviewed_diff_sha256: "f0a0e02baabf4e1f668078022ee1b888a05514de9bb64e9ed3b6f77ce806fe49"
@@ -245,6 +300,7 @@ checks:
   - { criterion: "Implementation quality and compatibility", result: PASS, evidence: "Developer/QC approved CI-N24 Code Quality at 2026-09-15T08:12:34Z." }
   - { criterion: "Local verification", result: PASS, evidence: "Exact counts, normalized fingerprint, YAML, diff, unit, pack, authoring, scoped governance/SDD/planning/execution, and UTF-8 checks pass." }
 remaining_obligations:
-  - "Push source commit 5baea95 and bind an exact hosted Workflow Guardrails run with zero Node deprecation annotations."
-  - "QC Technical Verification and DoD."
+  - "Resolve F-N24-H1 through an approved and digest-bound readiness amendment."
+  - "Implement and review the bounded two-token delta, then repeat exact hosted verification."
+  - "QC Technical Verification and DoD only after AC-04 reaches zero annotations."
 ```
