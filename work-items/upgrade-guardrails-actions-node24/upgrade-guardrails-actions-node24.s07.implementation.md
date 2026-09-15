@@ -327,7 +327,7 @@ remaining_obligations:
 ## Finding F-N24-T4A-001
 ```yaml
 finding_id: "F-N24-T4A-001"
-status: IMPLEMENTED_PENDING_SPEC_COMPLIANCE
+status: SPEC_COMPLIANCE_APPROVED_PENDING_CODE_QUALITY
 severity: MEDIUM
 detected_at: "2026-09-15T09:59:45Z"
 approved_by: ["developer", "qc"]
@@ -352,7 +352,7 @@ recommended_amendment:
   task_plan_delta: "Grant the two existing test paths and update only four expectation tokens: two upload v4->v6 and two download v4->v7."
   prohibited_changes: ["new test file", "test logic change", "fixture change", "workflow topology change", "parallelisation"]
   verify: "Rerun the same full unit suite plus existing local and hosted verification paths."
-required_human_action: "Developer and QC review refreshed Spec Compliance for the exact T4a/T4b content hashes; Code Quality remains a later gate."
+required_human_action: "Developer and QC review refreshed Code Quality for the exact source commit and implementation diff; hosted verification remains later."
 ```
 
 ## T4a/T4b Recovery Evidence
@@ -405,8 +405,9 @@ hosted_verification: "PENDING after refreshed two-tier review and pushed exact s
 review_order: ["Spec Compliance", "Code Quality"]
 spec_compliance:
   proposed_verdict: PASS
-  human_verdict: PENDING
+  human_verdict: PASS
   reviewers: ["developer", "qc"]
+  reviewed_at: "2026-09-15T10:33:17Z"
   source_commit: "53bab65030dd925d8f814454b504d12c2dec9505"
   source_set_manifest_sha256: "7115db15698953da66881d18335ab48b02b4f9102d46e5b2b29a9d3283d5983a"
   workflow_sha256: "b72a0cb172d8a11c5d2e96acc6a31bdd9c22b00f48b0a8fd0e643ae0d3ad0f30"
@@ -417,6 +418,16 @@ spec_compliance:
     - "T4b is exactly four expectation-token changes in the two approved existing tests; no test logic or coverage drift."
   pending: "Hosted zero-annotation evidence remains T4/s08 work and does not weaken the s07 source-scope verdict."
 code_quality:
-  status: BLOCKED_UNTIL_SPEC_COMPLIANCE_PASS
-  proposed_verdict: NOT_OPEN
+  status: REVIEW_REQUIRED
+  proposed_verdict: PASS
+  human_verdict: PENDING
+  reviewers: ["developer", "qc"]
+  source_commit: "53bab65030dd925d8f814454b504d12c2dec9505"
+  implementation_diff_sha256: "4852365ded7042836b4327e3506bdae04e5747200c83c3545afe3df12c9ddedc"
+  evidence:
+    - "The source commit contains exactly six replacement pairs across the one workflow and two approved test paths."
+    - "Workflow selectors and test contracts use the minimum compatible Node 24-backed artifact-action majors; no latest-major behavior expansion was introduced."
+    - "The normalized workflow is byte-identical, artifact inputs/order are unchanged, and all 45 unit test files pass."
+    - "Pack audit, authoring smoke, scoped validators, protocol, YAML parsing, diff hygiene, and UTF-8 checks pass."
+    - "actionlint is unavailable locally; exact hosted execution and annotation inspection remain mandatory before Technical Verification."
 ```

@@ -295,6 +295,7 @@ review_notes:
   - "Human Developer approved amended Spec v0.2, Approach, and Task Plan T4a; human QC approved amended DoR at 2026-09-15T09:27:44Z. Fresh receipt sealing and resume remain separate."
   - "Human Developer/QC approved F-N24-T4A-001; Developer approved the unchanged-semantic Approach and Task Plan amendment T4b at 2026-09-15T10:17:29Z. Fresh s06 receipts and resume remain separate."
   - "Fresh T4b Approach and Task Plan receipts match s06 SHA-256 b8e91fe17e5b2fcc46af6c1c712030a336f2f5f849422ef9008f09290656fa43; the work item resumed at 2026-09-15T10:21:15.722Z with all five approved write roots."
+  - "Human Developer/QC approved refreshed CI-N24-T4a/T4b Spec Compliance for source 53bab65030dd925d8f814454b504d12c2dec9505, workflow SHA-256 b72a0cb172d8a11c5d2e96acc6a31bdd9c22b00f48b0a8fd0e643ae0d3ad0f30, and source-set SHA-256 7115db15698953da66881d18335ab48b02b4f9102d46e5b2b29a9d3283d5983a at 2026-09-15T10:33:17Z. Code Quality remains independent."
 refs:
   - "work-items/upgrade-guardrails-actions-node24"
 audit_events:
@@ -318,6 +319,7 @@ audit_events:
   - "WORK_ITEM_RESUMED"
   - "F_N24_T4A_001_AND_T4B_HUMAN_APPROVED_PENDING_RECEIPTS"
   - "T4B_READINESS_RECEIPTS_VERIFIED_AND_RESUMED"
+  - "T4AB_REFRESHED_SPEC_COMPLIANCE_APPROVED"
 ```
 
 ## Audit
