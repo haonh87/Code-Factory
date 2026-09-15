@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: final
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
   - "project-context/checklists/strict.md"
@@ -72,8 +72,8 @@ gate_reviews:
   uat_reviewed_at: ""
   release_reviewed_by: ["devops", "qc"]
   release_reviewed_at: "2026-09-15T06:04:23Z"
-  business_acceptance_reviewed_by: []
-  business_acceptance_reviewed_at: ""
+  business_acceptance_reviewed_by: ["po"]
+  business_acceptance_reviewed_at: "2026-09-15T06:19:52Z"
   dod_reviewed_by: ["qc"]
   dod_reviewed_at: "2026-09-15T02:52:30Z"
 content_skills:
@@ -104,12 +104,13 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> **CURRENT STATUS — PARENT RELEASE HUMAN DECISION APPROVED; BUSINESS ACCEPTANCE PENDING.** The qualified child checkpoint receipt is
+> **CURRENT STATUS — ALL REQUIRED PARENT HUMAN DECISIONS APPROVED; TRUSTED RECEIPTS PENDING.** The qualified child checkpoint receipt is
 > signature-valid and current. For source `af70276…`, hosted run `34802149041`, candidate
 > `af49a958…c6c13f` and rollback `7c1d2c7…f0b9`, AG-01..AG-13 now have 13/13 PASS evidence.
 > QC approved the current hosted artifact binding, Technical Verification, and now the separate
 > DoD human decision, then DevOps/QC approved Release for the exact candidate and rollback.
-> Business Acceptance remains an independent, unapproved gate. Release approval did not publish or tag.
+> PO then approved Business Acceptance for the same exact candidate. These approvals did not publish,
+> tag, merge or clean up the branch/worktree; trusted terminal receipts and ledger reconciliation remain.
 > F-AG11-001 and CR-008 remain open; branch/worktree stays `HOLD_OPEN`.
 >
 > Earlier source/candidate decisions are retained only in headings marked
@@ -1025,7 +1026,7 @@ recoverable isolation, followed by fresh real-worktree verification and independ
 > is preserved. No tracked source, candidate or rollback artifact changed.
 
 ```yaml
-status: RELEASE_HUMAN_APPROVED_BUSINESS_ACCEPTANCE_PENDING
+status: BUSINESS_ACCEPTANCE_HUMAN_APPROVED_FINAL_RECEIPTS_PENDING
 acceptance_coverage: "AG-01..AG-13: 13/13 PASS"
 real_worktree:
   node18:
@@ -1047,23 +1048,23 @@ artifact_binding:
 current_human_authority:
   artifact_binding: APPROVED_QC
   technical_verification: APPROVED_QC
-  dod: APPROVED_QC_DECISION_RECEIPT_PENDING_FINAL_HOST
-  release: APPROVED_DEVOPS_QC_DECISION_RECEIPT_PENDING_FINAL_HOST
-  business_acceptance: PENDING_PO
-release_readiness: APPROVED_NOT_PUBLISHED_BUSINESS_ACCEPTANCE_PENDING
+  dod: APPROVED_QC_DECISION_RECEIPT_READY_TO_SEAL
+  release: APPROVED_DEVOPS_QC_DECISION_RECEIPT_READY_TO_SEAL
+  business_acceptance: APPROVED_PO_DECISION_RECEIPT_READY_TO_SEAL
+release_readiness: HUMAN_GATES_APPROVED_NOT_PUBLISHED_RECEIPTS_PENDING
 branch_finish: HOLD_OPEN
 ```
 
 QC approved the exact current parent artifact binding first and Technical Verification second,
 recorded at `2026-09-15T02:25:27Z`, approved the separate DoD human decision at
-`2026-09-15T02:52:30Z`, then DevOps and QC approved Release at `2026-09-15T06:04:23Z`.
-This approval did not publish or tag and does not approve Business Acceptance, close F-AG11-001,
-or close CR-008.
+`2026-09-15T02:52:30Z`, DevOps and QC approved Release at `2026-09-15T06:04:23Z`, and PO
+approved Business Acceptance at `2026-09-15T06:19:52Z`. These decisions did not publish, tag,
+merge or clean up; trusted shared-host receipts, F-AG11-001 reconciliation and protocol close remain.
 
 ## Main Artifact
 
 ```yaml
-status: RELEASE_HUMAN_APPROVED_BUSINESS_ACCEPTANCE_PENDING
+status: BUSINESS_ACCEPTANCE_HUMAN_APPROVED_FINAL_RECEIPTS_PENDING
 reviewed_source_sha: "04eed2f8b2098bddf513d0f96fd129e835686dd7"
 hosted_source_sha: "af70276fe14317417365c06dd06186da1996c401"
 hosted_run_id: 34802149041
@@ -1074,7 +1075,7 @@ acceptance_coverage: "AG-01..AG-13: 13/13 PASS"
 hosted_provenance: "Run 34802149041 re-read as 10/10 SUCCESS; no new hosted run"
 workspace_verification: "Node 18 and Node 22 each 45/45 PASS after approved recoverable isolation"
 evidence_ref: "rcr-parent-exact-candidate-evidence.json"
-human_gate_state: RELEASE_HUMAN_APPROVED_BUSINESS_ACCEPTANCE_PENDING
+human_gate_state: BUSINESS_ACCEPTANCE_HUMAN_APPROVED_FINAL_RECEIPTS_PENDING
 ```
 
 ## Current Hosted Artifact Binding
@@ -1151,19 +1152,45 @@ rollback_readiness: READY
 ```yaml
 spec_refs: ["changes/CR-008/spec-delta/brd.delta.md", "changes/CR-008/spec-delta/srs.delta.md"]
 coverage:
-  - { ref: "AG-01", status: PASS }
-  - { ref: "AG-02", status: PASS }
-  - { ref: "AG-03", status: PASS }
-  - { ref: "AG-04", status: PASS }
-  - { ref: "AG-05", status: PASS }
-  - { ref: "AG-06", status: PASS }
-  - { ref: "AG-07", status: PASS }
-  - { ref: "AG-08", status: PASS }
-  - { ref: "AG-09", status: PASS }
-  - { ref: "AG-10", status: PASS }
-  - { ref: "AG-11", status: PASS }
-  - { ref: "AG-12", status: PASS }
-  - { ref: "AG-13", status: PASS }
+  - id: "AG-01"
+    status: PASS
+    evidence: "Non-delivery zero-write and audited override regression."
+  - id: "AG-02"
+    status: PASS
+    evidence: "Maintenance applicability omits unnecessary roles."
+  - id: "AG-03"
+    status: PASS
+    evidence: "Eight lanes and deterministic 20-run routing."
+  - id: "AG-04"
+    status: PASS
+    evidence: "Six hard triggers and mixed-intent fail-closed."
+  - id: "AG-05"
+    status: PASS
+    evidence: "Non-applicable gates produce no actions, blockers or receipts."
+  - id: "AG-06"
+    status: PASS
+    evidence: "Independent reviewer/time/digest receipts and ready-bundle coverage."
+  - id: "AG-07"
+    status: PASS
+    evidence: "64/64 failure/crash boundaries plus concurrency and recovery."
+  - id: "AG-08"
+    status: PASS
+    evidence: "Legacy DoD and independent terminal gate enforcement."
+  - id: "AG-09"
+    status: PASS
+    evidence: "Legacy/adaptive dual-read, receipt-v1 and rollback compatibility."
+  - id: "AG-10"
+    status: PASS
+    evidence: "Telemetry allowlist, pseudonym, retention and secret-canary controls."
+  - id: "AG-11"
+    status: PASS
+    evidence: "20 commit cycles and 20 NOOP retries preserve identity and mirror parity."
+  - id: "AG-12"
+    status: PASS
+    evidence: "Controlled fixtures reduce median interactions from seven to three."
+  - id: "AG-13"
+    status: PASS
+    evidence: "Candidate, archive and real worktree pass Node 18/22 parity and rollback."
 status: PASS
 summary: { pass: 13, partial: 0, fail: 0, total: 13 }
 gaps: []
@@ -1198,18 +1225,30 @@ rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0
 scan_gaps: RETAINED
 publish: false
 tag: false
-trusted_receipt_status: MISSING_PENDING_FINAL_SHARED_S08_HOST
+trusted_receipt_status: MISSING_READY_TO_SEAL_FINAL_SHARED_S08_HOST
 later_gate_authority: "NONE; Business Acceptance stays independent"
 ```
 
 ## Business Acceptance Summary
 
 ```yaml
-status: PENDING_HUMAN_REVIEW
-reviewed_by: []
-reviewed_at: ""
+status: APPROVED
+reviewed_by: ["po"]
+reviewed_at: "2026-09-15T06:19:52Z"
+decision_order: 5
+decision_source: "Explicit user instruction assigning Business Acceptance authority to PO"
 owner: "po"
 depends_on: ["Current QC Technical Verification", "Current QC DoD", "Current DevOps/QC Release"]
+version: "v2.6.2"
+source_sha: "af70276fe14317417365c06dd06186da1996c401"
+hosted_run_id: 34802149041
+candidate_sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+scan_gaps: RETAINED
+publish: false
+tag: false
+merge: false
+cleanup: false
+trusted_receipt_status: MISSING_READY_TO_SEAL_FINAL_SHARED_S08_HOST
 ```
 
 ## Deployment Review
@@ -1220,9 +1259,9 @@ build_and_verify:
   required_checks: ["10/10 hosted jobs", "Node 18", "Node 22", "runtime parity", "rollback"]
 artifact_flow:
   provenance_controls: ["source SHA", "run ID", "full candidate SHA-256", "rollback SHA-256"]
-approval_controls: ["QC Technical Verification APPROVED", "QC DoD HUMAN_DECISION_APPROVED", "DevOps/QC Release HUMAN_DECISION_APPROVED", "PO Business Acceptance PENDING"]
+approval_controls: ["QC Technical Verification APPROVED", "QC DoD HUMAN_DECISION_APPROVED", "DevOps/QC Release HUMAN_DECISION_APPROVED", "PO Business Acceptance HUMAN_DECISION_APPROVED"]
 release_controls:
-  pre_release: ["PO Business Acceptance", "All current parent receipts must bind the finalized s08 host"]
+  pre_release: ["All current parent receipts must bind this finalized s08 host"]
 rollback_controls: ["Use immutable v2.6.1 SHA-256 7c1d2c7b...f0b9"]
 promotion_flow:
   path: "verified candidate -> publication"
@@ -1230,19 +1269,20 @@ promotion_flow:
   automation_level: HUMAN_CONTROLLED_NOT_EXECUTED
 pipeline_risks: ["Scan coverage remains PARTIAL", "No publication or tag has been executed"]
 pipeline_recommendation: READY_WITH_GUARDS
-notes_for_implementation_or_ops: "Release decision is approved for the exact candidate and rollback; publication and tagging remain blocked on Business Acceptance and final receipts"
+notes_for_implementation_or_ops: "All required parent human decisions are approved for the exact candidate and rollback; publication and tagging remain blocked until trusted receipts and explicit rollout authority"
 ```
 
 ## Audit
 
 ```yaml
 status: PASS
-scope: "Exact-candidate verification plus ordered artifact-binding, Technical Verification, DoD and Release decisions"
+scope: "Exact-candidate verification plus ordered artifact-binding, Technical Verification, DoD, Release and Business Acceptance decisions"
 evidence_complete: true
 human_approvals_inferred: false
 release_decision_approved: true
 publication_authorized: false
-next_step_allowed: "Parent PO Business Acceptance review only"
+business_acceptance_decision_approved: true
+next_step_allowed: "Trusted terminal receipt sealing and read-only reconciliation only"
 finish_target: "codex/adaptive-governance-human-approval-ux"
 workspace_kind: BOTH
 verify_inputs: ["rcr-parent-exact-candidate-evidence.json", "this s08 verification note"]
@@ -1251,27 +1291,27 @@ finish_gate_checks:
   dod_complete: PENDING
   findings_closed: FAIL
   exceptions_resolved: PASS
-allowed_actions: ["Record independent Business Acceptance decision", "Run read-only verification"]
+allowed_actions: ["Seal trusted terminal receipts in human TTY", "Run read-only verification and reconciliation"]
 blocked_actions: ["Merge", "Cleanup", "Branch/worktree finalization", "Publish", "Tag", "Global install"]
 cleanup_sequence: []
 merge_conditions: ["Final shared-host receipts are current", "F-AG11-001 and protocols are closed"]
-residual_risks: ["Scan coverage remains PARTIAL", "Current parent trusted DoD and Release receipts wait for the final shared s08 host"]
+residual_risks: ["Scan coverage remains PARTIAL", "Current parent trusted DoD, Release and Business Acceptance receipts are not yet sealed"]
 final_recommendation: HOLD_OPEN
-notes_for_closeout: "DoD and Release human approvals are recorded, but their trusted receipts and required Business Acceptance gate are incomplete."
+notes_for_closeout: "All required human decisions are recorded; keep the branch open until trusted receipts, F-AG11-001 reconciliation and both protocols are closed."
 ```
 
 ## Definition of Done
 
 ```yaml
 work_item_slug: "adaptive-governance-human-approval-ux"
-status: PARTIAL
+status: HUMAN_APPROVED_PENDING_TRUSTED_RECEIPTS_AND_RECONCILIATION
 human_gate_status: APPROVED
-human_decision: DOD_APPROVED_OVERALL_ITEM_WAITING_TERMINAL_GATES
+human_decision: DOD_AND_REQUIRED_TERMINAL_HUMAN_DECISIONS_APPROVED_WAITING_TRUSTED_RECEIPTS
 reviewed_by: ["qc"]
 reviewed_at: "2026-09-15T02:52:30Z"
 approval_source: "Explicit user QC DoD approval for the exact current parent candidate"
 reviewed_parent_s08_draft_sha256: "ff3a5fe7a5ee5e9070f79d3096cfd51d07dd97f4ee5b36dc015bbb53e922a481"
-trusted_receipt_status: MISSING_PENDING_FINAL_SHARED_S08_HOST
+trusted_receipt_status: MISSING_READY_TO_SEAL_FINAL_SHARED_S08_HOST
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -1280,11 +1320,12 @@ checks:
   traceability_complete: PASS
   residual_risks_documented: PASS
 gaps:
-  - "PO Business Acceptance is not approved; current shared-host terminal receipts are not sealed"
+  - "Current shared-host DoD, Release and Business Acceptance receipts are not sealed"
+  - "F-AG11-001 and parent/child protocol ledgers await receipt-backed reconciliation"
 residual_risks:
   - "Automatic static/security tools remain unavailable"
 follow_up_items: []
-next_action: "PO reviews current parent Business Acceptance"
+next_action: "Seal trusted DoD, Release and Business Acceptance receipts against this finalized s08 host"
 ```
 
 ## Traceability
@@ -1301,14 +1342,14 @@ verification_targets:
   - "run 34802149041"
   - "candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
   - "rollback 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
-next_step: "Independent parent PO Business Acceptance review; publication, tagging and closeout are not inferred"
+next_step: "Human-TTY trusted receipt sealing, then F-AG11-001 and protocol reconciliation; publication and tagging remain separate"
 ```
 
 ## Handoff
 
-- Workflow status: `WAITING_APPROVAL`.
+- Workflow status: `WAITING_APPROVAL` for trusted terminal receipts.
 - Evidence verdict: AG-01..AG-13 `13/13 PASS`.
-- Current decisions: QC approved hosted artifact binding, Technical Verification and DoD; DevOps/QC then approved Release.
-- Next human action: PO reviews Business Acceptance.
-- Release approval did not publish or tag the candidate.
+- Current decisions: QC approved hosted artifact binding, Technical Verification and DoD; DevOps/QC approved Release; PO approved Business Acceptance.
+- Next human action: seal trusted DoD, Release and Business Acceptance receipts against this finalized s08 host in a human TTY.
+- No approval published, tagged, merged or cleaned up the candidate or branch.
 - Branch/worktree: `HOLD_OPEN`; no publish, tag, merge, install or cleanup is authorized.

@@ -137,7 +137,8 @@
     "Human QC approved the current parent hosted artifact binding first at 2026-09-15T02:25:27Z for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f and rollback 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Scan gaps and later independent gates are preserved.",
     "Human QC then approved current parent Technical Verification at 2026-09-15T02:25:27Z with AG-01..AG-13 at 13/13 PASS. DoD, Release and Business Acceptance remain separate unapproved gates; no closeout or branch finalization is inferred.",
     "Human QC approved the separate current parent DoD decision at 2026-09-15T02:52:30Z for source af70276fe14317417365c06dd06186da1996c401, run 34802149041 and candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f, retaining scan gaps. Release and Business Acceptance remain independent unapproved gates; the shared s08 receipt is deferred until its final host is stable.",
-    "Human DevOps and QC approved current parent Release at 2026-09-15T06:04:23Z for v2.6.2, source af70276fe14317417365c06dd06186da1996c401, run 34802149041, candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f and rollback v2.6.1 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Scan gaps remain. This decision did not publish or tag; PO Business Acceptance remains independently pending."
+    "Human DevOps and QC approved current parent Release at 2026-09-15T06:04:23Z for v2.6.2, source af70276fe14317417365c06dd06186da1996c401, run 34802149041, candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f and rollback v2.6.1 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9. Scan gaps remain. This decision did not publish or tag; PO Business Acceptance remains independently pending.",
+    "Human PO approved current parent Business Acceptance at 2026-09-15T06:19:52Z for v2.6.2, source af70276fe14317417365c06dd06186da1996c401, run 34802149041 and candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f, based on approved Technical Verification, DoD and Release. Scan gaps remain. No publish, tag, merge or cleanup is inferred; trusted terminal receipts and ledger reconciliation remain pending."
   ],
   "work_item_slug": "adaptive-governance-human-approval-ux",
   "work_item_type": "CHANGE",
@@ -151,7 +152,7 @@
     "reopened_at": "2026-09-09T10:12:13Z",
     "finding": "F-AG11-001",
     "protocol_projection_status": "VERIFIED",
-    "projection_note": "Implementation, exact-candidate Technical Verification, DoD and the Release human decision are complete. Retain protocol VERIFIED while PO Business Acceptance and final shared-host receipts remain pending."
+    "projection_note": "Implementation, exact-candidate Technical Verification, DoD, Release and Business Acceptance human decisions are complete. Retain protocol VERIFIED while trusted terminal receipts, F-AG11-001 reconciliation and protocol close remain pending."
   },
   "granted_write_paths": [
     "policies/codex/AGENTS.global.md",
@@ -170,7 +171,7 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "parent-current-Business-Acceptance-PO-review",
+  "handoff_target": "parent-current-terminal-receipt-sealing",
   "required_actions": [
     "Complete the three amended child s04 human reviews and seal fresh independent receipts.",
     "Refresh and approve the child s05/s06 design and execution plan before resuming implementation.",
@@ -178,7 +179,7 @@
     {
       "id": "se:6bff872b1ec110f421ab4be71e8a2c08535a5d8a1a0e25b93e50d841486bdfab",
       "kind": "workflow_followup",
-      "text": "PO reviews current parent Business Acceptance for v2.6.2, source af70276fe14317417365c06dd06186da1996c401, run 34802149041 and candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f after approved Technical Verification, DoD and Release; preserve scan gaps and do not infer publish, tag or closeout."
+      "text": "After this finalized parent s08 metadata is committed, seal trusted DoD, Release and Business Acceptance receipts in a human TTY for the same exact candidate. Then verify all three digests before F-AG11-001 or protocol reconciliation; do not infer publish, tag, merge or cleanup."
     }
   ],
   "blockers": [
@@ -187,7 +188,7 @@
     {
       "id": "se:9099dbc3f27490fc6b16a65e265df0a52396886fa1efc32f37b78577d90155e7",
       "kind": "delivery_blocker",
-      "text": "Parent hosted artifact binding, Technical Verification and DoD are approved by QC, and Release is approved by DevOps/QC, with AG-01..AG-13 at 13/13 PASS for the exact candidate. PO Business Acceptance and final receipts remain pending; no closeout, publication, tag or branch finalization is authorized."
+      "text": "Parent hosted artifact binding, Technical Verification, DoD, Release and Business Acceptance human decisions are approved for the exact candidate with AG-01..AG-13 at 13/13 PASS. Trusted terminal receipts, F-AG11-001 reconciliation and both protocol closeouts remain pending; no publication, tag, merge, cleanup or branch finalization is authorized."
     }
   ],
   "refs": [
@@ -291,7 +292,8 @@
     "PARENT_CURRENT_HOSTED_ARTIFACT_BINDING_APPROVED",
     "PARENT_CURRENT_TECHNICAL_VERIFICATION_APPROVED",
     "PARENT_CURRENT_DOD_HUMAN_DECISION_APPROVED",
-    "PARENT_CURRENT_RELEASE_HUMAN_DECISION_APPROVED"
+    "PARENT_CURRENT_RELEASE_HUMAN_DECISION_APPROVED",
+    "PARENT_CURRENT_BUSINESS_ACCEPTANCE_HUMAN_DECISION_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -762,6 +764,14 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "DevOps and QC explicitly approved current parent Release for v2.6.2 and the exact source/run/candidate/rollback binding. Scan gaps remain. The decision did not publish or tag; PO Business Acceptance, trusted shared-host receipts, finding closure and branch finalization remain pending."
+    },
+    {
+      "timestamp": "2026-09-15T06:19:52Z",
+      "action": "record-parent-current-business-acceptance-human-decision-approved",
+      "actor": "po",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "PO explicitly approved current parent Business Acceptance for the exact v2.6.2 source/run/candidate after approved Technical Verification, DoD and Release. Scan gaps remain. No publish, tag, merge or cleanup is inferred; trusted terminal receipts, F-AG11-001 reconciliation and protocol close remain pending."
     }
   ]
 }

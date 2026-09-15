@@ -4,7 +4,7 @@
   "artifact_family": "verification-evidence",
   "artifact_role": "supporting",
   "source_of_truth": false,
-  "status": "RELEASE_HUMAN_APPROVED_BUSINESS_ACCEPTANCE_PENDING",
+  "status": "BUSINESS_ACCEPTANCE_HUMAN_APPROVED_FINAL_RECEIPTS_PENDING",
   "observed_at": "2026-09-14T14:34:14Z",
   "work_item_slug": "adaptive-governance-human-approval-ux",
   "change_id": "CR-008",
@@ -417,13 +417,16 @@
     "artifact_binding": "APPROVED_BY_QC",
     "technical_verification": "APPROVED_BY_QC",
     "technical_verification_reviewed_at": "2026-09-15T02:25:27Z",
-    "dod": "HUMAN_APPROVED_BY_QC_RECEIPT_PENDING_FINAL_HOST",
+    "dod": "HUMAN_APPROVED_BY_QC_RECEIPT_READY_TO_SEAL",
     "dod_reviewed_at": "2026-09-15T02:52:30Z",
     "dod_reviewed_parent_s08_draft_sha256": "ff3a5fe7a5ee5e9070f79d3096cfd51d07dd97f4ee5b36dc015bbb53e922a481",
-    "release": "HUMAN_APPROVED_BY_DEVOPS_AND_QC_RECEIPT_PENDING_FINAL_HOST",
+    "release": "HUMAN_APPROVED_BY_DEVOPS_AND_QC_RECEIPT_READY_TO_SEAL",
     "release_reviewed_at": "2026-09-15T06:04:23Z",
     "release_reviewed_parent_s08_draft_sha256": "e8e2245f8b640aca6a7101c619a430b1d5f87eac64d87d4dae4ec8a22d608e8d",
-    "business_acceptance": "NOT_REVIEWED_CURRENT_CANDIDATE",
+    "business_acceptance": "HUMAN_APPROVED_BY_PO_RECEIPT_READY_TO_SEAL",
+    "business_acceptance_reviewed_at": "2026-09-15T06:19:52Z",
+    "business_acceptance_reviewed_parent_s08_draft_sha256": "c742f1628f2b45b19a48be9d97ad3f4ee1da6ec70d73b24bb82d98a7ba511698",
+    "finalized_parent_s08_sha256": "e994f4292829e77d06ba809e897c3efd6d2c6cff562b579ed1536f5e92d0cc93",
     "historical_receipts": "SIGNATURE_VALID_BUT_DIGEST_STALE_NOT_CURRENT_AUTHORITY"
   },
   "ordered_human_decisions": [
@@ -487,10 +490,31 @@
       "later_gates": [
         "business_acceptance"
       ]
+    },
+    {
+      "order": 5,
+      "decision": "BUSINESS_ACCEPTANCE_HUMAN_DECISION_APPROVED",
+      "reviewed_by": "po",
+      "recorded_at": "2026-09-15T06:19:52Z",
+      "version": "v2.6.2",
+      "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+      "run_id": 34802149041,
+      "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "depends_on": [
+        "technical_verification",
+        "dod",
+        "release"
+      ],
+      "scan_gaps": "RETAINED_PARTIAL_NOT_WAIVED",
+      "publish": false,
+      "tag": false,
+      "merge": false,
+      "cleanup": false,
+      "trusted_receipt": "MISSING_PENDING_FINAL_SHARED_S08_HOST"
     }
   ],
   "release_readiness": {
-    "status": "APPROVED_NOT_PUBLISHED_BUSINESS_ACCEPTANCE_PENDING",
+    "status": "HUMAN_GATES_APPROVED_NOT_PUBLISHED_RECEIPTS_PENDING",
     "publish": false,
     "tag": false,
     "merge": false,
@@ -513,5 +537,5 @@
     "unknown_legacy_text_preserved": true,
     "production_source_changed": false
   },
-  "next_action": "PO reviews parent Business Acceptance for the exact Release-approved candidate; publication, tagging and closeout remain blocked pending that decision and final receipts."
+  "next_action": "Seal trusted DoD, Release and Business Acceptance receipts against the finalized parent s08 host, then reconcile F-AG11-001 and both protocols. Publication, tagging, merge and cleanup remain separately unauthorized."
 }
