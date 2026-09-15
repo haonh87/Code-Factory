@@ -13,12 +13,12 @@
       "work_item_slug": "upgrade-guardrails-actions-node24",
       "work_item_title": "Upgrade Guardrails Actions Node24",
       "work_item_type": "CHANGE",
-      "scope_summary": "Bump nine checkout and nine setup-node references to v7 in the existing guardrails workflow without topology drift.",
+      "scope_summary": "Move nine checkout, nine setup-node, one upload-artifact, and one download-artifact selector to their approved Node 24-backed majors without topology or input drift.",
       "primary_outcome": "A green hosted guardrails run with zero Node deprecation annotations before the Node 20 runner cutoff.",
       "in_scope": [
-        "Eighteen action-version references in .github/workflows/workflow-guardrails.yml",
-        "Preservation of release-candidate-build fetch-depth: 0",
-        "Local invariant checks and one hosted run"
+        "Twenty original-baseline action-version references in .github/workflows/workflow-guardrails.yml",
+        "Preservation of release-candidate fetch-depth: 0 and artifact inputs/order",
+        "Local invariant checks and an exact hosted run with zero Node deprecation annotations"
       ],
       "out_of_scope": [
         "Validator parallelisation, matrix conversion, or fail-fast changes",
@@ -63,7 +63,9 @@
     "Human PO explicitly approved this work item at 2026-09-11T08:05:37Z; trusted receipt sealing remains separate.",
     "Trusted PO work-item receipt recorded at 2026-09-11T08:20:11.420Z verifies APPROVED for this project root.",
     "Compact s04 and s06 author Spec, DoR, Approach, and Task Plan for one ready-bundle review; implementation remains closed.",
-    "Human Developer approved Spec, Approach, and Task Plan; human QC approved DoR at 2026-09-11T08:32:50Z. Receipt sealing and activation remain separate."
+    "Human Developer approved Spec, Approach, and Task Plan; human QC approved DoR at 2026-09-11T08:32:50Z. Receipt sealing and activation remain separate.",
+    "Hosted run 34947061938 exposed F-N24-H1: three Node 20 annotations from upload/download-artifact@v4 despite 10/10 job success.",
+    "Human Developer/QC approved F-N24-H1 and readiness rework; Developer approved Option A Task Plan amendment T4a and the Spec Card authoring path at 2026-09-15T09:14:23Z. Amended gate approvals and production edits remain separate."
   ],
   "work_item_slug": "upgrade-guardrails-actions-node24",
   "work_item_type": "CHANGE",
@@ -109,7 +111,8 @@
     "SDD_LIGHT_READY_BUNDLE_HUMAN_APPROVED_PENDING_RECEIPTS",
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "WORK_ITEM_BLOCKED"
+    "WORK_ITEM_BLOCKED",
+    "F_N24_H1_AND_T4A_DIRECTION_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -119,7 +122,9 @@
     "PO approved the Node 24 guardrails action upgrade; later gates remain independent.",
     "Trusted PO work-item receipt recorded at 2026-09-11T08:20:11.420Z verifies APPROVED for this project root.",
     "Compact s04 and s06 are drafted; no ready-bundle gate or implementation authority is inferred.",
-    "Human Developer approved Spec, Approach, and Task Plan; human QC approved DoR at 2026-09-11T08:32:50Z. Receipt sealing and activation remain separate."
+    "Human Developer approved Spec, Approach, and Task Plan; human QC approved DoR at 2026-09-11T08:32:50Z. Receipt sealing and activation remain separate.",
+    "Hosted run 34947061938 exposed F-N24-H1: three Node 20 annotations from upload/download-artifact@v4 despite 10/10 job success.",
+    "Human Developer/QC approved F-N24-H1 and readiness rework; Developer approved Option A Task Plan amendment T4a and the Spec Card authoring path at 2026-09-15T09:14:23Z. Amended gate approvals and production edits remain separate."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",

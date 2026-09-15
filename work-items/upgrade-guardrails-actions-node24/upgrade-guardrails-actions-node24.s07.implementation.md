@@ -238,8 +238,11 @@ code_quality:
 ## Hosted Finding F-N24-H1
 ```yaml
 finding_id: "F-N24-H1"
-status: OPEN_PENDING_HUMAN_DECISION
+status: DIRECTION_APPROVED_PENDING_AMENDED_GATES
 severity: HIGH
+approved_by: ["developer", "qc"]
+approved_at: "2026-09-15T09:14:23Z"
+approved_option: "A"
 source_commit: "ae6df04aff58de39a5f2f9f703598ad6d2b4c257"
 workflow_change_commit: "5baea95"
 run_id: 34947061938
@@ -279,9 +282,11 @@ recommended_amendment:
     - "Do not adopt upload direct mode or download v8 digest-mismatch behavior."
   implementation_method: "New fail-first warning/action-count assertion, two-token commit, refreshed Spec Compliance then Code Quality, second exact hosted run."
 required_human_decisions:
-  - "Developer/QC approve F-N24-H1 and return to readiness amendment."
   - "Developer re-approves amended Spec, Approach, and Task Plan; QC re-approves amended DoR."
   - "Trusted ready-bundle receipts are resealed before the two production tokens change."
+authorized_authoring_path:
+  - "product-specs/cards/upgrade-guardrails-actions-node24.md"
+decision_note: "Developer/QC approved F-N24-H1 and readiness rework; Developer approved Task Plan amendment T4a Option A and the added Spec Card authoring path. This is not approval of the amended gate artifacts or production edits."
 references:
   - "https://github.com/actions/upload-artifact/releases/tag/v6.0.0"
   - "https://github.com/actions/download-artifact/releases/tag/v7.0.0"
