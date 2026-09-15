@@ -691,14 +691,14 @@ decision_owner: "agent"
 protocol_owner: "qc"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "parent-exact-candidate-QC-binding-review"
-last_transition_action: "record-parent-exact-candidate-13-of-13-evidence-prepared"
-last_transition_at: "2026-09-15T02:06:06.548Z"
+handoff_target: "parent-current-DoD-QC-review"
+last_transition_action: "record-parent-current-binding-and-technical-verification-approved"
+last_transition_at: "2026-09-15T02:25:27Z"
 required_actions:
-  - {"id":"se:be5dc64361135cc0202ff0087e8fe274560e7f29363e1a097d970b6a69366966","kind":"workflow_followup","text":"Qualified child checkpoint receipt is valid and mandatory parent exact-candidate AG-01..AG-13 evidence is prepared at 13/13 PASS. Request independent parent QC artifact-binding and Technical Verification review; do not infer parent DoD/Release/Business Acceptance, close F-AG11-001, or mark CR-008 DONE."}
-  - {"id":"se:02f867797dfbd461087f98032647dc6be876c5c72d55f6d4728c805f047e9b1f","kind":"workflow_followup","text":"MANDATORY AC-RCR-08: after the child DoD gate is validly sealed, re-verify parent AG-01..AG-13 for exact source af70276fe14317417365c06dd06186da1996c401, run 34802149041, candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; repeat separate parent QC Technical Verification/DoD, DevOps/QC Release and PO Business Acceptance before closing F-AG11-001 or CR-008. No historical parent approval is current authority."}
+  - {"id":"se:be5dc64361135cc0202ff0087e8fe274560e7f29363e1a097d970b6a69366966","kind":"workflow_followup","text":"Qualified child checkpoint receipt remains valid and parent hosted artifact binding plus Technical Verification are approved by QC with AG-01..AG-13 at 13/13 PASS. Request independent parent QC DoD review; do not infer Release/Business Acceptance, close F-AG11-001, or mark CR-008 DONE."}
+  - {"id":"se:02f867797dfbd461087f98032647dc6be876c5c72d55f6d4728c805f047e9b1f","kind":"workflow_followup","text":"MANDATORY AC-RCR-08: child DoD is validly sealed and parent exact-candidate AG-01..AG-13 re-verification plus current QC Technical Verification are approved for source af70276fe14317417365c06dd06186da1996c401, run 34802149041, candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f. Complete separate parent QC DoD, DevOps/QC Release and PO Business Acceptance before closing F-AG11-001 or CR-008. No historical parent approval is current authority."}
 blockers:
-  - {"id":"se:4051976e3a5ded61673fb1cbc5ce3d7d05cd8709f64b20d4f5e484b9ac65207d","kind":"delivery_blocker","text":"Qualified child checkpoint DoD receipt is current and parent exact-candidate AG-01..AG-13 evidence is prepared at 13/13 PASS. Current parent QC Technical Verification/DoD, DevOps/QC Release, PO Business Acceptance, F-AG11-001 closure and final child protocol DONE remain mandatory."}
+  - {"id":"se:4051976e3a5ded61673fb1cbc5ce3d7d05cd8709f64b20d4f5e484b9ac65207d","kind":"delivery_blocker","text":"Qualified child checkpoint DoD receipt is current and parent hosted artifact binding plus Technical Verification are approved by QC with AG-01..AG-13 at 13/13 PASS. Current parent QC DoD, DevOps/QC Release, PO Business Acceptance, F-AG11-001 closure and final child protocol DONE remain mandatory."}
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
   - "Human PO explicitly approved this linked work item at 2026-09-09T13:32:51Z."
@@ -871,6 +871,7 @@ audit_events:
   - "RCR_TS8_CP_001_DOD_BINDING_APPROVED"
   - "RCR_TS8_CP_001_TRUSTED_DOD_RECEIPT_VERIFIED"
   - "PARENT_EXACT_CANDIDATE_13_OF_13_EVIDENCE_PREPARED"
+  - "PARENT_CURRENT_BINDING_AND_TV_APPROVED"
 ```
 
 ## Traceability

@@ -1,13 +1,13 @@
 {
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "task": "TS8",
-  "status": "QUALIFIED_CHILD_CHECKPOINT_VALID_PARENT_13_OF_13_READY_FOR_QC",
+  "status": "QUALIFIED_CHILD_CHECKPOINT_VALID_PARENT_TECHNICAL_VERIFICATION_APPROVED_DOD_PENDING",
   "checkpoint_amendment": {
     "id": "RCR-TS8-CP-001",
     "scope_decision": "APPROVED_OPTION_B",
     "review_packet": "rcr-ts8-checkpoint-amendment.json",
-    "snapshot_rule": "Historical test, frozen receipt and original QC observations remain source-bound evidence. Five actual fresh authoring receipts remain signature-valid, approved and current. Human QC amended DoD binding is explicitly approved; trusted checkpoint receipt and mandatory full parent contribution remain pending. Original qualified QC decisions, scan gaps and package identities are unchanged.",
-    "parent_AC_RCR_08": "EVIDENCE_PREPARED_13_OF_13_PASS_AWAITING_QC",
+    "snapshot_rule": "Historical test, frozen receipt and original QC observations remain source-bound evidence. Five actual fresh authoring receipts and the child checkpoint DoD receipt remain signature-valid, approved and current. Parent hosted artifact binding and Technical Verification are approved by QC; parent DoD, Release and Business Acceptance remain pending. Original qualified QC decisions, scan gaps and package identities are unchanged.",
+    "parent_AC_RCR_08": "TECHNICAL_VERIFICATION_APPROVED_13_OF_13_DOD_PENDING",
     "protocol_done": false,
     "authoring_gate_decision": "HUMAN_APPROVED_AND_FIVE_TRUSTED_RECEIPTS_VALID",
     "authoring_recorded_at": "2026-09-14T13:33:15Z",
@@ -1778,23 +1778,23 @@
     "tag": false,
     "merge": false,
     "cleanup": false,
-    "next_human_action": "QC reviews current parent artifact binding and Technical Verification for the exact source/run/candidate; DoD, Release and Business Acceptance remain later independent gates.",
+    "next_human_action": "QC reviews current parent DoD for the approved exact-candidate Technical Verification; Release and Business Acceptance remain later independent gates.",
     "hosted_artifact_binding": "APPROVED",
     "dod_reviewed_by": [
       "qc"
     ],
     "dod_reviewed_at": "2026-09-14T07:35:25.955Z",
     "dod_trusted_receipt": "APPROVED_VALID_CURRENT",
-    "workflow_status": "WAITING_PARENT_QC_REVIEW"
+    "workflow_status": "WAITING_PARENT_DOD_APPROVAL"
   },
   "rollback": {
     "version": "v2.6.1",
     "sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
   },
-  "mandatory_parent_contribution": "AC-RCR-08 remains downstream mandatory; child evidence does not fulfill parent or terminal gates.",
+  "mandatory_parent_contribution": "AC-RCR-08 parent hosted binding and Technical Verification are approved; parent DoD, Release and Business Acceptance remain mandatory.",
   "parent_exact_candidate_refresh": {
     "packet": "../adaptive-governance-human-approval-ux/rcr-parent-exact-candidate-evidence.json",
-    "status": "READY_FOR_PARENT_QC_BINDING_REVIEW",
+    "status": "TECHNICAL_VERIFICATION_APPROVED_DOD_PENDING",
     "observed_at": "2026-09-15T02:06:06.548Z",
     "coverage": {
       "pass": 13,
@@ -1812,11 +1812,18 @@
       "node22": "45/45 PASS"
     },
     "terminal_gates": {
-      "technical_verification": "NOT_REVIEWED_CURRENT_CANDIDATE",
+      "artifact_binding": "APPROVED_BY_QC",
+      "technical_verification": "APPROVED_BY_QC",
       "dod": "NOT_REVIEWED_CURRENT_CANDIDATE",
       "release": "NOT_REVIEWED_CURRENT_CANDIDATE",
       "business_acceptance": "NOT_REVIEWED_CURRENT_CANDIDATE"
-    }
+    },
+    "reviewed_at": "2026-09-15T02:25:27Z",
+    "decision_order": [
+      "HOSTED_ARTIFACT_BINDING_APPROVED",
+      "TECHNICAL_VERIFICATION_APPROVED"
+    ],
+    "scan_gaps": "RETAINED_PARTIAL_NOT_WAIVED"
   },
   "pipeline": {
     "pipeline_scope": "Existing GitHub Actions Workflow Guardrails candidate Verify only; no CI edit or deploy/publish.",

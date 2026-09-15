@@ -104,11 +104,12 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> **CURRENT STATUS — READY FOR PARENT QC REVIEW.** The qualified child checkpoint receipt is
+> **CURRENT STATUS — PARENT TECHNICAL VERIFICATION APPROVED; DoD PENDING.** The qualified child checkpoint receipt is
 > signature-valid and current. For source `af70276…`, hosted run `34802149041`, candidate
 > `af49a958…c6c13f` and rollback `7c1d2c7…f0b9`, AG-01..AG-13 now have 13/13 PASS evidence.
-> Parent Technical Verification, DoD, Release and Business Acceptance remain independent,
-> unapproved gates. F-AG11-001 and CR-008 remain open; branch/worktree stays `HOLD_OPEN`.
+> QC approved the current hosted artifact binding first and then Technical Verification.
+> DoD, Release and Business Acceptance remain independent, unapproved gates. F-AG11-001 and
+> CR-008 remain open; branch/worktree stays `HOLD_OPEN`.
 >
 > Earlier source/candidate decisions are retained only in headings marked
 > `Historical Pre-Finding`; they do not authorize current closeout or Release.
@@ -1023,7 +1024,7 @@ recoverable isolation, followed by fresh real-worktree verification and independ
 > is preserved. No tracked source, candidate or rollback artifact changed.
 
 ```yaml
-status: READY_FOR_PARENT_QC_BINDING_REVIEW
+status: TECHNICAL_VERIFICATION_APPROVED_DOD_PENDING
 acceptance_coverage: "AG-01..AG-13: 13/13 PASS"
 real_worktree:
   node18:
@@ -1043,8 +1044,8 @@ artifact_binding:
   candidate_sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
   rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
 current_human_authority:
-  artifact_binding: PENDING_QC
-  technical_verification: PENDING_QC
+  artifact_binding: APPROVED_QC
+  technical_verification: APPROVED_QC
   dod: PENDING_QC
   release: PENDING_DEVOPS_AND_QC
   business_acceptance: PENDING_PO
@@ -1052,14 +1053,14 @@ release_readiness: HOLD_PENDING_HUMAN_GATES
 branch_finish: HOLD_OPEN
 ```
 
-Recommendation: QC may now review the exact current parent artifact binding and Technical
-Verification. This recommendation does not approve Technical Verification, DoD, Release or
-Business Acceptance and does not close F-AG11-001 or CR-008.
+QC approved the exact current parent artifact binding first and Technical Verification second,
+recorded at `2026-09-15T02:25:27Z`. This does not approve DoD, Release or Business Acceptance and
+does not close F-AG11-001 or CR-008.
 
 ## Main Artifact
 
 ```yaml
-status: READY_FOR_QC_REVIEW
+status: TECHNICAL_VERIFICATION_APPROVED_DOD_PENDING
 reviewed_source_sha: "04eed2f8b2098bddf513d0f96fd129e835686dd7"
 hosted_source_sha: "af70276fe14317417365c06dd06186da1996c401"
 hosted_run_id: 34802149041
@@ -1070,15 +1071,34 @@ acceptance_coverage: "AG-01..AG-13: 13/13 PASS"
 hosted_provenance: "Run 34802149041 re-read as 10/10 SUCCESS; no new hosted run"
 workspace_verification: "Node 18 and Node 22 each 45/45 PASS after approved recoverable isolation"
 evidence_ref: "rcr-parent-exact-candidate-evidence.json"
-human_gate_state: PENDING
+human_gate_state: TECHNICAL_VERIFICATION_APPROVED_DOD_PENDING
+```
+
+## Current Hosted Artifact Binding
+
+```yaml
+status: APPROVED
+reviewed_by: ["qc"]
+reviewed_at: "2026-09-15T02:25:27Z"
+decision_order: 1
+decision_source: "Explicit user instruction assigning approval authority to QC"
+hosted_source_sha: "af70276fe14317417365c06dd06186da1996c401"
+hosted_run_id: 34802149041
+hosted_candidate_sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+rollback_version: "v2.6.1"
+rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+reviewed_parent_s08_draft_sha256: "61b41b661aff1dc607a2a1588a5c850a923f9f6e56e19502e55df030b2ef8dba"
+scan_gaps: RETAINED
+later_gate_authority: "NONE; DoD, Release and Business Acceptance stay independent"
 ```
 
 ## Technical Verification
 
 ```yaml
-status: READY_FOR_QC_REVIEW
-reviewed_by: []
-reviewed_at: ""
+status: APPROVED
+reviewed_by: ["qc"]
+reviewed_at: "2026-09-15T02:25:27Z"
+decision_order: 2
 recommendation: PASS
 evidence:
   acceptance_criteria: "13/13 PASS"
@@ -1091,7 +1111,8 @@ limitations:
   - "No configured repository lint/static/type/security wrapper"
   - "eslint, semgrep and tsc unavailable; automatic analysis skipped, not passed"
   - "Performance evidence is heuristic only; no benchmark"
-decision: PENDING_HUMAN_QC
+decision: APPROVED_BY_QC
+later_gate_authority: "NONE; DoD, Release and Business Acceptance stay independent"
 ```
 
 ## Governance Checks
@@ -1187,23 +1208,23 @@ build_and_verify:
   required_checks: ["10/10 hosted jobs", "Node 18", "Node 22", "runtime parity", "rollback"]
 artifact_flow:
   provenance_controls: ["source SHA", "run ID", "full candidate SHA-256", "rollback SHA-256"]
-approval_controls: ["QC Technical Verification", "QC DoD", "DevOps/QC Release", "PO Business Acceptance"]
+approval_controls: ["QC Technical Verification APPROVED", "QC DoD PENDING", "DevOps/QC Release PENDING", "PO Business Acceptance PENDING"]
 release_controls:
   pre_release: ["All current parent receipts must bind the finalized s08 host"]
 rollback_controls: ["Use immutable v2.6.1 SHA-256 7c1d2c7b...f0b9"]
 pipeline_recommendation: BLOCKED
-notes_for_implementation_or_ops: "Technical evidence is ready; publication remains blocked on human gates"
+notes_for_implementation_or_ops: "Technical Verification is approved; publication remains blocked on DoD, Release and Business Acceptance"
 ```
 
 ## Audit
 
 ```yaml
 status: PASS
-scope: "Evidence preparation and exact-candidate verification"
+scope: "Exact-candidate verification plus ordered QC artifact-binding and Technical Verification decisions"
 evidence_complete: true
 human_approvals_inferred: false
 release_authorized: false
-next_step_allowed: "Parent QC artifact-binding and Technical Verification review only"
+next_step_allowed: "Parent QC DoD review only"
 ```
 
 ## Definition of Done
@@ -1219,12 +1240,12 @@ checks:
   traceability_complete: PASS
   residual_risks_documented: PASS
 gaps:
-  - "Current parent QC Technical Verification and DoD are not approved"
+  - "Current parent QC DoD is not approved"
   - "Current DevOps/QC Release and PO Business Acceptance are not approved"
 residual_risks:
   - "Automatic static/security tools remain unavailable"
 follow_up_items: []
-next_action: "QC reviews current parent artifact binding and Technical Verification"
+next_action: "QC reviews current parent DoD"
 ```
 
 ## Traceability
@@ -1241,13 +1262,14 @@ verification_targets:
   - "run 34802149041"
   - "candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
   - "rollback 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
-next_step: "Independent parent QC review; no later gate inferred"
+next_step: "Independent parent QC DoD review; Release and Business Acceptance are not inferred"
 ```
 
 ## Handoff
 
 - Workflow status: `WAITING_APPROVAL`.
 - Evidence verdict: AG-01..AG-13 `13/13 PASS`.
-- Next human action: QC reviews the current parent artifact binding and then Technical Verification.
-- Later independent gates: QC DoD, DevOps/QC Release, PO Business Acceptance.
+- Current decisions: QC approved hosted artifact binding first, then Technical Verification.
+- Next human action: QC reviews DoD.
+- Later independent gates: DevOps/QC Release, PO Business Acceptance.
 - Branch/worktree: `HOLD_OPEN`; no publish, tag, merge, install or cleanup is authorized.

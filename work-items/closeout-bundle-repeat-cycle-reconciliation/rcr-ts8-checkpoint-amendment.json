@@ -3,7 +3,7 @@
   "artifact_family": "review-packet",
   "artifact_role": "supporting",
   "source_of_truth": false,
-  "status": "QUALIFIED_CHILD_CHECKPOINT_VALID_PARENT_13_OF_13_READY_FOR_QC",
+  "status": "QUALIFIED_CHILD_CHECKPOINT_VALID_PARENT_TECHNICAL_VERIFICATION_APPROVED_DOD_PENDING",
   "amendment_id": "RCR-TS8-CP-001",
   "canonical_scope_decision": "closeout-bundle-repeat-cycle-reconciliation.s03.open-questions.md#Checkpoint-Scope-Amendment",
   "authority": {
@@ -21,11 +21,34 @@
     "original_qc_dod_decision": "PRESERVED_QUALIFIED_CHILD_CHECKPOINT",
     "amended_dod_binding": "APPROVED_HUMAN_QC_BINDING_ONLY",
     "trusted_dod_receipt": "APPROVED_VALID_QC_QUALIFIED_CHECKPOINT",
-    "parent_AG13": "EVIDENCE_PREPARED_13_OF_13_PASS_AWAITING_QC",
-    "parent_terminal_gates": "MANDATORY_NEW_INDEPENDENT_REVIEWS_PENDING",
+    "parent_AG13": "VERIFIED_APPROVED_BY_QC_13_OF_13",
+    "parent_artifact_binding": "APPROVED_BY_QC",
+    "parent_technical_verification": "APPROVED_BY_QC",
+    "parent_terminal_gates": "DOD_RELEASE_BUSINESS_ACCEPTANCE_PENDING",
     "F_AG11_001": "OPEN",
     "protocol_DONE": false,
     "amended_dod_binding_recorded_at": "2026-09-14T13:51:10Z"
+  },
+  "parent_qc_transition": {
+    "recorded_at": "2026-09-15T02:25:27Z",
+    "workflow_status": "WAITING_APPROVAL",
+    "current_step": "s08",
+    "decision_order": [
+      "HOSTED_ARTIFACT_BINDING_APPROVED",
+      "TECHNICAL_VERIFICATION_APPROVED"
+    ],
+    "parent_protocol_events_before": 49,
+    "parent_protocol_events_after": 51,
+    "parent_preserved_event_prefix_sha256": "1c12a3e7488ba992c5daf8100a9f7ef6653fdbcfc379aee5a5840486e3709352",
+    "child_protocol_events_before": 88,
+    "child_protocol_events_after": 89,
+    "child_preserved_event_prefix_sha256": "8296d17c312a455e2bfce8424803fe4c27f558844f0dba7606f5ecc696259b08",
+    "next_human_action": "QC reviews parent DoD",
+    "later_independent_gates": [
+      "release",
+      "business_acceptance"
+    ],
+    "scan_gaps": "RETAINED_PARTIAL_NOT_WAIVED"
   },
   "amendment": {
     "child_release": "not_applicable",
@@ -479,7 +502,7 @@
     "canonical_human_instructions": "closeout-bundle-repeat-cycle-reconciliation.s06.task-breakdown.md#Human-TTY-Receipt-Sealing",
     "status": "AUTHORING_RECEIPTS_COMPLETED_AND_VERIFIED",
     "execution_note": "Original proposed commands are retained for traceability, not as an observed shell transcript or claimed execution order. Actual current receipts and the structured readiness transaction event are authoritative.",
-    "next_action": "QC reviews current parent artifact binding and Technical Verification for the exact source/run/candidate; later parent gates remain independent.",
+    "next_action": "QC reviews current parent DoD for the approved exact-candidate Technical Verification; Release and Business Acceptance remain independent.",
     "checkpoint_dod_command": "/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js gate approve --work-item closeout-bundle-repeat-cycle-reconciliation --gate dod --workflow-root work-items --project-root . --reviewed-by qc --note \"QC approved amended binding for qualified child checkpoint; full AC-RCR-08 parent contribution remains mandatory.\"",
     "checkpoint_dod_command_status": "COMPLETED_HUMAN_TTY_RECEIPT_VERIFIED"
   },
@@ -575,7 +598,7 @@
       "post_commit_rule": "Read-only native getUncommittedDeliveryErrors must return zero errors on actual committed branch bytes; do not modify tracked evidence merely to insert its own commit SHA."
     },
     "protocol_DONE": false,
-    "parent_AC_RCR_08": "EVIDENCE_PREPARED_13_OF_13_PASS_AWAITING_QC",
+    "parent_AC_RCR_08": "TECHNICAL_VERIFICATION_APPROVED_13_OF_13_DOD_PENDING",
     "F_AG11_001": "OPEN",
     "approval_source": "Human accept to the immediately preceding QC amended DoD artifact binding proposal",
     "reviewed_draft_s08_sha256": "e8bfa56df88def12724e289f272b6273005f319bc182d579c87ccd3c16cb8e10",
@@ -597,13 +620,17 @@
       "reason": ""
     },
     "parent_exact_candidate_refresh": {
-      "status": "READY_FOR_QC_BINDING_REVIEW",
+      "status": "TECHNICAL_VERIFICATION_APPROVED_DOD_PENDING",
       "coverage": "AG-01..AG-13 13/13 PASS",
       "node18": "45/45 PASS",
       "node22": "45/45 PASS",
       "workspace_parity": "PASS",
       "backup_directory": "/private/tmp/cf-cr008-runtime-parity-backup.H1ZWX1",
       "candidate_rebuilt": false,
+      "artifact_binding_reviewed_by": "qc",
+      "technical_verification_reviewed_by": "qc",
+      "reviewed_at": "2026-09-15T02:25:27Z",
+      "next_gate": "dod",
       "terminal_gates_inferred": false
     },
     "native_finalized_gate_authority": "PASS_QC",

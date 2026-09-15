@@ -4,7 +4,7 @@
   "artifact_family": "verification-evidence",
   "artifact_role": "supporting",
   "source_of_truth": false,
-  "status": "READY_FOR_PARENT_QC_BINDING_REVIEW",
+  "status": "TECHNICAL_VERIFICATION_APPROVED_DOD_PENDING",
   "observed_at": "2026-09-14T14:34:14Z",
   "work_item_slug": "adaptive-governance-human-approval-ux",
   "change_id": "CR-008",
@@ -17,7 +17,10 @@
     "rollback_version": "v2.6.1",
     "rollback_sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9",
     "reviewed_parent_s08_draft_sha256": "61b41b661aff1dc607a2a1588a5c850a923f9f6e56e19502e55df030b2ef8dba",
-    "evidence_baseline_commit": "24cf1814462435846537298896941c329ef8abb6"
+    "evidence_baseline_commit": "24cf1814462435846537298896941c329ef8abb6",
+    "artifact_binding_reviewed_by": "qc",
+    "artifact_binding_reviewed_at": "2026-09-15T02:25:27Z",
+    "artifact_binding_decision": "APPROVED"
   },
   "child_checkpoint": {
     "status": "APPROVED_VALID_QUALIFIED_TECHNICAL_CHECKPOINT",
@@ -411,12 +414,39 @@
     "child_events_sha256": "75cdb84adae668318af384592fdeccc0a05532a35c199bdd1a2512f36501100c"
   },
   "human_gate_state": {
-    "technical_verification": "NOT_REVIEWED_CURRENT_CANDIDATE",
+    "artifact_binding": "APPROVED_BY_QC",
+    "technical_verification": "APPROVED_BY_QC",
+    "technical_verification_reviewed_at": "2026-09-15T02:25:27Z",
     "dod": "NOT_REVIEWED_CURRENT_CANDIDATE",
     "release": "NOT_REVIEWED_CURRENT_CANDIDATE",
     "business_acceptance": "NOT_REVIEWED_CURRENT_CANDIDATE",
     "historical_receipts": "SIGNATURE_VALID_BUT_DIGEST_STALE_NOT_CURRENT_AUTHORITY"
   },
+  "ordered_human_decisions": [
+    {
+      "order": 1,
+      "decision": "HOSTED_ARTIFACT_BINDING_APPROVED",
+      "reviewed_by": "qc",
+      "recorded_at": "2026-09-15T02:25:27Z",
+      "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+      "run_id": 34802149041,
+      "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "rollback_sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+    },
+    {
+      "order": 2,
+      "decision": "TECHNICAL_VERIFICATION_APPROVED",
+      "reviewed_by": "qc",
+      "recorded_at": "2026-09-15T02:25:27Z",
+      "coverage": "AG-01..AG-13 13/13 PASS",
+      "scan_gaps": "RETAINED_PARTIAL_NOT_WAIVED",
+      "later_gates": [
+        "dod",
+        "release",
+        "business_acceptance"
+      ]
+    }
+  ],
   "release_readiness": {
     "status": "HOLD",
     "publish": false,
@@ -441,5 +471,5 @@
     "unknown_legacy_text_preserved": true,
     "production_source_changed": false
   },
-  "next_action": "QC reviews the current parent artifact binding and Technical Verification for the exact source/run/candidate; DoD, Release and Business Acceptance remain later independent gates."
+  "next_action": "QC reviews parent DoD for the approved exact-candidate Technical Verification; Release and Business Acceptance remain later independent gates."
 }
