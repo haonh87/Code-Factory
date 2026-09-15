@@ -145,15 +145,6 @@
   "delivery_context": "brownfield",
   "workflow_root": "work-items/adaptive-governance-human-approval-ux",
   "current_step": "s08",
-  "delivery_lane_state": {
-    "workflow_status": "WAITING_APPROVAL",
-    "current_step": "s08",
-    "reopened_by": "qc",
-    "reopened_at": "2026-09-09T10:12:13Z",
-    "finding": "F-AG11-001",
-    "protocol_projection_status": "VERIFIED",
-    "projection_note": "Implementation, exact-candidate Technical Verification, DoD, Release and Business Acceptance human decisions are complete. Retain protocol VERIFIED while trusted terminal receipts, F-AG11-001 reconciliation and protocol close remain pending."
-  },
   "granted_write_paths": [
     "policies/codex/AGENTS.global.md",
     "skills/orchestration",
@@ -171,20 +162,40 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "parent-current-terminal-receipt-sealing",
+  "handoff_target": "protocol-close",
   "required_actions": [
-    "Complete the three amended child s04 human reviews and seal fresh independent receipts.",
-    "Refresh and approve the child s05/s06 design and execution plan before resuming implementation.",
-    "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization.",
+    {
+      "kind": "legacy",
+      "text": "Complete the three amended child s04 human reviews and seal fresh independent receipts."
+    },
+    {
+      "kind": "legacy",
+      "text": "Refresh and approve the child s05/s06 design and execution plan before resuming implementation."
+    },
+    {
+      "kind": "legacy",
+      "text": "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
+    },
     {
       "id": "se:6bff872b1ec110f421ab4be71e8a2c08535a5d8a1a0e25b93e50d841486bdfab",
       "kind": "workflow_followup",
       "text": "After this finalized parent s08 metadata is committed, seal trusted DoD, Release and Business Acceptance receipts in a human TTY for the same exact candidate. Then verify all three digests before F-AG11-001 or protocol reconciliation; do not infer publish, tag, merge or cleanup."
+    },
+    {
+      "id": "se:f66a31120c5886068c5ebfe1df5678bb68ba8401843c99c49e88f8f3dacb6452",
+      "kind": "work_item_close",
+      "text": "wfc work-item close --work-item adaptive-governance-human-approval-ux"
     }
   ],
   "blockers": [
-    "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event.",
-    "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending.",
+    {
+      "kind": "legacy",
+      "text": "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."
+    },
+    {
+      "kind": "legacy",
+      "text": "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending."
+    },
     {
       "id": "se:9099dbc3f27490fc6b16a65e265df0a52396886fa1efc32f37b78577d90155e7",
       "kind": "delivery_blocker",
@@ -772,6 +783,15 @@
       "from_status": "VERIFIED",
       "to_status": "VERIFIED",
       "note": "PO explicitly approved current parent Business Acceptance for the exact v2.6.2 source/run/candidate after approved Technical Verification, DoD and Release. Scan gaps remain. No publish, tag, merge or cleanup is inferred; trusted terminal receipts, F-AG11-001 reconciliation and protocol close remain pending."
+    },
+    {
+      "timestamp": "2026-09-15T06:41:47.032Z",
+      "action": "approve-closeout-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "APPROVED closeout gates: dod, release, business_acceptance",
+      "transaction_id": "597aa5f9-1043-447e-b762-b6a7858f1b9c"
     }
   ]
 }
