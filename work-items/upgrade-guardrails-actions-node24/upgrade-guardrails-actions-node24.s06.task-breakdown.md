@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
 governance_status: ALIGNED
@@ -40,10 +40,10 @@ gate_reviews:
   spec_reviewed_at: ""
   dor_reviewed_by: []
   dor_reviewed_at: ""
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  approach_reviewed_by: ["developer"]
+  approach_reviewed_at: "2026-09-15T10:17:29Z"
+  task_plan_reviewed_by: ["developer"]
+  task_plan_reviewed_at: "2026-09-15T10:17:29Z"
   dod_reviewed_by: []
   dod_reviewed_at: ""
 content_skills:
@@ -78,7 +78,9 @@ tags:
 > the full unit suite exposed `F-N24-T4A-001`: two existing release-contract tests still assert the
 > superseded v4 artifact selectors. Amendment T4b adds only those two existing test files and four
 > expectation-token updates; because Approach and Task Plan share this physical s06 host, both need
-> fresh Developer approval and digest-bound receipts before test edits or resume.
+> fresh Developer approval and digest-bound receipts before test edits or resume. Developer and QC
+> approved finding `F-N24-T4A-001`, and Developer approved the unchanged-semantic Approach plus Task
+> Plan amendment T4b at `2026-09-15T10:17:29Z`; trusted receipts and resume remain separate.
 
 ## Main Artifact
 ```yaml
@@ -352,8 +354,8 @@ test_refs: ["CI-N24-V1", "CI-N24-V2", "CI-N24-V3", "CI-N24-V4A", "CI-N24-V4B", "
 
 ## Human Gate Proposal
 ```yaml
-approach: { status: "REVIEW_REQUIRED", reviewer: "developer", reviewed_at: "", host: "s06", semantic_delta: "None; receipt refresh is required because T4b changes the shared host artifact." }
-task_plan: { status: "REVIEW_REQUIRED", reviewer: "developer", reviewed_at: "", host: "s06", amendment: "T4b" }
+approach: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "developer", reviewed_at: "2026-09-15T10:17:29Z", host: "s06", semantic_delta: "None; receipt refresh is required because T4b changes the shared host artifact." }
+task_plan: { status: "HUMAN_APPROVED_PENDING_RECEIPT", reviewer: "developer", reviewed_at: "2026-09-15T10:17:29Z", host: "s06", amendment: "T4b" }
 ready_bundle_reviewers:
   spec: "developer"
   dor: "qc"

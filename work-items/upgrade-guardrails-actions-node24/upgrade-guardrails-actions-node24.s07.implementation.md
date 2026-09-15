@@ -323,9 +323,11 @@ remaining_obligations:
 ## Finding F-N24-T4A-001
 ```yaml
 finding_id: "F-N24-T4A-001"
-status: TASK_PLAN_AMENDMENT_REVIEW_REQUIRED
+status: HUMAN_APPROVED_PENDING_RECEIPTS
 severity: MEDIUM
 detected_at: "2026-09-15T09:59:45Z"
+approved_by: ["developer", "qc"]
+approved_at: "2026-09-15T10:17:29Z"
 production_delta:
   result: PASS
   workflow_sha256: "b72a0cb172d8a11c5d2e96acc6a31bdd9c22b00f48b0a8fd0e643ae0d3ad0f30"
@@ -346,5 +348,5 @@ recommended_amendment:
   task_plan_delta: "Grant the two existing test paths and update only four expectation tokens: two upload v4->v6 and two download v4->v7."
   prohibited_changes: ["new test file", "test logic change", "fixture change", "workflow topology change", "parallelisation"]
   verify: "Rerun the same full unit suite plus existing local and hosted verification paths."
-required_human_action: "Developer approves the unchanged-semantic Approach receipt refresh and Task Plan amendment T4b; then seal fresh approach/task_plan receipts and resume with both test paths."
+required_human_action: "Seal fresh approach/task_plan receipts for the approved s06 host, verify both digests, then resume with both test paths."
 ```
