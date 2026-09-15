@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: approved
+status: draft
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: BLOCKED
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -78,17 +78,21 @@ tags:
 > finding `F-N24-H1` blocks verification pending a human-approved Spec/DoR/Approach/Task Plan amendment.
 > That amendment was approved, sealed, and resumed. The bounded T4a production edit now passes its
 > focused invariant, but the full unit suite exposed `F-N24-T4A-001`: two existing tests lock the old
-> artifact-action majors and are outside the granted roots. Execution is blocked pending T4b.
+> artifact-action majors and are outside the granted roots. T4b was approved, sealed, and resumed;
+> the four expectation-token updates now pass all local checks. Refreshed Spec Compliance is the
+> next gate and Code Quality remains locked behind it.
 
 ## Main Artifact
 ```yaml
 implemented_changes:
   - ".github/workflows/workflow-guardrails.yml: replaced 9 actions/checkout@v4 selectors with @v7."
   - ".github/workflows/workflow-guardrails.yml: replaced 9 actions/setup-node@v4 selectors with @v7."
+  - ".github/workflows/workflow-guardrails.yml: replaced one upload-artifact@v4 with @v6 and one download-artifact@v4 with @v7."
+  - "Two existing release-contract tests: updated exactly two upload expectations to @v6 and two download expectations to @v7."
 doc_changes:
   - "This s07 note records baseline, fail-first, implementation, compatibility, and review evidence."
 operational_notes:
-  - "No trigger, permission, job, needs, runner, timeout, command, Node matrix, input, cache, submodule, credential, artifact, or parallelisation setting changed."
+  - "No trigger, permission, job, needs, runner, timeout, command, Node matrix, action input, cache, submodule, credential, artifact-flow, or parallelisation setting changed."
   - "release-candidate retains fetch-depth: 0."
   - "No release, tag, merge, or publication action was performed."
 ```
@@ -323,7 +327,7 @@ remaining_obligations:
 ## Finding F-N24-T4A-001
 ```yaml
 finding_id: "F-N24-T4A-001"
-status: HUMAN_APPROVED_PENDING_RECEIPTS
+status: IMPLEMENTED_PENDING_SPEC_COMPLIANCE
 severity: MEDIUM
 detected_at: "2026-09-15T09:59:45Z"
 approved_by: ["developer", "qc"]
@@ -341,12 +345,78 @@ red_evidence:
     - "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js"
     - "packages/workflow-bundle/test/release-surface.test.js"
   root_cause: "Both existing release-contract tests still assert upload/download-artifact@v4."
-scope_conflict: "The two test files are not in the T4a granted_write_paths, so they cannot be edited under current authority."
+scope_conflict: "Resolved by approved T4b and explicit resume with both test paths."
 recommended_amendment:
   id: "T4b"
   approach_delta: "None. Preserve the approved action-major choice, artifact flow, and validation design."
   task_plan_delta: "Grant the two existing test paths and update only four expectation tokens: two upload v4->v6 and two download v4->v7."
   prohibited_changes: ["new test file", "test logic change", "fixture change", "workflow topology change", "parallelisation"]
   verify: "Rerun the same full unit suite plus existing local and hosted verification paths."
-required_human_action: "Seal fresh approach/task_plan receipts for the approved s06 host, verify both digests, then resume with both test paths."
+required_human_action: "Developer and QC review refreshed Spec Compliance for the exact T4a/T4b content hashes; Code Quality remains a later gate."
+```
+
+## T4a/T4b Recovery Evidence
+```yaml
+readiness_receipts:
+  s06_sha256: "b8e91fe17e5b2fcc46af6c1c712030a336f2f5f849422ef9008f09290656fa43"
+  approach: { status: APPROVED, digest_match: true, reviewed_by: "developer", reviewed_at: "2026-09-15T10:20:07.994Z" }
+  task_plan: { status: APPROVED, digest_match: true, reviewed_by: "developer", reviewed_at: "2026-09-15T10:20:21.209Z" }
+resume:
+  status: ACTIVE
+  resumed_at: "2026-09-15T10:21:15.722Z"
+  granted_write_paths: 5
+source_artifacts:
+  source_commit: "53bab65030dd925d8f814454b504d12c2dec9505"
+  workflow_sha256: "b72a0cb172d8a11c5d2e96acc6a31bdd9c22b00f48b0a8fd0e643ae0d3ad0f30"
+  release_candidate_test_sha256: "d722e3f2eed474ed298c49cf338c019d4c4154c9384b6b2e0ed77b116e673c91"
+  release_surface_test_sha256: "9a6c0fe2840f2b039c869a96ae32286d47d0838d9e740b1add70f34ee376c45a"
+  source_set_manifest_sha256: "7115db15698953da66881d18335ab48b02b4f9102d46e5b2b29a9d3283d5983a"
+  implementation_diff_sha256: "4852365ded7042836b4327e3506bdae04e5747200c83c3545afe3df12c9ddedc"
+scope_proof:
+  workflow: { additions: 2, deletions: 2, semantic_delta: "Only upload v4->v6 and download v4->v7." }
+  release_candidate_test: { additions: 2, deletions: 2, semantic_delta: "Only two action-major expectation tokens." }
+  release_surface_test: { additions: 2, deletions: 2, semantic_delta: "Only two action-major expectation tokens." }
+  normalized_head_sha256: "85a3e531510b5752fe33da3a0181b257040dd707a42ef60e0f350229fcf9ff58"
+  normalized_worktree_sha256: "85a3e531510b5752fe33da3a0181b257040dd707a42ef60e0f350229fcf9ff58"
+  normalized_equal: true
+invariants:
+  jobs: 9
+  checkout_v7: 9
+  setup_node_v7: 9
+  upload_artifact_v6: 1
+  download_artifact_v7: 1
+  artifact_v4: 0
+  fetch_depth_zero: 1
+checks:
+  - { check: "T4b full-suite RED before test rebind", result: "EXPECTED FAIL in exactly 2 test files" }
+  - { check: "validate:workflow:unit after test rebind", result: "PASS (45 test files)" }
+  - { check: "validate:workflow:pack-audit", result: PASS }
+  - { check: "validate:workflow:authoring-smoke", result: "PASS (13 cases)" }
+  - { check: "scoped governance/SDD/planning/execution", result: PASS }
+  - { check: "all-work-item protocol validation", result: "PASS (13 managed, 16 legacy skipped)" }
+  - { check: "js-yaml, exact counts, normalized fingerprint, git diff --check", result: PASS }
+  - { check: "UTF-8 for all changed text files", result: PASS }
+  - { check: "actionlint", result: SKIPPED, reason: "Not installed; js-yaml plus exact hosted run remain the validation path." }
+hosted_verification: "PENDING after refreshed two-tier review and pushed exact source commit"
+```
+
+## Refreshed Two-Tier Review Handoff
+```yaml
+review_order: ["Spec Compliance", "Code Quality"]
+spec_compliance:
+  proposed_verdict: PASS
+  human_verdict: PENDING
+  reviewers: ["developer", "qc"]
+  source_commit: "53bab65030dd925d8f814454b504d12c2dec9505"
+  source_set_manifest_sha256: "7115db15698953da66881d18335ab48b02b4f9102d46e5b2b29a9d3283d5983a"
+  workflow_sha256: "b72a0cb172d8a11c5d2e96acc6a31bdd9c22b00f48b0a8fd0e643ae0d3ad0f30"
+  evidence:
+    - "AC-01/02: all nine checkout and setup-node selectors remain on approved v7 majors."
+    - "AC-03/05: normalized workflow is byte-identical; nine-job topology and release-candidate fetch-depth: 0 are unchanged."
+    - "AC-04/06 source preconditions: exactly one upload@v6, one download@v7, zero artifact v4, and unchanged inputs/order."
+    - "T4b is exactly four expectation-token changes in the two approved existing tests; no test logic or coverage drift."
+  pending: "Hosted zero-annotation evidence remains T4/s08 work and does not weaken the s07 source-scope verdict."
+code_quality:
+  status: BLOCKED_UNTIL_SPEC_COMPLIANCE_PASS
+  proposed_verdict: NOT_OPEN
 ```

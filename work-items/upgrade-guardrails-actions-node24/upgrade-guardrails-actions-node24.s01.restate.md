@@ -254,7 +254,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: BLOCKED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "upgrade-guardrails-actions-node24"
@@ -266,6 +266,8 @@ granted_write_paths:
   - ".github/workflows/workflow-guardrails.yml"
   - "work-items/upgrade-guardrails-actions-node24"
   - "product-specs/cards/upgrade-guardrails-actions-node24.md"
+  - "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js"
+  - "packages/workflow-bundle/test/release-surface.test.js"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -277,13 +279,12 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-11T08:20:11.412Z"
-handoff_target: "developer-qc-review-t4b"
-last_transition_action: "block"
-last_transition_at: "2026-09-15T09:59:45.552Z"
+handoff_target: "step-s07-t4b-owner"
+last_transition_action: "resume"
+last_transition_at: "2026-09-15T10:21:15.722Z"
 required_actions:
-  - {"id":"se:cb6c94e2cd9962c48052a22d0fd2861d67320173553c30085b95fbd2fffa6a6a","kind":"workflow_followup","text":"Resolve blockers before resuming the work item."}
-blockers:
-  - {"id":"se:85ebc8cd4ff42d2ca3b37a28f6ff6b15112cbc4f809f35f55c098cc699549690","kind":"delivery_blocker","text":"F-N24-T4A-001: existing release-candidate smoke and release-surface tests still assert upload/download-artifact@v4; their two test files are outside the approved write roots, so the full unit suite cannot pass until a bounded Task Plan amendment authorizes those expectation updates."}
+  - {"id":"se:1690cc592156372c298a3dae01726b118dfee7bcee02865a524e5dfb89d23fa1","kind":"workflow_followup","text":"Continue active execution from the current step."}
+blockers: []
 review_notes:
   - "PO approved the Node 24 guardrails action upgrade; later gates remain independent."
   - "Trusted PO work-item receipt recorded at 2026-09-11T08:20:11.420Z verifies APPROVED for this project root."
@@ -293,6 +294,7 @@ review_notes:
   - "Human Developer/QC approved F-N24-H1 and readiness rework; Developer approved Option A Task Plan amendment T4a and the Spec Card authoring path at 2026-09-15T09:14:23Z. Amended gate approvals and production edits remain separate."
   - "Human Developer approved amended Spec v0.2, Approach, and Task Plan T4a; human QC approved amended DoR at 2026-09-15T09:27:44Z. Fresh receipt sealing and resume remain separate."
   - "Human Developer/QC approved F-N24-T4A-001; Developer approved the unchanged-semantic Approach and Task Plan amendment T4b at 2026-09-15T10:17:29Z. Fresh s06 receipts and resume remain separate."
+  - "Fresh T4b Approach and Task Plan receipts match s06 SHA-256 b8e91fe17e5b2fcc46af6c1c712030a336f2f5f849422ef9008f09290656fa43; the work item resumed at 2026-09-15T10:21:15.722Z with all five approved write roots."
 refs:
   - "work-items/upgrade-guardrails-actions-node24"
 audit_events:
@@ -315,6 +317,7 @@ audit_events:
   - "AMENDED_READINESS_GATES_HUMAN_APPROVED_PENDING_RECEIPTS"
   - "WORK_ITEM_RESUMED"
   - "F_N24_T4A_001_AND_T4B_HUMAN_APPROVED_PENDING_RECEIPTS"
+  - "T4B_READINESS_RECEIPTS_VERIFIED_AND_RESUMED"
 ```
 
 ## Audit
