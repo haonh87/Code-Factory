@@ -71,8 +71,8 @@ function assertRuntimeContract(root, label) {
 function assertGuardrailsExactCandidateFlow() {
   const workflow = fs.readFileSync(guardrailsPath, "utf8");
   assert(/^  release-candidate-build:\s*$/m.test(workflow), "Guardrails must build one named release candidate before the Node matrix");
-  assert(/uses:\s*actions\/upload-artifact@v4/.test(workflow), "Guardrails must upload the exact candidate artifact once");
-  assert(/uses:\s*actions\/download-artifact@v4/.test(workflow), "Node verification jobs must download the same candidate artifact");
+  assert(/uses:\s*actions\/upload-artifact@v6/.test(workflow), "Guardrails must upload the exact candidate artifact once");
+  assert(/uses:\s*actions\/download-artifact@v7/.test(workflow), "Node verification jobs must download the same candidate artifact");
   assert(/WORKFLOW_BUNDLE_CANDIDATE_TARBALL/.test(workflow), "exact candidate path must be passed to artifact smoke");
   assert(/WORKFLOW_BUNDLE_CANDIDATE_SHA256/.test(workflow), "build-time candidate digest must be passed to artifact smoke");
   assert((workflow.match(/npm pack/g) || []).length === 1, "Guardrails must pack once and never rebuild per Node version");

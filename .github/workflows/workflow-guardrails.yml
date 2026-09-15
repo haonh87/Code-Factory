@@ -205,7 +205,7 @@ jobs:
           sha256sum "${tarballs[0]}" > "$candidate_dir/workflow-bundle.sha256"
 
       - name: Upload immutable candidate and digest
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: workflow-bundle-candidate
           path: ${{ runner.temp }}/workflow-bundle-candidate/
@@ -242,7 +242,7 @@ jobs:
           npm --version
 
       - name: Download the exact candidate built once
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: workflow-bundle-candidate
           path: ${{ runner.temp }}/workflow-bundle-candidate
