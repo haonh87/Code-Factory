@@ -719,18 +719,18 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "parent-current-Release-DevOps-QC-review"
-last_transition_action: "record-parent-current-dod-human-decision-approved"
-last_transition_at: "2026-09-15T02:52:30Z"
+handoff_target: "parent-current-Business-Acceptance-PO-review"
+last_transition_action: "record-parent-current-release-human-decision-approved"
+last_transition_at: "2026-09-15T06:04:23Z"
 required_actions:
   - {"kind":"legacy","text":"Complete the three amended child s04 human reviews and seal fresh independent receipts."}
   - {"kind":"legacy","text":"Refresh and approve the child s05/s06 design and execution plan before resuming implementation."}
   - {"kind":"legacy","text":"Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."}
-  - {"id":"se:6bff872b1ec110f421ab4be71e8a2c08535a5d8a1a0e25b93e50d841486bdfab","kind":"workflow_followup","text":"DevOps and QC review current parent Release for source af70276fe14317417365c06dd06186da1996c401, run 34802149041 and candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f after approved Technical Verification and DoD; Business Acceptance remains a later independent gate."}
+  - {"id":"se:6bff872b1ec110f421ab4be71e8a2c08535a5d8a1a0e25b93e50d841486bdfab","kind":"workflow_followup","text":"PO reviews current parent Business Acceptance for v2.6.2, source af70276fe14317417365c06dd06186da1996c401, run 34802149041 and candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f after approved Technical Verification, DoD and Release; preserve scan gaps and do not infer publish, tag or closeout."}
 blockers:
   - {"kind":"legacy","text":"F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."}
   - {"kind":"legacy","text":"Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending."}
-  - {"id":"se:9099dbc3f27490fc6b16a65e265df0a52396886fa1efc32f37b78577d90155e7","kind":"delivery_blocker","text":"Parent hosted artifact binding, Technical Verification and the DoD human decision are approved by QC with AG-01..AG-13 at 13/13 PASS for the exact candidate. DevOps/QC Release and PO Business Acceptance remain pending; no closeout, Release or branch finalization is authorized."}
+  - {"id":"se:9099dbc3f27490fc6b16a65e265df0a52396886fa1efc32f37b78577d90155e7","kind":"delivery_blocker","text":"Parent hosted artifact binding, Technical Verification and DoD are approved by QC, and Release is approved by DevOps/QC, with AG-01..AG-13 at 13/13 PASS for the exact candidate. PO Business Acceptance and final receipts remain pending; no closeout, publication, tag or branch finalization is authorized."}
 review_notes:
   - "Human review approved."
   - "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local verification matrix and hosted Guardrails run 34322150024."
@@ -867,6 +867,7 @@ audit_events:
   - "PARENT_CURRENT_HOSTED_ARTIFACT_BINDING_APPROVED"
   - "PARENT_CURRENT_TECHNICAL_VERIFICATION_APPROVED"
   - "PARENT_CURRENT_DOD_HUMAN_DECISION_APPROVED"
+  - "PARENT_CURRENT_RELEASE_HUMAN_DECISION_APPROVED"
 ```
 
 ## Current Governance Router Status

@@ -3,7 +3,7 @@
   "artifact_family": "review-packet",
   "artifact_role": "supporting",
   "source_of_truth": false,
-  "status": "QUALIFIED_CHILD_CHECKPOINT_VALID_PARENT_DOD_HUMAN_APPROVED_RELEASE_PENDING",
+  "status": "QUALIFIED_CHILD_CHECKPOINT_VALID_PARENT_RELEASE_HUMAN_APPROVED_BUSINESS_ACCEPTANCE_PENDING",
   "amendment_id": "RCR-TS8-CP-001",
   "canonical_scope_decision": "closeout-bundle-repeat-cycle-reconciliation.s03.open-questions.md#Checkpoint-Scope-Amendment",
   "authority": {
@@ -25,7 +25,8 @@
     "parent_artifact_binding": "APPROVED_BY_QC",
     "parent_technical_verification": "APPROVED_BY_QC",
     "parent_dod": "HUMAN_APPROVED_BY_QC_RECEIPT_PENDING_FINAL_HOST",
-    "parent_terminal_gates": "RELEASE_BUSINESS_ACCEPTANCE_PENDING",
+    "parent_release": "HUMAN_APPROVED_BY_DEVOPS_AND_QC_RECEIPT_PENDING_FINAL_HOST",
+    "parent_terminal_gates": "BUSINESS_ACCEPTANCE_PENDING",
     "F_AG11_001": "OPEN",
     "protocol_DONE": false,
     "amended_dod_binding_recorded_at": "2026-09-14T13:51:10Z"
@@ -65,6 +66,34 @@
     "trusted_parent_dod_receipt": "MISSING_PENDING_FINAL_SHARED_S08_HOST",
     "next_human_action": "DevOps and QC review parent Release",
     "later_independent_gate": "business_acceptance",
+    "scan_gaps": "RETAINED_PARTIAL_NOT_WAIVED"
+  },
+  "parent_release_transition": {
+    "recorded_at": "2026-09-15T06:04:23Z",
+    "workflow_status": "WAITING_APPROVAL",
+    "current_step": "s08",
+    "decision": "RELEASE_HUMAN_DECISION_APPROVED",
+    "reviewed_by": [
+      "devops",
+      "qc"
+    ],
+    "version": "v2.6.2",
+    "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "run_id": 34802149041,
+    "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+    "rollback_version": "v2.6.1",
+    "rollback_sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9",
+    "reviewed_parent_s08_draft_sha256": "e8e2245f8b640aca6a7101c619a430b1d5f87eac64d87d4dae4ec8a22d608e8d",
+    "parent_protocol_events_before": 52,
+    "parent_protocol_events_after": 53,
+    "parent_preserved_event_prefix_sha256": "154c9c38f14446738868f328d40126a640cc8e304873b605d964f724681fe645",
+    "child_protocol_events_before": 90,
+    "child_protocol_events_after": 91,
+    "child_preserved_event_prefix_sha256": "8ac9866176bb144432dddf2586562652795c89df0c86204307e8921e8b354c10",
+    "trusted_parent_release_receipt": "MISSING_PENDING_FINAL_SHARED_S08_HOST",
+    "publish": false,
+    "tag": false,
+    "next_human_action": "PO reviews parent Business Acceptance",
     "scan_gaps": "RETAINED_PARTIAL_NOT_WAIVED"
   },
   "amendment": {
@@ -327,7 +356,7 @@
     "legacy_text_not_cleared": true,
     "ordinary_event_omits_transaction_id": true,
     "router_status": "WAITING_APPROVAL",
-    "router_current_step": "s08 parent exact-candidate QC binding review",
+    "router_current_step": "s08 parent Business Acceptance PO review",
     "lifecycle_reopen": false,
     "events_before_this_record": 87,
     "previous_82_events_preserved": true,
@@ -345,7 +374,7 @@
     "COMPLETED: explicit human QC amended whole-s08 artifact binding approval only; original qualified DoD/Technical Verification decisions preserved",
     "COMPLETED: committed owned child evidence, native clean-scope guard passed, and independent QC trusted checkpoint DoD receipt is APPROVED/signature-valid/digest-current",
     "Valid child technical checkpoint -> full same-candidate parent AG-01..AG-13 at 13/13; no repack, historical approval substitution or premature child protocol DONE",
-    "New independent parent QC Technical Verification/DoD, DevOps/QC Release and PO Business Acceptance; keep final child contribution and bindings current",
+    "COMPLETED: independent parent QC Technical Verification/DoD and DevOps/QC Release for the exact candidate; PO Business Acceptance remains pending",
     "Reconcile final child/parent protocol, F-AG11-001 and CR-008 ledgers only with full current evidence; publication/tag/merge/install/cleanup remain separately authorized"
   ],
   "signing_notes": "Five actual authoring receipts are already valid; do not request or repeat those approvals/commands. Signed s04/s05/s06 hosts remain immutable. QC must separately review the amended whole-s08 DoD artifact binding, preserving the original qualified child decision. Finalize/hash and commit owned evidence before human-TTY checkpoint DoD signing. No private-key/passphrase access, non-interactive fixture, uncommitted waiver or CR-008 completion is authorized.",
@@ -519,7 +548,7 @@
     "canonical_human_instructions": "closeout-bundle-repeat-cycle-reconciliation.s06.task-breakdown.md#Human-TTY-Receipt-Sealing",
     "status": "AUTHORING_RECEIPTS_COMPLETED_AND_VERIFIED",
     "execution_note": "Original proposed commands are retained for traceability, not as an observed shell transcript or claimed execution order. Actual current receipts and the structured readiness transaction event are authoritative.",
-    "next_action": "DevOps and QC review current parent Release after the approved DoD human decision; Business Acceptance remains independent.",
+    "next_action": "PO reviews current parent Business Acceptance after the approved Technical Verification, DoD and Release decisions; no publication or tag is inferred.",
     "checkpoint_dod_command": "/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js gate approve --work-item closeout-bundle-repeat-cycle-reconciliation --gate dod --workflow-root work-items --project-root . --reviewed-by qc --note \"QC approved amended binding for qualified child checkpoint; full AC-RCR-08 parent contribution remains mandatory.\"",
     "checkpoint_dod_command_status": "COMPLETED_HUMAN_TTY_RECEIPT_VERIFIED"
   },
@@ -615,7 +644,7 @@
       "post_commit_rule": "Read-only native getUncommittedDeliveryErrors must return zero errors on actual committed branch bytes; do not modify tracked evidence merely to insert its own commit SHA."
     },
     "protocol_DONE": false,
-    "parent_AC_RCR_08": "DOD_HUMAN_APPROVED_13_OF_13_RELEASE_PENDING",
+    "parent_AC_RCR_08": "RELEASE_HUMAN_APPROVED_13_OF_13_BUSINESS_ACCEPTANCE_PENDING",
     "F_AG11_001": "OPEN",
     "approval_source": "Human accept to the immediately preceding QC amended DoD artifact binding proposal",
     "reviewed_draft_s08_sha256": "e8bfa56df88def12724e289f272b6273005f319bc182d579c87ccd3c16cb8e10",
@@ -637,7 +666,7 @@
       "reason": ""
     },
     "parent_exact_candidate_refresh": {
-      "status": "DOD_HUMAN_APPROVED_RELEASE_PENDING",
+      "status": "RELEASE_HUMAN_APPROVED_BUSINESS_ACCEPTANCE_PENDING",
       "coverage": "AG-01..AG-13 13/13 PASS",
       "node18": "45/45 PASS",
       "node22": "45/45 PASS",
@@ -650,7 +679,15 @@
       "dod_reviewed_by": "qc",
       "dod_reviewed_at": "2026-09-15T02:52:30Z",
       "trusted_dod_receipt": "MISSING_PENDING_FINAL_SHARED_S08_HOST",
-      "next_gate": "release",
+      "release_reviewed_by": [
+        "devops",
+        "qc"
+      ],
+      "release_reviewed_at": "2026-09-15T06:04:23Z",
+      "trusted_release_receipt": "MISSING_PENDING_FINAL_SHARED_S08_HOST",
+      "publish": false,
+      "tag": false,
+      "next_gate": "business_acceptance",
       "terminal_gates_inferred": false
     },
     "native_finalized_gate_authority": "PASS_QC",

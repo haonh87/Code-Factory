@@ -1,13 +1,13 @@
 {
   "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
   "task": "TS8",
-  "status": "QUALIFIED_CHILD_CHECKPOINT_VALID_PARENT_DOD_HUMAN_APPROVED_RELEASE_PENDING",
+  "status": "QUALIFIED_CHILD_CHECKPOINT_VALID_PARENT_RELEASE_HUMAN_APPROVED_BUSINESS_ACCEPTANCE_PENDING",
   "checkpoint_amendment": {
     "id": "RCR-TS8-CP-001",
     "scope_decision": "APPROVED_OPTION_B",
     "review_packet": "rcr-ts8-checkpoint-amendment.json",
-    "snapshot_rule": "Historical test, frozen receipt and original QC observations remain source-bound evidence. Five actual fresh authoring receipts and the child checkpoint DoD receipt remain signature-valid, approved and current. Parent hosted artifact binding, Technical Verification and DoD human decision are approved by QC; parent Release and Business Acceptance remain pending. Original qualified QC decisions, scan gaps and package identities are unchanged.",
-    "parent_AC_RCR_08": "DOD_HUMAN_APPROVED_13_OF_13_RELEASE_PENDING",
+    "snapshot_rule": "Historical test, frozen receipt and original QC observations remain source-bound evidence. Five actual fresh authoring receipts and the child checkpoint DoD receipt remain signature-valid, approved and current. Parent hosted artifact binding, Technical Verification and DoD are approved by QC; parent Release is approved by DevOps/QC and PO Business Acceptance remains pending. No publish or tag occurred. Original qualified QC decisions, scan gaps and package identities are unchanged.",
+    "parent_AC_RCR_08": "RELEASE_HUMAN_APPROVED_13_OF_13_BUSINESS_ACCEPTANCE_PENDING",
     "protocol_done": false,
     "authoring_gate_decision": "HUMAN_APPROVED_AND_FIVE_TRUSTED_RECEIPTS_VALID",
     "authoring_recorded_at": "2026-09-14T13:33:15Z",
@@ -83,7 +83,7 @@
     "amended_dod_binding_recorded_at": "2026-09-14T13:51:10Z",
     "finalized_s08_sha256": "e3159a438678242069c8045058b3d1c1664fa6451207a37cec123cfb8736af2e",
     "reviewed_draft_s08_sha256": "e8bfa56df88def12724e289f272b6273005f319bc182d579c87ccd3c16cb8e10",
-    "next_action": "Commit approved owned child evidence, then human-TTY seal the single qualified checkpoint DoD receipt without an uncommitted waiver. Full AC-RCR-08 parent13/13 and new independent terminal gates remain mandatory.",
+    "next_action": "PO reviews parent Business Acceptance for the exact Release-approved candidate. Final shared-host receipts, F-AG11-001 reconciliation and protocol close remain mandatory; do not publish or tag.",
     "trusted_checkpoint_dod_receipt": "APPROVED_VALID_CURRENT",
     "actual_checkpoint_dod_receipt": {
       "status": "APPROVED",
@@ -1762,7 +1762,7 @@
       "Native transient-read refusal and linear history cost are retained advisories"
     ],
     "final_recommendation": "HOLD_OPEN",
-    "notes_for_closeout": "QC child Technical Verification and DoD human decision approved; trusted DoD receipt pending at shared-host boundary. Mandatory parent F-AG11-001 OPEN; required later terminal reviews still unapproved. HOLD_OPEN, no merge/cleanup/publication authority."
+    "notes_for_closeout": "Qualified child receipt is current; parent Technical Verification, DoD and Release decisions are approved. PO Business Acceptance, final shared-host receipts and F-AG11-001 reconciliation remain pending. HOLD_OPEN, no merge/cleanup/publication authority."
   },
   "authority": {
     "protocol_status": "VERIFIED",
@@ -1770,7 +1770,7 @@
     "s08": "QUALIFIED_CHILD_DOD_RECEIPT_VALID",
     "technical_verification": "APPROVED",
     "dod": "HUMAN_APPROVED_TRUSTED_RECEIPT_VALID",
-    "release": "NOT_APPROVED",
+    "release": "PARENT_HUMAN_APPROVED_BY_DEVOPS_AND_QC_RECEIPT_PENDING_FINAL_HOST",
     "business_acceptance": "NOT_APPROVED",
     "F_RCR_SB3_001": "RESOLVED",
     "F_AG11_001": "OPEN",
@@ -1778,23 +1778,28 @@
     "tag": false,
     "merge": false,
     "cleanup": false,
-    "next_human_action": "DevOps and QC review current parent Release after the approved DoD human decision; Business Acceptance remains a later independent gate.",
+    "next_human_action": "PO reviews current parent Business Acceptance for the exact Release-approved candidate; publication and tagging remain unauthorized.",
     "hosted_artifact_binding": "APPROVED",
     "dod_reviewed_by": [
       "qc"
     ],
     "dod_reviewed_at": "2026-09-14T07:35:25.955Z",
     "dod_trusted_receipt": "APPROVED_VALID_CURRENT",
-    "workflow_status": "WAITING_PARENT_RELEASE_APPROVAL"
+    "release_reviewed_by": [
+      "devops",
+      "qc"
+    ],
+    "release_reviewed_at": "2026-09-15T06:04:23Z",
+    "workflow_status": "WAITING_PARENT_BUSINESS_ACCEPTANCE"
   },
   "rollback": {
     "version": "v2.6.1",
     "sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
   },
-  "mandatory_parent_contribution": "AC-RCR-08 parent hosted binding, Technical Verification and DoD human decision are approved; parent Release and Business Acceptance remain mandatory.",
+  "mandatory_parent_contribution": "AC-RCR-08 parent hosted binding, Technical Verification, DoD and Release human decisions are approved; PO Business Acceptance and final trusted receipts remain mandatory.",
   "parent_exact_candidate_refresh": {
     "packet": "../adaptive-governance-human-approval-ux/rcr-parent-exact-candidate-evidence.json",
-    "status": "DOD_HUMAN_APPROVED_RELEASE_PENDING",
+    "status": "RELEASE_HUMAN_APPROVED_BUSINESS_ACCEPTANCE_PENDING",
     "observed_at": "2026-09-15T02:06:06.548Z",
     "coverage": {
       "pass": 13,
@@ -1815,15 +1820,32 @@
       "artifact_binding": "APPROVED_BY_QC",
       "technical_verification": "APPROVED_BY_QC",
       "dod": "HUMAN_APPROVED_BY_QC_RECEIPT_PENDING_FINAL_HOST",
-      "release": "NOT_REVIEWED_CURRENT_CANDIDATE",
+      "release": "HUMAN_APPROVED_BY_DEVOPS_AND_QC_RECEIPT_PENDING_FINAL_HOST",
       "business_acceptance": "NOT_REVIEWED_CURRENT_CANDIDATE"
     },
-    "reviewed_at": "2026-09-15T02:52:30Z",
+    "reviewed_at": "2026-09-15T06:04:23Z",
     "decision_order": [
       "HOSTED_ARTIFACT_BINDING_APPROVED",
       "TECHNICAL_VERIFICATION_APPROVED",
-      "DOD_HUMAN_DECISION_APPROVED"
+      "DOD_HUMAN_DECISION_APPROVED",
+      "RELEASE_HUMAN_DECISION_APPROVED"
     ],
+    "release_decision": {
+      "version": "v2.6.2",
+      "reviewed_by": [
+        "devops",
+        "qc"
+      ],
+      "reviewed_at": "2026-09-15T06:04:23Z",
+      "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+      "run_id": 34802149041,
+      "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "rollback_version": "v2.6.1",
+      "rollback_sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9",
+      "publish": false,
+      "tag": false,
+      "trusted_receipt": "MISSING_PENDING_FINAL_SHARED_S08_HOST"
+    },
     "scan_gaps": "RETAINED_PARTIAL_NOT_WAIVED"
   },
   "pipeline": {
@@ -1874,7 +1896,7 @@
       "QC amended hosted identity binding explicitly APPROVED at 2026-09-14T03:40:31.291Z for af70276fe14317417365c06dd06186da1996c401 / 34802149041 / af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
       "QC approved opening TS8/s08 at 2026-09-14T02:45:55Z only",
       "QC Technical Verification explicitly APPROVED at 2026-09-14T07:26:16.002Z; QC child DoD human decision explicitly APPROVED at 2026-09-14T07:35:25.955Z; trusted receipt MISSING at shared draft s08-host boundary",
-      "Parent AG01..13 and DevOps/QC Release then PO acceptance independent"
+      "Parent AG01..13, QC DoD and DevOps/QC Release approved; PO acceptance remains independent"
     ],
     "release_controls": {
       "pre_release": [
@@ -1896,7 +1918,7 @@
       "CI action Node24 upgrade and validator parallelisation remain separate scopes"
     ],
     "pipeline_recommendation": "READY_WITH_GUARDS",
-    "notes_for_implementation_or_ops": "QC binding, Technical Verification and child DoD human decision approved for exact candidate. Trusted child DoD receipt remains pending at the shared-host boundary; parent exact-candidate verification and independent terminal decisions remain mandatory. No rebuild/CI edit/publish/promotion or parent finding closure."
+    "notes_for_implementation_or_ops": "Parent exact-candidate binding, Technical Verification, DoD and DevOps/QC Release decisions are approved. PO Business Acceptance and final parent shared-host receipts remain mandatory. No rebuild, CI edit, publish, tag, promotion or parent finding closure."
   },
   "local_execution": {
     "status": "PASS_REQUIRED_LOCAL_CHECKS",
