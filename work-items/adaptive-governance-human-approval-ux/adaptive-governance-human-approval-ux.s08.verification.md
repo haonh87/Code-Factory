@@ -104,34 +104,14 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> **INVALIDATED BY F-AG11-001 (2026-09-09):** the repeated parent closeout at
-> `2026-09-09T09:57:16.873Z` sealed digest-valid terminal receipts but did not reconcile the
-> current report/protocol navigation or append a current-cycle event. QC reopened the s07 delivery
-> lane and recorded `F-AG11-001` as HIGH. The linked defect
-> `closeout-bundle-repeat-cycle-reconciliation` has human-approved OQ-RCR-001=B,
-> OQ-RCR-002=A, and OQ-RCR-003=A. Its BA Spec and QC DoR receipts both match finalized s04,
-> and its Developer-approved transaction-delta s05 Approach receipt matches finalized s05. Its s06
-> Task Plan is Developer-approved and awaits its trusted receipt. Everything below that
-> declares PASS/DONE/APPROVED for the previous parent candidate is
-> retained as historical pre-finding evidence and does not authorize release or closeout.
+> **CURRENT STATUS — READY FOR PARENT QC REVIEW.** The qualified child checkpoint receipt is
+> signature-valid and current. For source `af70276…`, hosted run `34802149041`, candidate
+> `af49a958…c6c13f` and rollback `7c1d2c7…f0b9`, AG-01..AG-13 now have 13/13 PASS evidence.
+> Parent Technical Verification, DoD, Release and Business Acceptance remain independent,
+> unapproved gates. F-AG11-001 and CR-008 remain open; branch/worktree stays `HOLD_OPEN`.
 >
-> **PARENT RE-VERIFICATION READY (2026-09-09):** linked defects
-> `closeout-bundle-legacy-dod-compatibility` and `align-adaptive-sa-ta-applicability` are both `DONE`.
-> Source `38bb0d178aa994e2a7c6e841b58b3e6b4263c56d` passed the complete local verification matrix and
-> hosted Guardrails run `34322150024`; all nine required jobs passed, including one build-once
-> candidate verified on Node 18 and Node 22. The downloaded hosted `v2.6.2` candidate has SHA-256
-> `2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5`, matches its supplied
-> checksum, has byte-identical extracted payload to the local pre-host candidate `ebfb5ffb…`, and
-> passes Codex/Claude global/project smoke 4/4. F-AG08-001 is resolved and AG-01..AG-13 are 13/13 PASS.
-> Prior Technical Verification, DoD, Release, and Business Acceptance decisions for `8ddcb719…` are
-> retained as historical evidence only. QC approved the exact current hosted binding at
-> `2026-09-09T08:06:32Z`, then approved Technical Verification at `2026-09-09T08:13:53Z` against
-> AG-01..AG-13 at 13/13 PASS. QC separately approved DoD at `2026-09-09T08:19:40Z` for the same
-> binding. DevOps and QC approved Release at `2026-09-09T08:47:09Z` for the exact current candidate
-> and immutable v2.6.1 rollback. PO approved Business Acceptance at `2026-09-09T09:00:31Z` for
-> the same exact candidate. All applicable terminal decisions are now explicitly human-approved;
-> the finalized s08 artifact is ready for atomic trusted-receipt sealing.
-> Branch/worktree remains `HOLD_OPEN`; no merge, tag creation, GitHub Release publication, or global install occurred.
+> Earlier source/candidate decisions are retained only in headings marked
+> `Historical Pre-Finding`; they do not authorize current closeout or Release.
 
 ## Step Contract
 ```yaml
@@ -283,7 +263,7 @@ linked_work_item:
 next_human_action: "NONE until child B3 Spec Compliance is ready after T7."
 ```
 
-## Main Artifact
+## Historical Pre-Finding Main Artifact
 ```yaml
 verification_target: "CR-008 adaptive governance and exact workflow-bundle v2.6.2 candidate"
 risk_ranked_test_matrix:
@@ -470,7 +450,7 @@ human_decision:
 release_effect: "Technical artifact binding is resolved; proceed to the separate DevOps/QC Release gate."
 ```
 
-## Parent Re-verification Candidate
+## Historical Pre-Finding Parent Re-verification Candidate
 ```yaml
 status: APPROVED
 prepared_at: "2026-09-09T07:16:45Z"
@@ -515,7 +495,7 @@ operational_warnings:
 next_action: "Seal the trusted closeout receipt bundle against this finalized s08 host."
 ```
 
-## Current Technical Verification Decision
+## Historical Pre-Finding Technical Verification Decision
 ```yaml
 status: HISTORICAL_PRE_FINDING
 reviewed_by: "qc"
@@ -533,7 +513,7 @@ authority_effect: "F-AG11-001 invalidates this decision for current release auth
 next_action: "Verify a corrected candidate only after the linked defect passes its delivery gates."
 ```
 
-## Governance Checks
+## Historical Pre-Finding Governance Checks
 ```yaml
 checklist_applied: ["project-context/checklists/default.md", "project-context/checklists/strict.md"]
 checks:
@@ -550,7 +530,7 @@ owner: "qc/devops/po"
 next_action: "Approve and deliver the linked defect before creating a corrected verification candidate."
 ```
 
-## Regression & Compatibility Summary
+## Historical Pre-Finding Regression & Compatibility Summary
 ```yaml
 regression_status: FAIL
 compatibility_status: PASS
@@ -565,7 +545,7 @@ evidence:
 known_baseline_gap: "Unchanged github-push MCP fixture uses a Windows-only D:\\ path on macOS; MCP diff is empty."
 ```
 
-## Spec Coverage
+## Historical Pre-Finding Spec Coverage
 ```yaml
 spec_refs: ["changes/CR-008/spec-delta/brd.delta.md", "changes/CR-008/spec-delta/srs.delta.md"]
 coverage:
@@ -618,7 +598,7 @@ summary:
 gaps: []
 ```
 
-## Scan Summary
+## Historical Pre-Finding Scan Summary
 ```yaml
 scan_target: "CR-008 JavaScript, policy and release diff"
 scan_scope:
@@ -684,7 +664,7 @@ reviewers: []
 notes: ["Controlled kernel runs and Business Acceptance replace a separate UAT gate for CR-008."]
 ```
 
-## Release Summary
+## Historical Pre-Finding Release Summary
 ```yaml
 status: BLOCKED
 reviewers: ["devops", "qc"]
@@ -713,7 +693,7 @@ notes:
   - "This record captures the Release gate decision; it does not treat gate approval as an implicit external publication command."
 ```
 
-## Business Acceptance Summary
+## Historical Pre-Finding Business Acceptance Summary
 ```yaml
 status: HISTORICAL_PRE_FINDING
 reviewers: ["po"]
@@ -732,7 +712,7 @@ pending_controls: ["Complete the linked defect and repeat Business Acceptance af
 notes: ["The PO decision is explicit and distinct from Technical Verification and Release approval.", "No publication or tag operation is inferred from this acceptance record."]
 ```
 
-## Deployment Review
+## Historical Pre-Finding Deployment Review
 ```yaml
 pipeline_scope: "GitHub Actions build-once verification and GitHub Release promotion for v2.6.2"
 source_strategy:
@@ -780,7 +760,7 @@ waivers: []
 notes: "Unavailable scan tools and unchanged MCP fixture are limitations, not governance exceptions."
 ```
 
-## Audit
+## Historical Pre-Finding Audit
 
 ### Step Goal Audit
 ```yaml
@@ -820,7 +800,7 @@ final_recommendation: HOLD_OPEN
 notes_for_closeout: "F-AG11-001 invalidates parent closeout. Keep the branch/worktree open through linked-defect delivery and corrected-candidate parent re-verification."
 ```
 
-## Definition of Done
+## Historical Pre-Finding Definition of Done
 ```yaml
 work_item_slug: "adaptive-governance-human-approval-ux"
 status: BLOCKED
@@ -953,7 +933,7 @@ task_refs: ["T0", "T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T8a", "T8b", 
 test_refs: ["workflow-adaptive-governance", "materialize-work-item", "scaffold-workflow", "workflow-gate-review", "work-item-protocol", "workflow-telemetry", "runtime-parity", "release-candidate", "release-rollback", "release-surface"]
 ```
 
-## Traceability
+## Historical Pre-Finding Traceability
 ```yaml
 upstream:
   - "adaptive-governance-human-approval-ux.s04.acceptance-criteria.md"
@@ -971,7 +951,7 @@ verification_targets:
 next_step: "Seal trusted DoD, Release, and Business Acceptance receipts against this finalized s08 host."
 ```
 
-## Handoff
+## Historical Pre-Finding Handoff
 - Overall status: `FAIL/BLOCKED`; `F-AG11-001` proves AG-11 fails on a real repeated closeout cycle.
 - Historical evidence: source `38bb0d1…`, run `34322150024`, hosted SHA-256 `2a5ae701…`, the former Technical Verification/DoD/Release/Business Acceptance decisions, and the receipts sealed at `2026-09-09T09:57:16.873Z` are retained only as pre-finding evidence.
 - Linked defect: T1-T6 are complete at source `9ac8d95d29b0edd9681cfb1320eb848170bd14ca`; B1 passed in order and QC approved B2 Spec Compliance at `2026-09-11T03:20:17Z`.
@@ -979,7 +959,7 @@ next_step: "Seal trusted DoD, Release, and Business Acceptance receipts against 
 - Required sequence: approve refreshed B2 in order, complete T7/B3, verify one exact hosted candidate, then repeat parent terminal gates.
 - Branch/worktree: `HOLD_OPEN`; no merge, tag, release publication, install, cleanup, or branch finalization is authorized.
 
-## Current Parent Exact-Candidate Refresh — 2026-09-14T14:34:14Z
+## Historical Pre-Remediation Parent Exact-Candidate Refresh — 2026-09-14T14:34:14Z
 
 > [!warning]
 > Current verdict: **BLOCKED**. The qualified child checkpoint receipt is valid. AG-01..AG-12
@@ -1075,3 +1055,199 @@ branch_finish: HOLD_OPEN
 Recommendation: QC may now review the exact current parent artifact binding and Technical
 Verification. This recommendation does not approve Technical Verification, DoD, Release or
 Business Acceptance and does not close F-AG11-001 or CR-008.
+
+## Main Artifact
+
+```yaml
+status: READY_FOR_QC_REVIEW
+reviewed_source_sha: "04eed2f8b2098bddf513d0f96fd129e835686dd7"
+hosted_source_sha: "af70276fe14317417365c06dd06186da1996c401"
+hosted_run_id: 34802149041
+hosted_candidate_sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+rollback_version: "v2.6.1"
+rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+acceptance_coverage: "AG-01..AG-13: 13/13 PASS"
+hosted_provenance: "Run 34802149041 re-read as 10/10 SUCCESS; no new hosted run"
+workspace_verification: "Node 18 and Node 22 each 45/45 PASS after approved recoverable isolation"
+evidence_ref: "rcr-parent-exact-candidate-evidence.json"
+human_gate_state: PENDING
+```
+
+## Technical Verification
+
+```yaml
+status: READY_FOR_QC_REVIEW
+reviewed_by: []
+reviewed_at: ""
+recommendation: PASS
+evidence:
+  acceptance_criteria: "13/13 PASS"
+  node18: "45/45 PASS"
+  node22: "45/45 PASS"
+  runtime_parity: PASS
+  exact_candidate_and_rollback: PASS
+  workflow_validators: "6/6 PASS"
+limitations:
+  - "No configured repository lint/static/type/security wrapper"
+  - "eslint, semgrep and tsc unavailable; automatic analysis skipped, not passed"
+  - "Performance evidence is heuristic only; no benchmark"
+decision: PENDING_HUMAN_QC
+```
+
+## Governance Checks
+
+```yaml
+checks:
+  - { check: "Exact candidate and rollback identity", status: PASS }
+  - { check: "AG-01..AG-13 evidenced", status: PASS }
+  - { check: "Unknown legacy prose preserved and not interpreted", status: PASS }
+  - { check: "Historical terminal receipts excluded from current authority", status: PASS }
+  - { check: "Skipped scan tools disclosed", status: PASS }
+  - { check: "Human terminal gates remain independent", status: PASS }
+status: PASS
+exceptions: []
+```
+
+## Regression & Compatibility Summary
+
+```yaml
+regression_status: PASS
+compatibility_status: PASS
+breaking_changes: []
+node18: "45/45 PASS"
+node22: "45/45 PASS"
+runtime_parity: PASS
+legacy_dual_read: PASS
+receipt_v1: PASS
+rollback_readiness: READY
+```
+
+## Spec Coverage
+
+```yaml
+spec_refs: ["changes/CR-008/spec-delta/brd.delta.md", "changes/CR-008/spec-delta/srs.delta.md"]
+coverage:
+  - { ref: "AG-01", status: PASS }
+  - { ref: "AG-02", status: PASS }
+  - { ref: "AG-03", status: PASS }
+  - { ref: "AG-04", status: PASS }
+  - { ref: "AG-05", status: PASS }
+  - { ref: "AG-06", status: PASS }
+  - { ref: "AG-07", status: PASS }
+  - { ref: "AG-08", status: PASS }
+  - { ref: "AG-09", status: PASS }
+  - { ref: "AG-10", status: PASS }
+  - { ref: "AG-11", status: PASS }
+  - { ref: "AG-12", status: PASS }
+  - { ref: "AG-13", status: PASS }
+status: PASS
+summary: { pass: 13, partial: 0, fail: 0, total: 13 }
+gaps: []
+```
+
+## Scan Summary
+
+```yaml
+overall_status: PARTIAL
+syntax: "13/13 affected JavaScript files PASS under Node 22"
+static_analysis: SKIP_NO_REPO_WRAPPER_CONFIG
+security: SKIP_AUTOMATIC_SEMGREP_UNAVAILABLE
+performance: "Linear-history and transient-read heuristic only; no benchmark"
+false_positive_policy: "No finding was suppressed; skipped tools remain explicit limitations"
+release_impact: "Retained disclosed limitation; no automatic scan PASS claimed"
+```
+
+## Release Summary
+
+```yaml
+status: PENDING_HUMAN_REVIEW
+reviewed_by: []
+reviewed_at: ""
+candidate_sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+rollback_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+publish: false
+tag: false
+```
+
+## Business Acceptance Summary
+
+```yaml
+status: PENDING_HUMAN_REVIEW
+reviewed_by: []
+reviewed_at: ""
+owner: "po"
+depends_on: ["Current QC Technical Verification", "Current QC DoD", "Current DevOps/QC Release"]
+```
+
+## Deployment Review
+
+```yaml
+pipeline_scope: "Existing GitHub Actions Guardrails and exact v2.6.2 candidate only"
+build_and_verify:
+  required_checks: ["10/10 hosted jobs", "Node 18", "Node 22", "runtime parity", "rollback"]
+artifact_flow:
+  provenance_controls: ["source SHA", "run ID", "full candidate SHA-256", "rollback SHA-256"]
+approval_controls: ["QC Technical Verification", "QC DoD", "DevOps/QC Release", "PO Business Acceptance"]
+release_controls:
+  pre_release: ["All current parent receipts must bind the finalized s08 host"]
+rollback_controls: ["Use immutable v2.6.1 SHA-256 7c1d2c7b...f0b9"]
+pipeline_recommendation: BLOCKED
+notes_for_implementation_or_ops: "Technical evidence is ready; publication remains blocked on human gates"
+```
+
+## Audit
+
+```yaml
+status: PASS
+scope: "Evidence preparation and exact-candidate verification"
+evidence_complete: true
+human_approvals_inferred: false
+release_authorized: false
+next_step_allowed: "Parent QC artifact-binding and Technical Verification review only"
+```
+
+## Definition of Done
+
+```yaml
+work_item_slug: "adaptive-governance-human-approval-ux"
+status: BLOCKED
+checks:
+  acceptance_criteria_evidenced: PASS
+  implementation_recorded: PASS
+  required_verification_completed: PASS
+  code_scan_completed_or_justified: PASS
+  traceability_complete: PASS
+  residual_risks_documented: PASS
+gaps:
+  - "Current parent QC Technical Verification and DoD are not approved"
+  - "Current DevOps/QC Release and PO Business Acceptance are not approved"
+residual_risks:
+  - "Automatic static/security tools remain unavailable"
+follow_up_items: []
+next_action: "QC reviews current parent artifact binding and Technical Verification"
+```
+
+## Traceability
+
+```yaml
+upstream:
+  - "adaptive-governance-human-approval-ux.s04.acceptance-criteria.md"
+  - "adaptive-governance-human-approval-ux.s05.technical-approach.md"
+  - "adaptive-governance-human-approval-ux.s06.task-breakdown.md"
+  - "adaptive-governance-human-approval-ux.s07.implementation.md"
+  - "../closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s08.verification.md"
+verification_targets:
+  - "source af70276fe14317417365c06dd06186da1996c401"
+  - "run 34802149041"
+  - "candidate af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+  - "rollback 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+next_step: "Independent parent QC review; no later gate inferred"
+```
+
+## Handoff
+
+- Workflow status: `WAITING_APPROVAL`.
+- Evidence verdict: AG-01..AG-13 `13/13 PASS`.
+- Next human action: QC reviews the current parent artifact binding and then Technical Verification.
+- Later independent gates: QC DoD, DevOps/QC Release, PO Business Acceptance.
+- Branch/worktree: `HOLD_OPEN`; no publish, tag, merge, install or cleanup is authorized.

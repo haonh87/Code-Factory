@@ -15,7 +15,9 @@
     "hosted_candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
     "metadata_checkpoint_sha": "79f4519c6a7b225180f57a614e1fb97325e88f25",
     "rollback_version": "v2.6.1",
-    "rollback_sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+    "rollback_sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9",
+    "reviewed_parent_s08_draft_sha256": "61b41b661aff1dc607a2a1588a5c850a923f9f6e56e19502e55df030b2ef8dba",
+    "evidence_baseline_commit": "24cf1814462435846537298896941c329ef8abb6"
   },
   "child_checkpoint": {
     "status": "APPROVED_VALID_QUALIFIED_TECHNICAL_CHECKPOINT",
