@@ -254,7 +254,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: BLOCKED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "upgrade-guardrails-actions-node24"
@@ -276,12 +276,13 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-11T08:20:11.412Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-09-15T07:54:40.347Z"
+handoff_target: "s06-amendment-review"
+last_transition_action: "block"
+last_transition_at: "2026-09-15T09:08:15.067Z"
 required_actions:
-  - {"id":"se:ca223a3cf266be57f1803141b5b122dabb6e02ee9f25e403369504b6c6f57280","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
-blockers: []
+  - {"id":"se:cb6c94e2cd9962c48052a22d0fd2861d67320173553c30085b95fbd2fffa6a6a","kind":"workflow_followup","text":"Resolve blockers before resuming the work item."}
+blockers:
+  - {"id":"se:85ebc8cd4ff42d2ca3b37a28f6ff6b15112cbc4f809f35f55c098cc699549690","kind":"delivery_blocker","text":"F-N24-H1: hosted run 34947061938 passed 10/10 jobs but emitted three Node 20 deprecation annotations from upload-artifact@v4 and download-artifact@v4; the 18-token scope cannot satisfy AC-04."}
 review_notes:
   - "PO approved the Node 24 guardrails action upgrade; later gates remain independent."
   - "Trusted PO work-item receipt recorded at 2026-09-11T08:20:11.420Z verifies APPROVED for this project root."
@@ -304,6 +305,7 @@ audit_events:
   - "SDD_LIGHT_READY_BUNDLE_HUMAN_APPROVED_PENDING_RECEIPTS"
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
+  - "WORK_ITEM_BLOCKED"
 ```
 
 ## Audit

@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "BLOCKED",
   "decision_owner": "agent",
   "protocol_owner": "po",
   "raw_request_summary": "Upgrade all checkout/setup-node uses in workflow-guardrails.yml to v7 while preserving behavior and proving hosted Node 24 compatibility.",
@@ -76,15 +76,21 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "step-s07-owner",
+  "handoff_target": "s06-amendment-review",
   "required_actions": [
     {
-      "id": "se:ca223a3cf266be57f1803141b5b122dabb6e02ee9f25e403369504b6c6f57280",
+      "id": "se:cb6c94e2cd9962c48052a22d0fd2861d67320173553c30085b95fbd2fffa6a6a",
       "kind": "workflow_followup",
-      "text": "Continue active execution from step 7 onward."
+      "text": "Resolve blockers before resuming the work item."
     }
   ],
-  "blockers": [],
+  "blockers": [
+    {
+      "id": "se:85ebc8cd4ff42d2ca3b37a28f6ff6b15112cbc4f809f35f55c098cc699549690",
+      "kind": "delivery_blocker",
+      "text": "F-N24-H1: hosted run 34947061938 passed 10/10 jobs but emitted three Node 20 deprecation annotations from upload-artifact@v4 and download-artifact@v4; the 18-token scope cannot satisfy AC-04."
+    }
+  ],
   "refs": [
     "work-items/upgrade-guardrails-actions-node24"
   ],
@@ -102,7 +108,8 @@
     "SDD_LIGHT_S04_S06_DRAFTED",
     "SDD_LIGHT_READY_BUNDLE_HUMAN_APPROVED_PENDING_RECEIPTS",
     "READINESS_BUNDLE_APPROVED",
-    "WORK_ITEM_ACTIVATED"
+    "WORK_ITEM_ACTIVATED",
+    "WORK_ITEM_BLOCKED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -191,6 +198,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "ACTIVE",
       "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-09-15T09:08:15.067Z",
+      "action": "block",
+      "actor": "coordinator",
+      "from_status": "ACTIVE",
+      "to_status": "BLOCKED",
+      "note": "Hosted candidate exposed the approved scope/spec conflict. Stop production edits and return for a bounded Node 24 artifact-action amendment."
     }
   ]
 }
