@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
 governance_status: ALIGNED
@@ -79,8 +79,9 @@ tags:
 > That amendment was approved, sealed, and resumed. The bounded T4a production edit now passes its
 > focused invariant, but the full unit suite exposed `F-N24-T4A-001`: two existing tests lock the old
 > artifact-action majors and are outside the granted roots. T4b was approved, sealed, and resumed;
-> the four expectation-token updates now pass all local checks. Refreshed Spec Compliance is the
-> next gate and Code Quality remains locked behind it.
+> the four expectation-token updates now pass all local checks. Developer/QC approved refreshed
+> Spec Compliance and then Code Quality for the exact source/diff. The next boundary is push plus
+> exact hosted execution with zero Node deprecation annotations.
 
 ## Main Artifact
 ```yaml
@@ -190,6 +191,8 @@ review_status: COMPLETED
 review_refs:
   - "CI-N24-R1 Spec Compliance approved by Developer/QC for workflow SHA-256 a059d1a379076ca8773fc78fab5b3d0ab13c07a7dfaf78028705ff16970bb99e"
   - "CI-N24-R2 Code Quality approved by Developer/QC for production diff SHA-256 f0a0e02baabf4e1f668078022ee1b888a05514de9bb64e9ed3b6f77ce806fe49"
+  - "CI-N24-T4AB refreshed Spec Compliance approved by Developer/QC for source-set SHA-256 7115db15698953da66881d18335ab48b02b4f9102d46e5b2b29a9d3283d5983a"
+  - "CI-N24-T4AB refreshed Code Quality approved by Developer/QC for source 53bab65030dd925d8f814454b504d12c2dec9505 and diff SHA-256 4852365ded7042836b4327e3506bdae04e5747200c83c3545afe3df12c9ddedc"
 spec_compliance_status: PASS
 code_quality_status: PASS
 delegation_mode: agentic
@@ -245,7 +248,7 @@ code_quality:
 ## Hosted Finding F-N24-H1
 ```yaml
 finding_id: "F-N24-H1"
-status: DIRECTION_APPROVED_PENDING_AMENDED_GATES
+status: IMPLEMENTED_AND_REVIEWED_PENDING_HOSTED_VERIFICATION
 severity: HIGH
 approved_by: ["developer", "qc"]
 approved_at: "2026-09-15T09:14:23Z"
@@ -327,11 +330,13 @@ remaining_obligations:
 ## Finding F-N24-T4A-001
 ```yaml
 finding_id: "F-N24-T4A-001"
-status: SPEC_COMPLIANCE_APPROVED_PENDING_CODE_QUALITY
+status: CLOSED
 severity: MEDIUM
 detected_at: "2026-09-15T09:59:45Z"
 approved_by: ["developer", "qc"]
 approved_at: "2026-09-15T10:17:29Z"
+closed_at: "2026-09-15T10:41:09Z"
+closure_basis: "Approved T4b changed only four expectation tokens; the same full unit suite passed 45/45 files, then Developer/QC approved refreshed Spec Compliance and Code Quality."
 production_delta:
   result: PASS
   workflow_sha256: "b72a0cb172d8a11c5d2e96acc6a31bdd9c22b00f48b0a8fd0e643ae0d3ad0f30"
@@ -352,7 +357,7 @@ recommended_amendment:
   task_plan_delta: "Grant the two existing test paths and update only four expectation tokens: two upload v4->v6 and two download v4->v7."
   prohibited_changes: ["new test file", "test logic change", "fixture change", "workflow topology change", "parallelisation"]
   verify: "Rerun the same full unit suite plus existing local and hosted verification paths."
-required_human_action: "Developer and QC review refreshed Code Quality for the exact source commit and implementation diff; hosted verification remains later."
+required_human_action: "None for F-N24-T4A-001. Push the reviewed branch and collect exact hosted evidence for F-N24-H1."
 ```
 
 ## T4a/T4b Recovery Evidence
@@ -418,10 +423,11 @@ spec_compliance:
     - "T4b is exactly four expectation-token changes in the two approved existing tests; no test logic or coverage drift."
   pending: "Hosted zero-annotation evidence remains T4/s08 work and does not weaken the s07 source-scope verdict."
 code_quality:
-  status: REVIEW_REQUIRED
+  status: APPROVED
   proposed_verdict: PASS
-  human_verdict: PENDING
+  human_verdict: PASS
   reviewers: ["developer", "qc"]
+  reviewed_at: "2026-09-15T10:41:09Z"
   source_commit: "53bab65030dd925d8f814454b504d12c2dec9505"
   implementation_diff_sha256: "4852365ded7042836b4327e3506bdae04e5747200c83c3545afe3df12c9ddedc"
   evidence:
@@ -430,4 +436,5 @@ code_quality:
     - "The normalized workflow is byte-identical, artifact inputs/order are unchanged, and all 45 unit test files pass."
     - "Pack audit, authoring smoke, scoped validators, protocol, YAML parsing, diff hygiene, and UTF-8 checks pass."
     - "actionlint is unavailable locally; exact hosted execution and annotation inspection remain mandatory before Technical Verification."
+next_boundary: "Commit evidence, push the reviewed branch, bind the resulting source SHA/run/candidate digest, and prove zero Node deprecation annotations before s08."
 ```
