@@ -254,14 +254,14 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "upgrade-guardrails-actions-node24"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/upgrade-guardrails-actions-node24"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - ".github/workflows/workflow-guardrails.yml"
   - "work-items/upgrade-guardrails-actions-node24"
@@ -279,11 +279,11 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-11T08:20:11.412Z"
-handoff_target: "step-s07-t4b-owner"
-last_transition_action: "resume"
-last_transition_at: "2026-09-15T10:21:15.722Z"
+handoff_target: "qc-dod-review"
+last_transition_action: "verify"
+last_transition_at: "2026-09-16T01:45:38.574Z"
 required_actions:
-  - {"id":"se:1690cc592156372c298a3dae01726b118dfee7bcee02865a524e5dfb89d23fa1","kind":"workflow_followup","text":"Continue active execution from the current step."}
+  - {"id":"se:fd9336dd08773159878f3a147687db0ef5db543b3cea3f4a921e936f2206ba26","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
 blockers: []
 review_notes:
   - "PO approved the Node 24 guardrails action upgrade; later gates remain independent."
@@ -326,6 +326,7 @@ audit_events:
   - "T4AB_REFRESHED_CODE_QUALITY_APPROVED"
   - "CI_N24_HOSTED_ZERO_ANNOTATION_EVIDENCE_COLLECTED"
   - "CI_N24_TECHNICAL_VERIFICATION_APPROVED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
 ## Audit

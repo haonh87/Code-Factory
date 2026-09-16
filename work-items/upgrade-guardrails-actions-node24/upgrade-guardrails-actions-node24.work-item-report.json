@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "VERIFIED",
   "decision_owner": "agent",
   "protocol_owner": "po",
   "raw_request_summary": "Upgrade all checkout/setup-node uses in workflow-guardrails.yml to v7 while preserving behavior and proving hosted Node 24 compatibility.",
@@ -78,7 +78,7 @@
   "work_item_type": "CHANGE",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/upgrade-guardrails-actions-node24",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     ".github/workflows/workflow-guardrails.yml",
     "work-items/upgrade-guardrails-actions-node24",
@@ -88,12 +88,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "step-s07-t4b-owner",
+  "handoff_target": "qc-dod-review",
   "required_actions": [
     {
-      "id": "se:1690cc592156372c298a3dae01726b118dfee7bcee02865a524e5dfb89d23fa1",
+      "id": "se:fd9336dd08773159878f3a147687db0ef5db543b3cea3f4a921e936f2206ba26",
       "kind": "workflow_followup",
-      "text": "Continue active execution from the current step."
+      "text": "Collect DoD evidence and close the work item when ready."
     }
   ],
   "blockers": [],
@@ -124,7 +124,8 @@
     "T4AB_REFRESHED_SPEC_COMPLIANCE_APPROVED",
     "T4AB_REFRESHED_CODE_QUALITY_APPROVED",
     "CI_N24_HOSTED_ZERO_ANNOTATION_EVIDENCE_COLLECTED",
-    "CI_N24_TECHNICAL_VERIFICATION_APPROVED"
+    "CI_N24_TECHNICAL_VERIFICATION_APPROVED",
+    "VERIFICATION_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -263,6 +264,14 @@
       "from_status": "BLOCKED",
       "to_status": "ACTIVE",
       "note": "T4b Approach and Task Plan receipts are APPROVED and digest-matched to s06 SHA-256 b8e91fe17e5b2fcc46af6c1c712030a336f2f5f849422ef9008f09290656fa43; resume only the approved two-file/four-token test contract alignment and existing T4a workflow delta."
+    },
+    {
+      "timestamp": "2026-09-16T01:45:38.574Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "QC approved Technical Verification for source 41e7b0187ff97e486b019bb9d69ab2945d7bbf8a, run 34959637638, and candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; 10/10 jobs PASS and all 10 check-runs have zero annotations. DoD remains separate."
     }
   ]
 }
