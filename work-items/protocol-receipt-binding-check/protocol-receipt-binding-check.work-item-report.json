@@ -1,0 +1,136 @@
+{
+  "materialization_status": "PROPOSED",
+  "protocol_status": "PROPOSED",
+  "decision_owner": "agent",
+  "protocol_owner": "",
+  "raw_request_summary": "CF-023: the protocol state-contradiction check treats a gate as approved from a signature-valid trusted receipt without comparing the receipt artifact_ref and artifact_sha256 against the current gate-host note, so a gate approved against one checkout of a note reads as approved against a different version of that same note elsewhere in the repository.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "needs_review",
+  "work_items": [
+    {
+      "work_item_slug": "protocol-receipt-binding-check",
+      "work_item_title": "Protocol Receipt Binding Check",
+      "work_item_type": "FEATURE",
+      "scope_summary": "CF-023: the protocol state-contradiction check treats a gate as approved from a signature-valid trusted receipt without comparing the receipt artifact_ref and artifact_sha256 against the current gate-host note, so a gate approved against one checkout of a note reads as approved against a different version of that same note elsewhere in the repository.",
+      "primary_outcome": "CF-023: the protocol state-contradiction check treats a gate as approved from a signature-valid trusted receipt without comparing the receipt artifact_ref and artifact_sha256 against the current gate-host note, so a gate approved against one checkout of a note reads as approved against a different version of that same note elsewhere in the repository.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "strict",
+      "sdd_reasons": [
+        "planning-track-not-quick",
+        "governance-profile-not-default"
+      ],
+      "sdd_preset": "auto",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/trusted-receipt-namespace-resolution",
+        "work-items/artifact-governance-enforcement",
+        "work-items/artifact-governance-model"
+      ],
+      "collision_notes": [
+        "trusted-receipt-namespace-resolution (score=2)",
+        "artifact-governance-enforcement (score=1)",
+        "artifact-governance-model (score=1)"
+      ],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "Scope chưa cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item protocol-receipt-binding-check --planning-track full --delivery-context brownfield --governance-profile strict",
+        "npm run validate:workflow -- --workflow-root work-items/protocol-receipt-binding-check --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cf-023-receipt-binding"
+      ],
+      "blockers": [
+        {
+          "id": "se:5d63f0e5eab3755098c7f439497813754ef25cc3621cdb58b82d86ce754f675f",
+          "kind": "delivery_blocker",
+          "text": "Có work item gần nghĩa cần review: trusted-receipt-namespace-resolution, artifact-governance-enforcement, artifact-governance-model"
+        }
+      ]
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=FEATURE",
+    "delivery_context=brownfield",
+    "dedup_result=needs_review",
+    "change_strategy=none",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=auto",
+    "selected_profile=strict",
+    "sdd_mode=none",
+    "sdd_escalation_reasons=planning-track-not-quick|governance-profile-not-default"
+  ],
+  "work_item_slug": "protocol-receipt-binding-check",
+  "work_item_type": "FEATURE",
+  "delivery_context": "brownfield",
+  "selected_profile": "strict",
+  "sdd_mode": "none",
+  "sdd_preset": "auto",
+  "sdd_light_profile": "preview",
+  "sdd_reasons": [
+    "planning-track-not-quick",
+    "governance-profile-not-default"
+  ],
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/protocol-receipt-binding-check",
+  "current_step": "",
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "human-clarify",
+  "required_actions": [
+    {
+      "id": "se:b967516478eb716faf4acecf2c1bc793df1ee73a625fcf275c54d4811f275bde",
+      "kind": "workflow_followup",
+      "text": "Làm rõ scope để chốt single hay split."
+    },
+    {
+      "id": "se:198b45f070c91dc20c943b1592896ae0c5b21f18e09679c4306aa6d7a95e9876",
+      "kind": "workflow_followup",
+      "text": "Review existing work-items/changes trước khi scaffold."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "se:5d63f0e5eab3755098c7f439497813754ef25cc3621cdb58b82d86ce754f675f",
+      "kind": "delivery_blocker",
+      "text": "Có work item gần nghĩa cần review: trusted-receipt-namespace-resolution, artifact-governance-enforcement, artifact-governance-model"
+    }
+  ],
+  "refs": [
+    "work-items/trusted-receipt-namespace-resolution",
+    "work-items/artifact-governance-enforcement",
+    "work-items/artifact-governance-model"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED"
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "review_required": true,
+  "approval_status": "PENDING_REVIEW",
+  "reviewed_by": "",
+  "reviewed_at": "",
+  "review_notes": [],
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-16T06:17:44.229Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    }
+  ]
+}
