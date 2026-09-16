@@ -248,7 +248,7 @@ code_quality:
 ## Hosted Finding F-N24-H1
 ```yaml
 finding_id: "F-N24-H1"
-status: IMPLEMENTED_AND_REVIEWED_PENDING_HOSTED_VERIFICATION
+status: HOSTED_EVIDENCE_PASS_PENDING_TECHNICAL_VERIFICATION
 severity: HIGH
 approved_by: ["developer", "qc"]
 approved_at: "2026-09-15T09:14:23Z"
@@ -402,7 +402,16 @@ checks:
   - { check: "js-yaml, exact counts, normalized fingerprint, git diff --check", result: PASS }
   - { check: "UTF-8 for all changed text files", result: PASS }
   - { check: "actionlint", result: SKIPPED, reason: "Not installed; js-yaml plus exact hosted run remain the validation path." }
-hosted_verification: "PENDING after refreshed two-tier review and pushed exact source commit"
+hosted_verification:
+  source_commit: "41e7b0187ff97e486b019bb9d69ab2945d7bbf8a"
+  run_id: 34959637638
+  run_url: "https://github.com/haonh87/Code-Factory/actions/runs/34959637638"
+  jobs: "10/10 PASS"
+  check_run_annotations: "0 across all 10 check-runs"
+  node_deprecation_annotations: 0
+  candidate_sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+  declared_digest_match: true
+  next_gate: "QC Technical Verification in s08; DoD remains separate."
 ```
 
 ## Refreshed Two-Tier Review Handoff
