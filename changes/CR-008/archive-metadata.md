@@ -31,6 +31,7 @@ notes:
   - "npm workflow-bundle@2.6.2 is public and latest points to 2.6.2; the registry tarball is byte-identical to the approved candidate and passed CLI plus Codex/Claude global/project smoke 4/4."
   - "The parent and all three CR-008 child work items transitioned DONE -> ARCHIVED after downstream release actions completed. The branch-scoped Node24 maintenance item was archived separately."
   - "Two historical legacy blocker strings remain byte-preserved as opaque compatibility input in the parent report. Core transitions do not interpret them; transaction-bound reconciliation, current receipts, DONE, and ARCHIVED events are authoritative."
+  - "Post-release review classified the remaining legacy entries inside blockers[] as F-CR008-ARCH-001: the compatibility contract preserves their bytes, but the current projection is still misleading and the archive transition does not require explicit disposition."
 ```
 
 ## Branch Finish Audit
@@ -45,27 +46,26 @@ verify_inputs:
 finish_gate_checks:
   verify_complete: PASS
   dod_complete: PASS
-  findings_closed: PASS
+  findings_closed: FAIL
   exceptions_resolved: PASS
 allowed_actions:
-  - "Merge the archive-only closeout commit"
-  - "Remove the dedicated CR-008 worktree after the closeout commit is reachable from main"
-  - "Delete the merged CR-008 branch after confirming zero unique commits"
+  - "Record and route F-CR008-ARCH-001 into a separately approved behavior-change work item"
+  - "Retain the published v2.6.2 release and its immutable evidence"
 blocked_actions:
-  - "Delete the branch or worktree before the archive-only closeout commit is reachable from main"
+  - "Delete the branch or worktree before F-CR008-ARCH-001 is explicitly dispositioned and handed off"
+  - "Silently delete, regex-match, or reinterpret the two opaque legacy strings"
 cleanup_sequence:
-  - "Validate archive artifacts and protocol state"
-  - "Commit and merge the archive-only closeout delta"
-  - "Confirm the closeout commit is reachable from remote main"
+  - "Materialize and approve the F-CR008-ARCH-001 follow-up boundary"
+  - "Record an explicit handoff that preserves the exact legacy text and owns terminal-state reconciliation"
+  - "Confirm the follow-up no longer depends on this CR-008 worktree"
   - "Remove the dedicated worktree"
   - "Delete the merged local and remote branch"
 merge_conditions:
-  - "All workflow/change/protocol validators pass"
-  - "Only archive metadata, task status, and protocol mirrors are changed"
-  - "Remote main retains the immutable v2.6.2 tag and published artifact identity"
+  - "The follow-up must not mutate the immutable v2.6.2 release or historical signed receipts"
+  - "The new contract must preserve unknown legacy text while preventing ARCHIVED plus active blockers ambiguity"
 residual_risks:
   - "Automatic static/security scanners were unavailable in the approved candidate verification and remain disclosed scan gaps"
-  - "Historical legacy blocker text remains opaque and preserved by compatibility contract"
-final_recommendation: MERGE_ALLOWED
-notes_for_closeout: "All human gates, exact-candidate checks, publication checks, and lifecycle transitions are complete. Cleanup is allowed only after this archive-only delta is reachable from main."
+  - "F-CR008-ARCH-001: protocol_status=ARCHIVED currently coexists with two opaque legacy entries in blockers[]"
+final_recommendation: HOLD_OPEN
+notes_for_closeout: "Release and archive evidence remain valid, but branch/worktree cleanup is held until F-CR008-ARCH-001 has an explicit approved handoff. The finding cannot be fixed by silently clearing unknown legacy text."
 ```

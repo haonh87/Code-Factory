@@ -56,6 +56,10 @@ linked_work_items:
 branch_scoped_maintenance:
   - work_item: "upgrade-guardrails-actions-node24"
     status: ARCHIVED
-blocking_items: []
-next_action: "Merge this archive-only closeout delta to main, then remove the dedicated CR-008 branch/worktree after confirming zero unique commits."
+blocking_items:
+  - id: "F-CR008-ARCH-001"
+    status: OPEN
+    summary: "The archived parent report retains two opaque legacy entries inside blockers[]; bytes are preserved as required, but terminal-state projection and cleanup readiness are ambiguous."
+    owner: "maintainer"
+next_action: "Approve a linked behavior-change work item that adds explicit legacy-state disposition without text inference, then hand it off before CR-008 branch/worktree cleanup."
 ```
