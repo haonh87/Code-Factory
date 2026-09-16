@@ -58,6 +58,7 @@ Reading guide:
 
 The documents below are oriented toward mechanics, rollout, history, or roadmap:
 
+- [`audits/code-factory-holistic-workflow-skill-remediation-plan.md`](audits/code-factory-holistic-workflow-skill-remediation-plan.md)
 - [`../skills/orchestration/workflow-governance-router/SKILL.md`](../skills/orchestration/workflow-governance-router/SKILL.md)
 - [`../skills/orchestration/codex-workflow-chain/references/workflow-overview.md`](../skills/orchestration/codex-workflow-chain/references/workflow-overview.md)
 - [`../skills/orchestration/codex-workflow-chain/references/workflow-versioning.md`](../skills/orchestration/codex-workflow-chain/references/workflow-versioning.md)
@@ -71,6 +72,7 @@ The documents below are oriented toward mechanics, rollout, history, or roadmap:
 
 Reading guide:
 
+- `code-factory-holistic-workflow-skill-remediation-plan` is the current portfolio-level authority for pack-wide findings, remediation order, ownership, gates, and closure evidence.
 - `workflow-governance-router` is the meta-skill entrypoint of the multi-block prompt model; it pins the current step, delivery context, and missing gates before step skills run.
 - `hybrid-superpowers-policy` is the internal reference policy for the hybrid model between the repo workflow backbone and the execution discipline from Superpowers.
 - `hybrid-superpowers-decision-matrix` is a cheat sheet for deciding quickly when to enable `TDD`, `worktree`, `subagent`, and `review mode`.

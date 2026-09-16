@@ -42,6 +42,7 @@ notes: ""
 | Exception ID | Work Item | Step | Principle | Owner | Status | Review Date | Notes |
 |---|---|---|---|---|---|---|---|
 | GOV-EX-001 | none - that is the exception | n/a | Spec/Design Before Code | developer | RESOLVED | 2026-08-28 | Approved by developer; residual debt paid - readStdinByteSync exported and the EAGAIN retry covered by 5 assertions. |
+| GOV-EX-002 | ci-guardrails-parallelisation | s07 | Spec/Design Before Code | devops | PROPOSED | 2026-09-18 | Sealed Task Plan T3 cannot execute; REQ-002 transferred to the Codex branch which owns the file. |
 
 ### `GOV-EX-001`
 
@@ -81,4 +82,45 @@ resolution_evidence:
   observed_first_red: "The test was written before the export and observed failing on 'readStdinByteSync is exported...' - the exact blocker the register named, reproduced before being fixed."
 why_it_was_not_paid_earlier: "tdd-enforce genuinely refused an edit to workflow-trusted-approval-utils.js on main, because its test file existed only on the namespace branch. The guard was correct and the debt was scheduled rather than waived. Re-probed after the merge: the hook now returns exit 0 for that path."
 notes: "Recorded rather than hidden. This work item family exists precisely because undocumented shortcuts around governance produced the defects it fixes; absorbing this change silently into an unrelated work item would have repeated that pattern. The namespace work item's own s05 lists promptHiddenInput under explicitly_untouched, so folding it there would have breached a boundary sealed hours earlier."
+```
+
+### `GOV-EX-002`
+
+```yaml
+exception_id: GOV-EX-002
+work_item_ref: "ci-guardrails-parallelisation"
+step_ref: "s07"
+principle_ref: "Spec/Design Before Code - the sealed Task Plan T3 cannot execute as written"
+reason: >-
+  The approved Task Plan assumed .github/workflows/workflow-guardrails.yml was uncontested. Branch
+  codex/adaptive-governance-human-approval-ux modifies the same file with 60 insertions and 2
+  deletions, adding a release-candidate-build job whose output later jobs consume as an artifact. A
+  full restructure on main would collide with that work. The ownership analysis performed during
+  authoring checked `git status` on the working tree rather than the branch diff, and missed it.
+impact: >-
+  REQ-002, the checkout and setup-node upgrade from v4 to v7, is deadline-bound: GitHub removes
+  Node 20 from runners on 2026-09-23 and both v4 actions run on it, so the pipeline breaks rather
+  than warns. REQ-001, REQ-003 and REQ-004 - the validator parallelisation - are not deadline-bound.
+mitigation:
+  - "REQ-002 transferred to codex/adaptive-governance-human-approval-ux, which owns the file and lands first. Codex accepted and opened work item upgrade-guardrails-actions-node24, whose scope explicitly excludes validator matrix conversion and any parallelisation."
+  - "REQ-001, REQ-003 and REQ-004 remain in this work item and resume once that branch merges."
+  - "T3 will be redesigned around release-candidate-build and its artifact dependency, which did not exist when the Task Plan was sealed."
+  - "AC-002's baseline is already captured - 105s over 9 jobs, hosted run 32825477258 on main, 2026-08-25 - so the deferral loses no evidence."
+  - "The work item is BLOCKED in protocol rather than left ACTIVE, so the state is visible instead of inferred."
+residual_debt:
+  - "T3 and T4 are not merely deferred; T3 must be redesigned against a workflow file that will have gained a job. The current Task Plan text describes a file that will no longer exist in that form when work resumes."
+owner: "devops"
+approved_by: ""
+status: PROPOSED
+review_date: "2026-09-18 - the CR-008 stop-and-reassess checkpoint"
+contingency: >-
+  If CR-008 has not closed by approximately 2026-09-20, bump the two action tokens directly on main
+  for main's own jobs and accept a small conflict at merge. A broken pipeline costs more than a
+  conflict.
+notes: >-
+  Recorded at s07 rather than absorbed. The exception exists because an ownership claim was made
+  from an incomplete measurement, which is the same shape as CF-022: a determination reached
+  without reading an authoritative input that was available. Filed by the independent reviewer who
+  made that error; approved_by is deliberately empty because the authority belongs to a human per
+  project-context/governance-role-model.md.
 ```

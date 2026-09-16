@@ -1,0 +1,215 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "MATERIALIZED",
+  "decision_owner": "agent",
+  "protocol_owner": "po",
+  "raw_request_summary": "Process the recommended sequence and create the missing holistic Code-Factory workflow/skill review plan.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "code-factory-holistic-audit-remediation",
+      "work_item_title": "Code Factory Holistic Audit Remediation",
+      "work_item_type": "RESEARCH",
+      "scope_summary": "Audit the full Code-Factory workflow and all source skills, consolidate prior findings, and govern their remediation as independently approved child work items.",
+      "primary_outcome": "One canonical, evidence-backed portfolio states what is closed, open, stale or unverified and sequences the remaining work without bypassing human gates.",
+      "in_scope": [
+        "42 source skills and their contracts, boundaries, schemas, references, language and runtime discoverability",
+        "The s01-s08 workflow, policy, templates, validators, receipts and protocol",
+        "Runtime mirrors, adapters, hooks, MCP, CI/release and portfolio-state integrity",
+        "Prior plans and findings with ownership, priority, dependencies, gates and verification paths"
+      ],
+      "out_of_scope": [
+        "Bulk-fixing child findings inside the portfolio research item",
+        "Using portfolio approval as child-work-item approval",
+        "Self-approving human-controlled gates or rewriting immutable release evidence"
+      ],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "full",
+      "sdd_reasons": [],
+      "sdd_preset": "full",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/adaptive-governance-human-approval-ux",
+        "work-items/add-diagram-design-adapter",
+        "work-items/decouple-tests-from-tree-layout",
+        "docs/skill-pack-review-2026-07-23.md"
+      ],
+      "collision_notes": [
+        "Manual review confirms the referenced work items are narrow remediation children or historical evidence; none owns the pack-wide portfolio boundary."
+      ],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "Scope chưa cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item code-factory-holistic-audit-remediation --planning-track full --delivery-context brownfield --governance-profile strict",
+        "npm run validate:workflow -- --workflow-root work-items/code-factory-holistic-audit-remediation --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=RESEARCH",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict",
+    "change_strategy=none",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=full",
+    "selected_profile=full",
+    "sdd_mode=none",
+    "sdd_escalation_reasons=",
+    "Manual semantic dedup review confirmed this portfolio is distinct from CR-008, CHANGE-005, SDD Light and SA/TA delivery work items.",
+    "The linked portfolio plan is a proposal and cannot grant child-work-item gates.",
+    "PO explicitly approved the master work-item boundary, CF-001..018 finding register and P0-to-P4 sequence; the trusted work-item receipt is APPROVED and does not approve any child gate.",
+    "s02 Business Goal completed with portfolio outcomes and measurement candidates; OQ-CF-001..003 remain owned decisions for s03.",
+    "The 2026-09-05 evidence refresh made the approved plan discoverable, added a Vietnamese companion, and proposed CF-019/CF-020 plus AC-CF-010/AC-CF-011 without inheriting the 2026-09-03 approval.",
+    "The 2026-09-07 s03 amendment expands the recommendation bundle to OQ-CF-001..005 so CF-019/CF-020 and AC-CF-010/011 have explicit decisions, owners and verify paths; all five Option C recommendations remain pending human decisions.",
+    "The detailed P0 sequence now closes the linked defect before CF-019 disposition/remediation and parent CR-008 re-verification, removing the former P0.1-to-P1.0 dependency cycle without changing the approved P0-to-P4 phase order."
+  ],
+  "work_item_slug": "code-factory-holistic-audit-remediation",
+  "work_item_type": "RESEARCH",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/code-factory-holistic-audit-remediation",
+  "current_step": "s03",
+  "granted_write_paths": [],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "cf-019-child-work-item-proposal",
+  "required_actions": [
+    "Resolve OQ-CF-001 document authority with PO/maintainer.",
+    "Resolve OQ-CF-002 legacy migration policy with Developer/QC.",
+    "Resolve OQ-CF-003 public-language quality ownership with PO/BA.",
+    "Propose an independent CF-019 child work item; do not infer work-item or implementation approval from OQ-CF-004.",
+    "Resolve OQ-CF-005 current-versus-historical public documentation policy with PO/BA/DevOps.",
+    "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate spec --reviewed-by <role>",
+    "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate dor --reviewed-by <role>",
+    "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate approach --reviewed-by <role>",
+    "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate task_plan --reviewed-by <role>",
+    "wfc work-item activate --work-item code-factory-holistic-audit-remediation --step s07 --write-root <path>"
+  ],
+  "blockers": [
+    "OQ-CF-001 document authority has no human decision.",
+    "OQ-CF-002 legacy reconciliation policy has no human decision.",
+    "OQ-CF-003 public-language ownership and rubric have no human decision.",
+    "OQ-CF-005 public version/inventory classification has no human decision."
+  ],
+  "refs": [
+    "work-items/code-factory-holistic-audit-remediation",
+    "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md",
+    "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.vi.md"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "S01_HANDOFF_COMPLETED",
+    "S02_BUSINESS_GOAL_COMPLETED",
+    "OQ_RECOMMENDATION_BUNDLE_PREPARED",
+    "MASTER_PLAN_MADE_DISCOVERABLE",
+    "SEMANTIC_FINDINGS_CF_019_CF_020_PROPOSED",
+    "OQ_RECOMMENDATION_BUNDLE_AMENDED_CF_019_CF_020",
+    "PORTFOLIO_DEPENDENCY_CYCLE_REMOVED",
+    "OQ_CF_004_OPTION_C_APPROVED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-09-03T01:34:46.476Z",
+  "review_notes": [
+    "Human review approved.",
+    "The s03 bundle was amended at 2026-09-07T14:33:29Z so proposed findings CF-019/CF-020 and AC-CF-010/011 have explicit OQ-CF-004/005 decisions; no finding or option was self-approved.",
+    "The detailed P0 dependency cycle was removed: child closeout precedes CF-019 disposition/remediation, which precedes parent CR-008 re-verification; the approved P0-to-P4 phase order is unchanged.",
+    "PO, BA, Developer, and QC approved OQ-CF-004 Option C at 2026-09-08T02:23:55Z. CF-019 is accepted as a policy/runtime defect; this decision does not approve its child work item or implementation."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-02T13:16:23.790Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-09-02T13:16:23.790Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Materialization inputs are ready for scaffold."
+    },
+    {
+      "timestamp": "2026-09-02T13:16:23.949Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Auto-scaffolded workflow artifacts."
+    },
+    {
+      "timestamp": "2026-09-03T01:34:46.476Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-09-03T01:36:00Z",
+      "action": "authoring-handoff",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Trusted work-item approval was verified; s01 closed and s02 Business Goal completed. OQ-CF-001..003 are handed to s03 without inheriting any approval."
+    },
+    {
+      "timestamp": "2026-09-03T01:41:52Z",
+      "action": "decision-bundle-prepared",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "OQ-CF-001..003 now have options, recommendations, scoped authority and verify paths. s04 remains blocked until the corresponding human roles accept or amend them."
+    },
+    {
+      "timestamp": "2026-09-05T08:03:55Z",
+      "action": "publish-plan-evidence-refresh",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "The approved CF-001..018 plan is now linked from repository navigation with an EN source and VI companion. CF-019/CF-020 and AC-CF-010/011 are evidence-backed proposals only; s03 human decisions remain pending."
+    },
+    {
+      "timestamp": "2026-09-07T14:33:29Z",
+      "action": "amend-decision-bundle",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Expanded s03 to OQ-CF-001..005 so CF-019/CF-020 and AC-CF-010/011 have explicit options, scoped owners and verify paths. All five Option C recommendations remain pending human decisions. The detailed P0 ordering was corrected to remove the child-closeout/CF-019/parent-reverification dependency cycle."
+    },
+    {
+      "timestamp": "2026-09-08T02:23:55Z",
+      "action": "approve-oq-cf-004-option-c",
+      "actor": "po+ba+developer+qc",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Approved OQ-CF-004 Option C and accepted CF-019 as a policy/runtime defect. Child work-item approval and implementation authority remain independent human gates."
+    }
+  ]
+}
