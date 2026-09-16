@@ -1,0 +1,191 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "MATERIALIZED",
+  "decision_owner": "agent",
+  "protocol_owner": "",
+  "raw_request_summary": "Prevent terminal completion while unresolved state entries exist; require explicit opaque identifier disposition; preserve exact original text in append-only resolved-state history; prohibit semantic inference.",
+  "request_source": "user-chat",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "terminal-archive-legacy-state-reconciliation",
+      "work_item_title": "Terminal Archive Legacy State Reconciliation",
+      "work_item_type": "BUG",
+      "scope_summary": "Prevent terminal completion while unresolved state entries exist; require explicit opaque identifier disposition; preserve exact original text in append-only resolved-state history; prohibit semantic inference.",
+      "primary_outcome": "Prevent terminal completion while unresolved state entries exist; require explicit opaque identifier disposition; preserve exact original text in append-only resolved-state history; prohibit semantic inference.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "strict",
+      "sdd_reasons": [],
+      "sdd_preset": "strict",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [],
+      "collision_notes": [],
+      "change_strategy": "create_new",
+      "change_id": "CR-009",
+      "change_reason": "Scope có tín hiệu cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:change -- --change-id CR-009 --work-item terminal-archive-legacy-state-reconciliation",
+        "npm run scaffold:workflow -- --work-item terminal-archive-legacy-state-reconciliation --planning-track full --delivery-context brownfield --change-id CR-009 --governance-profile strict --adaptive-writes true --request-lane maintenance --adaptive-source-version 2.6.2 --adaptive-installed-version 2.6.2 --adaptive-installed-version 2.6.2 --adaptive-parity-passed true",
+        "npm run validate:workflow -- --workflow-root work-items/terminal-archive-legacy-state-reconciliation --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/terminal-archive-legacy-state-reconciliation"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=BUG",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict",
+    "change_strategy=create_new",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=strict",
+    "selected_profile=strict",
+    "sdd_mode=none",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "terminal-archive-legacy-state-reconciliation",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "selected_profile": "strict",
+  "sdd_mode": "none",
+  "sdd_preset": "strict",
+  "sdd_light_profile": "preview",
+  "sdd_reasons": [],
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/terminal-archive-legacy-state-reconciliation/work-items/terminal-archive-legacy-state-reconciliation",
+  "current_step": "s01",
+  "change_strategy": "create_new",
+  "change_id": "CR-009",
+  "handoff_target": "human-review",
+  "required_actions": [
+    {
+      "id": "se:6ee5e91f9895141bedc6ec73409d18cbc52d86cef1ab943cb4e41bc4bf5bc0f9",
+      "kind": "workflow_followup",
+      "text": "wfc change-item approve --change-id CR-009 --reviewed-by <role>"
+    },
+    {
+      "id": "se:e4d1b1b3b3c9fc2a684bb772fef07f569db8f57d44564fd9dcc9084ab91aad88",
+      "kind": "workflow_followup",
+      "text": "wfc work-item approve --work-item terminal-archive-legacy-state-reconciliation --reviewed-by <role>"
+    },
+    {
+      "id": "se:a1618872daacea133445e05562123bbabad1261b3d8841adb89ceeab80d3d988",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item terminal-archive-legacy-state-reconciliation --gate task_plan --reviewed-by developer",
+      "gate": "task_plan"
+    },
+    {
+      "id": "se:de24ce9b0f5e308bd1d3e574f073236c79b6ec089f9abccbfc6d0c5df7366c44",
+      "kind": "work_item_activation",
+      "text": "wfc work-item activate --work-item terminal-archive-legacy-state-reconciliation --step s07 --write-root <path>"
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/terminal-archive-legacy-state-reconciliation"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "CHANGE_CREATED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED"
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "review_required": true,
+  "approval_status": "PENDING_REVIEW",
+  "reviewed_by": "",
+  "reviewed_at": "",
+  "review_notes": [],
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-16T07:24:26.023Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-09-16T07:24:26.023Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Materialization inputs are ready for scaffold."
+    },
+    {
+      "timestamp": "2026-09-16T07:24:26.062Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Auto-scaffolded workflow artifacts."
+    }
+  ],
+  "artifact_shape": "adaptive_v1",
+  "request_lane": "maintenance",
+  "requested_lane": "maintenance",
+  "workflow_required": true,
+  "routing_reasons": [
+    "LANE_MAINTENANCE"
+  ],
+  "escalation_reasons": [],
+  "roles": [
+    {
+      "role": "developer",
+      "reasons": [
+        "ROLE_DEVELOPER_BOUNDED_CHANGE"
+      ]
+    },
+    {
+      "role": "qc",
+      "reasons": [
+        "ROLE_QC_DOD_VERIFICATION"
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "gate": "task_plan",
+      "reasons": [
+        "GATE_TASK_PLAN_BOUNDED_CHANGE"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
+      "gate": "dod",
+      "reasons": [
+        "GATE_DOD_TECHNICAL_CLOSEOUT"
+      ],
+      "reviewer_roles": [
+        "qc"
+      ]
+    }
+  ],
+  "human_override": null,
+  "adaptive_activation": {
+    "source_version": "2.6.2",
+    "installed_versions": [
+      "2.6.2",
+      "2.6.2"
+    ],
+    "parity_passed": true
+  }
+}
