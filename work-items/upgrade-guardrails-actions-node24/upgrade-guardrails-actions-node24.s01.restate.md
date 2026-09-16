@@ -254,7 +254,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "upgrade-guardrails-actions-node24"
@@ -279,11 +279,11 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-11T08:20:11.412Z"
-handoff_target: "qc-dod-review"
-last_transition_action: "verify"
-last_transition_at: "2026-09-16T01:45:38.574Z"
+handoff_target: "branch-release-coordinator"
+last_transition_action: "close"
+last_transition_at: "2026-09-16T02:07:22.934Z"
 required_actions:
-  - {"id":"se:fd9336dd08773159878f3a147687db0ef5db543b3cea3f4a921e936f2206ba26","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+  - {"id":"se:fce7a94d04b7683825a1738b8c5efb8dc3357cc3d81d28cd2aed8b110cc2ab4d","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "PO approved the Node 24 guardrails action upgrade; later gates remain independent."
@@ -329,6 +329,7 @@ audit_events:
   - "CI_N24_TECHNICAL_VERIFICATION_APPROVED"
   - "CI_N24_DOD_HUMAN_APPROVED_PENDING_RECEIPT"
   - "VERIFICATION_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Audit

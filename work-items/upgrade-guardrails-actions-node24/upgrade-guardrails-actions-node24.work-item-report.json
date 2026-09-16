@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "po",
   "raw_request_summary": "Upgrade all checkout/setup-node uses in workflow-guardrails.yml to v7 while preserving behavior and proving hosted Node 24 compatibility.",
@@ -89,12 +89,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "qc-dod-review",
+  "handoff_target": "branch-release-coordinator",
   "required_actions": [
     {
-      "id": "se:fd9336dd08773159878f3a147687db0ef5db543b3cea3f4a921e936f2206ba26",
+      "id": "se:fce7a94d04b7683825a1738b8c5efb8dc3357cc3d81d28cd2aed8b110cc2ab4d",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -127,7 +127,8 @@
     "CI_N24_HOSTED_ZERO_ANNOTATION_EVIDENCE_COLLECTED",
     "CI_N24_TECHNICAL_VERIFICATION_APPROVED",
     "CI_N24_DOD_HUMAN_APPROVED_PENDING_RECEIPT",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -275,6 +276,14 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "QC approved Technical Verification for source 41e7b0187ff97e486b019bb9d69ab2945d7bbf8a, run 34959637638, and candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; 10/10 jobs PASS and all 10 check-runs have zero annotations. DoD remains separate."
+    },
+    {
+      "timestamp": "2026-09-16T02:07:22.934Z",
+      "action": "close",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "QC-approved DoD receipt matches finalized s08 SHA-256 e02623f4d54ee2f13eb3abad0c9b1ee69782c9273528eb13693304a396dfc6c2. Technical Verification PASS, CI-N24-AC-01..06 6/6 PASS, run 34959637638 10/10 PASS with zero annotations, and candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f. Close this work item only; release, tag, merge, push, and cleanup remain separate."
     }
   ]
 }
