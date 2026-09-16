@@ -686,7 +686,7 @@ test_refs:
 
 ## Work Item Protocol
 ```yaml
-protocol_status: DONE
+protocol_status: ARCHIVED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "adaptive-governance-human-approval-ux"
@@ -719,11 +719,10 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-28T13:15:42.373Z"
-handoff_target: "archive-lifecycle"
-last_transition_action: "close"
-last_transition_at: "2026-09-15T06:54:27.736Z"
-required_actions:
-  - {"id":"se:6c8ae76aa0846919cf13ca32a2d718bf7832739cd59be075f8cdd17fb0d9c1a6","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
+handoff_target: "none"
+last_transition_action: "archive"
+last_transition_at: "2026-09-16T03:18:53.490Z"
+required_actions: []
 blockers:
   - {"kind":"legacy","text":"F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."}
   - {"kind":"legacy","text":"Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending."}
@@ -868,6 +867,7 @@ audit_events:
   - "PARENT_CURRENT_TERMINAL_RECEIPTS_VERIFIED"
   - "F_AG11_001_RECONCILED"
   - "DONE_CONFIRMED"
+  - "ARCHIVE_CONFIRMED"
 ```
 
 ## Current Governance Router Status

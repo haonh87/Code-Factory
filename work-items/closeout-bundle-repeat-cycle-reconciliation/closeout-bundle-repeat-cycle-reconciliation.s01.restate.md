@@ -654,7 +654,7 @@ next_action: "Developer reviews the amended s06 TS0..TS8 plan; implementation st
 
 ## Work Item Protocol
 ```yaml
-protocol_status: DONE
+protocol_status: ARCHIVED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-repeat-cycle-reconciliation"
@@ -691,11 +691,10 @@ decision_owner: "agent"
 protocol_owner: "qc"
 reviewed_by: "po"
 reviewed_at: "2026-09-09T13:32:51Z"
-handoff_target: "archive-lifecycle"
-last_transition_action: "close"
-last_transition_at: "2026-09-15T06:54:27.675Z"
-required_actions:
-  - {"id":"se:65e43f396e06347d934d0dbe004e1196c3a4e7151b58e789f7d8bac020109bb7","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
+handoff_target: "none"
+last_transition_action: "archive"
+last_transition_at: "2026-09-16T03:18:53.132Z"
+required_actions: []
 blockers: []
 review_notes:
   - "QC approved recording parent finding F-AG11-001 and creation of this linked defect."
@@ -876,6 +875,7 @@ audit_events:
   - "AC_RCR_08_PARENT_CONTRIBUTION_CONFIRMED"
   - "F_AG11_001_RECONCILED"
   - "DONE_CONFIRMED"
+  - "ARCHIVE_CONFIRMED"
 ```
 
 ## Traceability

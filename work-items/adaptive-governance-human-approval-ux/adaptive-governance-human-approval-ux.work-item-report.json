@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "DONE",
+  "protocol_status": "ARCHIVED",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Introduce adaptive request-lane admission, context-based role and gate routing, bundled human approvals, and interaction telemetry so non-product requests avoid unnecessary role ceremony while high-risk controls remain human-controlled.",
@@ -163,14 +163,8 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-008",
-  "handoff_target": "archive-lifecycle",
-  "required_actions": [
-    {
-      "id": "se:6c8ae76aa0846919cf13ca32a2d718bf7832739cd59be075f8cdd17fb0d9c1a6",
-      "kind": "workflow_followup",
-      "text": "Archive the work item when all downstream lifecycle actions are complete."
-    }
-  ],
+  "handoff_target": "none",
+  "required_actions": [],
   "blockers": [
     {
       "kind": "legacy",
@@ -286,7 +280,8 @@
     "PARENT_CURRENT_BUSINESS_ACCEPTANCE_HUMAN_DECISION_APPROVED",
     "PARENT_CURRENT_TERMINAL_RECEIPTS_VERIFIED",
     "F_AG11_001_RECONCILED",
-    "DONE_CONFIRMED"
+    "DONE_CONFIRMED",
+    "ARCHIVE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -790,6 +785,14 @@
       "from_status": "VERIFIED",
       "to_status": "DONE",
       "note": "Definition of Done and all required terminal gates confirmed for the exact v2.6.2 candidate after receipt-backed F-AG11-001 reconciliation."
+    },
+    {
+      "timestamp": "2026-09-16T03:18:53.490Z",
+      "action": "archive",
+      "actor": "coordinator",
+      "from_status": "DONE",
+      "to_status": "ARCHIVED",
+      "note": "CR-008 passed exact-candidate verification, DoD, Release, Business Acceptance, merge, tag, GitHub release, and npm publication for v2.6.2; parent lifecycle archived."
     }
   ]
 }

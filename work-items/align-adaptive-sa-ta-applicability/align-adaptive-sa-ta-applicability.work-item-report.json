@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "DONE",
+  "protocol_status": "ARCHIVED",
   "decision_owner": "agent",
   "protocol_owner": "po",
   "raw_request_summary": "Reconcile CF-019 by making router-derived SA/TA applicability authoritative while preserving deterministic hard-risk escalation.",
@@ -94,11 +94,8 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "parent-cr-008-reverification",
-  "required_actions": [
-    "Re-verify parent CR-008 against an exact candidate containing the completed CF-019 result.",
-    "Keep the shared branch/worktree open until parent verification and parent closeout gates complete."
-  ],
+  "handoff_target": "none",
+  "required_actions": [],
   "blockers": [],
   "refs": [
     "work-items/align-adaptive-sa-ta-applicability",
@@ -138,7 +135,8 @@
     "VERIFICATION_CONFIRMED",
     "S08_DOD_APPROVED",
     "S08_DOD_RECEIPT_VERIFIED",
-    "DONE_CONFIRMED"
+    "DONE_CONFIRMED",
+    "ARCHIVE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -391,6 +389,14 @@
       "from_status": "VERIFIED",
       "to_status": "DONE",
       "note": "Definition of Done confirmed by QC with digest-valid trusted receipt; child protocol closed and parent CR-008 exact-candidate re-verification remains mandatory."
+    },
+    {
+      "timestamp": "2026-09-16T03:18:52.958Z",
+      "action": "archive",
+      "actor": "coordinator",
+      "from_status": "DONE",
+      "to_status": "ARCHIVED",
+      "note": "Required parent CR-008 exact-candidate re-verification completed and v2.6.2 published; child lifecycle archived."
     }
   ]
 }
