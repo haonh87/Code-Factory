@@ -6,7 +6,7 @@ language: vi
 
 > Tiếng Anh / English: workflow-bundle-quickstart.md
 
-Hướng dẫn này tập trung vào ứng viên phát hành `workflow-bundle v2.6.1`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Không thể cài từ registry cho tới khi human Release gate phê duyệt. Bản vá giữ 42 managed skill và đồng bộ authoring smoke với hành vi bootstrap approval cho legacy scaffold đã được phê duyệt.
+Hướng dẫn này tập trung vào ứng viên phát hành `workflow-bundle v2.6.2`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, định tuyến request bằng adaptive governance, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Không thể cài từ registry cho tới khi human Release gate phê duyệt. Candidate giữ 42 managed skill và giữ nguyên thẩm quyền độc lập của human cho từng gate áp dụng.
 
 ## Mục Tiêu
 
@@ -16,6 +16,8 @@ Sau khi làm xong, bạn sẽ:
 - cài được workflow bundle vào `~/.codex`, `~/.claude` hoặc project folder bằng `wfc install`
 - bootstrap được một repo dự án mới bằng `wfc init`
 - scaffold hoặc materialize được workflow đầu tiên
+- hiểu request nào không cần delivery workflow và trigger nào buộc dùng đầy đủ control của product delivery
+- approve được readiness hoặc closeout gate áp dụng trong một lần tương tác có transaction journal
 - validate được workflow bằng `wfc`
 
 ## Requirements
@@ -148,6 +150,43 @@ Consistency rule:
 - nếu `Missing Gates` khác `NONE`, `Next Human Action` không được là `NONE`
 - request greenfield kiểu `QR Voucher + voucher service API + tone brand` trong repo trống phải dừng ở `proposal stage`, không được auto-scaffold
 
+## Định Tuyến Request Thích Ứng
+
+Vocabulary công khai gồm:
+
+- non-delivery: `qa`, `translation`, `summarization`, `research`, `documentation`, `read_only_analysis`
+- bounded delivery: `maintenance`
+- product delivery: `product_delivery`
+
+Các lane non-delivery kết thúc trước khi ghi report, scaffold, capability grant hoặc telemetry record. Chỉ human mới được yêu cầu materialize tường minh và phải cung cấp override có audit. Maintenance chỉ chọn role Developer/QC cùng gate Task Plan/DoD cần cho bounded change.
+
+Các hard trigger sau luôn route sang `product_delivery`: `public_contract`, `migration`, `security_sensitive`, `regulated`, `greenfield_foundation` và `release`. Intent hỗn hợp hoặc lane không xác định cũng fail-closed. Vì vậy SA và TA chỉ xuất hiện theo trigger, không còn bắt buộc với yêu cầu không liên quan; DevOps và Release chỉ xuất hiện khi scope có release. Thẩm quyền của gate áp dụng không thay đổi.
+
+Adaptive artifact writer có compatibility guard. Muốn bật phải truyền `--adaptive-writes true`, `--request-lane` tường minh, source/runtime đã cài cùng minor version và `--adaptive-parity-passed true`. Nếu một guard fail, hệ thống không ghi adaptive report, scaffold, capability state hay telemetry record. Chỉ bật cờ sau khi parity giữa canonical, Codex, Claude và installed candidate đã thực sự pass.
+
+Approval bundle giảm số lần tương tác nhưng không gộp decision:
+
+```bash
+# Trước hết finalize host note và điền gate_reviews cho từng gate áp dụng.
+wfc gate approve-ready-bundle --work-item <work-item-slug>
+# Hoặc reject cả readiness batch theo cơ chế atomic.
+wfc gate reject-ready-bundle --work-item <work-item-slug>
+
+# Sau verify, approve đúng các terminal gate áp dụng.
+wfc gate approve-closeout-bundle --work-item <work-item-slug>
+```
+
+Mỗi gate vẫn giữ reviewer, timestamp, artifact digest và signed receipt riêng. CLI preflight toàn bộ batch trước khi ký, dùng lock theo work item và transaction journal, rồi recover hoặc rollback interrupted write trước khi chấp nhận retry. Các lệnh `wfc gate approve` riêng lẻ vẫn là compatibility fallback.
+
+Telemetry mặc định tắt. Bật tường minh bằng `--telemetry true` trên lifecycle command được hỗ trợ hoặc `CF_TELEMETRY=on`. Dữ liệu chỉ nằm cục bộ, theo allowlist và dùng mã định danh giả danh; raw record hết hạn sau 30 ngày, aggregate record sau 90 ngày. Xóa record hết hạn bằng:
+
+```bash
+wfc telemetry purge
+wfc telemetry purge --telemetry-out /path/to/local-telemetry
+```
+
+Không có remote telemetry exporter.
+
 ## Bootstrap Một Repo Dự Án Mới
 
 ```bash
@@ -217,6 +256,12 @@ wfc gate approve --work-item add-google-oauth-login --gate spec --reviewed-by po
 wfc gate approve --work-item add-google-oauth-login --gate dor --reviewed-by po
 wfc gate approve --work-item add-google-oauth-login --gate approach --reviewed-by developer
 wfc gate approve --work-item add-google-oauth-login --gate task_plan --reviewed-by developer
+```
+
+Sau khi ghi cùng các per-gate review đó vào host note đã finalize, readiness bundle là cách ngắn hơn nhưng tương đương về thẩm quyền cho các gate áp dụng:
+
+```bash
+wfc gate approve-ready-bundle --work-item add-google-oauth-login
 ```
 
 Sau đó hoàn tất authoring và human review cho `s04`, `s05`, `s06`, rồi mới mở execution:
@@ -295,7 +340,11 @@ wfc work-item list
 wfc work-item status --work-item <work-item-slug>
 wfc work-item approve --work-item <work-item-slug> --reviewed-by <role>
 wfc gate approve --work-item <work-item-slug> --gate <spec|dor|approach|task_plan> --reviewed-by <role>
+# Hoặc, sau khi finalize mọi host note và gate_reviews áp dụng:
+wfc gate approve-ready-bundle --work-item <work-item-slug>
 wfc work-item activate --work-item <work-item-slug> --step s07 --write-root <path>
+wfc work-item verify --work-item <work-item-slug>
+wfc gate approve-closeout-bundle --work-item <work-item-slug>
 wfc capability status
 wfc protocol
 ```

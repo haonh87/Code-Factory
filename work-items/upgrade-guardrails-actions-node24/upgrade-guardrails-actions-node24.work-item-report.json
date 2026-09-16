@@ -1,0 +1,292 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "ARCHIVED",
+  "decision_owner": "agent",
+  "protocol_owner": "po",
+  "raw_request_summary": "Upgrade all checkout/setup-node uses in workflow-guardrails.yml to v7 while preserving behavior and proving hosted Node 24 compatibility.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "upgrade-guardrails-actions-node24",
+      "work_item_title": "Upgrade Guardrails Actions Node24",
+      "work_item_type": "CHANGE",
+      "scope_summary": "Move nine checkout, nine setup-node, one upload-artifact, and one download-artifact selector to their approved Node 24-backed majors without topology or input drift.",
+      "primary_outcome": "A green hosted guardrails run with zero Node deprecation annotations before the Node 20 runner cutoff.",
+      "in_scope": [
+        "Twenty original-baseline action-version references in .github/workflows/workflow-guardrails.yml",
+        "Preservation of release-candidate fetch-depth: 0 and artifact inputs/order",
+        "Local invariant checks and an exact hosted run with zero Node deprecation annotations"
+      ],
+      "out_of_scope": [
+        "Validator parallelisation, matrix conversion, or fail-fast changes",
+        "Job topology, trigger, permission, Node matrix, cache, submodule, or credential-policy changes",
+        "Release publication or tagging"
+      ],
+      "planning_track": "quick",
+      "delivery_context": "brownfield",
+      "sdd_mode": "light",
+      "selected_profile": "sdd-light",
+      "sdd_reasons": [],
+      "sdd_preset": "light",
+      "sdd_light_profile": "preview",
+      "governance_profile": "default",
+      "execution_mode": "agentic",
+      "existing_refs": [],
+      "collision_notes": [],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "The bounded one-file maintenance delta does not need a separate change package.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item upgrade-guardrails-actions-node24 --planning-track quick --delivery-context brownfield --sdd-mode light",
+        "npm run validate:workflow -- --workflow-root work-items/upgrade-guardrails-actions-node24 --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=CHANGE",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict",
+    "change_strategy=none",
+    "planning_track=quick",
+    "governance_profile=default",
+    "sdd_preset=light",
+    "selected_profile=sdd-light",
+    "sdd_mode=light",
+    "sdd_escalation_reasons=",
+    "Manual dedup confirmed no existing item owns the checkout/setup-node v7 bump; ci-guardrails-parallelisation owns only later topology restructuring.",
+    "Human PO explicitly approved this work item at 2026-09-11T08:05:37Z; trusted receipt sealing remains separate.",
+    "Trusted PO work-item receipt recorded at 2026-09-11T08:20:11.420Z verifies APPROVED for this project root.",
+    "Compact s04 and s06 author Spec, DoR, Approach, and Task Plan for one ready-bundle review; implementation remains closed.",
+    "Human Developer approved Spec, Approach, and Task Plan; human QC approved DoR at 2026-09-11T08:32:50Z. Receipt sealing and activation remain separate.",
+    "Hosted run 34947061938 exposed F-N24-H1: three Node 20 annotations from upload/download-artifact@v4 despite 10/10 job success.",
+    "Human Developer/QC approved F-N24-H1 and readiness rework; Developer approved Option A Task Plan amendment T4a and the Spec Card authoring path at 2026-09-15T09:14:23Z. Amended gate approvals and production edits remain separate.",
+    "Human Developer approved amended Spec v0.2, Approach, and Task Plan T4a; human QC approved amended DoR at 2026-09-15T09:27:44Z. Fresh receipt sealing and resume remain separate.",
+    "Human Developer/QC approved F-N24-T4A-001; Developer approved the unchanged-semantic Approach and Task Plan amendment T4b at 2026-09-15T10:17:29Z. Fresh s06 receipts and resume remain separate.",
+    "Fresh T4b Approach and Task Plan receipts match s06 SHA-256 b8e91fe17e5b2fcc46af6c1c712030a336f2f5f849422ef9008f09290656fa43; the work item resumed at 2026-09-15T10:21:15.722Z with all five approved write roots.",
+    "Human Developer/QC approved refreshed CI-N24-T4a/T4b Spec Compliance for source 53bab65030dd925d8f814454b504d12c2dec9505, workflow SHA-256 b72a0cb172d8a11c5d2e96acc6a31bdd9c22b00f48b0a8fd0e643ae0d3ad0f30, and source-set SHA-256 7115db15698953da66881d18335ab48b02b4f9102d46e5b2b29a9d3283d5983a at 2026-09-15T10:33:17Z. Code Quality remains independent.",
+    "Human Developer/QC approved refreshed CI-N24-T4a/T4b Code Quality for source 53bab65030dd925d8f814454b504d12c2dec9505 and implementation diff SHA-256 4852365ded7042836b4327e3506bdae04e5747200c83c3545afe3df12c9ddedc at 2026-09-15T10:41:09Z. Hosted zero-annotation verification remains separate.",
+    "Hosted run 34959637638 for source 41e7b0187ff97e486b019bb9d69ab2945d7bbf8a passed 10/10 jobs with zero annotations across all 10 check-runs; downloaded v2.6.2 candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f matches its declared digest. QC Technical Verification and DoD remain separate.",
+    "Human QC approved Technical Verification for source 41e7b0187ff97e486b019bb9d69ab2945d7bbf8a, run 34959637638, and candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f at 2026-09-16T01:41:43Z. DoD remains a separate gate.",
+    "Human QC approved DoD for upgrade-guardrails-actions-node24 at 2026-09-16T02:02:51Z based on approved Technical Verification and 6/6 Spec Coverage; QC accepted action-major alias pinning and missing local actionlint as non-blocking residual risks. Trusted DoD receipt and protocol close remain separate."
+  ],
+  "work_item_slug": "upgrade-guardrails-actions-node24",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/upgrade-guardrails-actions-node24",
+  "current_step": "s08",
+  "granted_write_paths": [
+    ".github/workflows/workflow-guardrails.yml",
+    "work-items/upgrade-guardrails-actions-node24",
+    "product-specs/cards/upgrade-guardrails-actions-node24.md",
+    "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js",
+    "packages/workflow-bundle/test/release-surface.test.js"
+  ],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "none",
+  "required_actions": [],
+  "blockers": [],
+  "refs": [
+    "work-items/upgrade-guardrails-actions-node24"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "S01_CLARIFY_LIGHT_DRAFTED",
+    "WORK_ITEM_REVIEW_RECORDED_PENDING_RECEIPT",
+    "WORK_ITEM_APPROVED",
+    "TRUSTED_WORK_ITEM_RECEIPT_VERIFIED",
+    "SDD_LIGHT_S04_S06_DRAFTED",
+    "SDD_LIGHT_READY_BUNDLE_HUMAN_APPROVED_PENDING_RECEIPTS",
+    "READINESS_BUNDLE_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "WORK_ITEM_BLOCKED",
+    "F_N24_H1_AND_T4A_DIRECTION_APPROVED",
+    "AMENDED_READINESS_GATES_HUMAN_APPROVED_PENDING_RECEIPTS",
+    "WORK_ITEM_RESUMED",
+    "F_N24_T4A_001_AND_T4B_HUMAN_APPROVED_PENDING_RECEIPTS",
+    "T4B_READINESS_RECEIPTS_VERIFIED_AND_RESUMED",
+    "T4AB_REFRESHED_SPEC_COMPLIANCE_APPROVED",
+    "T4AB_REFRESHED_CODE_QUALITY_APPROVED",
+    "CI_N24_HOSTED_ZERO_ANNOTATION_EVIDENCE_COLLECTED",
+    "CI_N24_TECHNICAL_VERIFICATION_APPROVED",
+    "CI_N24_DOD_HUMAN_APPROVED_PENDING_RECEIPT",
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED",
+    "ARCHIVE_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-09-11T08:20:11.412Z",
+  "review_notes": [
+    "PO approved the Node 24 guardrails action upgrade; later gates remain independent.",
+    "Trusted PO work-item receipt recorded at 2026-09-11T08:20:11.420Z verifies APPROVED for this project root.",
+    "Compact s04 and s06 are drafted; no ready-bundle gate or implementation authority is inferred.",
+    "Human Developer approved Spec, Approach, and Task Plan; human QC approved DoR at 2026-09-11T08:32:50Z. Receipt sealing and activation remain separate.",
+    "Hosted run 34947061938 exposed F-N24-H1: three Node 20 annotations from upload/download-artifact@v4 despite 10/10 job success.",
+    "Human Developer/QC approved F-N24-H1 and readiness rework; Developer approved Option A Task Plan amendment T4a and the Spec Card authoring path at 2026-09-15T09:14:23Z. Amended gate approvals and production edits remain separate.",
+    "Human Developer approved amended Spec v0.2, Approach, and Task Plan T4a; human QC approved amended DoR at 2026-09-15T09:27:44Z. Fresh receipt sealing and resume remain separate.",
+    "Human Developer/QC approved F-N24-T4A-001; Developer approved the unchanged-semantic Approach and Task Plan amendment T4b at 2026-09-15T10:17:29Z. Fresh s06 receipts and resume remain separate.",
+    "Fresh T4b Approach and Task Plan receipts match s06 SHA-256 b8e91fe17e5b2fcc46af6c1c712030a336f2f5f849422ef9008f09290656fa43; the work item resumed at 2026-09-15T10:21:15.722Z with all five approved write roots.",
+    "Human Developer/QC approved refreshed CI-N24-T4a/T4b Spec Compliance for source 53bab65030dd925d8f814454b504d12c2dec9505, workflow SHA-256 b72a0cb172d8a11c5d2e96acc6a31bdd9c22b00f48b0a8fd0e643ae0d3ad0f30, and source-set SHA-256 7115db15698953da66881d18335ab48b02b4f9102d46e5b2b29a9d3283d5983a at 2026-09-15T10:33:17Z. Code Quality remains independent.",
+    "Human Developer/QC approved refreshed CI-N24-T4a/T4b Code Quality for source 53bab65030dd925d8f814454b504d12c2dec9505 and implementation diff SHA-256 4852365ded7042836b4327e3506bdae04e5747200c83c3545afe3df12c9ddedc at 2026-09-15T10:41:09Z. Hosted zero-annotation verification remains separate.",
+    "Hosted run 34959637638 for source 41e7b0187ff97e486b019bb9d69ab2945d7bbf8a passed 10/10 jobs with zero annotations across all 10 check-runs; downloaded v2.6.2 candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f matches its declared digest. QC Technical Verification and DoD remain separate.",
+    "Human QC approved Technical Verification for source 41e7b0187ff97e486b019bb9d69ab2945d7bbf8a, run 34959637638, and candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f at 2026-09-16T01:41:43Z. DoD remains a separate gate.",
+    "Human QC approved DoD for upgrade-guardrails-actions-node24 at 2026-09-16T02:02:51Z based on approved Technical Verification and 6/6 Spec Coverage; QC accepted action-major alias pinning and missing local actionlint as non-blocking residual risks. Trusted DoD receipt and protocol close remain separate."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-11T08:04:34.863Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-09-11T08:04:34.864Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Materialization inputs are ready for scaffold."
+    },
+    {
+      "timestamp": "2026-09-11T08:04:34.901Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Auto-scaffolded workflow artifacts."
+    },
+    {
+      "timestamp": "2026-09-11T08:05:37Z",
+      "action": "work-item-review-recorded",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human PO explicitly approved the work item. Trusted receipt sealing remains a separate TTY action; no later gate is implied."
+    },
+    {
+      "timestamp": "2026-09-11T08:20:11.413Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "PO approved the Node 24 guardrails action upgrade; later gates remain independent."
+    },
+    {
+      "timestamp": "2026-09-11T08:26:22Z",
+      "action": "open-sdd-light-ready-bundle",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Verified the trusted PO work-item receipt and drafted compact s04 plus s06 for independent Spec, DoR, Approach, and Task Plan review; implementation remains closed."
+    },
+    {
+      "timestamp": "2026-09-11T08:32:50Z",
+      "action": "sdd-light-ready-bundle-human-approved",
+      "actor": "developer/qc",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human Developer approved Spec, Approach, and Task Plan; human QC approved DoR. Four trusted receipts and explicit s07 activation remain separate."
+    },
+    {
+      "timestamp": "2026-09-15T07:53:21.932Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "3e1a4065-b112-48dd-b825-cc15319ac495"
+    },
+    {
+      "timestamp": "2026-09-15T07:54:40.347Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-09-15T09:08:15.067Z",
+      "action": "block",
+      "actor": "coordinator",
+      "from_status": "ACTIVE",
+      "to_status": "BLOCKED",
+      "note": "Hosted candidate exposed the approved scope/spec conflict. Stop production edits and return for a bounded Node 24 artifact-action amendment."
+    },
+    {
+      "timestamp": "2026-09-15T09:35:25.621Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "BLOCKED",
+      "to_status": "BLOCKED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "1ef4708a-e6dc-44d8-a166-f6153c4f6ed0"
+    },
+    {
+      "timestamp": "2026-09-15T09:54:16.513Z",
+      "action": "resume",
+      "actor": "coordinator",
+      "from_status": "BLOCKED",
+      "to_status": "ACTIVE",
+      "note": "F-N24-H1 readiness amendment has four fresh digest-matched receipts; resume only bounded T4a two-token implementation and refreshed review."
+    },
+    {
+      "timestamp": "2026-09-15T09:59:45.552Z",
+      "action": "block",
+      "actor": "coordinator",
+      "from_status": "ACTIVE",
+      "to_status": "BLOCKED",
+      "note": "T4a production delta is exactly two selectors and its normalized workflow is unchanged, but full unit verification exposed two stale v4 expectations. Stop test edits pending a bounded T4b scope amendment and fresh s06 receipts."
+    },
+    {
+      "timestamp": "2026-09-15T10:21:15.722Z",
+      "action": "resume",
+      "actor": "coordinator",
+      "from_status": "BLOCKED",
+      "to_status": "ACTIVE",
+      "note": "T4b Approach and Task Plan receipts are APPROVED and digest-matched to s06 SHA-256 b8e91fe17e5b2fcc46af6c1c712030a336f2f5f849422ef9008f09290656fa43; resume only the approved two-file/four-token test contract alignment and existing T4a workflow delta."
+    },
+    {
+      "timestamp": "2026-09-16T01:45:38.574Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "QC approved Technical Verification for source 41e7b0187ff97e486b019bb9d69ab2945d7bbf8a, run 34959637638, and candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; 10/10 jobs PASS and all 10 check-runs have zero annotations. DoD remains separate."
+    },
+    {
+      "timestamp": "2026-09-16T02:07:22.934Z",
+      "action": "close",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "QC-approved DoD receipt matches finalized s08 SHA-256 e02623f4d54ee2f13eb3abad0c9b1ee69782c9273528eb13693304a396dfc6c2. Technical Verification PASS, CI-N24-AC-01..06 6/6 PASS, run 34959637638 10/10 PASS with zero annotations, and candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f. Close this work item only; release, tag, merge, push, and cleanup remain separate."
+    },
+    {
+      "timestamp": "2026-09-16T03:18:53.301Z",
+      "action": "archive",
+      "actor": "coordinator",
+      "from_status": "DONE",
+      "to_status": "ARCHIVED",
+      "note": "Hosted zero-annotation verification passed and the verified v2.6.2 artifact was published; branch-scoped maintenance lifecycle archived."
+    }
+  ]
+}

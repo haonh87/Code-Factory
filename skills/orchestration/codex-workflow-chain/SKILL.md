@@ -73,6 +73,15 @@ Follow the 8-step delivery workflow for coding tasks.
 - If a work item uses a non-default `planning_track` or you want to lock the routing rules, also run `wfc plan --workflow-root work-items`. If the repo maps a root script, `npm run validate:workflow:planning -- --workflow-root work-items` is an equivalent alias.
 - `work-items/` is the canonical artifact root for real workflow artifacts; unless instructed otherwise, a scaffolded workflow note should live under `work-items/<work_item_slug>/`.
 
+## Hard Rule: Adaptive Admission And Applicability
+
+- Classify the request before opening the eight-step delivery chain. The canonical lanes are `qa`, `translation`, `summarization`, `research`, `documentation`, `read_only_analysis`, `maintenance`, and `product_delivery`.
+- Non-delivery lanes short-circuit before delivery writes. A human may explicitly materialize one only with an actor, reason, and UTC timestamp; this does not approve a gate.
+- Public-contract, migration, security-sensitive, regulated, greenfield/foundation, release, and ambiguous mixed-intent triggers fail closed to `product_delivery` and cannot be downgraded by inference or a normal preset.
+- Hard triggers are structured inputs, not raw keyword matches; invalid trigger booleans are rejected rather than normalized to a downgrade.
+- Derive only applicable roles and gates. Every selected entry needs a stable reason; every selected gate also needs authorized reviewer roles. Omitted and `not_applicable` entries create zero pending actions.
+- Adaptive writes require source/installed minor-version agreement and canonical/runtime parity. Full authority is `policies/codex/AGENTS.global.md § Hard Rule: Adaptive Admission And Applicability`; the canonical tables are in `references/adaptive-planning.md`.
+
 ## Hard Rule: Spec/Design Before Code
 
 - Do not start `s07 Implement` until `s04 Acceptance + DoR`, `s05 Technical Approach`, or `s06 Task Plan` meet the minimum conditions.

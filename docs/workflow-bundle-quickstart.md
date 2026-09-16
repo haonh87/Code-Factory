@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: workflow-bundle-quickstart.vi.md
 
-This guide focuses on the `workflow-bundle v2.6.1` release candidate: install `wfc`, install the workflow bundle for Codex or Claude Code, bootstrap a new repo, and run the `agent proposes, human approves` flow. Registry installation remains unavailable until the human Release gate passes. The patch retains 42 managed skills and aligns the authoring smoke with approved legacy-scaffold approval bootstrap behavior.
+This guide focuses on the `workflow-bundle v2.6.2` release candidate: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, bootstrap a new repo, and run the `agent proposes, human approves` flow. Registry installation remains unavailable until the human Release gate passes. The candidate retains 42 managed skills and preserves independent human authority for every applicable gate.
 
 ## Objectives
 
@@ -16,6 +16,8 @@ When you are done, you will:
 - be able to install the workflow bundle into `~/.codex`, `~/.claude`, or a project folder with `wfc install`
 - be able to bootstrap a new project repo with `wfc init`
 - be able to scaffold or materialize your first workflow
+- understand which requests need no delivery workflow and which triggers force full product-delivery controls
+- be able to approve applicable readiness or closeout gates in one journaled interaction
 - be able to validate a workflow with `wfc`
 
 ## Requirements
@@ -148,6 +150,43 @@ Consistency rule:
 - if `Missing Gates` is not `NONE`, `Next Human Action` must not be `NONE`
 - a greenfield request like `QR Voucher + voucher service API + tone brand` in an empty repo must stop at `proposal stage` and must not auto-scaffold
 
+## Adaptive Request Routing
+
+The public lane vocabulary is:
+
+- non-delivery: `qa`, `translation`, `summarization`, `research`, `documentation`, `read_only_analysis`
+- bounded delivery: `maintenance`
+- product delivery: `product_delivery`
+
+Non-delivery lanes short-circuit before a report, scaffold, capability grant, or telemetry record is written. A human may explicitly materialize one only with an audited override. Maintenance selects only the Developer/QC roles and Task Plan/DoD gates needed for a bounded change.
+
+The following hard triggers always route to `product_delivery`: `public_contract`, `migration`, `security_sensitive`, `regulated`, `greenfield_foundation`, and `release`. Mixed or unknown intent also fails closed. SA and TA are therefore trigger-based rather than mandatory on unrelated work; DevOps and Release appear only for release scope. Applicable gate authority is unchanged.
+
+Adaptive artifact writing is compatibility-guarded. It requires `--adaptive-writes true`, an explicit `--request-lane`, matching source/installed minor versions, and `--adaptive-parity-passed true`. If any guard fails, no adaptive report, scaffold, capability state, or telemetry record is written. Keep the flag off until canonical, Codex, Claude, and installed-candidate parity has actually passed.
+
+Approval bundles reduce interactions without merging decisions:
+
+```bash
+# First finalize the host notes and fill gate_reviews for each applicable gate.
+wfc gate approve-ready-bundle --work-item <work-item-slug>
+# Or reject the readiness batch atomically.
+wfc gate reject-ready-bundle --work-item <work-item-slug>
+
+# After verification, approve only the applicable terminal gates.
+wfc gate approve-closeout-bundle --work-item <work-item-slug>
+```
+
+Each gate retains its own reviewer, timestamp, artifact digest, and signed receipt. The CLI preflights the whole batch before signing, uses a per-work-item lock and transaction journal, and recovers or rolls back interrupted writes before accepting a retry. Individual `wfc gate approve` commands remain the compatibility fallback.
+
+Telemetry is off by default. Enable it explicitly with `--telemetry true` on a supported lifecycle command or `CF_TELEMETRY=on`. Data is local-only, allowlisted, and pseudonymous; raw records expire after 30 days and aggregate records after 90 days. Purge expired records with:
+
+```bash
+wfc telemetry purge
+wfc telemetry purge --telemetry-out /path/to/local-telemetry
+```
+
+There is no remote telemetry exporter.
+
 ## Bootstrap A New Project Repo
 
 ```bash
@@ -217,6 +256,12 @@ wfc gate approve --work-item add-google-oauth-login --gate spec --reviewed-by po
 wfc gate approve --work-item add-google-oauth-login --gate dor --reviewed-by po
 wfc gate approve --work-item add-google-oauth-login --gate approach --reviewed-by developer
 wfc gate approve --work-item add-google-oauth-login --gate task_plan --reviewed-by developer
+```
+
+After the same per-gate reviews are recorded in their finalized host notes, the readiness bundle is the shorter equivalent for the applicable gates:
+
+```bash
+wfc gate approve-ready-bundle --work-item add-google-oauth-login
 ```
 
 Then complete authoring and human review for `s04`, `s05`, and `s06` before opening execution:
@@ -295,7 +340,11 @@ wfc work-item list
 wfc work-item status --work-item <work-item-slug>
 wfc work-item approve --work-item <work-item-slug> --reviewed-by <role>
 wfc gate approve --work-item <work-item-slug> --gate <spec|dor|approach|task_plan> --reviewed-by <role>
+# Or, after finalizing all applicable host notes and gate_reviews:
+wfc gate approve-ready-bundle --work-item <work-item-slug>
 wfc work-item activate --work-item <work-item-slug> --step s07 --write-root <path>
+wfc work-item verify --work-item <work-item-slug>
+wfc gate approve-closeout-bundle --work-item <work-item-slug>
 wfc capability status
 wfc protocol
 ```

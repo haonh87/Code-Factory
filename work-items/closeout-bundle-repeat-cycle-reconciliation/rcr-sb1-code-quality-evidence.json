@@ -1,0 +1,105 @@
+{
+  "batch": "RCR-SB1",
+  "source_sha": "964e1c7cf879c6d244253b3ee294f9cdaff60f77",
+  "spec_compliance": {
+    "human_decision": "APPROVED",
+    "reviewed_by": [
+      "qc"
+    ],
+    "reviewed_at": "2026-09-12T07:45:41Z"
+  },
+  "code_quality": {
+    "human_decision": "FAIL",
+    "reviewed_by": ["developer", "qc"],
+    "reviewed_at": "2026-09-13T05:25:28Z",
+    "decision_source": "User accepted the immediately preceding named RCR verdict/finding/reopen/TS2a bundle.",
+    "reviewer_roles": [
+      "developer",
+      "qc"
+    ],
+    "recommendation": "FAIL"
+  },
+  "findings": [
+    {
+      "id": "F-RCR-SB1-001",
+      "severity": "MEDIUM",
+      "confidence": "HIGH",
+      "category": "Correctness / fail-open mirror validation",
+      "disposition": "OPEN",
+      "file": "packages/workflow-bundle/scripts/validate-work-item-protocol.js",
+      "lines": [
+        82,
+        89,
+        90
+      ],
+      "issue": "Only the first collection key and contiguous list are parsed. Duplicate state collection keys or entries following an empty flow list are ignored, so invalid/desynchronized mirror data is accepted.",
+      "expected": "Reject duplicate collection keys, invalid collection structure and every invalid typed entry; never ignore serialized mirror input.",
+      "observed": "validateProtocolBlockSync returned [] for both a duplicate blockers mapping with unknown kind and an invalid mapping following blockers: [].",
+      "impact": "The s01 human-visible mirror may be invalid or disagree with the JSON report without a protocol validation error. No receipt/signature bypass demonstrated.",
+      "repro": {
+        "setup": "const u=require(\"./packages/workflow-bundle/scripts/work-item-protocol-utils\"),v=require(\"./packages/workflow-bundle/scripts/validate-work-item-protocol\"); const r=u.normalizeProtocolReport({work_item_slug:\"demo\",protocol_status:\"BLOCKED\",current_step:\"s07\",blockers:[],required_actions:[]}); const s=u.renderProtocolBlock(r);",
+        "cases": [
+          {
+            "name": "control",
+            "replacement": null,
+            "errors": []
+          },
+          {
+            "name": "duplicate collection",
+            "replacement": "blockers: []\nblockers:\n  - {\"id\":\"bad\",\"kind\":\"unknown\",\"text\":\"must reject\"}",
+            "errors": []
+          },
+          {
+            "name": "invalid trailing list",
+            "replacement": "blockers: []\n  - {\"id\":\"bad\",\"kind\":\"unknown\",\"text\":\"must reject\"}",
+            "errors": []
+          }
+        ],
+        "invoke": "const errors=[]; v.validateProtocolBlockSync(s.replace(\"blockers: []\",replacement),r,\"diagnostic.s01\",errors); console.log(errors);",
+        "writes": "None; in-memory diagnostics only."
+      },
+      "recommendation": "Reopen same-batch Spec Compliance after an approved TS2a amendment. Add fail-first duplicate-key/invalid-tail/non-contiguous-entry tests, make the existing mirror reader fully consume its bounded serialization format and reject malformed structure; preserve unknown legacy strings and no new parser dependency."
+    }
+  ],
+  "commands": [
+    {
+      "command": "node packages/workflow-bundle/test/work-item-protocol-state.test.js",
+      "result": "PASS 9/9"
+    },
+    {
+      "command": "node packages/workflow-bundle/test/validate-work-item-protocol.test.js",
+      "result": "PASS existing unit suite"
+    },
+    {
+      "command": "node packages/workflow-bundle/test/workflow-gate-review.test.js",
+      "result": "PASS"
+    },
+    {
+      "command": "node --check (two changed production scripts)",
+      "result": "PASS"
+    },
+    {
+      "command": "node packages/workflow-bundle/test/work-item-protocol.test.js",
+      "result": "FAIL 3 integration assertions; planned TS3/TS4 conversion, not hidden or fixed in this batch"
+    },
+    {
+      "command": "audit-workflow-pack.js",
+      "result": "Mechanical PASS; semantic completion not established"
+    }
+  ],
+  "scan": {
+    "syntax": "PASS: native Node parser and focused tests",
+    "static_analysis": "SKIP: no eslint binary or configured lint script; targeted manual review found F-RCR-SB1-001, not deterministic lint evidence",
+    "security": "SKIP: semgrep unavailable; no scanner installed or executed. Manual review covers bounded grammar/subject binding, display invariance, no new eval/process/file writes. This is not security clearance.",
+    "performance_heuristic": "Reviewed linear collection validation/normalization, per-entry deterministic hashing and mirror serialization. No observed hot-path I/O or unbounded nested scan in the new helpers. No benchmark performed.",
+    "overall_status": "FAIL",
+    "status_boundary": "Pre-handoff s07 evidence only, not s08 Technical Verification"
+  },
+  "guards": {
+    "ts3": "CLOSED",
+    "candidate_release_finalization": "CLOSED",
+    "protected_hosts": "UNCHANGED",
+    "quarantined_T7": "UNCHANGED and unstaged",
+    "unknown_legacy_rule": "Preserve exact original text and never semantically clear."
+  }
+}

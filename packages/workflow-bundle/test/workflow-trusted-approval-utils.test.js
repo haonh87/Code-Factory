@@ -18,6 +18,7 @@ const {
   buildProjectApprovalNamespace,
   buildReceiptPath,
   loadTrustedApprovalReceipt,
+  normalizeTrustedApprovalReceipt,
   resolveApprovalPassphrase,
   resolveGateArtifact
 } = require("../scripts/workflow-trusted-approval-utils");
@@ -66,6 +67,23 @@ function rmrf(target) {
 const tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), "wf-canonical-root-"));
 
 try {
+  const receiptV1 = {
+    schema_version: 1,
+    kind: "gate",
+    approval_status: "APPROVED",
+    signature: "signed-v1-payload"
+  };
+  const normalizedV1 = normalizeTrustedApprovalReceipt(receiptV1);
+  assert(normalizedV1.artifact_shape === "legacy_receipt_v1", "T4: signed receipt schema v1 stays the compatibility shape");
+  assert(normalizedV1.receipt === receiptV1, "T4: receipt v1 is returned unchanged, never auto-rewritten");
+  let unsupportedSchemaRejected = false;
+  try {
+    normalizeTrustedApprovalReceipt({ schema_version: 2 });
+  } catch (_error) {
+    unsupportedSchemaRejected = true;
+  }
+  assert(unsupportedSchemaRejected, "T4: unknown receipt schema fails closed");
+
   // ---------------------------------------------------------------- AC-001 / SM-3
   // One repository read from two different absolute paths must resolve to one identity.
   const repoA = initRepo(path.join(tmpRoot, "repo-a"));

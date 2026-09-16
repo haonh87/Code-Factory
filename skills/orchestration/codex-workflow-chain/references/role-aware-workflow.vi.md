@@ -19,6 +19,21 @@ Tài liệu này mô tả cách overlay role nghiệp vụ lên workflow 8 bư�
 - `governance` là lớp mỏng dùng chung; role output phải phản ánh `governance context`, `governance checks` hoặc `governance-exception` ở đúng step liên quan, không để tách rời khỏi workflow note.
 - Authority cho `waiver` hoặc `approved_by` không được suy ra chỉ từ `role_signoffs`; phải theo `project-context/governance-role-model.md`.
 - Khi work item chạy theo SDD, dùng thêm `spec-driven-development.md` để quản lý lifecycle, requirement IDs, spec freeze, spec change và coverage report.
+- Role có trong catalog không có nghĩa là role đó áp dụng cho mọi request. Phải derive role từ request lane và trigger chuẩn trong `adaptive-planning.md`; không gọi role hoặc yêu cầu signoff chỉ vì role card tồn tại ở đây.
+- Mỗi role và gate được chọn phải có reason code ổn định. Entry bị bỏ qua hoặc `not_applicable` không tạo pending action; applicability không thay đổi human authority của gate đã được chọn.
+
+## Xét Applicability Trước Khi Gọi Role
+
+| Context | Role set |
+|---|---|
+| lane phi-delivery, không có human materialization override | không có |
+| override phi-delivery có phạm vi hẹp hoặc maintenance | `developer`, `qc` |
+| product delivery cơ bản | `po`, `ba`, `developer`, `qc` |
+| public contract, regulated boundary hoặc greenfield foundation | thêm `sa`; thêm `ta` theo technical risk tương ứng |
+| migration hoặc security-sensitive technical risk | thêm `ta` |
+| release/publication | thêm `devops` |
+
+`sa` và `ta` là architecture lens theo trigger, không phải participant bắt buộc của mọi coding request. Xem `adaptive-planning.md` để biết trigger, reviewer của gate, reason code, escalation precedence và activation guard chính xác.
 
 ## Artifact Model
 

@@ -6,9 +6,9 @@ language: vi
 
 > Tiếng Anh / English: README.md
 
-Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent; ứng viên phát hành đã chuẩn bị là `workflow-bundle v2.6.1`: một workflow bundle cài được cho Codex và Claude Code, cho phép agent chủ động đề xuất `work-item` và `change`, còn human giữ quyền approve ở các gate trước khi delivery tiếp tục. Ứng viên vẫn chưa được phát hành cho đến khi human Release gate phê duyệt. Bản vá đồng bộ authoring smoke đã lỗi thời với hành vi bootstrap đã được phê duyệt, đồng thời giữ nguyên production approval semantics, inventory 42 skill và public contract hiện có.
+Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent. Ứng viên phát hành hiện tại là `workflow-bundle v2.6.2`: workflow bundle cài được cho Codex và Claude Code, có định tuyến request thích ứng, chỉ gọi những role/gate thực sự áp dụng, hỗ trợ approval bundle có transaction journal và telemetry cục bộ với giới hạn riêng tư rõ ràng. Quyền phê duyệt của con người không đổi: mỗi gate áp dụng vẫn phải có đúng reviewer có thẩm quyền và một trusted receipt độc lập. Ứng viên chưa được phát hành cho tới khi human Release gate phê duyệt.
 
-Cho tới khi gate đó pass, dùng source commit và candidate digest được lưu trong CHANGE-006 làm release-candidate reference. Chỉ tạo và chia sẻ tag `v2.6.1` sau khi Release được phê duyệt. Baseline rollback đã xác minh là release bất biến `v2.6.0/42`.
+Cho tới khi gate đó pass, dùng source commit của candidate và SHA-256 do Workflow Guardrails tạo làm release-candidate reference. Guardrails chỉ pack một lần rồi kiểm tra đúng artifact đó trên Node 18 và Node 22, không build lại theo từng môi trường. Chỉ tạo và chia sẻ tag `v2.6.2` sau khi Release được phê duyệt. Baseline rollback đã xác minh là release bất biến `v2.6.1/42`.
 
 ## Requirements
 
@@ -20,7 +20,7 @@ Cho tới khi gate đó pass, dùng source commit và candidate digest được 
 
 ## Bắt Đầu Ở Đây
 
-Nếu đang tiếp cận repo lần đầu và muốn review ứng viên phát hành `v2.6.1`:
+Nếu đang tiếp cận repo lần đầu và muốn review ứng viên phát hành `v2.6.2`:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -33,15 +33,12 @@ Nếu đang tiếp cận repo lần đầu và muốn review ứng viên phát h
 
 Các tài liệu dưới đây là maintainer hoặc historical context, không nên dùng làm public onboarding path:
 
-- [`memory-bank/projectbrief.md`](memory-bank/projectbrief.md)
-- [`memory-bank/activeContext.md`](memory-bank/activeContext.md)
-- [`memory-bank/progress.md`](memory-bank/progress.md)
 - [`skills/orchestration/codex-workflow-chain/references/workflow-overview.md`](skills/orchestration/codex-workflow-chain/references/workflow-overview.md)
 - [`skills/orchestration/codex-workflow-chain/references/workflow-versioning.md`](skills/orchestration/codex-workflow-chain/references/workflow-versioning.md)
 
 ## Workflow Commands Nhanh
 
-Command surface public của `v2.6.1` dùng `wfc`.
+Command surface public của `v2.6.2` dùng `wfc`.
 
 Install và quản lý workflow bundle:
 
@@ -89,7 +86,10 @@ Agentic proposal flow:
 - approve hoặc reject change package do agent đề xuất: `wfc change-item <approve|reject|status> --change-id <CHANGE-ID>`
 - approve work item trước khi activate: `wfc work-item approve --work-item <work-item-slug> --reviewed-by <role>`
 - seal trusted human gate receipt trước khi activate: `wfc gate approve --work-item <work-item-slug> --gate <spec|dor|approach|task_plan> --reviewed-by <role>`
+- review toàn bộ readiness gate áp dụng trong một lần tương tác: `wfc gate approve-ready-bundle --work-item <work-item-slug>`; dùng `reject-ready-bundle` để từ chối cả batch theo cơ chế atomic
+- review toàn bộ terminal gate áp dụng trong một lần tương tác: `wfc gate approve-closeout-bundle --work-item <work-item-slug>`
 - activate work item chỉ sau approval + evidence gate `s04-s06`: `wfc work-item activate --work-item <work-item-slug> --step s07 --write-root <path>`
+- xóa telemetry cục bộ opt-in đã hết hạn: `wfc telemetry purge [--telemetry-out <local-dir>]`
 - xem hoặc sync capability control: `wfc capability status` , `wfc capability sync` , `wfc capability check --path <path>`
 
 Ghi chú:
@@ -103,14 +103,24 @@ Ghi chú:
 - lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase trực tiếp trên TTY đó.
 - implementation path bị khóa ở mức filesystem cho tới khi work item vào `ACTIVE` ở `s07` và được cấp `write-root`.
 - `work-items/` là canonical artifact root cho workflow artifacts của repo.
-- Approval model của `v2.6.1` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate, trusted signed receipts và step-gate evidence bắt buộc đã có.
+- Approval model của `v2.6.2` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate, trusted signed receipts và step-gate evidence bắt buộc đã có.
+
+## Contract Adaptive Governance
+
+- Tám request lane gồm `qa`, `translation`, `summarization`, `research`, `documentation`, `read_only_analysis`, `maintenance` và `product_delivery`.
+- Sáu lane đầu thường kết thúc trước khi ghi delivery artifact. Nếu vẫn muốn materialize thì phải có human override được audit. Lane `maintenance` chỉ dùng những role và gate có lý do thực tế từ scope.
+- `public_contract`, `migration`, `security_sensitive`, `regulated`, `greenfield_foundation` và `release` là hard trigger. Intent hỗn hợp hoặc lane không xác định cũng fail-closed sang `product_delivery`; agent không được tự hạ mức kiểm soát.
+- SA, TA, DevOps, Contract, Foundation, Release và Business Acceptance chỉ xuất hiện khi trigger tương ứng có hiệu lực. Gate không áp dụng không tạo approval action; gate áp dụng vẫn giữ nguyên thẩm quyền.
+- `approve-ready-bundle` và `approve-closeout-bundle` chỉ giảm số lần tương tác, không gộp quyền phê duyệt: toàn bộ batch được preflight, mỗi gate vẫn có signed receipt riêng, còn partial write được recover hoặc rollback qua transaction journal.
+- Adaptive writer chỉ được mở khi source và runtime đã cài tương thích minor version và runtime parity đã pass. Nếu không, writer dừng trước khi đổi delivery state; legacy reader và lệnh approve từng gate vẫn dùng được.
+- Telemetry mặc định tắt. `--telemetry true` hoặc `CF_TELEMETRY=on` chỉ bật record cục bộ, theo allowlist và dùng mã định danh giả danh; raw record hết hạn sau 30 ngày, aggregate sau 90 ngày. Không có remote exporter.
 
 ## Workflow Docs
 
 ### Theo Mục Đích
 
 - Public docs cho người mới dùng workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface cho `v2.6.1`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface cho `v2.6.2`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart cho `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README cho cài đặt hoặc publish: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 

@@ -1,0 +1,19 @@
+{
+  "task": "TS6 binding canary during TS7 contract coverage",
+  "production_baseline_sha": "f7b06c43bef5336e12c4754270161fc57c5552f6",
+  "status": "EXPECTED_RED",
+  "command": "node packages/workflow-bundle/test/workflow-gate-review.test.js",
+  "exit_code": 1,
+  "expected_failed_assertions": 10,
+  "negative_cases": [
+    "Zero new event",
+    "New event without identity",
+    "New event with a different canonical identity",
+    "New event for a different phase",
+    "Two new events for one cycle"
+  ],
+  "root_cause": "The coordinator validates its own ID but does not reject a protocol operation whose newly appended event uses a different or absent ID.",
+  "scope": "Implement the locked s04 validation_failures guard inside existing TS6 coordinator root. Receipt schema, signer, public CLI and generated defaults for other operations remain unchanged.",
+  "initial_TS7_snapshot": "45/45 isolated full-suite files PASS, 64 atomicity cases and ten races PASS at f7b06c4, before this negative contract guard.",
+  "later_verification": "Re-run TS7 against the corrected exact source before SB3 Spec Compliance; no s08 or terminal approval."
+}

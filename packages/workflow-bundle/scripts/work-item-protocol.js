@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const workflowBundlePackage = require("../package.json");
 const { formatErrors, parseCliArgs, getFrontmatterLines, getFrontmatterValue } = require("./workflow-validator-utils");
 const { loadChangeProposalState } = require("./change-item-utils");
 const { CHANGE_APPROVAL_GATE_PASSED } = require("./workflow-change-definitions");
@@ -16,13 +17,16 @@ const {
   APPROVAL_GATE_PASSED,
   BOOTSTRAP_GATE_PASSED,
   buildProtocolEvent,
+  createStateEntry,
   getWorkItemPaths,
   isAllowedProtocolTransition,
   loadProtocolControl,
   loadProtocolReport,
+  matchesStateEntry,
   normalizeArray,
   normalizeProtocolReport,
   normalizeSingleValue,
+  normalizeStateCollection,
   resolveWorkflowRootBase,
   syncProtocolArtifacts
 } = require("./work-item-protocol-utils");
@@ -32,6 +36,10 @@ const {
   getWorkflowStepNotePath
 } = require("./workflow-gate-evidence-utils");
 const { ensureLazyWorkflowNote } = require("./scaffold-workflow");
+const {
+  emitAdaptiveTelemetryEvent,
+  isTelemetryEnabled
+} = require("./workflow-telemetry");
 
 const SUPPORTED_ACTIONS = new Set([
   "list",
@@ -306,11 +314,15 @@ function transitionReport(reportInput, options) {
   }
 
   if (Array.isArray(blockers)) {
-    report.blockers = blockers;
+    report.blockers = normalizeStateCollection(blockers.map((entry, index) => typeof entry === "string"
+      ? createStateEntry({ collection: "blockers", kind: "delivery_blocker", sourceKey: `transition:${action}:${report.work_item_slug}:${index}`, text: entry })
+      : entry), "blockers");
   }
 
   if (Array.isArray(requiredActions)) {
-    report.required_actions = requiredActions;
+    report.required_actions = normalizeStateCollection(requiredActions.map((entry, index) => typeof entry === "string"
+      ? createStateEntry({ collection: "required_actions", kind: "workflow_followup", sourceKey: `transition:${action}:${report.work_item_slug}:${index}`, text: entry })
+      : entry), "required_actions");
   }
 
   if (Array.isArray(grantedWritePaths)) {
@@ -352,6 +364,10 @@ function applyApprove(reportInput, args) {
   if (report.review_notes.length === 0) {
     report.review_notes = [noteText];
   }
+  for (const collection of ["blockers", "required_actions"]) {
+    const pending = createStateEntry({ collection, kind: "workflow_followup", sourceKey: "work-item-approval:" + report.work_item_slug, text: "Work-item approval" });
+    report[collection] = report[collection].filter(entry => !matchesStateEntry(entry, { id: pending.id }));
+  }
   if (!report.protocol_owner) {
     report.protocol_owner = reviewedBy;
   }
@@ -389,8 +405,14 @@ function applyReject(reportInput, args) {
   appendAuditEvent(report, "WORK_ITEM_REJECTED");
 
   if (report.protocol_status === "ACTIVE") {
-    report.blockers = [`Approval rejected: ${noteText}`];
-    report.required_actions = ["Resolve review feedback before resuming ACTIVE delivery."];
+    const feedback = {
+      blockers: createStateEntry({ collection: "blockers", kind: "delivery_blocker", sourceKey: "work-item-rejection:" + report.work_item_slug, text: `Approval rejected: ${noteText}` }),
+      required_actions: createStateEntry({ collection: "required_actions", kind: "blocker_resolution", sourceKey: "work-item-rejection:" + report.work_item_slug, text: "Resolve review feedback before resuming ACTIVE delivery." })
+    };
+    for (const collection of ["blockers", "required_actions"]) {
+      report[collection] = report[collection].filter(entry => !matchesStateEntry(entry, { id: feedback[collection].id }));
+      report[collection].push(feedback[collection]);
+    }
     report.handoff_target = handoffTarget;
     report.protocol_status = "BLOCKED";
     report.protocol_events.push(
@@ -417,6 +439,77 @@ function applyReject(reportInput, args) {
     })
   );
 
+  return report;
+}
+
+function reconcileApprovalBundleReport(
+  reportInput,
+  { phase, gates, decision, reviewedAt, recordProtocolEvent = true, transactionId } = {}
+) {
+  const report = normalizeProtocolReport(reportInput);
+  const normalizedPhase = String(phase || "").trim();
+  const normalizedDecision = String(decision || "").trim().toUpperCase();
+  const gateNames = [...new Set((Array.isArray(gates) ? gates : []).map((gate) => String(gate || "").trim()).filter(Boolean))];
+  if (!new Set(["readiness", "closeout"]).has(normalizedPhase)) {
+    throw new Error(`Unsupported approval bundle reconciliation phase '${normalizedPhase}'.`);
+  }
+  if (!new Set(["APPROVED", "REJECTED"]).has(normalizedDecision)) {
+    throw new Error(`Unsupported approval bundle reconciliation decision '${normalizedDecision}'.`);
+  }
+  if (gateNames.length < 1) {
+    throw new Error("Approval bundle reconciliation requires at least one gate.");
+  }
+
+  const eventPrefix = normalizedPhase.toUpperCase();
+  const gateList = gateNames.join(", ");
+  const phaseKinds = [normalizedPhase + "_bundle_approval", normalizedPhase + "_bundle_rejected", "resolve_" + normalizedPhase + "_rejection"];
+  const selected = entry => matchesStateEntry(entry, { kinds: phaseKinds }) ||
+    gateNames.some(gate => matchesStateEntry(entry, { kinds: ["approval_pending", "gate_approval"], gate }));
+  report.blockers = report.blockers.filter(entry => !selected(entry));
+  report.required_actions = report.required_actions.filter(entry => !selected(entry));
+
+  const auditEvent = `${eventPrefix}_BUNDLE_${normalizedDecision}`;
+  if (normalizedDecision === "APPROVED") {
+    appendAuditEvent(report, auditEvent);
+    if (normalizedPhase === "readiness") {
+      report.handoff_target = "step-s07-activation";
+    } else {
+      report.required_actions = report.required_actions.filter(entry => !matchesStateEntry(entry, { kind: "work_item_close" }));
+      report.required_actions.push(createStateEntry({ collection: "required_actions", kind: "work_item_close", sourceKey: "work-item-close:" + report.work_item_slug, text: `wfc work-item close --work-item ${report.work_item_slug}` }));
+      report.handoff_target = "protocol-close";
+    }
+  } else {
+    const blocker = `${normalizedPhase === "readiness" ? "Readiness" : "Closeout"} bundle rejected for gates: ${gateList}.`;
+    const action = `Resolve rejected ${normalizedPhase} gates before ${normalizedPhase === "readiness" ? "activation" : "completion"}.`;
+    const sourceKey = `bundle:${normalizedPhase}:${report.work_item_slug}`;
+    report.blockers.push(createStateEntry({ collection: "blockers", kind: normalizedPhase + "_bundle_rejected", sourceKey, text: blocker }));
+    const retryAction =
+      normalizedPhase === "readiness"
+        ? `wfc gate approve-ready-bundle --work-item ${report.work_item_slug}`
+        : `wfc gate approve-closeout-bundle --work-item ${report.work_item_slug}`;
+    report.required_actions.unshift(
+      createStateEntry({ collection: "required_actions", kind: "resolve_" + normalizedPhase + "_rejection", sourceKey, text: action }),
+      createStateEntry({ collection: "required_actions", kind: normalizedPhase + "_bundle_approval", sourceKey, text: retryAction })
+    );
+    report.handoff_target = `${normalizedPhase}-rework`;
+    appendAuditEvent(report, auditEvent);
+  }
+
+  // The coordinator classifies committed cycles from receipt/pre-event deltas.
+  // Coarse audit markers and human notes are never event identity or dedup keys.
+  if (recordProtocolEvent) {
+    report.protocol_events.push(
+      buildProtocolEvent({
+        action: `${normalizedDecision === "APPROVED" ? "approve" : "reject"}-${normalizedPhase}-bundle`,
+        actor: "human-review-bundle",
+        fromStatus: report.protocol_status,
+        toStatus: report.protocol_status,
+        note: `${normalizedDecision} ${normalizedPhase} gates: ${gateList}`,
+        timestamp: reviewedAt,
+        transactionId
+      })
+    );
+  }
   return report;
 }
 
@@ -786,6 +879,42 @@ function runCli() {
         approvalPassphrase: normalizeSingleValue(args["approval-passphrase"] || "")
       });
     }
+    if (isTelemetryEnabled(args.telemetry)) {
+      try {
+        emitAdaptiveTelemetryEvent({
+          enabled: true,
+          projectRoot,
+          outputDirOverride: normalizeSingleValue(args["telemetry-out"] || ""),
+          event: {
+            event_type: "work_item_transition",
+            runtime_version: workflowBundlePackage.version,
+            request_lane: updatedReport.request_lane,
+            selected_profile: updatedReport.selected_profile,
+            sdd_light_profile: updatedReport.sdd_light_profile,
+            routing_reasons: updatedReport.routing_reasons,
+            escalation_reasons: updatedReport.escalation_reasons,
+            role_count: Array.isArray(updatedReport.roles) ? updatedReport.roles.length : null,
+            gate_count: Array.isArray(updatedReport.gates) ? updatedReport.gates.length : null,
+            interaction_count: action === "approve" || action === "reject" ? 1 : 0,
+            override_count: updatedReport.human_override ? 1 : 0,
+            retry_count: 0,
+            outcome:
+              action === "approve"
+                ? "approved"
+                : action === "reject"
+                  ? "rejected"
+                : String(updatedReport.protocol_status || "").toLowerCase(),
+            work_item_slug: updatedReport.work_item_slug,
+            retention_class: "raw",
+            recorded_at: new Date().toISOString()
+          }
+        });
+      } catch (_error) {
+        // The protocol mutation is already durable. Optional local telemetry
+        // must never convert a successful lifecycle transition into a failure.
+        process.stderr.write("WARN: TELEMETRY_WRITE_FAILED\n");
+      }
+    }
     syncCapabilityControl({
       projectRoot,
       workflowRootBase
@@ -807,6 +936,7 @@ module.exports = {
   applyAction,
   ensureLightLazyStepNote,
   listWorkItems,
+  reconcileApprovalBundleReport,
   runCli,
   transitionReport
 };

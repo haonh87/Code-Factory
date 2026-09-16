@@ -3,6 +3,7 @@ const os = require("os");
 const path = require("path");
 const { execFileSync } = require("child_process");
 const { parseCliArgs } = require("./workflow-validator-utils");
+const { createStateEntry, matchesStateEntry } = require("./work-item-protocol-utils");
 
 function ensureDirectory(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
@@ -1410,10 +1411,11 @@ function runCaseGreenfieldQrVoucherProposal(repoRoot, projectRoot) {
   if (report.bootstrap_gate_status !== "PENDING_REVIEW") {
     throw new Error(`Expected QR Voucher bootstrap_gate_status=PENDING_REVIEW, got '${report.bootstrap_gate_status}'.`);
   }
-  if (!Array.isArray(report.blockers) || !report.blockers.some((item) => item.includes("Greenfield bootstrap gate"))) {
+  if (!Array.isArray(report.blockers) || !report.blockers.some(item => matchesStateEntry(item, { kind: "approval_pending", gate: "bootstrap" }))) {
     throw new Error("Expected QR Voucher proposal to include greenfield bootstrap blocker.");
   }
-  if (!Array.isArray(report.required_actions) || !report.required_actions.some((item) => item.includes("Foundation Decision"))) {
+  const prerequisites = createStateEntry({ collection: "required_actions", kind: "workflow_followup", sourceKey: "bootstrap-prerequisites:" + report.work_item_slug, text: "Bootstrap prerequisite identity" });
+  if (!Array.isArray(report.required_actions) || !report.required_actions.some(item => matchesStateEntry(item, { id: prerequisites.id }))) {
     throw new Error("Expected QR Voucher proposal to require human review for foundation-sensitive artifacts.");
   }
   if (report.handoff_target !== "human-clarify") {

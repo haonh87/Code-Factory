@@ -1,7 +1,10 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
-const { resolveArtifactReference } = require("../scripts/workflow-gate-evidence-utils");
+const {
+  getRequiredFinalizedGateKeys,
+  resolveArtifactReference
+} = require("../scripts/workflow-gate-evidence-utils");
 
 let failures = 0;
 
@@ -27,6 +30,31 @@ function expectReferenceError(fn, code) {
 }
 
 console.log("Running artifact reference resolver tests...\n");
+
+const adaptiveMaintenanceGates = {
+  spec: "not_applicable",
+  contract: "not_applicable",
+  dor: "not_applicable",
+  approach: "not_applicable",
+  foundation: "not_applicable",
+  task_plan: "required",
+  uat: "not_applicable",
+  dod: "required",
+  release: "not_applicable",
+  business_acceptance: "not_applicable"
+};
+assert(
+  getRequiredFinalizedGateKeys("s04", adaptiveMaintenanceGates, "none", "adaptive_v1").length === 0,
+  "T4 adaptive reader treats maintenance s04 gates as explicitly not applicable"
+);
+assert(
+  getRequiredFinalizedGateKeys("s06", adaptiveMaintenanceGates, "none", "adaptive_v1").join(",") === "task_plan",
+  "T4 adaptive reader requires only task_plan at s06"
+);
+assert(
+  getRequiredFinalizedGateKeys("s04", adaptiveMaintenanceGates, "none", "legacy_v1").join(",") === "spec,dor",
+  "T4 legacy reader preserves fixed-shape spec/dor requirements"
+);
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
 

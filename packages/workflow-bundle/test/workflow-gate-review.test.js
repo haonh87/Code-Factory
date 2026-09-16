@@ -7,7 +7,27 @@
 //
 // Work item: approval-path-defects, requirement REQ-002, task T4.
 
+const crypto = require("crypto");
+const fs = require("fs");
+const os = require("os");
+const path = require("path");
 const { validateSnapshotAuthority } = require("../scripts/workflow-gate-review");
+const { buildProtocolEvent, normalizeProtocolReport } = require("../scripts/work-item-protocol-utils");
+
+let approvalTransaction = {};
+try {
+  approvalTransaction = require("../scripts/workflow-approval-transaction");
+} catch (_error) {
+  approvalTransaction = {};
+}
+
+const {
+  APPROVAL_TRANSACTION_FAILURE_POINTS,
+  buildApprovalBundlePlan,
+  executeApprovalTransaction,
+  getApprovalTransactionPaths,
+  recoverApprovalTransaction
+} = approvalTransaction;
 
 let failures = 0;
 
@@ -45,6 +65,60 @@ function expectThrow(fn, matcher, message) {
     text = String(e.message || "");
   }
   assert(threw && matcher.test(text), `${message}${threw ? ` (got: ${text.slice(0, 110)})` : " (did not throw)"}`);
+}
+
+function sha256(content) {
+  return crypto.createHash("sha256").update(content).digest("hex");
+}
+
+function tempRoot(name) {
+  return fs.mkdtempSync(path.join(os.tmpdir(), `approval-transaction-${name}-`));
+}
+
+function rmrf(target) {
+  fs.rmSync(target, { recursive: true, force: true });
+}
+
+function makePlan(workItemSlug = "transaction-item") {
+  return buildApprovalBundlePlan({
+    work_item_slug: workItemSlug,
+    phase: "readiness",
+    gates: [
+      { gate: "spec", reviewer_role: "ba", artifact_digest: "sha256:spec", consequence: "freeze spec" },
+      { gate: "dor", reviewer_role: "qc", artifact_digest: "sha256:dor", consequence: "open design" }
+    ]
+  });
+}
+
+function makeOperations(root) {
+  const statePath = path.join(root, "work-items", "transaction-item", "report.json");
+  fs.mkdirSync(path.dirname(statePath), { recursive: true });
+  fs.writeFileSync(statePath, "before\n", "utf8");
+  return {
+    statePath,
+    receiptOne: path.join(root, "approvals", "transaction-item", "spec.json"),
+    receiptTwo: path.join(root, "approvals", "transaction-item", "dor.json"),
+    operations: [
+      {
+        id: "receipt:spec",
+        target_path: path.join(root, "approvals", "transaction-item", "spec.json"),
+        content: `${JSON.stringify({ schema_version: 1, gate: "spec" })}\n`,
+        expected_sha256: null
+      },
+      {
+        id: "receipt:dor",
+        target_path: path.join(root, "approvals", "transaction-item", "dor.json"),
+        content: `${JSON.stringify({ schema_version: 1, gate: "dor" })}\n`,
+        expected_sha256: null
+      },
+      {
+        id: "state:fixture",
+        target_path: statePath,
+        content: "after\n",
+        expected_sha256: sha256("before\n")
+      }
+    ]
+  };
 }
 
 function testExported() {
@@ -136,6 +210,375 @@ function testBootstrapGateStillExempt() {
   assert(!threw, "gate 'bootstrap' returns early as before");
 }
 
+function testApprovalTransactionSurfaceAndSummary() {
+  console.log("\nCR-008 T5: transaction surface and complete human summary");
+  assert(Array.isArray(APPROVAL_TRANSACTION_FAILURE_POINTS), "failure-point catalog is exported");
+  assert(typeof buildApprovalBundlePlan === "function", "buildApprovalBundlePlan is exported");
+  assert(typeof executeApprovalTransaction === "function", "executeApprovalTransaction is exported");
+  assert(typeof recoverApprovalTransaction === "function", "recoverApprovalTransaction is exported");
+  assert(typeof getApprovalTransactionPaths === "function", "getApprovalTransactionPaths is exported");
+  if (typeof buildApprovalBundlePlan !== "function") return;
+
+  const plan = makePlan();
+  assert(plan.phase === "readiness", "bundle summary preserves the readiness phase");
+  assert(plan.gates.length === 2, "bundle summary lists every applicable gate");
+  plan.gates.forEach((gate) => {
+    ["gate", "reviewer_role", "artifact_digest", "consequence"].forEach((field) => {
+      assert(Boolean(gate[field]), `bundle summary includes ${field}`);
+    });
+  });
+  assert(
+    APPROVAL_TRANSACTION_FAILURE_POINTS.length >= 5 && APPROVAL_TRANSACTION_FAILURE_POINTS.includes("after_first_commit"),
+    "transaction publishes at least five failure boundaries including after_first_commit"
+  );
+}
+
+function testPreflightFailureWritesNothing() {
+  if (typeof executeApprovalTransaction !== "function") return;
+  console.log("\nCR-008 T5: preflight failure leaves zero receipt, state, journal or lock writes");
+  const root = tempRoot("preflight");
+  const transactionRoot = path.join(root, "transactions");
+  const targetPath = path.join(root, "receipt.json");
+  try {
+    const hostPath = path.join(root, "host.md");
+    fs.writeFileSync(hostPath, "current host\n", "utf8");
+    expectThrow(
+      () => executeApprovalTransaction({
+        plan: makePlan(),
+        transaction_root: transactionRoot,
+        operations: [{ id: "receipt:spec", target_path: targetPath, content: "receipt\n", expected_sha256: null }],
+        guards: [{ path: hostPath, expected_sha256: sha256("stale host\n") }]
+      }),
+      /preflight|digest mismatch/i,
+      "a stale host digest is rejected during preflight"
+    );
+    assert(!fs.existsSync(targetPath), "preflight failure writes no receipt");
+    assert(!fs.existsSync(transactionRoot), "preflight failure creates no journal or lock directory");
+  } finally {
+    rmrf(root);
+  }
+}
+
+function testAtomicCommitAndIndependentReceipts() {
+  if (typeof executeApprovalTransaction !== "function") return;
+  console.log("\nCR-008 T5: successful commit is atomic and keeps independent receipt-v1 files");
+  const root = tempRoot("success");
+  const transactionRoot = path.join(root, "transactions");
+  try {
+    const fixture = makeOperations(root);
+    const result = executeApprovalTransaction({
+      plan: makePlan(),
+      transaction_root: transactionRoot,
+      operations: fixture.operations
+    });
+    assert(result.status === "COMMITTED", "successful transaction returns COMMITTED");
+    assert(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(result.transaction_id),
+      "an omitted transaction_id preserves the generated canonical UUID result"
+    );
+    assert(fs.readFileSync(fixture.statePath, "utf8") === "after\n", "derived protocol state commits with receipts");
+    const receiptOne = JSON.parse(fs.readFileSync(fixture.receiptOne, "utf8"));
+    const receiptTwo = JSON.parse(fs.readFileSync(fixture.receiptTwo, "utf8"));
+    assert(receiptOne.schema_version === 1 && receiptTwo.schema_version === 1, "each gate keeps an independent receipt schema v1 file");
+    assert(receiptOne.gate === "spec" && receiptTwo.gate === "dor", "receipt files retain independent gate identities");
+    const paths = getApprovalTransactionPaths({ transaction_root: transactionRoot, work_item_slug: "transaction-item" });
+    assert(!fs.existsSync(paths.journal_path) && !fs.existsSync(paths.lock_path), "successful commit removes journal and lock");
+  } finally {
+    rmrf(root);
+  }
+}
+
+function testBundleEventIdentitySurvivesCoordinatorCommitAndRecovery() {
+  for (const phase of ["readiness", "closeout"]) for (const decision of ["APPROVED", "REJECTED"]) {
+    const root = tempRoot(`direct-id-${phase}-${decision.toLowerCase()}`);
+    const transactionRoot = path.join(root, "transactions");
+    try {
+      const id = crypto.randomUUID();
+      const action = `${decision === "APPROVED" ? "approve" : "reject"}-${phase}-bundle`;
+      const event = buildProtocolEvent({ action, actor: "human-review-bundle", fromStatus: "ACTIVE", toStatus: "ACTIVE", transactionId: id, note: "Display is independent" });
+      const target = path.join(root, "report.json");
+      const plan = buildApprovalBundlePlan({ ...makePlan(), phase, decision });
+      expectThrow(() => executeApprovalTransaction({ plan, transaction_root: transactionRoot, transaction_id: id, operations: [{ id: "protocol:report", target_path: target, expected_sha256: null, content: JSON.stringify({ protocol_events: [event] }) }], crash_at: "after_verified_commit" }), /crash/i, `${action}: preserve a committed journal for direct comparison`);
+      const paths = getApprovalTransactionPaths({ transaction_root: transactionRoot, work_item_slug: plan.work_item_slug });
+      const journal = JSON.parse(fs.readFileSync(paths.journal_path, "utf8"));
+      const stored = normalizeProtocolReport(JSON.parse(fs.readFileSync(target, "utf8"))).protocol_events[0];
+      assert(stored.transaction_id === id && stored.transaction_id === journal.transaction_id, `${action}: normalized event matches journal identity directly`);
+      const result = recoverApprovalTransaction({ transaction_root: transactionRoot, work_item_slug: plan.work_item_slug });
+      assert(result.status === "COMPLETED" && result.transaction_id === stored.transaction_id, `${action}: recovery result shares exact event/journal identity`);
+      assert(recoverApprovalTransaction({ transaction_root: transactionRoot, work_item_slug: plan.work_item_slug }).status === "NOOP", `${action}: completed recovery retry appends nothing`);
+    } finally { rmrf(root); }
+  }
+}
+
+function testCoordinatorRejectsNewUnboundOrMismatchedProtocolEventsBeforeWriting() {
+  const action = "approve-readiness-bundle";
+  const id = "12345678-1234-4234-9234-123456789abc";
+  const valid = { timestamp: "2026-09-13T00:00:00Z", action, actor: "human-review-bundle", from_status: "ACTIVE", to_status: "ACTIVE", note: "Display only", transaction_id: id };
+  const historical = { ...valid }; delete historical.transaction_id;
+  const invalidSuffixes = [[], [{ ...valid, transaction_id: undefined }], [{ ...valid, transaction_id: "12345678-1234-4234-9234-123456789abd" }], [{ ...valid, action: "approve-closeout-bundle" }], [valid, valid]];
+  for (const suffix of invalidSuffixes) {
+    const root = tempRoot("reject-event-binding");
+    const target = path.join(root, "report.json"), transactionRoot = path.join(root, "transactions");
+    const before = JSON.stringify({ protocol_events: [historical] });
+    fs.writeFileSync(target, before);
+    try {
+      expectThrow(() => executeApprovalTransaction({ plan: makePlan(), transaction_root: transactionRoot, transaction_id: id, operations: [{ id: "protocol:report", target_path: target, expected_sha256: sha256(before), content: JSON.stringify({ protocol_events: [historical, ...suffix] }) }] }), /transaction_id|protocol event|identity/i, "invalid new event suffix is rejected before transaction writes");
+      assert(fs.readFileSync(target, "utf8") === before && !fs.existsSync(transactionRoot), "invalid event binding leaves history/state unchanged with zero journal/lock writes");
+    } finally { rmrf(root); }
+  }
+  const root = tempRoot("bound-event-after-legacy-history");
+  try {
+    const target = path.join(root, "report.json");
+    const before = JSON.stringify({ protocol_events: [historical] }); fs.writeFileSync(target, before);
+    const result = executeApprovalTransaction({ plan: makePlan(), transaction_root: path.join(root, "transactions"), transaction_id: id, operations: [{ id: "protocol:report", target_path: target, expected_sha256: sha256(before), content: JSON.stringify({ protocol_events: [historical, valid] }) }] });
+    const after = JSON.parse(fs.readFileSync(target, "utf8"));
+    assert(result.status === "COMMITTED" && after.protocol_events[1].transaction_id === result.transaction_id, "valid bound suffix commits after unbound legacy history");
+    assert(JSON.stringify(after.protocol_events[0]) === JSON.stringify(historical), "coordinator does not backfill historical identity");
+  } finally { rmrf(root); }
+}
+
+function testOptionalTransactionIdentityIsValidatedAndReused() {
+  if (typeof executeApprovalTransaction !== "function") return;
+  console.log("\nF-AG11-001 T1: optional transaction identity is validated before writes and reused");
+
+  const validRoot = tempRoot("supplied-identity");
+  const validTransactionRoot = path.join(validRoot, "transactions");
+  const suppliedTransactionId = "11111111-2222-4333-8444-555555555555";
+  try {
+    const fixture = makeOperations(validRoot);
+    const result = executeApprovalTransaction({
+      plan: makePlan(),
+      transaction_root: validTransactionRoot,
+      transaction_id: suppliedTransactionId,
+      operations: fixture.operations
+    });
+    assert(
+      result.transaction_id === suppliedTransactionId,
+      "a valid caller-supplied transaction_id is reused by the committed transaction"
+    );
+  } finally {
+    rmrf(validRoot);
+  }
+
+  const invalidRoot = tempRoot("invalid-identity");
+  const invalidTransactionRoot = path.join(invalidRoot, "transactions");
+  try {
+    const fixture = makeOperations(invalidRoot);
+    expectThrow(
+      () => executeApprovalTransaction({
+        plan: makePlan(),
+        transaction_root: invalidTransactionRoot,
+        transaction_id: "not-a-canonical-uuid",
+        operations: fixture.operations
+      }),
+      /transaction_id|transaction id|uuid/i,
+      "a malformed caller-supplied transaction_id is rejected"
+    );
+    assert(
+      fs.readFileSync(fixture.statePath, "utf8") === "before\n" &&
+        !fs.existsSync(fixture.receiptOne) &&
+        !fs.existsSync(fixture.receiptTwo),
+      "malformed transaction identity is rejected before any target write"
+    );
+    assert(
+      !fs.existsSync(invalidTransactionRoot),
+      "malformed transaction identity is rejected before transaction journal or lock directories exist"
+    );
+  } finally {
+    rmrf(invalidRoot);
+  }
+}
+
+function testCaughtFailureRollsBackFirstVisibleCommit() {
+  if (typeof executeApprovalTransaction !== "function") return;
+  console.log("\nCR-008 T5: every caught persistence failure rolls every target back");
+  APPROVAL_TRANSACTION_FAILURE_POINTS.forEach((failurePoint) => {
+    const root = tempRoot(`rollback-${failurePoint}`);
+    const transactionRoot = path.join(root, "transactions");
+    try {
+      const fixture = makeOperations(root);
+      expectThrow(
+        () => executeApprovalTransaction({
+          plan: makePlan(),
+          transaction_root: transactionRoot,
+          operations: fixture.operations,
+          fail_at: failurePoint
+        }),
+        new RegExp(`${failurePoint}|injected`, "i"),
+        `failure injection reaches ${failurePoint}`
+      );
+      assert(!fs.existsSync(fixture.receiptOne) && !fs.existsSync(fixture.receiptTwo), `${failurePoint}: rollback removes every partial receipt`);
+      assert(fs.readFileSync(fixture.statePath, "utf8") === "before\n", `${failurePoint}: rollback restores prior derived state`);
+      const paths = getApprovalTransactionPaths({ transaction_root: transactionRoot, work_item_slug: "transaction-item" });
+      assert(!fs.existsSync(paths.journal_path) && !fs.existsSync(paths.lock_path), `${failurePoint}: rollback removes journal and lock`);
+    } finally {
+      rmrf(root);
+    }
+  });
+}
+
+function testCrashRecoveryIsIdempotent() {
+  if (typeof executeApprovalTransaction !== "function") return;
+  console.log("\nCR-008 T5: crash recovery rolls back deterministically and is idempotent");
+  const root = tempRoot("crash");
+  const transactionRoot = path.join(root, "transactions");
+  try {
+    const fixture = makeOperations(root);
+    expectThrow(
+      () => executeApprovalTransaction({
+        plan: makePlan(),
+        transaction_root: transactionRoot,
+        operations: fixture.operations,
+        crash_at: "after_first_commit"
+      }),
+      /after_first_commit|crash/i,
+      "crash injection interrupts after the first visible commit"
+    );
+    const paths = getApprovalTransactionPaths({ transaction_root: transactionRoot, work_item_slug: "transaction-item" });
+    assert(fs.existsSync(paths.journal_path), "simulated crash leaves a recovery journal");
+    const first = recoverApprovalTransaction({ transaction_root: transactionRoot, work_item_slug: "transaction-item" });
+    assert(first.status === "ROLLED_BACK", "first recovery rolls the interrupted transaction back");
+    assert(!fs.existsSync(fixture.receiptOne) && fs.readFileSync(fixture.statePath, "utf8") === "before\n", "recovery restores the complete pre-transaction state");
+    const second = recoverApprovalTransaction({ transaction_root: transactionRoot, work_item_slug: "transaction-item" });
+    assert(second.status === "NOOP", "repeating recovery is a no-op");
+  } finally {
+    rmrf(root);
+  }
+}
+
+function testCrashAfterVerifiedCommitCompletesIdempotently() {
+  if (typeof executeApprovalTransaction !== "function") return;
+  console.log("\nCR-008 T5: recovery completes a fully verified commit instead of rolling it back");
+  const root = tempRoot("crash-complete");
+  const transactionRoot = path.join(root, "transactions");
+  try {
+    const fixture = makeOperations(root);
+    expectThrow(
+      () => executeApprovalTransaction({
+        plan: makePlan(),
+        transaction_root: transactionRoot,
+        operations: fixture.operations,
+        crash_at: "after_verified_commit"
+      }),
+      /after_verified_commit|crash/i,
+      "crash injection interrupts after the verified COMMITTED journal state"
+    );
+    const recovery = recoverApprovalTransaction({ transaction_root: transactionRoot, work_item_slug: "transaction-item" });
+    assert(recovery.status === "COMPLETED", "recovery completes a fully verified committed transaction");
+    assert(fs.existsSync(fixture.receiptOne) && fs.existsSync(fixture.receiptTwo), "completed recovery retains every committed receipt");
+    assert(fs.readFileSync(fixture.statePath, "utf8") === "after\n", "completed recovery retains reconciled protocol state");
+    const second = recoverApprovalTransaction({ transaction_root: transactionRoot, work_item_slug: "transaction-item" });
+    assert(second.status === "NOOP", "completed recovery is idempotent on retry");
+  } finally {
+    rmrf(root);
+  }
+}
+
+function testPerWorkItemLockRefusesConcurrentTransaction() {
+  if (typeof executeApprovalTransaction !== "function") return;
+  console.log("\nCR-008 T5: per-work-item lock refuses a concurrent transaction");
+  const root = tempRoot("lock");
+  const transactionRoot = path.join(root, "transactions");
+  try {
+    const fixture = makeOperations(root);
+    const paths = getApprovalTransactionPaths({ transaction_root: transactionRoot, work_item_slug: "transaction-item" });
+    fs.mkdirSync(path.dirname(paths.lock_path), { recursive: true });
+    fs.writeFileSync(paths.lock_path, "active\n", "utf8");
+    expectThrow(
+      () => executeApprovalTransaction({ plan: makePlan(), transaction_root: transactionRoot, operations: fixture.operations }),
+      /lock|in progress|concurrent/i,
+      "a live lock blocks another transaction for the same work item"
+    );
+    assert(!fs.existsSync(fixture.receiptOne), "concurrent refusal writes no receipt");
+    assert(fs.readFileSync(fixture.statePath, "utf8") === "before\n", "concurrent refusal leaves derived state unchanged");
+    assert(fs.readFileSync(paths.lock_path, "utf8") === "active\n", "early concurrent refusal preserves the existing lock");
+  } finally {
+    rmrf(root);
+  }
+}
+
+function testFailedLockAcquisitionPreservesForeignTransaction() {
+  console.log("\nTS6a: native wx acquisition loss preserves the foreign live lock and journal");
+  for (const withJournal of [false, true]) {
+    const root = tempRoot("acquisition-race");
+    const transactionRoot = path.join(root, "transactions");
+    const paths = getApprovalTransactionPaths({ transaction_root: transactionRoot, work_item_slug: "transaction-item" });
+    const nativeOpen = fs.openSync;
+    try {
+      const fixture = makeOperations(root);
+      fs.mkdirSync(transactionRoot);
+      const winnerId = "b2335a13-5c90-4dc4-b851-bd14793f7c5f";
+      const winnerLock = JSON.stringify({ schema_version: 1, transaction_id: winnerId, pid: process.pid, started_at: new Date().toISOString() }) + "\n";
+      const winnerJournal = JSON.stringify({ schema_version: 1, transaction_id: winnerId, work_item_slug: "transaction-item", phase: "readiness", decision: "APPROVED", state: "PREPARED", committed_count: 0,
+        operations: fixture.operations.map(operation => {
+          const base = path.basename(operation.target_path), directory = path.dirname(operation.target_path);
+          return { id: operation.id, target_path: operation.target_path, stage_path: path.join(directory, `.${base}.${winnerId}.stage`), backup_path: path.join(directory, `.${base}.${winnerId}.backup`), existed_before: fs.existsSync(operation.target_path), mode_before: fs.existsSync(operation.target_path) ? fs.statSync(operation.target_path).mode & 0o777 : null, content_sha256: sha256(operation.content) };
+        }) }) + "\n";
+      let injected = 0;
+      // Model the winner running between the last exists check and native wx.
+      // EEXIST is produced by the filesystem, not a manufactured error.
+      fs.openSync = function (file, flags, ...rest) {
+        if (path.resolve(String(file)) === paths.lock_path && flags === "wx") {
+          injected += 1;
+          const fd = nativeOpen(paths.lock_path, "wx");
+          fs.writeFileSync(fd, winnerLock, "utf8");
+          fs.closeSync(fd);
+          if (withJournal) fs.writeFileSync(paths.journal_path, winnerJournal, "utf8");
+        }
+        return nativeOpen(file, flags, ...rest);
+      };
+      let error;
+      try {
+        executeApprovalTransaction({ plan: makePlan(), transaction_root: transactionRoot, transaction_id: "a1335a13-5c90-4dc4-b851-bd14793f7c5f", operations: fixture.operations });
+      } catch (caught) { error = caught; }
+      finally { fs.openSync = nativeOpen; }
+      assert(injected === 1 && error && error.code === "EEXIST", `journal=${withJournal}: the native losing wx open fails before ownership`);
+      assert(fs.existsSync(paths.lock_path) && fs.readFileSync(paths.lock_path, "utf8") === winnerLock, `journal=${withJournal}: failed acquisition preserves the foreign live lock bytes`);
+      assert(withJournal ? fs.existsSync(paths.journal_path) && fs.readFileSync(paths.journal_path, "utf8") === winnerJournal : !fs.existsSync(paths.journal_path), `journal=${withJournal}: failed acquisition preserves the winner journal state`);
+      assert(fs.readFileSync(fixture.statePath, "utf8") === "before\n" && !fs.existsSync(fixture.receiptOne) && !fs.existsSync(fixture.receiptTwo), `journal=${withJournal}: failed acquisition writes no current authority or state`);
+    } finally {
+      fs.openSync = nativeOpen;
+      rmrf(root);
+    }
+  }
+}
+
+function testAcquiredLockWriteFailureCleansOwnLock() {
+  console.log("\nTS6a: failure writing a successfully acquired lock still cleans its own lock");
+  const root = tempRoot("acquired-lock-write");
+  const transactionRoot = path.join(root, "transactions");
+  const paths = getApprovalTransactionPaths({ transaction_root: transactionRoot, work_item_slug: "transaction-item" });
+  const nativeOpen = fs.openSync, nativeWrite = fs.writeFileSync;
+  let acquiredFd = null;
+  try {
+    const fixture = makeOperations(root);
+    fs.openSync = function (file, flags, ...rest) {
+      const fd = nativeOpen(file, flags, ...rest);
+      if (path.resolve(String(file)) === paths.lock_path && flags === "wx") acquiredFd = fd;
+      return fd;
+    };
+    fs.writeFileSync = function (file, ...rest) {
+      if (acquiredFd !== null && file === acquiredFd) {
+        const error = new Error("Injected acquired-lock payload write failure");
+        error.code = "EIO";
+        throw error;
+      }
+      return nativeWrite(file, ...rest);
+    };
+    let error;
+    try { executeApprovalTransaction({ plan: makePlan(), transaction_root: transactionRoot, operations: fixture.operations }); }
+    catch (caught) { error = caught; }
+    finally { fs.openSync = nativeOpen; fs.writeFileSync = nativeWrite; }
+    assert(acquiredFd !== null && error && error.code === "EIO", "lock payload write fails after native acquisition");
+    assert(!fs.existsSync(paths.lock_path) && !fs.existsSync(paths.journal_path), "own acquired lock is cleaned when payload writing fails");
+    assert(fs.readFileSync(fixture.statePath, "utf8") === "before\n" && !fs.existsSync(fixture.receiptOne) && !fs.existsSync(fixture.receiptTwo), "acquired-lock failure writes no authority or derived state");
+  } finally {
+    fs.openSync = nativeOpen;
+    fs.writeFileSync = nativeWrite;
+    rmrf(root);
+  }
+}
+
 console.log("Running workflow-gate-review tests...");
 testExported();
 if (typeof validateSnapshotAuthority === "function") {
@@ -146,6 +589,25 @@ if (typeof validateSnapshotAuthority === "function") {
   testBootstrapGateStillExempt();
 } else {
   console.error("  SKIP: remaining tests need the export");
+}
+testApprovalTransactionSurfaceAndSummary();
+if (
+  typeof buildApprovalBundlePlan === "function" &&
+  typeof executeApprovalTransaction === "function" &&
+  typeof recoverApprovalTransaction === "function" &&
+  typeof getApprovalTransactionPaths === "function"
+) {
+  testPreflightFailureWritesNothing();
+  testAtomicCommitAndIndependentReceipts();
+  testBundleEventIdentitySurvivesCoordinatorCommitAndRecovery();
+  testCoordinatorRejectsNewUnboundOrMismatchedProtocolEventsBeforeWriting();
+  testOptionalTransactionIdentityIsValidatedAndReused();
+  testCaughtFailureRollsBackFirstVisibleCommit();
+  testCrashRecoveryIsIdempotent();
+  testCrashAfterVerifiedCommitCompletesIdempotently();
+  testPerWorkItemLockRefusesConcurrentTransaction();
+  testFailedLockAcquisitionPreservesForeignTransaction();
+  testAcquiredLockWriteFailureCleansOwnLock();
 }
 
 if (failures > 0) {

@@ -83,6 +83,18 @@ Determine whether the task is:
 
 If it is a `non-workflow task`, state the reason clearly and handle it with the fitting flow.
 
+Before choosing either result, emit one canonical `request_lane` from:
+
+- `qa|translation|summarization|research|documentation|read_only_analysis`
+- `maintenance`
+- `product_delivery`
+
+The first group short-circuits before delivery writes. An explicit human materialization request must include actor, reason, and UTC timestamp; it opens materialization only and never approves a gate. The hard triggers `public_contract|migration|security_sensitive|regulated|greenfield_foundation|release`, plus ambiguous mixed intent, always escalate to `product_delivery` and cannot be downgraded by inference or a normal preset.
+
+Treat hard triggers as structured inputs. Do not infer a public contract, migration, security change, or release from one ambiguous keyword; reject an invalid trigger boolean instead of silently normalizing it to false.
+
+The canonical lane, trigger, role/gate, and reason-code contract is in `../codex-workflow-chain/references/adaptive-planning.md`. Adaptive writes remain disabled when source/installed bundle minors differ or canonical/runtime parity has not passed.
+
 ### Step 2: Determine Delivery Context
 
 Lock one of two values:
@@ -161,6 +173,8 @@ After locking the current step, route to the smallest sufficient skill:
 - `s08`: prefer `testing`, `definition-of-done-gate`, and the matching review/scan skills
 
 Do not invoke an implement skill if the current step has not opened up to `s07`.
+
+Applicability is evaluated before role routing: do not invoke a role skill or request a signoff merely because the role exists in the global role catalog. Every selected role and gate needs a deterministic reason code; omitted and `not_applicable` entries create no action.
 
 ## Mandatory Report Template
 

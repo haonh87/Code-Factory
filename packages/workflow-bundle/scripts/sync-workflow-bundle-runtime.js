@@ -170,7 +170,14 @@ function bundleRuntimeMode({ repoRoot, packageRoot, sourceManifest, mode }) {
   copyFileWritable(sourceGlobalAgents, path.join(runtimeRoot, path.basename(sourceGlobalAgents)));
   copyDirectory(sourceSkillsRoot, runtimeSkillsRoot);
   if (runtimePoliciesRoot && sourceSupportPoliciesRoot) {
-    copyDirectoryWithoutFiles(sourceSupportPoliciesRoot, runtimePoliciesRoot, new Set([runtimeConfig.globalAgentsFileName]));
+    // The installed filename may differ by harness (for example CLAUDE.md),
+    // while the canonical source remains AGENTS.global.md. Exclude the source
+    // basename so support policies never duplicate the global authority file.
+    copyDirectoryWithoutFiles(
+      sourceSupportPoliciesRoot,
+      runtimePoliciesRoot,
+      new Set([path.basename(sourceGlobalAgents)])
+    );
   }
 
   return {

@@ -298,6 +298,15 @@ Nguyên tắc áp dụng:
 - `Implement` không được âm thầm đi lệch nguyên tắc; mọi lệch chuẩn phải được ghi bằng `governance-exception` hoặc `waiver`.
 - `Verify + DoD` phải kết luận rõ mức độ `governance compliance`, không chỉ kết luận feature pass.
 
+## Rule Cứng: Adaptive Admission Và Applicability
+
+- Admission diễn ra trước workflow delivery 8 bước. Lane phi-delivery dừng trước delivery write, trừ khi human ghi một materialization override có audit đầy đủ.
+- Hard signal về public contract, migration, security, regulated, greenfield/foundation, release và mixed intent không rõ ràng luôn đẩy request lên `product_delivery`.
+- Hard trigger phải đến từ routing input có cấu trúc, không phải một raw keyword mơ hồ; boolean sai phải bị reject.
+- Role/gate applicability phải xác định và có reason; entry bị bỏ qua hoặc `not_applicable` không tạo pending action, còn gate có applicability vẫn giữ human authority tường minh.
+- Adaptive writer phải tắt khi minor version source/runtime lệch hoặc canonical/runtime parity chưa pass.
+- Authority đầy đủ nằm ở `policies/codex/AGENTS.global.md § Hard Rule: Adaptive Admission And Applicability`; bảng lane, trigger, reviewer và reason code nằm trong `adaptive-planning.md`.
+
 ## Rule Cứng: Spec/Design Trước Code
 
 - `s07 Implement` không được bắt đầu nếu `s04`, `s05` hoặc `s06` chưa đủ điều kiện tối thiểu.

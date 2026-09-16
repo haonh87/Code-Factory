@@ -1,0 +1,51 @@
+{
+  "batch": "RCR-SB2",
+  "task": "TS3",
+  "baseline_production_source": "3e0b9728d82204e38b06668e08cc895294109986",
+  "preconditions": {
+    "spec_compliance": "APPROVED",
+    "code_quality": "EXPLICIT_DEVELOPER_QC_PASS",
+    "finding": "F-RCR-SB1-001_RESOLVED",
+    "scope_roots": 16,
+    "resume_at": "2026-09-13T05:48:58.326Z"
+  },
+  "expected_red": [
+    {
+      "test": "work-item-protocol-state.test.js",
+      "exit_code": 1,
+      "failures": 5
+    },
+    {
+      "test": "materialize-work-item.test.js",
+      "exit_code": 1,
+      "failures": 18
+    },
+    {
+      "test": "work-item-protocol.test.js",
+      "exit_code": 1,
+      "failures": 18
+    }
+  ],
+  "production_changes_before_red": false,
+  "supplemental_ts4_canary_red": {
+    "test": "work-item rejection replaces only its own feedback and preserves unrelated state",
+    "command": "node --test --test-name-pattern='work-item rejection replaces only' packages/workflow-bundle/test/work-item-protocol-state.test.js",
+    "exit_code": 1,
+    "failures": 1,
+    "reason": "ACTIVE work-item rejection replaced both collections and discarded opaque/unrelated feedback.",
+    "repair_before_red": false,
+    "scope": "Approved TS4 rejection-selector preservation; other TS4 production work was already in progress."
+  },
+  "mutation_cases": 20,
+  "canaries": [
+    "Peer review of the migration script is outstanding",
+    "Review the release migration before close"
+  ],
+  "fixture_corrections": [
+    "Canonical authoring-root output resolves fixture-induced protected-root EACCES; no sandbox bypass or production repair.",
+    "Archive remains terminal with zero followups; erroneous fixture expectation corrected before final RED."
+  ],
+  "quarantined_T7": "Existing function/invocation preserved exactly and excluded from staging; owned TS3 edits to other parts are allowed.",
+  "event_identity": "TS5/TS6; unchanged in TS3/TS4",
+  "whole_work_item_status": "NOT_DONE"
+}

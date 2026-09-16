@@ -14,6 +14,7 @@ const {
   loadTrustedApprovalReceipt,
   resolveGateArtifact
 } = require("./workflow-trusted-approval-utils");
+const { createStateEntry, matchesStateEntry, normalizeProtocolReport } = require("./work-item-protocol-utils");
 
 const STEP_NOTE_SLUGS = {
   s01: "restate",
@@ -39,7 +40,10 @@ const SIGNOFF_KEYS = [
   "dod"
 ];
 
-const APPROVAL_GATE_KEYS = ["spec", "contract", "foundation", "uat", "release", "business_acceptance"];
+// Adaptive artifacts make applicability explicit for every human-controlled gate.
+// Legacy artifacts remain readable because missing keys still use the historical
+// defaults and the legacy finalized-step host map below.
+const APPROVAL_GATE_KEYS = [...SIGNOFF_KEYS];
 
 function artifactReferenceError(code, message) {
   const error = new Error(message);
@@ -479,7 +483,25 @@ function getUncommittedDeliveryErrors({ projectRoot, workflowRoot, workItemSlug,
   });
 }
 
-function getRequiredFinalizedGateKeys(stepId, approvalGates, sddMode) {
+function getRequiredFinalizedGateKeys(stepId, approvalGates, sddMode, artifactShape = "legacy_v1") {
+  if (artifactShape === "adaptive_v1") {
+    const hostByGate = {
+      spec: "s04",
+      contract: "s04",
+      dor: "s04",
+      approach: sddMode === "light" ? "s06" : "s05",
+      foundation: "s05",
+      task_plan: "s06",
+      uat: "s08",
+      release: "s08",
+      business_acceptance: "s08",
+      dod: "s08"
+    };
+    return SIGNOFF_KEYS.filter(
+      (key) => hostByGate[key] === stepId && approvalGates[key] === "required"
+    );
+  }
+
   // Light: dùng host map gọn — s06 require approach+task_plan, bỏ s05.
   // contract/foundation không áp dụng (light default not_applicable).
   if (sddMode === "light") {
@@ -813,41 +835,21 @@ function getTrustedReceiptArtifactErrors({ gate, receipt, artifact, filePath }) 
   return errors;
 }
 
-const GATE_TEXT_ALIASES = {
-  spec: ["spec"],
-  contract: ["contract"],
-  dor: ["dor", "definition of ready"],
-  approach: ["approach"],
-  foundation: ["foundation"],
-  task_plan: ["task plan", "task_plan"],
-  uat: ["uat"],
-  release: ["release"],
-  business_acceptance: ["business acceptance", "business_acceptance"],
-  dod: ["dod", "definition of done"]
-};
-
-function textClaimsApprovalPending(text, aliases) {
-  const normalized = String(text || "").toLowerCase();
-  return aliases.some((alias) => {
-    const index = normalized.indexOf(alias);
-    if (index < 0) {
-      return false;
-    }
-    const nearby = normalized.slice(Math.max(0, index - 60), index + 140);
-    return /pending|not\s+(?:passed|approved)|has\s+not\s+passed|review\s+and\s+approve/.test(nearby);
-  });
-}
-
 function getProtocolStateContradictionErrors(report, receiptState, reportPath) {
   const errors = [];
-  const claims = [...(report.blockers || []), ...(report.required_actions || [])];
-  if (receiptState.workItemApproved && claims.some((claim) => textClaimsApprovalPending(claim, ["work-item", "work item"]))) {
+  const normalized = normalizeProtocolReport(report);
+  const claims = [...normalized.blockers, ...normalized.required_actions];
+  const hasPurpose = sourceKey => ["blockers", "required_actions"].some(collection => {
+    const identity = createStateEntry({ collection, kind: "workflow_followup", sourceKey, text: "Approval purpose" });
+    return normalized[collection].some(entry => matchesStateEntry(entry, { id: identity.id }));
+  });
+  if (receiptState.workItemApproved && hasPurpose("work-item-approval:" + normalized.work_item_slug)) {
     errors.push(`Protocol blockers/required_actions claim work-item approval is pending after trusted receipt is APPROVED: ${reportPath}`);
   }
   if (
-    report.change_id &&
+    normalized.change_id &&
     receiptState.changeApproved &&
-    claims.some((claim) => textClaimsApprovalPending(claim, [String(report.change_id).toLowerCase(), "change approval"]))
+    hasPurpose("change-approval:" + normalized.change_id)
   ) {
     errors.push(`Protocol blockers/required_actions claim ${report.change_id} approval is pending after trusted receipt is APPROVED: ${reportPath}`);
   }
@@ -855,8 +857,7 @@ function getProtocolStateContradictionErrors(report, receiptState, reportPath) {
     ? receiptState.approvedGates
     : new Set(receiptState.approvedGates || []);
   approvedGates.forEach((gate) => {
-    const aliases = GATE_TEXT_ALIASES[gate] || [String(gate).replace(/_/g, " ")];
-    if (claims.some((claim) => textClaimsApprovalPending(claim, aliases))) {
+    if (claims.some(entry => matchesStateEntry(entry, { kinds: ["approval_pending", "gate_approval"], gate }))) {
       errors.push(`Protocol blockers/required_actions claim gate '${gate}' is pending after trusted receipt is APPROVED: ${reportPath}`);
     }
   });
@@ -880,6 +881,8 @@ function loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId }) {
       deliveryContext: "",
       governanceProfile: "default",
       sddMode: "none",
+      artifactShape: "legacy_v1",
+      requestLane: "",
       approvalGates: buildDefaultApprovalGates(),
       roleSignoffs: Object.fromEntries(SIGNOFF_KEYS.map((key) => [key, []])),
       gateReviews: Object.fromEntries(
@@ -907,6 +910,8 @@ function loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId }) {
       deliveryContext: "",
       governanceProfile: "default",
       sddMode: "none",
+      artifactShape: "legacy_v1",
+      requestLane: "",
       approvalGates: buildDefaultApprovalGates(),
       roleSignoffs: Object.fromEntries(SIGNOFF_KEYS.map((key) => [key, []])),
       gateReviews: Object.fromEntries(
@@ -946,6 +951,8 @@ function loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId }) {
     deliveryContext: getFrontmatterValue(frontmatterLines, "delivery_context") || "brownfield",
     governanceProfile: getFrontmatterValue(frontmatterLines, "governance_profile") || "default",
     sddMode: getFrontmatterValue(frontmatterLines, "sdd_mode") || "none",
+    artifactShape: getFrontmatterValue(frontmatterLines, "artifact_shape") || "legacy_v1",
+    requestLane: getFrontmatterValue(frontmatterLines, "request_lane") || "",
     approvalGates,
     roleSignoffs,
     gateReviews
@@ -1090,7 +1097,12 @@ function getProtocolStepGateErrors({ projectRoot, workflowRoot, workItemSlug, to
         stepId
       });
       errors.push(
-        ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys(stepId, snapshot.approvalGates, resolvedSddMode), {
+        ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys(
+          stepId,
+          snapshot.approvalGates,
+          resolvedSddMode,
+          snapshot.artifactShape
+        ), {
           projectRoot,
           workflowRoot,
           workItemSlug,
@@ -1121,7 +1133,12 @@ function getProtocolStepGateErrors({ projectRoot, workflowRoot, workItemSlug, to
       stepId: "s08"
     });
     errors.push(
-      ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys("s08", snapshot.approvalGates, resolvedSddMode), {
+      ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys(
+        "s08",
+        snapshot.approvalGates,
+        resolvedSddMode,
+        snapshot.artifactShape
+      ), {
         projectRoot,
         workflowRoot,
         workItemSlug,

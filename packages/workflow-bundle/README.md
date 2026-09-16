@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: README.vi.md
 
-`workflow-bundle` is the CLI package prepared for the `v2.6.1` release candidate: it installs the workflow bundle for Codex or Claude Code, scaffolds or validates workflows, and supports the `agent proposes, human approves` flow for `work-item` and `change`. It remains unpublished until the human Release gate passes. The patch aligns the stale authoring smoke with the approved bootstrap behavior without changing production approval semantics, managed-skill count, or public CLI contract.
+`workflow-bundle` is the CLI package prepared for the `v2.6.2` release candidate. It installs the workflow bundle for Codex or Claude Code, routes requests into an applicable governance lane, scaffolds or validates delivery workflows, and supports journaled human approval bundles. Applicable gates still require their authorized human reviewers and independent trusted receipts. The package remains unpublished until the human Release gate passes.
 
 Detailed quickstart: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -43,32 +43,37 @@ npm link
 wfc version
 ```
 
-### Roll Back From v2.6.1 To v2.6.0
+### Roll Back From v2.6.2 To v2.6.1
 
-Capture the current mode, scope, project roots, and status before replacing the package. Then install
-the retained immutable v2.6.0 tarball and run `install` for every recorded target:
+Capture the current mode, scope, project roots, and status before replacing the package. Stop adaptive
+writes by omitting `--adaptive-writes true`, then complete or retry the originating bundle command so
+its transaction recovery leaves no live journal. Individual `wfc gate approve` commands remain the
+fallback. Then install the retained immutable v2.6.1 tarball and run `install` for every recorded target:
 
 ```bash
 wfc status --mode codex
-npm install -g /absolute/path/to/workflow-bundle-2.6.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.6.1.tgz
 wfc install --mode codex --scope global
 wfc install --mode codex --scope project --project-root <repo-root>
 wfc status --mode codex
 wfc skills list --mode codex
 ```
 
-Use the same sequence with `--mode claude` for Claude Code. Use the retained immutable v2.6.0
+Use the same sequence with `--mode claude` for Claude Code. Use the retained immutable v2.6.1
 artifact and `wfc install` for the downgrade so the fallback identity is explicit; do not rely on a
-mutable registry alias. The supported path restores the v2.6.0 source behavior and preserves the
-42-skill inventory plus unmanaged files. Rehearse against isolated homes before operating on a live
-installation, and do not mutate a live global install before the human Release gate authorizes it.
+mutable registry alias. The supported path restores the v2.6.1 source behavior and preserves the
+42-skill inventory plus unmanaged files. Legacy/adaptive dual-read compatibility and historical receipts
+must remain intact; never rewrite or re-sign them as part of rollback. Rehearse against isolated homes
+before operating on a live installation, and do not mutate a live global install before the human Release
+gate authorizes it.
 
-## What `v2.6.1` Includes
+## What `v2.6.2` Includes
 
 - workflow bundle install surface via `wfc install|update|status|skills`
 - core authoring CLI via `wfc init|scaffold|validate`
 - agentic proposal flow via `wfc materialize|change-item|work-item|protocol`
-- human approval gates for change packages and work items
+- eight request lanes, hard-escalation triggers, and applicable-only roles/gates
+- human approval gates for change packages and work items, including readiness and closeout bundles
 - capability control to lock the implementation path until the work item reaches `ACTIVE` at `s07`
 - multi-block runtime prompt with `AGENTS.global.md` as authority, `workflow-governance-router` as the entry router, and `codex-workflow-chain` as the workflow backbone
 - 42 managed skills in each generated runtime, including corrected `sa` and `ta` contracts
@@ -76,6 +81,8 @@ installation, and do not mutate a live global install before the human Release g
 - `artifact-governance` with one-fact/one-owner placement rules, English/Vietnamese content, and canonical/runtime parity
 - additive design-readiness guidance for the existing `sa` and `ta` skills, mapped into their existing fields without selecting an s05 solution
 - corrected 13-case authoring smoke evidence for explicit legacy-scaffold approval bootstrap with `request_source`, `REPORT_BOOTSTRAPPED`, approval status, and reviewer provenance
+- opt-in, local-only, allowlisted telemetry with pseudonymous identifiers, 30/90-day retention, and purge
+- one Guardrails-built package candidate verified by SHA-256 on Node 18 and Node 22 without per-environment rebuild
 - machine enforcement for artifact placement, ownership duplication, section-first execution reads, and registered role-indexed handoffs
 - permission-safe repeat install/update behavior that preserves unmanaged content
 
@@ -108,6 +115,16 @@ Rules for reading this block:
 - if `Missing Gates` is not `NONE`, `Next Human Action` must not be `NONE`
 - a raw greenfield feature request such as `QR Voucher + voucher service API + tone brand` in an empty repo must stop at the `proposal stage`; it must not self-scaffold or code
 
+## Adaptive Governance Contract
+
+- Lanes: `qa`, `translation`, `summarization`, `research`, `documentation`, `read_only_analysis`, `maintenance`, and `product_delivery`.
+- The first six lanes write no delivery artifacts by default. Explicit materialization requires an audited human override. Maintenance uses only a bounded Developer/QC path unless a hard trigger escalates it.
+- Hard triggers are `public_contract`, `migration`, `security_sensitive`, `regulated`, `greenfield_foundation`, and `release`. Mixed or unknown intent fails closed to `product_delivery`.
+- SA, TA, DevOps and the Contract, Foundation, Release, and Business Acceptance gates are trigger-based. Not-applicable work creates no pending human action; applicable authority never changes.
+- Adaptive artifacts are written only when source and installed runtimes share the same minor version and parity has passed. A failed guard writes no adaptive delivery state; legacy readers and individual approvals remain available.
+- `approve-ready-bundle`, `reject-ready-bundle`, and `approve-closeout-bundle` perform one human interaction while keeping an independent signed receipt for every gate. The transaction is preflighted, locked, journaled, recoverable, and reconciled with protocol state.
+- Telemetry remains off unless `--telemetry true` or `CF_TELEMETRY=on` is supplied. Records are local-only and allowlisted; raw data expires after 30 days, aggregate data after 90 days, and `wfc telemetry purge` removes expired records.
+
 ## Command Overview
 
 | Task | Command |
@@ -129,7 +146,10 @@ Rules for reading this block:
 | Human-approve an agent-proposed change package | `wfc change-item approve --change-id <CHANGE-ID> --reviewed-by <role>` |
 | List or inspect work items | `wfc work-item list` , `wfc work-item status --work-item <slug>` |
 | Human-approve a work item or seal a workflow gate | `wfc work-item approve --work-item <slug> --reviewed-by <role>` , `wfc gate approve --work-item <slug> --gate <spec|dor|approach|task_plan> --reviewed-by <role>` |
+| Approve or reject all applicable readiness gates in one interaction | `wfc gate approve-ready-bundle --work-item <slug>` , `wfc gate reject-ready-bundle --work-item <slug>` |
+| Approve all applicable terminal gates in one interaction | `wfc gate approve-closeout-bundle --work-item <slug>` |
 | Activate execution after gates pass | `wfc work-item activate --work-item <slug> --step s07 --write-root <path>` |
+| Purge expired opt-in local telemetry | `wfc telemetry purge [--telemetry-out <local-dir>]` |
 | View or sync capability control | `wfc capability status` , `wfc capability sync` , `wfc capability check --path <path>` |
 | Validate the work-item protocol | `wfc protocol` |
 

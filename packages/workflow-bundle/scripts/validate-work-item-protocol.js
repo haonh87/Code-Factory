@@ -12,6 +12,9 @@ const {
   BOOTSTRAP_GATE_PASSED,
   BOOTSTRAP_GATE_STATUSES,
   PROTOCOL_STATUSES,
+  STATE_COLLECTIONS,
+  getStateCollectionErrors,
+  normalizeStateCollection,
   getWorkItemPaths,
   isAllowedProtocolTransition,
   loadProtocolControl,
@@ -28,6 +31,10 @@ const {
   hasApprovedReceipt,
   loadTrustedApprovalReceipt
 } = require("./workflow-trusted-approval-utils");
+const {
+  REQUEST_LANES,
+  canActivateAdaptiveWrites
+} = require("./workflow-adaptive-governance");
 
 function collectWorkItemDirs(workflowRootBase) {
   if (!fs.existsSync(workflowRootBase)) {
@@ -66,6 +73,81 @@ function validateProtocolBlockSync(s01Content, report, s01Path, errors) {
     if (!section.includes(expectedLine)) {
       errors.push(`Protocol block out of sync in ${s01Path}: missing '${expectedLine}'`);
     }
+  });
+
+  // Mirror checks read serialized YAML data, never infer state from its text.
+  // The current renderer uses JSON-compatible YAML flow mappings; pre-contract
+  // scalar lists remain readable without changing their files.
+  const lines = section.split("\n");
+  STATE_COLLECTIONS.forEach(collection => {
+    const starts = [];
+    lines.forEach((line, index) => {
+      const key = line.match(/^([a-z_]+)\s*:/);
+      if (key && key[1] === collection) starts.push(index);
+    });
+    if (starts.length === 0) {
+      errors.push(`${collection} out of sync in ${s01Path}: missing collection.`);
+      return;
+    }
+    if (starts.length !== 1) {
+      errors.push(`${collection} out of sync in ${s01Path}: duplicate collection keys.`);
+      return;
+    }
+    const start = starts[0];
+    const entries = [];
+    try {
+      if (lines[start] !== collection + ":" && lines[start] !== collection + ": []") {
+        throw new Error("collection must use the canonical block list or empty [] header.");
+      }
+      // A collection owns every line up to the next top-level mapping or fence.
+      // Never stop at a blank/comment/malformed line and silently drop its tail.
+      let end = start + 1;
+      while (end < lines.length && !/^[a-z_]+\s*:/.test(lines[end]) && lines[end] !== "```") end++;
+      if (lines[start] === collection + ": []") {
+        if (end !== start + 1) throw new Error("empty [] collection cannot have trailing entries or continuation.");
+      } else {
+        if (end === start + 1) throw new Error("empty collection must use [].");
+        for (let i = start + 1; i < end; i++) {
+          if (!lines[i].startsWith("  - ")) {
+            throw new Error("malformed or non-contiguous collection entry at mirror line " + (i + 1) + ".");
+          }
+          const value = lines[i].slice(4);
+          // Canonical flow maps/quoted scalars are JSON; bare legacy scalars
+          // remain exact input rather than being semantically interpreted here.
+          entries.push(value.startsWith("{") || value.startsWith('"') ? JSON.parse(value) : value);
+        }
+      }
+      const normalized = normalizeStateCollection(entries, collection, { workItemSlug: report.work_item_slug, changeId: report.change_id });
+      // Compare structural fields without making object key order meaningful.
+      const canonical = values => values.map(entry => [entry.id, entry.kind, entry.gate, entry.text]);
+      if (JSON.stringify(canonical(normalized)) !== JSON.stringify(canonical(report[collection]))) {
+        errors.push(`${collection} out of sync in ${s01Path}: collection differs from report.`);
+      }
+    } catch (error) {
+      errors.push(`${collection} out of sync in ${s01Path}: ${error.message}`);
+    }
+  });
+
+  if (report.artifact_shape === "adaptive_v1") {
+    [
+      `artifact_shape: adaptive_v1`,
+      `request_lane: ${report.request_lane}`,
+      `workflow_required: ${report.workflow_required ? "true" : "false"}`,
+      report.routing_reasons.length > 0 ? "routing_reasons:" : "routing_reasons: []",
+      report.roles.length > 0 ? "role_applicability:" : "role_applicability: []",
+      report.gates.length > 0 ? "gate_applicability:" : "gate_applicability: []"
+    ].forEach((expectedLine) => {
+      if (!section.includes(expectedLine)) {
+        errors.push(`Adaptive protocol block out of sync in ${s01Path}: missing '${expectedLine}'`);
+      }
+    });
+  }
+}
+
+function validateProtocolStateCollections(report, reportPath, errors) {
+  STATE_COLLECTIONS.forEach(collection => {
+    getStateCollectionErrors(report[collection] === undefined ? [] : report[collection], collection)
+      .forEach(error => errors.push(`${error} Report: ${reportPath}`));
   });
 }
 
@@ -158,6 +240,32 @@ function validateProtocolState(report, context, errors) {
 
   if (!BOOTSTRAP_GATE_STATUSES.includes(report.bootstrap_gate_status)) {
     errors.push(`Invalid bootstrap_gate_status '${report.bootstrap_gate_status}' in ${reportPath}`);
+  }
+
+  if (report.artifact_shape === "adaptive_v1") {
+    if (!REQUEST_LANES.includes(report.request_lane)) {
+      errors.push(`Invalid adaptive request_lane '${report.request_lane}' in ${reportPath}`);
+    }
+    if (report.workflow_required !== true) {
+      errors.push(`Protocol-managed adaptive report requires workflow_required=true in ${reportPath}`);
+    }
+    if (report.routing_reasons.length < 1) {
+      errors.push(`Adaptive report requires non-empty routing_reasons in ${reportPath}`);
+    }
+    report.roles.forEach((entry, index) => {
+      if (entry.reasons.length < 1) {
+        errors.push(`Adaptive report roles[${index}] requires non-empty reasons in ${reportPath}`);
+      }
+    });
+    report.gates.forEach((entry, index) => {
+      if (entry.reasons.length < 1 || entry.reviewer_roles.length < 1) {
+        errors.push(`Adaptive report gates[${index}] requires reasons and reviewer_roles in ${reportPath}`);
+      }
+    });
+    const activation = canActivateAdaptiveWrites(report.adaptive_activation);
+    if (!activation.allowed) {
+      errors.push(`Adaptive report activation evidence failed [${activation.reasons.join(", ")}] in ${reportPath}`);
+    }
   }
 
   if (report.work_item_slug !== slug) {
@@ -384,7 +492,16 @@ function validateWorkItemProtocol({ args }) {
       return;
     }
 
-    const report = normalizeProtocolReport(rawReport);
+    const stateErrorCount = errors.length;
+    validateProtocolStateCollections(rawReport, paths.reportPath, errors);
+    if (errors.length !== stateErrorCount) return;
+    let report;
+    try {
+      report = normalizeProtocolReport(rawReport);
+    } catch (error) {
+      errors.push(`Invalid state collection in ${paths.reportPath}: ${error.message}`);
+      return;
+    }
     validateProtocolState(report, {
       slug: entry.slug,
       projectRoot,
@@ -427,5 +544,7 @@ if (require.main === module) {
 
 module.exports = {
   isEquivalentWorkflowRoot,
+  validateProtocolStateCollections,
+  validateProtocolBlockSync,
   validateWorkItemProtocol
 };
