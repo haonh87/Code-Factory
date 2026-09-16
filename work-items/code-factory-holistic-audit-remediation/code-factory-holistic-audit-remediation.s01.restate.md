@@ -34,7 +34,7 @@ execution_roles:
   - "developer"
   - "qc"
   - "devops"
-review_mode: targeted
+review_mode: self
 verification_owner: "qc"
 approval_gates:
   spec: "required"
