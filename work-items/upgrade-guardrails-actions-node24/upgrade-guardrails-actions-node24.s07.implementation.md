@@ -248,7 +248,7 @@ code_quality:
 ## Hosted Finding F-N24-H1
 ```yaml
 finding_id: "F-N24-H1"
-status: TECHNICAL_VERIFICATION_APPROVED_PENDING_DOD
+status: DOD_HUMAN_APPROVED_PENDING_RECEIPT
 severity: HIGH
 approved_by: ["developer", "qc"]
 approved_at: "2026-09-15T09:14:23Z"

@@ -299,6 +299,7 @@ review_notes:
   - "Human Developer/QC approved refreshed CI-N24-T4a/T4b Code Quality for source 53bab65030dd925d8f814454b504d12c2dec9505 and implementation diff SHA-256 4852365ded7042836b4327e3506bdae04e5747200c83c3545afe3df12c9ddedc at 2026-09-15T10:41:09Z. Hosted zero-annotation verification remains separate."
   - "Hosted run 34959637638 for source 41e7b0187ff97e486b019bb9d69ab2945d7bbf8a passed 10/10 jobs with zero annotations across all 10 check-runs; downloaded v2.6.2 candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f matches its declared digest. QC Technical Verification and DoD remain separate."
   - "Human QC approved Technical Verification for source 41e7b0187ff97e486b019bb9d69ab2945d7bbf8a, run 34959637638, and candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f at 2026-09-16T01:41:43Z. DoD remains a separate gate."
+  - "Human QC approved DoD for upgrade-guardrails-actions-node24 at 2026-09-16T02:02:51Z based on approved Technical Verification and 6/6 Spec Coverage; QC accepted action-major alias pinning and missing local actionlint as non-blocking residual risks. Trusted DoD receipt and protocol close remain separate."
 refs:
   - "work-items/upgrade-guardrails-actions-node24"
 audit_events:
@@ -326,6 +327,7 @@ audit_events:
   - "T4AB_REFRESHED_CODE_QUALITY_APPROVED"
   - "CI_N24_HOSTED_ZERO_ANNOTATION_EVIDENCE_COLLECTED"
   - "CI_N24_TECHNICAL_VERIFICATION_APPROVED"
+  - "CI_N24_DOD_HUMAN_APPROVED_PENDING_RECEIPT"
   - "VERIFICATION_CONFIRMED"
 ```
 

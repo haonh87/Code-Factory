@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
 governance_status: ALIGNED
@@ -44,8 +44,8 @@ gate_reviews:
   approach_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-09-16T02:02:51Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -189,8 +189,10 @@ reason: "All six acceptance criteria, all local checks, all hosted jobs, all ann
 ## Definition of Done
 ```yaml
 proposed_status: DONE
-human_verdict: PENDING
-status: PENDING_QC
+human_verdict: PASS
+reviewed_by: "qc"
+reviewed_at: "2026-09-16T02:02:51Z"
+status: DONE
 preconditions:
   technical_verification: PASS
   spec_coverage: "6/6 PASS"
@@ -199,6 +201,10 @@ preconditions:
 residual_risks:
   - "Major action aliases are not pinned to immutable commit SHAs; retained by existing policy."
   - "actionlint was unavailable locally; the hosted runner accepted and executed the exact workflow successfully."
+residual_risk_acceptance:
+  status: ACCEPTED_NON_BLOCKING
+  accepted_by: "qc"
+  accepted_at: "2026-09-16T02:02:51Z"
 owners:
   - { risk: "Action alias pinning policy", owner: "devops/maintainer", disposition: "Follow-up only; not a blocker for this scoped upgrade." }
   - { risk: "Local actionlint gap", owner: "qc", disposition: "Accepted only if QC approves exact hosted evidence." }
@@ -216,7 +222,7 @@ trace_status: COMPLETE
 ## Branch Finish Decision
 ```yaml
 status: HOLD
-reason: "Technical Verification is approved; DoD remains a separate pending human QC decision."
+reason: "Technical Verification and human DoD are approved; trusted DoD receipt and protocol close remain pending."
 merge: NOT_AUTHORIZED
 cleanup: NOT_AUTHORIZED
 release_or_tag: OUT_OF_SCOPE
