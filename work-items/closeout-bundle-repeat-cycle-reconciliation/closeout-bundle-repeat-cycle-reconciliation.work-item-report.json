@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "DONE",
+  "protocol_status": "ARCHIVED",
   "decision_owner": "agent",
   "protocol_owner": "qc",
   "raw_request_summary": "Fix repeated closeout-bundle reconciliation so a successful current approval cycle removes stale pending approval actions and handoffs, records a current-cycle protocol event despite historical evidence, and remains idempotent.",
@@ -176,14 +176,8 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "archive-lifecycle",
-  "required_actions": [
-    {
-      "id": "se:65e43f396e06347d934d0dbe004e1196c3a4e7151b58e789f7d8bac020109bb7",
-      "kind": "workflow_followup",
-      "text": "Archive the work item when all downstream lifecycle actions are complete."
-    }
-  ],
+  "handoff_target": "none",
+  "required_actions": [],
   "blockers": [],
   "refs": [
     "work-items/closeout-bundle-repeat-cycle-reconciliation",
@@ -306,7 +300,8 @@
     "PARENT_CURRENT_BUSINESS_ACCEPTANCE_HUMAN_DECISION_APPROVED",
     "AC_RCR_08_PARENT_CONTRIBUTION_CONFIRMED",
     "F_AG11_001_RECONCILED",
-    "DONE_CONFIRMED"
+    "DONE_CONFIRMED",
+    "ARCHIVE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -1128,6 +1123,14 @@
       "from_status": "VERIFIED",
       "to_status": "DONE",
       "note": "Definition of Done confirmed after full AC-RCR-08 parent contribution and F-AG11-001 reconciliation."
+    },
+    {
+      "timestamp": "2026-09-16T03:18:53.132Z",
+      "action": "archive",
+      "actor": "coordinator",
+      "from_status": "DONE",
+      "to_status": "ARCHIVED",
+      "note": "Parent CR-008 re-verification, release, Business Acceptance, merge, tag, and v2.6.2 publication completed; child lifecycle archived."
     }
   ]
 }

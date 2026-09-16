@@ -517,7 +517,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: DONE
+protocol_status: ARCHIVED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "closeout-bundle-legacy-dod-compatibility"
@@ -540,13 +540,10 @@ decision_owner: "agent"
 protocol_owner: "qc"
 reviewed_by: "po"
 reviewed_at: "2026-09-03T07:45:40.233Z"
-handoff_target: "parent-cr008-cf019-decision"
-last_transition_action: "close"
-last_transition_at: "2026-09-08T02:10:58.887Z"
-required_actions:
-  - "Record this child DONE evidence and corrected candidate in parent CR-008."
-  - "Keep the shared branch/worktree HOLD_OPEN until CF-019 is dispositioned and parent CR-008 is re-verified, receipt-complete, and DONE."
-  - "Archive this child only after the downstream parent lifecycle actions are complete."
+handoff_target: "none"
+last_transition_action: "archive"
+last_transition_at: "2026-09-16T03:18:52.770Z"
+required_actions: []
 blockers: []
 review_notes:
   - "Approved creation of the recommended linked defect for CR-008 finding F-AG08-001."
@@ -583,6 +580,7 @@ audit_events:
   - "CLOSEOUT_BUNDLE_APPROVED"
   - "DONE_CONFIRMED"
   - "BRANCH_FINISH_HOLD_OPEN"
+  - "ARCHIVE_CONFIRMED"
 ```
 
 ## Traceability

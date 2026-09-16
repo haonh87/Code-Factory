@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "DONE",
+  "protocol_status": "ARCHIVED",
   "decision_owner": "agent",
   "protocol_owner": "qc",
   "raw_request_summary": "Fix the CR-008 legacy closeout bundle so mandatory DoD cannot be omitted and partial terminal state cannot be recorded as success.",
@@ -81,12 +81,8 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "parent-cr008-cf019-decision",
-  "required_actions": [
-    "Record this child DONE evidence and corrected candidate in parent CR-008.",
-    "Keep the shared branch/worktree HOLD_OPEN until CF-019 is dispositioned and parent CR-008 is re-verified, receipt-complete, and DONE.",
-    "Archive this child only after the downstream parent lifecycle actions are complete."
-  ],
+  "handoff_target": "none",
+  "required_actions": [],
   "blockers": [],
   "refs": [
     "work-items/closeout-bundle-legacy-dod-compatibility",
@@ -113,7 +109,8 @@
     "S08_FINALIZED_FOR_CLOSEOUT",
     "CLOSEOUT_BUNDLE_APPROVED",
     "DONE_CONFIRMED",
-    "BRANCH_FINISH_HOLD_OPEN"
+    "BRANCH_FINISH_HOLD_OPEN",
+    "ARCHIVE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -246,6 +243,14 @@
       "from_status": "VERIFIED",
       "to_status": "DONE",
       "note": "Trusted DoD, Release, and Business Acceptance receipts match the finalized s08 artifact; close the linked defect protocol and hand evidence back to CR-008 while the parent branch remains open."
+    },
+    {
+      "timestamp": "2026-09-16T03:18:52.770Z",
+      "action": "archive",
+      "actor": "coordinator",
+      "from_status": "DONE",
+      "to_status": "ARCHIVED",
+      "note": "Parent CR-008 exact-candidate verification and v2.6.2 publication completed; child lifecycle archived."
     }
   ]
 }

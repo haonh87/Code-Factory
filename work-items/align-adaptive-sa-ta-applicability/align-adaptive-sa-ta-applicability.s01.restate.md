@@ -660,7 +660,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: DONE
+protocol_status: ARCHIVED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "align-adaptive-sa-ta-applicability"
@@ -685,12 +685,10 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-08T03:03:41.551Z"
-handoff_target: "parent-cr-008-reverification"
-last_transition_action: "close"
-last_transition_at: "2026-09-09T04:26:08.744Z"
-required_actions:
-  - "Re-verify parent CR-008 against an exact candidate containing the completed CF-019 result."
-  - "Keep the shared branch/worktree open until parent verification and parent closeout gates complete."
+handoff_target: "none"
+last_transition_action: "archive"
+last_transition_at: "2026-09-16T03:18:52.958Z"
+required_actions: []
 blockers: []
 review_notes:
   - "Human review approved."
@@ -756,6 +754,7 @@ audit_events:
   - "S08_DOD_APPROVED"
   - "S08_DOD_RECEIPT_VERIFIED"
   - "DONE_CONFIRMED"
+  - "ARCHIVE_CONFIRMED"
 ```
 
 ## Traceability
