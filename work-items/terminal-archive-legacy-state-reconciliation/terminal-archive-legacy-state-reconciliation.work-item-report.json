@@ -2,7 +2,7 @@
   "materialization_status": "READY",
   "protocol_status": "MATERIALIZED",
   "decision_owner": "agent",
-  "protocol_owner": "",
+  "protocol_owner": "maintainer",
   "raw_request_summary": "Prevent terminal completion while unresolved state entries exist; require explicit opaque identifier disposition; preserve exact original text in append-only resolved-state history; prohibit semantic inference.",
   "request_source": "user-chat",
   "candidate_count": 1,
@@ -56,13 +56,9 @@
   "work_item_slug": "terminal-archive-legacy-state-reconciliation",
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
-  "selected_profile": "strict",
-  "sdd_mode": "none",
-  "sdd_preset": "strict",
-  "sdd_light_profile": "preview",
-  "sdd_reasons": [],
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/terminal-archive-legacy-state-reconciliation/work-items/terminal-archive-legacy-state-reconciliation",
   "current_step": "s01",
+  "granted_write_paths": [],
   "change_strategy": "create_new",
   "change_id": "CR-009",
   "handoff_target": "human-review",
@@ -71,11 +67,6 @@
       "id": "se:6ee5e91f9895141bedc6ec73409d18cbc52d86cef1ab943cb4e41bc4bf5bc0f9",
       "kind": "workflow_followup",
       "text": "wfc change-item approve --change-id CR-009 --reviewed-by <role>"
-    },
-    {
-      "id": "se:e4d1b1b3b3c9fc2a684bb772fef07f569db8f57d44564fd9dcc9084ab91aad88",
-      "kind": "workflow_followup",
-      "text": "wfc work-item approve --work-item terminal-archive-legacy-state-reconciliation --reviewed-by <role>"
     },
     {
       "id": "se:a1618872daacea133445e05562123bbabad1261b3d8841adb89ceeab80d3d988",
@@ -100,17 +91,20 @@
     "DEDUP_CONFIRMED",
     "CHANGE_CREATED",
     "WORKFLOW_SCAFFOLDED",
-    "STEP_OPENED"
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-09-16T07:38:09.525Z",
+  "review_notes": [
+    "Maintainer approved the linked defect for F-CR008-ARCH-001."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
   "bootstrap_reviewed_by": "",
   "bootstrap_reviewed_at": "",
-  "review_required": true,
-  "approval_status": "PENDING_REVIEW",
-  "reviewed_by": "",
-  "reviewed_at": "",
-  "review_notes": [],
   "protocol_events": [
     {
       "timestamp": "2026-09-16T07:24:26.023Z",
@@ -135,11 +129,26 @@
       "from_status": "READY_TO_MATERIALIZE",
       "to_status": "MATERIALIZED",
       "note": "Auto-scaffolded workflow artifacts."
+    },
+    {
+      "timestamp": "2026-09-16T07:38:04.598Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Maintainer approved the linked defect for F-CR008-ARCH-001."
+    },
+    {
+      "timestamp": "2026-09-16T07:38:09.527Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Maintainer approved the linked defect for F-CR008-ARCH-001."
     }
   ],
   "artifact_shape": "adaptive_v1",
   "request_lane": "maintenance",
-  "requested_lane": "maintenance",
   "workflow_required": true,
   "routing_reasons": [
     "LANE_MAINTENANCE"

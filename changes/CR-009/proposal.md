@@ -1,15 +1,18 @@
 ---
 change_id: "CR-009"
 artifact_kind: "change-proposal"
-status: draft
+status: approved
 decision_owner: "agent"
 review_required: true
-approval_status: PENDING_REVIEW
-reviewed_by: ""
-reviewed_at: ""
+approval_status: APPROVED
+reviewed_by: "maintainer"
+reviewed_at: "2026-09-16T07:37:51.520Z"
 materialization_ref: "work-items/terminal-archive-legacy-state-reconciliation/terminal-archive-legacy-state-reconciliation.work-item-report.json"
 request_summary: "Prevent terminal completion while unresolved state entries exist; require explicit opaque identifier disposition; preserve exact original text in append-only resolved-state history; prohibit semantic inference."
-review_notes: []
+defect_source: "n/a"
+spec_impact_classified: false
+review_notes:
+  - "Maintainer approved CR-009 linked defect boundary."
 linked_work_items:
   - "terminal-archive-legacy-state-reconciliation"
 ---

@@ -495,7 +495,7 @@ blockers: []
 ## Work Item Protocol
 ```yaml
 protocol_status: MATERIALIZED
-approval_status: PENDING_REVIEW
+approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
 request_lane: maintenance
@@ -523,19 +523,19 @@ bootstrap_reviewed_at: ""
 change_strategy: create_new
 change_id: "CR-009"
 decision_owner: "agent"
-protocol_owner: ""
-reviewed_by: ""
-reviewed_at: ""
+protocol_owner: "maintainer"
+reviewed_by: "maintainer"
+reviewed_at: "2026-09-16T07:38:09.525Z"
 handoff_target: "human-review"
-last_transition_action: "materialize"
-last_transition_at: "2026-09-16T07:24:26.062Z"
+last_transition_action: "approve"
+last_transition_at: "2026-09-16T07:38:09.527Z"
 required_actions:
   - {"id":"se:6ee5e91f9895141bedc6ec73409d18cbc52d86cef1ab943cb4e41bc4bf5bc0f9","kind":"workflow_followup","text":"wfc change-item approve --change-id CR-009 --reviewed-by <role>"}
-  - {"id":"se:e4d1b1b3b3c9fc2a684bb772fef07f569db8f57d44564fd9dcc9084ab91aad88","kind":"workflow_followup","text":"wfc work-item approve --work-item terminal-archive-legacy-state-reconciliation --reviewed-by <role>"}
   - {"id":"se:a1618872daacea133445e05562123bbabad1261b3d8841adb89ceeab80d3d988","kind":"gate_approval","text":"wfc gate approve --work-item terminal-archive-legacy-state-reconciliation --gate task_plan --reviewed-by developer","gate":"task_plan"}
   - {"id":"se:de24ce9b0f5e308bd1d3e574f073236c79b6ec089f9abccbfc6d0c5df7366c44","kind":"work_item_activation","text":"wfc work-item activate --work-item terminal-archive-legacy-state-reconciliation --step s07 --write-root <path>"}
 blockers: []
-review_notes: []
+review_notes:
+  - "Maintainer approved the linked defect for F-CR008-ARCH-001."
 refs:
   - "work-items/terminal-archive-legacy-state-reconciliation"
 audit_events:
@@ -546,6 +546,7 @@ audit_events:
   - "CHANGE_CREATED"
   - "WORKFLOW_SCAFFOLDED"
   - "STEP_OPENED"
+  - "WORK_ITEM_APPROVED"
 ```
 
 ## Traceability
