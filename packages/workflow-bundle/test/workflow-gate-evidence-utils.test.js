@@ -1,7 +1,10 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
-const { resolveArtifactReference } = require("../scripts/workflow-gate-evidence-utils");
+const {
+  getRequiredFinalizedGateKeys,
+  resolveArtifactReference
+} = require("../scripts/workflow-gate-evidence-utils");
 
 let failures = 0;
 
@@ -28,7 +31,87 @@ function expectReferenceError(fn, code) {
 
 console.log("Running artifact reference resolver tests...\n");
 
+const adaptiveMaintenanceGates = {
+  spec: "not_applicable",
+  contract: "not_applicable",
+  dor: "not_applicable",
+  approach: "not_applicable",
+  foundation: "not_applicable",
+  task_plan: "required",
+  uat: "not_applicable",
+  dod: "required",
+  release: "not_applicable",
+  business_acceptance: "not_applicable"
+};
+assert(
+  getRequiredFinalizedGateKeys("s04", adaptiveMaintenanceGates, "none", "adaptive_v1").length === 0,
+  "T4 adaptive reader treats maintenance s04 gates as explicitly not applicable"
+);
+assert(
+  getRequiredFinalizedGateKeys("s06", adaptiveMaintenanceGates, "none", "adaptive_v1").join(",") === "task_plan",
+  "T4 adaptive reader requires only task_plan at s06"
+);
+assert(
+  getRequiredFinalizedGateKeys("s04", adaptiveMaintenanceGates, "none", "legacy_v1").join(",") === "spec,dor",
+  "T4 legacy reader preserves fixed-shape spec/dor requirements"
+);
+
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
+
+
+// D-E / T7: this assertion used to read a LIVE work item note and require protocol_status to be
+// ACTIVE. It broke the moment that work item closed, which made the suite result depend on which
+// work items happen to be ACTIVE rather than on the resolver. The fixture below controls its own
+// input instead.
+//
+// protocol_status is deliberately VERIFIED - a value no work item in this repo carries - so the
+// assertion cannot pass by coincidence if the resolver ever returns a constant or a stale read.
+const sameNoteRoot = fs.mkdtempSync(path.join(os.tmpdir(), "artifact-reference-same-note-"));
+try {
+  const fixtureNote = path.join(
+    sameNoteRoot,
+    "work-items",
+    "fixture-item",
+    "fixture-item.s01.restate.md"
+  );
+  writeFile(
+    fixtureNote,
+    [
+      "---",
+      'artifact_id: "fixture-item.s01.restate"',
+      'work_item_slug: "fixture-item"',
+      "---",
+      "",
+      "# Step 1 - Clarify",
+      "",
+      "## Work Item Protocol",
+      "```yaml",
+      "protocol_status: VERIFIED",
+      'work_item_slug: "fixture-item"',
+      "```",
+      ""
+    ].join("\n")
+  );
+
+  const sameNote = resolveArtifactReference({
+    projectRoot: sameNoteRoot,
+    currentFile: fixtureNote,
+    reference: "#Work Item Protocol.protocol_status"
+  });
+  assert(
+    sameNote.value === "VERIFIED",
+    `same-note resolver must read protocol_status from the note it was given (got ${sameNote.value})`
+  );
+} finally {
+  fs.rmSync(sameNoteRoot, { recursive: true, force: true });
+}
+
+// Merge note (2026-08-28): main's 26591a2 fixed the same original brittleness a different way -
+// it kept reading the live note but compared against the live report, so a status change no longer
+// breaks it. AC-006 requires the CONTROLLED fixture, so that one is authoritative here; main's
+// live self-consistency check is kept as an additional assertion so the merge loses nothing.
+// The live check is coupled to that work item continuing to EXIST, which is the residual risk
+// already recorded in s07 as residual-cross-file and owned by the test-hygiene work item.
 const liveS01 = path.join(
   repoRoot,
   "work-items",

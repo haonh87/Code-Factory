@@ -1,8 +1,8 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "MATERIALIZED",
+  "protocol_status": "DONE",
   "decision_owner": "coordinator",
-  "protocol_owner": "ba",
+  "protocol_owner": "developer",
   "raw_request_summary": "",
   "request_source": "legacy-scaffold",
   "candidate_count": 1,
@@ -16,13 +16,22 @@
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/worktree-and-closure-integrity",
-  "current_step": "s01",
-  "granted_write_paths": [],
+  "current_step": "s08",
+  "granted_write_paths": [
+    "packages/workflow-bundle/scripts/validate-work-item-protocol.js",
+    "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js",
+    "packages/workflow-bundle/scripts/workflow-gate-review.js",
+    "packages/workflow-bundle/bin/wfc.js",
+    "packages/workflow-bundle/test",
+    "packages/workflow-bundle/tests/fixtures",
+    "scripts/hooks/tdd-enforce.sh",
+    "work-items/worktree-and-closure-integrity"
+  ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "author-s01",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
-    "Review and continue workflow backbone s01 -> s08."
+    "Archive the work item when all downstream lifecycle actions are complete."
   ],
   "blockers": [],
   "refs": [
@@ -30,7 +39,10 @@
   ],
   "audit_events": [
     "REPORT_BOOTSTRAPPED",
-    "WORK_ITEM_APPROVED"
+    "WORK_ITEM_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -59,6 +71,30 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-08-19T13:23:23.085Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "s07 opened for D-A..D-D; worktree isolation per approved T0."
+    },
+    {
+      "timestamp": "2026-08-28T04:35:43.909Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Technical verification completed."
+    },
+    {
+      "timestamp": "2026-08-28T04:40:22.075Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Definition of Done confirmed."
     }
   ]
 }

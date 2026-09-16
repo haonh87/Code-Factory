@@ -44,10 +44,10 @@ role_signoffs:
 gate_reviews:
   spec_reviewed_by:
     - "ba"
-  spec_reviewed_at: "2026-08-19T06:57:49.000Z"
+  spec_reviewed_at: "2026-08-26T07:24:09Z"
   dor_reviewed_by:
     - "po"
-  dor_reviewed_at: "2026-08-19T06:57:49.000Z"
+  dor_reviewed_at: "2026-08-26T07:24:09Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -112,6 +112,21 @@ acceptance_ids:
   - "AC-003 the verify transition's finalization requirement is documented and precedes the verify step"
   - "AC-004 dod seal and DONE transition refuse a dirty declared path, with a reason-bearing hatch visible in output"
   - "AC-005 four fixtures, each observed failing first"
+  - "AC-006 the artifact-reference resolver is covered by a controlled fixture, not by a live work item's protocol_status (added by AMENDMENT-001)"
+
+amendments:
+  - id: "AMENDMENT-001"
+    raised_at: "2026-08-19, during s07 T0 baseline"
+    adds: "REQ-006 / AC-006 - defect D-E"
+    what: "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js:43 asserts protocol_status == 'ACTIVE' while reading the LIVE artifact-governance-enforcement s01 note, which is now DONE. Pre-existing on main, not caused by this work item or by the worktree."
+    why_in_this_work_item: "It sits inside granted_write_paths (packages/workflow-bundle/test) and inside T5's declared paths, so T5 cannot leave the suite green without touching it. It also makes 'the unit suite passes' an invalid T6 criterion unless the baseline is stated as 1 failure. Same class as REQ-001 to REQ-003 - a check that assumes its environment rather than controlling it."
+    alternatives_considered:
+      - "Leave it and require T6 to match exactly 1 failing file, not 0. Zero scope drift, but the suite stays red and a future real regression is easier to miss."
+      - "Split it into its own work item. Cleanest governance separation, slowest - a full s01 to s08 for a one-line fix."
+    decided_by: "human, interactive, 2026-08-19"
+    decision: "Adopt as a 5th defect D-E in this work item."
+    gate_consequence: "This amendment edits s04 and s06, so the spec, dor, approach and task_plan receipts all go stale and must be re-sealed by a human before D-E is implemented. Nothing is implemented under a stale receipt."
+    scope_note: "product-specs/cards/worktree-and-closure-integrity.md was also amended so REQ-006/AC-006 exist at the spec source of truth. That path is NOT in granted_write_paths; the edit is additive spec authoring rather than implementation, and is disclosed here rather than done silently."
 
 decisions_accepted_by_owner:
   - id: "A2"
@@ -145,9 +160,10 @@ edge_cases:
 out_of_scope_ref: "product-specs/cards/worktree-and-closure-integrity.md#Business Goal"
 
 done_when:
-  - "AC-001 to AC-005 each have evidence in s08"
-  - "22 of 22 existing receipts still digest_match=true"
-  - "wfc protocol passes from inside a worktree"
+  - "AC-001 to AC-006 each have evidence in s08"
+  - "34 of 34 gate receipts still digest_match=true (43 total on disk). AMENDMENT-001 corrects the number: '22 of 22' was written before eight more gate receipts were sealed, and T0 measured the real figure. The intent - no receipt moves - is unchanged."
+  - "The workflow_root mismatch error no longer appears when wfc protocol runs from inside a worktree. AMENDMENT-001 narrows this from the original 'wfc protocol passes from inside a worktree' per decision F-02: the command still exits non-zero from a worktree because the trusted-receipt namespace is derived from projectRoot, which is a separate defect outside this work item's boundary and filed as its own work item. Measured at end of s07: mismatch lines = 0."
+  - "The full unit suite reports 0 failing files, which AC-006 makes reachable. Before AMENDMENT-001 the honest target was 1."
 
 behavioral_invariants:
   - "TTY refusal for non-interactive approval: unchanged"

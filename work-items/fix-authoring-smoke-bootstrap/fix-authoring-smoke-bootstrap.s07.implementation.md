@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: "CHANGE-006"
@@ -100,7 +100,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> Implementation is active in the required isolated worktree. The approved scope is a verification-harness correction plus v2.6.1 release preparation; no production approval semantics, tag, or release has changed yet.
+> PASS — implementation is `READY_FOR_VERIFY`. The approved harness/release scope is complete, local and exact artifact checks pass, and intended target `23a30756` has remote Workflow Guardrails 9/9; no production approval semantics, tag, or release has changed.
 
 ## Step Contract
 ```yaml
@@ -149,7 +149,7 @@ risks:
     mitigation: "Use structured bump tooling, inspect every diff, and protect the historical digest."
     contingency: "Discard only owned-path edits and regenerate from the clean anchor."
     owner: "developer"
-    status: OPEN
+    status: CLOSED
   - id: "S07-RISK-002"
     description: "Dirty-main content could contaminate the candidate."
     likelihood: MEDIUM
@@ -158,7 +158,7 @@ risks:
     mitigation: "Use this clean worktree and audit changed paths before each checkpoint."
     contingency: "Stop candidate work and restore only this branch to the governed anchor."
     owner: "developer"
-    status: MONITORING
+    status: CLOSED
   - id: "S07-RISK-003"
     description: "A candidate could be promoted before complete evidence and human approval."
     likelihood: LOW
@@ -167,7 +167,7 @@ risks:
     mitigation: "Keep publication prohibited in s07; s08 DevOps/QC Release approval remains mandatory."
     contingency: "Block promotion and invalidate any candidate whose source/payload changes."
     owner: "devops/qc"
-    status: MONITORING
+    status: MITIGATED
 timebox:
   target_duration: "One isolated implementation and local-evidence pass before s08."
   deadline: ""
@@ -203,6 +203,7 @@ tasks_completed:
   - "TASK-004: B1 and B2 reviews passed in the required spec-compliance then code-quality order."
   - "TASK-005: integrated local verification passed, including the required 13-case smoke, 39-file unit suite, release compatibility matrix, pack/runtime checks, and workflow validators."
   - "TASK-006: the initial candidate attempt was invalidated and removed; one replacement candidate from source commit a9888a9 is retained, inventoried, fingerprinted, hashed, and proven with exact candidate/rollback 4/4 plus a wrong-digest negative guard."
+  - "TASK-007: intended release target 23a30756 passed remote Workflow Guardrails 9/9 in run 32825477258; the branch/worktree remains retained for s08."
 bug_repro_evidence:
   - "Unchanged npm run validate:workflow:authoring-smoke: 12 cases passed; mutating-action-requires-report failed because approve returned Missing required argument '--reviewed-by' while the fixture expected Missing work item report."
 hypothesis_log:
@@ -269,13 +270,15 @@ outputs_actual:
   - "Candidate SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9 was conservatively INVALIDATED while package-payload impact was unproven; the tarball was moved out before rebuilding, and the replacement pack later proved test files are excluded."
   - "Replacement pack from a9888a9 produced the same digest/fingerprint/inventory, proving the changed test is excluded from npm payload; the replacement is the only v2.6.1 tarball retained in the worktree."
   - "Exact candidate install/update 4/4 and exact v2.6.1 -> v2.6.0 rollback 4/4 PASS; a caller-supplied all-zero rollback digest is rejected before installation with the immutable digest requirement."
+  - "Remote Workflow Guardrails PASS 9/9 for intended CI/tag target 23a30756fb2271b6f1604c91e5b31092fb2dec67 in run 32825477258: Workflow Tooling 97732387318, Artifacts 97732458226, SDD 97732511231, Changes 97732546003, Execution 97732598962, Planning 97732644150, Authoring Smoke 97732681888, Node 18 97732737815, and Node 22 97732737866 all succeeded."
 known_limitations:
-  - "Remote CI and s08 gates remain pending."
+  - "s08 Technical Verification, DoD, Release, and Business Acceptance gates remain pending."
   - "The bump tool resolves the outermost manifest by default; an in-repo worktree must pass --repo-root explicitly to avoid writing the parent main tree."
 follow_up_items:
   - "Track worktree-aware default root resolution for bump-version separately; this change uses the supported explicit --repo-root mitigation and does not widen CHANGE-006."
   - "Implementation path correction: add release-install-all-smoke.test.js to granted paths after the required 39-file unit suite exposed its stale v2.6.0 constant; this is an existing release-test compatibility surface, not a Spec or Approach change."
   - "Implementation path correction: add root package.json after remote run 32822390088 proved the full-unit npm entry point assumed an already-generated ignored runtime; the correction composes the existing runtime build as an npm pre-script and leaves the workflow file, production paths, public contract, and candidate package payload unchanged."
+  - "Track the GitHub annotation that actions/checkout@v4 and actions/setup-node@v4 target deprecated Node 20; run 32825477258 is fully green, and the read-only workflow upgrade is intentionally outside CHANGE-006."
 notes_for_testing: "Run the unchanged authoring smoke first and preserve the exact failing case/message before editing."
 ```
 
@@ -339,6 +342,8 @@ pipeline_scope: "Local source checks, exact GitHub candidate, remote Workflow Gu
 source_strategy:
   branch_model: "Isolated topic branch; reviewed commit becomes the exact CI/tag target."
   triggers: ["Local checks per batch", "Remote Workflow Guardrails for exact target"]
+  intended_release_target: "23a30756fb2271b6f1604c91e5b31092fb2dec67"
+  evidence_commit_policy: "Post-run evidence commits do not replace the locked release target and therefore do not retarget v2.6.1."
 build_and_verify:
   stages: ["Focused RED-to-GREEN", "Full local validation", "Candidate/rollback 4/4", "Remote 9/9"]
   cache_strategy: ["Isolated npm cache for one retained tarball build"]
@@ -409,6 +414,32 @@ implementation_path_corrections:
     authorization: "Added to protocol granted_write_paths and mirrored in the s01 protocol block before editing; local clean-runtime RED reproduced the same six failing test files."
 ```
 
+## Audit
+```yaml
+step: "s07 Implement"
+status: PASS
+checks:
+  - criterion: "Authoring smoke is 13/13 and TD-01/authority controls remain green."
+    result: PASS
+    evidence: "Authoring smoke 13/13; approval-path-defects TD-01 through TD-04; normal-mode approval authority negatives retained in the 39-file unit suite."
+  - criterion: "v2.6.1/42 surfaces agree and historical v2.6.0 evidence is unchanged."
+    result: PASS
+    evidence: "Structured identity/current EN/VI surfaces and release tests agree at v2.6.1/42; v2.6.0 note SHA-256 12e2e49d... and tarball SHA-256 5da823c9... are unchanged."
+  - criterion: "Review and required local/candidate/rollback checks pass with no open blocker."
+    result: PASS
+    evidence: "B1/B2/B2R/B3/B4 passed Spec Compliance before Code Quality; local 39/39, exact candidate 4/4, rollback 4/4, negative digest guard, and remote run 32825477258 at 9/9 all pass."
+  - criterion: "Handoff is READY_FOR_VERIFY without claiming DoD, Release, or Business Acceptance."
+    result: PASS
+    evidence: "No tag/release/npm publication or branch/worktree cleanup occurred; QC/DevOps/PO s08 approvals remain explicitly pending."
+constraint_violations: []
+unmitigated_high_risks: []
+timebox_breach: false
+timebox_evidence: "Completed inside the same isolated implementation sequence; two failed remote targets were preserved as RED evidence and remediated within the approved boundary before handoff."
+gaps: []
+risk_level: LOW
+next_action: "Human QC opens s08 for independent verification; author and review the s08 artifact before any Technical Verification, DoD, Release, Business Acceptance, publication, or branch finalization decision."
+```
+
 ## Spec Change
 ```yaml
 status: NOT_REQUIRED
@@ -434,7 +465,7 @@ acceptance_refs:
   - "AC-006 -> TEST-009"
   - "AC-007 -> TEST-010"
   - "AC-008 -> release audit and no npm publication"
-task_refs: ["TASK-001 through TASK-006 complete; TASK-007 through TASK-009 remain sequenced by s06"]
+task_refs: ["TASK-001 through TASK-007 complete; TASK-008 and TASK-009 remain sequenced by s06"]
 candidate_evidence:
   status: CURRENT
   source_commit: "a9888a923ce264567c308dc490199eada0db63a3"
@@ -451,19 +482,23 @@ candidate_evidence:
   exact_rollback_result: "PASS 4/4"
   negative_digest_guard: "PASS: an all-zero caller-supplied rollback digest is rejected before installation."
   superseded_attempt: "Candidate built from 0b6fb3e was invalidated and moved out before rebuild; replacement bytes are identical because npm inventory excludes test files."
+  intended_release_target: "23a30756fb2271b6f1604c91e5b31092fb2dec67"
+  remote_run_id: 32825477258
+  remote_run_url: "https://github.com/haonh87/Code-Factory/actions/runs/32825477258"
+  remote_required_jobs: "PASS 9/9"
 test_refs: ["TEST-001 through TEST-010 in s06 verification_plan"]
 ```
 
 ## Traceability
 ```yaml
 upstream: ["Approved s04/Spec Card", "Approved s06 Approach/Task Plan"]
-current: ["Active s07 implementation and Delivery Rule Evidence"]
+current: ["s07 PASS and READY_FOR_VERIFY with complete Delivery Rule Evidence"]
 downstream: ["s08 coverage, compatibility, Technical Verification, DoD, Release, Business Acceptance"]
 ```
 
 ## Handoff
 
-- Actual outputs: TASK-001 through TASK-006 complete; RED-to-GREEN, v2.6.1 release surfaces, early review including the path-correction reopen, integrated local verification, and exact candidate/rollback evidence are recorded without changing the approved requirements or approach.
-- Known limitations: remote CI and s08 gates remain pending.
-- Notes for testing: preserve the unchanged smoke failure before editing and follow s06 exact-artifact controls.
+- Actual outputs: TASK-001 through TASK-007 complete; RED-to-GREEN, v2.6.1 release surfaces, early review including both remote-finding corrections, integrated local verification, exact candidate/rollback proof, and remote 9/9 are recorded without changing the approved requirements or approach.
+- Known limitations: s08 Technical Verification, DoD, Release, and Business Acceptance gates remain pending.
+- Notes for testing: use the locked target/run and candidate/rollback identities in s08; preserve both failed remote runs as negative evidence.
 - Notes for deployment: no publication until DevOps/QC Release approval; npm remains excluded.

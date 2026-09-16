@@ -30,14 +30,14 @@ task_status:
     status: PASS
     evidence: "One replacement candidate is retained from reviewed source commit a9888a923ce264567c308dc490199eada0db63a3. It is byte-identical to the invalidated attempt because tests are excluded from npm payload: SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9, 932575 bytes, 544 files, payload fingerprint efe25e1bb0836b1e7a047a598ae4fd090d7049c6f09590a5050d0cbc80a9a606. Exact candidate 4/4, rollback 4/4, and wrong-digest negative guard PASS."
   - task_id: "TASK-007"
-    status: IN_PROGRESS
-    evidence: "Run 32822390088 at 8de5a8d failed both Node jobs on absent runtime. Run 32824019750 at db4315e proved the runtime bootstrap, then both Node jobs failed only release-rollback-smoke because the ignored v2.6.0 tarball was absent. A new commit/run is required; neither failed run will be rerun as remediation."
+    status: PASS
+    evidence: "Intended release target 23a30756fb2271b6f1604c91e5b31092fb2dec67 has Workflow Guardrails run 32825477258 at 9/9 success: seven sequential jobs plus Release Candidate Node 18 and Node 22. Failed runs 32822390088/32824019750 remain preserved RED evidence."
   - task_id: "TASK-008"
-    status: PENDING
-    evidence: "s08 not opened."
+    status: PASS
+    evidence: "Human QC approved Technical Verification and technical DoD at 2026-08-25T09:15:01Z; human DevOps and QC approved Release at 2026-08-25T09:23:44Z against target 23a30756..., candidate 7c1d2c7..., rollback 5da823c9..., remote run 32825477258 at 9/9, and unchanged v2.6.0."
   - task_id: "TASK-009"
-    status: PENDING
-    evidence: "Publication and closeout remain prohibited before s08 approvals."
+    status: PASS
+    evidence: "Publication and post-release verification PASS: annotated v2.6.1 resolves to 23a30756..., GitHub release 376297525 contains asset 528978943 with SHA-256 7c1d2c7..., the downloaded artifact is byte-identical and passes exact install/update 4/4, rollback to immutable v2.6.0 passes 4/4, REL-F01 is resolved, and CHANGE-004 archive readiness is READY. Human PO approved Business Acceptance at 2026-08-28T03:46:09Z. DoD, Release, and Business Acceptance receipts are APPROVED with digest_match=true against s08 SHA-256 f8710051...; protocol transitioned VERIFIED -> DONE -> ARCHIVED; merge commit 9e5c1ee and closeout commits are on main; the dedicated worktree and local branch were removed after Git confirmed zero unique branch commits."
 blocking_items: []
-next_action: "Commit the replacement-candidate evidence without changing package payload, push the new intended target, and require its own remote Workflow Guardrails 9/9 run."
+next_action: "NONE — CHANGE-006 delivery, protocol, archive, and branch/worktree finalization are complete."
 ```

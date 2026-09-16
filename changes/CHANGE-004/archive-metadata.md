@@ -10,7 +10,7 @@ linked_work_items:
 
 ## Archive Status
 ```yaml
-archive_status: not_ready
+archive_status: ready
 verified_by:
   - "qc"
   - "devops"
@@ -26,5 +26,8 @@ notes:
   - "npm registry publication is explicitly outside this release execution because the local npm client is not authenticated; the immutable GitHub asset is the published artifact."
   - "Post-release Workflow Guardrails run 32704618485 has six passing jobs, one failing Workflow Authoring Smoke job, and a skipped Release Candidate matrix."
   - "REL-F01 reproduces from the immutable tag target: the stale mutating-action-requires-report smoke expectation does not provide the now-required --reviewed-by argument; artifact integrity is unaffected."
-  - "Archive remains blocked until REL-F01 is resolved by a separately governed fix/patch release or explicitly accepted by authorized human reviewers."
+  - "CHANGE-006 resolves REL-F01 at target 23a30756fb2271b6f1604c91e5b31092fb2dec67; Workflow Guardrails run 32825477258 passed 9/9 required jobs."
+  - "Annotated v2.6.1 tag object feb5b3ee4be7109a0eccab9835dee513fbf275cc resolves to the approved target, and release asset 528978943 matches SHA-256 7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9."
+  - "The post-v2.6.1 check reconfirmed immutable v2.6.0 target 7c88f7d564f4c49daecc6eaec345002163f9e9ec and asset SHA-256 5da823c9e64ca464630aea29dcf59ae4098bd6ea544cfdb36cdf5ccec79f3af9."
+  - "Archive readiness is now READY; this reassessment does not itself execute archive or alter the frozen CHANGE-004 s08 artifact."
 ```

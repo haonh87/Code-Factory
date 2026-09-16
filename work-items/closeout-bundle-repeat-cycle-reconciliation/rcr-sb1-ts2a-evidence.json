@@ -1,0 +1,132 @@
+{
+  "batch": "RCR-SB1",
+  "amendment": "TS2a",
+  "observed_at": "2026-09-13T05:33:38Z",
+  "source_sha": "3e0b9728d82204e38b06668e08cc895294109986",
+  "previous_review_source_sha": "964e1c7cf879c6d244253b3ee294f9cdaff60f77",
+  "human_approval": {
+    "decision": "ACCEPTED_REPAIR_BUNDLE",
+    "reviewed_at": "2026-09-13T05:25:28Z",
+    "reviewer_roles": {
+      "code_quality_fail": [
+        "developer",
+        "qc"
+      ],
+      "finding": [
+        "developer",
+        "qc"
+      ],
+      "spec_compliance_reopen": [
+        "qc"
+      ],
+      "task_plan_amendment": [
+        "developer"
+      ]
+    },
+    "source": "User 'accept' immediately following the named RCR recommendation bundle; not approval of future corrected-source reviews."
+  },
+  "tdd": {
+    "red_commit": "94d252ff010bd812ae3451c4b541273109bf6bc1",
+    "red_failures": 16,
+    "negative_assertions": 30,
+    "red_reason": "Ignored duplicate keys, empty mapping, malformed indentation and interrupted tails",
+    "green_commit": "3e0b9728d82204e38b06668e08cc895294109986",
+    "green": "All 30 negative assertions and canonical/unknown legacy controls pass"
+  },
+  "changed_production": [
+    "packages/workflow-bundle/scripts/validate-work-item-protocol.js"
+  ],
+  "commands": [
+    {
+      "command": "node packages/workflow-bundle/test/validate-work-item-protocol.test.js",
+      "result": "PASS"
+    },
+    {
+      "command": "node packages/workflow-bundle/test/work-item-protocol-state.test.js",
+      "result": "PASS 9/9"
+    },
+    {
+      "command": "node packages/workflow-bundle/test/workflow-gate-review.test.js",
+      "result": "PASS"
+    },
+    {
+      "command": "node packages/workflow-bundle/test/work-item-protocol.test.js",
+      "result": "FAIL 3 unchanged planned TS3/TS4 integration assertions"
+    },
+    {
+      "command": "node --check packages/workflow-bundle/scripts/validate-work-item-protocol.js",
+      "result": "PASS"
+    },
+    {
+      "command": "wfc validate",
+      "result": "PASS naming 208 / governance 204"
+    },
+    {
+      "command": "wfc protocol",
+      "result": "PASS 13 managed / 16 legacy skipped"
+    },
+    {
+      "command": "wfc plan",
+      "result": "PASS 204 notes"
+    },
+    {
+      "command": "audit-workflow-pack.js",
+      "result": "Mechanical PASS 170 cross-references; semantic whole-pack completion not asserted"
+    },
+    {
+      "command": "Read-only compatibility/history/host/WIP/UTF-8 assertions",
+      "result": "PASS 13 frozen normalizations, 13 live loads without writes, historical prefixes and 2 unbound events unchanged, 3 protected hosts and WIP file/diff hashes unchanged"
+    }
+  ],
+  "review": {
+    "spec_compliance": {
+      "recommendation": "PASS",
+      "human_decision": "APPROVED",
+      "reviewed_by": ["qc"],
+      "reviewed_at": "2026-09-13T05:37:26Z",
+      "decision_source": "User accepted the immediately preceding explicit QC refreshed Spec Compliance request for source 3e0b9728d82204e38b06668e08cc895294109986.",
+      "reviewer_roles": [
+        "qc"
+      ]
+    },
+    "code_quality": {
+      "status": "PASS",
+      "human_decision": "APPROVED",
+      "reviewed_by": ["developer", "qc"],
+      "reviewed_at": "2026-09-13T05:46:55Z",
+      "recommendation": "PASS",
+      "evidence_ref": "rcr-sb1-ts2a-code-quality-evidence.json",
+      "reason": "User explicitly approved refreshed Code Quality PASS and F-RCR-SB1-001 closure for the exact source after QC Spec Compliance approval. Later batches and terminal gates remain independent."
+    }
+  },
+  "finding": {
+    "id": "F-RCR-SB1-001",
+    "disposition": "RESOLVED",
+    "remediation": "REVIEWED_AND_EXPLICITLY_APPROVED",
+    "resolved_by": ["developer", "qc"],
+    "resolved_at": "2026-09-13T05:46:55Z",
+    "fixed_scope": "Bounded collection structure only; not full producer/event conversion"
+  },
+  "scan_pre_handoff": {
+    "syntax": "PASS",
+    "static_analysis": "SKIP ESLint absent / no configured lint wrapper; manual diff review supplemental only",
+    "security": "SKIP Semgrep absent; manual bounded grammar/JSON/no-new-write/no-eval review is not scanner evidence or clearance",
+    "performance_heuristic": "Two fixed collection scans plus bounded body traversal; linear in mirror size, no new I/O/process/dependency, no benchmark",
+    "formal_s08_status": "NOT_OPEN"
+  },
+  "guards": {
+    "protected_hosts": "UNCHANGED",
+    "granted_write_roots": 16,
+    "quarantined_T7": "UNCHANGED_UNSTAGED",
+    "unknown_legacy": "Exact original text retained; no semantic inference or clearing",
+    "ts3": "CLOSED",
+    "candidate_release_finalization": "CLOSED"
+  },
+  "remaining": [
+    "TS3/TS4 producer and selector conversion",
+    "TS5/TS6 first-class event identity",
+    "TS7 atomicity/compatibility/full regression",
+    "TS8 child and parent exact-candidate verification plus independent human gates"
+  ],
+  "whole_work_item_status": "NOT_DONE"
+}

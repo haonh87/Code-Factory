@@ -1,0 +1,396 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "DONE",
+  "decision_owner": "agent",
+  "protocol_owner": "po",
+  "raw_request_summary": "Reconcile CF-019 by making router-derived SA/TA applicability authoritative while preserving deterministic hard-risk escalation.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "align-adaptive-sa-ta-applicability",
+      "work_item_title": "Align Adaptive Sa Ta Applicability",
+      "work_item_type": "BUG",
+      "scope_summary": "Align the source and packaged runtime policy clauses with OQ-CF-004 Option C and add semantic no-trigger/trigger-positive evidence.",
+      "primary_outcome": "No-trigger requests create zero SA/TA obligations, while every named hard trigger retains the expected architecture roles and reason codes.",
+      "in_scope": [
+        "Source Codex policy applicability wording",
+        "Packaged Codex and Claude runtime policy parity",
+        "Semantic no-trigger and trigger-positive fixtures",
+        "CR-008 child-work-item traceability"
+      ],
+      "out_of_scope": [
+        "Changing SA/TA internal output contracts",
+        "Redesigning adaptive admission or trusted receipts",
+        "Creating a second change package",
+        "Finalizing the CR-008 release"
+      ],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "strict",
+      "sdd_reasons": [],
+      "sdd_preset": "strict",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s03.open-questions.md",
+        "work-items/adaptive-governance-human-approval-ux",
+        "work-items/arch-role-skills-release",
+        "work-items/architecture-role-skills",
+        "work-items/sdd-light-authority-cutover",
+        "changes/CR-008"
+      ],
+      "collision_notes": [
+        "arch-role-skills-release packaged and released SA/TA roles; it does not own adaptive applicability authority.",
+        "architecture-role-skills created the role capabilities; it does not own conditional admission precedence.",
+        "sdd-light-authority-cutover owns Light gate-host policy; it does not decide whether SA/TA roles apply.",
+        "adaptive-governance-human-approval-ux is the CR-008 parent release container; this child uniquely owns CF-019."
+      ],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "Linked defect under approved CR-008; no second change package is created.",
+      "change_refs": [
+        "changes/CR-008"
+      ],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item align-adaptive-sa-ta-applicability --planning-track full --delivery-context brownfield --governance-profile strict",
+        "npm run validate:workflow -- --workflow-root work-items/align-adaptive-sa-ta-applicability --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=BUG",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict",
+    "change_strategy=none",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=strict",
+    "selected_profile=strict",
+    "sdd_mode=none",
+    "sdd_escalation_reasons=",
+    "oq_cf_004=option_c_approved",
+    "linked_parent=adaptive-governance-human-approval-ux",
+    "linked_change_ref=CR-008",
+    "dedup=related architecture-role and SDD-Light items do not own CF-019 conditional applicability"
+  ],
+  "work_item_slug": "align-adaptive-sa-ta-applicability",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items/align-adaptive-sa-ta-applicability",
+  "current_step": "s08",
+  "granted_write_paths": [
+    "packages/workflow-bundle/test/workflow-adaptive-governance.test.js",
+    "policies/codex/AGENTS.global.md",
+    "packages/workflow-bundle/runtime/codex/AGENTS.global.md",
+    "packages/workflow-bundle/runtime/claude/AGENTS.global.md",
+    "work-items/align-adaptive-sa-ta-applicability"
+  ],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "parent-cr-008-reverification",
+  "required_actions": [
+    "Re-verify parent CR-008 against an exact candidate containing the completed CF-019 result.",
+    "Keep the shared branch/worktree open until parent verification and parent closeout gates complete."
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/align-adaptive-sa-ta-applicability",
+    "work-items/adaptive-governance-human-approval-ux",
+    "changes/CR-008"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "S01_REQUIREMENT_AND_ARCHITECTURE_DRIVERS_DRAFTED",
+    "WORK_ITEM_APPROVED",
+    "S02_BUSINESS_GOAL_DRAFTED",
+    "S03_RECOMMENDATION_BUNDLE_DRAFTED",
+    "S03_OPEN_QUESTIONS_APPROVED",
+    "S04_SPEC_CONTRACT_DOR_DRAFTED",
+    "S04_HUMAN_GATES_APPROVED_PENDING_RECEIPTS",
+    "S04_TRUSTED_RECEIPTS_VERIFIED",
+    "S05_TECHNICAL_APPROACH_DRAFTED",
+    "S05_HUMAN_APPROACH_APPROVED_PENDING_RECEIPT",
+    "S05_TRUSTED_RECEIPT_VERIFIED",
+    "S06_TASK_PLAN_DRAFTED",
+    "S06_HUMAN_TASK_PLAN_APPROVED_PENDING_RECEIPT",
+    "WORK_ITEM_ACTIVATED",
+    "S07_T6A_METADATA_REBIND_APPROVED",
+    "S07_T6A_LOCAL_VALIDATION_PASS",
+    "S07_T6A_RECEIPTS_VERIFIED",
+    "S07_T6A_LOCAL_CANDIDATE_PASS",
+    "S08_HOSTED_GUARDRAILS_PASS",
+    "S08_HOSTED_ARTIFACT_READY_FOR_QC_BINDING",
+    "S08_HOSTED_ARTIFACT_BINDING_APPROVED",
+    "S08_TECHNICAL_VERIFICATION_APPROVED",
+    "S08_SPEC_COVERAGE_READY",
+    "VERIFICATION_CONFIRMED",
+    "S08_DOD_APPROVED",
+    "S08_DOD_RECEIPT_VERIFIED",
+    "DONE_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-09-08T03:03:41.551Z",
+  "review_notes": [
+    "Human review approved.",
+    "Trusted work-item receipt is APPROVED by PO at 2026-09-08T03:03:41.551Z.",
+    "A repeated approve invocation at 2026-09-08T03:29:34.925Z is retained in protocol history; the original trusted receipt remains authoritative.",
+    "OQ-CF-004 Option C approval does not approve downstream workflow gates.",
+    "The generic reply 'accept' opened s03 authoring only; it did not approve recommendations that had not yet been authored.",
+    "s03 corrected an agent-introduced multi-system trigger mention to the six-trigger adaptive baseline.",
+    "OQ-AR-001 Option B was approved by BA, Developer, and QC at 2026-09-08T04:39:20Z.",
+    "OQ-AR-002 Option A was approved by Developer and QC at 2026-09-08T04:39:20Z.",
+    "BA approved Spec, Developer approved Contract, and BA/QC approved DoR at 2026-09-08T06:08:19Z.",
+    "Spec, Contract, and DoR trusted receipts are APPROVED with digest_match=true; latest receipt was sealed at 2026-09-08T06:28:48.620Z.",
+    "Developer approved s05 Option A at 2026-09-08T06:41:51Z.",
+    "Approach receipt is APPROVED by Developer at 2026-09-08T06:57:11.904Z with digest_match=true for SHA-256 0737fa2d04a1961044edc26a20f5ce655434b2641cb0aebc5f729b31cf9106e2.",
+    "s06 Task Plan is drafted with T1..T6, two targeted review batches, and exact child-to-parent candidate handoff.",
+    "Developer approved s06 T1..T6 and AR-B1..AR-B2 at 2026-09-08T07:26:34Z; the Task Plan receipt remains pending.",
+    "QC reopened s07 and recorded F-AR08-001; Developer approved T6a; BA/Developer/QC re-approved unchanged Spec, Contract, DoR, Approach, and Task Plan for review_mode=independent at 2026-09-08T10:55:26Z.",
+    "T6a local Workflow Execution, workflow, planning, JSON, diff, and encoding checks passed at 2026-09-09T01:55:03Z; protocol is blocked only by the five expected stale receipts.",
+    "All five refreshed receipts are APPROVED with digest_match=true and Protocol passed at 2026-09-09T02:28:18Z; T6a may create a new exact candidate.",
+    "T6a packed a new candidate from clean source 1a803ba84a4e76150c90954d89dcc3b52f75111e at 2026-09-09T02:36:31Z; SHA-256 ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47 and exact-artifact smoke 4/4 PASS.",
+    "Hosted Guardrails run 34304892135 passed all nine required jobs for source d7c0efa876b014625d3e0e76382ad61b65e82d6e; downloaded artifact SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 matches its checksum, has byte-identical extracted payload, and passes exact-artifact smoke 4/4.",
+    "F-AR08-001 is resolved and the amended hosted binding evidence was prepared for QC; Technical Verification and DoD remain pending.",
+    "QC approved the amended hosted artifact binding at 2026-09-09T03:29:33Z for source d7c0efa876b014625d3e0e76382ad61b65e82d6e, run 34304892135, and SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5; ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47 remains local pre-host evidence.",
+    "QC approved Technical Verification at 2026-09-09T03:43:48Z for source d7c0efa876b014625d3e0e76382ad61b65e82d6e, run 34304892135, and hosted candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5; DoD remains pending.",
+    "Spec Coverage was completed at 2026-09-09T03:53:46Z with AC-AR-01..10 PASS and no uncovered acceptance criterion; QC DoD remained the only missing child gate.",
+    "QC explicitly approved DoD at 2026-09-09T04:15:06Z based on the approved Technical Verification and AC-AR-01..10 Spec Coverage at 10/10 PASS; the protocol was VERIFIED pending trusted DoD receipt sealing, and parent CR-008 re-verification remained mandatory.",
+    "QC sealed the trusted DoD receipt at 2026-09-09T04:24:18Z with digest_match=true for s08 SHA-256 186049911f4e04cea6406a095935849207551c200dabfd3e8e81a4db6daca249; the child protocol transitioned VERIFIED to DONE at 2026-09-09T04:26:08.744Z."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-08T02:41:56.780Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-09-08T02:41:56.780Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Materialization inputs are ready for scaffold."
+    },
+    {
+      "timestamp": "2026-09-08T02:41:56.861Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Auto-scaffolded workflow artifacts."
+    },
+    {
+      "timestamp": "2026-09-08T02:42:41Z",
+      "action": "author-s01-proposal",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Drafted requirement analysis and SA/TA architecture drivers from approved OQ-CF-004 Option C; work-item approval remains pending."
+    },
+    {
+      "timestamp": "2026-09-08T03:03:41.552Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-09-08T03:29:34.925Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-09-08T03:31:18Z",
+      "action": "author-s02-business-goal",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Authored s02 Business Goal after validating the PO work-item trusted receipt; s03 decisions remain open."
+    },
+    {
+      "timestamp": "2026-09-08T04:18:29Z",
+      "action": "author-s03-recommendation-bundle",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Drafted OQ-AR-001 Option B and OQ-AR-002 Option A recommendations; human decisions remain pending before s04."
+    },
+    {
+      "timestamp": "2026-09-08T04:39:20Z",
+      "action": "approve-s03-recommendation-bundle",
+      "actor": "ba+developer+qc",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human-approved OQ-AR-001 Option B with BA, Developer, and QC; human-approved OQ-AR-002 Option A with Developer and QC."
+    },
+    {
+      "timestamp": "2026-09-08T04:45:45Z",
+      "action": "author-s04-spec-contract-dor",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Drafted the s04 Spec, public workflow Contract, and DoR for independent human gate review; no s04 gate was self-approved."
+    },
+    {
+      "timestamp": "2026-09-08T06:08:19Z",
+      "action": "record-s04-human-gate-approvals",
+      "actor": "ba+developer+qc",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Recorded explicit human approval of Spec by BA, Contract by Developer, and DoR by BA/QC; finalized s04 before trusted receipt sealing."
+    },
+    {
+      "timestamp": "2026-09-08T06:36:30Z",
+      "action": "verify-s04-trusted-receipts",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Verified Spec, Contract, and DoR receipts as APPROVED with digest_match=true against s04 SHA-256 78f715cc25f1b803f8e52121fd0afdf204ef73a27aa529a2fec836c816d7bce4."
+    },
+    {
+      "timestamp": "2026-09-08T06:36:30Z",
+      "action": "author-s05-technical-approach",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Drafted Option A technical approach using the canonical policy, existing semantic fixture, generated runtime sync, and no router or SA/TA contract change; Developer approval remains pending."
+    },
+    {
+      "timestamp": "2026-09-08T06:41:51Z",
+      "action": "record-s05-human-approach-approval",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Developer approved Option A; s05 was finalized and the trusted Approach receipt remains pending human CLI sealing."
+    },
+    {
+      "timestamp": "2026-09-08T07:03:07Z",
+      "action": "verify-s05-receipt-and-author-s06-task-plan",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Verified the Developer Approach receipt with digest_match=true, then drafted the execution-oriented s06 Task Plan; Task Plan approval remains pending."
+    },
+    {
+      "timestamp": "2026-09-08T07:26:34Z",
+      "action": "record-s06-human-task-plan-approval",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Developer approved s06 T1..T6 and AR-B1..AR-B2; s06 was finalized and the trusted Task Plan receipt remains pending human CLI sealing."
+    },
+    {
+      "timestamp": "2026-09-08T09:39:29.131Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-09-08T10:55:26Z",
+      "action": "approve-s07-t6a-metadata-rebind",
+      "actor": "ba+developer+qc",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "QC reopened s07 and recorded F-AR08-001; Developer approved T6a; the named BA/Developer/QC authorities re-approved unchanged authoring gates for review_mode=independent. Fresh trusted receipts remain required before candidate creation."
+    },
+    {
+      "timestamp": "2026-09-09T01:55:03Z",
+      "action": "validate-s07-t6a-metadata-rebind",
+      "actor": "agent",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "Workflow Execution, child workflow governance, planning, JSON, diff, and encoding checks passed; protocol remains blocked only by the expected five stale trusted receipts."
+    },
+    {
+      "timestamp": "2026-09-09T02:28:18Z",
+      "action": "verify-s07-t6a-receipts",
+      "actor": "agent",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "Verified Spec, Contract, DoR, Approach, and Task Plan receipts as APPROVED with digest_match=true; protocol validation passed and candidate creation is unblocked."
+    },
+    {
+      "timestamp": "2026-09-09T02:36:31Z",
+      "action": "build-s07-t6a-local-candidate",
+      "actor": "agent",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "Packed workflow-bundle v2.6.2 once from clean source 1a803ba84a4e76150c90954d89dcc3b52f75111e; SHA-256 ebfb5ffb4c521d3269149cefd86c98971ad94e7037e5b6dfbc847053ad9d9f47 and exact-artifact smoke 4/4 passed."
+    },
+    {
+      "timestamp": "2026-09-09T02:59:22Z",
+      "action": "bind-s08-hosted-candidate",
+      "actor": "agent",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "Recorded successful hosted run 34304892135 for source d7c0efa876b014625d3e0e76382ad61b65e82d6e and candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5 after checksum, payload parity, and exact-artifact smoke passed; QC amended-binding approval remains pending."
+    },
+    {
+      "timestamp": "2026-09-09T03:29:33Z",
+      "action": "approve-s08-hosted-artifact-binding",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "QC approved the amended hosted artifact binding for source d7c0efa876b014625d3e0e76382ad61b65e82d6e, run 34304892135, and SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5; local ebfb5ffb... remains pre-host evidence. Technical Verification and DoD remain pending."
+    },
+    {
+      "timestamp": "2026-09-09T03:43:48Z",
+      "action": "approve-s08-technical-verification",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "QC approved Technical Verification for the exact hosted source d7c0efa876b014625d3e0e76382ad61b65e82d6e, run 34304892135, and candidate SHA-256 2a5ae7015a205bfe6f1b54abfbc551da95a65e2db001edc451f48ba558d363e5; DoD remains pending."
+    },
+    {
+      "timestamp": "2026-09-09T03:53:46Z",
+      "action": "complete-s08-spec-coverage",
+      "actor": "agent",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "Completed explicit Spec Coverage for AC-AR-01..10 with 10/10 PASS evidence; DoD remains pending QC."
+    },
+    {
+      "timestamp": "2026-09-09T04:20:33.534Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "QC approved Technical Verification and DoD after AC-AR-01..10 achieved 10/10 PASS; trusted DoD receipt sealing and parent CR-008 re-verification remain."
+    },
+    {
+      "timestamp": "2026-09-09T04:26:08.744Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Definition of Done confirmed by QC with digest-valid trusted receipt; child protocol closed and parent CR-008 exact-candidate re-verification remains mandatory."
+    }
+  ]
+}

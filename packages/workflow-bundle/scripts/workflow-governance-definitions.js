@@ -12,7 +12,7 @@ const GOVERNANCE_STATUSES = [
   "BLOCKED",
   "NOT_APPLICABLE"
 ];
-const GOVERNANCE_ROLES = ["po", "ba", "designer", "developer", "qc", "devops"];
+const GOVERNANCE_ROLES = ["po", "ba", "sa", "ta", "designer", "developer", "qc", "devops"];
 const EXCEPTION_REGISTER_STATUSES = ["PROPOSED", "APPROVED", "REJECTED", "EXPIRED", "RESOLVED"];
 const CHECKLIST_BY_PROFILE = {
   default: "project-context/checklists/default.md",

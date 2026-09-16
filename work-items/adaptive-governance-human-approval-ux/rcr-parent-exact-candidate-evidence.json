@@ -1,0 +1,626 @@
+{
+  "schema_version": 1,
+  "artifact_id": "rcr-parent-exact-candidate-evidence",
+  "artifact_family": "verification-evidence",
+  "artifact_role": "supporting",
+  "source_of_truth": false,
+  "status": "CR_008_PROTOCOL_DONE_BRANCH_FINALIZATION_READY",
+  "observed_at": "2026-09-15T06:47:56Z",
+  "work_item_slug": "adaptive-governance-human-approval-ux",
+  "change_id": "CR-008",
+  "identity": {
+    "reviewed_source_sha": "04eed2f8b2098bddf513d0f96fd129e835686dd7",
+    "hosted_source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "hosted_run_id": 34802149041,
+    "hosted_candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+    "metadata_checkpoint_sha": "79f4519c6a7b225180f57a614e1fb97325e88f25",
+    "rollback_version": "v2.6.1",
+    "rollback_sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9",
+    "reviewed_parent_s08_draft_sha256": "61b41b661aff1dc607a2a1588a5c850a923f9f6e56e19502e55df030b2ef8dba",
+    "evidence_baseline_commit": "24cf1814462435846537298896941c329ef8abb6",
+    "artifact_binding_reviewed_by": "qc",
+    "artifact_binding_reviewed_at": "2026-09-15T02:25:27Z",
+    "artifact_binding_decision": "APPROVED"
+  },
+  "child_checkpoint": {
+    "status": "APPROVED_VALID_QUALIFIED_TECHNICAL_CHECKPOINT",
+    "dod_receipt": {
+      "gate": "dod",
+      "exists": true,
+      "status": "APPROVED",
+      "signature_valid": true,
+      "approved": true,
+      "reviewed_by": "qc",
+      "reviewed_at": "2026-09-14T14:01:49.356Z",
+      "note": "QC approved amended binding for qualified child checkpoint; full AC-RCR-08 parent contribution remains mandatory.",
+      "artifact_ref": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.s08.verification.md",
+      "artifact_sha256": "e3159a438678242069c8045058b3d1c1664fa6451207a37cec123cfb8736af2e",
+      "current_sha256": "e3159a438678242069c8045058b3d1c1664fa6451207a37cec123cfb8736af2e",
+      "digest_match": true
+    },
+    "native_uncommitted_guard": {
+      "errors": [],
+      "waived": false,
+      "reason": "",
+      "not_a_git_repo": false
+    },
+    "full_AC_RCR_08": "MANDATORY_PENDING"
+  },
+  "hosted_provenance": {
+    "status": "RETAINED_RUN_RECHECKED_NOT_RERUN",
+    "conclusion": "success",
+    "created_at": "2026-09-14T03:18:16Z",
+    "updated_at": "2026-09-14T03:20:37Z",
+    "url": "https://github.com/haonh87/Code-Factory/actions/runs/34802149041",
+    "job_count": 10,
+    "jobs": [
+      {
+        "name": "Workflow Tooling",
+        "conclusion": "success"
+      },
+      {
+        "name": "Workflow Artifacts",
+        "conclusion": "success"
+      },
+      {
+        "name": "Workflow SDD",
+        "conclusion": "success"
+      },
+      {
+        "name": "Workflow Changes",
+        "conclusion": "success"
+      },
+      {
+        "name": "Workflow Execution",
+        "conclusion": "success"
+      },
+      {
+        "name": "Workflow Planning",
+        "conclusion": "success"
+      },
+      {
+        "name": "Workflow Authoring Smoke",
+        "conclusion": "success"
+      },
+      {
+        "name": "Build Exact Release Candidate",
+        "conclusion": "success"
+      },
+      {
+        "name": "Release Candidate (Node 22)",
+        "conclusion": "success"
+      },
+      {
+        "name": "Release Candidate (Node 18)",
+        "conclusion": "success"
+      }
+    ],
+    "all_required_success": true
+  },
+  "candidate_payload": {
+    "status": "PASS",
+    "sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+    "member_count": 545,
+    "source_runtime_members_exact": 544,
+    "npm_normalized_package_json": true,
+    "manifest_version": "2.6.2",
+    "skills_per_runtime": {
+      "codex": {
+        "count": 42,
+        "distinct_skill_names": 42
+      },
+      "claude": {
+        "count": 42,
+        "distinct_skill_names": 42
+      }
+    },
+    "ignored_worktree_extras_absent": true
+  },
+  "test_execution": {
+    "real_worktree": {
+      "status": "PASS_AFTER_APPROVED_RECOVERABLE_ISOLATION",
+      "node18": {
+        "started_at": "2026-09-15T02:05:38.118Z",
+        "finished_at": "2026-09-15T02:06:06.548Z",
+        "exit_code": 0,
+        "full_unit_files": 45,
+        "runtime_parity": "PASS",
+        "candidate_and_rollback": "PASS"
+      },
+      "node22": {
+        "started_at": "2026-09-15T02:05:38.111Z",
+        "finished_at": "2026-09-15T02:06:03.864Z",
+        "exit_code": 0,
+        "full_unit_files": 45,
+        "runtime_parity": "PASS",
+        "candidate_and_rollback": "PASS"
+      }
+    },
+    "clean_source_archive": {
+      "status": "PASS",
+      "input_files_exact_current_worktree": 319,
+      "node18": {
+        "node": "v18.20.8",
+        "started_at": "2026-09-14T14:07:17.584Z",
+        "finished_at": "2026-09-14T14:07:46.035Z",
+        "exit_code": 0,
+        "signal": null,
+        "full_unit_files": "45",
+        "candidate": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+        "rollback": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+      },
+      "node22": {
+        "node": "v22.23.2",
+        "started_at": "2026-09-14T14:07:18.680Z",
+        "finished_at": "2026-09-14T14:07:44.124Z",
+        "exit_code": 0,
+        "signal": null,
+        "full_unit_files": "45",
+        "candidate": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+        "rollback": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+      }
+    },
+    "targeted_closeout": {
+      "status": "PASS",
+      "node": "v22.23.2",
+      "started_at": "2026-09-14T14:12:23.216Z",
+      "finished_at": "2026-09-14T14:12:35.803Z",
+      "exit_code": 0,
+      "markers": [
+        "20 real cycles and 20 NOOP retries preserve transaction identity/report/s01 parity",
+        "64/64 atomic failure and crash boundaries PASS",
+        "unknown legacy prose remains opaque and preserved"
+      ]
+    },
+    "wrappers": [
+      {
+        "check": "fixtures",
+        "started_at": "2026-09-14T14:08:52.856Z",
+        "finished_at": "2026-09-14T14:08:52.919Z",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "check": "smoke",
+        "started_at": "2026-09-14T14:08:52.989Z",
+        "finished_at": "2026-09-14T14:08:55.738Z",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "check": "bundle-smoke",
+        "started_at": "2026-09-14T14:08:54.163Z",
+        "finished_at": "2026-09-14T14:08:55.373Z",
+        "exit_code": 0,
+        "status": "PASS"
+      }
+    ]
+  },
+  "pack_audit": {
+    "status": "PASS",
+    "exit_code": 0,
+    "cross_refs": 170,
+    "canonical_skills": 42,
+    "scope": "canonical branch skills/**; not a claim that independent main/runtime shadow-skill findings are closed"
+  },
+  "scan": {
+    "status": "PARTIAL",
+    "mode": "DIFF_AFFECTED_MODULES",
+    "syntax_files": 13,
+    "syntax": [
+      {
+        "file": "packages/workflow-bundle/scripts/materialize-work-item.js",
+        "status": "PASS"
+      },
+      {
+        "file": "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js",
+        "status": "PASS"
+      },
+      {
+        "file": "packages/workflow-bundle/scripts/validate-work-item-protocol.js",
+        "status": "PASS"
+      },
+      {
+        "file": "packages/workflow-bundle/scripts/work-item-protocol-utils.js",
+        "status": "PASS"
+      },
+      {
+        "file": "packages/workflow-bundle/scripts/work-item-protocol.js",
+        "status": "PASS"
+      },
+      {
+        "file": "packages/workflow-bundle/scripts/workflow-approval-transaction.js",
+        "status": "PASS"
+      },
+      {
+        "file": "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js",
+        "status": "PASS"
+      },
+      {
+        "file": "packages/workflow-bundle/scripts/workflow-gate-review.js",
+        "status": "PASS"
+      },
+      {
+        "file": "packages/workflow-bundle/test/materialize-work-item.test.js",
+        "status": "PASS"
+      },
+      {
+        "file": "packages/workflow-bundle/test/validate-work-item-protocol.test.js",
+        "status": "PASS"
+      },
+      {
+        "file": "packages/workflow-bundle/test/work-item-protocol-state.test.js",
+        "status": "PASS"
+      },
+      {
+        "file": "packages/workflow-bundle/test/work-item-protocol.test.js",
+        "status": "PASS"
+      },
+      {
+        "file": "packages/workflow-bundle/test/workflow-gate-review.test.js",
+        "status": "PASS"
+      }
+    ],
+    "available_scan_tools": {
+      "eslint": {
+        "available": false,
+        "path": ""
+      },
+      "semgrep": {
+        "available": false,
+        "path": ""
+      },
+      "tsc": {
+        "available": false,
+        "path": ""
+      }
+    },
+    "configured_wrappers": {},
+    "static_configs": [],
+    "static_analysis": "SKIP_NO_REPO_WRAPPER_CONFIG",
+    "security": "SKIP_AUTOMATIC_SEMGREP_UNAVAILABLE",
+    "performance": "RETAIN_LINEAR_HISTORY_AND_NATIVE_TRANSIENT_READ_ADVISORIES_NO_BENCHMARK",
+    "production_changes": false
+  },
+  "workspace_parity": {
+    "status": "PASS_AFTER_APPROVED_RECOVERABLE_ISOLATION",
+    "impact": "AG-13 verification requirement is satisfied; Release remains a separate human gate.",
+    "extra_ignored_files": [
+      {
+        "path": "packages/workflow-bundle/runtime/codex/policies/codex/workflow-artifact-naming 2.md",
+        "sha256": "76878225fe139b9f3b9448f021fe58788469e7271595a6072bdca62954cc7479",
+        "size": 5169,
+        "git_ignore": "packages/workflow-bundle/runtime/codex/policies/codex/workflow-artifact-naming 2.md",
+        "in_candidate": false
+      },
+      {
+        "path": "packages/workflow-bundle/runtime/claude/policies/codex/workflow-artifact-naming 2.md",
+        "sha256": "76878225fe139b9f3b9448f021fe58788469e7271595a6072bdca62954cc7479",
+        "size": 5169,
+        "git_ignore": "packages/workflow-bundle/runtime/claude/policies/codex/workflow-artifact-naming 2.md",
+        "in_candidate": false
+      }
+    ],
+    "candidate_support_inventory": [
+      "package/runtime/claude/policies/codex/workflow-artifact-naming.md",
+      "package/runtime/codex/policies/codex/workflow-artifact-naming.md"
+    ],
+    "diagnosis": "The two ignored generated-runtime duplicates were absent from the immutable candidate. After explicit Maintainer approval they were isolated recoverably and the real-worktree Node 18/22 parity suites passed.",
+    "owner": "maintainer",
+    "remediation_authorized": true,
+    "remediation_kind": "RECOVERABLE_ISOLATION_NO_DELETE",
+    "backup_directory": "/private/tmp/cf-cr008-runtime-parity-backup.H1ZWX1",
+    "backup_files": [
+      "codex-workflow-artifact-naming-2.md",
+      "claude-workflow-artifact-naming-2.md"
+    ],
+    "backup_sha256": "76878225fe139b9f3b9448f021fe58788469e7271595a6072bdca62954cc7479",
+    "source_or_candidate_changed": false,
+    "waiver": false
+  },
+  "acceptance_coverage": [
+    {
+      "criterion": "AG-01",
+      "status": "PASS",
+      "evidence": "Non-delivery zero-write and audited override regression."
+    },
+    {
+      "criterion": "AG-02",
+      "status": "PASS",
+      "evidence": "Maintenance applicability omits unnecessary roles."
+    },
+    {
+      "criterion": "AG-03",
+      "status": "PASS",
+      "evidence": "Eight lanes and deterministic 20-run routing."
+    },
+    {
+      "criterion": "AG-04",
+      "status": "PASS",
+      "evidence": "Six hard triggers and mixed-intent fail-closed."
+    },
+    {
+      "criterion": "AG-05",
+      "status": "PASS",
+      "evidence": "Non-applicable gates produce no actions, blockers or receipts."
+    },
+    {
+      "criterion": "AG-06",
+      "status": "PASS",
+      "evidence": "Independent trusted reviewer/time/digest receipts and ready-bundle."
+    },
+    {
+      "criterion": "AG-07",
+      "status": "PASS",
+      "evidence": "64/64 failure/crash boundaries plus concurrency and idempotent recovery."
+    },
+    {
+      "criterion": "AG-08",
+      "status": "PASS",
+      "evidence": "Legacy DoD and independent terminal gate enforcement."
+    },
+    {
+      "criterion": "AG-09",
+      "status": "PASS",
+      "evidence": "Legacy/adaptive dual-read, receipt-v1 and rollback compatibility."
+    },
+    {
+      "criterion": "AG-10",
+      "status": "PASS",
+      "evidence": "Telemetry disable/allowlist/pseudonym/retention/secret-canary controls."
+    },
+    {
+      "criterion": "AG-11",
+      "status": "PASS",
+      "evidence": "20 commit cycles, 20 NOOP retries, transaction identity and report/s01 parity."
+    },
+    {
+      "criterion": "AG-12",
+      "status": "PASS",
+      "evidence": "20 controlled fixtures: median 7 to 3 (57.14%), one bundle per phase, 0% retry; not production telemetry."
+    },
+    {
+      "criterion": "AG-13",
+      "status": "PASS",
+      "evidence": "Candidate, clean archive and remediated real worktree pass parity/skew/rollback on Node 18 and Node 22."
+    }
+  ],
+  "coverage_summary": {
+    "pass": 13,
+    "partial": 0,
+    "fail": 0,
+    "total": 13,
+    "overall": "PASS"
+  },
+  "limitations": [
+    "No configured repository lint/static/type/security wrapper.",
+    "eslint, semgrep and tsc unavailable; automatic analysis skipped, not passed.",
+    "Performance evidence is heuristic only; no benchmark."
+  ],
+  "preserved_state": {
+    "unknown_legacy_rule": "Preserve exact text; never infer or semantically clear it.",
+    "parent_event_count_before": 47,
+    "parent_events_sha256": "95b092fddb325afcb2390c1ab20742ba013ed9c62e66b8c6e28d0739e04cbaf6",
+    "parent_grants_sha256": "42b73ffd6383784436d6b21acd5aad69d78ec4c464a1d827d1864e4c319bcad4",
+    "blockers": [
+      "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event.",
+      "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending."
+    ],
+    "required_actions": [
+      "Complete the three amended child s04 human reviews and seal fresh independent receipts.",
+      "Refresh and approve the child s05/s06 design and execution plan before resuming implementation.",
+      "Re-verify parent CR-008 and repeat terminal approvals for one corrected candidate before protocol close or branch finalization."
+    ],
+    "child_events_sha256": "75cdb84adae668318af384592fdeccc0a05532a35c199bdd1a2512f36501100c"
+  },
+  "human_gate_state": {
+    "artifact_binding": "APPROVED_BY_QC",
+    "technical_verification": "APPROVED_BY_QC",
+    "technical_verification_reviewed_at": "2026-09-15T02:25:27Z",
+    "dod": "HUMAN_APPROVED_BY_QC_RECEIPT_READY_TO_SEAL",
+    "dod_reviewed_at": "2026-09-15T02:52:30Z",
+    "dod_reviewed_parent_s08_draft_sha256": "ff3a5fe7a5ee5e9070f79d3096cfd51d07dd97f4ee5b36dc015bbb53e922a481",
+    "release": "HUMAN_APPROVED_BY_DEVOPS_AND_QC_RECEIPT_READY_TO_SEAL",
+    "release_reviewed_at": "2026-09-15T06:04:23Z",
+    "release_reviewed_parent_s08_draft_sha256": "e8e2245f8b640aca6a7101c619a430b1d5f87eac64d87d4dae4ec8a22d608e8d",
+    "business_acceptance": "HUMAN_APPROVED_BY_PO_RECEIPT_READY_TO_SEAL",
+    "business_acceptance_reviewed_at": "2026-09-15T06:19:52Z",
+    "business_acceptance_reviewed_parent_s08_draft_sha256": "c742f1628f2b45b19a48be9d97ad3f4ee1da6ec70d73b24bb82d98a7ba511698",
+    "finalized_parent_s08_sha256": "e994f4292829e77d06ba809e897c3efd6d2c6cff562b579ed1536f5e92d0cc93",
+    "historical_receipts": "SIGNATURE_VALID_BUT_DIGEST_STALE_NOT_CURRENT_AUTHORITY"
+  },
+  "ordered_human_decisions": [
+    {
+      "order": 1,
+      "decision": "HOSTED_ARTIFACT_BINDING_APPROVED",
+      "reviewed_by": "qc",
+      "recorded_at": "2026-09-15T02:25:27Z",
+      "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+      "run_id": 34802149041,
+      "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "rollback_sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+    },
+    {
+      "order": 2,
+      "decision": "TECHNICAL_VERIFICATION_APPROVED",
+      "reviewed_by": "qc",
+      "recorded_at": "2026-09-15T02:25:27Z",
+      "coverage": "AG-01..AG-13 13/13 PASS",
+      "scan_gaps": "RETAINED_PARTIAL_NOT_WAIVED",
+      "later_gates": [
+        "dod",
+        "release",
+        "business_acceptance"
+      ]
+    },
+    {
+      "order": 3,
+      "decision": "DOD_HUMAN_DECISION_APPROVED",
+      "reviewed_by": "qc",
+      "recorded_at": "2026-09-15T02:52:30Z",
+      "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+      "run_id": 34802149041,
+      "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "coverage": "AG-01..AG-13 13/13 PASS",
+      "scan_gaps": "RETAINED_PARTIAL_NOT_WAIVED",
+      "trusted_receipt": "MISSING_PENDING_FINAL_SHARED_S08_HOST",
+      "later_gates": [
+        "release",
+        "business_acceptance"
+      ]
+    },
+    {
+      "order": 4,
+      "decision": "RELEASE_HUMAN_DECISION_APPROVED",
+      "reviewed_by": [
+        "devops",
+        "qc"
+      ],
+      "recorded_at": "2026-09-15T06:04:23Z",
+      "version": "v2.6.2",
+      "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+      "run_id": 34802149041,
+      "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "rollback_version": "v2.6.1",
+      "rollback_sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9",
+      "scan_gaps": "RETAINED_PARTIAL_NOT_WAIVED",
+      "publish": false,
+      "tag": false,
+      "trusted_receipt": "MISSING_PENDING_FINAL_SHARED_S08_HOST",
+      "later_gates": [
+        "business_acceptance"
+      ]
+    },
+    {
+      "order": 5,
+      "decision": "BUSINESS_ACCEPTANCE_HUMAN_DECISION_APPROVED",
+      "reviewed_by": "po",
+      "recorded_at": "2026-09-15T06:19:52Z",
+      "version": "v2.6.2",
+      "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+      "run_id": 34802149041,
+      "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+      "depends_on": [
+        "technical_verification",
+        "dod",
+        "release"
+      ],
+      "scan_gaps": "RETAINED_PARTIAL_NOT_WAIVED",
+      "publish": false,
+      "tag": false,
+      "merge": false,
+      "cleanup": false,
+      "trusted_receipt": "MISSING_PENDING_FINAL_SHARED_S08_HOST"
+    }
+  ],
+  "release_readiness": {
+    "status": "HUMAN_GATES_AND_CURRENT_RECEIPTS_APPROVED_NOT_PUBLISHED",
+    "publish": false,
+    "tag": false,
+    "merge": false,
+    "cleanup": false
+  },
+  "authoring_validation": {
+    "workflow_validators": {
+      "validate": "PASS",
+      "protocol": "PASS",
+      "sdd": "PASS",
+      "change": "PASS_WITH_RETAINED_LEGACY_CHANGE_WARNINGS",
+      "exec": "PASS",
+      "plan": "PASS"
+    },
+    "utf8": "PASS_8_CHANGED_FILES",
+    "json": "PASS_5_FILES",
+    "markdown_frontmatter": "PASS_3_FILES",
+    "yaml_fences_observed": 45,
+    "diff_check": "PASS",
+    "unknown_legacy_text_preserved": true,
+    "production_source_changed": false
+  },
+  "final_reconciliation": {
+    "status": "PASS",
+    "reconciled_at": "2026-09-15T06:47:56Z",
+    "parent_s08_sha256": "e994f4292829e77d06ba809e897c3efd6d2c6cff562b579ed1536f5e92d0cc93",
+    "receipts": {
+      "dod": {
+        "status": "APPROVED_VALID_CURRENT",
+        "reviewed_by": "qc",
+        "reviewed_at": "2026-09-15T06:35:16.290Z"
+      },
+      "release": {
+        "status": "APPROVED_VALID_CURRENT",
+        "reviewed_by": "devops",
+        "reviewed_at": "2026-09-15T06:35:27.640Z"
+      },
+      "business_acceptance": {
+        "status": "APPROVED_VALID_CURRENT",
+        "reviewed_by": "po",
+        "reviewed_at": "2026-09-15T06:35:58.981Z"
+      }
+    },
+    "closeout_transaction": {
+      "status": "COMMITTED",
+      "transaction_id": "597aa5f9-1043-447e-b762-b6a7858f1b9c",
+      "event_action": "approve-closeout-bundle",
+      "event_timestamp": "2026-09-15T06:41:47.032Z",
+      "selected_gates": [
+        "dod",
+        "release",
+        "business_acceptance"
+      ],
+      "direct_event_identity": "PASS"
+    },
+    "finding": {
+      "id": "F-AG11-001",
+      "status": "RESOLVED_BY_RECEIPT_BACKED_RECONCILIATION",
+      "authority_basis": "Explicit QC exact-candidate Technical Verification and DoD with AG-01..AG-13 at 13/13 PASS, followed by current independent terminal receipts and one directly attributed closeout transaction event.",
+      "legacy_rule": "Legacy entries remain exact opaque historical input and are not read by core transitions or current-state assertions."
+    },
+    "definition_of_done": {
+      "status": "DONE",
+      "checks": {
+        "acceptance_criteria_evidenced": "PASS",
+        "implementation_recorded": "PASS",
+        "required_verification_completed": "PASS",
+        "code_scan_completed_or_justified": "PASS",
+        "traceability_complete": "PASS",
+        "residual_risks_documented": "PASS"
+      },
+      "gaps": [],
+      "residual_risks": [
+        "Automated static/security tools remain unavailable; approved scan coverage remains PARTIAL."
+      ]
+    },
+    "branch_finish": {
+      "verify_complete": "PASS",
+      "dod_complete": "PASS",
+      "findings_closed": "PASS",
+      "exceptions_resolved": "PASS",
+      "child_protocol": "DONE",
+      "parent_protocol": "DONE",
+      "final_recommendation": "MERGE_ALLOWED_NOT_EXECUTED",
+      "allowed_actions": [
+        "Present branch finalization handoff",
+        "Request explicit merge or cleanup authority"
+      ],
+      "blocked_actions": [
+        "publish",
+        "tag",
+        "execute merge without explicit user instruction",
+        "cleanup before explicit user instruction",
+        "global install"
+      ]
+    },
+    "protocol_close": {
+      "sequence": [
+        "closeout-bundle-repeat-cycle-reconciliation VERIFIED -> DONE",
+        "adaptive-governance-human-approval-ux VERIFIED -> DONE"
+      ],
+      "child_closed_at": "2026-09-15T06:54:27.675Z",
+      "parent_closed_at": "2026-09-15T06:54:27.736Z",
+      "uncommitted_delivery_waiver": false,
+      "archive_executed": false
+    }
+  },
+  "next_action": "Await explicit user direction for branch merge/finalization and any separate publication or tag action; none has been executed."
+}

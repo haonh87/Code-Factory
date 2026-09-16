@@ -64,6 +64,11 @@ requirements:
     description: "Each of the four defects has a regression fixture that reproduces the observed symptom before its fix and passes after, so what is verified is the symptom rather than the implementation."
     provenance: BASELINE
     cr_required: false
+  - id: REQ-006
+    description: "A test must not assert against mutable live repository state. Found during this work item's T0 baseline, 2026-08-19: packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js:43 asserts resolveArtifactReference returns protocol_status == 'ACTIVE' while reading the LIVE note work-items/artifact-governance-enforcement/artifact-governance-enforcement.s01.restate.md, whose protocol_status is now DONE. The assertion passed only while that work item happened to be ACTIVE and broke the moment it closed - so the suite reports a failure that says nothing about the resolver it is meant to cover, and will break again whenever any referenced work item advances. Same class as REQ-001 to REQ-003: a check that assumes the shape of its environment instead of controlling it."
+    provenance: BASELINE
+    discovered_during: "worktree-and-closure-integrity T0 baseline, 2026-08-19 (AMENDMENT-001)"
+    cr_required: false
 ```
 
 ## Acceptance Criteria
@@ -84,6 +89,9 @@ acceptance_criteria:
   - id: AC-005
     requirement: REQ-005
     description: "Four fixtures exist, one per defect, each observed failing before its fix and passing after."
+  - id: AC-006
+    requirement: REQ-006
+    description: "The artifact-reference resolver is covered against a controlled fixture rather than a live work item's note: the assertion supplies its own note with a known protocol_status, so the suite result does not depend on the protocol_status of any real work item. Resolver coverage is preserved, not deleted - a same-note reference is still proved to resolve. Verified by running the full unit suite with every work item left untouched and observing 0 failing files, where the T0 baseline was 1."
 ```
 
 ## Assumptions And Open Decisions

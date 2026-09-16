@@ -6,9 +6,9 @@ language: en
 
 > Vietnamese: README.vi.md
 
-This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.6.1`: an installable workflow bundle for Codex and Claude Code that lets the agent proactively propose `work-item` and `change`, while the human retains approval authority at the gates before delivery proceeds. It remains unpublished until the human Release gate passes. The patch aligns the stale authoring smoke with the approved bootstrap behavior while preserving production approval semantics, the 42-skill inventory, and the existing public contract.
+This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.6.2`: an installable workflow bundle for Codex and Claude Code with adaptive request routing, applicable-only roles and gates, journaled approval bundles, and privacy-bounded local telemetry. Human authority is unchanged: every applicable gate still needs its authorized reviewer and independent trusted receipt. The candidate remains unpublished until the human Release gate passes.
 
-Until that gate passes, treat the candidate source commit and retained candidate digest in CHANGE-006 as the release-candidate references. Create and share the `v2.6.1` tag only after Release approval. The verified rollback baseline is the immutable `v2.6.0/42` release.
+Until that gate passes, use the candidate source commit and the SHA-256 produced by Workflow Guardrails as the release-candidate references. Guardrails packs once and verifies that same artifact on Node 18 and Node 22; it does not rebuild per environment. Create and share the `v2.6.2` tag only after Release approval. The verified rollback baseline is the immutable `v2.6.1/42` release.
 
 > Looking for the community-facing English overview? See [`docs/release/community-pack-readme.md`](docs/release/community-pack-readme.md) (Vietnamese: [`docs/release/community-pack-readme.vi.md`](docs/release/community-pack-readme.vi.md)).
 
@@ -22,7 +22,7 @@ Until that gate passes, treat the candidate source commit and retained candidate
 
 ## Start Here
 
-If you are approaching the repo for the first time and want to review the `v2.6.1` release candidate:
+If you are approaching the repo for the first time and want to review the `v2.6.2` release candidate:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -35,15 +35,12 @@ If you are approaching the repo for the first time and want to review the `v2.6.
 
 The documents below are maintainer or historical context and should not be used as the public onboarding path:
 
-- [`memory-bank/projectbrief.md`](memory-bank/projectbrief.md)
-- [`memory-bank/activeContext.md`](memory-bank/activeContext.md)
-- [`memory-bank/progress.md`](memory-bank/progress.md)
 - [`skills/orchestration/codex-workflow-chain/references/workflow-overview.md`](skills/orchestration/codex-workflow-chain/references/workflow-overview.md)
 - [`skills/orchestration/codex-workflow-chain/references/workflow-versioning.md`](skills/orchestration/codex-workflow-chain/references/workflow-versioning.md)
 
 ## Quick Workflow Commands
 
-The public command surface of `v2.6.1` uses `wfc`.
+The public command surface of `v2.6.2` uses `wfc`.
 
 Install and manage the workflow bundle:
 
@@ -91,7 +88,10 @@ Agentic proposal flow:
 - approve or reject a change package proposed by the agent: `wfc change-item <approve|reject|status> --change-id <CHANGE-ID>`
 - approve a work item before activation: `wfc work-item approve --work-item <work-item-slug> --reviewed-by <role>`
 - seal a trusted human gate receipt before activation: `wfc gate approve --work-item <work-item-slug> --gate <spec|dor|approach|task_plan> --reviewed-by <role>`
+- review all applicable readiness gates in one interaction: `wfc gate approve-ready-bundle --work-item <work-item-slug>`; use `reject-ready-bundle` to reject the batch atomically
+- review all applicable terminal gates in one interaction: `wfc gate approve-closeout-bundle --work-item <work-item-slug>`
 - activate a work item only after approval + the `s04-s06` evidence gates: `wfc work-item activate --work-item <work-item-slug> --step s07 --write-root <path>`
+- purge expired opt-in local telemetry: `wfc telemetry purge [--telemetry-out <local-dir>]`
 - view or sync capability control: `wfc capability status` , `wfc capability sync` , `wfc capability check --path <path>`
 
 Notes:
@@ -105,14 +105,24 @@ Notes:
 - The first approval in a trusted approval root creates an approver keypair and requires the human to enter an approval passphrase directly in that TTY.
 - The implementation path is locked at the filesystem level until the work item reaches `ACTIVE` at `s07` and is granted a `write-root`.
 - `work-items/` is the canonical artifact root for the repo's workflow artifacts.
-- The approval model of `v2.6.1` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
+- The approval model of `v2.6.2` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
+
+## Adaptive Governance Contract
+
+- The eight request lanes are `qa`, `translation`, `summarization`, `research`, `documentation`, `read_only_analysis`, `maintenance`, and `product_delivery`.
+- The first six lanes normally short-circuit before delivery artifacts are written. Explicit materialization requires an audited human override. `maintenance` uses only the roles and gates justified by its actual scope.
+- `public_contract`, `migration`, `security_sensitive`, `regulated`, `greenfield_foundation`, and `release` are hard triggers. Mixed or unknown intent also fails closed to `product_delivery`; an agent cannot downgrade these decisions.
+- SA, TA, DevOps, Contract, Foundation, Release, and Business Acceptance are trigger-based. A gate marked not applicable creates no approval action. Applicable gates retain their original authority.
+- `approve-ready-bundle` and `approve-closeout-bundle` reduce interactions, not approvals: they preflight the whole batch, preserve one signed receipt per gate, and recover or roll back journaled partial writes.
+- Adaptive writes require source/installed minor-version compatibility and a passing runtime parity result. Otherwise the writer fails before delivery state is changed, while legacy reads and individual approval commands remain available.
+- Telemetry is off by default. `--telemetry true` or `CF_TELEMETRY=on` enables local-only, allowlisted, pseudonymous records; raw records expire after 30 days and aggregates after 90 days. There is no remote exporter.
 
 ## Workflow Docs
 
 ### By Purpose
 
 - Public docs for newcomers to the workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface for `v2.6.1`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface for `v2.6.2`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart for `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README for installation or publishing: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 

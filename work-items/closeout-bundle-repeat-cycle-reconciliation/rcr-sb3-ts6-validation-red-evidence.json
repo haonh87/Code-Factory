@@ -1,0 +1,11 @@
+{
+  "task": "TS6 validation canary before TS7 adoption",
+  "baseline_sha": "e894db1bf5d70eab3b4c174e985fefabff1bf09b",
+  "status": "EXPECTED_RED",
+  "command": "node --test packages/workflow-bundle/test/work-item-protocol-state.test.js",
+  "passed_tests": 18,
+  "failed_tests": 1,
+  "root_cause": "An explicitly present transaction_id: undefined is passed to the coordinator's generate-if-omitted helper; non-string UUID-like values can also be coerced. The load adapter must not allocate identity. New event/reader fields must be canonical non-empty strings.",
+  "scope": "Bounded TS6 constructor/normalizer validation within locked AC-RCR-10 and the same write roots. Other coordinator callers retain generate-if-omitted semantics. No contract amendment or future gate approval.",
+  "T7_WIP": "Still quarantined and unchanged"
+}

@@ -6,7 +6,7 @@ language: vi
 
 > Tiếng Anh / English: README.md
 
-`workflow-bundle` là package CLI được chuẩn bị cho ứng viên phát hành `v2.6.1`: cài workflow bundle cho Codex hoặc Claude Code, scaffold hoặc validate workflow, và hỗ trợ flow `agent proposes, human approves` cho `work-item` và `change`. Package vẫn chưa được phát hành cho đến khi human Release gate phê duyệt. Bản vá đồng bộ authoring smoke đã lỗi thời với hành vi bootstrap đã được phê duyệt mà không đổi production approval semantics, số managed skill hoặc public CLI contract.
+`workflow-bundle` là package CLI được chuẩn bị cho ứng viên phát hành `v2.6.2`. Package cài workflow bundle cho Codex hoặc Claude Code, định tuyến request vào governance lane phù hợp, scaffold hoặc validate delivery workflow và hỗ trợ human approval bundle có transaction journal. Gate nào áp dụng vẫn phải có đúng human reviewer có thẩm quyền và một trusted receipt độc lập. Package chưa được phát hành cho tới khi human Release gate phê duyệt.
 
 Quickstart chi tiết: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -43,32 +43,36 @@ npm link
 wfc version
 ```
 
-### Roll Back Từ v2.6.1 Về v2.6.0
+### Roll Back Từ v2.6.2 Về v2.6.1
 
-Ghi lại mode, scope, project root và status hiện tại trước khi thay package. Sau đó cài đúng tarball
-v2.6.0 bất biến đã được lưu và chạy `install` cho từng target đã ghi:
+Ghi lại mode, scope, project root và status hiện tại trước khi thay package. Dừng adaptive writer bằng
+cách không truyền `--adaptive-writes true`, sau đó hoàn tất hoặc chạy lại bundle command ban đầu để
+transaction recovery không để lại live journal. Các lệnh `wfc gate approve` riêng lẻ vẫn là fallback.
+Tiếp theo, cài đúng tarball v2.6.1 bất biến đã được lưu và chạy `install` cho từng target đã ghi:
 
 ```bash
 wfc status --mode codex
-npm install -g /absolute/path/to/workflow-bundle-2.6.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.6.1.tgz
 wfc install --mode codex --scope global
 wfc install --mode codex --scope project --project-root <repo-root>
 wfc status --mode codex
 wfc skills list --mode codex
 ```
 
-Dùng cùng chuỗi lệnh với `--mode claude` cho Claude Code. Dùng artifact v2.6.0 bất biến đã được lưu
+Dùng cùng chuỗi lệnh với `--mode claude` cho Claude Code. Dùng artifact v2.6.1 bất biến đã được lưu
 và `wfc install` để hạ cấp nhằm giữ identity của fallback tường minh; không dựa vào registry alias có
-thể thay đổi. Đường được hỗ trợ sẽ khôi phục hành vi source v2.6.0, giữ inventory 42 skill và các file
-unmanaged. Hãy diễn tập với home cô lập trước khi thao tác trên bản cài live, và không thay đổi global
-install live trước khi human Release gate cho phép.
+có thể thay đổi. Đường được hỗ trợ sẽ khôi phục hành vi source v2.6.1, giữ inventory 42 skill và các file
+unmanaged. Phải giữ nguyên khả năng dual-read legacy/adaptive cùng mọi historical receipt; không rewrite
+hoặc ký lại receipt khi rollback. Hãy diễn tập với home cô lập trước khi thao tác trên bản cài live, và
+không thay đổi global install live trước khi human Release gate cho phép.
 
-## What `v2.6.1` Includes
+## What `v2.6.2` Includes
 
 - workflow bundle install surface qua `wfc install|update|status|skills`
 - core authoring CLI qua `wfc init|scaffold|validate`
 - agentic proposal flow qua `wfc materialize|change-item|work-item|protocol`
-- human approval gates cho change package và work item
+- tám request lane, hard-escalation trigger và role/gate chỉ xuất hiện khi áp dụng
+- human approval gate cho change package và work item, gồm readiness bundle và closeout bundle
 - capability control để khóa implementation path cho tới khi work item vào `ACTIVE` ở `s07`
 - runtime prompt nhiều khối với `AGENTS.global.md` làm authority, `workflow-governance-router` làm entry router và `codex-workflow-chain` làm workflow backbone
 - 42 skill được quản lý trong mỗi generated runtime, gồm contract `sa` và `ta` đã sửa
@@ -76,6 +80,8 @@ install live trước khi human Release gate cho phép.
 - `artifact-governance` với rule one-fact/one-owner, nội dung English/Vietnamese và canonical/runtime parity
 - hướng dẫn design-readiness dạng additive cho hai skill `sa` và `ta` hiện có, được map vào các field hiện hữu mà không chọn solution ở s05
 - evidence authoring smoke 13 case đã sửa cho bootstrap approval legacy-scaffold tường minh với provenance `request_source`, `REPORT_BOOTSTRAPPED`, approval status và reviewer
+- telemetry opt-in, local-only, theo allowlist, dùng mã định danh giả danh, có retention 30/90 ngày và purge
+- một package candidate do Guardrails build, được xác minh bằng SHA-256 trên Node 18 và Node 22 mà không rebuild theo môi trường
 - machine enforcement cho artifact placement, ownership duplication, section-first execution reader và role-indexed handoff đã đăng ký
 - repeat install/update an toàn về permission và giữ nguyên nội dung unmanaged
 
@@ -108,6 +114,16 @@ Quy tắc đọc block này:
 - nếu `Missing Gates` khác `NONE`, `Next Human Action` không được là `NONE`
 - raw feature request greenfield kiểu `QR Voucher + voucher service API + tone brand` trong repo trống phải dừng ở `proposal stage`, không được tự scaffold hay code
 
+## Contract Adaptive Governance
+
+- Các lane gồm `qa`, `translation`, `summarization`, `research`, `documentation`, `read_only_analysis`, `maintenance` và `product_delivery`.
+- Sáu lane đầu mặc định không ghi delivery artifact. Muốn materialize tường minh phải có human override được audit. Maintenance chỉ dùng đường Developer/QC gọn, trừ khi hard trigger buộc escalation.
+- Hard trigger gồm `public_contract`, `migration`, `security_sensitive`, `regulated`, `greenfield_foundation` và `release`. Intent hỗn hợp hoặc lane không xác định sẽ fail-closed sang `product_delivery`.
+- SA, TA, DevOps cùng các gate Contract, Foundation, Release và Business Acceptance chỉ xuất hiện theo trigger. Phần không áp dụng không tạo pending action cho human; thẩm quyền của phần áp dụng không thay đổi.
+- Chỉ ghi adaptive artifact khi source và runtime đã cài cùng minor version và parity đã pass. Nếu guard fail thì không có adaptive delivery state nào được ghi; legacy reader và lệnh approve từng gate vẫn hoạt động.
+- `approve-ready-bundle`, `reject-ready-bundle` và `approve-closeout-bundle` gói việc review vào một lần tương tác nhưng vẫn giữ một signed receipt độc lập cho từng gate. Transaction được preflight, lock, journal, recover và reconcile với protocol state.
+- Telemetry vẫn tắt nếu không truyền `--telemetry true` hoặc `CF_TELEMETRY=on`. Record chỉ nằm cục bộ và theo allowlist; raw data hết hạn sau 30 ngày, aggregate sau 90 ngày, còn `wfc telemetry purge` xóa record hết hạn.
+
 ## Command Overview
 
 | Việc cần làm | Lệnh |
@@ -129,7 +145,10 @@ Quy tắc đọc block này:
 | Human approve change package do agent đề xuất | `wfc change-item approve --change-id <CHANGE-ID> --reviewed-by <role>` |
 | Liệt kê hoặc xem detail work item | `wfc work-item list` , `wfc work-item status --work-item <slug>` |
 | Human approve work item hoặc seal workflow gate | `wfc work-item approve --work-item <slug> --reviewed-by <role>` , `wfc gate approve --work-item <slug> --gate <spec|dor|approach|task_plan> --reviewed-by <role>` |
+| Approve hoặc reject toàn bộ readiness gate áp dụng trong một lần tương tác | `wfc gate approve-ready-bundle --work-item <slug>` , `wfc gate reject-ready-bundle --work-item <slug>` |
+| Approve toàn bộ terminal gate áp dụng trong một lần tương tác | `wfc gate approve-closeout-bundle --work-item <slug>` |
 | Activate execution sau gate pass | `wfc work-item activate --work-item <slug> --step s07 --write-root <path>` |
+| Xóa telemetry cục bộ opt-in đã hết hạn | `wfc telemetry purge [--telemetry-out <local-dir>]` |
 | Xem hoặc sync capability control | `wfc capability status` , `wfc capability sync` , `wfc capability check --path <path>` |
 | Validate work-item protocol | `wfc protocol` |
 

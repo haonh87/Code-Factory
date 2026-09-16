@@ -48,10 +48,10 @@ gate_reviews:
   dor_reviewed_at: ""
   approach_reviewed_by:
     - "developer"
-  approach_reviewed_at: "2026-08-19T06:57:49.000Z"
+  approach_reviewed_at: "2026-08-26T07:24:09Z"
   task_plan_reviewed_by:
     - "developer"
-  task_plan_reviewed_at: "2026-08-19T06:57:49.000Z"
+  task_plan_reviewed_at: "2026-08-26T07:24:09Z"
   dod_reviewed_by: []
   dod_reviewed_at: ""
 content_skills:
@@ -211,6 +211,20 @@ tasks:
     verification_hint: "AC-004. Then confirm on all six existing work items that a clean one is not falsely refused."
     dependencies: ["T1"]
     sequencing_reason: "Last, and committed last. It is the only fix that makes the tool stricter, and the only one whose revert restores a weaker gate."
+  - id: T7
+    owner_role: developer
+    name: "D-E decouple the resolver test from live repo state"
+    objective: "Make workflow-gate-evidence-utils.test.js assert against a controlled fixture instead of a live work item's protocol_status, so the suite result stops depending on which work items happen to be ACTIVE."
+    paths_in_scope: ["packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js"]
+    outputs_expected:
+      - "The same-note resolver assertion supplies its own note with a known protocol_status"
+      - "Resolver coverage preserved, not deleted - a same-note reference is still proved to resolve"
+      - "The full unit suite reports 0 failing files with every real work item left untouched"
+    review_checkpoint: "SPEC_COMPLIANCE: AC-006. The fix must not weaken the assertion into a tautology - deleting the check would also turn the suite green and would be the wrong answer. CODE_QUALITY: the fixture is created and cleaned up in the test, matching the tmpdir pattern already used in this package."
+    verification_hint: "Observe it failing first for the recorded reason (asserts ACTIVE, live value is DONE). Then run the full suite and compare to the T0 baseline of 1 failing file."
+    dependencies: ["T1"]
+    sequencing_reason: "Added by AMENDMENT-001. Independent of T2 to T5 - it touches only its own test file - but it gates T6's 0-failure criterion."
+    added_by: "AMENDMENT-001"
   - id: T6
     owner_role: developer
     name: "Full regression and receipt integrity"
@@ -219,9 +233,15 @@ tasks:
     review_checkpoint: "SPEC_COMPLIANCE: AC-005 complete and no receipt moved."
     verification_hint: "Compare against T0 numbers, not against expectation."
     dependencies: ["T2", "T3", "T4", "T5"]
-execution_order: "T0 -> T1 -> {T2, T3, T4, T5} -> T6. T2 to T5 touch disjoint files and may be committed independently; D-D last."
+execution_order: "T0 -> T1 -> {T2, T3, T4, T5, T7} -> T6. T2 to T5 and T7 touch disjoint files and may be committed independently; D-D last among the four original fixes."
+execution_order_correction:
+  observed_during: "s07"
+  what: "T3 must precede T4 in practice, which the original order did not state. T4 edits packages/workflow-bundle/bin/wfc.js, and the tdd-enforce hook blocks every edit under bin/ until D-B lands - the very defect T3 fixes. The set {T2..T5} is therefore not fully order-free."
+  consequence: "Recorded rather than silently reordered. Anyone replaying this plan hits the same wall."
 dependencies:
   - "T1 gates every fix"
+  - "T3 gates T4 - the hook blocks bin/ edits until the D-B mapping exists"
+  - "T7 gates T6's 0-failing-file criterion"
   - "T6 compares against the T0 baseline"
 handoff_points:
   - "After T1: a symptom that cannot be reproduced withdraws its requirement rather than weakening its fixture"

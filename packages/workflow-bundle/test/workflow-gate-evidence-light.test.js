@@ -58,6 +58,77 @@ function testRequiredFinalizedGateKeysLight() {
   console.log("  PASS: required-finalized-gate-keys-light");
 }
 
+function testAdaptiveGateSnapshotDualReadsCompactShape() {
+  const projectRoot = fs.mkdtempSync(path.join(os.tmpdir(), "gate-adaptive-"));
+  const slug = "adaptive-gate-item";
+  const workflowRoot = path.join(projectRoot, "work-items", slug);
+  const filePath = path.join(workflowRoot, `${slug}.s06.task-breakdown.md`);
+  try {
+    writeFile(
+      filePath,
+      [
+        "---",
+        `artifact_id: "${slug}.s06.task-breakdown"`,
+        "artifact_family: workflow-step",
+        `work_item_slug: "${slug}"`,
+        'step_id: "s06"',
+        'step_slug: "task-breakdown"',
+        "workflow_stage: planning",
+        "artifact_role: primary",
+        "status: draft",
+        "delivery_context: brownfield",
+        "governance_profile: default",
+        "sdd_mode: none",
+        "artifact_shape: adaptive_v1",
+        "request_lane: maintenance",
+        "workflow_required: true",
+        "approval_gates:",
+        '  spec: "not_applicable"',
+        '  contract: "not_applicable"',
+        '  dor: "not_applicable"',
+        '  approach: "not_applicable"',
+        '  foundation: "not_applicable"',
+        '  task_plan: "required"',
+        '  uat: "not_applicable"',
+        '  dod: "required"',
+        '  release: "not_applicable"',
+        '  business_acceptance: "not_applicable"',
+        "role_signoffs:",
+        '  task_plan: ["developer"]',
+        '  dod: ["qc"]',
+        "gate_reviews:",
+        "  task_plan_reviewed_by: []",
+        '  task_plan_reviewed_at: ""',
+        "  dod_reviewed_by: []",
+        '  dod_reviewed_at: ""',
+        "---",
+        "",
+        "# adaptive"
+      ].join("\n")
+    );
+    const snapshot = loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug: slug, stepId: "s06" });
+    assert(snapshot.artifactShape === "adaptive_v1", `adaptive snapshot shape must survive read, got ${snapshot.artifactShape}`);
+    assert(snapshot.requestLane === "maintenance", `adaptive snapshot lane must survive read, got ${snapshot.requestLane}`);
+    assert(snapshot.approvalGates.task_plan === "required", "adaptive snapshot must read explicit task_plan gate");
+    assert(snapshot.approvalGates.spec === "not_applicable", "adaptive snapshot must read omitted ceremony as N/A");
+    assert(
+      JSON.stringify(getRequiredFinalizedGateKeys("s04", snapshot.approvalGates, "none", snapshot.artifactShape)) === "[]",
+      "adaptive maintenance must require no s04 gates"
+    );
+    assert(
+      JSON.stringify(getRequiredFinalizedGateKeys("s06", snapshot.approvalGates, "none", snapshot.artifactShape)) ===
+        JSON.stringify(["task_plan"]),
+      "adaptive maintenance must require only task_plan at s06"
+    );
+
+    const legacy = getRequiredFinalizedGateKeys("s04", buildDefaultApprovalGates(), "none", "legacy_v1");
+    assert(legacy.includes("spec") && legacy.includes("dor"), "legacy reader must preserve fixed s04 spec/dor behavior");
+    console.log("  PASS: gate snapshot dual-reads adaptive compact and legacy fixed shapes");
+  } finally {
+    fs.rmSync(projectRoot, { recursive: true, force: true });
+  }
+}
+
 // ---------- Protocol step gate errors (transition gate) ----------
 
 function makeNoteFrontmatter(slug, stepId, stepSlug, overrides = {}) {
@@ -204,6 +275,7 @@ console.log("Running workflow-gate-evidence (Light) tests...\n");
 
 testGateHostMapLight();
 testRequiredFinalizedGateKeysLight();
+testAdaptiveGateSnapshotDualReadsCompactShape();
 testProtocolStepGatesLightSkipsS05();
 testProtocolStepGatesNonLightChecksS05();
 testProtocolStepGatesS08RequiresS07Evidence();

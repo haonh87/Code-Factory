@@ -1,0 +1,299 @@
+{
+  "batch": "RCR-SB2",
+  "review_lane": "CODE_QUALITY",
+  "source_sha": "c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3",
+  "prepared_at": "2026-09-13T11:37:56Z",
+  "review_order": [
+    "SPEC_COMPLIANCE",
+    "CODE_QUALITY"
+  ],
+  "precondition": {
+    "spec_compliance": "EXPLICIT_QC_APPROVED",
+    "reviewed_by": [
+      "qc"
+    ],
+    "reviewed_at": "2026-09-13T11:34:46Z",
+    "source_sha": "c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3"
+  },
+  "recommendation": "PASS_FOR_BATCH_WITH_DISCLOSED_SCAN_GAPS",
+  "human_approval": "APPROVED",
+  "reviewer_roles": [
+    "developer",
+    "qc"
+  ],
+  "reviewed_by": [
+    "developer",
+    "qc"
+  ],
+  "reviewed_at": "2026-09-13T12:05:44Z",
+  "findings": [],
+  "scan": {
+    "scan_target": "RCR-SB2 pre-handoff Code Quality at c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3",
+    "scan_scope": {
+      "mode": "DIFF_ONLY",
+      "changed_files": [
+        "packages/workflow-bundle/scripts/materialize-work-item.js",
+        "packages/workflow-bundle/scripts/work-item-protocol.js",
+        "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js",
+        "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
+      ],
+      "affected_modules": [
+        "Report state emission and semantic reconciliation",
+        "Approval-state contradictions",
+        "Greenfield/adaptive authoring assertions"
+      ]
+    },
+    "language_stack": [
+      "JavaScript (CommonJS) / Node.js"
+    ],
+    "available_scan_tools": [
+      "Node.js v26.5.0 native parser",
+      "Git diff/source verification",
+      "Existing Node test suites"
+    ],
+    "false_positive_policy": "Diff-aware, evidence-based, dismiss only with reason; no automatic scanner or benchmark result is inferred.",
+    "scan_plan": {
+      "syntax": [
+        "node --check for all four changed scripts"
+      ],
+      "static_analysis": [
+        "Existing wrappers/config/tool discovery",
+        "Source-bound predicate and no-core-entry.text assertions",
+        "Manual constructor/export/import and object-shape review"
+      ],
+      "security": [
+        "Check Semgrep availability",
+        "Supplement with diff-aware manual trust/input/render/write review and existing authority tests"
+      ],
+      "performance_heuristic": [
+        "Review allocation, synchronous I/O, gate/collection loops and report-history normalization"
+      ]
+    },
+    "syntax_scan_results": [
+      {
+        "command": "node --check <each of the four changed JavaScript scripts>",
+        "scope": [
+          "packages/workflow-bundle/scripts/materialize-work-item.js",
+          "packages/workflow-bundle/scripts/work-item-protocol.js",
+          "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js",
+          "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
+        ],
+        "status": "PASS",
+        "evidence": "All four native parser checks exit 0; production source matches the QC-approved SHA.",
+        "blocker_files": []
+      }
+    ],
+    "static_analysis_results": [
+      {
+        "command": "Existing configured ESLint/typecheck wrapper",
+        "config_used": "No corresponding project script/config or installed eslint/tsc found",
+        "scope": [
+          "packages/workflow-bundle/scripts/materialize-work-item.js",
+          "packages/workflow-bundle/scripts/work-item-protocol.js",
+          "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js",
+          "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
+        ],
+        "status": "SKIP",
+        "findings": [],
+        "new_blockers": []
+      },
+      {
+        "command": "Source assertions plus manual constructor/import/selector review",
+        "config_used": "Approved state-entry Contract and source-bound Node assertions, not a lint configuration",
+        "scope": [
+          "packages/workflow-bundle/scripts/materialize-work-item.js",
+          "packages/workflow-bundle/scripts/work-item-protocol.js",
+          "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js",
+          "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
+        ],
+        "status": "PASS",
+        "findings": [],
+        "new_blockers": []
+      }
+    ],
+    "security_scan_results": [
+      {
+        "command_or_check": "Semgrep",
+        "scope": [
+          "packages/workflow-bundle/scripts/materialize-work-item.js",
+          "packages/workflow-bundle/scripts/work-item-protocol.js",
+          "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js",
+          "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
+        ],
+        "status": "SKIP",
+        "findings": []
+      },
+      {
+        "command_or_check": "Supplemental manual diff-aware trust/input/render/write review",
+        "scope": [
+          "packages/workflow-bundle/scripts/materialize-work-item.js",
+          "packages/workflow-bundle/scripts/work-item-protocol.js",
+          "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js",
+          "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
+        ],
+        "status": "PASS",
+        "findings": [],
+        "evidence": "No new file target, shell execution, dynamic evaluation, signer/trusted-root mutation, or permission bypass in the production diff. Machine kinds/purposes come from fixed metadata, not display text. JSON-backed flow mappings escape display text. Existing malformed-input, receipt-v1, wrong-authority/stale-digest, preflight/rollback and lock tests pass. This is manual supporting evidence, not a deterministic security scan."
+      }
+    ],
+    "performance_heuristic_results": [
+      {
+        "check": "Allocation, synchronous hashing, exact gate-selection loops and normalization",
+        "scope": [
+          "packages/workflow-bundle/scripts/materialize-work-item.js",
+          "packages/workflow-bundle/scripts/work-item-protocol.js",
+          "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js",
+          "packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js"
+        ],
+        "status": "PASS",
+        "expected_impact": "LOW",
+        "confidence": "MEDIUM",
+        "trigger_condition": "Very large state collections or long protocol-event history increase normalization/cloning work; no runtime benchmark or scale threshold is established in this batch.",
+        "evidence": "Filtering scales with collection size and the finite canonical gate list; constructor hashing is local and deterministic. No new filesystem/network/subprocess operation on the production reconciliation path. Approval assertions re-normalize the report (including history); retain this as an advisory residual risk for unusually large reports, not an observed blocker."
+      }
+    ],
+    "skipped_scans": [
+      "ESLint/typecheck: binaries, local tool dependencies and matching configured wrappers are absent. Native parsing and manual/test evidence are a fallback, not equivalent coverage.",
+      "Semgrep: binary/config absent; no new tool was installed during review. Sensitive receipt/signer/filesystem execution boundaries are unchanged by this delta, and manual diff checks plus existing authority/atomicity tests support this limited early review.",
+      "Benchmarks/profiling: not run; performance evidence is a heuristic only."
+    ],
+    "overall_status": "PARTIAL",
+    "remediation_actions": [
+      "Reassess automated static/security coverage in TS7/s08; do not promote this early scan to final release verification."
+    ],
+    "notes_for_verify": "s07 supporting evidence only. Any scoped human Code Quality PASS must explicitly retain scanner gaps, quarantined WIP and later full verification obligations."
+  },
+  "checks": [
+    {
+      "name": "syntax_static_source",
+      "command": "node -e 'const fs=require(\"node:fs\"),cp=require(\"node:child_process\"),assert=require(\"node:assert/strict\");\nconst source=\"c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3\";\nconst files=cp.execFileSync(\"git\",[\"diff\",\"--name-only\",\"3e0b9728d82204e38b06668e08cc895294109986\",source,\"--\",\"packages/workflow-bundle/scripts\"],{encoding:\"utf8\"}).trim().split(\"\\n\");\nassert.equal(files.length,4);for(const file of files)cp.execFileSync(process.execPath,[\"--check\",file]);\nconst owned=cp.execFileSync(\"git\",[\"show\",source+\":packages/workflow-bundle/test/work-item-protocol.test.js\"],{encoding:\"utf8\"});assert.ok(!owned.includes(\"testTwentyCloseoutCyclesRemainDeterministic\"));\nconst protocol=fs.readFileSync(\"packages/workflow-bundle/scripts/work-item-protocol.js\",\"utf8\"),evidence=fs.readFileSync(\"packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js\",\"utf8\");\nfor(const content of [protocol,evidence])assert.ok(!/\\b(?:entry|claim)\\.text\\b/.test(content));\nfor(const removed of [\"isSelectedCloseoutApprovalBlocker\",\"isApprovalActionForGate\",\"hasBoundedCloseoutAlias\",\"normalizeCloseoutStateText\"])assert.ok(!protocol.includes(removed));assert.ok(!evidence.includes(\"textClaimsApprovalPending\"));\nassert.equal(cp.execFileSync(\"git\",[\"diff\",\"--name-only\",source,\"--\",\"packages/workflow-bundle/scripts\"],{encoding:\"utf8\"}),\"\");cp.execFileSync(\"git\",[\"diff\",\"--check\"]);console.log(JSON.stringify({syntax:\"PASS\",scripts:files.length,prose_predicates_removed:5,core_entry_text_reads:0,source_unchanged:true,diff_check:\"PASS\"}));'",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "state",
+      "command": "node --test packages/workflow-bundle/test/work-item-protocol-state.test.js",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "materialize",
+      "command": "node packages/workflow-bundle/test/materialize-work-item.test.js",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "gate_evidence",
+      "command": "node packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "gate_review",
+      "command": "node packages/workflow-bundle/test/workflow-gate-review.test.js",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "compatibility",
+      "command": "node -e '\nconst fs=require(\"node:fs\"),cp=require(\"node:child_process\"),crypto=require(\"node:crypto\"),assert=require(\"node:assert/strict\");\nconst u=require(\"./packages/workflow-bundle/scripts/work-item-protocol-utils\");\nconst b=JSON.parse(fs.readFileSync(\"work-items/closeout-bundle-repeat-cycle-reconciliation/structural-ts0-baseline.json\",\"utf8\"));\nconst hash=v=>crypto.createHash(\"sha256\").update(v).digest(\"hex\");\nfor(const item of b.reports){\n const historic=cp.execFileSync(\"git\",[\"show\",b.source_sha+\":\"+item.path]);\n assert.equal(hash(historic),item.sha256,item.path);\n u.normalizeProtocolReport(JSON.parse(historic));\n const before=fs.readFileSync(item.path);\n const slug=JSON.parse(before).work_item_slug;\n const loaded=u.loadProtocolReport({projectRoot:process.cwd(),workflowRootBase:\"work-items\",workItemSlug:slug});\n assert.equal(hash(fs.readFileSync(item.path)),hash(before),\"load-only \"+item.path);\n assert.equal(hash(JSON.stringify(loaded.report.protocol_events.slice(0,item.protocol_event_count))),item.protocol_events_sha256,\"historical prefix \"+item.path);\n}\nfor(const item of b.historical_unbound_approval_events) assert.deepEqual(JSON.parse(fs.readFileSync(item.report_path,\"utf8\")).protocol_events[item.index],item.event);\nconst dir=\"work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.\";\nfor(const [step,digest]of [\n[\"s04.acceptance-criteria.md\",\"26b85c2d4ff64f218486352e4e8e770fe7bfe71a538d8366a308b56d1e9aaf87\"],\n[\"s05.technical-approach.md\",\"d075290f151a9596d029a79fa1cf2eab72b08a179c196d35a046d2d7a8187001\"],\n[\"s06.task-breakdown.md\",\"ae1a733dab2cc709f61334050b0435160d34d88385ca4dba5ff7960632f11238\"]\n]) assert.equal(hash(fs.readFileSync(dir+step)),digest,step);\nconst wip=\"packages/workflow-bundle/test/work-item-protocol.test.js\";\nconst liveTest=fs.readFileSync(wip,\"utf8\"),start=liveTest.indexOf(\"function testTwentyCloseoutCyclesRemainDeterministic()\"),end=liveTest.indexOf(\"function testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss()\",start);\nassert.ok(start>=0&&end>start,\"Quarantined T7 segment exists\");\nassert.equal(hash(liveTest.slice(start,end)),\"14616b5522fcdfd0d02a05220985ec935c8a9f13cb5361fb81d0101af624f0c4\");\nassert.equal(liveTest.split(\"testTwentyCloseoutCyclesRemainDeterministic();\\n\").length-1,1);\nassert.equal(cp.execFileSync(\"git\",[\"diff\",\"--numstat\",\"--\",wip],{encoding:\"utf8\"}).trim(),\"69\\t0\\t\"+wip);\nconst committedTest=cp.execFileSync(\"git\",[\"show\",\"HEAD:\"+wip],{encoding:\"utf8\"});\nassert.ok(!committedTest.includes(\"testTwentyCloseoutCyclesRemainDeterministic\"));\nconst changed=cp.execFileSync(\"git\",[\"diff\",\"--name-only\",\"5484c12\"],{encoding:\"utf8\"}).trim().split(\"\\n\").filter(p=>p!==wip);\nfor(const p of changed)new TextDecoder(\"utf-8\",{fatal:true}).decode(fs.readFileSync(p));\nconsole.log(JSON.stringify({status:\"PASS\",frozen_reports:b.reports.length,live_loads:b.reports.length,historical_prefixes:\"UNCHANGED\",unbound_events:b.historical_unbound_approval_events.length,protected_hosts:3,wip:\"UNCHANGED\",changed_utf8_files:changed.length}));\n'",
+      "exit_code": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "owned_protocol",
+      "command": "node -e 'const cp=require(\"node:child_process\"),path=require(\"node:path\"),Module=require(\"node:module\");\nconst test=\"packages/workflow-bundle/test/work-item-protocol.test.js\",filename=path.resolve(test);\nconst source=cp.execFileSync(\"git\",[\"show\",\"c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3:\"+test],{encoding:\"utf8\"});\nif(source.includes(\"function testTwentyCloseoutCyclesRemainDeterministic\")||source.includes(\"testTwentyCloseoutCyclesRemainDeterministic();\"))throw Error(\"Quarantined WIP entered committed test source\");\nconsole.log(\"Owned committed TS3 test source; live TS4 production; pre-existing T7 WIP is not in HEAD.\");\nconst m=new Module(filename,module);m.filename=filename;m.paths=Module._nodeModulePaths(path.dirname(filename));m._compile(source,filename);'",
+      "exit_code": 0,
+      "status": "PASS",
+      "scope": "Entire committed test source at the reviewed SHA; unchanged T7 WIP is not in this source."
+    },
+    {
+      "name": "authoring_smoke",
+      "command": "node packages/workflow-bundle/scripts/run-workflow-authoring-smoke.js --repo-root .",
+      "exit_code": 0,
+      "status": "PASS",
+      "passed": 13
+    },
+    {
+      "name": "local_full_test_file",
+      "command": "node packages/workflow-bundle/test/work-item-protocol.test.js",
+      "exit_code": 1,
+      "status": "FAIL_QUARANTINED_WIP",
+      "failures": 20,
+      "only_failures": "Unchanged T7 canonical-close string assertions; no other failing assertion observed."
+    }
+  ],
+  "manual_quality_results": [
+    {
+      "check": "Smallest-delta and scope",
+      "result": "PASS",
+      "evidence": "Exactly four TS4 production scripts changed (81 additions/127 deletions); no new module/config/dependency/stack, public CLI, transaction coordinator, receipt schema or approval authority change."
+    },
+    {
+      "check": "Constructor and purpose-ID coherence",
+      "result": "PASS",
+      "evidence": "Raw writer guards pass; collection/kind/gate/purpose constructor inputs are fixed at producer sites. Work-item/change approval IDs match their adapter identities exactly; display changes do not change identity."
+    },
+    {
+      "check": "Exact semantic selectors and opaque canaries",
+      "result": "PASS",
+      "evidence": "15 state tests pass, including 20 fixed-identity display mutations, phase isolation, unselected/foreign-purpose preservation, rejection feedback isolation and input immutability."
+    },
+    {
+      "check": "Tests preserve behavioral assertions",
+      "result": "PASS",
+      "evidence": "Typed positive fixtures coexist with exact opaque canaries. Receipt authority, canonical close/handoff, s01 parity, uncommitted delivery and historical-prefix assertions remain. No owned assertion is disabled or removed to mask a failure."
+    },
+    {
+      "check": "Protected evidence and quarantine",
+      "result": "PASS",
+      "evidence": "13 frozen/live report loads produce zero writes; historical prefixes, two unbound historical events and three finalized authoring hosts unchanged. T7 function hash and invocation unchanged; only its 69 pre-existing lines remain unstaged."
+    },
+    {
+      "check": "Event/transaction scope boundary",
+      "result": "PENDING_LATER_TASK",
+      "evidence": "Current optional transaction ID in notes/history path is unchanged and remains TS5/TS6. No complete root-cause or AC-RCR-10 PASS is claimed."
+    }
+  ],
+  "source_evidence": "rcr-sb2-evidence.json",
+  "red_evidence": "rcr-sb2-ts3-red-evidence.json",
+  "residual_risks": [
+    "Automated static/security scanner coverage missing; scan overall PARTIAL, not full security verification.",
+    "Quarantined local T7 fixture remains 20 FAIL until adoption at TS7.",
+    "Explicit generic lifecycle replacements are unchanged under the QC-approved scope boundary; no lifecycle redesign is authorized.",
+    "Large-history re-normalization may allocate extra memory; no benchmark claim.",
+    "Direct event identity, final atomicity/concurrency matrix, candidate and parent verification remain pending."
+  ],
+  "authority": {
+    "protocol_status": "ACTIVE",
+    "missing_gate": "NONE for approved TS5",
+    "next_human_action": "NONE for TS5",
+    "TS5": "OPEN_UNDER_APPROVED_TASK_PLAN",
+    "s08": "NOT_OPEN",
+    "dod": "NOT_OPEN",
+    "release": "NOT_OPEN",
+    "business_acceptance": "NOT_OPEN",
+    "publish": false,
+    "tag": false,
+    "merge": false,
+    "cleanup": false,
+    "operational_resume": "Coordinator resumed approved TS5/TS6/TS7 within existing sixteen roots; no later gate approval."
+  },
+  "handoff_checks": {
+    "workflow_validator": "PASS: 208 files / 204 notes",
+    "protocol_validator": "PASS: 13 managed work items / 16 legacy skipped",
+    "planning_validator": "PASS: 204 notes",
+    "trusted_authoring_receipts": "5 APPROVED with matching frozen host digests",
+    "source_hashes": "7 reviewed production/test file digests match the bound source",
+    "historical_reports": "13 frozen/live load-only reports; zero load writes and unchanged ordered history prefixes",
+    "unbound_historical_events": "2 unchanged",
+    "s01_parity": "PASS",
+    "text_encoding_and_diff": "Fatal UTF-8 decode and git diff --check PASS",
+    "quarantined_T7": "Function/invocation unchanged and 69 lines unstaged",
+    "external_owner_worktrees": "Root dirty status preserved; master audit worktree remains clean"
+  },
+  "whole_work_item_status": "NOT_DONE",
+  "branch_decision": "HOLD_OPEN",
+  "verdict": "PASS",
+  "approval_scope": "Human Developer and QC explicitly approved RCR-SB2 Code Quality PASS for source c4c51f11489ccff9d8f3f6ea6b5a43bb5b82d6e3 at 2026-09-13T12:05:44Z. All disclosed static/security/performance scan gaps, T7 WIP quarantine and TS7/s08 duties are retained. This completes SB2 review dependencies only; no SB3, s08 or terminal approval."
+}

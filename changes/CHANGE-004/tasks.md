@@ -251,7 +251,7 @@ branch_finalization:
     - "Created and pushed annotated tag v2.6.0; tag object 717d3282c4a7f9d039a5a7534a2bb4c581304d6d resolves to commit 7c88f7d564f4c49daecc6eaec345002163f9e9ec."
     - "Published GitHub Release 375537074 with exact asset workflow-bundle-2.6.0.tgz."
 release_execution:
-  status: COMPLETED_WITH_POST_RELEASE_FINDING
+  status: COMPLETED_FINDING_RESOLVED_BY_V2_6_1
   published_at: "2026-08-24T08:07:38Z"
   release_url: "https://github.com/haonh87/Code-Factory/releases/tag/v2.6.0"
   release_id: 375537074
@@ -275,7 +275,7 @@ release_execution:
     status: NOT_PUBLISHED
     reason: "The local npm client is not authenticated; this release explicitly uses the immutable GitHub asset as its publication artifact."
   post_release_ci:
-    status: PARTIAL
+    status: HISTORICAL_PARTIAL_RESOLVED
     run_id: 32704618485
     run_url: "https://github.com/haonh87/Code-Factory/actions/runs/32704618485"
     passing_jobs: 6
@@ -285,7 +285,17 @@ release_execution:
     finding: "The stale mutating-action-requires-report smoke case expects a missing-report error, but approve argument validation correctly fails earlier because --reviewed-by is absent."
     clean_export_reproduction: "CONFIRMED against immutable tag target 7c88f7d564f4c49daecc6eaec345002163f9e9ec"
     artifact_integrity_impact: NONE
-    disposition: OPEN_REQUIRES_SEPARATE_GOVERNED_FIX_OR_HUMAN_ACCEPTANCE
+    disposition: RESOLVED_BY_CHANGE_006_V2_6_1
+    resolution:
+      status: PASS
+      change_id: CHANGE-006
+      fixed_target: "23a30756fb2271b6f1604c91e5b31092fb2dec67"
+      guardrails_run_id: 32825477258
+      guardrails_result: "9/9 required jobs PASS, including Workflow Authoring Smoke and Node 18/22"
+      tag_object: "feb5b3ee4be7109a0eccab9835dee513fbf275cc"
+      release_url: "https://github.com/haonh87/Code-Factory/releases/tag/v2.6.1"
+      downloaded_asset_sha256: "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+      rollback_identity_unchanged: "v2.6.0 -> 7c88f7d564f4c49daecc6eaec345002163f9e9ec / 5da823c9e64ca464630aea29dcf59ae4098bd6ea544cfdb36cdf5ccec79f3af9"
 branch_and_worktree: FINALIZED
-next_action: "Resolve REL-F01 through a separately governed fix/patch release or explicit authorized acceptance; keep v2.6.0 tag immutable and do not archive CHANGE-004 while the finding is open."
+next_action: "REL-F01 is resolved by CHANGE-006/v2.6.1; CHANGE-004 archive readiness is READY, while actual archive execution remains a separate lifecycle action."
 ```

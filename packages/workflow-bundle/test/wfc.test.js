@@ -8,6 +8,8 @@
 //
 // Work item: approval-path-defects, task T4.
 
+const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const { execFileSync } = require("child_process");
 
@@ -67,6 +69,43 @@ function testFinalizeStepPrecedesSealing() {
   );
 }
 
+// D-C / REQ-003 / AC-003: approval-path-defects TD-02 documented the finalization
+// requirement for the seal-then-activate call site as steps 7b/7c. `work-item verify`
+// is a DIFFERENT call site with the same requirement, and it was left undocumented,
+// so the operator meets "s07 implementation note must be reviewed or finalized before
+// verification" as a surprise. Extends the pattern above rather than inventing one.
+//
+// Work item: worktree-and-closure-integrity, requirement REQ-003, task T4.
+function testVerifyStageFinalizationIsDocumented() {
+  console.log("\nAC-003: the flow documents the verify-stage finalization requirement");
+  const text = helpText();
+  const flowLines = text.split("\n").filter((line) => /^\s*\d+[a-z]?\./.test(line));
+  const verifyLines = flowLines.filter((line) => /verify/i.test(line));
+
+  assert(verifyLines.length > 0, "the documented flow includes a step for the verify transition");
+  assert(
+    verifyLines.some((line) => /s07/.test(line)),
+    "the verify step names s07, so the operator knows WHICH note must be finalized"
+  );
+  assert(
+    verifyLines.some((line) => /finali[sz]e|reviewed/i.test(line)),
+    "the verify step names the finalize/reviewed requirement, not merely the word verify"
+  );
+}
+
+function testVerifyStepFollowsActivate() {
+  console.log("\nAC-003: the verify step sits after activate, matching the state machine");
+  const text = helpText();
+  const activateAt = text.search(/work-item activate --work-item/);
+  const verifyAt = text.search(/work-item verify/);
+
+  assert(verifyAt >= 0, "the flow names `wfc work-item verify`");
+  assert(
+    activateAt >= 0 && verifyAt >= 0 && activateAt < verifyAt,
+    `activate is documented before verify (activate@${activateAt}, verify@${verifyAt})`
+  );
+}
+
 function testApprovalRuleStillDocumented() {
   console.log("\nthe existing approval controls are still documented");
   const text = helpText();
@@ -77,10 +116,48 @@ function testApprovalRuleStillDocumented() {
   );
 }
 
+function testTelemetryPrivacyAndPurgeAreDocumented() {
+  console.log("\nCR-008 T7: telemetry help states opt-in, local retention and purge");
+  const text = helpText();
+  assert(/telemetry/i.test(text) && /opt-in/i.test(text), "help makes telemetry opt-in explicit");
+  assert(/local-only/i.test(text), "help states that telemetry stays local-only");
+  assert(/30\/90|30.*90/.test(text), "help states the raw/aggregate retention window");
+  assert(/wfc telemetry purge/.test(text), "help exposes the purge command");
+}
+
+function testTelemetryPurgeRunsThroughWfc() {
+  console.log("\nCR-008 T7: wfc telemetry purge reaches the retention implementation");
+  const wfc = path.join(__dirname, "..", "bin", "wfc.js");
+  const telemetryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "wfc-telemetry-purge-"));
+  const expiredPath = path.join(telemetryRoot, "expired.json");
+  try {
+    fs.writeFileSync(
+      expiredPath,
+      `${JSON.stringify({ schema_version: 2, event_type: "materialize", retention_class: "raw", recorded_at: "2000-01-01T00:00:00.000Z" })}\n`,
+      "utf8"
+    );
+    const output = execFileSync(
+      process.execPath,
+      [wfc, "telemetry", "purge", "--telemetry-out", telemetryRoot],
+      { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }
+    );
+    assert(/deleted=1/.test(output), `purge reports one expired event deletion (got: ${output.trim()})`);
+    assert(!fs.existsSync(expiredPath), "wfc purge removes the expired raw event");
+  } catch (error) {
+    assert(false, `wfc telemetry purge must succeed (got: ${String(error.stderr || error.message).trim()})`);
+  } finally {
+    fs.rmSync(telemetryRoot, { recursive: true, force: true });
+  }
+}
+
 console.log("Running wfc CLI help tests...");
 testFinalizeStepIsDocumented();
 testFinalizeStepPrecedesSealing();
+testVerifyStageFinalizationIsDocumented();
+testVerifyStepFollowsActivate();
 testApprovalRuleStillDocumented();
+testTelemetryPrivacyAndPurgeAreDocumented();
+testTelemetryPurgeRunsThroughWfc();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in wfc.test.js`);

@@ -1,13 +1,21 @@
 const fs = require("fs");
+const crypto = require("crypto");
 const os = require("os");
 const path = require("path");
 const { execFileSync } = require("child_process");
 const { ensureLightLazyStepNote } = require("../scripts/work-item-protocol");
-const { loadTrustedApprovalReceipt, hasApprovedReceipt, resolveGateArtifact } = require("../scripts/workflow-trusted-approval-utils");
+const {
+  loadTrustedApprovalReceipt,
+  hasApprovedReceipt,
+  normalizeTrustedApprovalReceipt,
+  resolveGateArtifact
+} = require("../scripts/workflow-trusted-approval-utils");
+const { createStateEntry, normalizeProtocolReport, renderProtocolBlock } = require("../scripts/work-item-protocol-utils");
 const {
   getProtocolStateContradictionErrors,
   getTrustedReceiptArtifactErrors
 } = require("../scripts/workflow-gate-evidence-utils");
+const { APPROVAL_TRANSACTION_FAILURE_POINTS, recoverApprovalTransaction } = require("../scripts/workflow-approval-transaction");
 
 const governanceFixtureRoot = path.join(__dirname, "..", "tests", "fixtures", "workflow-governance");
 
@@ -18,6 +26,47 @@ function assert(condition, message) {
     failures += 1;
     console.error(`  FAIL: ${message}`);
   }
+}
+
+function testLegacyReceiptV1AndAdaptiveProtocolDualRead() {
+  const legacyReceipt = {
+    schema_version: 1,
+    kind: "gate",
+    approval_status: "APPROVED",
+    reviewed_by: "qc",
+    reviewed_at: "2026-08-29T04:37:56Z",
+    signature: "legacy-signature"
+  };
+  const normalizedReceipt = normalizeTrustedApprovalReceipt(legacyReceipt);
+  assert(normalizedReceipt.artifact_shape === "legacy_receipt_v1", "schema v1 receipt must be identified as legacy v1");
+  assert(
+    JSON.stringify(normalizedReceipt.receipt) === JSON.stringify(legacyReceipt),
+    "schema v1 receipt payload must remain byte-field compatible and must not be rewritten"
+  );
+
+  const legacyReport = normalizeProtocolReport({ work_item_slug: "legacy-item" });
+  assert(!Object.prototype.hasOwnProperty.call(legacyReport, "artifact_shape"), "legacy report normalization must not force adaptive fields");
+  const adaptiveReport = normalizeProtocolReport({
+    work_item_slug: "adaptive-item",
+    artifact_shape: "adaptive_v1",
+    request_lane: "maintenance",
+    workflow_required: true,
+    routing_reasons: ["LANE_MAINTENANCE"],
+    escalation_reasons: [],
+    roles: [{ role: "developer", reasons: ["ROLE_DEVELOPER_BOUNDED_CHANGE"] }],
+    gates: [{ gate: "task_plan", reasons: ["GATE_TASK_PLAN_BOUNDED_CHANGE"], reviewer_roles: ["developer"] }],
+    adaptive_activation: {
+      source_version: "2.6.1",
+      installed_versions: ["2.6.4"],
+      parity_passed: true
+    }
+  });
+  assert(adaptiveReport.request_lane === "maintenance", "adaptive report reader must preserve request lane");
+  assert(adaptiveReport.roles.length === 1 && adaptiveReport.gates.length === 1, "adaptive report reader must preserve reasoned roles/gates");
+  const block = renderProtocolBlock(adaptiveReport);
+  assert(/artifact_shape: adaptive_v1/.test(block), "adaptive protocol block must expose its shape");
+  assert(/request_lane: maintenance/.test(block), "adaptive protocol block must expose request lane");
+  console.log("  PASS: receipt v1 and protocol reports dual-read without rewriting legacy shape");
 }
 
 function writeFile(filePath, content) {
@@ -35,6 +84,14 @@ function rmrf(target) {
     }
   } catch (_e) { /* ignore */ }
   fs.rmSync(target, { recursive: true, force: true });
+}
+
+function listFilesRecursively(target) {
+  if (!fs.existsSync(target)) return [];
+  return fs.readdirSync(target, { withFileTypes: true }).flatMap((entry) => {
+    const child = path.join(target, entry.name);
+    return entry.isDirectory() ? listFilesRecursively(child) : [child];
+  });
 }
 
 // s01 note với profile light; các note khác chỉ cần đủ frontmatter cho gate snapshot.
@@ -151,6 +208,265 @@ function buildLightProject(slug) {
   return { projectRoot, workflowRoot };
 }
 
+function writeReadinessProtocolReport({ projectRoot, workflowRoot, slug }) {
+  const report = normalizeProtocolReport({
+    artifact_shape: "adaptive_v1",
+    materialization_status: "MATERIALIZED",
+    protocol_status: "MATERIALIZED",
+    decision_owner: "agent",
+    protocol_owner: "developer",
+    work_item_slug: slug,
+    work_item_type: "FEATURE",
+    delivery_context: "brownfield",
+    workflow_root: path.relative(projectRoot, workflowRoot),
+    current_step: "s06",
+    review_required: true,
+    approval_status: "APPROVED",
+    reviewed_by: "po",
+    reviewed_at: "2026-07-16T00:00:00Z",
+    handoff_target: "readiness-review",
+    required_actions: [
+      `wfc gate approve --work-item ${slug} --gate spec --reviewed-by po`,
+      `wfc gate approve --work-item ${slug} --gate dor --reviewed-by po`,
+      `wfc gate approve --work-item ${slug} --gate approach --reviewed-by tech-lead`,
+      `wfc gate approve --work-item ${slug} --gate task_plan --reviewed-by tech-lead`,
+      `wfc work-item activate --work-item ${slug} --step s07 --write-root <path>`
+    ],
+    blockers: [],
+    audit_events: ["WORK_ITEM_APPROVED"],
+    request_lane: "product_delivery",
+    workflow_required: true,
+    routing_reasons: ["LANE_PRODUCT_DELIVERY"],
+    escalation_reasons: [],
+    roles: [
+      { role: "ba", reasons: ["ROLE_BA_PRODUCT_REQUIREMENTS"] },
+      { role: "developer", reasons: ["ROLE_DEVELOPER_DELIVERY"] },
+      { role: "qc", reasons: ["ROLE_QC_VERIFICATION"] }
+    ],
+    gates: [
+      { gate: "spec", reasons: ["GATE_SPEC_PRODUCT_DELIVERY"], reviewer_roles: ["po"] },
+      { gate: "dor", reasons: ["GATE_DOR_PRODUCT_DELIVERY"], reviewer_roles: ["po"] },
+      { gate: "approach", reasons: ["GATE_APPROACH_PRODUCT_DELIVERY"], reviewer_roles: ["tech-lead"] },
+      { gate: "task_plan", reasons: ["GATE_TASK_PLAN_PRODUCT_DELIVERY"], reviewer_roles: ["tech-lead"] }
+    ],
+    adaptive_activation: {
+      source_version: "2.6.1",
+      installed_versions: ["2.6.1"],
+      parity_passed: true
+    }
+  });
+  const reportPath = path.join(workflowRoot, `${slug}.work-item-report.json`);
+  writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
+  return reportPath;
+}
+
+function makeCloseoutHostNoteFrontmatter(slug, terminalGates) {
+  const gateRoles = {
+    dod: "qc",
+    uat: "qc",
+    release: "devops",
+    business_acceptance: "po"
+  };
+  const allTerminal = ["dod", "uat", "release", "business_acceptance"];
+  return [
+    "---",
+    `artifact_id: "${slug}.s08.verification"`,
+    "artifact_family: workflow-step",
+    `work_item_slug: "${slug}"`,
+    'step_id: "s08"',
+    'step_slug: "verification"',
+    "workflow_stage: delivery",
+    "work_item_type: FEATURE",
+    "delivery_context: brownfield",
+    "artifact_role: primary",
+    "artifact_kind: primary-note",
+    "source_of_truth: true",
+    "status: finalized",
+    'governance_ref: "project-context/project-context.md"',
+    "governance_profile: default",
+    "governance_status: CHECKS_PENDING",
+    "checklist_refs:",
+    '  - "project-context/checklists/default.md"',
+    "sdd_mode: none",
+    "spec_refs:",
+    '  card: ""',
+    "spec_status: approved",
+    "planning_track: quick",
+    "execution_mode: agentic",
+    "review_mode: self",
+    "approval_gates:",
+    ...allTerminal.map((gate) => `  ${gate}: "${terminalGates.includes(gate) ? "required" : "not_applicable"}"`),
+    "role_signoffs:",
+    ...allTerminal.flatMap((gate) => [`  ${gate}:`, `    - "${gateRoles[gate]}"`]),
+    "gate_reviews:",
+    ...allTerminal.flatMap((gate) => [
+      `  ${gate}_reviewed_by:`,
+      `    - "${gateRoles[gate]}"`,
+      `  ${gate}_reviewed_at: "2026-07-17T00:00:00Z"`
+    ]),
+    "upstream_artifacts: []",
+    "linked_artifacts: []",
+    "tags: []",
+    "---",
+    ""
+  ].join("\n");
+}
+
+function buildCloseoutProject(slug, terminalGates) {
+  const projectRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-closeout-"));
+  const workflowRoot = path.join(projectRoot, "work-items", slug);
+  writeFile(path.join(workflowRoot, `${slug}.s01.restate.md`), makeS01Frontmatter(slug, "none") + "# s01\n");
+  writeFile(
+    path.join(workflowRoot, `${slug}.s08.verification.md`),
+    makeCloseoutHostNoteFrontmatter(slug, terminalGates) +
+      "# s08\n\n## Technical Verification\n```yaml\nverdict: PASS\n```\n\n## Definition of Done\n```yaml\nverdict: READY_FOR_REVIEW\n```\n"
+  );
+  const reviewers = { dod: "qc", uat: "qc", release: "devops", business_acceptance: "po" };
+  const report = normalizeProtocolReport({
+    artifact_shape: "adaptive_v1",
+    materialization_status: "MATERIALIZED",
+    protocol_status: "VERIFIED",
+    decision_owner: "agent",
+    protocol_owner: "developer",
+    work_item_slug: slug,
+    work_item_type: "FEATURE",
+    delivery_context: "brownfield",
+    workflow_root: path.relative(projectRoot, workflowRoot),
+    current_step: "s08",
+    review_required: true,
+    approval_status: "APPROVED",
+    reviewed_by: "po",
+    reviewed_at: "2026-07-16T00:00:00Z",
+    handoff_target: "closeout-review",
+    required_actions: [
+      ...terminalGates.map((gate) => `wfc gate approve --work-item ${slug} --gate ${gate} --reviewed-by ${reviewers[gate]}`),
+      `wfc work-item close --work-item ${slug}`
+    ],
+    blockers: [],
+    audit_events: ["VERIFICATION_CONFIRMED"],
+    request_lane: terminalGates.length === 1 ? "maintenance" : "product_delivery",
+    workflow_required: true,
+    routing_reasons: [terminalGates.length === 1 ? "LANE_MAINTENANCE" : "LANE_PRODUCT_DELIVERY"],
+    escalation_reasons: [],
+    roles: [
+      { role: "developer", reasons: ["ROLE_DEVELOPER_DELIVERY"] },
+      { role: "qc", reasons: ["ROLE_QC_VERIFICATION"] }
+    ],
+    gates: terminalGates.map((gate) => ({
+      gate,
+      reasons: [`GATE_${gate.toUpperCase()}_CLOSEOUT`],
+      reviewer_roles: [reviewers[gate]]
+    })),
+    adaptive_activation: {
+      source_version: "2.6.1",
+      installed_versions: ["2.6.1"],
+      parity_passed: true
+    }
+  });
+  const reportPath = path.join(workflowRoot, `${slug}.work-item-report.json`);
+  writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
+  return { projectRoot, workflowRoot, reportPath };
+}
+
+// A supported pre-adaptive report has no artifact_shape or reasoned gates array.
+// Its s08 may also predate an explicit approval_gates.dod key, while the finalized
+// host contract still requires DoD through role_signoffs and gate_reviews.
+function buildLegacyCloseoutProject(slug, optionalTerminalGates, { omitApprovalGates = false } = {}) {
+  const projectRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-closeout-legacy-"));
+  const workflowRoot = path.join(projectRoot, "work-items", slug);
+  const gateRoles = { dod: "qc", uat: "qc", release: "devops", business_acceptance: "po" };
+  const terminalGates = ["dod", ...optionalTerminalGates];
+  let hostFrontmatter = makeCloseoutHostNoteFrontmatter(slug, terminalGates);
+  hostFrontmatter = omitApprovalGates
+    ? hostFrontmatter.replace(
+        /approval_gates:\n(?:  (?:dod|uat|release|business_acceptance): "[^"]+"\n)+/,
+        ""
+      )
+    : hostFrontmatter.replace(/^  dod: "required"\n/m, "");
+
+  writeFile(path.join(workflowRoot, `${slug}.s01.restate.md`), makeS01Frontmatter(slug, "none") + "# s01\n");
+  const hostPath = path.join(workflowRoot, `${slug}.s08.verification.md`);
+  writeFile(
+    hostPath,
+    hostFrontmatter +
+      "# s08\n\n## Technical Verification\n```yaml\nverdict: PASS\n```\n\n## Definition of Done\n```yaml\nverdict: READY_FOR_REVIEW\n```\n"
+  );
+
+  const report = normalizeProtocolReport({
+    materialization_status: "MATERIALIZED",
+    protocol_status: "VERIFIED",
+    decision_owner: "agent",
+    protocol_owner: "developer",
+    work_item_slug: slug,
+    work_item_type: "FEATURE",
+    delivery_context: "brownfield",
+    workflow_root: path.relative(projectRoot, workflowRoot),
+    current_step: "s08",
+    review_required: true,
+    approval_status: "APPROVED",
+    reviewed_by: "po",
+    reviewed_at: "2026-07-16T00:00:00Z",
+    handoff_target: "closeout-review",
+    required_actions: [
+      ...terminalGates.map((gate) => `wfc gate approve --work-item ${slug} --gate ${gate} --reviewed-by ${gateRoles[gate]}`),
+      `wfc work-item close --work-item ${slug}`
+    ],
+    blockers: [],
+    audit_events: ["VERIFICATION_CONFIRMED"]
+  });
+  const reportPath = path.join(workflowRoot, `${slug}.work-item-report.json`);
+  writeFile(reportPath, `${JSON.stringify(report, null, 2)}\n`);
+  return { projectRoot, workflowRoot, reportPath, hostPath };
+}
+
+function runGateCommand(scriptPath, args, env) {
+  try {
+    return {
+      status: 0,
+      stdout: execFileSync(process.execPath, [scriptPath, ...args], {
+        env,
+        encoding: "utf8",
+        stdio: ["pipe", "pipe", "pipe"]
+      }),
+      stderr: ""
+    };
+  } catch (error) {
+    return {
+      status: error.status || 1,
+      stdout: String(error.stdout || ""),
+      stderr: String(error.stderr || "")
+    };
+  }
+}
+
+function buildCloseoutApprovalFixture(prefix) {
+  const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+  return {
+    approvalRoot,
+    env: {
+      ...process.env,
+      WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "true",
+      WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: "test-passphrase",
+      WORKFLOW_BUNDLE_APPROVAL_ROOT: approvalRoot
+    }
+  };
+}
+
+function runCloseoutFixture({ slug, projectRoot, workflowRoot, approvalRoot, env, extraArgs = [] }) {
+  return runGateCommand(
+    path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js"),
+    [
+      "approve-closeout-bundle",
+      "--work-item", slug,
+      "--project-root", projectRoot,
+      "--workflow-root", path.dirname(workflowRoot),
+      "--approval-root", approvalRoot,
+      ...extraArgs
+    ],
+    env
+  );
+}
+
 // ---------- Output 4: transition hooks tạo s07/s08 đúng thời điểm ----------
 
 function testEnsureLightLazyStepNoteCreatesS07S08() {
@@ -203,6 +519,7 @@ function testApproveReadyBundleSealsFourIndependentReceipts() {
   const slug = "proto-ready-item";
   const { projectRoot, workflowRoot } = buildLightProject(slug);
   const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-approvals-"));
+  const telemetryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-telemetry-"));
   const workflowRootBase = path.dirname(workflowRoot);
   const scriptPath = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
   const childEnv = {
@@ -212,6 +529,7 @@ function testApproveReadyBundleSealsFourIndependentReceipts() {
     WORKFLOW_BUNDLE_APPROVAL_ROOT: approvalRoot
   };
   try {
+    const reportPath = writeReadinessProtocolReport({ projectRoot, workflowRoot, slug });
     const stdout = execFileSync(
       process.execPath,
       [
@@ -220,7 +538,9 @@ function testApproveReadyBundleSealsFourIndependentReceipts() {
         "--work-item", slug,
         "--project-root", projectRoot,
         "--workflow-root", workflowRootBase,
-        "--approval-root", approvalRoot
+        "--approval-root", approvalRoot,
+        "--telemetry", "true",
+        "--telemetry-out", telemetryRoot
       ],
       { env: childEnv, encoding: "utf8" }
     );
@@ -228,6 +548,8 @@ function testApproveReadyBundleSealsFourIndependentReceipts() {
     assert(summary.action === "approve-ready-bundle", "ready-bundle must emit action summary");
     assert(Array.isArray(summary.sealed_gates) && summary.sealed_gates.length === 4, `ready-bundle must seal 4 gates, got ${summary.sealed_gates && summary.sealed_gates.length}`);
     assert(summary.sdd_mode === "light", "ready-bundle must detect light profile");
+    assert(summary.transaction && summary.transaction.status === "COMMITTED", "ready-bundle must commit through the journaled transaction coordinator");
+    assert(summary.approval_plan && summary.approval_plan.gates.length === 4, "ready-bundle must return the complete human summary used for approval");
 
     const sealedGates = summary.sealed_gates.map((s) => s.gate).sort();
     assert(sealedGates.join(",") === "approach,dor,spec,task_plan", `ready-bundle must seal spec/dor/approach/task_plan, got ${sealedGates.join(",")}`);
@@ -254,10 +576,810 @@ function testApproveReadyBundleSealsFourIndependentReceipts() {
     assert(specReceipt.receipt.reviewed_by === "po", "spec receipt reviewer must be po");
     assert(approachReceipt.receipt.reviewed_by === "tech-lead", "approach receipt reviewer must be tech-lead");
 
+    const reconciled = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert(
+      reconciled.required_actions.length === 1 && reconciled.required_actions[0].kind === "work_item_activation",
+      `readiness reconciliation must leave only the activation action, got ${JSON.stringify(reconciled.required_actions)}`
+    );
+    assert(reconciled.blockers.length === 0, "approved readiness reconciliation must leave no stale gate blocker");
+    assert(reconciled.audit_events.includes("READINESS_BUNDLE_APPROVED"), "protocol report records the atomic readiness approval event");
+    const s01 = fs.readFileSync(path.join(workflowRoot, `${slug}.s01.restate.md`), "utf8");
+    assert(s01.includes(renderProtocolBlock(reconciled)) && !reconciled.required_actions.some(value => value.kind === "gate_approval"), "s01 protocol block is reconciled in the same transaction");
+
+    const firstTelemetryFiles = fs.readdirSync(telemetryRoot).filter((name) => name.endsWith(".json"));
+    assert(firstTelemetryFiles.length === 1, `committed approval bundle emits one opt-in event, got ${firstTelemetryFiles.length}`);
+    if (firstTelemetryFiles.length === 1) {
+      const telemetry = JSON.parse(fs.readFileSync(path.join(telemetryRoot, firstTelemetryFiles[0]), "utf8"));
+      const serialized = JSON.stringify(telemetry);
+      assert(telemetry.event_type === "approval_bundle" && telemetry.outcome === "approved", "bundle adapter records bounded event type and outcome");
+      assert(telemetry.request_lane === "product_delivery", "bundle adapter records the selected request lane");
+      assert(telemetry.role_count === 3 && telemetry.gate_count === 4, "bundle adapter records only role and gate counts");
+      assert(telemetry.interaction_count === 1 && telemetry.retry_count === 0, "first bundle interaction is not a retry");
+      assert(/^wi_[a-f0-9]{24}$/.test(telemetry.work_item_id), "bundle adapter pseudonymizes the work item");
+      assert(!serialized.includes(slug) && !("approval_plan" in telemetry), "bundle telemetry stores no slug, plan, receipt, digest, or note body");
+    }
+
+    const receiptBeforeRetry = fs.readFileSync(specReceipt.receiptPath, "utf8");
+    const retry = JSON.parse(
+      execFileSync(
+        process.execPath,
+        [
+          scriptPath,
+          "approve-ready-bundle",
+          "--work-item", slug,
+          "--project-root", projectRoot,
+          "--workflow-root", workflowRootBase,
+          "--approval-root", approvalRoot,
+          "--telemetry", "true",
+          "--telemetry-out", telemetryRoot
+        ],
+        { env: childEnv, encoding: "utf8" }
+      )
+    );
+    assert(retry.transaction.status === "NOOP", "an exact duplicate ready-bundle retry is idempotent");
+    assert(fs.readFileSync(specReceipt.receiptPath, "utf8") === receiptBeforeRetry, "an idempotent retry does not rewrite signed receipt v1");
+    const afterRetry = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert(
+      afterRetry.protocol_events.filter((event) => event.action === "approve-readiness-bundle").length === 1,
+      "an idempotent retry does not duplicate protocol approval events"
+    );
+    const retryTelemetryFiles = fs.readdirSync(telemetryRoot).filter((name) => name.endsWith(".json"));
+    assert(retryTelemetryFiles.length === 2, "idempotent retry records a second interaction event without changing governance state");
+    if (retryTelemetryFiles.length === 2) {
+      const retryEvents = retryTelemetryFiles.map((name) => JSON.parse(fs.readFileSync(path.join(telemetryRoot, name), "utf8")));
+      assert(retryEvents.some((event) => event.retry_count === 1 && event.outcome === "approved"), "NOOP retry is observable only as a bounded retry count");
+    }
+
     console.log("  PASS: approve-ready-bundle (4 independent receipts, approach->s06, per-gate reviewer)");
   } finally {
     rmrf(projectRoot);
     rmrf(approvalRoot);
+    rmrf(telemetryRoot);
+  }
+}
+
+function testReadyBundlePreflightsEveryReviewerBeforeWriting() {
+  const slug = "proto-ready-preflight-item";
+  const { projectRoot, workflowRoot } = buildLightProject(slug);
+  const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-approvals-preflight-"));
+  const workflowRootBase = path.dirname(workflowRoot);
+  const scriptPath = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  const childEnv = {
+    ...process.env,
+    WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "true",
+    WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: "test-passphrase",
+    WORKFLOW_BUNDLE_APPROVAL_ROOT: approvalRoot
+  };
+  try {
+    const reportPath = writeReadinessProtocolReport({ projectRoot, workflowRoot, slug });
+    const s06Path = path.join(workflowRoot, `${slug}.s06.task-breakdown.md`);
+    fs.writeFileSync(
+      s06Path,
+      fs.readFileSync(s06Path, "utf8").replace('  task_plan_reviewed_by: ["tech-lead"]', "  task_plan_reviewed_by: []"),
+      "utf8"
+    );
+    const reportBefore = fs.readFileSync(reportPath, "utf8");
+    const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+    const s01Before = fs.readFileSync(s01Path, "utf8");
+    let outcome;
+    try {
+      outcome = {
+        status: 0,
+        output: execFileSync(
+          process.execPath,
+          [scriptPath, "approve-ready-bundle", "--work-item", slug, "--project-root", projectRoot, "--workflow-root", workflowRootBase, "--approval-root", approvalRoot],
+          { env: childEnv, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }
+        )
+      };
+    } catch (error) {
+      outcome = { status: error.status || 1, output: `${error.stdout || ""}${error.stderr || ""}` };
+    }
+    assert(outcome.status !== 0 && /task_plan_reviewed_by/.test(outcome.output), "missing reviewer fails during complete bundle preflight");
+    ["spec", "dor", "approach", "task_plan"].forEach((gate) => {
+      const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate });
+      assert(!loaded.receipt, `preflight failure writes zero receipts, including ${gate}`);
+    });
+    assert(fs.readFileSync(reportPath, "utf8") === reportBefore, "reviewer preflight failure leaves the protocol report byte-identical");
+    assert(fs.readFileSync(s01Path, "utf8") === s01Before, "reviewer preflight failure leaves the s01 protocol surface byte-identical");
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testRejectReadyBundleKeepsIndependentDecisionEvidence() {
+  const slug = "proto-ready-reject-item";
+  const { projectRoot, workflowRoot } = buildLightProject(slug);
+  const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-approvals-reject-"));
+  const workflowRootBase = path.dirname(workflowRoot);
+  const scriptPath = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  const childEnv = {
+    ...process.env,
+    WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "true",
+    WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: "test-passphrase",
+    WORKFLOW_BUNDLE_APPROVAL_ROOT: approvalRoot
+  };
+  try {
+    const reportPath = writeReadinessProtocolReport({ projectRoot, workflowRoot, slug });
+    const stdout = execFileSync(
+      process.execPath,
+      [scriptPath, "reject-ready-bundle", "--work-item", slug, "--project-root", projectRoot, "--workflow-root", workflowRootBase, "--approval-root", approvalRoot],
+      { env: childEnv, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }
+    );
+    const summary = JSON.parse(stdout);
+    assert(summary.action === "reject-ready-bundle" && summary.transaction.status === "COMMITTED", "ready-bundle rejection is one journaled transaction");
+    ["spec", "dor", "approach", "task_plan"].forEach((gate) => {
+      const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate });
+      assert(loaded.receipt && loaded.receipt.approval_status === "REJECTED", `rejection keeps independent ${gate} evidence`);
+    });
+    const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert(report.blockers.some((entry) => entry.kind === "readiness_bundle_rejected"), "rejected bundle adds an explicit activation blocker");
+    assert(report.required_actions.some((entry) => entry.kind === "resolve_readiness_rejection"), "rejected bundle records a concrete rework action");
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testMaintenanceCloseoutBundlesOnlyDod() {
+  const slug = "proto-maintenance-closeout-item";
+  const { projectRoot, workflowRoot, reportPath } = buildCloseoutProject(slug, ["dod"]);
+  const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-closeout-maintenance-approvals-"));
+  const scriptPath = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  const env = {
+    ...process.env,
+    WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "true",
+    WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: "test-passphrase",
+    WORKFLOW_BUNDLE_APPROVAL_ROOT: approvalRoot
+  };
+  try {
+    const outcome = runGateCommand(
+      scriptPath,
+      ["approve-closeout-bundle", "--work-item", slug, "--project-root", projectRoot, "--workflow-root", path.dirname(workflowRoot), "--approval-root", approvalRoot],
+      env
+    );
+    assert(outcome.status === 0, `maintenance closeout command succeeds (got: ${outcome.stderr.split("\n")[0]})`);
+    if (outcome.status !== 0) return;
+    const summary = JSON.parse(outcome.stdout);
+    assert(summary.transaction.status === "COMMITTED", "maintenance closeout uses the journaled coordinator");
+    assert(summary.sealed_gates.map((entry) => entry.gate).join(",") === "dod", "maintenance closeout seals DoD only");
+    ["release", "business_acceptance"].forEach((gate) => {
+      const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate });
+      assert(!loaded.receipt, `maintenance closeout emits no ${gate} receipt`);
+    });
+    const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert(report.required_actions.length === 1 && report.required_actions[0].kind === "work_item_close", "maintenance reconciliation leaves only the close transition");
+    assert(report.audit_events.includes("CLOSEOUT_BUNDLE_APPROVED"), "maintenance report records closeout bundle approval");
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testProductReleaseCloseoutKeepsConfiguredAuthority() {
+  const slug = "proto-product-closeout-item";
+  const gates = ["dod", "release", "business_acceptance"];
+  const { projectRoot, workflowRoot, reportPath } = buildCloseoutProject(slug, gates);
+  const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-closeout-product-approvals-"));
+  const scriptPath = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  const env = {
+    ...process.env,
+    WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "true",
+    WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: "test-passphrase",
+    WORKFLOW_BUNDLE_APPROVAL_ROOT: approvalRoot
+  };
+  try {
+    const outcome = runGateCommand(
+      scriptPath,
+      ["approve-closeout-bundle", "--work-item", slug, "--project-root", projectRoot, "--workflow-root", path.dirname(workflowRoot), "--approval-root", approvalRoot],
+      env
+    );
+    assert(outcome.status === 0, `product closeout command succeeds (got: ${outcome.stderr.split("\n")[0]})`);
+    if (outcome.status !== 0) return;
+    const summary = JSON.parse(outcome.stdout);
+    assert(summary.sealed_gates.map((entry) => entry.gate).join(",") === gates.join(","), "product closeout keeps DoD, Release and Business Acceptance in order");
+    const expectedReviewers = { dod: "qc", release: "devops", business_acceptance: "po" };
+    gates.forEach((gate) => {
+      const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate });
+      assert(loaded.receipt && loaded.receipt.approval_status === "APPROVED", `${gate} has an independent approved receipt`);
+      assert(loaded.receipt && loaded.receipt.reviewed_by === expectedReviewers[gate], `${gate} retains its configured reviewer authority`);
+    });
+    const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert(report.required_actions.length === 1 && report.required_actions[0].kind === "work_item_close", "product closeout removes every stale terminal gate action");
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testAllBundleDecisionsBindEventJournalAndResultWithNoteIndependentRetries() {
+  const script = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  for (const phase of ["readiness", "closeout"]) for (const decision of ["approve", "reject"]) {
+    const slug = `proto-identity-${phase}-${decision}`;
+    const context = phase === "readiness" ? buildLightProject(slug) : buildCloseoutProject(slug, ["dod", "release", "business_acceptance"]);
+    const { projectRoot, workflowRoot } = context;
+    const reportPath = context.reportPath || writeReadinessProtocolReport({ projectRoot, workflowRoot, slug });
+    const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+    const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-direct-identity-");
+    const command = `${decision}-${phase === "readiness" ? "ready" : "closeout"}-bundle`;
+    const eventAction = `${decision}-${phase}-bundle`;
+    const args = [command, "--work-item", slug, "--project-root", projectRoot, "--workflow-root", path.dirname(workflowRoot), "--approval-root", approvalRoot];
+    try {
+      const before = JSON.parse(fs.readFileSync(reportPath, "utf8")).protocol_events;
+      const crashed = runGateCommand(script, [...args, "--transaction-crash-at", "after_verified_commit"], env);
+      assert(crashed.status !== 0 && /crash/i.test(crashed.stderr), `${eventAction}: fixture stops after verified commit`);
+      const journalPath = listFilesRecursively(approvalRoot).find(file => file.endsWith(".journal.json"));
+      assert(Boolean(journalPath), `${eventAction}: recovery journal exists`);
+      if (!journalPath) continue;
+      const journal = JSON.parse(fs.readFileSync(journalPath, "utf8"));
+      const committed = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+      const event = committed.protocol_events.at(-1);
+      assert(committed.protocol_events.length === before.length + 1 && event.action === eventAction, `${eventAction}: exactly one event is committed`);
+      assert(event.transaction_id === journal.transaction_id, `${eventAction}: direct event identity equals committed journal identity`);
+      assert(JSON.stringify(committed.protocol_events.slice(0, before.length)) === JSON.stringify(before), `${eventAction}: historical prefix is immutable`);
+      const recovered = recoverApprovalTransaction({ transaction_root: path.dirname(journalPath), work_item_slug: slug });
+      assert(recovered.status === "COMPLETED" && recovered.transaction_id === event.transaction_id, `${eventAction}: result, journal and event expose one identity`);
+      const projection = value => JSON.stringify({ blockers: value.blockers, required_actions: value.required_actions, audit_events: value.audit_events, handoff_target: value.handoff_target, protocol_status: value.protocol_status });
+      const expected = projection(committed);
+      committed.protocol_events.at(-1).note = "Peer review is outstanding; transaction_id: another-id; Chờ QC – 漢字";
+      writeFile(reportPath, `${JSON.stringify(committed, null, 2)}\n`);
+      // The mirror omits event history; mutating human context needs no mirror change.
+      const files = listFilesRecursively(approvalRoot);
+      const snapshot = () => JSON.stringify([reportPath, s01Path, ...files].map(file => [file, crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex")]));
+      const bytes = snapshot();
+      for (let retry = 0; retry < 2; retry += 1) {
+        const outcome = runGateCommand(script, [...args, "--reviewed-at", `2026-09-13T01:00:0${retry}Z`, "--note", "Completely different human context"], env);
+        assert(outcome.status === 0, `${eventAction}: changed-note retry ${retry + 1} succeeds`);
+        if (outcome.status !== 0) continue;
+        const summary = JSON.parse(outcome.stdout);
+        assert(summary.transaction.status === "NOOP" && !summary.transaction.transaction_id, `${eventAction}: retry creates no transaction identity`);
+        const actual = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+        assert(actual.protocol_events.length === committed.protocol_events.length, `${eventAction}: retry adds no event`);
+        assert(actual.protocol_events.at(-1).transaction_id === journal.transaction_id, `${eventAction}: note mutation cannot change identity`);
+        assert(projection(actual) === expected && snapshot() === bytes, `${eventAction}: retry preserves state, receipts and exact report/mirror bytes`);
+        assert(listFilesRecursively(approvalRoot).length === files.length, `${eventAction}: retry creates no transaction residue`);
+      }
+    } finally { rmrf(projectRoot); rmrf(approvalRoot); }
+  }
+}
+
+function testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry() {
+  const slug = "proto-repeat-cycle-closeout-item";
+  const gates = ["dod", "release", "business_acceptance"];
+  const { projectRoot, workflowRoot, reportPath } = buildCloseoutProject(slug, gates);
+  const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-repeat-cycle-closeout-approvals-");
+  const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+  const hostPath = path.join(workflowRoot, `${slug}.s08.verification.md`);
+  try {
+    const historicalMarkerOnly = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    historicalMarkerOnly.audit_events.push("CLOSEOUT_BUNDLE_APPROVED");
+    writeFile(reportPath, `${JSON.stringify(historicalMarkerOnly, null, 2)}\n`);
+    assert(
+      !historicalMarkerOnly.protocol_events.some((event) => event.action === "approve-closeout-bundle"),
+      "historical-marker-only fixture starts without a backfilled closeout protocol event"
+    );
+
+    const first = runCloseoutFixture({
+      slug,
+      projectRoot,
+      workflowRoot,
+      approvalRoot,
+      env,
+      extraArgs: ["--reviewed-at", "2026-07-17T01:00:00Z"]
+    });
+    assert(first.status === 0, `first closeout cycle succeeds (got: ${first.stderr.split("\n")[0]})`);
+    if (first.status !== 0) return;
+    const firstSummary = JSON.parse(first.stdout);
+    assert(firstSummary.transaction.status === "COMMITTED", "first closeout cycle commits");
+
+    fs.appendFileSync(hostPath, "\n<!-- second verified candidate -->\n", "utf8");
+    const second = runCloseoutFixture({
+      slug,
+      projectRoot,
+      workflowRoot,
+      approvalRoot,
+      env,
+      extraArgs: ["--reviewed-at", "2026-07-17T02:00:00Z"]
+    });
+    assert(second.status === 0, `later closeout cycle succeeds (got: ${second.stderr.split("\n")[0]})`);
+    if (second.status !== 0) return;
+    const secondSummary = JSON.parse(second.stdout);
+    assert(secondSummary.transaction.status === "COMMITTED", "a new verified host creates a later committed closeout cycle");
+
+    const reportAfterSecond = fs.readFileSync(reportPath, "utf8");
+    const s01AfterSecond = fs.readFileSync(s01Path, "utf8");
+    const cycleEvents = JSON.parse(reportAfterSecond).protocol_events.filter(
+      (event) => event.action === "approve-closeout-bundle"
+    );
+    const auditEventsAfterSecond = JSON.parse(reportAfterSecond).audit_events;
+    assert(cycleEvents.length === 2, "first and later committed closeout cycles each append exactly one protocol event");
+    assert(
+      cycleEvents[0] && cycleEvents[0].transaction_id === firstSummary.transaction.transaction_id,
+      "the first-cycle event is attributable to its journal transaction_id"
+    );
+    assert(
+      cycleEvents[1] && cycleEvents[1].transaction_id === secondSummary.transaction.transaction_id,
+      "the later-cycle event is attributable to its journal transaction_id despite historical event evidence"
+    );
+    assert(
+      secondSummary.approval_plan.gates.map(value => value.gate).join(",") === gates.join(","),
+      "the structured approval plan retains deterministic selected-gate order"
+    );
+    assert(
+      auditEventsAfterSecond.filter((event) => event === "CLOSEOUT_BUNDLE_APPROVED").length === 1,
+      "the coarse CLOSEOUT_BUNDLE_APPROVED marker remains deduplicated across committed cycles"
+    );
+
+    ["2026-07-17T03:00:00Z", "2026-07-17T04:00:00Z"].forEach((reviewedAt, index) => {
+      const retry = runCloseoutFixture({
+        slug,
+        projectRoot,
+        workflowRoot,
+        approvalRoot,
+        env,
+        extraArgs: ["--reviewed-at", reviewedAt]
+      });
+      assert(retry.status === 0, `unchanged retry ${index + 1} succeeds (got: ${retry.stderr.split("\n")[0]})`);
+      if (retry.status === 0) {
+        const retrySummary = JSON.parse(retry.stdout);
+        assert(retrySummary.transaction.status === "NOOP", `unchanged retry ${index + 1} allocates no committed transaction`);
+        assert(!retrySummary.transaction.transaction_id, `unchanged retry ${index + 1} exposes no allocated transaction identity`);
+      }
+      assert(fs.readFileSync(reportPath, "utf8") === reportAfterSecond, `unchanged retry ${index + 1} leaves report byte-identical`);
+      assert(fs.readFileSync(s01Path, "utf8") === s01AfterSecond, `unchanged retry ${index + 1} leaves s01 byte-identical`);
+    });
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testTwentyCloseoutCyclesRemainDeterministic() {
+  const failuresBefore = failures;
+  const slug = "proto-twenty-cycle-closeout-item";
+  const gates = ["dod", "release", "business_acceptance"];
+  const { projectRoot, workflowRoot, reportPath } = buildCloseoutProject(slug, gates);
+  const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-twenty-cycle-closeout-approvals-");
+  const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+  const hostPath = path.join(workflowRoot, `${slug}.s08.verification.md`);
+  const expectedCloseAction = createStateEntry({ collection: "required_actions", kind: "work_item_close", sourceKey: `work-item-close:${slug}`, text: `wfc work-item close --work-item ${slug}` });
+  try {
+    for (let cycle = 0; cycle < 20; cycle += 1) {
+      if (cycle > 0) {
+        fs.appendFileSync(hostPath, `\n<!-- deterministic closeout cycle ${cycle + 1} -->\n`, "utf8");
+      }
+      const reviewedAt = `2026-07-18T00:00:${String(cycle).padStart(2, "0")}Z`;
+      const committed = runCloseoutFixture({
+        slug,
+        projectRoot,
+        workflowRoot,
+        approvalRoot,
+        env,
+        extraArgs: ["--reviewed-at", reviewedAt]
+      });
+      assert(committed.status === 0, `determinism cycle ${cycle + 1} succeeds (got: ${committed.stderr.split("\n")[0]})`);
+      if (committed.status !== 0) return;
+
+      const committedSummary = JSON.parse(committed.stdout);
+      const reportAfterCommitText = fs.readFileSync(reportPath, "utf8");
+      const s01AfterCommit = fs.readFileSync(s01Path, "utf8");
+      const reportAfterCommit = JSON.parse(reportAfterCommitText);
+      const closeoutEvents = reportAfterCommit.protocol_events.filter(
+        (event) => event.action === "approve-closeout-bundle"
+      );
+      assert(committedSummary.transaction.status === "COMMITTED", `determinism cycle ${cycle + 1} commits exactly once`);
+      assert(
+        reportAfterCommit.required_actions.length === 1 && JSON.stringify(reportAfterCommit.required_actions[0]) === JSON.stringify(expectedCloseAction),
+        `determinism cycle ${cycle + 1} retains only the canonical close action`
+      );
+      assert(reportAfterCommit.handoff_target === "protocol-close", `determinism cycle ${cycle + 1} retains protocol-close handoff`);
+      assert(reportAfterCommit.blockers.length === 0, `determinism cycle ${cycle + 1} retains no stale approval blocker`);
+      assert(s01AfterCommit.includes(renderProtocolBlock(reportAfterCommit)), `determinism cycle ${cycle + 1} keeps report/s01 parity`);
+      assert(closeoutEvents.length === cycle + 1, `determinism cycle ${cycle + 1} appends exactly one attributable event`);
+      assert(
+        closeoutEvents[cycle] && closeoutEvents[cycle].transaction_id === committedSummary.transaction.transaction_id,
+        `determinism cycle ${cycle + 1} event carries its transaction identity`
+      );
+
+      const retry = runCloseoutFixture({
+        slug,
+        projectRoot,
+        workflowRoot,
+        approvalRoot,
+        env,
+        extraArgs: ["--reviewed-at", reviewedAt]
+      });
+      assert(retry.status === 0, `determinism retry ${cycle + 1} succeeds (got: ${retry.stderr.split("\n")[0]})`);
+      if (retry.status !== 0) return;
+      const retrySummary = JSON.parse(retry.stdout);
+      assert(retrySummary.transaction.status === "NOOP", `determinism retry ${cycle + 1} performs no second commit`);
+      assert(!retrySummary.transaction.transaction_id, `determinism retry ${cycle + 1} allocates no transaction identity`);
+      assert(fs.readFileSync(reportPath, "utf8") === reportAfterCommitText, `determinism retry ${cycle + 1} leaves report byte-identical`);
+      assert(fs.readFileSync(s01Path, "utf8") === s01AfterCommit, `determinism retry ${cycle + 1} leaves s01 byte-identical`);
+    }
+    if (failures === failuresBefore) console.log("  PASS: twenty real cycles, twenty NOOP retries, direct event identities and report/mirror parity");
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testEveryBundleDecisionFailureAndCrashBoundaryIsAtomic() {
+  const script = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  let cases = 0;
+  for (const phase of ["readiness", "closeout"]) for (const decision of ["approve", "reject"]) {
+    for (const mode of ["fail", "crash"]) for (const boundary of APPROVAL_TRANSACTION_FAILURE_POINTS) {
+      const label = `${phase}/${decision}/${mode}/${boundary}`;
+      const slug = `proto-matrix-${phase}-${decision}-${mode}-${boundary.replace(/_/g, "-")}`;
+      const context = phase === "readiness" ? buildLightProject(slug) : buildCloseoutProject(slug, ["dod", "release", "business_acceptance"]);
+      const { projectRoot, workflowRoot } = context;
+      const reportPath = context.reportPath || writeReadinessProtocolReport({ projectRoot, workflowRoot, slug });
+      const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+      const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-all-boundaries-");
+      try {
+        const reportBefore = fs.readFileSync(reportPath, "utf8"), s01Before = fs.readFileSync(s01Path, "utf8");
+        const command = `${decision}-${phase === "readiness" ? "ready" : "closeout"}-bundle`;
+        const args = [command, "--work-item", slug, "--project-root", projectRoot, "--workflow-root", path.dirname(workflowRoot), "--approval-root", approvalRoot];
+        const outcome = runGateCommand(script, [...args, `--transaction-${mode}-at`, boundary], env);
+        assert(outcome.status !== 0 && outcome.stderr.includes(boundary), `${label}: requested boundary is observed`);
+        let committedId;
+        const completedCrash = mode === "crash" && boundary === "after_verified_commit";
+        if (mode === "crash") {
+          const recoveryPath = listFilesRecursively(approvalRoot).find(file => file.endsWith(".journal.json") || file.endsWith(".lock"));
+          assert(Boolean(recoveryPath), `${label}: recoverable residue exists`);
+          if (!recoveryPath) continue;
+          const recovered = recoverApprovalTransaction({ transaction_root: path.dirname(recoveryPath), work_item_slug: slug, refuse_if_live: true });
+          assert(recovered.status === (completedCrash ? "COMPLETED" : boundary === "after_lock" ? "STALE_LOCK_REMOVED" : "ROLLED_BACK"), `${label}: recovery has the expected complete/rollback result`);
+          committedId = recovered.transaction_id;
+          assert(recoverApprovalTransaction({ transaction_root: path.dirname(recoveryPath), work_item_slug: slug }).status === "NOOP", `${label}: second recovery is NOOP`);
+        }
+        const gates = phase === "readiness" ? ["spec", "dor", "approach", "task_plan"] : ["dod", "release", "business_acceptance"];
+        if (completedCrash) {
+          const actual = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+          const old = JSON.parse(reportBefore);
+          assert(actual.protocol_events.length === old.protocol_events.length + 1 && actual.protocol_events.at(-1).transaction_id === committedId, `${label}: exactly one complete identity-bound event survives`);
+          assert(JSON.stringify(actual.protocol_events.slice(0, old.protocol_events.length)) === JSON.stringify(old.protocol_events), `${label}: historical prefix survives`);
+          assert(fs.readFileSync(s01Path, "utf8").includes(renderProtocolBlock(actual)), `${label}: mirror matches complete report`);
+          gates.forEach(gate => { const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate }); assert(loaded.receipt && loaded.receipt.approval_status === (decision === "approve" ? "APPROVED" : "REJECTED"), `${label}: ${gate} authority is complete`); });
+          const bytes = JSON.stringify([reportPath, s01Path, ...gates.map(gate => loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate }).receiptPath)].map(file => crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex")));
+          const retry = runGateCommand(script, args, env);
+          assert(retry.status === 0 && JSON.parse(retry.stdout).transaction.status === "NOOP", `${label}: completed command retry is NOOP`);
+          const after = JSON.stringify([reportPath, s01Path, ...gates.map(gate => loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate }).receiptPath)].map(file => crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex")));
+          assert(after === bytes, `${label}: completed retry changes no authority or report bytes`);
+        } else {
+          assert(fs.readFileSync(reportPath, "utf8") === reportBefore && fs.readFileSync(s01Path, "utf8") === s01Before, `${label}: rollback leaves report/mirror byte-identical`);
+          gates.forEach(gate => { const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate }); assert(!loaded.receipt, `${label}: no partial ${gate} authority`); });
+        }
+        const residue = listFilesRecursively(projectRoot).concat(listFilesRecursively(approvalRoot)).filter(file => /\.(journal\.json(?:\.tmp)?|lock|stage|backup)$/.test(file));
+        assert(residue.length === 0, `${label}: zero transaction residue`);
+        cases += 1;
+      } finally { rmrf(projectRoot); rmrf(approvalRoot); }
+    }
+  }
+  assert(cases === 64, "four phase/decision combinations cover all eight failure/crash boundaries");
+  console.log(`  PASS: all-bundle atomicity matrix completed ${cases}/64 cases`);
+}
+
+function testConcurrentCloseoutCommandsCommitAtMostOneLaterCycle() {
+  const failuresBefore = failures;
+  const slug = "proto-concurrent-closeout";
+  const { projectRoot, workflowRoot, reportPath } = buildCloseoutProject(slug, ["dod", "release", "business_acceptance"]);
+  const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-concurrent-approvals-");
+  try {
+    const first = runCloseoutFixture({ slug, projectRoot, workflowRoot, approvalRoot, env });
+    assert(first.status === 0, "concurrency fixture initializes the signer and first cycle");
+    if (first.status !== 0) return;
+    const before = JSON.parse(fs.readFileSync(reportPath, "utf8")).protocol_events;
+    fs.appendFileSync(path.join(workflowRoot, `${slug}.s08.verification.md`), "\n<!-- shared next candidate -->\n", "utf8");
+    const args = [path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js"), "approve-closeout-bundle", "--work-item", slug, "--project-root", projectRoot, "--workflow-root", path.dirname(workflowRoot), "--approval-root", approvalRoot];
+    const harness = `const {spawn}=require("node:child_process");const args=JSON.parse(process.argv[1]);Promise.all([0,1].map(()=>new Promise((resolve,reject)=>{const child=spawn(process.execPath,args,{env:process.env});let out="",err="";child.stdout.on("data",s=>out+=s);child.stderr.on("data",s=>err+=s);child.on("error",reject);child.on("close",status=>resolve({status,out,err}));}))).then(results=>console.log(JSON.stringify(results))).catch(error=>{console.error(error);process.exitCode=1;});`;
+    const results = JSON.parse(execFileSync(process.execPath, ["-e", harness, JSON.stringify(args)], { env, encoding: "utf8", timeout: 20000 }));
+    const committed = results.filter(result => result.status === 0 && JSON.parse(result.out).transaction.status === "COMMITTED");
+    assert(committed.length === 1, "two real concurrent CLI processes commit exactly one later cycle");
+    results.filter(result => !committed.includes(result)).forEach(result => {
+      // EDGE-RCR-06 locks cycle count, retry and residue, not error wording.
+      // A refused contender must expose no successful authority summary; the
+      // settled report, winning identity and retries are asserted below.
+      assert(result.status === 0 ? JSON.parse(result.out).transaction.status === "NOOP" : result.status === 1 && !result.out.trim() && Boolean(result.err.trim()), `competing command is NOOP or fails closed with no authority summary (status=${result.status}; error=${result.err.trim()})`);
+    });
+    const after = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert(committed.length === 1 && after.protocol_events.length === before.length + 1 && after.protocol_events.at(-1).transaction_id === JSON.parse(committed[0].out).transaction.transaction_id, "race appends only one event with winning identity");
+    const reportBytes = fs.readFileSync(reportPath, "utf8"), s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`), mirrorBytes = fs.readFileSync(s01Path, "utf8");
+    assert(mirrorBytes.includes(renderProtocolBlock(after)), "winning concurrent report/mirror agree");
+    for (let retry = 0; retry < 2; retry += 1) {
+      const outcome = runCloseoutFixture({ slug, projectRoot, workflowRoot, approvalRoot, env });
+      assert(outcome.status === 0 && JSON.parse(outcome.stdout).transaction.status === "NOOP", "completed concurrent-cycle retry is NOOP");
+      assert(fs.readFileSync(reportPath, "utf8") === reportBytes && fs.readFileSync(s01Path, "utf8") === mirrorBytes, "concurrent-cycle retry changes no report/mirror bytes");
+    }
+    assert(!listFilesRecursively(approvalRoot).some(file => /\.(journal\.json(?:\.tmp)?|lock|stage|backup)$/.test(file)), "concurrent commands leave no residue");
+    if (failures === failuresBefore) console.log("  PASS: real concurrent CLI race and two completed retries");
+  } finally { rmrf(projectRoot); rmrf(approvalRoot); }
+}
+
+function testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss() {
+  const slug = "proto-closeout-canonical-state-item";
+  const gates = ["dod", "uat", "release", "business_acceptance"];
+  const { projectRoot, workflowRoot, reportPath } = buildCloseoutProject(slug, gates);
+  const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-closeout-canonical-state-approvals-");
+  const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+  try {
+    const reportBefore = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    reportBefore.handoff_target = "closeout-review";
+    const typed = (collection, kind, sourceKey, text, gate) => createStateEntry({ collection, kind, sourceKey, text, gate });
+    reportBefore.required_actions = [
+      typed("required_actions", "closeout_bundle_approval", "bundle", `  WFC   GATE   APPROVE-CLOSEOUT-BUNDLE --work-item ${slug}  `),
+      typed("required_actions", "gate_approval", "dod", "Await QC approval for Definition of Done.", "dod"),
+      typed("required_actions", "gate_approval", "release", "Release approval remains pending with DevOps.", "release"),
+      typed("required_actions", "gate_approval", "business", "  Business   Acceptance approval remains pending.  ", "business_acceptance"),
+      `wfc work-item close --work-item ${slug}`
+    ];
+    reportBefore.blockers = [
+      typed("blockers", "closeout_bundle_approval", "bundle", "Closeout bundle approval remains pending for DoD, Release and Business Acceptance."),
+      typed("blockers", "approval_pending", "release", "Awaiting RELEASE approval by DevOps.", "release"),
+      "Security scan is pending for dependency audit.",
+      "Security approval remains pending because the situation is unresolved.",
+      "Security approval remains pending while a dodgy dependency is investigated."
+    ];
+    reportBefore.audit_events.push("HISTORICAL_AUDIT_CANARY");
+    reportBefore.protocol_events.push({
+      timestamp: "2026-07-16T23:59:00Z",
+      action: "historical-canary",
+      actor: "system",
+      from_status: "VERIFIED",
+      to_status: "VERIFIED",
+      note: "Immutable history canary."
+    });
+    writeFile(reportPath, `${JSON.stringify(reportBefore, null, 2)}\n`);
+
+    const auditPrefixDigest = crypto
+      .createHash("sha256")
+      .update(JSON.stringify(reportBefore.audit_events))
+      .digest("hex");
+    const eventPrefixDigest = crypto
+      .createHash("sha256")
+      .update(JSON.stringify(reportBefore.protocol_events))
+      .digest("hex");
+
+    const outcome = runCloseoutFixture({
+      slug,
+      projectRoot,
+      workflowRoot,
+      approvalRoot,
+      env,
+      extraArgs: ["--reviewed-at", "2026-07-17T05:00:00Z"]
+    });
+    assert(outcome.status === 0, `semantic closeout fixture succeeds (got: ${outcome.stderr.split("\n")[0]})`);
+    if (outcome.status !== 0) return;
+
+    const reportAfter = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    const expectedCloseAction = createStateEntry({ collection: "required_actions", kind: "work_item_close", sourceKey: "work-item-close:" + slug, text: `wfc work-item close --work-item ${slug}` });
+    assert(
+      JSON.stringify(reportAfter.required_actions) === JSON.stringify([expectedCloseAction]),
+      `approved closeout projects exactly one canonical close action, got ${JSON.stringify(reportAfter.required_actions)}`
+    );
+    assert(
+      reportAfter.handoff_target === "protocol-close",
+      `approved closeout projects protocol-close handoff, got ${reportAfter.handoff_target}`
+    );
+    assert(
+      JSON.stringify(reportAfter.blockers) ===
+        JSON.stringify([
+          "Security scan is pending for dependency audit.",
+          "Security approval remains pending because the situation is unresolved.",
+          "Security approval remains pending while a dodgy dependency is investigated."
+        ].map(text => ({ kind: "legacy", text }))),
+      `selected-gate blockers are removed while unrelated blockers remain, got ${JSON.stringify(reportAfter.blockers)}`
+    );
+
+    const auditPrefixAfter = reportAfter.audit_events.slice(0, reportBefore.audit_events.length);
+    const eventPrefixAfter = reportAfter.protocol_events.slice(0, reportBefore.protocol_events.length);
+    assert(
+      crypto.createHash("sha256").update(JSON.stringify(auditPrefixAfter)).digest("hex") === auditPrefixDigest,
+      "approved closeout preserves historical audit-event bytes and order"
+    );
+    assert(
+      crypto.createHash("sha256").update(JSON.stringify(eventPrefixAfter)).digest("hex") === eventPrefixDigest,
+      "approved closeout preserves historical protocol-event bytes and order"
+    );
+    assert(
+      reportAfter.protocol_events.length === reportBefore.protocol_events.length + 1,
+      "approved closeout appends exactly one current-cycle protocol event after history"
+    );
+
+    const s01After = fs.readFileSync(s01Path, "utf8");
+    assert(
+      s01After.includes(renderProtocolBlock(reportAfter)),
+      "s01 protocol block is rendered from the same normalized canonical report projection"
+    );
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testLegacyMaintenanceCloseoutRestoresImplicitDod() {
+  const slug = "proto-legacy-maintenance-closeout-item";
+  const { projectRoot, workflowRoot, reportPath, hostPath } = buildLegacyCloseoutProject(slug, [], { omitApprovalGates: true });
+  const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-closeout-legacy-maintenance-approvals-");
+  try {
+    const reportBefore = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    const hostContent = fs.readFileSync(hostPath, "utf8");
+    assert(!Object.prototype.hasOwnProperty.call(reportBefore, "artifact_shape"), "legacy maintenance fixture omits artifact_shape");
+    assert(!Object.prototype.hasOwnProperty.call(reportBefore, "gates"), "legacy maintenance fixture omits adaptive gates");
+    assert(!/^approval_gates:/m.test(hostContent), "legacy maintenance s08 omits the whole approval_gates block");
+
+    const outcome = runCloseoutFixture({ slug, projectRoot, workflowRoot, approvalRoot, env });
+    assert(outcome.status === 0, `legacy maintenance closeout restores implicit DoD (got: ${outcome.stderr.split("\n")[0]})`);
+    if (outcome.status !== 0) return;
+    const summary = JSON.parse(outcome.stdout);
+    assert(summary.sealed_gates.map((entry) => entry.gate).join(",") === "dod", "legacy maintenance closeout seals exactly DoD");
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testLegacyProductReleaseCloseoutRestoresImplicitDod() {
+  const slug = "proto-legacy-product-closeout-item";
+  const expectedGates = ["dod", "release", "business_acceptance"];
+  const { projectRoot, workflowRoot, reportPath, hostPath } = buildLegacyCloseoutProject(slug, ["release", "business_acceptance"]);
+  const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-closeout-legacy-product-approvals-");
+  try {
+    const reportBefore = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    const hostContent = fs.readFileSync(hostPath, "utf8");
+    const approvalBlock = hostContent.match(/approval_gates:\n([\s\S]*?)role_signoffs:/)[1];
+    assert(!Object.prototype.hasOwnProperty.call(reportBefore, "artifact_shape"), "legacy product fixture omits artifact_shape");
+    assert(!Object.prototype.hasOwnProperty.call(reportBefore, "gates"), "legacy product fixture omits adaptive gates");
+    assert(!/^\s+dod:/m.test(approvalBlock), "legacy product s08 omits approval_gates.dod");
+
+    const outcome = runCloseoutFixture({ slug, projectRoot, workflowRoot, approvalRoot, env });
+    assert(outcome.status === 0, `legacy product closeout command succeeds (got: ${outcome.stderr.split("\n")[0]})`);
+    if (outcome.status !== 0) return;
+    const summary = JSON.parse(outcome.stdout);
+    assert(summary.transaction.status === "COMMITTED", "legacy product closeout commits one transaction");
+    assert(
+      summary.sealed_gates.map((entry) => entry.gate).join(",") === expectedGates.join(","),
+      "legacy product closeout restores DoD before configured Release and Business Acceptance"
+    );
+    const expectedReviewers = { dod: "qc", release: "devops", business_acceptance: "po" };
+    expectedGates.forEach((gate) => {
+      const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate });
+      assert(Boolean(loaded.receipt), `legacy product closeout emits an independent ${gate} receipt`);
+      assert(loaded.receipt && loaded.receipt.reviewed_by === expectedReviewers[gate], `legacy ${gate} receipt retains ${expectedReviewers[gate]} authority`);
+    });
+
+    const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+    const reportAfter = fs.readFileSync(reportPath, "utf8");
+    const s01After = fs.readFileSync(s01Path, "utf8");
+    const normalizedAfter = JSON.parse(reportAfter);
+    assert(
+      normalizedAfter.required_actions.length === 1 && normalizedAfter.required_actions[0].kind === "work_item_close",
+      "legacy product reconciliation removes every terminal gate action"
+    );
+    assert(
+      normalizedAfter.audit_events.filter((event) => event === "CLOSEOUT_BUNDLE_APPROVED").length === 1,
+      "legacy product reconciliation records one closeout approval event"
+    );
+    assert(/CLOSEOUT_BUNDLE_APPROVED/.test(s01After), "legacy product s01 mirrors the reconciled closeout event");
+
+    const retry = runCloseoutFixture({ slug, projectRoot, workflowRoot, approvalRoot, env });
+    assert(retry.status === 0, `unchanged legacy product closeout retry succeeds (got: ${retry.stderr.split("\n")[0]})`);
+    if (retry.status === 0) {
+      const retrySummary = JSON.parse(retry.stdout);
+      assert(retrySummary.transaction.status === "NOOP", "unchanged legacy product retry performs no duplicate transaction writes");
+    }
+    assert(fs.readFileSync(reportPath, "utf8") === reportAfter, "unchanged legacy product retry leaves report byte-identical");
+    assert(fs.readFileSync(s01Path, "utf8") === s01After, "unchanged legacy product retry leaves s01 byte-identical");
+  } finally {
+    rmrf(projectRoot);
+    rmrf(approvalRoot);
+  }
+}
+
+function testLegacyCloseoutKeepsOptionalTerminalGatesIndependent() {
+  ["release", "business_acceptance"].forEach((optionalGate) => {
+    const slug = `proto-legacy-${optionalGate.replace(/_/g, "-")}-closeout-item`;
+    const { projectRoot, workflowRoot } = buildLegacyCloseoutProject(slug, [optionalGate]);
+    const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-closeout-legacy-optional-approvals-");
+    try {
+      const outcome = runCloseoutFixture({ slug, projectRoot, workflowRoot, approvalRoot, env });
+      assert(outcome.status === 0, `legacy closeout with only ${optionalGate} succeeds (got: ${outcome.stderr.split("\n")[0]})`);
+      if (outcome.status !== 0) return;
+      const summary = JSON.parse(outcome.stdout);
+      assert(
+        summary.sealed_gates.map((entry) => entry.gate).join(",") === ["dod", optionalGate].join(","),
+        `legacy closeout selects DoD plus only configured ${optionalGate}`
+      );
+      const excludedGate = optionalGate === "release" ? "business_acceptance" : "release";
+      const excluded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate: excludedGate });
+      assert(!excluded.receipt, `legacy closeout does not add unconfigured ${excludedGate}`);
+    } finally {
+      rmrf(projectRoot);
+      rmrf(approvalRoot);
+    }
+  });
+}
+
+function testLegacyProductCloseoutFailureMatrixLeavesNoPartialState() {
+  APPROVAL_TRANSACTION_FAILURE_POINTS.forEach((failurePoint) => {
+    const slug = `proto-legacy-closeout-fail-${failurePoint.replace(/_/g, "-")}`;
+    const { projectRoot, workflowRoot, reportPath } = buildLegacyCloseoutProject(slug, ["release", "business_acceptance"]);
+    const { approvalRoot, env } = buildCloseoutApprovalFixture("proto-closeout-legacy-failure-approvals-");
+    const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+    const reportBefore = fs.readFileSync(reportPath, "utf8");
+    const s01Before = fs.readFileSync(s01Path, "utf8");
+    try {
+      const outcome = runCloseoutFixture({
+        slug,
+        projectRoot,
+        workflowRoot,
+        approvalRoot,
+        env,
+        extraArgs: ["--transaction-fail-at", failurePoint]
+      });
+      assert(outcome.status !== 0, `${failurePoint}: injected legacy closeout failure is observed`);
+      ["dod", "release", "business_acceptance"].forEach((gate) => {
+        const loaded = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot, kind: "gate", workItemSlug: slug, gate });
+        assert(!loaded.receipt, `${failurePoint}: no partial ${gate} receipt remains`);
+      });
+      assert(fs.readFileSync(reportPath, "utf8") === reportBefore, `${failurePoint}: protocol report remains byte-identical`);
+      assert(fs.readFileSync(s01Path, "utf8") === s01Before, `${failurePoint}: s01 remains byte-identical`);
+      const transactionResidue = listFilesRecursively(approvalRoot).filter(
+        (filePath) => !new Set(["approver-private.pem", "approver-public.pem"]).has(path.basename(filePath))
+      );
+      assert(transactionResidue.length === 0, `${failurePoint}: no journal, lock, stage, or receipt file remains`);
+    } finally {
+      rmrf(projectRoot);
+      rmrf(approvalRoot);
+    }
+  });
+}
+
+function testWorkItemLifecycleAdapterEmitsBoundedTelemetry() {
+  const slug = "proto-private-transition-item";
+  const blockerCanary = "PRIVATE_BLOCKER_CANARY_DO_NOT_PERSIST";
+  const { projectRoot, workflowRoot } = buildLightProject(slug);
+  const telemetryRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-transition-telemetry-"));
+  const protocolScript = path.resolve(__dirname, "..", "scripts", "work-item-protocol.js");
+  try {
+    const reportPath = writeReadinessProtocolReport({ projectRoot, workflowRoot, slug });
+    const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    report.protocol_status = "ACTIVE";
+    report.current_step = "s07";
+    report.handoff_target = "developer";
+    report.blockers = [];
+    report.required_actions = ["Continue implementation."];
+    fs.writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
+
+    const outcome = runGateCommand(
+      protocolScript,
+      [
+        "block",
+        "--work-item", slug,
+        "--project-root", projectRoot,
+        "--workflow-root", path.dirname(workflowRoot),
+        "--blocker", blockerCanary,
+        "--note", blockerCanary,
+        "--telemetry", "true",
+        "--telemetry-out", telemetryRoot
+      ],
+      { ...process.env }
+    );
+    assert(outcome.status === 0, `work-item block transition succeeds (got: ${outcome.stderr.split("\n")[0]})`);
+    const eventFiles = fs.readdirSync(telemetryRoot).filter((name) => name.endsWith(".json"));
+    assert(eventFiles.length === 1, `work-item transition emits one opt-in event, got ${eventFiles.length}`);
+    if (eventFiles.length === 1) {
+      const event = JSON.parse(fs.readFileSync(path.join(telemetryRoot, eventFiles[0]), "utf8"));
+      const serialized = JSON.stringify(event);
+      assert(event.event_type === "work_item_transition" && event.outcome === "blocked", "lifecycle adapter records only transition type and bounded outcome");
+      assert(event.role_count === 3 && event.gate_count === 4, "lifecycle adapter records role/gate counts without role identities");
+      assert(event.interaction_count === 0 && event.retry_count === 0, "non-approval transition records zero interaction/retry count");
+      assert(/^wi_[a-f0-9]{24}$/.test(event.work_item_id), "lifecycle adapter pseudonymizes work-item identity");
+      assert(!serialized.includes(slug) && !serialized.includes(blockerCanary), "lifecycle telemetry excludes slug, blocker and free-form note");
+    }
+  } finally {
+    rmrf(projectRoot);
+    rmrf(telemetryRoot);
   }
 }
 
@@ -316,6 +1438,25 @@ function testStaleDigestFixtureIsRejected() {
   console.log("  PASS: stale trusted-receipt digest fixture is rejected");
 }
 
+function testAllLifecycleFollowupWritersEmitTypedState() {
+  const ctx = buildProjectAtVerified("ts3-lifecycle-writer-item");
+  const { applyAction } = require("../scripts/work-item-protocol");
+  const previousRoot = process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
+  process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = ctx.approvalRoot;
+  try {
+    for (const [action, from] of [["activate", "MATERIALIZED"], ["resume", "BLOCKED"], ["verify", "ACTIVE"], ["close", "VERIFIED"], ["archive", "DONE"]]) {
+      const after = applyAction({ ...ctx.report, protocol_status: from }, action, { "project-root": ctx.projectRoot });
+      assert(action === "archive" ? after.required_actions.length === 0 : after.required_actions.length > 0, `TS3: ${action} preserves its existing followup/terminal contract`);
+      assert(after.required_actions.every(value => typeof value === "object" && value.kind !== "legacy" && value.id), `TS3: ${action} emits typed followups without load adaptation`);
+    }
+  } finally {
+    if (previousRoot === undefined) delete process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
+    else process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = previousRoot;
+    rmrf(ctx.projectRoot);
+    rmrf(ctx.approvalRoot);
+  }
+}
+
 function testContradictoryProtocolStateFixtureIsRejected() {
   const fixture = JSON.parse(
     fs.readFileSync(path.join(governanceFixtureRoot, "contradictory-protocol-state.json"), "utf8")
@@ -324,7 +1465,17 @@ function testContradictoryProtocolStateFixtureIsRejected() {
     ...fixture.receipt_state,
     approvedGates: new Set(fixture.receipt_state.approvedGates)
   };
-  const errors = getProtocolStateContradictionErrors(fixture.report, receiptState, "protocol-report.json");
+  assert(getProtocolStateContradictionErrors(fixture.report, receiptState, "protocol-report.json").length === 0, "unknown legacy fixture prose is opaque, not inferred as approval state");
+  const typedReport = {
+    ...fixture.report,
+    blockers: [
+      createStateEntry({ collection: "blockers", kind: "workflow_followup", sourceKey: "work-item-approval:example", text: fixture.report.blockers[0] }),
+      createStateEntry({ collection: "blockers", kind: "workflow_followup", sourceKey: "change-approval:CHANGE-999", text: fixture.report.blockers[1] }),
+      createStateEntry({ collection: "blockers", kind: "approval_pending", gate: "task_plan", sourceKey: "gate", text: fixture.report.blockers[2] })
+    ],
+    required_actions: [createStateEntry({ collection: "required_actions", kind: "approval_pending", gate: "spec", sourceKey: "gate", text: fixture.report.required_actions[0] })]
+  };
+  const errors = getProtocolStateContradictionErrors(typedReport, receiptState, "protocol-report.json");
   assert(errors.some((error) => /work-item approval.*APPROVED/i.test(error)), `work-item contradiction missing: ${JSON.stringify(errors)}`);
   assert(errors.some((error) => /CHANGE-999.*APPROVED/i.test(error)), `change contradiction missing: ${JSON.stringify(errors)}`);
   assert(errors.some((error) => /task_plan.*APPROVED/i.test(error)), `task-plan contradiction missing: ${JSON.stringify(errors)}`);
@@ -336,13 +1487,313 @@ function testContradictoryProtocolStateFixtureIsRejected() {
   console.log("  PASS: contradictory protocol state fixture is rejected and activate clears blockers");
 }
 
+
+// ---------------------------------------------------------------------------
+// E-B / REQ-004 carried from worktree-and-closure-integrity as L-01: a work item
+// must not reach DONE after its declared delivery was dirtied following a clean
+// dod seal. The seal guard already exists on main; this asserts the TRANSITION,
+// which is a different call site. A test that hits the seal instead would pass
+// while proving nothing about L-01 - see T4's review checkpoint.
+//
+// Nothing is persisted: OQ-4 is answered by re-evaluating at transition time, so
+// the hatch is passed again at the transition rather than stored in a receipt.
+//
+// Work item: trusted-receipt-namespace-resolution, task T4.
+// ---------------------------------------------------------------------------
+
+function git(cwd, args) {
+  try {
+    return { status: 0, out: execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }) };
+  } catch (e) {
+    return { status: e.status === undefined ? 1 : e.status, out: `${e.stdout || ""}${e.stderr || ""}` };
+  }
+}
+
+// Builds a Light work item sitting at VERIFIED with dod sealed over a CLEAN tree,
+// which is the only state from which the DONE transition is reachable.
+// --no-verify because the operator's global commit-msg hook enforces Conventional
+// Commits; a fixture must not depend on the operator's hook configuration.
+function buildProjectAtVerified(slug, opts = {}) {
+  const { projectRoot, workflowRoot } = buildLightProject(slug);
+  const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "proto-eb-approvals-"));
+  const workflowRootBase = path.dirname(workflowRoot);
+  const childEnv = {
+    ...process.env,
+    WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "true",
+    WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: "test-passphrase",
+    WORKFLOW_BUNDLE_APPROVAL_ROOT: approvalRoot
+  };
+
+  const withGit = opts.withGit !== false;
+  if (withGit) {
+    git(projectRoot, ["init", "-q"]);
+    git(projectRoot, ["config", "user.email", "fixture@example.test"]);
+    git(projectRoot, ["config", "user.name", "Fixture"]);
+  }
+  writeFile(path.join(projectRoot, "src", "app.js"), "// committed delivery\n");
+
+  // s07 must exist and be finalized before verify; s08 hosts the dod gate.
+  writeFile(
+    path.join(workflowRoot, `${slug}.s07.implementation.md`),
+    makeHostNoteFrontmatter(slug, "s07", "implementation") +
+      "## Delivery Rule Evidence\n```yaml\nbehavior_change: NO\ntdd_status: NOT_REQUIRED\nworktree_status: NOT_REQUIRED\nreview_status: COMPLETED\ndelegation_mode: agentic\n```\n"
+  );
+  writeFile(
+    path.join(workflowRoot, `${slug}.s08.verification.md`),
+    makeHostNoteFrontmatter(slug, "s08", "verification")
+      .replace('  spec: "required"', '  spec: "required"\n  dod: "required"')
+      .replace(
+        '  task_plan_reviewed_at: "2026-07-16"',
+        '  task_plan_reviewed_at: "2026-07-16"\n  dod_reviewed_by: ["qc"]\n  dod_reviewed_at: "2026-07-16"'
+      ) + "## Governance Checks\n```yaml\nchecklist_applied: []\n```\n## SDD Traceability\n```yaml\nrequirement_refs: [REQ-001]\n```\n"
+  );
+
+  // The dod seal guard (merged from the sibling work item) reads granted_write_paths
+  // from the PERSISTED report, so the report must exist on disk before sealing or the
+  // seal refuses with "granted_write_paths is empty" - the guard working as designed.
+  const reportPath = path.join(workflowRoot, `${slug}.work-item-report.json`);
+  writeFile(reportPath, JSON.stringify({
+    work_item_slug: slug,
+    workflow_root: workflowRoot,
+    delivery_context: "brownfield",
+    protocol_status: "VERIFIED",
+    approval_status: "APPROVED",
+    review_required: true,
+    reviewed_by: "po",
+    current_step: "s08",
+    granted_write_paths: ["src"]
+  }, null, 2) + "\n");
+
+  // Commit BEFORE sealing. The L-01 scenario is "seal clean, then dirty, then transition",
+  // so a fixture that seals over a dirty tree would be testing the seal guard instead.
+  if (withGit) {
+    git(projectRoot, ["add", "-A"]);
+    git(projectRoot, ["commit", "--no-verify", "-q", "-m", "chore: seed"]);
+  }
+
+  // The DONE transition also requires a trusted WORK-ITEM receipt, not just gate receipts.
+  const protocolScript = path.resolve(__dirname, "..", "scripts", "work-item-protocol.js");
+  execFileSync(process.execPath, [protocolScript, "approve", "--work-item", slug, "--reviewed-by", "po",
+    "--project-root", projectRoot, "--workflow-root", workflowRootBase, "--approval-root", approvalRoot],
+    { env: childEnv, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
+
+  const gateScript = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  execFileSync(process.execPath, [gateScript, "approve-ready-bundle", "--work-item", slug,
+    "--project-root", projectRoot, "--workflow-root", workflowRootBase, "--approval-root", approvalRoot],
+    { env: childEnv, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
+  execFileSync(process.execPath, [gateScript, "approve", "--work-item", slug, "--gate", "dod",
+    "--reviewed-by", "qc", "--project-root", projectRoot, "--workflow-root", workflowRootBase,
+    "--approval-root", approvalRoot], { env: childEnv, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
+
+  const report = {
+    work_item_slug: slug,
+    workflow_root: workflowRoot,
+    delivery_context: "brownfield",
+    protocol_status: "VERIFIED",
+    approval_status: "APPROVED",
+    review_required: true,
+    reviewed_by: "po",
+    current_step: "s08",
+    granted_write_paths: ["src"]
+  };
+  return { projectRoot, workflowRoot, approvalRoot, report, childEnv };
+}
+
+function closeIt(ctx, extra = {}) {
+  const { applyAction } = require("../scripts/work-item-protocol");
+  // applyAction reads the approval root from the environment rather than from args,
+  // so the fixture root is scoped around the call and restored afterwards.
+  const prevRoot = process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
+  const prevInsecure = process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT;
+  process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = ctx.approvalRoot;
+  process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT = "true";
+  try {
+    return { ok: true, report: applyAction(ctx.report, "close", { "project-root": ctx.projectRoot, ...extra }) };
+  } catch (e) {
+    return { ok: false, message: String(e.message || e) };
+  } finally {
+    if (prevRoot === undefined) delete process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT; else process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = prevRoot;
+    if (prevInsecure === undefined) delete process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT; else process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT = prevInsecure;
+  }
+}
+
+function dirty(ctx, rel, text) {
+  const abs = path.join(ctx.projectRoot, rel);
+  let cur = path.dirname(abs);
+  while (cur.startsWith(ctx.projectRoot)) { try { fs.chmodSync(cur, 0o755); } catch (_e) {} const up = path.dirname(cur); if (up === cur) break; cur = up; }
+  try { fs.chmodSync(ctx.projectRoot, 0o755); } catch (_e) {}
+  try { fs.chmodSync(abs, 0o644); } catch (_e) {}
+  fs.appendFileSync(abs, text, "utf8");
+}
+
+function testEbCleanTreeStillReachesDone() {
+  console.log("\nE-B / AC-004: a clean declared scope still reaches DONE (no false positive)");
+  const ctx = buildProjectAtVerified("eb-clean-item");
+  try {
+    const r = closeIt(ctx);
+    assert(r.ok && r.report.protocol_status === "DONE", `clean tree must reach DONE (got: ${r.ok ? r.report.protocol_status : r.message})`);
+  } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
+}
+
+function testEbDirtyDeclaredPathRefusedAtTransition() {
+  console.log("\nE-B / REQ-004 / L-01: DONE is refused when a declared path is dirty AFTER a clean seal");
+  const ctx = buildProjectAtVerified("eb-dirty-item");
+  try {
+    dirty(ctx, path.join("src", "app.js"), "// uncommitted after the seal\n");
+    const st = git(ctx.projectRoot, ["status", "--porcelain", "--", "src"]);
+    assert(st.out.trim() !== "", `precondition: src is dirty (got "${st.out.trim()}")`);
+    const r = closeIt(ctx);
+    assert(!r.ok, "the DONE transition is REFUSED while a declared path holds uncommitted changes (today: it succeeds - L-01)");
+    assert(!r.ok && /src/.test(r.message), "the refusal names the offending path");
+  } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
+}
+
+function testEbHatchNeedsAStatedReason() {
+  console.log("\nE-B / AC-004: the transition hatch requires a stated reason and echoes it");
+  const withReason = buildProjectAtVerified("eb-hatch-yes");
+  try {
+    dirty(withReason, path.join("src", "app.js"), "// uncommitted\n");
+    const r = closeIt(withReason, { "allow-uncommitted-delivery": true, "uncommitted-reason": "docs-only follow-up, nothing to commit" });
+    assert(r.ok, `the hatch WITH a reason permits DONE (got: ${r.ok ? "ok" : r.message})`);
+  } finally { rmrf(withReason.projectRoot); rmrf(withReason.approvalRoot); }
+
+  const noReason = buildProjectAtVerified("eb-hatch-no");
+  try {
+    dirty(noReason, path.join("src", "app.js"), "// uncommitted\n");
+    const r = closeIt(noReason, { "allow-uncommitted-delivery": true });
+    assert(!r.ok, "the hatch WITHOUT a reason is refused, so the exemption cannot be silent");
+    assert(!r.ok && /reason/i.test(r.message), "the refusal names the missing reason");
+  } finally { rmrf(noReason.projectRoot); rmrf(noReason.approvalRoot); }
+}
+
+function testEbEmptyScopeRefusesRatherThanPassesVacuously() {
+  console.log("\nE-B / EDGE-005: an empty granted_write_paths refuses rather than passing vacuously");
+  const ctx = buildProjectAtVerified("eb-empty-item");
+  try {
+    // The guard reads the PERSISTED report, which is the same object the CLI loads
+    // before calling applyAction - so in the real flow the in-memory and on-disk scopes
+    // cannot diverge. Emptying only the in-memory copy would construct a divergence that
+    // is unreachable through the real path, and would test nothing.
+    ctx.report.granted_write_paths = [];
+    const reportPath = path.join(ctx.workflowRoot, `${ctx.report.work_item_slug}.work-item-report.json`);
+    const persisted = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    persisted.granted_write_paths = [];
+    try { fs.chmodSync(reportPath, 0o644); } catch (_e) {}
+    fs.writeFileSync(reportPath, JSON.stringify(persisted, null, 2) + "\n");
+    const r = closeIt(ctx);
+    assert(!r.ok, "an empty declared scope is not evidence of a clean tree, so DONE is refused");
+  } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
+}
+
+function testEbOutsideGitIsSilent() {
+  console.log("\nE-B / EDGE-006: outside a git repository the guard stays silent (consistent with L-02)");
+  const ctx = buildProjectAtVerified("eb-nogit-item", { withGit: false });
+  try {
+    const r = closeIt(ctx);
+    assert(r.ok && r.report.protocol_status === "DONE", `no git history means nothing to verify, so DONE proceeds (got: ${r.ok ? r.report.protocol_status : r.message})`);
+  } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
+}
+
+
+// T5 review checkpoint, learned from the sibling work item: its equivalent guard was
+// first placed in a function the dod approve path never called, so the unit test passed
+// while the real command was unguarded. The tests above call applyAction directly, which
+// BYPASSES parseCliArgs - so they prove the guard, not the flag wiring. This drives the
+// actual CLI so --allow-uncommitted-delivery and --uncommitted-reason are proven to reach it.
+function testEbGuardIsOnTheRealCliPath() {
+  console.log("\nE-B / T5 checkpoint: the guard is on the path the close CLI actually calls");
+  const ctx = buildProjectAtVerified("eb-cli-item");
+  const script = path.resolve(__dirname, "..", "scripts", "work-item-protocol.js");
+  const env = {
+    ...process.env,
+    WORKFLOW_BUNDLE_APPROVAL_ROOT: ctx.approvalRoot,
+    WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT: "true"
+  };
+  const run = (extra) => {
+    try {
+      return { status: 0, out: execFileSync(process.execPath,
+        [script, "close", "--work-item", ctx.report.work_item_slug, "--project-root", ctx.projectRoot,
+         "--workflow-root", path.dirname(ctx.workflowRoot), ...extra],
+        { env, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] }) };
+    } catch (e) {
+      return { status: e.status === undefined ? 1 : e.status, out: `${e.stdout || ""}${e.stderr || ""}` };
+    }
+  };
+  try {
+    dirty(ctx, path.join("src", "app.js"), "// uncommitted after the seal\n");
+
+    const refused = run([]);
+    assert(refused.status !== 0, "the real close CLI refuses over a dirty declared path");
+    assert(/src/.test(refused.out), "the CLI refusal names the offending path");
+
+    const waived = run(["--allow-uncommitted-delivery", "--uncommitted-reason", "branch-parked on purpose"]);
+    assert(waived.status === 0, `the CLI hatch flags actually reach the guard (got: ${waived.out.split("\n")[0]})`);
+    assert(/WAIVED/.test(waived.out) && /branch-parked on purpose/.test(waived.out),
+      "the CLI echoes the waiver and its reason, so the exemption is visible in the operator's output");
+  } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
+}
+
+function testCloseoutBundlePreservesUncommittedDeliveryGuard() {
+  console.log("\nCR-008 T6: closeout bundle preserves the uncommitted-delivery guard");
+  const ctx = buildProjectAtVerified("closeout-bundle-dirty-item");
+  const gateScript = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  try {
+    dirty(ctx, path.join("src", "app.js"), "// dirtied before closeout bundle\n");
+    const reportPath = path.join(ctx.workflowRoot, `${ctx.report.work_item_slug}.work-item-report.json`);
+    const reportBefore = fs.readFileSync(reportPath, "utf8");
+    const dodBefore = loadTrustedApprovalReceipt({
+      projectRoot: ctx.projectRoot,
+      overrideRoot: ctx.approvalRoot,
+      kind: "gate",
+      workItemSlug: ctx.report.work_item_slug,
+      gate: "dod"
+    });
+    const receiptBefore = fs.readFileSync(dodBefore.receiptPath, "utf8");
+    const outcome = runGateCommand(
+      gateScript,
+      ["approve-closeout-bundle", "--work-item", ctx.report.work_item_slug, "--project-root", ctx.projectRoot, "--workflow-root", path.dirname(ctx.workflowRoot), "--approval-root", ctx.approvalRoot],
+      ctx.childEnv
+    );
+    assert(outcome.status !== 0 && /uncommitted|dirty|src/i.test(`${outcome.stdout}${outcome.stderr}`), "dirty declared delivery blocks the closeout bundle before transaction writes");
+    assert(fs.readFileSync(reportPath, "utf8") === reportBefore, "blocked closeout leaves protocol report byte-identical");
+    assert(fs.readFileSync(dodBefore.receiptPath, "utf8") === receiptBefore, "blocked closeout does not rewrite the existing DoD receipt");
+  } finally {
+    rmrf(ctx.projectRoot);
+    rmrf(ctx.approvalRoot);
+  }
+}
+
 console.log("Running work-item-protocol (Light) tests...\n");
+testLegacyReceiptV1AndAdaptiveProtocolDualRead();
 testEnsureLightLazyStepNoteCreatesS07S08();
 testEnsureLightLazyNoopForNonLight();
 testApproveReadyBundleSealsFourIndependentReceipts();
+testReadyBundlePreflightsEveryReviewerBeforeWriting();
+testRejectReadyBundleKeepsIndependentDecisionEvidence();
+testMaintenanceCloseoutBundlesOnlyDod();
+testProductReleaseCloseoutKeepsConfiguredAuthority();
+testAllBundleDecisionsBindEventJournalAndResultWithNoteIndependentRetries();
+testRepeatedCloseoutCyclesHaveTransactionAttributedEventsAndNoopRetry();
+testTwentyCloseoutCyclesRemainDeterministic();
+testEveryBundleDecisionFailureAndCrashBoundaryIsAtomic();
+testConcurrentCloseoutCommandsCommitAtMostOneLaterCycle();
+testApprovedCloseoutCanonicalizesSemanticStateWithoutHistoryLoss();
+testLegacyMaintenanceCloseoutRestoresImplicitDod();
+testLegacyProductReleaseCloseoutRestoresImplicitDod();
+testLegacyCloseoutKeepsOptionalTerminalGatesIndependent();
+testLegacyProductCloseoutFailureMatrixLeavesNoPartialState();
+testWorkItemLifecycleAdapterEmitsBoundedTelemetry();
 testFailedVerifyDoesNotLeavePrematureS08();
 testStaleDigestFixtureIsRejected();
+testAllLifecycleFollowupWritersEmitTypedState();
 testContradictoryProtocolStateFixtureIsRejected();
+testEbCleanTreeStillReachesDone();
+testEbDirtyDeclaredPathRefusedAtTransition();
+testEbHatchNeedsAStatedReason();
+testEbEmptyScopeRefusesRatherThanPassesVacuously();
+testEbOutsideGitIsSilent();
+testEbGuardIsOnTheRealCliPath();
+testCloseoutBundlePreservesUncommittedDeliveryGuard();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in work-item-protocol-light.test.js`);

@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { execFileSync } = require("child_process");
 const {
   getFrontmatterLines,
   getFrontmatterNestedList,
@@ -13,6 +14,7 @@ const {
   loadTrustedApprovalReceipt,
   resolveGateArtifact
 } = require("./workflow-trusted-approval-utils");
+const { createStateEntry, matchesStateEntry, normalizeProtocolReport } = require("./work-item-protocol-utils");
 
 const STEP_NOTE_SLUGS = {
   s01: "restate",
@@ -38,7 +40,10 @@ const SIGNOFF_KEYS = [
   "dod"
 ];
 
-const APPROVAL_GATE_KEYS = ["spec", "contract", "foundation", "uat", "release", "business_acceptance"];
+// Adaptive artifacts make applicability explicit for every human-controlled gate.
+// Legacy artifacts remain readable because missing keys still use the historical
+// defaults and the legacy finalized-step host map below.
+const APPROVAL_GATE_KEYS = [...SIGNOFF_KEYS];
 
 function artifactReferenceError(code, message) {
   const error = new Error(message);
@@ -345,7 +350,158 @@ function getApprovalGateDefault(key) {
   return key === "spec" ? "required" : "not_applicable";
 }
 
-function getRequiredFinalizedGateKeys(stepId, approvalGates, sddMode) {
+// D-D / REQ-004: the DoD gate decides whether a work item is finished, and it never
+// looked at the artifact of finishing. Measured 2026-08-19: two work items reached
+// DONE with every gate APPROVED and digest_match=true while main contained none of
+// the change. The other three defects in this work item are friction - a command
+// fails and the operator sees it. This one is silent.
+//
+// The decision is deliberately pure and separate from the git call so its edge matrix
+// is testable without a repository. See uncommitted-delivery-guard.test.js.
+function evaluateUncommittedDelivery({
+  grantedWritePaths,
+  dirtyEntries,
+  isGitRepo,
+  allowUncommitted,
+  uncommittedReason
+}) {
+  const errors = [];
+  const reason = String(uncommittedReason || "").trim();
+  const paths = Array.isArray(grantedWritePaths) ? grantedWritePaths.filter(Boolean) : [];
+  const dirty = Array.isArray(dirtyEntries) ? dirtyEntries.filter(Boolean) : [];
+
+  // A malformed exemption request is refused unconditionally, including over a clean
+  // tree: the operator asked for an exemption and must not be left guessing whether
+  // it applied. An invisible exemption is worse than no check.
+  if (allowUncommitted && !reason) {
+    errors.push(
+      "--allow-uncommitted-delivery requires a non-empty --uncommitted-reason, so the exemption is visible in the record."
+    );
+    return { errors, waived: false, reason: "", not_a_git_repo: !isGitRepo };
+  }
+
+  if (!isGitRepo) {
+    // Nothing to verify: there is no history a delivery could be missing from.
+    return { errors, waived: false, reason, not_a_git_repo: true };
+  }
+
+  const violations = [];
+  if (paths.length === 0) {
+    violations.push(
+      "granted_write_paths is empty, so there is no declared scope to check. An empty declared scope is not evidence of a clean tree."
+    );
+  }
+  if (dirty.length > 0) {
+    violations.push(
+      `the declared delivery scope holds uncommitted changes:\n    ${dirty.map((line) => line.trim()).join("\n    ")}`
+    );
+  }
+
+  if (violations.length === 0) {
+    return { errors, waived: false, reason, not_a_git_repo: false };
+  }
+
+  if (allowUncommitted) {
+    return { errors, waived: true, reason, not_a_git_repo: false };
+  }
+
+  violations.forEach((violation) => {
+    errors.push(
+      `Refusing to close over an undelivered change: ${violation}\n` +
+        "  Commit the delivery, or pass --allow-uncommitted-delivery with --uncommitted-reason \"<why>\"."
+    );
+  });
+
+  return { errors, waived: false, reason, not_a_git_repo: false };
+}
+
+// Thin git shell around the pure rule above. Kept separate so a caller can be tested
+// without a repository, and so a git failure degrades to "nothing to verify" rather
+// than to a crash inside a gate.
+function inspectDeclaredScopeCleanliness({ projectRoot, grantedWritePaths }) {
+  const paths = Array.isArray(grantedWritePaths) ? grantedWritePaths.filter(Boolean) : [];
+
+  let isGitRepo = false;
+  try {
+    const inside = execFileSync("git", ["rev-parse", "--is-inside-work-tree"], {
+      cwd: projectRoot,
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"]
+    });
+    isGitRepo = String(inside).trim() === "true";
+  } catch (_e) {
+    isGitRepo = false;
+  }
+
+  if (!isGitRepo || paths.length === 0) {
+    return { isGitRepo, dirtyEntries: [] };
+  }
+
+  try {
+    const out = execFileSync("git", ["status", "--porcelain", "--", ...paths], {
+      cwd: projectRoot,
+      encoding: "utf8",
+      stdio: ["pipe", "pipe", "pipe"]
+    });
+    return {
+      isGitRepo,
+      dirtyEntries: String(out)
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean)
+    };
+  } catch (_e) {
+    return { isGitRepo, dirtyEntries: [] };
+  }
+}
+
+// Reads the declared scope from the persisted report. Never writes it: four reports
+// are hashed into sealed trusted receipts (ASM-001).
+function readGrantedWritePaths({ workflowRoot, workItemSlug }) {
+  const reportPath = path.join(workflowRoot, `${workItemSlug}.work-item-report.json`);
+  if (!fs.existsSync(reportPath)) {
+    return [];
+  }
+  try {
+    const report = JSON.parse(readUtf8(reportPath));
+    return Array.isArray(report.granted_write_paths) ? report.granted_write_paths.filter(Boolean) : [];
+  } catch (_e) {
+    return [];
+  }
+}
+
+function getUncommittedDeliveryErrors({ projectRoot, workflowRoot, workItemSlug, allowUncommitted, uncommittedReason }) {
+  const grantedWritePaths = readGrantedWritePaths({ workflowRoot, workItemSlug });
+  const { isGitRepo, dirtyEntries } = inspectDeclaredScopeCleanliness({ projectRoot, grantedWritePaths });
+
+  return evaluateUncommittedDelivery({
+    grantedWritePaths,
+    dirtyEntries,
+    isGitRepo,
+    allowUncommitted,
+    uncommittedReason
+  });
+}
+
+function getRequiredFinalizedGateKeys(stepId, approvalGates, sddMode, artifactShape = "legacy_v1") {
+  if (artifactShape === "adaptive_v1") {
+    const hostByGate = {
+      spec: "s04",
+      contract: "s04",
+      dor: "s04",
+      approach: sddMode === "light" ? "s06" : "s05",
+      foundation: "s05",
+      task_plan: "s06",
+      uat: "s08",
+      release: "s08",
+      business_acceptance: "s08",
+      dod: "s08"
+    };
+    return SIGNOFF_KEYS.filter(
+      (key) => hostByGate[key] === stepId && approvalGates[key] === "required"
+    );
+  }
+
   // Light: dùng host map gọn — s06 require approach+task_plan, bỏ s05.
   // contract/foundation không áp dụng (light default not_applicable).
   if (sddMode === "light") {
@@ -679,41 +835,21 @@ function getTrustedReceiptArtifactErrors({ gate, receipt, artifact, filePath }) 
   return errors;
 }
 
-const GATE_TEXT_ALIASES = {
-  spec: ["spec"],
-  contract: ["contract"],
-  dor: ["dor", "definition of ready"],
-  approach: ["approach"],
-  foundation: ["foundation"],
-  task_plan: ["task plan", "task_plan"],
-  uat: ["uat"],
-  release: ["release"],
-  business_acceptance: ["business acceptance", "business_acceptance"],
-  dod: ["dod", "definition of done"]
-};
-
-function textClaimsApprovalPending(text, aliases) {
-  const normalized = String(text || "").toLowerCase();
-  return aliases.some((alias) => {
-    const index = normalized.indexOf(alias);
-    if (index < 0) {
-      return false;
-    }
-    const nearby = normalized.slice(Math.max(0, index - 60), index + 140);
-    return /pending|not\s+(?:passed|approved)|has\s+not\s+passed|review\s+and\s+approve/.test(nearby);
-  });
-}
-
 function getProtocolStateContradictionErrors(report, receiptState, reportPath) {
   const errors = [];
-  const claims = [...(report.blockers || []), ...(report.required_actions || [])];
-  if (receiptState.workItemApproved && claims.some((claim) => textClaimsApprovalPending(claim, ["work-item", "work item"]))) {
+  const normalized = normalizeProtocolReport(report);
+  const claims = [...normalized.blockers, ...normalized.required_actions];
+  const hasPurpose = sourceKey => ["blockers", "required_actions"].some(collection => {
+    const identity = createStateEntry({ collection, kind: "workflow_followup", sourceKey, text: "Approval purpose" });
+    return normalized[collection].some(entry => matchesStateEntry(entry, { id: identity.id }));
+  });
+  if (receiptState.workItemApproved && hasPurpose("work-item-approval:" + normalized.work_item_slug)) {
     errors.push(`Protocol blockers/required_actions claim work-item approval is pending after trusted receipt is APPROVED: ${reportPath}`);
   }
   if (
-    report.change_id &&
+    normalized.change_id &&
     receiptState.changeApproved &&
-    claims.some((claim) => textClaimsApprovalPending(claim, [String(report.change_id).toLowerCase(), "change approval"]))
+    hasPurpose("change-approval:" + normalized.change_id)
   ) {
     errors.push(`Protocol blockers/required_actions claim ${report.change_id} approval is pending after trusted receipt is APPROVED: ${reportPath}`);
   }
@@ -721,8 +857,7 @@ function getProtocolStateContradictionErrors(report, receiptState, reportPath) {
     ? receiptState.approvedGates
     : new Set(receiptState.approvedGates || []);
   approvedGates.forEach((gate) => {
-    const aliases = GATE_TEXT_ALIASES[gate] || [String(gate).replace(/_/g, " ")];
-    if (claims.some((claim) => textClaimsApprovalPending(claim, aliases))) {
+    if (claims.some(entry => matchesStateEntry(entry, { kinds: ["approval_pending", "gate_approval"], gate }))) {
       errors.push(`Protocol blockers/required_actions claim gate '${gate}' is pending after trusted receipt is APPROVED: ${reportPath}`);
     }
   });
@@ -746,6 +881,8 @@ function loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId }) {
       deliveryContext: "",
       governanceProfile: "default",
       sddMode: "none",
+      artifactShape: "legacy_v1",
+      requestLane: "",
       approvalGates: buildDefaultApprovalGates(),
       roleSignoffs: Object.fromEntries(SIGNOFF_KEYS.map((key) => [key, []])),
       gateReviews: Object.fromEntries(
@@ -773,6 +910,8 @@ function loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId }) {
       deliveryContext: "",
       governanceProfile: "default",
       sddMode: "none",
+      artifactShape: "legacy_v1",
+      requestLane: "",
       approvalGates: buildDefaultApprovalGates(),
       roleSignoffs: Object.fromEntries(SIGNOFF_KEYS.map((key) => [key, []])),
       gateReviews: Object.fromEntries(
@@ -812,6 +951,8 @@ function loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug, stepId }) {
     deliveryContext: getFrontmatterValue(frontmatterLines, "delivery_context") || "brownfield",
     governanceProfile: getFrontmatterValue(frontmatterLines, "governance_profile") || "default",
     sddMode: getFrontmatterValue(frontmatterLines, "sdd_mode") || "none",
+    artifactShape: getFrontmatterValue(frontmatterLines, "artifact_shape") || "legacy_v1",
+    requestLane: getFrontmatterValue(frontmatterLines, "request_lane") || "",
     approvalGates,
     roleSignoffs,
     gateReviews
@@ -956,7 +1097,12 @@ function getProtocolStepGateErrors({ projectRoot, workflowRoot, workItemSlug, to
         stepId
       });
       errors.push(
-        ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys(stepId, snapshot.approvalGates, resolvedSddMode), {
+        ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys(
+          stepId,
+          snapshot.approvalGates,
+          resolvedSddMode,
+          snapshot.artifactShape
+        ), {
           projectRoot,
           workflowRoot,
           workItemSlug,
@@ -987,7 +1133,12 @@ function getProtocolStepGateErrors({ projectRoot, workflowRoot, workItemSlug, to
       stepId: "s08"
     });
     errors.push(
-      ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys("s08", snapshot.approvalGates, resolvedSddMode), {
+      ...getMissingGateEvidenceErrors(snapshot, getRequiredFinalizedGateKeys(
+        "s08",
+        snapshot.approvalGates,
+        resolvedSddMode,
+        snapshot.artifactShape
+      ), {
         projectRoot,
         workflowRoot,
         workItemSlug,
@@ -1005,7 +1156,9 @@ module.exports = {
   REQUIRED_FINALIZED_SIGNOFF_BY_STEP,
   SIGNOFF_KEYS,
   countYamlListItemsInSection,
+  evaluateUncommittedDelivery,
   getApprovalGateDefault,
+  getUncommittedDeliveryErrors,
   getFinalizedStepSemanticEvidenceErrors,
   getProtocolStepGateErrors,
   getProtocolStateContradictionErrors,

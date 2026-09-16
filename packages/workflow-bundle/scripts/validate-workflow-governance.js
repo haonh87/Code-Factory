@@ -31,6 +31,10 @@ const {
   getSectionScalarValue,
   resolveArtifactReference
 } = require("./workflow-gate-evidence-utils");
+const {
+  REQUEST_LANES,
+  canActivateAdaptiveWrites
+} = require("./workflow-adaptive-governance");
 
 const filePattern =
   /^(?<work_item_slug>[a-z0-9]+(?:-[a-z0-9]+)*)\.(?<step_id>s0[1-8])\.(?<step_slug>[a-z-]+)\.md$/;
@@ -280,6 +284,92 @@ function validateKnownRoles(roles, label, filePath, errors) {
   });
 }
 
+function validateAdaptiveApplicability({
+  frontmatterLines,
+  filePath,
+  artifactShape,
+  approvalGates,
+  roleSignoffs,
+  gateReviews,
+  errors
+}) {
+  if (!artifactShape) {
+    return;
+  }
+  if (artifactShape !== "adaptive_v1") {
+    errors.push(`Unsupported artifact_shape '${artifactShape}' in ${filePath}`);
+    return;
+  }
+
+  const requestLane = getFrontmatterValue(frontmatterLines, "request_lane");
+  const workflowRequired = getFrontmatterValue(frontmatterLines, "workflow_required");
+  const routingReasons = getFrontmatterList(frontmatterLines, "routing_reasons") || [];
+  const executionRoles = getFrontmatterList(frontmatterLines, "execution_roles") || [];
+  if (!REQUEST_LANES.includes(requestLane)) {
+    errors.push(`Invalid request_lane '${requestLane}' for adaptive artifact: ${filePath}`);
+  }
+  if (workflowRequired !== "true") {
+    errors.push(`Adaptive workflow artifact requires workflow_required=true: ${filePath}`);
+  }
+  if (routingReasons.length < 1) {
+    errors.push(`Adaptive workflow artifact requires non-empty routing_reasons: ${filePath}`);
+  }
+  if (executionRoles.length < 1) {
+    errors.push(`Adaptive workflow artifact requires non-empty execution_roles: ${filePath}`);
+  }
+  validateKnownRoles(executionRoles, "execution_roles", filePath, errors);
+  executionRoles.forEach((role) => {
+    const reasons = getFrontmatterNestedList(frontmatterLines, "role_reasons", role) || [];
+    if (reasons.length < 1) {
+      errors.push(`Adaptive selected role requires non-empty role_reasons.${role}: ${filePath}`);
+    }
+  });
+
+  APPROVAL_GATE_KEYS.forEach((gate) => {
+    const explicitState = getFrontmatterNestedValue(frontmatterLines, "approval_gates", gate);
+    if (!explicitState) {
+      errors.push(`Adaptive artifact must explicitly classify approval_gates.${gate}: ${filePath}`);
+      return;
+    }
+    const reasons = getFrontmatterNestedList(frontmatterLines, "gate_reasons", gate) || [];
+    if (approvalGates[gate] === "required") {
+      if (reasons.length < 1) {
+        errors.push(`Adaptive required gate requires non-empty gate_reasons.${gate}: ${filePath}`);
+      }
+      if ((roleSignoffs[gate] || []).length < 1) {
+        errors.push(`Adaptive required gate requires reviewer roles in role_signoffs.${gate}: ${filePath}`);
+      }
+    } else {
+      if ((roleSignoffs[gate] || []).length > 0) {
+        errors.push(`Adaptive not_applicable gate must omit role_signoffs.${gate}: ${filePath}`);
+      }
+      if (reasons.length > 0) {
+        errors.push(`Adaptive not_applicable gate must omit gate_reasons.${gate}: ${filePath}`);
+      }
+      if (
+        gateReviews[gate] &&
+        (gateReviews[gate].reviewedBy.length > 0 || gateReviews[gate].reviewedAt)
+      ) {
+        errors.push(`Adaptive not_applicable gate must omit gate_reviews for '${gate}': ${filePath}`);
+      }
+    }
+  });
+
+  const sourceVersion = getFrontmatterNestedValue(frontmatterLines, "adaptive_activation", "source_version") || "";
+  const installedVersions =
+    getFrontmatterNestedList(frontmatterLines, "adaptive_activation", "installed_versions") || [];
+  const parityPassed =
+    getFrontmatterNestedValue(frontmatterLines, "adaptive_activation", "parity_passed") === "true";
+  const activation = canActivateAdaptiveWrites({
+    source_version: sourceVersion,
+    installed_versions: installedVersions,
+    parity_passed: parityPassed
+  });
+  if (!activation.allowed) {
+    errors.push(`Adaptive artifact activation evidence failed [${activation.reasons.join(", ")}]: ${filePath}`);
+  }
+}
+
 function getGateReviewFieldName(signoffKey, suffix) {
   return `${signoffKey}_reviewed_${suffix}`;
 }
@@ -378,6 +468,7 @@ function validateWorkflowGovernance(options) {
     const deliveryContext = rawDeliveryContext || "brownfield";
     const noteStatus = getFrontmatterValue(frontmatterLines, "status") || "draft";
     const sddMode = getFrontmatterValue(frontmatterLines, "sdd_mode") || "none";
+    const artifactShape = getFrontmatterValue(frontmatterLines, "artifact_shape") || "";
 
     // The new generator contract is marked by Role Outputs. Legacy notes remain
     // readable and untouched; new-shape notes must satisfy the ownership table.
@@ -451,6 +542,16 @@ function validateWorkflowGovernance(options) {
           `gate_reviews.${reviewedByField} must be a subset of role_signoffs.${key}; got [${unauthorizedReviewers.join(", ")}] in ${filePath}`
         );
       }
+    });
+
+    validateAdaptiveApplicability({
+      frontmatterLines,
+      filePath,
+      artifactShape,
+      approvalGates,
+      roleSignoffs,
+      gateReviews,
+      errors
     });
 
     if (!governanceRef) {
@@ -577,7 +678,12 @@ function validateWorkflowGovernance(options) {
         );
       }
 
-      const requiredSignoffs = getRequiredFinalizedGateKeys(stepId, approvalGates, sddMode);
+      const requiredSignoffs = getRequiredFinalizedGateKeys(
+        stepId,
+        approvalGates,
+        sddMode,
+        artifactShape || "legacy_v1"
+      );
       requiredSignoffs.forEach((key) => {
         const reviewedByField = getGateReviewFieldName(key, "by");
         const reviewedAtField = getGateReviewFieldName(key, "at");

@@ -1,0 +1,228 @@
+{
+  "work_item_slug": "closeout-bundle-repeat-cycle-reconciliation",
+  "task": "TS8-M1",
+  "status": "PASS_METADATA_CORRECTION_AND_HOSTED_SDD",
+  "approved_at": "2026-09-14T03:14:22Z",
+  "completed_at": "2026-09-14T03:16:42Z",
+  "approval": {
+    "id": "TS8-M1",
+    "kind": "METADATA_ONLY_SCOPE_ADDITION",
+    "status": "APPROVED",
+    "reviewed_by": [
+      "developer",
+      "qc"
+    ],
+    "reviewed_at": "2026-09-14T03:14:22Z",
+    "source": "User replied accept to the explicit Developer/QC card correction, additive write scope and hosted Verify question.",
+    "owned_path": "product-specs/cards/upgrade-guardrails-actions-node24.md",
+    "allowed_changes": [
+      "Five provenance scalars -> BASELINE; exact origin prose preserved in provenance_note",
+      "Spec Freeze status -> FROZEN; existing spec status/version, authority, approved_by and decided_at unchanged",
+      "Record scoped approval and resume hosted Verify"
+    ],
+    "excluded_changes": [
+      "Requirements/acceptance meaning",
+      "CI action versions/topology/parallelisation",
+      "Node24 readiness sealing/activation or broader implementation",
+      "RCR production/tests/locked authoring hosts",
+      "Hosted binding/Technical Verification/DoD/Release/Business Acceptance or parent finding closure"
+    ],
+    "completed_at": "2026-09-14T03:16:42Z",
+    "metadata_check": {
+      "status": "PASS",
+      "card": "product-specs/cards/upgrade-guardrails-actions-node24.md",
+      "before_sha256": "650acfe759cc16e4468bc219ae7641e12a34b1965f2777ff4fea02e8d31b9f2c",
+      "after_sha256": "73d6ea970ef878a69d6150e5c2d2f2a5cd9fe7cbed76938bc9620fa7c3458a8d",
+      "normalized_scalars": 6,
+      "origin_notes_preserved": 5,
+      "all_other_bytes": "EXACT_UNCHANGED",
+      "requirements_acceptance_freeze_authority_time": "UNCHANGED",
+      "trusted_authoring_receipts": [
+        {
+          "gate": "spec",
+          "status": "APPROVED_UNCHANGED"
+        },
+        {
+          "gate": "contract",
+          "status": "APPROVED_UNCHANGED"
+        },
+        {
+          "gate": "dor",
+          "status": "APPROVED_UNCHANGED"
+        },
+        {
+          "gate": "approach",
+          "status": "APPROVED_UNCHANGED"
+        },
+        {
+          "gate": "task_plan",
+          "status": "APPROVED_UNCHANGED"
+        }
+      ],
+      "node24_readiness_sealing_activation": "NOT_PERFORMED",
+      "utf8": "PASS"
+    },
+    "validators": {
+      "validate": {
+        "exit_code": 0,
+        "summary": "OK: validated workflow naming (208 files) and governance (204 notes) under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+      },
+      "sdd": {
+        "exit_code": 0,
+        "summary": "OK: validated SDD for 44 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+      },
+      "change": {
+        "exit_code": 0,
+        "summary": "OK: validated change layer for 42 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+      },
+      "exec": {
+        "exit_code": 0,
+        "summary": "OK: validated execution runtime for 204 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+      },
+      "plan": {
+        "exit_code": 0,
+        "summary": "OK: validated planning track for 204 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+      },
+      "protocol": {
+        "exit_code": 0,
+        "summary": "OK: validated 13 protocol-managed work items under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items (skipped legacy: 16)"
+      }
+    }
+  },
+  "base_commit": "537f7b476aea6d2fc558fbfb08a6e530fc132bcd",
+  "checks": {
+    "validate": {
+      "exit_code": 0,
+      "summary": "OK: validated workflow naming (208 files) and governance (204 notes) under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+    },
+    "sdd": {
+      "exit_code": 0,
+      "summary": "OK: validated SDD for 44 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+    },
+    "change": {
+      "exit_code": 0,
+      "summary": "OK: validated change layer for 42 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+    },
+    "exec": {
+      "exit_code": 0,
+      "summary": "OK: validated execution runtime for 204 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+    },
+    "plan": {
+      "exit_code": 0,
+      "summary": "OK: validated planning track for 204 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items"
+    },
+    "protocol": {
+      "exit_code": 0,
+      "summary": "OK: validated 13 protocol-managed work items under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr-008-adaptive-governance/work-items (skipped legacy: 16)"
+    }
+  },
+  "semantic_equivalence": {
+    "status": "PASS",
+    "card": "product-specs/cards/upgrade-guardrails-actions-node24.md",
+    "before_sha256": "650acfe759cc16e4468bc219ae7641e12a34b1965f2777ff4fea02e8d31b9f2c",
+    "after_sha256": "73d6ea970ef878a69d6150e5c2d2f2a5cd9fe7cbed76938bc9620fa7c3458a8d",
+    "normalized_scalars": 6,
+    "origin_notes_preserved": 5,
+    "all_other_bytes": "EXACT_UNCHANGED",
+    "requirements_acceptance_freeze_authority_time": "UNCHANGED",
+    "trusted_authoring_receipts": [
+      {
+        "gate": "spec",
+        "status": "APPROVED_UNCHANGED"
+      },
+      {
+        "gate": "contract",
+        "status": "APPROVED_UNCHANGED"
+      },
+      {
+        "gate": "dor",
+        "status": "APPROVED_UNCHANGED"
+      },
+      {
+        "gate": "approach",
+        "status": "APPROVED_UNCHANGED"
+      },
+      {
+        "gate": "task_plan",
+        "status": "APPROVED_UNCHANGED"
+      }
+    ],
+    "node24_readiness_sealing_activation": "NOT_PERFORMED",
+    "utf8": "PASS"
+  },
+  "review_order": [
+    "metadata spec compliance",
+    "metadata code quality"
+  ],
+  "reviews": {
+    "spec_compliance": {
+      "status": "PASS_CHECK",
+      "evidence": "Exact expected metadata-only diff; requirement/AC/authority/time unchanged; no broader work authorized"
+    },
+    "code_quality": {
+      "status": "PASS_SCOPED_CHECK",
+      "evidence": "Five origins preserved, enum values valid, UTF8 passed; no parser/runtime/CI/source changes"
+    }
+  },
+  "tdd": {
+    "required": false,
+    "reason": "Metadata-only normalization of an existing artifact; production/validator contract unchanged",
+    "verify_path": "Existing SDD failure reproduced before change; exact pre/post assertions and six validators pass after change"
+  },
+  "hosted_status": "PENDING_RERUN",
+  "authority": {
+    "terminal_gates": "RELEASE_AND_BUSINESS_ACCEPTANCE_NOT_APPROVED",
+    "parent_finding": "F-AG11-001 OPEN",
+    "node24_action_implementation": "NOT_ACTIVATED",
+    "dod": "HUMAN_APPROVED_RECEIPT_PENDING"
+  },
+  "initial_status": "PASS_METADATA_CORRECTION_PENDING_HOSTED_VERIFY",
+  "hosted_verification_result": {
+    "observed_at": "2026-09-14T03:32:59.441Z",
+    "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "run_id": 34802149041,
+    "workflow_sdd": "PASS",
+    "required_jobs": "10/10 PASS",
+    "artifact_binding": "PENDING_QC",
+    "card_package_excluded": true
+  },
+  "current_hosted_binding": {
+    "approved_at": "2026-09-14T03:40:31.291Z",
+    "reviewed_by": [
+      "qc"
+    ],
+    "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "run_id": 34802149041,
+    "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+    "technical_verification": "PENDING_QC"
+  },
+  "current_technical_verification": {
+    "approved_at": "2026-09-14T07:26:16.002Z",
+    "reviewed_by": [
+      "qc"
+    ],
+    "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "run_id": 34802149041,
+    "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+    "dod": "PENDING_QC",
+    "node24_activation": "NOT_PERFORMED"
+  },
+  "current_child_dod_handoff": {
+    "gate": "dod",
+    "human_approval": "APPROVED",
+    "human_decision": "DONE_CHILD_TECHNICAL_CHECKPOINT",
+    "reviewed_by": [
+      "qc"
+    ],
+    "reviewed_at": "2026-09-14T07:35:25.955Z",
+    "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "run_id": 34802149041,
+    "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+    "approval_source": "Explicit user QC DoD approval for closeout-bundle-repeat-cycle-reconciliation based on the already approved Technical Verification, retaining scan gaps and mandatory AC-RCR-08 parent exact-candidate verification.",
+    "scope": "Child DoD human decision only; no parent DoD/Release/Business Acceptance/finding closure/publish/tag/merge/cleanup authority.",
+    "trusted_receipt_status": "MISSING",
+    "host_status": "draft",
+    "completion_boundary": "Human decision recorded; trusted gate sealing and terminal work-item closure are not complete.",
+    "next_human_action": "Maintainer/QC decide the shared s08-host boundary before trusted DoD sealing. QC DoD is already explicitly approved; do not request it again or run a seal command against a draft host. Required child Release (DevOps/QC) and Business Acceptance (PO) reviews are still unapproved; changing their applicability would require explicit approved authoring amendments. Preserve mandatory AC-RCR-08 parent exact-candidate verification, scan gaps and F-AG11-001 OPEN."
+  }
+}

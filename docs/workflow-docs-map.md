@@ -6,11 +6,11 @@ language: en
 
 > Vietnamese: workflow-docs-map.vi.md
 
-This document separates the public onboarding path of `workflow-bundle v2.6.1` from the deep-dive docs and the maintainer context.
+This document separates the public onboarding path of `workflow-bundle v2.6.2` from the deep-dive docs and the maintainer context.
 
 ## Public Onboarding Docs
 
-This is the set to read when reviewing the `v2.6.1` release candidate.
+This is the set to read when reviewing the `v2.6.2` release candidate.
 
 1. [`../README.md`](../README.md)
 2. [`publish-surface.md`](publish-surface.md)
@@ -21,7 +21,7 @@ This is the set to read when reviewing the `v2.6.1` release candidate.
 
 Reading guide:
 
-- `README` answers what this repo is and what the public promise of `v2.6.1` is.
+- `README` answers what this repo is and what the public promise of `v2.6.2` is.
 - `publish-surface` pins the canonical tag or branch and the system requirements.
 - `quickstart` answers how to install `wfc`, install the workflow bundle, init a repo, and run the first flow.
 - the package `README` covers install, upgrade, command overview, and publish mechanics at the package level.
@@ -68,9 +68,6 @@ The documents below are oriented toward mechanics, rollout, history, or roadmap:
 - [`../skills/orchestration/codex-workflow-chain/references/target-architecture.md`](../skills/orchestration/codex-workflow-chain/references/target-architecture.md)
 - [`../skills/orchestration/codex-workflow-chain/references/workflow-ci-enforcement.md`](../skills/orchestration/codex-workflow-chain/references/workflow-ci-enforcement.md)
 - [`../packages/workflow-bundle/tests/fixtures/workflow-governance/README.md`](../packages/workflow-bundle/tests/fixtures/workflow-governance/README.md)
-- [`../memory-bank/projectbrief.md`](../memory-bank/projectbrief.md)
-- [`../memory-bank/activeContext.md`](../memory-bank/activeContext.md)
-- [`../memory-bank/progress.md`](../memory-bank/progress.md)
 
 Reading guide:
 

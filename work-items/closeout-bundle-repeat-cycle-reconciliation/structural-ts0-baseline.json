@@ -1,0 +1,118 @@
+{
+  "source_sha": "096c2ffc69e965c9dd531f03195799f55bbb8537",
+  "report_count": 13,
+  "reports": [
+    {
+      "path": "work-items/adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.work-item-report.json",
+      "sha256": "064717f601bec3ade05d1a671a4d575ee59c497bc66c8d8be367b73277eae468",
+      "protocol_event_count": 47,
+      "protocol_events_sha256": "95b092fddb325afcb2390c1ab20742ba013ed9c62e66b8c6e28d0739e04cbaf6"
+    },
+    {
+      "path": "work-items/align-adaptive-sa-ta-applicability/align-adaptive-sa-ta-applicability.work-item-report.json",
+      "sha256": "847771242025b9477dacefa12e01e940c97d2ca1901b4734bc61aeed818a0199",
+      "protocol_event_count": 27,
+      "protocol_events_sha256": "af0743b19b15e3f114db59638e4e8a2e819e0ad1f98071a949cc7888dd4aa192"
+    },
+    {
+      "path": "work-items/approval-path-defects/approval-path-defects.work-item-report.json",
+      "sha256": "a39fe8dcfb4e36adc763eee54ad07be912884b318e514a6604556312afa75d44",
+      "protocol_event_count": 5,
+      "protocol_events_sha256": "1c7638ee8639c1c378bac3fba39957507e50d73a1afb9252d005fafa6964cdec"
+    },
+    {
+      "path": "work-items/artifact-governance-enforcement/artifact-governance-enforcement.work-item-report.json",
+      "sha256": "138f5405e961aad4af666a09a4f12ef14c87aa961de1b4272787de758feb0a10",
+      "protocol_event_count": 5,
+      "protocol_events_sha256": "3a723ad1b738de71a51692ecb90edc2b178214a392814e452d7809b718fb42f9"
+    },
+    {
+      "path": "work-items/artifact-governance-model/artifact-governance-model.work-item-report.json",
+      "sha256": "f54410e2eda732e9e3d319346c8ce415a8a2578d3b23fe5ea9c03f45eeebd0a6",
+      "protocol_event_count": 7,
+      "protocol_events_sha256": "6084337c74c080c0c9485cc14026cb54446b6a9e25d92d57087f75d995263a71"
+    },
+    {
+      "path": "work-items/closeout-bundle-legacy-dod-compatibility/closeout-bundle-legacy-dod-compatibility.work-item-report.json",
+      "sha256": "6f47edd747874934bf53cd96bc627cb1c418cc8041b356d746a976490a8c7a54",
+      "protocol_event_count": 14,
+      "protocol_events_sha256": "a58a7f643aae425add0c12b7e78ddf2887e5a212a3aba2a735897441751cf375"
+    },
+    {
+      "path": "work-items/closeout-bundle-repeat-cycle-reconciliation/closeout-bundle-repeat-cycle-reconciliation.work-item-report.json",
+      "sha256": "da2772735f64115cfaf4b82f3d9848d74f04df74430bc305233428840991ac2e",
+      "protocol_event_count": 39,
+      "protocol_events_sha256": "d8191551610b2b10973515860f418479070554d959dcf9cfc841c6e848b1c071"
+    },
+    {
+      "path": "work-items/fix-authoring-smoke-bootstrap/fix-authoring-smoke-bootstrap.work-item-report.json",
+      "sha256": "e10aca509b9e7a9092f0338a0413b2b3261aae2bacc955215c8420ae8ed5a59e",
+      "protocol_event_count": 12,
+      "protocol_events_sha256": "79e09896939d2b100f5b47895711dbfa968c2f1c4f58d6267887de747be823f7"
+    },
+    {
+      "path": "work-items/integrate-design-checklists-into-sa-ta/integrate-design-checklists-into-sa-ta.work-item-report.json",
+      "sha256": "0c301c3e386a6cdf788c8219d2ac075ec9e5fb636a09075629822b594a9434f2",
+      "protocol_event_count": 17,
+      "protocol_events_sha256": "bb5dc3c44163c2cc662823140bfa85ef2cab2cd50fa7770317d36325b56907f5"
+    },
+    {
+      "path": "work-items/stabilize-architecture-skill-bundle/stabilize-architecture-skill-bundle.work-item-report.json",
+      "sha256": "ebeb704212e12549b8051db5789570394641c2d78e19774686b82b21bd9e457c",
+      "protocol_event_count": 6,
+      "protocol_events_sha256": "3d41857d97e318d64b1f8086f07cbd37100991e04a75a510648ff0aeffb1011e"
+    },
+    {
+      "path": "work-items/trusted-receipt-namespace-resolution/trusted-receipt-namespace-resolution.work-item-report.json",
+      "sha256": "d24994830f43612386faa92d91feb65d255b2352acc293f98bb04aadc9a2b0d4",
+      "protocol_event_count": 6,
+      "protocol_events_sha256": "39278ac8471486f4d1dcd382f1712d65b08f97914702add54616267bc0cbe3c9"
+    },
+    {
+      "path": "work-items/upgrade-guardrails-actions-node24/upgrade-guardrails-actions-node24.work-item-report.json",
+      "sha256": "0c1cbd4bfc61feefce8b0377da513c489a99114bcbaef01d24d8310f2e8094a6",
+      "protocol_event_count": 7,
+      "protocol_events_sha256": "d95082bc37fbb6df2dff7ddabc11cfacaff5de9332dc2aed1a1139d6d7593c23"
+    },
+    {
+      "path": "work-items/worktree-and-closure-integrity/worktree-and-closure-integrity.work-item-report.json",
+      "sha256": "34ee19d045bf4573ef85ec45352e092a0cd6e2a6ccb6c9e8fd815ff62bc559f3",
+      "protocol_event_count": 5,
+      "protocol_events_sha256": "a553199d99bbfc78a6e1159e231ac18584084243d3692955b9c8c53b9296ff04"
+    }
+  ],
+  "historical_unbound_approval_events": [
+    {
+      "report_path": "work-items/adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.work-item-report.json",
+      "index": 18,
+      "event": {
+        "timestamp": "2026-09-03T07:06:55.732Z",
+        "action": "approve-closeout-bundle",
+        "actor": "human-review-bundle",
+        "from_status": "VERIFIED",
+        "to_status": "VERIFIED",
+        "note": "APPROVED closeout gates: release, business_acceptance"
+      }
+    },
+    {
+      "report_path": "work-items/closeout-bundle-legacy-dod-compatibility/closeout-bundle-legacy-dod-compatibility.work-item-report.json",
+      "index": 12,
+      "event": {
+        "timestamp": "2026-09-08T02:02:43.548Z",
+        "action": "approve-closeout-bundle",
+        "actor": "human-review-bundle",
+        "from_status": "VERIFIED",
+        "to_status": "VERIFIED",
+        "note": "APPROVED closeout gates: dod, release, business_acceptance"
+      }
+    }
+  ],
+  "wip_file_sha256": "8b0d15de455cae2f0aed5603916e49c610e3b5acb6edda219764de5f0142ee1e",
+  "wip_diff_sha256": "554af6e279da86bec7634585a4fa5cb08d47d04c59abd7302180b4fec46efb91",
+  "scope_roots": 16,
+  "resume_at": "2026-09-12T06:06:04.440Z",
+  "baseline_tests": {
+    "work-item-protocol.test.js": "PASS",
+    "workflow-gate-review.test.js": "PASS"
+  }
+}
