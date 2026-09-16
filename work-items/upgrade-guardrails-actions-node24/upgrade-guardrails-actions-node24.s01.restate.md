@@ -298,6 +298,7 @@ review_notes:
   - "Human Developer/QC approved refreshed CI-N24-T4a/T4b Spec Compliance for source 53bab65030dd925d8f814454b504d12c2dec9505, workflow SHA-256 b72a0cb172d8a11c5d2e96acc6a31bdd9c22b00f48b0a8fd0e643ae0d3ad0f30, and source-set SHA-256 7115db15698953da66881d18335ab48b02b4f9102d46e5b2b29a9d3283d5983a at 2026-09-15T10:33:17Z. Code Quality remains independent."
   - "Human Developer/QC approved refreshed CI-N24-T4a/T4b Code Quality for source 53bab65030dd925d8f814454b504d12c2dec9505 and implementation diff SHA-256 4852365ded7042836b4327e3506bdae04e5747200c83c3545afe3df12c9ddedc at 2026-09-15T10:41:09Z. Hosted zero-annotation verification remains separate."
   - "Hosted run 34959637638 for source 41e7b0187ff97e486b019bb9d69ab2945d7bbf8a passed 10/10 jobs with zero annotations across all 10 check-runs; downloaded v2.6.2 candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f matches its declared digest. QC Technical Verification and DoD remain separate."
+  - "Human QC approved Technical Verification for source 41e7b0187ff97e486b019bb9d69ab2945d7bbf8a, run 34959637638, and candidate SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f at 2026-09-16T01:41:43Z. DoD remains a separate gate."
 refs:
   - "work-items/upgrade-guardrails-actions-node24"
 audit_events:
@@ -324,6 +325,7 @@ audit_events:
   - "T4AB_REFRESHED_SPEC_COMPLIANCE_APPROVED"
   - "T4AB_REFRESHED_CODE_QUALITY_APPROVED"
   - "CI_N24_HOSTED_ZERO_ANNOTATION_EVIDENCE_COLLECTED"
+  - "CI_N24_TECHNICAL_VERIFICATION_APPROVED"
 ```
 
 ## Audit

@@ -176,8 +176,10 @@ status: PASS
 ## Technical Verification
 ```yaml
 proposed_verdict: PASS
-human_verdict: PENDING
+human_verdict: PASS
 reviewer_role: "qc"
+reviewed_by: "qc"
+reviewed_at: "2026-09-16T01:41:43Z"
 reviewed_source_commit: "41e7b0187ff97e486b019bb9d69ab2945d7bbf8a"
 run_id: 34959637638
 candidate_sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
@@ -190,7 +192,7 @@ proposed_status: DONE
 human_verdict: PENDING
 status: PENDING_QC
 preconditions:
-  technical_verification: PENDING_QC
+  technical_verification: PASS
   spec_coverage: "6/6 PASS"
   governance_compliance: PASS
   regression_compatibility: PASS
@@ -214,7 +216,7 @@ trace_status: COMPLETE
 ## Branch Finish Decision
 ```yaml
 status: HOLD
-reason: "Technical Verification and DoD are still pending human QC decisions."
+reason: "Technical Verification is approved; DoD remains a separate pending human QC decision."
 merge: NOT_AUTHORIZED
 cleanup: NOT_AUTHORIZED
 release_or_tag: OUT_OF_SCOPE
