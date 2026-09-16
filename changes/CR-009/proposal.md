@@ -9,10 +9,11 @@ reviewed_by: "maintainer"
 reviewed_at: "2026-09-16T07:37:51.520Z"
 materialization_ref: "work-items/terminal-archive-legacy-state-reconciliation/terminal-archive-legacy-state-reconciliation.work-item-report.json"
 request_summary: "Prevent terminal completion while unresolved state entries exist; require explicit opaque identifier disposition; preserve exact original text in append-only resolved-state history; prohibit semantic inference."
-defect_source: "n/a"
-spec_impact_classified: false
+defect_source: "code"
+spec_impact_classified: true
 review_notes:
   - "Maintainer approved CR-009 linked defect boundary."
+  - "Human accepted the s03 recommendation bundle and the proposed code/true classification on 2026-09-16; the original change approval remains a separate trusted receipt."
 linked_work_items:
   - "terminal-archive-legacy-state-reconciliation"
 ---
@@ -38,7 +39,7 @@ affected_specs:
 
 ## Decision
 ```yaml
-status: draft
+status: approved
 owner: "maintainer"
 reviewers:
   - "developer"
