@@ -309,3 +309,158 @@ test("approval contradictions use exact gate or non-gate purpose identity, not w
     assert.deepEqual(evidence.getProtocolStateContradictionErrors(unrelated, receipts, "fixture.json"), []);
   }
 });
+
+// CR-009 / T1: fail-first tests for the public snapshot identity and exact
+// original-entry contract. No selection may depend on display text.
+test("disposition target IDs bind report bytes, collection, and position", () => {
+  const text = "Peer review remains outstanding – 漢字";
+  const raw = { work_item_slug: "demo", blockers: [text, text], required_actions: [text] };
+  const snapshot = Buffer.from(JSON.stringify(raw));
+  const targets = utils.getDispositionTargets(raw, snapshot);
+  assert.deepEqual(targets.map(({ collection, kind, text: value }) => [collection, kind, value]), [
+    ["blockers", "legacy", text], ["blockers", "legacy", text], ["required_actions", "legacy", text]
+  ]);
+  assert.equal(new Set(targets.map(({ state_id }) => state_id)).size, 3, "equal text never aliases an entry");
+  assert.ok(targets.every(({ state_id }) => typeof state_id === "string" && state_id.length > 0));
+  assert.deepEqual(utils.getDispositionTargets(raw, snapshot), targets, "same snapshot has stable IDs");
+  const changed = utils.getDispositionTargets(raw, Buffer.from(JSON.stringify(raw) + "\n"));
+  assert.ok(targets.every((target, index) => target.state_id !== changed[index].state_id), "any byte change expires IDs");
+});
+
+test("legacy report load retains raw entry shape and snapshot without rewriting bytes", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "tar-raw-read-"));
+  const slug = "demo", item = path.join(dir, "work-items", slug);
+  fs.mkdirSync(item, { recursive: true });
+  const reportPath = path.join(item, slug + ".work-item-report.json");
+  const raw = { work_item_slug: slug, blockers: ["  review\n漢字  ", { kind: "legacy", text: " pending " }], required_actions: [] };
+  const bytes = Buffer.from(JSON.stringify(raw, null, 2) + "\n");
+  fs.writeFileSync(reportPath, bytes);
+  try {
+    const loaded = utils.loadProtocolReport({ projectRoot: dir, workflowRootBase: path.join(dir, "work-items"), workItemSlug: slug });
+    assert.deepEqual(loaded.rawReport.blockers, raw.blockers, "original string remains a string");
+    assert.deepEqual(loaded.rawBytes, bytes, "the exact snapshot is available for ID binding");
+    assert.deepEqual(fs.readFileSync(reportPath), bytes, "status/load remains read-only");
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("normalization preserves optional resolved-state history rather than dropping it", () => {
+  const raw = { work_item_slug: "demo", resolved_state_history: [] };
+  assert.deepEqual(utils.normalizeProtocolReport(raw).resolved_state_history, []);
+  assert.equal(Object.hasOwn(utils.normalizeProtocolReport({ work_item_slug: "old" }), "resolved_state_history"), false,
+    "historical reports do not gain a field just by loading");
+  assert.throws(() => utils.normalizeProtocolReport({ work_item_slug: "demo", resolved_state_history: {} }),
+    /resolved_state_history.*array/i, "history cannot silently normalize from a malformed shape");
+});
+
+test("empty optional history survives report write and reload without adding it to old reports", () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "tar-history-roundtrip-"));
+  const slug = "demo", item = path.join(dir, "work-items", slug);
+  fs.mkdirSync(item, { recursive: true });
+  const reportPath = path.join(item, slug + ".work-item-report.json");
+  try {
+    utils.writeProtocolReport({ work_item_slug: slug, resolved_state_history: [] }, reportPath);
+    const persisted = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert.deepEqual(persisted.resolved_state_history, []);
+    const loaded = utils.loadProtocolReport({ projectRoot: dir, workflowRootBase: path.join(dir, "work-items"), workItemSlug: slug });
+    assert.deepEqual(loaded.report.resolved_state_history, []);
+    utils.writeProtocolReport({ work_item_slug: slug }, reportPath);
+    assert.equal(Object.hasOwn(JSON.parse(fs.readFileSync(reportPath, "utf8")), "resolved_state_history"), false);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("one per-work-item report lock rejects competing writers and releases only its own lock", () => {
+  assert.equal(typeof utils.withProtocolReportLock, "function", "shared report lock is available");
+  if (typeof utils.withProtocolReportLock !== "function") return;
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "tar-report-lock-"));
+  const workflowRootBase = path.join(dir, "work-items");
+  const options = { workflowRootBase, workItemSlug: "demo" };
+  try {
+    const result = utils.withProtocolReportLock(options, ({ lockPath }) => {
+      assert.equal(fs.existsSync(lockPath), true, "lock exists while the writer runs");
+      assert.throws(() => utils.withProtocolReportLock(options, () => {}), /lock|in progress/i,
+        "a competing writer cannot enter its snapshot/commit window");
+      assert.equal(fs.existsSync(lockPath), true, "losing writer cannot remove winner's lock");
+      return "committed";
+    });
+    assert.equal(result, "committed");
+    const lockPath = utils.getProtocolReportLockPath(options);
+    assert.equal(fs.existsSync(lockPath), false, "owner releases lock after success");
+    assert.throws(() => utils.withProtocolReportLock(options, () => { throw new Error("write failed"); }), /write failed/);
+    assert.equal(fs.existsSync(lockPath), false, "owner releases lock after failure");
+    fs.mkdirSync(path.dirname(lockPath), { recursive: true });
+    fs.writeFileSync(lockPath, JSON.stringify({ pid: 999999999, nonce: "orphan" }) + "\n");
+    assert.throws(() => utils.withProtocolReportLock(options, () => {}), /lock|in progress/i,
+      "an orphan lock fails closed pending explicit recovery");
+    assert.equal(fs.existsSync(lockPath), true, "failed contender never silently removes an orphan lock");
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("report commit refuses a changed or unexpectedly created snapshot", () => {
+  assert.equal(typeof utils.assertProtocolSnapshotUnchanged, "function", "snapshot pre-commit check is available");
+  if (typeof utils.assertProtocolSnapshotUnchanged !== "function") return;
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "tar-snapshot-check-"));
+  const reportPath = path.join(dir, "report.json");
+  const original = Buffer.from('{"blockers":[]}\n');
+  try {
+    assert.doesNotThrow(() => utils.assertProtocolSnapshotUnchanged({ reportPath, rawBytes: null }));
+    fs.writeFileSync(reportPath, original);
+    assert.throws(() => utils.assertProtocolSnapshotUnchanged({ reportPath, rawBytes: null }), /snapshot|changed/i,
+      "bootstrap cannot overwrite a report created after its initial read");
+    assert.doesNotThrow(() => utils.assertProtocolSnapshotUnchanged({ reportPath, rawBytes: original }));
+    fs.writeFileSync(reportPath, Buffer.from('{"blockers":["changed"]}\n'));
+    assert.throws(() => utils.assertProtocolSnapshotUnchanged({ reportPath, rawBytes: original }), /snapshot|changed/i,
+      "a stale reader cannot overwrite a newer report");
+    fs.unlinkSync(reportPath);
+    assert.throws(() => utils.assertProtocolSnapshotUnchanged({ reportPath, rawBytes: original }), /snapshot|changed/i,
+      "a removed report is not silently recreated from stale input");
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test("disposition selects one raw entry only by the locked snapshot ID", () => {
+  assert.equal(typeof utils.selectDispositionTarget, "function", "exact disposition selector is available");
+  if (typeof utils.selectDispositionTarget !== "function") return;
+  const text = "review pending – 漢字";
+  const rawReport = { blockers: [text, text], required_actions: [{ kind: "legacy", text }] };
+  const rawBytes = Buffer.from(JSON.stringify(rawReport));
+  const targets = utils.getDispositionTargets(rawReport, rawBytes);
+  const selected = utils.selectDispositionTarget({ rawReport, rawBytes, stateId: targets[1].state_id });
+  assert.deepEqual(selected, { ...targets[1], index: 1, originalEntry: text },
+    "duplicate text selects only the second raw blocker by ID");
+  assert.throws(() => utils.selectDispositionTarget({ rawReport, rawBytes, stateId: "" }), /state.id|unknown|stale/i);
+  assert.throws(() => utils.selectDispositionTarget({ rawReport, rawBytes, stateId: "di:" + "0".repeat(64) }), /state.id|unknown|stale/i);
+  assert.throws(() => utils.selectDispositionTarget({ rawReport, rawBytes: Buffer.from(JSON.stringify(rawReport) + "\n"), stateId: targets[1].state_id }), /state.id|unknown|stale/i);
+});
+
+test("atomic report replacement preserves whole pre-state or whole post-state at injected boundaries", () => {
+  assert.equal(typeof utils.atomicWriteRawProtocolReport, "function", "atomic disposition report writer is available");
+  if (typeof utils.atomicWriteRawProtocolReport !== "function") return;
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "tar-atomic-report-"));
+  const reportPath = path.join(dir, "report.json");
+  const before = Buffer.from(JSON.stringify({ work_item_slug: "demo", blockers: ["raw legacy"], required_actions: [] }, null, 2) + "\n");
+  const afterReport = { work_item_slug: "demo", blockers: [], required_actions: [], resolved_state_history: [{ operation_id: "op-1", original_entry: "raw legacy", original_text: "raw legacy" }] };
+  const after = Buffer.from(JSON.stringify(afterReport, null, 2) + "\n");
+  try {
+    for (const point of ["after_stage", "before_report_rename", "after_report_rename"]) {
+      fs.writeFileSync(reportPath, before);
+      assert.throws(() => utils.atomicWriteRawProtocolReport({ report: afterReport, reportPath, expectedBytes: before, failurePoint: point }), /injected|failure/i);
+      assert.deepEqual(fs.readFileSync(reportPath), point === "after_report_rename" ? after : before,
+        `${point} leaves one complete report image`);
+      assert.deepEqual(fs.readdirSync(dir), ["report.json"], `${point} leaves no staged file behind`);
+    }
+    fs.writeFileSync(reportPath, before);
+    fs.chmodSync(reportPath, 0o640);
+    utils.atomicWriteRawProtocolReport({ report: afterReport, reportPath, expectedBytes: before });
+    assert.deepEqual(fs.readFileSync(reportPath), after, "normal commit preserves the exact legacy string inside history");
+    assert.equal(fs.statSync(reportPath).mode & 0o777, 0o640,
+      "atomic replacement preserves the existing report's access mode");
+    assert.deepEqual(fs.readdirSync(dir), ["report.json"], "normal commit leaves no staged file");
+    assert.throws(() => utils.atomicWriteRawProtocolReport({ report: afterReport, reportPath, expectedBytes: before }), /snapshot|changed/i,
+      "stale writer cannot replace a newer report");
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});

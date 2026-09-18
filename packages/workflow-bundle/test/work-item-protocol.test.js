@@ -2,6 +2,7 @@ const fs = require("fs");
 const crypto = require("crypto");
 const os = require("os");
 const path = require("path");
+const strictAssert = require("node:assert/strict");
 const { execFileSync } = require("child_process");
 const { ensureLightLazyStepNote } = require("../scripts/work-item-protocol");
 const {
@@ -10,7 +11,7 @@ const {
   normalizeTrustedApprovalReceipt,
   resolveGateArtifact
 } = require("../scripts/workflow-trusted-approval-utils");
-const { createStateEntry, normalizeProtocolReport, renderProtocolBlock } = require("../scripts/work-item-protocol-utils");
+const { createStateEntry, normalizeProtocolReport, renderProtocolBlock, upsertProtocolBlockInS01 } = require("../scripts/work-item-protocol-utils");
 const {
   getProtocolStateContradictionErrors,
   getTrustedReceiptArtifactErrors
@@ -1348,7 +1349,8 @@ function testWorkItemLifecycleAdapterEmitsBoundedTelemetry() {
     report.current_step = "s07";
     report.handoff_target = "developer";
     report.blockers = [];
-    report.required_actions = ["Continue implementation."];
+    report.required_actions = [createStateEntry({ collection: "required_actions", kind: "workflow_followup",
+      sourceKey: `telemetry:${slug}`, text: "Continue implementation." })];
     fs.writeFileSync(reportPath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
 
     const outcome = runGateCommand(
@@ -1481,10 +1483,7 @@ function testContradictoryProtocolStateFixtureIsRejected() {
   assert(errors.some((error) => /task_plan.*APPROVED/i.test(error)), `task-plan contradiction missing: ${JSON.stringify(errors)}`);
   assert(errors.some((error) => /spec.*APPROVED/i.test(error)), `spec required-action contradiction missing: ${JSON.stringify(errors)}`);
 
-  const source = fs.readFileSync(path.join(__dirname, "..", "scripts", "work-item-protocol.js"), "utf8");
-  const activateCase = source.match(/case "activate":([\s\S]*?)case "block":/);
-  assert(activateCase && /blockers:\s*\[\]/.test(activateCase[1]), "activate transition must clear stale blockers");
-  console.log("  PASS: contradictory protocol state fixture is rejected and activate clears blockers");
+  console.log("  PASS: contradictory protocol state fixture is rejected without inferring from opaque prose");
 }
 
 
@@ -1763,6 +1762,408 @@ function testCloseoutBundlePreservesUncommittedDeliveryGuard() {
   }
 }
 
+function testTarStatusExposesReadOnlySnapshotTargets() {
+  const slug = "tar-target-fixture";
+  const { projectRoot, workflowRoot } = buildLightProject(slug);
+  const script = path.resolve(__dirname, "..", "scripts", "work-item-protocol.js");
+  const text = " Peer review is outstanding – 漢字 ";
+  const raw = { work_item_slug: slug, protocol_status: "DONE", blockers: [text, text], required_actions: [text] };
+  const reportPath = path.join(workflowRoot, `${slug}.work-item-report.json`);
+  writeFile(reportPath, JSON.stringify(raw, null, 2) + "\n");
+  try {
+    const before = fs.readFileSync(reportPath);
+    const outcome = runGateCommand(script, ["status", "--work-item", slug, "--project-root", projectRoot,
+      "--workflow-root", path.dirname(workflowRoot)], process.env);
+    assert(outcome.status === 0, "TAR status reads a historical report");
+    if (outcome.status !== 0) return;
+    const body = JSON.parse(outcome.stdout.slice(outcome.stdout.indexOf("\n") + 1));
+    const targets = body.disposition_targets || [];
+    assert(targets.length === 3, "TAR status exposes all active entries in both collections");
+    assert(new Set(targets.map(target => target.state_id)).size === 3, "TAR duplicate text has three distinct IDs");
+    assert(targets.every(target => target.text === text && target.kind === "legacy"), "TAR status preserves exact display text");
+    assert(fs.readFileSync(reportPath).equals(before), "TAR status never migrates or rewrites the report");
+  } finally { rmrf(projectRoot); }
+}
+
+function testTarCopiedCr008BlockersRefuseArchive() {
+  const ctx = buildProjectAtVerified("tar-cr008-parent-copy");
+  const { applyAction } = require("../scripts/work-item-protocol");
+  const priorRoot = process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
+  const priorInsecure = process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT;
+  process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = ctx.approvalRoot;
+  process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT = "true";
+  try {
+    const closed = closeIt(ctx);
+    assert(closed.ok, "TAR copied CR-008 fixture reaches DONE before archive check");
+    if (!closed.ok) return;
+    const parentTexts = [
+      "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event.",
+      "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending."
+    ];
+    for (const blockers of [parentTexts, parentTexts.map(text => ({ kind: "legacy", text })),
+      [createStateEntry({ collection: "blockers", kind: "delivery_blocker", sourceKey: "parent-finding", text: parentTexts[0] })]]) {
+      const input = { ...closed.report, blockers, required_actions: [] };
+      const before = JSON.stringify(input);
+      let error;
+      try { applyAction(input, "archive", { "project-root": ctx.projectRoot }); }
+      catch (caught) { error = caught; }
+      assert(error && /active blockers|blockers.*active|dispose.*blocker/i.test(error.message),
+        `TAR archive rejects active ${typeof blockers[0] === "string" ? "raw" : blockers[0].kind} blockers for the right reason`);
+      assert(JSON.stringify(input) === before, "TAR rejected archive leaves input state unchanged");
+      const reportPath = path.join(ctx.workflowRoot, `${ctx.report.work_item_slug}.work-item-report.json`);
+      const s01Path = path.join(ctx.workflowRoot, `${ctx.report.work_item_slug}.s01.restate.md`);
+      writeFile(reportPath, JSON.stringify(input, null, 2) + "\n");
+      const reportBytes = fs.readFileSync(reportPath);
+      const s01Bytes = fs.readFileSync(s01Path);
+      const cli = runGateCommand(path.resolve(__dirname, "..", "scripts", "work-item-protocol.js"),
+        ["archive", "--work-item", ctx.report.work_item_slug, "--project-root", ctx.projectRoot,
+          "--workflow-root", path.dirname(ctx.workflowRoot)], ctx.childEnv);
+      assert(cli.status !== 0 && /active blockers|blockers.*active|dispose.*blocker/i.test(cli.stderr),
+        "TAR CLI archive rejects copied active blockers");
+      assert(fs.readFileSync(reportPath).equals(reportBytes) && fs.readFileSync(s01Path).equals(s01Bytes),
+        "TAR failed CLI archive keeps report and s01 projection byte-identical");
+    }
+  } finally {
+    if (priorRoot === undefined) delete process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
+    else process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = priorRoot;
+    if (priorInsecure === undefined) delete process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT;
+    else process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT = priorInsecure;
+    rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot);
+  }
+}
+
+function testTarLifecycleTransitionsRefuseOpaqueLegacyState() {
+  const ctx = buildProjectAtVerified("tar-opaque-transition-item");
+  const { applyAction } = require("../scripts/work-item-protocol");
+  const priorRoot = process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
+  const priorInsecure = process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT;
+  process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = ctx.approvalRoot;
+  process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT = "true";
+  const opaque = { kind: "legacy", text: "  Chờ review; pending – 漢字  " };
+  try {
+    for (const [action, from, args] of [
+      ["activate", "MATERIALIZED", { "write-root": "src" }],
+      ["block", "ACTIVE", { blocker: "New blocker" }],
+      ["resume", "BLOCKED", { "write-root": "src" }],
+      ["verify", "ACTIVE", {}],
+      ["close", "VERIFIED", {}],
+      ["cancel", "ACTIVE", { reason: "Cancel requested" }]
+    ]) {
+      const input = { ...ctx.report, protocol_status: from, required_actions: [opaque] };
+      const before = JSON.stringify(input);
+      strictAssert.throws(() => applyAction(input, action, { "project-root": ctx.projectRoot, ...args }),
+        /legacy|opaque|dispose-state/i, `TAR ${action} refuses unresolved opaque legacy action`);
+      assert(JSON.stringify(input) === before, `TAR ${action} leaves rejected input unchanged`);
+    }
+    for (const [action, from] of [["activate", "MATERIALIZED"], ["resume", "BLOCKED"]]) {
+      const blockers = [createStateEntry({ collection: "blockers", kind: "delivery_blocker",
+        sourceKey: `unresolved:${action}`, text: "Peer review remains outstanding – 漢字" })];
+      strictAssert.throws(() => applyAction({ ...ctx.report, protocol_status: from, blockers }, action,
+        { "project-root": ctx.projectRoot, "write-root": "src" }), /active blockers|dispose.*blocker/i,
+      `TAR ${action} cannot implicitly clear a typed active blocker`);
+    }
+  } finally {
+    if (priorRoot === undefined) delete process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
+    else process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = priorRoot;
+    if (priorInsecure === undefined) delete process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT;
+    else process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT = priorInsecure;
+    rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot);
+  }
+}
+
+function testTarLifecycleTransitionsPreserveUnrelatedTypedAction() {
+  const ctx = buildProjectAtVerified("tar-typed-transition-item");
+  const { applyAction } = require("../scripts/work-item-protocol");
+  const priorRoot = process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
+  const priorInsecure = process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT;
+  process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = ctx.approvalRoot;
+  process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT = "true";
+  const unrelated = { id: "se:unrelated", kind: "workflow_followup", text: "Independent follow-up – 漢字" };
+  try {
+    const approvedGateAction = createStateEntry({ collection: "required_actions", kind: "gate_approval",
+      gate: "spec", sourceKey: "gate-approval:" + ctx.report.work_item_slug, text: "Approve spec" });
+    const unrelatedGateAction = createStateEntry({ collection: "required_actions", kind: "gate_approval",
+      gate: "spec", sourceKey: "external:spec-review", text: "Independent spec review" });
+    const activated = applyAction({ ...ctx.report, protocol_status: "MATERIALIZED",
+      required_actions: [approvedGateAction, unrelatedGateAction, unrelated] }, "activate",
+    { "project-root": ctx.projectRoot, "write-root": "src" });
+    assert(!activated.required_actions.some(entry => entry.id === approvedGateAction.id),
+      "TAR activation consumes only the materializer-owned spec approval action after its trusted receipt passed");
+    assert(activated.required_actions.some(entry => entry.id === unrelatedGateAction.id),
+      "TAR activation preserves a same-gate action that has a different purpose ID");
+    assert(activated.required_actions.some(entry => JSON.stringify(entry) === JSON.stringify(unrelated)),
+      "TAR activation preserves an unrelated typed action while clearing the approved gate action");
+    for (const [action, from, args] of [
+      ["activate", "MATERIALIZED", { "write-root": "src" }],
+      ["block", "ACTIVE", { blocker: "New blocker" }],
+      ["resume", "BLOCKED", { "write-root": "src" }],
+      ["verify", "ACTIVE", {}],
+      ["close", "VERIFIED", {}],
+      ["cancel", "ACTIVE", { reason: "Cancel requested" }]
+    ]) {
+      const after = applyAction({ ...ctx.report, protocol_status: from, required_actions: [unrelated] }, action,
+        { "project-root": ctx.projectRoot, ...args });
+      assert(after.required_actions.some(entry => JSON.stringify(entry) === JSON.stringify(unrelated)),
+        `TAR ${action} preserves unrelated typed action unchanged`);
+    }
+    const unrelatedBlocker = createStateEntry({ collection: "blockers", kind: "delivery_blocker",
+      sourceKey: "unrelated:blocker", text: "Independent blocker – 漢字" });
+    for (const [action, from, args] of [
+      ["block", "ACTIVE", { blocker: "New blocker" }],
+      ["verify", "ACTIVE", {}],
+      ["close", "VERIFIED", {}],
+      ["cancel", "ACTIVE", { reason: "Cancel requested" }]
+    ]) {
+      const after = applyAction({ ...ctx.report, protocol_status: from, blockers: [unrelatedBlocker] }, action,
+        { "project-root": ctx.projectRoot, ...args });
+      assert(after.blockers.some(entry => JSON.stringify(entry) === JSON.stringify(unrelatedBlocker)),
+        `TAR ${action} preserves unrelated typed blocker unchanged`);
+    }
+    const closed = closeIt(ctx);
+    assert(closed.ok, "TAR archive required-action fixture can close");
+    if (closed.ok) {
+      const input = { ...closed.report, blockers: [], required_actions: [unrelated] };
+      strictAssert.throws(() => applyAction(input, "archive", { "project-root": ctx.projectRoot }),
+        /active required.action|unresolved required.action|dispose-state/i,
+        "TAR archive refuses an unrelated required action instead of silently discarding it");
+    }
+  } finally {
+    if (priorRoot === undefined) delete process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
+    else process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = priorRoot;
+    if (priorInsecure === undefined) delete process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT;
+    else process.env.WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT = priorInsecure;
+    rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot);
+  }
+}
+
+function testTarOneEntryDispositionRequiresTrustAndIsIdempotent() {
+  const ctx = buildProjectAtVerified("tar-disposition-copy");
+  const script = path.resolve(__dirname, "..", "scripts", "work-item-protocol.js");
+  const reportPath = path.join(ctx.workflowRoot, `${ctx.report.work_item_slug}.work-item-report.json`);
+  const firstText = "Peer review of the migration script is outstanding";
+  const secondText = "  Chờ review: seal; pending – 漢字  ";
+  try {
+    const raw = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    raw.blockers = [firstText, { kind: "legacy", text: secondText }];
+    raw.required_actions = [];
+    writeFile(reportPath, JSON.stringify(raw, null, 2) + "\n");
+    const baseArgs = ["--work-item", ctx.report.work_item_slug, "--project-root", ctx.projectRoot,
+      "--workflow-root", path.dirname(ctx.workflowRoot)];
+    const status = runGateCommand(script, ["status", ...baseArgs], ctx.childEnv);
+    assert(status.status === 0, "TAR disposition fixture can inspect active entries");
+    if (status.status !== 0) return;
+    const body = JSON.parse(status.stdout.slice(status.stdout.indexOf("\n") + 1));
+    const targets = body.disposition_targets || [];
+    assert(targets.length === 2, "TAR copied fixture exposes two blocker IDs");
+    if (targets.length !== 2) return;
+    const baselineBytes = fs.readFileSync(reportPath);
+    const missingReason = runGateCommand(script, ["dispose-state", ...baseArgs, "--state-id", targets[0].state_id,
+      "--operation-id", "tar-no-reason", "--reviewed-by", "maintainer"], ctx.childEnv);
+    assert(missingReason.status !== 0 && /reason/i.test(missingReason.stderr) && fs.readFileSync(reportPath).equals(baselineBytes),
+      "TAR missing reason rejects before authorization or report mutation");
+    const unknownTarget = runGateCommand(script, ["dispose-state", ...baseArgs, "--state-id", "di:" + "0".repeat(64),
+      "--operation-id", "tar-unknown", "--reviewed-by", "maintainer", "--reason", "Explicit decision"], process.env);
+    assert(unknownTarget.status !== 0 && /state.id|unknown|stale/i.test(unknownTarget.stderr) &&
+      fs.readFileSync(reportPath).equals(baselineBytes), "TAR unknown ID rejects before human credential prompt and mutation");
+    const operation = ["dispose-state", ...baseArgs, "--state-id", targets[0].state_id,
+      "--operation-id", "tar-op-001", "--reviewed-by", "maintainer", "--reason", "Maintainer confirmed historical defect resolved"];
+    const before = fs.readFileSync(reportPath);
+    const spoofed = runGateCommand(script, operation, {
+      ...process.env, WORKFLOW_BUNDLE_APPROVAL_ROOT: ctx.approvalRoot,
+      WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT: "true"
+    });
+    assert(spoofed.status !== 0 && /passphrase|trusted|interactive|TTY/i.test(spoofed.stderr),
+      "TAR role label without trusted human confirmation fails");
+    assert(fs.readFileSync(reportPath).equals(before), "TAR failed authorization does not mutate the report");
+    const wrongPassphrase = runGateCommand(script, operation, {
+      ...ctx.childEnv, WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: "incorrect-passphrase"
+    });
+    assert(wrongPassphrase.status !== 0 && fs.readFileSync(reportPath).equals(before),
+      "TAR incorrect passphrase leaves the report byte-identical");
+
+    const approved = runGateCommand(script, operation, ctx.childEnv);
+    assert(approved.status === 0, `TAR fixture-authorized one-entry disposition succeeds (${approved.stderr.split("\n")[0]})`);
+    if (approved.status !== 0) return;
+    const after = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert(after.blockers.length === 1 && JSON.stringify(after.blockers[0]) === JSON.stringify(raw.blockers[1]),
+      "TAR exactly one entry moves; trap-word peer stays active");
+    assert(after.resolved_state_history && after.resolved_state_history.length === 1,
+      "TAR exactly one history record is appended");
+    const record = (after.resolved_state_history || [])[0] || {};
+    assert(record.operation_id === "tar-op-001" && record.source_entry_id === targets[0].state_id &&
+      record.source_collection === "blockers" && record.original_entry === firstText && record.original_text === firstText &&
+      record.actor === "maintainer" && record.reason === "Maintainer confirmed historical defect resolved" &&
+      /Z$/.test(record.resolved_at || ""), "TAR history binds exact raw entry, identity, actor, reason, and UTC time");
+    const afterBytes = fs.readFileSync(reportPath);
+    const retry = runGateCommand(script, operation, ctx.childEnv);
+    assert(retry.status === 0 && fs.readFileSync(reportPath).equals(afterBytes), "TAR identical operation retry is a byte-stable no-op");
+    const tampered = JSON.parse(afterBytes.toString("utf8"));
+    tampered.resolved_state_history[0].authorization.signature = "tampered-signature";
+    const tamperedBytes = Buffer.from(JSON.stringify(tampered, null, 2) + "\n");
+    fs.writeFileSync(reportPath, tamperedBytes);
+    const unsafeRetry = runGateCommand(script, operation, ctx.childEnv);
+    assert(unsafeRetry.status !== 0 && /invalid signed history/i.test(unsafeRetry.stderr) &&
+      fs.readFileSync(reportPath).equals(tamperedBytes),
+      "TAR tampered signed history cannot authorize an idempotent retry");
+    fs.writeFileSync(reportPath, afterBytes);
+    const conflict = runGateCommand(script, [...operation.slice(0, -2), "--reason", "different reason"], ctx.childEnv);
+    assert(conflict.status !== 0 && fs.readFileSync(reportPath).equals(afterBytes), "TAR operation ID reuse with different reason rejects");
+    const conflictingTarget = runGateCommand(script, ["dispose-state", ...baseArgs, "--state-id", targets[1].state_id,
+      "--operation-id", "tar-op-001", "--reviewed-by", "maintainer", "--reason", "Maintainer confirmed historical defect resolved"], ctx.childEnv);
+    assert(conflictingTarget.status !== 0 && /conflicting reuse/i.test(conflictingTarget.stderr) &&
+      fs.readFileSync(reportPath).equals(afterBytes),
+      "TAR conflicting operation_id is checked before the now-stale target ID");
+    const stale = runGateCommand(script, ["dispose-state", ...baseArgs, "--state-id", targets[1].state_id,
+      "--operation-id", "tar-op-002", "--reviewed-by", "maintainer", "--reason", "Second decision"], ctx.childEnv);
+    assert(stale.status !== 0 && /stale|state.id|snapshot/i.test(stale.stderr) && fs.readFileSync(reportPath).equals(afterBytes),
+      "TAR old snapshot ID cannot select the surviving entry");
+    const refreshed = runGateCommand(script, ["status", ...baseArgs], ctx.childEnv);
+    assert(refreshed.status === 0, "TAR can refresh the snapshot after one disposition");
+    if (refreshed.status !== 0) return;
+    const refreshedTargets = JSON.parse(refreshed.stdout.slice(refreshed.stdout.indexOf("\n") + 1)).disposition_targets || [];
+    assert(refreshedTargets.length === 1, "TAR one surviving blocker has one new ID");
+    if (refreshedTargets.length !== 1) return;
+    const second = ["dispose-state", ...baseArgs, "--state-id", refreshedTargets[0].state_id,
+      "--operation-id", "tar-op-002", "--reviewed-by", "maintainer", "--reason", "Second explicit Maintainer decision"];
+    const injected = runGateCommand(script, second, {
+      ...ctx.childEnv, WORKFLOW_BUNDLE_DISPOSITION_FAILURE_POINT: "before_report_rename"
+    });
+    assert(injected.status !== 0 && fs.readFileSync(reportPath).equals(afterBytes),
+      "TAR failure before report rename leaves the complete pre-state");
+    const secondApproved = runGateCommand(script, second, ctx.childEnv);
+    assert(secondApproved.status === 0, "TAR second separately authorized operation succeeds after a failed attempt");
+    if (secondApproved.status !== 0) return;
+    const finalReport = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert(finalReport.blockers.length === 0 && finalReport.resolved_state_history.length === 2,
+      "TAR copied parent reaches zero blockers only after two exact dispositions");
+    assert(JSON.stringify(finalReport.resolved_state_history[1].original_entry) === JSON.stringify(raw.blockers[1]) &&
+      finalReport.resolved_state_history[1].original_text === secondText,
+      "TAR adversarial legacy object stays exact in resolved history");
+    const closed = runGateCommand(script, ["close", ...baseArgs], ctx.childEnv);
+    assert(closed.status === 0, "TAR copied parent can close after two exact dispositions");
+    if (closed.status === 0) {
+      const archived = runGateCommand(script, ["archive", ...baseArgs], ctx.childEnv);
+      assert(archived.status === 0, "TAR copied parent can archive only after active blockers are gone");
+      if (archived.status === 0) {
+        const archivedReport = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+        assert(archivedReport.protocol_status === "ARCHIVED" && archivedReport.blockers.length === 0 &&
+          archivedReport.resolved_state_history.length === 2,
+        "TAR archive retains both exact dispositions without active blockers");
+      }
+    }
+  } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
+}
+
+function testTarUnselectedEqualRawTextRemainsRaw() {
+  const ctx = buildProjectAtVerified("tar-equal-raw-items");
+  const slug = "tar-equal-raw-items";
+  const script = path.resolve(__dirname, "..", "scripts", "work-item-protocol.js");
+  const reportPath = path.join(ctx.workflowRoot, `${slug}.work-item-report.json`);
+  const text = "Peer review remains outstanding – 漢字";
+  try {
+    const raw = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    raw.blockers = [text, text];
+    raw.required_actions = [];
+    fs.writeFileSync(reportPath, JSON.stringify(raw, null, 2) + "\n");
+    const baseArgs = ["--work-item", slug, "--project-root", ctx.projectRoot,
+      "--workflow-root", path.dirname(ctx.workflowRoot)];
+    const status = runGateCommand(script, ["status", ...baseArgs], ctx.childEnv);
+    assert(status.status === 0, "TAR equal-text raw fixture can read targets");
+    if (status.status !== 0) return;
+    const targets = JSON.parse(status.stdout.slice(status.stdout.indexOf("\n") + 1)).disposition_targets;
+    assert(targets.length === 2 && targets[0].state_id !== targets[1].state_id,
+      "TAR equal raw strings receive distinct IDs");
+    const operation = ["dispose-state", ...baseArgs, "--state-id", targets[0].state_id,
+      "--operation-id", "tar-equal-op", "--reviewed-by", "maintainer", "--reason", "One exact entry resolved"];
+    const outcome = runGateCommand(script, operation, ctx.childEnv);
+    assert(outcome.status === 0, "TAR one equal-text raw entry can be disposed");
+    if (outcome.status !== 0) return;
+    const after = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    assert(after.blockers.length === 1 && after.blockers[0] === text && typeof after.blockers[0] === "string",
+      "TAR unselected equal-text legacy string retains its exact raw shape and text");
+    assert(after.resolved_state_history.length === 1 && after.resolved_state_history[0].original_entry === text,
+      "TAR selected raw string moves once into exact history");
+  } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
+}
+
+function testTarCommittedReportRepairsProjectionOnIdenticalRetry() {
+  const ctx = buildProjectAtVerified("tar-projection-repair");
+  const script = path.resolve(__dirname, "..", "scripts", "work-item-protocol.js");
+  const slug = "tar-projection-repair";
+  const reportPath = path.join(ctx.workflowRoot, `${slug}.work-item-report.json`);
+  const s01Path = path.join(ctx.workflowRoot, `${slug}.s01.restate.md`);
+  try {
+    const raw = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    raw.blockers = ["Peer review remains outstanding – 漢字"];
+    raw.required_actions = [];
+    writeFile(reportPath, JSON.stringify(raw, null, 2) + "\n");
+    upsertProtocolBlockInS01(s01Path, raw);
+    const beforeS01 = fs.readFileSync(s01Path);
+    const baseArgs = ["--work-item", slug, "--project-root", ctx.projectRoot,
+      "--workflow-root", path.dirname(ctx.workflowRoot)];
+    const status = runGateCommand(script, ["status", ...baseArgs], ctx.childEnv);
+    assert(status.status === 0, "TAR projection fixture exposes its blocker ID");
+    if (status.status !== 0) return;
+    const target = JSON.parse(status.stdout.slice(status.stdout.indexOf("\n") + 1)).disposition_targets[0];
+    const operation = ["dispose-state", ...baseArgs, "--state-id", target.state_id,
+      "--operation-id", "tar-projection-op", "--reviewed-by", "maintainer", "--reason", "Explicit resolution"];
+    const interrupted = runGateCommand(script, operation, {
+      ...ctx.childEnv, WORKFLOW_BUNDLE_DISPOSITION_FAILURE_POINT: "before_projection_refresh"
+    });
+    const committed = fs.readFileSync(reportPath);
+    const post = JSON.parse(committed.toString("utf8"));
+    assert(interrupted.status !== 0 && post.blockers.length === 0 && post.resolved_state_history.length === 1,
+      "TAR projection failure leaves the complete authoritative post-state");
+    assert(fs.readFileSync(s01Path).equals(beforeS01), "TAR projection failure does not fake a refreshed s01");
+    const retried = runGateCommand(script, operation, ctx.childEnv);
+    assert(retried.status === 0 && /NOOP/.test(retried.stdout) && fs.readFileSync(reportPath).equals(committed),
+      "TAR identical retry repairs projection without a second report commit");
+    assert(!fs.readFileSync(s01Path).equals(beforeS01), "TAR identical retry refreshes the derived s01 projection");
+  } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
+}
+
+function testTarCliWriterHonorsReportLock() {
+  const projectRoot = fs.mkdtempSync(path.join(os.tmpdir(), "tar-cli-lock-"));
+  const slug = "tar-lock-item";
+  const workflowRootBase = path.join(projectRoot, "work-items");
+  const workflowRoot = path.join(workflowRootBase, slug);
+  const reportPath = path.join(workflowRoot, `${slug}.work-item-report.json`);
+  const lockPath = path.join(workflowRootBase, `.${slug}.work-item-report.lock`);
+  const script = path.resolve(__dirname, "..", "scripts", "work-item-protocol.js");
+  const bytes = `${JSON.stringify({ work_item_slug: slug, protocol_status: "ACTIVE", approval_status: "APPROVED",
+    review_required: true, current_step: "s07", blockers: [], required_actions: [], audit_events: [] }, null, 2)}\n`;
+  try {
+    writeFile(reportPath, bytes);
+    writeFile(lockPath, JSON.stringify({ pid: process.pid, nonce: "another-writer" }) + "\n");
+    const outcome = runGateCommand(script, ["block", "--work-item", slug,
+      "--project-root", projectRoot, "--workflow-root", workflowRootBase, "--blocker", "new blocker"], process.env);
+    assert(outcome.status !== 0 && /report.*lock|lock.*report/i.test(outcome.stderr),
+      "TAR CLI mutation refuses a competing per-item report lock");
+    assert(fs.readFileSync(reportPath, "utf8") === bytes,
+      "TAR losing CLI writer cannot change the report");
+    assert(fs.existsSync(lockPath), "TAR losing CLI writer cannot remove the other lock");
+  } finally { rmrf(projectRoot); }
+}
+
+function testTarGateBundleHonorsReportLock() {
+  const ctx = buildProjectAtVerified("tar-bundle-lock-item");
+  const slug = "tar-bundle-lock-item";
+  const reportPath = path.join(ctx.workflowRoot, `${slug}.work-item-report.json`);
+  const lockPath = path.join(path.dirname(ctx.workflowRoot), `.${slug}.work-item-report.lock`);
+  const script = path.resolve(__dirname, "..", "scripts", "workflow-gate-review.js");
+  try {
+    const before = fs.readFileSync(reportPath);
+    writeFile(lockPath, JSON.stringify({ pid: process.pid, nonce: "another-writer" }) + "\n");
+    const outcome = runGateCommand(script, ["approve-closeout-bundle", "--work-item", slug,
+      "--project-root", ctx.projectRoot, "--workflow-root", path.dirname(ctx.workflowRoot),
+      "--approval-root", ctx.approvalRoot], ctx.childEnv);
+    assert(outcome.status !== 0 && /report.*lock|lock.*report/i.test(outcome.stderr),
+      "TAR gate bundle refuses the shared report lock before its transaction lock");
+    assert(fs.readFileSync(reportPath).equals(before), "TAR losing gate bundle cannot rewrite report history");
+    assert(fs.existsSync(lockPath), "TAR losing gate bundle cannot remove another writer's lock");
+  } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
+}
+
 console.log("Running work-item-protocol (Light) tests...\n");
 testLegacyReceiptV1AndAdaptiveProtocolDualRead();
 testEnsureLightLazyStepNoteCreatesS07S08();
@@ -1794,6 +2195,15 @@ testEbEmptyScopeRefusesRatherThanPassesVacuously();
 testEbOutsideGitIsSilent();
 testEbGuardIsOnTheRealCliPath();
 testCloseoutBundlePreservesUncommittedDeliveryGuard();
+testTarStatusExposesReadOnlySnapshotTargets();
+testTarCopiedCr008BlockersRefuseArchive();
+testTarLifecycleTransitionsRefuseOpaqueLegacyState();
+testTarLifecycleTransitionsPreserveUnrelatedTypedAction();
+testTarOneEntryDispositionRequiresTrustAndIsIdempotent();
+testTarUnselectedEqualRawTextRemainsRaw();
+testTarCommittedReportRepairsProjectionOnIdenticalRetry();
+testTarCliWriterHonorsReportLock();
+testTarGateBundleHonorsReportLock();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in work-item-protocol-light.test.js`);

@@ -10,14 +10,20 @@ const {
 } = require("./workflow-capability-control");
 const {
   hasApprovedReceipt,
+  isTrustedDispositionSignatureValid,
   loadTrustedApprovalReceipt,
+  resolveTrustedApprovalRoot,
+  signDispositionIntent,
   writeTrustedApprovalReceipt
 } = require("./workflow-trusted-approval-utils");
 const {
   APPROVAL_GATE_PASSED,
   BOOTSTRAP_GATE_PASSED,
+  atomicWriteRawProtocolReport,
   buildProtocolEvent,
   createStateEntry,
+  assertProtocolSnapshotUnchanged,
+  getDispositionTargets,
   getWorkItemPaths,
   isAllowedProtocolTransition,
   loadProtocolControl,
@@ -28,7 +34,10 @@ const {
   normalizeSingleValue,
   normalizeStateCollection,
   resolveWorkflowRootBase,
-  syncProtocolArtifacts
+  selectDispositionTarget,
+  syncProtocolArtifacts,
+  upsertProtocolBlockInS01,
+  withProtocolReportLock
 } = require("./work-item-protocol-utils");
 const {
   getProtocolStepGateErrors,
@@ -52,7 +61,8 @@ const SUPPORTED_ACTIONS = new Set([
   "verify",
   "close",
   "archive",
-  "cancel"
+  "cancel",
+  "dispose-state"
 ]);
 
 const APPROVAL_REQUIRED_STATUSES = new Set(["ACTIVE", "VERIFIED", "DONE", "ARCHIVED"]);
@@ -291,6 +301,46 @@ function transitionReport(reportInput, options) {
     throw new Error(`Invalid protocol transition ${fromStatus} -> ${toStatus} for work item '${report.work_item_slug}'.`);
   }
 
+  if (action === "archive" && report.blockers.length > 0) {
+    throw new Error(`Cannot archive work item '${report.work_item_slug}' with active blockers; dispose each blocker by state_id first.`);
+  }
+  if ([...report.blockers, ...report.required_actions].some(entry => entry.kind === "legacy")) {
+    throw new Error(`Cannot ${action} work item '${report.work_item_slug}' with unresolved opaque legacy state; use dispose-state with an exact state_id.`);
+  }
+  if (["activate", "resume"].includes(action) && report.blockers.length > 0) {
+    throw new Error(`Cannot ${action} work item '${report.work_item_slug}' with active blockers; dispose each blocker by state_id first.`);
+  }
+
+  const priorActions = ({
+    activate: [],
+    block: ["activate", "resume"],
+    resume: ["block"],
+    verify: ["activate", "resume"],
+    close: ["verify"],
+    archive: ["close"],
+    cancel: ["activate", "resume", "block", "verify", "close"]
+  })[action] || [];
+  const priorTransitionIds = new Set(priorActions.map(previous => createStateEntry({
+    collection: "required_actions",
+    kind: "workflow_followup",
+    sourceKey: `transition:${previous}:${report.work_item_slug}:0`,
+    text: "Transition-owned follow-up"
+  }).id));
+  const consumedKinds = ({
+    activate: ["work_item_activation"],
+    block: [],
+    resume: ["blocker_resolution", "work_item_resume"],
+    verify: [],
+    close: ["work_item_close"],
+    archive: [],
+    cancel: []
+  })[action] || [];
+  let retainedActions = report.required_actions.filter(entry =>
+    !priorTransitionIds.has(entry.id) && !consumedKinds.includes(entry.kind));
+  if (action === "archive" && retainedActions.length > 0) {
+    throw new Error(`Cannot archive work item '${report.work_item_slug}' with unresolved required_actions; dispose each by state_id first.`);
+  }
+
   assertApprovalGate(report, toStatus, projectRoot);
   assertBootstrapGate(report, toStatus, projectRoot);
   assertStepGateEvidence(report, toStatus, projectRoot);
@@ -298,6 +348,28 @@ function transitionReport(reportInput, options) {
     allowUncommitted: options.allowUncommitted,
     uncommittedReason: options.uncommittedReason
   });
+  if (action === "activate") {
+    // Receipt checks above passed; retire only materializer-owned approval purposes by stable ID.
+    const approvedActionIds = new Set([
+      createStateEntry({ collection: "required_actions", kind: "workflow_followup",
+        sourceKey: "work-item-approval:" + report.work_item_slug, text: "Approved work item" }).id
+    ]);
+    if (report.change_id) {
+      approvedActionIds.add(createStateEntry({ collection: "required_actions", kind: "workflow_followup",
+        sourceKey: "change-approval:" + report.change_id, text: "Approved change" }).id);
+    }
+    retainedActions = retainedActions.filter(entry => {
+      if (approvedActionIds.has(entry.id)) return false;
+      if (entry.kind !== "gate_approval" ||
+          !["spec", "contract", "dor", "approach", "foundation", "task_plan"].includes(entry.gate)) return true;
+      const materializerAction = createStateEntry({ collection: "required_actions", kind: "gate_approval",
+        gate: entry.gate, sourceKey: "gate-approval:" + report.work_item_slug, text: "Approved gate" });
+      if (entry.id !== materializerAction.id) return true;
+      const receipt = loadTrustedApprovalReceipt({ projectRoot, kind: "gate",
+        workItemSlug: report.work_item_slug, gate: entry.gate });
+      return !hasApprovedReceipt(receipt.receipt, receipt.approvalRoot);
+    });
+  }
   if (uncommittedWaiver) {
     // Never silent: an exemption nobody can see is worse than no check.
     console.log(`WAIVED: closed over an uncommitted delivery. Reason: ${uncommittedWaiver}`);
@@ -314,15 +386,17 @@ function transitionReport(reportInput, options) {
   }
 
   if (Array.isArray(blockers)) {
-    report.blockers = normalizeStateCollection(blockers.map((entry, index) => typeof entry === "string"
+    const generatedBlockers = blockers.map((entry, index) => typeof entry === "string"
       ? createStateEntry({ collection: "blockers", kind: "delivery_blocker", sourceKey: `transition:${action}:${report.work_item_slug}:${index}`, text: entry })
-      : entry), "blockers");
+      : entry);
+    report.blockers = normalizeStateCollection([...report.blockers, ...generatedBlockers], "blockers");
   }
 
   if (Array.isArray(requiredActions)) {
-    report.required_actions = normalizeStateCollection(requiredActions.map((entry, index) => typeof entry === "string"
+    const generatedActions = requiredActions.map((entry, index) => typeof entry === "string"
       ? createStateEntry({ collection: "required_actions", kind: "workflow_followup", sourceKey: `transition:${action}:${report.work_item_slug}:${index}`, text: entry })
-      : entry), "required_actions");
+      : entry);
+    report.required_actions = normalizeStateCollection([...retainedActions, ...generatedActions], "required_actions");
   }
 
   if (Array.isArray(grantedWritePaths)) {
@@ -690,8 +764,13 @@ function applyAction(reportInput, action, args) {
   }
 }
 
-function printStatus(reportInput) {
+function printStatus(reportInput, snapshot = {}) {
   const report = normalizeProtocolReport(reportInput);
+  const rawBytes = snapshot.rawBytes || (snapshot.reportPath && fs.existsSync(snapshot.reportPath)
+    ? fs.readFileSync(snapshot.reportPath)
+    : null);
+  const rawReport = snapshot.rawReport || (rawBytes ? JSON.parse(rawBytes.toString("utf8")) : null);
+  const dispositionTargets = rawBytes ? getDispositionTargets(rawReport, rawBytes) : [];
   const trustedReceipt = loadTrustedApprovalReceipt({
     projectRoot: path.resolve(report.project_root || ""),
     kind: "work-item",
@@ -711,6 +790,7 @@ function printStatus(reportInput) {
     JSON.stringify(
       {
         ...report,
+        disposition_targets: dispositionTargets,
         trusted_receipt_path: trustedReceipt.receiptPath,
         trusted_receipt: trustedReceipt.receipt
       },
@@ -801,6 +881,105 @@ function listWorkItems({ projectRoot, workflowRootBase, protocolControl }) {
   });
 }
 
+function requireDispositionArg(args, key) {
+  const value = normalizeSingleValue(args[key] || "");
+  if (typeof value !== "string" || !value.trim()) throw new Error(`dispose-state requires '--${key}'.`);
+  return value.trim();
+}
+
+function verifyRecordedDisposition({ record, workItemSlug, stateId, operationId, actor, reason, approvalRoot }) {
+  if (record.source_entry_id !== stateId || record.actor !== actor || record.reason !== reason) {
+    throw new Error(`Conflicting reuse of disposition operation_id '${operationId}'.`);
+  }
+  const authorization = record.authorization;
+  const intent = authorization && authorization.intent;
+  if (!authorization || !isTrustedDispositionSignatureValid({
+    approvalRoot, intent: authorization.intent, signature: authorization.signature
+  }) ||
+    intent.work_item_slug !== workItemSlug || intent.operation_id !== operationId ||
+    intent.state_id !== record.source_entry_id || intent.source_collection !== record.source_collection ||
+    intent.original_text !== record.original_text || JSON.stringify(intent.original_entry) !== JSON.stringify(record.original_entry) ||
+    intent.actor !== record.actor || intent.reason !== record.reason || intent.resolved_at !== record.resolved_at) {
+    throw new Error(`Existing disposition operation_id '${operationId}' has invalid signed history.`);
+  }
+}
+
+function refreshDispositionProjection({ s01Path, report, operationId }) {
+  if (!fs.existsSync(s01Path)) return "NOT_APPLICABLE";
+  try {
+    if (process.env.WORKFLOW_BUNDLE_DISPOSITION_FAILURE_POINT === "before_projection_refresh") {
+      throw new Error("Injected disposition failure at before_projection_refresh.");
+    }
+    upsertProtocolBlockInS01(s01Path, report);
+    if (process.env.WORKFLOW_BUNDLE_DISPOSITION_FAILURE_POINT === "after_projection_refresh") {
+      throw new Error("Injected disposition failure at after_projection_refresh.");
+    }
+    return "SYNCED";
+  } catch (error) {
+    throw new Error(`Disposition operation_id '${operationId}' is committed; s01 projection refresh failed: ${error.message}. Retry the same operation_id to repair the projection.`);
+  }
+}
+
+function runDispositionAction({ projectRoot, workflowRootBase, workItemSlug, args }) {
+  const stateId = requireDispositionArg(args, "state-id");
+  const operationId = requireDispositionArg(args, "operation-id");
+  const actor = requireDispositionArg(args, "reviewed-by");
+  const reason = requireDispositionArg(args, "reason");
+  if (actor !== "maintainer") throw new Error("dispose-state requires '--reviewed-by maintainer'.");
+  const loaded = loadProtocolReport({ projectRoot, workflowRootBase, workItemSlug });
+  const history = loaded.rawReport.resolved_state_history || [];
+  const prior = history.filter((entry) => entry && entry.operation_id === operationId);
+  if (prior.length > 1) throw new Error(`Duplicate disposition operation_id '${operationId}' in resolved history.`);
+  if (prior.length === 1) {
+    const { approvalRoot } = resolveTrustedApprovalRoot({
+      projectRoot, overrideRoot: normalizeSingleValue(args["approval-root"] || "")
+    });
+    verifyRecordedDisposition({ record: prior[0], workItemSlug, stateId, operationId, actor, reason, approvalRoot });
+    return { outcome: "NOOP", record: prior[0], projection_status: refreshDispositionProjection({
+      s01Path: loaded.s01Path, report: loaded.rawReport, operationId
+    }) };
+  }
+
+  // Unknown/stale ID is rejected before resolving a human passphrase or writing.
+  const selected = selectDispositionTarget({ rawReport: loaded.rawReport, rawBytes: loaded.rawBytes, stateId });
+  const { approvalRoot } = resolveTrustedApprovalRoot({
+    projectRoot, overrideRoot: normalizeSingleValue(args["approval-root"] || "")
+  });
+  const resolvedAt = new Date().toISOString();
+  const authorization = signDispositionIntent({
+    approvalRoot, workItemSlug, operationId, stateId,
+    sourceCollection: selected.collection, originalEntry: selected.originalEntry,
+    actor, reason, resolvedAt,
+    approvalPassphrase: normalizeSingleValue(args["approval-passphrase"] || "")
+  });
+  const originalText = typeof selected.originalEntry === "string" ? selected.originalEntry : selected.originalEntry.text;
+  const record = {
+    operation_id: operationId,
+    source_collection: selected.collection,
+    source_entry_id: stateId,
+    original_entry: selected.originalEntry,
+    original_text: originalText,
+    actor,
+    reason,
+    resolved_at: resolvedAt,
+    authorization
+  };
+  const nextReport = {
+    ...loaded.rawReport,
+    [selected.collection]: loaded.rawReport[selected.collection].filter((_entry, index) => index !== selected.index),
+    resolved_state_history: [...history, record]
+  };
+  atomicWriteRawProtocolReport({
+    report: nextReport,
+    reportPath: loaded.reportPath,
+    expectedBytes: loaded.rawBytes,
+    failurePoint: String(process.env.WORKFLOW_BUNDLE_DISPOSITION_FAILURE_POINT || "")
+  });
+  return { outcome: "APPLIED", record, projection_status: refreshDispositionProjection({
+    s01Path: loaded.s01Path, report: nextReport, operationId
+  }) };
+}
+
 function runCli() {
   const action = process.argv[2];
   if (!SUPPORTED_ACTIONS.has(action)) {
@@ -830,6 +1009,22 @@ function runCli() {
     }
 
     const workItemSlug = requireWorkItemSlug(args);
+    if (action === "dispose-state") {
+      const result = withProtocolReportLock({ workflowRootBase, workItemSlug }, () =>
+        runDispositionAction({ projectRoot, workflowRootBase, workItemSlug, args })
+      );
+      console.log(`OK: disposition ${result.outcome.toLowerCase()} for '${workItemSlug}' | operation_id=${result.record.operation_id}`);
+      console.log(JSON.stringify({
+        outcome: result.outcome,
+        work_item_slug: workItemSlug,
+        operation_id: result.record.operation_id,
+        state_id: result.record.source_entry_id,
+        source_collection: result.record.source_collection,
+        signature_verified: true,
+        projection_status: result.projection_status
+      }, null, 2));
+      return;
+    }
     // TD-01: a work item created by `wfc scaffold`/`scaffold-step` has no report, so
     // `approve` used to fail with "Missing work item report" and the manual authoring
     // path recommended by AGENTS.global.md could never reach ACTIVE.
@@ -844,15 +1039,9 @@ function runCli() {
     const allowBootstrap =
       action === "approve" ||
       (action === "status" && protocolControl.legacyScaffoldPolicy === "allow_readonly");
-    const loaded = loadProtocolReport({
-      projectRoot,
-      workflowRootBase,
-      workItemSlug,
-      allowBootstrap
-    });
-
     if (action === "status") {
-      printStatus(loaded.report);
+      const loaded = loadProtocolReport({ projectRoot, workflowRootBase, workItemSlug, allowBootstrap });
+      printStatus(loaded.report, loaded);
       return;
     }
 
@@ -860,25 +1049,33 @@ function runCli() {
       throw new Error("block requires at least one '--blocker'.");
     }
 
-    const updatedReport = applyAction(loaded.report, action, args);
-    syncProtocolArtifacts({
-      report: updatedReport,
-      reportPath: loaded.reportPath,
-      s01Path: loaded.s01Path
-    });
-    if (action === "approve" || action === "reject") {
-      writeTrustedApprovalReceipt({
-        projectRoot,
-        overrideRoot: normalizeSingleValue(args["approval-root"] || ""),
-        kind: "work-item",
-        workItemSlug: updatedReport.work_item_slug,
-        reviewedBy: updatedReport.reviewed_by,
-        reviewedAt: updatedReport.reviewed_at,
-        note: normalizeArray(updatedReport.review_notes).join(" | "),
-        approvalStatus: updatedReport.approval_status,
-        approvalPassphrase: normalizeSingleValue(args["approval-passphrase"] || "")
+    const { updatedReport, reportPath } = withProtocolReportLock({ workflowRootBase, workItemSlug }, () => {
+      const loaded = loadProtocolReport({ projectRoot, workflowRootBase, workItemSlug, allowBootstrap });
+      const updatedReport = applyAction(loaded.report, action, args);
+      assertProtocolSnapshotUnchanged({
+        reportPath: loaded.reportPath,
+        rawBytes: loaded.existed ? loaded.rawBytes : null
       });
-    }
+      syncProtocolArtifacts({
+        report: updatedReport,
+        reportPath: loaded.reportPath,
+        s01Path: loaded.s01Path
+      });
+      if (action === "approve" || action === "reject") {
+        writeTrustedApprovalReceipt({
+          projectRoot,
+          overrideRoot: normalizeSingleValue(args["approval-root"] || ""),
+          kind: "work-item",
+          workItemSlug: updatedReport.work_item_slug,
+          reviewedBy: updatedReport.reviewed_by,
+          reviewedAt: updatedReport.reviewed_at,
+          note: normalizeArray(updatedReport.review_notes).join(" | "),
+          approvalStatus: updatedReport.approval_status,
+          approvalPassphrase: normalizeSingleValue(args["approval-passphrase"] || "")
+        });
+      }
+      return { updatedReport, reportPath: loaded.reportPath };
+    });
     if (isTelemetryEnabled(args.telemetry)) {
       try {
         emitAdaptiveTelemetryEvent({
@@ -919,7 +1116,7 @@ function runCli() {
       projectRoot,
       workflowRootBase
     });
-    printStatus(updatedReport);
+    printStatus(updatedReport, { reportPath });
   } catch (error) {
     const message = error.message.startsWith("ERROR:") ? error.message : formatErrors([error.message]);
     console.error(message);

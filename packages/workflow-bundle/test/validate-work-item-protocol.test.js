@@ -16,6 +16,9 @@
 // Work item: worktree-and-closure-integrity, requirement REQ-001, task T2.
 
 const path = require("path");
+const fs = require("fs");
+const os = require("os");
+const { execFileSync } = require("child_process");
 const strictAssert = require("node:assert/strict");
 const { isEquivalentWorkflowRoot } = require("../scripts/validate-work-item-protocol");
 
@@ -254,6 +257,92 @@ testWorkflowRootOutsideProjectRoot();
   const bareErrors = [];
   validator.validateProtocolBlockSync(bare, exact, "ts2a-bare.s01.md", bareErrors);
   strictAssert.deepEqual(bareErrors, [], "pre-contract bare legacy scalar remains readable");
+}
+
+// CR-009 / T1: malformed disposition history must not be accepted as authority.
+{
+  const validator = require("../scripts/validate-work-item-protocol");
+  assert(typeof validator.validateResolvedStateHistory === "function", "TAR history validator is independently testable");
+  if (typeof validator.validateResolvedStateHistory === "function") {
+    const errors = [];
+    validator.validateResolvedStateHistory({ resolved_state_history: [{ operation_id: "op-1", original_entry: "review" }] }, "report.json", errors);
+    assert(errors.some(error => /resolved_state_history\[0\]/.test(error)), "TAR incomplete or unsigned history fails closed");
+
+    const trust = require("../scripts/workflow-trusted-approval-utils");
+    const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "tar-history-approval-"));
+    const priorFixture = process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE;
+    const priorPassphrase = process.env.WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE;
+    process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE = "true";
+    process.env.WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE = "fixture-passphrase";
+    try {
+      trust.ensureApproverKeyPair({ approvalRoot, passphrase: "fixture-passphrase" });
+      const originalEntry = { kind: "legacy", text: "  Peer review pending – 漢字  " };
+      const intentArgs = {
+        approvalRoot, workItemSlug: "tar-history-item", operationId: "tar-history-op-1",
+        stateId: "di:" + "a".repeat(64), sourceCollection: "blockers", originalEntry,
+        actor: "maintainer", reason: "Maintainer resolved exact state", resolvedAt: "2026-09-17T00:00:00.000Z"
+      };
+      const authorization = trust.signDispositionIntent(intentArgs);
+      const record = {
+        operation_id: intentArgs.operationId, source_collection: intentArgs.sourceCollection,
+        source_entry_id: intentArgs.stateId, original_entry: originalEntry,
+        original_text: originalEntry.text, actor: intentArgs.actor, reason: intentArgs.reason,
+        resolved_at: intentArgs.resolvedAt, authorization
+      };
+      const validate = (history) => {
+        const found = [];
+        validator.validateResolvedStateHistory({ work_item_slug: "tar-history-item", resolved_state_history: history },
+          "report.json", found, approvalRoot);
+        return found;
+      };
+      strictAssert.deepEqual(validate([record]), [], "TAR valid signed history is accepted in fixture mode");
+      for (const [label, changed] of [
+        ["tampered signature", { ...record, authorization: { ...authorization, signature: "invalid" } }],
+        ["changed original text", { ...record, original_text: "different" }],
+        ["changed operation ID", { ...record, operation_id: "different-op" }],
+        ["changed source collection", { ...record, source_collection: "required_actions" }],
+        ["missing reason", { ...record, reason: "" }]
+      ]) {
+        assert(validate([changed]).some(error => /resolved_state_history\[0\]/.test(error)), `TAR ${label} fails closed`);
+      }
+      assert(validate([record, record]).some(error => /duplicate.*operation_id/i.test(error)),
+        "TAR duplicate operation_id is rejected");
+      delete process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE;
+      assert(validate([record]).some(error => /fixture.*not.*production|fixture.*authorization/i.test(error)),
+        "TAR fixture-mode signature cannot count as production authorization");
+    } finally {
+      if (priorFixture === undefined) delete process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE;
+      else process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE = priorFixture;
+      if (priorPassphrase === undefined) delete process.env.WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE;
+      else process.env.WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE = priorPassphrase;
+      fs.rmSync(approvalRoot, { recursive: true, force: true });
+    }
+  }
+}
+
+// CR-009 / AC-TAR-08: load every tracked report without rewriting any source bytes.
+{
+  const utils = require("../scripts/work-item-protocol-utils");
+  const repoRoot = path.resolve(__dirname, "../../..");
+  const reportPaths = execFileSync("git", ["ls-files", "work-items/*/*.work-item-report.json"],
+    { cwd: repoRoot, encoding: "utf8" }).trim().split("\n").filter(Boolean);
+  assert(reportPaths.length > 0, `TAR tracked corpus contains protocol reports (${reportPaths.length})`);
+  for (const relativePath of reportPaths) {
+    const reportPath = path.join(repoRoot, relativePath);
+    const before = fs.readFileSync(reportPath);
+    const raw = JSON.parse(before.toString("utf8"));
+    const normalized = utils.normalizeProtocolReport(raw);
+    for (const collection of ["blockers", "required_actions"]) {
+      (raw[collection] || []).forEach((entry, index) => {
+        const rawText = typeof entry === "string" ? entry : entry.kind === "legacy" ? entry.text : null;
+        if (rawText === null) return;
+        strictAssert.deepEqual(Buffer.from(normalized[collection][index].text, "utf8"), Buffer.from(rawText, "utf8"),
+          `${relativePath} ${collection}[${index}] keeps exact legacy text bytes`);
+      });
+    }
+    strictAssert.deepEqual(fs.readFileSync(reportPath), before, `${relativePath} is not migrated by read`);
+  }
+  console.log(`  PASS: TAR ${reportPaths.length} tracked reports load with exact legacy text and no migration`);
 }
 
 if (failures > 0) {

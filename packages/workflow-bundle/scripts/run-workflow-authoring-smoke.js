@@ -1213,7 +1213,7 @@ function runCaseMaterializeAutoScaffold(repoRoot, projectRoot) {
     "--blocker",
     "Waiting for security checklist confirmation."
   ]);
-  runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
+  const resumeArgs = [
     "resume",
     "--work-item",
     workItemSlug,
@@ -1225,7 +1225,68 @@ function runCaseMaterializeAutoScaffold(repoRoot, projectRoot) {
     "coordinator",
     "--write-root",
     "src"
+  ];
+  const blockedBytes = fs.readFileSync(reportPath);
+  runNodeScriptExpectFailure(
+    repoRoot,
+    "scripts/work-item-protocol.js",
+    resumeArgs,
+    "with active blockers; dispose each blocker by state_id first."
+  );
+  if (!fs.readFileSync(reportPath).equals(blockedBytes)) {
+    throw new Error("Premature resume changed the blocked fixture report.");
+  }
+
+  const blockedReport = JSON.parse(blockedBytes.toString("utf8"));
+  const statusOutput = runNodeScriptCaptureOutput(repoRoot, "scripts/work-item-protocol.js", [
+    "status",
+    "--work-item",
+    workItemSlug,
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase
   ]);
+  const statusReport = JSON.parse(statusOutput.slice(statusOutput.indexOf("\n") + 1));
+  const blockerTargets = statusReport.disposition_targets.filter(target => target.collection === "blockers");
+  if (blockedReport.blockers.length !== 1 || blockerTargets.length !== 1 ||
+      blockerTargets[0].text !== blockedReport.blockers[0].text) {
+    throw new Error("Expected one exact blocker disposition target in the blocked fixture.");
+  }
+
+  const operationId = "authoring-smoke-blocker-resolution";
+  const reason = "Maintainer confirmed the smoke fixture blocker is resolved.";
+  runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
+    "dispose-state",
+    "--work-item",
+    workItemSlug,
+    "--project-root",
+    projectRoot,
+    "--workflow-root",
+    workflowRootBase,
+    "--state-id",
+    blockerTargets[0].state_id,
+    "--operation-id",
+    operationId,
+    "--reviewed-by",
+    "maintainer",
+    "--reason",
+    reason
+  ]);
+  const disposedReport = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+  const history = disposedReport.resolved_state_history || [];
+  const record = history[0] || {};
+  if (disposedReport.blockers.length !== 0 || history.length !== 1 ||
+      record.operation_id !== operationId || record.source_entry_id !== blockerTargets[0].state_id ||
+      record.source_collection !== "blockers" ||
+      JSON.stringify(record.original_entry) !== JSON.stringify(blockedReport.blockers[0]) ||
+      record.original_text !== blockedReport.blockers[0].text ||
+      record.actor !== "maintainer" || record.reason !== reason ||
+      !record.authorization || !record.authorization.signature) {
+    throw new Error("Expected one signed exact-entry disposition and zero active blockers before resume.");
+  }
+
+  runNodeScript(repoRoot, "scripts/work-item-protocol.js", resumeArgs);
   runNodeScript(repoRoot, "scripts/work-item-protocol.js", [
     "verify",
     "--work-item",

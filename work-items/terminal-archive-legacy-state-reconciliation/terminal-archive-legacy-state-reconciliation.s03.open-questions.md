@@ -28,26 +28,49 @@ spec_status: draft
 planning_track: full
 execution_mode: agentic
 execution_roles:
+  - "po"
+  - "ba"
+  - "sa"
+  - "ta"
   - "developer"
   - "qc"
 review_mode: self
 verification_owner: ""
 artifact_shape: adaptive_v1
-request_lane: maintenance
+request_lane: product_delivery
 workflow_required: true
 routing_reasons:
-  - "LANE_MAINTENANCE"
-escalation_reasons: []
+  - "LANE_PRODUCT_DELIVERY"
+escalation_reasons:
+  - "HARD_PUBLIC_CONTRACT"
 role_reasons:
+  po:
+    - "ROLE_PO_PRODUCT_OUTCOME"
+  ba:
+    - "ROLE_BA_REQUIREMENTS"
+  sa:
+    - "ROLE_SA_PUBLIC_CONTRACT_BOUNDARY"
+  ta:
+    - "ROLE_TA_PUBLIC_CONTRACT_RISK"
   developer:
-    - "ROLE_DEVELOPER_BOUNDED_CHANGE"
+    - "ROLE_DEVELOPER_DELIVERY"
   qc:
-    - "ROLE_QC_DOD_VERIFICATION"
+    - "ROLE_QC_VERIFICATION"
 gate_reasons:
+  spec:
+    - "GATE_SPEC_PRODUCT_DELIVERY"
+  contract:
+    - "GATE_CONTRACT_PUBLIC_CONTRACT"
+  dor:
+    - "GATE_DOR_PRODUCT_DELIVERY"
+  approach:
+    - "GATE_APPROACH_PRODUCT_DELIVERY"
   task_plan:
-    - "GATE_TASK_PLAN_BOUNDED_CHANGE"
+    - "GATE_TASK_PLAN_PRODUCT_DELIVERY"
   dod:
-    - "GATE_DOD_TECHNICAL_CLOSEOUT"
+    - "GATE_DOD_PRODUCT_DELIVERY"
+  business_acceptance:
+    - "GATE_BUSINESS_ACCEPTANCE_PRODUCT_OUTCOME"
 adaptive_activation:
   source_version: "2.6.2"
   installed_versions:
@@ -55,24 +78,39 @@ adaptive_activation:
     - "2.6.2"
   parity_passed: true
 approval_gates:
-  spec: "not_applicable"
-  contract: "not_applicable"
-  dor: "not_applicable"
-  approach: "not_applicable"
+  spec: "required"
+  contract: "required"
+  dor: "required"
+  approach: "required"
   foundation: "not_applicable"
   task_plan: "required"
   uat: "not_applicable"
   release: "not_applicable"
-  business_acceptance: "not_applicable"
+  business_acceptance: "required"
   dod: "required"
 role_signoffs:
+  spec: ["ba"]
+  contract: ["developer"]
+  dor: ["ba","qc"]
+  approach: ["developer"]
   task_plan: ["developer"]
   dod: ["qc"]
+  business_acceptance: ["po"]
 gate_reviews:
+  spec_reviewed_by: []
+  spec_reviewed_at: ""
+  contract_reviewed_by: []
+  contract_reviewed_at: ""
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
   dod_reviewed_by: []
   dod_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
 content_skills:
   - "codex-workflow-chain"
   - "requirement-analysis"
@@ -98,7 +136,7 @@ tags:
 # Step 3 - Open Questions
 
 > [!summary]
-> The human accepted OQ-TAR-001..006 and the CR-009 code/true classification. Runtime inspection then exposed a separate public-contract routing conflict (OQ-TAR-007); s04 readiness remains blocked until that scope decision and routing amendment are reviewed. No implementation or cleanup is opened.
+> The human accepted OQ-TAR-001..007 and the CR-009 code/true classification. OQ-TAR-007 Option A keeps the supported CLI/data contract; adaptive routing is now product_delivery with public_contract=true. s04 inputs are ready for authoring, but its human gates have not passed. No implementation or cleanup is opened.
 
 ## Step Contract
 ```yaml
@@ -242,7 +280,8 @@ open_questions:
     recommendation: A
     reason: "CR-009 already lists CLI and persisted-state compatibility among impacted areas, and workflow-bundle publishes wfc as its package bin. A preserves the accepted reusable structural fix without hiding a public contract change under maintenance routing."
     owner: [maintainer, developer, qc]
-    status: PROPOSED
+    selected_option: A
+    status: RESOLVED
     verification_consequence: "If A, update routing/applicability before s04 and test CLI/data compatibility; if B, prove the public CLI and package data contract are untouched."
 decision_record:
   selected_bundle: ["OQ-TAR-001:B", "OQ-TAR-002:A", "OQ-TAR-003:A", "OQ-TAR-004:B", "OQ-TAR-005:A", "OQ-TAR-006:A"]
@@ -250,8 +289,14 @@ decision_record:
   recorded_at: "2026-09-16T07:59:30Z"
   source: "User message: accept theo đề xuất của bạn"
   scope: "Open-question choices and CR-009 classification only; no Spec, DoR, Approach, Task Plan, implementation, DoD, or cleanup approval."
-missing_inputs:
-  - "Owner decision on OQ-TAR-007 and a reviewed routing/amendment path before s04."
+public_contract_decision_record:
+  selected_option: "OQ-TAR-007:A"
+  authority: "Human user accepted the immediately preceding Option A recommendation in two follow-up messages."
+  recorded_at: "2026-09-16T08:22:18Z"
+  source: "User messages: accept; accept."
+  scope: "Public-contract routing and applicability only; no Spec, Contract, DoR, Approach, Task Plan, DoD, Business Acceptance, or cleanup approval."
+  amendment: "Metadata-only rebind of the existing adaptive report and note frontmatter; protocol status, events, approval receipt, and historical materialization record remain unchanged."
+missing_inputs: []
 conflicts:
   - id: C-TAR-001
     status: RESOLVED
@@ -261,36 +306,34 @@ conflicts:
     evidence: "The new report still lists a change-approval required_action although the trusted CR-009 receipt is APPROVED; OQ-TAR-004:B places opaque required_actions preservation and disposition inside this defect."
     action: "Use the trusted receipt for current approval authority; cover stale required_actions projection in s04 criteria and s08 tests without clearing by prose."
   - id: C-TAR-003
-    status: OPEN
-    evidence: "The approved proposal lists CLI and persisted-state compatibility, and workflow-bundle/package.json publishes bin.wfc, but the materialized report is request_lane=maintenance with only task_plan/dod gates. The adaptive hard trigger for a public API/event/data contract requires product_delivery plus contract applicability."
+    status: RESOLVED
+    evidence: "The approved proposal lists CLI and persisted-state compatibility, workflow-bundle/package.json publishes bin.wfc, and the human selected OQ-TAR-007:A. The current adaptive report and all eight note frontmatters now use product_delivery, HARD_PUBLIC_CONTRACT, and the evaluator's exact role/gate reasons."
     resolution_owner: [maintainer, developer, qc]
-    action: "Decide OQ-TAR-007, then amend the route and applicable approvals or narrow the scope explicitly; do not hand-edit CLI-owned protocol state."
+    action: "Author s04 against the public contract; retain independent human approvals for each required gate."
 assumptions:
   - "The approval applies to the exact recommendation bundle previously presented to the human; it does not approve later gates."
   - "The current 14-report count includes this newly materialized work item; verification must recalculate the corpus."
   - "CR-008 archive history and v2.6.2 artifacts are immutable inputs."
-recommendation_bundle: ["OQ-TAR-001:B", "OQ-TAR-002:A", "OQ-TAR-003:A", "OQ-TAR-004:B", "OQ-TAR-005:A", "OQ-TAR-006:A"]
-pending_recommendation: "OQ-TAR-007:A"
+recommendation_bundle: ["OQ-TAR-001:B", "OQ-TAR-002:A", "OQ-TAR-003:A", "OQ-TAR-004:B", "OQ-TAR-005:A", "OQ-TAR-006:A", "OQ-TAR-007:A"]
 ```
 
 ## Input Readiness
 ```yaml
 step: s04
-status: BLOCKED
+status: READY
 available_inputs:
   - "Maintainer-approved CR-009 and work-item trusted receipts."
   - "s01 request, SA/TA drivers, and draft acceptance criteria."
   - "s02 business goal and non-goals."
   - "CR-008 finding and archive evidence."
-missing_inputs:
-  - "OQ-TAR-007 scope decision and reviewed routing amendment."
+  - "OQ-TAR-007:A human decision and product_delivery/public_contract routing metadata."
+missing_inputs: []
 invalid_inputs: []
-conflicts:
-  - "C-TAR-003: public CLI/data-contract impact conflicts with maintenance-only materialization."
+conflicts: []
 assumptions:
   - "C-TAR-002 remains a baseline symptom to specify and test, not evidence that the already-approved change receipt is invalid."
 risk_level: HIGH
-next_action: "Obtain OQ-TAR-007 decision and update routing/applicability without hand-editing protocol state; then reassess s04 readiness."
+next_action: "Draft measurable s04 Spec, public Contract, and DoR evidence; request separate BA, Developer, and QC gate reviews."
 ```
 
 ## Audit
@@ -301,18 +344,17 @@ audit_status: PASS
 checks:
   - { criterion: "Each open question has options, recommendation, owner, and verification consequence", result: PASS, evidence: "OQ-TAR-001..007 in Artifact Chính" }
   - { criterion: "Conflicting metadata and routing are visible", result: PASS, evidence: "C-TAR-001..003" }
-  - { criterion: "No question is marked resolved without owner approval", result: PASS, evidence: "Human accepted the exact recommendation bundle; see decision_record" }
-  - { criterion: "s04 readiness reflects unresolved routing conflict", result: PASS, evidence: "Input Readiness status BLOCKED for OQ-TAR-007 and C-TAR-003; CR-009 classification is code/true" }
+  - { criterion: "No question is marked resolved without owner approval", result: PASS, evidence: "Human accepted OQ-TAR-001..006 and then OQ-TAR-007:A; see both decision records" }
+  - { criterion: "s04 readiness reflects resolved routing conflict", result: PASS, evidence: "Input Readiness status READY; C-TAR-003 is resolved by exact adaptive role/gate metadata" }
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Human accepted the recommendation bundle in the current review cycle; the decision was recorded at 2026-09-16T07:59:30Z."
-gaps:
-  - "OQ-TAR-007 and the routing amendment remain open before s04."
+gaps: []
 risk_level: HIGH
-next_action: "Obtain OQ-TAR-007 decision and reviewed routing amendment."
+next_action: "Draft s04 Spec, Contract, and DoR without treating Option A as gate approval."
 notes:
-  - "The six approved questions remain resolved; public-contract routing is a newly discovered and separately owned question."
+  - "All seven questions are resolved; production implementation remains closed until required s04-s06 gates pass."
 ```
 
 ## Traceability
@@ -322,9 +364,9 @@ upstream:
   - "terminal-archive-legacy-state-reconciliation.s02.business-goal.md"
   - "changes/CR-009/proposal.md"
 question_ids: [OQ-TAR-001, OQ-TAR-002, OQ-TAR-003, OQ-TAR-004, OQ-TAR-005, OQ-TAR-006, OQ-TAR-007]
-next_step: "Resolve OQ-TAR-007 and routing before s04 Acceptance + DoR"
+next_step: "Author s04 Acceptance + DoR and public Contract; seek independent human gate receipts"
 ```
 
 ## Handoff
-- Readiness: BLOCKED for s04 by the newly identified public-contract routing conflict; OQ-TAR-001..006 and metadata remain approved.
+- Readiness: READY for s04 authoring; OQ-TAR-001..007 and routing metadata are resolved, while s04 gate approvals remain outstanding.
 - No production implementation, DoD, or CR-008 worktree cleanup is opened by this s03 decision.

@@ -28,26 +28,49 @@ spec_status: draft
 planning_track: full
 execution_mode: agentic
 execution_roles:
+  - "po"
+  - "ba"
+  - "sa"
+  - "ta"
   - "developer"
   - "qc"
 review_mode: self
 verification_owner: ""
 artifact_shape: adaptive_v1
-request_lane: maintenance
+request_lane: product_delivery
 workflow_required: true
 routing_reasons:
-  - "LANE_MAINTENANCE"
-escalation_reasons: []
+  - "LANE_PRODUCT_DELIVERY"
+escalation_reasons:
+  - "HARD_PUBLIC_CONTRACT"
 role_reasons:
+  po:
+    - "ROLE_PO_PRODUCT_OUTCOME"
+  ba:
+    - "ROLE_BA_REQUIREMENTS"
+  sa:
+    - "ROLE_SA_PUBLIC_CONTRACT_BOUNDARY"
+  ta:
+    - "ROLE_TA_PUBLIC_CONTRACT_RISK"
   developer:
-    - "ROLE_DEVELOPER_BOUNDED_CHANGE"
+    - "ROLE_DEVELOPER_DELIVERY"
   qc:
-    - "ROLE_QC_DOD_VERIFICATION"
+    - "ROLE_QC_VERIFICATION"
 gate_reasons:
+  spec:
+    - "GATE_SPEC_PRODUCT_DELIVERY"
+  contract:
+    - "GATE_CONTRACT_PUBLIC_CONTRACT"
+  dor:
+    - "GATE_DOR_PRODUCT_DELIVERY"
+  approach:
+    - "GATE_APPROACH_PRODUCT_DELIVERY"
   task_plan:
-    - "GATE_TASK_PLAN_BOUNDED_CHANGE"
+    - "GATE_TASK_PLAN_PRODUCT_DELIVERY"
   dod:
-    - "GATE_DOD_TECHNICAL_CLOSEOUT"
+    - "GATE_DOD_PRODUCT_DELIVERY"
+  business_acceptance:
+    - "GATE_BUSINESS_ACCEPTANCE_PRODUCT_OUTCOME"
 adaptive_activation:
   source_version: "2.6.2"
   installed_versions:
@@ -55,24 +78,39 @@ adaptive_activation:
     - "2.6.2"
   parity_passed: true
 approval_gates:
-  spec: "not_applicable"
-  contract: "not_applicable"
-  dor: "not_applicable"
-  approach: "not_applicable"
+  spec: "required"
+  contract: "required"
+  dor: "required"
+  approach: "required"
   foundation: "not_applicable"
   task_plan: "required"
   uat: "not_applicable"
   release: "not_applicable"
-  business_acceptance: "not_applicable"
+  business_acceptance: "required"
   dod: "required"
 role_signoffs:
+  spec: ["ba"]
+  contract: ["developer"]
+  dor: ["ba","qc"]
+  approach: ["developer"]
   task_plan: ["developer"]
   dod: ["qc"]
+  business_acceptance: ["po"]
 gate_reviews:
+  spec_reviewed_by: []
+  spec_reviewed_at: ""
+  contract_reviewed_by: []
+  contract_reviewed_at: ""
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
   dod_reviewed_by: []
   dod_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
 content_skills:
   - "codex-workflow-chain"
   - "product-thinking"
@@ -184,9 +222,9 @@ constraints:
   - "SA drivers DRV-SA-TAR-001..004 and TA drivers DRV-TA-TAR-001..005 remain the design envelope."
   - "Current CR-008 parent entries remain untouched until an approved operation is available."
 assumptions:
-  - "This remains a maintenance defect, with Maintainer, Developer, and QC as the applicable roles."
-  - "No public API or external integration boundary is intentionally changed."
-notes_for_next_step: "Resolve OQ-TAR-001..006 and the CR-009 metadata consistency check in s03 before s04 acceptance/readiness."
+  - "The initial maintenance classification was superseded by OQ-TAR-007:A; the supported wfc CLI and persisted-state contract require product_delivery/public_contract routing."
+  - "No release or external integration deployment is opened by the contract repair itself."
+notes_for_next_step: "s03 resolves OQ-TAR-001..007 and records the public-contract route before s04 acceptance/readiness."
 ```
 
 ## Traceability

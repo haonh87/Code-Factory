@@ -20,7 +20,10 @@ const {
   loadTrustedApprovalReceipt,
   normalizeTrustedApprovalReceipt,
   resolveApprovalPassphrase,
-  resolveGateArtifact
+  resolveGateArtifact,
+  ensureApproverKeyPair,
+  signDispositionIntent,
+  isTrustedDispositionSignatureValid
 } = require("../scripts/workflow-trusted-approval-utils");
 
 let failures = 0;
@@ -402,6 +405,80 @@ function testEagainRetryIsCoveredGovEx001() {
 }
 
 testEagainRetryIsCoveredGovEx001();
+
+function testTarDispositionUsesExistingHumanKeyOnly() {
+  assert(typeof signDispositionIntent === "function" && typeof isTrustedDispositionSignatureValid === "function",
+    "TAR structured disposition signer and verifier are available");
+  if (typeof signDispositionIntent !== "function" || typeof isTrustedDispositionSignatureValid !== "function") return;
+  const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "tar-disposition-signer-"));
+  const previousFixture = process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE;
+  const previousPassphrase = process.env.WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE;
+  const intentArgs = {
+    approvalRoot,
+    workItemSlug: "tar-demo",
+    operationId: "tar-op-001",
+    stateId: "di:" + "a".repeat(64),
+    sourceCollection: "blockers",
+    originalEntry: { kind: "legacy", text: "  Peer review is outstanding – 漢字  " },
+    actor: "maintainer",
+    reason: "Maintainer explicitly resolved this entry",
+    resolvedAt: "2026-09-17T00:00:00.000Z"
+  };
+  delete process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE;
+  delete process.env.WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE;
+  try {
+    let missingKeyError = "";
+    try { signDispositionIntent({ ...intentArgs, approvalPassphrase: "test-passphrase" }); }
+    catch (error) { missingKeyError = error.message; }
+    assert(/existing.*key|keypair.*missing/i.test(missingKeyError), "TAR missing keypair refuses without creating a new identity");
+    assert(fs.readdirSync(approvalRoot).length === 0, "TAR missing keypair leaves approval root untouched");
+
+    ensureApproverKeyPair({ approvalRoot, passphrase: "test-passphrase" });
+    const keyBytes = fs.readFileSync(path.join(approvalRoot, "approver-private.pem"));
+    let inlineError = "";
+    try { signDispositionIntent({ ...intentArgs, approvalPassphrase: "test-passphrase" }); }
+    catch (error) { inlineError = error.message; }
+    assert(/Non-interactive human approval is disabled/.test(inlineError), "TAR inline credential is rejected in normal mode");
+    let labelOnlyError = "";
+    try { signDispositionIntent(intentArgs); }
+    catch (error) { labelOnlyError = error.message; }
+    assert(/interactive TTY/.test(labelOnlyError), "TAR claimed Maintainer role alone cannot sign without a human TTY");
+
+    process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE = "true";
+    const signed = signDispositionIntent({ ...intentArgs, approvalPassphrase: "test-passphrase" });
+    assert(signed.intent.authorization_mode === "fixture", "TAR fixture credential is visibly marked, never disguised as TTY evidence");
+    assert(isTrustedDispositionSignatureValid({ approvalRoot, ...signed }), "TAR existing key signs a verifiable structured intent");
+    for (const [field, changed] of [
+      ["work_item_slug", "other-item"], ["operation_id", "other-op"], ["state_id", "di:" + "b".repeat(64)],
+      ["source_collection", "required_actions"], ["actor", "developer"], ["reason", "other reason"],
+      ["original_text", "changed text"], ["resolved_at", "2026-09-18T00:00:00.000Z"],
+      ["authorization_mode", "tty"]
+    ]) {
+      assert(!isTrustedDispositionSignatureValid({ approvalRoot, ...signed, intent: { ...signed.intent, [field]: changed } }),
+        `TAR signature binds ${field}`);
+    }
+    assert(!isTrustedDispositionSignatureValid({ approvalRoot, ...signed,
+      intent: { ...signed.intent, original_entry: { kind: "legacy", text: "changed" } } }),
+    "TAR signature binds the exact original entry object");
+    let wrongPassphraseError = "";
+    try { signDispositionIntent({ ...intentArgs, approvalPassphrase: "wrong-passphrase" }); }
+    catch (error) { wrongPassphraseError = error.message; }
+    assert(Boolean(wrongPassphraseError), "TAR wrong passphrase cannot produce a signature");
+    let roleError = "";
+    try { signDispositionIntent({ ...intentArgs, actor: "developer", approvalPassphrase: "test-passphrase" }); }
+    catch (error) { roleError = error.message; }
+    assert(/maintainer/i.test(roleError), "TAR non-Maintainer actor is rejected");
+    assert(fs.readFileSync(path.join(approvalRoot, "approver-private.pem")).equals(keyBytes), "TAR never rewrites the existing key");
+  } finally {
+    if (previousFixture === undefined) delete process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE;
+    else process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE = previousFixture;
+    if (previousPassphrase === undefined) delete process.env.WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE;
+    else process.env.WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE = previousPassphrase;
+    rmrf(approvalRoot);
+  }
+}
+
+testTarDispositionUsesExistingHumanKeyOnly();
 
 if (failures > 0) {
   console.error(`\nworkflow-trusted-approval-utils.test.js: ${failures} assertion(s) failed.`);

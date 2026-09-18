@@ -1,8 +1,8 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "MATERIALIZED",
+  "protocol_status": "ACTIVE",
   "decision_owner": "agent",
-  "protocol_owner": "maintainer",
+  "protocol_owner": "developer",
   "raw_request_summary": "Prevent terminal completion while unresolved state entries exist; require explicit opaque identifier disposition; preserve exact original text in append-only resolved-state history; prohibit semantic inference.",
   "request_source": "user-chat",
   "candidate_count": 1,
@@ -57,27 +57,22 @@
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/terminal-archive-legacy-state-reconciliation/work-items/terminal-archive-legacy-state-reconciliation",
-  "current_step": "s01",
-  "granted_write_paths": [],
+  "current_step": "s07",
+  "granted_write_paths": [
+    "packages/workflow-bundle/scripts",
+    "packages/workflow-bundle/test",
+    "packages/workflow-bundle/README.md",
+    "skills/orchestration/codex-workflow-chain/references/work-item-protocol.md",
+    "work-items/terminal-archive-legacy-state-reconciliation"
+  ],
   "change_strategy": "create_new",
   "change_id": "CR-009",
-  "handoff_target": "human-review",
+  "handoff_target": "step-s07-owner",
   "required_actions": [
     {
-      "id": "se:6ee5e91f9895141bedc6ec73409d18cbc52d86cef1ab943cb4e41bc4bf5bc0f9",
+      "id": "se:3de82da2d418247351bc0df2b5c7ce6d7c4199ff2b2177a6f87d80931e7328a6",
       "kind": "workflow_followup",
-      "text": "wfc change-item approve --change-id CR-009 --reviewed-by <role>"
-    },
-    {
-      "id": "se:a1618872daacea133445e05562123bbabad1261b3d8841adb89ceeab80d3d988",
-      "kind": "gate_approval",
-      "text": "wfc gate approve --work-item terminal-archive-legacy-state-reconciliation --gate task_plan --reviewed-by developer",
-      "gate": "task_plan"
-    },
-    {
-      "id": "se:de24ce9b0f5e308bd1d3e574f073236c79b6ec089f9abccbfc6d0c5df7366c44",
-      "kind": "work_item_activation",
-      "text": "wfc work-item activate --work-item terminal-archive-legacy-state-reconciliation --step s07 --write-root <path>"
+      "text": "Continue active execution from step 7 onward."
     }
   ],
   "blockers": [],
@@ -92,7 +87,8 @@
     "CHANGE_CREATED",
     "WORKFLOW_SCAFFOLDED",
     "STEP_OPENED",
-    "WORK_ITEM_APPROVED"
+    "WORK_ITEM_APPROVED",
+    "WORK_ITEM_ACTIVATED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -145,34 +141,105 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Maintainer approved the linked defect for F-CR008-ARCH-001."
+    },
+    {
+      "timestamp": "2026-09-16T14:45:05.936Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Activated approved CR-009 Task Plan T1-T8 with five approved write roots; live CR-008 state remains untouched."
     }
   ],
   "artifact_shape": "adaptive_v1",
-  "request_lane": "maintenance",
+  "request_lane": "product_delivery",
   "workflow_required": true,
   "routing_reasons": [
-    "LANE_MAINTENANCE"
+    "LANE_PRODUCT_DELIVERY"
   ],
-  "escalation_reasons": [],
+  "escalation_reasons": [
+    "HARD_PUBLIC_CONTRACT"
+  ],
   "roles": [
+    {
+      "role": "po",
+      "reasons": [
+        "ROLE_PO_PRODUCT_OUTCOME"
+      ]
+    },
+    {
+      "role": "ba",
+      "reasons": [
+        "ROLE_BA_REQUIREMENTS"
+      ]
+    },
+    {
+      "role": "sa",
+      "reasons": [
+        "ROLE_SA_PUBLIC_CONTRACT_BOUNDARY"
+      ]
+    },
+    {
+      "role": "ta",
+      "reasons": [
+        "ROLE_TA_PUBLIC_CONTRACT_RISK"
+      ]
+    },
     {
       "role": "developer",
       "reasons": [
-        "ROLE_DEVELOPER_BOUNDED_CHANGE"
+        "ROLE_DEVELOPER_DELIVERY"
       ]
     },
     {
       "role": "qc",
       "reasons": [
-        "ROLE_QC_DOD_VERIFICATION"
+        "ROLE_QC_VERIFICATION"
       ]
     }
   ],
   "gates": [
     {
+      "gate": "spec",
+      "reasons": [
+        "GATE_SPEC_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "ba"
+      ]
+    },
+    {
+      "gate": "contract",
+      "reasons": [
+        "GATE_CONTRACT_PUBLIC_CONTRACT"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
+      "gate": "dor",
+      "reasons": [
+        "GATE_DOR_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "ba",
+        "qc"
+      ]
+    },
+    {
+      "gate": "approach",
+      "reasons": [
+        "GATE_APPROACH_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
       "gate": "task_plan",
       "reasons": [
-        "GATE_TASK_PLAN_BOUNDED_CHANGE"
+        "GATE_TASK_PLAN_PRODUCT_DELIVERY"
       ],
       "reviewer_roles": [
         "developer"
@@ -181,10 +248,19 @@
     {
       "gate": "dod",
       "reasons": [
-        "GATE_DOD_TECHNICAL_CLOSEOUT"
+        "GATE_DOD_PRODUCT_DELIVERY"
       ],
       "reviewer_roles": [
         "qc"
+      ]
+    },
+    {
+      "gate": "business_acceptance",
+      "reasons": [
+        "GATE_BUSINESS_ACCEPTANCE_PRODUCT_OUTCOME"
+      ],
+      "reviewer_roles": [
+        "po"
       ]
     }
   ],

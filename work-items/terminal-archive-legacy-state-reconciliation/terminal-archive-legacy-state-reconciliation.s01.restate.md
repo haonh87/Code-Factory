@@ -28,26 +28,49 @@ spec_status: draft
 planning_track: full
 execution_mode: agentic
 execution_roles:
+  - "po"
+  - "ba"
+  - "sa"
+  - "ta"
   - "developer"
   - "qc"
 review_mode: self
 verification_owner: ""
 artifact_shape: adaptive_v1
-request_lane: maintenance
+request_lane: product_delivery
 workflow_required: true
 routing_reasons:
-  - "LANE_MAINTENANCE"
-escalation_reasons: []
+  - "LANE_PRODUCT_DELIVERY"
+escalation_reasons:
+  - "HARD_PUBLIC_CONTRACT"
 role_reasons:
+  po:
+    - "ROLE_PO_PRODUCT_OUTCOME"
+  ba:
+    - "ROLE_BA_REQUIREMENTS"
+  sa:
+    - "ROLE_SA_PUBLIC_CONTRACT_BOUNDARY"
+  ta:
+    - "ROLE_TA_PUBLIC_CONTRACT_RISK"
   developer:
-    - "ROLE_DEVELOPER_BOUNDED_CHANGE"
+    - "ROLE_DEVELOPER_DELIVERY"
   qc:
-    - "ROLE_QC_DOD_VERIFICATION"
+    - "ROLE_QC_VERIFICATION"
 gate_reasons:
+  spec:
+    - "GATE_SPEC_PRODUCT_DELIVERY"
+  contract:
+    - "GATE_CONTRACT_PUBLIC_CONTRACT"
+  dor:
+    - "GATE_DOR_PRODUCT_DELIVERY"
+  approach:
+    - "GATE_APPROACH_PRODUCT_DELIVERY"
   task_plan:
-    - "GATE_TASK_PLAN_BOUNDED_CHANGE"
+    - "GATE_TASK_PLAN_PRODUCT_DELIVERY"
   dod:
-    - "GATE_DOD_TECHNICAL_CLOSEOUT"
+    - "GATE_DOD_PRODUCT_DELIVERY"
+  business_acceptance:
+    - "GATE_BUSINESS_ACCEPTANCE_PRODUCT_OUTCOME"
 adaptive_activation:
   source_version: "2.6.2"
   installed_versions:
@@ -55,24 +78,39 @@ adaptive_activation:
     - "2.6.2"
   parity_passed: true
 approval_gates:
-  spec: "not_applicable"
-  contract: "not_applicable"
-  dor: "not_applicable"
-  approach: "not_applicable"
+  spec: "required"
+  contract: "required"
+  dor: "required"
+  approach: "required"
   foundation: "not_applicable"
   task_plan: "required"
   uat: "not_applicable"
   release: "not_applicable"
-  business_acceptance: "not_applicable"
+  business_acceptance: "required"
   dod: "required"
 role_signoffs:
+  spec: ["ba"]
+  contract: ["developer"]
+  dor: ["ba","qc"]
+  approach: ["developer"]
   task_plan: ["developer"]
   dod: ["qc"]
+  business_acceptance: ["po"]
 gate_reviews:
+  spec_reviewed_by: []
+  spec_reviewed_at: ""
+  contract_reviewed_by: []
+  contract_reviewed_at: ""
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
   dod_reviewed_by: []
   dod_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
 content_skills:
   - "codex-workflow-chain"
   - "requirement-analysis"
@@ -170,8 +208,8 @@ open_questions:
   - "OQ-TAR-005 [Developer, QC]: What schema/version compatibility rule lets all 14 tracked reports load without migration?"
   - "OQ-TAR-006 [Maintainer]: May CR-008 branch cleanup occur after the approved handoff, or only after this defect reaches DoD?"
 assumptions:
-  - "The defect restores a protocol invariant and is routed as maintenance, not a new product outcome."
-  - "Maintainer is the work-item/change authority; Developer and QC are the applicable delivery roles."
+  - "The initial maintenance route was superseded by human-approved OQ-TAR-007:A; the supported CLI/data contract requires product_delivery with public_contract=true."
+  - "Maintainer remains the work-item/change authority; applicable delivery roles and gates follow the adaptive public-contract routing in frontmatter."
   - "The two current CR-008 legacy entries remain untouched until an approved disposition operation exists."
   - "Resolved-state history is append-only from the perspective of normal protocol transitions."
 dependencies:
@@ -216,7 +254,7 @@ acceptance_criteria_draft:
   - id: "AC-TAR-10"
     description: "The change does not modify v2.6.2 release artifacts, tags, packages, or existing trusted receipts."
     measurable: true
-notes_for_next_step: "s02 must define the operational value of an unambiguous terminal state; s03 must resolve OQ-TAR-001..006 before s04 locks criteria."
+notes_for_next_step: "s02 defines operational value; s03 records OQ-TAR-001..007, including the later public-contract routing decision, before s04 locks criteria."
 ```
 
 ## SA Architecture Drivers
@@ -320,7 +358,7 @@ metrics:
     - { id: M-09, applicable: false, reason: "No landscape is required.", name: "Landscape element ownership", formula: "owned elements / total elements", value: "N/A", threshold: "100%", calibration: uncalibrated, evidence: "landscape.applicable=false" }
     - { id: M-10, applicable: true, reason: "", name: "Capability ownership clarity", formula: "capabilities with one existing authority / total capabilities", value: "1/1 = 100%", threshold: "100%", calibration: uncalibrated, evidence: "Existing workflow-bundle protocol runtime owns work-item state transitions" }
 handoff:
-  to_ba: { applicable: false, reason: "Adaptive maintenance lane has no BA approval action; criteria are carried by the main s01 artifact.", items: [] }
+  to_ba: { applicable: true, reason: "OQ-TAR-007:A escalates the supported CLI/data contract to product_delivery.", items: ["Use DRV-SA-TAR-001..004 and the approved s03 decisions to lock testable s04 criteria; do not infer disposition from display text."] }
   to_dev:
     applicable: true
     reason: ""
@@ -494,27 +532,42 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: MATERIALIZED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
-request_lane: maintenance
+request_lane: product_delivery
 workflow_required: true
 routing_reasons:
-  - "LANE_MAINTENANCE"
-escalation_reasons: []
+  - "LANE_PRODUCT_DELIVERY"
+escalation_reasons:
+  - "HARD_PUBLIC_CONTRACT"
 role_applicability:
-  - "{\"role\":\"developer\",\"reasons\":[\"ROLE_DEVELOPER_BOUNDED_CHANGE\"]}"
-  - "{\"role\":\"qc\",\"reasons\":[\"ROLE_QC_DOD_VERIFICATION\"]}"
+  - "{\"role\":\"po\",\"reasons\":[\"ROLE_PO_PRODUCT_OUTCOME\"]}"
+  - "{\"role\":\"ba\",\"reasons\":[\"ROLE_BA_REQUIREMENTS\"]}"
+  - "{\"role\":\"sa\",\"reasons\":[\"ROLE_SA_PUBLIC_CONTRACT_BOUNDARY\"]}"
+  - "{\"role\":\"ta\",\"reasons\":[\"ROLE_TA_PUBLIC_CONTRACT_RISK\"]}"
+  - "{\"role\":\"developer\",\"reasons\":[\"ROLE_DEVELOPER_DELIVERY\"]}"
+  - "{\"role\":\"qc\",\"reasons\":[\"ROLE_QC_VERIFICATION\"]}"
 gate_applicability:
-  - "{\"gate\":\"task_plan\",\"reasons\":[\"GATE_TASK_PLAN_BOUNDED_CHANGE\"],\"reviewer_roles\":[\"developer\"]}"
-  - "{\"gate\":\"dod\",\"reasons\":[\"GATE_DOD_TECHNICAL_CLOSEOUT\"],\"reviewer_roles\":[\"qc\"]}"
+  - "{\"gate\":\"spec\",\"reasons\":[\"GATE_SPEC_PRODUCT_DELIVERY\"],\"reviewer_roles\":[\"ba\"]}"
+  - "{\"gate\":\"contract\",\"reasons\":[\"GATE_CONTRACT_PUBLIC_CONTRACT\"],\"reviewer_roles\":[\"developer\"]}"
+  - "{\"gate\":\"dor\",\"reasons\":[\"GATE_DOR_PRODUCT_DELIVERY\"],\"reviewer_roles\":[\"ba\",\"qc\"]}"
+  - "{\"gate\":\"approach\",\"reasons\":[\"GATE_APPROACH_PRODUCT_DELIVERY\"],\"reviewer_roles\":[\"developer\"]}"
+  - "{\"gate\":\"task_plan\",\"reasons\":[\"GATE_TASK_PLAN_PRODUCT_DELIVERY\"],\"reviewer_roles\":[\"developer\"]}"
+  - "{\"gate\":\"dod\",\"reasons\":[\"GATE_DOD_PRODUCT_DELIVERY\"],\"reviewer_roles\":[\"qc\"]}"
+  - "{\"gate\":\"business_acceptance\",\"reasons\":[\"GATE_BUSINESS_ACCEPTANCE_PRODUCT_OUTCOME\"],\"reviewer_roles\":[\"po\"]}"
 work_item_slug: "terminal-archive-legacy-state-reconciliation"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/terminal-archive-legacy-state-reconciliation/work-items/terminal-archive-legacy-state-reconciliation"
-current_step: "s01"
-granted_write_paths: []
+current_step: "s07"
+granted_write_paths:
+  - "packages/workflow-bundle/scripts"
+  - "packages/workflow-bundle/test"
+  - "packages/workflow-bundle/README.md"
+  - "skills/orchestration/codex-workflow-chain/references/work-item-protocol.md"
+  - "work-items/terminal-archive-legacy-state-reconciliation"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -523,16 +576,14 @@ bootstrap_reviewed_at: ""
 change_strategy: create_new
 change_id: "CR-009"
 decision_owner: "agent"
-protocol_owner: "maintainer"
+protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-09-16T07:38:09.525Z"
-handoff_target: "human-review"
-last_transition_action: "approve"
-last_transition_at: "2026-09-16T07:38:09.527Z"
+handoff_target: "step-s07-owner"
+last_transition_action: "activate"
+last_transition_at: "2026-09-16T14:45:05.936Z"
 required_actions:
-  - {"id":"se:6ee5e91f9895141bedc6ec73409d18cbc52d86cef1ab943cb4e41bc4bf5bc0f9","kind":"workflow_followup","text":"wfc change-item approve --change-id CR-009 --reviewed-by <role>"}
-  - {"id":"se:a1618872daacea133445e05562123bbabad1261b3d8841adb89ceeab80d3d988","kind":"gate_approval","text":"wfc gate approve --work-item terminal-archive-legacy-state-reconciliation --gate task_plan --reviewed-by developer","gate":"task_plan"}
-  - {"id":"se:de24ce9b0f5e308bd1d3e574f073236c79b6ec089f9abccbfc6d0c5df7366c44","kind":"work_item_activation","text":"wfc work-item activate --work-item terminal-archive-legacy-state-reconciliation --step s07 --write-root <path>"}
+  - {"id":"se:3de82da2d418247351bc0df2b5c7ce6d7c4199ff2b2177a6f87d80931e7328a6","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
 blockers: []
 review_notes:
   - "Maintainer approved the linked defect for F-CR008-ARCH-001."
@@ -547,6 +598,7 @@ audit_events:
   - "WORKFLOW_SCAFFOLDED"
   - "STEP_OPENED"
   - "WORK_ITEM_APPROVED"
+  - "WORK_ITEM_ACTIVATED"
 ```
 
 ## Traceability
@@ -568,5 +620,5 @@ next_step: "s02 Business Goal after Maintainer seals work-item and change-packag
 
 ## Handoff
 - Clear: one linked BUG; terminal archive rejects active blockers; disposition is ID-only; exact text survives in resolved history; no text inference.
-- Pending: OQ-TAR-001..006 and every downstream authoring gate.
+- Pending: every downstream authoring gate; OQ-TAR-001..007 are resolved in s03.
 - Step 2 condition: Maintainer reviews this source-of-truth artifact and seals both the CR-009 and work-item receipts.

@@ -52,8 +52,9 @@ Important notes:
 - for a new project, before materializing the first implementation work item, there must be evidence that `Spec`, `Contract` when present, `Approach`, and `Foundation Decision` when present have been human-passed
 - for `brownfield`, the protocol still allows materialize/scaffold for authoring, but the work item must declare `delivery_context=brownfield` and follow enough of the backbone's baseline/impact/regression output before implementing
 - if there is no bootstrap evidence yet, the correct handoff is to go back to clarify/spec/approach, not to scaffold and legitimize afterward
-- `list` and `status` may bootstrap a read-only report from old `s01` to observe the state of legacy scaffolding
-- mutating actions such as `approve`, `reject`, `activate`, `block`, `resume`, `verify`, `close`, `archive`, `cancel` must use an already-existing report; they must not bootstrap from `s01` on their own
+- `list` and `status` may bootstrap a read-only report from old `s01` only when `protocolControl.legacyScaffoldPolicy=allow_readonly`
+- `approve` may materialize a pending report from an existing scaffold before recording the explicit human approval; it never treats the scaffold itself as approval
+- other mutating actions (`reject`, `activate`, `block`, `resume`, `verify`, `close`, `archive`, `cancel`, `dispose-state`) require an already-existing report and do not bootstrap from `s01`
 - human gates are considered trusted only when there is a signed receipt outside the project root; metadata in a note/report is no longer enough to open a gate on its own
 
 ## Scope
@@ -334,7 +335,7 @@ Minimum output:
 
 Goal:
 
-- return to `ACTIVE` after the blocker is cleared
+- return to `ACTIVE` after each active blocker has been explicitly resolved
 
 ### `verify`
 
@@ -361,11 +362,30 @@ Minimum output:
 
 Goal:
 
-- end the lifecycle of the work item
+- end the lifecycle only when no active blocker or unresolved required action remains
 
 Minimum output:
 
 - `protocol_status=ARCHIVED`
+
+The archive transition is guard-only: it never resolves or removes a blocker. Raw strings, legacy objects, and typed blockers all cause refusal before report or `s01` projection mutation. Historical archived reports remain readable; the forward guard does not silently rewrite them.
+
+### `dispose-state`
+
+Goal:
+
+- explicitly resolve exactly one active `blockers[]` or `required_actions[]` entry by its read-only `status.disposition_targets[].state_id`
+
+Contract:
+
+- command: `wfc work-item dispose-state --work-item <slug> --state-id <opaque-id> --operation-id <id> --reviewed-by maintainer --reason "<reason>"`
+- `state_id` binds the exact report bytes, collection, and array position; equal text has distinct IDs, and a changed snapshot makes old IDs stale
+- an existing `operation_id` is checked before stale-ID selection: identical signed intent returns `NOOP` without another report write; conflicting reuse fails
+- a human-controlled TTY unlocks the existing approver key in normal mode; `--reviewed-by` alone cannot authorize a disposition
+- one atomic report replacement removes the selected raw entry and appends one signed `resolved_state_history[]` record containing `operation_id`, `source_collection`, `source_entry_id`, `original_entry`, `original_text`, `actor`, `reason`, `resolved_at`, and `authorization`
+- `original_entry` retains its raw string or object shape; `original_text` matches its exact display bytes; no transition selects or clears by text, regex, or alias
+- if the report commit succeeds but the derived `s01` projection fails, retrying the same operation repairs only that projection
+- existing reports without `resolved_state_history[]` remain valid and are not bulk-migrated; fixture-mode signatures do not constitute production authorization
 
 ### `cancel`
 
@@ -484,6 +504,7 @@ review_notes: []
 refs: []
 audit_events: []
 protocol_events: []
+resolved_state_history: [] # optional; present only after explicit dispositions or on an already extended report
 bootstrap_gate_status: PENDING_REVIEW|APPROVED|NOT_REQUIRED
 bootstrap_gate_ref: ""
 bootstrap_reviewed_by: ""
@@ -495,6 +516,7 @@ Notes:
 - `NOT_REQUIRED` is kept in the enum for compatibility with old artifacts; a new protocol-managed work item must not use this value.
 - `review_required` must always be `true` for a protocol-managed work item.
 - `decision_owner` is the owner of the materialization/protocol decision produced by the runtime; it does not replace human approval authority.
+- `status.disposition_targets[]` is a read-only response field, not a persisted report field. Unknown legacy text stays active until its own ID is explicitly dispositioned.
 
 ## Audit Event Vocabulary
 
@@ -525,6 +547,7 @@ A stable vocabulary is recommended:
 
 - `wfc materialize --request "<raw-request>"`
 - `wfc work-item status --work-item <slug>`
+- `wfc work-item dispose-state --work-item <slug> --state-id <opaque-id> --operation-id <id> --reviewed-by maintainer --reason "<reason>"`
 - `wfc work-item approve --work-item <slug> --reviewed-by <role>`
 - `wfc work-item reject --work-item <slug> --reviewed-by <role> --note "<reason>"`
 - `wfc gate approve --work-item <slug> --gate <spec|dor|approach|task_plan|bootstrap|dod|...> --reviewed-by <role>`
@@ -555,14 +578,15 @@ A stable vocabulary is recommended:
 
 `wfc work-item list|status`:
 
-- may bootstrap a read-only report from `s01` if an old work item has no `.work-item-report.json`
+- may bootstrap a read-only report from `s01` if an old work item has no `.work-item-report.json` and the project allows `legacyScaffoldPolicy=allow_readonly`
 - must not sync this bootstrap report back to the filesystem
 
-`wfc work-item approve|reject|activate|block|resume|verify|close|archive|cancel`:
+`wfc work-item approve|reject|activate|block|resume|verify|close|archive|cancel|dispose-state`:
 
-- must use an existing `.work-item-report.json`
-- if there is only a legacy `s01` and no report yet, it must re-materialize or create the report via the official flow first
+- `approve` may bootstrap an existing scaffold into a pending report before the trusted human decision; all other mutations require an existing `.work-item-report.json`
 - `activate` and `resume` into `ACTIVE` at `s07` must have at least one `write-root` so capability control opens the correct implementation path
+- `dispose-state` requires the report, an exact current `state_id`, and a signed Maintainer intent; it never bootstraps or infers identity from display text
+- `archive` rejects active blockers and unresolved required actions; lifecycle transitions refuse opaque legacy state rather than silently clearing it
 
 `wfc gate approve|reject|status`:
 
