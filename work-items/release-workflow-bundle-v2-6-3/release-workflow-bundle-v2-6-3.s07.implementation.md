@@ -89,7 +89,7 @@ gate_reviews:
   approach_reviewed_by: ["developer"]
   approach_reviewed_at: "2026-09-19T10:34:59Z"
   task_plan_reviewed_by: ["developer"]
-  task_plan_reviewed_at: "2026-09-19T13:50:54Z"
+  task_plan_reviewed_at: "2026-09-19T14:28:40.007Z"
   dod_reviewed_by: []
   dod_reviewed_at: ""
   release_reviewed_by: []
@@ -116,7 +116,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> T0-T4 are complete and committed at `39dddfce80b5eec957623ae2acea81312f28cf41`. T5 found three unchanged regression tests outside the approved 19-path grant that hard-code candidate v2.6.2 and therefore block the full suite on v2.6.3. Finding F-R263-T5-001 and bounded Task Plan amendment T5a are awaiting Developer approval; no out-of-scope test edit or release publication has occurred.
+> T0-T4 are complete and committed at `39dddfce80b5eec957623ae2acea81312f28cf41`. T5 found three unchanged regression tests that hard-code candidate v2.6.2. Developer approved bounded amendment T5a, its trusted receipt matches, Maintainer disposed the superseded blocker by exact state ID, and s07 resumed with 22 write roots. T5a implementation is open; review, s08, and release remain closed.
 
 ## Step Contract
 ```yaml
@@ -124,7 +124,7 @@ step: "s07 Implement"
 step_goal: "Prepare the approved v2.6.3 release-only delta with fail-first contracts, minimal active-surface edits, exact provenance, and early independent review evidence."
 input_summary:
   - "Approved s04 Spec/DoR, s05 Approach, and s06 Task Plan trusted receipts all match."
-  - "Work item is ACTIVE at s07 with 19 granted write paths."
+  - "Work item is ACTIVE at s07 with 22 granted write paths after approved amendment T5a."
   - "T0 baseline source is origin/main 3204749e9fac592e9f38e327dbd85a87b84b2325."
 output_summary:
   - "T0 baseline, isolation, source inventory, and historical hashes."
@@ -180,7 +180,7 @@ code_changes:
   - "release-rollback-smoke.test.js now targets exact v2.6.3 -> v2.6.2, pins rollback digest af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f, and asserts CR-009 disposition/history is candidate-only."
   - "Both manifests, package.json, and the wfc public-flow label now identify 2.6.3."
 doc_changes:
-  - "Protocol-owned activation updated s01 and the work-item report to ACTIVE/s07 with the exact 19 write roots."
+  - "Protocol-owned activation initially opened s07 with 19 write roots; approved T5a disposition and resume expanded the exact grant to 22 roots."
   - "This canonical s07 note records T0 evidence; no parallel baseline report was created."
   - "Eleven active English/Vietnamese surfaces now identify v2.6.3 as unpublished, document exact ID-based disposition and archive guards, and point rollback to immutable v2.6.2/42."
   - "docs/releases/workflow-bundle-v2.6.3.md separates the complete packaged CR-009 delta from non-packaged repository history and keeps hosted/human evidence pending."
@@ -203,13 +203,12 @@ outputs_actual:
 known_limitations:
   - "T0 corroborates the rollback digest from immutable repository/hosted evidence; it does not claim a fresh public download."
   - "Local Node is v26.5.0; required Node 18/22 proof remains hosted evidence."
-  - "T5-T7 and all independent review verdicts remain pending."
+  - "T5a/T5 completion, T6-T7, and all independent review verdicts remain pending."
   - "The bump utility's automatic repository-root discovery selects the outer manifest from this nested in-repo worktree; release execution must keep using the explicit --repo-root . form."
-  - "F-R263-T5-001 blocks T5: three unchanged release/runtime-version assertions outside the approved write grant still require v2.6.2."
+  - "F-R263-T5-001 is authorized for the exact T5a test-only correction but remains open until focused GREEN and sequential T5 evidence are recorded."
   - "Global protocol validation also reports four stale gate-state entries in unrelated code-factory-holistic-audit-remediation; this baseline issue is recorded as a scan gap and is not included in T5a."
 follow_up_items:
-  - "Developer approves bounded Task Plan amendment T5a, reseals the amended Task Plan receipt, then the work item resumes s07 with the original 19 roots plus three exact test paths."
-  - "Apply the three-token-plus-temp-prefix test-only delta, rerun T5 sequentially, retain no generated runtime diff, then prepare B1/B2/B3 review evidence."
+  - "Apply the approved three-token-plus-temp-prefix test-only delta, rerun T5 sequentially, retain no generated runtime diff, then prepare B1/B2/B3 review evidence."
 notes_for_testing: "Bootstrap generated runtime before source-mode release tests in a fresh worktree. Do not treat generated runtime files as owned production changes, and fail if a tracked runtime diff remains."
 ```
 
@@ -358,7 +357,7 @@ concurrency_note:
 finding:
   id: "F-R263-T5-001"
   severity: HIGH
-  status: HUMAN_APPROVED_PENDING_RECEIPT_AND_RESUME
+  status: AUTHORIZED_ACTIVE
   category: RELEASE_REGRESSION_TEST_VERSION_DRIFT
   introduced_by_t2_t4: false
   evidence:
@@ -379,7 +378,7 @@ baseline_scan_gap:
   boundary: "Unrelated work item state; standard hosted validators pass and T5a must not edit it."
 proposed_task_plan_amendment:
   amendment_id: T5a
-  status: DEVELOPER_APPROVED_PENDING_TRUSTED_RECEIPT
+  status: APPROVED_RECEIPT_MATCHED_AND_RESUMED
   reviewed_at: "2026-09-19T14:24:49Z"
   decision_source: "User explicitly approved Task Plan amendment T5a with role Developer and the exact three proposed test paths."
   added_write_roots:
@@ -398,14 +397,42 @@ proposed_task_plan_amendment:
     - "Add T5a to the s06 Task Plan, reseal the trusted Task Plan receipt, and resume with all 22 exact write roots."
     - "Apply the minimal test-only delta and run the three tests GREEN."
     - "Run T5 sequentially, pack one local pre-host candidate, and execute exact v2.6.3 -> v2.6.2 artifact rehearsal."
-result: BLOCKED_RETURN_TO_S06
-next_human_action: "Seal the amended Task Plan trusted receipt as Developer, then resume s07 with all 22 approved write roots; T5a approval does not approve implementation, review, s08, Release, publication, Business Acceptance, merge, or cleanup."
+result: AUTHORIZED_ACTIVE
+next_human_action: NONE
+```
+
+## T5a Authorization And Resume Evidence
+```yaml
+recorded_at: "2026-09-19T14:31:06.992Z"
+task_plan:
+  amendment_id: T5a
+  artifact_sha256: "ce56a08465e3f8b054582a29f786fbe9ae83bbb90e6979fd17c2d3a6dea212af"
+  receipt_status: APPROVED
+  reviewed_by: developer
+  reviewed_at: "2026-09-19T14:28:40.007Z"
+  digest_match: true
+state_disposition:
+  operation_id: "b1fa11f2-c7b5-40ab-aa95-cc253f06fe3e"
+  source_entry_id: "di:b7cbc1a234e4567ef1a1d29c20c0e776cd3f90967de4ccc7aa13080093faea8d"
+  actor: maintainer
+  authorization_mode: tty
+  original_text_preserved: true
+  signed_history_recorded: true
+protocol_resume:
+  status: ACTIVE
+  current_step: s07
+  resumed_at: "2026-09-19T14:31:06.992Z"
+  granted_write_paths: 22
+  blockers: []
+  handoff_target: step-s07-owner
+authority_boundary: "Opens only T5a implementation and T5 completion. B1/B2/B3 review, s08, DoD, merge, main binding, Release, publication, Business Acceptance, archive, and cleanup remain independent."
+next_task: "Apply the approved minimal test-only version rebind, then execute focused GREEN and sequential T5 verification."
 ```
 
 ## Delivery Rule Evidence
 ```yaml
 behavior_change: YES
-tdd_status: RED_GREEN_COMPLETE
+tdd_status: T1_T4_RED_GREEN_COMPLETE_T5A_RED_CONFIRMED_GREEN_PENDING
 tdd_test_refs:
   - "packages/workflow-bundle/test/release-surface.test.js"
   - "packages/workflow-bundle/test/release-rollback-smoke.test.js"
@@ -416,7 +443,7 @@ worktree_status: USED
 worktree_refs:
   - ".claude/worktrees/release-workflow-bundle-v2-6-3"
 worktree_reason: "Full-track public release work spans multiple sessions and exact branch/main/public identities."
-review_status: BLOCKED_BY_F_R263_T5_001
+review_status: PENDING_T5A_AND_T5_COMPLETION
 review_refs:
   - "s06 Review Plan B1/B2/B3; T1 contract diff is ready for later B1 after T4 GREEN."
 spec_compliance_status: NOT_RUN
@@ -465,19 +492,20 @@ task_status:
   T2: COMPLETE
   T3: COMPLETE
   T4: COMPLETE_GREEN_CONFIRMED
-  T5: BLOCKED_BY_F_R263_T5_001
-  T6: BLOCKED_BY_T5
+  T5: IN_PROGRESS_AMENDED
+  T5a: NEXT
+  T6: BLOCKED_BY_T5A
   T7: BLOCKED_BY_T6
   T8_T13: LATER_GATES
 acceptance_coverage_current:
   AC-R263-01: LOCAL_PASS_REVIEW_PENDING
   AC-R263-02: LOCAL_PASS_REVIEW_PENDING
   AC-R263-08: PARTIAL
-next_step: "Return to s06 for Developer-approved Task Plan amendment T5a"
+next_step: "Implement T5a and complete T5 sequential verification"
 ```
 
 ## Handoff
 - Outputs actual: ACTIVE s07, exact write grant, T0 isolation/inventory/hashes, T1 intended RED, T2/T3 approved release delta, and T4 targeted GREEN.
-- Known limitations: F-R263-T5-001 blocks T5; T6-T7 and every review/hosted gate remain pending; local Node 26 is not Node 18/22 release evidence.
-- Notes for testing: T1 RED and T4 GREEN are preserved in this note. After T5a approval/reseal/resume, serialize runtime writers, run the full local matrix and exact-artifact rehearsal, and leave no generated runtime diff.
+- Known limitations: T5a and T5 completion remain pending; T6-T7 and every review/hosted gate remain pending; local Node 26 is not Node 18/22 release evidence.
+- Notes for testing: T1 RED, T4 GREEN, and the three independent T5a RED reproductions are preserved in this note. Serialize runtime writers, run the full local matrix and exact-artifact rehearsal, and leave no generated runtime diff.
 - Notes for deployment: none; tag, publication, latest movement, merge, and cleanup remain unauthorized.

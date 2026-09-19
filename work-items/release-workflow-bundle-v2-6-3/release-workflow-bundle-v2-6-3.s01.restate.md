@@ -292,7 +292,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: BLOCKED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
@@ -340,6 +340,9 @@ granted_write_paths:
   - "docs/releases/workflow-bundle-v2.6.3.md"
   - "packages/workflow-bundle/test/release-surface.test.js"
   - "packages/workflow-bundle/test/release-rollback-smoke.test.js"
+  - "packages/workflow-bundle/test/materialize-work-item.test.js"
+  - "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js"
+  - "packages/workflow-bundle/test/release-install-all-smoke.test.js"
   - "work-items/release-workflow-bundle-v2-6-3"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
@@ -352,13 +355,12 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-19T08:48:27.806Z"
-handoff_target: "developer-task-plan-amendment"
-last_transition_action: "block"
-last_transition_at: "2026-09-19T14:18:20.327Z"
+handoff_target: "step-s07-owner"
+last_transition_action: "resume"
+last_transition_at: "2026-09-19T14:31:06.992Z"
 required_actions:
-  - {"id":"se:e17a57a9f4d5c0d569278cacb872ad6f7c7c66e3cc3f01809b3e999b0a581139","kind":"workflow_followup","text":"Resolve blockers before resuming the work item."}
-blockers:
-  - {"id":"se:609ef764810c2b5b67dd624b2ecb1fe248572b8802fdf7d2adeb891c659574a0","kind":"delivery_blocker","text":"F-R263-T5-001: full unit and candidate artifact smoke are blocked by three v2.6.2 expectations outside the approved write grant; Developer approval of Task Plan amendment T5a is required."}
+  - {"id":"se:72985ed9da123d13e7581cc9e85f49d3912167360718e34700350fda60ee59de","kind":"workflow_followup","text":"Continue active execution from the current step."}
+blockers: []
 review_notes:
   - "PO approved opening the workflow-bundle v2.6.3 release work item; later gates remain independent."
 refs:
@@ -374,6 +376,7 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "WORK_ITEM_BLOCKED"
+  - "WORK_ITEM_RESUMED"
 ```
 
 ## Traceability
