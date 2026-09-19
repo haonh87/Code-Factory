@@ -144,7 +144,7 @@ if (fs.existsSync(path.join(repoRoot, releaseNotePath))) {
     "release note must document the immutable rollback command boundary"
   );
   assert(
-    releaseNote.includes("Node 24 action-runtime readiness") &&
+    releaseNote.includes("Workflow documentation and planning history") &&
       releaseNote.includes("does not add files to the npm tarball"),
     "release note must separate non-packaged repository history from the packaged delta"
   );

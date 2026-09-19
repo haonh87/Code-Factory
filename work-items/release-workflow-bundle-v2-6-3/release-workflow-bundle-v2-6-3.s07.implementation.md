@@ -116,7 +116,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> s07 is ACTIVE with the exact 19-path grant. T0 baseline/worktree isolation and T1 fail-first contracts are complete: both approved tests are RED only because current surfaces still represent v2.6.2 and the old rollback. Historical hashes remain intact. T2 structured version bump is next; no release publication has occurred.
+> s07 is ACTIVE with the exact 19-path grant. T0-T4 are complete: the fail-first contracts preceded the structured v2.6.3 bump and full active-surface update, both targeted contracts are now GREEN, historical hashes remain intact, and no release publication has occurred. T5 integrated local verification is next.
 
 ## Step Contract
 ```yaml
@@ -145,6 +145,9 @@ implementation_mode: HARDENING
 tasks_completed:
   - "T0 - locked isolated baseline and release inventory"
   - "T1 - wrote failing v2.6.3 release and exact v2.6.2 rollback contracts"
+  - "T2 - advanced the four structured version surfaces and generated the release-note stub"
+  - "T3 - updated active bilingual surfaces and replaced the stub with the complete packaged-delta record"
+  - "T4 - closed the targeted red-green cycle without weakening historical or rollback locks"
 bug_repro_evidence: []
 hypothesis_log:
   - assumption: "All active structured release surfaces still identify 2.6.2 before T1."
@@ -156,6 +159,9 @@ hypothesis_log:
   - assumption: "The initial release-test failure was an environment bootstrap gap, not a baseline product regression."
     status: CONFIRMED
     evidence: "Both tests initially raised ENOENT for generated runtime skills; npm run build:workflow:bundle-runtime produced 84 mode-skill copies with no retained tracked diff, after which both baseline tests passed."
+  - assumption: "The existing bump utility can be safely scoped to the nested release worktree."
+    status: CONFIRMED_WITH_EXPLICIT_ROOT
+    evidence: "The npm wrapper selected the outer repository manifest from the nested worktree; the exact five unintended outer-repo outputs were immediately restored, the parent target diff was verified empty, and the same approved utility succeeded with --repo-root . inside the release worktree."
 debug_experiments:
   - goal: "Distinguish a product failure from missing generated runtime in the fresh worktree."
     action: "Run both release tests, synchronize runtime using the repository script, then rerun both tests and inspect runtime diff."
@@ -163,22 +169,25 @@ debug_experiments:
 tdd_evidence:
   - behavior: "Active version, current docs, complete release record, and historical locks advance to v2.6.3."
     failing_test: "release-surface.test.js exits 1 with 41 expected old-state assertions; zero historical-digest assertion failed."
-    passing_test: "PENDING_T4 after T2/T3 implementation."
+    passing_test: "release-surface.test.js passes after the four structured surfaces, eleven active docs, and v2.6.3 release record were updated."
   - behavior: "Exact-artifact rollback advances from v2.6.2->v2.6.1 to v2.6.3->v2.6.2 and distinguishes CR-009 runtime state."
     failing_test: "release-rollback-smoke.test.js exits 1 at source package version: expected 2.6.3, got 2.6.2."
-    passing_test: "PENDING_T4 after T2/T3 implementation."
+    passing_test: "release-rollback-smoke.test.js source mode passes for v2.6.3 -> v2.6.2 with the retained rollback digest lock."
 safe_refactor_notes:
   - "No refactor is planned or performed; any need for one requires an Approach/Task Plan amendment."
 code_changes:
   - "release-surface.test.js now targets v2.6.3, freezes every v2.0.0-v2.6.2 release record, rejects stale v2.6.2 current claims, and requires full packaged/repository-only release-note separation."
   - "release-rollback-smoke.test.js now targets exact v2.6.3 -> v2.6.2, pins rollback digest af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f, and asserts CR-009 disposition/history is candidate-only."
+  - "Both manifests, package.json, and the wfc public-flow label now identify 2.6.3."
 doc_changes:
   - "Protocol-owned activation updated s01 and the work-item report to ACTIVE/s07 with the exact 19 write roots."
   - "This canonical s07 note records T0 evidence; no parallel baseline report was created."
+  - "Eleven active English/Vietnamese surfaces now identify v2.6.3 as unpublished, document exact ID-based disposition and archive guards, and point rollback to immutable v2.6.2/42."
+  - "docs/releases/workflow-bundle-v2.6.3.md separates the complete packaged CR-009 delta from non-packaged repository history and keeps hosted/human evidence pending."
 config_changes: []
 review_checkpoints:
-  - "B1 metadata/contracts: pending T4, QC Spec Compliance then Developer+QC Code Quality."
-  - "B2 active docs/release record: pending T5, same ordered reviewers."
+  - "B1 metadata/contracts: implementation complete and targeted GREEN; pending QC Spec Compliance then Developer+QC Code Quality after T5 evidence is recorded."
+  - "B2 active docs/release record: implementation complete; pending T5 and the same ordered reviewers."
   - "B3 integrated branch candidate: pending B1/B2."
 outputs_actual:
   - "Branch codex/release-workflow-bundle-v2-6-3 at d1d6a8208f8bc5dc73bc6e70f27f87e6c5957e34 is 10 governance commits ahead of origin/main 3204749e9fac592e9f38e327dbd85a87b84b2325."
@@ -188,12 +197,16 @@ outputs_actual:
   - "v2.6.2 tag object resolves to commit a9455fa86b13af9f285ea3480728ec951c53286d."
   - "Retained rollback digest af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f is recorded by the immutable v2.6.2 release record and prior hosted verification; fresh artifact download is deferred to exact-artifact rehearsal."
   - "T1 syntax and diff checks pass; intended RED is 41 scoped release-surface assertions plus one rollback version mismatch, with no unrelated or historical-hash failure."
+  - "T2 produced exactly the four approved structured version edits plus the generated v2.6.3 release-note stub in the release worktree."
+  - "T3 replaced the stub and updated only the eleven approved active documentation surfaces; v2.6.3 remains explicitly UNPUBLISHED."
+  - "T4 release-surface and rollback source-mode contracts both pass; git diff --check and the approved-path boundary check pass."
 known_limitations:
   - "T0 corroborates the rollback digest from immutable repository/hosted evidence; it does not claim a fresh public download."
   - "Local Node is v26.5.0; required Node 18/22 proof remains hosted evidence."
-  - "T2-T7 and all independent review verdicts remain pending."
+  - "T5-T7 and all independent review verdicts remain pending."
+  - "The bump utility's automatic repository-root discovery selects the outer manifest from this nested in-repo worktree; release execution must keep using the explicit --repo-root . form."
 follow_up_items:
-  - "Execute T2 once with npm run bump-version -- 2.6.3 and reject any path outside the five expected outputs."
+  - "Execute T5 integrated local release verification, retain no generated runtime diff, then prepare B1/B2/B3 review evidence."
 notes_for_testing: "Bootstrap generated runtime before source-mode release tests in a fresh worktree. Do not treat generated runtime files as owned production changes, and fail if a tracked runtime diff remains."
 ```
 
@@ -279,10 +292,52 @@ result: PASS
 next_task: "T2 structured version bump"
 ```
 
+## T2-T4 Implementation And Targeted Green Evidence
+```yaml
+captured_at: "2026-09-19T14:13:49Z"
+t2_structured_bump:
+  safe_command: "node packages/workflow-bundle/scripts/bump-version.js 2.6.3 --repo-root ."
+  result: PASS
+  outputs:
+    - "workflow-bundle.manifest.json -> 2.6.3"
+    - "packages/workflow-bundle/workflow-bundle.manifest.json -> 2.6.3"
+    - "packages/workflow-bundle/package.json -> 2.6.3"
+    - "packages/workflow-bundle/bin/wfc.js -> Public v2.6.3 Flow"
+    - "docs/releases/workflow-bundle-v2.6.3.md -> generated stub, replaced by T3"
+  root_discovery_incident:
+    command: "npm run bump-version -- 2.6.3"
+    observation: "Nested-worktree invocation selected the outer repository manifest and changed exactly its four version surfaces plus a new release-note stub."
+    containment: "Restored the exact outer-repository version tokens to HEAD values, removed only the generated outer stub, and verified those outer target paths clean before continuing."
+    user_content_affected: false
+t3_active_surfaces:
+  result: PASS
+  active_docs_updated: 11
+  release_record: "docs/releases/workflow-bundle-v2.6.3.md"
+  release_record_sha256: "23db415d782d8f11b8ea02c78c638908535b0afc4580f2d96d2ce3e8fbcb12c4"
+  current_claims: "v2.6.3 UNPUBLISHED"
+  rollback: "workflow-bundle-2.6.2.tgz / af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+  packaged_delta: "CR-009 exact state disposition, signed resolved-state history, atomic state mutation, archive/materialization guards, validator and smoke coverage"
+  repository_only_delta: "Workflow documentation and planning history is separated and does not add files to the npm tarball."
+t4_green:
+  release_surface_test: PASS
+  rollback_source_contract: PASS
+  git_diff_check: PASS
+  historical_release_digests: PASS
+  stale_current_claims: NONE
+  false_public_release_claims: NONE
+  assertion_relaxation: NONE
+path_boundary:
+  result: PASS
+  changed_production_or_doc_paths: 17
+  outside_approved_19_write_roots: []
+result: PASS
+next_task: "T5 integrated local release verification"
+```
+
 ## Delivery Rule Evidence
 ```yaml
 behavior_change: YES
-tdd_status: RED_CONFIRMED_GREEN_PENDING
+tdd_status: RED_GREEN_COMPLETE
 tdd_test_refs:
   - "packages/workflow-bundle/test/release-surface.test.js"
   - "packages/workflow-bundle/test/release-rollback-smoke.test.js"
@@ -339,22 +394,22 @@ upstream:
 task_status:
   T0: COMPLETE
   T1: COMPLETE_RED_CONFIRMED
-  T2: NEXT
-  T3: BLOCKED_BY_T2
-  T4: BLOCKED_BY_T2_T3
-  T5: BLOCKED_BY_T4
+  T2: COMPLETE
+  T3: COMPLETE
+  T4: COMPLETE_GREEN_CONFIRMED
+  T5: NEXT
   T6: BLOCKED_BY_T5
   T7: BLOCKED_BY_T6
   T8_T13: LATER_GATES
 acceptance_coverage_current:
-  AC-R263-01: PARTIAL
-  AC-R263-02: PARTIAL
+  AC-R263-01: LOCAL_PASS_REVIEW_PENDING
+  AC-R263-02: LOCAL_PASS_REVIEW_PENDING
   AC-R263-08: PARTIAL
-next_step: "T2 structured version bump"
+next_step: "T5 integrated local release verification"
 ```
 
 ## Handoff
-- Outputs actual: ACTIVE s07, exact write grant, T0 isolation/inventory/hashes, and T1 intended RED on the two approved contract tests.
-- Known limitations: T2-T7 and every review/hosted gate remain pending; local Node 26 is not Node 18/22 release evidence.
-- Notes for testing: T1 RED is preserved in this note; T2 may now change only the five bump outputs, followed by T3 active docs and T4 GREEN.
+- Outputs actual: ACTIVE s07, exact write grant, T0 isolation/inventory/hashes, T1 intended RED, T2/T3 approved release delta, and T4 targeted GREEN.
+- Known limitations: T5-T7 and every review/hosted gate remain pending; local Node 26 is not Node 18/22 release evidence.
+- Notes for testing: T1 RED and T4 GREEN are preserved in this note; T5 must run the full local matrix, exact-artifact rehearsal, UTF-8 checks, and leave no generated runtime diff.
 - Notes for deployment: none; tag, publication, latest movement, merge, and cleanup remain unauthorized.

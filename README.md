@@ -6,9 +6,9 @@ language: en
 
 > Vietnamese: README.vi.md
 
-This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.6.2`: an installable workflow bundle for Codex and Claude Code with adaptive request routing, applicable-only roles and gates, journaled approval bundles, and privacy-bounded local telemetry. Human authority is unchanged: every applicable gate still needs its authorized reviewer and independent trusted receipt. The candidate remains unpublished until the human Release gate passes.
+This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.6.3`: an installable workflow bundle for Codex and Claude Code with adaptive request routing, applicable-only roles and gates, journaled approval bundles, privacy-bounded local telemetry, exact ID-based state disposition and terminal archive guards. Human authority is unchanged: every applicable gate still needs its authorized reviewer and independent trusted receipt. The candidate remains unpublished until the human Release gate passes.
 
-Until that gate passes, use the candidate source commit and the SHA-256 produced by Workflow Guardrails as the release-candidate references. Guardrails packs once and verifies that same artifact on Node 18 and Node 22; it does not rebuild per environment. Create and share the `v2.6.2` tag only after Release approval. The verified rollback baseline is the immutable `v2.6.1/42` release.
+Until that gate passes, use the candidate source commit and the SHA-256 produced by Workflow Guardrails as the release-candidate references. Guardrails packs once and verifies that same artifact on Node 18 and Node 22; it does not rebuild per environment. Create and share the `v2.6.3` tag only after Release approval. The verified rollback baseline is the immutable `v2.6.2/42` release.
 
 > Looking for the community-facing English overview? See [`docs/release/community-pack-readme.md`](docs/release/community-pack-readme.md) (Vietnamese: [`docs/release/community-pack-readme.vi.md`](docs/release/community-pack-readme.vi.md)).
 
@@ -22,7 +22,7 @@ Until that gate passes, use the candidate source commit and the SHA-256 produced
 
 ## Start Here
 
-If you are approaching the repo for the first time and want to review the `v2.6.2` release candidate:
+If you are approaching the repo for the first time and want to review the `v2.6.3` release candidate:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -40,7 +40,7 @@ The documents below are maintainer or historical context and should not be used 
 
 ## Quick Workflow Commands
 
-The public command surface of `v2.6.2` uses `wfc`.
+The public command surface of `v2.6.3` uses `wfc`.
 
 Install and manage the workflow bundle:
 
@@ -105,7 +105,7 @@ Notes:
 - The first approval in a trusted approval root creates an approver keypair and requires the human to enter an approval passphrase directly in that TTY.
 - The implementation path is locked at the filesystem level until the work item reaches `ACTIVE` at `s07` and is granted a `write-root`.
 - `work-items/` is the canonical artifact root for the repo's workflow artifacts.
-- The approval model of `v2.6.2` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
+- The approval model of `v2.6.3` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
 
 ## Adaptive Governance Contract
 
@@ -117,12 +117,18 @@ Notes:
 - Adaptive writes require source/installed minor-version compatibility and a passing runtime parity result. Otherwise the writer fails before delivery state is changed, while legacy reads and individual approval commands remain available.
 - Telemetry is off by default. `--telemetry true` or `CF_TELEMETRY=on` enables local-only, allowlisted, pseudonymous records; raw records expire after 30 days and aggregates after 90 days. There is no remote exporter.
 
+## Exact State Disposition And Archive Guards
+
+- `wfc work-item status --json` exposes snapshot-bound `disposition_targets[]`; use the exact `state_id` to select one blocker or required action.
+- `wfc work-item dispose-state` requires a Maintainer-authorized signed disposition and moves only that entry to append-only `resolved_state_history[]`, preserving the original value exactly.
+- Reusing an identical operation is idempotent; stale IDs, conflicting reuse, active blockers at archive time, and terminal-state overwrites are rejected rather than inferred from human-readable text.
+
 ## Workflow Docs
 
 ### By Purpose
 
 - Public docs for newcomers to the workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface for `v2.6.2`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface for `v2.6.3`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart for `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README for installation or publishing: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 

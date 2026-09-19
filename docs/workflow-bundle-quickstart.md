@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: workflow-bundle-quickstart.vi.md
 
-This guide focuses on the `workflow-bundle v2.6.2` release candidate: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, bootstrap a new repo, and run the `agent proposes, human approves` flow. Registry installation remains unavailable until the human Release gate passes. The candidate retains 42 managed skills and preserves independent human authority for every applicable gate.
+This guide focuses on the `workflow-bundle v2.6.3` release candidate: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, resolve legacy workflow state by exact ID, bootstrap a new repo, and run the `agent proposes, human approves` flow. Registry installation remains unavailable until the human Release gate passes. The candidate retains 42 managed skills and preserves independent human authority for every applicable gate.
 
 ## Objectives
 
@@ -149,6 +149,27 @@ Consistency rule:
 - if `Missing Gates` is not `NONE`, `Workflow Status` must not be `ACTIVE`, `READY_FOR_REVIEW`, or `VERIFIED`
 - if `Missing Gates` is not `NONE`, `Next Human Action` must not be `NONE`
 - a greenfield request like `QR Voucher + voucher service API + tone brand` in an empty repo must stop at `proposal stage` and must not auto-scaffold
+
+## Resolve State By Exact ID
+
+First refresh the report snapshot and inspect the read-only disposition targets:
+
+```bash
+wfc work-item status --work-item <work-item-slug> --json
+```
+
+Select the exact `state_id` from `disposition_targets[]`, then have an authorized Maintainer run the disposition in an interactive terminal:
+
+```bash
+wfc work-item dispose-state \
+  --work-item <work-item-slug> \
+  --state-id <snapshot-bound-state-id> \
+  --operation-id <unique-operation-id> \
+  --reason "<explicit disposition reason>" \
+  --reviewed-by maintainer
+```
+
+The command moves only the selected raw entry into signed, append-only `resolved_state_history[]`; legacy text is preserved exactly and is never interpreted by regex or fuzzy matching. Refresh status after any report change because stale IDs are rejected. `wfc work-item archive` also rejects active blockers or required actions, so disposition and archive remain separate authorized actions.
 
 ## Adaptive Request Routing
 
