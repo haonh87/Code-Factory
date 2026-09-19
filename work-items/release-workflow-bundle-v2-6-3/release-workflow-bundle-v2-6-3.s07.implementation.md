@@ -358,7 +358,7 @@ concurrency_note:
 finding:
   id: "F-R263-T5-001"
   severity: HIGH
-  status: OPEN_WAITING_DEVELOPER_APPROVAL
+  status: HUMAN_APPROVED_PENDING_RECEIPT_AND_RESUME
   category: RELEASE_REGRESSION_TEST_VERSION_DRIFT
   introduced_by_t2_t4: false
   evidence:
@@ -379,7 +379,9 @@ baseline_scan_gap:
   boundary: "Unrelated work item state; standard hosted validators pass and T5a must not edit it."
 proposed_task_plan_amendment:
   amendment_id: T5a
-  status: PROPOSED_WAITING_DEVELOPER_APPROVAL
+  status: DEVELOPER_APPROVED_PENDING_TRUSTED_RECEIPT
+  reviewed_at: "2026-09-19T14:24:49Z"
+  decision_source: "User explicitly approved Task Plan amendment T5a with role Developer and the exact three proposed test paths."
   added_write_roots:
     - "packages/workflow-bundle/test/materialize-work-item.test.js"
     - "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js"
@@ -397,7 +399,7 @@ proposed_task_plan_amendment:
     - "Apply the minimal test-only delta and run the three tests GREEN."
     - "Run T5 sequentially, pack one local pre-host candidate, and execute exact v2.6.3 -> v2.6.2 artifact rehearsal."
 result: BLOCKED_RETURN_TO_S06
-next_human_action: "Developer approves Task Plan amendment T5a; this does not approve the amended artifact, its trusted receipt, implementation, review, s08, Release, publication, Business Acceptance, merge, or cleanup."
+next_human_action: "Seal the amended Task Plan trusted receipt as Developer, then resume s07 with all 22 approved write roots; T5a approval does not approve implementation, review, s08, Release, publication, Business Acceptance, merge, or cleanup."
 ```
 
 ## Delivery Rule Evidence

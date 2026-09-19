@@ -89,7 +89,7 @@ gate_reviews:
   approach_reviewed_by: ["developer"]
   approach_reviewed_at: "2026-09-19T10:34:59Z"
   task_plan_reviewed_by: ["developer"]
-  task_plan_reviewed_at: "2026-09-19T13:50:54Z"
+  task_plan_reviewed_at: "2026-09-19T14:24:49Z"
   dod_reviewed_by: []
   dod_reviewed_at: ""
   release_reviewed_by: []
@@ -117,7 +117,7 @@ tags:
 # Step 6 - Task Plan
 
 > [!summary]
-> Developer approved this ordered plan: lock the baseline, drive version and rollback contracts red first, prepare only approved release surfaces, verify and review the branch, merge only after QC DoD, bind the authoritative candidate to the post-merge `main` run, then publish the exact bytes through npm staging and GitHub before promoting `latest`. Approval does not open s07 or authorize any public action.
+> Developer approved this ordered plan and bounded amendment T5a: lock the baseline, drive version and rollback contracts red first, prepare only approved release surfaces, rebind the three stale v2.6.2 regression expectations discovered by T5, verify and review the branch, merge only after QC DoD, bind the authoritative candidate to the post-merge `main` run, then publish the exact bytes through npm staging and GitHub before promoting `latest`. The amended trusted receipt and protocol resume remain separate actions; approval does not authorize public mutation.
 
 ## Step Contract
 ```yaml
@@ -128,7 +128,7 @@ input_summary:
   - "Approved s05 Option A using one post-merge main artifact."
   - "Baseline source 3204749e9fac592e9f38e327dbd85a87b84b2325 and immutable v2.6.2 rollback SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f."
 output_summary:
-  - "Fourteen ordered tasks with exact paths, dependencies, outputs, review checkpoints, and verification hints."
+  - "Fourteen ordered release tasks plus bounded recovery task T5a, with exact paths, dependencies, outputs, review checkpoints, and verification hints."
   - "Required worktree, TDD, two-tier review, main candidate binding, staged publication, rollback, and finalization plans."
   - "Traceability from every acceptance-criteria group to an execution checkpoint."
 done_when:
@@ -155,6 +155,7 @@ ba_lane:
     - "Public mutation is forbidden until exact-main QC DoD and DevOps+QC Release receipts pass."
   human_review_points:
     - "Developer approves Task Plan before s07 activation."
+    - "Developer approves T5a and the amended Task Plan receipt must match before the blocked s07 path resumes."
     - "QC Spec Compliance precedes Developer+QC Code Quality for every s07 batch."
     - "QC approves branch DoD before merge and refreshes verification/DoD for the exact main binding."
     - "DevOps+QC approve Release before publication; PO approves Business Acceptance afterward."
@@ -178,21 +179,23 @@ dev_lane:
     - "docs/releases/workflow-bundle-v2.6.3.md"
     - "packages/workflow-bundle/test/release-surface.test.js"
     - "packages/workflow-bundle/test/release-rollback-smoke.test.js"
+    - "packages/workflow-bundle/test/materialize-work-item.test.js"
+    - "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js"
+    - "packages/workflow-bundle/test/release-install-all-smoke.test.js"
     - "work-items/release-workflow-bundle-v2-6-3/**"
   read_only_validation_surfaces:
     - ".github/workflows/workflow-guardrails.yml"
-    - "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js"
-    - "packages/workflow-bundle/test/release-install-all-smoke.test.js"
     - "packages/workflow-bundle/runtime/**; build commands may rewrite deterministically, but any retained diff is blocking."
     - "docs/releases/workflow-bundle-v2.0.0.md through docs/releases/workflow-bundle-v2.6.2.md"
   technical_sequence:
     - "T0 baseline -> T1 failing contracts -> T2 version bump -> T3 active docs/full record -> T4 targeted green tests."
-    - "T5 local verification -> T6 independent review -> T7 PR evidence -> T8 branch DoD and merge."
+    - "T5 local verification finding -> T5a bounded regression-test rebind and sequential rerun -> T6 independent review -> T7 PR evidence -> T8 branch DoD and merge."
     - "T9 main artifact/matrices -> T10 QC rebind -> T11 preflight/Release -> T12 staged publish -> T13 acceptance/finalize."
   tdd_targets:
     - "release-surface.test.js first fails because active surfaces are still 2.6.2 while the contract expects 2.6.3 and freezes v2.6.2 history."
     - "release-rollback-smoke.test.js first fails because source still represents 2.6.2 -> 2.6.1 while the contract expects 2.6.3 -> 2.6.2."
     - "Record expected red reasons before T2; unrelated failures stop implementation."
+    - "T5 independently reproduced three unchanged v2.6.2 expectations; T5a may change only those version expectations plus the candidate temp-prefix label before focused and full GREEN reruns."
 task_breakdown:
   - id: "T0"
     owner_role: "developer"
@@ -295,6 +298,24 @@ task_breakdown:
       - "No unexpected runtime diff remains."
     review_checkpoint: "QC receives raw evidence, scan gaps, identities, and a clean approved-scope diff."
     verification_hint: "Run package.json verification scripts and exact-artifact smoke in isolated temp homes; compare diff and historical hashes to T0."
+  - id: "T5a"
+    owner_role: "developer"
+    name: "Rebind stale release regression expectations and complete T5"
+    objective: "Resolve F-R263-T5-001 with the smallest test-only delta, then rerun integrated verification sequentially without changing production behavior or rollback identity."
+    paths_in_scope:
+      - "packages/workflow-bundle/test/materialize-work-item.test.js"
+      - "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js"
+      - "packages/workflow-bundle/test/release-install-all-smoke.test.js"
+      - "work-items/release-workflow-bundle-v2-6-3/**"
+    dependencies: ["T5"]
+    outputs_expected:
+      - "Telemetry runtime-version expectation advances from 2.6.2 to 2.6.3."
+      - "Candidate source/installed expectation and diagnostic temp prefix advance from 2.6.2 to 2.6.3."
+      - "Install-all source expectation advances from 2.6.2 to 2.6.3."
+      - "The three focused tests and full unit suite pass; local candidate and immutable v2.6.2 artifact rehearse exact rollback in isolated Codex/Claude global/project homes."
+      - "Runtime writers are serialized and no generated runtime diff remains."
+    review_checkpoint: "Compare the patch to the three recorded RED failures; any production edit, assertion removal, rollback change, new path, or broad relaxation is blocking."
+    verification_hint: "Run node --check and each amended test, then rerun T5 sequentially, record candidate and rollback digests, inspect tarball contents, and enforce clean runtime/approved-path diffs."
   - id: "T6"
     owner_role: "qc"
     name: "Perform independent two-tier s07 review"
@@ -303,7 +324,7 @@ task_breakdown:
       - "B1: metadata and release/rollback contracts"
       - "B2: active bilingual docs and v2.6.3 release note"
       - "B3: integrated release-only delta, local evidence, and historical hashes"
-    dependencies: ["T5"]
+    dependencies: ["T5a"]
     outputs_expected:
       - "For B1/B2/B3, QC Spec Compliance precedes Developer+QC Code Quality."
       - "Every finding has ID, severity, owner, source, disposition, and reopen condition."
@@ -421,7 +442,7 @@ task_breakdown:
     review_checkpoint: "Branch-finish discipline rejects cleanup if any receipt, public digest, archive, or rollback evidence is missing."
     verification_hint: "Re-query public identities, run public install smoke, validate receipts/report/archive, confirm reachability and clean tree, then clean up."
 dependencies_global:
-  - "Strict sequence: T0 -> T1 -> T2 -> T3 -> T4 -> T5 -> T6 -> T7 -> T8 -> T9 -> T10 -> T11 -> T12 -> T13."
+  - "Strict sequence: T0 -> T1 -> T2 -> T3 -> T4 -> T5 finding -> T5a recovery/T5 completion -> T6 -> T7 -> T8 -> T9 -> T10 -> T11 -> T12 -> T13."
   - "No implementation before Developer Task Plan receipt and explicit s07 activation with approved write roots."
   - "T1 red precedes T2/T3; T6 precedes hosted handoff; T8 DoD precedes merge."
   - "T9 supersedes PR authority; T10 precedes T11 Release; T11 precedes T12 public mutation; T13 cleanup is terminal."
@@ -433,11 +454,12 @@ risk_notes:
   - "Historical version text is ownership-sensitive and must never be mass-replaced."
 verification_plan:
   - "Use each task's verification_hint and record raw evidence."
+  - "After amendment, serialize every command that writes generated runtime; parallel read-only checks may run only after runtime sync completes."
   - "Local checks cover tests, static/audit equivalents, pack, release contracts, candidate smoke, security heuristics, YAML, diff, and UTF-8."
   - "Hosted checks cover every guardrail job, Node 18/22 consumers, and annotations."
   - "Compatibility covers five candidate and five rollback modes with exact identities and timing."
   - "Public checks cover tag target, channel downloads, latest/staging state, and install smoke."
-notes_for_implementation: "Use sequential agentic execution in the existing worktree. Do not delegate because every task shares one release identity and gate chain. Any new mutable root requires an approved amendment."
+notes_for_implementation: "Use sequential agentic execution in the existing worktree. T5a is limited to three version expectations and one diagnostic temp-prefix label across the three added test paths. Do not delegate because every task shares one release identity and gate chain. Any further mutable root requires another approved amendment."
 ```
 
 ## Worktree Plan
@@ -479,7 +501,7 @@ review_mode: INDEPENDENT
 review_order: [SPEC_COMPLIANCE, CODE_QUALITY]
 review_batches:
   - batch: "B1 - release identity and contracts"
-    scope: ["structured metadata and CLI label", "release/rollback tests"]
+    scope: ["structured metadata and CLI label", "release/rollback tests", "T5a runtime/candidate/install version expectations"]
     trigger: "T4 red-green cycle passes"
     reviewer_role: "QC for Spec Compliance; Developer and QC for Code Quality"
   - batch: "B2 - documentation and release record"
@@ -527,7 +549,7 @@ checks:
   - id: "GOV-R263-S06-01"
     check: "Execution-oriented plan"
     result: PASS
-    evidence: "T0..T13 name all task fields; mutable and read-only paths are separated."
+    evidence: "T0..T13 plus bounded T5a name all task fields; 22 mutable roots and read-only validation surfaces are separated."
   - id: "GOV-R263-S06-02"
     check: "TDD for release contracts"
     result: PASS
@@ -553,15 +575,15 @@ checks:
     result: PASS
     evidence: "s07 awaits Developer receipt/activation; publication awaits T11 Release."
 blocking_items:
-  - "The Developer Task Plan decision is recorded, but its trusted receipt is not yet sealed against this finalized artifact."
+  - "Developer approved T5a, but the amended trusted Task Plan receipt is not yet sealed against this artifact and the work item remains BLOCKED."
 owner: "developer"
-next_action: "Seal the Developer Task Plan trusted receipt; after digest_match=true, activate s07 with exact owned paths."
+next_action: "Seal the amended Developer Task Plan trusted receipt; after digest_match=true, resume s07 with all 22 exact owned paths."
 ```
 
 ## Brownfield Delivery Plan
 ```yaml
 regression_checkpoints:
-  - "T0 baseline/hashes; T4 targeted red-green; T5 full local; T6 review; T7/T9 hosted; T13 public smoke."
+  - "T0 baseline/hashes; T4 targeted red-green; T5 finding; T5a focused/full local recovery; T6 review; T7/T9 hosted; T13 public smoke."
 compatibility_checkpoints:
   - "Node 18/22 hosted lanes."
   - "CLI plus Codex global/project and Claude global/project candidate modes."
@@ -586,8 +608,8 @@ gate_evidence:
   approach: { status: "APPROVED", reviewed_by: "developer", artifact_sha256: "cd4e4479e668cc3c00e548fbbc780b8329b03b7620898a358e33cb25d44875c7", digest_match: true }
 acceptance_to_tasks:
   - { criteria: ["AC-R263-01", "AC-R263-02", "AC-R263-03"], tasks: ["T0", "T1", "T2", "T3", "T4", "T6"] }
-  - { criteria: ["AC-R263-04", "AC-R263-05", "AC-R263-06"], tasks: ["T5", "T7", "T8", "T9", "T10"] }
-  - { criteria: ["AC-R263-07", "AC-R263-08"], tasks: ["T5", "T9", "T10"] }
+  - { criteria: ["AC-R263-04", "AC-R263-05", "AC-R263-06"], tasks: ["T5", "T5a", "T7", "T8", "T9", "T10"] }
+  - { criteria: ["AC-R263-07", "AC-R263-08"], tasks: ["T5", "T5a", "T9", "T10"] }
   - { criteria: ["AC-R263-09", "AC-R263-10"], tasks: ["T10", "T11"] }
   - { criteria: ["AC-R263-11", "AC-R263-12"], tasks: ["T11", "T12"] }
   - { criteria: ["AC-R263-13"], tasks: ["T13"] }
@@ -597,7 +619,7 @@ edge_case_to_tasks:
   - { edge_cases: ["EC-R263-04"], tasks: ["T0", "T1", "T3", "T6"] }
   - { edge_cases: ["EC-R263-05"], tasks: ["T7", "T9", "T10", "T12"] }
   - { edge_cases: ["EC-R263-06"], tasks: ["T9", "T10"] }
-next_step: "Seal the Developer Task Plan trusted receipt, then explicitly activate s07 with the approved write roots"
+next_step: "Seal the amended Developer Task Plan trusted receipt, then resume s07 with all 22 approved write roots"
 ```
 
 ## Audit
@@ -607,7 +629,7 @@ status: PASS
 checks:
   - criterion: "Executable without re-deriving the approach"
     result: PASS
-    evidence: "T0..T13 lock sequence, paths, dependencies, outputs, reviewers, and verification."
+    evidence: "T0..T13 plus T5a lock sequence, 22 paths, dependencies, outputs, reviewers, and verification."
   - criterion: "Fail-first behavior"
     result: PASS
     evidence: "T1 RED precedes T2/T3; T4 closes GREEN."
@@ -626,14 +648,14 @@ timebox_breach: false
 timebox_evidence: "One focused planning pass after exact Approach receipt verification."
 gaps: []
 risk_level: HIGH
-next_action: "Seal the Developer Task Plan trusted receipt; do not activate s07 before digest_match=true."
+next_action: "Seal the amended Developer Task Plan trusted receipt; do not resume s07 before digest_match=true."
 authority_boundary: "Audit PASS does not approve Task Plan, implementation, DoD, Release, publication, acceptance, merge, or cleanup."
 ```
 
 ## Handoff
-- First task after activation: T0 baseline/isolation and immutable historical hash inventory.
-- Blocker: the Developer approval is recorded; the trusted `task_plan` receipt must still be sealed with `digest_match=true`.
-- s07 condition: explicit activation grants only `dev_lane.owned_paths`; validation surfaces remain read-only.
+- Recovery task after resume: T5a applies only the approved three-test version rebind and completes T5 sequential verification.
+- Blocker: Developer approved T5a; the amended trusted `task_plan` receipt must still be sealed with `digest_match=true`.
+- s07 condition: explicit resume grants only the 22 `dev_lane.owned_paths`; validation surfaces remain read-only.
 - Release boundary: no tag/npm/GitHub Release/latest before T10 QC DoD and T11 DevOps+QC Release for exact main candidate.
 - Cleanup boundary: no finalization before T13 public verification, PO Business Acceptance, terminal archive, and clean tree.
 
@@ -642,7 +664,7 @@ authority_boundary: "Audit PASS does not approve Task Plan, implementation, DoD,
 decision: "APPROVED"
 gate: "task_plan"
 reviewed_by: ["developer"]
-reviewed_at: "2026-09-19T13:50:54Z"
-decision_source: "User explicitly approved the workflow-bundle v2.6.3 Task Plan, including the proposed 19 owned paths and T0-T13 sequencing."
+reviewed_at: "2026-09-19T14:24:49Z"
+decision_source: "User explicitly approved Task Plan amendment T5a, adding exactly materialize-work-item.test.js, release-candidate-artifact-smoke.test.js, and release-install-all-smoke.test.js to the original 19 owned paths."
 authority_boundary: "Approves only the s06 Task Plan; s07 activation, implementation reviews, DoD, merge, Release, publication, Business Acceptance, archive, and cleanup remain separate."
 ```
