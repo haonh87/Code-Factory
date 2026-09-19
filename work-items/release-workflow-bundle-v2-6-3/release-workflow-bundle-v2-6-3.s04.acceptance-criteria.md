@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
 governance_status: ALIGNED
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -94,10 +94,10 @@ role_signoffs:
   release: ["devops","qc"]
   business_acceptance: ["po"]
 gate_reviews:
-  spec_reviewed_by: []
-  spec_reviewed_at: ""
-  dor_reviewed_by: []
-  dor_reviewed_at: ""
+  spec_reviewed_by: ["ba"]
+  spec_reviewed_at: "2026-09-19T09:10:05Z"
+  dor_reviewed_by: ["ba","qc"]
+  dor_reviewed_at: "2026-09-19T09:10:06Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -128,7 +128,7 @@ tags:
 # Step 4 - Acceptance + DoR
 
 > [!summary]
-> Spec v2.6.3 đã được chuyển thành 13 acceptance criteria có thể kiểm chứng, bao phủ exact artifact, full-delta release note, CLI/Codex/Claude compatibility, rollback v2.6.2 trong 15 phút và staged cross-channel publication. Đánh giá DoR đề xuất là `READY`, nhưng Spec và DoR vẫn `PENDING_HUMAN_APPROVAL`.
+> Spec v2.6.3 gồm 13 acceptance criteria có thể kiểm chứng, bao phủ exact artifact, full-delta release note, CLI/Codex/Claude compatibility, rollback v2.6.2 trong 15 phút và staged cross-channel publication. BA đã phê duyệt Spec; BA và QC đã phê duyệt DoR. Các approval này không mở Approach, Task Plan hoặc implementation.
 
 ## Step Contract
 ```yaml
@@ -213,10 +213,19 @@ timebox:
 
 ## Requirement Baseline
 ```yaml
-status: READY_FOR_REVIEW
-gate_status: PENDING_HUMAN_APPROVAL
-approved_spec_refs: []
-proposed_spec_ref: "release-workflow-bundle-v2-6-3.s04.acceptance-criteria.md"
+status: APPROVED
+gate_status: APPROVED
+approved_spec_refs:
+  - "release-workflow-bundle-v2-6-3.s01.restate.md"
+  - "release-workflow-bundle-v2-6-3.s02.business-goal.md"
+  - "release-workflow-bundle-v2-6-3.s03.open-questions.md"
+approved_spec_digests:
+  - ref: "release-workflow-bundle-v2-6-3.s01.restate.md"
+    sha256: "e036fa3fa47fa45afe9bb38619c548413a3f14ea1f924e4d3b4a6078629d3250"
+  - ref: "release-workflow-bundle-v2-6-3.s02.business-goal.md"
+    sha256: "b0a4b14062d975310a4d11551dfddd4765490a351693f9b5a15cd93b32f49b35"
+  - ref: "release-workflow-bundle-v2-6-3.s03.open-questions.md"
+    sha256: "cf801504a063340341e308273405f8f7f51435fa0f9438e5ac129aec862ff867"
 decision_notes:
   - "OQ-R263-001 Option A requires GitHub Releases plus npm using the same artifact."
   - "OQ-R263-002 Option A permits updates only to active surfaces and a new v2.6.3 record."
@@ -224,6 +233,7 @@ decision_notes:
   - "OQ-R263-004 Option A requires complete packaged-delta release notes."
   - "OQ-R263-005 Option A requires auth preflight, npm staging, GitHub verification, then latest promotion."
   - "OQ-R263-006 Option A requires rollback to v2.6.2 within 15 minutes per supported mode."
+  - "BA approved this Spec on 2026-09-19; the s04 gate receipt must remain bound to the finalized note digest."
 ```
 
 ## Contract Baseline
@@ -389,7 +399,7 @@ next_action: "BA reviews Spec first; BA and QC then independently review DoR."
 ```yaml
 work_item_slug: "release-workflow-bundle-v2-6-3"
 status: READY
-gate_status: PENDING_HUMAN_APPROVAL
+gate_status: APPROVED
 checks:
   restated_request_clear: PASS
   business_goal_clear: PASS
@@ -407,8 +417,8 @@ residual_risks:
   - "External credentials may expire; AC-R263-09 makes preflight evidence mandatory."
   - "GitHub/npm publication is not atomic; AC-R263-11 and EC-R263-01..02 constrain partial states."
   - "The final candidate SHA does not exist until release preparation is reviewed; all later evidence must rebind to that exact descendant."
-next_action: "BA approves Spec, then BA and QC approve DoR; only afterward may s05 Technical Approach be presented for Developer approval."
-authority_boundary: "READY is the artifact author's readiness recommendation, not a passed DoR gate."
+next_action: "After Spec and DoR trusted receipts both show digest_match=true, author s05 Technical Approach for Developer approval."
+authority_boundary: "Spec and DoR are approved only; Approach, Task Plan, implementation, DoD, Release, Business Acceptance, tag creation, and publication remain separate."
 ```
 
 ## Traceability
@@ -446,18 +456,33 @@ checks:
     evidence: "DoR checks are all PASS with no blocking_gaps; three residual risks have explicit controls."
   - criterion: "The Spec and DoR are presented for independent human approval."
     result: PASS
-    evidence: "Frontmatter remains status=draft; Requirement Baseline and DoR both state PENDING_HUMAN_APPROVAL."
+    evidence: "BA explicitly approved Spec and BA+QC explicitly approved DoR; the note records separate reviewer metadata and authority boundaries."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed in one authoring pass after the six s03 decisions were approved."
 gaps: []
 risk_level: MEDIUM
-next_action: "Obtain BA Spec approval, then BA+QC DoR approval; do not begin s05 or implementation before those receipts exist."
-authority_boundary: "Audit PASS covers artifact completeness only; it does not pass Spec or DoR."
+next_action: "Seal Spec then DoR trusted receipts against this final content hash; proceed only when both report digest_match=true."
+authority_boundary: "Audit PASS and s04 approvals do not pass Approach, Task Plan, implementation, DoD, Release, or Business Acceptance."
 ```
 
 ## Handoff
 - Criteria bắt buộc: AC-R263-01..13, với exact source/artifact binding và năm installation modes cho candidate lẫn rollback.
 - Edge case phải giữ: partial cross-channel publication, immutable identity collision, historical version references, digest mismatch, auth failure và timing variance.
-- Điều kiện sang step 5: BA phê duyệt Spec; sau đó BA và QC phê duyệt DoR bằng trusted receipts. Không approval nào trong s03 thay thế hai gate này.
+- Điều kiện sang step 5: đã được human đáp ứng theo thứ tự Spec (BA) rồi DoR (BA+QC); trusted receipts phải được seal vào exact digest trước khi s05 được trình Developer review.
+
+## Human Approval Record
+```yaml
+decision_source: "User explicitly approved Spec with role BA, then DoR with roles BA and QC for workflow-bundle v2.6.3."
+approvals:
+  - gate: "spec"
+    decision: "APPROVED"
+    reviewed_by: ["ba"]
+    reviewed_at: "2026-09-19T09:10:05Z"
+  - gate: "dor"
+    decision: "APPROVED"
+    reviewed_by: ["ba", "qc"]
+    reviewed_at: "2026-09-19T09:10:06Z"
+authority_boundary: "Approves only Spec and DoR; all later gates and every implementation or publication action remain independent."
+```
