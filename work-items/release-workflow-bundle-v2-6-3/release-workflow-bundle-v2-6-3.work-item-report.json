@@ -2,7 +2,7 @@
   "materialization_status": "READY",
   "protocol_status": "MATERIALIZED",
   "decision_owner": "agent",
-  "protocol_owner": "",
+  "protocol_owner": "po",
   "raw_request_summary": "Promote v263-3204749e with v262 fallback.",
   "request_source": "user-chat",
   "candidate_count": 1,
@@ -56,13 +56,9 @@
   "work_item_slug": "release-workflow-bundle-v2-6-3",
   "work_item_type": "CHANGE",
   "delivery_context": "brownfield",
-  "selected_profile": "full",
-  "sdd_mode": "none",
-  "sdd_preset": "full",
-  "sdd_light_profile": "preview",
-  "sdd_reasons": [],
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/release-workflow-bundle-v2-6-3/work-items/release-workflow-bundle-v2-6-3",
   "current_step": "s01",
+  "granted_write_paths": [],
   "change_strategy": "create_new",
   "change_id": "CHANGE-007",
   "handoff_target": "human-review",
@@ -71,11 +67,6 @@
       "id": "se:6ee5e91f9895141bedc6ec73409d18cbc52d86cef1ab943cb4e41bc4bf5bc0f9",
       "kind": "workflow_followup",
       "text": "wfc change-item approve --change-id CHANGE-007 --reviewed-by <role>"
-    },
-    {
-      "id": "se:e92335a8ed30cca18ab048105774943921b898380c5866e9bf7aa1d30697c220",
-      "kind": "workflow_followup",
-      "text": "wfc work-item approve --work-item release-workflow-bundle-v2-6-3 --reviewed-by <role>"
     },
     {
       "id": "se:440f5d1de06856e1a6cf03220e543abc0984c14b227573a442b72455b7724d69",
@@ -118,17 +109,20 @@
     "DEDUP_CONFIRMED",
     "CHANGE_CREATED",
     "WORKFLOW_SCAFFOLDED",
-    "STEP_OPENED"
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-09-19T08:48:27.806Z",
+  "review_notes": [
+    "PO approved opening the workflow-bundle v2.6.3 release work item; later gates remain independent."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
   "bootstrap_reviewed_by": "",
   "bootstrap_reviewed_at": "",
-  "review_required": true,
-  "approval_status": "PENDING_REVIEW",
-  "reviewed_by": "",
-  "reviewed_at": "",
-  "review_notes": [],
   "protocol_events": [
     {
       "timestamp": "2026-09-19T08:42:26.740Z",
@@ -153,11 +147,18 @@
       "from_status": "READY_TO_MATERIALIZE",
       "to_status": "MATERIALIZED",
       "note": "Auto-scaffolded workflow artifacts."
+    },
+    {
+      "timestamp": "2026-09-19T08:48:27.807Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "PO approved opening the workflow-bundle v2.6.3 release work item; later gates remain independent."
     }
   ],
   "artifact_shape": "adaptive_v1",
   "request_lane": "product_delivery",
-  "requested_lane": "product_delivery",
   "workflow_required": true,
   "routing_reasons": [
     "LANE_PRODUCT_DELIVERY"

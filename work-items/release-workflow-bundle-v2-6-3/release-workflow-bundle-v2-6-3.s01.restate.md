@@ -293,7 +293,7 @@ blockers: []
 ## Work Item Protocol
 ```yaml
 protocol_status: MATERIALIZED
-approval_status: PENDING_REVIEW
+approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
 request_lane: product_delivery
@@ -330,22 +330,22 @@ bootstrap_reviewed_at: ""
 change_strategy: create_new
 change_id: "CHANGE-007"
 decision_owner: "agent"
-protocol_owner: ""
-reviewed_by: ""
-reviewed_at: ""
+protocol_owner: "po"
+reviewed_by: "po"
+reviewed_at: "2026-09-19T08:48:27.806Z"
 handoff_target: "human-review"
-last_transition_action: "materialize"
-last_transition_at: "2026-09-19T08:42:26.796Z"
+last_transition_action: "approve"
+last_transition_at: "2026-09-19T08:48:27.807Z"
 required_actions:
   - {"id":"se:6ee5e91f9895141bedc6ec73409d18cbc52d86cef1ab943cb4e41bc4bf5bc0f9","kind":"workflow_followup","text":"wfc change-item approve --change-id CHANGE-007 --reviewed-by <role>"}
-  - {"id":"se:e92335a8ed30cca18ab048105774943921b898380c5866e9bf7aa1d30697c220","kind":"workflow_followup","text":"wfc work-item approve --work-item release-workflow-bundle-v2-6-3 --reviewed-by <role>"}
   - {"id":"se:440f5d1de06856e1a6cf03220e543abc0984c14b227573a442b72455b7724d69","kind":"gate_approval","text":"wfc gate approve --work-item release-workflow-bundle-v2-6-3 --gate spec --reviewed-by ba","gate":"spec"}
   - {"id":"se:9ed41867a24f911cb6089bd8f75ee756bc93f66023befa368582adbb2d5ba461","kind":"gate_approval","text":"wfc gate approve --work-item release-workflow-bundle-v2-6-3 --gate dor --reviewed-by ba","gate":"dor"}
   - {"id":"se:6bf1a66609a55cd10ce75383d6ff424fc1424448e593c3a578c6aa2af8e2ed70","kind":"gate_approval","text":"wfc gate approve --work-item release-workflow-bundle-v2-6-3 --gate approach --reviewed-by developer","gate":"approach"}
   - {"id":"se:ea6d7fbe5bfa918c9e2cbe647194dce33781afccbd2d203117137bd337985330","kind":"gate_approval","text":"wfc gate approve --work-item release-workflow-bundle-v2-6-3 --gate task_plan --reviewed-by developer","gate":"task_plan"}
   - {"id":"se:755d52a4ebc203c62805ff31f8972f258ba7d2e57c4e157e4182928eb4bc7895","kind":"work_item_activation","text":"wfc work-item activate --work-item release-workflow-bundle-v2-6-3 --step s07 --write-root <path>"}
 blockers: []
-review_notes: []
+review_notes:
+  - "PO approved opening the workflow-bundle v2.6.3 release work item; later gates remain independent."
 refs:
   - "work-items/release-workflow-bundle-v2-6-3"
 audit_events:
@@ -356,6 +356,7 @@ audit_events:
   - "CHANGE_CREATED"
   - "WORKFLOW_SCAFFOLDED"
   - "STEP_OPENED"
+  - "WORK_ITEM_APPROVED"
 ```
 
 ## Traceability
