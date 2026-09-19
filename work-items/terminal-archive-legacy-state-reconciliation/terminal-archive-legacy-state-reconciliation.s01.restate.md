@@ -579,11 +579,12 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-09-16T07:38:09.525Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-09-18T15:03:18.324Z"
+handoff_target: "protocol-close"
+last_transition_action: "approve-closeout-bundle"
+last_transition_at: "2026-09-19T06:16:06.264Z"
 required_actions:
   - {"id":"se:65207e13fed7fc0e60f73488206b8b36b80d01524297ee272b104ed7a95ba32d","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+  - {"id":"se:6fb07ae9f546cea8d00f32f44953103811f3e3baabc9b2891d6939ca340f530c","kind":"work_item_close","text":"wfc work-item close --work-item terminal-archive-legacy-state-reconciliation"}
 blockers: []
 review_notes:
   - "Maintainer approved the linked defect for F-CR008-ARCH-001."
@@ -600,6 +601,7 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
+  - "CLOSEOUT_BUNDLE_APPROVED"
 ```
 
 ## Traceability

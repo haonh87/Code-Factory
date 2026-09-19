@@ -67,12 +67,17 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-009",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "protocol-close",
   "required_actions": [
     {
       "id": "se:65207e13fed7fc0e60f73488206b8b36b80d01524297ee272b104ed7a95ba32d",
       "kind": "workflow_followup",
       "text": "Collect DoD evidence and close the work item when ready."
+    },
+    {
+      "id": "se:6fb07ae9f546cea8d00f32f44953103811f3e3baabc9b2891d6939ca340f530c",
+      "kind": "work_item_close",
+      "text": "wfc work-item close --work-item terminal-archive-legacy-state-reconciliation"
     }
   ],
   "blockers": [],
@@ -89,7 +94,8 @@
     "STEP_OPENED",
     "WORK_ITEM_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "CLOSEOUT_BUNDLE_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -158,6 +164,15 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "QC approved Technical Verification for CR-009 source 8166ae9280a231a2fde7dc6e2ac1df7658f95c25, PR #7 merge ref 776380ae45422bd04040d8cbd1b47eacbe953340, run 35354094106, hosted tarball SHA-256 de92904f00dc3ff7a371e4ea582750350d5e83fae2d6660a1246657d32bed6f1. Scanner SKIPs remain accepted residual risks; DoD and PO Business Acceptance are separate pending gates."
+    },
+    {
+      "timestamp": "2026-09-19T06:16:06.264Z",
+      "action": "approve-closeout-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "APPROVED closeout gates: dod, business_acceptance",
+      "transaction_id": "842307fc-894f-4a23-9b60-ed77e9c4f647"
     }
   ],
   "artifact_shape": "adaptive_v1",
