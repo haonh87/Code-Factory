@@ -116,7 +116,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> T0-T5a are locally complete. The approved four-token test-only rebind turned all three recorded RED cases GREEN, the 45-file unit suite and local release matrix pass, and exact PRE_HOST candidate `bbf06295...be30` rolls back to immutable v2.6.2 `af49a958...c13f` in all four Codex/Claude global/project scenarios. T6 independent review is next; s08, merge, main binding, release, and publication remain closed.
+> T0-T5a are locally complete. The approved four-token test-only rebind turned all three recorded RED cases GREEN, the 45-file unit suite and local release matrix pass, and exact PRE_HOST candidate `bbf06295...be30` rolls back to immutable v2.6.2 `af49a958...c13f` in all four Codex/Claude global/project scenarios. QC approved B1 Spec Compliance for source `3cd7da6...` and B1 diff `db70b5b...`; B1 Code Quality is next. s08, merge, main binding, release, and publication remain closed.
 
 ## Step Contract
 ```yaml
@@ -188,7 +188,7 @@ doc_changes:
   - "docs/releases/workflow-bundle-v2.6.3.md separates the complete packaged CR-009 delta from non-packaged repository history and keeps hosted/human evidence pending."
 config_changes: []
 review_checkpoints:
-  - "B1 metadata/contracts: implementation and local verification complete; ready for QC Spec Compliance, then Developer+QC Code Quality."
+  - "B1 metadata/contracts: QC Spec Compliance PASS for source 3cd7da6a05c0b9e9a2cfa3d3a4dc3aa6a01b8420 and diff db70b5bad2d473d0a620c7d0d002b0e8fe009aeb3dc233cec3c380a56fc718a2; Developer+QC Code Quality pending."
   - "B2 active docs/release record: implementation, UTF-8, history, and local release checks complete; pending B1 and the same ordered reviewers."
   - "B3 integrated branch candidate: pending B1/B2."
 outputs_actual:
@@ -402,7 +402,7 @@ proposed_task_plan_amendment:
     - "Apply the minimal test-only delta and run the three tests GREEN."
     - "Run T5 sequentially, pack one local pre-host candidate, and execute exact v2.6.3 -> v2.6.2 artifact rehearsal."
 result: RECOVERY_EXECUTED_T5_COMPLETE
-next_human_action: "QC reviews B1 Spec Compliance before any B1 Code Quality decision."
+next_human_action: "Developer and QC review B1 Code Quality after the recorded QC Spec Compliance PASS."
 ```
 
 ## T5a Authorization And Resume Evidence
@@ -509,7 +509,36 @@ finding_disposition:
   review_status: PENDING_T6
   reopen_condition: "Any reviewed expectation drift, production edit, rollback identity change, generated runtime diff, or failure in B1/B2/B3 review."
 result: PASS_READY_FOR_T6
-next_human_action: "QC approves or rejects B1 Spec Compliance for release identity/contracts before Developer and QC review B1 Code Quality."
+next_human_action: "Developer and QC approve or reject B1 Code Quality for the unchanged source and B1 diff."
+```
+
+## T6 B1 Spec Compliance Review
+```yaml
+recorded_at: "2026-09-19T14:44:12Z"
+batch: "B1 - release identity and contracts"
+review_lane: SPEC_COMPLIANCE
+review_order_position: FIRST
+reviewer_role: qc
+decision_source: "User explicitly approved B1 Spec Compliance with role QC and named the exact source and B1 diff identities."
+source_commit: "3cd7da6a05c0b9e9a2cfa3d3a4dc3aa6a01b8420"
+b1_diff:
+  scope: "Four structured metadata/CLI surfaces, release/rollback contracts, and the three T5a regression tests."
+  changed_files: 9
+  additions: 84
+  deletions: 38
+  sha256: "db70b5bad2d473d0a620c7d0d002b0e8fe009aeb3dc233cec3c380a56fc718a2"
+spec_checks:
+  approved_scope_only: PASS
+  active_version_identity_v2_6_3: PASS
+  immutable_v2_6_2_history_and_rollback: PASS
+  t5a_exact_four_token_rebind: PASS
+  production_behavior_drift: NONE
+  assertion_or_coverage_relaxation: NONE
+  premature_public_or_gate_claim: NONE
+verdict: PASS
+findings: []
+authority_boundary: "This approval closes only B1 Spec Compliance. It does not approve B1 Code Quality, B2/B3, s08, DoD, merge, main binding, Release, publication, Business Acceptance, archive, or cleanup."
+next_human_action: "Developer and QC approve or reject B1 Code Quality for the unchanged source and B1 diff."
 ```
 
 ## Delivery Rule Evidence
@@ -529,10 +558,10 @@ worktree_status: USED
 worktree_refs:
   - ".claude/worktrees/release-workflow-bundle-v2-6-3"
 worktree_reason: "Full-track public release work spans multiple sessions and exact branch/main/public identities."
-review_status: READY_FOR_B1_SPEC_COMPLIANCE
+review_status: B1_SPEC_COMPLIANCE_PASS_CODE_QUALITY_PENDING
 review_refs:
   - "s06 Review Plan B1/B2/B3; T5a and sequential T5 evidence are ready for ordered independent review."
-spec_compliance_status: NOT_RUN
+spec_compliance_status: B1_PASS_B2_B3_PENDING
 code_quality_status: NOT_RUN
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
@@ -580,18 +609,18 @@ task_status:
   T4: COMPLETE_GREEN_CONFIRMED
   T5: COMPLETE_LOCAL_PASS
   T5a: COMPLETE_GREEN_CONFIRMED
-  T6: READY_B1_SPEC_COMPLIANCE
+  T6: B1_SPEC_COMPLIANCE_PASS_CODE_QUALITY_NEXT
   T7: BLOCKED_BY_T6
   T8_T13: LATER_GATES
 acceptance_coverage_current:
   AC-R263-01: LOCAL_PASS_REVIEW_PENDING
   AC-R263-02: LOCAL_PASS_REVIEW_PENDING
   AC-R263-08: LOCAL_PASS_HOSTED_PENDING
-next_step: "QC B1 Spec Compliance, then Developer and QC B1 Code Quality"
+next_step: "Developer and QC B1 Code Quality for unchanged source 3cd7da6a05c0b9e9a2cfa3d3a4dc3aa6a01b8420 and B1 diff db70b5bad2d473d0a620c7d0d002b0e8fe009aeb3dc233cec3c380a56fc718a2"
 ```
 
 ## Handoff
 - Outputs actual: ACTIVE s07; T0-T5a locally complete; focused and full suites GREEN; PRE_HOST candidate and exact v2.6.2 rollback evidence recorded; no generated runtime diff.
-- Known limitations: T6 B1/B2/B3 reviews, T7 hosted evidence, and every s08/public gate remain pending; local Node 26 is not Node 18/22 release evidence; unrelated R263-SG-001 remains external.
+- Known limitations: B1 Code Quality plus B2/B3 reviews, T7 hosted evidence, and every s08/public gate remain pending; local Node 26 is not Node 18/22 release evidence; unrelated R263-SG-001 remains external.
 - Notes for testing: T1/T4 and T5a RED/GREEN evidence is preserved. Review must bind to release-delta SHA-256 `83fd98ba064121559fa7488ce663e5ea0dfb149ba05ea6a6c7d5d51c69cbae39`; the local tarball is PRE_HOST only.
 - Notes for deployment: none; tag, publication, latest movement, merge, and cleanup remain unauthorized.
