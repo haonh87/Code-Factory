@@ -292,7 +292,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: MATERIALIZED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
@@ -320,8 +320,27 @@ work_item_slug: "release-workflow-bundle-v2-6-3"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/release-workflow-bundle-v2-6-3/work-items/release-workflow-bundle-v2-6-3"
-current_step: "s01"
-granted_write_paths: []
+current_step: "s07"
+granted_write_paths:
+  - "workflow-bundle.manifest.json"
+  - "packages/workflow-bundle/workflow-bundle.manifest.json"
+  - "packages/workflow-bundle/package.json"
+  - "packages/workflow-bundle/bin/wfc.js"
+  - ".claude/CLAUDE.md"
+  - "README.md"
+  - "README.vi.md"
+  - "docs/publish-surface.md"
+  - "docs/publish-surface.vi.md"
+  - "docs/workflow-bundle-quickstart.md"
+  - "docs/workflow-bundle-quickstart.vi.md"
+  - "docs/workflow-docs-map.md"
+  - "docs/workflow-docs-map.vi.md"
+  - "packages/workflow-bundle/README.md"
+  - "packages/workflow-bundle/README.vi.md"
+  - "docs/releases/workflow-bundle-v2.6.3.md"
+  - "packages/workflow-bundle/test/release-surface.test.js"
+  - "packages/workflow-bundle/test/release-rollback-smoke.test.js"
+  - "work-items/release-workflow-bundle-v2-6-3"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -333,16 +352,11 @@ decision_owner: "agent"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-19T08:48:27.806Z"
-handoff_target: "human-review"
-last_transition_action: "approve"
-last_transition_at: "2026-09-19T08:48:27.807Z"
+handoff_target: "step-s07-owner"
+last_transition_action: "activate"
+last_transition_at: "2026-09-19T13:54:13.707Z"
 required_actions:
-  - {"id":"se:6ee5e91f9895141bedc6ec73409d18cbc52d86cef1ab943cb4e41bc4bf5bc0f9","kind":"workflow_followup","text":"wfc change-item approve --change-id CHANGE-007 --reviewed-by <role>"}
-  - {"id":"se:440f5d1de06856e1a6cf03220e543abc0984c14b227573a442b72455b7724d69","kind":"gate_approval","text":"wfc gate approve --work-item release-workflow-bundle-v2-6-3 --gate spec --reviewed-by ba","gate":"spec"}
-  - {"id":"se:9ed41867a24f911cb6089bd8f75ee756bc93f66023befa368582adbb2d5ba461","kind":"gate_approval","text":"wfc gate approve --work-item release-workflow-bundle-v2-6-3 --gate dor --reviewed-by ba","gate":"dor"}
-  - {"id":"se:6bf1a66609a55cd10ce75383d6ff424fc1424448e593c3a578c6aa2af8e2ed70","kind":"gate_approval","text":"wfc gate approve --work-item release-workflow-bundle-v2-6-3 --gate approach --reviewed-by developer","gate":"approach"}
-  - {"id":"se:ea6d7fbe5bfa918c9e2cbe647194dce33781afccbd2d203117137bd337985330","kind":"gate_approval","text":"wfc gate approve --work-item release-workflow-bundle-v2-6-3 --gate task_plan --reviewed-by developer","gate":"task_plan"}
-  - {"id":"se:755d52a4ebc203c62805ff31f8972f258ba7d2e57c4e157e4182928eb4bc7895","kind":"work_item_activation","text":"wfc work-item activate --work-item release-workflow-bundle-v2-6-3 --step s07 --write-root <path>"}
+  - {"id":"se:3d75f62d8b6d15170598b5b04f4cafaa61cda434abdd2fcece0d7f914ed138c3","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
 blockers: []
 review_notes:
   - "PO approved opening the workflow-bundle v2.6.3 release work item; later gates remain independent."
@@ -357,6 +371,7 @@ audit_events:
   - "WORKFLOW_SCAFFOLDED"
   - "STEP_OPENED"
   - "WORK_ITEM_APPROVED"
+  - "WORK_ITEM_ACTIVATED"
 ```
 
 ## Traceability
