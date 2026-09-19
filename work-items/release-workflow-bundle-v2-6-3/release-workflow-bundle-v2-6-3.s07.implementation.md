@@ -116,7 +116,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> s07 is ACTIVE with the exact 19-path grant. T0-T4 are complete: the fail-first contracts preceded the structured v2.6.3 bump and full active-surface update, both targeted contracts are now GREEN, historical hashes remain intact, and no release publication has occurred. T5 integrated local verification is next.
+> T0-T4 are complete and committed at `39dddfce80b5eec957623ae2acea81312f28cf41`. T5 found three unchanged regression tests outside the approved 19-path grant that hard-code candidate v2.6.2 and therefore block the full suite on v2.6.3. Finding F-R263-T5-001 and bounded Task Plan amendment T5a are awaiting Developer approval; no out-of-scope test edit or release publication has occurred.
 
 ## Step Contract
 ```yaml
@@ -205,8 +205,11 @@ known_limitations:
   - "Local Node is v26.5.0; required Node 18/22 proof remains hosted evidence."
   - "T5-T7 and all independent review verdicts remain pending."
   - "The bump utility's automatic repository-root discovery selects the outer manifest from this nested in-repo worktree; release execution must keep using the explicit --repo-root . form."
+  - "F-R263-T5-001 blocks T5: three unchanged release/runtime-version assertions outside the approved write grant still require v2.6.2."
+  - "Global protocol validation also reports four stale gate-state entries in unrelated code-factory-holistic-audit-remediation; this baseline issue is recorded as a scan gap and is not included in T5a."
 follow_up_items:
-  - "Execute T5 integrated local release verification, retain no generated runtime diff, then prepare B1/B2/B3 review evidence."
+  - "Developer approves bounded Task Plan amendment T5a, reseals the amended Task Plan receipt, then the work item resumes s07 with the original 19 roots plus three exact test paths."
+  - "Apply the three-token-plus-temp-prefix test-only delta, rerun T5 sequentially, retain no generated runtime diff, then prepare B1/B2/B3 review evidence."
 notes_for_testing: "Bootstrap generated runtime before source-mode release tests in a fresh worktree. Do not treat generated runtime files as owned production changes, and fail if a tracked runtime diff remains."
 ```
 
@@ -334,6 +337,69 @@ result: PASS
 next_task: "T5 integrated local release verification"
 ```
 
+## T5 Integrated Local Verification Finding
+```yaml
+captured_at: "2026-09-19T14:17:32Z"
+reviewed_source: "39dddfce80b5eec957623ae2acea81312f28cf41"
+completed_checks:
+  runtime_sync: "PASS - bundle_version=2.6.3, modes=claude/codex, 84 mode-skill copies, no retained runtime diff"
+  release_surface: PASS
+  rollback_source_contract: PASS
+  workflow_fixtures: PASS
+  authoring_smoke: "PASS - 13/13 cases"
+  workflow_standard_sdd_change_execution_planning: PASS
+  pack_audit: "PASS - 42 canonical skills, runtime/cross-reference parity"
+  bundle_smoke_sequential: PASS
+  utf8_changed_text: PASS
+  rollback_artifact_recovered: "workflow-bundle-2.6.2.tgz SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+concurrency_note:
+  observation: "The first parallel T5 attempt let unit prebuild, npm pack prepack, and bundle smoke mutate/read the generated runtime concurrently, producing a transient missing-directory failure."
+  disposition: "Reran runtime sync and bundle smoke sequentially; both pass and leave no runtime diff. Remaining T5 runs must serialize runtime writers."
+finding:
+  id: "F-R263-T5-001"
+  severity: HIGH
+  status: OPEN_WAITING_DEVELOPER_APPROVAL
+  category: RELEASE_REGRESSION_TEST_VERSION_DRIFT
+  introduced_by_t2_t4: false
+  evidence:
+    - "materialize-work-item.test.js expects telemetry runtime_version=2.6.2; actual bounded runtime version is 2.6.3."
+    - "release-candidate-artifact-smoke.test.js expects source/installed version 2.6.2 and uses a v2.6.2 temp prefix."
+    - "release-install-all-smoke.test.js expects source version 2.6.2."
+    - "Each file fails independently on reviewed source 39dddfc before any amendment edit."
+  file_sha256:
+    materialize-work-item.test.js: "18537d2c25588393d22939908cc1c4d73293dbd6cf561b620e9a0c0ba469cf70"
+    release-candidate-artifact-smoke.test.js: "d722e3f2eed474ed298c49cf338c019d4c4154c9384b6b2e0ed77b116e673c91"
+    release-install-all-smoke.test.js: "d90a29015b74920f48b899044fb26b7896c1eb1cc881a674d3bf6e73e679b252"
+  impact: "npm run validate:workflow:unit and exact candidate artifact smoke cannot pass; hosted release-candidate jobs would fail before review."
+  owner: developer
+baseline_scan_gap:
+  id: "R263-SG-001"
+  status: OPEN_EXTERNAL_NON_BLOCKING_FOR_T5A
+  evidence: "Global wfc protocol reports four stale spec/dor/approach/task_plan pending entries only in code-factory-holistic-audit-remediation although trusted receipts are approved."
+  boundary: "Unrelated work item state; standard hosted validators pass and T5a must not edit it."
+proposed_task_plan_amendment:
+  amendment_id: T5a
+  status: PROPOSED_WAITING_DEVELOPER_APPROVAL
+  added_write_roots:
+    - "packages/workflow-bundle/test/materialize-work-item.test.js"
+    - "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js"
+    - "packages/workflow-bundle/test/release-install-all-smoke.test.js"
+  allowed_delta:
+    - "Advance the telemetry bounded-runtime expectation from 2.6.2 to 2.6.3."
+    - "Advance exact candidate artifact source/installed expectation and temp prefix from 2.6.2 to 2.6.3."
+    - "Advance install-all source expectation from 2.6.2 to 2.6.3."
+  unchanged_contract:
+    - "No production code, package allowlist, dependency, CI workflow, release behavior, rollback boundary, historical record, tag, publish, merge, or cleanup change."
+    - "v2.6.2 remains the exact rollback artifact at SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f."
+  recovery_sequence:
+    - "Developer approves T5a."
+    - "Add T5a to the s06 Task Plan, reseal the trusted Task Plan receipt, and resume with all 22 exact write roots."
+    - "Apply the minimal test-only delta and run the three tests GREEN."
+    - "Run T5 sequentially, pack one local pre-host candidate, and execute exact v2.6.3 -> v2.6.2 artifact rehearsal."
+result: BLOCKED_RETURN_TO_S06
+next_human_action: "Developer approves Task Plan amendment T5a; this does not approve the amended artifact, its trusted receipt, implementation, review, s08, Release, publication, Business Acceptance, merge, or cleanup."
+```
+
 ## Delivery Rule Evidence
 ```yaml
 behavior_change: YES
@@ -348,7 +414,7 @@ worktree_status: USED
 worktree_refs:
   - ".claude/worktrees/release-workflow-bundle-v2-6-3"
 worktree_reason: "Full-track public release work spans multiple sessions and exact branch/main/public identities."
-review_status: PARTIAL
+review_status: BLOCKED_BY_F_R263_T5_001
 review_refs:
   - "s06 Review Plan B1/B2/B3; T1 contract diff is ready for later B1 after T4 GREEN."
 spec_compliance_status: NOT_RUN
@@ -397,7 +463,7 @@ task_status:
   T2: COMPLETE
   T3: COMPLETE
   T4: COMPLETE_GREEN_CONFIRMED
-  T5: NEXT
+  T5: BLOCKED_BY_F_R263_T5_001
   T6: BLOCKED_BY_T5
   T7: BLOCKED_BY_T6
   T8_T13: LATER_GATES
@@ -405,11 +471,11 @@ acceptance_coverage_current:
   AC-R263-01: LOCAL_PASS_REVIEW_PENDING
   AC-R263-02: LOCAL_PASS_REVIEW_PENDING
   AC-R263-08: PARTIAL
-next_step: "T5 integrated local release verification"
+next_step: "Return to s06 for Developer-approved Task Plan amendment T5a"
 ```
 
 ## Handoff
 - Outputs actual: ACTIVE s07, exact write grant, T0 isolation/inventory/hashes, T1 intended RED, T2/T3 approved release delta, and T4 targeted GREEN.
-- Known limitations: T5-T7 and every review/hosted gate remain pending; local Node 26 is not Node 18/22 release evidence.
-- Notes for testing: T1 RED and T4 GREEN are preserved in this note; T5 must run the full local matrix, exact-artifact rehearsal, UTF-8 checks, and leave no generated runtime diff.
+- Known limitations: F-R263-T5-001 blocks T5; T6-T7 and every review/hosted gate remain pending; local Node 26 is not Node 18/22 release evidence.
+- Notes for testing: T1 RED and T4 GREEN are preserved in this note. After T5a approval/reseal/resume, serialize runtime writers, run the full local matrix and exact-artifact rehearsal, and leave no generated runtime diff.
 - Notes for deployment: none; tag, publication, latest movement, merge, and cleanup remain unauthorized.
