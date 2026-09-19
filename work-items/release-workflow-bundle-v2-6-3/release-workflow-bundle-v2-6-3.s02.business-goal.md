@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: review
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
 governance_status: ALIGNED
@@ -217,4 +217,14 @@ next_action: "Present the s02 Business Goal for PO approval before opening s03."
 ## Handoff
 - User problem đã chốt: public `v2.6.2` không chứa các fix đã merge sau đó; phải dùng identity patch mới có evidence và rollback.
 - Non-goals: không thêm feature, không kéo scope của work item khác vào release, không sửa lịch sử `v2.6.2`, không publish từ tín hiệu CI đơn lẻ.
-- Điều kiện sang step 3: PO phê duyệt Business Goal; sau đó s03 chốt OQ về channels, release surfaces, compatibility, delta coverage, authentication và rollback target.
+- Điều kiện sang step 3: đã đạt bằng PO approval; s03 chốt OQ về channels, release surfaces, compatibility, delta coverage, authentication và rollback target.
+
+## Human Approval Record
+```yaml
+decision: "APPROVED"
+artifact: "release-workflow-bundle-v2-6-3.s02.business-goal.md"
+reviewed_by: ["po"]
+reviewed_at: "2026-09-19T08:52:58Z"
+decision_source: "User explicitly approved the workflow-bundle v2.6.3 Business Goal and authorized proceeding to s03 Open Questions."
+authority_boundary: "Approves the Business Goal only; it does not approve any s04-s08 gate, implementation, tag, publication, or release."
+```
