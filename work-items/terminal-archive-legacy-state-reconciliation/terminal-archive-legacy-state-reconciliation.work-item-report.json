@@ -1,0 +1,304 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "DONE",
+  "decision_owner": "agent",
+  "protocol_owner": "developer",
+  "raw_request_summary": "Prevent terminal completion while unresolved state entries exist; require explicit opaque identifier disposition; preserve exact original text in append-only resolved-state history; prohibit semantic inference.",
+  "request_source": "user-chat",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "terminal-archive-legacy-state-reconciliation",
+      "work_item_title": "Terminal Archive Legacy State Reconciliation",
+      "work_item_type": "BUG",
+      "scope_summary": "Prevent terminal completion while unresolved state entries exist; require explicit opaque identifier disposition; preserve exact original text in append-only resolved-state history; prohibit semantic inference.",
+      "primary_outcome": "Prevent terminal completion while unresolved state entries exist; require explicit opaque identifier disposition; preserve exact original text in append-only resolved-state history; prohibit semantic inference.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "strict",
+      "sdd_reasons": [],
+      "sdd_preset": "strict",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [],
+      "collision_notes": [],
+      "change_strategy": "create_new",
+      "change_id": "CR-009",
+      "change_reason": "Scope có tín hiệu cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:change -- --change-id CR-009 --work-item terminal-archive-legacy-state-reconciliation",
+        "npm run scaffold:workflow -- --work-item terminal-archive-legacy-state-reconciliation --planning-track full --delivery-context brownfield --change-id CR-009 --governance-profile strict --adaptive-writes true --request-lane maintenance --adaptive-source-version 2.6.2 --adaptive-installed-version 2.6.2 --adaptive-installed-version 2.6.2 --adaptive-parity-passed true",
+        "npm run validate:workflow -- --workflow-root work-items/terminal-archive-legacy-state-reconciliation --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/terminal-archive-legacy-state-reconciliation"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=BUG",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict",
+    "change_strategy=create_new",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=strict",
+    "selected_profile=strict",
+    "sdd_mode=none",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "terminal-archive-legacy-state-reconciliation",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/terminal-archive-legacy-state-reconciliation/work-items/terminal-archive-legacy-state-reconciliation",
+  "current_step": "s08",
+  "granted_write_paths": [
+    "packages/workflow-bundle/scripts",
+    "packages/workflow-bundle/test",
+    "packages/workflow-bundle/README.md",
+    "skills/orchestration/codex-workflow-chain/references/work-item-protocol.md",
+    "work-items/terminal-archive-legacy-state-reconciliation"
+  ],
+  "change_strategy": "create_new",
+  "change_id": "CR-009",
+  "handoff_target": "archive-lifecycle",
+  "required_actions": [
+    {
+      "id": "se:40db771bed08590f1459091f5c87385f5dfb24e65b12eef6f91015e37ad1255a",
+      "kind": "workflow_followup",
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/terminal-archive-legacy-state-reconciliation"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "CHANGE_CREATED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED",
+    "CLOSEOUT_BUNDLE_APPROVED",
+    "DONE_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-09-16T07:38:09.525Z",
+  "review_notes": [
+    "Maintainer approved the linked defect for F-CR008-ARCH-001."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-16T07:24:26.023Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-09-16T07:24:26.023Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Materialization inputs are ready for scaffold."
+    },
+    {
+      "timestamp": "2026-09-16T07:24:26.062Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Auto-scaffolded workflow artifacts."
+    },
+    {
+      "timestamp": "2026-09-16T07:38:04.598Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Maintainer approved the linked defect for F-CR008-ARCH-001."
+    },
+    {
+      "timestamp": "2026-09-16T07:38:09.527Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Maintainer approved the linked defect for F-CR008-ARCH-001."
+    },
+    {
+      "timestamp": "2026-09-16T14:45:05.936Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Activated approved CR-009 Task Plan T1-T8 with five approved write roots; live CR-008 state remains untouched."
+    },
+    {
+      "timestamp": "2026-09-18T15:03:18.324Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "QC approved Technical Verification for CR-009 source 8166ae9280a231a2fde7dc6e2ac1df7658f95c25, PR #7 merge ref 776380ae45422bd04040d8cbd1b47eacbe953340, run 35354094106, hosted tarball SHA-256 de92904f00dc3ff7a371e4ea582750350d5e83fae2d6660a1246657d32bed6f1. Scanner SKIPs remain accepted residual risks; DoD and PO Business Acceptance are separate pending gates."
+    },
+    {
+      "timestamp": "2026-09-19T06:16:06.264Z",
+      "action": "approve-closeout-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "APPROVED closeout gates: dod, business_acceptance",
+      "transaction_id": "842307fc-894f-4a23-9b60-ed77e9c4f647"
+    },
+    {
+      "timestamp": "2026-09-19T06:21:42.412Z",
+      "action": "close",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "QC DoD and PO Business Acceptance trusted receipts are APPROVED with matching s08 digest for source 8166ae9280a231a2fde7dc6e2ac1df7658f95c25, run 35354094106, hosted tarball SHA-256 de92904f00dc3ff7a371e4ea582750350d5e83fae2d6660a1246657d32bed6f1; protocol closed separately. No merge, release, tag, publish, cleanup, archive, or live CR-008 mutation is authorized."
+    }
+  ],
+  "artifact_shape": "adaptive_v1",
+  "request_lane": "product_delivery",
+  "workflow_required": true,
+  "routing_reasons": [
+    "LANE_PRODUCT_DELIVERY"
+  ],
+  "escalation_reasons": [
+    "HARD_PUBLIC_CONTRACT"
+  ],
+  "roles": [
+    {
+      "role": "po",
+      "reasons": [
+        "ROLE_PO_PRODUCT_OUTCOME"
+      ]
+    },
+    {
+      "role": "ba",
+      "reasons": [
+        "ROLE_BA_REQUIREMENTS"
+      ]
+    },
+    {
+      "role": "sa",
+      "reasons": [
+        "ROLE_SA_PUBLIC_CONTRACT_BOUNDARY"
+      ]
+    },
+    {
+      "role": "ta",
+      "reasons": [
+        "ROLE_TA_PUBLIC_CONTRACT_RISK"
+      ]
+    },
+    {
+      "role": "developer",
+      "reasons": [
+        "ROLE_DEVELOPER_DELIVERY"
+      ]
+    },
+    {
+      "role": "qc",
+      "reasons": [
+        "ROLE_QC_VERIFICATION"
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "gate": "spec",
+      "reasons": [
+        "GATE_SPEC_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "ba"
+      ]
+    },
+    {
+      "gate": "contract",
+      "reasons": [
+        "GATE_CONTRACT_PUBLIC_CONTRACT"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
+      "gate": "dor",
+      "reasons": [
+        "GATE_DOR_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "ba",
+        "qc"
+      ]
+    },
+    {
+      "gate": "approach",
+      "reasons": [
+        "GATE_APPROACH_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
+      "gate": "task_plan",
+      "reasons": [
+        "GATE_TASK_PLAN_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
+      "gate": "dod",
+      "reasons": [
+        "GATE_DOD_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "qc"
+      ]
+    },
+    {
+      "gate": "business_acceptance",
+      "reasons": [
+        "GATE_BUSINESS_ACCEPTANCE_PRODUCT_OUTCOME"
+      ],
+      "reviewer_roles": [
+        "po"
+      ]
+    }
+  ],
+  "human_override": null,
+  "adaptive_activation": {
+    "source_version": "2.6.2",
+    "installed_versions": [
+      "2.6.2",
+      "2.6.2"
+    ],
+    "parity_passed": true
+  }
+}

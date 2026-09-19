@@ -25,7 +25,8 @@ const {
   loadProtocolReport,
   normalizeSingleValue,
   renderProtocolBlock,
-  resolveWorkflowRootBase
+  resolveWorkflowRootBase,
+  withProtocolReportLock
 } = require("./work-item-protocol-utils");
 const { reconcileApprovalBundleReport } = require("./work-item-protocol");
 const {
@@ -617,15 +618,19 @@ function runCli() {
     const sddMode = resolveSddMode(workflowRoot, workItemSlug);
 
     if (/^(?:approve|reject)-(?:ready|closeout)-bundle$/.test(action)) {
-      runGateBundle({
-        projectRoot,
-        workflowRootBase,
-        workflowRoot,
-        workItemSlug,
-        approvalRoot: approvalRootInfo.approvalRoot,
-        args,
-        sddMode,
-        action
+      // Keep report snapshot/reconciliation and the approval transaction under
+      // one per-item lock. Lock order is report first, transaction second.
+      withProtocolReportLock({ workflowRootBase, workItemSlug }, () => {
+        runGateBundle({
+          projectRoot,
+          workflowRootBase,
+          workflowRoot,
+          workItemSlug,
+          approvalRoot: approvalRootInfo.approvalRoot,
+          args,
+          sddMode,
+          action
+        });
       });
       return;
     }

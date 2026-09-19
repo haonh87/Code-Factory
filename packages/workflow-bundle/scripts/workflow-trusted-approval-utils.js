@@ -332,6 +332,80 @@ function signReceiptPayload({ approvalRoot, payload, passphrase }) {
   };
 }
 
+function getDispositionIntentErrors(intent) {
+  if (!intent || typeof intent !== "object" || Array.isArray(intent)) return ["Disposition intent must be an object."];
+  const errors = [];
+  if (intent.schema_version !== 1 || intent.purpose !== "state_disposition") errors.push("Unsupported disposition intent schema.");
+  for (const key of ["work_item_slug", "operation_id", "reason"]) {
+    if (typeof intent[key] !== "string" || !intent[key].trim()) errors.push(`Disposition intent ${key} must be non-empty.`);
+  }
+  if (typeof intent.state_id !== "string" || !/^di:[0-9a-f]{64}$/.test(intent.state_id)) errors.push("Disposition intent state_id is invalid.");
+  if (!["blockers", "required_actions"].includes(intent.source_collection)) errors.push("Disposition intent source_collection is invalid.");
+  if (intent.actor !== "maintainer") errors.push("Disposition intent actor must be maintainer.");
+  if (!["tty", "fixture"].includes(intent.authorization_mode)) errors.push("Disposition intent authorization_mode is invalid.");
+  if (typeof intent.resolved_at !== "string" || !intent.resolved_at.endsWith("Z") || Number.isNaN(Date.parse(intent.resolved_at))) {
+    errors.push("Disposition intent resolved_at must be a UTC timestamp.");
+  }
+  const original = intent.original_entry;
+  const originalText = typeof original === "string" ? original
+    : original && typeof original === "object" && !Array.isArray(original) ? original.text : undefined;
+  if (typeof originalText !== "string" || intent.original_text !== originalText) {
+    errors.push("Disposition intent original_text must equal the exact original entry text.");
+  }
+  return errors;
+}
+
+function isTrustedDispositionSignatureValid({ approvalRoot, intent, signature }) {
+  if (getDispositionIntentErrors(intent).length > 0 || typeof signature !== "string" || !signature) return false;
+  const { publicKeyPath } = getApproverKeyPaths(approvalRoot);
+  if (!fs.existsSync(publicKeyPath)) return false;
+  try {
+    return crypto.verify(
+      null,
+      Buffer.from(JSON.stringify(intent)),
+      fs.readFileSync(publicKeyPath, "utf8"),
+      Buffer.from(signature, "base64")
+    );
+  } catch (_error) {
+    return false;
+  }
+}
+
+function signDispositionIntent({
+  approvalRoot, workItemSlug, operationId, stateId, sourceCollection,
+  originalEntry, actor, reason, resolvedAt, approvalPassphrase = ""
+}) {
+  const { privateKeyPath, publicKeyPath } = getApproverKeyPaths(approvalRoot);
+  if (!fs.existsSync(privateKeyPath) || !fs.existsSync(publicKeyPath)) {
+    throw new Error("Disposition requires an existing approver keypair; it never creates a new identity.");
+  }
+  const intent = {
+    schema_version: 1,
+    purpose: "state_disposition",
+    work_item_slug: workItemSlug,
+    operation_id: operationId,
+    state_id: stateId,
+    source_collection: sourceCollection,
+    original_entry: originalEntry,
+    original_text: typeof originalEntry === "string" ? originalEntry : originalEntry && originalEntry.text,
+    actor,
+    reason,
+    resolved_at: resolvedAt,
+    authorization_mode: isNonInteractiveApprovalFixtureEnabled() ? "fixture" : "tty"
+  };
+  const errors = getDispositionIntentErrors(intent);
+  if (errors.length > 0) throw new Error(errors.join("\n"));
+  const passphrase = resolveApprovalPassphrase(approvalPassphrase);
+  const signature = crypto.sign(null, Buffer.from(JSON.stringify(intent)), {
+    key: fs.readFileSync(privateKeyPath, "utf8"),
+    passphrase
+  }).toString("base64");
+  if (!isTrustedDispositionSignatureValid({ approvalRoot, intent, signature })) {
+    throw new Error("Disposition signing key does not match the existing public key.");
+  }
+  return { intent, signature };
+}
+
 function isTrustedReceiptSignatureValid({ approvalRoot, receipt }) {
   if (!receipt || !receipt.signature) {
     return false;
@@ -565,6 +639,7 @@ module.exports = {
   getWorkflowStepNotePath,
   hasApprovedReceipt,
   isTrustedReceiptSignatureValid,
+  isTrustedDispositionSignatureValid,
   loadTrustedApprovalReceipt,
   normalizeTrustedApprovalReceipt,
   normalizeProjectRelativePath,
@@ -573,5 +648,6 @@ module.exports = {
   resolveApprovalPassphrase,
   resolveGateArtifact,
   resolveTrustedApprovalRoot,
+  signDispositionIntent,
   writeTrustedApprovalReceipt
 };

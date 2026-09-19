@@ -821,8 +821,50 @@ function testMaterializeNoTelemetryByDefault() {
   }
 }
 
+function testTarMaterializerCannotReplaceGovernedReport() {
+  const projectRoot = buildProject();
+  const slug = "tar-existing-item";
+  const reportPath = path.join(projectRoot, "report.json");
+  const original = `${JSON.stringify({ work_item_slug: slug, protocol_status: "ACTIVE",
+    blockers: [{ kind: "legacy", text: "Peer review outstanding" }], required_actions: [],
+    resolved_state_history: [{ operation_id: "historical", original_text: "keep" }] }, null, 2)}\n`;
+  try {
+    fs.writeFileSync(reportPath, original, "utf8");
+    let refused = false;
+    try {
+      materializeWorkItem({ args: { request: "replace an already governed candidate", "work-item": slug,
+        "project-root": projectRoot, "workflow-root": path.join(projectRoot, "work-items"),
+        output: "report.json", "delivery-context": "brownfield" } });
+    } catch (error) { refused = /existing|governed|replace|overwrite/i.test(String(error.message)); }
+    assert(refused, "TAR materializer refuses to replace an existing governed report");
+    assert(fs.readFileSync(reportPath, "utf8") === original,
+      "TAR materializer preserves exact live and history bytes on refusal");
+  } finally { rmrf(projectRoot); }
+}
+
+function testTarMaterializerHonorsReportLock() {
+  const projectRoot = buildProject();
+  const slug = "tar-materializer-lock";
+  const lockPath = path.join(projectRoot, "work-items", `.${slug}.work-item-report.lock`);
+  const reportPath = path.join(projectRoot, "report.json");
+  try {
+    fs.writeFileSync(lockPath, JSON.stringify({ pid: process.pid, nonce: "another-writer" }) + "\n", "utf8");
+    let refused = false;
+    try {
+      materializeWorkItem({ args: { request: "create a candidate", "work-item": slug,
+        "project-root": projectRoot, "workflow-root": path.join(projectRoot, "work-items"),
+        output: "report.json", "delivery-context": "brownfield" } });
+    } catch (error) { refused = /report.*lock|lock.*report/i.test(String(error.message)); }
+    assert(refused, "TAR materializer shares the per-item lock with CLI and gate bundle");
+    assert(!fs.existsSync(reportPath), "TAR locked materializer cannot write its candidate report");
+    assert(fs.existsSync(lockPath), "TAR locked materializer cannot remove another writer's lock");
+  } finally { rmrf(projectRoot); }
+}
+
 testMaterializeEmitsTelemetryWhenOptIn();
 testMaterializeNoTelemetryByDefault();
+testTarMaterializerCannotReplaceGovernedReport();
+testTarMaterializerHonorsReportLock();
 
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in materialize-work-item-light.test.js`);

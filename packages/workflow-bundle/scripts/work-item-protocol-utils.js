@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { createHash } = require("crypto");
+const { createHash, randomUUID } = require("crypto");
 const { normalizeTransactionId } = require("./workflow-approval-transaction");
 const {
   ensureDirectory,
@@ -376,6 +376,62 @@ function getWorkItemPaths({ projectRoot, workflowRootBase, workItemSlug }) {
   };
 }
 
+function getProtocolReportLockPath({ workflowRootBase, workItemSlug }) {
+  if (typeof workItemSlug !== "string" || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(workItemSlug)) {
+    throw new Error("Report lock requires a valid work item slug.");
+  }
+  const base = path.resolve(workflowRootBase);
+  const rootBase = path.basename(base) === workItemSlug &&
+    fs.existsSync(path.join(base, `${workItemSlug}.s01.restate.md`))
+      ? path.dirname(base) : base;
+  return path.join(rootBase, `.${workItemSlug}.work-item-report.lock`);
+}
+
+// Fail closed on an existing lock, including an orphan. Automatic stale-lock
+// removal can race a new owner and silently undo serialization. Recovery is an
+// explicit operator action after checking the recorded PID and current state.
+function withProtocolReportLock(options, callback) {
+  if (typeof callback !== "function") throw new Error("Report lock requires a synchronous callback.");
+  const lockPath = getProtocolReportLockPath(options);
+  ensureDirectory(path.dirname(lockPath));
+  const owner = `${JSON.stringify({ pid: process.pid, nonce: randomUUID(), acquired_at: new Date().toISOString() })}\n`;
+  let fd;
+  try {
+    fd = fs.openSync(lockPath, "wx", 0o600);
+  } catch (error) {
+    if (error.code === "EEXIST") throw new Error(`Report mutation lock already exists for '${options.workItemSlug}' (${lockPath}).`);
+    throw error;
+  }
+  try {
+    fs.writeFileSync(fd, owner, "utf8");
+  } catch (error) {
+    fs.closeSync(fd);
+    if (fs.existsSync(lockPath) && fs.readFileSync(lockPath, "utf8") === owner) fs.unlinkSync(lockPath);
+    throw error;
+  }
+  fs.closeSync(fd);
+  try {
+    const result = callback({ lockPath });
+    if (result && typeof result.then === "function") throw new Error("Report lock callback must be synchronous.");
+    return result;
+  } finally {
+    if (!fs.existsSync(lockPath) || fs.readFileSync(lockPath, "utf8") !== owner) {
+      throw new Error(`Report mutation lock ownership changed for '${options.workItemSlug}'; refusing to remove it.`);
+    }
+    fs.unlinkSync(lockPath);
+  }
+}
+
+function assertProtocolSnapshotUnchanged({ reportPath, rawBytes }) {
+  const exists = fs.existsSync(reportPath);
+  if (rawBytes === null) {
+    if (!exists) return;
+  } else if (Buffer.isBuffer(rawBytes) && exists && fs.readFileSync(reportPath).equals(rawBytes)) {
+    return;
+  }
+  throw new Error(`Work item report snapshot changed before commit: ${reportPath}`);
+}
+
 function normalizeProtocolEvent(event) {
   if (!event || typeof event !== "object" || Array.isArray(event)) {
     return null;
@@ -462,6 +518,13 @@ function normalizeProtocolReport(report) {
       .map((event) => normalizeProtocolEvent(event))
       .filter(Boolean)
   };
+
+  if (Object.hasOwn(report, "resolved_state_history")) {
+    if (!Array.isArray(report.resolved_state_history)) {
+      throw new Error("resolved_state_history must be an array.");
+    }
+    normalized.resolved_state_history = [...report.resolved_state_history];
+  }
 
   if (!isAdaptiveProtocolReport(report)) {
     return normalized;
@@ -553,9 +616,12 @@ function loadProtocolReport({ projectRoot, workflowRootBase, workItemSlug, allow
   const paths = getWorkItemPaths({ projectRoot, workflowRootBase, workItemSlug });
 
   if (fs.existsSync(paths.reportPath)) {
-    const raw = JSON.parse(readUtf8(paths.reportPath));
+    const rawBytes = fs.readFileSync(paths.reportPath);
+    const rawReport = JSON.parse(rawBytes.toString("utf8"));
     return {
-      report: normalizeProtocolReport(raw),
+      report: normalizeProtocolReport(rawReport),
+      rawReport,
+      rawBytes,
       ...paths,
       existed: true
     };
@@ -580,6 +646,72 @@ function loadProtocolReport({ projectRoot, workflowRootBase, workItemSlug, allow
     ...paths,
     existed: false
   };
+}
+
+function getDispositionTargets(rawReport, snapshotBytes) {
+  if (!rawReport || typeof rawReport !== "object" || Array.isArray(rawReport)) {
+    throw new Error("Disposition targets require a raw report object.");
+  }
+  if (!Buffer.isBuffer(snapshotBytes)) {
+    throw new Error("Disposition targets require exact report snapshot bytes.");
+  }
+  const snapshotHash = createHash("sha256").update(snapshotBytes).digest("hex");
+  return STATE_COLLECTIONS.flatMap((collection) => {
+    const entries = rawReport[collection] === undefined ? [] : rawReport[collection];
+    const errors = getStateCollectionErrors(entries, collection);
+    if (errors.length > 0) throw new Error(errors.join("\n"));
+    return entries.map((entry, index) => ({
+      state_id: "di:" + createHash("sha256")
+        .update(JSON.stringify([snapshotHash, collection, index]))
+        .digest("hex"),
+      collection,
+      kind: typeof entry === "string" ? "legacy" : entry.kind,
+      text: typeof entry === "string" ? entry : entry.text
+    }));
+  });
+}
+
+function selectDispositionTarget({ rawReport, rawBytes, stateId }) {
+  if (typeof stateId !== "string" || !/^di:[0-9a-f]{64}$/.test(stateId)) {
+    throw new Error("Disposition requires an exact state_id from the current report snapshot.");
+  }
+  const targets = getDispositionTargets(rawReport, rawBytes);
+  const matches = targets.filter((entry) => entry.state_id === stateId);
+  if (matches.length !== 1) throw new Error("Unknown, stale, or ambiguous state_id; refresh work-item status.");
+  const target = matches[0];
+  const index = targets.slice(0, targets.indexOf(target)).filter((entry) => entry.collection === target.collection).length;
+  return { ...target, index, originalEntry: rawReport[target.collection][index] };
+}
+
+function atomicWriteRawProtocolReport({ report, reportPath, expectedBytes, failurePoint = "" }) {
+  if (!Buffer.isBuffer(expectedBytes)) throw new Error("Atomic report replacement requires exact prior snapshot bytes.");
+  // Validate state without serializing the normalized copy: untouched legacy
+  // strings and objects must retain their original raw shapes and text.
+  normalizeProtocolReport(report);
+  const nextBytes = Buffer.from(`${JSON.stringify(report, null, 2)}\n`, "utf8");
+  const stagedPath = `${reportPath}.disposition-${randomUUID()}.tmp`;
+  const inject = (point) => {
+    if (failurePoint === point) throw new Error(`Injected disposition failure at ${point}.`);
+  };
+  assertProtocolSnapshotUnchanged({ reportPath, rawBytes: expectedBytes });
+  let fd = null;
+  try {
+    fd = fs.openSync(stagedPath, "wx", 0o600);
+    fs.fchmodSync(fd, fs.statSync(reportPath).mode & 0o777);
+    fs.writeFileSync(fd, nextBytes);
+    fs.fsyncSync(fd);
+    fs.closeSync(fd);
+    fd = null;
+    inject("after_stage");
+    assertProtocolSnapshotUnchanged({ reportPath, rawBytes: expectedBytes });
+    inject("before_report_rename");
+    fs.renameSync(stagedPath, reportPath);
+    inject("after_report_rename");
+    return nextBytes;
+  } finally {
+    if (fd !== null) fs.closeSync(fd);
+    if (fs.existsSync(stagedPath)) fs.unlinkSync(stagedPath);
+  }
 }
 
 function renderProtocolBlock(reportInput) {
@@ -699,6 +831,12 @@ module.exports = {
   buildYamlList,
   getDefaultApprovalState,
   getWorkItemPaths,
+  getProtocolReportLockPath,
+  withProtocolReportLock,
+  assertProtocolSnapshotUnchanged,
+  getDispositionTargets,
+  selectDispositionTarget,
+  atomicWriteRawProtocolReport,
   hasProjectImplementationBaseline,
   inferDeliveryContext,
   isAllowedProtocolTransition,

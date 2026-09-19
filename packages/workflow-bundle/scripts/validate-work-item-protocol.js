@@ -29,7 +29,9 @@ const {
 } = require("./workflow-gate-evidence-utils");
 const {
   hasApprovedReceipt,
-  loadTrustedApprovalReceipt
+  isTrustedDispositionSignatureValid,
+  loadTrustedApprovalReceipt,
+  resolveTrustedApprovalRoot
 } = require("./workflow-trusted-approval-utils");
 const {
   REQUEST_LANES,
@@ -148,6 +150,71 @@ function validateProtocolStateCollections(report, reportPath, errors) {
   STATE_COLLECTIONS.forEach(collection => {
     getStateCollectionErrors(report[collection] === undefined ? [] : report[collection], collection)
       .forEach(error => errors.push(`${error} Report: ${reportPath}`));
+  });
+}
+
+function validateResolvedStateHistory(report, reportPath, errors, approvalRoot = "") {
+  if (!Object.hasOwn(report, "resolved_state_history")) return;
+  if (!Array.isArray(report.resolved_state_history)) {
+    errors.push(`${reportPath} resolved_state_history must be an array.`);
+    return;
+  }
+
+  const seenOperationIds = new Set();
+  report.resolved_state_history.forEach((record, index) => {
+    const label = `${reportPath} resolved_state_history[${index}]`;
+    if (!record || typeof record !== "object" || Array.isArray(record)) {
+      errors.push(`${label} must be a signed object.`);
+      return;
+    }
+    if (typeof record.operation_id !== "string" || !record.operation_id.trim()) {
+      errors.push(`${label} operation_id must be non-empty.`);
+    } else if (seenOperationIds.has(record.operation_id)) {
+      errors.push(`${label} has duplicate operation_id '${record.operation_id}'.`);
+    } else {
+      seenOperationIds.add(record.operation_id);
+    }
+    if (!STATE_COLLECTIONS.includes(record.source_collection)) {
+      errors.push(`${label} source_collection is invalid.`);
+    } else {
+      getStateCollectionErrors([record.original_entry], record.source_collection)
+        .forEach(error => errors.push(`${label} original_entry: ${error}`));
+    }
+    if (typeof record.source_entry_id !== "string" || !/^di:[0-9a-f]{64}$/.test(record.source_entry_id)) {
+      errors.push(`${label} source_entry_id is invalid.`);
+    }
+    const originalText = typeof record.original_entry === "string" ? record.original_entry
+      : record.original_entry && typeof record.original_entry === "object" && !Array.isArray(record.original_entry)
+        ? record.original_entry.text : undefined;
+    if (typeof originalText !== "string" || record.original_text !== originalText) {
+      errors.push(`${label} original_text differs from the exact original_entry text.`);
+    }
+    if (record.actor !== "maintainer" || typeof record.reason !== "string" || !record.reason.trim()) {
+      errors.push(`${label} requires a Maintainer actor and non-empty reason.`);
+    }
+    if (typeof record.resolved_at !== "string" || !record.resolved_at.endsWith("Z") || Number.isNaN(Date.parse(record.resolved_at))) {
+      errors.push(`${label} resolved_at must be a UTC timestamp.`);
+    }
+
+    const authorization = record.authorization;
+    const intent = authorization && authorization.intent;
+    if (!approvalRoot || !authorization || !isTrustedDispositionSignatureValid({
+      approvalRoot, intent, signature: authorization.signature
+    })) {
+      errors.push(`${label} has missing or invalid trusted authorization signature.`);
+      return;
+    }
+    if (intent.work_item_slug !== report.work_item_slug || intent.operation_id !== record.operation_id ||
+      intent.state_id !== record.source_entry_id || intent.source_collection !== record.source_collection ||
+      JSON.stringify(intent.original_entry) !== JSON.stringify(record.original_entry) ||
+      intent.original_text !== record.original_text || intent.actor !== record.actor ||
+      intent.reason !== record.reason || intent.resolved_at !== record.resolved_at) {
+      errors.push(`${label} fields differ from signed disposition intent.`);
+    }
+    if (intent.authorization_mode === "fixture" &&
+      String(process.env.WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE || "").trim().toLowerCase() !== "true") {
+      errors.push(`${label} fixture authorization is not production evidence.`);
+    }
   });
 }
 
@@ -495,6 +562,20 @@ function validateWorkItemProtocol({ args }) {
     const stateErrorCount = errors.length;
     validateProtocolStateCollections(rawReport, paths.reportPath, errors);
     if (errors.length !== stateErrorCount) return;
+    let approvalRoot = "";
+    if (Array.isArray(rawReport.resolved_state_history) && rawReport.resolved_state_history.length > 0) {
+      try {
+        approvalRoot = resolveTrustedApprovalRoot({
+          projectRoot,
+          overrideRoot: normalizeSingleValue(args["approval-root"] || "")
+        }).approvalRoot;
+      } catch (error) {
+        errors.push(`Cannot verify resolved-state history in ${paths.reportPath}: ${error.message}`);
+      }
+    }
+    const historyErrorCount = errors.length;
+    validateResolvedStateHistory(rawReport, paths.reportPath, errors, approvalRoot);
+    if (errors.length !== historyErrorCount) return;
     let report;
     try {
       report = normalizeProtocolReport(rawReport);
@@ -545,6 +626,7 @@ if (require.main === module) {
 module.exports = {
   isEquivalentWorkflowRoot,
   validateProtocolStateCollections,
+  validateResolvedStateHistory,
   validateProtocolBlockSync,
   validateWorkItemProtocol
 };

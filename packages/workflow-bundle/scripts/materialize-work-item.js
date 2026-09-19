@@ -42,7 +42,8 @@ const {
   createStateEntry,
   getDefaultApprovalState,
   inferDeliveryContext,
-  renderProtocolBlock
+  renderProtocolBlock,
+  withProtocolReportLock
 } = require("./work-item-protocol-utils");
 
 const WORK_ITEM_TYPES = ["FEATURE", "BUG", "CHANGE", "REFACTOR", "RESEARCH"];
@@ -1194,6 +1195,23 @@ function writeReportFile(report, outputPath) {
   fs.writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`, "utf8");
 }
 
+function assertMaterializerMayWriteReport(outputPath) {
+  if (!outputPath || !fs.existsSync(outputPath)) return;
+  let prior;
+  try {
+    prior = JSON.parse(fs.readFileSync(outputPath, "utf8"));
+  } catch (_error) {
+    throw new Error(`Materializer refuses to replace an existing unreadable report: ${outputPath}`);
+  }
+  if (prior && typeof prior === "object" && !Array.isArray(prior) && (
+    ["MATERIALIZED", "ACTIVE", "BLOCKED", "VERIFIED", "DONE", "ARCHIVED", "CANCELLED"].includes(prior.protocol_status) ||
+    prior.approval_status === "APPROVED" ||
+    Object.hasOwn(prior, "resolved_state_history")
+  )) {
+    throw new Error(`Materializer refuses to replace an existing governed report: ${outputPath}`);
+  }
+}
+
 function materializeWorkItem(options) {
   const args = options.args;
   const request = normalizeSingleValue(args.request);
@@ -1434,6 +1452,11 @@ function materializeWorkItem(options) {
   const outputArg = normalizeSingleValue(args.output || "");
   let reportPath = outputArg ? path.resolve(projectRoot, outputArg) : "";
 
+  const potentialReportPath = reportPath || (autoScaffold && item.work_item_slug
+    ? path.join(workflowRootBase, item.work_item_slug, `${item.work_item_slug}.work-item-report.json`)
+    : "");
+  assertMaterializerMayWriteReport(potentialReportPath);
+
   if (
     autoScaffold &&
     report.materialization_status === "READY" &&
@@ -1529,7 +1552,15 @@ function materializeWorkItem(options) {
   }
 
   if (reportPath) {
-    writeReportFile(report, reportPath);
+    const persistReport = () => {
+      assertMaterializerMayWriteReport(reportPath);
+      writeReportFile(report, reportPath);
+    };
+    if (item.work_item_slug && WORK_ITEM_PATTERN.test(item.work_item_slug)) {
+      withProtocolReportLock({ workflowRootBase, workItemSlug: item.work_item_slug }, persistReport);
+    } else {
+      persistReport();
+    }
   }
 
   let telemetryPath = "";

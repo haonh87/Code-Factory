@@ -145,6 +145,7 @@ Rules for reading this block:
 | Materialize and auto-scaffold | `wfc materialize --request "<raw-request>" --auto-scaffold` |
 | Human-approve an agent-proposed change package | `wfc change-item approve --change-id <CHANGE-ID> --reviewed-by <role>` |
 | List or inspect work items | `wfc work-item list` , `wfc work-item status --work-item <slug>` |
+| Resolve one active state entry by exact ID | `wfc work-item dispose-state --work-item <slug> --state-id <opaque-id> --operation-id <id> --reviewed-by maintainer --reason "<reason>"` |
 | Human-approve a work item or seal a workflow gate | `wfc work-item approve --work-item <slug> --reviewed-by <role>` , `wfc gate approve --work-item <slug> --gate <spec|dor|approach|task_plan> --reviewed-by <role>` |
 | Approve or reject all applicable readiness gates in one interaction | `wfc gate approve-ready-bundle --work-item <slug>` , `wfc gate reject-ready-bundle --work-item <slug>` |
 | Approve all applicable terminal gates in one interaction | `wfc gate approve-closeout-bundle --work-item <slug>` |
@@ -205,6 +206,9 @@ Notes:
 - the implementation path is locked at the filesystem level until `ACTIVE + s07 + granted write roots` exist.
 - the strict default for a new repo is `protocolControl.legacyScaffoldPolicy=forbid`; only if project config explicitly enables `allow_readonly` should `wfc work-item list|status` use a read-only bootstrap report from an old `s01` to observe legacy-scaffold state.
 - read-only `list|status` never persists a report; explicit `approve` may bootstrap a scaffold-only item with auditable provenance, while `activate|verify|close` require an existing `.work-item-report.json`.
+- `work-item status` includes read-only `disposition_targets[]` for each active blocker or required action. A `state_id` is bound to the exact report snapshot, collection, and position; refresh status after any report change. Equal display text does not identify an entry.
+- `work-item dispose-state` moves only the selected raw entry into signed, append-only `resolved_state_history[]`. The Maintainer must unlock the existing approver key in a human-controlled TTY; `--reviewed-by maintainer` alone is not authorization. An identical `operation_id` retry is a no-op, while conflicting reuse or a stale ID is rejected.
+- `work-item archive` refuses any active blocker and does not clear state. Other lifecycle transitions preserve unrelated typed state or refuse unresolved opaque legacy state; use an exact `state_id` and a separate authorized disposition instead of editing report text.
 
 ## Config
 
