@@ -532,7 +532,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
@@ -561,7 +561,7 @@ work_item_slug: "terminal-archive-legacy-state-reconciliation"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/terminal-archive-legacy-state-reconciliation/work-items/terminal-archive-legacy-state-reconciliation"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - "packages/workflow-bundle/scripts"
   - "packages/workflow-bundle/test"
@@ -579,11 +579,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-09-16T07:38:09.525Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-09-16T14:45:05.936Z"
+handoff_target: "definition-of-done"
+last_transition_action: "verify"
+last_transition_at: "2026-09-18T15:03:18.324Z"
 required_actions:
-  - {"id":"se:3de82da2d418247351bc0df2b5c7ce6d7c4199ff2b2177a6f87d80931e7328a6","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
+  - {"id":"se:65207e13fed7fc0e60f73488206b8b36b80d01524297ee272b104ed7a95ba32d","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
 blockers: []
 review_notes:
   - "Maintainer approved the linked defect for F-CR008-ARCH-001."
@@ -599,6 +599,7 @@ audit_events:
   - "STEP_OPENED"
   - "WORK_ITEM_APPROVED"
   - "WORK_ITEM_ACTIVATED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
 ## Traceability

@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: "CR-009"
@@ -107,10 +107,10 @@ gate_reviews:
   approach_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
-  business_acceptance_reviewed_by: []
-  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-09-18T15:10:04Z"
+  business_acceptance_reviewed_by: ["po"]
+  business_acceptance_reviewed_at: "2026-09-19T06:10:38Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -132,7 +132,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> PARTIAL local evidence for the refreshed CR-009 diff: revised T8a Option A has a matching Task Plan receipt, authoring smoke passes 13/13, and a clean mirror of the same reviewed implementation diff passes the full 45/45 bundle unit suite. QC approved Spec Compliance and closed F-TAR-S08-001, then Developer/QC accepted Code Quality and QC confirmed handoff completeness and opened s08. The user separately authorized a candidate commit/push for hosted CI, not merge or release. No immutable hosted candidate exists yet; Technical Verification and DoD are not approved.
+> QC separately approved Technical Verification and DoD, and PO separately approved Business Acceptance, for CR-009's bound candidate: reviewed diff SHA-256 fc86c3f1… is source 8166ae9… in Draft PR #7. Guardrails run 35354094106 passed 10/10 jobs. Its build checked out PR merge ref 776380a…; the hosted tarball SHA-256 de92904f… matches the uploaded digest, and the merge tree changes no `packages/workflow-bundle` path relative to the branch head. Local authoring smoke passed 13/13 and a clean mirror passed the 45/45 bundle unit suite. QC accepted this artifact binding and the documented eslint/semgrep SKIP risks; those scan lanes remain SKIP. The human terminal decisions are complete and s08 is finalized; trusted receipts and protocol closeout remain operationally pending. No merge or release is authorized.
 
 ## Step Contract
 ```yaml
@@ -156,7 +156,7 @@ outputs_required:
 done_when:
   - "All AC-TAR-01..10 have reproducible pass/fail/partial evidence against the same candidate."
   - "Negative cases, regression targets, corpus compatibility, scope boundaries, and changed-text encoding are checked."
-  - "Every skipped scanner or uncommitted-candidate gap has an owner and a decision path."
+  - "Every skipped scanner or missing hosted-candidate gap has an owner and a decision path."
   - "QC separately reviews Technical Verification before any DoD verdict is requested."
 constraints:
   hard_constraints:
@@ -174,12 +174,12 @@ constraints:
     - "Inspect text-selection, signer, lock, and atomic-write paths in the changed diff."
 risks:
   - id: R-TAR-S08-01
-    description: "An uncommitted local diff is mistaken for an immutable hosted candidate."
+    description: "A pushed source commit or local self-pack is mistaken for an independently built hosted candidate."
     likelihood: HIGH
     impact: HIGH
     severity: HIGH
-    mitigation: "Label the diff hash as local review identity; require later source/hosted artifact binding before final DoD."
-    contingency: "Keep the verdict PARTIAL and do not seal DoD until binding is complete."
+    mitigation: "Record source 8166ae9…, PR merge checkout 776380a…, hosted run 35354094106, and tarball digest de92904f… separately; QC accepted this scoped binding and separately approved Technical Verification and DoD."
+    contingency: "Keep overall closeout PARTIAL and do not seal DoD if the candidate binding changes."
     owner: developer
     status: OPEN
   - id: R-TAR-S08-02
@@ -187,8 +187,8 @@ risks:
     likelihood: HIGH
     impact: MEDIUM
     severity: HIGH
-    mitigation: "Run syntax, targeted manual security review, and negative authorization tests; present the residual gap to QC for hosted scan or explicit risk decision."
-    contingency: "Keep Technical Verification or DoD pending if QC requires deterministic scanning."
+    mitigation: "Run syntax, targeted manual security review, and negative authorization tests; QC accepted the documented eslint/semgrep SKIPs as residual risk for this review, not as scanner PASS."
+    contingency: "Reopen scan disposition and seek renewed QC review if the candidate or risk scope changes."
     owner: qc
     status: OPEN
 timebox:
@@ -199,7 +199,7 @@ timebox:
 
 ## Main Artifact
 ```yaml
-verification_target: "CR-009 QC-reviewed local implementation diff SHA-256 fc86c3f150d89688faa98795a2b3cea22690fb001532346e6c2366987c49257a on source HEAD f49a402696435796ef1a1a7c0ee465e5d45adab4; QC opened s08 evidence authoring, but this is not an immutable hosted candidate."
+verification_target: "CR-009 QC-reviewed implementation diff SHA-256 fc86c3f150d89688faa98795a2b3cea22690fb001532346e6c2366987c49257a at branch source 8166ae9280a231a2fde7dc6e2ac1df7658f95c25; Draft PR #7 hosted run 35354094106 checked out merge ref 776380ae45422bd04040d8cbd1b47eacbe953340 and produced workflow-bundle-2.6.2.tgz SHA-256 de92904f00dc3ff7a371e4ea582750350d5e83fae2d6660a1246657d32bed6f1. Local self-pack SHA-256 c7707703286d58b78bd07c35d66f7614a07bbc78a925eddaf7e9463f6d8007e6 is not the hosted artifact."
 risk_ranked_test_matrix:
   - risk: "Active blockers could be silently removed or an archive could falsely succeed."
     severity: HIGH
@@ -245,10 +245,18 @@ manual_exploration:
     - "Parent report SHA-256 remains 64f67605beab120ffa4fffe8407fc5e9c900d04c5d6727c3ecddf8ebabf785cc after the current local checks."
     - "QC confirmed refreshed T8a/T6 handoff completeness and opened s08 evidence authoring in conversation, recorded 2026-09-18T02:47:47Z for the unchanged local implementation diff SHA-256 fc86c3f150d89688faa98795a2b3cea22690fb001532346e6c2366987c49257a."
     - "The user accepted the immediately preceding, limited recommendation to commit/push the reviewed CR-009 candidate for hosted CI; recorded 2026-09-18T03:28:49Z. This does not authorize merge, release, tag, live CR-008 disposition, Technical Verification, or DoD."
+    - "Candidate commit 8166ae9280a231a2fde7dc6e2ac1df7658f95c25 contains 24 CR-009 paths; its production diff still hashes to fc86c3f1…, the worktree was clean after commit, and git ls-remote confirmed the same SHA on origin/codex/terminal-archive-legacy-state-reconciliation."
+    - "Guardrails triggers only on pull_request, main push, or workflow_dispatch. The public GitHub API returned zero PRs for this branch and zero workflow runs for exact head SHA 8166ae9… when checked on 2026-09-18; branch-only push did not create hosted evidence."
+    - "After GitHub authentication was restored, Draft PR #7 was opened against main for exact head 8166ae9…. Pull-request Guardrails run 35354094106 passed 10/10 jobs, including candidate build and Node 18/22 artifact smoke."
+    - "Build job checkout log identifies merge ref 776380ae45422bd04040d8cbd1b47eacbe953340 (base 22c4fab92478a5f7313ccfd7751667dd5b571cdc), not raw head checkout. GitHub compare from head to merge lists no packages/workflow-bundle files; added base content is documentation/work-item material."
+    - "Downloaded hosted artifact 10550698025 from run 35354094106: workflow-bundle-2.6.2.tgz SHA-256 de92904f00dc3ff7a371e4ea582750350d5e83fae2d6660a1246657d32bed6f1 exactly matches the uploaded workflow-bundle.sha256 record. The artifact zip digest in the upload log is 9c056b32c503b51ce5d4428bf189323acf54e9ebecdea0398ad4e089978cc578; it is distinct from the tarball digest."
+    - "All 10 hosted check-runs concluded success. Each has one notice annotation about ubuntu-latest migrating to Ubuntu 26 on 2026-10-19; the complete annotation list contains zero Node deprecation messages."
+    - "QC confirmation in conversation was recorded in this note at 2026-09-18T14:51:37Z: PR merge-ref artifact binding and documented eslint/semgrep SKIP risks are accepted for this exact candidate. The timestamp is the evidence-recording time, not a claim about the exact message-delivery time. This confirmation is not Technical Verification, DoD, a scanner PASS, or a governance waiver receipt."
     - "A direct worktree unit run hit an ignored generated-runtime duplicate support-policy inventory; the two extra 'workflow-artifact-naming 2.md' files are byte-identical to canonical source, ignored by Git, and outside approved CR-009 write roots. No source or generated-runtime file was deleted or edited."
   issues_found:
     - "Historical F-TAR-S08-001: the old smoke fixture assumed resume silently cleared an active blocker. Repaired by signed exact-ID disposition and closed by QC after refreshed Spec Compliance on the matching diff."
     - "T8a smoke exposed an activation regression: approved materializer-owned change/gate actions survived trusted receipts. A focused red/green T6 test and exact-ID cleanup now pass; Developer/QC accepted Code Quality on the matching diff."
+    - "The initial branch-only push did not trigger CI and sandboxed gh could not access the restored keyring; authenticated, authorized Draft PR #7 resolved this evidence gap without dispatching or merging."
 criteria_results:
   - criterion: AC-TAR-01
     result: PASS
@@ -294,6 +302,7 @@ test_evidence:
     - "Bundle smoke initially hit sandbox EACCES; approved unsandboxed rerun PASS, so this was an environment limit, not a candidate failure."
     - "Current source worktree bundle smoke PASS. In the clean mirror, bundle smoke raced a simultaneous self-pack runtime rebuild and first failed; the sequential rerun passed. The hosted jobs use isolated workspaces; do not count the raced attempt as a candidate verdict."
     - "Historical T8a blocker-free trial failed: block requires at least one --blocker; the trial edit was reverted before the signed-disposition plan."
+    - "Hosted PR run 35354094106 PASS 10/10 jobs: workflow tooling, artifacts, SDD, changes, execution, planning, authoring smoke, exact candidate build, and Node 18/22 candidate verification. Both matrix jobs consumed the single uploaded candidate and passed its digest check."
   database_test: []
   feature_test:
     - "Copied CR-008 parent two-disposition-then-archive test PASS; live parent status was read-only."
@@ -312,26 +321,51 @@ commands_run:
   - "npm run validate:workflow:release-candidate (local self-pack PASS; not hosted candidate binding)"
   - "Local self-pack on this evidence refresh produced tarball SHA-256 c7707703286d58b78bd07c35d66f7614a07bbc78a925eddaf7e9463f6d8007e6; this ephemeral local output is not a hosted candidate identity."
   - "Clean mirror: bundle-smoke PASS on sequential rerun and release-candidate self-pack PASS, with Codex/Claude global/project smoke 4/4; the initial parallel invocation raced a runtime rebuild."
+  - "git commit 8166ae9280a231a2fde7dc6e2ac1df7658f95c25; git diff HEAD^ HEAD on implementation paths SHA-256 fc86c3f1…; git push origin codex/terminal-archive-legacy-state-reconciliation; git ls-remote confirms exact remote SHA."
+  - "GitHub API read-only checks: zero PRs for the branch and zero Actions runs for head SHA 8166ae9…; .github/workflows/workflow-guardrails.yml triggers on PR, main push, or workflow_dispatch, not this branch push."
+  - "gh pr create --draft opened PR #7 with base main/head 8166ae9…; gh run view 35354094106 confirmed pull_request event, exact head SHA, and 10/10 successful jobs."
+  - "gh run download 35354094106 --name workflow-bundle-candidate; shasum -a 256 confirmed hosted tarball de92904f… equals workflow-bundle.sha256; build log confirmed merge checkout 776380a… and artifact ID 10550698025."
+  - "GitHub compare head 8166ae9… to merge ref 776380a… found no packages/workflow-bundle path differences; check-run API inspected all 10 annotations (10 Ubuntu runner notices, zero Node deprecation)."
   - "node --check on 12 changed JavaScript files; iconv UTF-8 on 11 tracked changed text files plus the untracked Spec Card; git diff --check"
   - "wfc work-item status on live CR-008 parent (read-only) with before/after report SHA-256 comparison"
 skipped_checks:
-  - "eslint unavailable locally; no equivalent configured lint/typecheck wrapper exists. Owner: Developer/QC; hosted or approved alternate scan decision pending."
-  - "semgrep unavailable locally; no deterministic local security static scan was run. Owner: QC; hosted scan or explicit risk decision pending."
-  - "No hosted exact-candidate run or immutable source binding for this uncommitted local diff. Owner: Developer/QC."
+  - "eslint unavailable locally; no equivalent configured lint/typecheck wrapper exists. QC accepted this documented SKIP as residual risk for the exact candidate on 2026-09-18T14:51:37Z; no static-analysis PASS is claimed."
+  - "semgrep unavailable locally; no deterministic local security static scan was run. QC accepted this documented SKIP as residual risk for the exact candidate on 2026-09-18T14:51:37Z; manual review is only supplemental."
+  - "Hosted run uses PR merge checkout 776380a…, not raw branch head 8166ae9…. Package paths do not differ, and QC accepted this scoped artifact binding on 2026-09-18T14:51:37Z."
 release_blockers:
-  - "Current diff has QC Spec Compliance and Developer/QC Code Quality PASS, with F-TAR-S08-001 closed; QC confirmed refreshed handoff completeness and opened s08, but has not approved Technical Verification. Limited candidate commit/push is authorized separately."
-  - "No QC Technical Verification verdict or DoD receipt yet."
-  - "Local diff is not an immutable candidate; scanner gaps need QC disposition before final DoD."
-status: PARTIAL
-gaps:
-  - "Immutable candidate/source and hosted artifact binding are pending; the QC-reviewed fc86c3f1… hash identifies only the local implementation diff."
-  - "Deterministic lint/security scan or QC-accepted skip path is outstanding."
-  - "Exact source/hosted artifact binding and independent QC Technical Verification are outstanding."
+  - "Trusted closeout receipts must be sealed against this finalized note before protocol closeout; no merge or release authorization exists."
+status: PASS
+gaps: []
 residual_risks:
-  - "A manual diff review cannot provide the same coverage as a configured static/security scanner."
+  - "QC accepted the documented eslint/semgrep SKIPs for this exact candidate; manual diff review cannot provide the same coverage as configured deterministic scanners."
   - "Orphaned per-item locks require inspected operator recovery; no automatic lock stealing was introduced."
-recommendation: "Keep s08 evidence PARTIAL; create and push only the separately authorized CR-009 candidate from the reviewed diff, then present scanner-gap and exact-candidate hosted evidence to QC for Technical Verification before DoD."
-notes_for_review: "All AC results above describe local implementation evidence only. They do not approve Technical Verification, DoD, Business Acceptance, or release."
+recommendation: "Seal the trusted closeout bundle for the separately approved QC DoD and PO Business Acceptance decisions, then verify both receipt digests before protocol closeout."
+notes_for_review: "Local AC results and hosted CI refer to the same package source paths, but the hosted build checked out the PR merge ref, not raw branch head. QC separately approved Technical Verification and DoD, and PO separately approved Business Acceptance, with this scoped binding. No decision authorizes release or merge."
+```
+
+## Technical Verification
+```yaml
+status: APPROVED
+verdict: PASS_WITH_ACCEPTED_SCAN_GAPS
+scope: "CR-009 technical verification only; not DoD, Business Acceptance, release, merge, tag, publish, or live CR-008 parent disposition."
+source_commit: "8166ae9280a231a2fde7dc6e2ac1df7658f95c25"
+reviewed_implementation_diff_sha256: "fc86c3f150d89688faa98795a2b3cea22690fb001532346e6c2366987c49257a"
+pr: 7
+hosted_run: 35354094106
+hosted_merge_ref: "776380ae45422bd04040d8cbd1b47eacbe953340"
+hosted_artifact_id: 10550698025
+hosted_tarball_sha256: "de92904f00dc3ff7a371e4ea582750350d5e83fae2d6660a1246657d32bed6f1"
+evidence:
+  - "AC-TAR-01..10: 10/10 PASS on reviewed implementation diff."
+  - "Hosted guardrails: 10/10 jobs PASS; uploaded tarball digest matches the downloaded tarball."
+  - "Hosted merge tree has no packages/workflow-bundle path difference from source head."
+  - "Clean mirror bundle unit suite: 45/45 PASS; local authoring smoke: 13/13 PASS."
+scan_disposition: "PARTIAL: local eslint and semgrep unavailable; both remain SKIP, explicitly accepted by QC as scoped residual risks for this candidate."
+blocking_findings: []
+reviewed_by: ["qc"]
+recorded_at: "2026-09-18T15:01:38Z"
+approval_source: "Explicit user message: QC phê duyệt Technical Verification; the previously accepted candidate binding is unchanged."
+next_gate: "QC DoD and PO Business Acceptance were reviewed and approved separately; seal their independent trusted receipts through one closeout-bundle transaction."
 ```
 
 ## Governance Checks
@@ -343,13 +377,14 @@ checks:
   - "PASS: T8a authoring smoke covers signed exact-ID disposition and passes 13/13; QC approved refreshed Spec Compliance and closed F-TAR-S08-001 for the matching diff."
   - "PASS: legacy-compatibility checks cover 14 governed reports without migration."
   - "PASS: QC confirmed refreshed T8a/T6 handoff completeness and opened s08 for the unchanged local diff; this is not Technical Verification or DoD."
-  - "PARTIAL: strict verification evidence lacks immutable candidate binding and deterministic lint/security scan disposition."
+  - "PASS: reviewed diff fc86c3f1… is committed and pushed as source 8166ae9…; live CR-008 report remains untouched."
+  - "PASS: QC approved Technical Verification for the exact source 8166ae9…, merge ref 776380a…, run 35354094106, and hosted tarball de92904f… after separately accepting the scoped artifact binding and two named scanner SKIPs."
+  - "PARTIAL: eslint and semgrep remain SKIP despite QC's separate Technical Verification and DoD approvals; neither scan lane becomes PASS. PO separately approved Business Acceptance with these residual risks visible."
 blocking_items:
-  - "F-TAR-S08-001 is closed, sequential s07 review passed, and QC opened s08; the user separately authorized only candidate commit/push for hosted CI."
-  - "QC Technical Verification is a separate unapproved gate."
-  - "QC must decide whether to require hosted scanners or accept documented local gaps; candidate binding remains pending."
-owner: "Developer prepares candidate/scan evidence; QC decides Technical Verification and DoD; PO later decides Business Acceptance."
-next_action: "Keep protocol ACTIVE/s07 while s08 evidence is prepared; commit/push only the authorized reviewed candidate, then bind hosted evidence for QC review."
+  - "F-TAR-S08-001 is closed, sequential s07 review passed, and QC explicitly approved Technical Verification; CI success alone was not treated as approval."
+  - "QC explicitly approved DoD and PO explicitly approved Business Acceptance; their independent trusted receipts remain to be sealed against this finalized note."
+owner: "Developer retains hosted provenance and runs the atomic closeout-bundle transaction; QC and PO remain the recorded authorities for their respective gates."
+next_action: "Commit the finalized evidence, then seal and verify the independent DoD and Business Acceptance receipts without a waiver."
 ```
 
 ## Regression & Compatibility Summary
@@ -365,7 +400,36 @@ evidence:
   - "New T6 regression test proves activation retires only approved materializer-owned action IDs, retaining unrelated typed actions."
   - "All 14 tracked legacy reports load without migration and preserve exact raw text; copied-parent end-to-end flow PASS."
   - "Live parent report remains byte-identical at SHA-256 64f67605…; this work item does not resolve its two historical active blockers in place."
-rollback_or_remediation: "Do not mutate the live parent or release artifacts under CR-009. QC opened s08, and the user separately authorized candidate commit/push for the reviewed diff; bind and verify that immutable hosted candidate before any Technical Verification or DoD decision."
+rollback_or_remediation: "Do not mutate the live parent or release artifacts under CR-009. QC separately approved Technical Verification and DoD, and PO separately approved Business Acceptance, for the scoped PR #7 hosted merge candidate with the named scanner gaps retained."
+```
+
+## Spec Coverage
+```yaml
+acceptance_criteria_ref: "product-specs/cards/terminal-archive-legacy-state-reconciliation.md#Acceptance Criteria"
+evidence_ref: "#Main Artifact.criteria_results"
+status: PASS
+summary: {total: 10, pass: 10, fail: 0, partial: 0}
+coverage:
+  - id: AC-TAR-01
+    status: PASS
+  - id: AC-TAR-02
+    status: PASS
+  - id: AC-TAR-03
+    status: PASS
+  - id: AC-TAR-04
+    status: PASS
+  - id: AC-TAR-05
+    status: PASS
+  - id: AC-TAR-06
+    status: PASS
+  - id: AC-TAR-07
+    status: PASS
+  - id: AC-TAR-08
+    status: PASS
+  - id: AC-TAR-09
+    status: PASS
+  - id: AC-TAR-10
+    status: PASS
 ```
 
 ## Scan Summary
@@ -421,13 +485,13 @@ performance_heuristic_results:
     trigger_condition: "High-frequency concurrent writes to one work item; this CLI path is low-volume."
     evidence: "One staged report write and fsync per applied disposition; identical retry avoids a second report write. No benchmark was run."
 skipped_scans:
-  - "eslint/static analysis unavailable locally; Developer/QC to provide hosted evidence or explicit skip decision."
-  - "semgrep/security static scan unavailable locally; QC to require hosted evidence or explicitly accept the documented gap."
+  - "eslint/static analysis unavailable locally; QC accepted this exact-candidate SKIP as residual risk on 2026-09-18T14:51:37Z; the lane remains SKIP."
+  - "semgrep/security static scan unavailable locally; QC accepted this exact-candidate SKIP as residual risk on 2026-09-18T14:51:37Z; the lane remains SKIP."
 overall_status: PARTIAL
 remediation_actions:
-  - "Bind an immutable source/hosted candidate to this unchanged implementation and review its scan/check annotations."
-  - "QC explicitly decides scanner-gap treatment before Technical Verification/DoD; do not describe manual review as scanner output."
-notes_for_verify: "Syntax and tests PASS locally; static/security tool lanes remain SKIP. A new code diff reopens s07 review."
+  - "Retain PR #7 hosted run 35354094106, merge checkout 776380a…, tarball SHA-256 de92904f…, 10/10 successful checks, and 10 Ubuntu runner notices as the QC-accepted binding evidence."
+  - "Carry the two QC-accepted scan SKIPs as residual risk after the approved Technical Verification; do not describe manual review as scanner output."
+notes_for_verify: "Syntax and tests PASS locally and hosted CI is green; static/security tool lanes remain SKIP but QC accepted their documented residual risk. A new code diff reopens s07 review and the scoped acceptance."
 ```
 
 ## UAT Summary
@@ -446,65 +510,98 @@ notes: ["CR-009 does not itself authorize a release, publish, tag, or live paren
 
 ## Business Acceptance Summary
 ```yaml
-status: PARTIAL
-reviewers: []
-notes: ["Required PO Business Acceptance has not been requested or approved; it follows QC Technical Verification and DoD."]
+status: APPROVED
+verdict: PASS
+reviewers: ["po"]
+reviewed_at: "2026-09-19T06:10:38Z"
+candidate_source: "8166ae9280a231a2fde7dc6e2ac1df7658f95c25"
+hosted_run: 35354094106
+hosted_tarball_sha256: "de92904f00dc3ff7a371e4ea582750350d5e83fae2d6660a1246657d32bed6f1"
+basis: "QC-approved Technical Verification and DoD, AC-TAR-01..10 at 10/10 PASS, accepted merge-ref binding, and explicitly retained eslint/semgrep SKIP risks."
+scope: "Business Acceptance for CR-009 only; not release, merge, tag, publish, worktree cleanup, or live CR-008 parent disposition."
+notes: ["Explicit user message: PO phê duyệt Business Acceptance cho đúng candidate trên."]
 ```
 
 ## Audit
 ```yaml
 step: s08
-status: PARTIAL
+status: PASS
 checks:
   - criterion: "AC-TAR-01..10 have reproducible local pass/fail/partial evidence against the same candidate."
     result: PASS
-    evidence: "10/10 local AC results refer to the current fc86c3f1… diff, 45-file bundle suite in a fresh mirror of that diff, and 13-case authoring smoke; this is not an immutable hosted candidate."
+    evidence: "10/10 local AC results refer to reviewed diff fc86c3f1… committed as 8166ae9…, the 45-file bundle suite in a fresh mirror, and 13-case authoring smoke. PR #7 hosted run 35354094106 adds 10/10 green integration jobs and tarball digest evidence from merge ref 776380a…."
   - criterion: "Negative cases, regression, corpus compatibility, scope, and changed-text encoding are checked."
     result: PASS
     evidence: "Negative CLI/signer/atomic tests, 14-report corpus, authoring smoke 13/13, scope, and UTF-8 pass locally."
-  - criterion: "Every skipped scanner or uncommitted-candidate gap has an owner and decision path."
+  - criterion: "Every skipped scanner or missing hosted-candidate gap has an owner and decision path."
     result: PASS
-    evidence: "Scan Summary names eslint/semgrep SKIP and Developer/QC candidate/scanner actions."
+    evidence: "Scan Summary keeps eslint/semgrep SKIP; hosted provenance is recorded and QC accepted the scoped residual risks and merge-ref binding on 2026-09-18T14:51:37Z."
   - criterion: "QC separately reviews Technical Verification before any DoD verdict is requested."
-    result: PARTIAL
-    evidence: "The s08 note is a draft of local evidence while protocol remains ACTIVE/s07; QC accepted the refreshed handoff and opened s08, but hosted binding and Technical Verification have not occurred. No DoD pass is requested."
+    result: PASS
+    evidence: "QC explicitly approved Technical Verification for the already bound source 8166ae9…, merge ref 776380a…, hosted run 35354094106, and tarball de92904f…. QC subsequently approved DoD in a separate user message; the two named scanner SKIPs remain accepted residual risks."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "One evidence-authoring cycle; no fixed deadline was specified."
-gaps:
-  - "Immutable candidate binding is pending for the sequentially reviewed diff; QC handoff and s08 opening have passed."
-  - "QC Technical Verification decision pending."
-  - "Immutable candidate and scanner-gap disposition pending."
+gaps: []
 risk_level: HIGH
-next_action: "Create and push only the separately authorized candidate, then prepare hosted binding and scanner-gap evidence for QC Technical Verification."
+next_action: "Seal the trusted closeout bundle, verify independent DoD and Business Acceptance receipt digests, then consider protocol close separately."
 ```
 
 ## Definition of Done
 ```yaml
 work_item_slug: "terminal-archive-legacy-state-reconciliation"
-status: BLOCKED
+status: DONE
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
-  required_verification_completed: FAIL
-  code_scan_completed_or_justified: FAIL
+  required_verification_completed: PASS
+  code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps:
-  - "QC refreshed handoff and s08 opening passed; exact-candidate verification remains required."
-  - "QC Technical Verification has not been approved for an immutable candidate."
-  - "Static/security scan SKIPs have not been independently dispositioned by QC."
-  - "Required PO Business Acceptance is separate and pending."
+gaps: []
 residual_risks:
-  - "Uncommitted local diff can drift before hosted verification."
-  - "Manual security review cannot replace an unavailable deterministic scanner without QC risk acceptance."
+  - "The QC-accepted PR merge-ref build must not be mislabeled as a raw branch-head build; both identities remain visible in the Technical Verification decision."
+  - "QC accepted the two scanner SKIPs as scoped residual risk; manual security review still does not equal deterministic scanning."
   - "Orphan lock recovery remains an operator-controlled action."
 follow_up_items:
-  - "Developer: create and push only the separately authorized reviewed candidate, then prepare exact candidate/hosted evidence or other immutable binding."
-  - "QC: decide scanner gaps, Technical Verification, then DoD as separate gates."
-  - "PO: Business Acceptance only after QC DoD."
-next_action: "Keep protocol ACTIVE/s07 while QC-opened s08 evidence is prepared; create/push only the separately authorized candidate before exact hosted-candidate evidence and separate QC Technical Verification and DoD."
+  - "Developer: retain PR #7 hosted run, merge-ref provenance, and artifact digest evidence; do not alter the candidate without renewed review."
+  - "Developer: seal and verify independent trusted receipts for the QC DoD and PO Business Acceptance decisions."
+  - "Maintainer: keep the Draft PR and worktree open until protocol close and branch-finalization actions are separately authorized."
+next_action: "Commit the finalized evidence, seal the closeout bundle without an uncommitted-delivery waiver, verify receipt digests, then close protocol separately."
+human_decision: "QC explicitly approved DoD for source 8166ae9280a231a2fde7dc6e2ac1df7658f95c25, hosted run 35354094106, and tarball SHA-256 de92904f00dc3ff7a371e4ea582750350d5e83fae2d6660a1246657d32bed6f1 after the separately approved Technical Verification."
+```
+
+## Branch Finish Decision
+```yaml
+finish_target: "codex/terminal-archive-legacy-state-reconciliation"
+workspace_kind: BOTH
+verify_inputs:
+  - "QC-approved Technical Verification for source 8166ae9… and run 35354094106"
+  - "QC-approved DoD and PO-approved Business Acceptance recorded in this finalized s08 note"
+finish_gate_checks:
+  verify_complete: PASS
+  dod_complete: PASS
+  findings_closed: PASS
+  exceptions_resolved: PASS
+allowed_actions:
+  - "Commit owned closeout evidence."
+  - "Seal and verify trusted terminal receipts."
+  - "Prepare a separate protocol-close decision."
+blocked_actions:
+  - "Merge Draft PR #7."
+  - "Remove the branch or worktree."
+  - "Release, tag, publish, or mutate live CR-008 state."
+cleanup_sequence: []
+merge_conditions:
+  - "Trusted DoD and Business Acceptance receipts match this finalized s08 digest."
+  - "Protocol reaches DONE through a separate authorized close action."
+  - "Merge is explicitly authorized and the resulting PR checks pass."
+residual_risks:
+  - "eslint and semgrep remain QC-accepted SKIPs, not PASS."
+  - "The hosted build identity is a PR merge ref, preserved separately from the raw source head."
+final_recommendation: HOLD_OPEN
+notes_for_closeout: "Human terminal decisions are complete, but receipt sealing, protocol close, merge, and cleanup remain distinct actions."
 ```
 
 ## Traceability
@@ -513,12 +610,12 @@ upstream:
   - "s04 approved Spec/Contract/DoR and Spec Card AC-TAR-01..10"
   - "s05 approved Approach; s06 approved T1-T8 and revised T8a Option A Task Plan with a matching receipt"
   - "s07 historical QC-approved T8 handoff on diff 69e69c57…; QC Spec Compliance and Developer/QC Code Quality passed in order, with F-TAR-S08-001 closed, and QC confirmed refreshed handoff and opened s08 for T8a/T6 diff fc86c3f1…"
-next_step: "Create/push only the separately authorized reviewed candidate, then obtain immutable candidate evidence and a scanner-gap decision before separate QC Technical Verification, DoD, and PO Business Acceptance."
+next_step: "QC-approved Technical Verification and DoD plus PO-approved Business Acceptance are recorded for the bound PR #7 candidate with accepted scanner SKIPs; seal trusted terminal receipts, then close protocol separately."
 ```
 
 ## Handoff
-- Overall status: `PARTIAL` local evidence; QC confirmed handoff completeness and opened s08 evidence authoring, while protocol remains `ACTIVE/s07` pending a separate verification transition and Technical Verification decision.
-- Residual risks: uncommitted local diff, unavailable eslint/semgrep, and operator-recovered orphan locks. QC closed F-TAR-S08-001 on the matching diff.
-- Recommendation: create/push only the separately authorized candidate from QC-reviewed diff fc86c3f1…, then bind hosted evidence for QC Technical Verification. DoD and PO Business Acceptance remain separate.
+- Overall status: human terminal decisions are complete for reviewed diff fc86c3f1…, source 8166ae9…, Draft PR #7 run 35354094106, and hosted tarball de92904f… from merge checkout 776380a…. QC approved Technical Verification and DoD; PO approved Business Acceptance. Protocol remains `VERIFIED/s08` until trusted terminal receipts are sealed and protocol close is separately executed.
+- Residual risks: eslint/semgrep remain SKIP despite QC acceptance, and orphan locks require inspected operator recovery. QC closed F-TAR-S08-001 on the matching diff.
+- Recommendation: commit this finalized evidence, seal and verify the independent terminal receipts, then perform protocol close as a separate action. Keep the branch/worktree open.
 - Release recommendation when applicable: `NOT_APPLICABLE` to CR-009; do not publish, tag, or mutate the live CR-008 parent.
-- Next action: create/push only the separately authorized reviewed candidate. Do not run `wfc work-item verify` as a substitute for QC Technical Verification; exact-candidate binding and the QC verdict remain pending.
+- Next action: seal the atomic closeout bundle for DoD and Business Acceptance after the evidence commit. No merge, release, tag, cleanup, or live CR-008 mutation follows from these approvals.
