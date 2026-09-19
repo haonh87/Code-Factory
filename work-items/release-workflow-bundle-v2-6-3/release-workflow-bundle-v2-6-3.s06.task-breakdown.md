@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
 governance_status: ALIGNED
@@ -88,8 +88,8 @@ gate_reviews:
   dor_reviewed_at: "2026-09-19T09:10:06Z"
   approach_reviewed_by: ["developer"]
   approach_reviewed_at: "2026-09-19T10:34:59Z"
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  task_plan_reviewed_by: ["developer"]
+  task_plan_reviewed_at: "2026-09-19T13:50:54Z"
   dod_reviewed_by: []
   dod_reviewed_at: ""
   release_reviewed_by: []
@@ -117,7 +117,7 @@ tags:
 # Step 6 - Task Plan
 
 > [!summary]
-> This draft turns the approved minimal release approach into an ordered plan: lock the baseline, drive version and rollback contracts red first, prepare only approved release surfaces, verify and review the branch, merge only after QC DoD, bind the authoritative candidate to the post-merge `main` run, then publish the exact bytes through npm staging and GitHub before promoting `latest`. It does not open s07 or authorize any public action.
+> Developer approved this ordered plan: lock the baseline, drive version and rollback contracts red first, prepare only approved release surfaces, verify and review the branch, merge only after QC DoD, bind the authoritative candidate to the post-merge `main` run, then publish the exact bytes through npm staging and GitHub before promoting `latest`. Approval does not open s07 or authorize any public action.
 
 ## Step Contract
 ```yaml
@@ -553,9 +553,9 @@ checks:
     result: PASS
     evidence: "s07 awaits Developer receipt/activation; publication awaits T11 Release."
 blocking_items:
-  - "Developer Task Plan approval and trusted receipt are not yet present."
+  - "The Developer Task Plan decision is recorded, but its trusted receipt is not yet sealed against this finalized artifact."
 owner: "developer"
-next_action: "Developer approves Task Plan; after digest_match=true, activate s07 with exact owned paths."
+next_action: "Seal the Developer Task Plan trusted receipt; after digest_match=true, activate s07 with exact owned paths."
 ```
 
 ## Brownfield Delivery Plan
@@ -597,7 +597,7 @@ edge_case_to_tasks:
   - { edge_cases: ["EC-R263-04"], tasks: ["T0", "T1", "T3", "T6"] }
   - { edge_cases: ["EC-R263-05"], tasks: ["T7", "T9", "T10", "T12"] }
   - { edge_cases: ["EC-R263-06"], tasks: ["T9", "T10"] }
-next_step: "Developer Task Plan approval and receipt, then explicit s07 activation"
+next_step: "Seal the Developer Task Plan trusted receipt, then explicitly activate s07 with the approved write roots"
 ```
 
 ## Audit
@@ -626,13 +626,23 @@ timebox_breach: false
 timebox_evidence: "One focused planning pass after exact Approach receipt verification."
 gaps: []
 risk_level: HIGH
-next_action: "Developer reviews Task Plan; do not activate s07 before receipt match."
+next_action: "Seal the Developer Task Plan trusted receipt; do not activate s07 before digest_match=true."
 authority_boundary: "Audit PASS does not approve Task Plan, implementation, DoD, Release, publication, acceptance, merge, or cleanup."
 ```
 
 ## Handoff
 - First task after activation: T0 baseline/isolation and immutable historical hash inventory.
-- Blocker: Developer Task Plan approval plus trusted `task_plan` receipt with `digest_match=true`.
+- Blocker: the Developer approval is recorded; the trusted `task_plan` receipt must still be sealed with `digest_match=true`.
 - s07 condition: explicit activation grants only `dev_lane.owned_paths`; validation surfaces remain read-only.
 - Release boundary: no tag/npm/GitHub Release/latest before T10 QC DoD and T11 DevOps+QC Release for exact main candidate.
 - Cleanup boundary: no finalization before T13 public verification, PO Business Acceptance, terminal archive, and clean tree.
+
+## Human Approval Record
+```yaml
+decision: "APPROVED"
+gate: "task_plan"
+reviewed_by: ["developer"]
+reviewed_at: "2026-09-19T13:50:54Z"
+decision_source: "User explicitly approved the workflow-bundle v2.6.3 Task Plan, including the proposed 19 owned paths and T0-T13 sequencing."
+authority_boundary: "Approves only the s06 Task Plan; s07 activation, implementation reviews, DoD, merge, Release, publication, Business Acceptance, archive, and cleanup remain separate."
+```
