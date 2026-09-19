@@ -532,7 +532,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: DONE
+protocol_status: ARCHIVED
 approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
@@ -579,11 +579,10 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-09-16T07:38:09.525Z"
-handoff_target: "archive-lifecycle"
-last_transition_action: "close"
-last_transition_at: "2026-09-19T06:21:42.412Z"
-required_actions:
-  - {"id":"se:40db771bed08590f1459091f5c87385f5dfb24e65b12eef6f91015e37ad1255a","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
+handoff_target: "none"
+last_transition_action: "archive"
+last_transition_at: "2026-09-19T06:33:22.044Z"
+required_actions: []
 blockers: []
 review_notes:
   - "Maintainer approved the linked defect for F-CR008-ARCH-001."
@@ -602,6 +601,7 @@ audit_events:
   - "VERIFICATION_CONFIRMED"
   - "CLOSEOUT_BUNDLE_APPROVED"
   - "DONE_CONFIRMED"
+  - "ARCHIVE_CONFIRMED"
 ```
 
 ## Traceability

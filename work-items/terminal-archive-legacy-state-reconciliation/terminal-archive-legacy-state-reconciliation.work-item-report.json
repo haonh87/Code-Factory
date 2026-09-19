@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "DONE",
+  "protocol_status": "ARCHIVED",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Prevent terminal completion while unresolved state entries exist; require explicit opaque identifier disposition; preserve exact original text in append-only resolved-state history; prohibit semantic inference.",
@@ -67,14 +67,8 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-009",
-  "handoff_target": "archive-lifecycle",
-  "required_actions": [
-    {
-      "id": "se:40db771bed08590f1459091f5c87385f5dfb24e65b12eef6f91015e37ad1255a",
-      "kind": "workflow_followup",
-      "text": "Archive the work item when all downstream lifecycle actions are complete."
-    }
-  ],
+  "handoff_target": "none",
+  "required_actions": [],
   "blockers": [],
   "refs": [
     "work-items/terminal-archive-legacy-state-reconciliation"
@@ -91,7 +85,8 @@
     "WORK_ITEM_ACTIVATED",
     "VERIFICATION_CONFIRMED",
     "CLOSEOUT_BUNDLE_APPROVED",
-    "DONE_CONFIRMED"
+    "DONE_CONFIRMED",
+    "ARCHIVE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -177,6 +172,14 @@
       "from_status": "VERIFIED",
       "to_status": "DONE",
       "note": "QC DoD and PO Business Acceptance trusted receipts are APPROVED with matching s08 digest for source 8166ae9280a231a2fde7dc6e2ac1df7658f95c25, run 35354094106, hosted tarball SHA-256 de92904f00dc3ff7a371e4ea582750350d5e83fae2d6660a1246657d32bed6f1; protocol closed separately. No merge, release, tag, publish, cleanup, archive, or live CR-008 mutation is authorized."
+    },
+    {
+      "timestamp": "2026-09-19T06:33:22.044Z",
+      "action": "archive",
+      "actor": "coordinator",
+      "from_status": "DONE",
+      "to_status": "ARCHIVED",
+      "note": "Work item lifecycle archived."
     }
   ],
   "artifact_shape": "adaptive_v1",
