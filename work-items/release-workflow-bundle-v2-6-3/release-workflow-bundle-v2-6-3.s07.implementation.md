@@ -116,7 +116,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> T0-T4 are complete and committed at `39dddfce80b5eec957623ae2acea81312f28cf41`. T5 found three unchanged regression tests that hard-code candidate v2.6.2. Developer approved bounded amendment T5a, its trusted receipt matches, Maintainer disposed the superseded blocker by exact state ID, and s07 resumed with 22 write roots. T5a implementation is open; review, s08, and release remain closed.
+> T0-T5a are locally complete. The approved four-token test-only rebind turned all three recorded RED cases GREEN, the 45-file unit suite and local release matrix pass, and exact PRE_HOST candidate `bbf06295...be30` rolls back to immutable v2.6.2 `af49a958...c13f` in all four Codex/Claude global/project scenarios. T6 independent review is next; s08, merge, main binding, release, and publication remain closed.
 
 ## Step Contract
 ```yaml
@@ -148,6 +148,7 @@ tasks_completed:
   - "T2 - advanced the four structured version surfaces and generated the release-note stub"
   - "T3 - updated active bilingual surfaces and replaced the stub with the complete packaged-delta record"
   - "T4 - closed the targeted red-green cycle without weakening historical or rollback locks"
+  - "T5/T5a - rebound four stale test tokens, completed the sequential local matrix, and rehearsed the exact candidate-to-v2.6.2 rollback"
 bug_repro_evidence: []
 hypothesis_log:
   - assumption: "All active structured release surfaces still identify 2.6.2 before T1."
@@ -178,6 +179,7 @@ safe_refactor_notes:
 code_changes:
   - "release-surface.test.js now targets v2.6.3, freezes every v2.0.0-v2.6.2 release record, rejects stale v2.6.2 current claims, and requires full packaged/repository-only release-note separation."
   - "release-rollback-smoke.test.js now targets exact v2.6.3 -> v2.6.2, pins rollback digest af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f, and asserts CR-009 disposition/history is candidate-only."
+  - "T5a advances exactly three stale v2.6.2 test expectations and one diagnostic temp-prefix label to v2.6.3; it changes no production code or rollback identity."
   - "Both manifests, package.json, and the wfc public-flow label now identify 2.6.3."
 doc_changes:
   - "Protocol-owned activation initially opened s07 with 19 write roots; approved T5a disposition and resume expanded the exact grant to 22 roots."
@@ -186,8 +188,8 @@ doc_changes:
   - "docs/releases/workflow-bundle-v2.6.3.md separates the complete packaged CR-009 delta from non-packaged repository history and keeps hosted/human evidence pending."
 config_changes: []
 review_checkpoints:
-  - "B1 metadata/contracts: implementation complete and targeted GREEN; pending QC Spec Compliance then Developer+QC Code Quality after T5 evidence is recorded."
-  - "B2 active docs/release record: implementation complete; pending T5 and the same ordered reviewers."
+  - "B1 metadata/contracts: implementation and local verification complete; ready for QC Spec Compliance, then Developer+QC Code Quality."
+  - "B2 active docs/release record: implementation, UTF-8, history, and local release checks complete; pending B1 and the same ordered reviewers."
   - "B3 integrated branch candidate: pending B1/B2."
 outputs_actual:
   - "Branch codex/release-workflow-bundle-v2-6-3 at d1d6a8208f8bc5dc73bc6e70f27f87e6c5957e34 is 10 governance commits ahead of origin/main 3204749e9fac592e9f38e327dbd85a87b84b2325."
@@ -200,15 +202,17 @@ outputs_actual:
   - "T2 produced exactly the four approved structured version edits plus the generated v2.6.3 release-note stub in the release worktree."
   - "T3 replaced the stub and updated only the eleven approved active documentation surfaces; v2.6.3 remains explicitly UNPUBLISHED."
   - "T4 release-surface and rollback source-mode contracts both pass; git diff --check and the approved-path boundary check pass."
+  - "T5a focused tests and the full 45-file unit suite pass; all local workflow validators except the recorded unrelated global protocol scan gap pass."
+  - "Local PRE_HOST artifact workflow-bundle-2.6.3.tgz has SHA-256 bbf0629513c317d238e0a7410086f9bd0c3b92810e9b96c4393ffdac06a7be30 and passes exact candidate plus v2.6.2 rollback smoke in all four Codex/Claude global/project scenarios."
 known_limitations:
   - "T0 corroborates the rollback digest from immutable repository/hosted evidence; it does not claim a fresh public download."
   - "Local Node is v26.5.0; required Node 18/22 proof remains hosted evidence."
-  - "T5a/T5 completion, T6-T7, and all independent review verdicts remain pending."
+  - "T6-T7 and all independent review or hosted verdicts remain pending."
   - "The bump utility's automatic repository-root discovery selects the outer manifest from this nested in-repo worktree; release execution must keep using the explicit --repo-root . form."
-  - "F-R263-T5-001 is authorized for the exact T5a test-only correction but remains open until focused GREEN and sequential T5 evidence are recorded."
+  - "F-R263-T5-001 is implementation-resolved by exact focused/full GREEN evidence but remains subject to T6 review."
   - "Global protocol validation also reports four stale gate-state entries in unrelated code-factory-holistic-audit-remediation; this baseline issue is recorded as a scan gap and is not included in T5a."
 follow_up_items:
-  - "Apply the approved three-token-plus-temp-prefix test-only delta, rerun T5 sequentially, retain no generated runtime diff, then prepare B1/B2/B3 review evidence."
+  - "Run T6 independent review in strict order: B1 Spec Compliance, B1 Code Quality, B2 Spec Compliance, B2 Code Quality, B3 Spec Compliance, B3 Code Quality."
 notes_for_testing: "Bootstrap generated runtime before source-mode release tests in a fresh worktree. Do not treat generated runtime files as owned production changes, and fail if a tracked runtime diff remains."
 ```
 
@@ -357,7 +361,7 @@ concurrency_note:
 finding:
   id: "F-R263-T5-001"
   severity: HIGH
-  status: AUTHORIZED_ACTIVE
+  status: IMPLEMENTATION_RESOLVED_REVIEW_PENDING
   category: RELEASE_REGRESSION_TEST_VERSION_DRIFT
   introduced_by_t2_t4: false
   evidence:
@@ -397,8 +401,8 @@ proposed_task_plan_amendment:
     - "Add T5a to the s06 Task Plan, reseal the trusted Task Plan receipt, and resume with all 22 exact write roots."
     - "Apply the minimal test-only delta and run the three tests GREEN."
     - "Run T5 sequentially, pack one local pre-host candidate, and execute exact v2.6.3 -> v2.6.2 artifact rehearsal."
-result: AUTHORIZED_ACTIVE
-next_human_action: NONE
+result: RECOVERY_EXECUTED_T5_COMPLETE
+next_human_action: "QC reviews B1 Spec Compliance before any B1 Code Quality decision."
 ```
 
 ## T5a Authorization And Resume Evidence
@@ -429,13 +433,95 @@ authority_boundary: "Opens only T5a implementation and T5 completion. B1/B2/B3 r
 next_task: "Apply the approved minimal test-only version rebind, then execute focused GREEN and sequential T5 verification."
 ```
 
+## T5a Focused Green And Completed T5 Evidence
+```yaml
+captured_at: "2026-09-19T14:39:00Z"
+source_parent: "f4f01cbb0b6ed5a48f565a87e86f3dc0c40176e5"
+amended_delta:
+  changed_files: 3
+  additions: 4
+  deletions: 4
+  semantic_change: "Only three v2.6.2 expectations and one diagnostic temp-prefix label advance to v2.6.3."
+  production_code_changed: false
+  assertion_removed_or_relaxed: false
+  rollback_identity_changed: false
+  file_sha256:
+    materialize-work-item.test.js: "590401940c5037a4aaabceab46b8ff4701602e3b3ba25fb436e9253cd49ad5e5"
+    release-candidate-artifact-smoke.test.js: "5b90bd5dd60c5137bacd65d16390e33a66d6f461e3a4bee875904493137178ce"
+    release-install-all-smoke.test.js: "8859e24aad3b52cd25f16446c47aad3abc88c8625ade970250cb0d2e4ea47756"
+focused_green:
+  syntax_checks: "PASS - all three amended JavaScript files"
+  materialize_work_item: "PASS - 24/24 cases"
+  release_candidate_source_preflight: "PASS - v2.6.3/42"
+  release_install_all: "PASS - Codex/Claude x global/project 4/4"
+sequential_local_matrix:
+  runtime_sync: "PASS - bundle_version=2.6.3, modes=claude/codex, 84 mode-skill copies"
+  full_unit: "PASS - 45 workflow-bundle test files"
+  fixtures: "PASS - 10 governance fixture cases"
+  workflow_standard: "PASS - 267 names and 263 governance notes"
+  workflow_sdd: "PASS - 52 workflow notes"
+  workflow_change: "PASS - 58 workflow notes; legacy CHANGE-002 warnings retained"
+  workflow_execution: "PASS - 263 workflow notes"
+  workflow_planning: "PASS - 263 workflow notes"
+  authoring_smoke: "PASS - 13/13 cases"
+  pack_audit: "PASS - 42 canonical skills and runtime/cross-reference parity"
+  bundle_smoke: PASS
+  release_surface: PASS
+  rollback_source_contract: PASS
+local_pre_host_candidate:
+  authority: PRE_HOST_ONLY
+  artifact: "/private/tmp/cf-v263-prehost.tvFbDw/workflow-bundle-2.6.3.tgz"
+  package_identity: "workflow-bundle@2.6.3"
+  tar_entries: 545
+  sha256: "bbf0629513c317d238e0a7410086f9bd0c3b92810e9b96c4393ffdac06a7be30"
+  exact_candidate_smoke: "PASS - wfc 2.6.3 and Codex/Claude x global/project 4/4"
+exact_rollback_rehearsal:
+  artifact: "/private/tmp/cf-v262-release.4X1VNo/workflow-bundle-2.6.2.tgz"
+  version: "2.6.2"
+  sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+  result: "PASS - candidate-to-rollback transition 4/4; unmanaged markers preserved"
+release_delta:
+  baseline: "origin/main@3204749e9fac592e9f38e327dbd85a87b84b2325"
+  scope: "git diff --binary origin/main excluding work-items/** and changes/**"
+  changed_files: 21
+  additions: 295
+  deletions: 95
+  sha256: "83fd98ba064121559fa7488ce663e5ea0dfb149ba05ea6a6c7d5d51c69cbae39"
+boundary_and_hygiene:
+  approved_path_boundary: "PASS - 37 branch paths within 22 mutable roots plus approved immutable CHANGE-007 governance root"
+  retained_generated_runtime_diff: NONE
+  git_diff_check: PASS
+  workflow_yaml_parse: PASS
+  changed_text_utf8: PASS
+  secret_scan: PASS
+  network_surface_scan: PASS
+  historical_release_sha256: "PASS - v2.0.0 through v2.6.2 exactly match T0"
+scan_gaps:
+  - id: R263-SG-001
+    status: OPEN_EXTERNAL_NON_BLOCKING_FOR_T6_REVIEW
+    evidence: "Global protocol validation still reports four stale gate-state entries only in code-factory-holistic-audit-remediation; the v2.6.3 work item status itself is ACTIVE with no blockers."
+  - id: R263-SG-002
+    status: HOSTED_EVIDENCE_PENDING
+    evidence: "Local verification ran on Node v26.5.0; Node 18/22 matrix and exact hosted artifact evidence belong to T7/s08."
+finding_disposition:
+  id: F-R263-T5-001
+  implementation_status: RESOLVED
+  review_status: PENDING_T6
+  reopen_condition: "Any reviewed expectation drift, production edit, rollback identity change, generated runtime diff, or failure in B1/B2/B3 review."
+result: PASS_READY_FOR_T6
+next_human_action: "QC approves or rejects B1 Spec Compliance for release identity/contracts before Developer and QC review B1 Code Quality."
+```
+
 ## Delivery Rule Evidence
 ```yaml
 behavior_change: YES
-tdd_status: T1_T4_RED_GREEN_COMPLETE_T5A_RED_CONFIRMED_GREEN_PENDING
+tdd_status: T1_T4_AND_T5A_RED_GREEN_COMPLETE
 tdd_test_refs:
   - "packages/workflow-bundle/test/release-surface.test.js"
   - "packages/workflow-bundle/test/release-rollback-smoke.test.js"
+  - "packages/workflow-bundle/test/materialize-work-item.test.js"
+  - "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js"
+  - "packages/workflow-bundle/test/release-install-all-smoke.test.js"
 tdd_exception_reason: ""
 tdd_alternative_verify_path: []
 change_risk_profile: LARGE_OR_RISKY
@@ -443,9 +529,9 @@ worktree_status: USED
 worktree_refs:
   - ".claude/worktrees/release-workflow-bundle-v2-6-3"
 worktree_reason: "Full-track public release work spans multiple sessions and exact branch/main/public identities."
-review_status: PENDING_T5A_AND_T5_COMPLETION
+review_status: READY_FOR_B1_SPEC_COMPLIANCE
 review_refs:
-  - "s06 Review Plan B1/B2/B3; T1 contract diff is ready for later B1 after T4 GREEN."
+  - "s06 Review Plan B1/B2/B3; T5a and sequential T5 evidence are ready for ordered independent review."
 spec_compliance_status: NOT_RUN
 code_quality_status: NOT_RUN
 delegation_mode: agentic
@@ -492,20 +578,20 @@ task_status:
   T2: COMPLETE
   T3: COMPLETE
   T4: COMPLETE_GREEN_CONFIRMED
-  T5: IN_PROGRESS_AMENDED
-  T5a: NEXT
-  T6: BLOCKED_BY_T5A
+  T5: COMPLETE_LOCAL_PASS
+  T5a: COMPLETE_GREEN_CONFIRMED
+  T6: READY_B1_SPEC_COMPLIANCE
   T7: BLOCKED_BY_T6
   T8_T13: LATER_GATES
 acceptance_coverage_current:
   AC-R263-01: LOCAL_PASS_REVIEW_PENDING
   AC-R263-02: LOCAL_PASS_REVIEW_PENDING
-  AC-R263-08: PARTIAL
-next_step: "Implement T5a and complete T5 sequential verification"
+  AC-R263-08: LOCAL_PASS_HOSTED_PENDING
+next_step: "QC B1 Spec Compliance, then Developer and QC B1 Code Quality"
 ```
 
 ## Handoff
-- Outputs actual: ACTIVE s07, exact write grant, T0 isolation/inventory/hashes, T1 intended RED, T2/T3 approved release delta, and T4 targeted GREEN.
-- Known limitations: T5a and T5 completion remain pending; T6-T7 and every review/hosted gate remain pending; local Node 26 is not Node 18/22 release evidence.
-- Notes for testing: T1 RED, T4 GREEN, and the three independent T5a RED reproductions are preserved in this note. Serialize runtime writers, run the full local matrix and exact-artifact rehearsal, and leave no generated runtime diff.
+- Outputs actual: ACTIVE s07; T0-T5a locally complete; focused and full suites GREEN; PRE_HOST candidate and exact v2.6.2 rollback evidence recorded; no generated runtime diff.
+- Known limitations: T6 B1/B2/B3 reviews, T7 hosted evidence, and every s08/public gate remain pending; local Node 26 is not Node 18/22 release evidence; unrelated R263-SG-001 remains external.
+- Notes for testing: T1/T4 and T5a RED/GREEN evidence is preserved. Review must bind to release-delta SHA-256 `83fd98ba064121559fa7488ce663e5ea0dfb149ba05ea6a6c7d5d51c69cbae39`; the local tarball is PRE_HOST only.
 - Notes for deployment: none; tag, publication, latest movement, merge, and cleanup remain unauthorized.

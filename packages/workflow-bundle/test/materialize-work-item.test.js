@@ -784,7 +784,7 @@ function testMaterializeEmitsTelemetryWhenOptIn() {
     const serialized = JSON.stringify(tel);
     assert(tel.schema_version === 2, `telemetry uses privacy schema v2, got ${tel.schema_version}`);
     assert(tel.event_type === "materialize", `telemetry identifies lifecycle event, got ${tel.event_type}`);
-    assert(tel.runtime_version === "2.6.2", `telemetry carries bounded runtime version, got ${tel.runtime_version}`);
+    assert(tel.runtime_version === "2.6.3", `telemetry carries bounded runtime version, got ${tel.runtime_version}`);
     assert(tel.request_lane === "maintenance", `telemetry carries lane, got ${tel.request_lane}`);
     assert(tel.selected_profile === SDD_LIGHT_PROFILE, `telemetry carries selected_profile, got ${tel.selected_profile}`);
     assert(tel.sdd_light_profile === "preview", "telemetry carries sdd_light_profile default preview");
