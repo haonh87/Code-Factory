@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
 governance_status: ALIGNED
@@ -98,8 +98,8 @@ gate_reviews:
   spec_reviewed_at: "2026-09-19T09:10:05Z"
   dor_reviewed_by: ["ba","qc"]
   dor_reviewed_at: "2026-09-19T09:10:06Z"
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
+  approach_reviewed_by: ["developer"]
+  approach_reviewed_at: "2026-09-19T10:34:59Z"
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
   dod_reviewed_by: []
@@ -127,7 +127,7 @@ tags:
 # Step 5 - Technical Approach
 
 > [!summary]
-> Khuyến nghị Option A: chuẩn bị một release-only descendant nhỏ trên nhánh hiện tại, tái dùng version-bump/release-contract/Workflow Guardrails sẵn có, rồi coi artifact từ run `main` sau merge là candidate phát hành có thẩm quyền. Publish đúng bytes đó dưới npm staging tag `candidate-2-6-3`, tạo và kiểm chứng GitHub Release, sau đó mới chuyển npm `latest`. Không thêm release framework hoặc thay đổi hành vi runtime ngoài baseline đã merge.
+> Developer đã phê duyệt Option A: chuẩn bị một release-only descendant nhỏ trên nhánh hiện tại, tái dùng version-bump/release-contract/Workflow Guardrails sẵn có, rồi coi artifact từ run `main` sau merge là candidate phát hành có thẩm quyền. Publish đúng bytes đó dưới npm staging tag `candidate-2-6-3`, tạo và kiểm chứng GitHub Release, sau đó mới chuyển npm `latest`. Không thêm release framework hoặc thay đổi hành vi runtime ngoài baseline đã merge.
 
 ## Step Contract
 ```yaml
@@ -246,37 +246,14 @@ dev_lane:
     - "Digest mismatch tolerance is zero."
     - "Rollback target is 15 minutes per supported mode."
 options:
-  - name: "Option A - Minimal existing-path release"
-    summary: "Use the current bump utility, manually review active docs/tests, reuse Workflow Guardrails, and perform staged npm/GitHub promotion with the post-merge main artifact."
-    pros:
-      - "Smallest production delta and lowest regression surface."
-      - "Reuses already-tested build-once and Node 18/22 candidate lanes."
-      - "Keeps source, artifact, gate, and publication identities explicit."
-    cons:
-      - "Requires a controlled manual publication sequence after Release approval."
-      - "Requires a post-merge main run before final candidate binding."
-    risks:
-      - "Operator error remains possible unless s06 commands and evidence checks are explicit."
-  - name: "Option B - Add a dedicated automated release workflow now"
-    summary: "Create a new dispatch workflow that versions, publishes, creates the release, promotes latest, and records evidence."
-    pros:
-      - "Could reduce future manual steps."
-      - "Could centralize credentials and release telemetry."
-    cons:
-      - "Adds new production automation and permission surface to a patch release."
-      - "Requires its own failure/recovery testing before it can safely publish."
-    risks:
-      - "The release mechanism becomes a larger unproven change than the artifact being released."
-  - name: "Option C - Local rebuild and direct latest publication"
-    summary: "Pack locally, publish directly to npm latest, and separately attach a GitHub artifact."
-    pros:
-      - "Fewest operator commands before first publication."
-    cons:
-      - "Cannot prove the two channels use the same bytes."
-      - "Moves latest before cross-channel verification."
-    risks:
-      - "Violates AC-R263-04, AC-R263-10, and AC-R263-11."
+  - "Option A - Minimal existing-path release: reuse bump-version, release tests, Workflow Guardrails, and staged promotion of the post-merge main artifact."
+  - "Option B - Add a dedicated automated release workflow now: centralize versioning and publication but introduce a new permission and recovery surface."
+  - "Option C - Local rebuild and direct latest publication: fewer commands but violates exact-artifact and latest-protection invariants."
 recommended_option: "Option A - Minimal existing-path release"
+trade_offs:
+  - "Option A keeps the production delta smallest and reuses proven Node 18/22 build-once lanes, at the cost of a controlled manual publication sequence and a post-merge candidate rebind."
+  - "Option B could reduce future operator steps but makes an unproven release mechanism larger than this patch-release scope."
+  - "Option C is operationally shorter but cannot prove channel byte equality or recover safely before latest moves."
 recommendation_reason: "It is the smallest approach that satisfies all 13 criteria using proven repository capabilities; Option B creates unnecessary release-system scope, while Option C violates exact-artifact and latest-protection invariants."
 validation_plan:
   - "Review release-only source delta and historical hashes before merge."
@@ -556,19 +533,29 @@ checks:
     evidence: "Failure modes, release controls, and rollback controls define both ordering failures and immutable retry behavior."
   - criterion: "The approach is presented for Developer approval without opening s07."
     result: PASS
-    evidence: "s05 remains draft; approach reviewer metadata and trusted receipt are empty."
+    evidence: "Developer explicitly approved the Approach; s05 records reviewer identity and timestamp while Task Plan and s07 remain unopened."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Completed in one focused authoring pass after Spec and DoR receipt verification."
 gaps: []
 risk_level: MEDIUM
-next_action: "Developer reviews and approves Approach; only then may s06 Task Plan be authored."
+next_action: "Seal the Developer Approach trusted receipt against this finalized note; only after digest_match=true may s06 Task Plan be authored."
 authority_boundary: "Audit PASS covers proposal completeness only and does not approve Approach, Task Plan, implementation, Release, or publication."
 ```
 
 ## Handoff
 - Recommended option: Option A — minimal existing-path release with the authoritative post-merge main artifact.
 - Trade-off chấp nhận: one additional main-run binding and a controlled manual promotion sequence in exchange for exact provenance and recoverable partial states.
-- Điều kiện sang step 6: Developer phê duyệt Approach và trusted receipt phải `digest_match=true`; chưa được chạy version bump hoặc sửa production surface.
+- Điều kiện sang step 6: Developer approval đã được ghi nhận; trusted receipt còn phải `digest_match=true`. Chưa được chạy version bump hoặc sửa production surface.
 - Deployment note khi có: npm `candidate-2-6-3` -> annotated GitHub `v2.6.3` release -> cross-channel digest verify -> npm `latest`; rollback latest/installations về immutable v2.6.2.
+
+## Human Approval Record
+```yaml
+decision: "APPROVED"
+gate: "approach"
+reviewed_by: ["developer"]
+reviewed_at: "2026-09-19T10:34:59Z"
+decision_source: "User explicitly approved the Approach for workflow-bundle v2.6.3 with role Developer."
+authority_boundary: "Approves only the s05 Approach; Task Plan, implementation, DoD, Release, Business Acceptance, tag creation, and publication remain separate."
+```
