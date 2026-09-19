@@ -1,0 +1,276 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "MATERIALIZED",
+  "decision_owner": "agent",
+  "protocol_owner": "",
+  "raw_request_summary": "Promote v263-3204749e with v262 fallback.",
+  "request_source": "user-chat",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "release-workflow-bundle-v2-6-3",
+      "work_item_title": "Release Workflow Bundle V2 6 3",
+      "work_item_type": "CHANGE",
+      "scope_summary": "Promote v263-3204749e with v262 fallback.",
+      "primary_outcome": "Promote v263-3204749e with v262 fallback.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "full",
+      "sdd_reasons": [],
+      "sdd_preset": "full",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [],
+      "collision_notes": [],
+      "change_strategy": "create_new",
+      "change_id": "CHANGE-007",
+      "change_reason": "Scope có tín hiệu cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:change -- --change-id CHANGE-007 --work-item release-workflow-bundle-v2-6-3",
+        "npm run scaffold:workflow -- --work-item release-workflow-bundle-v2-6-3 --planning-track full --delivery-context brownfield --change-id CHANGE-007 --governance-profile strict --adaptive-writes true --request-lane product_delivery --adaptive-source-version 2.6.2 --adaptive-installed-version 2.6.2 --adaptive-parity-passed true --release true",
+        "npm run validate:workflow -- --workflow-root work-items/release-workflow-bundle-v2-6-3 --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/release-workflow-bundle-v2-6-3"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=CHANGE",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict",
+    "change_strategy=create_new",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=full",
+    "selected_profile=full",
+    "sdd_mode=none",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "release-workflow-bundle-v2-6-3",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "selected_profile": "full",
+  "sdd_mode": "none",
+  "sdd_preset": "full",
+  "sdd_light_profile": "preview",
+  "sdd_reasons": [],
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/release-workflow-bundle-v2-6-3/work-items/release-workflow-bundle-v2-6-3",
+  "current_step": "s01",
+  "change_strategy": "create_new",
+  "change_id": "CHANGE-007",
+  "handoff_target": "human-review",
+  "required_actions": [
+    {
+      "id": "se:6ee5e91f9895141bedc6ec73409d18cbc52d86cef1ab943cb4e41bc4bf5bc0f9",
+      "kind": "workflow_followup",
+      "text": "wfc change-item approve --change-id CHANGE-007 --reviewed-by <role>"
+    },
+    {
+      "id": "se:e92335a8ed30cca18ab048105774943921b898380c5866e9bf7aa1d30697c220",
+      "kind": "workflow_followup",
+      "text": "wfc work-item approve --work-item release-workflow-bundle-v2-6-3 --reviewed-by <role>"
+    },
+    {
+      "id": "se:440f5d1de06856e1a6cf03220e543abc0984c14b227573a442b72455b7724d69",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item release-workflow-bundle-v2-6-3 --gate spec --reviewed-by ba",
+      "gate": "spec"
+    },
+    {
+      "id": "se:9ed41867a24f911cb6089bd8f75ee756bc93f66023befa368582adbb2d5ba461",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item release-workflow-bundle-v2-6-3 --gate dor --reviewed-by ba",
+      "gate": "dor"
+    },
+    {
+      "id": "se:6bf1a66609a55cd10ce75383d6ff424fc1424448e593c3a578c6aa2af8e2ed70",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item release-workflow-bundle-v2-6-3 --gate approach --reviewed-by developer",
+      "gate": "approach"
+    },
+    {
+      "id": "se:ea6d7fbe5bfa918c9e2cbe647194dce33781afccbd2d203117137bd337985330",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item release-workflow-bundle-v2-6-3 --gate task_plan --reviewed-by developer",
+      "gate": "task_plan"
+    },
+    {
+      "id": "se:755d52a4ebc203c62805ff31f8972f258ba7d2e57c4e157e4182928eb4bc7895",
+      "kind": "work_item_activation",
+      "text": "wfc work-item activate --work-item release-workflow-bundle-v2-6-3 --step s07 --write-root <path>"
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/release-workflow-bundle-v2-6-3"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "CHANGE_CREATED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED"
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "review_required": true,
+  "approval_status": "PENDING_REVIEW",
+  "reviewed_by": "",
+  "reviewed_at": "",
+  "review_notes": [],
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-19T08:42:26.740Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-09-19T08:42:26.741Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Materialization inputs are ready for scaffold."
+    },
+    {
+      "timestamp": "2026-09-19T08:42:26.796Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Auto-scaffolded workflow artifacts."
+    }
+  ],
+  "artifact_shape": "adaptive_v1",
+  "request_lane": "product_delivery",
+  "requested_lane": "product_delivery",
+  "workflow_required": true,
+  "routing_reasons": [
+    "LANE_PRODUCT_DELIVERY"
+  ],
+  "escalation_reasons": [
+    "HARD_RELEASE"
+  ],
+  "roles": [
+    {
+      "role": "po",
+      "reasons": [
+        "ROLE_PO_PRODUCT_OUTCOME"
+      ]
+    },
+    {
+      "role": "ba",
+      "reasons": [
+        "ROLE_BA_REQUIREMENTS"
+      ]
+    },
+    {
+      "role": "developer",
+      "reasons": [
+        "ROLE_DEVELOPER_DELIVERY"
+      ]
+    },
+    {
+      "role": "qc",
+      "reasons": [
+        "ROLE_QC_VERIFICATION"
+      ]
+    },
+    {
+      "role": "devops",
+      "reasons": [
+        "ROLE_DEVOPS_RELEASE"
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "gate": "spec",
+      "reasons": [
+        "GATE_SPEC_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "ba"
+      ]
+    },
+    {
+      "gate": "dor",
+      "reasons": [
+        "GATE_DOR_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "ba",
+        "qc"
+      ]
+    },
+    {
+      "gate": "approach",
+      "reasons": [
+        "GATE_APPROACH_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
+      "gate": "task_plan",
+      "reasons": [
+        "GATE_TASK_PLAN_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
+      "gate": "dod",
+      "reasons": [
+        "GATE_DOD_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "qc"
+      ]
+    },
+    {
+      "gate": "release",
+      "reasons": [
+        "GATE_RELEASE_PUBLICATION"
+      ],
+      "reviewer_roles": [
+        "devops",
+        "qc"
+      ]
+    },
+    {
+      "gate": "business_acceptance",
+      "reasons": [
+        "GATE_BUSINESS_ACCEPTANCE_PRODUCT_OUTCOME",
+        "GATE_BUSINESS_ACCEPTANCE_RELEASE_OUTCOME"
+      ],
+      "reviewer_roles": [
+        "po"
+      ]
+    }
+  ],
+  "human_override": null,
+  "adaptive_activation": {
+    "source_version": "2.6.2",
+    "installed_versions": [
+      "2.6.2"
+    ],
+    "parity_passed": true
+  }
+}
