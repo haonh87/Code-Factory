@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: review
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
 governance_status: ALIGNED
@@ -190,7 +190,8 @@ dev_lane:
 open_questions:
   - id: "OQ-R263-001"
     topic: "Public release channels"
-    status: "PENDING_DECISION"
+    status: "APPROVED"
+    selected_option: "A"
     reviewers: ["po", "devops", "qc"]
     options:
       - id: "A"
@@ -209,7 +210,8 @@ open_questions:
     if_unresolved: "s04 cannot define publication-completeness acceptance criteria."
   - id: "OQ-R263-002"
     topic: "Current versus historical release-surface ownership"
-    status: "PENDING_DECISION"
+    status: "APPROVED"
+    selected_option: "A"
     reviewers: ["ba", "developer", "qc"]
     options:
       - id: "A"
@@ -228,7 +230,8 @@ open_questions:
     if_unresolved: "s04 cannot define the allowed documentation and test delta."
   - id: "OQ-R263-003"
     topic: "Compatibility and rollback matrix"
-    status: "PENDING_DECISION"
+    status: "APPROVED"
+    selected_option: "A"
     reviewers: ["developer", "qc", "devops"]
     options:
       - id: "A"
@@ -247,7 +250,8 @@ open_questions:
     if_unresolved: "s04 cannot freeze compatibility or rollback coverage."
   - id: "OQ-R263-004"
     topic: "Release-note delta boundary"
-    status: "PENDING_DECISION"
+    status: "APPROVED"
+    selected_option: "A"
     reviewers: ["ba", "developer", "qc"]
     options:
       - id: "A"
@@ -266,7 +270,8 @@ open_questions:
     if_unresolved: "s04 cannot make release-note completeness measurable."
   - id: "OQ-R263-005"
     topic: "Cross-channel publication sequencing and authentication"
-    status: "PENDING_DECISION"
+    status: "APPROVED"
+    selected_option: "A"
     reviewers: ["devops", "qc"]
     options:
       - id: "A"
@@ -285,7 +290,8 @@ open_questions:
     if_unresolved: "s04 cannot define safe publication failure behavior."
   - id: "OQ-R263-006"
     topic: "Rollback service-level objective"
-    status: "PENDING_DECISION"
+    status: "APPROVED"
+    selected_option: "A"
     reviewers: ["po", "devops", "qc"]
     options:
       - id: "A"
@@ -302,21 +308,20 @@ open_questions:
     recommendation_reason: "Fifteen minutes is a practical patch-release recovery target; the evidence can record network-related exclusions without weakening functional correctness."
     validation_plan: ["Measure each rehearsal mode separately", "Record functional result and elapsed time", "Treat functional failure as blocking and environmental timing variance as a reviewed exception"]
     if_unresolved: "s04 cannot freeze the rollback performance criterion."
-missing_inputs:
-  - "Human decisions for OQ-R263-001..006 from the listed reviewers."
+missing_inputs: []
 conflicts:
   - id: "CONFLICT-R263-001"
     statement: "3204749e is the approved baseline, but version preparation necessarily creates a different final candidate SHA."
     resolution_direction: "Treat 3204749e as the immutable baseline and bind Release to its reviewed release-only descendant."
-    status: "RECOMMENDED_PENDING_APPROVAL"
+    status: "RESOLVED"
   - id: "CONFLICT-R263-002"
     statement: "GitHub and npm cannot be published atomically."
     resolution_direction: "Stage npm without moving latest, verify GitHub, then promote latest."
-    status: "RECOMMENDED_PENDING_APPROVAL"
+    status: "RESOLVED"
   - id: "CONFLICT-R263-003"
     statement: "Release notes must cover the full artifact without pulling unrelated work into implementation scope."
     resolution_direction: "Document the complete packaged delta; do not modify behavior outside the release-only descendant."
-    status: "RECOMMENDED_PENDING_APPROVAL"
+    status: "RESOLVED"
 assumptions:
   - "npm supports a non-latest staging dist-tag and later dist-tag promotion."
   - "GitHub Release can attach the exact tarball built by Workflow Guardrails."
@@ -326,35 +331,32 @@ validation_plan:
   - "Translate accepted decisions into measurable s04 criteria and DoR checks."
   - "Keep publication commands and file-level design out of s03; lock them in s05/s06."
   - "Reject any approach that rebuilds per channel, edits historical evidence, or moves latest before cross-channel verification."
-notes_for_next_step: "BLOCKED until the six decisions are explicitly accepted or amended by their named human reviewer roles."
+notes_for_next_step: "OQ-R263-001..006 are approved as Option A; s04 may freeze measurable acceptance criteria and assess DoR without inferring any later gate approval."
 ```
 
 ## Input Readiness
 ```yaml
 step: "s03 -> s04 Acceptance + DoR"
-status: BLOCKED
+status: READY
 available_inputs:
   - "Approved CHANGE-007 and work-item trusted receipts"
   - "Approved s02 Business Goal"
   - "Baseline main 3204749e and immutable v2.6.2 rollback identity"
   - "Existing Workflow Guardrails exact-candidate model"
   - "Decision-ready options and recommendations for OQ-R263-001..006"
-missing_inputs:
-  - "Authorized human decisions for OQ-R263-001..006"
+missing_inputs: []
 invalid_inputs: []
-conflicts:
-  - "Baseline versus final candidate identity remains unresolved until OQ bundle acceptance."
-  - "Cross-channel failure policy remains unresolved until OQ-R263-005 acceptance."
+conflicts: []
 assumptions:
-  - "No publication or implementation occurs while readiness is BLOCKED."
-risk_level: HIGH
-next_action: "PO/BA/Developer/QC/DevOps accept or amend OQ-R263-001..006; then reassess readiness before authoring s04."
+  - "The accepted Option A decisions constrain s04 but do not approve Spec, DoR, Approach, Task Plan, Release, or Business Acceptance."
+risk_level: MEDIUM
+next_action: "Author measurable s04 acceptance criteria and present Spec to BA plus DoR to BA and QC for independent approval."
 ```
 
 ## Audit
 ```yaml
 step: "s03 Open Questions"
-status: PARTIAL
+status: PASS
 checks:
   - criterion: "Each question has options, recommendation, rationale, validation direction, and authorized reviewers."
     result: PASS
@@ -366,19 +368,18 @@ checks:
     result: PASS
     evidence: "OQ-R263-005 Option A stages npm without moving latest until GitHub and registry verification succeed."
   - criterion: "All required human owners accept or amend the bundle."
-    result: FAIL
-    evidence: "Recommendations are drafted but no OQ decision has yet been human-approved."
+    result: PASS
+    evidence: "The user explicitly approved Option A for OQ-R263-001..006 with every listed PO, BA, Developer, QC, and DevOps authority."
   - criterion: "No unresolved conflict remains before s04."
-    result: FAIL
-    evidence: "CONFLICT-R263-001..003 retain RECOMMENDED_PENDING_APPROVAL status."
+    result: PASS
+    evidence: "CONFLICT-R263-001..003 are resolved by the corresponding approved Option A decisions."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Decision bundle authored in one focused pass."
-gaps:
-  - "Human decisions for OQ-R263-001..006 are pending."
-risk_level: HIGH
-next_action: "Obtain role-correct human decisions, update each OQ and conflict, then rerun readiness/audit."
+gaps: []
+risk_level: MEDIUM
+next_action: "Proceed to s04 Acceptance + DoR authoring; keep Spec and DoR as independent human-controlled gates."
 ```
 
 ## Traceability
@@ -391,9 +392,24 @@ decision_to_acceptance_handoff:
   - { decisions: ["OQ-R263-001", "OQ-R263-005"], acceptance_focus: "publication completeness, exact artifact, authentication, and partial-failure safety" }
   - { decisions: ["OQ-R263-002", "OQ-R263-004"], acceptance_focus: "release-surface ownership, history immutability, and complete delta coverage" }
   - { decisions: ["OQ-R263-003", "OQ-R263-006"], acceptance_focus: "compatibility matrix, rollback correctness, and recovery time" }
-next_step: "s04 Acceptance + DoR after s03 decisions are approved"
+next_step: "s04 Acceptance + DoR"
 ```
 
 ## Handoff
-- Trạng thái readiness: `BLOCKED` chỉ vì OQ-R263-001..006 chưa có human decision; artifact và recommendation đã decision-ready.
-- Điều cần làm để sang step 4: các reviewer đúng role phê duyệt hoặc amend sáu lựa chọn, sau đó cập nhật conflict/readiness/audit thành trạng thái cuối.
+- Trạng thái readiness: `READY`; OQ-R263-001..006 đều chọn Option A với đầy đủ reviewer authority.
+- Điều cần làm để sang step 4: soạn Spec/DoR dựa trên các quyết định đã khóa; BA và QC vẫn phải phê duyệt các gate tương ứng.
+
+## Human Decision Record
+```yaml
+decision: "APPROVED"
+reviewed_at: "2026-09-19T08:59:53Z"
+decision_source: "User explicitly approved Option A for OQ-R263-001..006 with the named roles."
+decisions:
+  - { id: "OQ-R263-001", option: "A", reviewed_by: ["po", "devops", "qc"] }
+  - { id: "OQ-R263-002", option: "A", reviewed_by: ["ba", "developer", "qc"] }
+  - { id: "OQ-R263-003", option: "A", reviewed_by: ["developer", "qc", "devops"] }
+  - { id: "OQ-R263-004", option: "A", reviewed_by: ["ba", "developer", "qc"] }
+  - { id: "OQ-R263-005", option: "A", reviewed_by: ["devops", "qc"] }
+  - { id: "OQ-R263-006", option: "A", reviewed_by: ["po", "devops", "qc"] }
+authority_boundary: "Approves only the six s03 decisions; it does not approve Spec, DoR, Approach, Task Plan, implementation, DoD, Release, Business Acceptance, tag creation, or publication."
+```
