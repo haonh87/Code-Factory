@@ -116,7 +116,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> T0-T5a are locally complete. The approved four-token test-only rebind turned all three recorded RED cases GREEN, the 45-file unit suite and local release matrix pass, and exact PRE_HOST candidate `bbf06295...be30` rolls back to immutable v2.6.2 `af49a958...c13f` in all four Codex/Claude global/project scenarios. B1 Spec Compliance and Code Quality passed in order for unchanged diff `db70b5b...`; B2 Spec Compliance is next. s08, merge, main binding, release, and publication remain closed.
+> T0-T5a are locally complete. The approved four-token test-only rebind turned all three recorded RED cases GREEN, the 45-file unit suite and local release matrix pass, and exact PRE_HOST candidate `bbf06295...be30` rolls back to immutable v2.6.2 `af49a958...c13f` in all four Codex/Claude global/project scenarios. B1 review is complete, and QC approved B2 Spec Compliance for source `221a6ba...` and diff `e6587d7...`; B2 Code Quality is next. s08, merge, main binding, release, and publication remain closed.
 
 ## Step Contract
 ```yaml
@@ -189,7 +189,7 @@ doc_changes:
 config_changes: []
 review_checkpoints:
   - "B1 metadata/contracts: QC Spec Compliance PASS, then Developer+QC Code Quality PASS for unchanged diff db70b5bad2d473d0a620c7d0d002b0e8fe009aeb3dc233cec3c380a56fc718a2; ESLint and Semgrep gaps accepted as non-blocking."
-  - "B2 active docs/release record: implementation, UTF-8, history, and local release checks complete; ready for QC Spec Compliance, then Developer+QC Code Quality."
+  - "B2 active docs/release record: QC Spec Compliance PASS for source 221a6ba4633a5e6f46eeb86a350d262ad8504eb1 and diff e6587d7dc729b68cc91797886e497c72e58b826ebd5771a0bd9758108b6130d4; Developer+QC Code Quality pending."
   - "B3 integrated branch candidate: pending B1/B2."
 outputs_actual:
   - "Branch codex/release-workflow-bundle-v2-6-3 at d1d6a8208f8bc5dc73bc6e70f27f87e6c5957e34 is 10 governance commits ahead of origin/main 3204749e9fac592e9f38e327dbd85a87b84b2325."
@@ -506,7 +506,7 @@ scan_gaps:
 finding_disposition:
   id: F-R263-T5-001
   implementation_status: RESOLVED
-  review_status: B1_PASS_B2_B3_PENDING
+  review_status: B1_PASS_B2_SPEC_PASS_REMAINDER_PENDING
   reopen_condition: "Any reviewed expectation drift, production edit, rollback identity change, generated runtime diff, or failure in B1/B2/B3 review."
 result: PASS_READY_FOR_T6
 next_human_action: "Developer and QC approve or reject B1 Code Quality for the unchanged source and B1 diff."
@@ -570,6 +570,37 @@ authority_boundary: "This approval closes only B1 Code Quality. It does not appr
 next_human_action: "QC approves or rejects B2 Spec Compliance for active bilingual docs and the v2.6.3 release record."
 ```
 
+## T6 B2 Spec Compliance Review
+```yaml
+recorded_at: "2026-09-20T12:44:00Z"
+batch: "B2 - documentation and release record"
+review_lane: SPEC_COMPLIANCE
+review_order_position: FIRST
+reviewer_role: qc
+decision_source: "User explicitly approved B2 Spec Compliance with role QC and named the exact source and B2 diff identities."
+source_commit: "221a6ba4633a5e6f46eeb86a350d262ad8504eb1"
+b2_diff:
+  scope: "Eleven active English/Vietnamese documentation surfaces plus the v2.6.3 release record."
+  changed_files: 12
+  additions: 212
+  deletions: 57
+  sha256: "e6587d7dc729b68cc91797886e497c72e58b826ebd5771a0bd9758108b6130d4"
+spec_checks:
+  active_version_identity_v2_6_3: PASS
+  unpublished_and_human_gate_language: PASS
+  english_vietnamese_current_surface_alignment: PASS
+  complete_packaged_delta_and_repository_only_separation: PASS
+  immutable_v2_0_0_through_v2_6_2_history: PASS
+  exact_v2_6_2_rollback_identity: PASS
+  current_b1_review_state: PASS
+  placeholder_or_false_public_claim: NONE
+  unapproved_scope_or_behavior_drift: NONE
+verdict: PASS
+findings: []
+authority_boundary: "This approval closes only B2 Spec Compliance. It does not approve B2 Code Quality, B3, s08, DoD, merge, main binding, Release, publication, Business Acceptance, archive, or cleanup."
+next_human_action: "Developer and QC approve or reject B2 Code Quality for the unchanged source and B2 diff."
+```
+
 ## Delivery Rule Evidence
 ```yaml
 behavior_change: YES
@@ -587,10 +618,10 @@ worktree_status: USED
 worktree_refs:
   - ".claude/worktrees/release-workflow-bundle-v2-6-3"
 worktree_reason: "Full-track public release work spans multiple sessions and exact branch/main/public identities."
-review_status: B1_COMPLETE_B2_SPEC_COMPLIANCE_PENDING
+review_status: B1_COMPLETE_B2_SPEC_COMPLIANCE_PASS_CODE_QUALITY_PENDING
 review_refs:
   - "s06 Review Plan B1/B2/B3; T5a and sequential T5 evidence are ready for ordered independent review."
-spec_compliance_status: B1_PASS_B2_B3_PENDING
+spec_compliance_status: B1_B2_PASS_B3_PENDING
 code_quality_status: B1_PASS_B2_B3_PENDING
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
@@ -638,18 +669,18 @@ task_status:
   T4: COMPLETE_GREEN_CONFIRMED
   T5: COMPLETE_LOCAL_PASS
   T5a: COMPLETE_GREEN_CONFIRMED
-  T6: B1_COMPLETE_B2_SPEC_COMPLIANCE_NEXT
+  T6: B1_COMPLETE_B2_SPEC_COMPLIANCE_PASS_CODE_QUALITY_NEXT
   T7: BLOCKED_BY_T6
   T8_T13: LATER_GATES
 acceptance_coverage_current:
   AC-R263-01: LOCAL_PASS_REVIEW_PENDING
   AC-R263-02: LOCAL_PASS_REVIEW_PENDING
   AC-R263-08: LOCAL_PASS_HOSTED_PENDING
-next_step: "QC B2 Spec Compliance for active bilingual docs and the v2.6.3 release record"
+next_step: "Developer and QC B2 Code Quality for unchanged source 221a6ba4633a5e6f46eeb86a350d262ad8504eb1 and B2 diff e6587d7dc729b68cc91797886e497c72e58b826ebd5771a0bd9758108b6130d4"
 ```
 
 ## Handoff
 - Outputs actual: ACTIVE s07; T0-T5a locally complete; focused and full suites GREEN; PRE_HOST candidate and exact v2.6.2 rollback evidence recorded; no generated runtime diff.
-- Known limitations: B2/B3 reviews, T7 hosted evidence, and every s08/public gate remain pending; local Node 26 is not Node 18/22 release evidence; unrelated R263-SG-001 remains external; B1 accepted missing ESLint/Semgrep as non-blocking.
+- Known limitations: B2 Code Quality plus B3 review, T7 hosted evidence, and every s08/public gate remain pending; local Node 26 is not Node 18/22 release evidence; unrelated R263-SG-001 remains external; B1 accepted missing ESLint/Semgrep as non-blocking.
 - Notes for testing: T1/T4 and T5a RED/GREEN evidence is preserved. Review must bind to release-delta SHA-256 `83fd98ba064121559fa7488ce663e5ea0dfb149ba05ea6a6c7d5d51c69cbae39`; the local tarball is PRE_HOST only.
 - Notes for deployment: none; tag, publication, latest movement, merge, and cleanup remain unauthorized.
