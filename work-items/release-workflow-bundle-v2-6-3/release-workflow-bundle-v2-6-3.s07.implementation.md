@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: review
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: "CHANGE-007"
@@ -980,10 +980,31 @@ authority_boundary: "T7 evidence does not approve Technical Verification, DoD, m
 next_human_action: "QC confirms T7 handoff completeness and opens s08 for reviewed source afefacae..., run 35515273824, and PRE_MERGE_ONLY tarball SHA-256 f496aed3...e8f."
 ```
 
+## T7 QC Handoff Approval And s08 Opening
+```yaml
+recorded_at: "2026-09-20T14:20:21Z"
+reviewer_role: qc
+decision_source: "User explicitly confirmed T7 handoff completeness and approved opening s08 Verify + DoD for PR #9 with the exact current head, reviewed release source, corroboration run, and PRE_MERGE_ONLY candidate digest."
+pull_request: 9
+current_pr_head: "23c5848fb4571ad21b763e4b01fd7e3f447bb024"
+reviewed_release_source_sha: "afefacae95639aa0fab0135038f6bb421e0cebb5"
+corroboration_run_id: 35515671125
+corroboration_run_conclusion: SUCCESS
+corroboration_jobs: "PASS - 10/10"
+pre_merge_candidate_sha256: "f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f"
+candidate_authority: PRE_MERGE_ONLY_NOT_PUBLISHABLE
+s07_finalization: REVIEWED
+s08_opening: APPROVED
+technical_verification: NOT_APPROVED
+dod: NOT_APPROVED
+authority_boundary: "This approval finalizes the s07 handoff and opens s08 evidence preparation only. Technical Verification, DoD, merge, main candidate binding, Release, publication, Business Acceptance, archive, and cleanup remain separate."
+next_task: "Prepare the branch Technical Verification packet in the canonical s08 note; do not run the protocol verify transition until QC explicitly approves Technical Verification."
+```
+
 ## Delivery Rule Evidence
 ```yaml
 behavior_change: YES
-tdd_status: T1_T4_AND_T5A_RED_GREEN_COMPLETE
+tdd_status: DONE
 tdd_test_refs:
   - "packages/workflow-bundle/test/release-surface.test.js"
   - "packages/workflow-bundle/test/release-rollback-smoke.test.js"
@@ -997,11 +1018,11 @@ worktree_status: USED
 worktree_refs:
   - ".claude/worktrees/release-workflow-bundle-v2-6-3"
 worktree_reason: "Full-track public release work spans multiple sessions and exact branch/main/public identities."
-review_status: B1_B2_B3_COMPLETE
+review_status: COMPLETED
 review_refs:
   - "s06 Review Plan B1/B2/B3; T5a and sequential T5 evidence are ready for ordered independent review."
-spec_compliance_status: B1_B2_B3_PASS
-code_quality_status: B1_B2_B3_PASS
+spec_compliance_status: PASS
+code_quality_status: PASS
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
 independence_refs:
