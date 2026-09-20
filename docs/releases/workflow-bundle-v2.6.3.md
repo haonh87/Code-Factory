@@ -44,10 +44,11 @@ Completed locally during release preparation:
 - source-mode checks confirm the candidate exposes `dispose-state` and `resolved_state_history`, while the rollback source does not.
 - generated Codex and Claude runtimes retain 42 managed skills each.
 
-Remote and human evidence is intentionally not inferred:
+Remote and human evidence is intentionally not inferred. At the initial candidate cut, B1/B2/B3 review, s08 Technical Verification, DoD, Release, and Business Acceptance remain pending. The current review state is:
 
 - GitHub-hosted Workflow Guardrails has not run for the v2.6.3 release branch.
-- B1/B2/B3 review, s08 Technical Verification, DoD, Release, and Business Acceptance remain pending.
+- B1 Spec Compliance and Code Quality passed in order for source `4e78c868c097b553e29116f23aea78a7528ec42a` with unchanged B1 diff SHA-256 `db70b5bad2d473d0a620c7d0d002b0e8fe009aeb3dc233cec3c380a56fc718a2`.
+- B2/B3 review, s08 Technical Verification, DoD, Release, and Business Acceptance remain pending.
 - The candidate tarball SHA-256 will be bound only after the hosted build-once run; the same artifact must pass Node 18 and Node 22 without per-environment rebuild.
 
 ## Rollback
@@ -75,7 +76,7 @@ Before replacing an installation, capture mode, scope, project roots, and `wfc s
 
 ## Release Gates
 
-- B1 metadata and release contracts: pending ordered Spec Compliance then Code Quality review.
+- B1 metadata and release contracts: Spec Compliance PASS, then Code Quality PASS; missing local ESLint and Semgrep were accepted as non-blocking scan gaps.
 - B2 active documentation and this release record: pending ordered Spec Compliance then Code Quality review.
 - B3 integrated branch candidate: pending ordered Spec Compliance then Code Quality review.
 - s08 Technical Verification and DoD: pending exact hosted candidate evidence.
