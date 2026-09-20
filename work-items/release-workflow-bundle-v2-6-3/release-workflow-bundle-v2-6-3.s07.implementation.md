@@ -116,7 +116,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> T0-T5a are locally complete. B1 and B2 reviews passed in order, and F-R263-B2-001 is closed. QC approved B3 Spec Compliance for the exact integrated release delta and refreshed PRE_HOST candidate; B3 Code Quality is the next separate gate. s08, merge, main binding, release, and publication remain closed.
+> T0-T6 are complete. B1, B2, and B3 passed Spec Compliance then Code Quality in order; F-R263-B2-001 is closed and the two unavailable-tool scan gaps remain explicitly non-blocking. T7 branch freeze and hosted PR evidence are next. s08, merge, main binding, release, and publication remain closed.
 
 ## Step Contract
 ```yaml
@@ -190,7 +190,7 @@ config_changes: []
 review_checkpoints:
   - "B1 metadata/contracts: QC Spec Compliance PASS, then Developer+QC Code Quality PASS for unchanged diff db70b5bad2d473d0a620c7d0d002b0e8fe009aeb3dc233cec3c380a56fc718a2; ESLint and Semgrep gaps accepted as non-blocking."
   - "B2 active docs/release record: refreshed QC Spec Compliance PASS, then Developer+QC Code Quality PASS for corrected diff 1c172e94098443cb8a69930a23ec61f12cc00e8cb4d4f5f94923d4a46a1b9c23; F-R263-B2-001 closed."
-  - "B3 integrated branch candidate: QC Spec Compliance PASS for the exact release delta and refreshed PRE_HOST candidate; Developer+QC Code Quality remains pending."
+  - "B3 integrated branch candidate: QC Spec Compliance PASS followed by Developer+QC Code Quality PASS for the unchanged exact release delta and refreshed PRE_HOST candidate."
 outputs_actual:
   - "Branch codex/release-workflow-bundle-v2-6-3 at d1d6a8208f8bc5dc73bc6e70f27f87e6c5957e34 is 10 governance commits ahead of origin/main 3204749e9fac592e9f38e327dbd85a87b84b2325."
   - "Merge base equals origin/main 3204749e; pre-implementation committed delta contains only CHANGE-007 and this work item's governance artifacts."
@@ -874,6 +874,43 @@ authority_boundary: "This preparation does not approve B3 Code Quality or any la
 next_human_action: "Developer and QC approve or reject B3 Code Quality, explicitly retaining the two non-blocking scan gaps if accepted."
 ```
 
+## T6 B3 Code Quality Review
+```yaml
+recorded_at: "2026-09-20T13:07:14Z"
+batch: "B3 - integrated branch candidate"
+review_lane: CODE_QUALITY
+review_order_position: SECOND_AFTER_SPEC_COMPLIANCE_PASS
+reviewer_roles: [developer, qc]
+decision_source: "User explicitly approved B3 Code Quality PASS with roles Developer and QC, named the exact review source, integrated release diff, and PRE_HOST candidate, and accepted the two unavailable-tool scan gaps as non-blocking."
+review_source_commit: "99f658262ad96aca96eed5a2e647185b0516dc81"
+candidate_source_commit: "ed5a9d25cedb3e11d0fdce3b44ca19c1ddcc41c8"
+integrated_release_diff_sha256: "c838bef1a088fa5535ce9bcaef5e60ba5d160e18dd19d20fd86727ea2bb75ec3"
+pre_host_candidate_sha256: "acb69c96e33586e5c592fd2f3cae7697977e7f6943f1a11701e641512575b2b0"
+quality_checks:
+  changed_javascript_syntax: "PASS - 6/6 files"
+  full_unit: "PASS - 45 workflow-bundle test files"
+  exact_candidate_smoke: "PASS - Codex/Claude x global/project 4/4"
+  exact_rollback_smoke: "PASS - v2.6.3 to immutable v2.6.2 x 4/4"
+  dependency_lock_changes: NONE
+  secret_pattern_hits: 0
+  generated_runtime_diff: NONE
+  runtime_behavior_delta: "Only the public-flow version label changes; no algorithm, network, persistence, dependency, or hot-path change."
+accepted_scan_gaps:
+  - id: R263-SG-003
+    tool: ESLint
+    reason: "No repository lint script or ESLint configuration exists."
+    disposition: ACCEPTED_NON_BLOCKING
+  - id: R263-SG-004
+    tool: Semgrep
+    reason: "Semgrep is unavailable in the current environment."
+    disposition: ACCEPTED_NON_BLOCKING
+verdict: PASS
+findings: []
+t6_result: COMPLETE
+authority_boundary: "This approval closes only T6/B3 Code Quality. It does not approve T7 hosted evidence, s08, DoD, merge, main binding, Release, publication, Business Acceptance, archive, or cleanup."
+next_task: "Freeze the reviewed branch, push/open or update the PR, and collect exact hosted Workflow Guardrails evidence under T7."
+```
+
 ## Delivery Rule Evidence
 ```yaml
 behavior_change: YES
@@ -891,11 +928,11 @@ worktree_status: USED
 worktree_refs:
   - ".claude/worktrees/release-workflow-bundle-v2-6-3"
 worktree_reason: "Full-track public release work spans multiple sessions and exact branch/main/public identities."
-review_status: B1_B2_COMPLETE_B3_SPEC_PASS_CODE_QUALITY_PENDING
+review_status: B1_B2_B3_COMPLETE
 review_refs:
   - "s06 Review Plan B1/B2/B3; T5a and sequential T5 evidence are ready for ordered independent review."
 spec_compliance_status: B1_B2_B3_PASS
-code_quality_status: B1_B2_PASS_B3_PENDING
+code_quality_status: B1_B2_B3_PASS
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
 independence_refs:
@@ -942,18 +979,18 @@ task_status:
   T4: COMPLETE_GREEN_CONFIRMED
   T5: COMPLETE_LOCAL_PASS
   T5a: COMPLETE_GREEN_CONFIRMED
-  T6: B1_B2_COMPLETE_B3_SPEC_PASS_CODE_QUALITY_PENDING
-  T7: BLOCKED_BY_T6
+  T6: COMPLETE_REVIEW_PASS
+  T7: READY_BRANCH_FREEZE_AND_HOSTED_EVIDENCE
   T8_T13: LATER_GATES
 acceptance_coverage_current:
   AC-R263-01: LOCAL_PASS_REVIEW_PENDING
   AC-R263-02: LOCAL_PASS_REVIEW_PENDING
   AC-R263-08: LOCAL_PASS_HOSTED_PENDING
-next_step: "Developer and QC B3 Code Quality for the unchanged release delta c838bef1... and PRE_HOST candidate acb69c96..."
+next_step: "T7 freeze final reviewed branch SHA, push/open or update PR, and collect hosted Workflow Guardrails evidence"
 ```
 
 ## Handoff
-- Outputs actual: ACTIVE s07; T0-T5a locally complete; B1/B2 passed; refreshed PRE_HOST candidate and exact v2.6.2 rollback evidence pass; no generated runtime diff.
-- Known limitations: B3 review, T7 hosted evidence, and every s08/public gate remain pending; the pre-B2 PRE_HOST tarball is historical only; local Node 26 is not Node 18/22 release evidence; unrelated R263-SG-001 remains external; B1 accepted missing ESLint/Semgrep as non-blocking.
-- Notes for testing: T1/T4 and T5a RED/GREEN evidence is preserved. B3 must bind to release-delta SHA-256 `c838bef1a088fa5535ce9bcaef5e60ba5d160e18dd19d20fd86727ea2bb75ec3` and refreshed PRE_HOST candidate SHA-256 `acb69c96e33586e5c592fd2f3cae7697977e7f6943f1a11701e641512575b2b0`; the tarball remains PRE_HOST only.
+- Outputs actual: ACTIVE s07; T0-T6 complete; B1/B2/B3 passed in required order; refreshed PRE_HOST candidate and exact v2.6.2 rollback evidence pass; no generated runtime diff.
+- Known limitations: T7 hosted evidence and every s08/public gate remain pending; the pre-B2 PRE_HOST tarball is historical only; local Node 26 is not Node 18/22 release evidence; unrelated R263-SG-001 remains external; missing ESLint configuration and Semgrep were explicitly accepted as non-blocking by Developer and QC.
+- Notes for testing: T1/T4 and T5a RED/GREEN evidence is preserved. T6 binds release-delta SHA-256 `c838bef1a088fa5535ce9bcaef5e60ba5d160e18dd19d20fd86727ea2bb75ec3` and refreshed PRE_HOST candidate SHA-256 `acb69c96e33586e5c592fd2f3cae7697977e7f6943f1a11701e641512575b2b0`; T7 must freeze the final branch SHA and record PR evidence as PRE_MERGE_ONLY.
 - Notes for deployment: none; tag, publication, latest movement, merge, and cleanup remain unauthorized.
