@@ -116,7 +116,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> T0-T5a are locally complete. B1 review is complete. B2 Spec Compliance and Code Quality passed in order for corrected diff `1c172e9...`, and F-R263-B2-001 is closed. Because the B2 correction changes packaged README bytes, the earlier PRE_HOST tarball is historical and a refreshed local candidate is required before B3 Spec Compliance. s08, merge, main binding, release, and publication remain closed.
+> T0-T5a are locally complete. B1 and B2 reviews passed in order, and F-R263-B2-001 is closed. The post-B2 PRE_HOST candidate and integrated release evidence are refreshed and ready for QC B3 Spec Compliance. s08, merge, main binding, release, and publication remain closed.
 
 ## Step Contract
 ```yaml
@@ -190,7 +190,7 @@ config_changes: []
 review_checkpoints:
   - "B1 metadata/contracts: QC Spec Compliance PASS, then Developer+QC Code Quality PASS for unchanged diff db70b5bad2d473d0a620c7d0d002b0e8fe009aeb3dc233cec3c380a56fc718a2; ESLint and Semgrep gaps accepted as non-blocking."
   - "B2 active docs/release record: refreshed QC Spec Compliance PASS, then Developer+QC Code Quality PASS for corrected diff 1c172e94098443cb8a69930a23ec61f12cc00e8cb4d4f5f94923d4a46a1b9c23; F-R263-B2-001 closed."
-  - "B3 integrated branch candidate: B1/B2 passed; refreshed PRE_HOST candidate and integrated evidence pending before QC Spec Compliance."
+  - "B3 integrated branch candidate: refreshed PRE_HOST candidate and integrated evidence are prepared; QC Spec Compliance remains pending."
 outputs_actual:
   - "Branch codex/release-workflow-bundle-v2-6-3 at d1d6a8208f8bc5dc73bc6e70f27f87e6c5957e34 is 10 governance commits ahead of origin/main 3204749e9fac592e9f38e327dbd85a87b84b2325."
   - "Merge base equals origin/main 3204749e; pre-implementation committed delta contains only CHANGE-007 and this work item's governance artifacts."
@@ -203,11 +203,12 @@ outputs_actual:
   - "T3 replaced the stub and updated only the eleven approved active documentation surfaces; v2.6.3 remains explicitly UNPUBLISHED."
   - "T4 release-surface and rollback source-mode contracts both pass; git diff --check and the approved-path boundary check pass."
   - "T5a focused tests and the full 45-file unit suite pass; all local workflow validators except the recorded unrelated global protocol scan gap pass."
-  - "Local PRE_HOST artifact workflow-bundle-2.6.3.tgz has SHA-256 bbf0629513c317d238e0a7410086f9bd0c3b92810e9b96c4393ffdac06a7be30 and passes exact candidate plus v2.6.2 rollback smoke in all four Codex/Claude global/project scenarios."
+  - "The pre-B2 PRE_HOST artifact SHA-256 bbf0629513c317d238e0a7410086f9bd0c3b92810e9b96c4393ffdac06a7be30 is historical only after the packaged README.vi correction."
+  - "The refreshed post-B2 PRE_HOST artifact workflow-bundle-2.6.3.tgz has SHA-256 acb69c96e33586e5c592fd2f3cae7697977e7f6943f1a11701e641512575b2b0 and passes exact candidate plus v2.6.2 rollback smoke in all four Codex/Claude global/project scenarios."
 known_limitations:
   - "T0 corroborates the rollback digest from immutable repository/hosted evidence; it does not claim a fresh public download."
   - "Local Node is v26.5.0; required Node 18/22 proof remains hosted evidence."
-  - "T6-T7 and all independent review or hosted verdicts remain pending."
+  - "B3 Spec Compliance, B3 Code Quality, T7, and all s08 or hosted verdicts remain pending."
   - "The bump utility's automatic repository-root discovery selects the outer manifest from this nested in-repo worktree; release execution must keep using the explicit --repo-root . form."
   - "F-R263-T5-001 is implementation-resolved by exact focused/full GREEN evidence but remains subject to T6 review."
   - "Global protocol validation also reports four stale gate-state entries in unrelated code-factory-holistic-audit-remediation; this baseline issue is recorded as a scan gap and is not included in T5a."
@@ -695,6 +696,71 @@ authority_boundary: "This approval closes only B2 Code Quality and F-R263-B2-001
 next_task: "Build one refreshed local PRE_HOST candidate from the reviewed B1/B2 source, rerun exact candidate and rollback smoke, then prepare B3 Spec Compliance."
 ```
 
+## T6 B3 Integrated Candidate Preparation
+```yaml
+captured_at: "2026-09-20T13:00:18Z"
+batch: "B3 - integrated branch candidate"
+preparation_status: READY_FOR_SPEC_COMPLIANCE
+candidate_source_commit: "ed5a9d25cedb3e11d0fdce3b44ca19c1ddcc41c8"
+reviewed_inputs:
+  b1_diff_sha256: "db70b5bad2d473d0a620c7d0d002b0e8fe009aeb3dc233cec3c380a56fc718a2"
+  b2_diff_sha256: "1c172e94098443cb8a69930a23ec61f12cc00e8cb4d4f5f94923d4a46a1b9c23"
+  b1_review: PASS
+  b2_review: PASS
+  open_review_findings: []
+historical_pre_b2_candidate:
+  authority: HISTORICAL_PRE_B2_ONLY
+  artifact: "/private/tmp/cf-v263-prehost.tvFbDw/workflow-bundle-2.6.3.tgz"
+  sha256: "bbf0629513c317d238e0a7410086f9bd0c3b92810e9b96c4393ffdac06a7be30"
+  exclusion_reason: "It predates the reviewed correction to packaged packages/workflow-bundle/README.vi.md and is not eligible for B3 or later binding."
+refreshed_pre_host_candidate:
+  authority: PRE_HOST_ONLY
+  artifact: "/private/tmp/cf-v263-b3-prehost.xQ3VLX/workflow-bundle-2.6.3.tgz"
+  package_identity: "workflow-bundle@2.6.3"
+  tar_entries: 545
+  sha256: "acb69c96e33586e5c592fd2f3cae7697977e7f6943f1a11701e641512575b2b0"
+  exact_candidate_smoke: "PASS - wfc 2.6.3 and Codex/Claude x global/project 4/4"
+exact_rollback_rehearsal:
+  rollback_artifact: "/private/tmp/cf-v262-release.4X1VNo/workflow-bundle-2.6.2.tgz"
+  rollback_version: "2.6.2"
+  rollback_sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+  result: "PASS - candidate-to-rollback transition 4/4; unmanaged markers preserved"
+integrated_release_delta:
+  baseline: "origin/main@3204749e9fac592e9f38e327dbd85a87b84b2325"
+  scope: "git diff --binary origin/main excluding work-items/** and changes/**"
+  changed_files: 21
+  additions: 305
+  deletions: 104
+  sha256: "c838bef1a088fa5535ce9bcaef5e60ba5d160e18dd19d20fd86727ea2bb75ec3"
+sequential_verification:
+  full_unit: "PASS - 45 workflow-bundle test files"
+  runtime_sync: "PASS - bundle_version=2.6.3, modes=claude/codex, 84 mode-skill copies"
+  fixtures: "PASS - 10 governance fixture cases"
+  workflow_standard: "PASS - 267 names and 263 governance notes"
+  workflow_sdd: "PASS - 52 workflow notes"
+  workflow_change: "PASS - 58 workflow notes"
+  workflow_execution: "PASS - 263 workflow notes"
+  workflow_planning: "PASS - 263 workflow notes"
+  authoring_smoke: "PASS - 13/13 cases"
+  pack_audit: "PASS - 42 canonical skills and runtime/cross-reference parity"
+  bundle_smoke: PASS
+  release_surface: PASS
+  rollback_source_contract: PASS
+  git_diff_check: PASS
+  changed_text_utf8: "PASS - 37 changed text files"
+  retained_generated_runtime_diff: NONE
+scan_gaps:
+  - id: R263-SG-001
+    status: OPEN_EXTERNAL_NON_BLOCKING_FOR_B3
+    evidence: "Global protocol validation reports only four stale spec/dor/approach/task_plan entries in unrelated code-factory-holistic-audit-remediation; all validators for this release work item pass and its status is ACTIVE with no blocker."
+  - id: R263-SG-002
+    status: HOSTED_EVIDENCE_PENDING
+    evidence: "Local verification ran on Node v26.5.0; Node 18/22 and authoritative hosted artifact identity remain T7/s08 obligations."
+result: PASS_READY_FOR_B3_SPEC_COMPLIANCE
+authority_boundary: "This preparation is evidence only. It does not approve B3 Spec Compliance, B3 Code Quality, s08, DoD, merge, main binding, Release, publication, Business Acceptance, archive, or cleanup."
+next_human_action: "QC approves or rejects B3 Spec Compliance for the named source, integrated release delta, and refreshed PRE_HOST candidate."
+```
+
 ## Delivery Rule Evidence
 ```yaml
 behavior_change: YES
@@ -712,7 +778,7 @@ worktree_status: USED
 worktree_refs:
   - ".claude/worktrees/release-workflow-bundle-v2-6-3"
 worktree_reason: "Full-track public release work spans multiple sessions and exact branch/main/public identities."
-review_status: B1_B2_COMPLETE_B3_PREPARATION
+review_status: B1_B2_COMPLETE_B3_SPEC_READY
 review_refs:
   - "s06 Review Plan B1/B2/B3; T5a and sequential T5 evidence are ready for ordered independent review."
 spec_compliance_status: B1_B2_PASS_B3_PENDING
@@ -763,18 +829,18 @@ task_status:
   T4: COMPLETE_GREEN_CONFIRMED
   T5: COMPLETE_LOCAL_PASS
   T5a: COMPLETE_GREEN_CONFIRMED
-  T6: B1_B2_COMPLETE_B3_PREPARATION
+  T6: B1_B2_COMPLETE_B3_SPEC_READY
   T7: BLOCKED_BY_T6
   T8_T13: LATER_GATES
 acceptance_coverage_current:
   AC-R263-01: LOCAL_PASS_REVIEW_PENDING
   AC-R263-02: LOCAL_PASS_REVIEW_PENDING
   AC-R263-08: LOCAL_PASS_HOSTED_PENDING
-next_step: "Refresh local PRE_HOST candidate and integrated release evidence, then QC B3 Spec Compliance"
+next_step: "QC B3 Spec Compliance for source ed5a9d25, release delta c838bef1..., and PRE_HOST candidate acb69c96..."
 ```
 
 ## Handoff
-- Outputs actual: ACTIVE s07; T0-T5a locally complete; focused and full suites GREEN; PRE_HOST candidate and exact v2.6.2 rollback evidence recorded; no generated runtime diff.
-- Known limitations: B3 review, T7 hosted evidence, and every s08/public gate remain pending; the prior PRE_HOST tarball predates a packaged README correction and is historical only; local Node 26 is not Node 18/22 release evidence; unrelated R263-SG-001 remains external; B1 accepted missing ESLint/Semgrep as non-blocking.
-- Notes for testing: T1/T4 and T5a RED/GREEN evidence is preserved. Review must bind to release-delta SHA-256 `83fd98ba064121559fa7488ce663e5ea0dfb149ba05ea6a6c7d5d51c69cbae39`; the local tarball is PRE_HOST only.
+- Outputs actual: ACTIVE s07; T0-T5a locally complete; B1/B2 passed; refreshed PRE_HOST candidate and exact v2.6.2 rollback evidence pass; no generated runtime diff.
+- Known limitations: B3 review, T7 hosted evidence, and every s08/public gate remain pending; the pre-B2 PRE_HOST tarball is historical only; local Node 26 is not Node 18/22 release evidence; unrelated R263-SG-001 remains external; B1 accepted missing ESLint/Semgrep as non-blocking.
+- Notes for testing: T1/T4 and T5a RED/GREEN evidence is preserved. B3 must bind to release-delta SHA-256 `c838bef1a088fa5535ce9bcaef5e60ba5d160e18dd19d20fd86727ea2bb75ec3` and refreshed PRE_HOST candidate SHA-256 `acb69c96e33586e5c592fd2f3cae7697977e7f6943f1a11701e641512575b2b0`; the tarball remains PRE_HOST only.
 - Notes for deployment: none; tag, publication, latest movement, merge, and cleanup remain unauthorized.
