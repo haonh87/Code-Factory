@@ -102,8 +102,8 @@ gate_reviews:
   approach_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-09-20T14:40:54Z"
   release_reviewed_by: []
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
@@ -134,15 +134,16 @@ tags:
 > for CLI and all four Codex/Claude global/project modes. The overall work item remains PARTIAL because
 > this PR artifact is PRE_MERGE_ONLY and AC-R263-09/11/12/13 belong to later main, Release, publication,
 > and Business Acceptance tasks. QC approved Technical Verification for the exact branch identity;
-> DoD remains a separate human-controlled gate.
+> QC then approved technical DoD in a separate decision. Merge, Release, publication, and Business
+> Acceptance remain independent, while T9-T13 stay mandatory.
 
 ## Step Contract
 ```yaml
 step_goal: "Verify the reviewed v2.6.3 branch and PRE_MERGE_ONLY PR artifact against the locked release criteria, surface every residual gate, and prepare independent QC decisions without inferring DoD or Release."
 input_summary:
   - "T0-T7 implementation, B1/B2/B3 ordered review, and QC-approved s08 handoff."
-  - "PR #9 current head 09eed7d2573ebf6fad9400de6748862c1035d947; reviewed release source afefacae95639aa0fab0135038f6bb421e0cebb5."
-  - "Workflow Guardrails corroboration run 35516336889 and downloaded PRE_MERGE_ONLY tarball SHA-256 f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f."
+  - "Technical Verification source 09eed7d2573ebf6fad9400de6748862c1035d947; reviewed release source afefacae95639aa0fab0135038f6bb421e0cebb5."
+  - "Current PR head ab56593be9ff31f77e9b1a0cbcde91a44379f176; corroboration run 35516877406 passes 10/10 with the same PRE_MERGE_ONLY tarball SHA-256 f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f."
 output_summary:
   - "Risk-ranked branch verification and AC-R263-01..13 coverage."
   - "Exact candidate and immutable v2.6.2 rollback compatibility evidence."
@@ -255,7 +256,7 @@ test_evidence:
     - "Candidate SHA-256 f496aed3... and immutable rollback SHA-256 af49a958... pass exact transition rehearsal."
     - "Read-only public-state probe confirms no v2.6.3 collision and latest=2.6.2."
 commands_run:
-  - "gh run watch/view/download for runs 35515273824, 35515671125, and 35516336889"
+  - "gh run watch/view/download for runs 35515273824, 35515671125, 35516336889, and 35516877406"
   - "GitHub Actions artifact/check-run annotation API queries"
   - "release-candidate-artifact-smoke.test.js in exact-artifact mode"
   - "release-rollback-smoke.test.js in exact-artifact mode"
@@ -272,8 +273,8 @@ gaps:
 residual_risks:
   - "PR artifact is non-publishable and must never substitute for the post-merge main candidate."
   - "ubuntu-latest migration notice is non-blocking now but runner behavior changes after 2026-10-19."
-recommendation: TECHNICAL_VERIFICATION_APPROVED_DOD_PENDING
-notes_for_review: "QC bound its Technical Verification approval to PR #9 source 09eed7d..., run 35516336889, and PRE_MERGE_ONLY tarball f496aed3.... DoD remains a separate decision; T9/T10 must rebind and refresh after merge."
+recommendation: DOD_HUMAN_APPROVED_T9_T13_PENDING
+notes_for_review: "QC approved Technical Verification for source 09eed7d.../run 35516336889 and separately approved DoD after current head ab56593.../run 35516877406 corroborated 10/10 PASS with the same PRE_MERGE_ONLY tarball f496aed3.... T9/T10 must rebind and refresh after a separately authorized merge."
 ```
 
 ## Technical Verification Decision
@@ -303,8 +304,11 @@ retained_scan_gaps:
   - "R263-SG-003: ESLint is not configured."
   - "R263-SG-004: Semgrep is unavailable."
 verdict: PASS_FOR_BRANCH_TECHNICAL_VERIFICATION
-dod_status: NOT_APPROVED
-authority_boundary: "This decision neither approves DoD nor authorizes merge, main-candidate binding, Release, publication, Business Acceptance, archive, or cleanup."
+corroborating_source_sha: "ab56593be9ff31f77e9b1a0cbcde91a44379f176"
+corroborating_run_id: 35516877406
+corroborating_result: "10/10 jobs PASS; candidate SHA-256 unchanged"
+dod_status: HUMAN_APPROVED_PENDING_SHARED_HOST_RECEIPT
+authority_boundary: "Technical Verification did not itself approve DoD; QC approved DoD separately. Neither decision authorizes merge, main-candidate binding, Release, publication, Business Acceptance, archive, or cleanup."
 ```
 
 ## Governance Checks
@@ -319,7 +323,7 @@ checks:
   - "PASS - release diff SHA-256 remains c838bef1... and no production edit followed review."
 blocking_items: []
 owner: "qc"
-next_action: "Prepare the separate QC DoD decision while preserving T9-T13 as mandatory downstream obligations."
+next_action: "Request a separate merge authorization; preserve T9-T13 and all remaining terminal gates."
 ```
 
 ## Regression & Compatibility Summary
@@ -378,15 +382,16 @@ finish_target: "codex/release-workflow-bundle-v2-6-3"
 workspace_kind: BOTH
 verify_inputs:
   - "QC-approved Technical Verification for source 09eed7d..., run 35516336889, and PRE_MERGE_ONLY candidate f496aed3...."
+  - "QC-approved DoD corroboration at current head ab56593..., run 35516877406, with 10/10 jobs PASS and the same candidate digest."
   - "Immutable v2.6.2 rollback SHA-256 af49a958...."
 finish_gate_checks:
   verify_complete: PASS
-  dod_complete: PENDING
+  dod_complete: PASS
   findings_closed: PASS
   exceptions_resolved: PASS
 allowed_actions:
-  - "Record the approved Technical Verification transition."
-  - "Prepare the separate DoD evidence packet."
+  - "Record the separately approved QC DoD decision."
+  - "Prepare the separate merge decision without publishing or tagging."
 blocked_actions:
   - "Merge PR #9."
   - "Remove the branch or worktree."
@@ -396,23 +401,34 @@ blocked_actions:
   - "Archive or clean up the work item."
 cleanup_sequence: []
 merge_conditions:
-  - "QC approves DoD against this Technical Verification."
-  - "The trusted DoD receipt is sealed against the finalized s08 host."
-  - "A separate merge action is explicitly authorized and PR checks remain green."
+  - "A separate merge action is explicitly authorized."
+  - "PR #9 remains mergeable and every required check is green at merge time."
+  - "The merge does not create a tag, GitHub Release, npm publication, or latest movement."
 residual_risks:
   - "The verified candidate is PRE_MERGE_ONLY and is not publishable."
   - "ESLint and Semgrep remain explicitly accepted scan gaps."
   - "T9-T13 remain mandatory after merge."
 final_recommendation: HOLD_OPEN
-notes_for_closeout: "Technical Verification is approved, but DoD and branch finalization remain separate. Keep the branch and worktree open."
+notes_for_closeout: "Technical Verification and DoD are human-approved, but merge still needs separate authorization and T9-T13 remain open. Keep the branch and worktree open."
 ```
 
 ## Definition of Done
 ```yaml
 work_item_slug: "release-workflow-bundle-v2-6-3"
 proposed_status: DONE
-status: PARTIAL
-human_gate_status: PENDING
+status: DONE
+human_gate_status: APPROVED
+human_decision: DOD_APPROVED_FOR_BRANCH_TECHNICAL_SCOPE
+reviewed_by: ["qc"]
+reviewed_at: "2026-09-20T14:40:54Z"
+approval_source: "Explicit user QC DoD approval after the separately approved Technical Verification."
+technical_verification_source_sha: "09eed7d2573ebf6fad9400de6748862c1035d947"
+technical_verification_run_id: 35516336889
+corroborating_source_sha: "ab56593be9ff31f77e9b1a0cbcde91a44379f176"
+corroborating_run_id: 35516877406
+candidate_authority: PRE_MERGE_ONLY
+candidate_sha256: "f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f"
+trusted_receipt_status: PENDING_FINAL_SHARED_S08_HOST
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -420,8 +436,7 @@ checks:
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps:
-  - "QC has not yet issued the separate DoD decision."
+gaps: []
 residual_risks:
   - "PR artifact is PRE_MERGE_ONLY; authoritative main re-verification is mandatory."
   - "ESLint is not configured and Semgrep is unavailable; Developer and QC accepted both scan gaps as non-blocking."
@@ -431,7 +446,7 @@ follow_up_items:
   - "T11: complete GitHub/npm authority preflight and obtain the independent DevOps/QC Release decision."
   - "T12: publish in the locked order and prove cross-channel identity equality."
   - "T13: obtain PO Business Acceptance, archive the release record, and clean up only after terminal reconciliation."
-next_action: "QC reviews and explicitly approves or rejects DoD for the exact Technical Verification identity."
+next_action: "Obtain separate merge authorization, execute T9/T10 exact-main binding, then complete T11-T13 and seal terminal receipts against the final shared s08 host."
 ```
 
 ## Traceability
@@ -450,12 +465,12 @@ edge_case_controls:
   EC-R263-05: "Digest mismatch is assertion-blocking in exact-artifact tests."
   EC-R263-06: "Functional and timing evidence are separate; measured rollback total is 2 seconds."
   EC-R263-07: "Formal authority preflight is pending T11 and failure leaves public state unchanged."
-next_step: "QC DoD decision for the approved branch Technical Verification; merge and T9-T13 remain separate."
+next_step: "Separate merge authorization, followed by T9/T10 authoritative-main binding; T11-T13 remain mandatory."
 ```
 
 ## Handoff
-- Overall status: VERIFIED at the protocol level after QC Technical Verification; DoD remains pending for the full release work item.
+- Overall status: VERIFIED at the protocol level; QC separately approved Technical Verification and technical DoD for the PRE_MERGE_ONLY branch candidate.
 - Residual risks: PRE_MERGE_ONLY authority, two accepted scanner gaps, future Ubuntu runner migration, and mandatory T9-T13 re-verification/release work.
-- Recommendation: QC may approve technical DoD; preserve T9-T13 as mandatory downstream obligations.
+- Recommendation: Keep PR #9 and its worktree open pending separate merge authorization; preserve T9-T13 as mandatory downstream obligations.
 - Release recommendation khi có: HOLD; Release is not yet eligible and no public mutation is authorized.
-- Next action: QC independently approves or rejects DoD for PR #9 source 09eed7d..., run 35516336889, candidate f496aed3....
+- Next action: Human explicitly authorizes or rejects merge of PR #9. Merge must not publish, tag, or move npm latest.
