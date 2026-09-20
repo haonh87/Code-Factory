@@ -116,7 +116,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> T0-T6 are complete. B1, B2, and B3 passed Spec Compliance then Code Quality in order; F-R263-B2-001 is closed and the two unavailable-tool scan gaps remain explicitly non-blocking. T7 branch freeze and hosted PR evidence are next. s08, merge, main binding, release, and publication remain closed.
+> T0-T7 are complete for reviewed release source `afefacae...`. B1, B2, and B3 passed in order; PR #9 is Ready and CLEAN; Workflow Guardrails run `35515273824` passed 10/10 jobs on the exact hosted artifact. QC handoff to s08 remains separate. Merge, main binding, release, and publication remain closed.
 
 ## Step Contract
 ```yaml
@@ -911,6 +911,75 @@ authority_boundary: "This approval closes only T6/B3 Code Quality. It does not a
 next_task: "Freeze the reviewed branch, push/open or update the PR, and collect exact hosted Workflow Guardrails evidence under T7."
 ```
 
+## T7 Frozen Branch And Hosted PR Evidence
+```yaml
+captured_at: "2026-09-20T14:08:47Z"
+task: T7
+status: COMPLETE_HOSTED_PASS_PENDING_QC_S08_HANDOFF
+reviewed_release_source_sha: "afefacae95639aa0fab0135038f6bb421e0cebb5"
+reviewed_release_diff_sha256: "c838bef1a088fa5535ce9bcaef5e60ba5d160e18dd19d20fd86727ea2bb75ec3"
+source_worktree_status: CLEAN
+remote_branch: "origin/codex/release-workflow-bundle-v2-6-3"
+remote_head_match: PASS
+pull_request:
+  number: 9
+  url: "https://github.com/haonh87/Code-Factory/pull/9"
+  state: OPEN
+  draft: false
+  base_sha: "3204749e9fac592e9f38e327dbd85a87b84b2325"
+  head_sha: "afefacae95639aa0fab0135038f6bb421e0cebb5"
+  mergeable: MERGEABLE
+  merge_state: CLEAN
+hosted_run:
+  id: 35515273824
+  url: "https://github.com/haonh87/Code-Factory/actions/runs/35515273824"
+  event: pull_request
+  source_sha: "afefacae95639aa0fab0135038f6bb421e0cebb5"
+  started_at: "2026-09-20T14:02:35Z"
+  completed_at: "2026-09-20T14:05:30Z"
+  conclusion: SUCCESS
+  required_jobs: "PASS - 10/10"
+  node_18_consumer: PASS
+  node_22_consumer: PASS
+  build_once_and_equal_downstream_artifact: PASS
+annotations:
+  total: 10
+  notice: 10
+  warning: 0
+  failure: 0
+  node_deprecation: 0
+  unique_notice: "ubuntu-latest will migrate to Ubuntu 26 beginning 2026-10-19"
+  disposition: "NON_BLOCKING_RUNNER_NOTICE; no unresolved warning or failure annotation"
+hosted_artifact:
+  authority: PRE_MERGE_ONLY
+  github_artifact_id: 10606512657
+  github_artifact_name: workflow-bundle-candidate
+  github_artifact_size_bytes: 957956
+  github_archive_sha256: "cedd497cc6a5657d49ecba45839ab53130474cb67310ea7dbb566f2fcc04fe50"
+  expires_at: "2026-09-27T14:04:36Z"
+  tarball: workflow-bundle-2.6.3.tgz
+  tarball_sha256: "f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f"
+  checksum_file_match: PASS
+  package_identity: "workflow-bundle@2.6.3"
+  tar_entries: 545
+  downloaded_path: "/private/tmp/cf-v263-t7-pr.jEml6j/download/workflow-bundle-candidate/workflow-bundle-2.6.3.tgz"
+candidate_lineage:
+  local_pre_host_sha256: "acb69c96e33586e5c592fd2f3cae7697977e7f6943f1a11701e641512575b2b0"
+  local_pre_host_disposition: HISTORICAL_PRE_HOST_ONLY
+  hosted_pr_sha256: "f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f"
+  hosted_pr_disposition: PRE_MERGE_ONLY_NOT_PUBLISHABLE
+  authoritative_release_candidate: "PENDING post-merge main run under T9"
+evidence_carrier_rule: "This s07 update is governance-only and changes neither the 21-file release delta nor package inputs. The named run remains bound to the reviewed release source; any later source/package edit reopens T6/T7, while later evidence-only commits require hosted corroboration before merge."
+open_findings: []
+retained_gaps:
+  - R263-SG-001
+  - R263-SG-003
+  - R263-SG-004
+result: PASS_READY_FOR_QC_S08_HANDOFF
+authority_boundary: "T7 evidence does not approve Technical Verification, DoD, merge, main candidate binding, Release, publication, Business Acceptance, archive, or cleanup."
+next_human_action: "QC confirms T7 handoff completeness and opens s08 for reviewed source afefacae..., run 35515273824, and PRE_MERGE_ONLY tarball SHA-256 f496aed3...e8f."
+```
+
 ## Delivery Rule Evidence
 ```yaml
 behavior_change: YES
@@ -980,17 +1049,17 @@ task_status:
   T5: COMPLETE_LOCAL_PASS
   T5a: COMPLETE_GREEN_CONFIRMED
   T6: COMPLETE_REVIEW_PASS
-  T7: READY_BRANCH_FREEZE_AND_HOSTED_EVIDENCE
+  T7: COMPLETE_HOSTED_PASS_PENDING_QC_S08_HANDOFF
   T8_T13: LATER_GATES
 acceptance_coverage_current:
   AC-R263-01: LOCAL_PASS_REVIEW_PENDING
   AC-R263-02: LOCAL_PASS_REVIEW_PENDING
   AC-R263-08: LOCAL_PASS_HOSTED_PENDING
-next_step: "T7 freeze final reviewed branch SHA, push/open or update PR, and collect hosted Workflow Guardrails evidence"
+next_step: "QC confirms T7 handoff completeness and opens s08 for source afefacae..., run 35515273824, PRE_MERGE_ONLY candidate f496aed3..."
 ```
 
 ## Handoff
-- Outputs actual: ACTIVE s07; T0-T6 complete; B1/B2/B3 passed in required order; refreshed PRE_HOST candidate and exact v2.6.2 rollback evidence pass; no generated runtime diff.
-- Known limitations: T7 hosted evidence and every s08/public gate remain pending; the pre-B2 PRE_HOST tarball is historical only; local Node 26 is not Node 18/22 release evidence; unrelated R263-SG-001 remains external; missing ESLint configuration and Semgrep were explicitly accepted as non-blocking by Developer and QC.
-- Notes for testing: T1/T4 and T5a RED/GREEN evidence is preserved. T6 binds release-delta SHA-256 `c838bef1a088fa5535ce9bcaef5e60ba5d160e18dd19d20fd86727ea2bb75ec3` and refreshed PRE_HOST candidate SHA-256 `acb69c96e33586e5c592fd2f3cae7697977e7f6943f1a11701e641512575b2b0`; T7 must freeze the final branch SHA and record PR evidence as PRE_MERGE_ONLY.
+- Outputs actual: ACTIVE s07; T0-T7 complete; B1/B2/B3 passed; PR #9 and Workflow Guardrails run 35515273824 are green for reviewed source afefacae...; hosted tarball f496aed3... is PRE_MERGE_ONLY.
+- Known limitations: QC s08 handoff and every s08/public gate remain pending; local PRE_HOST bytes are historical; unrelated R263-SG-001 remains external; missing ESLint configuration and Semgrep were explicitly accepted as non-blocking by Developer and QC.
+- Notes for testing: T1/T4 and T5a RED/GREEN evidence is preserved. T6 binds release-delta SHA-256 `c838bef1a088fa5535ce9bcaef5e60ba5d160e18dd19d20fd86727ea2bb75ec3`; T7 binds run `35515273824` and PRE_MERGE_ONLY tarball SHA-256 `f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f`.
 - Notes for deployment: none; tag, publication, latest movement, merge, and cleanup remain unauthorized.
