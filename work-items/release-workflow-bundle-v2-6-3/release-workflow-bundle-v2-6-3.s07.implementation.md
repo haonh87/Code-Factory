@@ -116,7 +116,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> T0-T5a are locally complete. B1 review is complete. B2 quality pre-review found and corrected F-R263-B2-001, and QC approved refreshed B2 Spec Compliance for corrected source `c7465df...` and diff `1c172e9...`. B2 Code Quality and finding closure are next. s08, merge, main binding, release, and publication remain closed.
+> T0-T5a are locally complete. B1 review is complete. B2 Spec Compliance and Code Quality passed in order for corrected diff `1c172e9...`, and F-R263-B2-001 is closed. Because the B2 correction changes packaged README bytes, the earlier PRE_HOST tarball is historical and a refreshed local candidate is required before B3 Spec Compliance. s08, merge, main binding, release, and publication remain closed.
 
 ## Step Contract
 ```yaml
@@ -189,8 +189,8 @@ doc_changes:
 config_changes: []
 review_checkpoints:
   - "B1 metadata/contracts: QC Spec Compliance PASS, then Developer+QC Code Quality PASS for unchanged diff db70b5bad2d473d0a620c7d0d002b0e8fe009aeb3dc233cec3c380a56fc718a2; ESLint and Semgrep gaps accepted as non-blocking."
-  - "B2 active docs/release record: refreshed QC Spec Compliance PASS for corrected source c7465dfedc06d2c8e353053f3a2a04a2d0f85974 and diff 1c172e94098443cb8a69930a23ec61f12cc00e8cb4d4f5f94923d4a46a1b9c23; Developer+QC Code Quality and F-R263-B2-001 closure pending."
-  - "B3 integrated branch candidate: pending B1/B2."
+  - "B2 active docs/release record: refreshed QC Spec Compliance PASS, then Developer+QC Code Quality PASS for corrected diff 1c172e94098443cb8a69930a23ec61f12cc00e8cb4d4f5f94923d4a46a1b9c23; F-R263-B2-001 closed."
+  - "B3 integrated branch candidate: B1/B2 passed; refreshed PRE_HOST candidate and integrated evidence pending before QC Spec Compliance."
 outputs_actual:
   - "Branch codex/release-workflow-bundle-v2-6-3 at d1d6a8208f8bc5dc73bc6e70f27f87e6c5957e34 is 10 governance commits ahead of origin/main 3204749e9fac592e9f38e327dbd85a87b84b2325."
   - "Merge base equals origin/main 3204749e; pre-implementation committed delta contains only CHANGE-007 and this work item's governance artifacts."
@@ -506,7 +506,7 @@ scan_gaps:
 finding_disposition:
   id: F-R263-T5-001
   implementation_status: RESOLVED
-  review_status: B1_PASS_B2_REFRESHED_SPEC_PASS_CODE_QUALITY_PENDING
+  review_status: B1_B2_PASS_B3_PENDING
   reopen_condition: "Any reviewed expectation drift, production edit, rollback identity change, generated runtime diff, or failure in B1/B2/B3 review."
 result: PASS_READY_FOR_T6
 next_human_action: "Developer and QC approve or reject B1 Code Quality for the unchanged source and B1 diff."
@@ -610,7 +610,7 @@ finding:
   id: F-R263-B2-001
   severity: LOW
   category: DOCUMENTATION_LANGUAGE_QUALITY
-  status: IMPLEMENTATION_RESOLVED_CODE_QUALITY_PENDING
+  status: CLOSED
   discovered_during: "B2 Code Quality pre-review"
   reviewed_source_before_correction: "221a6ba4633a5e6f46eeb86a350d262ad8504eb1"
   reviewed_diff_before_correction: "e6587d7dc729b68cc91797886e497c72e58b826ebd5771a0bd9758108b6130d4"
@@ -635,7 +635,8 @@ verification:
   language_and_placeholder_scan: PASS
   git_diff_check: PASS
 review_effect: "The correction changed the B2 diff after the initial Spec Compliance approval. Refreshed Spec Compliance now passes; B1 remains unchanged and B2 Code Quality is next."
-next_human_action: "Developer and QC approve or reject B2 Code Quality and the closure of F-R263-B2-001."
+closed_by: "Developer and QC B2 Code Quality PASS on corrected diff 1c172e94098443cb8a69930a23ec61f12cc00e8cb4d4f5f94923d4a46a1b9c23."
+next_human_action: "Prepare refreshed integrated candidate evidence before B3 Spec Compliance."
 ```
 
 ## T6 B2 Refreshed Spec Compliance Review
@@ -663,6 +664,37 @@ authority_boundary: "This refreshed approval closes only B2 Spec Compliance for 
 next_human_action: "Developer and QC approve or reject B2 Code Quality and F-R263-B2-001 closure for the unchanged corrected diff."
 ```
 
+## T6 B2 Code Quality Review
+```yaml
+recorded_at: "2026-09-20T12:54:53Z"
+batch: "B2 - documentation and release record"
+review_lane: CODE_QUALITY
+review_order_position: SECOND_AFTER_REFRESHED_SPEC_COMPLIANCE_PASS
+reviewer_roles: [developer, qc]
+decision_source: "User explicitly approved B2 Code Quality PASS and F-R263-B2-001 closure with roles Developer and QC, naming the exact source and corrected diff."
+source_commit: "f86285aa0abc8a8b8c106726a9668355154608fa"
+implementation_source: "c7465dfedc06d2c8e353053f3a2a04a2d0f85974"
+b2_diff_sha256: "1c172e94098443cb8a69930a23ec61f12cc00e8cb4d4f5f94923d4a46a1b9c23"
+implementation_bytes_unchanged_since_refreshed_spec_review: true
+quality_checks:
+  release_surface: PASS
+  utf8: "PASS - 12/12 B2 files"
+  local_links: "PASS - 12/12 B2 files"
+  english_vietnamese_alignment: PASS
+  language_and_placeholder_scan: PASS
+  secret_scan: PASS
+  historical_release_hashes: PASS
+finding_disposition:
+  id: F-R263-B2-001
+  status: CLOSED
+  residual_issue: NONE
+candidate_effect: "The corrected packages/workflow-bundle/README.vi.md is packaged content, so PRE_HOST digest bbf06295...be30 is historical pre-B2 evidence and must not be used for B3 or later binding."
+verdict: PASS
+findings: []
+authority_boundary: "This approval closes only B2 Code Quality and F-R263-B2-001. It does not approve B3, s08, DoD, merge, main binding, Release, publication, Business Acceptance, archive, or cleanup."
+next_task: "Build one refreshed local PRE_HOST candidate from the reviewed B1/B2 source, rerun exact candidate and rollback smoke, then prepare B3 Spec Compliance."
+```
+
 ## Delivery Rule Evidence
 ```yaml
 behavior_change: YES
@@ -680,11 +712,11 @@ worktree_status: USED
 worktree_refs:
   - ".claude/worktrees/release-workflow-bundle-v2-6-3"
 worktree_reason: "Full-track public release work spans multiple sessions and exact branch/main/public identities."
-review_status: B1_COMPLETE_B2_REFRESHED_SPEC_COMPLIANCE_PASS_CODE_QUALITY_PENDING
+review_status: B1_B2_COMPLETE_B3_PREPARATION
 review_refs:
   - "s06 Review Plan B1/B2/B3; T5a and sequential T5 evidence are ready for ordered independent review."
 spec_compliance_status: B1_B2_PASS_B3_PENDING
-code_quality_status: B1_PASS_B2_PENDING_B3_PENDING
+code_quality_status: B1_B2_PASS_B3_PENDING
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
 independence_refs:
@@ -731,18 +763,18 @@ task_status:
   T4: COMPLETE_GREEN_CONFIRMED
   T5: COMPLETE_LOCAL_PASS
   T5a: COMPLETE_GREEN_CONFIRMED
-  T6: B1_COMPLETE_B2_REFRESHED_SPEC_COMPLIANCE_PASS_CODE_QUALITY_NEXT
+  T6: B1_B2_COMPLETE_B3_PREPARATION
   T7: BLOCKED_BY_T6
   T8_T13: LATER_GATES
 acceptance_coverage_current:
   AC-R263-01: LOCAL_PASS_REVIEW_PENDING
   AC-R263-02: LOCAL_PASS_REVIEW_PENDING
   AC-R263-08: LOCAL_PASS_HOSTED_PENDING
-next_step: "Developer and QC B2 Code Quality plus F-R263-B2-001 closure for unchanged corrected diff 1c172e94098443cb8a69930a23ec61f12cc00e8cb4d4f5f94923d4a46a1b9c23"
+next_step: "Refresh local PRE_HOST candidate and integrated release evidence, then QC B3 Spec Compliance"
 ```
 
 ## Handoff
 - Outputs actual: ACTIVE s07; T0-T5a locally complete; focused and full suites GREEN; PRE_HOST candidate and exact v2.6.2 rollback evidence recorded; no generated runtime diff.
-- Known limitations: B2 Code Quality/finding closure, B3 review, T7 hosted evidence, and every s08/public gate remain pending; local Node 26 is not Node 18/22 release evidence; unrelated R263-SG-001 remains external; B1 accepted missing ESLint/Semgrep as non-blocking.
+- Known limitations: B3 review, T7 hosted evidence, and every s08/public gate remain pending; the prior PRE_HOST tarball predates a packaged README correction and is historical only; local Node 26 is not Node 18/22 release evidence; unrelated R263-SG-001 remains external; B1 accepted missing ESLint/Semgrep as non-blocking.
 - Notes for testing: T1/T4 and T5a RED/GREEN evidence is preserved. Review must bind to release-delta SHA-256 `83fd98ba064121559fa7488ce663e5ea0dfb149ba05ea6a6c7d5d51c69cbae39`; the local tarball is PRE_HOST only.
 - Notes for deployment: none; tag, publication, latest movement, merge, and cleanup remain unauthorized.
