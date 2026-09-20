@@ -116,7 +116,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> T0-T5a are locally complete. B1 and B2 reviews passed in order, and F-R263-B2-001 is closed. The post-B2 PRE_HOST candidate and integrated release evidence are refreshed and ready for QC B3 Spec Compliance. s08, merge, main binding, release, and publication remain closed.
+> T0-T5a are locally complete. B1 and B2 reviews passed in order, and F-R263-B2-001 is closed. QC approved B3 Spec Compliance for the exact integrated release delta and refreshed PRE_HOST candidate; B3 Code Quality is the next separate gate. s08, merge, main binding, release, and publication remain closed.
 
 ## Step Contract
 ```yaml
@@ -190,7 +190,7 @@ config_changes: []
 review_checkpoints:
   - "B1 metadata/contracts: QC Spec Compliance PASS, then Developer+QC Code Quality PASS for unchanged diff db70b5bad2d473d0a620c7d0d002b0e8fe009aeb3dc233cec3c380a56fc718a2; ESLint and Semgrep gaps accepted as non-blocking."
   - "B2 active docs/release record: refreshed QC Spec Compliance PASS, then Developer+QC Code Quality PASS for corrected diff 1c172e94098443cb8a69930a23ec61f12cc00e8cb4d4f5f94923d4a46a1b9c23; F-R263-B2-001 closed."
-  - "B3 integrated branch candidate: refreshed PRE_HOST candidate and integrated evidence are prepared; QC Spec Compliance remains pending."
+  - "B3 integrated branch candidate: QC Spec Compliance PASS for the exact release delta and refreshed PRE_HOST candidate; Developer+QC Code Quality remains pending."
 outputs_actual:
   - "Branch codex/release-workflow-bundle-v2-6-3 at d1d6a8208f8bc5dc73bc6e70f27f87e6c5957e34 is 10 governance commits ahead of origin/main 3204749e9fac592e9f38e327dbd85a87b84b2325."
   - "Merge base equals origin/main 3204749e; pre-implementation committed delta contains only CHANGE-007 and this work item's governance artifacts."
@@ -761,6 +761,119 @@ authority_boundary: "This preparation is evidence only. It does not approve B3 S
 next_human_action: "QC approves or rejects B3 Spec Compliance for the named source, integrated release delta, and refreshed PRE_HOST candidate."
 ```
 
+## T6 B3 Spec Compliance Review
+```yaml
+recorded_at: "2026-09-20T13:02:58Z"
+batch: "B3 - integrated branch candidate"
+review_lane: SPEC_COMPLIANCE
+review_order_position: FIRST
+reviewer_role: qc
+decision_source: "User explicitly approved B3 Spec Compliance with role QC and named the review source, candidate source, integrated release diff, and refreshed PRE_HOST candidate identities."
+review_source_commit: "23fb8c98da44028a1bc55d47b393d9a2f4d2f65f"
+candidate_source_commit: "ed5a9d25cedb3e11d0fdce3b44ca19c1ddcc41c8"
+integrated_release_diff_sha256: "c838bef1a088fa5535ce9bcaef5e60ba5d160e18dd19d20fd86727ea2bb75ec3"
+pre_host_candidate_sha256: "acb69c96e33586e5c592fd2f3cae7697977e7f6943f1a11701e641512575b2b0"
+spec_checks:
+  b1_and_b2_review_chain_complete: PASS
+  integrated_delta_matches_approved_release_scope: PASS
+  candidate_identity_matches_integrated_source: PASS
+  version_and_rollback_contracts: PASS
+  active_docs_and_release_record_alignment: PASS
+  historical_release_records_immutable: PASS
+  premature_public_release_claim: NONE
+  unapproved_scope_or_behavior_drift: NONE
+verdict: PASS
+findings: []
+authority_boundary: "This approval closes only B3 Spec Compliance. It does not approve B3 Code Quality, s08, DoD, merge, main binding, Release, publication, Business Acceptance, archive, or cleanup."
+next_human_action: "Developer and QC approve or reject B3 Code Quality for the unchanged integrated release diff and refreshed PRE_HOST candidate."
+```
+
+## T6 B3 Code Quality Review Preparation
+```yaml
+captured_at: "2026-09-20T13:04:14Z"
+review_target: "Integrated v2.6.3 release delta and refreshed PRE_HOST candidate"
+planning_track: full
+review_mode: INDEPENDENT
+review_order:
+  - SPEC_COMPLIANCE
+  - CODE_QUALITY
+review_order_status: "B3 Spec Compliance passed before this Code Quality preparation."
+review_source_commit: "23fb8c98da44028a1bc55d47b393d9a2f4d2f65f"
+candidate_source_commit: "ed5a9d25cedb3e11d0fdce3b44ca19c1ddcc41c8"
+integrated_release_diff_sha256: "c838bef1a088fa5535ce9bcaef5e60ba5d160e18dd19d20fd86727ea2bb75ec3"
+pre_host_candidate_sha256: "acb69c96e33586e5c592fd2f3cae7697977e7f6943f1a11701e641512575b2b0"
+scan_target: "21 release files excluding work-items/** and changes/**"
+scan_scope:
+  mode: DIFF_ONLY
+  changed_files: 21
+  affected_modules:
+    - "workflow-bundle package identity and CLI display"
+    - "release and rollback contract tests"
+    - "active English/Vietnamese release documentation"
+language_stack: [JavaScript, JSON, Markdown]
+available_scan_tools:
+  - "node --check"
+  - "workflow-bundle unit and release wrappers"
+  - "git diff --check"
+  - "diff-aware secret-pattern scan"
+false_positive_policy: "Diff-aware, evidence-based, dismiss only with a recorded reason."
+scan_plan:
+  syntax: ["node --check for all six changed JavaScript files"]
+  static_analysis: ["project ESLint wrapper/config discovery", "full workflow-bundle unit suite"]
+  security: ["Semgrep availability", "diff-aware credential/private-key pattern scan", "dependency-lock delta check"]
+  performance_heuristic: ["review runtime-path, I/O, loop, serialization, and allocation deltas"]
+syntax_scan_results:
+  - command: "node --check <each changed JavaScript file>"
+    scope: "six changed JavaScript files"
+    status: PASS
+    evidence: "6/6 parse successfully"
+    blocker_files: []
+static_analysis_results:
+  - command: "npm run validate:workflow:unit"
+    config_used: "repository workflow-bundle test wrapper"
+    scope: "workflow-bundle"
+    status: PASS
+    findings: []
+    new_blockers: []
+  - command: "ESLint project wrapper/config discovery"
+    config_used: NONE
+    scope: "release JavaScript diff"
+    status: SKIP
+    findings: ["No lint script or ESLint configuration exists in the repository."]
+    new_blockers: []
+security_scan_results:
+  - command_or_check: "diff-aware credential/private-key pattern scan"
+    scope: "integrated release delta"
+    status: PASS
+    findings: []
+  - command_or_check: "Semgrep availability check"
+    scope: "integrated release delta"
+    status: SKIP
+    findings: []
+  - command_or_check: "dependency-lock delta check"
+    scope: "package lockfiles"
+    status: PASS
+    findings: []
+performance_heuristic_results:
+  - check: "Review runtime and test deltas for new hot-path loops, synchronous I/O, serialization, or allocation"
+    scope: "integrated release delta"
+    status: PASS
+    expected_impact: LOW
+    confidence: HIGH
+    trigger_condition: "Only the CLI public-flow version label changes in runtime JavaScript; remaining JavaScript changes are release assertions and version-bound test constants."
+    evidence: "Runtime JavaScript delta is 1 addition/1 deletion; no dependency, algorithm, network, or persistence path changes."
+skipped_scans:
+  - "ESLint: no repository script or configuration; retained accepted B1 non-blocking gap."
+  - "Semgrep: executable unavailable; retained accepted B1 non-blocking gap."
+pre_handoff_scan_status: PARTIAL
+quality_review_recommendation: PASS_WITH_RECORDED_SCAN_GAPS
+new_findings: []
+remediation_actions: []
+notes_for_verify: "This is s07 pre-handoff evidence only. T7/s08 must bind Node 18/22 hosted checks and the authoritative post-merge candidate; do not promote the PRE_HOST tarball."
+authority_boundary: "This preparation does not approve B3 Code Quality or any later gate."
+next_human_action: "Developer and QC approve or reject B3 Code Quality, explicitly retaining the two non-blocking scan gaps if accepted."
+```
+
 ## Delivery Rule Evidence
 ```yaml
 behavior_change: YES
@@ -778,10 +891,10 @@ worktree_status: USED
 worktree_refs:
   - ".claude/worktrees/release-workflow-bundle-v2-6-3"
 worktree_reason: "Full-track public release work spans multiple sessions and exact branch/main/public identities."
-review_status: B1_B2_COMPLETE_B3_SPEC_READY
+review_status: B1_B2_COMPLETE_B3_SPEC_PASS_CODE_QUALITY_PENDING
 review_refs:
   - "s06 Review Plan B1/B2/B3; T5a and sequential T5 evidence are ready for ordered independent review."
-spec_compliance_status: B1_B2_PASS_B3_PENDING
+spec_compliance_status: B1_B2_B3_PASS
 code_quality_status: B1_B2_PASS_B3_PENDING
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
@@ -829,14 +942,14 @@ task_status:
   T4: COMPLETE_GREEN_CONFIRMED
   T5: COMPLETE_LOCAL_PASS
   T5a: COMPLETE_GREEN_CONFIRMED
-  T6: B1_B2_COMPLETE_B3_SPEC_READY
+  T6: B1_B2_COMPLETE_B3_SPEC_PASS_CODE_QUALITY_PENDING
   T7: BLOCKED_BY_T6
   T8_T13: LATER_GATES
 acceptance_coverage_current:
   AC-R263-01: LOCAL_PASS_REVIEW_PENDING
   AC-R263-02: LOCAL_PASS_REVIEW_PENDING
   AC-R263-08: LOCAL_PASS_HOSTED_PENDING
-next_step: "QC B3 Spec Compliance for source ed5a9d25, release delta c838bef1..., and PRE_HOST candidate acb69c96..."
+next_step: "Developer and QC B3 Code Quality for the unchanged release delta c838bef1... and PRE_HOST candidate acb69c96..."
 ```
 
 ## Handoff
