@@ -292,7 +292,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
@@ -320,7 +320,7 @@ work_item_slug: "release-workflow-bundle-v2-6-3"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/release-workflow-bundle-v2-6-3/work-items/release-workflow-bundle-v2-6-3"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - "workflow-bundle.manifest.json"
   - "packages/workflow-bundle/workflow-bundle.manifest.json"
@@ -355,11 +355,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-19T08:48:27.806Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "resume"
-last_transition_at: "2026-09-19T14:31:06.992Z"
+handoff_target: "definition-of-done"
+last_transition_action: "verify"
+last_transition_at: "2026-09-20T14:32:50.193Z"
 required_actions:
-  - {"id":"se:72985ed9da123d13e7581cc9e85f49d3912167360718e34700350fda60ee59de","kind":"workflow_followup","text":"Continue active execution from the current step."}
+  - {"id":"se:cbbdfae039cbb6411c1ff5d2f9cc3ded4d93b3649f5284d4546f7c303ed88ecf","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
 blockers: []
 review_notes:
   - "PO approved opening the workflow-bundle v2.6.3 release work item; later gates remain independent."
@@ -377,6 +377,7 @@ audit_events:
   - "WORK_ITEM_ACTIVATED"
   - "WORK_ITEM_BLOCKED"
   - "WORK_ITEM_RESUMED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
 ## Traceability

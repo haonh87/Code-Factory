@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "VERIFIED",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Promote v263-3204749e with v262 fallback.",
@@ -57,7 +57,7 @@
   "work_item_type": "CHANGE",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/release-workflow-bundle-v2-6-3/work-items/release-workflow-bundle-v2-6-3",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     "workflow-bundle.manifest.json",
     "packages/workflow-bundle/workflow-bundle.manifest.json",
@@ -84,12 +84,12 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CHANGE-007",
-  "handoff_target": "step-s07-owner",
+  "handoff_target": "definition-of-done",
   "required_actions": [
     {
-      "id": "se:72985ed9da123d13e7581cc9e85f49d3912167360718e34700350fda60ee59de",
+      "id": "se:cbbdfae039cbb6411c1ff5d2f9cc3ded4d93b3649f5284d4546f7c303ed88ecf",
       "kind": "workflow_followup",
-      "text": "Continue active execution from the current step."
+      "text": "Collect DoD evidence and close the work item when ready."
     }
   ],
   "blockers": [],
@@ -107,7 +107,8 @@
     "WORK_ITEM_APPROVED",
     "WORK_ITEM_ACTIVATED",
     "WORK_ITEM_BLOCKED",
-    "WORK_ITEM_RESUMED"
+    "WORK_ITEM_RESUMED",
+    "VERIFICATION_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -176,6 +177,14 @@
       "from_status": "BLOCKED",
       "to_status": "ACTIVE",
       "note": "Task Plan T5a receipt matches and Maintainer disposition is signed; resume s07 with the approved 22-path grant. Review, s08, Release, publication, Business Acceptance, merge, and cleanup remain independent."
+    },
+    {
+      "timestamp": "2026-09-20T14:32:50.193Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "QC approved branch Technical Verification for PR #9 source 09eed7d2573ebf6fad9400de6748862c1035d947, run 35516336889, PRE_MERGE_ONLY candidate SHA-256 f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f, rollback v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; AC-R263-01..08 and AC-R263-10 PASS; DoD, merge, main binding, Release, publication, Business Acceptance, archive, and cleanup remain independent."
     }
   ],
   "resolved_state_history": [

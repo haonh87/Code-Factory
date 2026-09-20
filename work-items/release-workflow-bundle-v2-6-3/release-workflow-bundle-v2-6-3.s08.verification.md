@@ -133,15 +133,16 @@ tags:
 > PR head and corroboration run pass all 10 hosted jobs, and exact candidate plus rollback checks pass
 > for CLI and all four Codex/Claude global/project modes. The overall work item remains PARTIAL because
 > this PR artifact is PRE_MERGE_ONLY and AC-R263-09/11/12/13 belong to later main, Release, publication,
-> and Business Acceptance tasks. Technical Verification and DoD are not yet approved.
+> and Business Acceptance tasks. QC approved Technical Verification for the exact branch identity;
+> DoD remains a separate human-controlled gate.
 
 ## Step Contract
 ```yaml
 step_goal: "Verify the reviewed v2.6.3 branch and PRE_MERGE_ONLY PR artifact against the locked release criteria, surface every residual gate, and prepare independent QC decisions without inferring DoD or Release."
 input_summary:
   - "T0-T7 implementation, B1/B2/B3 ordered review, and QC-approved s08 handoff."
-  - "PR #9 current head 23c5848fb4571ad21b763e4b01fd7e3f447bb024; reviewed release source afefacae95639aa0fab0135038f6bb421e0cebb5."
-  - "Workflow Guardrails corroboration run 35515671125 and downloaded PRE_MERGE_ONLY tarball SHA-256 f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f."
+  - "PR #9 current head 09eed7d2573ebf6fad9400de6748862c1035d947; reviewed release source afefacae95639aa0fab0135038f6bb421e0cebb5."
+  - "Workflow Guardrails corroboration run 35516336889 and downloaded PRE_MERGE_ONLY tarball SHA-256 f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f."
 output_summary:
   - "Risk-ranked branch verification and AC-R263-01..13 coverage."
   - "Exact candidate and immutable v2.6.2 rollback compatibility evidence."
@@ -214,13 +215,13 @@ criteria_results:
     evidence: "The v2.6.3 release record separates Complete Packaged Delta from Non-Packaged Repository Changes and passed B2 review."
   - criterion: AC-R263-04
     result: PASS
-    evidence: "Run 35515671125 builds once; both Node jobs consume tarball SHA-256 f496aed3...; authority is explicitly PRE_MERGE_ONLY pending T9 main binding."
+    evidence: "Run 35516336889 builds once; both Node jobs consume tarball SHA-256 f496aed3...; authority is explicitly PRE_MERGE_ONLY pending T9 main binding."
   - criterion: AC-R263-05
     result: PASS
     evidence: "45/45 unit files and local workflow, pack, bundle, release, rollback, diff, and UTF-8 checks pass; unavailable ESLint/Semgrep are disclosed."
   - criterion: AC-R263-06
     result: PASS
-    evidence: "Current PR-head run 35515671125 passes 10/10 jobs including Node 18/22; annotations are 10 notice, 0 warning, 0 failure, 0 Node deprecation."
+    evidence: "Current PR-head run 35516336889 passes 10/10 jobs including Node 18/22; annotations are 10 notice, 0 warning, 0 failure, 0 Node deprecation."
   - criterion: AC-R263-07
     result: PASS
     evidence: "Downloaded exact artifact reports CLI 2.6.3 and passes Codex/Claude global/project 4/4 with 42 managed skills."
@@ -246,7 +247,7 @@ test_evidence:
   unit_test:
     - "npm run validate:workflow:unit -> PASS, 45/45 files."
   integration_test:
-    - "Run 35515671125 -> PASS 10/10 jobs; Node 18 and Node 22 consume the same tarball checksum."
+    - "Run 35516336889 -> PASS 10/10 jobs; Node 18 and Node 22 consume the same tarball checksum."
     - "Exact candidate smoke -> PASS CLI plus Codex/Claude global/project 4/4."
     - "Exact rollback smoke -> PASS Codex/Claude global/project 4/4; standalone rollback CLI reports 2.6.2."
   database_test: []
@@ -254,7 +255,7 @@ test_evidence:
     - "Candidate SHA-256 f496aed3... and immutable rollback SHA-256 af49a958... pass exact transition rehearsal."
     - "Read-only public-state probe confirms no v2.6.3 collision and latest=2.6.2."
 commands_run:
-  - "gh run watch/view/download for runs 35515273824 and 35515671125"
+  - "gh run watch/view/download for runs 35515273824, 35515671125, and 35516336889"
   - "GitHub Actions artifact/check-run annotation API queries"
   - "release-candidate-artifact-smoke.test.js in exact-artifact mode"
   - "release-rollback-smoke.test.js in exact-artifact mode"
@@ -271,8 +272,39 @@ gaps:
 residual_risks:
   - "PR artifact is non-publishable and must never substitute for the post-merge main candidate."
   - "ubuntu-latest migration notice is non-blocking now but runner behavior changes after 2026-10-19."
-recommendation: PASS_FOR_BRANCH_TECHNICAL_VERIFICATION_ONLY
-notes_for_review: "QC must bind its Technical Verification decision to PR #9 head 23c5848f..., run 35515671125, and PRE_MERGE_ONLY tarball f496aed3.... DoD remains a separate decision; T9/T10 must rebind and refresh after merge."
+recommendation: TECHNICAL_VERIFICATION_APPROVED_DOD_PENDING
+notes_for_review: "QC bound its Technical Verification approval to PR #9 source 09eed7d..., run 35516336889, and PRE_MERGE_ONLY tarball f496aed3.... DoD remains a separate decision; T9/T10 must rebind and refresh after merge."
+```
+
+## Technical Verification Decision
+```yaml
+proposed_verdict: PASS
+human_verdict: PASS
+reviewer_role: "qc"
+reviewed_by: "qc"
+reviewed_at: "2026-09-20T14:30:26Z"
+approval_source: "Explicit user QC approval for the exact PR #9 branch identity."
+pr_number: 9
+source_sha: "09eed7d2573ebf6fad9400de6748862c1035d947"
+run_id: 35516336889
+candidate_authority: PRE_MERGE_ONLY
+candidate_sha256: "f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f"
+rollback_version: "2.6.2"
+rollback_sha256: "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"
+criteria_passed:
+  - "AC-R263-01..08"
+  - "AC-R263-10"
+downstream_obligations:
+  - "AC-R263-09 under T11"
+  - "AC-R263-11 under T11"
+  - "AC-R263-12 under T12"
+  - "AC-R263-13 under T13"
+retained_scan_gaps:
+  - "R263-SG-003: ESLint is not configured."
+  - "R263-SG-004: Semgrep is unavailable."
+verdict: PASS_FOR_BRANCH_TECHNICAL_VERIFICATION
+dod_status: NOT_APPROVED
+authority_boundary: "This decision neither approves DoD nor authorizes merge, main-candidate binding, Release, publication, Business Acceptance, archive, or cleanup."
 ```
 
 ## Governance Checks
@@ -287,7 +319,7 @@ checks:
   - "PASS - release diff SHA-256 remains c838bef1... and no production edit followed review."
 blocking_items: []
 owner: "qc"
-next_action: "Independent QC review of branch Technical Verification; DoD remains separate."
+next_action: "Prepare the separate QC DoD decision while preserving T9-T13 as mandatory downstream obligations."
 ```
 
 ## Regression & Compatibility Summary
@@ -342,20 +374,64 @@ notes:
 ## Audit
 ```yaml
 audit_status: PARTIAL
-notes:
-  - "Branch evidence and governance are complete for Technical Verification review."
-  - "Terminal audit cannot pass before T9-T13, Release, Business Acceptance, archive, and cleanup."
+finish_target: "codex/release-workflow-bundle-v2-6-3"
+workspace_kind: BOTH
+verify_inputs:
+  - "QC-approved Technical Verification for source 09eed7d..., run 35516336889, and PRE_MERGE_ONLY candidate f496aed3...."
+  - "Immutable v2.6.2 rollback SHA-256 af49a958...."
+finish_gate_checks:
+  verify_complete: PASS
+  dod_complete: PENDING
+  findings_closed: PASS
+  exceptions_resolved: PASS
+allowed_actions:
+  - "Record the approved Technical Verification transition."
+  - "Prepare the separate DoD evidence packet."
+blocked_actions:
+  - "Merge PR #9."
+  - "Remove the branch or worktree."
+  - "Bind or publish a main release candidate."
+  - "Create a tag or GitHub Release."
+  - "Publish workflow-bundle@2.6.3 or move npm latest."
+  - "Archive or clean up the work item."
+cleanup_sequence: []
+merge_conditions:
+  - "QC approves DoD against this Technical Verification."
+  - "The trusted DoD receipt is sealed against the finalized s08 host."
+  - "A separate merge action is explicitly authorized and PR checks remain green."
+residual_risks:
+  - "The verified candidate is PRE_MERGE_ONLY and is not publishable."
+  - "ESLint and Semgrep remain explicitly accepted scan gaps."
+  - "T9-T13 remain mandatory after merge."
+final_recommendation: HOLD_OPEN
+notes_for_closeout: "Technical Verification is approved, but DoD and branch finalization remain separate. Keep the branch and worktree open."
 ```
 
 ## Definition of Done
 ```yaml
+work_item_slug: "release-workflow-bundle-v2-6-3"
+proposed_status: DONE
 status: PARTIAL
+human_gate_status: PENDING
+checks:
+  acceptance_criteria_evidenced: PASS
+  implementation_recorded: PASS
+  required_verification_completed: PASS
+  code_scan_completed_or_justified: PASS
+  traceability_complete: PASS
+  residual_risks_documented: PASS
+gaps:
+  - "QC has not yet issued the separate DoD decision."
 residual_risks:
-  - "Technical Verification is awaiting explicit QC approval."
-  - "DoD is a separate QC gate after Technical Verification."
   - "PR artifact is PRE_MERGE_ONLY; authoritative main re-verification is mandatory."
-  - "Release, publication, Business Acceptance, archive, and cleanup remain pending."
-owners: [qc, devops, po]
+  - "ESLint is not configured and Semgrep is unavailable; Developer and QC accepted both scan gaps as non-blocking."
+  - "AC-R263-09/11/12/13 remain mandatory downstream obligations under T11-T13."
+follow_up_items:
+  - "T9/T10: merge only after separate authorization, then bind and verify the authoritative main candidate."
+  - "T11: complete GitHub/npm authority preflight and obtain the independent DevOps/QC Release decision."
+  - "T12: publish in the locked order and prove cross-channel identity equality."
+  - "T13: obtain PO Business Acceptance, archive the release record, and clean up only after terminal reconciliation."
+next_action: "QC reviews and explicitly approves or rejects DoD for the exact Technical Verification identity."
 ```
 
 ## Traceability
@@ -374,12 +450,12 @@ edge_case_controls:
   EC-R263-05: "Digest mismatch is assertion-blocking in exact-artifact tests."
   EC-R263-06: "Functional and timing evidence are separate; measured rollback total is 2 seconds."
   EC-R263-07: "Formal authority preflight is pending T11 and failure leaves public state unchanged."
-next_step: "QC Technical Verification decision for the exact branch identity; DoD remains separate."
+next_step: "QC DoD decision for the approved branch Technical Verification; merge and T9-T13 remain separate."
 ```
 
 ## Handoff
-- Overall status: PARTIAL for the full release work item; branch verification evidence is complete and has no open blocker.
+- Overall status: VERIFIED at the protocol level after QC Technical Verification; DoD remains pending for the full release work item.
 - Residual risks: PRE_MERGE_ONLY authority, two accepted scanner gaps, future Ubuntu runner migration, and mandatory T9-T13 re-verification/release work.
-- Recommendation: PASS_FOR_BRANCH_TECHNICAL_VERIFICATION_ONLY.
+- Recommendation: QC may approve technical DoD; preserve T9-T13 as mandatory downstream obligations.
 - Release recommendation khi có: HOLD; Release is not yet eligible and no public mutation is authorized.
-- Next action: QC independently approves or rejects Technical Verification for PR #9 head 23c5848f..., run 35515671125, candidate f496aed3.... DoD remains separate.
+- Next action: QC independently approves or rejects DoD for PR #9 source 09eed7d..., run 35516336889, candidate f496aed3....
