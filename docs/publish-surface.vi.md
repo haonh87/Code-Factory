@@ -8,11 +8,11 @@ language: vi
 
 Tài liệu này ghim bề mặt phát hành công khai dự kiến cho `workflow-bundle v2.6.3`.
 
-`v2.6.3` là một ứng viên phát hành và vẫn chưa được phát hành cho đến khi human Release gate phê duyệt. Khi được phê duyệt, public surface dự kiến sẽ:
-- cài được vào Codex hoặc Claude Code bằng `wfc install|update|status|skills`
-- author workflow bằng `wfc init|scaffold|validate`
-- cho agent chủ động đề xuất `work-item` và `change`
-- nhưng human vẫn giữ quyền approve ở các gate trước khi delivery tiếp tục
+`v2.6.3` là một ứng viên phát hành và vẫn chưa được phát hành cho đến khi human Release gate phê duyệt. Khi được phê duyệt, public surface dự kiến sẽ cung cấp:
+- khả năng cài vào Codex hoặc Claude Code bằng `wfc install|update|status|skills`
+- khả năng author workflow bằng `wfc init|scaffold|validate`
+- khả năng để agent chủ động đề xuất `work-item` và `change`
+- quyền phê duyệt tiếp tục thuộc về human ở từng gate trước khi delivery tiếp diễn
 
 `v2.0.0` vẫn là first public release. Nếu được phê duyệt, `v2.6.3` tiếp tục trên cùng public surface và không tạo breaking change cho command line:
 

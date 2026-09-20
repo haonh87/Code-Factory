@@ -8,11 +8,11 @@ language: en
 
 This document pins the planned public publish surface for `workflow-bundle v2.6.3`.
 
-`v2.6.3` is a release candidate. It remains unpublished until the human Release gate passes. Once approved, its planned public surface will:
-- installable into Codex or Claude Code via `wfc install|update|status|skills`
-- author workflows with `wfc init|scaffold|validate`
-- lets the agent proactively propose `work-item` and `change`
-- but the human still holds approval authority at each gate before delivery continues
+`v2.6.3` is a release candidate. It remains unpublished until the human Release gate passes. Once approved, its planned public surface will provide:
+- installation into Codex or Claude Code via `wfc install|update|status|skills`
+- workflow authoring with `wfc init|scaffold|validate`
+- proactive agent proposals for `work-item` and `change`
+- continued human approval authority at each gate before delivery proceeds
 
 `v2.0.0` remains the first public release. If approved, `v2.6.3` will continue on the same public surface and make no breaking command-line change:
 - `v2.2.x` added the harness adapter registry and internal hooks/instincts tooling.

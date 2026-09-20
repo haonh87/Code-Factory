@@ -60,7 +60,7 @@ wfc skills list --mode codex
 ```
 
 Dùng cùng chuỗi lệnh với `--mode claude` cho Claude Code. Dùng artifact v2.6.2 bất biến đã được lưu
-và `wfc install` để hạ cấp nhằm giữ identity của fallback tường minh; không dựa vào registry alias có
+và `wfc install` để hạ cấp nhằm giữ identity của fallback tường minh; không dựa vào registry alias
 có thể thay đổi. Đường được hỗ trợ sẽ khôi phục hành vi source v2.6.2, giữ inventory 42 skill và các file
 unmanaged. Phải giữ nguyên khả năng dual-read legacy/adaptive cùng mọi historical receipt; không rewrite
 hoặc ký lại receipt khi rollback. Hãy diễn tập với home cô lập trước khi thao tác trên bản cài live, và
