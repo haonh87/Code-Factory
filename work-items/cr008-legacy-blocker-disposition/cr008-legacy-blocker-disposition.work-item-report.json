@@ -1,0 +1,181 @@
+{
+  "materialization_status": "PROPOSED",
+  "protocol_status": "PROPOSED",
+  "decision_owner": "agent",
+  "protocol_owner": "",
+  "raw_request_summary": "Record two reviewed legacy blocker dispositions for archived CR-008 and establish removal readiness for its clean merged worktree.",
+  "request_source": "user-chat",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "needs_review",
+  "work_items": [
+    {
+      "work_item_slug": "cr008-legacy-blocker-disposition",
+      "work_item_title": "Cr008 Legacy Blocker Disposition",
+      "work_item_type": "CHANGE",
+      "scope_summary": "Record two reviewed legacy blocker dispositions for archived CR-008 and establish removal readiness for its clean merged worktree.",
+      "primary_outcome": "Record two reviewed legacy blocker dispositions for archived CR-008 and establish removal readiness for its clean merged worktree.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "quick",
+      "delivery_context": "brownfield",
+      "sdd_mode": "light",
+      "selected_profile": "sdd-light",
+      "sdd_reasons": [],
+      "sdd_preset": "light",
+      "sdd_light_profile": "preview",
+      "governance_profile": "default",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/closeout-bundle-legacy-dod-compatibility",
+        "work-items/terminal-archive-legacy-state-reconciliation",
+        "work-items/worktree-and-closure-integrity"
+      ],
+      "collision_notes": [
+        "closeout-bundle-legacy-dod-compatibility (score=1)",
+        "terminal-archive-legacy-state-reconciliation (score=1)",
+        "worktree-and-closure-integrity (score=1)"
+      ],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "Scope chưa cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item cr008-legacy-blocker-disposition --planning-track quick --delivery-context brownfield --sdd-mode light --adaptive-writes true --request-lane maintenance --adaptive-source-version 2.6.3 --adaptive-installed-version 2.6.3 --adaptive-installed-version 2.6.3 --adaptive-parity-passed true",
+        "npm run validate:workflow -- --workflow-root work-items/cr008-legacy-blocker-disposition --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr008-legacy-blocker-disposition"
+      ],
+      "blockers": [
+        {
+          "id": "se:db2ddb0d5e7ac10cb949c301bc1cd22f1169197fec13e4d4c6e4d22a3eb361e3",
+          "kind": "delivery_blocker",
+          "text": "Có work item gần nghĩa cần review: closeout-bundle-legacy-dod-compatibility, terminal-archive-legacy-state-reconciliation, worktree-and-closure-integrity"
+        }
+      ]
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=CHANGE",
+    "delivery_context=brownfield",
+    "dedup_result=needs_review",
+    "change_strategy=none",
+    "planning_track=quick",
+    "governance_profile=default",
+    "sdd_preset=light",
+    "selected_profile=sdd-light",
+    "sdd_mode=light",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "cr008-legacy-blocker-disposition",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "selected_profile": "sdd-light",
+  "sdd_mode": "light",
+  "sdd_preset": "light",
+  "sdd_light_profile": "preview",
+  "sdd_reasons": [],
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr008-legacy-blocker-disposition/work-items/cr008-legacy-blocker-disposition",
+  "current_step": "",
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "human-clarify",
+  "required_actions": [
+    {
+      "id": "se:6e883e07166ee862060dea9ecc18843de5470cbc581eed5dd539b9cc61fac453",
+      "kind": "workflow_followup",
+      "text": "Làm rõ scope để chốt single hay split."
+    },
+    {
+      "id": "se:2b1b5b8d31cf90ea804bd2af3187717ac96e6d874b3533a3d603a1f93fd78f86",
+      "kind": "workflow_followup",
+      "text": "Review existing work-items/changes trước khi scaffold."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "se:db2ddb0d5e7ac10cb949c301bc1cd22f1169197fec13e4d4c6e4d22a3eb361e3",
+      "kind": "delivery_blocker",
+      "text": "Có work item gần nghĩa cần review: closeout-bundle-legacy-dod-compatibility, terminal-archive-legacy-state-reconciliation, worktree-and-closure-integrity"
+    }
+  ],
+  "refs": [
+    "work-items/closeout-bundle-legacy-dod-compatibility",
+    "work-items/terminal-archive-legacy-state-reconciliation",
+    "work-items/worktree-and-closure-integrity"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED"
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "review_required": true,
+  "approval_status": "PENDING_REVIEW",
+  "reviewed_by": "",
+  "reviewed_at": "",
+  "review_notes": [],
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-21T13:10:10.810Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    }
+  ],
+  "artifact_shape": "adaptive_v1",
+  "request_lane": "maintenance",
+  "requested_lane": "maintenance",
+  "workflow_required": true,
+  "routing_reasons": [
+    "LANE_MAINTENANCE"
+  ],
+  "escalation_reasons": [],
+  "roles": [
+    {
+      "role": "developer",
+      "reasons": [
+        "ROLE_DEVELOPER_BOUNDED_CHANGE"
+      ]
+    },
+    {
+      "role": "qc",
+      "reasons": [
+        "ROLE_QC_DOD_VERIFICATION"
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "gate": "task_plan",
+      "reasons": [
+        "GATE_TASK_PLAN_BOUNDED_CHANGE"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
+      "gate": "dod",
+      "reasons": [
+        "GATE_DOD_TECHNICAL_CLOSEOUT"
+      ],
+      "reviewer_roles": [
+        "qc"
+      ]
+    }
+  ],
+  "human_override": null,
+  "adaptive_activation": {
+    "source_version": "2.6.3",
+    "installed_versions": [
+      "2.6.3",
+      "2.6.3"
+    ],
+    "parity_passed": true
+  }
+}
