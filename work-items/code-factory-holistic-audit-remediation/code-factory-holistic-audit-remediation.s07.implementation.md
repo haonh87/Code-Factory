@@ -867,3 +867,36 @@ Spec-compliance self-check: this entry is audit evidence inside the existing gra
 Fresh main checks before the entry: workflow naming/governance PASS (267 artifacts / 263 notes), execution PASS (263 notes), protocol PASS (18 managed items; 21 legacy skipped), and pack audit PASS. The old September 14 execution failure is historical; it was not reproduced on main. Production unit/build/security/hosted release suites were not rerun for this documentation and checkout operation; the handoff's 45-test-file claim is not presented as a new run.
 
 Focused verification PASS: fatal UTF-8 decoding, absence of replacement characters, `git diff --check`, the exact original 71,620-byte s07 prefix, unchanged JSON and all 19 root untracked files, unchanged frozen hosts/reports, and unchanged authoritative protected files. The primary root's protected register now equals the committed main version because of checkout; no register wording was authored. Main's eight master notes were copied into `/private/tmp/cf-state-review-9kq6l4ei`, with this working s07 and its historical JSON overlaid. The 2.6.3 validators passed naming/governance, execution and planning for all eight notes. This checks the proposed note against the current baseline without modifying the clean main reference worktree or silently repairing old audit-branch s01/s02 metadata. The audit worktree remains dirty and behind main; no commit, integration, independent review or master DoD is claimed.
+
+## WIP checkpoint and main synchronization — 2026-09-21
+
+The user selected the proposed checkpoint-and-sync action. This progress entry records that bounded operation within the existing audit work-item grant; it supersedes the preceding dirty/behind snapshot. The September 14 plan remains historical, and the master continues under its existing approved s06 and ACTIVE/s07 report.
+
+### Preservation and synchronization
+
+- Source baseline: `main = origin/main = 0dc985dcabd6c86132cd8c2d4a7a412b3a8014cd`.
+- Original WIP checkpoint: `ff9e95705431743395c85607ac381255092d3799`, containing exactly s07 and `portfolio-execution-plan.json`, with 1,819 added lines in total.
+- Rebased checkpoint: `cc9a8913ae72873a4eaded7a87a2e6b8609a3f4c`, directly on the main baseline. Rebase completed without conflicts and replayed only the new local checkpoint. Main and remote refs were not updated.
+- Before/after hashes confirm that both WIP files were byte-identical through rebase: s07 was 81,927 bytes / SHA-256 `325e2167310cd3e556d85ebb3c4949fbcb0cc0a8c4726757dff7654f26fc0d70`; JSON was 62,657 bytes / SHA-256 `21d6c5819659584ff7db8b3b8071c25e623edf15ebfd007f6e8678f82df29f2f`. This follow-up entry appends to that s07 prefix; JSON stays unchanged.
+- Recovery files are retained in `/private/tmp/cf-audit-checkpoint-sr1yd0t3`: `audit-wip-original.tar.gz`, `preservation-manifest.json`, and `audit-checkpoint.bundle`. `git bundle verify` passed. The incremental bundle contains the original checkpoint and requires baseline `84713be9e95da3c6192034e57e4eddf41c78c5ba`, which remains in main history.
+
+Option considered: merging main into the stale branch would also preserve the work, but would add a merge commit. Rebase was selected because every pre-checkpoint audit commit was already reachable from main; only one unpublished, documentation-only checkpoint needed replay. The original checkpoint was independently preserved before replay.
+
+### Verification and review
+
+Actual post-rebase checks, completed by `2026-09-21T08:49:31Z`:
+
+| Check | Result |
+|---|---|
+| Exact scope | PASS: branch delta from main contains only the two granted audit paths. |
+| Preservation | PASS: both original WIP file hashes, all 19 root untracked files, and 11 protected/frozen/main-reference files match the preflight manifest. |
+| Workflow / execution / planning | PASS: 267 naming artifacts, 263 governance notes, 263 execution notes, and 263 planning notes. |
+| Protocol / SDD | PASS: 18 managed items with 21 legacy skips retained; 52 SDD notes. |
+| Authoring receipts | Spec, DoR, Approach and Task Plan remain APPROVED with digest_match=true when queried from the rebased audit worktree. |
+| Checkout state | Clean after checkpoint rebase; zero commits behind main and one local checkpoint ahead before this follow-up evidence entry. |
+
+Spec-compliance self-review passed for this bounded operation: the two owned audit artifacts are preserved, no frozen host, protocol control, protected register, child authority or main commit was authored. Documentation-quality self-review passed: the historical plan's supersession remains explicit, original bytes have a recoverable checkpoint, and the new baseline and verification limits are identified. Independent portfolio review and s08 DoD remain outstanding; this operation does not finalize the branch or worktree.
+
+The preceding global-CLI mismatch was resolved by the separately requested installation: `/opt/homebrew/lib/node_modules/workflow-bundle/package.json` now reports 2.6.3, rechecked during this operation. No installation occurred as part of checkpoint/rebase.
+
+This is documentation preservation and synchronization, with no production behavior authored; TDD, production unit/build and hosted release reruns are not applicable to this delta. Final UTF-8, whitespace and preservation checks cover this appended entry before its evidence commit. No push, merge into main, branch deletion or worktree removal is included.
