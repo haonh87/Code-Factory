@@ -6,9 +6,9 @@ language: vi
 
 > Tiếng Anh / English: README.md
 
-Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent. Ứng viên phát hành hiện tại là `workflow-bundle v2.6.2`: workflow bundle cài được cho Codex và Claude Code, có định tuyến request thích ứng, chỉ gọi những role/gate thực sự áp dụng, hỗ trợ approval bundle có transaction journal và telemetry cục bộ với giới hạn riêng tư rõ ràng. Quyền phê duyệt của con người không đổi: mỗi gate áp dụng vẫn phải có đúng reviewer có thẩm quyền và một trusted receipt độc lập. Ứng viên chưa được phát hành cho tới khi human Release gate phê duyệt.
+Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent. Ứng viên phát hành hiện tại là `workflow-bundle v2.6.3`: workflow bundle cài được cho Codex và Claude Code, có định tuyến request thích ứng, chỉ gọi những role/gate thực sự áp dụng, hỗ trợ approval bundle có transaction journal, telemetry cục bộ với giới hạn riêng tư rõ ràng, state disposition theo ID chính xác và terminal archive guard. Quyền phê duyệt của con người không đổi: mỗi gate áp dụng vẫn phải có đúng reviewer có thẩm quyền và một trusted receipt độc lập. Ứng viên chưa được phát hành cho tới khi human Release gate phê duyệt.
 
-Cho tới khi gate đó pass, dùng source commit của candidate và SHA-256 do Workflow Guardrails tạo làm release-candidate reference. Guardrails chỉ pack một lần rồi kiểm tra đúng artifact đó trên Node 18 và Node 22, không build lại theo từng môi trường. Chỉ tạo và chia sẻ tag `v2.6.2` sau khi Release được phê duyệt. Baseline rollback đã xác minh là release bất biến `v2.6.1/42`.
+Cho tới khi gate đó pass, dùng source commit của candidate và SHA-256 do Workflow Guardrails tạo làm release-candidate reference. Guardrails chỉ pack một lần rồi kiểm tra đúng artifact đó trên Node 18 và Node 22, không build lại theo từng môi trường. Chỉ tạo và chia sẻ tag `v2.6.3` sau khi Release được phê duyệt. Baseline rollback đã xác minh là release bất biến `v2.6.2/42`.
 
 ## Requirements
 
@@ -20,7 +20,7 @@ Cho tới khi gate đó pass, dùng source commit của candidate và SHA-256 do
 
 ## Bắt Đầu Ở Đây
 
-Nếu đang tiếp cận repo lần đầu và muốn review ứng viên phát hành `v2.6.2`:
+Nếu đang tiếp cận repo lần đầu và muốn review ứng viên phát hành `v2.6.3`:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -38,7 +38,7 @@ Các tài liệu dưới đây là maintainer hoặc historical context, không 
 
 ## Workflow Commands Nhanh
 
-Command surface public của `v2.6.2` dùng `wfc`.
+Command surface public của `v2.6.3` dùng `wfc`.
 
 Install và quản lý workflow bundle:
 
@@ -103,7 +103,7 @@ Ghi chú:
 - lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase trực tiếp trên TTY đó.
 - implementation path bị khóa ở mức filesystem cho tới khi work item vào `ACTIVE` ở `s07` và được cấp `write-root`.
 - `work-items/` là canonical artifact root cho workflow artifacts của repo.
-- Approval model của `v2.6.2` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate, trusted signed receipts và step-gate evidence bắt buộc đã có.
+- Approval model của `v2.6.3` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate, trusted signed receipts và step-gate evidence bắt buộc đã có.
 
 ## Contract Adaptive Governance
 
@@ -115,12 +115,18 @@ Ghi chú:
 - Adaptive writer chỉ được mở khi source và runtime đã cài tương thích minor version và runtime parity đã pass. Nếu không, writer dừng trước khi đổi delivery state; legacy reader và lệnh approve từng gate vẫn dùng được.
 - Telemetry mặc định tắt. `--telemetry true` hoặc `CF_TELEMETRY=on` chỉ bật record cục bộ, theo allowlist và dùng mã định danh giả danh; raw record hết hạn sau 30 ngày, aggregate sau 90 ngày. Không có remote exporter.
 
+## State Disposition Chính Xác Và Archive Guard
+
+- `wfc work-item status --json` trả về `disposition_targets[]` gắn với snapshot; dùng đúng `state_id` để chọn một blocker hoặc required action.
+- `wfc work-item dispose-state` yêu cầu disposition có chữ ký và được Maintainer cho phép, chỉ chuyển entry đã chọn sang `resolved_state_history[]` append-only, đồng thời giữ nguyên giá trị gốc.
+- Retry cùng operation là idempotent; stale ID, tái sử dụng ID xung đột, archive khi còn blocker và overwrite terminal state đều bị từ chối thay vì suy diễn từ text cho người đọc.
+
 ## Workflow Docs
 
 ### Theo Mục Đích
 
 - Public docs cho người mới dùng workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface cho `v2.6.2`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface cho `v2.6.3`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart cho `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README cho cài đặt hoặc publish: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 

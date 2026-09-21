@@ -1,0 +1,344 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "VERIFIED",
+  "decision_owner": "agent",
+  "protocol_owner": "developer",
+  "raw_request_summary": "Promote v263-3204749e with v262 fallback.",
+  "request_source": "user-chat",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "release-workflow-bundle-v2-6-3",
+      "work_item_title": "Release Workflow Bundle V2 6 3",
+      "work_item_type": "CHANGE",
+      "scope_summary": "Promote v263-3204749e with v262 fallback.",
+      "primary_outcome": "Promote v263-3204749e with v262 fallback.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "full",
+      "sdd_reasons": [],
+      "sdd_preset": "full",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [],
+      "collision_notes": [],
+      "change_strategy": "create_new",
+      "change_id": "CHANGE-007",
+      "change_reason": "Scope có tín hiệu cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:change -- --change-id CHANGE-007 --work-item release-workflow-bundle-v2-6-3",
+        "npm run scaffold:workflow -- --work-item release-workflow-bundle-v2-6-3 --planning-track full --delivery-context brownfield --change-id CHANGE-007 --governance-profile strict --adaptive-writes true --request-lane product_delivery --adaptive-source-version 2.6.2 --adaptive-installed-version 2.6.2 --adaptive-parity-passed true --release true",
+        "npm run validate:workflow -- --workflow-root work-items/release-workflow-bundle-v2-6-3 --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/release-workflow-bundle-v2-6-3"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=CHANGE",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict",
+    "change_strategy=create_new",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=full",
+    "selected_profile=full",
+    "sdd_mode=none",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "release-workflow-bundle-v2-6-3",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/release-workflow-bundle-v2-6-3/work-items/release-workflow-bundle-v2-6-3",
+  "current_step": "s08",
+  "granted_write_paths": [
+    "workflow-bundle.manifest.json",
+    "packages/workflow-bundle/workflow-bundle.manifest.json",
+    "packages/workflow-bundle/package.json",
+    "packages/workflow-bundle/bin/wfc.js",
+    ".claude/CLAUDE.md",
+    "README.md",
+    "README.vi.md",
+    "docs/publish-surface.md",
+    "docs/publish-surface.vi.md",
+    "docs/workflow-bundle-quickstart.md",
+    "docs/workflow-bundle-quickstart.vi.md",
+    "docs/workflow-docs-map.md",
+    "docs/workflow-docs-map.vi.md",
+    "packages/workflow-bundle/README.md",
+    "packages/workflow-bundle/README.vi.md",
+    "docs/releases/workflow-bundle-v2.6.3.md",
+    "packages/workflow-bundle/test/release-surface.test.js",
+    "packages/workflow-bundle/test/release-rollback-smoke.test.js",
+    "packages/workflow-bundle/test/materialize-work-item.test.js",
+    "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js",
+    "packages/workflow-bundle/test/release-install-all-smoke.test.js",
+    "work-items/release-workflow-bundle-v2-6-3"
+  ],
+  "change_strategy": "create_new",
+  "change_id": "CHANGE-007",
+  "handoff_target": "definition-of-done",
+  "required_actions": [
+    {
+      "id": "se:cbbdfae039cbb6411c1ff5d2f9cc3ded4d93b3649f5284d4546f7c303ed88ecf",
+      "kind": "workflow_followup",
+      "text": "Collect DoD evidence and close the work item when ready."
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/release-workflow-bundle-v2-6-3"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "CHANGE_CREATED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "WORK_ITEM_BLOCKED",
+    "WORK_ITEM_RESUMED",
+    "VERIFICATION_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-09-19T08:48:27.806Z",
+  "review_notes": [
+    "PO approved opening the workflow-bundle v2.6.3 release work item; later gates remain independent."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-19T08:42:26.740Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-09-19T08:42:26.741Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Materialization inputs are ready for scaffold."
+    },
+    {
+      "timestamp": "2026-09-19T08:42:26.796Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Auto-scaffolded workflow artifacts."
+    },
+    {
+      "timestamp": "2026-09-19T08:48:27.807Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "PO approved opening the workflow-bundle v2.6.3 release work item; later gates remain independent."
+    },
+    {
+      "timestamp": "2026-09-19T13:54:13.707Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Task Plan receipt verified; activate s07 with the approved 19-path release scope. DoD, Release, publication, Business Acceptance, merge, and cleanup remain independent."
+    },
+    {
+      "timestamp": "2026-09-19T14:18:20.327Z",
+      "action": "block",
+      "actor": "coordinator",
+      "from_status": "ACTIVE",
+      "to_status": "BLOCKED",
+      "note": "T5 stopped at the approved boundary. Proposed T5a adds exactly three regression-test paths; no out-of-scope edit was made."
+    },
+    {
+      "timestamp": "2026-09-19T14:31:06.992Z",
+      "action": "resume",
+      "actor": "coordinator",
+      "from_status": "BLOCKED",
+      "to_status": "ACTIVE",
+      "note": "Task Plan T5a receipt matches and Maintainer disposition is signed; resume s07 with the approved 22-path grant. Review, s08, Release, publication, Business Acceptance, merge, and cleanup remain independent."
+    },
+    {
+      "timestamp": "2026-09-20T14:32:50.193Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "QC approved branch Technical Verification for PR #9 source 09eed7d2573ebf6fad9400de6748862c1035d947, run 35516336889, PRE_MERGE_ONLY candidate SHA-256 f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f, rollback v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; AC-R263-01..08 and AC-R263-10 PASS; DoD, merge, main binding, Release, publication, Business Acceptance, archive, and cleanup remain independent."
+    }
+  ],
+  "resolved_state_history": [
+    {
+      "operation_id": "b1fa11f2-c7b5-40ab-aa95-cc253f06fe3e",
+      "source_collection": "blockers",
+      "source_entry_id": "di:b7cbc1a234e4567ef1a1d29c20c0e776cd3f90967de4ccc7aa13080093faea8d",
+      "original_entry": {
+        "id": "se:609ef764810c2b5b67dd624b2ecb1fe248572b8802fdf7d2adeb891c659574a0",
+        "kind": "delivery_blocker",
+        "text": "F-R263-T5-001: full unit and candidate artifact smoke are blocked by three v2.6.2 expectations outside the approved write grant; Developer approval of Task Plan amendment T5a is required."
+      },
+      "original_text": "F-R263-T5-001: full unit and candidate artifact smoke are blocked by three v2.6.2 expectations outside the approved write grant; Developer approval of Task Plan amendment T5a is required.",
+      "actor": "maintainer",
+      "reason": "Developer approved T5a and the amended Task Plan receipt matches; dispose the superseded scope blocker so s07 may resume.",
+      "resolved_at": "2026-09-19T14:30:33.226Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "release-workflow-bundle-v2-6-3",
+          "operation_id": "b1fa11f2-c7b5-40ab-aa95-cc253f06fe3e",
+          "state_id": "di:b7cbc1a234e4567ef1a1d29c20c0e776cd3f90967de4ccc7aa13080093faea8d",
+          "source_collection": "blockers",
+          "original_entry": {
+            "id": "se:609ef764810c2b5b67dd624b2ecb1fe248572b8802fdf7d2adeb891c659574a0",
+            "kind": "delivery_blocker",
+            "text": "F-R263-T5-001: full unit and candidate artifact smoke are blocked by three v2.6.2 expectations outside the approved write grant; Developer approval of Task Plan amendment T5a is required."
+          },
+          "original_text": "F-R263-T5-001: full unit and candidate artifact smoke are blocked by three v2.6.2 expectations outside the approved write grant; Developer approval of Task Plan amendment T5a is required.",
+          "actor": "maintainer",
+          "reason": "Developer approved T5a and the amended Task Plan receipt matches; dispose the superseded scope blocker so s07 may resume.",
+          "resolved_at": "2026-09-19T14:30:33.226Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "FODRrxbkJwBR96OhF4MdxpIxL3LO40zFRvPL6hW+kQX6XLvrw0P6v7ghMrOIbCHsE1eLbu65yz+e7wDChXKDCQ=="
+      }
+    }
+  ],
+  "artifact_shape": "adaptive_v1",
+  "request_lane": "product_delivery",
+  "workflow_required": true,
+  "routing_reasons": [
+    "LANE_PRODUCT_DELIVERY"
+  ],
+  "escalation_reasons": [
+    "HARD_RELEASE"
+  ],
+  "roles": [
+    {
+      "role": "po",
+      "reasons": [
+        "ROLE_PO_PRODUCT_OUTCOME"
+      ]
+    },
+    {
+      "role": "ba",
+      "reasons": [
+        "ROLE_BA_REQUIREMENTS"
+      ]
+    },
+    {
+      "role": "developer",
+      "reasons": [
+        "ROLE_DEVELOPER_DELIVERY"
+      ]
+    },
+    {
+      "role": "qc",
+      "reasons": [
+        "ROLE_QC_VERIFICATION"
+      ]
+    },
+    {
+      "role": "devops",
+      "reasons": [
+        "ROLE_DEVOPS_RELEASE"
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "gate": "spec",
+      "reasons": [
+        "GATE_SPEC_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "ba"
+      ]
+    },
+    {
+      "gate": "dor",
+      "reasons": [
+        "GATE_DOR_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "ba",
+        "qc"
+      ]
+    },
+    {
+      "gate": "approach",
+      "reasons": [
+        "GATE_APPROACH_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
+      "gate": "task_plan",
+      "reasons": [
+        "GATE_TASK_PLAN_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
+      "gate": "dod",
+      "reasons": [
+        "GATE_DOD_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "qc"
+      ]
+    },
+    {
+      "gate": "release",
+      "reasons": [
+        "GATE_RELEASE_PUBLICATION"
+      ],
+      "reviewer_roles": [
+        "devops",
+        "qc"
+      ]
+    },
+    {
+      "gate": "business_acceptance",
+      "reasons": [
+        "GATE_BUSINESS_ACCEPTANCE_PRODUCT_OUTCOME",
+        "GATE_BUSINESS_ACCEPTANCE_RELEASE_OUTCOME"
+      ],
+      "reviewer_roles": [
+        "po"
+      ]
+    }
+  ],
+  "human_override": null,
+  "adaptive_activation": {
+    "source_version": "2.6.2",
+    "installed_versions": [
+      "2.6.2"
+    ],
+    "parity_passed": true
+  }
+}

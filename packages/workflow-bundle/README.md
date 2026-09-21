@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: README.vi.md
 
-`workflow-bundle` is the CLI package prepared for the `v2.6.2` release candidate. It installs the workflow bundle for Codex or Claude Code, routes requests into an applicable governance lane, scaffolds or validates delivery workflows, and supports journaled human approval bundles. Applicable gates still require their authorized human reviewers and independent trusted receipts. The package remains unpublished until the human Release gate passes.
+`workflow-bundle` is the CLI package prepared for the `v2.6.3` release candidate. It installs the workflow bundle for Codex or Claude Code, routes requests into an applicable governance lane, scaffolds or validates delivery workflows, supports journaled human approval bundles, and provides exact workflow-state disposition. Applicable gates still require their authorized human reviewers and independent trusted receipts. The package remains unpublished until the human Release gate passes.
 
 Detailed quickstart: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -43,31 +43,31 @@ npm link
 wfc version
 ```
 
-### Roll Back From v2.6.2 To v2.6.1
+### Roll Back From v2.6.3 To v2.6.2
 
 Capture the current mode, scope, project roots, and status before replacing the package. Stop adaptive
 writes by omitting `--adaptive-writes true`, then complete or retry the originating bundle command so
 its transaction recovery leaves no live journal. Individual `wfc gate approve` commands remain the
-fallback. Then install the retained immutable v2.6.1 tarball and run `install` for every recorded target:
+fallback. Then install the retained immutable v2.6.2 tarball and run `install` for every recorded target:
 
 ```bash
 wfc status --mode codex
-npm install -g /absolute/path/to/workflow-bundle-2.6.1.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.6.2.tgz
 wfc install --mode codex --scope global
 wfc install --mode codex --scope project --project-root <repo-root>
 wfc status --mode codex
 wfc skills list --mode codex
 ```
 
-Use the same sequence with `--mode claude` for Claude Code. Use the retained immutable v2.6.1
+Use the same sequence with `--mode claude` for Claude Code. Use the retained immutable v2.6.2
 artifact and `wfc install` for the downgrade so the fallback identity is explicit; do not rely on a
-mutable registry alias. The supported path restores the v2.6.1 source behavior and preserves the
+mutable registry alias. The supported path restores the v2.6.2 source behavior and preserves the
 42-skill inventory plus unmanaged files. Legacy/adaptive dual-read compatibility and historical receipts
 must remain intact; never rewrite or re-sign them as part of rollback. Rehearse against isolated homes
 before operating on a live installation, and do not mutate a live global install before the human Release
 gate authorizes it.
 
-## What `v2.6.2` Includes
+## What `v2.6.3` Includes
 
 - workflow bundle install surface via `wfc install|update|status|skills`
 - core authoring CLI via `wfc init|scaffold|validate`
@@ -85,6 +85,13 @@ gate authorizes it.
 - one Guardrails-built package candidate verified by SHA-256 on Node 18 and Node 22 without per-environment rebuild
 - machine enforcement for artifact placement, ownership duplication, section-first execution reads, and registered role-indexed handoffs
 - permission-safe repeat install/update behavior that preserves unmanaged content
+
+## Exact State Disposition And Archive Guards
+
+- `wfc work-item status --json` exposes snapshot-bound `disposition_targets[]` for active blockers and required actions.
+- `wfc work-item dispose-state` selects exactly one `state_id`, requires an authorized Maintainer signature, and writes the unmodified source entry to append-only `resolved_state_history[]`.
+- Identical `operation_id` retries are idempotent; conflicting reuse, stale IDs, and semantic clearing of unknown legacy text are rejected.
+- Archive and resume transitions do not parse prose. Archive refuses active blockers or required actions, and terminal reports cannot be silently overwritten by materialization.
 
 ## Runtime Model
 

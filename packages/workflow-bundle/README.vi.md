@@ -6,7 +6,7 @@ language: vi
 
 > Tiếng Anh / English: README.md
 
-`workflow-bundle` là package CLI được chuẩn bị cho ứng viên phát hành `v2.6.2`. Package cài workflow bundle cho Codex hoặc Claude Code, định tuyến request vào governance lane phù hợp, scaffold hoặc validate delivery workflow và hỗ trợ human approval bundle có transaction journal. Gate nào áp dụng vẫn phải có đúng human reviewer có thẩm quyền và một trusted receipt độc lập. Package chưa được phát hành cho tới khi human Release gate phê duyệt.
+`workflow-bundle` là package CLI được chuẩn bị cho ứng viên phát hành `v2.6.3`. Package cài workflow bundle cho Codex hoặc Claude Code, định tuyến request vào governance lane phù hợp, scaffold hoặc validate delivery workflow, hỗ trợ human approval bundle có transaction journal và cung cấp workflow-state disposition chính xác. Gate nào áp dụng vẫn phải có đúng human reviewer có thẩm quyền và một trusted receipt độc lập. Package chưa được phát hành cho tới khi human Release gate phê duyệt.
 
 Quickstart chi tiết: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -43,30 +43,30 @@ npm link
 wfc version
 ```
 
-### Roll Back Từ v2.6.2 Về v2.6.1
+### Roll Back Từ v2.6.3 Về v2.6.2
 
 Ghi lại mode, scope, project root và status hiện tại trước khi thay package. Dừng adaptive writer bằng
 cách không truyền `--adaptive-writes true`, sau đó hoàn tất hoặc chạy lại bundle command ban đầu để
 transaction recovery không để lại live journal. Các lệnh `wfc gate approve` riêng lẻ vẫn là fallback.
-Tiếp theo, cài đúng tarball v2.6.1 bất biến đã được lưu và chạy `install` cho từng target đã ghi:
+Tiếp theo, cài đúng tarball v2.6.2 bất biến đã được lưu và chạy `install` cho từng target đã ghi:
 
 ```bash
 wfc status --mode codex
-npm install -g /absolute/path/to/workflow-bundle-2.6.1.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.6.2.tgz
 wfc install --mode codex --scope global
 wfc install --mode codex --scope project --project-root <repo-root>
 wfc status --mode codex
 wfc skills list --mode codex
 ```
 
-Dùng cùng chuỗi lệnh với `--mode claude` cho Claude Code. Dùng artifact v2.6.1 bất biến đã được lưu
-và `wfc install` để hạ cấp nhằm giữ identity của fallback tường minh; không dựa vào registry alias có
-có thể thay đổi. Đường được hỗ trợ sẽ khôi phục hành vi source v2.6.1, giữ inventory 42 skill và các file
+Dùng cùng chuỗi lệnh với `--mode claude` cho Claude Code. Dùng artifact v2.6.2 bất biến đã được lưu
+và `wfc install` để hạ cấp nhằm giữ identity của fallback tường minh; không dựa vào registry alias
+có thể thay đổi. Đường được hỗ trợ sẽ khôi phục hành vi source v2.6.2, giữ inventory 42 skill và các file
 unmanaged. Phải giữ nguyên khả năng dual-read legacy/adaptive cùng mọi historical receipt; không rewrite
 hoặc ký lại receipt khi rollback. Hãy diễn tập với home cô lập trước khi thao tác trên bản cài live, và
 không thay đổi global install live trước khi human Release gate cho phép.
 
-## What `v2.6.2` Includes
+## What `v2.6.3` Includes
 
 - workflow bundle install surface qua `wfc install|update|status|skills`
 - core authoring CLI qua `wfc init|scaffold|validate`
@@ -84,6 +84,13 @@ không thay đổi global install live trước khi human Release gate cho phép
 - một package candidate do Guardrails build, được xác minh bằng SHA-256 trên Node 18 và Node 22 mà không rebuild theo môi trường
 - machine enforcement cho artifact placement, ownership duplication, section-first execution reader và role-indexed handoff đã đăng ký
 - repeat install/update an toàn về permission và giữ nguyên nội dung unmanaged
+
+## State Disposition Chính Xác Và Archive Guard
+
+- `wfc work-item status --json` trả về `disposition_targets[]` gắn với snapshot cho blocker và required action đang active.
+- `wfc work-item dispose-state` chọn đúng một `state_id`, yêu cầu chữ ký Maintainer có thẩm quyền và ghi source entry không thay đổi vào `resolved_state_history[]` append-only.
+- Retry cùng `operation_id` là idempotent; tái sử dụng ID xung đột, stale ID và semantic clearing trên unknown legacy text đều bị từ chối.
+- Transition archive và resume không parse prose. Archive từ chối khi còn blocker hoặc required action active, và materialization không được âm thầm overwrite report terminal.
 
 ## Runtime Model
 

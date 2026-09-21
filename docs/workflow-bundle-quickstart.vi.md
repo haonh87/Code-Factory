@@ -6,7 +6,7 @@ language: vi
 
 > Tiếng Anh / English: workflow-bundle-quickstart.md
 
-Hướng dẫn này tập trung vào ứng viên phát hành `workflow-bundle v2.6.2`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, định tuyến request bằng adaptive governance, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Không thể cài từ registry cho tới khi human Release gate phê duyệt. Candidate giữ 42 managed skill và giữ nguyên thẩm quyền độc lập của human cho từng gate áp dụng.
+Hướng dẫn này tập trung vào ứng viên phát hành `workflow-bundle v2.6.3`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, định tuyến request bằng adaptive governance, xử lý workflow state cũ theo ID chính xác, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Không thể cài từ registry cho tới khi human Release gate phê duyệt. Candidate giữ 42 managed skill và giữ nguyên thẩm quyền độc lập của human cho từng gate áp dụng.
 
 ## Mục Tiêu
 
@@ -149,6 +149,27 @@ Consistency rule:
 - nếu `Missing Gates` khác `NONE`, `Workflow Status` không được là `ACTIVE`, `READY_FOR_REVIEW` hoặc `VERIFIED`
 - nếu `Missing Gates` khác `NONE`, `Next Human Action` không được là `NONE`
 - request greenfield kiểu `QR Voucher + voucher service API + tone brand` trong repo trống phải dừng ở `proposal stage`, không được auto-scaffold
+
+## Xử Lý State Theo ID Chính Xác
+
+Trước hết refresh report snapshot và xem các disposition target chỉ đọc:
+
+```bash
+wfc work-item status --work-item <work-item-slug> --json
+```
+
+Chọn đúng `state_id` trong `disposition_targets[]`, sau đó để Maintainer có thẩm quyền chạy disposition trong terminal tương tác:
+
+```bash
+wfc work-item dispose-state \
+  --work-item <work-item-slug> \
+  --state-id <snapshot-bound-state-id> \
+  --operation-id <unique-operation-id> \
+  --reason "<lý-do-disposition-tường-minh>" \
+  --reviewed-by maintainer
+```
+
+Lệnh chỉ chuyển raw entry đã chọn sang `resolved_state_history[]` append-only có chữ ký; legacy text được giữ nguyên và không bị suy diễn bằng regex hay fuzzy matching. Phải refresh status sau mọi thay đổi report vì stale ID sẽ bị từ chối. `wfc work-item archive` cũng từ chối khi còn blocker hoặc required action active, nên disposition và archive vẫn là hai action có thẩm quyền riêng.
 
 ## Định Tuyến Request Thích Ứng
 
