@@ -292,7 +292,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: ARCHIVED
 approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
@@ -355,12 +355,10 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-09-19T08:48:27.806Z"
-handoff_target: "protocol-close"
-last_transition_action: "approve-closeout-bundle"
-last_transition_at: "2026-09-21T03:54:52Z"
-required_actions:
-  - {"id":"se:cbbdfae039cbb6411c1ff5d2f9cc3ded4d93b3649f5284d4546f7c303ed88ecf","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
-  - {"id":"se:9894a38e74711aebd4daaaa0fa287b56de225b7598921156be750942feafd544","kind":"work_item_close","text":"wfc work-item close --work-item release-workflow-bundle-v2-6-3"}
+handoff_target: "none"
+last_transition_action: "archive"
+last_transition_at: "2026-09-21T04:30:08.675Z"
+required_actions: []
 blockers: []
 review_notes:
   - "PO approved opening the workflow-bundle v2.6.3 release work item; later gates remain independent."
@@ -380,6 +378,8 @@ audit_events:
   - "WORK_ITEM_RESUMED"
   - "VERIFICATION_CONFIRMED"
   - "CLOSEOUT_BUNDLE_APPROVED"
+  - "DONE_CONFIRMED"
+  - "ARCHIVE_CONFIRMED"
 ```
 
 ## Traceability

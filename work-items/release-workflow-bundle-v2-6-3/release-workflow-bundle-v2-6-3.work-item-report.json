@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "ARCHIVED",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Promote v263-3204749e with v262 fallback.",
@@ -84,19 +84,8 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CHANGE-007",
-  "handoff_target": "protocol-close",
-  "required_actions": [
-    {
-      "id": "se:cbbdfae039cbb6411c1ff5d2f9cc3ded4d93b3649f5284d4546f7c303ed88ecf",
-      "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
-    },
-    {
-      "id": "se:9894a38e74711aebd4daaaa0fa287b56de225b7598921156be750942feafd544",
-      "kind": "work_item_close",
-      "text": "wfc work-item close --work-item release-workflow-bundle-v2-6-3"
-    }
-  ],
+  "handoff_target": "none",
+  "required_actions": [],
   "blockers": [],
   "refs": [
     "work-items/release-workflow-bundle-v2-6-3"
@@ -114,7 +103,9 @@
     "WORK_ITEM_BLOCKED",
     "WORK_ITEM_RESUMED",
     "VERIFICATION_CONFIRMED",
-    "CLOSEOUT_BUNDLE_APPROVED"
+    "CLOSEOUT_BUNDLE_APPROVED",
+    "DONE_CONFIRMED",
+    "ARCHIVE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -200,6 +191,22 @@
       "to_status": "VERIFIED",
       "note": "APPROVED closeout gates: dod, release, business_acceptance",
       "transaction_id": "598f6494-9654-4283-82ad-d88110bcc4cf"
+    },
+    {
+      "timestamp": "2026-09-21T04:29:54.566Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Terminal DoD, Release, publication verification, and Business Acceptance are complete for workflow-bundle v2.6.3 candidate f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f."
+    },
+    {
+      "timestamp": "2026-09-21T04:30:08.675Z",
+      "action": "archive",
+      "actor": "coordinator",
+      "from_status": "DONE",
+      "to_status": "ARCHIVED",
+      "note": "Archived after authoritative main verification, public v2.6.3 publication, Business Acceptance, and terminal closeout."
     }
   ],
   "resolved_state_history": [
