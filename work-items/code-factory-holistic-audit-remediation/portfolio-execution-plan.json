@@ -1,0 +1,1240 @@
+{
+  "artifact_id": "code-factory-holistic-audit-remediation.portfolio-execution-plan",
+  "artifact_family": "audit-plan",
+  "artifact_role": "supporting",
+  "source_of_truth": false,
+  "status": "draft",
+  "planning_only": true,
+  "created_at": "2026-09-14T07:50:59.223Z",
+  "language": "en",
+  "work_item_slug": "code-factory-holistic-audit-remediation",
+  "canonical_task_plan": "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s06.task-breakdown.md",
+  "canonical_spec": "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s04.acceptance-criteria.md",
+  "canonical_approach": "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s05.technical-approach.md",
+  "priority_decision": "User explicitly requested CR-008 first on 2026-09-14; no child gate, waiver, applicability amendment or external action approval inferred.",
+  "protected_baseline": {
+    "at": "2026-09-14T07:50:59.223Z",
+    "masterHead": "84713be9e95da3c6192034e57e4eddf41c78c5ba",
+    "rcrHead": "832f449cd5012d661b5e5636d801709d7db9ac35",
+    "grants": [
+      "work-items/code-factory-holistic-audit-remediation",
+      "docs/audits/code-factory-holistic-inventory.json",
+      "docs/audits/code-factory-holistic-coverage-matrix.md",
+      "docs/audits/code-factory-holistic-finding-disposition.md",
+      "docs/audits/code-factory-holistic-legacy-document-classification.md",
+      "docs/audits/code-factory-holistic-language-review.md"
+    ],
+    "masterProtected": [
+      {
+        "path": "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md",
+        "sha256": "e9f84613af3ca7b5788ad3d948f56f5c8650fc7d9fbc463076950435d75b7a8d"
+      },
+      {
+        "path": "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.vi.md",
+        "sha256": "522a9fe46aef0dbd9cc3067ccdca15664abb65f24d4334495e766b10963542fc"
+      },
+      {
+        "path": "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s03.open-questions.md",
+        "sha256": "9402538f7049896970cb86f2d242d23e8b2967b59507a5d60d9c99d84c19b804"
+      },
+      {
+        "path": "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s04.acceptance-criteria.md",
+        "sha256": "41078181e9b0e8186c900b8d1908ca9f52820d6b763b37467681325edc389f29"
+      },
+      {
+        "path": "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s05.technical-approach.md",
+        "sha256": "10b4015018013eebc9a623c5651148f3b4e648c46717f83b1c401b1df2048f8b"
+      },
+      {
+        "path": "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s06.task-breakdown.md",
+        "sha256": "5e27d9630ad5d502709069103f5deb22952604b30ab52115c5a03917ad9b4bb5"
+      },
+      {
+        "path": "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.work-item-report.json",
+        "sha256": "ae4d0c89b9069a131988cd843fd7df58d0b368c5bfa2c8aea7c39d3cab3527c6"
+      }
+    ],
+    "rcrS08": "9111f0e2df4a58813be80c63c6db6bc74090f2ec5c8f0ee6ee2265fae6be8dcf",
+    "rcrReport": "c7b312129807c531f35f7fc67a1305a9489dae092fecc62d5e27ae3b2bf62250",
+    "rcrWorkflow": "8da65bd3fec41cb5cd9afadf03d220601a4d5c7c8fd84bff007fce5f7f7d3202"
+  },
+  "snapshot": {
+    "master_worktree_head": "84713be9e95da3c6192034e57e4eddf41c78c5ba",
+    "cr008_worktree_head": "832f449cd5012d661b5e5636d801709d7db9ac35",
+    "pinned_audit_source": "5b85d7f943fff4fc9e0f559faed43e79f9483b12",
+    "pinned_main_comparator": "2e3aaded1779787d993b7e5cacc96bfae008b3bc",
+    "source_skills_inventoried": 42,
+    "skill_groups": 7,
+    "surface_families": 8,
+    "supporting_files": 227,
+    "canonical_skills_read": 25,
+    "operative_en_refs_read": 25,
+    "operative_en_refs_total": 69,
+    "legacy_classified": 16,
+    "legacy_closed_historical": 8,
+    "legacy_actionable": 1,
+    "legacy_ambiguous": 7,
+    "starter_document_allowlist": 27,
+    "master_full_semantic_review_complete": false,
+    "master_CF_MB1_human_verdict": "NOT_OPENED",
+    "installed_observation": "Historical M0/M1: both harnesses2.3.2/40 vs source2.6.1/42; not a fresh install or activation proof",
+    "child_ac_pass": 9,
+    "child_ac_total": 10,
+    "parent_corrected_candidate_verification": "PENDING",
+    "cr008_complete": false,
+    "whole_goal_complete": false
+  },
+  "implementation_goal": "Complete the whole Code-Factory audit/remediation goal, prioritizing CR-008 closure; coordinate independently governed child fixes and final identity/language/security evidence, not a monolithic rewrite.",
+  "ba_lane": {
+    "acceptance_coverage": [
+      {
+        "ac": "AC-CF-001",
+        "tasks": [
+          "M1",
+          "M2",
+          "M10",
+          "M11"
+        ]
+      },
+      {
+        "ac": "AC-CF-002",
+        "tasks": [
+          "M3",
+          "M4",
+          "M9",
+          "M11"
+        ]
+      },
+      {
+        "ac": "AC-CF-003",
+        "tasks": [
+          "M4",
+          "M5",
+          "M6",
+          "M8",
+          "M9"
+        ]
+      },
+      {
+        "ac": "AC-CF-004",
+        "tasks": [
+          "M0",
+          "M4",
+          "M5",
+          "M9",
+          "M11"
+        ]
+      },
+      {
+        "ac": "AC-CF-005",
+        "tasks": [
+          "M5",
+          "M10",
+          "M11"
+        ]
+      },
+      {
+        "ac": "AC-CF-006",
+        "tasks": [
+          "M2",
+          "M6",
+          "M9",
+          "M11"
+        ]
+      },
+      {
+        "ac": "AC-CF-007",
+        "tasks": [
+          "M7",
+          "M9",
+          "M11"
+        ]
+      },
+      {
+        "ac": "AC-CF-008",
+        "tasks": [
+          "M3",
+          "M4",
+          "M9",
+          "M11"
+        ]
+      },
+      {
+        "ac": "AC-CF-009",
+        "tasks": [
+          "M5",
+          "M10",
+          "M11"
+        ]
+      },
+      {
+        "ac": "AC-CF-010",
+        "tasks": [
+          "M2",
+          "M5",
+          "M9",
+          "M11"
+        ]
+      },
+      {
+        "ac": "AC-CF-011",
+        "tasks": [
+          "M3",
+          "M7",
+          "M10",
+          "M11"
+        ]
+      }
+    ],
+    "scope_guards": [
+      "Six master audit-only roots retained; frozen master and child authoring hosts unchanged in this plan",
+      "Existing child execution remains governed by its own approval and grants",
+      "Unknown legacy text preserved exactly; never cleared by prose inference",
+      "CR-008 AC-RCR-06 atomicity and AC-RCR-08 full parent verification are not cut",
+      "AI recommendations and scores are not human gate verdicts"
+    ],
+    "human_review_points": [
+      "CR2 explicit owner/applicability decision",
+      "CF-MB1 QC Spec Compliance then Developer/QC Code Quality",
+      "CF-MB2 QC Spec Compliance with applicable BA language evidence then Developer/QC Code Quality",
+      "Separate child materialization/readiness/review/verification/terminal receipts",
+      "Master QC s08 opening, Technical Verification and DoD; external mutation authority remains separate"
+    ]
+  },
+  "dev_lane": {
+    "path_map": [
+      {
+        "path": "work-items/code-factory-holistic-audit-remediation",
+        "permission": "Existing approved audit-only root; frozen hosts protected"
+      },
+      {
+        "path": "docs/audits/code-factory-holistic-inventory.json",
+        "permission": "Existing approved audit-only root; frozen hosts protected"
+      },
+      {
+        "path": "docs/audits/code-factory-holistic-coverage-matrix.md",
+        "permission": "Existing approved audit-only root; frozen hosts protected"
+      },
+      {
+        "path": "docs/audits/code-factory-holistic-finding-disposition.md",
+        "permission": "Existing approved audit-only root; frozen hosts protected"
+      },
+      {
+        "path": "docs/audits/code-factory-holistic-legacy-document-classification.md",
+        "permission": "Existing approved audit-only root; frozen hosts protected"
+      },
+      {
+        "path": "docs/audits/code-factory-holistic-language-review.md",
+        "permission": "Existing approved audit-only root; frozen hosts protected"
+      }
+    ],
+    "technical_sequence": [
+      "CR1",
+      "CR2",
+      "CR3",
+      "CR4",
+      "CR5",
+      "CR6",
+      "CR7",
+      "CR8",
+      "M2",
+      "M3",
+      "M4",
+      "CF-MB1",
+      "M5",
+      "M6",
+      "M7",
+      "M8",
+      "M9",
+      "CF-MB2",
+      "M10",
+      "M11"
+    ],
+    "tdd_targets": [
+      "Master plan documentation: not applicable; UTF-8/schema/links/dependency/hash checks instead",
+      "Behavior-changing children: named fail-first regression -> minimal change -> pass; verify standard-path execution",
+      "Legacy unknown blocker containing review/outstanding must survive; transaction_id is a required event field for approval transactions, not optional prose"
+    ]
+  },
+  "task_breakdown": [
+    {
+      "id": "M0",
+      "owner_role": "developer",
+      "name": "Preserve admission and frozen baselines",
+      "objective": "Confirm master execution grants and preserve approved artifacts and concurrent ownership.",
+      "paths_in_scope": [
+        "work-items/code-factory-holistic-audit-remediation"
+      ],
+      "dependencies": [],
+      "outputs_expected": [
+        "Four current authoring receipts with matching digests",
+        "Six audit-only write roots and protected digest snapshot"
+      ],
+      "review_checkpoint": "Existing explicit activation retained; no new approval inferred.",
+      "verification_hint": "Read wfc gate status for spec/dor/approach/task_plan; compare protected hashes and Git status.",
+      "status": "COMPLETE_OBSERVED",
+      "remaining_effort_hours": [
+        0,
+        1
+      ],
+      "authority": "master audit-only; external child execution is not granted by this task"
+    },
+    {
+      "id": "M1",
+      "owner_role": "developer",
+      "name": "Refresh full inventory and effective resolution",
+      "objective": "Maintain a pinned inventory for source, overlays and installed harnesses without conflating tiers.",
+      "paths_in_scope": [
+        "docs/audits/code-factory-holistic-inventory.json",
+        "work-items/code-factory-holistic-audit-remediation"
+      ],
+      "dependencies": [
+        "M0"
+      ],
+      "outputs_expected": [
+        "42 unique canonical skill rows and eight surface families on the approved snapshot",
+        "Separately attributed Codex/Claude/local overrides, manifests and resolution evidence"
+      ],
+      "review_checkpoint": "Overlay discovery never authorizes deletion; installed observations are not release proof.",
+      "verification_hint": "Match pinned git ls-tree and inventory hashes; recount each new snapshot; record unknown discovery precedence explicitly.",
+      "status": "INVENTORY_COMPLETE_RESOLUTION_PENDING",
+      "remaining_effort_hours": [
+        2,
+        4
+      ],
+      "authority": "master audit-only; external child execution is not granted by this task"
+    },
+    {
+      "id": "M2",
+      "owner_role": "developer",
+      "name": "Finish full skill and cross-boundary semantic review",
+      "objective": "Complete unread source contracts and explain all authority/schema/trigger conflicts.",
+      "paths_in_scope": [
+        "docs/audits/code-factory-holistic-inventory.json",
+        "docs/audits/code-factory-holistic-coverage-matrix.md"
+      ],
+      "dependencies": [
+        "M1"
+      ],
+      "outputs_expected": [
+        "Remaining 17 SKILL.md and 44 operative EN references reviewed against the recorded 25/42 and 25/69 baseline",
+        "Authority/router/backbone/runtime/validator/adapter/hook/MCP/CI contract rows",
+        "Every canonical skill has trigger, boundary, input/output, schema, references, language/role and discovery evidence"
+      ],
+      "review_checkpoint": "Read-only master audit; semantic FAIL remains blocking even if pack-audit passes.",
+      "verification_hint": "Match every row to pinned source digest; run existing mechanical audit and role contract tests; reject unread rows at M2 completion.",
+      "status": "IN_PROGRESS",
+      "remaining_effort_hours": [
+        12,
+        20
+      ],
+      "authority": "master audit-only; external child execution is not granted by this task"
+    },
+    {
+      "id": "M3",
+      "owner_role": "ba",
+      "name": "Complete prior-plan, lifecycle and document classifications",
+      "objective": "Remove ambiguity from authority and CURRENT/HISTORICAL claims without retroactive approvals.",
+      "paths_in_scope": [
+        "docs/audits/code-factory-holistic-legacy-document-classification.md"
+      ],
+      "dependencies": [
+        "M1"
+      ],
+      "outputs_expected": [
+        "Extend the 16/16 legacy classifications and 27-document starter allowlist to all prior authorities and current entry paths",
+        "Resolve or explicitly route seven ambiguous and one actionable legacy entries",
+        "Replacement/navigation proposals and separately labeled stale child projections"
+      ],
+      "review_checkpoint": "No retrospective receipts, bulk unignore, WIP cleanup or source-doc corrections from master authority.",
+      "verification_hint": "Inspect direct notes/reports/receipts/Git evidence; each input has one classification and traceable successor or named gap.",
+      "status": "PARTIAL",
+      "remaining_effort_hours": [
+        6,
+        10
+      ],
+      "authority": "master audit-only; external child execution is not granted by this task"
+    },
+    {
+      "id": "M4",
+      "owner_role": "developer",
+      "name": "Give every finding an executable disposition",
+      "objective": "Map CF-001..020 and accepted fresh findings to owners, evidence tiers and bounded closure contracts.",
+      "paths_in_scope": [
+        "docs/audits/code-factory-holistic-finding-disposition.md",
+        "docs/audits/code-factory-holistic-coverage-matrix.md"
+      ],
+      "dependencies": [
+        "M2",
+        "M3"
+      ],
+      "outputs_expected": [
+        "Twenty exact original IDs with severity, owner, dependency, child/proposal, next gate and closure evidence",
+        "Eleven existing M2 observations reviewed and deduplicated; fresh observations remain proposals until accepted",
+        "R-01/R-03 revalidation and unavailable R-02/R-04/R-06 recovery log"
+      ],
+      "review_checkpoint": "CF-MB1: human QC Spec Compliance before human Developer/QC Code Quality; neither verdict inferred.",
+      "verification_hint": "Check unique original IDs, ownerless count=0, full source identities and direct terminal proof; unavailable external findings are not invented.",
+      "status": "PENDING_FULL_DISPOSITION",
+      "remaining_effort_hours": [
+        4,
+        8
+      ],
+      "authority": "master audit-only; external child execution is not granted by this task"
+    },
+    {
+      "id": "M5",
+      "owner_role": "developer",
+      "name": "Coordinate existing P0 and deadline lanes",
+      "objective": "Reuse CR-008/RCR, SA/TA, adapter/test and independent Node24 lanes instead of duplicating children.",
+      "paths_in_scope": [
+        "docs/audits/code-factory-holistic-finding-disposition.md",
+        "docs/audits/code-factory-holistic-coverage-matrix.md"
+      ],
+      "dependencies": [
+        "M4",
+        "CF-MB1_SPEC_PASS",
+        "CF-MB1_QUALITY_PASS"
+      ],
+      "outputs_expected": [
+        "RCR child -> exact-candidate parent re-verification -> CR-008 terminal evidence",
+        "Reuse branch-complete SA/TA child as integration-pending evidence",
+        "Adapter and two-tree-test residual next gates",
+        "Independent 18-token action upgrade with explicit contingency"
+      ],
+      "review_checkpoint": "Master reads children only. Existing independently approved CR-008 execution can proceed now without waiting for CF-MB1.",
+      "verification_hint": "Inspect each child's actual report and current receipt digest; verify 9+9 action references and fetch-depth: 0 on CR-008 branch.",
+      "status": "PENDING_MASTER_REVIEW_GATE",
+      "remaining_effort_hours": [
+        2,
+        4
+      ],
+      "authority": "master audit-only; external child execution is not granted by this task"
+    },
+    {
+      "id": "M6",
+      "owner_role": "developer",
+      "name": "Draft bounded P1/P2 child proposals",
+      "objective": "Specify missing security, semantic-audit, legacy/authority and language/docs changes in independent child briefs.",
+      "paths_in_scope": [
+        "docs/audits/code-factory-holistic-finding-disposition.md"
+      ],
+      "dependencies": [
+        "M5"
+      ],
+      "outputs_expected": [
+        "Concrete proposal boundaries, upstream CF/AC IDs, applicability reasons, verifier and rollback",
+        "Security provenance/ephemeral-scan plan without automatic external scanner execution",
+        "Standard-path negative-fixture registration and truthful legacy/doc update proposals"
+      ],
+      "review_checkpoint": "Separate human materialization and every required child gate before touching child artifacts or source.",
+      "verification_hint": "Compare existing ownership first; disjoint paths; measurable RED/GREEN and closure evidence; no duplicated children or hidden parallelisation.",
+      "status": "NOT_STARTED",
+      "remaining_effort_hours": [
+        4,
+        8
+      ],
+      "authority": "master audit-only; external child execution is not granted by this task"
+    },
+    {
+      "id": "M7",
+      "owner_role": "ba",
+      "name": "Measure language and interaction quality",
+      "objective": "Review public EN/VI usability independently of UTF-8 and mechanical PASS.",
+      "paths_in_scope": [
+        "docs/audits/code-factory-holistic-language-review.md",
+        "docs/audits/code-factory-holistic-coverage-matrix.md"
+      ],
+      "dependencies": [
+        "M2",
+        "M3"
+      ],
+      "outputs_expected": [
+        "100% mandatory entry/approval/error/status surfaces reviewed",
+        "Deterministic sample min(n,max(2,ceil(n/4))) per skill group, at least 15 EN/VI pairs across seven approved groups",
+        "Five dimension scores, critical authority/action check and applicable BA/QC review"
+      ],
+      "review_checkpoint": "AI scores are proposals; BA owns language judgment, QC verifies evidence; no all-role confirmation by default.",
+      "verification_hint": "Zero critical failures; mean >=4.0/5; no reviewed dimension <3.0/5; missing translations count as gaps; recompute sampling and aggregates.",
+      "status": "NOT_STARTED",
+      "remaining_effort_hours": [
+        10,
+        16
+      ],
+      "authority": "master audit-only; external child execution is not granted by this task"
+    },
+    {
+      "id": "M8",
+      "owner_role": "ba",
+      "name": "Resolve optional backlog by explicit decisions",
+      "objective": "Disposition memory, metrics and Rationalizations without reopening completed trials or inventing sponsorship.",
+      "paths_in_scope": [
+        "docs/audits/code-factory-holistic-finding-disposition.md"
+      ],
+      "dependencies": [
+        "M3",
+        "M4"
+      ],
+      "outputs_expected": [
+        "CF-013 reduced-contract/split/retirement brief",
+        "CF-014 sponsored experiment or explicit retirement brief",
+        "CF-015 one-skill pilot or supersession brief"
+      ],
+      "review_checkpoint": "PO/Maintainer or named original owner decides independently; undecided proposal is not terminal closure.",
+      "verification_hint": "Compare original authority and completed evidence; no unvalidated metrics in people/delivery gates; accepted retirement retains history.",
+      "status": "NOT_STARTED",
+      "remaining_effort_hours": [
+        2,
+        4
+      ],
+      "authority": "master audit-only; external child execution is not granted by this task"
+    },
+    {
+      "id": "M9",
+      "owner_role": "qc",
+      "name": "Review handoffs and maintain closure ledger",
+      "objective": "Create a reviewed portfolio snapshot linking actual child review/verification and language evidence.",
+      "paths_in_scope": [
+        "work-items/code-factory-holistic-audit-remediation",
+        "docs/audits/code-factory-holistic-coverage-matrix.md",
+        "docs/audits/code-factory-holistic-finding-disposition.md"
+      ],
+      "dependencies": [
+        "M5",
+        "M6",
+        "M7",
+        "M8"
+      ],
+      "outputs_expected": [
+        "CF-MB2 Spec Compliance packet with applicable BA language evidence",
+        "Separately opened Developer/QC Code Quality packet",
+        "Ledger of child source/run/digest/receipt/RED-GREEN/standard-path security/language evidence"
+      ],
+      "review_checkpoint": "CF-MB2: QC Spec Compliance first, then Developer/QC Code Quality; handoff review is not final remediation completion.",
+      "verification_hint": "Hash reviewed audit artifacts; compare subject/reviewer/source tier; no branch-DONE shortcut; absent evidence stays PARTIAL/FAIL.",
+      "status": "NOT_STARTED",
+      "remaining_effort_hours": [
+        4,
+        6
+      ],
+      "authority": "master audit-only; external child execution is not granted by this task"
+    },
+    {
+      "id": "M10",
+      "owner_role": "devops",
+      "name": "Reconcile final integrated/released/installed identities",
+      "objective": "Collect final exact provenance only after separately authorized child delivery and activation.",
+      "paths_in_scope": [
+        "docs/audits/code-factory-holistic-inventory.json",
+        "docs/audits/code-factory-holistic-coverage-matrix.md",
+        "docs/audits/code-factory-holistic-finding-disposition.md"
+      ],
+      "dependencies": [
+        "M9",
+        "CF-MB2_SPEC_PASS",
+        "CF-MB2_QUALITY_PASS",
+        "CHILD_DELIVERY_AND_ACTIVATION"
+      ],
+      "outputs_expected": [
+        "Full final source SHA, package SHA-256/content identity, hosted checks, immutable release/tag mapping",
+        "Repeated clean-build identity or an independently approved canonicalization rule",
+        "Both installed harness versions, inventories and file parity; CURRENT docs match actual released state"
+      ],
+      "review_checkpoint": "No master publish/tag/install/merge; read-only coordination cannot perform external mutation.",
+      "verification_hint": "Compare exact artifact and extracted manifests, hosted required jobs/annotations, tag/release and wfc status for both harnesses on one refreshed snapshot.",
+      "status": "NOT_STARTED",
+      "remaining_effort_hours": [
+        6,
+        10
+      ],
+      "authority": "master audit-only; external child execution is not granted by this task"
+    },
+    {
+      "id": "M11",
+      "owner_role": "qc",
+      "name": "Verify complete portfolio and request DoD",
+      "objective": "Close the broad goal only with final AC/edge/finding evidence and valid human authority.",
+      "paths_in_scope": [
+        "work-items/code-factory-holistic-audit-remediation",
+        "docs/audits/code-factory-holistic-coverage-matrix.md",
+        "docs/audits/code-factory-holistic-finding-disposition.md"
+      ],
+      "dependencies": [
+        "M10",
+        "ALL_REQUIRED_FINDINGS_TERMINAL",
+        "QC_S08_OPEN"
+      ],
+      "outputs_expected": [
+        "AC-CF-001..011 and EDGE-CF-001..006 final evidence",
+        "20/20 original findings plus accepted new findings have terminal verdict or correctly authorized exception",
+        "Separate QC Technical Verification and trusted DoD receipt; branch HOLD until separate finalization"
+      ],
+      "review_checkpoint": "No self-declared DONE. Master research Release/Business Acceptance stay as approved not_applicable; no child authority inheritance.",
+      "verification_hint": "Run appropriate workflow/protocol/planning/SDD/change/execution/unit/smoke/security/language/UTF-8 checks; missing required evidence blocks PASS.",
+      "status": "NOT_STARTED",
+      "remaining_effort_hours": [
+        4,
+        8
+      ],
+      "authority": "master audit-only; external child execution is not granted by this task"
+    }
+  ],
+  "cr008_exact_candidate": {
+    "source_sha": "af70276fe14317417365c06dd06186da1996c401",
+    "hosted_run_id": 34802149041,
+    "candidate_sha256": "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f",
+    "rollback_version": "v2.6.1",
+    "rollback_sha256": "7c1d2c7bde8307801cacc6a513a6c547abdd4e9accfdaa2d71685cd44533f0b9"
+  },
+  "cr008_critical_path": [
+    {
+      "id": "CR1",
+      "name": "Confirm existing child DoD decision and receipt boundary",
+      "owner_role": "qc/maintainer",
+      "dependencies": [],
+      "status": "CONFIRMED_BLOCKER",
+      "paths_in_scope": [
+        "work-items/closeout-bundle-repeat-cycle-reconciliation"
+      ],
+      "outputs_expected": [
+        "QC human DoD APPROVED retained; trusted receipt MISSING; actual host draft",
+        "Shared s08 finalized-host requires dod/release/business_acceptance"
+      ],
+      "verification_hint": "Read exact evidence and wfc gate status; never sign or finalize a hypothetical host.",
+      "remaining_effort_hours": [
+        0,
+        1
+      ],
+      "authority": "Read-only diagnosis allowed; no new human finding inferred."
+    },
+    {
+      "id": "CR2",
+      "name": "Obtain explicit PO/BA/Developer/QC checkpoint-scope and applicability decision",
+      "owner_role": "po/ba/developer/qc",
+      "dependencies": [
+        "CR1"
+      ],
+      "status": "WAITING_HUMAN_DECISION",
+      "paths_in_scope": [
+        "work-items/closeout-bundle-repeat-cycle-reconciliation"
+      ],
+      "outputs_expected": [
+        "Explicitly decide the PO-approved Business Goal/non-goal and frozen AC-RCR-08 sequencing impact; Option A is not approval-ready under current locked sequencing",
+        "Option B remains recommended, not approved: child technical checkpoint first, full parent Release/Business Acceptance still mandatory",
+        "Preserve AC-RCR-08 parent verification and separate parent Release/BA"
+      ],
+      "verification_hint": "Read the RCR shared-host decision packet, locked s02 success/non-goal and s04 AC-RCR-08; obtain explicit PO/BA/Developer/QC scope decision before any amendment. No automatic waiver.",
+      "remaining_effort_hours": [
+        1,
+        2
+      ],
+      "authority": "Option B recommendation is proposed, not approved; latest priority request is not an applicability amendment."
+    },
+    {
+      "id": "CR3",
+      "name": "Prepare only explicitly approved authoring rebinds",
+      "owner_role": "developer/ba/qc",
+      "dependencies": [
+        "CR2"
+      ],
+      "status": "NOT_AUTHORIZED_YET",
+      "paths_in_scope": [
+        "work-items/closeout-bundle-repeat-cycle-reconciliation"
+      ],
+      "outputs_expected": [
+        "Proven five-receipt impact: Spec BA, Contract Developer, DoR BA/QC, Approach Developer, Task Plan Developer; immutable old approvals retained as history",
+        "Scope-approved checkpoint/applicability authoring amendment only if Option B accepted; no production/candidate drift"
+      ],
+      "verification_hint": "All five current authoring receipts are whole-host digest-bound and become stale after the proposed metadata edit. Review actual amended bytes and renew all five bindings; preview hashes are not final approvals. Preserve the existing qualified QC DoD decision.",
+      "remaining_effort_hours": [
+        1,
+        3
+      ],
+      "authority": "Execute amendments only after explicit approval; no change to frozen hosts now."
+    },
+    {
+      "id": "CR4",
+      "name": "Seal valid child technical-checkpoint DoD without premature DONE",
+      "owner_role": "qc",
+      "dependencies": [
+        "CR3"
+      ],
+      "status": "BLOCKED_RECEIPT",
+      "paths_in_scope": [
+        "work-items/closeout-bundle-repeat-cycle-reconciliation"
+      ],
+      "outputs_expected": [
+        "Trusted QC DoD bound to valid finalized child host",
+        "Consistent child report/s01/s07/s08 authority; checkpoint receipt is not protocol DONE while mandatory AC-RCR-08 parent contribution remains incomplete"
+      ],
+      "verification_hint": "Interactive human-controlled signer only; verify receipt digest/subject/role, scope cleanliness and protocol validation.",
+      "remaining_effort_hours": [
+        1,
+        2
+      ],
+      "authority": "Existing QC DoD decision retained; changed reviewed content may require explicit amended binding. No fake TTY/passphrase/receipt."
+    },
+    {
+      "id": "CR5",
+      "name": "Reconcile parent child-progress projection",
+      "owner_role": "developer/qc",
+      "dependencies": [
+        "CR4"
+      ],
+      "status": "WAITING_CHILD_VALID_DOD",
+      "paths_in_scope": [
+        "work-items/adaptive-governance-human-approval-ux",
+        "work-items/closeout-bundle-repeat-cycle-reconciliation"
+      ],
+      "outputs_expected": [
+        "Parent no longer claims current child waits at s04",
+        "Exact source/run/package and mandatory F-AG11-001 OPEN linked with preserved history"
+      ],
+      "verification_hint": "Update owned structured state by field/id/kind, never parse prose; preserve unknown legacy strings verbatim and historical events.",
+      "remaining_effort_hours": [
+        1,
+        2
+      ],
+      "authority": "Use existing owned parent roots only after child's valid gate boundary; do not clear unrelated blockers."
+    },
+    {
+      "id": "CR6",
+      "name": "Run full exact-candidate parent AG verification",
+      "owner_role": "qc",
+      "dependencies": [
+        "CR5"
+      ],
+      "status": "NOT_RUN_FOR_CORRECTED_PARENT",
+      "paths_in_scope": [
+        "work-items/adaptive-governance-human-approval-ux"
+      ],
+      "outputs_expected": [
+        "AG-01..AG-13=13/13 PASS or explicit failures against the exact corrected package",
+        "Supported Node18/22 child/source/artifact/rollback lineage and parent coverage; source payload provenance"
+      ],
+      "verification_hint": "Consume retained af49 package, not a fresh repack; compare checksum and source/run binding. Existing 10/10 hosted child checks are not new parent 13/13 proof.",
+      "remaining_effort_hours": [
+        3,
+        6
+      ],
+      "authority": "AC-RCR-08 requires valid child DoD first. New code/payload change requires its own approved review and candidate evidence."
+    },
+    {
+      "id": "CR7",
+      "name": "Obtain fresh parent terminal decisions and receipts",
+      "owner_role": "qc/devops/po",
+      "dependencies": [
+        "CR6"
+      ],
+      "status": "WAITING_NEW_PARENT_EVIDENCE",
+      "paths_in_scope": [
+        "work-items/adaptive-governance-human-approval-ux"
+      ],
+      "outputs_expected": [
+        "Parent artifact binding if changed, QC Technical Verification -> QC DoD -> DevOps/QC Release -> PO Business Acceptance",
+        "Each receipt binds its actual unchanged reviewed host and exact candidate"
+      ],
+      "verification_hint": "Review source/run/full digest, roles, timestamps and host hashes; historical 38bb0d... approvals remain historical.",
+      "remaining_effort_hours": [
+        1,
+        3
+      ],
+      "authority": "Independent gates; no inherited child approval, premature parent release, publishing or tag creation."
+    },
+    {
+      "id": "CR8",
+      "name": "Close finding/CR ledger and hand off finalization",
+      "owner_role": "developer/qc/maintainer",
+      "dependencies": [
+        "CR7"
+      ],
+      "status": "WAITING_FULL_CHAIN",
+      "paths_in_scope": [
+        "work-items/adaptive-governance-human-approval-ux",
+        "work-items/closeout-bundle-repeat-cycle-reconciliation"
+      ],
+      "outputs_expected": [
+        "F-AG11-001 terminal only after complete exact-candidate chain",
+        "Parent/child protocol closure and CR contribution agree; branch readiness decision backed by current DoD"
+      ],
+      "verification_hint": "Validate notes/reports/receipts/CR contribution and original AC coverage; retain scan gaps and unknown blockers. Check worktree and open findings.",
+      "remaining_effort_hours": [
+        1,
+        2
+      ],
+      "authority": "Actual merge/push/publish/tag/global install/cleanup require separately scoped authority; readiness is not execution permission."
+    }
+  ],
+  "cr008_host_options": [
+    {
+      "id": "A",
+      "decision": "Retain required child Release and Business Acceptance",
+      "status": "NOT_SELECTED",
+      "tradeoff": "HOLD review drafts exist, but Option A is not approval-ready: locked s02 requires parent AG proof before new terminal decisions while frozen AC-RCR-08 requires valid child DoD first. Explicit human scope clarification is still required; do not approve early child Release/BA."
+    },
+    {
+      "id": "B",
+      "decision": "Propose child technical-only gate applicability amendment; keep Release/BA required on parent",
+      "status": "RECOMMENDED_NOT_APPROVED",
+      "tradeoff": "Requires explicit PO/BA/Developer/QC checkpoint-scope decision, including the PO-approved non-goal impact. All five whole-host authoring receipts must be renewed after actual amendment. Keep full AC-RCR-08 and all parent AG13/terminal decisions; no silent not_applicable or early DONE."
+    }
+  ],
+  "node24": {
+    "id": "N24",
+    "owner_role": "devops/qc",
+    "status": "NOT_ACTIVE_ACTIONS_STILL_V4",
+    "action_reference_count": {
+      "checkout": 9,
+      "setup_node": 9,
+      "total_tokens": 18
+    },
+    "target": {
+      "checkout": "v7 (releasev7.0.1)",
+      "setup_node": "v7 (releasev7.0.0)"
+    },
+    "paths": [
+      ".github/workflows/workflow-guardrails.yml"
+    ],
+    "authority": "Existing independent work item; readiness receipts and activation must be verified before source edit. This master plan does not open that lane.",
+    "steps": [
+      "Review official v5/v6/v7 notes for both actions and minimum runner/OS/credentials/cache changes",
+      "Verify readiness receipts and explicit activation",
+      "Make one workflow-only18-token commit; keep fetch-depth0 and all other normalized pre/post content identical",
+      "Run existing local checks and one hosted full workflow; inspect every job check-run annotation for Node deprecation; green conclusion alone is insufficient",
+      "Escalate owner near-2026-09-20 main contingency if CR-008 not integrated; do not cherry-pick/edit main without separate authority"
+    ],
+    "remaining_effort_hours": [
+      2,
+      4
+    ],
+    "removal_date": "2026-09-23",
+    "removal_source": "https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+    "checkout_release_source": "https://github.com/actions/checkout/releases/tag/v7.0.1",
+    "setup_node_release_source": "https://github.com/actions/setup-node/releases/tag/v7.0.0",
+    "parallelisation": "Excluded: ci-guardrails-parallelisation owns validator matrix; R-03 restructure deferred until integration"
+  },
+  "finding_dispositions": [
+    {
+      "id": "CF-001",
+      "severity": "HIGH",
+      "owner": "PO/BA",
+      "status": "Historical resolved",
+      "tasks": "M0,M4,M11",
+      "child_or_proposal": "Existing master; no duplicate",
+      "closure_evidence": "Tracked canonical plan and current navigation; verify without rewriting sealed plan",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-002",
+      "severity": "HIGH",
+      "owner": "Developer/QC/DevOps/PO",
+      "status": "CR-008 blocked at child receipt",
+      "tasks": "CR1-CR8; M5,M10,M11",
+      "child_or_proposal": "Existing RCR + parent",
+      "closure_evidence": "Valid child DoD, new same-candidate parent13/13 and independent terminal receipts; F-AG11-001 closed truthfully",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-003",
+      "severity": "HIGH",
+      "owner": "DevOps",
+      "status": "Open identity reconciliation",
+      "tasks": "M1,M5,M10,M11",
+      "child_or_proposal": "Existing release/activation lane",
+      "closure_evidence": "Source/run/package/released/tag/both installed harness/public-doc identity agree; branch/source evidence alone insufficient",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-004",
+      "severity": "HIGH",
+      "owner": "Developer/QC",
+      "status": "Open adapter state/preflight",
+      "tasks": "M3,M5,M9",
+      "child_or_proposal": "Existing add-diagram-design-adapter",
+      "closure_evidence": "Refresh completed prerequisite, T0 environment preflight, approved route, receipt/protocol consistency; do not silently install browser dependencies",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-005",
+      "severity": "MEDIUM",
+      "owner": "Developer/QC",
+      "status": "Open mutable-test residual",
+      "tasks": "M2,M5,M9",
+      "child_or_proposal": "Reuse decouple-tests-from-tree-layout after lawful admission",
+      "closure_evidence": "Fixture-controlled cross-file assertion, fail-first negative case and equal results in two different workflow trees",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-006",
+      "severity": "HIGH",
+      "owner": "Security reviewer/QC",
+      "status": "Open security baseline",
+      "tasks": "M2,M6,M9,M11",
+      "child_or_proposal": "Missing bounded security child proposal",
+      "closure_evidence": "Approved scanner provenance and ephemeral execution over skills/hooks/MCP/adapters; SARIF/Markdown, false-positive triage and owned fixes",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-007",
+      "severity": "MEDIUM",
+      "owner": "Developer/QC",
+      "status": "Accepted; classifications partial",
+      "tasks": "M3,M6,M9,M11",
+      "child_or_proposal": "Classify-first legacy child proposal",
+      "closure_evidence": "All legacy statuses truthful; actionable/ambiguous cases routed; zero retrospective receipts",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-008",
+      "severity": "LOW",
+      "owner": "Maintainer",
+      "status": "Historical resolved; recheck only",
+      "tasks": "M1,M3,M4,M11",
+      "child_or_proposal": "No demo cleanup child unless live issue reappears",
+      "closure_evidence": "Pinned absence and valid listing; no deletion of user paths based on old snapshot",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-009",
+      "severity": "HIGH",
+      "owner": "Developer/QC",
+      "status": "Historical resolved; preserve regression",
+      "tasks": "M2,M4,M9,M11",
+      "child_or_proposal": "Existing role schema contract",
+      "closure_evidence": "EN/VI schemas retain quantified/binary/not_quantified; semantic fixture remains registered where required",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-010",
+      "severity": "HIGH",
+      "owner": "Developer/QC",
+      "status": "Partial semantic standard path",
+      "tasks": "M2,M6,M9,M11",
+      "child_or_proposal": "Missing bounded semantic-audit child proposal",
+      "closure_evidence": "Fail-first conflict fixture plus standard pack-audit/hosted registration; mechanical PASS cannot suppress semantic FAIL",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-011",
+      "severity": "MEDIUM",
+      "owner": "PO/Maintainer",
+      "status": "Accepted; prior-authority classification pending",
+      "tasks": "M3,M6,M8,M9",
+      "child_or_proposal": "Selective promotion/retirement proposal",
+      "closure_evidence": "Every actionable ignored prior authority tracked or explicitly retired/superseded with one resolvable successor; no bulk unignore",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-012",
+      "severity": "MEDIUM",
+      "owner": "BA/QC; PO for scope decisions",
+      "status": "Accepted; language review pending",
+      "tasks": "M7,M6,M9,M11",
+      "child_or_proposal": "Bounded language/interaction child proposal",
+      "closure_evidence": "Mandatory surfaces and stratified sample meet five-dimension rubric; no irrelevant roles or duplicated confirmations",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-013",
+      "severity": "MEDIUM",
+      "owner": "PO/Developer/QC",
+      "status": "Open optional memory decision",
+      "tasks": "M8,M9,M11",
+      "child_or_proposal": "Reduced contract/split/retirement brief",
+      "closure_evidence": "Explicit owner decision and evidence; completed codebase-memory trial preserved; no unsponsored implementation",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-014",
+      "severity": "LOW",
+      "owner": "Architecture lead/PO",
+      "status": "Open experiment decision",
+      "tasks": "M8,M9,M11",
+      "child_or_proposal": "Sponsor experiment or retire brief",
+      "closure_evidence": "Explicit decision; thresholds remain unvalidated until actual calibration, not used as people/delivery gates",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-015",
+      "severity": "LOW",
+      "owner": "Developer; PO if new product scope",
+      "status": "Open pilot decision",
+      "tasks": "M8,M9,M11",
+      "child_or_proposal": "One-skill pilot or supersession brief",
+      "closure_evidence": "Explicit decision and pilot review evidence if selected; current guardrail comparison if superseded",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-016",
+      "severity": "MEDIUM",
+      "owner": "Maintainer/DevOps",
+      "status": "Open WIP ownership/contamination",
+      "tasks": "M0,M1,M3,M6,M10",
+      "child_or_proposal": "Owned path disposition proposal",
+      "closure_evidence": "Each root WIP attributed; clean release snapshot excludes unrelated edits; moves/deletes require approved recoverable scope",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-017",
+      "severity": "HIGH",
+      "owner": "Developer/DevOps/QC",
+      "status": "New child exact equality observed; portfolio repeat proof pending",
+      "tasks": "CR6; M5,M10,M11",
+      "child_or_proposal": "Reuse candidate identity lane",
+      "closure_evidence": "Repeated clean same-source package comparison or approved canonicalization contract; old mismatch stays historical",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-018",
+      "severity": "MEDIUM",
+      "owner": "DevOps/QC",
+      "status": "Open independent deadline lane",
+      "tasks": "N24; M5,M9,M10",
+      "child_or_proposal": "Existing upgrade-guardrails-actions-node24",
+      "closure_evidence": "One commit changing only18 tokens, normalized pre/post identical; fetch-depth0 retained; supported actions/runner and warning-free hosted annotation proof",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-019",
+      "severity": "HIGH",
+      "owner": "PO/BA/Developer/QC",
+      "status": "SA/TA child branch-complete; integration pending",
+      "tasks": "M2,M5,M9,M10",
+      "child_or_proposal": "Reuse align-adaptive-sa-ta-applicability",
+      "closure_evidence": "No duplicate child; source/Codex/Claude operative policies obey router reason codes; maintenance omission and high-risk triggers tested",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    },
+    {
+      "id": "CF-020",
+      "severity": "MEDIUM",
+      "owner": "PO/BA/DevOps",
+      "status": "Accepted; current/historical classification partial",
+      "tasks": "M3,M7,M9,M10",
+      "child_or_proposal": "Bounded current-doc child proposal",
+      "closure_evidence": "CURRENT claims match actual released/installed inventory; HISTORICAL claims preserved and excluded from current onboarding",
+      "next_gate": "Revalidate at M4; then existing child next gate or explicit bounded-child materialization; terminal review only with direct evidence"
+    }
+  ],
+  "progress_reporting": {
+    "method_status": "PROPOSED_NOT_APPROVED_NOT_YET_SCORED",
+    "prior_directional_estimates": {
+      "whole_goal": "25–30%",
+      "cr008": "85–90%",
+      "kind": "Informal remaining-work estimates; not criterion completion or a measured weighted score"
+    },
+    "exact_counts": "42/42 inventory;25/42 source skill reads;25/69 EN reference reads;9/10 child AC PASS with AC-RCR-08 mandatory parent contribution pending; no current parent13/13 claim",
+    "weights": [
+      {
+        "id": "G0",
+        "name": "Complete audit and triage",
+        "weight": 15
+      },
+      {
+        "id": "G1",
+        "name": "CR-008 closeout",
+        "weight": 25
+      },
+      {
+        "id": "G2",
+        "name": "Adapter, mutable-test and ownership residuals",
+        "weight": 10
+      },
+      {
+        "id": "G3",
+        "name": "Security, semantic audit, legacy truth and deadline CI",
+        "weight": 20
+      },
+      {
+        "id": "G4",
+        "name": "Language, applicable-role interaction and CURRENT docs",
+        "weight": 15
+      },
+      {
+        "id": "G5",
+        "name": "Optional capability dispositions",
+        "weight": 5
+      },
+      {
+        "id": "G6",
+        "name": "Final released/installed reconciliation and portfolio DoD",
+        "weight": 10
+      }
+    ],
+    "formula": "sum(weight * evidence-backed completed/required subdeliverables). Each subdeliverable is counted only with its actual required verification and authority. Rebaseline weights explicitly if scope changes.",
+    "rules": [
+      "Do not score reads as semantic PASS or remediation DONE",
+      "Child branch completion is not integration/installed closure",
+      "Optional item counts terminal only with explicit owner disposition and retained evidence",
+      "100% requires all mandatory AC/finding evidence plus valid DoD and applicable delivery gates; missing authority is not waived"
+    ]
+  },
+  "dependencies_global": [
+    "Existing CR-008 independently opened execution does not wait on master CF-MB1; master child-handoff authoring M5 still does",
+    "CR4 valid child DoD -> CR6 full parent verification -> CR7 new parent terminal decisions -> CR8 finding closure",
+    "N24 deadline risk remains an independently controlled contingency, not a reason to absorb CI matrix work",
+    "New children cannot be created/activated solely from this plan",
+    "Final portfolio closure waits for actual integrated/released/installed evidence and accepted optional dispositions"
+  ],
+  "risk_notes": [
+    "Shared-host receipt deadlock: explicit scope decision required; no silent runtime or gate change",
+    "Evidence-only commits must not cause pointless rebuild/rebinding loops; retain candidate af49 and full history",
+    "Scan remains PARTIAL (ESLint/typecheck/Semgrep unavailable); benchmark/native reader isolation not proved",
+    "Parent saved s04-child blocker is stale projection, not current child gate truth; preserve history and reconcile lawfully",
+    "2026-09-18 is a CR-008 stop-and-reassess checkpoint, not a delivery promise",
+    "Missing independent review R-02/R-04/R-06 remains unavailable input, not invented content",
+    "Final live skill/legacy/doc counts must be recounted instead of copied from approved historical snapshots"
+  ],
+  "verification_plan": [
+    "Plan-only: schema/unique IDs/acyclic dependencies/11AC and20finding coverage/weights sum100/links/UTF-8/protected hashes/diff",
+    "Run actual master workflow,protocol,plan,sdd,change,exec validators; report warnings and skipped checks truthfully",
+    "CR-008: exact candidate checksum, supported Node18/22 lineage, retained rollback, parent13AG evidence and ordered fresh terminal receipts",
+    "Semantic children: RED/GREEN plus standard local/hosted negative fixture",
+    "Security child: approved ephemeral scanner provenance,SARIF/Markdown triage; absent tool is not clean scan",
+    "BA language: all mandatory units plus deterministic sample, zero critical failures,mean>=4 andall dimensions>=3",
+    "Final: one exact source/run/package/release/tag/both installed harness/CURRENT-doc snapshot and master QC DoD"
+  ],
+  "planning_estimates": {
+    "unit": "Active engineering hours; proposed coarse ranges, no commitment",
+    "cr008_remaining_hours": [
+      9,
+      21
+    ],
+    "node24_remaining_hours": [
+      2,
+      4
+    ],
+    "master_audit_coordination_remaining_hours": [
+      56,
+      99
+    ],
+    "missing_child_implementation": "Estimate per child after approved scope; not included in master audit hours",
+    "calendar_rule": "No credible whole-goal delivery date until CR2 authority, unknown child scope, review turnaround, CI and release/activation permissions are resolved. Re-estimate after CR8 and CF-MB1; review on2026-09-18."
+  },
+  "notes_for_implementation": "This supporting plan expands visibility and operational sequencing without replacing approved s06, editing frozen authoring hosts, granting child scope, approving gates or authorizing main/release/runtime mutations.",
+  "plan_revision_verification": {
+    "checked_at": "2026-09-14T08:15:21Z",
+    "scope": "Supporting audit-plan revision only; no child gate/receipt/scope approval or source/CI change",
+    "status": "DRAFT_PLANNING_ONLY",
+    "priority": "CR-008 FIRST",
+    "proven_receipt_renewal_count_if_option_B": 5,
+    "scope_decision_roles": [
+      "po",
+      "ba",
+      "developer",
+      "qc"
+    ],
+    "option_B": "RECOMMENDED_NOT_APPROVED",
+    "child_checkpoint_is_automatic_DONE": false,
+    "AC_RCR_08": "Full same-candidate parent AG13 and fresh independent terminal gates remain mandatory",
+    "structural_checks": "PASS: JSON, frontmatter/10 YAML blocks, acyclic dependencies,12 tasks,8 CR steps,20 finding IDs,11 AC mappings, weights100,UTF-8,seven protected master files,unchanged original s07 prefix and CR-owned evidence/report",
+    "validators": [
+      {
+        "id": "validate",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "id": "protocol",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "id": "plan",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "id": "sdd",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "id": "change",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "id": "exec",
+        "exit_code": 1,
+        "status": "FAIL_PREEXISTING_MASTER_S01_S02_REVIEW_MODE"
+      }
+    ],
+    "known_gap": "PLAN-VALIDATION-OBS-01 remains unresolved; s01/s02 unchanged from pinned master HEAD",
+    "skipped_checks": "Production test/build/typecheck/security/hosted reruns not applicable to this plan-only delta; applicable child/final checks remain mandatory",
+    "no_external_mutations": true
+  },
+  "plan_authoring_verification": {
+    "checked_at": "2026-09-14 07:57:27 UTC",
+    "scope": "Plan-only documentation; not a new CR-008 or whole-goal verification",
+    "structural_checks": {
+      "json_schema": "PASS",
+      "yaml_parse": "PASS",
+      "task_count": 12,
+      "cr008_path_task_count": 8,
+      "original_finding_count": 20,
+      "AC_mapping_count": 11,
+      "acyclic_dependencies": "PASS",
+      "weights_sum": 100,
+      "UTF8": "PASS",
+      "local_links": "PASS",
+      "protected_master_files": 7,
+      "master_s07_history": "UNCHANGED_PREFIX",
+      "RCR_head_report_s08_workflow": "UNCHANGED_AND_CLEAN"
+    },
+    "validators": [
+      {
+        "id": "validate",
+        "result": "PASS",
+        "exit_code": 0,
+        "output": "OK: validated workflow naming (181 files) and governance (177 notes) under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/code-factory-holistic-audit-remediation/work-items\n"
+      },
+      {
+        "id": "protocol",
+        "result": "PASS",
+        "exit_code": 0,
+        "output": "OK: validated 9 protocol-managed work items under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/code-factory-holistic-audit-remediation/work-items (skipped legacy: 16)\n"
+      },
+      {
+        "id": "plan",
+        "result": "PASS",
+        "exit_code": 0,
+        "output": "OK: validated planning track for 177 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/code-factory-holistic-audit-remediation/work-items\n"
+      },
+      {
+        "id": "sdd",
+        "result": "PASS",
+        "exit_code": 0,
+        "output": "OK: validated SDD for 41 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/code-factory-holistic-audit-remediation/work-items\n"
+      },
+      {
+        "id": "change",
+        "result": "PASS",
+        "exit_code": 0,
+        "output": "WARNING: reading legacy change package 'CHANGE-003' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-003 --apply\nWARNING: reading legacy change package 'CHANGE-003' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-003 --apply\nWARNING: reading legacy change package 'CHANGE-003' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-003 --apply\nWARNING: reading legacy change package 'CHANGE-003' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-003 --apply\nWARNING: reading legacy change package 'CHANGE-003' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-003 --apply\nWARNING: reading legacy change package 'CHANGE-006' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-006 --apply\nWARNING: reading legacy change package 'CHANGE-006' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-006 --apply\nWARNING: reading legacy change package 'CHANGE-006' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-006 --apply\nWARNING: reading legacy change package 'CHANGE-006' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-006 --apply\nWARNING: reading legacy change package 'CHANGE-006' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-006 --apply\nWARNING: reading legacy change package 'CHANGE-004' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-004 --apply\nWARNING: reading legacy change package 'CHANGE-004' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-004 --apply\nWARNING: reading legacy change package 'CHANGE-004' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-004 --apply\nWARNING: reading legacy change package 'CHANGE-004' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-004 --apply\nWARNING: reading legacy change package 'CHANGE-004' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-004 --apply\nWARNING: reading legacy change package 'CHANGE-004' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-004 --apply\nWARNING: reading legacy change package 'CHANGE-004' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-004 --apply\nWARNING: reading legacy change package 'CHANGE-004' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-004 --apply\nWARNING: reading legacy change package 'CHANGE-001' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-001 --apply\nWARNING: reading legacy change package 'CHANGE-001' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-001 --apply\nWARNING: reading legacy change package 'CHANGE-001' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-001 --apply\nWARNING: reading legacy change package 'CHANGE-001' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-001 --apply\nWARNING: reading legacy change package 'CHANGE-001' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-001 --apply\nWARNING: reading legacy change package 'CHANGE-001' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-001 --apply\nWARNING: reading legacy change package 'CHANGE-001' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-001 --apply\nWARNING: reading legacy change package 'CHANGE-001' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-001 --apply\nWARNING: reading legacy change package 'CHANGE-002' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-002 --apply\nWARNING: reading legacy change package 'CHANGE-002' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-002 --apply\nWARNING: reading legacy change package 'CHANGE-002' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-002 --apply\nWARNING: reading legacy change package 'CHANGE-002' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-002 --apply\nWARNING: reading legacy change package 'CHANGE-002' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-002 --apply\nWARNING: reading legacy change package 'CHANGE-002' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-002 --apply\nWARNING: reading legacy change package 'CHANGE-002' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-002 --apply\nWARNING: reading legacy change package 'CHANGE-002' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-002 --apply\nOK: validated change layer for 34 workflow note files under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/code-factory-holistic-audit-remediation/work-items\n"
+      },
+      {
+        "id": "exec",
+        "result": "FAIL",
+        "exit_code": 1,
+        "output": "ERROR: Invalid review_mode 'targeted' in /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/code-factory-holistic-audit-remediation/work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s01.restate.md\nERROR: Invalid review_mode 'targeted' in /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/code-factory-holistic-audit-remediation/work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s02.business-goal.md\n"
+      }
+    ],
+    "known_preexisting_errors": {
+      "observation_id": "PLAN-VALIDATION-OBS-01",
+      "human_finding_status": "NOT_HUMAN_ACCEPTED_FINDING",
+      "source_tier": "unmerged-master-audit-worktree",
+      "source_head": "84713be9e95da3c6192034e57e4eddf41c78c5ba",
+      "files": [
+        "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s01.restate.md",
+        "work-items/code-factory-holistic-audit-remediation/code-factory-holistic-audit-remediation.s02.business-goal.md"
+      ],
+      "issue": "review_mode: targeted is rejected by the current execution validator",
+      "baseline_proof": "Both complete files are byte-identical to pinned master HEAD84713be9; no new error introduced in these files by plan changes",
+      "next_action": "After priority CR-008 closeout, reconcile authoring/runtime review-mode contract under master M3/M4; changes require the appropriate authority, not a silent edit or waiver."
+    },
+    "skipped_checks": [
+      "Production unit/build/typecheck/security/hosted execution not applicable to this plan-only delta; child and final required verification stays pending, not waived"
+    ],
+    "completion_claim": "Plan is materialized and structurally valid. Existing exec errors remain unresolved. Neither CR-008 nor the whole audit/remediation goal is DONE."
+  }
+}
