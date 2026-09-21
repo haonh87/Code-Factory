@@ -84,12 +84,17 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CHANGE-007",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "protocol-close",
   "required_actions": [
     {
       "id": "se:cbbdfae039cbb6411c1ff5d2f9cc3ded4d93b3649f5284d4546f7c303ed88ecf",
       "kind": "workflow_followup",
       "text": "Collect DoD evidence and close the work item when ready."
+    },
+    {
+      "id": "se:9894a38e74711aebd4daaaa0fa287b56de225b7598921156be750942feafd544",
+      "kind": "work_item_close",
+      "text": "wfc work-item close --work-item release-workflow-bundle-v2-6-3"
     }
   ],
   "blockers": [],
@@ -108,7 +113,8 @@
     "WORK_ITEM_ACTIVATED",
     "WORK_ITEM_BLOCKED",
     "WORK_ITEM_RESUMED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "CLOSEOUT_BUNDLE_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -185,6 +191,15 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "QC approved branch Technical Verification for PR #9 source 09eed7d2573ebf6fad9400de6748862c1035d947, run 35516336889, PRE_MERGE_ONLY candidate SHA-256 f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f, rollback v2.6.2 SHA-256 af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f; AC-R263-01..08 and AC-R263-10 PASS; DoD, merge, main binding, Release, publication, Business Acceptance, archive, and cleanup remain independent."
+    },
+    {
+      "timestamp": "2026-09-21T03:54:52Z",
+      "action": "approve-closeout-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "APPROVED closeout gates: dod, release, business_acceptance",
+      "transaction_id": "598f6494-9654-4283-82ad-d88110bcc4cf"
     }
   ],
   "resolved_state_history": [
