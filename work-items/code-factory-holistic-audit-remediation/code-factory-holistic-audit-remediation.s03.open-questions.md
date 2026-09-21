@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: final
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -97,8 +97,9 @@ tags:
 
 > [!summary]
 > OQ-CF-001..005 đã được chuyển thành recommendation bundle có option, trade-off, owner và verify
-> path. OQ-CF-004/005 đóng khoảng trống decision của hai finding mới CF-019/020. Chưa có quyết định
-> human cho năm OQ, vì vậy readiness để viết s04 hiện là **BLOCKED**.
+> path. Các authority tương ứng đã phê duyệt Option C cho cả năm OQ; approval này khóa policy đầu
+> vào cho s04 nhưng không tự phê duyệt child work item, Spec, DoR hoặc implementation. Readiness để
+> author s04 hiện là **READY**.
 
 ## Step Contract
 ```yaml
@@ -211,7 +212,12 @@ open_questions:
   - id: "OQ-CF-001"
     topic: "Canonical authority for ignored planning and research documents"
     owner: "po/maintainer"
-    status: PENDING_HUMAN_DECISION
+    status: APPROVED
+    selected_option: C
+    disposition: ACCEPTED_SELECTIVE_PROMOTION_POLICY
+    approved_by: ["po", "maintainer"]
+    approved_at: "2026-09-11T11:40:59Z"
+    implementation_authority: NOT_GRANTED
     affects: ["CF-001", "CF-011", "KPI-CF-002"]
     observed_baseline:
       canonical_work_item_root: "work-items/"
@@ -250,14 +256,20 @@ open_questions:
       draft documents and duplicate authority.
     requested_decision: "Accept, amend or reject Option C as PO/maintainer."
   - id: "OQ-CF-002"
-    topic: "Truthful policy for 17 legacy work items and the empty wfc-demo entry"
+    topic: "Truthful policy for the current legacy work-item inventory and invalid/empty entries"
     owner: "developer/qc"
-    status: PENDING_HUMAN_DECISION
+    status: APPROVED
+    selected_option: C
+    disposition: ACCEPTED_CLASSIFY_FIRST_POLICY
+    approved_by: ["developer", "qc"]
+    approved_at: "2026-09-11T11:40:59Z"
+    implementation_authority: NOT_GRANTED
     affects: ["CF-007", "CF-008", "KPI-CF-003", "KPI-CF-010"]
     observed_baseline:
-      protocol_managed: 11
-      legacy_skipped: 17
-      invalid_empty_entries: ["work-items/wfc-demo/"]
+      protocol_managed: 9
+      legacy_skipped: 16
+      snapshot_scope: "clean tracked main at 2e3aaded1779787d993b7e5cacc96bfae008b3bc"
+      invalid_empty_entries: []
       new_item_policy: "legacyScaffoldPolicy=forbid"
     options:
       - id: A
@@ -283,7 +295,7 @@ open_questions:
         - "Migration preserves original paths/commit references and records the transformation event."
         - "Portfolio/list output distinguishes historical closed evidence from pending protocol work."
       verify_path:
-        - "17/17 legacy entries have one class and evidence pointer."
+        - "100% of the live legacy inventory has one class and evidence pointer."
         - "0 retrospective trusted receipts are created."
         - "0 unexplained skipped or misleading pending entries remain."
         - "wfc-demo is attributed and either repaired or recoverably removed."
@@ -294,7 +306,12 @@ open_questions:
   - id: "OQ-CF-003"
     topic: "Ownership and measurable quality bar for public English/Vietnamese language"
     owner: "ba/po/qc"
-    status: PENDING_HUMAN_DECISION
+    status: APPROVED
+    selected_option: C
+    disposition: ACCEPTED_BA_OWNED_LANGUAGE_RUBRIC
+    approved_by: ["ba", "po", "qc"]
+    approved_at: "2026-09-11T11:40:59Z"
+    implementation_authority: NOT_GRANTED
     affects: ["CF-012", "KPI-CF-008", "KPI-CF-009"]
     options:
       - id: A
@@ -382,7 +399,12 @@ open_questions:
   - id: "OQ-CF-005"
     topic: "Current-versus-historical policy for public version and managed-skill inventory claims"
     owner: "po/ba/devops"
-    status: PENDING_HUMAN_DECISION
+    status: APPROVED
+    selected_option: C
+    disposition: ACCEPTED_CURRENT_HISTORICAL_CLASSIFICATION_POLICY
+    approved_by: ["po", "ba", "devops"]
+    approved_at: "2026-09-11T11:40:59Z"
+    implementation_authority: NOT_GRANTED
     affects: ["CF-020", "AC-CF-011", "KPI-CF-002", "KPI-CF-007"]
     observed_baseline:
       current_candidate: "v2.6.2 with 42 source skills; not yet released or installed"
@@ -415,8 +437,7 @@ open_questions:
       Option C prevents both stale onboarding and revisionist history. It also makes version/count
       consistency a release invariant instead of an ad-hoc documentation cleanup.
     requested_decision: "Accept, amend or reject Option C jointly as PO, BA and DevOps."
-missing_inputs:
-  - "Explicit human decisions for OQ-CF-001..005."
+missing_inputs: []
 conflicts:
   - id: "CONFLICT-CF-001"
     tension: "Repository visibility versus draft/noise and duplicate authority."
@@ -444,31 +465,27 @@ assumptions:
 ## Input Readiness
 ```yaml
 step: "s04 Acceptance + DoR"
-status: BLOCKED
+status: READY
 available_inputs:
   - "PO-approved master plan and trusted work-item receipt"
   - "s01 Requirement Analysis and SA/TA drivers"
   - "s02 Business Goal, KPI-CF-001..012 and INV-CF-001..005"
   - "Current ignore, protocol, work-item inventory and role-authority evidence"
-missing_inputs:
-  - "Human decision for OQ-CF-001"
-  - "Human decision for OQ-CF-002"
-  - "Human decision for OQ-CF-003"
-  - "Human decision for OQ-CF-005"
+  - "Human-approved OQ-CF-001..005 Option C policies with their assigned roles"
+missing_inputs: []
 invalid_inputs: []
-conflicts:
-  - "Four option tensions remain unresolved; OQ-CF-004 is resolved by approved Option C."
+conflicts: []
 assumptions:
-  - "Recommendations remain proposals until explicit role decisions are recorded."
-  - "OQ-CF-004 approval accepts CF-019 but does not approve a child work item or implementation."
+  - "OQ approvals authorize policy use in s04 only; they do not approve child work items or implementation."
+  - "Live counts and repository status will be refreshed in s04 rather than carried forward from the 2026-09-02 snapshot."
 risk_level: MEDIUM
-next_action: "Propose the independent CF-019 child; human owners decide OQ-CF-001/002/003/005 before master s04."
+next_action: "Author s04 Acceptance + DoR from the approved Option C policies and refreshed repository evidence."
 ```
 
 ## Audit
 ```yaml
 step: "s03 Open Questions"
-status: PARTIAL
+status: PASS
 checks:
   - criterion: "Each OQ has options, recommendation and rationale"
     result: PASS
@@ -480,17 +497,15 @@ checks:
     result: PASS
     evidence: "OQ-CF-002 forbids retrospective receipts; every recommendation preserves independent child gates."
   - criterion: "Human owners have decided"
-    result: PARTIAL
-    evidence: "OQ-CF-004 is APPROVED as Option C by PO/BA/Developer/QC; OQ-CF-001/002/003/005 remain pending."
+    result: PASS
+    evidence: "All five Option C decisions have explicit approval from their assigned PO/Maintainer, BA, Developer, QC, and DevOps authorities."
 constraint_violations: []
-unmitigated_high_risks:
-  - "CF-019 is accepted but remains unremediated until an independently approved child reaches implementation and verification."
+unmitigated_high_risks: []
 timebox_breach: false
-timebox_evidence: "Recommendation authoring completed in one focused pass; human decision is pending."
-gaps:
-  - "OQ-CF-001, OQ-CF-002, OQ-CF-003, and OQ-CF-005 lack explicit human decisions."
+timebox_evidence: "Recommendation authoring and one explicit human decision bundle completed before s04 authoring."
+gaps: []
 risk_level: MEDIUM
-next_action: "Propose the CF-019 child independently, then request the remaining four decisions with their scoped roles."
+next_action: "Proceed to s04 authoring; keep every remediation child independently gated."
 ```
 
 ## Traceability
@@ -502,12 +517,13 @@ upstream:
 outputs:
   - "OQ-CF-001..005 recommendation bundle"
   - "s04 input-readiness report"
-next_step: "Independent CF-019 child proposal; remaining human decisions before master s04 Acceptance + DoR"
+next_step: "s04 Acceptance + DoR authoring from approved OQ-CF-001..005 policies"
 ```
 
 ## Handoff
-- Trạng thái readiness: `BLOCKED` vì bốn human decisions còn lại chưa được ghi; không có missing technical input.
-- OQ-CF-004: Option C đã được PO/BA/Developer/QC phê duyệt; CF-019 được chấp nhận là policy/runtime defect, nhưng child work item và implementation vẫn cần gate độc lập.
-- Recommendation còn lại: chọn Option C cho OQ-CF-001/002/003/005 với authority tương ứng.
-- Điều cần làm để sang step 4: PO/maintainer quyết OQ-CF-001; Developer/QC quyết OQ-CF-002;
-  BA quyết OQ-CF-003 với PO/QC đồng ý phạm vi trách nhiệm; PO/BA/DevOps quyết OQ-CF-005.
+- Trạng thái readiness: `READY`; cả năm Option C đã có quyết định rõ từ đúng authority.
+- OQ-CF-001 khóa selective promotion; OQ-CF-002 khóa classify-first không mint receipt hồi tố;
+  OQ-CF-003 khóa BA-owned rubric; OQ-CF-004 khóa conditional SA/TA applicability; OQ-CF-005 khóa
+  current-versus-historical classification.
+- Điều cần làm để sang step 4: author s04 Acceptance + DoR từ policy đã duyệt và số liệu live đã
+  refresh. Các quyết định này không phê duyệt Spec, DoR, child work item hoặc implementation.

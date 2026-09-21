@@ -11,7 +11,7 @@ status: approved-for-authoring
 approval: human-approved
 approved_by: po
 approved_at: 2026-09-03T01:34:46.476Z
-last_updated: 2026-09-07
+last_updated: 2026-09-11
 delivery_context: brownfield
 planning_track: full
 governance_profile: strict
@@ -33,8 +33,9 @@ tags:
 > PO đã phê duyệt phạm vi master plan và thứ tự `P0 → P4` để tiếp tục authoring. Quyết định này
 > không tự động phê duyệt bất kỳ child work item, implementation, DoD, Release, Business
 > Acceptance, exception hoặc waiver nào. Approval ngày 2026-09-03 chỉ phủ `CF-001..018`;
-> PO/BA/Developer/QC đã phê duyệt OQ-CF-004 Option C ngày 2026-09-08, qua đó chấp nhận `CF-019`
-> nhưng chưa phê duyệt child work item hay implementation. `CF-020` và `AC-CF-011` vẫn là đề xuất.
+> OQ-CF-001..005 đã được các authority tương ứng phê duyệt Option C. Các quyết định này khóa policy
+> đầu vào cho s04 nhưng không tự động phê duyệt child work item, Spec, DoR, implementation, DoD,
+> Release, Business Acceptance, exception hoặc waiver.
 
 ## 1. Vì Sao Cần Master Plan Này
 
@@ -85,12 +86,12 @@ Master plan này là portfolio-level authority cho bốn câu hỏi trên. Workf
 | CF-004 | HIGH | CHANGE-005 diagram adapter có prerequisite/status cũ | `OPEN` | Developer/QC |
 | CF-005 | MEDIUM | Test cross-file còn đọc live work-item note | `OPEN` | Developer/QC |
 | CF-006 | HIGH | Chưa có security baseline bao phủ skill, hook, MCP, adapter | `OPEN` | Security/QC |
-| CF-007 | MEDIUM | Legacy work item bị skip và hiển thị status gây hiểu sai | `OPEN_DECISION` | Developer/QC |
-| CF-008 | LOW | `wfc-demo` rỗng tạo inventory không hợp lệ trên main | `OPEN` | Maintainer |
-| CF-009 | HIGH | Schema threshold SA/TA thiếu `binary` nhưng rule lại yêu cầu | `OPEN` | Developer/QC |
-| CF-010 | HIGH | Pack audit cơ học vẫn xanh khi CF-009 tồn tại | `OPEN` | Developer/QC |
-| CF-011 | MEDIUM | Plan/research còn hành động được đang bị ignore | `OPEN_DECISION` | PO/Maintainer |
-| CF-012 | MEDIUM | Chưa có quality gate cho độ tự nhiên và role-friction của EN/VI | `OPEN` | BA/PO |
+| CF-007 | MEDIUM | 16 legacy work item trên clean tracked main bị skip và có thể hiển thị status gây hiểu sai | `ACCEPTED_PENDING_CHILD` | Developer/QC |
+| CF-008 | LOW | `wfc-demo` rỗng từng tạo inventory không hợp lệ | `RESOLVED` — path đã vắng mặt, list có 25 item hợp lệ | Maintainer |
+| CF-009 | HIGH | Schema threshold SA/TA từng thiếu `binary` nhưng rule lại yêu cầu | `RESOLVED` — schema/test đã cùng enum | Developer/QC |
+| CF-010 | HIGH | Pack-audit command chưa trực tiếp chạy semantic contract test hiện có | `PARTIAL` | Developer/QC |
+| CF-011 | MEDIUM | Plan/research còn hành động được đang bị ignore | `ACCEPTED_PENDING_CLASSIFICATION` | PO/Maintainer |
+| CF-012 | MEDIUM | Chưa có quality gate cho độ tự nhiên và role-friction của EN/VI | `ACCEPTED_PENDING_CHILD` | BA/PO/QC |
 | CF-013 | MEDIUM | Memory authority/freshness/retention contract chưa được duyệt | `OPEN_DECISION` | PO/Developer/QC |
 | CF-014 | LOW | Threshold và trọng số đánh giá SA/TA chưa được hiệu chỉnh | `OPEN_EXPERIMENT` | Architecture lead/PO |
 | CF-015 | LOW | Rationalizations/anatomy pilot chưa có evidence | `OPEN_DECISION` | Developer |
@@ -98,7 +99,7 @@ Master plan này là portfolio-level authority cho bốn câu hỏi trên. Workf
 | CF-017 | HIGH | Local và hosted `.tgz` khác byte dù extracted content bằng nhau | `OPEN` | Developer/DevOps/QC |
 | CF-018 | MEDIUM | GitHub action runtime có cảnh báo deprecation | `OPEN` | DevOps |
 | CF-019 | HIGH | Câu chữ authority về SA/TA mâu thuẫn với adaptive applicability | `ACCEPTED_PENDING_CHILD` | PO/BA/Developer/QC |
-| CF-020 | MEDIUM | Tài liệu current-facing còn version/inventory cũ | `PROPOSED_FINDING` | PO/BA/DevOps |
+| CF-020 | MEDIUM | Tài liệu current-facing còn version/inventory cũ | `ACCEPTED_PENDING_CLASSIFICATION` | PO/BA/DevOps |
 
 ## 5. Thứ Tự Thực Thi Đã Phê Duyệt
 
@@ -166,18 +167,20 @@ Master plan này là portfolio-level authority cho bốn câu hỏi trên. Workf
 
 ## 7. Gate Hiện Tại
 
-Master work item đang ở `s03 Open Questions`, trạng thái `BLOCKED` cho authoring `s04` vì còn bốn
-quyết định human:
+Master work item đã hoàn tất `s03 Open Questions`; BA đã phê duyệt Spec và BA/QC đã phê duyệt DoR
+của s04. Hai digest-bound receipt còn thiếu trước khi author s05. Năm quyết định policy đã được khóa
+độc lập:
 
-1. `OQ-CF-001` — PO/Maintainer chọn selective promotion cho tài liệu bị ignore.
-2. `OQ-CF-002` — Developer/QC chọn classify-first cho legacy work item; không mint receipt hồi tố.
+1. `OQ-CF-001` — PO/Maintainer đã chọn selective promotion cho tài liệu bị ignore.
+2. `OQ-CF-002` — Developer/QC đã chọn classify-first cho legacy work item; không mint receipt hồi tố.
 3. `OQ-CF-003` — BA sở hữu language rubric, PO/QC/domain reviewer chỉ tham gia theo phạm vi.
-4. `OQ-CF-005` — PO/BA/DevOps chọn policy current/historical cho version và skill inventory,
+4. `OQ-CF-004` — PO/BA/Developer/QC đã chọn conditional SA/TA applicability theo router.
+5. `OQ-CF-005` — PO/BA/DevOps đã chọn policy current/historical cho version và skill inventory,
    đồng thời disposition CF-020.
 
-`OQ-CF-004` đã chốt **Option C**. Recommendation cho bốn OQ còn lại vẫn là **Option C**. Sau khi
-các role tương ứng phê duyệt, bước kế tiếp mới là author `s04 Acceptance + DoR`; chưa được nhảy
-sang Task Plan hoặc implementation.
+`OQ-CF-004` đã chốt ngày 2026-09-08; bốn OQ còn lại chốt ngày 2026-09-11. Spec và DoR cũng đã có
+human decision; bước kế tiếp là BA seal Spec và QC seal DoR. Chưa được nhảy sang Technical Approach,
+Task Plan hoặc implementation trước khi cả hai receipt khớp s04.
 
 ## Traceability
 
@@ -188,6 +191,6 @@ source_request:
 requirements: ["AC-CF-001..011"]
 findings: ["CF-001..020"]
 sequence: ["P0.1 -> P0.2 -> P0.3 -> P0.4 -> P0.5 -> P1 -> P2 -> P3 -> P4"]
-current_step: "s03 Open Questions"
-next_human_action: "Approve or amend OQ-CF-001..005 Option C with their named roles."
+current_step: "s04 Acceptance + DoR receipt sealing"
+next_human_action: "BA seals Spec and QC seals DoR against the unchanged finalized s04 host."
 ```

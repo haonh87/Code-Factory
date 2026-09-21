@@ -1,8 +1,8 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "MATERIALIZED",
+  "protocol_status": "ACTIVE",
   "decision_owner": "agent",
-  "protocol_owner": "po",
+  "protocol_owner": "developer",
   "raw_request_summary": "Process the recommended sequence and create the missing holistic Code-Factory workflow/skill review plan.",
   "request_source": "user",
   "candidate_count": 1,
@@ -73,35 +73,40 @@
     "s02 Business Goal completed with portfolio outcomes and measurement candidates; OQ-CF-001..003 remain owned decisions for s03.",
     "The 2026-09-05 evidence refresh made the approved plan discoverable, added a Vietnamese companion, and proposed CF-019/CF-020 plus AC-CF-010/AC-CF-011 without inheriting the 2026-09-03 approval.",
     "The 2026-09-07 s03 amendment expands the recommendation bundle to OQ-CF-001..005 so CF-019/CF-020 and AC-CF-010/011 have explicit decisions, owners and verify paths; all five Option C recommendations remain pending human decisions.",
-    "The detailed P0 sequence now closes the linked defect before CF-019 disposition/remediation and parent CR-008 re-verification, removing the former P0.1-to-P1.0 dependency cycle without changing the approved P0-to-P4 phase order."
+    "The detailed P0 sequence now closes the linked defect before CF-019 disposition/remediation and parent CR-008 re-verification, removing the former P0.1-to-P1.0 dependency cycle without changing the approved P0-to-P4 phase order.",
+    "PO/Maintainer approved OQ-CF-001=C, Developer/QC approved OQ-CF-002=C, BA/PO/QC approved OQ-CF-003=C, and PO/BA/DevOps approved OQ-CF-005=C at 2026-09-11T11:40:59Z. All master OQs are resolved without granting child implementation authority.",
+    "s04 now proposes AC-CF-001..011 and a READY DoR from refreshed clean-main evidence. Human Spec/DoR decisions and trusted receipts remain pending.",
+    "Human BA approved Spec and human BA/QC approved DoR at 2026-09-11T13:51:45Z. Two independent trusted receipts remain pending; no later gate is implied.",
+    "BA Spec receipt 2026-09-11T14:33:43.972Z and QC DoR receipt 2026-09-11T14:33:56.365Z both verify against s04 SHA-256 41078181e9b0e8186c900b8d1908ca9f52820d6b763b37467681325edc389f29.",
+    "Master s05 proposes bounded evidence-led coordination, five audit sidecars, independent child reuse/proposals, and separate source/candidate/release/install tiers. Developer review remains independent.",
+    "Human Developer approved the master evidence-led Approach at 2026-09-12T05:44:54Z. The finalized s05 host awaits a matching trusted receipt before s06; no audit execution, child gate, or write grant is opened.",
+    "Developer Approach receipt APPROVED at 2026-09-12T05:51:55.282Z verifies digest_match=true against s05 SHA-256 10b4015018013eebc9a623c5651148f3b4e648c46717f83b1c401b1df2048f8b.",
+    "Master s06 M0..M11 is drafted with five audit sidecars, six proposed audit-only roots, full semantic coverage, two ordered review pairs and direct child/integration/released/installed closure dependencies. No execution or child authority is granted.",
+    "Human Developer approved M0..M11 and all six audit-only roots at 2026-09-12T06:04:23Z. The finalized host awaits a matching receipt; no execution or child write authority is granted.",
+    "Developer Task Plan receipt APPROVED at 2026-09-12T06:23:55.010Z verifies digest_match=true against unchanged s06 SHA-256 5e27d9630ad5d502709069103f5deb22952604b30ab52115c5a03917ad9b4bb5. Spec, DoR and Approach receipts also match; only separately authorized master activation with six approved audit-only roots remains. No master/child execution or write grant is opened.",
+    "Developer explicitly activated master s07 with six approved audit-only roots. Metadata anchor was rebound to this worktree after the CLI consulted stale root drafts; four sealed hosts/receipts unchanged.",
+    "M0/M1 produced exact source/main/WIP identities, 42 canonical skills, seven groups, 227 supporting files, eight surface families, both installed 2.3.2/40 inventories and nine local overlay-root observations. M2 has begun with four SKILL.md reads and three architecture-modeling operative EN references; no full semantic, finding, language or final identity closure is claimed."
   ],
   "work_item_slug": "code-factory-holistic-audit-remediation",
   "work_item_type": "RESEARCH",
   "delivery_context": "brownfield",
-  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/code-factory-holistic-audit-remediation",
-  "current_step": "s03",
-  "granted_write_paths": [],
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/code-factory-holistic-audit-remediation/work-items/code-factory-holistic-audit-remediation",
+  "current_step": "s07",
+  "granted_write_paths": [
+    "work-items/code-factory-holistic-audit-remediation",
+    "docs/audits/code-factory-holistic-inventory.json",
+    "docs/audits/code-factory-holistic-coverage-matrix.md",
+    "docs/audits/code-factory-holistic-finding-disposition.md",
+    "docs/audits/code-factory-holistic-legacy-document-classification.md",
+    "docs/audits/code-factory-holistic-language-review.md"
+  ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "cf-019-child-work-item-proposal",
+  "handoff_target": "s07-portfolio-M2-full-semantic-review",
   "required_actions": [
-    "Resolve OQ-CF-001 document authority with PO/maintainer.",
-    "Resolve OQ-CF-002 legacy migration policy with Developer/QC.",
-    "Resolve OQ-CF-003 public-language quality ownership with PO/BA.",
-    "Propose an independent CF-019 child work item; do not infer work-item or implementation approval from OQ-CF-004.",
-    "Resolve OQ-CF-005 current-versus-historical public documentation policy with PO/BA/DevOps.",
-    "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate spec --reviewed-by <role>",
-    "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate dor --reviewed-by <role>",
-    "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate approach --reviewed-by <role>",
-    "wfc gate approve --work-item code-factory-holistic-audit-remediation --gate task_plan --reviewed-by <role>",
-    "wfc work-item activate --work-item code-factory-holistic-audit-remediation --step s07 --write-root <path>"
+    "Continue M2 full semantic coverage and M3/M4 classifications/dispositions; CF-MB1 opens only after all required evidence is complete."
   ],
-  "blockers": [
-    "OQ-CF-001 document authority has no human decision.",
-    "OQ-CF-002 legacy reconciliation policy has no human decision.",
-    "OQ-CF-003 public-language ownership and rubric have no human decision.",
-    "OQ-CF-005 public version/inventory classification has no human decision."
-  ],
+  "blockers": [],
   "refs": [
     "work-items/code-factory-holistic-audit-remediation",
     "docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md",
@@ -122,7 +127,19 @@
     "SEMANTIC_FINDINGS_CF_019_CF_020_PROPOSED",
     "OQ_RECOMMENDATION_BUNDLE_AMENDED_CF_019_CF_020",
     "PORTFOLIO_DEPENDENCY_CYCLE_REMOVED",
-    "OQ_CF_004_OPTION_C_APPROVED"
+    "OQ_CF_004_OPTION_C_APPROVED",
+    "OQ_CF_001_002_003_005_OPTION_C_APPROVED",
+    "S03_OPEN_QUESTIONS_COMPLETED",
+    "S04_PORTFOLIO_SPEC_DOR_DRAFTED",
+    "S04_PORTFOLIO_SPEC_DOR_HUMAN_APPROVED_PENDING_RECEIPTS",
+    "S04_PORTFOLIO_RECEIPTS_VERIFIED",
+    "S05_PORTFOLIO_APPROACH_DRAFTED",
+    "S05_PORTFOLIO_APPROACH_HUMAN_APPROVED_PENDING_RECEIPT",
+    "S05_PORTFOLIO_APPROACH_RECEIPT_VERIFIED",
+    "S06_PORTFOLIO_TASK_PLAN_DRAFTED",
+    "S06_PORTFOLIO_TASK_PLAN_HUMAN_APPROVED_PENDING_RECEIPT",
+    "S06_PORTFOLIO_TASK_PLAN_RECEIPT_VERIFIED",
+    "WORK_ITEM_ACTIVATED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -132,7 +149,17 @@
     "Human review approved.",
     "The s03 bundle was amended at 2026-09-07T14:33:29Z so proposed findings CF-019/CF-020 and AC-CF-010/011 have explicit OQ-CF-004/005 decisions; no finding or option was self-approved.",
     "The detailed P0 dependency cycle was removed: child closeout precedes CF-019 disposition/remediation, which precedes parent CR-008 re-verification; the approved P0-to-P4 phase order is unchanged.",
-    "PO, BA, Developer, and QC approved OQ-CF-004 Option C at 2026-09-08T02:23:55Z. CF-019 is accepted as a policy/runtime defect; this decision does not approve its child work item or implementation."
+    "PO, BA, Developer, and QC approved OQ-CF-004 Option C at 2026-09-08T02:23:55Z. CF-019 is accepted as a policy/runtime defect; this decision does not approve its child work item or implementation.",
+    "PO/Maintainer approved OQ-CF-001=C, Developer/QC approved OQ-CF-002=C, BA/PO/QC approved OQ-CF-003=C, and PO/BA/DevOps approved OQ-CF-005=C at 2026-09-11T11:40:59Z. s04 authoring may proceed; Spec, DoR, child and implementation gates remain independent.",
+    "s04 now proposes AC-CF-001..011 and a READY DoR using refreshed clean-main evidence: 42 skills, 181 files/177 notes valid, 9 managed/16 legacy protocol inventory, and source v2.6.1 versus installed v2.3.2/40. Human Spec/DoR gates remain pending.",
+    "Human BA approved Spec and human BA/QC approved DoR at 2026-09-11T13:51:45Z. Two independent trusted receipts remain pending; Approach, Task Plan, and implementation remain closed.",
+    "BA Spec receipt 2026-09-11T14:33:43.972Z and QC DoR receipt 2026-09-11T14:33:56.365Z both verify against s04 SHA-256 41078181e9b0e8186c900b8d1908ca9f52820d6b763b37467681325edc389f29.",
+    "Master s05 is drafted with five audit sidecars, child gate independence, frozen/current evidence separation, and release/runtime identity guards. No execution or child gate is granted.",
+    "Human Developer approved the evidence-led master Approach at 2026-09-12T05:44:54Z. A matching trusted receipt is still required before s06; no audit execution, child gate, or write grant is opened.",
+    "Developer Approach receipt APPROVED at 2026-09-12T05:51:55.282Z matches finalized s05 SHA-256 10b4015018013eebc9a623c5651148f3b4e648c46717f83b1c401b1df2048f8b.",
+    "Master s06 M0..M11 is drafted with six proposed audit-only roots, five sidecars, full source semantic coverage, separate BA language evidence, child gate independence and final identity/closure requirements. Task Plan decision, trusted evidence and activation remain independent.",
+    "Human Developer approved M0..M11 and all six audit-only roots at 2026-09-12T06:04:23Z. The finalized host awaits a matching receipt; no execution or child write authority is granted.",
+    "Developer Task Plan receipt APPROVED at 2026-09-12T06:23:55.010Z verifies digest_match=true against unchanged s06 SHA-256 5e27d9630ad5d502709069103f5deb22952604b30ab52115c5a03917ad9b4bb5. Spec, DoR and Approach receipts also match; only separately authorized master activation with six approved audit-only roots remains. No master/child execution or write grant is opened."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -210,6 +237,86 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Approved OQ-CF-004 Option C and accepted CF-019 as a policy/runtime defect. Child work-item approval and implementation authority remain independent human gates."
+    },
+    {
+      "timestamp": "2026-09-11T11:40:59Z",
+      "action": "approve-remaining-master-option-c-decisions",
+      "actor": "po+maintainer+ba+developer+qc+devops",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Approved OQ-CF-001, OQ-CF-002, OQ-CF-003, and OQ-CF-005 Option C with their assigned authorities. All five master OQs are resolved and s04 authoring is open; no later gate is implied."
+    },
+    {
+      "timestamp": "2026-09-11T13:29:37Z",
+      "action": "author-s04-portfolio-spec-dor",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Drafted AC-CF-001..011, brownfield baseline, governance checks, edge cases, and READY DoR. Human BA Spec and BA/QC DoR decisions remain independent and pending."
+    },
+    {
+      "timestamp": "2026-09-11T13:51:45Z",
+      "action": "approve-s04-portfolio-spec-dor",
+      "actor": "ba+qc",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "BA approved Spec and BA/QC approved DoR. Two digest-bound s04 receipts remain required before s05."
+    },
+    {
+      "timestamp": "2026-09-12T05:34:10Z",
+      "action": "verify-s04-receipts-open-s05-portfolio-approach",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Verified BA Spec and QC DoR receipts against unchanged s04 and drafted master s05. Developer review and matching trusted receipt remain independent; no master/child execution is open."
+    },
+    {
+      "timestamp": "2026-09-12T05:44:54Z",
+      "action": "approve-s05-portfolio-approach",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human Developer approved the evidence-led portfolio Approach. The finalized host awaits a matching trusted receipt before s06; master/child execution and all write grants stay closed."
+    },
+    {
+      "timestamp": "2026-09-12T05:54:27Z",
+      "action": "verify-s05-receipt-open-s06-portfolio-task-plan",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Verified matching Developer Approach receipt and authored M0..M11 with six proposed audit-only roots. Human Task Plan review, trusted receipt and activation remain separate; no master/child execution or public mutation is opened."
+    },
+    {
+      "timestamp": "2026-09-12T06:04:23Z",
+      "action": "approve-s06-portfolio-task-plan",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human Developer approved the audit-only Task Plan and all six proposed roots. A matching trusted receipt and explicit activation remain required; no execution or child authority is granted."
+    },
+    {
+      "timestamp": "2026-09-12T06:24:42Z",
+      "action": "verify-s06-portfolio-task-plan-receipt",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Developer Task Plan receipt APPROVED at 2026-09-12T06:23:55.010Z verifies digest_match=true against unchanged s06 SHA-256 5e27d9630ad5d502709069103f5deb22952604b30ab52115c5a03917ad9b4bb5. Spec, DoR and Approach receipts also match; only separately authorized master activation with six approved audit-only roots remains. No master/child execution or write grant is opened."
+    },
+    {
+      "timestamp": "2026-09-12T07:45:40.860Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Human Developer explicitly confirmed master activation at s07 with the six approved audit-only roots; child implementation and terminal gates remain independent."
+    },
+    {
+      "timestamp": "2026-09-12T07:55:14Z",
+      "action": "record-M0-M1-and-open-M2-evidence",
+      "actor": "agent",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "M0/M1 inventory and scoped artifact checks recorded; M2 read-only semantic review started. No child/source/main/receipt/publish/install mutation from master authority."
     }
   ]
 }
