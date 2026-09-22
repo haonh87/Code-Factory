@@ -136,12 +136,12 @@ tags:
 
 ```text
 Current Step: s08 Verify + DoD
-Workflow Status: WAITING_APPROVAL
+Workflow Status: VERIFIED
 Delivery Context: brownfield
-What I Am Doing Now: Record explicit closeout acceptance and prepare receipt sealing.
-Missing Gates: Trusted DoD and Business Acceptance receipts; content approval received.
-Next Artifact: Finalized s08 and two terminal receipts.
-Next Human Action: Sign the approved closeout bundle in the human-controlled terminal.
+What I Am Doing Now: Both terminal receipts are verified; record the guarded protocol close.
+Missing Gates: NONE
+Next Artifact: DONE protocol event and integration handoff.
+Next Human Action: NONE
 ```
 
 ## Step Contract
@@ -298,11 +298,12 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-09-22T01:54:22.214Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-09-22T02:24:26.998Z"
+handoff_target: "protocol-close"
+last_transition_action: "approve-closeout-bundle"
+last_transition_at: "2026-09-22T02:41:58.322Z"
 required_actions:
   - {"id":"se:6d1f92ed070ccb33bbd3320f8c0c816056b753f4b3ce481a92c2505133474779","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+  - {"id":"se:a3ae84b74efd60895a789b46d49a9931ea343e0a5a096980e760dd0089b6f751","kind":"work_item_close","text":"wfc work-item close --work-item materialization-dedup-recovery"}
 blockers: []
 review_notes:
   - "User accepted the concrete repair scope and authoring packet; observed 2026-09-22T01:44:34Z."
@@ -319,6 +320,7 @@ audit_events:
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
+  - "CLOSEOUT_BUNDLE_APPROVED"
 ```
 
 ## Traceability

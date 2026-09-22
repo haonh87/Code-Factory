@@ -75,12 +75,17 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "protocol-close",
   "required_actions": [
     {
       "id": "se:6d1f92ed070ccb33bbd3320f8c0c816056b753f4b3ce481a92c2505133474779",
       "kind": "workflow_followup",
       "text": "Collect DoD evidence and close the work item when ready."
+    },
+    {
+      "id": "se:a3ae84b74efd60895a789b46d49a9931ea343e0a5a096980e760dd0089b6f751",
+      "kind": "work_item_close",
+      "text": "wfc work-item close --work-item materialization-dedup-recovery"
     }
   ],
   "blockers": [],
@@ -97,7 +102,8 @@
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "CLOSEOUT_BUNDLE_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -175,6 +181,15 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "AC-DR-01..08 evidence recorded in s08: 45-file unit suite, public CLI and isolated CR-008 proposal smoke, pack audit and applicable validators. Static scanner limits disclosed; DoD and Business Acceptance pending."
+    },
+    {
+      "timestamp": "2026-09-22T02:41:58.322Z",
+      "action": "approve-closeout-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "APPROVED closeout gates: dod, business_acceptance",
+      "transaction_id": "11d27e89-3471-4ab9-89e2-25cb8fd8cb88"
     }
   ],
   "artifact_shape": "adaptive_v1",
