@@ -1,0 +1,282 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "MATERIALIZED",
+  "decision_owner": "agent",
+  "protocol_owner": "",
+  "raw_request_summary": "Repair reviewed dedup admission progression.",
+  "request_source": "user-chat",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "materialization-dedup-recovery",
+      "work_item_title": "Materialization Dedup Recovery",
+      "work_item_type": "BUG",
+      "scope_summary": "Repair reviewed dedup admission progression.",
+      "primary_outcome": "Repair reviewed dedup admission progression.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "strict",
+      "sdd_reasons": [],
+      "sdd_preset": "strict",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [],
+      "collision_notes": [],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "Scope chưa cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item materialization-dedup-recovery --planning-track full --delivery-context brownfield --governance-profile strict --adaptive-writes true --request-lane product_delivery --adaptive-source-version 2.6.3 --adaptive-installed-version 2.6.3 --adaptive-installed-version 2.6.3 --adaptive-parity-passed true --public-contract true --security-sensitive true",
+        "npm run validate:workflow -- --workflow-root work-items/materialization-dedup-recovery --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/materialization-dedup-recovery"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=BUG",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict",
+    "change_strategy=none",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=strict",
+    "selected_profile=strict",
+    "sdd_mode=none",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "materialization-dedup-recovery",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "selected_profile": "strict",
+  "sdd_mode": "none",
+  "sdd_preset": "strict",
+  "sdd_light_profile": "preview",
+  "sdd_reasons": [],
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/materialization-dedup-recovery/work-items/materialization-dedup-recovery",
+  "current_step": "s01",
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "human-review",
+  "required_actions": [
+    {
+      "id": "se:1817ead6061b0dc1c8216974cc14eaacb252065d7099365c813a82071e4735d9",
+      "kind": "workflow_followup",
+      "text": "wfc work-item approve --work-item materialization-dedup-recovery --reviewed-by <role>"
+    },
+    {
+      "id": "se:05bd114bdaa8c7627676d9539f25ed4565399744f0769a0b2cd61c7ccf4daf3c",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item materialization-dedup-recovery --gate spec --reviewed-by ba",
+      "gate": "spec"
+    },
+    {
+      "id": "se:9cf6c9259adb2ac89f7e8db46f224abd0ce812283924889b5e46ec89bfda0c45",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item materialization-dedup-recovery --gate contract --reviewed-by developer",
+      "gate": "contract"
+    },
+    {
+      "id": "se:10603e8b9aeedefe9bd1caabac195ced3d9e35ab7cbb565e2631aa658b60246e",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item materialization-dedup-recovery --gate dor --reviewed-by ba",
+      "gate": "dor"
+    },
+    {
+      "id": "se:e634df0fc7c61e6cb80579c3207999b769153105ed0ed218e3fb3bd5e85421f2",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item materialization-dedup-recovery --gate approach --reviewed-by developer",
+      "gate": "approach"
+    },
+    {
+      "id": "se:2f8e8833e6f8e013a13b53fd1c2aac40b06cfff1bc267cd22e2a857349c0887a",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item materialization-dedup-recovery --gate task_plan --reviewed-by developer",
+      "gate": "task_plan"
+    },
+    {
+      "id": "se:22e928d7090ed434b639d489b143facbe419d80099d1444d46864682c5a61adc",
+      "kind": "work_item_activation",
+      "text": "wfc work-item activate --work-item materialization-dedup-recovery --step s07 --write-root <path>"
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/materialization-dedup-recovery"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED"
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "review_required": true,
+  "approval_status": "PENDING_REVIEW",
+  "reviewed_by": "",
+  "reviewed_at": "",
+  "review_notes": [],
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-21T13:37:36.220Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-09-21T13:37:36.220Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Materialization inputs are ready for scaffold."
+    },
+    {
+      "timestamp": "2026-09-21T13:37:36.254Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Auto-scaffolded workflow artifacts."
+    }
+  ],
+  "artifact_shape": "adaptive_v1",
+  "request_lane": "product_delivery",
+  "requested_lane": "product_delivery",
+  "workflow_required": true,
+  "routing_reasons": [
+    "LANE_PRODUCT_DELIVERY"
+  ],
+  "escalation_reasons": [
+    "HARD_PUBLIC_CONTRACT",
+    "HARD_SECURITY_SENSITIVE"
+  ],
+  "roles": [
+    {
+      "role": "po",
+      "reasons": [
+        "ROLE_PO_PRODUCT_OUTCOME"
+      ]
+    },
+    {
+      "role": "ba",
+      "reasons": [
+        "ROLE_BA_REQUIREMENTS"
+      ]
+    },
+    {
+      "role": "sa",
+      "reasons": [
+        "ROLE_SA_PUBLIC_CONTRACT_BOUNDARY"
+      ]
+    },
+    {
+      "role": "ta",
+      "reasons": [
+        "ROLE_TA_PUBLIC_CONTRACT_RISK",
+        "ROLE_TA_SECURITY_RISK"
+      ]
+    },
+    {
+      "role": "developer",
+      "reasons": [
+        "ROLE_DEVELOPER_DELIVERY"
+      ]
+    },
+    {
+      "role": "qc",
+      "reasons": [
+        "ROLE_QC_VERIFICATION"
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "gate": "spec",
+      "reasons": [
+        "GATE_SPEC_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "ba"
+      ]
+    },
+    {
+      "gate": "contract",
+      "reasons": [
+        "GATE_CONTRACT_PUBLIC_CONTRACT"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
+      "gate": "dor",
+      "reasons": [
+        "GATE_DOR_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "ba",
+        "qc"
+      ]
+    },
+    {
+      "gate": "approach",
+      "reasons": [
+        "GATE_APPROACH_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
+      "gate": "task_plan",
+      "reasons": [
+        "GATE_TASK_PLAN_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
+      "gate": "dod",
+      "reasons": [
+        "GATE_DOD_PRODUCT_DELIVERY"
+      ],
+      "reviewer_roles": [
+        "qc"
+      ]
+    },
+    {
+      "gate": "business_acceptance",
+      "reasons": [
+        "GATE_BUSINESS_ACCEPTANCE_PRODUCT_OUTCOME"
+      ],
+      "reviewer_roles": [
+        "po"
+      ]
+    }
+  ],
+  "human_override": null,
+  "adaptive_activation": {
+    "source_version": "2.6.3",
+    "installed_versions": [
+      "2.6.3",
+      "2.6.3"
+    ],
+    "parity_passed": true
+  }
+}
