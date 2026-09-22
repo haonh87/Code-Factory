@@ -83,10 +83,9 @@ assumptions:
   - id: ASM-001
     description: "Evidence and exact IDs must be refreshed if target bytes change, including after the first disposition."
     owner: "developer"
-open_decisions:
-  - id: ODC-001
-    description: "Obtain three trusted admission dispositions and use the recovery command integrated by PR #10 to promote the proposal to MATERIALIZED; work-item and Task Plan approval remain separate prerequisites for implementation."
-    owner: "maintainer"
+open_decisions: []
+resolved_decisions:
+  - "ODC-001: PR #10 recovery executed after three verified admission signatures on 2026-09-22; work-item and Task Plan approval remain separate implementation prerequisites."
 ```
 
 ## Spec Freeze
