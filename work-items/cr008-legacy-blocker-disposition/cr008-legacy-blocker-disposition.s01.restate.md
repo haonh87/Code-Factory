@@ -325,7 +325,7 @@ Global CLI, source bundle and installed Codex/Claude harnesses are 2.6.3. This m
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
@@ -344,7 +344,7 @@ work_item_slug: "cr008-legacy-blocker-disposition"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr008-legacy-blocker-disposition/work-items/cr008-legacy-blocker-disposition"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - "work-items/cr008-legacy-blocker-disposition"
   - "product-specs/cards/cr008-legacy-blocker-disposition.md"
@@ -363,11 +363,11 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-09-22T07:36:46.859Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-09-22T08:33:50.844Z"
+handoff_target: "definition-of-done"
+last_transition_action: "verify"
+last_transition_at: "2026-09-22T09:44:08.172Z"
 required_actions:
-  - {"id":"se:010693fa73462794f4edce57a248baab42d8cb1bcc0eb9e94cdfe73ff68a7f7b","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
+  - {"id":"se:028ed6090f00eae052663d7ccd863234a344eaf1a3afd572d542810b8d699edc","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
 blockers: []
 review_notes:
   - "User explicitly accepted Work Item and Task Plan a00ce83; recorded at 2026-09-22T07:33:21Z; finalized authoring d51f7f5."
@@ -385,4 +385,5 @@ audit_events:
   - "STEP_OPENED"
   - "WORK_ITEM_APPROVED"
   - "WORK_ITEM_ACTIVATED"
+  - "VERIFICATION_CONFIRMED"
 ```

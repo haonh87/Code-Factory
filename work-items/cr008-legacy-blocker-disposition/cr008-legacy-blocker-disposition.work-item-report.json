@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "VERIFIED",
   "decision_owner": "agent",
   "protocol_owner": "maintainer",
   "raw_request_summary": "Record two reviewed legacy blocker dispositions for archived CR-008 and establish removal readiness for its clean merged worktree.",
@@ -70,7 +70,7 @@
   "work_item_type": "CHANGE",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr008-legacy-blocker-disposition/work-items/cr008-legacy-blocker-disposition",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     "work-items/cr008-legacy-blocker-disposition",
     "product-specs/cards/cr008-legacy-blocker-disposition.md",
@@ -81,12 +81,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "step-s07-owner",
+  "handoff_target": "definition-of-done",
   "required_actions": [
     {
-      "id": "se:010693fa73462794f4edce57a248baab42d8cb1bcc0eb9e94cdfe73ff68a7f7b",
+      "id": "se:028ed6090f00eae052663d7ccd863234a344eaf1a3afd572d542810b8d699edc",
       "kind": "workflow_followup",
-      "text": "Continue active execution from step 7 onward."
+      "text": "Collect DoD evidence and close the work item when ready."
     }
   ],
   "blockers": [],
@@ -104,7 +104,8 @@
     "WORKFLOW_SCAFFOLDED",
     "STEP_OPENED",
     "WORK_ITEM_APPROVED",
-    "WORK_ITEM_ACTIVATED"
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -157,6 +158,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "ACTIVE",
       "note": "Explicit user approval recorded at 2026-09-22T07:33:21Z; trusted work-item and task_plan signatures verified; activate only six approved maintenance paths."
+    },
+    {
+      "timestamp": "2026-09-22T09:44:08.172Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "AC-01..05 technical evidence and full applicable validators pass; QC DoD decision remains pending."
     }
   ],
   "resolved_state_history": [
