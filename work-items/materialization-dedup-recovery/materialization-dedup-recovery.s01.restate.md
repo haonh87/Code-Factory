@@ -138,10 +138,10 @@ tags:
 Current Step: s08 Verify + DoD
 Workflow Status: WAITING_APPROVAL
 Delivery Context: brownfield
-What I Am Doing Now: Present completed repair and verification evidence for closeout review.
-Missing Gates: DoD, Business Acceptance.
-Next Artifact: Human-reviewed s08 and two terminal receipts.
-Next Human Action: Review the concrete s08 packet and sign the closeout bundle after explicit approval.
+What I Am Doing Now: Record explicit closeout acceptance and prepare receipt sealing.
+Missing Gates: Trusted DoD and Business Acceptance receipts; content approval received.
+Next Artifact: Finalized s08 and two terminal receipts.
+Next Human Action: Sign the approved closeout bundle in the human-controlled terminal.
 ```
 
 ## Step Contract

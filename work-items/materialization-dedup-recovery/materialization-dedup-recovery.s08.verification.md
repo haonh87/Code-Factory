@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: verified
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -109,10 +109,10 @@ gate_reviews:
   approach_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
-  business_acceptance_reviewed_by: []
-  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-09-22T02:37:58Z"
+  business_acceptance_reviewed_by: ["po"]
+  business_acceptance_reviewed_at: "2026-09-22T02:37:58Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -134,7 +134,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Technical verification PASS for AC-DR-01..08. Scan coverage is PARTIAL because ESLint and Semgrep are unavailable; syntax checks, targeted review and deterministic security-negative tests are complete. Human DoD and Business Acceptance are pending. This work item is not DONE and the installed 2.6.3 runtime is unchanged.
+> Technical verification PASS for AC-DR-01..08. Scan coverage is PARTIAL because ESLint and Semgrep are unavailable; syntax checks, targeted review and deterministic security-negative tests are complete. The user explicitly approved DoD and Business Acceptance for commit 5256886, including the disclosed scan limits. This host records that human verdict; trusted receipt sealing and the protocol close transition are still required. Installed 2.6.3 is unchanged.
 
 ## Step Contract
 
@@ -189,9 +189,9 @@ commands_run:
 skipped_checks: ["ESLint and Semgrep not installed/configured; no dependency added", "No typecheck/build application, database, deployment or hosted release in scope"]
 release_blockers: []
 status: PASS
-gaps: ["Human DoD and Business Acceptance not yet sealed"]
+gaps: ["Content approval received; trusted DoD and Business Acceptance receipts await human Terminal signing"]
 residual_risks: ["Static security scanner unavailable; security assessment combines signature/path negative tests and targeted source review", "Older protocol writers may drop materialization_recovery; documented compatibility limit", "No performance benchmark; synchronous traversal is confined to the selected work-item tree"]
-recommendation: "Review the concrete packet and approve DoD/Business Acceptance if the documented verification limits are acceptable"
+recommendation: "Seal the approved closeout gates in a human-controlled terminal, verify both receipts, then close the bounded repair"
 notes_for_review: "No live CR-008 resume/disposition, global update, release, merge or worktree cleanup is part of this repair"
 ```
 
@@ -200,14 +200,30 @@ notes_for_review: "No live CR-008 resume/disposition, global update, release, me
 ```yaml
 status: PASS
 coverage:
-  - {id: AC-DR-01, status: PASS, evidence: "READY and existing draft recovery tests"}
-  - {id: AC-DR-02, status: PASS, evidence: "Signed near-match and copied real-proposal smoke"}
-  - {id: AC-DR-03, status: PASS, evidence: "Zero-write refusal matrix"}
-  - {id: AC-DR-04, status: PASS, evidence: "Pending approval, no grants, activation rejection"}
-  - {id: AC-DR-05, status: PASS, evidence: "Idempotent public CLI and conflicting retry cases"}
-  - {id: AC-DR-06, status: PASS, evidence: "Filesystem ownership, atomic failure and concurrent edit fixtures"}
-  - {id: AC-DR-07, status: PASS, evidence: "Full 45-file unit suite and overwrite guards"}
-  - {id: AC-DR-08, status: PASS, evidence: "EN/VI, runtime parity, validators and UTF-8"}
+  - id: AC-DR-01
+    status: PASS
+    evidence: "READY and existing draft recovery tests"
+  - id: AC-DR-02
+    status: PASS
+    evidence: "Signed near-match and copied real-proposal smoke"
+  - id: AC-DR-03
+    status: PASS
+    evidence: "Zero-write refusal matrix"
+  - id: AC-DR-04
+    status: PASS
+    evidence: "Pending approval, no grants, activation rejection"
+  - id: AC-DR-05
+    status: PASS
+    evidence: "Idempotent public CLI and conflicting retry cases"
+  - id: AC-DR-06
+    status: PASS
+    evidence: "Filesystem ownership, atomic failure and concurrent edit fixtures"
+  - id: AC-DR-07
+    status: PASS
+    evidence: "Full 45-file unit suite and overwrite guards"
+  - id: AC-DR-08
+    status: PASS
+    evidence: "EN/VI, runtime parity, validators and UTF-8"
 summary: {total: 8, pass: 8, fail: 0, partial: 0}
 ```
 
@@ -254,9 +270,9 @@ notes: "No new skill, gate, authority rule, template schema or installed bundle 
 ```yaml
 checklist_applied: ["project-context/checklists/strict.md"]
 checks: ["Valid authoring receipts retained", "Only ACTIVE granted paths changed", "TDD and spec-first review recorded", "33 protected paths and four sealed authoring hosts unchanged"]
-blocking_items: ["Human DoD and Business Acceptance pending"]
+blocking_items: ["Trusted closeout receipts pending; human content approval already received"]
 owner: qc
-next_action: "Human closeout review and trusted receipts"
+next_action: "Sign the two closeout receipts; do not repeat content approval"
 ```
 
 ## Regression & Compatibility Summary
@@ -272,7 +288,9 @@ compatibility_notes: ["Intentional default-overwrite refusal", "Optional recover
 
 ```yaml
 work_item_slug: materialization-dedup-recovery
-status: PARTIAL
+status: DONE
+verdict_authority: "Explicit user approval of QC DoD and PO Business Acceptance for commit 5256886"
+protocol_close_requires: "Signature-valid digest-matched terminal receipts"
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -280,12 +298,39 @@ checks:
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps: ["Await explicit QC DoD and PO Business Acceptance decision and trusted receipts"]
+gaps: []
 residual_risks: ["Static scanner availability and older-writer compatibility disclosed above"]
 follow_up_items: ["Separately owned CR-008 maintenance after repair integration", "Master audit M2-M4 remain open"]
-next_action: "Human review; no self-declared DONE or cleanup"
+next_action: "Seal the approved verdict, then use the guarded protocol close command; retain the worktree for integration"
 ```
+
+## Business Acceptance Summary
+
+```yaml
+status: APPROVED
+reviewer_role: po
+human_actor: user
+reviewed_revision: "5256886"
+accepted_outcome: "Persisted proposals can continue without re-analysis, report overwrite or inherited gate approval; retry and admission evidence remain verifiable"
+accepted_limits: ["ESLint/Semgrep unavailable; disclosed deterministic tests and targeted review", "Older writer compatibility limit", "Source-only change; installed 2.6.3 unchanged"]
+```
+
+## Human Decision Record
+
+```yaml
+human_actor: user
+source: "Explicit accept in this conversation following the DoD and Business Acceptance question for commit 5256886"
+decision: APPROVED
+observed_at: "2026-09-22T02:37:58Z"
+reviewed_revision: "5256886"
+approved_gates: [dod, business_acceptance]
+review_contexts: [qc, po]
+trusted_receipts_at_authoring: PENDING
+scope_limit: "Close the bounded repair only; no release, install, live CR-008 mutation, merge or cleanup"
+```
+
+The same user reviewed the two applicable role contexts; no independent human reviewer is claimed. This finalized host precedes signing so the two receipts bind the final approved bytes. Its human DoD verdict does not by itself change protocol status to DONE.
 
 ## Handoff
 
-Spec/Contract/DoR/Approach/Task Plan and the work-item approval are already signed; do not ask for those again. This packet requests only QC DoD and PO Business Acceptance for the bounded repair. The same human can review in the applicable roles; no independent reviewer is invented. After explicit approval, finalize this s08 host and seal its two terminal receipts in a human-controlled terminal. Keep the branch/worktree until terminal evidence is valid. No release, install, live CR-008 mutation or audit-master completion is implied.
+Work-item and all authoring approvals are already signed. Content approval for QC DoD and PO Business Acceptance is now explicit; do not ask for it again. Commit this host before sealing the closeout bundle in a human-controlled terminal. Verify each signature and host digest, commit CLI-owned reconciliation, then run the guarded close transition. Retain this branch/worktree for integration; release, installation, live CR-008 maintenance and audit-master completion remain separately owned.
