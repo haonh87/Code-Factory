@@ -135,13 +135,13 @@ tags:
 ## Router Status
 
 ```text
-Current Step: s01 Clarify
+Current Step: s06 Task Plan
 Workflow Status: WAITING_APPROVAL
 Delivery Context: brownfield
-What I Am Doing Now: Prepare the reproducible defect, proposed contract, approach and task plan for review.
-Missing Gates: Work-item approval; Spec; Contract; DoR; Approach; Task Plan.
-Next Artifact: Human review of s04/s05/s06, then trusted authoring receipts.
-Next Human Action: Review the concrete packet; authorized reviewers seal the applicable gates in a human-controlled terminal.
+What I Am Doing Now: Record the explicit packet acceptance and prepare trusted signing.
+Missing Gates: Trusted work-item and Spec/Contract/DoR/Approach/Task Plan receipts.
+Next Artifact: Finalized s04/s05/s06 and human-terminal signing.
+Next Human Action: Sign the work-item receipt and readiness bundle in a human-controlled terminal.
 ```
 
 ## Step Contract
@@ -329,4 +329,4 @@ next_step: "s02 Business Goal (draft review packet)"
 
 ## Handoff
 
-Review s04 for acceptance/contract, s05 for the proposed option, and s06 for exact tasks and approval procedure. All notes remain drafts; the report remains CLI-owned and pending review.
+The user explicitly accepted the presented Spec/Contract/DoR, Approach and Task Plan packet; observed at 2026-09-22T01:44:34Z. s04-s06 and SRS are finalized. The CLI-owned report remains pending until the work-item signature is recorded; authoring receipts and ACTIVE scope are still required.

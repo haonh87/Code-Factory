@@ -2,7 +2,7 @@
 artifact_id: "materialization-dedup-recovery.srs"
 artifact_family: product-spec
 spec_type: SRS
-spec_status: draft
+spec_status: approved
 spec_version: "0.1"
 owner: "ba"
 reviewers: ["developer", "qc"]
@@ -13,7 +13,7 @@ linked_changes: []
 
 # SRS - Materialization Dedup Recovery
 
-Draft for review. This document owns the requirements, acceptance criteria and proposed public contract. No command below exists in 2.6.3 yet, and no human approval is implied.
+Human approval of the presented Spec/Contract/DoR, Approach and Task Plan packet was explicitly confirmed by the user with "accept", observed at 2026-09-22T01:44:34Z. This document owns the approved requirements, acceptance criteria and public contract. The proposed command is not implemented in 2.6.3; implementation still requires trusted receipts and ACTIVE scope.
 
 ## Requirement Spec
 
@@ -62,4 +62,4 @@ Signature bytes and receipt schemas remain unchanged. Existing disposition signa
 
 ## Open Decisions
 
-OQ-DR-01..05 in the work item's s03 are pending human review. In particular, reviewers must accept the bounded support matrix, existing per-entry disposition interactions and explicit default-overwrite refusal. These choices are proposed, not frozen.
+The user accepted OQ-DR-01..05 together with the concrete packet: bounded support matrix, existing per-entry disposition interactions and explicit default-overwrite refusal. See the s03 decision record. Trusted authoring receipts are still pending; this decision does not approve DoD, Business Acceptance, release, live CR-008 disposition or cleanup.

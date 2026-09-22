@@ -133,7 +133,7 @@ tags:
 # Step 3 - Open Questions
 
 > [!summary]
-> The evidence is sufficient to draft a repair. The following choices are recommendations for human review, not approvals.
+> The user accepted OQ-DR-01..05 with the concrete review packet; the decision was observed at 2026-09-22T01:44:34Z. Trusted receipt signing is still pending.
 
 ## Step Contract
 
@@ -147,7 +147,7 @@ owner: ba
 
 ## Main Artifact
 
-| ID | Proposed decision | Reviewer |
+| ID | Accepted decision | Reviewer |
 | --- | --- | --- |
 | OQ-DR-01 | Add an explicit resume mode to materialize; keep ordinary approve semantics unchanged. | developer |
 | OQ-DR-02 | Near-match recovery consumes only already completed, exact-ID Maintainer dispositions; it never interprets prose as approval. | developer, qc |
@@ -158,16 +158,16 @@ owner: ba
 ## Input Readiness
 
 ```yaml
-status: PARTIAL
-blocking_items: ["Contract choices and authoring gates are not human-passed."]
-owner_actions: ["Review s04-s06 together; record explicit decisions before sealing receipts."]
+status: READY
+blocking_items: []
+owner_actions: ["Sign the finalized s04-s06 hosts after the recorded user acceptance."]
 ```
 
 ## Audit
 
 ```yaml
-audit_status: PARTIAL
-notes: ["Source evidence and bounded proposal are complete; no authority is inferred from prior acceptance of opening the repair."]
+audit_status: PASS
+notes: ["The explicit acceptance of the concrete packet closes OQ-DR-01..05; trusted signing and ACTIVE checks remain separate."]
 ```
 
 ## Traceability
@@ -179,4 +179,4 @@ next_step: "s04 Acceptance + DoR draft"
 
 ## Handoff
 
-No extra discovery interview is needed. Human review can accept or amend the concrete decisions in the packet.
+No further discovery or repeated content approval is required. Continue with human terminal signing of the finalized packet.

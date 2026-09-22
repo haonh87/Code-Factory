@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: verified
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: "product-specs/srs/materialization-dedup-recovery.md"
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -105,8 +105,8 @@ gate_reviews:
   contract_reviewed_at: ""
   dor_reviewed_by: []
   dor_reviewed_at: ""
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
+  approach_reviewed_by: ["developer"]
+  approach_reviewed_at: "2026-09-22T01:44:34Z"
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
   dod_reviewed_by: []
@@ -131,7 +131,7 @@ tags:
 # Step 5 - Technical Approach
 
 > [!summary]
-> Proposed explicit resume mode on the existing materializer, with preserved report identity and retry evidence. Approach review remains pending.
+> The user accepted explicit_resume with preserved report identity and retry evidence. Approach is finalized for signing; its trusted receipt remains pending.
 
 ## Step Contract
 
@@ -147,18 +147,9 @@ owner: developer
 
 ```yaml
 options:
-  - name: explicit_resume
-    summary: "Add a separate resume branch within materializeWorkItem, operating on an existing report without re-analysis."
-    pros: ["Preserves approve semantics", "Reuses scaffold/state helpers", "Makes recovery deliberate"]
-    cons: ["Requires one public CLI mode and optional recovery metadata"]
-  - name: approve_also_materializes
-    summary: "Promote and scaffold while approving a work item."
-    pros: ["One fewer command"]
-    cons: ["Mixes signing and filesystem mutation", "Expands approval failure/rollback semantics", "Does not solve unsigned READY continuation cleanly"]
-  - name: manual_report_rewrite
-    summary: "Edit statuses or recreate a blocked proposal."
-    pros: []
-    cons: ["Loses provenance or bypasses control ownership; rejected"]
+  - {"name": "explicit_resume", "summary": "Add a separate resume branch within materializeWorkItem, operating on an existing report without re-analysis.", "pros": ["Preserves approve semantics", "Reuses scaffold/state helpers", "Makes recovery deliberate"], "cons": ["Requires one public CLI mode and optional recovery metadata"]}
+  - {"name": "approve_also_materializes", "summary": "Promote and scaffold while approving a work item.", "pros": ["One fewer command"], "cons": ["Mixes signing and filesystem mutation", "Expands approval failure/rollback semantics", "Does not solve unsigned READY continuation cleanly"]}
+  - {"name": "manual_report_rewrite", "summary": "Edit statuses or recreate a blocked proposal.", "pros": [], "cons": ["Loses provenance or bypasses control ownership; rejected"]}
 recommended_option: explicit_resume
 trade_offs: ["Existing per-entry Maintainer disposition interactions are retained; batching is outside scope."]
 ```
@@ -202,7 +193,7 @@ observability_hooks: ["Explicit APPLIED/NOOP/refusal result with operation ID an
 constraints_applied: ["No force overwrite", "No new receipt format or passphrase path", "Materialized result stays pending approval with no write grants"]
 validation_plan: ["s06 task verification matrix"]
 specialized_followups: []
-notes_for_next_step: "All choices remain proposed; require the actual Approach receipt before s07."
+notes_for_next_step: "The user approved these choices; require the actual Approach receipt before s07."
 ```
 
 ## Architecture Details
@@ -231,4 +222,15 @@ next_step: "s06 draft task plan"
 
 ## Handoff
 
-Recommended option is explicit_resume. Review particularly the three existing signed admission dispositions and the preflight zero-write guarantee. No implementation is authorized yet.
+Approved option: explicit_resume, including the three existing signed admission dispositions and the preflight zero-write guarantee. Trusted authoring receipts are still required before implementation.
+## Human Decision Record
+
+```yaml
+human_actor: "user"
+source: "Explicit accept in this conversation after review packet f1d3efd and the gate-approval question"
+decision: APPROVED
+observed_at: "2026-09-22T01:44:34Z"
+reviewed_revision: "f1d3efd"
+trusted_receipts: PENDING
+scope_limit: "Authoring only; no DoD, Business Acceptance, release, live disposition or cleanup"
+```

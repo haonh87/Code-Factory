@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: verified
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: "product-specs/srs/materialization-dedup-recovery.md"
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -99,12 +99,12 @@ role_signoffs:
   dod: ["qc"]
   business_acceptance: ["po"]
 gate_reviews:
-  spec_reviewed_by: []
-  spec_reviewed_at: ""
-  contract_reviewed_by: []
-  contract_reviewed_at: ""
-  dor_reviewed_by: []
-  dor_reviewed_at: ""
+  spec_reviewed_by: ["ba"]
+  spec_reviewed_at: "2026-09-22T01:44:34Z"
+  contract_reviewed_by: ["developer"]
+  contract_reviewed_at: "2026-09-22T01:44:34Z"
+  dor_reviewed_by: ["ba","qc"]
+  dor_reviewed_at: "2026-09-22T01:44:34Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -133,7 +133,7 @@ tags:
 # Step 4 - Acceptance + DoR
 
 > [!summary]
-> Review packet only. Requirements and the proposed public CLI/report contract are owned by the linked SRS; no Spec, Contract or DoR approval is recorded.
+> The user explicitly approved this packet. Spec, Contract and DoR decisions are recorded below; their trusted receipts remain pending. The linked SRS is the single requirement/contract owner.
 
 ## Step Contract
 
@@ -148,18 +148,21 @@ owner: ba
 ## Requirement Baseline
 
 ```yaml
-status: PARTIAL
-approved_spec_refs: []
-decision_notes: ["Draft: product-specs/srs/materialization-dedup-recovery.md; BA Spec review pending."]
+status: APPROVED
+approved_spec_refs:
+  - "product-specs/srs/materialization-dedup-recovery.md"
+approved_spec_digests:
+  - "sha256:f56366ec93523e1b15185d3f760232e36bae6799225be9326d1819f36b642323"
+decision_notes: ["Explicit user acceptance of the complete review packet observed at 2026-09-22T01:44:34Z; trusted Spec receipt pending."]
 ```
 
 ## Contract Baseline
 
 ```yaml
-status: PARTIAL
+status: APPROVED
 api_contract_refs: ["product-specs/srs/materialization-dedup-recovery.md#Proposed CLI And Report Contract"]
 ux_contract_refs: []
-notes: ["Developer Contract review pending. Existing approve, gate and disposition signatures remain unchanged."]
+notes: ["Developer Contract decision accepted in the user-approved packet; receipt pending. Existing approve, gate and disposition signatures remain unchanged."]
 ```
 
 ## Existing System Baseline
@@ -174,7 +177,31 @@ rollback_constraints: ["Do not downgrade a recovered report or erase history", "
 ## Main Artifact
 
 ```yaml
-acceptance_criteria: ["SRS AC-DR-01", "SRS AC-DR-02", "SRS AC-DR-03", "SRS AC-DR-04", "SRS AC-DR-05", "SRS AC-DR-06", "SRS AC-DR-07", "SRS AC-DR-08"]
+acceptance_criteria:
+  - id: AC-DR-01
+    criterion: "product-specs/srs/materialization-dedup-recovery.md#AC-DR-01: approved criterion by reference"
+    verification: "Eligible READY resume fixtures and note validation"
+  - id: AC-DR-02
+    criterion: "product-specs/srs/materialization-dedup-recovery.md#AC-DR-02: approved criterion by reference"
+    verification: "Signed admission-resolution fixture plus raw-history preservation comparison"
+  - id: AC-DR-03
+    criterion: "product-specs/srs/materialization-dedup-recovery.md#AC-DR-03: approved criterion by reference"
+    verification: "Invalid authority/input cases with before/after byte snapshots"
+  - id: AC-DR-04
+    criterion: "product-specs/srs/materialization-dedup-recovery.md#AC-DR-04: approved criterion by reference"
+    verification: "Pending approval and empty grants assertions; activation-negative test"
+  - id: AC-DR-05
+    criterion: "product-specs/srs/materialization-dedup-recovery.md#AC-DR-05: approved criterion by reference"
+    verification: "Same-operation retry and conflict tests; exact event/history counts"
+  - id: AC-DR-06
+    criterion: "product-specs/srs/materialization-dedup-recovery.md#AC-DR-06: approved criterion by reference"
+    verification: "Scaffold/commit/projection failure injection and path/lock checks"
+  - id: AC-DR-07
+    criterion: "product-specs/srs/materialization-dedup-recovery.md#AC-DR-07: approved criterion by reference"
+    verification: "Default rerun byte-preservation and legacy/adaptive regression tests"
+  - id: AC-DR-08
+    criterion: "product-specs/srs/materialization-dedup-recovery.md#AC-DR-08: approved criterion by reference"
+    verification: "Documentation, runtime parity, workflow and UTF-8 checks"
 edge_cases: ["Forged/mismatched history", "New unresolved state", "Snapshot race", "Partial scaffold", "Wrong slug in existing note", "Projection failure after report commit", "Unsupported or terminal state"]
 out_of_scope: ["Live report repair", "Changing signing identity or receipt schema", "Release"]
 done_when: ["Applicable human gates and trusted receipts are present before ACTIVE"]
@@ -186,28 +213,28 @@ behavioral_invariants: ["Materialization is authoring only", "Every history reco
 ```yaml
 checklist_applied: ["project-context/checklists/strict.md"]
 checks: ["Public CLI/state boundary identified", "No foundation or release trigger", "Spec/Contract/DoR reviewer roles are explicit in frontmatter"]
-blocking_items: ["Spec, Contract and DoR review/signatures pending"]
+blocking_items: ["Trusted Spec, Contract and DoR receipts pending"]
 owner: ba
-next_action: "Review the SRS and this host, then finalize only the decisions actually approved and seal their receipts."
+next_action: "Seal the finalized host through the readiness bundle; do not edit it after sealing."
 ```
 
 ## Definition of Ready
 
 ```yaml
 work_item_slug: materialization-dedup-recovery
-status: BLOCKED
+status: READY
 checks:
   restated_request_clear: PASS
   business_goal_clear: PASS
   scope_defined: PASS
-  open_questions_non_blocking: FAIL
+  open_questions_non_blocking: PASS
   acceptance_criteria_testable: PASS
   dependencies_known: PASS
   verification_direction_present: PASS
-blocking_gaps: ["Human decisions OQ-DR-01..05 and authoring approvals are pending."]
-accepted_assumptions: []
+blocking_gaps: []
+accepted_assumptions: ["Bounded support matrix and existing per-entry disposition interactions accepted in OQ-DR-01..05."]
 residual_risks: ["Partial filesystem writes require explicit retry tests."]
-next_action: "Human review of this packet; implementation stays closed."
+next_action: "Authoring decision is approved; seal trusted receipts before implementation."
 ```
 
 ## Traceability
@@ -215,9 +242,20 @@ next_action: "Human review of this packet; implementation stays closed."
 ```yaml
 upstream: ["materialization-dedup-recovery.s01.restate.md", "materialization-dedup-recovery.s02.business-goal.md", "materialization-dedup-recovery.s03.open-questions.md"]
 requirement_refs: ["product-specs/srs/materialization-dedup-recovery.md"]
-next_step: "s05 proposal; do not treat the approach as locked until gates pass"
+next_step: "s05 approved approach; trusted gate receipts remain required"
 ```
 
 ## Handoff
 
-s05 and s06 are prepared drafts to make review concrete. Their existence does not pass DoR or open implementation.
+The user-approved packet includes s05 and s06. Authoring decisions are finalized; the router still waits for trusted receipts and ACTIVE scope.
+## Human Decision Record
+
+```yaml
+human_actor: "user"
+source: "Explicit accept in this conversation after review packet f1d3efd and the gate-approval question"
+decision: APPROVED
+observed_at: "2026-09-22T01:44:34Z"
+reviewed_revision: "f1d3efd"
+trusted_receipts: PENDING
+scope_limit: "Authoring only; no DoD, Business Acceptance, release, live disposition or cleanup"
+```

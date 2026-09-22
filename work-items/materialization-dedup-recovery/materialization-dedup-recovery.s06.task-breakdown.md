@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: verified
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: "product-specs/srs/materialization-dedup-recovery.md"
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -107,8 +107,8 @@ gate_reviews:
   dor_reviewed_at: ""
   approach_reviewed_by: []
   approach_reviewed_at: ""
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  task_plan_reviewed_by: ["developer"]
+  task_plan_reviewed_at: "2026-09-22T01:44:34Z"
   dod_reviewed_by: []
   dod_reviewed_at: ""
   business_acceptance_reviewed_by: []
@@ -130,13 +130,13 @@ tags:
 # Step 6 - Task Plan
 
 > [!summary]
-> Draft tasks with exact ownership and verification. No source-code task has started and no write grant has been issued.
+> The user approved tasks T1..T5 and their ownership/verification paths. No source-code task has started; trusted signing and the ACTIVE write grant remain pending.
 
 ## Step Contract
 
 ```yaml
 step_goal: "Make the approved repair executable without reopening its design."
-input_summary: ["Draft SRS", "s05 explicit_resume recommendation"]
+input_summary: ["Approved SRS", "s05 approved explicit_resume approach"]
 output_summary: ["Ordered TDD tasks", "Owned paths", "Approval and verification handoff"]
 done_when: ["Each task names paths, dependencies, acceptance coverage and a concrete verify method"]
 owner: developer
@@ -211,7 +211,7 @@ checklist_applied: ["project-context/checklists/strict.md"]
 checks: ["Every task has scope, dependencies and verify path", "TDD precedes each behavior change", "Single agent; no delegated ownership"]
 blocking_items: ["Work-item and s04/s05/s06 gates unsealed"]
 owner: developer
-next_action: "Human review of the packet, explicit artifact finalization, then terminal signing."
+next_action: "Human decision is recorded and host finalized; seal work-item/readiness receipts in a human-controlled terminal."
 ```
 
 ## Brownfield Delivery Plan
@@ -225,20 +225,18 @@ rollback_or_restore_steps: ["Retain source report backup for acceptance smoke", 
 
 ## Human Approval Handoff
 
-This packet is fully drafted for review, but **not yet eligible for sealing**: s04/s05/s06 are draft and their decision blocks still say pending. After explicit review of the SRS and OQ-DR-01..05, record only the approved decisions and finalize those host notes. Then the authorized human reviewers run the existing work-item/gate approve commands in their own terminal. `wfc gate approve` refuses unfinalized hosts, so do not treat the commands below as runnable now.
+The user explicitly approved the concrete packet with "accept", observed at 2026-09-22T01:44:34Z. The gate-host notes and SRS have been finalized for signing. This records the human content decision, not a fabricated trusted receipt. No second content review is requested.
 
-| Decision | Existing command after host finalization |
-| --- | --- |
-| Work-item approval | `wfc work-item approve --work-item materialization-dedup-recovery --reviewed-by maintainer` |
-| BA Spec | `wfc gate approve --work-item materialization-dedup-recovery --gate spec --reviewed-by ba` |
-| Developer Contract | `wfc gate approve --work-item materialization-dedup-recovery --gate contract --reviewed-by developer` |
-| BA/QC DoR | `wfc gate approve --work-item materialization-dedup-recovery --gate dor --reviewed-by ba` |
-| Developer Approach | `wfc gate approve --work-item materialization-dedup-recovery --gate approach --reviewed-by developer` |
-| Developer Task Plan | `wfc gate approve --work-item materialization-dedup-recovery --gate task_plan --reviewed-by developer` |
+Run these existing commands in a human-controlled terminal from `.claude/worktrees/materialization-dedup-recovery`:
 
-BA and QC must both have explicitly reviewed DoR in the finalized host; the individual seal command names one authorized signer, BA. Do not pass repeated reviewer flags as a substitute for those reviews. Finalize all s04 decisions and reviewer metadata together before sealing Spec/Contract/DoR so later metadata edits do not invalidate earlier hashes.
+```sh
+wfc work-item approve --work-item materialization-dedup-recovery --reviewed-by maintainer
+wfc gate approve-ready-bundle --work-item materialization-dedup-recovery
+```
 
-Run from `.claude/worktrees/materialization-dedup-recovery`. Human signing authority is not inferred from `--reviewed-by`. No passphrase is requested in chat. Inspect each receipt's status/digest, then activate only with the exact union of paths listed in T1..T5 plus this item's SRS. Publication, installed global/harness writes, live CR-008 paths and the protected master audit register are excluded. The agent can perform activation and implementation after valid receipts exist.
+The adaptive readiness bundle supports this full-profile item and derives Spec/Contract/DoR/Approach/Task Plan from the report. It creates five independent receipts in one signing interaction; the work-item receipt remains a separate signing step. Reviewers are read from finalized host metadata. BA and QC DoR contexts record the same user-approved packet, not invented independent human reviewers.
+
+Passphrases stay in the human terminal. The agent will inspect each receipt's signature/status/digest and activate only the exact union of T1..T5 paths plus this SRS after signing succeeds. A terminal cancellation or failed signature does not open implementation. No terminal/closeout gate, live CR-008 disposition, installation, publication or cleanup is included.
 
 ## Traceability
 
@@ -255,4 +253,15 @@ next_step: "s07 only after trusted receipts and ACTIVE scope grant"
 
 ## Handoff
 
-First implementation task is T1. Current blocker is human authoring review/signing, not a materializer dead end for this repair item.
+First implementation task is T1. Current blocker is trusted signing, not content review or materializer admission.
+## Human Decision Record
+
+```yaml
+human_actor: "user"
+source: "Explicit accept in this conversation after review packet f1d3efd and the gate-approval question"
+decision: APPROVED
+observed_at: "2026-09-22T01:44:34Z"
+reviewed_revision: "f1d3efd"
+trusted_receipts: PENDING
+scope_limit: "Authoring only; no DoD, Business Acceptance, release, live disposition or cleanup"
+```
