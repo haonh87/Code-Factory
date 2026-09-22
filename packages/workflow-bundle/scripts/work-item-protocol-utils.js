@@ -468,6 +468,20 @@ function isAdaptiveProtocolReport(report) {
   return Boolean(report && report.artifact_shape === "adaptive_v1");
 }
 
+function validateMaterializationRecovery(record) {
+  const invalid = () => { throw new Error("Invalid materialization_recovery metadata."); };
+  if (!record || typeof record !== "object" || Array.isArray(record) || record.schema_version !== 1 ||
+      typeof record.operation_id !== "string" || typeof record.source_report_sha256 !== "string" ||
+      !/^[0-9a-f]{64}$/.test(record.source_report_sha256) || record.resulting_status !== "MATERIALIZED" ||
+      !Array.isArray(record.disposition_operation_ids) ||
+      record.disposition_operation_ids.some(id => typeof id !== "string" || !id.trim()) ||
+      new Set(record.disposition_operation_ids).size !== record.disposition_operation_ids.length ||
+      typeof record.completed_at !== "string" || !record.completed_at.endsWith("Z") ||
+      Number.isNaN(Date.parse(record.completed_at))) invalid();
+  try { normalizeTransactionId(record.operation_id); } catch (_error) { invalid(); }
+  return { ...record, disposition_operation_ids: [...record.disposition_operation_ids] };
+}
+
 function normalizeProtocolReport(report) {
   const decisionOwner = String(report.decision_owner || "agent").trim() || "agent";
   const approvalDefaults = getDefaultApprovalState(decisionOwner);
@@ -524,6 +538,10 @@ function normalizeProtocolReport(report) {
       throw new Error("resolved_state_history must be an array.");
     }
     normalized.resolved_state_history = [...report.resolved_state_history];
+  }
+
+  if (Object.hasOwn(report, "materialization_recovery")) {
+    normalized.materialization_recovery = validateMaterializationRecovery(report.materialization_recovery);
   }
 
   if (!isAdaptiveProtocolReport(report)) {

@@ -149,6 +149,7 @@ Rules for reading this block:
 | Validate SDD, change, execution, planning | `wfc sdd` , `wfc change` , `wfc exec` , `wfc plan` |
 | Run smoke or fixtures | `wfc smoke` , `wfc fixtures` |
 | Analyze a raw request into a work-item candidate | `wfc materialize --request "<raw-request>"` |
+| Resume an eligible persisted proposal | `wfc materialize --resume-proposal --work-item <slug> --expected-report-sha256 <64-hex> --operation-id <canonical-uuid>` |
 | Materialize and auto-scaffold | `wfc materialize --request "<raw-request>" --auto-scaffold` |
 | Human-approve an agent-proposed change package | `wfc change-item approve --change-id <CHANGE-ID> --reviewed-by <role>` |
 | List or inspect work items | `wfc work-item list` , `wfc work-item status --work-item <slug>` |
@@ -303,3 +304,9 @@ npm pack
 ```
 
 `prepack` will bundle the support policies and the full `runtime/codex/**`, `runtime/claude/**` trees before creating the tarball.
+
+## Persisted Proposal Recovery (Source Change)
+
+The source CLI adds explicit `materialize --resume-proposal`; the installed 2.6.3 release remains unchanged. Ordinary materialization refuses to overwrite existing reports. Recovery supports unapproved single brownfield items without a change layer or write grants: either READY/no_conflict with original scaffold actions, or needs_review after valid Maintainer-signed disposition of all three admission concerns. It never signs or approves on the user's behalf.
+
+Read `wfc work-item status`, resolve applicable concerns in their owning lane, then hash the current report with `shasum -a 256 work-items/<slug>/<slug>.work-item-report.json`. Pass that hash and a new canonical UUID to the command above. Keep both values for retry. Success is MATERIALIZED/PENDING_REVIEW with no grants. Existing draft content, raw history and candidate snapshots are preserved; only missing notes and the managed s01 protocol section are authored. Retry with the same identity returns NOOP or repairs a committed projection failure. Unsupported state, stale hash, conflicting metadata, invalid signatures or symlinks are rejected. Do not use an older protocol writer on a recovered report: it may drop the optional `materialization_recovery` identity. See the EN/VI work-item-materialization references for the full support and failure contract.

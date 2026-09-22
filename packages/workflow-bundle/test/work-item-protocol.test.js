@@ -2164,7 +2164,25 @@ function testTarGateBundleHonorsReportLock() {
   } finally { rmrf(ctx.projectRoot); rmrf(ctx.approvalRoot); }
 }
 
+function testMaterializationRecoveryMetadataRoundTrip() {
+  const recovery = { schema_version: 1, operation_id: crypto.randomUUID(),
+    source_report_sha256: "a".repeat(64), resulting_status: "MATERIALIZED",
+    disposition_operation_ids: ["existing-disposition-op"], completed_at: "2026-09-22T02:00:00.000Z" };
+  const report = { work_item_slug: "recovery-metadata", materialization_recovery: recovery };
+  assert(JSON.stringify(normalizeProtocolReport(report).materialization_recovery) === JSON.stringify(recovery),
+    "recovery identity survives ordinary report normalization");
+  assert(!Object.hasOwn(normalizeProtocolReport({}), "materialization_recovery"), "legacy report gains no recovery field");
+  for (const delta of [{ schema_version: 2 }, { operation_id: "not-uuid" }, { source_report_sha256: "bad" },
+    { resulting_status: "ACTIVE" }, { disposition_operation_ids: ["same", "same"] }, { completed_at: "bad" }]) {
+    let refused = false;
+    try { normalizeProtocolReport({ ...report, materialization_recovery: { ...recovery, ...delta } }); }
+    catch (error) { refused = /recovery/i.test(error.message); }
+    assert(refused, `invalid recovery metadata rejected: ${Object.keys(delta)[0]}`);
+  }
+}
+
 console.log("Running work-item-protocol (Light) tests...\n");
+testMaterializationRecoveryMetadataRoundTrip();
 testLegacyReceiptV1AndAdaptiveProtocolDualRead();
 testEnsureLightLazyStepNoteCreatesS07S08();
 testEnsureLightLazyNoopForNonLight();
