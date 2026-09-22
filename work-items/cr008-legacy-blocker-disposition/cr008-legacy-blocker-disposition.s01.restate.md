@@ -96,10 +96,10 @@ Request Lane: maintenance
 Current Step: s01 Clarify
 Workflow Status: BLOCKED
 Delivery Context: brownfield
-What I Am Doing Now: Prepare the evidence and bounded execution proposal for human review.
-Missing Gates: Admission reconciliation; trusted work-item approval; developer task_plan approval. Maintainer signatures are required for each future disposition, QC DoD for closeout.
-Next Artifact: Supported reconciliation of the PROPOSED admission report; then s04/s06 authoring and task_plan receipt.
-Next Human Action: Maintainer reviews the admission issue and exact two-entry disposition proposal; authorized reviewers later seal the applicable receipts in a human-controlled terminal.
+What I Am Doing Now: Prepare three exact-entry admission dispositions using the integrated recovery implementation.
+Missing Gates: Three Maintainer admission signatures; trusted work-item approval; developer task_plan approval. QC DoD remains a later closeout gate.
+Next Artifact: Signed admission history, supported proposal recovery, then s04/s06 authoring for review.
+Next Human Action: Maintainer signs the three admission decisions in a human-controlled terminal. This does not approve Task Plan or authorize live CR-008 parent writes.
 ```
 
 ## Step Contract
@@ -138,7 +138,7 @@ prohibited_actions:
   - "Rewrite historical s04-s08 gate hosts or reopen the 2.6.3 release."
   - "Edit the protected holistic finding register or dispose CF findings outside M4."
 open_governance_questions:
-  - "The materializer's needs_review proposal has no supported CLI promotion/review override in 2.6.3; the admission recovery mechanism remains unresolved."
+  - "Admission authority remains pending: the integrated recovery command requires three signed dispositions before resuming this proposal."
 ```
 
 ## Artifact Chính
@@ -198,7 +198,21 @@ The CLI generated `cr008-legacy-blocker-disposition.work-item-report.json` at 20
 
 Recommendation: one separate maintenance item, not a duplicate or a split request. This is an agent analysis, not a signed admission decision. The materializer uses shared request/slug tokens; all three matches have score 1.
 
-Admission limitation: `materialize-work-item.js` has no reviewed-dedup override. Re-running against this now-existing folder produces an exact-match collision. `work-item approve` records approval but leaves `PROPOSED` unchanged, and the public action set has no `materialize-ready`/`materialize` transition. Signed `dispose-state` can resolve selected entries, but does not promote the lifecycle. Therefore signing alone is not presented as a complete recovery. Do not delete/relabel this proposal or hand-edit its report to force activation; a supported admission recovery or an explicitly approved repair boundary is still needed.
+The original admission limitation is resolved by the separately owned, human-verified `materialization-dedup-recovery` work item. Its [PR #10](https://github.com/haonh87/Code-Factory/pull/10) merged as `cf866d82077a13d77e63fe63548a8800a378ced3` on 2026-09-22 after all ten CI checks passed. The user explicitly accepted integration and continuation; that instruction was recorded at 2026-09-22T07:17:27Z (observation time, not message-delivery time). This proposal was rebased onto that main commit; all three original proposal files were byte-identical across the rebase.
+
+The source CLI now supports `materialize --resume-proposal` after the three admission concerns have trusted signed dispositions. The global installed release remains 2.6.3 and does not yet contain this source change. Use this updated worktree's `packages/workflow-bundle/bin/wfc.js` for recovery. Ordinary re-materialization, manual report relabeling, and work-item approval alone are not recovery paths.
+
+### Admission Decisions For Maintainer Signature
+
+These decisions belong to this proposal, not the archived CR-008 parent. Each preserves its exact original entry in signed history. Stable producer IDs identify the reviewed concern; execution refreshes the snapshot-bound `di:` ID immediately before each command.
+
+| Concern | Stable producer ID | Proposed signed reason |
+| --- | --- | --- |
+| Near-match review | `se:db2ddb0d5e7ac10cb949c301bc1cd22f1169197fec13e4d4c6e4d22a3eb361e3` | The three matched work items own earlier runtime fixes; none owns the two live CR-008 dispositions or the resulting cleanup reassessment. Retain this distinct maintenance proposal. |
+| Single versus split scope | `se:6e883e07166ee862060dea9ecc18843de5470cbc581eed5dd539b9cc61fac453` | One bounded maintenance item owns exactly two parent dispositions, their projection, dated finding/finish metadata, and conditional verified local cleanup. No production, release, or unrelated audit work is included. |
+| Existing work/change review | `se:2b1b5b8d31cf90ea804bd2af3187717ac96e6d874b3533a3d603a1f93fd78f86` | Existing work items and CR-008/CR-009 evidence have been reviewed. CR-009 s08 explicitly excludes live CR-008 disposition and worktree cleanup, so this separately owned item is required. |
+
+After all three signatures verify, recovery uses a fresh report SHA-256 and one persisted operation UUID. Expected result: MATERIALIZED/s01, PENDING_REVIEW, no granted write paths. That result opens authoring only. Drafting s06 does not pass Task Plan; implementation waits for trusted work-item and applicable task_plan receipts.
 
 ## Existing System Baseline And Per-entry Disposition
 

@@ -85,7 +85,7 @@ assumptions:
     owner: "developer"
 open_decisions:
   - id: ODC-001
-    description: "Resolve supported promotion of the PROPOSED/needs_review admission report before implementation."
+    description: "Obtain three trusted admission dispositions and use the recovery command integrated by PR #10 to promote the proposal to MATERIALIZED; work-item and Task Plan approval remain separate prerequisites for implementation."
     owner: "maintainer"
 ```
 
