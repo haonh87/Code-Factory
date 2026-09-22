@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: verified
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -23,7 +23,7 @@ archive_status: not_ready
 sdd_mode: light
 spec_refs:
   card: "product-specs/cards/cr008-legacy-blocker-disposition.md"
-spec_status: draft
+spec_status: approved
 planning_track: quick
 execution_mode: agentic
 execution_roles:
@@ -67,8 +67,8 @@ role_signoffs:
   task_plan: ["developer"]
   dod: ["qc"]
 gate_reviews:
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  task_plan_reviewed_by: ["developer"]
+  task_plan_reviewed_at: "2026-09-22T07:33:21Z"
   dod_reviewed_by: []
   dod_reviewed_at: ""
 content_skills:
@@ -88,7 +88,11 @@ tags:
 # Step 6 - Technical Approach + Task Plan
 
 > [!summary]
-> Proposed use of the existing signed disposition CLI for exactly two archived CR-008 entries. Task Plan is WAITING_APPROVAL; this draft opens no implementation path.
+> The user approved the exact T1-T6 plan and six-path scope at commit a00ce83. Trusted work-item/task_plan sealing and ACTIVE remain pending; no parent entry has been changed.
+
+## Human Review Decision
+
+The repository owner explicitly answered `accept` to the Work Item + Task Plan review for commit `a00ce83c625d529d4480d07b97543853c7ffbe9b`. Recorded at 2026-09-22T07:33:21Z (observation time). Authority: Maintainer for work-item approval and developer for Task Plan. The accepted scope is the six-path grant and T1-T6, including all conditional finish prerequisites. This does not pass QC DoD or authorize early cleanup. Trusted receipts must still be sealed and verified before ACTIVE.
 
 ## Step Contract
 
@@ -103,15 +107,9 @@ done_when: ["Tasks have paths, dependencies and verification", "Developer review
 
 ```yaml
 options:
-  - id: A
-    description: "Keep both legacy entries and retain the worktree indefinitely."
-    trade_off: "Preserves all evidence but leaves current status and finish metadata misleading."
-  - id: B
-    description: "Apply two explicit signed dispositions, reconcile dated finding metadata, and assess cleanup."
-    trade_off: "Requires human signatures and verification; satisfies all five acceptance criteria without source-code changes."
-  - id: C
-    description: "Delete blockers directly or remove the old worktree immediately."
-    trade_off: "Rejected: loses provenance or bypasses the existing finish hold."
+  - "A: Keep both legacy entries and retain the worktree indefinitely. Preserves all evidence but leaves current status and finish metadata misleading."
+  - "B: Apply two explicit signed dispositions, reconcile dated finding metadata, and assess cleanup. Requires human signatures and verification; satisfies all five acceptance criteria without source-code changes."
+  - "C: Delete blockers directly or remove the old worktree immediately. Rejected: loses provenance or bypasses the existing finish hold."
 recommended_option: B
 validation: "Verify original-entry preservation, receipt digests and current state before declaring removal readiness."
 ```
@@ -267,10 +265,11 @@ checks:
   - "PASS: each task maps to Spec Card acceptance and has an owner, path, dependency and verify method."
   - "PASS: existing isolated worktree covers the multi-session maintenance scope."
   - "PASS: production behavior is unchanged, so TDD is not applicable; early two-tier review remains required."
-  - "PENDING: human Task Plan decision and trusted receipt; no implementation permission follows from this draft."
+  - "PASS: the user explicitly accepted Work Item and Task Plan at a00ce83; observed 2026-09-22T07:33:21Z."
+  - "PENDING: trusted work-item/task_plan receipts and exact-scope activation."
 blocking_items: ["Trusted work-item approval", "Developer task_plan receipt"]
 owner: developer
-next_action: "Human reviews this exact plan; finalize the host and seal only the applicable receipts after explicit approval."
+next_action: "Seal the approved work-item and task_plan receipts in a human-controlled TTY, verify them, then activate only the declared scope."
 ```
 
 ## Brownfield Delivery Plan

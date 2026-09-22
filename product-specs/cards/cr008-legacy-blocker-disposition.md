@@ -2,7 +2,7 @@
 artifact_id: "cr008-legacy-blocker-disposition.card"
 artifact_family: product-spec
 spec_type: SPEC_CARD
-spec_status: draft
+spec_status: approved
 spec_version: "0.1"
 owner: "developer"
 reviewers:
@@ -15,7 +15,7 @@ linked_crs: []
 
 # Spec Card - CR-008 Legacy Blocker Disposition
 
-Draft application of the shipped CR-009 disposition contract and existing branch-finish rules. BASELINE means an existing control, not new product behavior or an assertion of approval. The adaptive maintenance lane requires task_plan and dod; this card adds no Spec, business, or release gate.
+Approved maintenance baseline applying the shipped CR-009 disposition contract and existing branch-finish rules. BASELINE means an existing control, not new product behavior or an assertion of approval. The adaptive maintenance lane requires task_plan and dod; this card adds no Spec, business, or release gate.
 
 ## Business Goal
 
@@ -91,7 +91,7 @@ resolved_decisions:
 ## Spec Freeze
 
 ```yaml
-status: draft
+status: FROZEN
 authority: "developer"
-decided_at: ""
+decided_at: "2026-09-22T07:33:21Z"
 ```

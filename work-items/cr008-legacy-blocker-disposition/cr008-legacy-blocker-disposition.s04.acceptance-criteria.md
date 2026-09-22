@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: verified
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -23,7 +23,7 @@ archive_status: not_ready
 sdd_mode: light
 spec_refs:
   card: "product-specs/cards/cr008-legacy-blocker-disposition.md"
-spec_status: draft
+spec_status: approved
 planning_track: quick
 execution_mode: agentic
 execution_roles:
@@ -89,7 +89,7 @@ tags:
 # Step 4 - Acceptance + DoR
 
 > [!summary]
-> Evidence and scope are ready for bounded maintenance planning. The required human gates are work-item approval, developer Task Plan and later QC DoD. This draft records no gate approval.
+> Evidence and scope are ready for bounded maintenance planning. The required human gates are work-item approval, developer Task Plan and later QC DoD. The user accepted this readiness evidence as part of the a00ce83 Task Plan review; omitted gates remain not_applicable.
 
 ## Step Contract
 
@@ -204,7 +204,7 @@ accepted_assumptions: ["ASM-001: refresh evidence after any snapshot change"]
 blockers: []
 ```
 
-The Spec Card remains draft pending the concrete Task Plan decision. The adaptive Spec gate is not_applicable; this section adds no Spec gate or claimed receipt.
+The Spec Card is baselined by the explicit Task Plan decision at a00ce83. The adaptive Spec gate is not_applicable; this section adds no Spec gate or claimed receipt.
 
 ## SDD Traceability
 

@@ -23,7 +23,7 @@ archive_status: not_ready
 sdd_mode: light
 spec_refs:
   card: "product-specs/cards/cr008-legacy-blocker-disposition.md"
-spec_status: draft
+spec_status: approved
 planning_track: quick
 execution_mode: agentic
 execution_roles:
@@ -96,10 +96,10 @@ Request Lane: maintenance
 Current Step: s06 Task Plan
 Workflow Status: WAITING_APPROVAL
 Delivery Context: brownfield
-What I Am Doing Now: Present the completed s04/s06 authoring packet for explicit work-item and Task Plan review.
-Missing Gates: Trusted work-item approval and developer task_plan approval. QC DoD remains a later closeout gate.
+What I Am Doing Now: Record explicit authoring approval and prepare trusted work-item/task_plan sealing.
+Missing Gates: Trusted work-item and developer task_plan receipts. Human decisions are explicit; QC DoD remains a later closeout gate.
 Next Artifact: Approved authoring hosts and trusted readiness receipts; then exact-scope activation.
-Next Human Action: Review s04, the Spec Card and s06 T1-T6; explicitly approve the work item and Task Plan, then seal their trusted receipts.
+Next Human Action: Seal the accepted work-item and task_plan receipts using the existing key in a human-controlled terminal.
 ```
 
 ## Step Contract
@@ -312,6 +312,10 @@ test_refs:
 - PASS: s04/s06 semantic preflight has no missing acceptance, readiness, task or traceability fields. UTF-8/no-BOM checks cover all five work-item files; `git diff --check` passes after trimming a generated extra trailing blank line in the unsealed s01 projection.
 - PASS: 32 preservation-manifest paths remain byte-identical. The only changed manifest path is this item's report, through the three authorized signed admission dispositions and supported recovery. The parent/child reports in this worktree also retain their reviewed hashes.
 - Authoring review only: s04/s06 and the Spec Card remain draft; work-item and Task Plan receipts are still missing. No parent disposition, release change or workspace cleanup has occurred.
+
+## Authoring Approval — 2026-09-22T07:33:21Z
+
+The user explicitly accepted the Work Item + Task Plan question for commit a00ce83. s04/s06 and the Spec Card now record that reviewed baseline; s06 owns the human Task Plan decision. Work-item and Task Plan receipts remain to be sealed. No other gate is inferred from this approval, and parent CR-008 writes remain locked until ACTIVE.
 
 ## Handoff
 
