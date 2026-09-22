@@ -63,3 +63,31 @@ blocking_items:
     owner: "maintainer"
 next_action: "Approve a linked behavior-change work item that adds explicit legacy-state disposition without text inference, then hand it off before CR-008 branch/worktree cleanup."
 ```
+
+## Maintenance Reconciliation — 2026-09-22
+
+The Status block above retains the release-era evidence and original finding. This dated disposition supersedes its OPEN entry for F-CR008-ARCH-001. CR-009 delivered the signed disposition contract; the separately approved [maintenance work item](../../../work-items/cr008-legacy-blocker-disposition/cr008-legacy-blocker-disposition.s07.implementation.md) applies it to the two live entries.
+
+The current verification and human closeout decision are owned by [maintenance s08](../../../work-items/cr008-legacy-blocker-disposition/cr008-legacy-blocker-disposition.s08.verification.md).
+
+```yaml
+finding_id: F-CR008-ARCH-001
+disposition: RESOLVED
+disposition_owner: maintainer
+owning_work_item: cr008-legacy-blocker-disposition
+signed_operations:
+  - operation_id: cr008-legacy-20260921-f-ag11-001
+    resolved_at: "2026-09-22T09:09:04.253Z"
+    outcome: "Exact original entry retained in signed history; superseded by receipt-backed parent reconciliation and subsequent terminal events."
+  - operation_id: cr008-legacy-20260921-linked-child
+    resolved_at: "2026-09-22T09:09:07.065Z"
+    outcome: "Exact original entry retained in signed history; superseded by the completed and archived linked child."
+verification:
+  - "Both Maintainer signatures verified; two distinct records, no duplicate operation."
+  - "Parent remains ARCHIVED/s08 with zero blockers and required_actions; protocol_events unchanged."
+  - "Parent s04-s08 and all three terminal receipt digests remain unchanged and valid."
+  - "Report SHA-256 after disposition: 111c425d97214dcf5b8720e931e6b6d32a3269bb93245de795362e51327b9761"
+maintenance_closeout: "DONE: QC DoD signed 2026-09-22T10:24:48.694Z, signature/digest valid; maintenance protocol closed."
+cleanup_readiness: ALLOWED_AFTER_INTEGRATION_AND_FRESH_CHECKS
+next_action: "Execute authorized T6: integrate PR #11 after required CI, repeat per-path finish checks and remove only the eligible old CR-008 worktree/local branch."
+```

@@ -723,9 +723,7 @@ handoff_target: "none"
 last_transition_action: "archive"
 last_transition_at: "2026-09-16T03:18:53.490Z"
 required_actions: []
-blockers:
-  - {"kind":"legacy","text":"F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."}
-  - {"kind":"legacy","text":"Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending."}
+blockers: []
 review_notes:
   - "Human review approved."
   - "Both linked child work items are DONE. Parent source 38bb0d178aa994e2a7c6e841b58b3e6b4263c56d passed the full local verification matrix and hosted Guardrails run 34322150024."

@@ -1,0 +1,349 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "DONE",
+  "decision_owner": "agent",
+  "protocol_owner": "maintainer",
+  "raw_request_summary": "Record two reviewed legacy blocker dispositions for archived CR-008 and establish removal readiness for its clean merged worktree.",
+  "request_source": "user-chat",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "cr008-legacy-blocker-disposition",
+      "work_item_title": "Cr008 Legacy Blocker Disposition",
+      "work_item_type": "CHANGE",
+      "scope_summary": "Record two reviewed legacy blocker dispositions for archived CR-008 and establish removal readiness for its clean merged worktree.",
+      "primary_outcome": "Record two reviewed legacy blocker dispositions for archived CR-008 and establish removal readiness for its clean merged worktree.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "quick",
+      "delivery_context": "brownfield",
+      "sdd_mode": "light",
+      "selected_profile": "sdd-light",
+      "sdd_reasons": [],
+      "sdd_preset": "light",
+      "sdd_light_profile": "preview",
+      "governance_profile": "default",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/closeout-bundle-legacy-dod-compatibility",
+        "work-items/terminal-archive-legacy-state-reconciliation",
+        "work-items/worktree-and-closure-integrity"
+      ],
+      "collision_notes": [
+        "closeout-bundle-legacy-dod-compatibility (score=1)",
+        "terminal-archive-legacy-state-reconciliation (score=1)",
+        "worktree-and-closure-integrity (score=1)"
+      ],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "Scope chưa cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item cr008-legacy-blocker-disposition --planning-track quick --delivery-context brownfield --sdd-mode light --adaptive-writes true --request-lane maintenance --adaptive-source-version 2.6.3 --adaptive-installed-version 2.6.3 --adaptive-installed-version 2.6.3 --adaptive-parity-passed true",
+        "npm run validate:workflow -- --workflow-root work-items/cr008-legacy-blocker-disposition --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr008-legacy-blocker-disposition"
+      ],
+      "blockers": [
+        {
+          "id": "se:db2ddb0d5e7ac10cb949c301bc1cd22f1169197fec13e4d4c6e4d22a3eb361e3",
+          "kind": "delivery_blocker",
+          "text": "Có work item gần nghĩa cần review: closeout-bundle-legacy-dod-compatibility, terminal-archive-legacy-state-reconciliation, worktree-and-closure-integrity"
+        }
+      ]
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=CHANGE",
+    "delivery_context=brownfield",
+    "dedup_result=needs_review",
+    "change_strategy=none",
+    "planning_track=quick",
+    "governance_profile=default",
+    "sdd_preset=light",
+    "selected_profile=sdd-light",
+    "sdd_mode=light",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "cr008-legacy-blocker-disposition",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr008-legacy-blocker-disposition/work-items/cr008-legacy-blocker-disposition",
+  "current_step": "s08",
+  "granted_write_paths": [
+    "work-items/cr008-legacy-blocker-disposition",
+    "product-specs/cards/cr008-legacy-blocker-disposition.md",
+    "work-items/adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.work-item-report.json",
+    "work-items/adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.s01.restate.md",
+    "changes/CR-008/execution/task-status.md",
+    "changes/CR-008/archive-metadata.md"
+  ],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "archive-lifecycle",
+  "required_actions": [
+    {
+      "id": "se:c72e9777b1a25029153e84ed58dde45ccca0adf24801587833d31b6df97a5cd8",
+      "kind": "workflow_followup",
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/closeout-bundle-legacy-dod-compatibility",
+    "work-items/terminal-archive-legacy-state-reconciliation",
+    "work-items/worktree-and-closure-integrity",
+    "work-items/cr008-legacy-blocker-disposition"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-09-22T07:36:46.859Z",
+  "review_notes": [
+    "User explicitly accepted Work Item and Task Plan a00ce83; recorded at 2026-09-22T07:33:21Z; finalized authoring d51f7f5."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-21T13:10:10.810Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-09-22T07:23:32.354Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Signed admission concerns resolved."
+    },
+    {
+      "timestamp": "2026-09-22T07:23:32.354Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Resumed proposal operation ec6bcd8d-7f21-4c2e-8818-e78b56e5c116."
+    },
+    {
+      "timestamp": "2026-09-22T07:36:46.859Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "User explicitly accepted Work Item and Task Plan a00ce83; recorded at 2026-09-22T07:33:21Z; finalized authoring d51f7f5."
+    },
+    {
+      "timestamp": "2026-09-22T08:33:50.844Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Explicit user approval recorded at 2026-09-22T07:33:21Z; trusted work-item and task_plan signatures verified; activate only six approved maintenance paths."
+    },
+    {
+      "timestamp": "2026-09-22T09:44:08.172Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "AC-01..05 technical evidence and full applicable validators pass; QC DoD decision remains pending."
+    },
+    {
+      "timestamp": "2026-09-22T10:25:37.105Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "QC DoD explicitly approved, trusted signature and current host digest verified; all AC evidence passed. Conditional T6 integration and old-worktree cleanup authorized separately in the same human review."
+    }
+  ],
+  "resolved_state_history": [
+    {
+      "operation_id": "492ae3ce-16a2-4111-ab8d-5c0921c68d85",
+      "source_collection": "blockers",
+      "source_entry_id": "di:be1704c316d22778276b5dc3fe19cd63a4b20ffe04a5c3621942af4caab391da",
+      "original_entry": {
+        "id": "se:db2ddb0d5e7ac10cb949c301bc1cd22f1169197fec13e4d4c6e4d22a3eb361e3",
+        "kind": "delivery_blocker",
+        "text": "Có work item gần nghĩa cần review: closeout-bundle-legacy-dod-compatibility, terminal-archive-legacy-state-reconciliation, worktree-and-closure-integrity"
+      },
+      "original_text": "Có work item gần nghĩa cần review: closeout-bundle-legacy-dod-compatibility, terminal-archive-legacy-state-reconciliation, worktree-and-closure-integrity",
+      "actor": "maintainer",
+      "reason": "Reviewed near matches: closeout-bundle-legacy-dod-compatibility, terminal-archive-legacy-state-reconciliation, and worktree-and-closure-integrity own earlier runtime fixes. None owns the two live CR-008 dispositions or their cleanup reassessment; retain this distinct maintenance proposal.",
+      "resolved_at": "2026-09-22T07:22:34.367Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "cr008-legacy-blocker-disposition",
+          "operation_id": "492ae3ce-16a2-4111-ab8d-5c0921c68d85",
+          "state_id": "di:be1704c316d22778276b5dc3fe19cd63a4b20ffe04a5c3621942af4caab391da",
+          "source_collection": "blockers",
+          "original_entry": {
+            "id": "se:db2ddb0d5e7ac10cb949c301bc1cd22f1169197fec13e4d4c6e4d22a3eb361e3",
+            "kind": "delivery_blocker",
+            "text": "Có work item gần nghĩa cần review: closeout-bundle-legacy-dod-compatibility, terminal-archive-legacy-state-reconciliation, worktree-and-closure-integrity"
+          },
+          "original_text": "Có work item gần nghĩa cần review: closeout-bundle-legacy-dod-compatibility, terminal-archive-legacy-state-reconciliation, worktree-and-closure-integrity",
+          "actor": "maintainer",
+          "reason": "Reviewed near matches: closeout-bundle-legacy-dod-compatibility, terminal-archive-legacy-state-reconciliation, and worktree-and-closure-integrity own earlier runtime fixes. None owns the two live CR-008 dispositions or their cleanup reassessment; retain this distinct maintenance proposal.",
+          "resolved_at": "2026-09-22T07:22:34.367Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "RVAYN+92WSwoDk3aA8p1+xettjnAIR0N6fC5ZzpZ12YZco23DRtLe4GP/swwr9BUGStlpFOFab/bmlbg3CcIAQ=="
+      }
+    },
+    {
+      "operation_id": "9a69f447-ea97-4b9e-9449-ac1039e66338",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:a51121ba004d9760cddf5f8b1f2b8b21b8afbd94b8311dcb7057978983f1d41e",
+      "original_entry": {
+        "id": "se:6e883e07166ee862060dea9ecc18843de5470cbc581eed5dd539b9cc61fac453",
+        "kind": "workflow_followup",
+        "text": "Làm rõ scope để chốt single hay split."
+      },
+      "original_text": "Làm rõ scope để chốt single hay split.",
+      "actor": "maintainer",
+      "reason": "Scope confirmed as one bounded maintenance item: exactly two archived-parent dispositions, their managed projection, dated finding and finish metadata, and conditional verified local cleanup. Excludes production changes, release, unrelated audit work, and remote branch deletion.",
+      "resolved_at": "2026-09-22T07:22:38.090Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "cr008-legacy-blocker-disposition",
+          "operation_id": "9a69f447-ea97-4b9e-9449-ac1039e66338",
+          "state_id": "di:a51121ba004d9760cddf5f8b1f2b8b21b8afbd94b8311dcb7057978983f1d41e",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:6e883e07166ee862060dea9ecc18843de5470cbc581eed5dd539b9cc61fac453",
+            "kind": "workflow_followup",
+            "text": "Làm rõ scope để chốt single hay split."
+          },
+          "original_text": "Làm rõ scope để chốt single hay split.",
+          "actor": "maintainer",
+          "reason": "Scope confirmed as one bounded maintenance item: exactly two archived-parent dispositions, their managed projection, dated finding and finish metadata, and conditional verified local cleanup. Excludes production changes, release, unrelated audit work, and remote branch deletion.",
+          "resolved_at": "2026-09-22T07:22:38.090Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "t5Xyfen8NXdB5gQJvZMrgwGiOApQ+6+zlmwW/NaIe52NFkH9K7R4CaT2rEJ9kwuqrst1LcPLr9jZm0QsXiD0BA=="
+      }
+    },
+    {
+      "operation_id": "5eba384e-ab6f-4c60-af58-45a5e63213e6",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:5892488d133221e73c5a3aa89238f091de8c9e836d21162551942f5a8688e7ea",
+      "original_entry": {
+        "id": "se:2b1b5b8d31cf90ea804bd2af3187717ac96e6d874b3533a3d603a1f93fd78f86",
+        "kind": "workflow_followup",
+        "text": "Review existing work-items/changes trước khi scaffold."
+      },
+      "original_text": "Review existing work-items/changes trước khi scaffold.",
+      "actor": "maintainer",
+      "reason": "Reviewed existing work-items and CR-008/CR-009 evidence. CR-009 s08 explicitly excludes live CR-008 disposition and worktree cleanup; the earlier compatibility and closure fixes do not own those actions. A separate maintenance owner is required.",
+      "resolved_at": "2026-09-22T07:22:41.149Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "cr008-legacy-blocker-disposition",
+          "operation_id": "5eba384e-ab6f-4c60-af58-45a5e63213e6",
+          "state_id": "di:5892488d133221e73c5a3aa89238f091de8c9e836d21162551942f5a8688e7ea",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:2b1b5b8d31cf90ea804bd2af3187717ac96e6d874b3533a3d603a1f93fd78f86",
+            "kind": "workflow_followup",
+            "text": "Review existing work-items/changes trước khi scaffold."
+          },
+          "original_text": "Review existing work-items/changes trước khi scaffold.",
+          "actor": "maintainer",
+          "reason": "Reviewed existing work-items and CR-008/CR-009 evidence. CR-009 s08 explicitly excludes live CR-008 disposition and worktree cleanup; the earlier compatibility and closure fixes do not own those actions. A separate maintenance owner is required.",
+          "resolved_at": "2026-09-22T07:22:41.149Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "eQ8ia6J2JcazMo+fy1M8fZQR34v/sz/43qRmSs9f7XXiTZaMI5CeU62QHibJjjgOYep6dhv4+7UUWXaSe3SXDQ=="
+      }
+    }
+  ],
+  "materialization_recovery": {
+    "schema_version": 1,
+    "operation_id": "ec6bcd8d-7f21-4c2e-8818-e78b56e5c116",
+    "source_report_sha256": "222c8b6670a8b52e473270c67eefa8deedb078843c7bc72224ce7921acc84b37",
+    "resulting_status": "MATERIALIZED",
+    "disposition_operation_ids": [
+      "492ae3ce-16a2-4111-ab8d-5c0921c68d85",
+      "9a69f447-ea97-4b9e-9449-ac1039e66338",
+      "5eba384e-ab6f-4c60-af58-45a5e63213e6"
+    ],
+    "completed_at": "2026-09-22T07:23:32.354Z"
+  },
+  "artifact_shape": "adaptive_v1",
+  "request_lane": "maintenance",
+  "workflow_required": true,
+  "routing_reasons": [
+    "LANE_MAINTENANCE"
+  ],
+  "escalation_reasons": [],
+  "roles": [
+    {
+      "role": "developer",
+      "reasons": [
+        "ROLE_DEVELOPER_BOUNDED_CHANGE"
+      ]
+    },
+    {
+      "role": "qc",
+      "reasons": [
+        "ROLE_QC_DOD_VERIFICATION"
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "gate": "task_plan",
+      "reasons": [
+        "GATE_TASK_PLAN_BOUNDED_CHANGE"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
+      "gate": "dod",
+      "reasons": [
+        "GATE_DOD_TECHNICAL_CLOSEOUT"
+      ],
+      "reviewer_roles": [
+        "qc"
+      ]
+    }
+  ],
+  "human_override": null,
+  "adaptive_activation": {
+    "source_version": "2.6.3",
+    "installed_versions": [
+      "2.6.3",
+      "2.6.3"
+    ],
+    "parity_passed": true
+  }
+}
