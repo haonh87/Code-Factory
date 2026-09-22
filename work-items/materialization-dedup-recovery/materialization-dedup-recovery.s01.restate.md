@@ -135,13 +135,13 @@ tags:
 ## Router Status
 
 ```text
-Current Step: s06 Task Plan
+Current Step: s08 Verify + DoD
 Workflow Status: WAITING_APPROVAL
 Delivery Context: brownfield
-What I Am Doing Now: Record the explicit packet acceptance and prepare trusted signing.
-Missing Gates: Trusted work-item and Spec/Contract/DoR/Approach/Task Plan receipts.
-Next Artifact: Finalized s04/s05/s06 and human-terminal signing.
-Next Human Action: Sign the work-item receipt and readiness bundle in a human-controlled terminal.
+What I Am Doing Now: Present completed repair and verification evidence for closeout review.
+Missing Gates: DoD, Business Acceptance.
+Next Artifact: Human-reviewed s08 and two terminal receipts.
+Next Human Action: Review the concrete s08 packet and sign the closeout bundle after explicit approval.
 ```
 
 ## Step Contract
@@ -241,8 +241,8 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: MATERIALIZED
-approval_status: PENDING_REVIEW
+protocol_status: VERIFIED
+approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
 request_lane: product_delivery
@@ -271,8 +271,22 @@ work_item_slug: "materialization-dedup-recovery"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/materialization-dedup-recovery/work-items/materialization-dedup-recovery"
-current_step: "s01"
-granted_write_paths: []
+current_step: "s08"
+granted_write_paths:
+  - "packages/workflow-bundle/test/materialize-work-item.test.js"
+  - "packages/workflow-bundle/scripts/work-item-protocol-utils.js"
+  - "packages/workflow-bundle/scripts/work-item-protocol.js"
+  - "packages/workflow-bundle/scripts/workflow-trusted-approval-utils.js"
+  - "packages/workflow-bundle/test/work-item-protocol.test.js"
+  - "packages/workflow-bundle/scripts/materialize-work-item.js"
+  - "packages/workflow-bundle/scripts/scaffold-workflow.js"
+  - "packages/workflow-bundle/README.md"
+  - "skills/orchestration/codex-workflow-chain/references/work-item-materialization.md"
+  - "skills/orchestration/codex-workflow-chain/references/work-item-materialization.vi.md"
+  - "skills/orchestration/codex-workflow-chain/references/work-item-protocol.md"
+  - "skills/orchestration/codex-workflow-chain/references/work-item-protocol.vi.md"
+  - "work-items/materialization-dedup-recovery"
+  - "product-specs/srs/materialization-dedup-recovery.md"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -281,22 +295,17 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: ""
-reviewed_by: ""
-reviewed_at: ""
-handoff_target: "human-review"
-last_transition_action: "materialize"
-last_transition_at: "2026-09-21T13:37:36.254Z"
+protocol_owner: "maintainer"
+reviewed_by: "maintainer"
+reviewed_at: "2026-09-22T01:54:22.214Z"
+handoff_target: "definition-of-done"
+last_transition_action: "verify"
+last_transition_at: "2026-09-22T02:24:26.998Z"
 required_actions:
-  - {"id":"se:1817ead6061b0dc1c8216974cc14eaacb252065d7099365c813a82071e4735d9","kind":"workflow_followup","text":"wfc work-item approve --work-item materialization-dedup-recovery --reviewed-by <role>"}
-  - {"id":"se:05bd114bdaa8c7627676d9539f25ed4565399744f0769a0b2cd61c7ccf4daf3c","kind":"gate_approval","text":"wfc gate approve --work-item materialization-dedup-recovery --gate spec --reviewed-by ba","gate":"spec"}
-  - {"id":"se:9cf6c9259adb2ac89f7e8db46f224abd0ce812283924889b5e46ec89bfda0c45","kind":"gate_approval","text":"wfc gate approve --work-item materialization-dedup-recovery --gate contract --reviewed-by developer","gate":"contract"}
-  - {"id":"se:10603e8b9aeedefe9bd1caabac195ced3d9e35ab7cbb565e2631aa658b60246e","kind":"gate_approval","text":"wfc gate approve --work-item materialization-dedup-recovery --gate dor --reviewed-by ba","gate":"dor"}
-  - {"id":"se:e634df0fc7c61e6cb80579c3207999b769153105ed0ed218e3fb3bd5e85421f2","kind":"gate_approval","text":"wfc gate approve --work-item materialization-dedup-recovery --gate approach --reviewed-by developer","gate":"approach"}
-  - {"id":"se:2f8e8833e6f8e013a13b53fd1c2aac40b06cfff1bc267cd22e2a857349c0887a","kind":"gate_approval","text":"wfc gate approve --work-item materialization-dedup-recovery --gate task_plan --reviewed-by developer","gate":"task_plan"}
-  - {"id":"se:22e928d7090ed434b639d489b143facbe419d80099d1444d46864682c5a61adc","kind":"work_item_activation","text":"wfc work-item activate --work-item materialization-dedup-recovery --step s07 --write-root <path>"}
+  - {"id":"se:6d1f92ed070ccb33bbd3320f8c0c816056b753f4b3ce481a92c2505133474779","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
 blockers: []
-review_notes: []
+review_notes:
+  - "User accepted the concrete repair scope and authoring packet; observed 2026-09-22T01:44:34Z."
 refs:
   - "work-items/materialization-dedup-recovery"
 audit_events:
@@ -306,6 +315,10 @@ audit_events:
   - "DEDUP_CONFIRMED"
   - "WORKFLOW_SCAFFOLDED"
   - "STEP_OPENED"
+  - "WORK_ITEM_APPROVED"
+  - "READINESS_BUNDLE_APPROVED"
+  - "WORK_ITEM_ACTIVATED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
 ## Traceability

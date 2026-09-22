@@ -1,5 +1,7 @@
 const fs = require("fs");
 const path = require("path");
+const { createHash } = require("crypto");
+const { normalizeTransactionId } = require("./workflow-approval-transaction");
 const workflowBundlePackage = require("../package.json");
 const {
   ensureDirectory,
@@ -16,6 +18,7 @@ const { PLANNING_TRACKS } = require("./workflow-planning-definitions");
 const { EXECUTION_MODES } = require("./workflow-execution-definitions");
 const {
   SDD_LIGHT_PROFILE,
+  SDD_MODES,
   SDD_LIGHT_ESCALATION_REASONS,
   resolveSddLightProfile,
   evaluateLightEligibility
@@ -27,12 +30,16 @@ const {
 } = require("./workflow-telemetry");
 const {
   hasApprovedReceipt,
-  loadTrustedApprovalReceipt
+  loadTrustedApprovalReceipt,
+  resolveTrustedApprovalRoot,
+  verifyRecordedDisposition
 } = require("./workflow-trusted-approval-utils");
-const { scaffoldWorkflowNotes } = require("./scaffold-workflow");
+const { scaffoldWorkflowNotes, prepareMissingWorkflowNotes, validateRecoveredWorkflowNotes } = require("./scaffold-workflow");
 const { scaffoldChangePackage } = require("./scaffold-change-package");
 const {
   REQUEST_LANES,
+  ROLE_ORDER,
+  GATE_ORDER,
   canActivateAdaptiveWrites,
   evaluateAdaptiveGovernance
 } = require("./workflow-adaptive-governance");
@@ -43,7 +50,13 @@ const {
   getDefaultApprovalState,
   inferDeliveryContext,
   renderProtocolBlock,
-  withProtocolReportLock
+  withProtocolReportLock,
+  loadProtocolReport,
+  normalizeProtocolReport,
+  resolveWorkflowRootBase,
+  atomicWriteRawProtocolReport,
+  assertProtocolSnapshotUnchanged,
+  upsertProtocolBlockInS01
 } = require("./work-item-protocol-utils");
 
 const WORK_ITEM_TYPES = ["FEATURE", "BUG", "CHANGE", "REFACTOR", "RESEARCH"];
@@ -1196,24 +1209,233 @@ function writeReportFile(report, outputPath) {
 }
 
 function assertMaterializerMayWriteReport(outputPath) {
-  if (!outputPath || !fs.existsSync(outputPath)) return;
-  let prior;
-  try {
-    prior = JSON.parse(fs.readFileSync(outputPath, "utf8"));
-  } catch (_error) {
-    throw new Error(`Materializer refuses to replace an existing unreadable report: ${outputPath}`);
+  if (!outputPath) return;
+  try { fs.lstatSync(outputPath); } catch (error) { if (error.code === "ENOENT") return; throw error; }
+  throw new Error(`Materializer refuses to replace an existing report: ${outputPath}. Use --resume-proposal for an eligible persisted proposal, or investigate its owner.`);
+}
+
+function assertRecoveryPath(projectRoot, target) {
+  const relative = path.relative(projectRoot, target);
+  if (relative === ".." || relative.startsWith(".." + path.sep) || path.isAbsolute(relative)) {
+    throw new Error(`Recovery path escapes project: ${target}`);
   }
-  if (prior && typeof prior === "object" && !Array.isArray(prior) && (
-    ["MATERIALIZED", "ACTIVE", "BLOCKED", "VERIFIED", "DONE", "ARCHIVED", "CANCELLED"].includes(prior.protocol_status) ||
-    prior.approval_status === "APPROVED" ||
-    Object.hasOwn(prior, "resolved_state_history")
-  )) {
-    throw new Error(`Materializer refuses to replace an existing governed report: ${outputPath}`);
+  let current = projectRoot;
+  for (const part of relative.split(path.sep).filter(Boolean)) {
+    current = path.join(current, part);
+    let stat;
+    try { stat = fs.lstatSync(current); } catch (error) { if (error.code === "ENOENT") break; throw error; }
+    if (stat.isSymbolicLink()) throw new Error(`Recovery refuses symlink: ${current}`);
   }
+}
+
+function assertRecoveryTree(projectRoot, workflowRoot) {
+  assertRecoveryPath(projectRoot, workflowRoot);
+  if (!fs.existsSync(workflowRoot)) return;
+  if (!fs.lstatSync(workflowRoot).isDirectory()) throw new Error(`Recovery root is not a directory: ${workflowRoot}`);
+  for (const entry of fs.readdirSync(workflowRoot, { withFileTypes: true })) {
+    const target = path.join(workflowRoot, entry.name);
+    assertRecoveryPath(projectRoot, target);
+    if (entry.isDirectory()) assertRecoveryTree(projectRoot, target);
+    else if (!entry.isFile()) throw new Error(`Recovery refuses non-file: ${target}`);
+  }
+}
+
+function validateRecoveryCandidate(raw, { workItemSlug, workflowRoot }) {
+  if (!raw || raw.work_item_slug !== workItemSlug || raw.candidate_count !== 1 || raw.split_decision !== "single" ||
+      raw.delivery_context !== "brownfield" || raw.change_strategy !== "none" || raw.change_id !== "" ||
+      !Array.isArray(raw.work_items) || raw.work_items.length !== 1 || raw.review_required !== true ||
+      raw.approval_status !== "PENDING_REVIEW" || raw.reviewed_by || raw.reviewed_at ||
+      (raw.granted_write_paths !== undefined && (!Array.isArray(raw.granted_write_paths) || raw.granted_write_paths.length)) ||
+      !["PROPOSED", "READY_TO_MATERIALIZE", "MATERIALIZED"].includes(raw.protocol_status) ||
+      !["", "s01"].includes(raw.current_step) || path.resolve(raw.workflow_root || ".") !== workflowRoot) {
+    throw new Error("Unsupported recovery candidate: expected one unapproved brownfield item without change or grants.");
+  }
+  const item = raw.work_items[0];
+  for (const key of ["work_item_slug", "work_item_type", "delivery_context", "change_strategy", "change_id",
+    "planning_track", "governance_profile", "execution_mode", "sdd_mode", "selected_profile", "sdd_preset", "sdd_light_profile"]) {
+    if (Object.hasOwn(raw, key) && raw[key] !== item[key]) throw new Error(`Conflicting candidate metadata: ${key}`);
+  }
+  if (item.scope_summary !== raw.raw_request_summary || item.primary_outcome !== raw.raw_request_summary ||
+      !Array.isArray(item.blockers) || !Array.isArray(item.scaffold_actions) || item.scaffold_actions.length !== 2 ||
+      !Array.isArray(raw.blockers) || !Array.isArray(raw.required_actions) ||
+      !Array.isArray(raw.protocol_events) || !Array.isArray(raw.audit_events) || !Array.isArray(raw.refs)) {
+    throw new Error("Conflicting or incomplete persisted candidate metadata.");
+  }
+  validateChoice("work-item-type", item.work_item_type, WORK_ITEM_TYPES);
+  validateChoice("planning-track", item.planning_track, PLANNING_TRACKS);
+  validateChoice("governance-profile", item.governance_profile, GOVERNANCE_PROFILES);
+  validateChoice("execution-mode", item.execution_mode, EXECUTION_MODES);
+  validateChoice("sdd-mode", item.sdd_mode, SDD_MODES);
+  return item;
+}
+
+function validateRecoveryAdmission(raw, item, approvalRoot) {
+  const history = raw.resolved_state_history || [];
+  const operations = new Set();
+  for (const record of history) {
+    if (!record || operations.has(record.operation_id)) throw new Error("Ambiguous disposition history.");
+    operations.add(record.operation_id);
+    verifyRecordedDisposition({ record, workItemSlug: raw.work_item_slug, stateId: record.source_entry_id,
+      operationId: record.operation_id, actor: "maintainer", reason: record.reason, approvalRoot });
+  }
+  if (raw.blockers.length) throw new Error("Recovery requires all current blockers to be resolved.");
+  if (raw.protocol_status === "READY_TO_MATERIALIZE" && raw.materialization_status === "READY" && raw.dedup_result === "no_conflict") {
+    const expected = buildScaffoldStateActions(item);
+    if (item.blockers.length || JSON.stringify(raw.required_actions) !== JSON.stringify(expected)) {
+      throw new Error("READY recovery accepts only exact materializer-owned scaffold/validation actions.");
+    }
+    return [];
+  }
+  if (raw.protocol_status !== "PROPOSED" || raw.materialization_status !== "PROPOSED" ||
+      raw.dedup_result !== "needs_review" || raw.required_actions.length) {
+    throw new Error("Recovery requires READY/no_conflict or a fully reviewed needs_review proposal.");
+  }
+  const slug = raw.work_item_slug;
+  const expected = [
+    ["blockers", "delivery_blocker", `materialize:${slug}:near-match-review`],
+    ["required_actions", "workflow_followup", `clarify-scope:${slug}`],
+    ["required_actions", "workflow_followup", `review-existing:${slug}`]
+  ].map(([collection, kind, sourceKey]) => ({ collection, kind,
+    id: createStateEntry({ collection, kind, sourceKey, text: "identity only" }).id }));
+  if (item.blockers.length !== 1 || item.blockers[0].id !== expected[0].id ||
+      item.blockers[0].kind !== expected[0].kind) throw new Error("Unsupported original admission blockers.");
+  if (!Array.isArray(history) || !history.length) throw new Error("Recovery requires signed admission history; unsigned clearing is not approval.");
+  return expected.map(concern => {
+    const records = history.filter(record => record.source_collection === concern.collection &&
+      record.original_entry?.id === concern.id && record.original_entry.kind === concern.kind);
+    if (records.length !== 1) throw new Error(`Missing or ambiguous signed admission concern: ${concern.id}`);
+    if (concern.collection === "blockers" && JSON.stringify(records[0].original_entry) !== JSON.stringify(item.blockers[0])) {
+      throw new Error("Signed admission blocker differs from the candidate snapshot.");
+    }
+    return records[0].operation_id;
+  });
+}
+
+function resumeMaterialization(args) {
+  const allowed = new Set(["resume-proposal", "work-item", "project-root", "workflow-root", "expected-report-sha256", "operation-id", "approval-root"]);
+  for (const key of Object.keys(args)) {
+    if (!allowed.has(key) || Array.isArray(args[key])) throw new Error(`Unsupported recovery override: --${key}`);
+  }
+  if (![true, "true"].includes(args["resume-proposal"])) throw new Error("--resume-proposal must be true.");
+  const workItemSlug = args["work-item"];
+  if (typeof workItemSlug !== "string" || !WORK_ITEM_PATTERN.test(workItemSlug)) throw new Error("Recovery requires a valid --work-item slug.");
+  const sourceHash = args["expected-report-sha256"];
+  if (typeof sourceHash !== "string" || !/^[0-9a-f]{64}$/.test(sourceHash)) throw new Error("Recovery requires --expected-report-sha256 (64 lowercase hex).");
+  if (!args["operation-id"]) throw new Error("Recovery requires --operation-id (canonical UUID).");
+  const operationId = normalizeTransactionId(args["operation-id"]);
+  const projectRoot = path.resolve(args["project-root"] || process.cwd());
+  const workflowRootBase = resolveWorkflowRootBase(projectRoot,
+    args["workflow-root"] ? path.resolve(projectRoot, args["workflow-root"]) : "");
+  const workflowRoot = path.join(workflowRootBase, workItemSlug);
+  assertRecoveryTree(projectRoot, workflowRoot);
+  const reportPath = path.join(workflowRoot, `${workItemSlug}.work-item-report.json`);
+  if (!fs.existsSync(reportPath) || !fs.lstatSync(reportPath).isFile()) {
+    throw new Error(`Recovery requires an existing regular report: ${reportPath}`);
+  }
+  const { approvalRoot } = resolveTrustedApprovalRoot({ projectRoot, overrideRoot: args["approval-root"] });
+  return withProtocolReportLock({ workflowRootBase, workItemSlug }, () => {
+    assertRecoveryTree(projectRoot, workflowRoot);
+    const loaded = loadProtocolReport({ projectRoot, workflowRootBase, workItemSlug });
+    const raw = loaded.rawReport;
+    const item = validateRecoveryCandidate(raw, { workItemSlug, workflowRoot });
+    const recovery = raw.materialization_recovery;
+    if (recovery && (recovery.operation_id !== operationId || recovery.source_report_sha256 !== sourceHash || raw.protocol_status !== "MATERIALIZED")) {
+      throw new Error("Conflicting recovery operation identity or later lifecycle state.");
+    }
+    if (!recovery && createHash("sha256").update(loaded.rawBytes).digest("hex") !== sourceHash) {
+      throw new Error("Stale expected report SHA-256; refresh the original snapshot.");
+    }
+    for (const gate of ["work-item", "spec", "contract", "dor", "approach", "task_plan"]) {
+      const receipt = loadTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot,
+        kind: gate === "work-item" ? gate : "gate", gate, workItemSlug });
+      if (receipt.receipt && !recovery) throw new Error("Recovery refuses an already reviewed proposal with trusted receipts.");
+    }
+    let dispositions;
+    if (recovery) {
+      if (raw.materialization_status !== "READY" || raw.dedup_result !== "no_conflict" || raw.blockers.length) {
+        throw new Error("Recovery retry has conflicting materialized state.");
+      }
+      // Recheck the preserved admission evidence, not the newly generated gate actions.
+      const reviewed = item.blockers.length > 0;
+      dispositions = validateRecoveryAdmission({ ...raw,
+        protocol_status: reviewed ? "PROPOSED" : "READY_TO_MATERIALIZE",
+        materialization_status: reviewed ? "PROPOSED" : "READY",
+        dedup_result: reviewed ? "needs_review" : "no_conflict",
+        required_actions: reviewed ? [] : buildScaffoldStateActions(item)
+      }, item, approvalRoot);
+      if (JSON.stringify(dispositions) !== JSON.stringify(recovery.disposition_operation_ids)) {
+        throw new Error("Recovery disposition references differ from signed history.");
+      }
+    } else dispositions = validateRecoveryAdmission(raw, item, approvalRoot);
+    const normalized = normalizeProtocolReport(raw);
+    if (raw.artifact_shape && raw.artifact_shape !== "adaptive_v1") throw new Error("Unsupported recovery artifact shape.");
+    if (raw.artifact_shape === "adaptive_v1") {
+      const activation = canActivateAdaptiveWrites(normalized.adaptive_activation);
+      const nonemptyStrings = values => Array.isArray(values) && values.length > 0 &&
+        values.every(value => typeof value === "string" && value.trim());
+      const validEntries = (entries, key, values) => Array.isArray(entries) && entries.length > 0 &&
+        new Set(entries.map(entry => entry?.[key])).size === entries.length &&
+        entries.every(entry => entry && values.includes(entry[key]) && nonemptyStrings(entry.reasons));
+      if (!activation.allowed || raw.workflow_required !== true || !REQUEST_LANES.includes(raw.request_lane) ||
+          !nonemptyStrings(raw.routing_reasons) || !validEntries(raw.roles, "role", ROLE_ORDER) ||
+          !validEntries(raw.gates, "gate", GATE_ORDER) || raw.gates.some(entry =>
+            !nonemptyStrings(entry.reviewer_roles) || entry.reviewer_roles.some(role => !ROLE_ORDER.includes(role)))) {
+        throw new Error("Persisted adaptive activation or governance is invalid.");
+      }
+    }
+    const noteArgs = { "work-item": workItemSlug, "work-item-type": item.work_item_type,
+      "delivery-context": item.delivery_context, "planning-track": item.planning_track,
+      "governance-profile": item.governance_profile, "execution-mode": item.execution_mode,
+      "sdd-mode": item.sdd_mode, "project-root": projectRoot, "workflow-root": workflowRoot };
+    const notes = prepareMissingWorkflowNotes({ args: noteArgs,
+      adaptiveReport: raw.artifact_shape === "adaptive_v1" ? normalized : null, allowFinalized: Boolean(recovery) });
+    validateRecoveredWorkflowNotes({ projectRoot, workflowRoot });
+    assertProtocolSnapshotUnchanged({ reportPath: loaded.reportPath, rawBytes: loaded.rawBytes });
+    const failurePoint = process.env.WORKFLOW_BUNDLE_RECOVERY_FAILURE_POINT || "";
+    for (const note of notes) {
+      assertRecoveryPath(projectRoot, note.filePath);
+      if (note.original) {
+        if (!fs.readFileSync(note.filePath).equals(note.original)) throw new Error("Recovery note changed during preflight.");
+      } else {
+        fs.writeFileSync(note.filePath, note.content, { encoding: "utf8", flag: "wx" });
+        if (failurePoint === "after_first_note") throw new Error("Injected recovery failure after_first_note; original report unchanged.");
+      }
+    }
+    validateRecoveredWorkflowNotes({ projectRoot, workflowRoot });
+    let report = raw;
+    if (!recovery) {
+      const now = new Date().toISOString();
+      const events = [];
+      if (raw.protocol_status === "PROPOSED") events.push(buildProtocolEvent({ action: "materialize-ready",
+        actor: raw.decision_owner, fromStatus: "PROPOSED", toStatus: "READY_TO_MATERIALIZE", note: "Signed admission concerns resolved." }));
+      events.push(buildProtocolEvent({ action: "materialize", actor: raw.decision_owner,
+        fromStatus: "READY_TO_MATERIALIZE", toStatus: "MATERIALIZED", note: `Resumed proposal operation ${operationId}.` }));
+      report = { ...raw, protocol_status: "MATERIALIZED", materialization_status: "READY", dedup_result: "no_conflict",
+        current_step: "s01", granted_write_paths: [], approval_status: "PENDING_REVIEW", handoff_target: "human-review",
+        required_actions: buildPostMaterializationActions(raw, item),
+        refs: unique([...raw.refs, path.relative(projectRoot, workflowRoot)]),
+        audit_events: [...raw.audit_events, ...(raw.dedup_result === "needs_review" ? ["DEDUP_CONFIRMED"] : []), "WORKFLOW_SCAFFOLDED", "STEP_OPENED"],
+        protocol_events: [...raw.protocol_events, ...events],
+        materialization_recovery: { schema_version: 1, operation_id: operationId, source_report_sha256: sourceHash,
+          resulting_status: "MATERIALIZED", disposition_operation_ids: dispositions, completed_at: now } };
+      atomicWriteRawProtocolReport({ report, reportPath: loaded.reportPath, expectedBytes: loaded.rawBytes,
+        failurePoint: failurePoint === "before_report_rename" ? failurePoint : "" });
+    }
+    try {
+      if (failurePoint === "before_projection_refresh") throw new Error("Injected recovery projection failure.");
+      upsertProtocolBlockInS01(loaded.s01Path, report);
+      syncCapabilityControl({ projectRoot, workflowRootBase });
+    } catch (error) {
+      throw new Error(`Recovery operation '${operationId}' is committed; projection/capability refresh failed: ${error.message}. Retry the same operation ID and original source hash.`);
+    }
+    return { report, reportPath: loaded.reportPath, outcome: recovery ? "NOOP" : "APPLIED",
+      operation_id: operationId, projection_status: "SYNCED" };
+  });
 }
 
 function materializeWorkItem(options) {
   const args = options.args;
+  if (Object.hasOwn(args, "resume-proposal")) return resumeMaterialization(args);
   const request = normalizeSingleValue(args.request);
   if (!request) {
     throw new Error("Missing required argument '--request'.");
@@ -1628,7 +1850,7 @@ function runCli() {
     const report = result.report;
     const slug = report.work_item_slug || "<unresolved>";
     const summary = [
-      `OK: materialized work item candidate '${slug}'`,
+      result.outcome ? `OK: ${result.outcome} operation_id=${result.operation_id} projection_status=${result.projection_status} work_item=${slug}` : `OK: materialized work item candidate '${slug}'`,
       `materialization_status=${report.materialization_status}`,
       `protocol_status=${report.protocol_status}`,
       `dedup_result=${report.dedup_result}`,

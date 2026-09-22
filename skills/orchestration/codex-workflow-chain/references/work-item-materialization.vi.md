@@ -606,3 +606,28 @@ Nếu lớp này được giữ thành protocol rõ:
 - change decision có evidence
 - dedup được kiểm trước khi sinh artifact
 - scaffold có thể được tự động hóa mà không làm trôi governance của authoring
+
+## Tiếp Tục Proposal Đã Lưu
+
+Dùng CLI từ source có hỗ trợ recovery; bản 2.6.3 đang cài chưa có chế độ này. Lệnh `materialize --request` thông thường từ chối ghi đè mọi report đã tồn tại, kể cả PROPOSED và READY chưa được duyệt.
+
+```sh
+wfc work-item status --work-item <slug>
+shasum -a 256 work-items/<slug>/<slug>.work-item-report.json
+wfc materialize --resume-proposal --work-item <slug> --expected-report-sha256 <64-hex> --operation-id <canonical-uuid>
+```
+
+Lấy hash sau khi xử lý các quyết định admission. Dùng một UUID chuẩn, chữ thường, cho operation mới; giữ UUID và hash nguồn ban đầu để retry. `--project-root` và `--workflow-root` chọn project và thư mục gốc workflow bên trong project; report phải nằm ở `<workflow-base>/<slug>/<slug>.work-item-report.json`. Resume không nhận request mới, thay đổi profile, đường dẫn output hay `--force`, và không thực thi chuỗi `scaffold_actions` đã lưu.
+
+Chỉ hỗ trợ một work item brownfield, `change_strategy=none`, không có change ID, approval hay write grant, và chưa có note finalized:
+
+- READY_TO_MATERIALIZE / READY / no_conflict, không có blocker, chỉ còn action scaffold/validation thuộc materializer.
+- PROPOSED / needs_review, không còn blocker/action hiện tại và có lịch sử disposition đã ký hợp lệ cho đủ ba nội dung: near-match review, làm rõ scope và review work item đã có. Xử lý từng ID hiện tại qua `wfc work-item dispose-state` trong lane có owner; đọc lại status giữa các lần vì ID `di:` phụ thuộc snapshot report. Maintainer mở khóa danh tính hiện có trong terminal do con người điều khiển. Xóa entry hoặc viết câu chấp thuận không thay thế chữ ký. ID `se:` xác định nội dung do producer tạo; ID `di:` xác định entry cần disposition trong snapshot.
+
+Greenfield, split, linked-change, item đã approved/active/terminal và report `reuse_work_item` bị ghi đè cần owner điều tra riêng. Recovery không dựng lại bằng chứng đã mất. Metadata mâu thuẫn, chữ ký sai, note sai owner/profile hoặc symlink bị từ chối trước khi ghi.
+
+Kết quả thành công ghi `APPLIED`, operation ID và `projection_status=SYNCED`; trạng thái là MATERIALIZED/s01, PENDING_REVIEW, grant rỗng và các action authoring cần thiết. Snapshot candidate ban đầu được giữ nguyên, gồm `work_items[].blockers` lịch sử; chỉ blocker/action ở cấp report thể hiện việc hiện còn chờ. Các gate con người vẫn bắt buộc trước ACTIVE.
+
+Trường tùy chọn `materialization_recovery` giữ schema version 1, operation ID, SHA-256 report nguồn, kết quả MATERIALIZED, các operation ID disposition liên quan và thời gian UTC. Hash kiểm tra thay đổi đồng thời, không phải approval. Normalizer hiện tại giữ trường này; không dùng writer cũ với report đã recovery vì có thể làm mất metadata.
+
+Draft đúng owner giữ nguyên byte, ngoại trừ phần protocol do CLI quản lý trong s01. Lỗi giữa lúc scaffold có thể để lại draft mới nhưng report gốc không đổi; đọc lỗi và retry cùng đầu vào. Nếu report đã commit nhưng cập nhật projection/capability lỗi, thông báo nêu rõ operation đã commit. Retry cùng UUID và hash nguồn ban đầu trả `NOOP`, sửa projection, không lặp event. Operation khác hoặc lifecycle đã tiến bước sẽ bị từ chối. Recovery không tạo receipt, tự disposition, duyệt implement, publish hay cho phép cleanup.

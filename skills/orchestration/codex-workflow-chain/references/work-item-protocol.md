@@ -739,3 +739,9 @@ When these two layers work together:
 - `agentic` can open a work item on its own in a controlled way
 - scaffold is no longer an isolated action
 - the state, authority, and handoff of a work item become auditable
+
+## Proposal Recovery And Protocol Identity
+
+`wfc materialize --resume-proposal --work-item <slug> --expected-report-sha256 <64-hex> --operation-id <canonical-uuid>` continues eligible persisted admission into MATERIALIZED/s01. It is separate from work-item approval and `work-item resume`, which resumes blocked execution. See [proposal recovery](work-item-materialization.md#resume-a-persisted-proposal) for support limits, signed admission prerequisites and retry semantics.
+
+Current pending state is top-level `blockers` / `required_actions`; `work_items[].blockers` remains the historical candidate snapshot. `resolved_state_history` remains exact signed evidence. The optional `materialization_recovery` record must survive lifecycle normalization; older writers may drop it. A matching retry repairs projection only while the item remains MATERIALIZED and the operation/source identity and admission signatures remain valid. Neither recovery metadata nor a report hash grants approval or write capability.

@@ -615,3 +615,27 @@ If this layer is kept as a clear protocol:
 - the change decision has evidence
 - dedup is checked before generating artifacts
 - scaffold can be automated without eroding the governance of authoring
+## Resume A Persisted Proposal
+
+Use the source CLI that includes proposal recovery; the installed 2.6.3 release does not yet provide this mode. Ordinary `materialize --request` refuses to replace any existing report, including unapproved PROPOSED and READY reports.
+
+```sh
+wfc work-item status --work-item <slug>
+shasum -a 256 work-items/<slug>/<slug>.work-item-report.json
+wfc materialize --resume-proposal --work-item <slug> --expected-report-sha256 <64-hex> --operation-id <canonical-uuid>
+```
+
+Record the hash after all admission decisions. Supply a new canonical lowercase UUID for the recovery operation. Keep that UUID and the original source hash for retries. `--project-root` and `--workflow-root` select the project and its in-project workflow base; the report must be at `<workflow-base>/<slug>/<slug>.work-item-report.json`. Resume accepts no new request, profile overrides, output redirection or `--force`, and never executes stored `scaffold_actions` text.
+
+Supported inputs are single brownfield items with `change_strategy=none`, no change ID, no work-item approval or grants, and no finalized notes:
+
+- READY_TO_MATERIALIZE / READY / no_conflict, with no blockers and only the original materializer-owned scaffold/validation actions.
+- PROPOSED / needs_review, with no current blockers/actions and valid signed disposition history for all three admission concerns: near-match review, scope clarification and review of existing work. Resolve each exact current ID through `wfc work-item dispose-state` in the owning maintenance lane; refresh status between dispositions because `di:` IDs depend on the report snapshot. The existing Maintainer identity is unlocked in a human-controlled terminal. Deleting entries or writing an approval sentence is insufficient. Producer `se:` IDs identify concerns; snapshot `di:` IDs identify disposition targets.
+
+Greenfield, split, linked-change, approved/active/terminal items and damaged `reuse_work_item` reports require investigation by their owner. Recovery does not reconstruct overwritten evidence. Conflicting candidate metadata, signatures, note ownership/profile or symlinks fail before target writes.
+
+Success reports `APPLIED`, an operation ID and `projection_status=SYNCED`. It reaches MATERIALIZED/s01 with PENDING_REVIEW, empty grants and applicable authoring approval actions. It preserves the original candidate snapshot, including historical `work_items[].blockers`; only top-level blockers/actions represent current pending state. The existing human authoring gates remain required before ACTIVE.
+
+The optional `materialization_recovery` field records schema version 1, operation ID, source-report SHA-256, resulting status MATERIALIZED, referenced disposition operation IDs and UTC completion time. The hash detects concurrent changes; it is not an approval. The record survives current protocol normalization. Do not use older writers on recovered reports because they may discard this field.
+
+Existing correctly owned drafts retain their bytes, except the managed s01 protocol section. A failure while scaffolding may leave new drafts and the original report unchanged; inspect the error and retry with the same inputs. A committed report followed by projection/capability failure explicitly identifies the committed operation. The same UUID and original hash then return `NOOP` and repair the projection without duplicate events. Different operation identity or a later lifecycle state is refused. Recovery never creates trusted receipts, disposes concerns, approves implementation, publishes a release or authorizes cleanup.

@@ -3,6 +3,11 @@ const path = require("path");
 const {
   ensureDirectory,
   formatErrors,
+  getFrontmatterLines,
+  getFrontmatterValue,
+  getFrontmatterList,
+  getFrontmatterNestedValue,
+  getFrontmatterNestedList,
   normalizeYamlScalar,
   parseCliArgs
 } = require("./workflow-validator-utils");
@@ -687,6 +692,67 @@ function ensureLazyWorkflowNote(options) {
   return { created: true, filePath, workflowRoot };
 }
 
+// Internal recovery API: prepare all authoring bytes and check existing owners
+// before creating anything. The caller holds the work-item report lock.
+function prepareMissingWorkflowNotes({ args, adaptiveReport, allowFinalized = false }) {
+  const context = parseContextFromArgs(args);
+  if (adaptiveReport) {
+    context.adaptive = { decision: adaptiveReport, activation: adaptiveReport.adaptive_activation };
+    context.executionRoles = adaptiveReport.roles.map(entry => entry.role);
+  }
+  const workflowRoot = path.resolve(args["workflow-root"]);
+  return getStepIdsFromArgs(args, context.sddMode).map(stepId => {
+    const definition = getStepDefinition(stepId);
+    const filePath = path.join(workflowRoot, `${context.workItemSlug}.${stepId}.${definition.stepSlug}.md`);
+    const content = buildStepContent(definition, context);
+    let original = null;
+    if (fs.existsSync(filePath)) {
+      if (!fs.lstatSync(filePath).isFile()) throw new Error(`Recovery note is not a regular file: ${filePath}`);
+      original = fs.readFileSync(filePath);
+      const frontmatter = getFrontmatterLines(filePath);
+      const expected = { work_item_slug: context.workItemSlug, step_id: stepId,
+        step_slug: definition.stepSlug, work_item_type: context.workItemType,
+        delivery_context: context.deliveryContext, planning_track: context.planningTrack,
+        governance_profile: context.governanceProfile, execution_mode: context.executionMode,
+        sdd_mode: context.sddMode, change_id: context.changeId };
+      for (const [key, value] of Object.entries(expected)) {
+        if (!frontmatter || getFrontmatterValue(frontmatter, key) !== value) {
+          throw new Error(`Recovery note ownership/profile mismatch (${key}): ${filePath}`);
+        }
+      }
+      if (!allowFinalized && (getFrontmatterValue(frontmatter, "status") !== "draft" ||
+          !["draft", "not_applicable", ""].includes(getFrontmatterValue(frontmatter, "spec_status")))) {
+        throw new Error(`Recovery refuses finalized note: ${filePath}`);
+      }
+      if (Boolean(adaptiveReport) !== (getFrontmatterValue(frontmatter, "artifact_shape") === "adaptive_v1")) {
+        throw new Error(`Recovery note adaptive profile mismatch: ${filePath}`);
+      }
+      if (adaptiveReport) {
+        const required = new Map(adaptiveReport.gates.map(entry => [entry.gate, entry.reviewer_roles]));
+        for (const gate of FULL_SIGNOFF_KEYS) {
+          if (getFrontmatterNestedValue(frontmatter, "approval_gates", gate) !== (required.has(gate) ? "required" : "not_applicable") ||
+              (required.has(gate) && JSON.stringify(getFrontmatterNestedList(frontmatter, "role_signoffs", gate)) !== JSON.stringify(required.get(gate)))) {
+            throw new Error(`Recovery note gate metadata differs from report (${gate}): ${filePath}`);
+          }
+        }
+        if (getFrontmatterValue(frontmatter, "request_lane") !== adaptiveReport.request_lane ||
+            JSON.stringify(getFrontmatterList(frontmatter, "execution_roles")) !== JSON.stringify(context.executionRoles)) {
+          throw new Error(`Recovery note routing metadata differs from report: ${filePath}`);
+        }
+      }
+    }
+    return { filePath, content, original };
+  });
+}
+
+function validateRecoveredWorkflowNotes({ workflowRoot, projectRoot }) {
+  const errors = [validateWorkflowArtifactNames({ workflowRoot }),
+    validateWorkflowGovernance({ workflowRoot, projectRoot }),
+    validateWorkflowExecution({ workflowRoot }), validateWorkflowPlanning({ workflowRoot })]
+    .flatMap(result => result.errors);
+  if (errors.length) throw new Error(formatErrors(errors));
+}
+
 function runCli() {
   const args = parseCliArgs(process.argv.slice(2));
 
@@ -715,6 +781,8 @@ if (require.main === module) {
 }
 
 module.exports = {
+  prepareMissingWorkflowNotes,
+  validateRecoveredWorkflowNotes,
   scaffoldWorkflowNotes,
   ensureLazyWorkflowNote
 };

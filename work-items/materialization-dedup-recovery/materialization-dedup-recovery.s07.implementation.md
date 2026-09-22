@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: reviewed
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -133,23 +133,81 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> NOT STARTED. This draft was created by full-profile scaffolding; implementation is not open.
+> Implementation complete and reviewed; technical verification recorded in s08. This is not a DoD verdict. The user approved the concrete authoring packet and signed the work-item receipt and five readiness receipts on 2026-09-22. All signatures and host digests were checked before activation at 02:00:56Z. No terminal approval is inferred.
 
 ## Main Artifact
 
 ```yaml
-implemented_changes: []
-doc_changes: ["s01-s06 review packet and draft SRS only"]
-operational_notes: ["Report is MATERIALIZED/PENDING_REVIEW; no production write grant."]
+recommended_design: "Explicit persisted-proposal resume with signed admission checks, missing-only authoring and atomic report replacement"
+implementation_mode: BUGFIX
+tasks_completed: ["T1", "T2", "T3", "T4"]
+bug_repro_evidence:
+  - "T1: READY and signed needs_review resume fail because --request is required; ordinary reruns overwrite both PROPOSED and READY reports. Four intended failures."
+  - "T2: normalizer drops recovery identity and accepts six malformed metadata cases. Seven intended failures."
+hypothesis_log:
+  - {assumption: "Materializer has no continuation path and admits overwrite of unapproved reports", status: CONFIRMED, evidence: "T1 regression cases"}
+  - {assumption: "Recovery identity needs an explicit normalizer field", status: CONFIRMED, evidence: "T2 RED/GREEN"}
+debug_experiments:
+  - {goal: "Prove recovery failure independently of live state", action: "Temporary projects with test-owned signed dispositions", result: "Expected T1 failures; no production trust root used"}
+tdd_evidence:
+  - {behavior: "Resume and default overwrite refusal", failing_test: "/private/tmp/cf-dedup-t1-red.log", passing_test: "/private/tmp/cf-dedup-t3-first.log"}
+  - {behavior: "Recovery metadata validation and preservation", failing_test: "/private/tmp/cf-dedup-t2-red.log", passing_test: "/private/tmp/cf-dedup-t2-green.log"}
+safe_refactor_notes: ["Moved the existing disposition retry verifier unchanged into trusted approval utilities; signer and receipt formats unchanged"]
+code_changes: ["Shared disposition verifier", "Validated recovery metadata", "Resume dispatch, eligibility and atomic report update", "Missing-only authoring preflight"]
+doc_changes: ["Bundle README and EN/VI materialization/protocol references"]
+config_changes: []
+review_checkpoints: ["T1 spec compliance: intended failures match AC-DR-01/02/07", "T2 trust checks preserved; targeted review continues with negative fixtures"]
+outputs_actual: ["Basic legacy/adaptive resume and existing protocol tests pass"]
+known_limitations: ["No live CR-008 mutation or installed-package change; DoD and Business Acceptance remain pending"]
+follow_up_items: ["Keep live CR-008 maintenance and audit reconciliation under their own owners"]
+notes_for_testing: "Run targeted edge cases before the final unit suite and pack audit. No live resume, release, install or cleanup."
 ```
 
 ## Delivery Rule Evidence
 
-No production behavior has changed. TDD and early review will be recorded when s07 is authorized; neither is claimed complete. Workspace: `.claude/worktrees/materialization-dedup-recovery`, branch `fix/materialization-dedup-recovery`. Execution is single-agent. See s06 T1..T5 for the future verification path.
+```yaml
+behavior_change: YES
+tdd_status: DONE
+tdd_test_refs:
+  - "packages/workflow-bundle/test/materialize-work-item.test.js — T1 four RED cases, then GREEN; retry signature/result checks and malformed adaptive preflight also RED then GREEN"
+  - "packages/workflow-bundle/test/work-item-protocol.test.js — recovery metadata seven RED assertions, then GREEN"
+tdd_exception_reason: ""
+tdd_alternative_verify_path: []
+change_risk_profile: LARGE_OR_RISKY
+worktree_status: USED
+worktree_refs:
+  - ".claude/worktrees/materialization-dedup-recovery"
+worktree_reason: "Full profile, multisession public CLI and signed-admission boundary"
+review_status: COMPLETED
+review_refs:
+  - "Implementation Notes: spec compliance, then targeted code-quality review"
+spec_compliance_status: PASS
+code_quality_status: PASS
+delegation_mode: agentic
+independence_status: NOT_APPLICABLE
+independence_refs: []
+merge_path: "Retain dedicated branch pending s08 DoD and Business Acceptance; no merge or cleanup yet"
+verify_path:
+  - "s08 AC-DR-01..08 evidence matrix, full 45-file suite, CLI smoke and validators"
+```
+
+TDD ran before production changes. All fixtures use isolated temporary project and approval roots. The existing production keypair was used only by the human Terminal signing interaction; the agent verifies public signatures.
+
+Workspace is `.claude/worktrees/materialization-dedup-recovery`, branch `fix/materialization-dedup-recovery`. Worktree isolation is REQUIRED for this full-profile, multisession contract repair. The ACTIVE grant lists only T1–T5 files plus the work-item directory and SRS. Execution is single-agent; delegation is not used. Frozen SRS/s04/s05/s06 bytes remain unchanged after signing. Review order is spec compliance, then targeted code quality, before s08.
+
+An execution-context mistake after a new user message briefly placed the two verifier-extraction edits in the root checkout. Their exact diff was checked, moved to this repair worktree, and only those two root files were restored to their known original bytes. Root tracked diff is empty again; no user file was reverted. Subsequent tool calls pin the full worktree path explicitly.
+
+## Implementation Notes
+
+Spec compliance review (first): AC-DR-01..08 map to tests and docs; first materialization and retry remain unapproved with empty grants; original candidate/raw history are retained; signed intent mirrors, producer ownership, snapshot hash, report lock and path checks are explicit. No change to crypto format or live maintenance scope. Verdict PASS for implementation scope.
+
+Targeted code-quality review (second): reused the existing report lock, atomic writer, snapshot comparison, scaffold templates, validators and signature verifier. Recovery is isolated from new-request analysis and does not execute stored shell strings. Review found retry-signature/state revalidation and malformed adaptive input writing notes before rejection; both were reproduced with negative tests and fixed. Note ownership/gate conflicts, concurrent report edits, symlink escape, partial authoring and committed projection retry are covered. Verdict PASS; absent ESLint/Semgrep and lack of performance benchmark are disclosed in s08, not represented as completed scans.
+
+Full verification: `npm run validate:workflow:unit` passed all 45 test files on Node 22.23.2; its pre-step synchronized ignored runtime files. `npm run validate:workflow:pack-audit` passed. Public CLI APPLIED/NOOP smoke passed, and an isolated copy of the real CR-008 proposal reached MATERIALIZED using only test-owned disposition signatures. No source report or production trust root was changed by that smoke.
 
 ## Traceability
 
 ```yaml
 upstream: ["materialization-dedup-recovery.s06.task-breakdown.md"]
-next_step: "Wait for authoring receipts and ACTIVE status"
+next_step: "s08 technical evidence and human closeout review"
 ```
