@@ -84,8 +84,8 @@ workspace_kind: BOTH
 verify_inputs:
   - "Two exact-entry Maintainer signatures, verified against the real trusted public key"
   - "Unchanged parent lifecycle/events and s04-s08; all three terminal receipts remain digest-matched"
-  - "Old worktree clean at 3cce566218fc2106e37ad29cab9806ff5821ce36; 88 behind and zero ahead of main cf866d8"
-  - "462 ignored runtime paths individually match their canonical sources in durable Git history; repeat before removal"
+  - "Fresh preflight at 2026-09-22T14:24:36.214Z: old worktree clean at 3cce566218fc2106e37ad29cab9806ff5821ce36; 97 behind and zero ahead of integrated main 94f510c"
+  - "All 462 ignored runtime paths individually matched canonical source blobs at old head 3cce566, an ancestor of main; per-path attribution repeated immediately before removal"
 finish_gate_checks:
   verify_complete: PASS
   dod_complete: PASS
@@ -108,7 +108,15 @@ merge_conditions:
   - "Required PR CI and durable main integration before local removal"
 residual_risks:
   - "The original candidate's disclosed scanner gaps remain historical evidence; this maintenance adds no production code."
-  - "Until integration, the new signed dispositions exist on the maintenance branch only."
-final_recommendation: MERGE_ALLOWED
-notes_for_closeout: "Maintenance is DONE with a valid QC DoD receipt sealed at 2026-09-22T10:24:48.694Z. The user explicitly approved T6; execute cleanup only after durable integration and fresh attribution. The operational result is recorded in the maintenance s01 handoff. Remote branch deletion remains excluded."
+final_recommendation: CLEANUP_ALLOWED
+cleanup_execution: COMPLETED
+integration: "PR #11 merged as 94f510c586af325afa7827247ad7b03204a665f9 at 2026-09-22T13:54:54Z after ten passing CI checks; root and maintenance checkout fast-forwarded before removal."
+cleanup_completed_at: "2026-09-22T14:24:36.440Z"
+removed:
+  - ".claude/worktrees/cr-008-adaptive-governance, without force"
+  - "Local branch codex/adaptive-governance-human-approval-ux, using git branch -d"
+retained:
+  - "Remote branch and every other worktree"
+  - "All 19 root untracked files, byte-identical; protected branch heads unchanged"
+notes_for_closeout: "Maintenance is DONE with valid QC DoD sealed at 2026-09-22T10:24:48.694Z. Authorized T6 completed after durable integration and fresh attribution. The maintenance s01 owns the detailed execution record. Historical gate hosts, audit register and release evidence remain unchanged."
 ```
