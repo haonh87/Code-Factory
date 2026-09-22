@@ -94,12 +94,12 @@ tags:
 ```text
 Request Lane: maintenance
 Current Step: s08 Verify + DoD
-Workflow Status: WAITING_APPROVAL
+Workflow Status: VERIFIED
 Delivery Context: brownfield
-What I Am Doing Now: Record explicit QC DoD and T6 approval, then seal the trusted DoD receipt.
-Missing Gates: Trusted DoD receipt; QC decision is explicitly approved.
-Next Artifact: Human-approved s08 and trusted DoD receipt, then conditional PR integration and local cleanup.
-Next Human Action: Unlock the existing signing key in a human-controlled Terminal to seal the accepted QC DoD.
+What I Am Doing Now: Integrate the DONE maintenance result and execute the authorized T6 finish checks.
+Missing Gates: NONE
+Next Artifact: PR integration and recorded result of the guarded old-worktree cleanup.
+Next Human Action: NONE
 ```
 
 ## Step Contract
@@ -321,15 +321,21 @@ The user explicitly accepted the Work Item + Task Plan question for commit a00ce
 
 The user explicitly accepted QC DoD and T6 for b457522 / PR #11 after its ten CI checks passed. s08 records the approved verdict and exact conditional integration/cleanup authority. Trusted receipt sealing, protocol close and T6 execution remain pending. This instruction does not authorize removal of any other worktree or remote branch.
 
+## Signed Closeout And T6 Handoff — 2026-09-22
+
+QC DoD receipt was sealed by `qc` at 2026-09-22T10:24:48.694Z. Its signature is valid and its artifact digest matches s08 SHA-256 `ab273cc0559306bcd005f2d870e4e03af9c63529a265b52dc13c29f07e9ad32d`. The DONE gate check returned no errors and the supported CLI closed this work item. The user has explicitly authorized PR integration after required CI and conditional cleanup of only the old CR-008 worktree and its merged local branch. No further human approval is pending for those actions.
+
+At this checkpoint, main integration and the final inventory/removal are still pending. Preserve this maintenance worktree for the operational handoff. Never edit the sealed s08 to append execution progress; this unsealed section owns it.
+
 ## Handoff
 
 Audit checkpoint publication is complete separately: remote `origin/codex/code-factory-holistic-audit-remediation` points to `b4984bcc59ee5e927f1d907a5d42f31c3bf3eea8`. That branch remains an ACTIVE audit with its preserved unique commits; pushing did not merge or finish it.
 
-Global CLI, source bundle and installed Codex/Claude harnesses are 2.6.3. This maintenance changes none of them. Root remains on main. The five root untracked paths, two unmerged branches, protected audit register, archived release, and every pre-existing worktree are retained. Implementation and technical verification are recorded in s07/s08; human QC DoD is approved in s08 and its trusted receipt remains to be sealed. The current protocol state is owned by the CLI block below.
+Global CLI, source bundle and installed Codex/Claude harnesses are 2.6.3. This maintenance changes none of them. Root remains on main. The five root untracked paths, two unmerged branches, protected audit register, archived release, and every pre-existing worktree are retained. Implementation and technical verification are recorded in s07/s08; human QC DoD and its trusted receipt are valid; protocol is DONE. The current protocol state is owned by the CLI block below.
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
@@ -367,11 +373,11 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-09-22T07:36:46.859Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-09-22T09:44:08.172Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-09-22T10:25:37.105Z"
 required_actions:
-  - {"id":"se:028ed6090f00eae052663d7ccd863234a344eaf1a3afd572d542810b8d699edc","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+  - {"id":"se:c72e9777b1a25029153e84ed58dde45ccca0adf24801587833d31b6df97a5cd8","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "User explicitly accepted Work Item and Task Plan a00ce83; recorded at 2026-09-22T07:33:21Z; finalized authoring d51f7f5."
@@ -390,4 +396,5 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```

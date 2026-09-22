@@ -87,13 +87,13 @@ verify_inputs:
   - "Old worktree clean at 3cce566218fc2106e37ad29cab9806ff5821ce36; 88 behind and zero ahead of main cf866d8"
   - "462 ignored runtime paths individually match their canonical sources in durable Git history; repeat before removal"
 finish_gate_checks:
-  verify_complete: PENDING
-  dod_complete: PENDING
+  verify_complete: PASS
+  dod_complete: PASS
   findings_closed: PASS
   exceptions_resolved: PASS
 allowed_actions:
-  - "Verify and review the separately owned maintenance result"
-  - "Retain the old worktree while QC DoD and durable integration remain pending"
+  - "Integrate PR #11 after required CI under the explicit human T6 approval"
+  - "After durable integration and fresh attribution, remove only the old CR-008 worktree and its merged local branch"
 blocked_actions:
   - "Remove the old worktree or branch before maintenance DoD, integration and fresh attribution checks"
   - "Delete remote branches or modify historical gate hosts and release evidence"
@@ -109,6 +109,6 @@ merge_conditions:
 residual_risks:
   - "The original candidate's disclosed scanner gaps remain historical evidence; this maintenance adds no production code."
   - "Until integration, the new signed dispositions exist on the maintenance branch only."
-final_recommendation: HOLD_OPEN
-notes_for_closeout: "F-CR008-ARCH-001 has explicit signed disposition; its cleanup hold now depends on maintenance closeout and durable handoff. Remote branch deletion is excluded by the current approved scope."
+final_recommendation: MERGE_ALLOWED
+notes_for_closeout: "Maintenance is DONE with a valid QC DoD receipt sealed at 2026-09-22T10:24:48.694Z. The user explicitly approved T6; execute cleanup only after durable integration and fresh attribution. The operational result is recorded in the maintenance s01 handoff. Remote branch deletion remains excluded."
 ```

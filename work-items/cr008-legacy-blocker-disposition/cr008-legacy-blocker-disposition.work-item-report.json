@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "maintainer",
   "raw_request_summary": "Record two reviewed legacy blocker dispositions for archived CR-008 and establish removal readiness for its clean merged worktree.",
@@ -81,12 +81,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "id": "se:028ed6090f00eae052663d7ccd863234a344eaf1a3afd572d542810b8d699edc",
+      "id": "se:c72e9777b1a25029153e84ed58dde45ccca0adf24801587833d31b6df97a5cd8",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -105,7 +105,8 @@
     "STEP_OPENED",
     "WORK_ITEM_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -166,6 +167,14 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "AC-01..05 technical evidence and full applicable validators pass; QC DoD decision remains pending."
+    },
+    {
+      "timestamp": "2026-09-22T10:25:37.105Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "QC DoD explicitly approved, trusted signature and current host digest verified; all AC evidence passed. Conditional T6 integration and old-worktree cleanup authorized separately in the same human review."
     }
   ],
   "resolved_state_history": [

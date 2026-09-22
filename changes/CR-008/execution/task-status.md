@@ -87,7 +87,7 @@ verification:
   - "Parent remains ARCHIVED/s08 with zero blockers and required_actions; protocol_events unchanged."
   - "Parent s04-s08 and all three terminal receipt digests remain unchanged and valid."
   - "Report SHA-256 after disposition: 111c425d97214dcf5b8720e931e6b6d32a3269bb93245de795362e51327b9761"
-maintenance_closeout: "PENDING: separate QC DoD and durable integration."
-cleanup_readiness: HOLD_OPEN
-next_action: "Verify AC-01..05 in the maintenance s08, obtain QC DoD, integrate the result and repeat the per-path finish checks before local cleanup."
+maintenance_closeout: "DONE: QC DoD signed 2026-09-22T10:24:48.694Z, signature/digest valid; maintenance protocol closed."
+cleanup_readiness: ALLOWED_AFTER_INTEGRATION_AND_FRESH_CHECKS
+next_action: "Execute authorized T6: integrate PR #11 after required CI, repeat per-path finish checks and remove only the eligible old CR-008 worktree/local branch."
 ```
