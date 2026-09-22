@@ -88,6 +88,9 @@ verification:
   - "Parent s04-s08 and all three terminal receipt digests remain unchanged and valid."
   - "Report SHA-256 after disposition: 111c425d97214dcf5b8720e931e6b6d32a3269bb93245de795362e51327b9761"
 maintenance_closeout: "DONE: QC DoD signed 2026-09-22T10:24:48.694Z, signature/digest valid; maintenance protocol closed."
-cleanup_readiness: ALLOWED_AFTER_INTEGRATION_AND_FRESH_CHECKS
-next_action: "Execute authorized T6: integrate PR #11 after required CI, repeat per-path finish checks and remove only the eligible old CR-008 worktree/local branch."
+cleanup_readiness: COMPLETED
+integration: "PR #11 merged as 94f510c586af325afa7827247ad7b03204a665f9 at 2026-09-22T13:54:54Z after all ten CI checks passed."
+cleanup_completed_at: "2026-09-22T14:24:36.440Z"
+cleanup_result: "Removed only the old CR-008 worktree and merged local branch after rechecking valid DoD, zero unique commits, clean status and canonical ownership of all 462 ignored files. Remote branch and all other worktrees retained; 19 root untracked files byte-preserved."
+next_action: "No remaining CR-008 cleanup action in the authorized T6 scope. The maintenance s01 owns the execution record and its separate lifecycle handoff."
 ```

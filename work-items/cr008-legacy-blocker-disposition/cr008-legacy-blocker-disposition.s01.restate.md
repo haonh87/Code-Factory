@@ -87,7 +87,7 @@ tags:
 # Step 1 - Clarify
 
 > [!summary]
-> Proposed bounded maintenance: preserve and explicitly disposition two obsolete CR-008 blocker entries using the shipped 2.6.3 command, then verify whether its merged worktree can be removed. The maintenance admission has three signed dispositions and is MATERIALIZED; the archived parent and all worktrees remain unchanged.
+> Bounded maintenance is DONE with signed QC DoD. Both obsolete CR-008 blockers were preserved in signed resolved history and integrated through PR #11. Authorized T6 removed the old CR-008 worktree and its merged local branch after fresh attribution; all other worktrees and the five root untracked paths were retained.
 
 ## Router Status
 
@@ -96,9 +96,9 @@ Request Lane: maintenance
 Current Step: s08 Verify + DoD
 Workflow Status: VERIFIED
 Delivery Context: brownfield
-What I Am Doing Now: Integrate the DONE maintenance result and execute the authorized T6 finish checks.
+What I Am Doing Now: Record the completed integration and verified T6 cleanup in this unsealed operational handoff.
 Missing Gates: NONE
-Next Artifact: PR integration and recorded result of the guarded old-worktree cleanup.
+Next Artifact: Durable integration of this T6 execution record.
 Next Human Action: NONE
 ```
 
@@ -137,8 +137,7 @@ prohibited_actions:
   - "Hand-edit protocol control fields to bypass admission, approval, or disposition."
   - "Rewrite historical s04-s08 gate hosts or reopen the 2.6.3 release."
   - "Edit the protected holistic finding register or dispose CF findings outside M4."
-open_governance_questions:
-  - "No technical admission question remains; the required authoring approvals are still pending."
+open_governance_questions: []
 ```
 
 ## Artifact Chính
@@ -242,7 +241,7 @@ The [Spec Card](../../product-specs/cards/cr008-legacy-blocker-disposition.md) o
 
 No grant or implementation permission is issued by these drafts. Work-item approval and Task Plan pass require explicit human decisions and trusted receipts. Parent signing remains through a human-controlled TTY; a source-code blocker would require a separate repair owner.
 
-## Audit
+## Audit — Initial Proposal
 
 ```yaml
 finish_target: "codex/adaptive-governance-human-approval-ux"
@@ -275,9 +274,8 @@ notes_for_closeout: "PASS entries describe the existing archived CR-008 delivery
 open_questions: []
 resolved_questions:
   - "OQ-01: integrated PR #10 supplied supported recovery, executed after all three admission signatures verified."
-missing_inputs:
-  - "Explicit work-item and Task Plan approval for the complete s04/s06 packet"
-  - "Human-controlled Maintainer signatures for both parent dispositions after ACTIVE"
+  - "Work-item and Task Plan approvals were signed before ACTIVE; both parent dispositions and QC DoD were subsequently signed and verified."
+missing_inputs: []
 conflicts: []
 ```
 
@@ -325,13 +323,19 @@ The user explicitly accepted QC DoD and T6 for b457522 / PR #11 after its ten CI
 
 QC DoD receipt was sealed by `qc` at 2026-09-22T10:24:48.694Z. Its signature is valid and its artifact digest matches s08 SHA-256 `ab273cc0559306bcd005f2d870e4e03af9c63529a265b52dc13c29f07e9ad32d`. The DONE gate check returned no errors and the supported CLI closed this work item. The user has explicitly authorized PR integration after required CI and conditional cleanup of only the old CR-008 worktree and its merged local branch. No further human approval is pending for those actions.
 
-At this checkpoint, main integration and the final inventory/removal are still pending. Preserve this maintenance worktree for the operational handoff. Never edit the sealed s08 to append execution progress; this unsealed section owns it.
+[PR #11](https://github.com/haonh87/Code-Factory/pull/11) merged as `94f510c586af325afa7827247ad7b03204a665f9` at 2026-09-22T13:54:54Z. Its final head `7404d9c7a118746a4b3556efe33fdcb26fd7fd48` passed all ten CI checks in [run 35716810803](https://github.com/haonh87/Code-Factory/actions/runs/35716810803), including Node 18 and Node 22. Root main and this maintenance checkout were fast-forwarded to that merge before cleanup.
+
+Fresh T6 preflight ran at 2026-09-22T14:24:36.214Z. The old branch head `3cce566218fc2106e37ad29cab9806ff5821ce36` was 97 commits behind and zero ahead of integrated main, with a clean worktree. All 462 ignored runtime files were compared individually, byte-for-byte, with their canonical Git blobs at that old head, itself an ancestor of main. Attribution maps `packages/workflow-bundle/runtime/{codex,claude}/<suffix>` to `<suffix>` at that commit, with `AGENTS.global.md` mapped to `policies/codex/AGENTS.global.md`. No unattributed or unique file remained. The maintenance DONE state, trusted QC signature and sealed s08 digest were revalidated from integrated main before removal.
+
+Cleanup completed at 2026-09-22T14:24:36.440Z: `git worktree remove` removed only `.claude/worktrees/cr-008-adaptive-governance` without force, then `git branch -d` removed only `codex/adaptive-governance-human-approval-ux`. The remote branch was retained. All 19 files in the five root untracked paths remained byte-identical across integration and removal. The protected branch heads remained `backup/local-main-2026-09-16` at `1277f2382eb6b571617fcd8fa813f65adef0f2e5`, `evals/behaviour-axis` at `64833b48021884da55f47e13957eab35799332de`, and the ACTIVE audit branch at `b4984bcc59ee5e927f1d907a5d42f31c3bf3eea8`.
+
+T6 execution is complete. This maintenance worktree remains for the operational handoff; no other worktree was removed. Sealed s08 is unchanged; this unsealed section owns the post-DoD execution record.
 
 ## Handoff
 
 Audit checkpoint publication is complete separately: remote `origin/codex/code-factory-holistic-audit-remediation` points to `b4984bcc59ee5e927f1d907a5d42f31c3bf3eea8`. That branch remains an ACTIVE audit with its preserved unique commits; pushing did not merge or finish it.
 
-Global CLI, source bundle and installed Codex/Claude harnesses are 2.6.3. This maintenance changes none of them. Root remains on main. The five root untracked paths, two unmerged branches, protected audit register, archived release, and every pre-existing worktree are retained. Implementation and technical verification are recorded in s07/s08; human QC DoD and its trusted receipt are valid; protocol is DONE. The current protocol state is owned by the CLI block below.
+Global CLI, source bundle and installed Codex/Claude harnesses are 2.6.3. This maintenance changes none of them. Root remains on main. The five root untracked paths, two unmerged branches, protected audit register, archived release, and all worktrees except the explicitly approved old CR-008 target are retained. Implementation and technical verification are recorded in s07/s08; human QC DoD and its trusted receipt are valid; protocol is DONE. The current protocol state, including its standard archive-lifecycle follow-up, is owned by the CLI block below.
 
 ## Work Item Protocol
 ```yaml
