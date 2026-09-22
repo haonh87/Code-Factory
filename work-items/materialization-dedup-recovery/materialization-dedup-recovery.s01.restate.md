@@ -130,7 +130,7 @@ tags:
 # Step 1 - Clarify
 
 > [!summary]
-> Fix the missing continuation from a persisted admission proposal to authoring. This work item owns the runtime repair, not the live CR-008 dispositions or cleanup. User accepted opening this repair scope on 2026-09-21; production implementation remains gated.
+> Fix the missing continuation from a persisted admission proposal to authoring. This work item owns the runtime repair, not the live CR-008 dispositions or cleanup. User accepted opening this repair scope on 2026-09-21. Implementation and human closeout are complete; the protocol record below is DONE. Integration remains pending.
 
 ## Router Status
 
@@ -138,9 +138,9 @@ tags:
 Current Step: s08 Verify + DoD
 Workflow Status: VERIFIED
 Delivery Context: brownfield
-What I Am Doing Now: Both terminal receipts are verified; record the guarded protocol close.
+What I Am Doing Now: The bounded repair is DONE; retain its branch for integration.
 Missing Gates: NONE
-Next Artifact: DONE protocol event and integration handoff.
+Next Artifact: Separately authorized integration handoff; no remaining gate for this repair.
 Next Human Action: NONE
 ```
 
@@ -241,7 +241,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
@@ -298,12 +298,11 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-09-22T01:54:22.214Z"
-handoff_target: "protocol-close"
-last_transition_action: "approve-closeout-bundle"
-last_transition_at: "2026-09-22T02:41:58.322Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-09-22T02:47:02.685Z"
 required_actions:
-  - {"id":"se:6d1f92ed070ccb33bbd3320f8c0c816056b753f4b3ce481a92c2505133474779","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
-  - {"id":"se:a3ae84b74efd60895a789b46d49a9931ea343e0a5a096980e760dd0089b6f751","kind":"work_item_close","text":"wfc work-item close --work-item materialization-dedup-recovery"}
+  - {"id":"se:4ce0d2055aaaa07e6412b5d29fd94064ed2e50eda52519e454a8ba91f33a5903","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "User accepted the concrete repair scope and authoring packet; observed 2026-09-22T01:44:34Z."
@@ -321,6 +320,7 @@ audit_events:
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
   - "CLOSEOUT_BUNDLE_APPROVED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Traceability
@@ -345,3 +345,11 @@ next_step: "s02 Business Goal (draft review packet)"
 ## Handoff
 
 The user explicitly accepted the presented Spec/Contract/DoR, Approach and Task Plan packet; observed at 2026-09-22T01:44:34Z. s04-s06 and SRS are finalized. The CLI-owned report remains pending until the work-item signature is recorded; authoring receipts and ACTIVE scope are still required.
+
+## Closeout Evidence — 2026-09-22
+
+The user explicitly accepted QC DoD and PO Business Acceptance for implementation commit `5256886`. Finalized s08 was committed in `7d8ba12`; the human signed the two independent receipts through the closeout bundle at `2026-09-22T02:41:58.322Z`, transaction `11d27e89-3471-4ab9-89e2-25cb8fd8cb88`. Both signatures and the s08 digest were verified before closing. No agent fixture signing or production credential handling was used.
+
+Receipt reconciliation was committed in `edf1950` before `wfc work-item close`; the guarded close succeeded with protocol status DONE and no uncommitted-delivery waiver. The sealed s08 and original authoring hosts remain unchanged. Source behavior was already verified by the 45-file unit suite and isolated CR-008 proposal smoke; this closeout changed only workflow evidence.
+
+Retain the branch/worktree: integration into main is pending and unique commits must not be removed. The standard archive followup remains pending downstream integration. No main merge, release, installation, live CR-008 disposition or cleanup was performed. The global WFC installation remains 2.6.3. The master audit remains ACTIVE/s07 and its M2–M4 work is not closed by this repair. All 33 preservation-manifest paths remain byte-identical.

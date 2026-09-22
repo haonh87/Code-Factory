@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "maintainer",
   "raw_request_summary": "Repair reviewed dedup admission progression.",
@@ -75,17 +75,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "protocol-close",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "id": "se:6d1f92ed070ccb33bbd3320f8c0c816056b753f4b3ce481a92c2505133474779",
+      "id": "se:4ce0d2055aaaa07e6412b5d29fd94064ed2e50eda52519e454a8ba91f33a5903",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
-    },
-    {
-      "id": "se:a3ae84b74efd60895a789b46d49a9931ea343e0a5a096980e760dd0089b6f751",
-      "kind": "work_item_close",
-      "text": "wfc work-item close --work-item materialization-dedup-recovery"
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -103,7 +98,8 @@
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
     "VERIFICATION_CONFIRMED",
-    "CLOSEOUT_BUNDLE_APPROVED"
+    "CLOSEOUT_BUNDLE_APPROVED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -190,6 +186,14 @@
       "to_status": "VERIFIED",
       "note": "APPROVED closeout gates: dod, business_acceptance",
       "transaction_id": "11d27e89-3471-4ab9-89e2-25cb8fd8cb88"
+    },
+    {
+      "timestamp": "2026-09-22T02:47:02.685Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "User approved DoD and Business Acceptance; both terminal receipts signed at 2026-09-22T02:41:58.322Z and verified against finalized s08. Close repair only; retain branch/worktree for separate integration."
     }
   ],
   "artifact_shape": "adaptive_v1",
