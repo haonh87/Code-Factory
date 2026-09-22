@@ -93,13 +93,13 @@ tags:
 
 ```text
 Request Lane: maintenance
-Current Step: s06 Task Plan
+Current Step: s08 Verify + DoD
 Workflow Status: WAITING_APPROVAL
 Delivery Context: brownfield
-What I Am Doing Now: Record explicit authoring approval and prepare trusted work-item/task_plan sealing.
-Missing Gates: Trusted work-item and developer task_plan receipts. Human decisions are explicit; QC DoD remains a later closeout gate.
-Next Artifact: Approved authoring hosts and trusted readiness receipts; then exact-scope activation.
-Next Human Action: Seal the accepted work-item and task_plan receipts using the existing key in a human-controlled terminal.
+What I Am Doing Now: Present the verified two-disposition result and conditional finish decision for QC review.
+Missing Gates: QC DoD decision and trusted receipt.
+Next Artifact: Human-approved s08 and trusted DoD receipt, then conditional PR integration and local cleanup.
+Next Human Action: QC reviews AC-01..05 evidence, explicitly decides DoD and seals its receipt.
 ```
 
 ## Step Contract
@@ -321,12 +321,12 @@ The user explicitly accepted the Work Item + Task Plan question for commit a00ce
 
 Audit checkpoint publication is complete separately: remote `origin/codex/code-factory-holistic-audit-remediation` points to `b4984bcc59ee5e927f1d907a5d42f31c3bf3eea8`. That branch remains an ACTIVE audit with its preserved unique commits; pushing did not merge or finish it.
 
-Global CLI, source bundle and installed Codex/Claude harnesses are 2.6.3. This proposal changes none of them. Root remains on main. The five root untracked paths, two unmerged branches, protected audit register, archived release, and every pre-existing worktree are retained. This maintenance item is not ACTIVE or DONE.
+Global CLI, source bundle and installed Codex/Claude harnesses are 2.6.3. This maintenance changes none of them. Root remains on main. The five root untracked paths, two unmerged branches, protected audit register, archived release, and every pre-existing worktree are retained. Implementation and technical verification are recorded in s07/s08; human QC DoD remains pending. The current protocol state is owned by the CLI block below.
 
 ## Work Item Protocol
 ```yaml
-protocol_status: MATERIALIZED
-approval_status: PENDING_REVIEW
+protocol_status: ACTIVE
+approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
 request_lane: maintenance
@@ -344,8 +344,14 @@ work_item_slug: "cr008-legacy-blocker-disposition"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr008-legacy-blocker-disposition/work-items/cr008-legacy-blocker-disposition"
-current_step: "s01"
-granted_write_paths: []
+current_step: "s07"
+granted_write_paths:
+  - "work-items/cr008-legacy-blocker-disposition"
+  - "product-specs/cards/cr008-legacy-blocker-disposition.md"
+  - "work-items/adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.work-item-report.json"
+  - "work-items/adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.s01.restate.md"
+  - "changes/CR-008/execution/task-status.md"
+  - "changes/CR-008/archive-metadata.md"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -354,18 +360,17 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: ""
-reviewed_by: ""
-reviewed_at: ""
-handoff_target: "human-review"
-last_transition_action: "materialize"
-last_transition_at: "2026-09-22T07:23:32.354Z"
+protocol_owner: "maintainer"
+reviewed_by: "maintainer"
+reviewed_at: "2026-09-22T07:36:46.859Z"
+handoff_target: "step-s07-owner"
+last_transition_action: "activate"
+last_transition_at: "2026-09-22T08:33:50.844Z"
 required_actions:
-  - {"id":"se:bbe49e85f96cec9dc377cac422ed9f1676d8acbdb1d21bff33e88f12696b0717","kind":"workflow_followup","text":"wfc work-item approve --work-item cr008-legacy-blocker-disposition --reviewed-by <role>"}
-  - {"id":"se:f748d4e1b5dc816200464ffd6da2aac310c6eb39839b967ee2aafe85eb59ab47","kind":"gate_approval","text":"wfc gate approve --work-item cr008-legacy-blocker-disposition --gate task_plan --reviewed-by developer","gate":"task_plan"}
-  - {"id":"se:3a6ed2bdfd961ca0dfa340ea0b65f4fe9e0cacb25bc4f2aaa9441a10c009cb71","kind":"work_item_activation","text":"wfc work-item activate --work-item cr008-legacy-blocker-disposition --step s07 --write-root <path>"}
+  - {"id":"se:010693fa73462794f4edce57a248baab42d8cb1bcc0eb9e94cdfe73ff68a7f7b","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
 blockers: []
-review_notes: []
+review_notes:
+  - "User explicitly accepted Work Item and Task Plan a00ce83; recorded at 2026-09-22T07:33:21Z; finalized authoring d51f7f5."
 refs:
   - "work-items/closeout-bundle-legacy-dod-compatibility"
   - "work-items/terminal-archive-legacy-state-reconciliation"
@@ -378,4 +383,6 @@ audit_events:
   - "DEDUP_CONFIRMED"
   - "WORKFLOW_SCAFFOLDED"
   - "STEP_OPENED"
+  - "WORK_ITEM_APPROVED"
+  - "WORK_ITEM_ACTIVATED"
 ```

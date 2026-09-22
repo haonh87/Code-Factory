@@ -1,8 +1,8 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "MATERIALIZED",
+  "protocol_status": "ACTIVE",
   "decision_owner": "agent",
-  "protocol_owner": "",
+  "protocol_owner": "maintainer",
   "raw_request_summary": "Record two reviewed legacy blocker dispositions for archived CR-008 and establish removal readiness for its clean merged worktree.",
   "request_source": "user-chat",
   "candidate_count": 1,
@@ -69,32 +69,24 @@
   "work_item_slug": "cr008-legacy-blocker-disposition",
   "work_item_type": "CHANGE",
   "delivery_context": "brownfield",
-  "selected_profile": "sdd-light",
-  "sdd_mode": "light",
-  "sdd_preset": "light",
-  "sdd_light_profile": "preview",
-  "sdd_reasons": [],
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/cr008-legacy-blocker-disposition/work-items/cr008-legacy-blocker-disposition",
-  "current_step": "s01",
+  "current_step": "s07",
+  "granted_write_paths": [
+    "work-items/cr008-legacy-blocker-disposition",
+    "product-specs/cards/cr008-legacy-blocker-disposition.md",
+    "work-items/adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.work-item-report.json",
+    "work-items/adaptive-governance-human-approval-ux/adaptive-governance-human-approval-ux.s01.restate.md",
+    "changes/CR-008/execution/task-status.md",
+    "changes/CR-008/archive-metadata.md"
+  ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "human-review",
+  "handoff_target": "step-s07-owner",
   "required_actions": [
     {
-      "id": "se:bbe49e85f96cec9dc377cac422ed9f1676d8acbdb1d21bff33e88f12696b0717",
+      "id": "se:010693fa73462794f4edce57a248baab42d8cb1bcc0eb9e94cdfe73ff68a7f7b",
       "kind": "workflow_followup",
-      "text": "wfc work-item approve --work-item cr008-legacy-blocker-disposition --reviewed-by <role>"
-    },
-    {
-      "id": "se:f748d4e1b5dc816200464ffd6da2aac310c6eb39839b967ee2aafe85eb59ab47",
-      "kind": "gate_approval",
-      "text": "wfc gate approve --work-item cr008-legacy-blocker-disposition --gate task_plan --reviewed-by developer",
-      "gate": "task_plan"
-    },
-    {
-      "id": "se:3a6ed2bdfd961ca0dfa340ea0b65f4fe9e0cacb25bc4f2aaa9441a10c009cb71",
-      "kind": "work_item_activation",
-      "text": "wfc work-item activate --work-item cr008-legacy-blocker-disposition --step s07 --write-root <path>"
+      "text": "Continue active execution from step 7 onward."
     }
   ],
   "blockers": [],
@@ -110,17 +102,21 @@
     "SLUG_LOCKED",
     "DEDUP_CONFIRMED",
     "WORKFLOW_SCAFFOLDED",
-    "STEP_OPENED"
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "WORK_ITEM_ACTIVATED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-09-22T07:36:46.859Z",
+  "review_notes": [
+    "User explicitly accepted Work Item and Task Plan a00ce83; recorded at 2026-09-22T07:33:21Z; finalized authoring d51f7f5."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
   "bootstrap_reviewed_by": "",
   "bootstrap_reviewed_at": "",
-  "review_required": true,
-  "approval_status": "PENDING_REVIEW",
-  "reviewed_by": "",
-  "reviewed_at": "",
-  "review_notes": [],
   "protocol_events": [
     {
       "timestamp": "2026-09-21T13:10:10.810Z",
@@ -145,59 +141,24 @@
       "from_status": "READY_TO_MATERIALIZE",
       "to_status": "MATERIALIZED",
       "note": "Resumed proposal operation ec6bcd8d-7f21-4c2e-8818-e78b56e5c116."
-    }
-  ],
-  "artifact_shape": "adaptive_v1",
-  "request_lane": "maintenance",
-  "requested_lane": "maintenance",
-  "workflow_required": true,
-  "routing_reasons": [
-    "LANE_MAINTENANCE"
-  ],
-  "escalation_reasons": [],
-  "roles": [
-    {
-      "role": "developer",
-      "reasons": [
-        "ROLE_DEVELOPER_BOUNDED_CHANGE"
-      ]
     },
     {
-      "role": "qc",
-      "reasons": [
-        "ROLE_QC_DOD_VERIFICATION"
-      ]
-    }
-  ],
-  "gates": [
-    {
-      "gate": "task_plan",
-      "reasons": [
-        "GATE_TASK_PLAN_BOUNDED_CHANGE"
-      ],
-      "reviewer_roles": [
-        "developer"
-      ]
+      "timestamp": "2026-09-22T07:36:46.859Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "User explicitly accepted Work Item and Task Plan a00ce83; recorded at 2026-09-22T07:33:21Z; finalized authoring d51f7f5."
     },
     {
-      "gate": "dod",
-      "reasons": [
-        "GATE_DOD_TECHNICAL_CLOSEOUT"
-      ],
-      "reviewer_roles": [
-        "qc"
-      ]
+      "timestamp": "2026-09-22T08:33:50.844Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Explicit user approval recorded at 2026-09-22T07:33:21Z; trusted work-item and task_plan signatures verified; activate only six approved maintenance paths."
     }
   ],
-  "human_override": null,
-  "adaptive_activation": {
-    "source_version": "2.6.3",
-    "installed_versions": [
-      "2.6.3",
-      "2.6.3"
-    ],
-    "parity_passed": true
-  },
   "resolved_state_history": [
     {
       "operation_id": "492ae3ce-16a2-4111-ab8d-5c0921c68d85",
@@ -305,7 +266,6 @@
       }
     }
   ],
-  "granted_write_paths": [],
   "materialization_recovery": {
     "schema_version": 1,
     "operation_id": "ec6bcd8d-7f21-4c2e-8818-e78b56e5c116",
@@ -317,5 +277,55 @@
       "5eba384e-ab6f-4c60-af58-45a5e63213e6"
     ],
     "completed_at": "2026-09-22T07:23:32.354Z"
+  },
+  "artifact_shape": "adaptive_v1",
+  "request_lane": "maintenance",
+  "workflow_required": true,
+  "routing_reasons": [
+    "LANE_MAINTENANCE"
+  ],
+  "escalation_reasons": [],
+  "roles": [
+    {
+      "role": "developer",
+      "reasons": [
+        "ROLE_DEVELOPER_BOUNDED_CHANGE"
+      ]
+    },
+    {
+      "role": "qc",
+      "reasons": [
+        "ROLE_QC_DOD_VERIFICATION"
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "gate": "task_plan",
+      "reasons": [
+        "GATE_TASK_PLAN_BOUNDED_CHANGE"
+      ],
+      "reviewer_roles": [
+        "developer"
+      ]
+    },
+    {
+      "gate": "dod",
+      "reasons": [
+        "GATE_DOD_TECHNICAL_CLOSEOUT"
+      ],
+      "reviewer_roles": [
+        "qc"
+      ]
+    }
+  ],
+  "human_override": null,
+  "adaptive_activation": {
+    "source_version": "2.6.3",
+    "installed_versions": [
+      "2.6.3",
+      "2.6.3"
+    ],
+    "parity_passed": true
   }
 }
