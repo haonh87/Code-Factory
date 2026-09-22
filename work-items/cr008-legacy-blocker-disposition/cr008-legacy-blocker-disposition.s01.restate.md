@@ -96,10 +96,10 @@ Request Lane: maintenance
 Current Step: s08 Verify + DoD
 Workflow Status: WAITING_APPROVAL
 Delivery Context: brownfield
-What I Am Doing Now: Present the verified two-disposition result and conditional finish decision for QC review.
-Missing Gates: QC DoD decision and trusted receipt.
+What I Am Doing Now: Record explicit QC DoD and T6 approval, then seal the trusted DoD receipt.
+Missing Gates: Trusted DoD receipt; QC decision is explicitly approved.
 Next Artifact: Human-approved s08 and trusted DoD receipt, then conditional PR integration and local cleanup.
-Next Human Action: QC reviews AC-01..05 evidence, explicitly decides DoD and seals its receipt.
+Next Human Action: Unlock the existing signing key in a human-controlled Terminal to seal the accepted QC DoD.
 ```
 
 ## Step Contract
@@ -317,11 +317,15 @@ test_refs:
 
 The user explicitly accepted the Work Item + Task Plan question for commit a00ce83. s04/s06 and the Spec Card now record that reviewed baseline; s06 owns the human Task Plan decision. Work-item and Task Plan receipts remain to be sealed. No other gate is inferred from this approval, and parent CR-008 writes remain locked until ACTIVE.
 
+## QC Closeout Approval — 2026-09-22T10:17:32Z
+
+The user explicitly accepted QC DoD and T6 for b457522 / PR #11 after its ten CI checks passed. s08 records the approved verdict and exact conditional integration/cleanup authority. Trusted receipt sealing, protocol close and T6 execution remain pending. This instruction does not authorize removal of any other worktree or remote branch.
+
 ## Handoff
 
 Audit checkpoint publication is complete separately: remote `origin/codex/code-factory-holistic-audit-remediation` points to `b4984bcc59ee5e927f1d907a5d42f31c3bf3eea8`. That branch remains an ACTIVE audit with its preserved unique commits; pushing did not merge or finish it.
 
-Global CLI, source bundle and installed Codex/Claude harnesses are 2.6.3. This maintenance changes none of them. Root remains on main. The five root untracked paths, two unmerged branches, protected audit register, archived release, and every pre-existing worktree are retained. Implementation and technical verification are recorded in s07/s08; human QC DoD remains pending. The current protocol state is owned by the CLI block below.
+Global CLI, source bundle and installed Codex/Claude harnesses are 2.6.3. This maintenance changes none of them. Root remains on main. The five root untracked paths, two unmerged branches, protected audit register, archived release, and every pre-existing worktree are retained. Implementation and technical verification are recorded in s07/s08; human QC DoD is approved in s08 and its trusted receipt remains to be sealed. The current protocol state is owned by the CLI block below.
 
 ## Work Item Protocol
 ```yaml

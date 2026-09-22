@@ -90,7 +90,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> T1-T4 implementation evidence is complete: two exact entries have signed dispositions, metadata has a dated reconciliation, and early review passed. QC DoD and post-DoD integration/cleanup remain pending.
+> T1-T4 implementation evidence is complete: two exact entries have signed dispositions, metadata has a dated reconciliation, and early review passed. The QC decision is owned by s08; the operational T6 handoff is owned by s01.
 
 ## Step Contract
 
@@ -126,7 +126,7 @@ review_checkpoints:
   - "T1 spec compliance PASS: only six approved paths are granted; parent remains unchanged."
   - "T1 artifact quality PASS: backups and hashes are reproducible; no decision relies on old validators."
 outputs_actual: ["Fresh 14-path snapshot and 462-entry ownership inventory", "Two exact-entry signed parent dispositions", "Parent ARCHIVED/s08 with zero pending entries", "Dated finding and conditional finish evidence", "s08 verification packet"]
-known_limitations: ["QC DoD and durable integration remain pending; cleanup is held until a fresh final inventory."]
+known_limitations: ["Cleanup requires valid closeout authority, durable integration and a fresh final inventory; current progress is owned by s01/s08."]
 follow_up_items: ["T5: QC DoD review and sealing", "T6: conditional durable integration and eligible local cleanup"]
 notes_for_testing: "Use V1-V5 in the sealed s06; retain original snapshots and compare signed history, state, gate hosts and scope."
 ```

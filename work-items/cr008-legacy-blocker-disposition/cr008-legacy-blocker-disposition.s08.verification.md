@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: verified
 governance_ref: "project-context/project-context.md"
 governance_profile: default
 governance_status: ALIGNED
@@ -69,8 +69,8 @@ role_signoffs:
 gate_reviews:
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-09-22T10:17:32Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -90,7 +90,13 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Technical evidence supports all five maintenance criteria. Human QC DoD is pending; no cleanup or integration is inferred from this verification draft.
+> The human QC reviewer approved DoD for all five maintenance criteria and explicitly authorized conditional T6 integration/cleanup. Trusted DoD sealing and the operational finish checks remain separate prerequisites.
+
+## Human Closeout Decision
+
+The repository owner explicitly answered `accept` to the QC DoD + T6 review for commit `b457522c0e6b717b3c0eeb38cd22259e20e0b75f` in [PR #11](https://github.com/haonh87/Code-Factory/pull/11). This decision was recorded at 2026-09-22T10:17:32Z (observation time). QC accepts AC-01..05 evidence, justified check applicability, preserved historical scanner limitations, and the conditional cleanup interpretation of AC-05. The same answer explicitly authorizes PR integration after required CI and removal of only the eligible old CR-008 worktree and its merged local branch after fresh attribution checks. Remote branch deletion and unrelated workspaces remain excluded.
+
+Hosted [Workflow Guardrails run 35714350613](https://github.com/haonh87/Code-Factory/actions/runs/35714350613) passed all ten jobs for that reviewed source, including packaged candidate checks on Node 18 and Node 22. Any pushed closeout update must pass its own required CI before merge. The human decision is now recorded; the trusted DoD receipt still must be sealed against this finalized host and verified before protocol DONE or branch finalization. Current operational progress is owned by the unsealed s01 handoff and dated CR-008 finish metadata.
 
 ## Step Contract
 
@@ -162,9 +168,9 @@ checks:
   - "PASS: each parent entry has its own human-controlled Maintainer signature."
   - "PASS: early spec compliance precedes artifact-quality review; no delegation or source-code scope expansion."
   - "PASS: protected release/gate evidence and unrelated paths are retained."
-blocking_items: ["QC DoD decision and trusted receipt pending"]
+blocking_items: ["Trusted DoD receipt sealing remains pending after explicit QC approval."]
 owner: qc
-next_action: "Review this concrete evidence, explicitly decide DoD, then seal its trusted receipt; operational integration/cleanup remains conditional."
+next_action: "Seal the approved DoD receipt in a human-controlled TTY, verify its digest and close protocol; execute only the authorized conditional T6 sequence."
 ```
 
 ## Regression & Compatibility Summary
@@ -205,7 +211,7 @@ summary: {total: 5, pass: 5, fail: 0, partial: 0}
 
 ```yaml
 work_item_slug: cr008-legacy-blocker-disposition
-status: BLOCKED
+status: DONE
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -213,12 +219,12 @@ checks:
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps: ["QC human decision and trusted DoD receipt are pending."]
+gaps: []
 residual_risks:
   - "The old-worktree inventory must be repeated immediately before removal."
   - "Until integration, the signed maintenance result is not yet durable on main."
 follow_up_items: ["T6 conditional PR integration and local cleanup after QC DoD"]
-next_action: "QC reviews the evidence and explicitly decides DoD; do not self-declare DONE."
+next_action: "Seal and verify the explicitly approved DoD; only then may the CLI close this work item and the authorized T6 handoff proceed."
 ```
 
 ## Audit
@@ -229,11 +235,11 @@ workspace_kind: BOTH
 verify_inputs: ["V1-V5", "s07 two-tier review", "Signed exact-entry history"]
 finish_gate_checks:
   verify_complete: PASS
-  dod_complete: PENDING
+  dod_complete: PASS
   findings_closed: PASS
   exceptions_resolved: PASS
-allowed_actions: ["Commit verification evidence", "Request QC DoD review"]
-blocked_actions: ["Merge or clean up before QC DoD", "Delete any remote branch or unrelated workspace"]
+allowed_actions: ["Commit human-approved closeout evidence", "Seal the trusted QC DoD receipt"]
+blocked_actions: ["Merge before the approved DoD receipt is verified and required CI passes", "Clean up before durable integration and fresh attribution", "Delete any remote branch or unrelated workspace"]
 cleanup_sequence:
   - "Seal and verify maintenance QC DoD; close protocol with no remaining blockers."
   - "Integrate the maintenance branch through an authorized PR with required CI passing."
@@ -243,7 +249,7 @@ cleanup_sequence:
 merge_conditions: ["QC DoD receipt", "Human integration authority", "Required CI pass"]
 residual_risks: ["A changed, unique or unattributed file requires HOLD_OPEN and preservation."]
 final_recommendation: HOLD_OPEN
-notes_for_closeout: "This work item establishes removal readiness; actual removal is a guarded post-DoD operation under T6."
+notes_for_closeout: "QC approved delivery DoD and conditional T6. At host finalization, receipt sealing and durable integration remain pending, so this snapshot retains HOLD_OPEN. A subsequent unsealed operational finish decision may open T6 only after those prerequisites are verified; never rewrite this sealed host."
 ```
 
 ## SDD Traceability
