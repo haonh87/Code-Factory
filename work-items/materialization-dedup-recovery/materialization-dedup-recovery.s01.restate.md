@@ -130,7 +130,7 @@ tags:
 # Step 1 - Clarify
 
 > [!summary]
-> Fix the missing continuation from a persisted admission proposal to authoring. This work item owns the runtime repair, not the live CR-008 dispositions or cleanup. User accepted opening this repair scope on 2026-09-21. Implementation and human closeout are complete; the protocol record below is DONE. Integration remains pending.
+> The bounded admission-recovery repair is integrated through PR #10 and ARCHIVED. Implementation, human closeout and the downstream CR-008 handoff are complete. The user has now authorized cleanup of this repair's local worktree after durable archive integration and fresh preservation checks.
 
 ## Router Status
 
@@ -138,9 +138,9 @@ tags:
 Current Step: s08 Verify + DoD
 Workflow Status: VERIFIED
 Delivery Context: brownfield
-What I Am Doing Now: The bounded repair is DONE; retain its branch for integration.
+What I Am Doing Now: Integrate the archive record and finish the authorized local worktree cleanup.
 Missing Gates: NONE
-Next Artifact: Separately authorized integration handoff; no remaining gate for this repair.
+Next Artifact: Durable archive record and guarded local cleanup.
 Next Human Action: NONE
 ```
 
@@ -241,7 +241,7 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: DONE
+protocol_status: ARCHIVED
 approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
@@ -298,11 +298,10 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-09-22T01:54:22.214Z"
-handoff_target: "archive-lifecycle"
-last_transition_action: "close"
-last_transition_at: "2026-09-22T02:47:02.685Z"
-required_actions:
-  - {"id":"se:4ce0d2055aaaa07e6412b5d29fd94064ed2e50eda52519e454a8ba91f33a5903","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
+handoff_target: "none"
+last_transition_action: "archive"
+last_transition_at: "2026-09-23T02:54:01.795Z"
+required_actions: []
 blockers: []
 review_notes:
   - "User accepted the concrete repair scope and authoring packet; observed 2026-09-22T01:44:34Z."
@@ -321,6 +320,7 @@ audit_events:
   - "VERIFICATION_CONFIRMED"
   - "CLOSEOUT_BUNDLE_APPROVED"
   - "DONE_CONFIRMED"
+  - "ARCHIVE_CONFIRMED"
 ```
 
 ## Traceability
@@ -353,3 +353,38 @@ The user explicitly accepted QC DoD and PO Business Acceptance for implementatio
 Receipt reconciliation was committed in `edf1950` before `wfc work-item close`; the guarded close succeeded with protocol status DONE and no uncommitted-delivery waiver. The sealed s08 and original authoring hosts remain unchanged. Source behavior was already verified by the 45-file unit suite and isolated CR-008 proposal smoke; this closeout changed only workflow evidence.
 
 Retain the branch/worktree: integration into main is pending and unique commits must not be removed. The standard archive followup remains pending downstream integration. No main merge, release, installation, live CR-008 disposition or cleanup was performed. The global WFC installation remains 2.6.3. The master audit remains ACTIVE/s07 and its M2–M4 work is not closed by this repair. All 33 preservation-manifest paths remain byte-identical.
+
+## Archive And Local Finish Handoff — 2026-09-23
+
+The user explicitly requested completion of proposals 1 and 2: finish archive/handoff and remove the two DONE worktrees, then continue the separately owned master audit M2/M3. This section owns only `materialization-dedup-recovery` archive and local cleanup. PR #10 merged as cf866d82077a13d77e63fe63548a8800a378ced3; the downstream CR-008 maintenance and T6 record are integrated through PR #11 and PR #12. The supported CLI archived this item at `2026-09-23T02:54:01.795Z` with no blockers or remaining required actions. Existing gate hosts and signatures are unchanged; no new gate approval is inferred. Earlier pending-integration statements are historical checkpoints.
+
+```yaml
+finish_target: "fix/materialization-dedup-recovery"
+workspace_kind: BOTH
+verify_inputs:
+  - "Integrated implementation and applicable signature-valid, digest-matched terminal receipts"
+  - "Preflight head 1616c8607d195ca9bee46156e94badf2bc75ca85: clean, zero commits outside main"
+  - "462 ignored files; all existing ignored content individually attributed to durable canonical Git blobs"
+  - "User explicitly authorized this worktree cleanup on 2026-09-23"
+finish_gate_checks:
+  verify_complete: PASS
+  dod_complete: PASS
+  findings_closed: PASS
+  exceptions_resolved: PASS
+allowed_actions:
+  - "Integrate this item's archive and operational handoff through PR with passing CI"
+  - "After integration, remove only .claude/worktrees/materialization-dedup-recovery and its fully merged local branch"
+blocked_actions:
+  - "Delete remote branches, other worktrees, root untracked paths or protected refs"
+  - "Rewrite sealed hosts, reopen releases or treat the master audit as complete"
+cleanup_sequence:
+  - "Commit and integrate archive/handoff; confirm origin/main contains the records"
+  - "Revalidate receipts from main and repeat ancestry, clean-state and per-file preservation checks"
+  - "Remove this worktree without force, then delete only its merged local branch"
+merge_conditions:
+  - "Required CI passes and the four changed lifecycle files retain their respective owning work items"
+residual_risks:
+  - "Cleanup is authorized, not executed by this pre-removal handoff; runtime files must still match their recorded Git sources immediately before removal"
+final_recommendation: CLEANUP_ALLOWED
+notes_for_closeout: "No delivery remains. The root checkout keeps integrated archived artifacts; the separately owned audit M3 inventory records the observed post-cleanup workspace state. Remote branches remain retained."
+```
