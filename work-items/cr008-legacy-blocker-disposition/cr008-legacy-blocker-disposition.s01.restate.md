@@ -87,7 +87,7 @@ tags:
 # Step 1 - Clarify
 
 > [!summary]
-> Bounded maintenance is DONE with signed QC DoD. Both obsolete CR-008 blockers were preserved in signed resolved history and integrated through PR #11. Authorized T6 removed the old CR-008 worktree and its merged local branch after fresh attribution; all other worktrees and the five root untracked paths were retained.
+> Bounded maintenance is ARCHIVED with signed QC DoD. Both obsolete CR-008 blockers were preserved in signed resolved history and integrated through PR #11. Authorized T6 removed the old CR-008 worktree and its merged local branch; PR #12 recorded that result. The user has now authorized cleanup of this completed maintenance worktree after durable archive integration and fresh preservation checks.
 
 ## Router Status
 
@@ -96,9 +96,9 @@ Request Lane: maintenance
 Current Step: s08 Verify + DoD
 Workflow Status: VERIFIED
 Delivery Context: brownfield
-What I Am Doing Now: Record the completed integration and verified T6 cleanup in this unsealed operational handoff.
+What I Am Doing Now: Integrate the archive record and finish the authorized maintenance-worktree cleanup.
 Missing Gates: NONE
-Next Artifact: Durable integration of this T6 execution record.
+Next Artifact: Durable archive record and guarded local cleanup.
 Next Human Action: NONE
 ```
 
@@ -339,7 +339,7 @@ Global CLI, source bundle and installed Codex/Claude harnesses are 2.6.3. This m
 
 ## Work Item Protocol
 ```yaml
-protocol_status: DONE
+protocol_status: ARCHIVED
 approval_status: APPROVED
 review_required: true
 artifact_shape: adaptive_v1
@@ -377,11 +377,10 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-09-22T07:36:46.859Z"
-handoff_target: "archive-lifecycle"
-last_transition_action: "close"
-last_transition_at: "2026-09-22T10:25:37.105Z"
-required_actions:
-  - {"id":"se:c72e9777b1a25029153e84ed58dde45ccca0adf24801587833d31b6df97a5cd8","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
+handoff_target: "none"
+last_transition_action: "archive"
+last_transition_at: "2026-09-23T02:53:28.216Z"
+required_actions: []
 blockers: []
 review_notes:
   - "User explicitly accepted Work Item and Task Plan a00ce83; recorded at 2026-09-22T07:33:21Z; finalized authoring d51f7f5."
@@ -401,4 +400,40 @@ audit_events:
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
   - "DONE_CONFIRMED"
+  - "ARCHIVE_CONFIRMED"
+```
+
+## Archive And Local Finish Handoff — 2026-09-23
+
+The user explicitly requested completion of proposals 1 and 2: finish archive/handoff and remove the two DONE worktrees, then continue the separately owned master audit M2/M3. This section owns only `cr008-legacy-blocker-disposition` archive and local cleanup. PR #11 and PR #12 are integrated; original T6 cleanup completed at 2026-09-22T14:24:36.440Z. The supported CLI archived this item at `2026-09-23T02:53:28.216Z` with no blockers or remaining required actions. Existing gate hosts and signatures are unchanged; no new gate approval is inferred. Earlier pending-integration statements are historical checkpoints.
+
+```yaml
+finish_target: "codex/cr008-legacy-blocker-disposition"
+workspace_kind: BOTH
+verify_inputs:
+  - "Integrated implementation and applicable signature-valid, digest-matched terminal receipts"
+  - "Preflight head a754f06a1a8c95806b0fed77ce20a8dc9ad0eba7: clean, zero commits outside main"
+  - "0 ignored files; all existing ignored content individually attributed to durable canonical Git blobs"
+  - "User explicitly authorized this worktree cleanup on 2026-09-23"
+finish_gate_checks:
+  verify_complete: PASS
+  dod_complete: PASS
+  findings_closed: PASS
+  exceptions_resolved: PASS
+allowed_actions:
+  - "Integrate this item's archive and operational handoff through PR with passing CI"
+  - "After integration, remove only .claude/worktrees/cr008-legacy-blocker-disposition and its fully merged local branch"
+blocked_actions:
+  - "Delete remote branches, other worktrees, root untracked paths or protected refs"
+  - "Rewrite sealed hosts, reopen releases or treat the master audit as complete"
+cleanup_sequence:
+  - "Commit and integrate archive/handoff; confirm origin/main contains the records"
+  - "Revalidate receipts from main and repeat ancestry, clean-state and per-file preservation checks"
+  - "Remove this worktree without force, then delete only its merged local branch"
+merge_conditions:
+  - "Required CI passes and the four changed lifecycle files retain their respective owning work items"
+residual_risks:
+  - "Cleanup is authorized, not executed by this pre-removal handoff; runtime files must still match their recorded Git sources immediately before removal"
+final_recommendation: CLEANUP_ALLOWED
+notes_for_closeout: "No delivery remains. The root checkout keeps integrated archived artifacts; the separately owned audit M3 inventory records the observed post-cleanup workspace state. Remote branches remain retained."
 ```
