@@ -626,7 +626,25 @@ function hasApprovedReceipt(receipt, approvalRoot = "") {
   );
 }
 
+function verifyRecordedDisposition({ record, workItemSlug, stateId, operationId, actor, reason, approvalRoot }) {
+  if (record.source_entry_id !== stateId || record.actor !== actor || record.reason !== reason) {
+    throw new Error(`Conflicting reuse of disposition operation_id '${operationId}'.`);
+  }
+  const authorization = record.authorization;
+  const intent = authorization && authorization.intent;
+  if (!authorization || !isTrustedDispositionSignatureValid({
+    approvalRoot, intent: authorization.intent, signature: authorization.signature
+  }) ||
+    intent.work_item_slug !== workItemSlug || intent.operation_id !== operationId ||
+    intent.state_id !== record.source_entry_id || intent.source_collection !== record.source_collection ||
+    intent.original_text !== record.original_text || JSON.stringify(intent.original_entry) !== JSON.stringify(record.original_entry) ||
+    intent.actor !== record.actor || intent.reason !== record.reason || intent.resolved_at !== record.resolved_at) {
+    throw new Error(`Existing disposition operation_id '${operationId}' has invalid signed history.`);
+  }
+}
+
 module.exports = {
+  verifyRecordedDisposition,
   APPROVED_RECEIPT_STATUSES,
   GATE_TO_STEP_ID,
   buildTrustedApprovalReceipt,

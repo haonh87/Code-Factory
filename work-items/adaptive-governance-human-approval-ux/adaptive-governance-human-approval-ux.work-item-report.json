@@ -165,16 +165,7 @@
   "change_id": "CR-008",
   "handoff_target": "none",
   "required_actions": [],
-  "blockers": [
-    {
-      "kind": "legacy",
-      "text": "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."
-    },
-    {
-      "kind": "legacy",
-      "text": "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending."
-    }
-  ],
+  "blockers": [],
   "refs": [
     "changes/CR-008",
     "work-items/adaptive-governance-human-approval-ux",
@@ -793,6 +784,74 @@
       "from_status": "DONE",
       "to_status": "ARCHIVED",
       "note": "CR-008 passed exact-candidate verification, DoD, Release, Business Acceptance, merge, tag, GitHub release, and npm publication for v2.6.2; parent lifecycle archived."
+    }
+  ],
+  "resolved_state_history": [
+    {
+      "operation_id": "cr008-legacy-20260921-f-ag11-001",
+      "source_collection": "blockers",
+      "source_entry_id": "di:02fbe34b491da0943b0b79043862f7d1574166660932157dac1c6b12ee23c32a",
+      "original_entry": {
+        "kind": "legacy",
+        "text": "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."
+      },
+      "original_text": "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event.",
+      "actor": "maintainer",
+      "reason": "Superseded by transaction 597aa5f9-1043-447e-b762-b6a7858f1b9c, receipt-backed reconciliation at 2026-09-15T06:47:56Z, and subsequent DONE/ARCHIVED events; retain original entry in signed history.",
+      "resolved_at": "2026-09-22T09:09:04.253Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "adaptive-governance-human-approval-ux",
+          "operation_id": "cr008-legacy-20260921-f-ag11-001",
+          "state_id": "di:02fbe34b491da0943b0b79043862f7d1574166660932157dac1c6b12ee23c32a",
+          "source_collection": "blockers",
+          "original_entry": {
+            "kind": "legacy",
+            "text": "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event."
+          },
+          "original_text": "F-AG11-001 is OPEN: repeated closeout success leaves stale pending state and no current-cycle event.",
+          "actor": "maintainer",
+          "reason": "Superseded by transaction 597aa5f9-1043-447e-b762-b6a7858f1b9c, receipt-backed reconciliation at 2026-09-15T06:47:56Z, and subsequent DONE/ARCHIVED events; retain original entry in signed history.",
+          "resolved_at": "2026-09-22T09:09:04.253Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "gVEK9RQyAKX3AZ+AwFGQE9hBkn9uPpvvu7eGncqSGqXjUUtzUSC/Jf7gDngjDNcjVM23BN/J2khj2zkCS3ayDg=="
+      }
+    },
+    {
+      "operation_id": "cr008-legacy-20260921-linked-child",
+      "source_collection": "blockers",
+      "source_entry_id": "di:b6c00b9cc6390befa7853adcf7c56a33a8d868112a7d3ba88d2fe1bf6f4eca8c",
+      "original_entry": {
+        "kind": "legacy",
+        "text": "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending."
+      },
+      "original_text": "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending.",
+      "actor": "maintainer",
+      "reason": "Superseded by linked child closeout-bundle-repeat-cycle-reconciliation closing after AC-RCR-08 and archiving on 2026-09-16; current child DoD is approved and no child blockers remain.",
+      "resolved_at": "2026-09-22T09:09:07.065Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "adaptive-governance-human-approval-ux",
+          "operation_id": "cr008-legacy-20260921-linked-child",
+          "state_id": "di:b6c00b9cc6390befa7853adcf7c56a33a8d868112a7d3ba88d2fe1bf6f4eca8c",
+          "source_collection": "blockers",
+          "original_entry": {
+            "kind": "legacy",
+            "text": "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending."
+          },
+          "original_text": "Linked defect closeout-bundle-repeat-cycle-reconciliation is BLOCKED at s04; structural decisions are approved but fresh downstream gate receipts are pending.",
+          "actor": "maintainer",
+          "reason": "Superseded by linked child closeout-bundle-repeat-cycle-reconciliation closing after AC-RCR-08 and archiving on 2026-09-16; current child DoD is approved and no child blockers remain.",
+          "resolved_at": "2026-09-22T09:09:07.065Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "pIoCmJ9oCdDRfoHawCdoPt/DPFN+Z/xl11WrN6jvtjGR6VlMCwNxx6M1bCgX4tfNWAsGNNYIbE/OLwQf5qDnBg=="
+      }
     }
   ]
 }

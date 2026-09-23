@@ -1,6 +1,9 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const crypto = require("crypto");
+const strictAssert = require("node:assert/strict");
+const { execFileSync } = require("child_process");
 const { materializeWorkItem } = require("../scripts/materialize-work-item");
 const { SDD_LIGHT_PROFILE } = require("../scripts/workflow-sdd-definitions");
 const { validateWorkItemProtocol } = require("../scripts/validate-work-item-protocol");
@@ -861,6 +864,322 @@ function testTarMaterializerHonorsReportLock() {
   } finally { rmrf(projectRoot); }
 }
 
+// Recovery fixtures always use a separate temporary trust root. Never sign with
+// the developer's installed approval identity.
+function buildRecoveryFixture(review = false, extraArgs = {}) {
+  const projectRoot = buildProject();
+  const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "resume-approvals-"));
+  const slug = "dashboard-export-recovery";
+  const workflowRoot = path.join(projectRoot, "work-items", slug);
+  if (review) fs.mkdirSync(path.join(projectRoot, "work-items", "dashboard-existing"));
+  const result = materializeWorkItem({ args: {
+    request: "add export button to dashboard", "work-item": slug,
+    "project-root": projectRoot, "workflow-root": path.dirname(workflowRoot),
+    output: path.join(workflowRoot, `${slug}.work-item-report.json`),
+    "delivery-context": "brownfield", "planning-track": "quick", ...extraArgs
+  } });
+  strictAssert.equal(result.report.dedup_result, review ? "needs_review" : "no_conflict");
+  return { projectRoot, approvalRoot, slug, workflowRoot, reportPath: result.reportPath,
+    dispose() { rmrf(projectRoot); rmrf(approvalRoot); } };
+}
+
+function resolveFixtureAdmission(ctx) {
+  const { ensureApproverKeyPair } = require("../scripts/workflow-trusted-approval-utils");
+  const { getDispositionTargets } = require("../scripts/work-item-protocol-utils");
+  const passphrase = "isolated-resume-fixture-only";
+  ensureApproverKeyPair({ approvalRoot: ctx.approvalRoot, passphrase });
+  const script = path.resolve(__dirname, "../scripts/work-item-protocol.js");
+  while (true) {
+    const bytes = fs.readFileSync(ctx.reportPath);
+    const raw = JSON.parse(bytes);
+    const targets = getDispositionTargets(raw, bytes);
+    if (!targets.length) return raw;
+    execFileSync(process.execPath, [script, "dispose-state", "--project-root", ctx.projectRoot,
+      "--work-item", ctx.slug, "--state-id", targets[0].state_id,
+      "--operation-id", crypto.randomUUID(), "--reviewed-by", "maintainer",
+      "--reason", "Fixture admission reviewed; independent bounded authoring allowed"], {
+      env: { ...process.env, WORKFLOW_BUNDLE_APPROVAL_ROOT: ctx.approvalRoot,
+        WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE: "true",
+        WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE: passphrase }, stdio: "pipe"
+    });
+  }
+}
+
+function recoveryArgs(ctx, extra = {}) {
+  return { "resume-proposal": true, "project-root": ctx.projectRoot,
+    "work-item": ctx.slug, "approval-root": ctx.approvalRoot,
+    "expected-report-sha256": crypto.createHash("sha256").update(fs.readFileSync(ctx.reportPath)).digest("hex"),
+    "operation-id": crypto.randomUUID(), ...extra };
+}
+
+function testResumeReadyAndSignedReview() {
+  for (const reviewed of [false, true]) {
+    const ctx = buildRecoveryFixture(reviewed);
+    try {
+      const before = reviewed ? resolveFixtureAdmission(ctx) : JSON.parse(fs.readFileSync(ctx.reportPath));
+      const args = recoveryArgs(ctx);
+      let result;
+      try { result = materializeWorkItem({ args }); }
+      catch (error) { assert(false, `resume ${reviewed ? "signed review" : "READY"}: ${error.message}`); continue; }
+      assert(result.report.protocol_status === "MATERIALIZED", "resume reaches authoring MATERIALIZED");
+      assert(result.report.approval_status === "PENDING_REVIEW" && result.report.granted_write_paths.length === 0,
+        "resume never approves or grants implementation");
+      assert(JSON.stringify(result.report.work_items) === JSON.stringify(before.work_items), "candidate snapshot retained");
+      assert(JSON.stringify(result.report.resolved_state_history) === JSON.stringify(before.resolved_state_history),
+        "signed history retained verbatim");
+      const bytes = fs.readFileSync(ctx.reportPath);
+      const retry = materializeWorkItem({ args });
+      assert(retry.outcome === "NOOP" && fs.readFileSync(ctx.reportPath).equals(bytes), "same-operation retry is byte-stable");
+    } finally { ctx.dispose(); }
+  }
+}
+
+function testDefaultMaterializerPreservesUnapprovedReports() {
+  for (const reviewed of [false, true]) {
+    const ctx = buildRecoveryFixture(reviewed);
+    try {
+      const bytes = fs.readFileSync(ctx.reportPath);
+      let refused = false;
+      try { materializeWorkItem({ args: { request: "different fresh request", "project-root": ctx.projectRoot,
+        "work-item": ctx.slug, output: ctx.reportPath, "delivery-context": "brownfield" } }); }
+      catch (error) { refused = /existing|resume|replace|overwrite/i.test(error.message); }
+      assert(refused && fs.readFileSync(ctx.reportPath).equals(bytes), "default materialize preserves PROPOSED/READY report");
+    } finally { ctx.dispose(); }
+  }
+}
+
+function treeSnapshot(root) {
+  const result = {};
+  function visit(dir) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      const target = path.join(dir, entry.name), key = path.relative(root, target);
+      if (entry.isSymbolicLink()) result[key] = "link:" + fs.readlinkSync(target);
+      else if (entry.isDirectory()) { result[key] = "directory"; visit(target); }
+      else result[key] = crypto.createHash("sha256").update(fs.readFileSync(target)).digest("hex");
+    }
+  }
+  visit(root);
+  return JSON.stringify(result);
+}
+
+function assertRecoveryRefusal(ctx, args, message) {
+  const before = treeSnapshot(ctx.projectRoot), trust = treeSnapshot(ctx.approvalRoot);
+  let error;
+  try { materializeWorkItem({ args }); } catch (caught) { error = caught; }
+  assert(Boolean(error), `refuse ${message}`);
+  assert(before === treeSnapshot(ctx.projectRoot) && trust === treeSnapshot(ctx.approvalRoot), `zero writes: ${message}`);
+}
+
+function testResumeRejectsUntrustedAndConflictingState() {
+  const ctx = buildRecoveryFixture(true);
+  try {
+    const base = resolveFixtureAdmission(ctx);
+    base.unknown_future_metadata = { keep: ["exact", "value"] };
+    const mutations = [
+      ["missing history", d => { delete d.resolved_state_history; }],
+      ["missing concern", d => d.resolved_state_history.pop()],
+      ["bad signature", d => { d.resolved_state_history[0].authorization.signature = "forged"; }],
+      ...["operation_id", "source_entry_id", "source_collection", "actor", "reason", "resolved_at", "original_text"]
+        .map(key => [`conflicting ${key}`, d => { d.resolved_state_history[0][key] = "tampered"; }]),
+      ["wrong signed item", d => { d.resolved_state_history[0].authorization.intent.work_item_slug = "other-item"; }],
+      ["modified original object", d => { d.resolved_state_history[0].original_entry.text += " changed"; }],
+      ["duplicate history operation", d => d.resolved_state_history.push(d.resolved_state_history[0])],
+      ["unresolved blocker", d => d.blockers.push({ kind: "legacy", text: "still pending" })],
+      ["unknown pending action", d => d.required_actions.push({ kind: "legacy", text: "still pending" })],
+      ["greenfield", d => { d.delivery_context = "greenfield"; }],
+      ["split", d => { d.split_decision = "split"; }],
+      ["change", d => { d.change_id = "CR-123"; }],
+      ["grant", d => { d.granted_write_paths = ["src"]; }],
+      ["already approved", d => { d.approval_status = "APPROVED"; }],
+      ["later state", d => { d.protocol_status = "ACTIVE"; }],
+      ["duplicate metadata", d => { d.work_items[0].delivery_context = "greenfield"; }],
+      ["changed candidate blocker", d => { d.work_items[0].blockers[0].text += " changed"; }],
+      ["reconstructed reuse", d => { d.dedup_result = "reuse_work_item"; }]
+    ];
+    for (const [name, mutate] of mutations) {
+      const raw = JSON.parse(JSON.stringify(base)); mutate(raw);
+      fs.writeFileSync(ctx.reportPath, JSON.stringify(raw, null, 2) + "\n");
+      assertRecoveryRefusal(ctx, recoveryArgs(ctx), name);
+    }
+    fs.writeFileSync(ctx.reportPath, JSON.stringify(base, null, 2) + "\n");
+    for (const delta of [{ request: "override" }, { "planning-track": "quick" }, { "operation-id": "bad" },
+      { "expected-report-sha256": "b".repeat(64) }, { force: true }]) {
+      assertRecoveryRefusal(ctx, recoveryArgs(ctx, delta), `argument ${Object.keys(delta)[0]}`);
+    }
+    const result = materializeWorkItem({ args: recoveryArgs(ctx) });
+    assert(JSON.stringify(result.report.unknown_future_metadata) === JSON.stringify(base.unknown_future_metadata), "unknown raw fields survive recovery");
+    const script = path.resolve(__dirname, "../scripts/work-item-protocol.js");
+    let denied = false;
+    try { execFileSync(process.execPath, [script, "activate", "--project-root", ctx.projectRoot, "--work-item", ctx.slug,
+      "--step", "s07", "--write-root", "src"], { env: { ...process.env, WORKFLOW_BUNDLE_APPROVAL_ROOT: ctx.approvalRoot }, stdio: "pipe" }); }
+    catch (error) { denied = /approval|receipt|gate/i.test(String(error.stderr)); }
+    assert(denied, "resumed item cannot activate without ordinary authoring approval");
+  } finally { ctx.dispose(); }
+}
+
+function testResumeFailuresAndOwnedNotes() {
+  for (const failurePoint of ["after_first_note", "before_report_rename", "before_projection_refresh"]) {
+    const ctx = buildRecoveryFixture();
+    try {
+      const before = fs.readFileSync(ctx.reportPath), args = recoveryArgs(ctx);
+      process.env.WORKFLOW_BUNDLE_RECOVERY_FAILURE_POINT = failurePoint;
+      let error;
+      try { materializeWorkItem({ args }); } catch (caught) { error = caught; }
+      finally { delete process.env.WORKFLOW_BUNDLE_RECOVERY_FAILURE_POINT; }
+      assert(Boolean(error), `failure injected at ${failurePoint}`);
+      if (failurePoint !== "before_projection_refresh") assert(fs.readFileSync(ctx.reportPath).equals(before), "precommit failure preserves original report");
+      else assert(/committed/.test(error?.message || "") && error.message.includes(args["operation-id"]), "postcommit failure identifies retry operation");
+      const existing = fs.readdirSync(ctx.workflowRoot).filter(name => name.endsWith(".md"));
+      const protectedNote = path.join(ctx.workflowRoot, existing[0]);
+      fs.appendFileSync(protectedNote, "\nUser-authored recovery note.\n");
+      const bytes = fs.readFileSync(protectedNote, "utf8");
+      const result = materializeWorkItem({ args });
+      assert(result.outcome === (failurePoint === "before_projection_refresh" ? "NOOP" : "APPLIED"), "retry has correct outcome");
+      assert(fs.readFileSync(protectedNote, "utf8").includes("User-authored recovery note."), "owned prose retained on retry");
+      if (!protectedNote.includes(".s01.")) assert(fs.readFileSync(protectedNote, "utf8") === bytes, "non-s01 existing note byte-identical");
+    } finally { delete process.env.WORKFLOW_BUNDLE_RECOVERY_FAILURE_POINT; ctx.dispose(); }
+  }
+  const ctx = buildRecoveryFixture();
+  try {
+    const args = recoveryArgs(ctx), lock = path.join(path.dirname(ctx.workflowRoot), `.${ctx.slug}.work-item-report.lock`);
+    fs.writeFileSync(lock, "other owner\n");
+    assertRecoveryRefusal(ctx, args, "existing report lock"); fs.unlinkSync(lock);
+    const foreign = path.join(ctx.approvalRoot, "foreign.md"); fs.writeFileSync(foreign, "never overwrite\n");
+    const note = path.join(ctx.workflowRoot, `${ctx.slug}.s01.restate.md`);
+    fs.symlinkSync(foreign, note); assertRecoveryRefusal(ctx, args, "symlink escape"); fs.unlinkSync(note);
+    // Generate one legitimate partial note, then deliberately corrupt its owner.
+    process.env.WORKFLOW_BUNDLE_RECOVERY_FAILURE_POINT = "after_first_note";
+    try { materializeWorkItem({ args }); } catch (_) { /* expected injected failure */ }
+    finally { delete process.env.WORKFLOW_BUNDLE_RECOVERY_FAILURE_POINT; }
+    const original = fs.readFileSync(note, "utf8");
+    fs.writeFileSync(note, original.replace(`work_item_slug: "${ctx.slug}"`, 'work_item_slug: "foreign-owner"'));
+    assertRecoveryRefusal(ctx, args, "wrong-slug existing note");
+    fs.writeFileSync(note, original.replace("status: draft", "status: approved"));
+    assertRecoveryRefusal(ctx, args, "finalized existing note");
+    fs.writeFileSync(note, original);
+    materializeWorkItem({ args });
+    assertRecoveryRefusal(ctx, { ...args, "operation-id": crypto.randomUUID() }, "different retry operation");
+    const raw = JSON.parse(fs.readFileSync(ctx.reportPath)); raw.protocol_status = "ACTIVE";
+    fs.writeFileSync(ctx.reportPath, JSON.stringify(raw)); assertRecoveryRefusal(ctx, args, "retry after lifecycle advance");
+  } finally { delete process.env.WORKFLOW_BUNDLE_RECOVERY_FAILURE_POINT; ctx.dispose(); }
+}
+
+function testResumeAdaptiveAdmission() {
+  const ctx = buildRecoveryFixture(false, { "planning-track": "full", "adaptive-writes": "true",
+    "request-lane": "product_delivery", "public-contract": true, ...ADAPTIVE_ACTIVATION_ARGS });
+  try {
+    const result = materializeWorkItem({ args: recoveryArgs(ctx) });
+    assert(result.report.artifact_shape === "adaptive_v1" && result.report.required_actions.some(entry => entry.gate === "contract"),
+      "adaptive resume preserves applicable contract gate");
+    assert(fs.readdirSync(ctx.workflowRoot).filter(name => name.endsWith(".md")).length === 8, "full resume creates eight notes");
+  } finally { ctx.dispose(); }
+}
+
+function testResumeRetryRevalidatesHistory() {
+  const ctx = buildRecoveryFixture(true);
+  try {
+    resolveFixtureAdmission(ctx);
+    const args = recoveryArgs(ctx);
+    materializeWorkItem({ args });
+    const baseline = JSON.parse(fs.readFileSync(ctx.reportPath));
+    for (const [label, mutate] of [
+      ["retry forged signature", d => { d.resolved_state_history[0].authorization.signature = "forged"; }],
+      ["retry recovery references", d => { d.materialization_recovery.disposition_operation_ids = []; }],
+      ["retry wrong result", d => { d.materialization_status = "PROPOSED"; }],
+      ["retry unresolved blocker", d => { d.blockers = [{ kind: "legacy", text: "unresolved" }]; }]
+    ]) {
+      const changed = JSON.parse(JSON.stringify(baseline)); mutate(changed);
+      fs.writeFileSync(ctx.reportPath, JSON.stringify(changed));
+      assertRecoveryRefusal(ctx, args, label);
+    }
+  } finally { ctx.dispose(); }
+}
+
+function testResumeNoteGovernanceConflict() {
+  const ctx = buildRecoveryFixture(false, { "planning-track": "full", "adaptive-writes": "true",
+    "request-lane": "product_delivery", "public-contract": true, ...ADAPTIVE_ACTIVATION_ARGS });
+  try {
+    const args = recoveryArgs(ctx);
+    process.env.WORKFLOW_BUNDLE_RECOVERY_FAILURE_POINT = "after_first_note";
+    try { materializeWorkItem({ args }); } catch (_) { /* expected partial scaffold */ }
+    finally { delete process.env.WORKFLOW_BUNDLE_RECOVERY_FAILURE_POINT; }
+    const note = path.join(ctx.workflowRoot, `${ctx.slug}.s01.restate.md`);
+    const raw = fs.readFileSync(note, "utf8");
+    // Both values remain individually schema-valid but differ from the report.
+    fs.writeFileSync(note, raw.replace('  contract: "required"', '  contract: "not_applicable"'));
+    assertRecoveryRefusal(ctx, args, "existing note gate differs from report");
+  } finally { delete process.env.WORKFLOW_BUNDLE_RECOVERY_FAILURE_POINT; ctx.dispose(); }
+}
+
+function testResumeMissingReportAndSnapshotRace() {
+  const ctx = buildRecoveryFixture();
+  try {
+    const args = recoveryArgs(ctx);
+    assertRecoveryRefusal(ctx, { ...args, "workflow-root": path.join(ctx.projectRoot, "absent-workflows") }, "absent workflow root");
+    const raw = JSON.parse(fs.readFileSync(ctx.reportPath)); raw.concurrent_editor = "must survive";
+    const concurrentBytes = JSON.stringify(raw, null, 2) + "\n";
+    const originalOpen = fs.openSync;
+    let injected = false, rejected = false;
+    fs.openSync = function (target, ...rest) {
+      if (!injected && String(target).startsWith(ctx.reportPath + ".disposition-")) {
+        injected = true; fs.writeFileSync(ctx.reportPath, concurrentBytes);
+      }
+      return originalOpen.call(fs, target, ...rest);
+    };
+    try { materializeWorkItem({ args }); }
+    catch (error) { rejected = /changed|snapshot/i.test(error.message); }
+    finally { fs.openSync = originalOpen; }
+    assert(injected && rejected, "snapshot race rejected before report replacement");
+    assert(fs.readFileSync(ctx.reportPath, "utf8") === concurrentBytes, "concurrent editor's report preserved");
+    assert(!fs.readdirSync(ctx.workflowRoot).some(name => name.endsWith(".tmp")), "failed atomic commit leaves no staged report");
+  } finally { ctx.dispose(); }
+}
+
+function testResumeCliAndLegacyFullNotes() {
+  const ctx = buildRecoveryFixture(false, { "planning-track": "full" });
+  try {
+    const args = recoveryArgs(ctx), cli = path.resolve(__dirname, "../bin/wfc.js");
+    const argv = [cli, "materialize", "--resume-proposal", "--work-item", ctx.slug,
+      "--project-root", ctx.projectRoot, "--workflow-root", "work-items",
+      "--expected-report-sha256", args["expected-report-sha256"], "--operation-id", args["operation-id"],
+      "--approval-root", ctx.approvalRoot];
+    const first = execFileSync(process.execPath, argv, { encoding: "utf8" });
+    const retry = execFileSync(process.execPath, argv, { encoding: "utf8" });
+    assert(first.includes("APPLIED") && retry.includes("NOOP") && retry.includes("projection_status=SYNCED"),
+      "public wfc CLI reports APPLIED/NOOP and projection status");
+    assert(fs.readdirSync(ctx.workflowRoot).filter(name => name.endsWith(".md")).length === 8, "legacy full profile keeps eight notes");
+    console.log("  PASS: proposal recovery CLI, signatures, refusal matrix, partial-write retry, notes, and snapshot race");
+  } finally { ctx.dispose(); }
+}
+
+function testResumeMalformedAdaptiveInputIsReadOnly() {
+  const ctx = buildRecoveryFixture(false, { "planning-track": "full", "adaptive-writes": "true",
+    "request-lane": "product_delivery", "public-contract": true, ...ADAPTIVE_ACTIVATION_ARGS });
+  try {
+    const base = JSON.parse(fs.readFileSync(ctx.reportPath));
+    for (const [name, mutate] of [
+      ["empty role reasons", d => { d.roles[0].reasons = []; }],
+      ["empty gate reviewers", d => { d.gates[0].reviewer_roles = []; }],
+      ["invalid lane", d => { d.request_lane = "invalid"; }],
+      ["missing routing reasons", d => { d.routing_reasons = []; }],
+      ["unknown role", d => { d.roles[0].role = "invented"; }]
+    ]) {
+      const d = JSON.parse(JSON.stringify(base)); mutate(d); fs.writeFileSync(ctx.reportPath, JSON.stringify(d));
+      assertRecoveryRefusal(ctx, recoveryArgs(ctx), name);
+    }
+  } finally { ctx.dispose(); }
+}
+
+testResumeMalformedAdaptiveInputIsReadOnly();
+testResumeCliAndLegacyFullNotes();
+testResumeMissingReportAndSnapshotRace();
+testResumeRetryRevalidatesHistory();
+testResumeNoteGovernanceConflict();
+testResumeRejectsUntrustedAndConflictingState();
+testResumeFailuresAndOwnedNotes();
+testResumeAdaptiveAdmission();
+testResumeReadyAndSignedReview();
+testDefaultMaterializerPreservesUnapprovedReports();
 testMaterializeEmitsTelemetryWhenOptIn();
 testMaterializeNoTelemetryByDefault();
 testTarMaterializerCannotReplaceGovernedReport();

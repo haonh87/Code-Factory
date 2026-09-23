@@ -69,3 +69,54 @@ residual_risks:
 final_recommendation: HOLD_OPEN
 notes_for_closeout: "Release and archive evidence remain valid, but branch/worktree cleanup is held until F-CR008-ARCH-001 has an explicit approved handoff. The finding cannot be fixed by silently clearing unknown legacy text."
 ```
+
+## Maintenance Finish Reassessment — 2026-09-22
+
+The Archive Status and Branch Finish Audit above are historical release records. This assessment owns the current maintenance handoff. It preserves all v2.6.2 facts and existing terminal receipts; the settled v2.6.3 release is not reopened.
+
+The two signed operations `cr008-legacy-20260921-f-ag11-001` (09:09:04.253Z) and `cr008-legacy-20260921-linked-child` (09:09:07.065Z) resolved the exact parent entries. [The dated finding disposition](execution/task-status.md#maintenance-reconciliation--2026-09-22) and [maintenance implementation evidence](../../work-items/cr008-legacy-blocker-disposition/cr008-legacy-blocker-disposition.s07.implementation.md) retain the attribution and verification path. The parent remains ARCHIVED; original entries now live in signed `resolved_state_history`.
+
+[Maintenance s08](../../work-items/cr008-legacy-blocker-disposition/cr008-legacy-blocker-disposition.s08.verification.md) owns the current verification and DoD decision.
+
+```yaml
+finish_target: "codex/adaptive-governance-human-approval-ux"
+workspace_kind: BOTH
+verify_inputs:
+  - "Two exact-entry Maintainer signatures, verified against the real trusted public key"
+  - "Unchanged parent lifecycle/events and s04-s08; all three terminal receipts remain digest-matched"
+  - "Fresh preflight at 2026-09-22T14:24:36.214Z: old worktree clean at 3cce566218fc2106e37ad29cab9806ff5821ce36; 97 behind and zero ahead of integrated main 94f510c"
+  - "All 462 ignored runtime paths individually matched canonical source blobs at old head 3cce566, an ancestor of main; per-path attribution repeated immediately before removal"
+finish_gate_checks:
+  verify_complete: PASS
+  dod_complete: PASS
+  findings_closed: PASS
+  exceptions_resolved: PASS
+allowed_actions:
+  - "Integrate PR #11 after required CI under the explicit human T6 approval"
+  - "After durable integration and fresh attribution, remove only the old CR-008 worktree and its merged local branch"
+blocked_actions:
+  - "Remove the old worktree or branch before maintenance DoD, integration and fresh attribution checks"
+  - "Delete remote branches or modify historical gate hosts and release evidence"
+cleanup_sequence:
+  - "Obtain the maintenance QC DoD receipt and verify its current digest"
+  - "Integrate the approved maintenance result through PR with required CI passing"
+  - "Recheck zero unique commits, clean workspace and every ignored/untracked path"
+  - "Remove only .claude/worktrees/cr-008-adaptive-governance without force"
+  - "Delete only its fully merged local branch when the recorded finish decision allows it"
+merge_conditions:
+  - "Maintenance s08 QC DoD and human integration authority"
+  - "Required PR CI and durable main integration before local removal"
+residual_risks:
+  - "The original candidate's disclosed scanner gaps remain historical evidence; this maintenance adds no production code."
+final_recommendation: CLEANUP_ALLOWED
+cleanup_execution: COMPLETED
+integration: "PR #11 merged as 94f510c586af325afa7827247ad7b03204a665f9 at 2026-09-22T13:54:54Z after ten passing CI checks; root and maintenance checkout fast-forwarded before removal."
+cleanup_completed_at: "2026-09-22T14:24:36.440Z"
+removed:
+  - ".claude/worktrees/cr-008-adaptive-governance, without force"
+  - "Local branch codex/adaptive-governance-human-approval-ux, using git branch -d"
+retained:
+  - "Remote branch and every other worktree"
+  - "All 19 root untracked files, byte-identical; protected branch heads unchanged"
+notes_for_closeout: "Maintenance is DONE with valid QC DoD sealed at 2026-09-22T10:24:48.694Z. Authorized T6 completed after durable integration and fresh attribution. The maintenance s01 owns the detailed execution record. Historical gate hosts, audit register and release evidence remain unchanged."
+```

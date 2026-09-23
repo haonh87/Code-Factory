@@ -715,3 +715,9 @@ Khi hai lớp này đi cùng nhau:
 - `agentic` có thể tự mở work item một cách có kiểm soát
 - scaffold không còn là hành vi rời rạc
 - state, authority và handoff của work item trở nên audit được
+
+## Recovery Proposal Và Danh Tính Protocol
+
+`wfc materialize --resume-proposal --work-item <slug> --expected-report-sha256 <64-hex> --operation-id <canonical-uuid>` tiếp tục admission đã lưu đủ điều kiện đến MATERIALIZED/s01. Lệnh này tách biệt với work-item approval và `work-item resume` dùng để tiếp tục execution đang BLOCKED. Xem [recovery proposal](work-item-materialization.vi.md#tiếp-tục-proposal-đã-lưu) để biết giới hạn, yêu cầu disposition đã ký và retry.
+
+Việc hiện còn chờ nằm ở `blockers` / `required_actions` cấp report; `work_items[].blockers` giữ snapshot candidate lịch sử. `resolved_state_history` giữ nguyên bằng chứng đã ký. Trường tùy chọn `materialization_recovery` phải được giữ qua normalization lifecycle; writer cũ có thể làm mất nó. Retry sửa projection chỉ khi item còn MATERIALIZED và operation/hash nguồn cùng chữ ký admission vẫn hợp lệ. Metadata recovery và hash report không cấp approval hay write capability.
