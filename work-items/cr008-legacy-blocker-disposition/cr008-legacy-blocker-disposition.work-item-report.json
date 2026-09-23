@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "DONE",
+  "protocol_status": "ARCHIVED",
   "decision_owner": "agent",
   "protocol_owner": "maintainer",
   "raw_request_summary": "Record two reviewed legacy blocker dispositions for archived CR-008 and establish removal readiness for its clean merged worktree.",
@@ -81,14 +81,8 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "archive-lifecycle",
-  "required_actions": [
-    {
-      "id": "se:c72e9777b1a25029153e84ed58dde45ccca0adf24801587833d31b6df97a5cd8",
-      "kind": "workflow_followup",
-      "text": "Archive the work item when all downstream lifecycle actions are complete."
-    }
-  ],
+  "handoff_target": "none",
+  "required_actions": [],
   "blockers": [],
   "refs": [
     "work-items/closeout-bundle-legacy-dod-compatibility",
@@ -106,7 +100,8 @@
     "WORK_ITEM_APPROVED",
     "WORK_ITEM_ACTIVATED",
     "VERIFICATION_CONFIRMED",
-    "DONE_CONFIRMED"
+    "DONE_CONFIRMED",
+    "ARCHIVE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -175,6 +170,14 @@
       "from_status": "VERIFIED",
       "to_status": "DONE",
       "note": "QC DoD explicitly approved, trusted signature and current host digest verified; all AC evidence passed. Conditional T6 integration and old-worktree cleanup authorized separately in the same human review."
+    },
+    {
+      "timestamp": "2026-09-23T02:53:28.216Z",
+      "action": "archive",
+      "actor": "coordinator",
+      "from_status": "DONE",
+      "to_status": "ARCHIVED",
+      "note": "User explicitly requested completion of proposal 1 on 2026-09-23: archive/handoff and cleanup of the two DONE worktrees. PR #11 and PR #12 are merged; the original CR-008 T6 cleanup and record are complete. Required receipts remain signature-valid and digest-matched; no pending delivery. Remove this local workspace only after archive integration and fresh preservation checks."
     }
   ],
   "resolved_state_history": [
