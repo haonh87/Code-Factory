@@ -4429,19 +4429,19 @@
     "deletion_authorized": false
   },
   "semantic_review": {
-    "observed_at": "2026-09-27T06:18:49.415106Z",
-    "source_identity": "bab6b78183e6291ce6dccee035f2392219fbd45f",
+    "observed_at": "2026-09-27T11:44:55.531626Z",
+    "source_identity": "4f37b25efed78512de0202dbb0f34c3b925befac",
     "evidence_tier": "audit-branch-on-integrated-main",
     "status": "IN_PROGRESS",
     "canonical_skill_reads": 42,
     "total_skills": 42,
-    "operative_english_reference_reads": 57,
+    "operative_english_reference_reads": 67,
     "total_operative_english_references": 68,
     "agent_metadata_reads": 13,
     "bundled_script_reads": 3,
     "remaining_skill_reads": 0,
-    "remaining_operative_english_reference_reads": 11,
-    "closure_rule": "All canonical skill bodies have been read; remaining operative references and cross-boundary contracts still prevent M2 completion. Reading is not semantic PASS, CF-MB1 approval, Technical Verification or DoD.",
+    "remaining_operative_english_reference_reads": 1,
+    "closure_rule": "All canonical skill bodies and 67/68 operative English references have been read. The full workflow-chain reference and cross-boundary contract assessment still prevent M2 completion. Read coverage is not semantic PASS, CF-MB1 approval, Technical Verification or DoD.",
     "read_log": [
       {
         "path": "skills/analysis/brainstorming/SKILL.md",
@@ -5284,6 +5284,14 @@
         "revalidated_at": "2026-09-27T06:00:10.803553Z"
       },
       {
+        "path": "skills/orchestration/codex-workflow-chain/references/end-to-end-examples.md",
+        "sha256": "f4abe7f9adc6f8545cbdf00fb093e6ce789afc3a70e28a3b6d0701515ca64317",
+        "source_bytes_match": true,
+        "read_scope": "full",
+        "read_from_commit": "4f37b25efed78512de0202dbb0f34c3b925befac",
+        "revalidated_at": "2026-09-27T11:44:55.531626Z"
+      },
+      {
         "path": "skills/orchestration/codex-workflow-chain/references/execution-runtime.md",
         "sha256": "869d0583428db28620ba96f454ea71014e0d44ad0d151f6ddb39d9ac59e2c53e",
         "source_bytes_match": true,
@@ -5292,12 +5300,84 @@
         "revalidated_at": "2026-09-27T06:18:49.415106Z"
       },
       {
+        "path": "skills/orchestration/codex-workflow-chain/references/implementation-blueprint.md",
+        "sha256": "db651a8c4d219e8875549467a99ca5ab17d7752fbcd3a0d2a2e943b9978057b3",
+        "source_bytes_match": true,
+        "read_scope": "full",
+        "read_from_commit": "4f37b25efed78512de0202dbb0f34c3b925befac",
+        "revalidated_at": "2026-09-27T11:44:55.531626Z"
+      },
+      {
+        "path": "skills/orchestration/codex-workflow-chain/references/role-aware-workflow.md",
+        "sha256": "b5432dba1b0fdf5733e7b430df5da584c07abc0ef7f6ec27f76876872fcb3e2c",
+        "source_bytes_match": true,
+        "read_scope": "full",
+        "read_from_commit": "4f37b25efed78512de0202dbb0f34c3b925befac",
+        "revalidated_at": "2026-09-27T11:44:55.531626Z"
+      },
+      {
         "path": "skills/orchestration/codex-workflow-chain/references/sdd-merge-strategy.md",
         "sha256": "bde5feb9fad70e48bd59b63d2f466bceb33a1a6fcfa8e234efbf41800041cf86",
         "source_bytes_match": true,
         "read_scope": "full",
         "first_read_source_identity": "bab6b78183e6291ce6dccee035f2392219fbd45f",
         "revalidated_at": "2026-09-27T06:18:49.415106Z"
+      },
+      {
+        "path": "skills/orchestration/codex-workflow-chain/references/spec-driven-development.md",
+        "sha256": "2c91d332032e9baec27d28dd9328ded4cfa855ebb8ab6b0e093f6567cd4ac6c7",
+        "source_bytes_match": true,
+        "read_scope": "full",
+        "read_from_commit": "4f37b25efed78512de0202dbb0f34c3b925befac",
+        "revalidated_at": "2026-09-27T11:44:55.531626Z"
+      },
+      {
+        "path": "skills/orchestration/codex-workflow-chain/references/target-architecture.md",
+        "sha256": "517611cd66b69746ccf69ef279c904f9fbcd079a25ca77644dcb66aebeabe203",
+        "source_bytes_match": true,
+        "read_scope": "full",
+        "read_from_commit": "4f37b25efed78512de0202dbb0f34c3b925befac",
+        "revalidated_at": "2026-09-27T11:44:55.531626Z"
+      },
+      {
+        "path": "skills/orchestration/codex-workflow-chain/references/work-item-materialization.md",
+        "sha256": "ae991fe55ae16d07f30125a52d2e3b3eb093b7af3baf819f4c21e1616a6dcd54",
+        "source_bytes_match": true,
+        "read_scope": "full",
+        "read_from_commit": "4f37b25efed78512de0202dbb0f34c3b925befac",
+        "revalidated_at": "2026-09-27T11:44:55.531626Z"
+      },
+      {
+        "path": "skills/orchestration/codex-workflow-chain/references/work-item-protocol.md",
+        "sha256": "32a8363fd15c38da700284b7077da860aac4fceee175f5e28302e4ec3dc80bde",
+        "source_bytes_match": true,
+        "read_scope": "full",
+        "read_from_commit": "4f37b25efed78512de0202dbb0f34c3b925befac",
+        "revalidated_at": "2026-09-27T11:44:55.531626Z"
+      },
+      {
+        "path": "skills/orchestration/codex-workflow-chain/references/workflow-ci-enforcement.md",
+        "sha256": "de47f5219f9ad79d2fce035ed69fec5fb77b25d65040c326e9fb32c8dc67029e",
+        "source_bytes_match": true,
+        "read_scope": "full",
+        "read_from_commit": "4f37b25efed78512de0202dbb0f34c3b925befac",
+        "revalidated_at": "2026-09-27T11:44:55.531626Z"
+      },
+      {
+        "path": "skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md",
+        "sha256": "ffd6ea1b2de6d102264ac2926d6cbbce6d1a39a8418d39043a137f3ce9d05f6d",
+        "source_bytes_match": true,
+        "read_scope": "full",
+        "read_from_commit": "4f37b25efed78512de0202dbb0f34c3b925befac",
+        "revalidated_at": "2026-09-27T11:44:55.531626Z"
+      },
+      {
+        "path": "skills/orchestration/codex-workflow-chain/references/workflow-overview.md",
+        "sha256": "3e4a5f6944136838e5c677dd21b5adfb51c1e7cffe1f6223980330df02726fa5",
+        "source_bytes_match": true,
+        "read_scope": "full",
+        "read_from_commit": "4f37b25efed78512de0202dbb0f34c3b925befac",
+        "revalidated_at": "2026-09-27T11:44:55.531626Z"
       },
       {
         "path": "skills/orchestration/codex-workflow-chain/references/workflow-versioning.md",
@@ -5514,6 +5594,36 @@
         ],
         "guard": "This is an example/convention defect, not proof that arbitrary string IDs produce invalid Canvas files.",
         "next": "M4 may route a minimal example correction; no Canvas artifact was generated."
+      },
+      {
+        "id": "M2-OBS-15",
+        "result": "FAIL",
+        "severity": "MEDIUM",
+        "owner": "developer/maintainer",
+        "subject": "Work-item protocol reference contradicts its implemented activation and list baseline",
+        "evidence": "work-item-protocol.md activate goal says handoff at s01 while its minimum output and current CLI surface say s07. Its Target Extension lists work-item list, already documented in Current Baseline and handled by work-item-protocol.js listWorkItems/action dispatch.",
+        "guard": "Documentation contradiction only; no activation, protocol mutation, or runtime gate bypass demonstrated. Unqualified s04/s05/s06 wording must also be interpreted under the higher Light gate-host contract.",
+        "next": "M4 may route a bounded reference correction and Light qualification to an independently owned documentation change."
+      },
+      {
+        "id": "M2-OBS-16",
+        "result": "FAIL",
+        "severity": "MEDIUM",
+        "owner": "developer/QC",
+        "subject": "Worked bug example puts implementation before its regression test",
+        "evidence": "end-to-end-examples.md Example A s06 orders Task 1 fix normalize util, Task 2 update tests; s07 repeats fix then tests. The global TDD For Behavior Change rule and implementation skill require a failing desired-behavior test before the fix.",
+        "guard": "The worked sequence is inconsistent guidance; no actual code-first execution or human-gate bypass is inferred.",
+        "next": "M4 may route an example correction that explicitly records RED before GREEN; master audit changes no example or production test."
+      },
+      {
+        "id": "M2-OBS-17",
+        "result": "FAIL",
+        "severity": "LOW",
+        "owner": "developer/DevOps",
+        "subject": "CI reference describes existing manual dispatch as future work",
+        "evidence": "workflow-ci-enforcement.md Manual Dispatch says it should be added later, while .github/workflows/workflow-guardrails.yml already declares workflow_dispatch. The YAML also includes candidate build and Node 18/22 candidate jobs beyond the seven listed baseline jobs.",
+        "guard": "Source-configuration/document comparison; no hosted run or dispatch was initiated. The seven baseline jobs are not themselves invalid.",
+        "next": "M4 may route a current-capability versus historical-baseline documentation correction; no CI change is authorized."
       }
     ],
     "diagnostics": [
@@ -5562,17 +5672,7 @@
       }
     ],
     "remaining_reference_paths": [
-      "skills/orchestration/codex-workflow-chain/references/end-to-end-examples.md",
-      "skills/orchestration/codex-workflow-chain/references/implementation-blueprint.md",
-      "skills/orchestration/codex-workflow-chain/references/role-aware-workflow.md",
-      "skills/orchestration/codex-workflow-chain/references/spec-driven-development.md",
-      "skills/orchestration/codex-workflow-chain/references/target-architecture.md",
-      "skills/orchestration/codex-workflow-chain/references/work-item-materialization.md",
-      "skills/orchestration/codex-workflow-chain/references/work-item-protocol.md",
-      "skills/orchestration/codex-workflow-chain/references/workflow-chain.md",
-      "skills/orchestration/codex-workflow-chain/references/workflow-ci-enforcement.md",
-      "skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md",
-      "skills/orchestration/codex-workflow-chain/references/workflow-overview.md"
+      "skills/orchestration/codex-workflow-chain/references/workflow-chain.md"
     ]
   },
   "snapshot_scope": "Top-level M1 source/manifests/surfaces/installed_harnesses/local_overlays/baseline retain their dated historical observation. current_snapshot and semantic_review own the refreshed evidence; do not interpret September 12/13 installation/version claims as current.",
