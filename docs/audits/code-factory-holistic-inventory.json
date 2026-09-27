@@ -4429,18 +4429,18 @@
     "deletion_authorized": false
   },
   "semantic_review": {
-    "observed_at": "2026-09-27T06:00:10.803553Z",
-    "source_identity": "1b2af7be87301c62965f2339b5199aa48ae9e358",
+    "observed_at": "2026-09-27T06:18:49.415106Z",
+    "source_identity": "bab6b78183e6291ce6dccee035f2392219fbd45f",
     "evidence_tier": "audit-branch-on-integrated-main",
     "status": "IN_PROGRESS",
     "canonical_skill_reads": 42,
     "total_skills": 42,
-    "operative_english_reference_reads": 54,
+    "operative_english_reference_reads": 57,
     "total_operative_english_references": 68,
     "agent_metadata_reads": 13,
     "bundled_script_reads": 3,
     "remaining_skill_reads": 0,
-    "remaining_operative_english_reference_reads": 14,
+    "remaining_operative_english_reference_reads": 11,
     "closure_rule": "All canonical skill bodies have been read; remaining operative references and cross-boundary contracts still prevent M2 completion. Reading is not semantic PASS, CF-MB1 approval, Technical Verification or DoD.",
     "read_log": [
       {
@@ -5284,6 +5284,30 @@
         "revalidated_at": "2026-09-27T06:00:10.803553Z"
       },
       {
+        "path": "skills/orchestration/codex-workflow-chain/references/execution-runtime.md",
+        "sha256": "869d0583428db28620ba96f454ea71014e0d44ad0d151f6ddb39d9ac59e2c53e",
+        "source_bytes_match": true,
+        "read_scope": "full",
+        "first_read_source_identity": "bab6b78183e6291ce6dccee035f2392219fbd45f",
+        "revalidated_at": "2026-09-27T06:18:49.415106Z"
+      },
+      {
+        "path": "skills/orchestration/codex-workflow-chain/references/sdd-merge-strategy.md",
+        "sha256": "bde5feb9fad70e48bd59b63d2f466bceb33a1a6fcfa8e234efbf41800041cf86",
+        "source_bytes_match": true,
+        "read_scope": "full",
+        "first_read_source_identity": "bab6b78183e6291ce6dccee035f2392219fbd45f",
+        "revalidated_at": "2026-09-27T06:18:49.415106Z"
+      },
+      {
+        "path": "skills/orchestration/codex-workflow-chain/references/workflow-versioning.md",
+        "sha256": "13d0dacd6738e94cee2ab92dcb335333365aa0a4e4ee08cf72f7357ed8955ce5",
+        "source_bytes_match": true,
+        "read_scope": "full",
+        "first_read_source_identity": "bab6b78183e6291ce6dccee035f2392219fbd45f",
+        "revalidated_at": "2026-09-27T06:18:49.415106Z"
+      },
+      {
         "path": "skills/orchestration/goal-griller/SKILL.md",
         "sha256": "74bbcb57f9d3ebe3ca39f5f500b02724326963f3bb08a1ab957ab858f874db20",
         "source_bytes_match": true,
@@ -5539,10 +5563,8 @@
     ],
     "remaining_reference_paths": [
       "skills/orchestration/codex-workflow-chain/references/end-to-end-examples.md",
-      "skills/orchestration/codex-workflow-chain/references/execution-runtime.md",
       "skills/orchestration/codex-workflow-chain/references/implementation-blueprint.md",
       "skills/orchestration/codex-workflow-chain/references/role-aware-workflow.md",
-      "skills/orchestration/codex-workflow-chain/references/sdd-merge-strategy.md",
       "skills/orchestration/codex-workflow-chain/references/spec-driven-development.md",
       "skills/orchestration/codex-workflow-chain/references/target-architecture.md",
       "skills/orchestration/codex-workflow-chain/references/work-item-materialization.md",
@@ -5550,8 +5572,7 @@
       "skills/orchestration/codex-workflow-chain/references/workflow-chain.md",
       "skills/orchestration/codex-workflow-chain/references/workflow-ci-enforcement.md",
       "skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md",
-      "skills/orchestration/codex-workflow-chain/references/workflow-overview.md",
-      "skills/orchestration/codex-workflow-chain/references/workflow-versioning.md"
+      "skills/orchestration/codex-workflow-chain/references/workflow-overview.md"
     ]
   },
   "snapshot_scope": "Top-level M1 source/manifests/surfaces/installed_harnesses/local_overlays/baseline retain their dated historical observation. current_snapshot and semantic_review own the refreshed evidence; do not interpret September 12/13 installation/version claims as current.",

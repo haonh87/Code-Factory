@@ -2,7 +2,7 @@
 
 Historical initial observation: `2026-09-13T04:37:54Z`. Initial audit source: `5b85d7f943fff4fc9e0f559faed43e79f9483b12`; tracked main comparator: `2e3aaded1779787d993b7e5cacc96bfae008b3bc`. Evidence tier: unmerged-child, except explicitly identified ignored/root historical inputs and external trusted receipts.
 
-M3 is IN_PROGRESS. The September 13 historical portfolio had 25 entries: 9 managed and 16 legacy. Current recount below has 41 tracked entries: 20 managed and 21 legacy; the older classifications are not a complete current census. Classifications below are evidence-backed AI recommendations for the ordered CF-MB1 review, not retrospective approvals, migration, retirement or cleanup. Prior-plan/successor recovery remains incomplete.
+M3 is IN_PROGRESS. The September 13 historical portfolio had 25 entries: 9 managed and 16 legacy. Current recount below has 41 tracked entries: 20 managed and 21 legacy; the older classifications are not a complete current census. Classifications below are evidence-backed AI recommendations for the ordered CF-MB1 review, not retrospective approvals, migration, retirement or cleanup. The root plan/research census and earlier pack-review chronology are classified below; current public-navigation classification remains incomplete.
 
 ## Current workspace and lifecycle checkpoint
 
@@ -13,7 +13,7 @@ Observed `2026-09-27T06:00:10.803553Z` from audit `1b2af7be87301c62965f2339b5199
 | `cr008-legacy-blocker-disposition` | ARCHIVED/s08, no blockers/actions; two relevant receipts revalidated, zero unique commits at removal | Local worktree and branch removed 2026-09-23T03:10:59.753Z under its own closeout authority. Archive/handoff integrated by [PR #13](https://github.com/haonh87/Code-Factory/pull/13). Remote branch retained. |
 | `materialization-dedup-recovery` | ARCHIVED/s08, no blockers/actions; seven relevant receipts revalidated; 462 ignored files attributed to identical canonical content; zero unique commits | Local worktree and branch removed in the same guarded operation after PR #13. Remote branch retained. |
 | `cf-023-receipt-binding` | Detached `0dc985d`; tracked clean, 22 behind main; 468 ignored files retained. Owning `protocol-receipt-binding-check` is PROPOSED with dedup blocker | HOLD_OPEN. Materialization repair did not dispose this item's own blocker. Owner must resolve overlap and establish lawful lifecycle/DoD before cleanup. |
-| `code-factory-holistic-audit-remediation` | ACTIVE/s07; `1b2af7b` contains latest main and original WIP commits; three ahead/zero behind main before this checkpoint | HOLD_OPEN. Priority is approved M2/M3 evidence; no master DoD or M4 opening inferred. |
+| `code-factory-holistic-audit-remediation` | ACTIVE/s07; `1b2af7b` contains latest main and original WIP commits; four ahead/zero behind main at `bab6b78`, before this continuation | HOLD_OPEN. Priority is approved M2/M3 evidence; no master DoD or M4 opening inferred. |
 | `publish-planning-work` | `19efbaa`; clean, zero ahead/80 behind main; capability-grant plans lack s08 | HOLD_OPEN. Published plans and merged commits do not establish completion. Classification/successor evidence precedes any later owned closeout. |
 | Primary checkout | `main` at `a36b185`; five untracked roots, 19 files | Preserve CHANGE-005 and adapter work item as a matched CF-004 pair; preserve superseded community README filename variant; keep both unattributed scratch notes pending user attribution. |
 
@@ -21,7 +21,7 @@ The earlier `cr-008-adaptive-governance` worktree removal is recorded in its mai
 
 The guarded removal observation is retained at `/private/tmp/cf-two-done-cleanup-ywnmmreq/result.json`; its durable authorization and archive evidence live in each owning s01/report on main. This audit records observed effects, not a new closeout approval.
 
-Current M3 coverage: all 21 tracked legacy entries have one classification below; the earlier sixteen directories are byte-identical to the prior reviewed source. All 20 managed protocol states are enumerated, and all required terminal receipts for the 17 DONE/ARCHIVED subjects are verified below. Full prior-authority and public-navigation classification remains pending; these completed subchecks do not finish M3.
+Current M3 coverage: all 21 tracked legacy entries have one classification below; the earlier sixteen directories are byte-identical to the prior reviewed source. All 20 managed protocol states are enumerated, and all required terminal receipts for the 17 DONE/ARCHIVED subjects are verified below. The prior-input census below adds the recovered plan/research and earlier pack-review classifications. Full public-navigation classification remains pending; these completed subchecks do not finish M3.
 
 ## Interpretation rules
 
@@ -31,17 +31,76 @@ Current M3 coverage: all 21 tracked legacy entries have one classification below
 - HISTORICAL/HISTORICAL_INPUT below classifies audit use; changing a public label, promoting an ignored plan or retiring it requires the owning child/human authority.
 - A prose DONE or technical PASS without an unambiguous applicable human decision never establishes delivery completion.
 
-## Prior authority/input classification — partial recovery
+## Prior authority/input classification
+
+These are input classifications, not promotion or retirement decisions. The four plans were fully read and their exact bytes revalidated at `2026-09-27T06:18:49.415106Z`. Three are ignored root-owner files; only the SDD Light plan is tracked. Historical approval is preserved with its scope and successors, never inherited as a new gate. The classification census also covers every file currently present under the root checkout's `docs/plans/` and `docs/research/`: **21 paths, 2 tracked and 19 ignored**. The tracked depth-2 measurement is a historical addendum. Nothing was copied from ignored storage into the governed source tree.
 
 | Input | Classification | Evidence / scope | Owner / next boundary |
 | --- | --- | --- | --- |
-| docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md | CURRENT | Tracked portfolio authority; frozen SHA-256 e9f84613af3ca7b5788ad3d948f56f5c8650fc7d9fbc463076950435d75b7a8d | PO/BA; remain immutable |
-| docs/plans/memory-standardization-plan.md | HISTORICAL_INPUT | Ignored root-owner input, not tracked authority; SHA-256 25ff8af65e2e834dfd2dd9acaf635e0026ff2e838ec1da12e9911ca5ce99d557; header/classification evidence only; full plan completion revalidation pending | PO/BA; M4/M8 reduced scope/experiment/retirement or selective-promotion proposal, no approval inferred |
-| docs/plans/sa-ta-skill-metrics-deep-dive.md | HISTORICAL_INPUT | Ignored root-owner input, not tracked authority; SHA-256 ce0cb800418b11214a0e08ade2627072b0b85ed67b915f993cb9422007c7e780; header/classification evidence only; full plan completion revalidation pending | PO/BA; M4/M8 reduced scope/experiment/retirement or selective-promotion proposal, no approval inferred |
-| docs/plans/apply-trending-ai-research-2026-06.md | HISTORICAL_INPUT | Ignored root-owner input, not tracked authority; SHA-256 a46757a56f2b0d03ff56d76d42d338a4b214b28f711e1ff98a0519cb81eb4862; header/classification evidence only; full plan completion revalidation pending | PO/BA; M4/M8 reduced scope/experiment/retirement or selective-promotion proposal, no approval inferred |
-| docs/plans/sdd-light-code-factory-plan-review.md | HISTORICAL_INPUT | Tracked source input; SHA-256 fa52e98d7e3cc522076c6a7de006e05b42661ca55be1e340be52e0f3ef0ad5b3; header/classification evidence only; full plan completion revalidation pending | PO/BA; M4/M8 reduced scope/experiment/retirement or selective-promotion proposal, no approval inferred |
+| `docs/audits/code-factory-holistic-workflow-skill-remediation-plan.md` | CURRENT | Tracked portfolio authority; SHA-256 e9f84613af3ca7b5788ad3d948f56f5c8650fc7d9fbc463076950435d75b7a8d. Scope is approved authoring and prioritization, not child execution. | PO/BA; protected, remain immutable |
+| `docs/plans/memory-standardization-plan.md` | HISTORICAL_INPUT | Full plan read; proposal / pending-human-review. Layers A-F and M1-M5 remain an umbrella proposal; four P0-P2 approval checkboxes are open. Graph trial and team rollout do not approve authority/freshness/retention/retrieval contracts. SHA-256 25ff8af65e2e834dfd2dd9acaf635e0026ff2e838ec1da12e9911ca5ce99d557. | PO/BA; M4/M8 reduced-contract, experiment, split or retirement proposal; no implementation |
+| `docs/plans/sa-ta-skill-metrics-deep-dive.md` | HISTORICAL_INPUT | Full plan read; personal draft learning plan: six modules over twelve weeks. Section 9 labels numerical thresholds and scoring weights uncalibrated; five follow-ups remain unchecked. No organizational people/delivery gate established. SHA-256 ce0cb800418b11214a0e08ade2627072b0b85ed67b915f993cb9422007c7e780. | Architecture lead/PO; M4/M8 sponsored calibration or retirement decision |
+| `docs/plans/apply-trending-ai-research-2026-06.md` | HISTORICAL_INPUT | Full plan read; proposal pending human review. WI-2 explicitly maps to codebase-memory-mcp-trial and subsequent team rollout. WI-1 scanner and WI-3 Rationalizations/anatomy remain proposals; the graph trial records its scanner dependency as no longer mandatory after its install-route decision. SHA-256 a46757a56f2b0d03ff56d76d42d338a4b214b28f711e1ff98a0519cb81eb4862. | PO/developer/security reviewer; M4/M8 distinguish completed WI-2 from separate WI-1/WI-3 proposals; no scanner run |
+| `docs/plans/sdd-light-code-factory-plan-review.md` | HISTORICAL_INPUT | Full revision-5 plan read; historical human approval dated 2026-07-16. Its two canonical successor s01 notes explicitly take T1-T7 and T8-T9 respectively. Legacy s08 evidence preserves accepted AC-15 telemetry residual and separate default-rollout decision. SHA-256 fa52e98d7e3cc522076c6a7de006e05b42661ca55be1e340be52e0f3ef0ad5b3. | Maintainer/QC; preserve original approval and bounded successor closure; operative authority is the current policy/backbone and owning work items |
 
-The three ignored plans were found in the root-owner workspace, not in the clean tracked audit tree. The SDD Light plan is selectively tracked despite the broader ignore rule. Memory and metrics headers remain proposal/draft; the trending input preserves WI-1/WI-3 proposals and WI-2 trial scope. Only header/classification evidence has been read for memory/metrics/SDD Light, not their full completion claims. Remaining prior audit, architecture/productization, adaptive/diagram and research inputs need tracked canonical/successor mapping at M3/M4; no duplicated CURRENT portfolio authority is created.
+Successor checks: the trial s01 explicitly names the trending WI-2 proposal, and the two Light s01 notes explicitly name revision 5 and their task partition. Their historical closures are evaluated in the legacy table below. The current 42-skill inventory does not establish completion of a proposed nine-skill architecture pack. A scoped search for `Rationalizations` and `SkillSpector` in canonical skills and non-master work items finds trial install discussion, not a WI-1 scan report or WI-3 pilot completion; this is a scoped evidence gap, not proof about every external workspace.
+
+### Research inputs and local source captures — 17 paths
+
+Read scope here is classification-oriented: frontmatter, introductions, headings and the named purpose/limitations/conclusion sections. It is not a fresh verification of upstream statistics, tool capabilities or organization-specific pilot claims. The depth-2 addendum and raw-source INDEX were read in full. Each file has exactly one input classification; `SUPERSEDED` for pilot v1 follows the explicit `supersedes` metadata in v2. All other research inputs remain historical inputs, including actionable proposals awaiting a separately owned decision.
+
+| Root-owner input under `docs/research/` | Classification | Direct evidence / read scope | Owner / successor boundary |
+| --- | --- | --- | --- |
+| `architecture-skill-pack-proposal.md` | HISTORICAL_INPUT | Frontmatter/intro and sections 1, 3-5: unapproved proposal; open audience/review-model/scope questions, phased skill pack and overlap review. | BA/maintainer; competency map and specs refine the proposal, but no whole-pack approval inferred |
+| `architecture-skill-specs-and-plan.md` | HISTORICAL_INPUT | Intro and sections 11-12: nine-skill proposal, four waves, six per-skill acceptance checks and four human decisions still required; old 38-skill baseline and unverified manifest assumptions. | BA/developer; canonical architecture-modeling owns shipped behavior; other proposed skills need independent admission |
+| `sa-ta-competency-map.md` | HISTORICAL_INPUT | Intro and sections 5-9: calls itself master only within the proposal family; eighteen competencies, nine skills; explicitly uncalibrated thresholds and no human gate for the roadmap. | Architecture lead/BA; input to optional experiment, not current organization role policy |
+| `design-templates-and-quality-bar.md` | HISTORICAL_INPUT | Intro, sections 1 and 4: proposal changes earlier Mermaid recommendation to Structurizr for two audience axes; revises names and removes overlap. | BA/developer; compare with canonical architecture-modeling and audience-views research before any fold-in; no global tool-default change |
+| `sad-skill-content-spec.md` | HISTORICAL_INPUT | Intro and sections 5.3-6: SAD content proposal, eight proposed quality checks, anti-rationalization examples, explicit no self-approval; audience format is conditional. | BA/developer; no shipped sad-authoring skill or implementation gate inferred from this content spec |
+| `system-landscape-design-objectives.md` | HISTORICAL_INPUT | Intro and sections 9-10: conceptual reference, not template; numeric node/time/deviation thresholds explicitly unvalidated and not acceptance criteria. | Architecture lead/BA; conceptual input only; current canonical modeling contracts retain authority |
+| `sa-ta-architecture-skill-trends-2026-08.md` | HISTORICAL_INPUT | Intro, section 5.1/5.2 and section 6: dated v2.3.1 inventory, proposed gap/roadmap, unverified source statistics and organizational assumptions explicitly disclosed. | Architecture lead/BA; revalidate external sources before reuse; current product scope follows canonical SA/TA/modeling owners |
+| `pilot-run-m1.2-store-operations.md` | SUPERSEDED | Intro and sections 5-7: prototype pilot explicitly not canonical GGG output; design limitations identified. v2 frontmatter explicitly supersedes this run. | BA/QC; successor pilot-run-m1.2-store-operations-v2.md; preserve historical observations |
+| `pilot-run-m1.2-store-operations-v2.md` | HISTORICAL_INPUT | Intro and sections 6-7: rerun reports four changes but two remaining convention/domain issues and proposed third pilot; no current product closure. | BA/QC; audience-views research plus recovered prototype archive below; external GGG facts not independently revalidated |
+| `harness-engineering-2026.md` | HISTORICAL_INPUT | Intro and sections 5-9: H1-H4 registry/evaluation/policy/improvement proposal; depends on other plans, explicitly forbids auto-promotion and state-authority replacement. | Maintainer/developer/QC; reconcile current runtime primitives before any separate proposal; not a controller implementation grant |
+| `codebase-memory-depth2-measurement.md` | HISTORICAL_INPUT | Full 67-line tracked addendum: v0.9.0/index 3447969 measurement does not confirm depth-2 benefit across import boundaries; names trial residual and rollout successor. | Developer/QC; preserve measured limitation; current usage guidance belongs to docs/codebase-memory.md and the rollout work item |
+| `trending-ai-github-2026-06.md` | HISTORICAL_INPUT | Intro, headings and Code-Factory relevance/limitations sections: June 22 research on four tools; dated 36-skill baseline; LMCache explicitly out of current scope. | PO/maintainer; application plan owns WI-1/2/3 proposals; external popularity/capabilities not revalidated |
+| `trending-2026-06-raw/INDEX.md` | HISTORICAL_INPUT | Full file: captures four upstream main-branch READMEs on 2026-06-22 and links research/application plan. No upstream commit IDs are recorded. | Maintainer; retain local capture provenance; do not refresh in place during this audit |
+| `trending-2026-06-raw/DeusData-codebase-memory-mcp.README.md` | HISTORICAL_INPUT | Title, opening feature claims and headings checked against INDEX; whole-file digest retained, not full upstream technical verification. | Maintainer; captured external input for WI-2, not current installation authority |
+| `trending-2026-06-raw/addyosmani-agent-skills.README.md` | HISTORICAL_INPUT | Title, intro, workflow illustration and headings checked against INDEX; whole-file digest retained, not a local skill-pack contract. | Maintainer/developer; WI-3 proposal input only |
+| `trending-2026-06-raw/NVIDIA-SkillSpector.README.md` | HISTORICAL_INPUT | Title, intro and headings checked against INDEX; scanner claims are source-capture content, not proof that a local scan was run. | Security reviewer/maintainer; WI-1 proposal input only; no install/scan authorization |
+| `trending-2026-06-raw/LMCache-LMCache.README.md` | HISTORICAL_INPUT | Title, opening prerequisites and headings checked against INDEX; captured GPU/inference quickstart, not Code-Factory runtime requirements. | Maintainer; research-only source; application plan excludes current inference work |
+
+Exact research identities (root-owner workspace; only `codebase-memory-depth2-measurement.md` is tracked):
+
+- `architecture-skill-pack-proposal.md`: 14882 bytes; SHA-256 `8a6a4da5d1802f64b9860ee319ef416750a6adf41d611b061dd3baf31b7930cf`.
+- `architecture-skill-specs-and-plan.md`: 28942 bytes; SHA-256 `5dd5038e1800471a54b9e41f8b79a57e4ba7b6a6e134e7299599bd22c98ce4b1`.
+- `sa-ta-competency-map.md`: 17353 bytes; SHA-256 `765a3af4296a7340d4ae81a6e4db1eba4a61ae79c0d89ffc9c5263cf8c90df3a`.
+- `design-templates-and-quality-bar.md`: 19585 bytes; SHA-256 `1bade764a8a1ce9400a593c1e2253f46d4f2ab55fe8c4c8d129b90141ccc7cea`.
+- `sad-skill-content-spec.md`: 17122 bytes; SHA-256 `ed39dbad9f7c1ac4a34aea2ebb2fcc398e76515cd67cfe5e9e7c502066787528`.
+- `system-landscape-design-objectives.md`: 10397 bytes; SHA-256 `1934003efb452bf85c344f89a2c8f800f12d1c4e337005f97328fbd9f008815c`.
+- `sa-ta-architecture-skill-trends-2026-08.md`: 58642 bytes; SHA-256 `bc4ebd12928a4b9a251965d660002906e2e5ff82464ecdb524a4558574f16ed4`.
+- `pilot-run-m1.2-store-operations.md`: 16148 bytes; SHA-256 `a4f9c5f6ceee4e3f7e2adc9133ee6a7dc88ccb74fff971ccf07b693fe1864699`.
+- `pilot-run-m1.2-store-operations-v2.md`: 14755 bytes; SHA-256 `39b20f8a9bbcdb741dafeff4d14c9acb08a533400da017f3cadc61ca68cee0fc`.
+- `harness-engineering-2026.md`: 12324 bytes; SHA-256 `2bea75995f223949d26a41a6a34a62f80336057e85fc10c8dbfce06cdbff2204`.
+- `codebase-memory-depth2-measurement.md`: 3494 bytes; SHA-256 `f19d66f9f09dbae3e995874fc4bf562c2a11e1f8375f47c9af7e4a6abcf0ced0`.
+- `trending-ai-github-2026-06.md`: 15005 bytes; SHA-256 `cbc150e252d499710dbcd95f079a6b343ddd1271c5defc2ac2ef82e072f70760`.
+- `trending-2026-06-raw/INDEX.md`: 2210 bytes; SHA-256 `313765479aaa9a226be0b383a478613b4a823d3ac234e5bd096ae10c118ece7c`.
+- `trending-2026-06-raw/DeusData-codebase-memory-mcp.README.md`: 35328 bytes; SHA-256 `410204e484041c9f755dc68c0a47a7d4603d6b0cb2de96d2a7e2373d2b3827af`.
+- `trending-2026-06-raw/addyosmani-agent-skills.README.md`: 20574 bytes; SHA-256 `ebcbdd66b3b7688b098b750ff398c2da2866cc1d42428716e0074ccde78c4500`.
+- `trending-2026-06-raw/NVIDIA-SkillSpector.README.md`: 20800 bytes; SHA-256 `bf75d79dced64d0fd6ffccd0d54402006644487de2c04e22cca699ad7fc0be1a`.
+- `trending-2026-06-raw/LMCache-LMCache.README.md`: 5022 bytes; SHA-256 `7d9b799875050e6a0d0884ec93415a6620e15925b852d84a9f7ee29f7412e15c`.
+
+### Earlier pack review records
+
+These four tracked records have a direct chronology. The original EN/VI pair explicitly names its replacement; the independent review marks seven findings resolved and points to its post-fix record. This classifies the history without using July tests or installed-version warnings as September completion evidence. Read scope: status banners, finding summaries, supersession links and post-fix residuals.
+
+| Input | Input classification | Evidence / successor | Owner |
+| --- | --- | --- | --- |
+| `docs/skill-pack-audit-report.md` | SUPERSEDED | Explicit historical banner; replacement is independent review plus post-fix record; SHA-256 `04d671753db0d9d6193584d3a74194a8a388d59552874132c9518d6c809a655c` | Maintainer/QC; preserve historical record, use current M2 evidence for present quality |
+| `docs/skill-pack-audit-report.vi.md` | SUPERSEDED | Vietnamese companion has the same explicit supersession boundary; SHA-256 `79ce85514c99d8be16316b4ab009faaf4426d00ecff8ae792bdf60f3c691552c` | Maintainer/QC; preserve historical record, use current M2 evidence for present quality |
+| `docs/skill-pack-review-2026-07-23.md` | HISTORICAL_INPUT | Resolved seven-finding review; original FAIL preserved, dated resolution points to post-fix audit; SHA-256 `229151b7110493c32b3d49bc8856e3783b2b3bb3fdee03fc260abfea6f11e98f` | Maintainer/QC; preserve historical record, use current M2 evidence for present quality |
+| `docs/skill-pack-audit-report-2026-07-23-post-fix.md` | HISTORICAL_INPUT | v2.3.0 post-fix record; installed-runtime and flat governance-pointer residuals remain historically disclosed; SHA-256 `d8e7b0cb6d780089dc00913903b1ed769212a692d8298bf0360f180f9b170e49` | Maintainer/QC; preserve historical record, use current M2 evidence for present quality |
+
+Other protected-plan input families map to existing owners: SA/TA productization to `arch-role-skills-release` and `integrate-design-checklists-into-sa-ta`; adaptive approval to the archived `adaptive-governance-human-approval-ux` and its independently closed correction subjects; diagram design to the root-only CHANGE-005/adapter pair; test/tree residual to `decouple-tests-from-tree-layout`. Their lifecycle classifications above/below govern interpretation. This mapping does not amend the protected CF register or declare any remaining finding closed.
 
 ## Legacy work-item classification — 21/21
 
@@ -90,7 +149,7 @@ Counts: 8 LEGACY_CLOSED, 6 actionable, 7 ambiguous, 0 empty-invalid. Protocol va
 - sdd-light-authority-cutover: work-items/sdd-light-authority-cutover/sdd-light-authority-cutover.s08.verification.md; SHA-256 30aba0b2acef76fb23701cfe73d45b7b137e103f9836383469cdd60499fab6e7.
 - sdd-light-code-factory: work-items/sdd-light-code-factory/sdd-light-code-factory.s08.verification.md; SHA-256 cf2bea9099b6c294c980aaa3c465a897eb8e3b5da4f2393404e48a7b514b3700.
 
-`work-items/wfc-demo/` is absent from the pinned tracked tree; list reports 25 valid entries. There is no current empty-invalid entry to delete. No file or report was written by the read-only list/status/protocol checks.
+Historical initial check: `work-items/wfc-demo/` was absent and the initial list reported 25 valid entries. The current tracked census is 41, as recorded above. There is no current empty-invalid entry to delete. No file or report was written by the read-only list/status/protocol checks.
 
 ## Recovered architecture prototype input
 
@@ -165,9 +224,9 @@ M3-OBS-04: CI parallelisation remains an actual BLOCKED report even though the C
 
 These checks establish lifecycle/receipt classifications, not every earlier authoring gate, every residual closure, branch cleanup permission or live release/installed provenance. Root README and v2.6.1 wording flagged in historical M3-OBS-02 still require current-document comparison below; old wording is not used to revoke valid terminal receipts.
 
-## Public-document classification allowlist — 27 subjects
+## Public-document classification allowlist — historical 27-subject starter
 
-This is a source-navigation/identity classification, not the full mandatory-surface M7 language review. CURRENT files can still FAIL freshness. The two positioning files explicitly describe June 2026 brand proposals, hence HISTORICAL advisory inputs; labeling or unlinking them is only a proposal. The current-facing community README pair and Vietnamese onboarding page must not be silently reclassified to hide their stale v2.1.1/36-skill claims.
+This starter is pinned to the initial `5b85d7f` snapshot; its hashes are historical, not a claim about the current source. Refresh and expansion to the current public surface remain pending. This is a source-navigation/identity classification, not the full mandatory-surface M7 language review. CURRENT files can still FAIL freshness. The two positioning files explicitly describe June 2026 brand proposals, hence HISTORICAL advisory inputs; labeling or unlinking them is only a proposal. The current-facing community README pair and Vietnamese onboarding page must not be silently reclassified to hide their stale v2.1.1/36-skill claims.
 
 | Document | Classification | Source SHA-256 | Disposition / owner |
 | --- | --- | --- | --- |
@@ -199,7 +258,7 @@ This is a source-navigation/identity classification, not the full mandatory-surf
 | docs/releases/workflow-bundle-v2.6.0.md | HISTORICAL | 12e2e49d61d7145a71e12eaf6c2c82e7fcdc46d349ce16716daa9b858dc45151 | Preserve versioned record or brand proposal; propose explicit historical label/navigation boundary; BA/DevOps |
 | docs/releases/workflow-bundle-v2.6.1.md | HISTORICAL | e5fd05b23ce86184309429e5ad7228cb618c008da215ed96424aff0e59bd6d2d | Preserve versioned record or brand proposal; propose explicit historical label/navigation boundary; BA/DevOps |
 
-All 27 listed files exist and match the pinned source bytes. The full M1 public/navigation surface family includes additional governance/help/glossary subjects; this starter allowlist does not claim that those have been fully classified or language-reviewed. Final CURRENT-doc parity is still M10/M11, after independent release/installation evidence.
+All 27 listed files matched the initial pinned source bytes when classified; this table is not current-source parity evidence. The full M1 public/navigation surface family includes additional governance/help/glossary subjects; this starter allowlist does not claim that those have been fully classified or language-reviewed. Final CURRENT-doc parity is still M10/M11, after independent release/installation evidence.
 
 ## Remaining evidence and scope boundaries
 

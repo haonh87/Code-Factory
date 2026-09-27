@@ -1,6 +1,6 @@
 # Code-Factory holistic coverage matrix
 
-Current M2 source: `1b2af7be87301c62965f2339b5199aa48ae9e358`; integrated main comparator: `a36b1852ca13dd5209fad319400e769c5b22cabf`. Updated: `2026-09-27T06:00:10.803553Z`.
+Current M2 source: `bab6b78183e6291ce6dccee035f2392219fbd45f`; integrated main comparator: `a36b1852ca13dd5209fad319400e769c5b22cabf`. Updated: `2026-09-27T06:18:49.415106Z`.
 Evidence tier: audit branch on integrated main. The inventory preserves dated M1 snapshots separately from `current_snapshot` and the refreshed semantic read log. M2/M3 remain IN_PROGRESS; M4, CF-MB1 and final AC closure are not approved.
 
 ## Inventory coverage
@@ -48,7 +48,7 @@ Evidence tier: audit branch on integrated main. The inventory preserves dated M1
 | json-canvas | obsidian | Canvas artifact format and layout; no workflow activation | Node/edge/group fields and validation rules read | Full worked examples and primary format specification compared | Unique string IDs are valid; optional hex convention example is inconsistent: M2-OBS-14 | Both installed 2.6.3 SKILL files match; effective precedence unobserved | PARTIAL |
 | obsidian-bases | obsidian | Base filters/views/formulas within vault | YAML/filter/property/summary schemas read | Function and worked-example references fully read | Artifact formatting only; exhaustive function claim and mean()/basename examples need compatibility verification | Both installed 2.6.3 SKILL files match; effective precedence unobserved | PARTIAL |
 | obsidian-markdown | obsidian | Markdown syntax, links, properties and embeds | Formatting/examples and frontmatter types read | Callouts and diagrams/extras references fully read | No gate ownership; syntax examples do not create delivery approval | Both installed 2.6.3 SKILL files match; effective precedence unobserved | PARTIAL |
-| codex-workflow-chain | orchestration | Eight-step backbone; admission and human authority | Light/full mappings, step contracts and delegation rules read | Full skill and adaptive-planning read; remaining backbone refs listed in inventory | Adaptive applicability precedes roles; Light gate hosts explicit; runtime comparison pending | Both installed 2.6.3 SKILL files match; effective precedence unobserved; four supporting refs differ from later main | PARTIAL |
+| codex-workflow-chain | orchestration | Eight-step backbone; admission and human authority | Light/full mappings, step contracts and delegation rules read | Full skill, adaptive-planning, execution-runtime, sdd-merge-strategy and workflow-versioning read; remaining backbone refs listed in inventory | Adaptive applicability precedes roles; Light gate hosts explicit; runtime comparison pending | Both installed 2.6.3 SKILL files match; effective precedence unobserved; four supporting refs differ from later main | PARTIAL |
 | goal-griller | orchestration | Interview only when goal/autonomy request exists | Six required mission fields and rendering rules read | All five harness/generic references read; external version claims not yet verified | Draft does not start a goal; this audit invokes no goal commands from examples | Both installed 2.6.3 SKILL files match; effective precedence unobserved | PARTIAL |
 | workflow-governance-router | orchestration | Canonical request lane before workflow activation | Seven-field status and gate consistency rules read | Current router reread; adaptive-planning contract read | Non-delivery short-circuit; structured escalation; omitted roles/gates create no action | Both installed 2.6.3 SKILL files match; effective precedence unobserved | PARTIAL |
 
@@ -72,7 +72,7 @@ Evidence tier: audit branch on integrated main. The inventory preserves dated M1
 
 Current mechanical checks: pack audit PASS and architecture-role-skills-contract.test.js PASS on `1b2af7be87301c62965f2339b5199aa48ae9e358` (2026-09-23). Protocol PASS on the same source (2026-09-27): 20 managed items and 21 legacy skips. The old 181/177 artifact and 9/16 portfolio counts were historical observations, not the current tree.
 
-M2 read coverage: **42/42 canonical SKILL.md**, **54/68 operative English references**, thirteen agent files and three bundled architecture scripts; 112 unique read-log paths. Earlier reads were hash-revalidated, and the changed router was reread. The earlier total of 69 was a counting error: tracked English `references/*.md` count is 68 in both initial and current snapshots. Remaining 14 English references and cross-boundary runtime/adapter/hook/MCP/CI contracts prevent completion. Read coverage does not imply semantic approval.
+M2 read coverage: **42/42 canonical SKILL.md**, **57/68 operative English references**, thirteen agent files and three bundled architecture scripts; 115 unique read-log paths. Earlier reads were hash-revalidated, and the changed router was reread. The earlier total of 69 was a counting error: tracked English `references/*.md` count is 68 in both initial and current snapshots. Remaining 11 English references and cross-boundary runtime/adapter/hook/MCP/CI contracts prevent completion. Read coverage does not imply semantic approval.
 
 A successful inventory or pack audit does not make any NOT_REVIEWED semantic cell PASS. No Technical Verification, DoD, merge, publish, tag or install is opened here.
 
@@ -109,3 +109,13 @@ All eight guardrail SKILL.md files and five delivery SKILL.md files (branch fini
 - M2-OBS-14 (PARTIAL; proposed LOW): the Canvas example described as 16-character hexadecimal contains `g`/`h`. The actual [JSON Canvas format](https://jsoncanvas.org/spec/1.0/) requires unique string IDs, so this is an example/convention inconsistency rather than invalid Canvas syntax. Owner: maintainer; M4 proposal only.
 
 All observations remain audit assessments. The protected CF-001..020 register and finding-disposition sidecar are unchanged; no original finding is reclassified by these additions.
+
+## Backbone reference continuation
+
+| Reference | Read evidence and authority interpretation | Assessment / next boundary |
+| --- | --- | --- |
+| `execution-runtime.md` | Full read of ownership, agentic fallback, assignment/handoff/merge schemas, optional external research and verifier roles. Explicitly scoped to v1.0.0; says later work-item protocol must be respected. | PARTIAL: tester/coordinator DoD wording must be read under current human-controlled approval (same concern as M2-OBS-10). Compare current plural artifact sections and validators before concluding runtime consistency; no delegation activated. |
+| `sdd-merge-strategy.md` | Full read; dated April 11 composition strategy keeps the host workflow and forbids execution kits replacing business gates. | PARTIAL: historical BRD/SRS and role/RESEARCH guidance is not an exception to present Spec Card/adaptive admission rules. Current Light and protocol references still need full cross-check. No external kit installed or current upstream capabilities asserted. |
+| `workflow-versioning.md` | Full read; dated April 14 v1.0.0 manual-scaffold boundary and post-v1 materialization/protocol extensions. | PARTIAL: preserve historical version boundary, but unqualified default-onboarding wording needs comparison with current strict protocol defaults and current-facing navigation. It does not authorize legacy scaffold execution. |
+
+These reads add source evidence only. The remaining eleven references and cross-boundary contract rows still prevent M2 completion; no new CF disposition or current semantic PASS is inferred from a dated architecture document.
