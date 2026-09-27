@@ -939,3 +939,61 @@ Spec-compliance self-review first: all four M2 outputs and all four M3 outputs n
 The two-part task's first part was already completed: the two archived DONE worktrees and local branches were removed with preserved remote refs and path attribution. The second part is this M2/M3 audit output, not all M0..M11 remediation. Master remains ACTIVE/s07; M4 and the review pair remain subsequent portfolio work. Final artifact verification follows after execution.
 
 Verification completed at `2026-09-27T13:35:54.626345Z`: naming PASS (280 artifacts); governance, execution and planning PASS (276 notes each); protocol PASS (20 managed / 21 legacy skips). Integrity PASS covers 126 skill/reference/agent/script hashes, 43 scope-labeled cross-boundary hashes, 42 assessed skills, ten contract rows, 23 observations, all 48 public classifications and 20 managed report/host identities. All 33 terminal and four master authoring receipts remain APPROVED/digest-matched. The 21 root prior inputs, 19 untracked files, two protected refs, protected register/disposition and frozen hosts remain unchanged. Both installed 42-skill bodies and manifest/state identities revalidate; global CLI remains 2.6.3. Strict UTF-8 and whitespace checks PASS. Full production unit/build, live security scans, hosted jobs, install and release reruns are outside this documentation-only delta; the three earlier source tests retain their exact scopes and identities. M2 and M3 are COMPLETE_WITH_OBSERVATIONS as audit tasks; master remains ACTIVE/s07.
+
+
+## M4 finding reconciliation — 2026-09-27T13:58:47.572995Z
+
+The user accepted the concrete M4 continuation. Router revalidation found this existing materialized research owner ACTIVE/s07, brownfield, all four authoring receipts APPROVED/digest-matched, no missing execution gate, and granted audit-only paths. No non-delivery materialization or new child was created. M2/M3 dependencies are complete with observations; s06 M4 owns finding disposition and coverage, with progress recorded here.
+
+Source `14a5068187a6fecf22e325dfdfcdc98855c7b38a` retains integrated main `a36b1852ca13dd5209fad319400e769c5b22cabf`. M4 now prepares twenty exactly-once dispositions and routes 23 M2 observations, six M3 observations and one previously unnumbered source-label residual. The [disposition owner](../../docs/audits/code-factory-holistic-finding-disposition.md) holds evidence tiers, ownership, child/proposal boundaries, next gates and closure tests; [coverage](../../docs/audits/code-factory-holistic-coverage-matrix.md) records task/AC limits. Existing CF-023/CI owners retain their blockers. Unavailable R-02/R-04/R-06 and partial known-claim revalidation of R-01/R-03 are explicit, with no invented original findings.
+
+Fresh read-only GitHub evidence confirms Node24 run 34959637638 at source 41e7b0187ff97e486b019bb9d69ab2945d7bbf8a has ten successful jobs and zero annotations on all ten checks; release run 35554116040 succeeds at its recorded 7f810352ca253b9b8356f9116335cc03713adae4 source. No hosted run was triggered. Original register, frozen s04/s05/s06, portfolio JSON, production files, child reports/receipts, release/install state and all root untracked/protected branch/worktree contents remain outside the write scope.
+
+Spec-compliance self-assessment: M4's five output obligations are represented; historical closure is not confused with new approval and open defects have testable owner contracts. This is the implementer's recommendation only. Formal CF-MB1 Code Quality is not opened before human QC Spec Compliance; no two-tier approval is fabricated from local checks. Documentation-only change needs no production TDD; integrity, text encoding, whitespace and workflow checks follow.
+
+M4 verification completed at `2026-09-27T14:01:44.653036Z`: naming PASS (280 artifacts); governance, execution and planning PASS (276 notes each); protocol PASS (20 managed/21 legacy). Exact ID/severity/owner/route checks PASS for twenty original findings, 23 M2/six M3 routes and 15 proposal entries. All 33 terminal and four authoring receipts remain APPROVED/digest-matched. Integrity/UTF-8/whitespace PASS; 912 other tracked files, all nineteen root untracked files, 21 prior inputs, installed manifests/state and 84 SKILL bodies, the protected register/hosts/portfolio JSON, two unique-commit refs and four-worktree map remain unchanged. Scope is three audit documents only. M4 is COMPLETE_WITH_OBSERVATIONS as an audit task; master remains ACTIVE/s07 with no final DoD.
+
+
+### CF-MB1 Spec Compliance review packet
+
+This packet covers M2/M3/M4 output obligations, not remediation completion. The AI recommendation is PASS_WITH_RECORDED_LIMITATIONS: all outputs are represented and verified; missing original review inputs, actual harness precedence, ambiguous legacy outcomes and unresolved source defects retain named owners. Human QC must assess the bounds and recommendations. A new user approval must identify this stage/subject; prior acceptance to execute M4 is not the review verdict.
+
+```yaml
+review_target: CF-MB1
+planning_track: full
+review_mode: INDEPENDENT
+review_order: [SPEC_COMPLIANCE, CODE_QUALITY]
+current_stage: SPEC_COMPLIANCE
+recommendation: PASS_WITH_RECORDED_LIMITATIONS
+human_spec_compliance: NOT_APPROVED
+code_quality: NOT_OPENED
+reviewer_role: qc
+reviewed_by: ""
+reviewed_at: ""
+source_identity: 14a5068187a6fecf22e325dfdfcdc98855c7b38a
+integrated_main: a36b1852ca13dd5209fad319400e769c5b22cabf
+evidence_set_sha256: 85f5eb35cb314e2b3e367789e005b524fe1911320ce88a6c78e8ea3cf618f25d
+evidence_artifacts:
+  - path: docs/audits/code-factory-holistic-coverage-matrix.md
+    sha256: 0811ad5fe2e3423f5ff33967ca2e6bdf78f11865043477788cb7ee3f62e45e44
+  - path: docs/audits/code-factory-holistic-finding-disposition.md
+    sha256: 096b79be77c9161a59dec08eda2b77df0c7d15e3ec54ccb9d5a180ebffa03df7
+  - path: docs/audits/code-factory-holistic-inventory.json
+    sha256: 13ba3b0bb3c5f75bbf3f15bcd5c27d17e6bac4ac315751ee0ba3b4cf23cf5772
+  - path: docs/audits/code-factory-holistic-legacy-document-classification.md
+    sha256: ca61069c07afbb01ebe3d88a3bfd84fcd05740f0b05bb88e8687dc4fda8d05fc
+binding_rule: "SHA-256 of UTF-8 lines sorted by path: <sha256><two spaces><path><LF>; all four files included. Any byte change invalidates this packet."
+required_checks:
+  spec_compliance:
+    - "M2/M3/M4 approved outputs present; complete inventory and exactly-once finding/input authority."
+    - "Each nonterminal/new observation has owner, dependency, child/proposal, next gate and closure test."
+    - "Historical closure/current runtime evidence reconciled without inherited child or gate approval."
+    - "R-* recovery limits, effective discovery and ownership deferral disclosed; no guessed findings."
+    - "Only the granted three audit documents changed; protected register, sealed hosts, reports, receipts and root WIP preserved."
+  code_quality:
+    - "NOT_OPENED: separate Developer/QC review after human QC Spec Compliance PASS."
+next_human_action: "QC reviews and approves or rejects this exact CF-MB1 Spec Compliance packet."
+m5: CLOSED_PENDING_REVIEW_PAIR
+```
+
+The binding excludes this hosting s07 file to avoid a self-referential digest; its own bytes are fixed by the review commit. Evidence includes the unchanged inventory and M3 classification as well as the two current M4 sidecars. No trusted receipt was fabricated and no independent reviewer was impersonated. Per approved s06: “QC approves CF-MB1 Spec Compliance before Developer/QC Code Quality; M5 waits for the pair.”

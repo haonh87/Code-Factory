@@ -1,7 +1,7 @@
 # Code-Factory holistic coverage matrix
 
 Current M2 source: `72353b029b9fb5d82adca34fef3bdedf789c930c`; integrated main comparator: `a36b1852ca13dd5209fad319400e769c5b22cabf`. Updated: `2026-09-27T13:34:22.790725Z`.
-Evidence tier: audit branch on integrated main. The inventory preserves dated M1 snapshots separately from `current_snapshot` and the refreshed semantic read log. M2 and M3 are COMPLETE_WITH_OBSERVATIONS at this verified audit-task snapshot; M4, CF-MB1 and final AC closure are not approved.
+Evidence tier: audit branch on integrated main. The inventory preserves dated M1 snapshots separately from `current_snapshot` and the refreshed semantic read log. M2 and M3 are COMPLETE_WITH_OBSERVATIONS at that verified audit-task snapshot. The current M4 reconciliation is recorded below and in its owning disposition sidecar; CF-MB1 and final AC closure remain unapproved.
 
 ## Inventory coverage
 
@@ -57,13 +57,13 @@ Evidence tier: audit branch on integrated main. The inventory preserves dated M1
 | Criterion | Current evidence | Result | Remaining closure |
 | --- | --- | --- | --- |
 | AC-CF-001 | M1 42 skills / 8 families / exact source digests | PARTIAL | M2 assessed 42/42; remediation/final identity and M11 recount remain |
-| AC-CF-002 | Protected prior authority retained | PARTIAL | M3 classifications complete; M4 exactly-once findings disposition remains |
-| AC-CF-003 | Existing approved task dependencies | PARTIAL | M4-M8 finding/child closure contracts |
+| AC-CF-002 | Protected prior authority retained | PARTIAL | M3 classifications and M4 twenty-row disposition prepared; CF-MB1 review, owned remediation and M11 final closure remain |
+| AC-CF-003 | M4 gives every original/new observation an owner, dependency, child/proposal, next gate and closure test | PARTIAL | Human CF-MB1 review; M5/M6 detailed child handoffs, M8 decisions and actual closure remain |
 | AC-CF-004 | M0 six roots and independent receipts | PARTIAL | Final child authority audit |
 | AC-CF-005 | Both installed 2.6.3/42; SKILL bodies equal current source and retained release; four supporting refs differ from later main | PARTIAL | Exact candidate/release/installed reconciliation remains M10; version equality alone is insufficient |
 | AC-CF-006 | No semantic result inferred from mechanical tests | PARTIAL | Semantic-child standard-path negative regression |
 | AC-CF-007 | Deterministic review scope pending M7 | PARTIAL | BA rubric + QC evidence |
-| AC-CF-008 | No history rewritten | PARTIAL | M3 classified every subject; M4/M11 residual and final closure remain |
+| AC-CF-008 | No history rewritten | PARTIAL | M3 classified every subject; M4 routes residuals; owned changes and M11 final closure remain |
 | AC-CF-009 | No package generated or hosted identity claimed | PARTIAL | Repeated clean artifact/content/provenance comparison |
 | AC-CF-010 | M2 source applicability suite and two negative controls assessed | PARTIAL | Operative policy/runtime semantic fixtures |
 | AC-CF-011 | M3 classifies 48 public subjects: 26 CURRENT / 22 HISTORICAL; stale current claims remain visible | PARTIAL | Released/installed allowlist parity |
@@ -203,6 +203,24 @@ The ten contract rows cover authority, router, backbone, gate, report, validator
 | Mechanical versus semantic results | Three existing checks PASS; invalid catalog YAML and hook diagnostics remain explicit FAIL/PARTIAL |
 | Known regression/standard-path coverage | CF-009/019 existing assertions and in-memory negatives; CF-010 standard-path gaps and owner identified |
 
-M3's four-output completion evidence remains in [its classification owner](code-factory-holistic-legacy-document-classification.md#m3-completion-check). The next portfolio task is M4, followed by the independently controlled CF-MB1 review pair. Neither is completed by M2/M3. The protected original register, sealed s04/s05/s06, child reports/receipts and settled release remain unchanged. No further branch/worktree closure is authorized by this assessment.
+M3's four-output completion evidence remains in [its classification owner](code-factory-holistic-legacy-document-classification.md#m3-completion-check). At that M2/M3 checkpoint, the next portfolio task was M4 followed by the independently controlled CF-MB1 review pair. The current M4 section below supersedes that next-action snapshot; M2/M3 never passed the review pair. The protected original register, sealed s04/s05/s06, child reports/receipts and settled release remain unchanged. No further branch/worktree closure is authorized by this assessment.
 
 Verification completed at `2026-09-27T13:35:54.626345Z`: naming PASS (280 artifacts); governance, execution and planning PASS (276 notes each); protocol PASS (20 managed / 21 legacy skips). Integrity PASS covers 126 skill/reference/agent/script hashes, 43 scope-labeled cross-boundary hashes, 42 assessed skills, ten contract rows, 23 observations, all 48 public classifications and 20 managed report/host identities. All 33 terminal and four master authoring receipts remain APPROVED/digest-matched. The 21 root prior inputs, 19 untracked files, two protected refs, protected register/disposition and frozen hosts remain unchanged. Both installed 42-skill bodies and manifest/state identities revalidate; global CLI remains 2.6.3. Strict UTF-8 and whitespace checks PASS. Full production unit/build, live security scans, hosted jobs, install and release reruns are outside this documentation-only delta; the three earlier source tests retain their exact scopes and identities. M2 and M3 are COMPLETE_WITH_OBSERVATIONS as audit tasks; master remains ACTIVE/s07.
+
+
+## M4 reconciliation and CF-MB1 scope — 2026-09-27T13:58:47.572995Z
+
+Source `14a5068187a6fecf22e325dfdfcdc98855c7b38a`, integrated main `a36b1852ca13dd5209fad319400e769c5b22cabf`. The [finding-disposition owner](code-factory-holistic-finding-disposition.md) now contains the only current twenty-row reconciliation, preserving original IDs/severity while leaving the protected register unchanged. Five original defects are RESOLVED_REVALIDATED and fifteen retain a partial/open closure contract. This is an AI assessment pending human review, not an accepted portfolio/child completion verdict.
+
+| Approved M4 output | Evidence / result | Remaining boundary |
+| --- | --- | --- |
+| Exactly one disposition per original finding | Twenty unique rows with severity, priority, owner, source tier, current rationale, existing child/proposal, dependency/next gate and concrete closure test | CF-MB1 QC review; open defects stay open |
+| Revalidate historical resolved claims | Tracked authority, fresh valid 41-item list/no wfc-demo, and M2 SA/TA enum regression evidence retain all three prior resolved verdicts | New defects route separately; no register rewrite |
+| Reconcile advanced lifecycle/runtime state | CR-008 terminal reconciliation and Node24 warning-free run revalidated; release remains ARCHIVED; installed 2.6.3/42 drift corrected with M10 limits | CF-003/017/019 retain identity/discovery residuals; M5 must consume completed evidence instead of obsolete blockers |
+| Route new evidence without duplication | All 23 M2 and six M3 IDs map once; one previously unnumbered step-label residual is M4-OBS-01; CF-023 retains its existing dedup-blocked owner | New proposal IDs are sidecar entries only; M6 materialization not opened |
+| Independent review inputs | R-01/R-03 known claims revalidated with explicit precedence/ownership limits; R-02/R-04/R-06 originals unavailable after bounded recovery | Maintainer/QC owns recovery; no guessed R-* content; R-03 restructure deferred |
+| Ordered review recommendation | s07 binds exact evidence-artifact digests after verification | QC Spec Compliance NOT_APPROVED; Developer/QC Code Quality NOT_OPENED; M5 waits for both |
+
+AC-CF-002/003/004/008 have new reconciliation evidence but remain PARTIAL at the whole-work-item level. M4 establishes traceability; it does not implement semantic/security/docs fixes, complete M7 language review, prove effective harness discovery, repeat packaging, or pass final AC-CF-001..011. All M2 FAIL/PARTIAL cells and M3 classifications retain their original assessment scopes. Existing observation details above are historical evidence; their current ownership/disposition is the linked M4 owner.
+
+M4 is COMPLETE_WITH_OBSERVATIONS as an audit task after artifact verification at `2026-09-27T14:01:44.653036Z`: naming 280, governance/execution/planning 276, protocol 20 managed/21 legacy all PASS; twenty finding rows, 23 M2/six M3 routes, 37 receipt bindings, preservation hashes, UTF-8 and whitespace PASS. Human CF-MB1 remains unapproved. Production tests/build/security/install/hosted reruns are not required for this documentation-only delta; existing source-test evidence remains bound to the unchanged production tree. No production behavior or archived release is changed.
