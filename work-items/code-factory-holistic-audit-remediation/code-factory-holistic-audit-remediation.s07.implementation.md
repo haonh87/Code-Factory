@@ -956,20 +956,24 @@ M4 verification completed at `2026-09-27T14:01:44.653036Z`: naming PASS (280 art
 
 ### CF-MB1 Spec Compliance review packet
 
-This packet covers M2/M3/M4 output obligations, not remediation completion. The AI recommendation is PASS_WITH_RECORDED_LIMITATIONS: all outputs are represented and verified; missing original review inputs, actual harness precedence, ambiguous legacy outcomes and unresolved source defects retain named owners. Human QC must assess the bounds and recommendations. A new user approval must identify this stage/subject; prior acceptance to execute M4 is not the review verdict.
+This packet covers M2/M3/M4 output obligations, not remediation completion. The AI recommendation is PASS_WITH_RECORDED_LIMITATIONS: all outputs are represented and verified; missing original review inputs, actual harness precedence, ambiguous legacy outcomes and unresolved source defects retain named owners. The recorded QC decision covers these bounds and recommendations. The user explicitly replied “accept” to the request to approve CF-MB1 Spec Compliance as QC for commit 2cbc8c9. This decision was recorded at 2026-09-28T04:15:21.909852Z, after all four evidence digests and the aggregate binding revalidated. This is the UTC recording time; no platform message timestamp was available. The earlier acceptance to execute M4 was not used as a review verdict.
 
 ```yaml
 review_target: CF-MB1
 planning_track: full
 review_mode: INDEPENDENT
 review_order: [SPEC_COMPLIANCE, CODE_QUALITY]
-current_stage: SPEC_COMPLIANCE
+current_stage: CODE_QUALITY
 recommendation: PASS_WITH_RECORDED_LIMITATIONS
-human_spec_compliance: NOT_APPROVED
-code_quality: NOT_OPENED
-reviewer_role: qc
-reviewed_by: ""
-reviewed_at: ""
+human_spec_compliance: PASS
+code_quality: WAITING_HUMAN_APPROVAL
+spec_compliance_reviewer_role: qc
+reviewed_by: "human user, acting as QC in the explicit approval request"
+reviewed_at: "2026-09-28T04:15:21.909852Z"
+reviewed_commit: 2cbc8c9a60ccc94c64e3561ca39bb3c9c664b7ab
+reviewed_s07_sha256: 7178ff0724227d05689787d841a515047034582467a54d57db4e61f212185c7b
+decision_source: "User replied accept to the explicit CF-MB1 Spec Compliance/QC approval request for commit 2cbc8c9."
+approval_scope: "M2/M3/M4 evidence and recorded limitations; excludes Code Quality, M5 execution, child approvals and master DoD."
 source_identity: 14a5068187a6fecf22e325dfdfcdc98855c7b38a
 integrated_main: a36b1852ca13dd5209fad319400e769c5b22cabf
 evidence_set_sha256: 85f5eb35cb314e2b3e367789e005b524fe1911320ce88a6c78e8ea3cf618f25d
@@ -991,9 +995,54 @@ required_checks:
     - "R-* recovery limits, effective discovery and ownership deferral disclosed; no guessed findings."
     - "Only the granted three audit documents changed; protected register, sealed hosts, reports, receipts and root WIP preserved."
   code_quality:
-    - "NOT_OPENED: separate Developer/QC review after human QC Spec Compliance PASS."
-next_human_action: "QC reviews and approves or rejects this exact CF-MB1 Spec Compliance packet."
-m5: CLOSED_PENDING_REVIEW_PAIR
+    - "Opened after the recorded QC Spec Compliance PASS; evidence fidelity, stable identities and disclosed gaps."
+next_human_action: "Developer/QC reviews the separate Code Quality recommendation after its evidence is prepared."
+m5: CLOSED_PENDING_CODE_QUALITY
 ```
 
-The binding excludes this hosting s07 file to avoid a self-referential digest; its own bytes are fixed by the review commit. Evidence includes the unchanged inventory and M3 classification as well as the two current M4 sidecars. No trusted receipt was fabricated and no independent reviewer was impersonated. Per approved s06: “QC approves CF-MB1 Spec Compliance before Developer/QC Code Quality; M5 waits for the pair.”
+The binding excludes this hosting s07 file to avoid a self-referential digest; its own bytes are fixed by the review commit. Evidence includes the unchanged inventory and M3 classification as well as the two current M4 sidecars. This is the s07 batch-review decision required by s06, not a new s04 Spec receipt. The gate CLI has no CF-MB1/spec_compliance gate; no lifecycle gate was repurposed, no trusted receipt fabricated and no independent reviewer impersonated. Bound sidecars retain their pre-approval snapshot wording; this owning s07 record is the current review status. Per approved s06: “QC approves CF-MB1 Spec Compliance before Developer/QC Code Quality; M5 waits for the pair.”
+
+
+#### CF-MB1 Code Quality recommendation — 2026-09-28T04:20:29.285039Z
+
+The human QC Spec Compliance decision above opened this quality assessment. The implementer reviewed evidence fidelity, stable identities, source-of-truth ownership, readable scope and disclosed gaps against the unchanged four-artifact set `85f5eb35cb314e2b3e367789e005b524fe1911320ce88a6c78e8ea3cf618f25d` from commit `2cbc8c9a60ccc94c64e3561ca39bb3c9c664b7ab`. This is an AI self-assessment submitted for the independent human Developer/QC verdict required by s06. No subagent or independent reviewer was invented.
+
+| Quality batch | Checks and direct result | Recommendation |
+| --- | --- | --- |
+| Evidence fidelity and identity | Four bound artifact hashes and aggregate match. All 126 full-read and 43 cross-boundary source hashes match; 42 inventory results agree with the coverage rows; all ten boundary assessments preserve their scope. Twenty managed reports/available s08 hashes, 48 public-document hashes and fifteen exact legacy terminal-note hashes agree with M3. All 33 terminal and four authoring receipts remain APPROVED/digest-matched. | PASS for the recorded snapshot; this does not re-run every historical diagnostic, external tool or hosted release. |
+| Traceability and ownership | Twenty original IDs occur once with unchanged severity and complete owner/dependency/child-or-proposal/next-gate/closure fields. All 23 M2 and six M3 observations route once; all 15 proposal identifiers resolve. CF-023 and CI parallelisation retain their actual owners and blockers. Local Markdown path links resolve. | PASS; proposal contracts do not activate children, and M6 must still perform its bounded proposal/ownership work. |
+| Reproducibility and claim limits | Fresh in-memory controls reproduce the geometry, typed-context and path-classification evidence below. The legacy traversal path model agrees with the inspected shell/PowerShell destination joins. No live hook, installer, deletion or external publication was executed. Existing MCP effect simulation remains a pinned historical diagnostic, not a new live test. | PASS_WITH_RECORDED_LIMITATIONS; unresolved source findings remain open, with security-sensitive changes independently governed. |
+| Preservation and maintainability | Only this unsealed s07 host changes; all 914 other tracked paths, including the four accepted sidecars, remain unchanged. Nineteen root untracked files, protected unique-commit refs and the four-worktree map retain their exact pre-review state. Dated pending prose in bound sidecars is interpreted through this owning review record. | PASS; editing a bound sidecar later requires rebinding/review rather than silent status normalization. |
+
+Fresh diagnostic reproduction uses the committed `packages/workflow-bundle/tests/fixtures/architecture-modeling/representative-model.json`: replace its relationships in memory with twelve copies of the first relationship, assigning distinct IDs `CQ-ROUTE-00` through `CQ-ROUTE-11`. Call `buildLayout`, flatten `edges[].path`, and compare every point with canvas bounds; call `buildDrawioXml` and `validateDrawio` without file output. The resulting architecture-model digest is `e27b8ab6db3a69d0c18f28845df18b2d309b90fe4b31e1abdbd45d47ebba5c02`, canvas 1180 by 410, eight outside points, minimum y=-40, automated PASS and overall PARTIAL. This is an equivalent fresh control, not a claim that its input is byte-identical to the earlier M2 model. An initial diagnostic used the wrong edge property (`points`); it failed before making a claim, was corrected to the actual `path` property, and the assertions then passed.
+
+For typed context, evaluate the exact `blockers` expression in `load-workflow-context.sh` against the unchanged receipt-binding report: it returns `[object Object]`. Evaluate `tdd-track-write.sh`'s exact `isExempt` expression for `packages/workflow-bundle/scripts/example.js`, `packages/workflow-bundle/test/example.test.js`, `mcp/github-push/src/core.js`, and `scripts/example.js`: results are false/true/true/true. Resolve `../outside-sentinel` against synthetic `/synthetic/home/skills`: it escapes to `/synthetic/home/outside-sentinel`. No whole hook or installer is invoked; these controls validate the audit's bounded assertions and are not child TDD evidence.
+
+```yaml
+review_target: CF-MB1
+review_stage: CODE_QUALITY
+assessment_mode: AI_SELF_REVIEW
+human_review_mode: INDEPENDENT
+human_reviewer_roles: [developer, qc]
+recommendation: PASS_WITH_RECORDED_LIMITATIONS
+assessed_at: "2026-09-28T04:20:29.285039Z"
+reviewed_evidence_commit: 2cbc8c9a60ccc94c64e3561ca39bb3c9c664b7ab
+evidence_set_sha256: 85f5eb35cb314e2b3e367789e005b524fe1911320ce88a6c78e8ea3cf618f25d
+spec_compliance_dependency: HUMAN_QC_PASS_RECORDED_ABOVE
+new_blocking_quality_findings: []
+human_code_quality: NOT_APPROVED
+human_reviewed_by: ""
+human_reviewed_at: ""
+finding_policy:
+  blocker_threshold: "Authority drift, lost evidence, a wrong binding or incomplete required coverage blocks M5."
+  reopen_conditions: ["Changed bound artifact", "New contradictory direct evidence", "Human reviewer rejects a stated evidence limit"]
+retained_limits:
+  - "R-02/R-04/R-06 original review texts unavailable; R-01/R-03 only their recorded claims revalidated."
+  - "Effective harness precedence and final identity remain M10; source/source-copy parity does not prove live selection."
+  - "Source defects, ambiguous legacy outcomes and language/current-doc remediation remain owned follow-up work."
+  - "Historical hosted/registry evidence was not queried again in this quality-only continuation."
+next_human_action: "Developer/QC approves or rejects CF-MB1 Code Quality for this unchanged evidence set and recorded assessment."
+m5: CLOSED_PENDING_CODE_QUALITY
+```
+
+Verification of this review-record change at `2026-09-28T04:21:00.823114Z`: targeted naming/governance/execution/planning PASS (8 notes); repository-root protocol PASS (20 managed / 21 legacy). Both new review YAML blocks parse with Ruby Psych; strict UTF-8, whitespace, digest/route/link and preservation checks PASS. A first protocol invocation at the item directory enumerated zero items and was not counted as evidence; the corrected work-items root produced the actual 20/21 result. No production behavior changed; production unit/build, new security scans, release/install and worktree-cleanup runs are outside this delta. The evidence-hash, route, receipt and preservation checks above validate the existing review subject; targeted workflow/encoding checks validate this record before handoff. Master remains ACTIVE/s07 with no final DoD.
