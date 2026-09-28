@@ -963,10 +963,10 @@ review_target: CF-MB1
 planning_track: full
 review_mode: INDEPENDENT
 review_order: [SPEC_COMPLIANCE, CODE_QUALITY]
-current_stage: CODE_QUALITY
+current_stage: REVIEW_PAIR_PASSED
 recommendation: PASS_WITH_RECORDED_LIMITATIONS
 human_spec_compliance: PASS
-code_quality: WAITING_HUMAN_APPROVAL
+code_quality: HUMAN_PASS
 spec_compliance_reviewer_role: qc
 reviewed_by: "human user, acting as QC in the explicit approval request"
 reviewed_at: "2026-09-28T04:15:21.909852Z"
@@ -996,8 +996,8 @@ required_checks:
     - "Only the granted three audit documents changed; protected register, sealed hosts, reports, receipts and root WIP preserved."
   code_quality:
     - "Opened after the recorded QC Spec Compliance PASS; evidence fidelity, stable identities and disclosed gaps."
-next_human_action: "Developer/QC reviews the separate Code Quality recommendation after its evidence is prepared."
-m5: CLOSED_PENDING_CODE_QUALITY
+next_human_action: "NONE for M5 audit execution; downstream child and review gates remain independent."
+m5: OPEN_UNDER_APPROVED_S06
 ```
 
 The binding excludes this hosting s07 file to avoid a self-referential digest; its own bytes are fixed by the review commit. Evidence includes the unchanged inventory and M3 classification as well as the two current M4 sidecars. This is the s07 batch-review decision required by s06, not a new s04 Spec receipt. The gate CLI has no CF-MB1/spec_compliance gate; no lifecycle gate was repurposed, no trusted receipt fabricated and no independent reviewer impersonated. Bound sidecars retain their pre-approval snapshot wording; this owning s07 record is the current review status. Per approved s06: “QC approves CF-MB1 Spec Compliance before Developer/QC Code Quality; M5 waits for the pair.”
@@ -1030,9 +1030,13 @@ reviewed_evidence_commit: 2cbc8c9a60ccc94c64e3561ca39bb3c9c664b7ab
 evidence_set_sha256: 85f5eb35cb314e2b3e367789e005b524fe1911320ce88a6c78e8ea3cf618f25d
 spec_compliance_dependency: HUMAN_QC_PASS_RECORDED_ABOVE
 new_blocking_quality_findings: []
-human_code_quality: NOT_APPROVED
-human_reviewed_by: ""
-human_reviewed_at: ""
+human_code_quality: PASS
+human_reviewed_by: "human user, acting as Developer/QC in the explicit approval request"
+human_reviewed_at: "2026-09-28T04:26:38.275548Z"
+approved_review_commit: 276c0c10779143fb5742acb236933986cbe195fa
+approved_review_host_sha256: 198a2801fcfe0994fa5ef9468bd21f92dea9d8d6f02175e25bb18bcf7de74f18
+decision_source: "User replied approve to the explicit CF-MB1 Code Quality request for commit 276c0c1."
+approval_scope: "Code Quality of the bound M2/M3/M4 evidence and recorded limitations; opens M5 under s06, not child execution or master DoD."
 finding_policy:
   blocker_threshold: "Authority drift, lost evidence, a wrong binding or incomplete required coverage blocks M5."
   reopen_conditions: ["Changed bound artifact", "New contradictory direct evidence", "Human reviewer rejects a stated evidence limit"]
@@ -1041,8 +1045,37 @@ retained_limits:
   - "Effective harness precedence and final identity remain M10; source/source-copy parity does not prove live selection."
   - "Source defects, ambiguous legacy outcomes and language/current-doc remediation remain owned follow-up work."
   - "Historical hosted/registry evidence was not queried again in this quality-only continuation."
-next_human_action: "Developer/QC approves or rejects CF-MB1 Code Quality for this unchanged evidence set and recorded assessment."
-m5: CLOSED_PENDING_CODE_QUALITY
+next_human_action: "NONE for M5; CF-MB2 and all applicable child gates remain separate."
+m5: OPEN_UNDER_APPROVED_S06
 ```
 
 Verification of this review-record change at `2026-09-28T04:21:00.823114Z`: targeted naming/governance/execution/planning PASS (8 notes); repository-root protocol PASS (20 managed / 21 legacy). Both new review YAML blocks parse with Ruby Psych; strict UTF-8, whitespace, digest/route/link and preservation checks PASS. A first protocol invocation at the item directory enumerated zero items and was not counted as evidence; the corrected work-items root produced the actual 20/21 result. No production behavior changed; production unit/build, new security scans, release/install and worktree-cleanup runs are outside this delta. The evidence-hash, route, receipt and preservation checks above validate the existing review subject; targeted workflow/encoding checks validate this record before handoff. Master remains ACTIVE/s07 with no final DoD.
+
+
+Code Quality human PASS recorded at `2026-09-28T04:26:38.275548Z` after the explicit “approve” response and read-only revalidation of commit `276c0c1`, its host SHA-256 and the four-artifact set. This UTC timestamp records the decision; no platform message timestamp was available. CF-MB1 now has the required ordered human QC Spec Compliance and Developer/QC Code Quality decisions, opening M5 under the already approved s06.
+
+The immutable CF-MB1 evidence is resolved from reviewed commit `2cbc8c9a60ccc94c64e3561ca39bb3c9c664b7ab`; Code Quality recommendation/approval subject is `276c0c10779143fb5742acb236933986cbe195fa`. Subsequent M5-M9 additions to the owning sidecars are new working evidence, not bytes approved by CF-MB1; CF-MB2 will bind that later snapshot. The recorded four hashes are retained and verified against their Git objects. No prior approval is silently applied to changed content.
+
+
+## M5 handoff and M6/M8 preparation — 2026-09-28
+
+The explicit CF-MB1 Code Quality approval above opened M5 under sealed s06. The current branch is based on integrated main `a36b1852ca13dd5209fad319400e769c5b22cabf`; collection source is `276c0c10779143fb5742acb236933986cbe195fa`. All collection and authoring stayed in the existing master; no child or deployment lane was activated.
+
+| Task | Current audit-task assessment | Evidence / remaining boundary |
+| --- | --- | --- |
+| M5 | COMPLETE_WITH_OBSERVATIONS | Read actual child reports, applicable s04–s08 scope/coverage/decisions, 37 applicable matching receipts and source ancestry. RCR/SA-TA/CR-008/Node24 completion retained; adapter's five valid authoring receipts do not provide activation, baseline amendment or Playwright launch proof. Test residual is AC-002/AC-003, not superseded rollback AC-001. Finding-disposition owns exact identities and next gates. |
+| M6 | COMPLETE_WITH_OPEN_DECISIONS | Fifteen existing proposal IDs refined with bounded prospective ownership, stable route/role/gate reasons, ordered review, verifier, negatives and rollback. No child files/grants/receipts created. Conditional choices/destinations require independent owner intake, not a placeholder Task Plan pass. |
+| M7 | NOT_RUN | Existing deterministic 15-pair sample/rubric retained. Full mandatory public/CLI surfaces, EN/VI scoring and applicable BA/QC evidence remain the next master task; semantic coverage and UTF-8 are not language scores. |
+| M8 | COMPLETE_WITH_OPEN_DECISIONS | Three decision-ready briefs for memory, calibration and Rationalizations. Named owner decisions remain pending; trial/rollout closure and prior-plan checkbox truth preserved. |
+| M9 / CF-MB2 | NOT_OPENED | Waits for M7 evidence. It reviews handoff fidelity, not final remediation or approval of every proposal. |
+| M10/M11 | NOT_OPENED | Independent ordered CF-MB2 pair, child integration/identity and final coverage prerequisites remain. |
+
+The [finding-disposition](../../docs/audits/code-factory-holistic-finding-disposition.md) owns M5 exact handoffs and M6/M8 details; [coverage](../../docs/audits/code-factory-holistic-coverage-matrix.md) links task evidence without creating another ledger. The original register, inventory, legacy classification, language rubric, frozen s04/s05/s06, portfolio JSON, reports, receipts, production source, installed bundle and root WIP are preserved. CF-MB1 hashes are checked through their immutable reviewed Git objects; new sidecar bytes require CF-MB2 binding and do not change the historical human decision.
+
+Early review sequence: AI Spec Compliance checked M5 read-only boundaries, completed-child precedence, M6 proposal-only scope, M8 pending-owner semantics and exact s06 dependency order; then AI Code Quality checked source identities, applicability codes, concrete file paths, links, duplication and preservation. These are implementer assessments for the current audit delta, not the independent human CF-MB2 pair. Review corrected the old CF-005 AC citation and draft proposal filenames before handoff. No blocking scope defect remains in the authored handoff; source defects and unselected owner decisions retain their explicit open status.
+
+No further human approval is required merely to prepare M7 under this already approved master Task Plan. Separate owner decisions in M8 and child admission/authoring gates cannot be supplied by a general master continuation. Master workflow remains ACTIVE/s07; final work-item DoD has not passed and all retained worktrees stay HOLD_OPEN.
+
+Artifact verification at `2026-09-28T04:43:40.286668Z`: full naming PASS (280 artifacts); governance/execution/planning PASS (276 notes each); protocol PASS (20 managed / 21 legacy skips), using Node 22.23.2 and the repository `work-items` root. Integrity PASS: twenty original finding IDs/severities preserved, 23 M2/six M3 routes, fifteen unique proposal contracts, 85 expanded prospective paths checked (three explicitly new tests), 21 stable role/gate/hard-trigger codes checked against the executable router, local Markdown links and strict UTF-8/whitespace valid. All 37 applicable child receipts and four master authoring receipts are APPROVED/digest-matched; the additional legacy Contract probe is explicitly not_applicable. Child report/host hashes, three original optional-plan hashes and both historical CF-MB1 review bindings match. The three owned files are the entire diff; 912 other tracked files, all 19 root untracked files, four-worktree map and main/two protected branch refs retain the captured state. A proposed product-thinking agent metadata path was absent and removed from the final allowlist; its absence did not justify creating it.
+
+Validation reproduction: run `node packages/workflow-bundle/bin/wfc.js <naming|governance|exec|plan|protocol> --workflow-root work-items --project-root .` for each command; query each M5 table gate with `gate status` at its owning project; compare report/host hashes with the M5 ledger and source ancestry with `git merge-base --is-ancestor <source> main`. Resolve the four CF-MB1 files via `git show 2cbc8c9:<path>` before hashing, not their later working copies. Production unit/build, live security scanning, browser launch, hosted jobs, installation and release reruns were not executed for this documentation-only delta. This verifies the audit handoff, not the unresolved source fixes or final DoD.

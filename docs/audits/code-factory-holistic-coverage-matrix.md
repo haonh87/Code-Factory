@@ -1,7 +1,7 @@
 # Code-Factory holistic coverage matrix
 
 Current M2 source: `72353b029b9fb5d82adca34fef3bdedf789c930c`; integrated main comparator: `a36b1852ca13dd5209fad319400e769c5b22cabf`. Updated: `2026-09-27T13:34:22.790725Z`.
-Evidence tier: audit branch on integrated main. The inventory preserves dated M1 snapshots separately from `current_snapshot` and the refreshed semantic read log. M2 and M3 are COMPLETE_WITH_OBSERVATIONS at that verified audit-task snapshot. The current M4 reconciliation is recorded below and in its owning disposition sidecar; CF-MB1 and final AC closure remain unapproved.
+Evidence tier: audit branch on integrated main. The inventory preserves dated M1 snapshots separately from `current_snapshot` and the refreshed semantic read log. M2 and M3 are COMPLETE_WITH_OBSERVATIONS at that verified audit-task snapshot. The current M4 reconciliation is recorded below and in its owning disposition sidecar; The human CF-MB1 pair is now PASS as recorded in s07 and M5 below; final AC closure remains unapproved.
 
 ## Inventory coverage
 
@@ -224,3 +224,27 @@ Source `14a5068187a6fecf22e325dfdfcdc98855c7b38a`, integrated main `a36b1852ca13
 AC-CF-002/003/004/008 have new reconciliation evidence but remain PARTIAL at the whole-work-item level. M4 establishes traceability; it does not implement semantic/security/docs fixes, complete M7 language review, prove effective harness discovery, repeat packaging, or pass final AC-CF-001..011. All M2 FAIL/PARTIAL cells and M3 classifications retain their original assessment scopes. Existing observation details above are historical evidence; their current ownership/disposition is the linked M4 owner.
 
 M4 is COMPLETE_WITH_OBSERVATIONS as an audit task after artifact verification at `2026-09-27T14:01:44.653036Z`: naming 280, governance/execution/planning 276, protocol 20 managed/21 legacy all PASS; twenty finding rows, 23 M2/six M3 routes, 37 receipt bindings, preservation hashes, UTF-8 and whitespace PASS. Human CF-MB1 remains unapproved. Production tests/build/security/install/hosted reruns are not required for this documentation-only delta; existing source-test evidence remains bound to the unchanged production tree. No production behavior or archived release is changed.
+
+
+## M5 child handoff and review progression — 2026-09-28
+
+The human CF-MB1 Spec Compliance and Code Quality decisions are recorded in s07 against the immutable M2/M3/M4 review snapshot. Earlier pending language above is historical. Current M5 additions are new evidence for CF-MB2, not retroactively approved by CF-MB1. Source `276c0c10779143fb5742acb236933986cbe195fa`; integrated main `a36b1852ca13dd5209fad319400e769c5b22cabf`.
+
+| Approved M5 output | Evidence / assessment | Remaining boundary |
+| --- | --- | --- |
+| RCR -> SA/TA -> parent exact-candidate handoff | Five terminal subjects ARCHIVED with zero blockers/actions; 32 applicable authoring/terminal receipts match. Integrated ancestor checks and parent AG-01..13 coverage/transaction confirm completed contribution. The legacy-compatibility Contract is explicitly not_applicable. | Larger M10 installed/effective-resolution and identity obligations remain; no repeated child execution. |
+| Reuse SA/TA and parent integration | Completed source/run/candidate and parent receipt identities recorded in the disposition owner; no unmerged-DONE shortcut or duplicate owner | CF-019 remains PARTIAL pending effective harness proof |
+| Node24 independent lane | Parent baseline confirms 9+9 references; approved T4A/T4B amendment and archived 5-receipt closure supersede historical 18-selector limit | Original warning defect resolved; retained accepted actionlint/mutable-major limits, no new hosted trigger |
+| Diagram prerequisite/environment/next gate | Five root authoring receipts match (total M5 37); CHANGE-004 completed; Python Playwright absent, existing cache not launch proof; obsolete 2.5.0/2.6.0 plan conflicts with 2.6.3 | Existing owner baseline amendment, approved provisioning/alternative, compatible preflight, activation/grants; 16 files preserved |
+| Two-tree test residual | Integrated rollback fix supersedes AC-001/T1; remaining AC-002/AC-003 and T0/T2/T3 cover all live source/report reads | Existing legacy owner admission and real authoring gates; fixture-first repair/two-layout evidence in its own scope |
+
+M5 is COMPLETE_WITH_OBSERVATIONS as a read-only handoff task after the artifact checks recorded in s07. AC-CF-003/004/008 remain PARTIAL at portfolio level; correctly exposed dependencies do not close outstanding remediation. No child report, frozen host, receipt, workflow, release, install, root untracked file or worktree was modified by M5.
+
+
+## M6/M8 proposal and decision-brief preparation — 2026-09-28
+
+M6 refines all fifteen existing proposal IDs in the finding-disposition owner with source finding/AC, prospective bounded paths, risk, actual adaptive reason codes, role/gate reviewer applicability, review order, verifier, measurable tests and rollback. Conditional identity/strategic items explicitly have no granted write allowlist before their diagnosis/owner decision. Existing CF-023, adapter, test and CI owners are reused; shared source wording is serialized. Security scan is an ephemeral, separately approved proposal; no scanner is executed. Child intake must select alternatives and resolve current authoring/writer eligibility, so these are proposals, not child Task Plan PASS.
+
+M8 provides three explicit options/recommendations and decision owners: reduced memory authority contract while preserving closed graph trial/rollout; metrics as learning guidance unless a named sponsor approves calibration; Rationalizations supersession or a measured one-skill pilot. All three human decisions are pending. No ignored plan is promoted or deemed complete; no people/delivery score gate or sponsorship is invented.
+
+M6 and M8 authoring outputs are COMPLETE_WITH_OPEN_DECISIONS after the s07 artifact checks. AC-CF-002/003/004/008 gain handoff evidence but remain PARTIAL for final portfolio completion. M7's language-review owner still records NOT_RUN; no naturalness score is derived from UTF-8 or the earlier semantic reads. M9/CF-MB2 remains unopened until M7's mandatory coverage and rubric evidence are prepared. The master remains ACTIVE/s07, with no child execution, M10 opening, final DoD or cleanup authority inferred.
