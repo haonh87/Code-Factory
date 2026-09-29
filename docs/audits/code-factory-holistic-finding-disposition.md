@@ -314,3 +314,69 @@ The [language-review](code-factory-holistic-language-review.md) owns the 147 sco
 No observation creates a sixteenth proposal. Positive M7-CONTROL rows need no corrective child unless a separate semantic finding already exists. Low style scores justify review, not a blanket rewrite of every skill. Shared text ownership remains serialized; runtime mirrors/installed copies are not edited by these proposals automatically. Friction claims are qualitative and do not fabricate measured interaction counts.
 
 M9 recommendation is limited to the fidelity of this audit and its open handoffs, conditional on applicable BA assessment review followed by human QC Spec Compliance. Human Developer/QC Code Quality remains unopened. M8's three owner decisions, independent child authorization, final identity evidence and final finding closure are still open. No source, register, report, receipt, installation or worktree is changed by this enrichment.
+
+
+## Selected authority-guidance correction — 2026-09-29
+
+Human direction: the user selected priority 1 (incorrect action/authority/approval instructions), then said “Tiếp tục”. This authorizes preparing the independent correction intake; it does not approve the new work item, authoring gates or CF-MB2. Existing P-SEM / CF-010 owns the bounded semantic correction, coordinating with P-LANGUAGE / CF-012 for the DoD wording and EN/VI review. No sixteenth portfolio proposal is created.
+
+Candidate: `correct-workflow-authority-guidance`, BUG / maintenance / brownfield / full / default / agentic. One outcome: make the eight existing guidance files below describe the already-authoritative boundaries accurately. No public API/event/data contract, migration, security control, regulated evidence, foundation, release or mixed-outcome change is proposed. Developer and QC are the technical owners; BA contributes the named M7 EN/VI authority/action recheck, not a generic maintenance business gate. P-HOOKS, P-MCP, CLI bump guidance and CURRENT publication corrections retain their separate owners and are not absorbed.
+
+The worktree is `.claude/worktrees/correct-workflow-authority-guidance`, branch `fix/workflow-authority-guidance`, based on main `a36b1852ca13dd5209fad319400e769c5b22cabf`. The original four worktrees are preserved; the count is now five. The separate worktree isolates this multi-session authoring/repair from the pending audit review. No cleanup eligibility is inferred.
+
+### Concrete correction boundary and draft acceptance
+
+| Criterion / source finding | Current defect | Required result and verification |
+| --- | --- | --- |
+| AC-AUTH-001 / M7-H01, M2-OBS-05 | Requirement-analysis Out Of Scope has an exception that makes a summary/analysis request sound like code-edit authority. | Both languages unambiguously retain read-only scope; clarity or an existing implementation idea never supplies write/gate approval. Reviewer counterexample: a clear analysis-only request still permits no source change. |
+| AC-AUTH-002 / M7-L15 and L14 | Backbone uses “or” for prerequisite steps and unqualified full-host ACTIVE language; VI omits newer Light distinctions. | Every applicable prerequisite is required. State full versus Light physical hosts without adding an s05 file/receipt to Light or weakening its s04/s06 approvals. Counterexamples: each missing applicable prerequisite blocks entry; merely existing drafts do not pass. |
+| AC-AUTH-003 / M7-H05, M2-OBS-15 | Protocol activate goal says s01 while output says s07; VI also drifts on read-only legacy bootstrap and approve. | Authoring/materialization at s01 is distinct from activation at s07. EN/VI explain the actual bounded legacy read/approve behavior and operative list status consistently with current source. No runtime lifecycle change or new approval bypass. |
+| AC-AUTH-004 / M7-L10, M2-OBS-10 | DoD skill directs an AI DONE conclusion without a local advisory-versus-human distinction. | Keep existing schema identifiers and evidence checks; AI supplies a proposed assessment, while actual DoD/protocol completion requires the authorized human review and applicable trusted evidence. Positive local tests alone never close delivery. |
+| AC-AUTH-005 / AC-CF-007 contribution | Eight affected file scores contain authority/action failures. | Recheck the exact repaired scopes in both languages with BA/QC: zero critical flags, mean >=4/5 and every dimension >=3. Do not extrapolate a bounded recheck into whole-M7 PASS or claim all missing translations repaired. |
+| AC-AUTH-006 / AC-CF-006 contribution | Existing mechanical pack PASS does not detect these prose contradictions. | Add a bounded regression in the existing auto-discovered unit path, with each old defect failing first and corrected positive cases passing. Mutated missing-prerequisite/read-only-exception/self-approval/wrong-activation examples must fail; tests validate the approved boundaries rather than merely count file names. No production implementation before child gates. |
+
+Prospective source allowlist (not a grant):
+
+| Existing source file | SHA-256 at main and audited source |
+| --- | --- |
+| `skills/analysis/requirement-analysis/SKILL.md` | `41970076eb955cb17272f17193d58a5a268dd1e6ebb291c3c305b67afb020263` |
+| `skills/analysis/requirement-analysis/SKILL.vi.md` | `80cfadc4668d8dbaa23e8e1507196b62228808ad978548c281b922ad66bf5b99` |
+| `skills/guardrails/definition-of-done-gate/SKILL.md` | `bf3c6b9508794cb11a8a262fe5b742c0df834fb913d15b762e82517e59dc8e9d` |
+| `skills/guardrails/definition-of-done-gate/SKILL.vi.md` | `5a75be0a2e7650c7f8350b0be7bbcf49809df05303e6101d4c9a64ff8dbae0ef` |
+| `skills/orchestration/codex-workflow-chain/SKILL.md` | `83138352a6800b87dfacd776e3fac5440295b94194d7f47a144e569ee69f2f8a` |
+| `skills/orchestration/codex-workflow-chain/SKILL.vi.md` | `4d133a1b83447d45f1845785b3db4cc1f373eaa9be80fdba63e6ef0f2e003cac` |
+| `skills/orchestration/codex-workflow-chain/references/work-item-protocol.md` | `32a8363fd15c38da700284b7077da860aac4fceee175f5e28302e4ec3dc80bde` |
+| `skills/orchestration/codex-workflow-chain/references/work-item-protocol.vi.md` | `356dd1ff5dd3918c934687ea014f39de28244033869f56d0078f439aec8dc328` |
+
+Proposed new regression file: `packages/workflow-bundle/test/workflow-authority-guidance.test.js`. Existing `test/run-all.js` automatically discovers every `*.test.js`, so no runner or CI workflow edit is proposed. Child artifacts will belong only to `work-items/correct-workflow-authority-guidance/` after admission. Packaged runtime outputs, if needed for a later child verification, must be explicitly derived and scoped at its Approach/Task Plan; no installed harness is edited here. No registry publish, tag, receipt/report repair, protected register change, master DoD, global reinstall or worktree cleanup is in scope.
+
+Recommended smallest direction: repair the four source guidance boundaries together, with EN/VI parity and one focused regression file. Rejected alternative: bulk-rewrite all 147 M7 units or change the runtime gate model; both expand ownership and would obscure this bounded repair. Proposed sequence after admission: draft acceptance/baseline, compare this direction with the alternative, lock exact tests/paths and gate applicability, obtain independent authoring approvals, then RED -> minimal correction -> GREEN -> ordered review -> s08 verification/DoD. This is intake detail, not a passed child Task Plan. Rollback is an owned corrective-commit revert; it never restores a stale approval or alters another owner's work.
+
+### Dedup review and current blocker
+
+The real source CLI returned `PROPOSED`, `dedup_result=needs_review`, `approval_status=PENDING_REVIEW`; no s01–s08 notes or source files were scaffolded. The persisted report is the only new child artifact. It has one exact blocker and two exact follow-up entries, all still unresolved. The first non-persisting proposal call and the persisted call had the same scope and same three match identities; the request was not renamed or shortened to evade dedup.
+
+| Near match | Direct evidence | Recommendation for maintainer |
+| --- | --- | --- |
+| sample-workflow-item | s01 is an empty example with blank request/scope/criteria, SHA-256 `bf656ed8056350b087856880122497af4b37fd1fa70258a8a04d1f04b16ab7bc` | Exclude as a delivery owner; preserve the example. |
+| adaptive-governance-human-approval-ux | ARCHIVED/s08, no blockers; report `111c425d97214dcf5b8720e931e6b6d32a3269bb93245de795362e51327b9761`. Owned routing, adaptive gates, decision bundles and telemetry. | Reuse its completed authority baseline, preserve closure; admit the remaining specific documentation contradiction as a bounded follow-up. Its historical broad orchestration grant does not activate new work. |
+| closeout-bundle-legacy-dod-compatibility | ARCHIVED/s08, no blockers; report `6bcd5fa4fe3d5b4176b0ec1b465aab548eb9ec0ca7120a54e3b2c5f577b47ede`. Owned runtime gate derivation/reconciliation in gate-review and protocol tests. | Different files and failure mode from advisory DoD skill wording; preserve completed runtime repair. |
+
+The manual recommendation is NO_CURRENT_OWNER_COLLISION, pending the required maintainer disposition. It is not written over `dedup_result`. The runtime's `validateRecoveryAdmission` requires signed history for these exact three state identities; unsigned clearing, a new slug or direct scaffold is not a valid recovery.
+
+Source/installed versions were freshly read as 2.6.3/42 for both Codex and Claude. The read-only pack audit passes, but it checks reference/frontmatter structure and does not prove byte-for-byte canonical/runtime parity. The isolated worktree has no generated runtime tree. Therefore adaptive writes were not enabled or attested; the legacy materializer is authoritative. Its report does not persist an adaptive request_lane field; maintenance is the intake classification above. No unsupported reduction of required human gates is inferred. Telemetry was disabled for this admission.
+
+### Maintainer actions to resolve the exact admission concerns
+
+Pending report SHA-256 before any disposition: `8a8da614941def870ec08407572df39edb7f25c050ef645f4ba6e069368cfc16`. Review this boundary first. Run the following commands in a human-controlled terminal using the source CLI in the child worktree. Each command removes only its named state entry and records signed provenance; it does not approve the work item, Spec, DoR, Approach, Task Plan or implementation. Enter the approval passphrase only at the hidden local prompt, never in chat or a command argument.
+
+```sh
+cd /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-workflow-authority-guidance
+/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js work-item dispose-state --work-item correct-workflow-authority-guidance --state-id se:aee6906c588eb131d3743037361fa0d0afbf13f39924f0214006db7dccf6fad8 --operation-id 46f57400-61d9-421e-8ebf-cd09e8db1515 --reviewed-by maintainer --reason 'Reviewed sample-workflow-item as an empty example, archived CR-008 as completed routing delivery, and archived legacy-DoD compatibility as a different runtime fix. None owns the eight-file guidance correction; preserve their closure.' --project-root .
+/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js work-item dispose-state --work-item correct-workflow-authority-guidance --state-id se:7654b677f9ee46bd8c6ae490701fe1fd780350ae8ab8cf9af2ae44005cd3e341 --operation-id caf2a087-652e-4400-91fb-0b96e5bf7511 --reviewed-by maintainer --reason 'Single outcome: align eight EN/VI guidance files with existing authority for read-only requests, applicable s07 prerequisites, activation and advisory DoD. No runtime gate, release, hook or MCP changes.' --project-root .
+/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js work-item dispose-state --work-item correct-workflow-authority-guidance --state-id se:37fba38be04cc25c6cd45bf7c79554bc0a8dc970382899079d68abe1acafed6d --operation-id e4ef8a05-f9bf-4a8c-8f4e-8eca286c37e4 --reviewed-by maintainer --reason 'Reviewed current work-item and change scopes, including the three near matches and portfolio P-SEM/P-LANGUAGE ownership. Admit a bounded follow-up without reopening archived work or inheriting its approvals.' --project-root .
+```
+
+After those signed decisions, the agent must inspect all three history entries, recompute the changed report SHA and use source-only `materialize --resume-proposal` with that exact SHA and a fresh operation UUID. The pre-disposition hash above must not be reused for recovery. Recovery produces authoring artifacts with work-item approval still PENDING_REVIEW and no implementation grant. If a command was already applied, retry its same operation ID/reason rather than minting another decision. Global 2.6.3 must not be assumed to contain the later source-only recovery command.
+
+CF-MB2's original five-artifact request remains resolvable at commit `499ee1cf5c3dee67d262644f3d0a33e4c101c46f`; this later intake addendum is outside that immutable request. No human BA/QC response to it has been inferred. Before any revised CF-MB2 request, rebind this changed disposition sidecar and the hosting s07 record; do not silently apply an old verdict to new bytes. All M7 scores and the original register stay unchanged.
