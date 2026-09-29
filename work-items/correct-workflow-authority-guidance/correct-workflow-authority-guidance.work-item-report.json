@@ -1,13 +1,13 @@
 {
-  "materialization_status": "PROPOSED",
-  "protocol_status": "PROPOSED",
+  "materialization_status": "READY",
+  "protocol_status": "MATERIALIZED",
   "decision_owner": "agent",
   "protocol_owner": "",
   "raw_request_summary": "Correct contradictory EN/VI workflow guidance for read-only analysis, all applicable prerequisites before s07, activation at s07, and advisory versus human-approved DoD. Restore existing authority in requirement-analysis, definition-of-done-gate, codex-workflow-chain SKILL and work-item-protocol references, with bounded regression evidence; exclude runtime gate changes, publication and cleanup.",
   "request_source": "user",
   "candidate_count": 1,
   "split_decision": "single",
-  "dedup_result": "needs_review",
+  "dedup_result": "no_conflict",
   "work_items": [
     {
       "work_item_slug": "correct-workflow-authority-guidance",
@@ -75,38 +75,60 @@
   "sdd_light_profile": "preview",
   "sdd_reasons": [],
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-workflow-authority-guidance/work-items/correct-workflow-authority-guidance",
-  "current_step": "",
+  "current_step": "s01",
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "human-clarify",
+  "handoff_target": "human-review",
   "required_actions": [
     {
-      "id": "se:7654b677f9ee46bd8c6ae490701fe1fd780350ae8ab8cf9af2ae44005cd3e341",
+      "id": "se:1fa05583f1678e6ecbea1e2deadfc258d0e7398ae4f0468811268908469a767f",
       "kind": "workflow_followup",
-      "text": "Làm rõ scope để chốt single hay split."
+      "text": "wfc work-item approve --work-item correct-workflow-authority-guidance --reviewed-by <role>"
     },
     {
-      "id": "se:37fba38be04cc25c6cd45bf7c79554bc0a8dc970382899079d68abe1acafed6d",
-      "kind": "workflow_followup",
-      "text": "Review existing work-items/changes trước khi scaffold."
-    }
-  ],
-  "blockers": [
+      "id": "se:df012924776ee8b04d15e7fb13a158589efd534fe4c65563d177bbd27961ea6a",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item correct-workflow-authority-guidance --gate spec --reviewed-by <role>",
+      "gate": "spec"
+    },
     {
-      "id": "se:aee6906c588eb131d3743037361fa0d0afbf13f39924f0214006db7dccf6fad8",
-      "kind": "delivery_blocker",
-      "text": "Có work item gần nghĩa cần review: sample-workflow-item, adaptive-governance-human-approval-ux, closeout-bundle-legacy-dod-compatibility"
+      "id": "se:95993f9f81208e6b4acfecdbd4e934ef49e8972ab44fe072bbd5e49712599c3d",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item correct-workflow-authority-guidance --gate dor --reviewed-by <role>",
+      "gate": "dor"
+    },
+    {
+      "id": "se:18f58e29d6c825d395cb1c252924a35bdc68c55927e990ca42c59f9af7191429",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item correct-workflow-authority-guidance --gate approach --reviewed-by <role>",
+      "gate": "approach"
+    },
+    {
+      "id": "se:dfcfb2f961bb581294a5b1d656f8ee14785ccebbd2b5a378bca0ff9c0e5d8025",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item correct-workflow-authority-guidance --gate task_plan --reviewed-by <role>",
+      "gate": "task_plan"
+    },
+    {
+      "id": "se:4056ed4e63efb4280058bbbfaf70427d7750e2604f2da9e68e5bfd2e2b782c6a",
+      "kind": "work_item_activation",
+      "text": "wfc work-item activate --work-item correct-workflow-authority-guidance --step s07 --write-root <path>"
     }
   ],
+  "blockers": [],
   "refs": [
     "work-items/sample-workflow-item",
     "work-items/adaptive-governance-human-approval-ux",
-    "work-items/closeout-bundle-legacy-dod-compatibility"
+    "work-items/closeout-bundle-legacy-dod-compatibility",
+    "work-items/correct-workflow-authority-guidance"
   ],
   "audit_events": [
     "REQUEST_CAPTURED",
     "CANDIDATE_PROPOSED",
-    "SLUG_LOCKED"
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED"
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -125,6 +147,142 @@
       "from_status": "INTAKE",
       "to_status": "PROPOSED",
       "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-09-29T09:49:35.962Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Signed admission concerns resolved."
+    },
+    {
+      "timestamp": "2026-09-29T09:49:35.962Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Resumed proposal operation dfda57c9-b0b5-4573-a088-0fb363a85aee."
     }
-  ]
+  ],
+  "resolved_state_history": [
+    {
+      "operation_id": "46f57400-61d9-421e-8ebf-cd09e8db1515",
+      "source_collection": "blockers",
+      "source_entry_id": "di:48d7a71c7d2459bfb72044530043d379660a4bc42f9e75c1d870bfecc737fa91",
+      "original_entry": {
+        "id": "se:aee6906c588eb131d3743037361fa0d0afbf13f39924f0214006db7dccf6fad8",
+        "kind": "delivery_blocker",
+        "text": "Có work item gần nghĩa cần review: sample-workflow-item, adaptive-governance-human-approval-ux, closeout-bundle-legacy-dod-compatibility"
+      },
+      "original_text": "Có work item gần nghĩa cần review: sample-workflow-item, adaptive-governance-human-approval-ux, closeout-bundle-legacy-dod-compatibility",
+      "actor": "maintainer",
+      "reason": "Reviewed sample-workflow-item as an empty example, archived CR-008 as completed routing delivery, and archived legacy-DoD compatibility as a different runtime fix. None owns the eight-file guidance correction; preserve their closure.",
+      "resolved_at": "2026-09-29T09:48:01.578Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "correct-workflow-authority-guidance",
+          "operation_id": "46f57400-61d9-421e-8ebf-cd09e8db1515",
+          "state_id": "di:48d7a71c7d2459bfb72044530043d379660a4bc42f9e75c1d870bfecc737fa91",
+          "source_collection": "blockers",
+          "original_entry": {
+            "id": "se:aee6906c588eb131d3743037361fa0d0afbf13f39924f0214006db7dccf6fad8",
+            "kind": "delivery_blocker",
+            "text": "Có work item gần nghĩa cần review: sample-workflow-item, adaptive-governance-human-approval-ux, closeout-bundle-legacy-dod-compatibility"
+          },
+          "original_text": "Có work item gần nghĩa cần review: sample-workflow-item, adaptive-governance-human-approval-ux, closeout-bundle-legacy-dod-compatibility",
+          "actor": "maintainer",
+          "reason": "Reviewed sample-workflow-item as an empty example, archived CR-008 as completed routing delivery, and archived legacy-DoD compatibility as a different runtime fix. None owns the eight-file guidance correction; preserve their closure.",
+          "resolved_at": "2026-09-29T09:48:01.578Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "E2KcOjn6dLaeQzdZJjtvYf5c1kGXTIA7RZY78gc1rtIKCVc0/JV9zAjaqsKbmHk1vFZEEoZY7rgzzfwPE2LUAw=="
+      }
+    },
+    {
+      "operation_id": "caf2a087-652e-4400-91fb-0b96e5bf7511",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:6d26b30b185ba5c35678e62dcd6f7a20c631cf508feb2fd8bbedbf5750b9125e",
+      "original_entry": {
+        "id": "se:7654b677f9ee46bd8c6ae490701fe1fd780350ae8ab8cf9af2ae44005cd3e341",
+        "kind": "workflow_followup",
+        "text": "Làm rõ scope để chốt single hay split."
+      },
+      "original_text": "Làm rõ scope để chốt single hay split.",
+      "actor": "maintainer",
+      "reason": "Single outcome: align eight EN/VI guidance files with existing authority for read-only requests, applicable s07 prerequisites, activation and advisory DoD. No runtime gate, release, hook or MCP changes.",
+      "resolved_at": "2026-09-29T09:48:04.385Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "correct-workflow-authority-guidance",
+          "operation_id": "caf2a087-652e-4400-91fb-0b96e5bf7511",
+          "state_id": "di:6d26b30b185ba5c35678e62dcd6f7a20c631cf508feb2fd8bbedbf5750b9125e",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:7654b677f9ee46bd8c6ae490701fe1fd780350ae8ab8cf9af2ae44005cd3e341",
+            "kind": "workflow_followup",
+            "text": "Làm rõ scope để chốt single hay split."
+          },
+          "original_text": "Làm rõ scope để chốt single hay split.",
+          "actor": "maintainer",
+          "reason": "Single outcome: align eight EN/VI guidance files with existing authority for read-only requests, applicable s07 prerequisites, activation and advisory DoD. No runtime gate, release, hook or MCP changes.",
+          "resolved_at": "2026-09-29T09:48:04.385Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "+JAxtf0927ZRyRFbenV8JeVQFJue7fWWlpc33lGPSC1KLRm15WeOXDqTycZOKsHmayByLrSaugGNmHQ32aHaCQ=="
+      }
+    },
+    {
+      "operation_id": "e4ef8a05-f9bf-4a8c-8f4e-8eca286c37e4",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:1fcf4555d308dc70099d17944ff1c29b5837aa9ba4fead53ee87322b68d4181a",
+      "original_entry": {
+        "id": "se:37fba38be04cc25c6cd45bf7c79554bc0a8dc970382899079d68abe1acafed6d",
+        "kind": "workflow_followup",
+        "text": "Review existing work-items/changes trước khi scaffold."
+      },
+      "original_text": "Review existing work-items/changes trước khi scaffold.",
+      "actor": "maintainer",
+      "reason": "Reviewed current work-item and change scopes, including the three near matches and portfolio P-SEM/P-LANGUAGE ownership. Admit a bounded follow-up without reopening archived work or inheriting its approvals.",
+      "resolved_at": "2026-09-29T09:48:07.121Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "correct-workflow-authority-guidance",
+          "operation_id": "e4ef8a05-f9bf-4a8c-8f4e-8eca286c37e4",
+          "state_id": "di:1fcf4555d308dc70099d17944ff1c29b5837aa9ba4fead53ee87322b68d4181a",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:37fba38be04cc25c6cd45bf7c79554bc0a8dc970382899079d68abe1acafed6d",
+            "kind": "workflow_followup",
+            "text": "Review existing work-items/changes trước khi scaffold."
+          },
+          "original_text": "Review existing work-items/changes trước khi scaffold.",
+          "actor": "maintainer",
+          "reason": "Reviewed current work-item and change scopes, including the three near matches and portfolio P-SEM/P-LANGUAGE ownership. Admit a bounded follow-up without reopening archived work or inheriting its approvals.",
+          "resolved_at": "2026-09-29T09:48:07.121Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "WtHssdvpgVqRo9d96kbOyTChPAbIWhHnj5KGatsBbbBAyMo8cHvZz8UtX7kRqUXJgWblOY3/LsXRtXziY4NJDw=="
+      }
+    }
+  ],
+  "granted_write_paths": [],
+  "materialization_recovery": {
+    "schema_version": 1,
+    "operation_id": "dfda57c9-b0b5-4573-a088-0fb363a85aee",
+    "source_report_sha256": "601c92ffd9774f8140a510a97dfbfe4371ea71160e53cb98069e6b29f93fc29a",
+    "resulting_status": "MATERIALIZED",
+    "disposition_operation_ids": [
+      "46f57400-61d9-421e-8ebf-cd09e8db1515",
+      "caf2a087-652e-4400-91fb-0b96e5bf7511",
+      "e4ef8a05-f9bf-4a8c-8f4e-8eca286c37e4"
+    ],
+    "completed_at": "2026-09-29T09:49:35.962Z"
+  }
 }
