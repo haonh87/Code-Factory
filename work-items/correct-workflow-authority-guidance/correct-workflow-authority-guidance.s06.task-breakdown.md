@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -62,8 +62,8 @@ gate_reviews:
   approach_reviewed_at: ""
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  task_plan_reviewed_by: [developer]
+  task_plan_reviewed_at: "2026-09-29T13:12:49Z"
   uat_reviewed_by: []
   uat_reviewed_at: ""
   release_reviewed_by: []
@@ -89,12 +89,12 @@ tags:
 # Step 6 - Task Plan
 
 > [!summary]
-> Review proposal only. Protocol remains MATERIALIZED at s01; work-item and authoring gate approvals are pending. No implementation grant is open.
+> The user explicitly accepted this packet and its work-item, Spec, DoR, Approach and Task Plan decisions. Human review was recorded at 2026-09-29T13:12:49Z. Trusted receipt sealing and CLI activation are separate requirements; this note alone grants no source-write authority.
 
 ## Step Contract
 
 ```yaml
-step_goal: "Make proposed option A executable by path, dependency, evidence and human checkpoints."
+step_goal: "Lock the accepted option A plan by path, dependency, evidence and human checkpoints."
 input_summary:
   - "correct-workflow-authority-guidance.s04.acceptance-criteria.md"
   - "correct-workflow-authority-guidance.s05.technical-approach.md"
@@ -124,23 +124,23 @@ ba_lane:
 dev_lane:
   path_map:
     - path: "skills/analysis/requirement-analysis/SKILL.md"
-      ownership: "proposed tracked source grant; not active"
+      ownership: "human-accepted tracked source scope; activation still required"
     - path: "skills/analysis/requirement-analysis/SKILL.vi.md"
-      ownership: "proposed tracked source grant; not active"
+      ownership: "human-accepted tracked source scope; activation still required"
     - path: "skills/guardrails/definition-of-done-gate/SKILL.md"
-      ownership: "proposed tracked source grant; not active"
+      ownership: "human-accepted tracked source scope; activation still required"
     - path: "skills/guardrails/definition-of-done-gate/SKILL.vi.md"
-      ownership: "proposed tracked source grant; not active"
+      ownership: "human-accepted tracked source scope; activation still required"
     - path: "skills/orchestration/codex-workflow-chain/SKILL.md"
-      ownership: "proposed tracked source grant; not active"
+      ownership: "human-accepted tracked source scope; activation still required"
     - path: "skills/orchestration/codex-workflow-chain/SKILL.vi.md"
-      ownership: "proposed tracked source grant; not active"
+      ownership: "human-accepted tracked source scope; activation still required"
     - path: "skills/orchestration/codex-workflow-chain/references/work-item-protocol.md"
-      ownership: "proposed tracked source grant; not active"
+      ownership: "human-accepted tracked source scope; activation still required"
     - path: "skills/orchestration/codex-workflow-chain/references/work-item-protocol.vi.md"
-      ownership: "proposed tracked source grant; not active"
+      ownership: "human-accepted tracked source scope; activation still required"
     - path: "packages/workflow-bundle/test/workflow-authority-guidance.test.js"
-      ownership: "proposed new tracked regression"
+      ownership: "human-accepted new tracked regression; activation still required"
     - path: "work-items/correct-workflow-authority-guidance/"
       ownership: "authoring/evidence; report and protocol block remain CLI-owned"
   technical_sequence:
@@ -267,7 +267,7 @@ risk_notes:
 verification_plan:
   - "Use the commands and negative matrix below; capture exit codes and exact source hashes in s07/s08."
   - "No unit suite is claimed run at authoring time; syntax/pack/runtime checks are scheduled for T6."
-notes_for_implementation: "A plan draft is not the same as Task Plan pass. T1 is blocked until work-item and authoring gates are explicitly approved, hosts finalized before sealing, and current trusted receipts verified. Do not implement merely because this plan is detailed."
+notes_for_implementation: "A plan draft is not the same as Task Plan pass. The user has now explicitly accepted T1-T8. T1 remains gated by normal trusted signing, finalized hosts, current receipt verification and exact activation grants; content acceptance alone does not authorize source writes."
 ```
 
 ## Verification Plan
@@ -307,13 +307,13 @@ Tests validate the bounded prose contract and known counterexamples. They are no
 checklist_applied:
   - "project-context/checklists/default.md"
 checks:
-  - "Eight source files plus one new test are proposed; no broad skills/ or scripts/ grant."
-  - "Report/protocol mutations use CLI only. Human gate reviews/timestamps remain blank while drafts."
+  - "Eight source files plus one new test are accepted; no broad skills/ or scripts/ grant."
+  - "Report/protocol mutations use CLI only. Host reviewer metadata records explicit human acceptance; no receipt is fabricated."
   - "Agentic work; targeted s07 review in order; no subagent or invented independent review."
 blocking_items:
-  - "Work-item, Spec, DoR, Approach and Task Plan approval pending."
+  - "Trusted work-item/authoring receipts and exact CLI activation are required before T1 execution."
 owner: "developer"
-next_action: "Present concrete packet for independent human decisions; then finalize approved hosts before signing current hashes."
+next_action: "Seal the accepted decisions against finalized host hashes using the normal human-controlled TTY flow, then verify and activate the exact scope."
 ```
 
 ## Brownfield Delivery Plan
@@ -343,4 +343,4 @@ next_step: "correct-workflow-authority-guidance.s07.implementation.md"
 
 ## Handoff
 
-All T1–T8 are NOT_STARTED. This proposal does not open s07. After explicit human decisions, finalize the approved s04/s05/s06 hosts, seal independent trusted receipts using the human-controlled CLI flow, approve the work item and verify exact activation grants. Keep this worktree open until its own s08 decision permits finalization.
+T1–T8 are accepted and NOT_STARTED. Finalized authoring hosts are prepared for independent trusted receipt sealing; work-item approval and exact CLI activation remain required before s07 execution. Keep this worktree open until its own s08 decision permits finalization.

@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -58,8 +58,8 @@ gate_reviews:
   contract_reviewed_at: ""
   dor_reviewed_by: []
   dor_reviewed_at: ""
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
+  approach_reviewed_by: [developer]
+  approach_reviewed_at: "2026-09-29T13:12:49Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -90,12 +90,12 @@ tags:
 # Step 5 - Technical Approach
 
 > [!summary]
-> Review proposal only. Protocol remains MATERIALIZED at s01; work-item and authoring gate approvals are pending. No implementation grant is open.
+> The user explicitly accepted this packet and its work-item, Spec, DoR, Approach and Task Plan decisions. Human review was recorded at 2026-09-29T13:12:49Z. Trusted receipt sealing and CLI activation are separate requirements; this note alone grants no source-write authority.
 
 ## Step Contract
 
 ```yaml
-step_goal: "Propose the smallest repair that satisfies s04 without changing runtime authority."
+step_goal: "Lock accepted option A, the smallest repair satisfying s04 without changing runtime authority."
 input_summary:
   - "correct-workflow-authority-guidance.s04.acceptance-criteria.md"
   - "Pinned source baseline and current CLI/gate behavior."
@@ -110,11 +110,9 @@ owner: "developer"
 
 ```yaml
 options:
-  - name: "A: bounded guidance correction"
-    summary: "Repair the four instruction boundaries in eight EN/VI sources; add one focused regression and human meaning review."
-  - name: "B: broad M7 rewrite/runtime redesign"
-    summary: "Rewrite all reviewed language units or change enforcement to accommodate prose."
-recommended_option: "A (proposed; not approved)"
+  - "A: bounded guidance correction. Repair the four instruction boundaries in eight EN/VI sources; add one focused regression and human meaning review."
+  - "B: broad M7 rewrite/runtime redesign. Rewrite all reviewed language units or change enforcement to accommodate prose."
+recommended_option: "A (explicit human acceptance recorded in s01)"
 trade_offs:
   - "A leaves other M7 failures open but satisfies these six criteria with clear ownership."
   - "B exceeds admission/portfolio boundaries and adds unnecessary runtime/release risk."
@@ -232,7 +230,7 @@ specialized_followups:
     reason: "Skill/reference edits need structure and reference validation."
   - skill: "testing"
     reason: "s08 evidence must distinguish static guidance checks, regression and human language review."
-notes_for_next_step: "This is a forward proposal. Human Spec/DoR and Approach are pending; s06 may prepare conditional tasks but no task may implement yet."
+notes_for_next_step: "The user accepted option A and the associated Task Plan. Seal finalized s04/s05/s06 hosts and verify all runtime prerequisites before any implementation task."
 ```
 
 ## Architecture Details
@@ -277,4 +275,4 @@ next_step: "correct-workflow-authority-guidance.s06.task-breakdown.md"
 
 ## Handoff
 
-Recommend A. The reviewer must approve this direction before implementation. The following Task Plan is a reviewable dependency plan for A, not evidence that Approach has passed.
+Option A was explicitly accepted by the human reviewer through the review request recorded in s01. This finalized host must receive a current trusted Approach receipt; it supplies no source-write grant by itself.

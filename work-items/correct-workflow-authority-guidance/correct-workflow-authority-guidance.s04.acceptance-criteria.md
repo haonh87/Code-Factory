@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -52,12 +52,12 @@ role_signoffs:
   business_acceptance: []
   dod: [qc]
 gate_reviews:
-  spec_reviewed_by: []
-  spec_reviewed_at: ""
+  spec_reviewed_by: [ba]
+  spec_reviewed_at: "2026-09-29T13:12:49Z"
   contract_reviewed_by: []
   contract_reviewed_at: ""
-  dor_reviewed_by: []
-  dor_reviewed_at: ""
+  dor_reviewed_by: [qc]
+  dor_reviewed_at: "2026-09-29T13:12:49Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   foundation_reviewed_by: []
@@ -92,12 +92,12 @@ tags:
 # Step 4 - Acceptance + DoR
 
 > [!summary]
-> Review proposal only. Protocol remains MATERIALIZED at s01; work-item and authoring gate approvals are pending. No implementation grant is open.
+> The user explicitly accepted this packet and its work-item, Spec, DoR, Approach and Task Plan decisions. Human review was recorded at 2026-09-29T13:12:49Z. Trusted receipt sealing and CLI activation are separate requirements; this note alone grants no source-write authority.
 
 ## Step Contract
 
 ```yaml
-step_goal: "Propose measurable acceptance and readiness evidence without passing Spec or DoR."
+step_goal: "Lock the accepted measurable criteria and readiness decision, with trusted sealing required before execution."
 input_summary:
   - "correct-workflow-authority-guidance.s01.restate.md"
   - "correct-workflow-authority-guidance.s02.business-goal.md"
@@ -106,17 +106,18 @@ output_summary:
   - "AC-AUTH-001..006, baseline, invariants and review requirements."
 done_when:
   - "Each criterion has a concrete negative/positive verification path and bounded owner."
-owner: "ba (Spec proposal); qc (DoR recommendation)"
+owner: "ba (Spec); qc (DoR)"
 ```
 
 ## Requirement Baseline
 
 ```yaml
-status: "BLOCKED"
-approved_spec_refs: []
+status: "APPROVED"
+approved_spec_refs:
+  - "correct-workflow-authority-guidance.s04.acceptance-criteria.md#main-artifact"
 decision_notes:
-  - "This note is the canonical proposed spec for sdd_mode=none. No separate BRD/SRS/Spec Card is required."
-  - "Human Spec and DoR decisions remain pending; this is not a frozen baseline."
+  - "This note is the canonical accepted spec for sdd_mode=none. No separate BRD/SRS/Spec Card is required."
+  - "Explicit user acceptance is recorded in s01 against c495f14. Spec/DoR reviewer metadata records that human decision; trusted receipts must bind the finalized host before activation."
 ```
 
 ## Contract Baseline
@@ -229,25 +230,24 @@ checklist_applied:
   - "project-context/checklists/default.md"
 checks:
   - "Admission disposition signatures verified; materialization recovered via CLI."
-  - "Eight source paths and new test proposed only; granted_write_paths remains empty."
+  - "The human accepted eight source paths and one test; runtime write authority still depends on receipts and activation."
   - "No independent agent/delegation; human BA participation has the named M7 trigger."
 blocking_items:
-  - "Work-item approval, Spec and DoR are pending; Approach/Task Plan drafts cannot open implementation."
+  - "Runtime authorization requires trusted work-item/authoring receipts and explicit activation; this content decision alone cannot open implementation."
 owner: "qc"
-next_action: "Human review of the concrete packet; then record decisions and seal each applicable gate through normal trusted CLI flow."
+next_action: "Seal the accepted decisions via the human-controlled CLI flow after host finalization; verify current digests before activation."
 ```
 
 ## Definition of Ready
 
 ```yaml
-status: "BLOCKED"
-blockers:
-  - "Human Spec and DoR decisions have not been recorded or sealed."
+status: "READY"
+blockers: []
 owners:
   - "ba"
   - "qc"
 notes:
-  - "Evidence/content is ready for review. BLOCKED describes unpassed readiness authority, not a missing technical proposal."
+  - "The user explicitly approved readiness. READY records that human content decision; runtime execution still requires its trusted receipt and all other applicable gates."
   - "No exception, waiver or inherited parent approval is asserted."
 ```
 
@@ -267,4 +267,4 @@ parent_contribution:
 
 ## Handoff
 
-Review AC-AUTH-001..006 as one bounded spec and assess DoR separately. The s05/s06 documents are conditional proposals; keep them draft until the appropriate human decisions.
+The user accepted AC-AUTH-001..006 and independently approved DoR in the explicit bundled review request. Freeze this finalized host before trusted Spec/DoR sealing. Any later content change requires receipt refresh and review when the accepted meaning/scope changes.

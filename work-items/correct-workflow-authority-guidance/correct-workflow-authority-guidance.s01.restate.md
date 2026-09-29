@@ -89,7 +89,7 @@ tags:
 # Step 1 - Clarify
 
 > [!summary]
-> Review proposal only. Protocol remains MATERIALIZED at s01; work-item and authoring gate approvals are pending. No implementation grant is open.
+> The user explicitly accepted this packet and its work-item, Spec, DoR, Approach and Task Plan decisions. Human review was recorded at 2026-09-29T13:12:49Z. Trusted receipt sealing and CLI activation are separate requirements; this note alone grants no source-write authority.
 
 Review packet: [Acceptance + DoR](correct-workflow-authority-guidance.s04.acceptance-criteria.md), [Technical Approach](correct-workflow-authority-guidance.s05.technical-approach.md), [Task Plan](correct-workflow-authority-guidance.s06.task-breakdown.md).
 
@@ -145,7 +145,7 @@ scope_out:
   - "P-HOOKS, P-MCP, P-INSTALL and CURRENT release/publication corrections."
   - "Global installs, registry publication, tagging, merging and branch/worktree cleanup."
 open_questions:
-  - "Human review of the proposed work item, Spec/DoR, Approach and Task Plan is pending."
+  - "No unresolved scope question. Explicit human acceptance is recorded below; trusted receipts and activation remain required."
 assumptions:
   - "No runtime behavior change is needed; re-route if implementation evidence disproves this."
   - "Default governance and full planning apply; this is not SDD Light authoring."
@@ -157,24 +157,24 @@ risks_initial:
   - "Broader M7 failures and pending parent CF-MB2 reviews remain open."
 acceptance_criteria_draft:
   - id: "AC-AUTH-001"
-    description: "See canonical proposed criterion in s04; M7-H01, M2-OBS-05"
+    description: "See canonical accepted criterion in s04; M7-H01, M2-OBS-05"
     measurable: true
   - id: "AC-AUTH-002"
-    description: "See canonical proposed criterion in s04; M7-L15, M7-L14"
+    description: "See canonical accepted criterion in s04; M7-L15, M7-L14"
     measurable: true
   - id: "AC-AUTH-003"
-    description: "See canonical proposed criterion in s04; M7-H05, M2-OBS-15"
+    description: "See canonical accepted criterion in s04; M7-H05, M2-OBS-15"
     measurable: true
   - id: "AC-AUTH-004"
-    description: "See canonical proposed criterion in s04; M7-L10, M2-OBS-10"
+    description: "See canonical accepted criterion in s04; M7-L10, M2-OBS-10"
     measurable: true
   - id: "AC-AUTH-005"
-    description: "See canonical proposed criterion in s04; AC-CF-007"
+    description: "See canonical accepted criterion in s04; AC-CF-007"
     measurable: true
   - id: "AC-AUTH-006"
-    description: "See canonical proposed criterion in s04; AC-CF-006"
+    description: "See canonical accepted criterion in s04; AC-CF-006"
     measurable: true
-notes_for_next_step: "s02-s06 are forward proposals for a single human review packet. Protocol remains s01; none is a passed gate."
+notes_for_next_step: "The user accepted the packet. Finalize s04-s06 before trusted sealing; verify every receipt and exact grant before s07. The CLI owns protocol progression."
 ```
 
 ## Routing and Applicability
@@ -325,12 +325,43 @@ next_step: "correct-workflow-authority-guidance.s02.business-goal.md"
 
 ## Handoff
 
-Admission is resolved. The work item and all authoring gates remain pending. Review the linked s04–s06 proposals before any source activation. The existing five worktrees, two unique-commit branches and root untracked paths remain preserved.
+Admission is resolved and the user explicitly accepted the work item and four authoring decisions. Record only that decision here; work-item approval status and execution authority remain CLI-owned until normal trusted signing and activation. The five worktrees, two unique-commit branches and root untracked paths remain preserved.
 
-## Authoring Verification
+## Authoring Verification — pre-approval snapshot
 
 Checked at 2026-09-29T10:02:37Z with Node 22.23.2, from this child worktree. Naming, governance, execution and planning each PASS for eight notes. Repository protocol PASS for 21 managed work items, with 21 legacy references skipped by the configured policy. This resolves the earlier missing-s01 pre-materialization failure.
 
 Strict UTF-8 and YAML checks PASS for all eight notes (51 YAML blocks); every note remains draft and every actual human gate reviewer/timestamp remains empty. s01–s06 contain proposals; s07/s08 are untouched future scaffolds, not implementation or verification evidence. The CLI-owned s01 protocol block is byte-identical to the recovered projection. The current report SHA-256 is `212524dee0eae2940fbd34affe0eadad279e60d877c8a75f693c42c39d592625`; authoring did not edit it.
 
 Preservation checks PASS: no child source/policy/package/audit change; 913 non-owned master tracked hashes and all 19 root untracked hashes retained; main and the backup/evals unique-commit refs retained. No worktree was finalized or removed. Production unit/build/packaged-runtime tests were not run for this authoring-only delta; T2–T8 schedule the applicable source verification. Validator success does not approve a gate or pass M7.
+
+## Human Authoring Decision
+
+The repository maintainer replied `accept` to the explicit request to approve this work item and its Spec, DoR, Approach and Task Plan, then instructed `Tiếp tục`. This decision applies to review packet commit `c495f141b2d5cfb4817ad9d134b80418c2f0238b`. Recorded at `2026-09-29T13:12:49Z` (recording time; the chat message has no supplied wall-clock timestamp).
+
+| Decision | Authorized role from accepted packet | Human content decision | Receipt owner |
+| --- | --- | --- | --- |
+| Work item | maintainer | APPROVED | CLI work-item receipt |
+| Spec | ba | APPROVED | s04 / independent Spec receipt |
+| DoR | qc | APPROVED | s04 / independent DoR receipt |
+| Approach | developer | APPROVED: option A | s05 / independent Approach receipt |
+| Task Plan | developer | APPROVED: T1–T8 and declared scope | s06 / independent Task Plan receipt |
+
+One human reviewed in the declared roles; no additional reviewer or independent agent is claimed. The record author is the agent, not the approver. Finalization updates status/reviewer metadata and removes superseded pending-review wording; AC-AUTH-001..006, the selected boundary and ordered task contents remain as reviewed. Human acceptance is not a fabricated trusted receipt. The report and its s01 protocol block remain unchanged until the real CLI signing flow runs.
+
+Normal-mode authority requires a human-controlled TTY: `packages/workflow-bundle/scripts/workflow-trusted-approval-utils.js::promptHiddenInput` / `resolveApprovalPassphrase`. The agent must not supply the passphrase, invoke an approval fixture or sign for the human. `workflow-gate-review.js::validateSnapshotAuthority` requires finalized host bytes before sealing; changing s04/s05/s06 afterward makes their receipts stale.
+
+## Human Receipt Handoff
+
+Run from this child worktree with Node 22.23.2 after checking the finalized host contents. The first command seals work-item approval; the second uses one interaction to seal four separate hash-bound authoring receipts. Enter the passphrase only in the local hidden prompts.
+
+```sh
+node packages/workflow-bundle/bin/wfc.js work-item approve --work-item correct-workflow-authority-guidance --reviewed-by maintainer --note "Explicit user accept of review packet c495f141b2d5cfb4817ad9d134b80418c2f0238b; work-item approval only." --project-root . --telemetry off
+node packages/workflow-bundle/bin/wfc.js gate approve-ready-bundle --work-item correct-workflow-authority-guidance --note "Explicit user accept: Spec and DoR at s04, option A Approach at s05, and T1-T8 Task Plan at s06; independent receipts for finalized hosts." --project-root . --telemetry off
+```
+
+These commands do not activate, implement, close, merge, publish or remove anything. After signing, the agent verifies receipt signatures/current digests and uses the approved exact scope for CLI activation. A temporary checked helper may wrap these same commands, verify the expected host hashes and skip receipts already valid on retry; it is scratch, not a second decision artifact.
+
+Prepared helper: `sh /private/tmp/cf-authority-ready-ksc7ua1_/approve.sh`. Its `--check` mode passed without invoking a signer: expected subject, all three finalized host hashes and the four authorized role/timestamp mappings match; all five trusted receipts are currently missing. Normal execution uses the two commands above and usually two hidden passphrase prompts, then verifies signatures/digests. It performs no activation or source write.
+
+Finalization verification at `2026-09-29T13:19:26Z`: naming/governance/execution/planning PASS for eight notes; protocol PASS for 21 managed items with 21 configured legacy skips. UTF-8/YAML and whitespace checks PASS. Finalized s05 initially failed the shallow option counter because its valid YAML object list was counted as one entry; formatting the same two name/summary values as two scalar list entries resolved it. No validator source was changed. Structured comparisons confirm unchanged s04 acceptance/invariants, s05 design and s06 T1–T8 task objects; both original options are preserved. The CLI report and s01 protocol block remain unchanged. This records the explicit human decision and prepares sealing; it does not claim a trusted receipt or completed implementation.

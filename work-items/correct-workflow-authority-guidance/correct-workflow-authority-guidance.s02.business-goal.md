@@ -89,7 +89,7 @@ tags:
 # Step 2 - Business Goal
 
 > [!summary]
-> Review proposal only. Protocol remains MATERIALIZED at s01; work-item and authoring gate approvals are pending. No implementation grant is open.
+> The user explicitly accepted this packet and its work-item, Spec, DoR, Approach and Task Plan decisions. Human review was recorded at 2026-09-29T13:12:49Z. Trusted receipt sealing and CLI activation are separate requirements; this note alone grants no source-write authority.
 
 ## Step Contract
 
@@ -137,4 +137,4 @@ next_step: "correct-workflow-authority-guidance.s03.open-questions.md"
 
 ## Handoff
 
-Proceed with proposed acceptance and technical preparation. Human scope and gate decisions are still pending; this value statement creates no additional product role or gate.
+The user accepted this bounded value/scope as part of the review packet. Continue with receipt sealing for the approved authoring decisions; this value statement creates no additional product role or gate.

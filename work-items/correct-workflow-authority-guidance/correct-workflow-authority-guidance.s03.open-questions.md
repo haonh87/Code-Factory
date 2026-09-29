@@ -92,7 +92,7 @@ tags:
 # Step 3 - Open Questions
 
 > [!summary]
-> Review proposal only. Protocol remains MATERIALIZED at s01; work-item and authoring gate approvals are pending. No implementation grant is open.
+> The user explicitly accepted this packet and its work-item, Spec, DoR, Approach and Task Plan decisions. Human review was recorded at 2026-09-29T13:12:49Z. Trusted receipt sealing and CLI activation are separate requirements; this note alone grants no source-write authority.
 
 ## Step Contract
 
@@ -102,7 +102,7 @@ input_summary:
   - "correct-workflow-authority-guidance.s01.restate.md"
   - "correct-workflow-authority-guidance.s02.business-goal.md"
 output_summary:
-  - "No unresolved technical design input for this bounded proposal; gate decisions remain open."
+  - "No unresolved technical design input; human decisions are recorded, and trusted receipt sealing remains."
 done_when:
   - "Every remaining action has a role and a concrete review subject."
 owner: "developer"
@@ -115,11 +115,11 @@ open_questions:
   - id: "Q-AUTH-01"
     owner: "maintainer"
     question: "Approve the bounded work item described by s01/s04/s06?"
-    status: "PENDING_REVIEW"
+    status: "ANSWERED_APPROVED"
   - id: "Q-AUTH-02"
     owner: "ba / qc / developer"
     question: "Pass the independent Spec, DoR, Approach and Task Plan decisions for this packet, or identify required revisions?"
-    status: "PENDING_REVIEW"
+    status: "ANSWERED_APPROVED"
 missing_inputs: []
 conflicts:
   - subject: "Current source wording versus higher authority"
@@ -134,11 +134,11 @@ assumptions:
 ```yaml
 status: "PARTIAL"
 blocking_items:
-  - "Human work-item and authoring gate approvals are absent; execution remains closed."
+  - "Human content approval is recorded; trusted work-item/authoring receipts and CLI activation are still required."
 owner_actions:
-  - "Agent: prepare and validate concrete draft packet."
-  - "Maintainer/BA/QC/Developer: review the named decisions after packet preparation."
-authoring_readiness: "READY for proposals only; no missing factual prerequisite for the bounded plan."
+  - "Agent: finalize reviewed hosts, validate and prepare exact signing commands."
+  - "Human: seal the accepted decisions using the normal TTY flow; no repeat content review is requested."
+authoring_readiness: "Content accepted; finalize and seal, then verify authorization before implementation."
 ```
 
 ## Audit
@@ -146,8 +146,8 @@ authoring_readiness: "READY for proposals only; no missing factual prerequisite 
 ```yaml
 audit_status: "PARTIAL"
 notes:
-  - "Scope and evidence suffice for forward drafts."
-  - "Admission is verified, but no human-controlled delivery gate is claimed passed."
+  - "The user accepted scope, criteria, option A and T1-T8; decision trace is in s01."
+  - "Admission is verified. Trusted authoring receipts and runtime activation are separate from chat acceptance."
 ```
 
 ## Traceability
@@ -161,4 +161,4 @@ next_step: "correct-workflow-authority-guidance.s04.acceptance-criteria.md"
 
 ## Handoff
 
-Review s04 acceptance before locking the s05/s06 proposals. Do not treat the presence of these drafts as permission to start s07.
+The human decisions answer Q-AUTH-01/02. Complete trusted sealing and verify the runtime gate state before s07; do not use this decision record as an implementation grant.
