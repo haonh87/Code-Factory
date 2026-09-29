@@ -1,0 +1,130 @@
+{
+  "materialization_status": "PROPOSED",
+  "protocol_status": "PROPOSED",
+  "decision_owner": "agent",
+  "protocol_owner": "",
+  "raw_request_summary": "Correct contradictory EN/VI workflow guidance for read-only analysis, all applicable prerequisites before s07, activation at s07, and advisory versus human-approved DoD. Restore existing authority in requirement-analysis, definition-of-done-gate, codex-workflow-chain SKILL and work-item-protocol references, with bounded regression evidence; exclude runtime gate changes, publication and cleanup.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "needs_review",
+  "work_items": [
+    {
+      "work_item_slug": "correct-workflow-authority-guidance",
+      "work_item_title": "Correct Workflow Authority Guidance",
+      "work_item_type": "BUG",
+      "scope_summary": "Correct contradictory EN/VI workflow guidance for read-only analysis, all applicable prerequisites before s07, activation at s07, and advisory versus human-approved DoD. Restore existing authority in requirement-analysis, definition-of-done-gate, codex-workflow-chain SKILL and work-item-protocol references, with bounded regression evidence; exclude runtime gate changes, publication and cleanup.",
+      "primary_outcome": "Correct contradictory EN/VI workflow guidance for read-only analysis, all applicable prerequisites before s07, activation at s07, and advisory versus human-approved DoD. Restore existing authority in requirement-analysis, definition-of-done-gate, codex-workflow-chain SKILL and work-item-protocol references, with bounded regression evidence; exclude runtime gate changes, publication and cleanup.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "full",
+      "sdd_reasons": [],
+      "sdd_preset": "full",
+      "sdd_light_profile": "preview",
+      "governance_profile": "default",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/sample-workflow-item",
+        "work-items/adaptive-governance-human-approval-ux",
+        "work-items/closeout-bundle-legacy-dod-compatibility"
+      ],
+      "collision_notes": [
+        "sample-workflow-item (score=2)",
+        "adaptive-governance-human-approval-ux (score=1)",
+        "closeout-bundle-legacy-dod-compatibility (score=1)"
+      ],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "Scope chưa cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item correct-workflow-authority-guidance --planning-track full --delivery-context brownfield",
+        "npm run validate:workflow -- --workflow-root work-items/correct-workflow-authority-guidance --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-workflow-authority-guidance"
+      ],
+      "blockers": [
+        {
+          "id": "se:aee6906c588eb131d3743037361fa0d0afbf13f39924f0214006db7dccf6fad8",
+          "kind": "delivery_blocker",
+          "text": "Có work item gần nghĩa cần review: sample-workflow-item, adaptive-governance-human-approval-ux, closeout-bundle-legacy-dod-compatibility"
+        }
+      ]
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=BUG",
+    "delivery_context=brownfield",
+    "dedup_result=needs_review",
+    "change_strategy=none",
+    "planning_track=full",
+    "governance_profile=default",
+    "sdd_preset=full",
+    "selected_profile=full",
+    "sdd_mode=none",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "correct-workflow-authority-guidance",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "selected_profile": "full",
+  "sdd_mode": "none",
+  "sdd_preset": "full",
+  "sdd_light_profile": "preview",
+  "sdd_reasons": [],
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-workflow-authority-guidance/work-items/correct-workflow-authority-guidance",
+  "current_step": "",
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "human-clarify",
+  "required_actions": [
+    {
+      "id": "se:7654b677f9ee46bd8c6ae490701fe1fd780350ae8ab8cf9af2ae44005cd3e341",
+      "kind": "workflow_followup",
+      "text": "Làm rõ scope để chốt single hay split."
+    },
+    {
+      "id": "se:37fba38be04cc25c6cd45bf7c79554bc0a8dc970382899079d68abe1acafed6d",
+      "kind": "workflow_followup",
+      "text": "Review existing work-items/changes trước khi scaffold."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "se:aee6906c588eb131d3743037361fa0d0afbf13f39924f0214006db7dccf6fad8",
+      "kind": "delivery_blocker",
+      "text": "Có work item gần nghĩa cần review: sample-workflow-item, adaptive-governance-human-approval-ux, closeout-bundle-legacy-dod-compatibility"
+    }
+  ],
+  "refs": [
+    "work-items/sample-workflow-item",
+    "work-items/adaptive-governance-human-approval-ux",
+    "work-items/closeout-bundle-legacy-dod-compatibility"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED"
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "review_required": true,
+  "approval_status": "PENDING_REVIEW",
+  "reviewed_by": "",
+  "reviewed_at": "",
+  "review_notes": [],
+  "protocol_events": [
+    {
+      "timestamp": "2026-09-29T09:18:31.600Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    }
+  ]
+}
