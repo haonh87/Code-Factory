@@ -368,13 +368,55 @@ Source/installed versions were freshly read as 2.6.3/42 for both Codex and Claud
 
 ### Maintainer actions to resolve the exact admission concerns
 
-Pending report SHA-256 before any disposition: `8a8da614941def870ec08407572df39edb7f25c050ef645f4ba6e069368cfc16`. Review this boundary first. Run the following commands in a human-controlled terminal using the source CLI in the child worktree. Each command removes only its named state entry and records signed provenance; it does not approve the work item, Spec, DoR, Approach, Task Plan or implementation. Enter the approval passphrase only at the hidden local prompt, never in chat or a command argument.
+Pending report SHA-256 before any disposition: `8a8da614941def870ec08407572df39edb7f25c050ef645f4ba6e069368cfc16`. Review this boundary first. Run the following helper in a human-controlled terminal; it invokes the source CLI three times, with one hidden approval prompt for each decision. It reads a fresh report before each call because the CLI accepts snapshot-bound `di:` IDs, not stable entry `se:` IDs. Signing the first entry changes the snapshot and invalidates the other old `di:` IDs. The stable IDs below only select the intended original entries; they are never passed as CLI state IDs.
+
+The helper performs only the three declared maintainer dispositions. It does not approve the work item or an authoring/implementation gate. Enter the passphrase only at the local hidden prompts. Existing matching operation history is retried through the CLI's signed idempotence path; ambiguous/missing subjects stop before signing. The agent has not executed this helper or invoked a signer.
 
 ```sh
 cd /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-workflow-authority-guidance
-/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js work-item dispose-state --work-item correct-workflow-authority-guidance --state-id se:aee6906c588eb131d3743037361fa0d0afbf13f39924f0214006db7dccf6fad8 --operation-id 46f57400-61d9-421e-8ebf-cd09e8db1515 --reviewed-by maintainer --reason 'Reviewed sample-workflow-item as an empty example, archived CR-008 as completed routing delivery, and archived legacy-DoD compatibility as a different runtime fix. None owns the eight-file guidance correction; preserve their closure.' --project-root .
-/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js work-item dispose-state --work-item correct-workflow-authority-guidance --state-id se:7654b677f9ee46bd8c6ae490701fe1fd780350ae8ab8cf9af2ae44005cd3e341 --operation-id caf2a087-652e-4400-91fb-0b96e5bf7511 --reviewed-by maintainer --reason 'Single outcome: align eight EN/VI guidance files with existing authority for read-only requests, applicable s07 prerequisites, activation and advisory DoD. No runtime gate, release, hook or MCP changes.' --project-root .
-/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js work-item dispose-state --work-item correct-workflow-authority-guidance --state-id se:37fba38be04cc25c6cd45bf7c79554bc0a8dc970382899079d68abe1acafed6d --operation-id e4ef8a05-f9bf-4a8c-8f4e-8eca286c37e4 --reviewed-by maintainer --reason 'Reviewed current work-item and change scopes, including the three near matches and portfolio P-SEM/P-LANGUAGE ownership. Admit a bounded follow-up without reopening archived work or inheriting its approvals.' --project-root .
+/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node -e '
+const fs = require("node:fs");
+const { execFileSync } = require("node:child_process");
+const { getDispositionTargets, selectDispositionTarget } = require("./packages/workflow-bundle/scripts/work-item-protocol-utils");
+const slug = "correct-workflow-authority-guidance";
+const reportPath = `work-items/${slug}/${slug}.work-item-report.json`;
+const decisions = [
+  {
+    "id": "se:aee6906c588eb131d3743037361fa0d0afbf13f39924f0214006db7dccf6fad8",
+    "operation": "46f57400-61d9-421e-8ebf-cd09e8db1515",
+    "reason": "Reviewed sample-workflow-item as an empty example, archived CR-008 as completed routing delivery, and archived legacy-DoD compatibility as a different runtime fix. None owns the eight-file guidance correction; preserve their closure."
+  },
+  {
+    "id": "se:7654b677f9ee46bd8c6ae490701fe1fd780350ae8ab8cf9af2ae44005cd3e341",
+    "operation": "caf2a087-652e-4400-91fb-0b96e5bf7511",
+    "reason": "Single outcome: align eight EN/VI guidance files with existing authority for read-only requests, applicable s07 prerequisites, activation and advisory DoD. No runtime gate, release, hook or MCP changes."
+  },
+  {
+    "id": "se:37fba38be04cc25c6cd45bf7c79554bc0a8dc970382899079d68abe1acafed6d",
+    "operation": "e4ef8a05-f9bf-4a8c-8f4e-8eca286c37e4",
+    "reason": "Reviewed current work-item and change scopes, including the three near matches and portfolio P-SEM/P-LANGUAGE ownership. Admit a bounded follow-up without reopening archived work or inheriting its approvals."
+  }
+];
+for (const decision of decisions) {
+  const rawBytes = fs.readFileSync(reportPath);
+  const rawReport = JSON.parse(rawBytes);
+  const prior = (rawReport.resolved_state_history || []).filter(x => x.operation_id === decision.operation);
+  if (prior.length > 1) throw new Error("Ambiguous operation history");
+  let stateId;
+  if (prior.length === 1) {
+    if (prior[0].original_entry.id !== decision.id || prior[0].reason !== decision.reason) throw new Error("Operation subject changed");
+    stateId = prior[0].source_entry_id;
+  } else {
+    const targets = getDispositionTargets(rawReport, rawBytes).filter(x =>
+      selectDispositionTarget({ rawReport, rawBytes, stateId: x.state_id }).originalEntry.id === decision.id);
+    if (targets.length !== 1) throw new Error("Expected one current disposition target");
+    stateId = targets[0].state_id;
+  }
+  execFileSync(process.execPath, ["packages/workflow-bundle/bin/wfc.js", "work-item", "dispose-state",
+    "--work-item", slug, "--state-id", stateId, "--operation-id", decision.operation,
+    "--reviewed-by", "maintainer", "--reason", decision.reason, "--project-root", "."], { stdio: "inherit" });
+}
+'
 ```
 
 After those signed decisions, the agent must inspect all three history entries, recompute the changed report SHA and use source-only `materialize --resume-proposal` with that exact SHA and a fresh operation UUID. The pre-disposition hash above must not be reused for recovery. Recovery produces authoring artifacts with work-item approval still PENDING_REVIEW and no implementation grant. If a command was already applied, retry its same operation ID/reason rather than minting another decision. Global 2.6.3 must not be assumed to contain the later source-only recovery command.
