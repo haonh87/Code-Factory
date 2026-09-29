@@ -57,16 +57,16 @@ Evidence tier: audit branch on integrated main. The inventory preserves dated M1
 | Criterion | Current evidence | Result | Remaining closure |
 | --- | --- | --- | --- |
 | AC-CF-001 | M1 42 skills / 8 families / exact source digests | PARTIAL | M2 assessed 42/42; remediation/final identity and M11 recount remain |
-| AC-CF-002 | Protected prior authority retained | PARTIAL | M3 classifications and M4 twenty-row disposition prepared; CF-MB1 review, owned remediation and M11 final closure remain |
-| AC-CF-003 | M4 gives every original/new observation an owner, dependency, child/proposal, next gate and closure test | PARTIAL | Human CF-MB1 review; M5/M6 detailed child handoffs, M8 decisions and actual closure remain |
-| AC-CF-004 | M0 six roots and independent receipts | PARTIAL | Final child authority audit |
+| AC-CF-002 | M3 classification and M4 exactly-once disposition; human CF-MB1 pair passed | PARTIAL | M6/M8 owner decisions, owned remediation and M11 final closure remain |
+| AC-CF-003 | M4 ownership plus M5 handoffs, fifteen M6 contracts and M7 enrichment prepared | PARTIAL | Applicable BA and CF-MB2 ordered reviews, M8 owner decisions and actual remediation closure remain |
+| AC-CF-004 | M0 six roots; M5 verified 37 applicable child receipts and four master authoring receipts without inheritance | PARTIAL | Preserve authority during future child intake/integration and M11 final audit |
 | AC-CF-005 | Both installed 2.6.3/42; SKILL bodies equal current source and retained release; four supporting refs differ from later main | PARTIAL | Exact candidate/release/installed reconciliation remains M10; version equality alone is insufficient |
 | AC-CF-006 | No semantic result inferred from mechanical tests | PARTIAL | Semantic-child standard-path negative regression |
-| AC-CF-007 | Deterministic review scope pending M7 | PARTIAL | BA rubric + QC evidence |
+| AC-CF-007 | M7: 64/64 declared mandatory units inventoried; 147 scored; mean 3.5361, 41 critical units, minimum 2; eight missing VI counterparts | FAIL | BA/QC review of assessment, independently owned corrections, then complete rubric recheck; accepting the audit does not waive the threshold |
 | AC-CF-008 | No history rewritten | PARTIAL | M3 classified every subject; M4 routes residuals; owned changes and M11 final closure remain |
 | AC-CF-009 | No package generated or hosted identity claimed | PARTIAL | Repeated clean artifact/content/provenance comparison |
 | AC-CF-010 | M2 source applicability suite and two negative controls assessed | PARTIAL | Operative policy/runtime semantic fixtures |
-| AC-CF-011 | M3 classifies 48 public subjects: 26 CURRENT / 22 HISTORICAL; stale current claims remain visible | PARTIAL | Released/installed allowlist parity |
+| AC-CF-011 | M3 CURRENT/HISTORICAL classification plus M7 exact current-facing stale release/version/action excerpts | FAIL | P-PUBLIC independent correction and EN/VI recheck against existing released/installed evidence; do not reopen release |
 
 ## Mechanical and semantic separation
 
@@ -247,4 +247,15 @@ M6 refines all fifteen existing proposal IDs in the finding-disposition owner wi
 
 M8 provides three explicit options/recommendations and decision owners: reduced memory authority contract while preserving closed graph trial/rollout; metrics as learning guidance unless a named sponsor approves calibration; Rationalizations supersession or a measured one-skill pilot. All three human decisions are pending. No ignored plan is promoted or deemed complete; no people/delivery score gate or sponsorship is invented.
 
-M6 and M8 authoring outputs are COMPLETE_WITH_OPEN_DECISIONS after the s07 artifact checks. AC-CF-002/003/004/008 gain handoff evidence but remain PARTIAL for final portfolio completion. M7's language-review owner still records NOT_RUN; no naturalness score is derived from UTF-8 or the earlier semantic reads. M9/CF-MB2 remains unopened until M7's mandatory coverage and rubric evidence are prepared. The master remains ACTIVE/s07, with no child execution, M10 opening, final DoD or cleanup authority inferred.
+M6 and M8 authoring outputs are COMPLETE_WITH_OPEN_DECISIONS after the s07 artifact checks. AC-CF-002/003/004/008 gain handoff evidence but remain PARTIAL for final portfolio completion. At this 2026-09-28 checkpoint, M7's language-review owner still recorded NOT_RUN; no naturalness score is derived from UTF-8 or the earlier semantic reads. M9/CF-MB2 remains unopened until M7's mandatory coverage and rubric evidence are prepared. The master remains ACTIVE/s07, with no child execution, M10 opening, final DoD or cleanup authority inferred.
+
+
+## M7 language assessment and M9 review preparation — 2026-09-29
+
+The [language-review](code-factory-holistic-language-review.md) is the sole scoring/allowlist owner. It supersedes its earlier partial checkpoints at source `f42f4631e20e60b64c489c496bab057f246226b5`: 24 mandatory full documents plus 40 CLI source inventories (38 scored, two N/A); all 40 existing deterministic sample files read, with eight missing VI counterparts disclosed. Two sample files overlap mandatory coverage. Six further full risk references and 41 targeted scopes complete 149 inventoried/147 unique scored units. Read scope is explicit; message projections and line-bounded reads are not represented as full-file reviews.
+
+AI rubric verdict **FAIL**: 41 critical source-unit flags, 2599/735 = 3.5361/5 overall, lowest dimension 2, 97 units with mean below 4. Every required quality threshold is evaluated independently; successful encoding/validators cannot turn it into a language PASS. Forty-one units have a dimension below 3. These are not 41 new accepted CF findings. All original twenty IDs/severities and fifteen proposal IDs remain unchanged.
+
+M7 collection is COMPLETE_WITH_FINDINGS; applicable human BA assessment review and QC verification are pending. M9's CF-MB2 Spec Compliance packet is PREPARED_CONDITIONAL_ON_BA_REVIEW, evaluating whether this audit truthfully records gaps and handoffs. This is separate from final AC fulfillment. Code Quality has not opened; M10 still requires the ordered human CF-MB2 pair and child/integration evidence, and M11 requires terminal finding evidence and explicit QC s08 opening.
+
+The disposition owner extends prospective handoffs using exact failing-unit paths without creating grants, new children, retrospective approvals or duplicate findings. Source language/default corrections need P-LANGUAGE intake, semantic overlaps go first to P-SEM, and CURRENT publication claims go to P-PUBLIC. Qualitative duplicate-instruction friction is recorded; interaction counts and user latency remain NOT_MEASURED. Effective harness selection, build reproducibility and final child remediation remain outside this M7 evidence claim.

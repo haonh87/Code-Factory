@@ -89,11 +89,12 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> Master activated at s07 with six approved audit-only roots. M0 admission and M1 inventory
-> are complete: 42 canonical skills, seven groups, 227 supporting files and eight surface families.
-> M2 now records 25/42 canonical skill reads, 25/69 operative English refs, 13 agent files
-> and three scripts; M3 classifies 16 legacy entries and starts a 27-document allowlist. Both
-> installed harnesses remain 2.3.2/40; full semantic, prior-plan, language and final identity review remain open. No child production or release authority is inherited.
+> Master remains at s07 with six approved audit-only roots. M2/M3/M4 passed the human CF-MB1
+> review pair; M5 handoffs and M6/M8 proposals retain explicit open decisions. M7 collection
+> now covers 147 scored units and records AI language FAIL; applicable BA/QC review is pending.
+> The latest M9 packet below owns the current review request. M10 final identity and M11 closure
+> remain unopened. Historical 2.3.2/40 observations below were superseded by M2's 2.6.3/42 evidence.
+> No child production, release, DoD or cleanup authority is inherited.
 
 ## Step Contract
 
@@ -1079,3 +1080,65 @@ No further human approval is required merely to prepare M7 under this already ap
 Artifact verification at `2026-09-28T04:43:40.286668Z`: full naming PASS (280 artifacts); governance/execution/planning PASS (276 notes each); protocol PASS (20 managed / 21 legacy skips), using Node 22.23.2 and the repository `work-items` root. Integrity PASS: twenty original finding IDs/severities preserved, 23 M2/six M3 routes, fifteen unique proposal contracts, 85 expanded prospective paths checked (three explicitly new tests), 21 stable role/gate/hard-trigger codes checked against the executable router, local Markdown links and strict UTF-8/whitespace valid. All 37 applicable child receipts and four master authoring receipts are APPROVED/digest-matched; the additional legacy Contract probe is explicitly not_applicable. Child report/host hashes, three original optional-plan hashes and both historical CF-MB1 review bindings match. The three owned files are the entire diff; 912 other tracked files, all 19 root untracked files, four-worktree map and main/two protected branch refs retain the captured state. A proposed product-thinking agent metadata path was absent and removed from the final allowlist; its absence did not justify creating it.
 
 Validation reproduction: run `node packages/workflow-bundle/bin/wfc.js <naming|governance|exec|plan|protocol> --workflow-root work-items --project-root .` for each command; query each M5 table gate with `gate status` at its owning project; compare report/host hashes with the M5 ledger and source ancestry with `git merge-base --is-ancestor <source> main`. Resolve the four CF-MB1 files via `git show 2cbc8c9:<path>` before hashing, not their later working copies. Production unit/build, live security scanning, browser launch, hosted jobs, installation and release reruns were not executed for this documentation-only delta. This verifies the audit handoff, not the unresolved source fixes or final DoD.
+
+
+## M7 results and M9 CF-MB2 Spec Compliance packet — 2026-09-29
+
+The human-passed CF-MB1 pair opened the M5–M9 authoring work already authorized in s06. Source collection for this packet is `f42f4631e20e60b64c489c496bab057f246226b5` on integrated main `a36b1852ca13dd5209fad319400e769c5b22cabf`. This section supersedes the earlier M7 NOT_RUN/M9 NOT_OPENED checkpoint; it does not rewrite historical approval bindings.
+
+M7 evidence collection is COMPLETE_WITH_FINDINGS. The [language assessment](../../docs/audits/code-factory-holistic-language-review.md) owns the mandatory allowlist, sampling, every read scope/hash/excerpt, eight missing VI counterparts and scores. AI result is **FAIL**: 147 scored units, mean 3.5361/5, 41 critical source-unit flags and minimum dimension 2. All 64 declared mandatory source units were inventoried (two N/A); available sample coverage is 40/40 files. These counts do not mean all files were fully read: 68 full-file units, 38 CLI projections and 41 targeted scopes are distinguished. Source repairs remain separately owned; no human BA/QC language verdict is invented.
+
+M9 is now PREPARED_FOR_REVIEW, conditional on applicable BA evidence. The following implementer Spec Compliance recommendation covers audit/handoff fidelity across all eleven ACs. It is not an independent human review, source-quality PASS, final acceptance or DoD. Per sealed s06: “CF-MB2 evaluates audit/handoff fidelity, not final remediation completion.” The [coverage matrix](../../docs/audits/code-factory-holistic-coverage-matrix.md) retains final acceptance status: AC-CF-007/011 FAIL, the other nine PARTIAL.
+
+| Acceptance coverage | Audit-fidelity recommendation and evidence | Outstanding final delivery requirement |
+| --- | --- | --- |
+| AC-CF-001 | REVIEWABLE: M2 owns 42/42 semantic skill assessments and cross-boundary evidence; M7 supplements language without relabeling scoped reads. | Independent corrections, integrated identity and M11 final recount/verification. |
+| AC-CF-002/003 | REVIEWABLE: M3/M4 preserve input authority, twenty original finding rows and severity; M5/M6/M8/M7 enrichment gives existing/proposed owners, decisions, dependencies and closure checks. Fifteen proposal IDs remain stable. | Missing original reviewer text and M8 decisions remain explicit; proposed children need separate admission and actual closure evidence. |
+| AC-CF-004 | REVIEWABLE: M5's 37 applicable child receipts stay historical evidence; four master authoring receipts were freshly rechecked. No child grant, report or receipt changed. | Future child activation/integration must retain independent authority; this packet cannot supply it. |
+| AC-CF-005/009 | REVIEWABLE: M4/M5 distinguish source, published candidate, hosted runs and installed copies. M7 stale-doc excerpts are wording evidence, not a reopened release or new registry query. | M10 exact identity, effective discovery and repeated build/canonical-content evidence remain unmet. |
+| AC-CF-006/010 | REVIEWABLE: M2 negatives/standard-path gaps remain explicit; M6 identifies fail-first child tests. M7 semantic overlap routes to those owners, not a parallel prose fix. | Registered child negatives and operative runtime applicability verification still required. |
+| AC-CF-007 | CONDITIONAL_ON_BA: finite mandatory allowlist, deterministic sample, missing translations, critical-first five-dimension scores and reproduction are present; AI rubric FAIL is retained. QC can independently recompute all arithmetic. | Human assessment review, approved corrections and passing language recheck. Audit acceptance must not waive the rubric. Interaction friction is qualitative; user/latency measurements were not performed. |
+| AC-CF-008 | REVIEWABLE: M3 classified 21 legacy subjects; M5/M8 distinguish completed, actionable and ambiguous work; root WIP and all four worktrees preserved. | Owned disposition/legacy handling and final zero-unexplained-state evidence. |
+| AC-CF-011 | REVIEWABLE: M3's 26 CURRENT/22 HISTORICAL public subjects and M7 exact stale-current claims are reconciled. P-PUBLIC excludes historical rewriting and CLI JS edits. | Independently approved CURRENT-only corrections, EN/VI recheck and actual released/installed parity. |
+
+Requested human review can be handled in one response with **two explicit decisions**: (1) BA accepts or corrects the accuracy/scope of M7's assessment, including its FAIL and missing translations; then (2) QC passes or rejects CF-MB2 Spec Compliance for the bound audit/handoff evidence. This bundles the interaction only; it does not infer one role's decision from the other or open Code Quality before QC PASS. If BA requires changes, rebind the affected evidence and keep QC pending. No approval of new child Task Plans, M8 option selection, Release, remediation completion, M10 or DoD is requested.
+
+### Immutable evidence set for human review
+
+The five sidecars below form the review subject. Hash the sorted UTF-8 lines `<sha256>  <relative-path>\n` to reproduce the aggregate. This s07 host is excluded to avoid a self-referential digest; the final Git commit fixes its bytes and the entire review request. The historical CF-MB1 set is still resolved at its original reviewed commit, not these changed files.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| `docs/audits/code-factory-holistic-coverage-matrix.md` | `f8ba523fb4b62cc381b41f11bade8515b10a3d993061aeb7637fe5202bbb489f` |
+| `docs/audits/code-factory-holistic-finding-disposition.md` | `de57158ede15aac66dbfadc60a2f52d8422a6c664dd52166bc937de8d2ebcdd7` |
+| `docs/audits/code-factory-holistic-inventory.json` | `13ba3b0bb3c5f75bbf3f15bcd5c27d17e6bac4ac315751ee0ba3b4cf23cf5772` |
+| `docs/audits/code-factory-holistic-language-review.md` | `d86db008e2c03273feafef7a46e654299cdb6c69414a32f32e6e154a61936773` |
+| `docs/audits/code-factory-holistic-legacy-document-classification.md` | `ca61069c07afbb01ebe3d88a3bfd84fcd05740f0b05bb88e8687dc4fda8d05fc` |
+
+```yaml
+review_target: CF-MB2
+review_stage: SPEC_COMPLIANCE
+assessment_mode: AI_SELF_REVIEW
+human_review_mode: INDEPENDENT
+source_commit: f42f4631e20e60b64c489c496bab057f246226b5
+evidence_set_sha256: c2ce527e14b26266ead33c44d8e87ff2a8ed7682b57158405ae9a193d74c4986
+recommendation: REVIEWABLE_CONDITIONAL_ON_BA_ASSESSMENT_REVIEW
+human_ba_assessment: NOT_REVIEWED
+human_qc_spec_compliance: NOT_REVIEWED
+human_code_quality: NOT_OPENED
+language_rubric_ai_result: FAIL
+final_acceptance_pass: false
+m10: NOT_OPENED
+m11: NOT_OPENED
+next_human_action: "BA reviews M7 assessment accuracy; then QC decides CF-MB2 Spec Compliance on the bound set."
+```
+
+Authoring review first checked the approved scope, no gate inference, unchanged authoring hosts and source-tier distinctions; editorial/integrity checks then found and corrected draft handoff overreach: CLI `bump-version.js` belongs to independent P-LANGUAGE maintenance intake, not P-PUBLIC docs scope; `tdd-track.sh` is a proposed P-HOOKS extension needing its own grant. EN broken catalog/SDD tables were distinguished from the corresponding intact VI table and its separate missing-Light content. These checks prepare a readable packet and do not constitute CF-MB2 Code Quality review. That stage remains closed until the human QC Spec Compliance verdict.
+
+Artifact verification at `2026-09-29T02:05:42Z`: full naming PASS (280 artifacts), governance/execution/planning PASS (276 notes each), protocol PASS (20 managed / 21 legacy skips), using Node 22.23.2 and `work-items` as the root. Fresh Spec/DoR/Approach/Task Plan status reads each return APPROVED and digest_match=true. Coverage/arithmetic/source verification PASS: 147 distinct score rows, exact full-file SHA-256 against source Git objects, exact excerpt lines, bounded read ranges, 64 mandatory inventories, 15 sampled subjects/40 available files/eight disclosed absent counterparts, 2,560 CLI projection rows. No source was changed to improve a score.
+
+Preservation checks PASS: exactly four owned Markdown files changed, all 911 other tracked files and 19 root untracked files retain captured hashes; main, backup/local-main-2026-09-16 and evals/behaviour-axis retain exact refs; the four-worktree map is unchanged before the audit commit. The original protected register, frozen s04/s05/s06, portfolio JSON, child reports/receipts and source/install/release content are untouched. Twenty original finding IDs/severities and fifteen proposal IDs are preserved. Strict UTF-8, local Markdown links and whitespace checks pass. No branch/worktree was finalized or removed.
+
+Reproduce workflow checks with `node packages/workflow-bundle/bin/wfc.js <naming|governance|exec|plan|protocol> --workflow-root work-items --project-root .`; run each command independently. Reproduce source/score and sampling checks by the language owner's method; compare non-owned paths with source commit and captured root-WIP manifests. Read master authoring evidence with `wfc gate status --work-item code-factory-holistic-audit-remediation --gate <spec|dor|approach|task_plan> --project-root . --json`. The status probe with `--help` alone returned a missing-work-item error and is not evidence; four explicit queries above succeeded. No unit/build/security/browser/hosted/install/release run was required or performed for this audit-document delta. Those checks remain independently required where the eventual child or final portfolio scope calls for them.
+
+Master protocol remains ACTIVE/s07; the current router handoff is WAITING_APPROVAL for applicable BA/CF-MB2 Spec Compliance review. No lifecycle transition or trusted receipt is manufactured for an s07 batch review. No CF-MB2 Code Quality or M10/M11 result is claimed.
