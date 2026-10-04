@@ -267,14 +267,14 @@ limits:
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "correct-workflow-authority-guidance"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-workflow-authority-guidance/work-items/correct-workflow-authority-guidance"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - "skills/analysis/requirement-analysis/SKILL.md"
   - "skills/analysis/requirement-analysis/SKILL.vi.md"
@@ -299,11 +299,11 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-09-30T04:08:57.705Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-09-30T04:10:25.324Z"
+handoff_target: "definition-of-done"
+last_transition_action: "verify"
+last_transition_at: "2026-10-04T13:25:33.168Z"
 required_actions:
-  - {"id":"se:b97f792f21d1073df6c7087cf75765982be8c4a00d4226079c1221e4dd3e5188","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
+  - {"id":"se:93b4ab7319a255ffe6130d7fb9db6c18ccd6a24b3b0102800c908f072f836f7f","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
 blockers: []
 review_notes:
   - "Explicit user accept of review packet c495f141b2d5cfb4817ad9d134b80418c2f0238b; work-item approval only."
@@ -322,6 +322,7 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
 ## Traceability

@@ -89,7 +89,7 @@ tags:
 
 # Step 8 - Verify + DoD
 
-> Technical checks pass. AC-AUTH-005, human QC verification and DoD remain pending. This draft supports review; it does not approve a gate, conclude whole-M7 PASS, or authorize branch finalization.
+> Verification PASS: the user accepted the bounded BA/QC packet. All six acceptance criteria have passing evidence. Human DoD and its trusted receipt remain pending; this draft does not close the work item or change whole-M7 status.
 
 ## Step Contract
 ```yaml
@@ -97,7 +97,7 @@ step_goal: "Verify AC-AUTH-001..006 and prepare a bounded BA/QC decision without
 input_summary:
   - "s04 accepted criteria, frozen s05/s06 and s07 implementation evidence."
 output_summary:
-  - "Technical results, eight source identities and proposed language scores."
+  - "Technical results, eight source identities and human-accepted bounded language scores."
 done_when:
   - "AC coverage, required human decisions and trusted DoD evidence are complete."
 owner: "qc; human BA owns the bounded language assessment"
@@ -155,8 +155,8 @@ criteria_results:
     result: PASS
     evidence: "Advisory/human authority controls; unchanged output schema and all six evidence checks."
   - criterion: AC-AUTH-005
-    result: PARTIAL
-    evidence: "Eight hashed scopes and proposed scores below; human BA/QC decisions absent."
+    result: PASS
+    evidence: "Explicit user accept of the BA/QC packet at fcff3b4; eight source hashes and scores unchanged, bounded mean 4.55/5, minimum dimension 4, zero critical flags."
   - criterion: AC-AUTH-006
     result: PASS
     evidence: "Original eight failures; corrected 56 checks with 48 mutations rejected; auto-discovered in 46-file complete runner."
@@ -173,15 +173,13 @@ commands_run:
 skipped_checks:
   - "ESLint and Semgrep unavailable; no repository configuration or applicable script for either. No scanner PASS is claimed."
   - "Separate app build/type-check, database and deployment tests not applicable to this prose/static-test change."
-release_blockers:
-  - "Publication and installation are outside this child's scope."
-status: PARTIAL
-gaps:
-  - "Human BA language decision, human QC verification and human DoD."
+release_blockers: []
+status: PASS
+gaps: []
 residual_risks:
   - "Static lexical assertions cover known counterexamples and can reject legitimate rewording; they do not prove arbitrary natural-language correctness."
   - "The remaining parent M7 corpus is unrepaired by this child."
-recommendation: "Review the bounded packet, then complete T8 through the normal human-controlled flow."
+recommendation: "Technical verification and BA/QC are accepted; request the separate human DoD decision, then seal the finalized s08 via the normal trusted flow."
 notes_for_review:
   - "Do not reuse authoring acceptance as BA/QC/DoD approval."
 ```
@@ -204,17 +202,23 @@ Full runner scratch log: /private/tmp/cf-authority-implement-r914fojm/unit.log. 
 
 ## Final Evidence Checks — 2026-10-04
 
-Child naming, governance, execution and planning validators each PASS for eight notes. Repository protocol PASS for 21 managed work items, with 21 explicitly configured legacy skips. Work-item status remains ACTIVE/s07 and APPROVED; each of Spec, DoR, Approach and Task Plan reports APPROVED with digest_match=true. The initial gate-status invocation omitted --gate and was rejected without mutation; explicit per-gate checks above replace that invocation.
+Child naming, governance, execution and planning validators each PASS for eight notes. Repository protocol PASS for 21 managed work items, with 21 explicitly configured legacy skips. At the pre-acceptance source checkpoint, work-item status was ACTIVE/s07 and APPROVED; each of Spec, DoR, Approach and Task Plan reports APPROVED with digest_match=true. The initial gate-status invocation omitted --gate and was rejected without mutation; explicit per-gate checks above replace that invocation.
 
 The eight source hashes match the bounded review table. Frozen child s04/s05/s06, tracked runtime/validator implementation and the package manifest remain byte-identical to the pre-implementation snapshot. All 19 root untracked file hashes and main/backup/evals refs are preserved. Report and s01 protocol contents remain exactly as produced by the existing approval/activation CLI; evidence authoring does not edit them. No generated runtime output is staged.
 
 All five trusted signatures also pass production isTrustedReceiptSignatureValid/hasApprovedReceipt; all four gate artifact digests match current bytes. Final strict UTF-8 checks pass for all 13 changed text files; both evidence notes parse as YAML (frontmatter and every YAML fence), and git diff --check passes. No scanner, schema or validator was installed or changed to obtain these results.
 
+## BA/QC Acceptance Checkpoint
+
+The source CLI recorded technical verification after the explicit BA/QC decision using work-item verify with actor agent. The CLI-owned report and s01 projection now identify VERIFIED/s08 with handoff to definition-of-done. No gate approval command, signer or close operation was invoked. DoD fields remain unset and the host remains draft pending that distinct decision.
+
+Naming/governance/execution/planning each PASS for eight child notes; post-transition protocol PASS for 21 managed items and 21 configured legacy skips. Existing five signatures and four artifact bindings remain valid. YAML, strict UTF-8 and whitespace checks pass; a bounded table check confirms eight rows with five columns, unchanged hashes and scores, and eight NO critical flags. Source/test bytes are identical to fcff3b4, so its successful 46-file suite is retained without rerunning unchanged production tests for this artifact-only decision record.
+
 ## Bounded Language Review
 
-Scope is limited to the ranges below, including related authority statements. SHA-256 binds the complete file; scores assess only the stated ranges. Scores are **AI proposals**, not human assessments. Dimension order: clarity (C), naturalness (N), next action (A), terminology (T), role/gate relevance (R). Human acceptance requires zero critical flags, mean >=4 and every dimension >=3.
+Scope is limited to the ranges below, including related authority statements. SHA-256 binds the complete file; scores assess only the stated ranges. Scores were proposed by the agent and are now **accepted by the human BA/QC reviewer** for this bounded packet. Dimension order: clarity (C), naturalness (N), next action (A), terminology (T), role/gate relevance (R). Human acceptance requires zero critical flags, mean >=4 and every dimension >=3.
 
-| Unit / file SHA-256 | Read lines | C / N / A / T / R | Critical (AI) | Source excerpts |
+| Unit / file SHA-256 | Read lines | C / N / A / T / R | Critical (accepted) | Source excerpts |
 | --- | --- | --- | --- | --- |
 | skills/analysis/requirement-analysis/SKILL.md<br>6c0dad6f45767cce36fe8ff469a42a522812d9985980f64c9fdcb9927a6e9633 | 27–33 | 5 / 4 / 5 / 5 / 5 | NO | 31: This skill does not modify code. Summary or analysis requests remain read-only even when the intended change is clear; clarity is not write authorization. |
 | skills/analysis/requirement-analysis/SKILL.vi.md<br>19a642e6036df5fbf96c273ae787ceee35489a3974e528c1ae19358679a74581 | 27–33 | 5 / 4 / 5 / 5 / 5 | NO | 31: Skill này không trực tiếp sửa code. Yêu cầu tóm tắt hoặc phân tích luôn chỉ đọc, kể cả khi thay đổi đã rõ; sự rõ ràng không cấp quyền ghi. |
@@ -222,26 +226,32 @@ Scope is limited to the ranges below, including related authority statements. SH
 | skills/guardrails/definition-of-done-gate/SKILL.vi.md<br>93ab5a193174077a86b5b044140d93f9e4575d871355900d6b4ccc4d8a9596ab | 1–88 | 4 / 4 / 5 / 4 / 5 | NO | 13: AI lập đánh giá đề xuất. Chỉ human reviewer có thẩm quyền QC mới được approve DoD tại `s08`; việc hoàn tất work item do protocol quản lý còn cần trusted receipt tương ứng và các transition protocol hợp lệ. Test pass hoặc đề xuất `DONE` của AI không tự đóng work item.; 43: Field `status` ghi đề xuất của AI, không phải quyết định human gate hoặc trạng thái protocol. Giữ human review và trusted receipt riêng với đánh giá này.; 76: 7. Đề xuất `DONE`, `PARTIAL` hoặc `BLOCKED` và chuyển đánh giá cho human reviewer có thẩm quyền QC; không tự pass gate hoặc đóng work item. |
 | skills/orchestration/codex-workflow-chain/SKILL.md<br>84d56f1bad1d2885f5c59e1140650f30d57c9f1c62b8bec5d0778e00d4525b1b | 85–106, 237–274, 319–358 | 4 / 4 / 5 / 4 / 5 | NO | 87: Do not start `s07 Implement` until **all applicable** prerequisites have passed human review. A draft artifact is not a passed gate.; 89: For `sdd_mode=light`: `s04` hosts `Spec` and `DoR`; `s06` hosts `Approach` and `Task Plan`. Each gate still needs its own trusted receipt.; 90: Light has no separate `s05` physical note or receipt; all eight logical steps remain. See the Light profile below for eligibility and additional applicable gates.; 265: `ACTIVE` requires human-passed `work item approval`, `change package approval` when present, the `greenfield` `bootstrap gate` when present, and all applicable authoring gates with current trusted receipts (full/non-Light: `s04`, `s05`, `s06`; Light: `s04`, `s06`, with independent receipts for each gate). |
 | skills/orchestration/codex-workflow-chain/SKILL.vi.md<br>bbad7cea83022a322f5a3d72daabd6dc4bff7bd6507c55e98fe923bf327afe22 | 85–105, 236–273, 318–356 | 4 / 4 / 5 / 4 / 5 | NO | 87: Chỉ bắt đầu `s07 Implement` sau khi **tất cả** điều kiện tiên quyết áp dụng đã qua human review. Artifact nháp không phải gate đã pass.; 89: Với `sdd_mode=light`: `s04` chứa `Spec` và `DoR`; `s06` chứa `Approach` và `Task Plan`. Mỗi gate vẫn cần trusted receipt riêng.; 90: Light không có note vật lý hoặc receipt riêng tại `s05`; vẫn giữ đủ tám bước logic. Xem profile Light bên dưới để biết điều kiện áp dụng và các gate bổ sung khi cần.; 264: `ACTIVE` yêu cầu human pass cho `work item approval`, `change package approval` khi có, `bootstrap gate` của `greenfield` khi có và tất cả authoring gate áp dụng với trusted receipt còn khớp (full/không dùng Light: `s04`, `s05`, `s06`; Light: `s04`, `s06`, mỗi gate có receipt độc lập). |
-| skills/orchestration/codex-workflow-chain/references/work-item-protocol.md<br>d18f407a2e81ff91e84ab4f80d10cb1838940bcf087508bb837fe1b20e163b43 | 33–59, 143–153, 235–246, 298–322, 545–614 | 4 / 4 / 5 / 4 / 5 | 55: `list` and `status` may bootstrap a read-only report from old `s01` only when `protocolControl.legacyScaffoldPolicy=allow_readonly`; 305: begin authoring at `s01`; scaffolding does not approve gates or open implementation; 316: open implementation at `s07` after all applicable human approvals and write grants are in place | 53: for `brownfield`, the protocol still allows materialize/scaffold for authoring, but the work item must declare `delivery_context=brownfield` and follow enough of the backbone's baseline/impact/regression output before implementing; 303: lock the `change_strategy`; 317:  |
-| skills/orchestration/codex-workflow-chain/references/work-item-protocol.vi.md<br>178628a5433669f6951333f842fa155726abb71f5d6db0483874e44b27fe52fc | 33–59, 143–153, 235–246, 298–322, 524–592 | 4 / 4 / 5 / 4 / 5 | 55: `list` và `status` có thể bootstrap report read-only từ `s01` cũ chỉ khi `protocolControl.legacyScaffoldPolicy=allow_readonly`; 305: bắt đầu authoring tại `s01`; scaffold không phê duyệt gate hoặc mở implementation; 316: mở implementation tại `s07` sau khi đủ mọi human approval áp dụng và phạm vi được cấp quyền ghi | 53: với `brownfield`, protocol vẫn cho phép materialize/scaffold để authoring, nhưng work item phải khai báo `delivery_context=brownfield` và bám đủ output baseline/impact/regression của backbone trước khi implement; 303: khóa `change_strategy`; 317:  |
+| skills/orchestration/codex-workflow-chain/references/work-item-protocol.md<br>d18f407a2e81ff91e84ab4f80d10cb1838940bcf087508bb837fe1b20e163b43 | 33–59, 143–153, 235–246, 298–322, 545–614 | 4 / 4 / 5 / 4 / 5 | NO | 55: `list` and `status` may bootstrap a read-only report from old `s01` only when `protocolControl.legacyScaffoldPolicy=allow_readonly`; 305: begin authoring at `s01`; scaffolding does not approve gates or open implementation; 316: open implementation at `s07` after all applicable human approvals and write grants are in place |
+| skills/orchestration/codex-workflow-chain/references/work-item-protocol.vi.md<br>178628a5433669f6951333f842fa155726abb71f5d6db0483874e44b27fe52fc | 33–59, 143–153, 235–246, 298–322, 524–592 | 4 / 4 / 5 / 4 / 5 | NO | 55: `list` và `status` có thể bootstrap report read-only từ `s01` cũ chỉ khi `protocolControl.legacyScaffoldPolicy=allow_readonly`; 305: bắt đầu authoring tại `s01`; scaffold không phê duyệt gate hoặc mở implementation; 316: mở implementation tại `s07` sau khi đủ mọi human approval áp dụng và phạm vi được cấp quyền ghi |
 
-The proposed cohort totals 182/200 (mean 4.55/5), with minimum dimension 4 and zero proposed critical flags. Naturalness/terminology scores of 4 acknowledge the existing mixed EN/VI workflow vocabulary and dense gate references. The read-only scopes state the action boundary directly; the DoD and lifecycle scopes identify the human reviewer and prerequisite handoff. This is a bounded proposal, not a new 147-unit parent score.
+The accepted cohort totals 182/200 (mean 4.55/5), with minimum dimension 4 and zero critical flags. Naturalness/terminology scores of 4 acknowledge the existing mixed EN/VI workflow vocabulary and dense gate references. The read-only scopes state the action boundary directly; the DoD and lifecycle scopes identify the human reviewer and prerequisite handoff. The decision covers these eight read scopes only; the 147-unit parent score remains unchanged.
 
 ```yaml
 human_language_review:
-  status: NOT_REVIEWED
-  reviewer: ""
-  reviewed_at: ""
-  decision: ""
-  accepted_score_scope: ""
+  status: APPROVED
+  reviewer: "user"
+  reviewer_role: "ba"
+  reviewed_at: "2026-10-04T13:22:04Z"
+  decision: "Explicit chat accept of the requested bounded BA/QC review packet at fcff3b4d53f7fbed76ec78788dd8e20b73447ac6."
+  accepted_score_scope: "All eight hashed read scopes and five scores per row; mean 4.55/5, minimum 4, zero critical."
 human_qc_verification:
-  status: NOT_REVIEWED
-  reviewer: ""
-  reviewed_at: ""
-  decision: ""
+  status: APPROVED
+  reviewer: "user"
+  reviewer_role: "qc"
+  reviewed_at: "2026-10-04T13:22:04Z"
+  decision: "Explicit chat accept of the same packet, including AC coverage, regression evidence, residual risks and justified scanner omissions; DoD was a separate next gate."
 ```
 
-The human BA should accept or amend the eight rows and identify any critical authority/action defect. QC should then confirm AC coverage and the scan limitations. A single human may act in the applicable authorized roles, but each decision must be explicit. DoD remains separate and requires its normal trusted receipt after the finalized s08 host is accepted.
+The preceding response explicitly requested BA/QC review of this packet before DoD; the user replied "accept". The record above applies that decision to BA and QC only. One human acts in the declared roles; no independent reviewer is claimed. The UTC value is the agent's decision-recording time, not an asserted exact chat-send timestamp. The agent authored this record; the user made the decision.
+
+Two protocol rows in the reviewed Markdown table had source excerpts placed in the critical-flag column and stale excerpt text in the final column. This update restores NO and the exact lines 55/305/316 already present in the packet. Source hashes, read ranges, all scores and the stated zero-critical aggregate remain unchanged. This is a presentation correction, not new source or review scope.
+
+DoD remains separate. No DoD reviewer metadata or trusted receipt is fabricated; the host stays draft until the authorized human decides DoD. After that decision, finalize the host before normal TTY signing so its receipt binds stable bytes.
 
 ## Governance Checks
 ```yaml
@@ -252,10 +262,9 @@ checks:
   - "Exact granted source/test boundary; report and s01 protocol block owned by CLI."
   - "Ordered targeted developer review in s07; no independent reviewer or delegation claim."
 blocking_items:
-  - "AC-AUTH-005 human BA/QC review is pending."
   - "Human DoD approval and applicable trusted receipt are absent."
 owner: "qc"
-next_action: "Complete T7 before T8; keep protocol ACTIVE/s07 while this review packet remains draft."
+next_action: "T7 and QC verification are accepted. Record technical VERIFIED/s08 via CLI; request human DoD before finalization/signing and completion."
 ```
 
 ## Regression & Compatibility Summary
@@ -285,7 +294,7 @@ performance:
   evidence: "Heuristic only: eight small files, finite section scans, test-only execution; no runtime hot path."
 notes:
   - "No automated security/static-analysis assurance is claimed."
-  - "QC must review these justified omissions with the final verification packet."
+  - "Human QC accepted these justified omissions with the bounded verification packet; scanner status remains SKIPPED."
 ```
 
 ## UAT Summary
@@ -314,31 +323,30 @@ notes: ["Maintenance repair; BA has the named language-review trigger, not a Bus
 audit_status: PARTIAL
 notes:
   - "Technical checks and s07 ordered review pass."
-  - "AC-AUTH-005 and human QC/DoD are pending; no whole-M7 completion."
+  - "AC-AUTH-005 and human QC verification are accepted. Human DoD remains pending; no whole-M7 completion."
 ```
 
 ## Definition of Done
 
-Advisory assessment only; no human DoD decision has been supplied.
+Advisory assessment only; no human DoD decision has been supplied. Proposed decision: APPROVE child DoD for AC-AUTH-001..006 based on the accepted BA/QC packet and the documented scanner limitations. No parent M7/CF-MB2 decision, publication or installation is included.
 
 ```yaml
 work_item_slug: "correct-workflow-authority-guidance"
 status: PARTIAL
 checks:
-  acceptance_criteria_evidenced: FAIL
+  acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
-  required_verification_completed: FAIL
+  required_verification_completed: PASS
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
 gaps:
-  - "AC-AUTH-005 human BA/QC decisions."
   - "Human QC DoD decision and trusted receipt against a finalized s08."
 residual_risks:
   - "Bounded static assertions and scanner omissions as described above."
 follow_up_items:
   - "Return bounded evidence to P-SEM/P-LANGUAGE without changing parent M7 or CF-MB2 decisions."
-next_action: "Human BA review of the eight rows, then QC verification and DoD; do not close/merge/clean up now."
+next_action: "Request explicit human QC DoD approval for the verified child. After acceptance, finalize and seal s08 through the normal human TTY flow; no close/merge/cleanup before that."
 ```
 
 ## Traceability
@@ -348,9 +356,9 @@ upstream:
   - "correct-workflow-authority-guidance.s05.technical-approach.md"
   - "correct-workflow-authority-guidance.s06.task-breakdown.md"
   - "correct-workflow-authority-guidance.s07.implementation.md"
-next_step: "T7 human BA review, then T8 human QC/DoD."
+next_step: "T8 human DoD decision and trusted receipt; T7 and QC verification are accepted."
 ```
 
 ## Handoff
 
-Technical evidence is ready for review. Parent P-SEM / CF-010 and P-LANGUAGE / CF-012 receive only a bounded contribution after their own integration review. Parent M7, CF-MB2, M10/M11 and master DoD are not passed by this child. All worktrees remain open.
+Technical verification and bounded BA/QC review are accepted. Recommend human QC approve child DoD based on all six evidenced criteria and the recorded scan limitations; this recommendation is not a passed gate. Parent P-SEM / CF-010 and P-LANGUAGE / CF-012 receive a bounded contribution under their own integration review. Parent M7, CF-MB2, M10/M11 and master DoD are unchanged. All worktrees remain open.

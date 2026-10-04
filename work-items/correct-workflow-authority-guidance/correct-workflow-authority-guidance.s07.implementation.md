@@ -88,7 +88,7 @@ tags:
 
 # Step 7 - Implement
 
-> Implementation and developer review are complete for T1–T6. T7 human BA review and T8 QC/DoD remain pending; no completion or cleanup is authorized.
+> Implementation and developer review are complete for T1–T6. T7 human BA review and T8 QC verification are accepted in s08; the separate human DoD decision remains pending.
 
 ## Step Contract
 ```yaml
@@ -141,8 +141,7 @@ outputs_actual:
 known_limitations:
   - "Static prose assertions cover known counterexamples, not arbitrary natural-language correctness."
 follow_up_items:
-  - "T7: human BA assessment of all eight repaired scopes."
-  - "T8: human QC verification and DoD after T7; normal trusted receipt flow."
+  - "T8: separate human DoD decision and normal trusted receipt flow; accepted BA/QC evidence is owned by s08."
 notes_for_testing:
   - "s08 owns command results, AC coverage, source identities, scan limitations and human review decisions."
 ```
@@ -219,4 +218,4 @@ next_step: "correct-workflow-authority-guidance.s08.verification.md"
 
 ## Handoff
 
-T1–T6 are complete at the implementation-evidence level. The s08 draft contains technical verification and the concrete bounded language packet for T7; its scores are agent proposals only. T8 depends on the human T7 decision. Keep the protocol ACTIVE/s07 until that dependency is resolved; do not use a technical test pass to jump to DONE or finalize this branch.
+T1–T6 are complete at the implementation-evidence level. The user has accepted the bounded BA/QC packet; s08 owns that decision and unchanged source identities. Technical verification may now progress through the CLI. T8 still needs the separate human DoD decision and trusted receipt before completion; retain this branch/worktree.
