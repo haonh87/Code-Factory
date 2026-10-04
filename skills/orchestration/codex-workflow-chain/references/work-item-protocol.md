@@ -149,7 +149,7 @@ Standard enum:
 ### `ACTIVE`
 
 - the work item has opened an execution path in the `s07 -> s08` backbone
-- the pre-code authoring gates at `s04`, `s05`, `s06` have the right evidence for the runtime to allow implementation
+- all applicable authoring gates have current trusted human evidence (full/non-Light: `s04`, `s05`, `s06`; Light: `s04`, `s06`, with an independent receipt for every required gate)
 
 ### `BLOCKED`
 
@@ -239,7 +239,7 @@ Requires:
 - `work item approval` is `APPROVED`
 - if there is a `change_id`, `change package approval` is `APPROVED`
 - if `delivery_context=greenfield`, the `bootstrap gate` is `APPROVED`
-- `s04`, `s05`, `s06` have enough gate evidence to open execution
+- all applicable authoring gates have passed (full/non-Light: `s04`, `s05`, `s06`; Light: `s04`, `s06`); Light hosts Spec/DoR at s04 and Approach/Task Plan at s06 without a separate s05 note or receipt
 - `granted_write_paths` has been declared so capability control knows which implementation path is open for writing
 - a trusted signed receipt for `work-item`, `change`, and the required step gates exists and still matches the current artifact
 - the handoff into the execution path is clear
@@ -302,6 +302,7 @@ Goal:
 - lock the `work_item_slug`
 - lock the `change_strategy`
 - scaffold the initial artifacts
+- begin authoring at `s01`; scaffolding does not approve gates or open implementation
 
 Minimum output:
 
@@ -312,7 +313,7 @@ Minimum output:
 
 Goal:
 
-- hand off the scaffolded work item into the backbone at `s01`
+- open implementation at `s07` after all applicable human approvals and write grants are in place
 
 Minimum output:
 
@@ -546,6 +547,7 @@ A stable vocabulary is recommended:
 ### Current Baseline
 
 - `wfc materialize --request "<raw-request>"`
+- `wfc work-item list`
 - `wfc work-item status --work-item <slug>`
 - `wfc work-item dispose-state --work-item <slug> --state-id <opaque-id> --operation-id <id> --reviewed-by maintainer --reason "<reason>"`
 - `wfc work-item approve --work-item <slug> --reviewed-by <role>`
@@ -574,16 +576,16 @@ A stable vocabulary is recommended:
 - supports `--auto-scaffold` when the status reaches `READY_TO_MATERIALIZE`
 - embeds the `Work Item Materialization` and `Work Item Protocol` blocks into `s01` after scaffolding succeeds
 - sets `approval_status=PENDING_REVIEW` on its own, forcing human review before `ACTIVE`
-- does not open `ACTIVE` just because scaffolding finished; `s04-s06` must have the right gate evidence before execution
+- does not open `ACTIVE` just because scaffolding finished; all applicable authoring gates must have current trusted evidence (full/non-Light: `s04`, `s05`, `s06`; Light: `s04`, `s06`)
 
 `wfc work-item list|status`:
 
-- may bootstrap a read-only report from `s01` if an old work item has no `.work-item-report.json` and the project allows `legacyScaffoldPolicy=allow_readonly`
+- may bootstrap a read-only report from `s01` only when an old work item has no `.work-item-report.json` and `protocolControl.legacyScaffoldPolicy=allow_readonly`
 - must not sync this bootstrap report back to the filesystem
 
 `wfc work-item approve|reject|activate|block|resume|verify|close|archive|cancel|dispose-state`:
 
-- `approve` may bootstrap an existing scaffold into a pending report before the trusted human decision; all other mutations require an existing `.work-item-report.json`
+- `approve` may bootstrap an existing scaffold into a pending report before the trusted human decision; it never treats the scaffold itself as approval. All other mutations require an existing `.work-item-report.json`
 - `activate` and `resume` into `ACTIVE` at `s07` must have at least one `write-root` so capability control opens the correct implementation path
 - `dispose-state` requires the report, an exact current `state_id`, and a signed Maintainer intent; it never bootstraps or infers identity from display text
 - `archive` rejects active blockers and unresolved required actions; lifecycle transitions refuse opaque legacy state rather than silently clearing it
@@ -607,7 +609,6 @@ The following commands are still the next target contract:
 
 - `wfc work-item split --work-item <slug>`
 - `wfc work-item reopen --work-item <slug>`
-- `wfc work-item list`
 
 If implemented later, these commands must follow the enum and transitions in this document; they must not invent new states on their own.
 

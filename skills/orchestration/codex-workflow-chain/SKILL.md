@@ -84,12 +84,12 @@ Follow the 8-step delivery workflow for coding tasks.
 
 ## Hard Rule: Spec/Design Before Code
 
-- Do not start `s07 Implement` until `s04 Acceptance + DoR`, `s05 Technical Approach`, or `s06 Task Plan` meet the minimum conditions.
-- Minimum conditions for production code to begin:
-  - `s04` has measurable acceptance criteria and a clear `DoR`.
-  - `s05` has locked the approach, the affected boundary, and a sufficient validation plan.
-  - `s06` has a task plan clear enough to know execution order and verify path.
-- `planning_track=quick` only allows reducing the detail level of artifacts; it does not allow dropping `s05` or `s06` entirely.
+- Do not start `s07 Implement` until **all applicable** prerequisites have passed human review. A draft artifact is not a passed gate.
+- For full/non-Light work items: `s04` hosts `Spec` and `DoR`; `s05` hosts `Approach`; `s06` hosts `Task Plan`. Each required gate needs its own trusted approval evidence.
+- For `sdd_mode=light`: `s04` hosts `Spec` and `DoR`; `s06` hosts `Approach` and `Task Plan`. Each gate still needs its own trusted receipt.
+- Light has no separate `s05` physical note or receipt; all eight logical steps remain. See the Light profile below for eligibility and additional applicable gates.
+- Before production code begins, acceptance criteria must be measurable, the approach must identify the affected boundary and validation plan, and the task plan must identify execution order and verification.
+- `planning_track=quick` reduces authoring detail; it never removes the Approach or Task Plan gate. Light hosts both at `s06` instead of requiring a separate `s05` note.
 - When a work item runs under `SDD`, do not implement if the `spec` is not yet `approved|frozen`, unless a `spec-change` or `governance-exception` exists per the rules.
 - If an emergency forces a deviation, record the exception or waiver clearly; do not code first and backfill docs as if the workflow had never been shortened.
 
@@ -262,7 +262,7 @@ Follow the 8-step delivery workflow for coding tasks.
 - `work item approval` and `change package approval` are always human-controlled gates; a protocol-managed item must not use `review_required=false` or `approval_status=NOT_REQUIRED` to bypass review.
 - Human pass must be explicit; do not infer it from a comment, technical `review pass`, local `test pass`, or the fact that an artifact exists.
 - If a human-controlled gate has not passed, the workflow must be `BLOCKED`, return to the previous step, or stop before the next gate; do not proceed just because the AI judges it "good enough".
-- `ACTIVE` is only valid when `work item approval`, `change package approval` when present, the `greenfield` `bootstrap gate` when present, and the `s04`, `s05`, `s06` evidence have been human-passed.
+- `ACTIVE` requires human-passed `work item approval`, `change package approval` when present, the `greenfield` `bootstrap gate` when present, and all applicable authoring gates with current trusted receipts (full/non-Light: `s04`, `s05`, `s06`; Light: `s04`, `s06`, with independent receipts for each gate).
 - `VERIFIED` is only valid when `s08` has verify evidence.
 - `DONE` is only valid when `s08` has passed `DoD`, and if the scope requires it, `UAT`, `Release`, and `Business Acceptance` have also passed in `s08`.
 - Invariants for the router status block:
@@ -338,7 +338,7 @@ Follow the 8-step delivery workflow for coding tasks.
 - Split implementation into small ordered tasks, traceable to requirements/AC, with a verify plan and enough review/governance checkpoints; the task plan must be clear enough to execute without reinventing the design.
 
 7. Implement
-- Only allowed after `s04-s06` meet the conditions; changes must be focused, in scope, and match the approach, use `TDD` for behavior change, use a `worktree` for large or risky change, review early for the main parts, and not drift from `spec` or `governance` before approval.
+- Only allowed after all applicable authoring gates pass (full/non-Light: `s04`, `s05`, `s06`; Light: `s04`, `s06`); changes must be focused, in scope, and match the approach, use `TDD` for behavior change, use a `worktree` for large or risky change, review early for the main parts, and not drift from `spec` or `governance` before approval.
 
 8. Verify + DoD
 - Compare results against criteria/spec, check Vietnamese encoding for changed text files, conclude `governance compliance`, use `definition-of-done-gate` when a conclusion lock is needed, only declare `done` here, only close `branch/worktree` here when present, and state clearly if a check cannot be run.

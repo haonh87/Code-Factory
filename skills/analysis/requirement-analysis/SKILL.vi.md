@@ -28,7 +28,7 @@ Phân tích yêu cầu để biến đầu bài thô thành đầu bài có th�
 
 - Không chọn kiến trúc hoặc technical approach chi tiết.
 - Không estimate effort chi tiết hoặc chia task thực thi.
-- Không trực tiếp sửa code, trừ khi người dùng chỉ yêu cầu tóm tắt/phân tích trong bối cảnh thay đổi đã rõ.
+- Skill này không trực tiếp sửa code. Yêu cầu tóm tắt hoặc phân tích luôn chỉ đọc, kể cả khi thay đổi đã rõ; sự rõ ràng không cấp quyền ghi.
 - Không tự ý suy diễn để lấp khoảng trống cho thông tin quan trọng.
 
 ## Đầu Vào Tối Thiểu

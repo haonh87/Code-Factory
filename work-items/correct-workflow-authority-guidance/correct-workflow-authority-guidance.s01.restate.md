@@ -267,15 +267,27 @@ limits:
 
 ## Work Item Protocol
 ```yaml
-protocol_status: MATERIALIZED
-approval_status: PENDING_REVIEW
+protocol_status: ACTIVE
+approval_status: APPROVED
 review_required: true
 work_item_slug: "correct-workflow-authority-guidance"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-workflow-authority-guidance/work-items/correct-workflow-authority-guidance"
-current_step: "s01"
-granted_write_paths: []
+current_step: "s07"
+granted_write_paths:
+  - "skills/analysis/requirement-analysis/SKILL.md"
+  - "skills/analysis/requirement-analysis/SKILL.vi.md"
+  - "skills/guardrails/definition-of-done-gate/SKILL.md"
+  - "skills/guardrails/definition-of-done-gate/SKILL.vi.md"
+  - "skills/orchestration/codex-workflow-chain/SKILL.md"
+  - "skills/orchestration/codex-workflow-chain/SKILL.vi.md"
+  - "skills/orchestration/codex-workflow-chain/references/work-item-protocol.md"
+  - "skills/orchestration/codex-workflow-chain/references/work-item-protocol.vi.md"
+  - "packages/workflow-bundle/test/workflow-authority-guidance.test.js"
+  - "work-items/correct-workflow-authority-guidance"
+  - "packages/workflow-bundle/runtime"
+  - "packages/workflow-bundle/workflow-bundle.manifest.json"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -284,21 +296,17 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: ""
-reviewed_by: ""
-reviewed_at: ""
-handoff_target: "human-review"
-last_transition_action: "materialize"
-last_transition_at: "2026-09-29T09:49:35.962Z"
+protocol_owner: "maintainer"
+reviewed_by: "maintainer"
+reviewed_at: "2026-09-30T04:08:57.705Z"
+handoff_target: "step-s07-owner"
+last_transition_action: "activate"
+last_transition_at: "2026-09-30T04:10:25.324Z"
 required_actions:
-  - {"id":"se:1fa05583f1678e6ecbea1e2deadfc258d0e7398ae4f0468811268908469a767f","kind":"workflow_followup","text":"wfc work-item approve --work-item correct-workflow-authority-guidance --reviewed-by <role>"}
-  - {"id":"se:df012924776ee8b04d15e7fb13a158589efd534fe4c65563d177bbd27961ea6a","kind":"gate_approval","text":"wfc gate approve --work-item correct-workflow-authority-guidance --gate spec --reviewed-by <role>","gate":"spec"}
-  - {"id":"se:95993f9f81208e6b4acfecdbd4e934ef49e8972ab44fe072bbd5e49712599c3d","kind":"gate_approval","text":"wfc gate approve --work-item correct-workflow-authority-guidance --gate dor --reviewed-by <role>","gate":"dor"}
-  - {"id":"se:18f58e29d6c825d395cb1c252924a35bdc68c55927e990ca42c59f9af7191429","kind":"gate_approval","text":"wfc gate approve --work-item correct-workflow-authority-guidance --gate approach --reviewed-by <role>","gate":"approach"}
-  - {"id":"se:dfcfb2f961bb581294a5b1d656f8ee14785ccebbd2b5a378bca0ff9c0e5d8025","kind":"gate_approval","text":"wfc gate approve --work-item correct-workflow-authority-guidance --gate task_plan --reviewed-by <role>","gate":"task_plan"}
-  - {"id":"se:4056ed4e63efb4280058bbbfaf70427d7750e2604f2da9e68e5bfd2e2b782c6a","kind":"work_item_activation","text":"wfc work-item activate --work-item correct-workflow-authority-guidance --step s07 --write-root <path>"}
+  - {"id":"se:b97f792f21d1073df6c7087cf75765982be8c4a00d4226079c1221e4dd3e5188","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
 blockers: []
-review_notes: []
+review_notes:
+  - "Explicit user accept of review packet c495f141b2d5cfb4817ad9d134b80418c2f0238b; work-item approval only."
 refs:
   - "work-items/sample-workflow-item"
   - "work-items/adaptive-governance-human-approval-ux"
@@ -311,6 +319,9 @@ audit_events:
   - "DEDUP_CONFIRMED"
   - "WORKFLOW_SCAFFOLDED"
   - "STEP_OPENED"
+  - "WORK_ITEM_APPROVED"
+  - "READINESS_BUNDLE_APPROVED"
+  - "WORK_ITEM_ACTIVATED"
 ```
 
 ## Traceability
