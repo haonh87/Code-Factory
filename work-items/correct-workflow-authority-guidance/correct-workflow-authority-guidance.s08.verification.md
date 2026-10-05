@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -67,8 +67,8 @@ gate_reviews:
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by: [qc]
+  dod_reviewed_at: "2026-10-05T02:40:09Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -89,7 +89,7 @@ tags:
 
 # Step 8 - Verify + DoD
 
-> Verification PASS: the user accepted the bounded BA/QC packet. All six acceptance criteria have passing evidence. Human DoD and its trusted receipt remain pending; this draft does not close the work item or change whole-M7 status.
+> Verification PASS; the human has explicitly approved child DoD for all six evidenced criteria. This finalized host is ready for trusted signing. Protocol remains VERIFIED/s08 until receipt validation and the normal close transition; parent M7 is unchanged.
 
 ## Step Contract
 ```yaml
@@ -179,7 +179,7 @@ gaps: []
 residual_risks:
   - "Static lexical assertions cover known counterexamples and can reject legitimate rewording; they do not prove arbitrary natural-language correctness."
   - "The remaining parent M7 corpus is unrepaired by this child."
-recommendation: "Technical verification and BA/QC are accepted; request the separate human DoD decision, then seal the finalized s08 via the normal trusted flow."
+recommendation: "Human DoD is accepted. Seal this finalized host through the normal human-controlled TTY flow, verify the receipt, then perform the normal close transition."
 notes_for_review:
   - "Do not reuse authoring acceptance as BA/QC/DoD approval."
 ```
@@ -210,7 +210,7 @@ All five trusted signatures also pass production isTrustedReceiptSignatureValid/
 
 ## BA/QC Acceptance Checkpoint
 
-The source CLI recorded technical verification after the explicit BA/QC decision using work-item verify with actor agent. The CLI-owned report and s01 projection now identify VERIFIED/s08 with handoff to definition-of-done. No gate approval command, signer or close operation was invoked. DoD fields remain unset and the host remains draft pending that distinct decision.
+The source CLI recorded technical verification after the explicit BA/QC decision using work-item verify with actor agent. The CLI-owned report and s01 projection now identify VERIFIED/s08 with handoff to definition-of-done. No gate approval command, signer or close operation was invoked. At that checkpoint, DoD fields were unset and the host was draft; the later explicit DoD decision is recorded below.
 
 Naming/governance/execution/planning each PASS for eight child notes; post-transition protocol PASS for 21 managed items and 21 configured legacy skips. Existing five signatures and four artifact bindings remain valid. YAML, strict UTF-8 and whitespace checks pass; a bounded table check confirms eight rows with five columns, unchanged hashes and scores, and eight NO critical flags. Source/test bytes are identical to fcff3b4, so its successful 46-file suite is retained without rerunning unchanged production tests for this artifact-only decision record.
 
@@ -251,7 +251,7 @@ The preceding response explicitly requested BA/QC review of this packet before D
 
 Two protocol rows in the reviewed Markdown table had source excerpts placed in the critical-flag column and stale excerpt text in the final column. This update restores NO and the exact lines 55/305/316 already present in the packet. Source hashes, read ranges, all scores and the stated zero-critical aggregate remain unchanged. This is a presentation correction, not new source or review scope.
 
-DoD remains separate. No DoD reviewer metadata or trusted receipt is fabricated; the host stays draft until the authorized human decides DoD. After that decision, finalize the host before normal TTY signing so its receipt binds stable bytes.
+The separate DoD request received a later explicit user accept. Frontmatter now records the authorized QC decision; no trusted receipt is fabricated. Keep the finalized host byte-identical after signing.
 
 ## Governance Checks
 ```yaml
@@ -262,9 +262,9 @@ checks:
   - "Exact granted source/test boundary; report and s01 protocol block owned by CLI."
   - "Ordered targeted developer review in s07; no independent reviewer or delegation claim."
 blocking_items:
-  - "Human DoD approval and applicable trusted receipt are absent."
+  - "At host finalization, the trusted DoD receipt has not yet been sealed; protocol completion waits for its successful verification."
 owner: "qc"
-next_action: "T7 and QC verification are accepted. Record technical VERIFIED/s08 via CLI; request human DoD before finalization/signing and completion."
+next_action: "Human DoD is recorded; seal the finalized s08, verify the current signature/digest, then use the normal CLI close transition."
 ```
 
 ## Regression & Compatibility Summary
@@ -323,16 +323,41 @@ notes: ["Maintenance repair; BA has the named language-review trigger, not a Bus
 audit_status: PARTIAL
 notes:
   - "Technical checks and s07 ordered review pass."
-  - "AC-AUTH-005 and human QC verification are accepted. Human DoD remains pending; no whole-M7 completion."
+  - "AC-AUTH-005, human QC verification and explicit human DoD are accepted. Trusted DoD receipt was absent at finalization; no whole-M7 completion."
+finish_target: "fix/workflow-authority-guidance"
+workspace_kind: BOTH
+verify_inputs:
+  - "This note's accepted AC-AUTH-001..006 evidence and human DoD decision."
+  - "Trusted receipt remains an external authority; validate it before closeout."
+finish_gate_checks:
+  verify_complete: PASS
+  dod_complete: PENDING
+  findings_closed: PASS
+  exceptions_resolved: PASS
+allowed_actions:
+  - "Commit finalized evidence and seal the already-approved DoD in a human-controlled terminal."
+blocked_actions:
+  - "Protocol close until the signed receipt is verified."
+  - "Merge/remove this worktree before its integration/finish conditions are met."
+cleanup_sequence: []
+merge_conditions:
+  - "Verified trusted DoD receipt and completed child protocol handoff."
+  - "Separate integration review; do not infer parent M7/CF-MB2 or release approval."
+residual_risks:
+  - "Pre-signature snapshot; a clean tree alone does not permit finalization."
+final_recommendation: HOLD_OPEN
+notes_for_closeout: "This is the pre-signature finish assessment. Keep the signed s08 immutable; later protocol events and the owning integration decision record further progress."
 ```
 
 ## Definition of Done
 
-Advisory assessment only; no human DoD decision has been supplied. Proposed decision: APPROVE child DoD for AC-AUTH-001..006 based on the accepted BA/QC packet and the documented scanner limitations. No parent M7/CF-MB2 decision, publication or installation is included.
+The assistant explicitly requested child DoD approval against the s08 packet at commit b5360008434b5a06134b226868ee0f03dad77aba; the user replied "accept". This records that human decision, including the accepted bounded language review, verification evidence and scanner limitations. The reviewer role and UTC recording time are owned by frontmatter gate_reviews.dod; that time records the decision here, not an asserted exact chat-send timestamp. The human user approved; the agent recorded it.
+
+The assessment below recommends DONE and the human content decision is APPROVED. Protocol completion still requires the external trusted receipt and normal CLI transition. No parent M7/CF-MB2 decision, publication or installation is included.
 
 ```yaml
 work_item_slug: "correct-workflow-authority-guidance"
-status: PARTIAL
+status: DONE
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -340,13 +365,12 @@ checks:
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps:
-  - "Human QC DoD decision and trusted receipt against a finalized s08."
+gaps: []
 residual_risks:
   - "Bounded static assertions and scanner omissions as described above."
 follow_up_items:
   - "Return bounded evidence to P-SEM/P-LANGUAGE without changing parent M7 or CF-MB2 decisions."
-next_action: "Request explicit human QC DoD approval for the verified child. After acceptance, finalize and seal s08 through the normal human TTY flow; no close/merge/cleanup before that."
+next_action: "Seal the human-approved, finalized s08 through the normal TTY flow; verify its signature/current digest before CLI close. Do not modify this host after signing."
 ```
 
 ## Traceability
@@ -356,9 +380,28 @@ upstream:
   - "correct-workflow-authority-guidance.s05.technical-approach.md"
   - "correct-workflow-authority-guidance.s06.task-breakdown.md"
   - "correct-workflow-authority-guidance.s07.implementation.md"
-next_step: "T8 human DoD decision and trusted receipt; T7 and QC verification are accepted."
+next_step: "T8 trusted receipt sealing/validation and normal closeout; human DoD, T7 and QC verification are accepted."
 ```
 
 ## Handoff
 
-Technical verification and bounded BA/QC review are accepted. Recommend human QC approve child DoD based on all six evidenced criteria and the recorded scan limitations; this recommendation is not a passed gate. Parent P-SEM / CF-010 and P-LANGUAGE / CF-012 receive a bounded contribution under their own integration review. Parent M7, CF-MB2, M10/M11 and master DoD are unchanged. All worktrees remain open.
+Human DoD, technical verification and bounded BA/QC review are accepted. Seal this frozen host in the human terminal; the agent can then verify the receipt and complete normal protocol closeout. Parent P-SEM / CF-010 and P-LANGUAGE / CF-012 receive a bounded contribution under their own integration review. Parent M7, CF-MB2, M10/M11 and master DoD are unchanged. Worktrees remain open pending their finish conditions.
+
+## Trusted Signing Handoff
+
+Run in the human-controlled terminal after the checkpoint is committed. The helper checks the exact s08 SHA-256, existing trusted authoring receipts, current reviewer metadata and the clean granted scope before it invokes the one normal signing command. It skips signing on retry only if the current DoD receipt already has a valid signature and matching digest.
+
+```sh
+sh /private/tmp/cf-authority-dod-95hynv2s/approve.sh
+```
+
+The durable equivalent, if the temporary helper is unavailable, is:
+
+```sh
+cd /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-workflow-authority-guidance
+/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js gate approve --work-item correct-workflow-authority-guidance --gate dod --reviewed-by qc --reviewed-at 2026-10-05T02:40:09Z --note "Explicit user accept of child DoD against b536000; six criteria evidenced, BA/QC accepted, scanner limitations recorded. No parent or release approval." --project-root . --telemetry off
+```
+
+The normal CLI requires a human-controlled TTY and hidden passphrase prompt (workflow-trusted-approval-utils.js, promptHiddenInput/resolveApprovalPassphrase). The agent must not provide the passphrase or use a fixture path. This command seals only DoD; it performs no merge, cleanup, install or release. Keep s08 unchanged after sealing; later state is owned by the trusted receipt and CLI report.
+
+Host-finalization checks PASS on 2026-10-05: naming/governance/execution/planning each validate eight notes; repository protocol validates 21 managed items with 21 configured legacy skips. YAML and whitespace checks pass. Source/test bytes, accepted BA/QC scores and s04/s05/s06 hosts remain unchanged; prior successful source tests are retained for this decision-only update. The report and its s01 projection remain VERIFIED/s08 and are not hand-edited.
