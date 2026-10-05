@@ -1,19 +1,21 @@
 ---
 language: en
 name: definition-of-done-gate
-description: Pin the Definition of Done at the work-item level after technical verification. Use when you need to confirm that acceptance criteria have evidence, implementation is recorded, verification is sufficient, and the traceability chain business -> design -> code -> verify is complete before closing out the technical work.
+description: Prepare an advisory Definition of Done assessment for human QC approval after technical verification. Check acceptance evidence, implementation, verification and business -> design -> code -> verify traceability; this skill does not approve the gate or close the work item.
 ---
 
 # Definition of Done Gate
 
 > Vietnamese: SKILL.vi.md
 
-Pin the completion status of a technical work item after implementation and verification have run.
+Assess whether a technical work item is ready for human DoD approval after implementation and verification.
+
+AI prepares an advisory assessment. Only an authorized human QC reviewer can approve DoD at `s08`; protocol-managed completion also requires the applicable trusted receipt and valid protocol transitions. Passing tests or an AI `DONE` recommendation alone never closes the work item.
 
 ## Goal
 
-- Create a gate at the work-item level instead of stopping only at the test result of the verify step.
-- Confirm the change has enough evidence to be considered done from the technical-workflow perspective.
+- Prepare the evidence for the work-item DoD gate beyond the verify step's test result.
+- Assess whether the evidence supports requesting human approval of technical completion.
 - Record gaps, residual risks, and follow-up items when it cannot yet be considered DONE.
 
 ## When To Use
@@ -37,6 +39,8 @@ Pin the completion status of a technical work item after implementation and veri
 ## Required Output
 
 Emit a YAML artifact using the following schema:
+
+The `status` field records the AI recommendation, not the human gate decision or protocol status. Keep the human review and trusted receipt separate from this assessment.
 
 ```yaml
 work_item_slug: ""
@@ -69,16 +73,16 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 4. Check that the code-quality scan is complete or has a clear justification.
 5. Check whether the traceability chain business -> design -> code -> verify is fully connected.
 6. Check whether residual risks and follow-up items are clearly recorded.
-7. Conclude `DONE`, `PARTIAL`, or `BLOCKED`.
+7. Recommend `DONE`, `PARTIAL`, or `BLOCKED` and hand the assessment to the authorized human QC reviewer; do not pass the gate or close the work item yourself.
 
 ## Decision Rule
 
-- `DONE` when every mandatory check passes and no blocking gap remains.
-- `PARTIAL` when most of the work is done but a non-blocking gap remains that does not prevent closing the technical work now.
-- `BLOCKED` when important evidence is missing, traceability is incomplete, or verification is insufficient.
+- Recommend `DONE` when every mandatory check passes and no blocking gap remains; request the human DoD decision and applicable trusted receipt before protocol completion.
+- Recommend `PARTIAL` when evidence or work remains; identify the owner and next action. This assessment does not authorize closure.
+- Recommend `BLOCKED` when important evidence is missing, traceability is incomplete, or verification is insufficient.
 
 ## Completion Conditions
 
-- A clear `DONE|PARTIAL|BLOCKED` conclusion.
+- A clear advisory `DONE|PARTIAL|BLOCKED` assessment and handoff for the human decision. Finishing this assessment does not finish the work item.
 - `gaps` and `next_action` when not DONE.
 - `follow_up_items` when there is work outside the current scope.

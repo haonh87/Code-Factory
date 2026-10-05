@@ -84,14 +84,24 @@ Tuân thủ workflow delivery 8 bước cho các tác vụ coding.
 
 ## Quy Tắc Cứng: Spec/Design Trước Code
 
-- Không được bắt đầu `s07 Implement` khi `s04 Acceptance + DoR`, `s05 Technical Approach` hoặc `s06 Task Plan` chưa đủ điều kiện tối thiểu.
-- Điều kiện tối thiểu để code production được phép bắt đầu:
-  - `s04` đã có acceptance criteria đo được và `DoR` rõ.
-  - `s05` đã khóa approach, boundary bị tác động và validation plan ở mức đủ dùng.
-  - `s06` đã có task plan đủ để biết thứ tự thực hiện và verify path.
-- `planning_track=quick` chỉ cho phép rút gọn mức chi tiết của artifact; không cho phép bỏ hẳn `s05` hoặc `s06`.
+- Chỉ bắt đầu `s07 Implement` sau khi **tất cả** điều kiện tiên quyết áp dụng đã qua human review. Artifact nháp không phải gate đã pass.
+- Với work item full/không dùng Light: `s04` chứa `Spec` và `DoR`; `s05` chứa `Approach`; `s06` chứa `Task Plan`. Mỗi gate bắt buộc cần bằng chứng phê duyệt đáng tin cậy riêng.
+- Với `sdd_mode=light`: `s04` chứa `Spec` và `DoR`; `s06` chứa `Approach` và `Task Plan`. Mỗi gate vẫn cần trusted receipt riêng.
+- Light không có note vật lý hoặc receipt riêng tại `s05`; vẫn giữ đủ tám bước logic. Xem profile Light bên dưới để biết điều kiện áp dụng và các gate bổ sung khi cần.
+- Trước khi code production, acceptance criteria phải đo được, approach phải chỉ rõ boundary bị tác động và validation plan, task plan phải chỉ rõ thứ tự thực hiện và cách kiểm chứng.
+- `planning_track=quick` rút gọn nội dung authoring; không bỏ gate Approach hoặc Task Plan. Light đặt cả hai tại `s06`, không yêu cầu note `s05` riêng.
 - Khi work item chạy theo `SDD`, không được implement nếu `spec` chưa `approved|frozen`, trừ khi đã có `spec-change` hoặc `governance-exception` theo đúng rule.
 - Nếu có tình huống khẩn cấp buộc phải đi lệch, phải ghi rõ exception hoặc waiver; không được code trước rồi backfill tài liệu như thể workflow chưa từng bị rút ngắn.
+
+## Quy Tắc Cứng: SDD Light Profile
+
+- `sdd_mode=light` giảm lượng tài liệu, không thêm SDD mode, bỏ bước logic hay giảm control invariant. Thẩm quyền đầy đủ nằm tại `policies/codex/AGENTS.global.md` mục `Hard Rule: SDD Light Profile`.
+- Light chỉ áp dụng khi `delivery_context=brownfield`, `planning_track=quick`, `governance_profile=default`, `execution_mode=agentic`, `interaction_mode=self` và risk là `low` hoặc `medium`.
+- Hard escalation sang full/strict có ưu tiên hơn preset Light: greenfield/Foundation Decision, public API/event/data contract, migration/backfill/cutover, evidence regulated hoặc security-sensitive, multi-agent delegation, `defect_source=UNKNOWN` hoặc chưa phân loại spec impact, blast radius cao hoặc nhiều hệ thống, hay UAT/release gate phức tạp.
+- Mapping note vật lý: `s01` chứa Clarify + Business Goal + Open Questions + classification; `s04` chứa Acceptance + DoR + Spec Freeze/approved CR; `s06` chứa Option Analysis + Brownfield Impact + Technical Approach + Task Plan. Không có note `s05` riêng. `s07` và `s08` được tạo khi vào ACTIVE hoặc bắt đầu Verify; trace vẫn giữ tám bước logic.
+- Gate host: `Spec + DoR` tại `s04`; `Approach + Task Plan` tại `s06`; `Delivery Rule Evidence` tại `s07`; `DoD` tại `s08`. Light không hỗ trợ Foundation Decision; nếu cần gate này phải escalate sang full.
+- Light dùng Spec Card (`spec_refs.card`) thay BRD/SRS; xem `references/spec-driven-development.md`. Một lần `ready-bundle` có thể ký nhiều gate, nhưng mỗi gate vẫn có receipt độc lập gắn với hash của host, reviewer và timestamp riêng.
+- `ACTIVE` của Light vẫn cần các receipt tại `s04` và `s06`; mọi invariant về human-controlled gate bên dưới vẫn áp dụng.
 
 ## Quy Tắc Cứng: Brainstorming Có Kỷ Luật
 
@@ -251,7 +261,7 @@ Tuân thủ workflow delivery 8 bước cho các tác vụ coding.
 - `work item approval` và `change package approval` luôn là human-controlled gate; protocol-managed item không được dùng `review_required=false` hoặc `approval_status=NOT_REQUIRED` để bypass review.
 - Human pass phải explicit; không suy diễn từ comment, `review pass` kỹ thuật, `test pass` cục bộ hoặc việc artifact đã tồn tại.
 - Nếu human-controlled gate chưa pass, workflow phải `BLOCKED`, quay lại step trước, hoặc dừng trước gate tiếp theo; không được đi tiếp chỉ vì AI đánh giá là “đủ tốt”.
-- `ACTIVE` chỉ hợp lệ khi `work item approval`, `change package approval` khi có, `bootstrap gate` của `greenfield` khi có, và evidence `s04`, `s05`, `s06` đã được human pass.
+- `ACTIVE` yêu cầu human pass cho `work item approval`, `change package approval` khi có, `bootstrap gate` của `greenfield` khi có và tất cả authoring gate áp dụng với trusted receipt còn khớp (full/không dùng Light: `s04`, `s05`, `s06`; Light: `s04`, `s06`, mỗi gate có receipt độc lập).
 - `VERIFIED` chỉ hợp lệ khi `s08` đã có evidence verify.
 - `DONE` chỉ hợp lệ khi `s08` đã pass `DoD`, và nếu scope yêu cầu thì `UAT`, `Release`, `Business Acceptance` cũng đã pass trong `s08`.
 - Invariant cho block trạng thái router:
@@ -326,7 +336,7 @@ Tuân thủ workflow delivery 8 bước cho các tác vụ coding.
 - Tách implementation thành task nhỏ có thứ tự, trace được về requirement/AC, có kế hoạch verify và có đủ checkpoint review/governance; task plan phải đủ rõ để triển khai mà không cần tự phát minh lại design.
 
 7. Implement
-- Chỉ được thực hiện sau khi `s04-s06` đã đủ điều kiện; thay đổi phải tập trung, đúng phạm vi, đúng approach, dùng `TDD` cho behavior change, dùng `worktree` cho change lớn hoặc rủi ro, review sớm cho phần chính và không lệch `spec` hoặc `governance` khi chưa được approve.
+- Chỉ được thực hiện sau khi mọi authoring gate áp dụng đã pass (full/không dùng Light: `s04`, `s05`, `s06`; Light: `s04`, `s06`); thay đổi phải tập trung, đúng phạm vi, đúng approach, dùng `TDD` cho behavior change, dùng `worktree` cho change lớn hoặc rủi ro, review sớm cho phần chính và không lệch `spec` hoặc `governance` khi chưa được approve.
 
 8. Verify + DoD
 - Đối chiếu kết quả với criteria/spec, kiểm tra mã hóa tiếng Việt cho file văn bản đã đổi, kết luận `governance compliance`, dùng `definition-of-done-gate` khi cần khóa kết luận, chỉ tuyên bố `done` tại đây, chỉ chốt `branch/worktree` tại đây khi có và nêu rõ nếu không thể chạy kiểm tra.

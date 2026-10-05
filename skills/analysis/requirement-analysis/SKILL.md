@@ -28,7 +28,7 @@ Requirement analysis turns a rough brief into one that is understandable, clearl
 
 - Choosing architecture or a detailed technical approach.
 - Detailed effort estimation or splitting execution tasks.
-- Directly modifying code, unless the user only asks for a summary/analysis in a context where the change is already clear.
+- This skill does not modify code. Summary or analysis requests remain read-only even when the intended change is clear; clarity is not write authorization.
 - Filling gaps in important information by inference.
 
 ## Minimum Inputs

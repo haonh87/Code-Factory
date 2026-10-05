@@ -52,8 +52,9 @@ Lưu ý quan trọng:
 - với project mới, trước khi materialize work item implementation đầu tiên phải có evidence rằng `Spec`, `Contract` khi có, `Approach` và `Foundation Decision` khi có đã được human pass
 - với `brownfield`, protocol vẫn cho phép materialize/scaffold để authoring, nhưng work item phải khai báo `delivery_context=brownfield` và bám đủ output baseline/impact/regression của backbone trước khi implement
 - nếu chưa có bootstrap evidence, handoff đúng là quay về clarify/spec/approach, không được scaffold rồi hợp thức hóa sau
-- `list` và `status` có thể bootstrap report read-only từ `s01` cũ để quan sát trạng thái legacy scaffold
-- các action mutating như `approve`, `reject`, `activate`, `block`, `resume`, `verify`, `close`, `archive`, `cancel` phải dùng report đã tồn tại; không được tự bootstrap từ `s01`
+- `list` và `status` có thể bootstrap report read-only từ `s01` cũ chỉ khi `protocolControl.legacyScaffoldPolicy=allow_readonly`
+- `approve` có thể tạo report pending từ scaffold đã tồn tại trước khi ghi nhận quyết định human rõ ràng; không bao giờ coi scaffold là approval
+- các action ghi khác (`reject`, `activate`, `block`, `resume`, `verify`, `close`, `archive`, `cancel`, `dispose-state`) phải dùng report đã tồn tại; không bootstrap từ `s01`
 - các human gate được coi là trusted chỉ khi có signed receipt ngoài project root; metadata trong note/report không còn đủ để mở gate một mình
 
 ## Phạm Vi
@@ -148,7 +149,7 @@ Enum chuẩn:
 ### `ACTIVE`
 
 - work item đã mở execution path trong backbone `s07 -> s08`
-- gate authoring trước code ở `s04`, `s05`, `s06` đã có evidence phù hợp để runtime cho phép implement
+- mọi authoring gate áp dụng đã có bằng chứng human đáng tin cậy còn khớp (full/không dùng Light: `s04`, `s05`, `s06`; Light: `s04`, `s06`, mỗi gate bắt buộc có receipt độc lập)
 
 ### `BLOCKED`
 
@@ -238,7 +239,7 @@ Yêu cầu:
 - `work item approval` đã `APPROVED`
 - nếu có `change_id`, `change package approval` đã `APPROVED`
 - nếu `delivery_context=greenfield`, `bootstrap gate` đã `APPROVED`
-- `s04`, `s05`, `s06` đã có evidence gate đủ để mở execution
+- mọi authoring gate áp dụng đã pass (full/không dùng Light: `s04`, `s05`, `s06`; Light: `s04`, `s06`); Light đặt Spec/DoR tại s04 và Approach/Task Plan tại s06, không cần note hoặc receipt riêng tại s05
 - `granted_write_paths` đã được khai báo để capability control biết implementation path nào được mở ghi
 - trusted signed receipt cho `work-item`, `change` và các gate step bắt buộc đã tồn tại và còn khớp artifact hiện tại
 - handoff vào execution path đã rõ
@@ -301,6 +302,7 @@ Mục tiêu:
 - khóa `work_item_slug`
 - khóa `change_strategy`
 - scaffold artifact ban đầu
+- bắt đầu authoring tại `s01`; scaffold không phê duyệt gate hoặc mở implementation
 
 Output tối thiểu:
 
@@ -311,7 +313,7 @@ Output tối thiểu:
 
 Mục tiêu:
 
-- handoff work item đã scaffold vào backbone `s01`
+- mở implementation tại `s07` sau khi đủ mọi human approval áp dụng và phạm vi được cấp quyền ghi
 
 Output tối thiểu:
 
@@ -524,6 +526,7 @@ Khuyến nghị dùng vocabulary ổn định:
 ### Baseline Hiện Có
 
 - `wfc materialize --request "<raw-request>"`
+- `wfc work-item list`
 - `wfc work-item status --work-item <slug>`
 - `wfc work-item approve --work-item <slug> --reviewed-by <role>`
 - `wfc work-item reject --work-item <slug> --reviewed-by <role> --note "<reason>"`
@@ -551,18 +554,19 @@ Khuyến nghị dùng vocabulary ổn định:
 - hỗ trợ `--auto-scaffold` khi status đạt `READY_TO_MATERIALIZE`
 - nhúng block `Work Item Materialization` và `Work Item Protocol` vào `s01` sau khi scaffold thành công
 - tự đặt `approval_status=PENDING_REVIEW`, buộc human review trước khi vào `ACTIVE`
-- không mở `ACTIVE` chỉ vì scaffold xong; `s04-s06` phải có evidence gate phù hợp trước khi execute
+- không mở `ACTIVE` chỉ vì scaffold xong; mọi authoring gate áp dụng cần trusted evidence còn khớp (full/không dùng Light: `s04`, `s05`, `s06`; Light: `s04`, `s06`)
 
 `wfc work-item list|status`:
 
-- có thể bootstrap report read-only từ `s01` nếu work item cũ chưa có `.work-item-report.json`
+- có thể bootstrap report read-only từ `s01` chỉ khi work item cũ chưa có `.work-item-report.json` và `protocolControl.legacyScaffoldPolicy=allow_readonly`
 - không được sync bootstrap report này ngược lại xuống filesystem
 
-`wfc work-item approve|reject|activate|block|resume|verify|close|archive|cancel`:
+`wfc work-item approve|reject|activate|block|resume|verify|close|archive|cancel|dispose-state`:
 
-- phải dùng `.work-item-report.json` đã tồn tại
-- nếu chỉ có `s01` legacy mà chưa có report, phải materialize lại hoặc tạo report theo flow chính thức trước
+- `approve` có thể tạo report pending từ scaffold đã tồn tại trước quyết định human đáng tin cậy; không bao giờ coi scaffold là approval. Mọi action ghi khác phải dùng `.work-item-report.json` đã tồn tại
 - `activate` và `resume` vào `ACTIVE` ở `s07` phải có ít nhất một `write-root` để capability control mở đúng implementation path
+- `dispose-state` cần report, `state_id` chính xác của trạng thái hiện tại và ý định được Maintainer ký; không bootstrap hoặc suy ra định danh từ text hiển thị
+- `archive` từ chối blocker hoặc required action chưa giải quyết; lifecycle transition không được âm thầm xóa trạng thái legacy không rõ nghĩa
 
 `wfc gate approve|reject|status`:
 
@@ -583,7 +587,6 @@ Các command sau vẫn là target contract tiếp theo:
 
 - `wfc work-item split --work-item <slug>`
 - `wfc work-item reopen --work-item <slug>`
-- `wfc work-item list`
 
 Nếu implement sau này, các command này phải bám đúng enum và transition trong tài liệu này, không tự invent state mới.
 

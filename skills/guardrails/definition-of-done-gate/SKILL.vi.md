@@ -1,19 +1,21 @@
 ---
 language: vi
 name: definition-of-done-gate
-description: Chốt Definition of Done ở mức work item sau khi verify kỹ thuật. Dùng khi cần xác nhận acceptance criteria đã có evidence, implementation đã được ghi nhận, verify đã đủ và truy vết business -> design -> code -> verify đã hoàn chỉnh trước khi đóng technical work.
+description: Chuẩn bị đánh giá đề xuất Definition of Done để human QC phê duyệt sau verify kỹ thuật. Kiểm tra acceptance evidence, implementation, verification và truy vết business -> design -> code -> verify; skill không tự approve gate hoặc đóng work item.
 ---
 
 # Definition of Done Gate
 
 > English: SKILL.md
 
-Chốt trạng thái hoàn tất của technical work item sau khi implementation và verify đã chạy xong.
+Đánh giá technical work item đã sẵn sàng để human phê duyệt DoD hay chưa, sau khi implementation và verify hoàn tất.
+
+AI lập đánh giá đề xuất. Chỉ human reviewer có thẩm quyền QC mới được approve DoD tại `s08`; việc hoàn tất work item do protocol quản lý còn cần trusted receipt tương ứng và các transition protocol hợp lệ. Test pass hoặc đề xuất `DONE` của AI không tự đóng work item.
 
 ## Mục Tiêu
 
-- Tạo gate ở mức work item thay vì chỉ dừng ở test result của step verify.
-- Xác nhận thay đổi đã đủ bằng chứng để xem là xong về mặt technical workflow.
+- Chuẩn bị bằng chứng cho gate DoD ở mức work item, ngoài test result của step verify.
+- Đánh giá bằng chứng đã đủ để đề nghị human phê duyệt hoàn tất technical work hay chưa.
 - Ghi rõ gap, residual risk và follow-up item nếu chưa thể xem là DONE.
 
 ## Khi Sử Dụng
@@ -37,6 +39,8 @@ Chốt trạng thái hoàn tất của technical work item sau khi implementatio
 ## Đầu Ra Bắt Buộc
 
 Xuất artifact YAML theo schema sau:
+
+Field `status` ghi đề xuất của AI, không phải quyết định human gate hoặc trạng thái protocol. Giữ human review và trusted receipt riêng với đánh giá này.
 
 ```yaml
 work_item_slug: ""
@@ -69,16 +73,16 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 4. Kiểm tra scan code quality đã hoàn tất hoặc có biện minh rõ.
 5. Kiểm tra traceability đã nối đủ business -> design -> code -> verify hay chưa.
 6. Kiểm tra residual risk và follow-up item đã được ghi rõ hay chưa.
-7. Kết luận `DONE`, `PARTIAL` hoặc `BLOCKED`.
+7. Đề xuất `DONE`, `PARTIAL` hoặc `BLOCKED` và chuyển đánh giá cho human reviewer có thẩm quyền QC; không tự pass gate hoặc đóng work item.
 
 ## Quy Tắc Ra Quyết Định
 
-- `DONE` khi mọi check bắt buộc đạt và không còn gap blocker.
-- `PARTIAL` khi xong phần lớn nhưng còn gap không chặn việc đóng technical work ngay.
-- `BLOCKED` khi thiếu evidence quan trọng, thiếu traceability hoặc verify chưa đủ.
+- Đề xuất `DONE` khi mọi check bắt buộc đạt và không còn gap blocker; cần quyết định DoD của human và trusted receipt tương ứng trước khi protocol hoàn tất.
+- Đề xuất `PARTIAL` khi còn thiếu bằng chứng hoặc còn việc phải làm; ghi owner và bước tiếp theo. Đánh giá này không cấp quyền đóng work item.
+- Đề xuất `BLOCKED` khi thiếu evidence quan trọng, thiếu traceability hoặc verify chưa đủ.
 
 ## Điều Kiện Hoàn Tất
 
-- Có kết luận `DONE|PARTIAL|BLOCKED` rõ ràng.
+- Có đánh giá đề xuất `DONE|PARTIAL|BLOCKED` rõ ràng và handoff để human quyết định. Hoàn tất đánh giá không có nghĩa work item đã hoàn tất.
 - Có `gaps` và `next_action` nếu chưa DONE.
 - Có `follow_up_items` khi còn việc ngoài phạm vi hiện tại.
