@@ -425,19 +425,19 @@ CF-MB2's original five-artifact request remains resolvable at commit `499ee1cf5c
 
 ### Signed recovery and child authoring packet — 2026-09-29
 
-Current snapshot: 2026-10-05. The former MATERIALIZED/signing-pending snapshot is superseded by child closeout checkpoint `46d3ef5810b834eda5d4a4541b5cdc47523e5c72` on `fix/workflow-authority-guidance`. Admission recovery, human work-item/authoring decisions, trusted receipt verification and CLI activation are recorded in the child artifacts. The report is now DONE/s08 and APPROVED after the accepted BA/QC packet, explicit human DoD, verified trusted receipt and normal CLI close. The signed s08 remains immutable. No child technical approval is pending. [PR #14](https://github.com/haonh87/Code-Factory/pull/14) now carries the integration review; the parent s07 integration checkpoint owns its CI/review status and finish decision. Downstream archive lifecycle remains separate.
+Current snapshot: 2026-10-05. The former MATERIALIZED/signing-pending snapshot is superseded by child closeout checkpoint `46d3ef5810b834eda5d4a4541b5cdc47523e5c72` on `fix/workflow-authority-guidance`. Admission recovery, human work-item/authoring decisions, trusted receipt verification and CLI activation are recorded in the child artifacts. The report is now DONE/s08 and APPROVED after the accepted BA/QC packet, explicit human DoD, verified trusted receipt and normal CLI close. The signed s08 remains immutable. No child technical approval is pending. [PR #14](https://github.com/haonh87/Code-Factory/pull/14) was human-accepted and merged as `f27093d06ecab43f40d481542e1be5f49bf279cc`; the parent s07 integration checkpoint owns the human decision, merge/CI evidence and finish decision. Downstream archive lifecycle remains separate.
 
 P-SEM / CF-010 owns the authority correction; P-LANGUAGE / CF-012 coordinates the bounded EN/VI assessment. No proposal was added to the fifteen-proposal portfolio, no finding was closed and no parent acceptance result changed. The child repaired the eight declared sources and added its focused regression; implementation T1–T6 are recorded in child s07.
 
 The concrete review packet is [child s08 at the checkpoint](https://github.com/haonh87/Code-Factory/blob/46d3ef5810b834eda5d4a4541b5cdc47523e5c72/work-items/correct-workflow-authority-guidance/correct-workflow-authority-guidance.s08.verification.md). It owns AC-AUTH-001..006 coverage, command results, per-file SHA-256/read ranges/excerpts and five-dimension accepted scores. Technical evidence: 46 test files PASS, 56 focused checks PASS and 48 negative mutations rejected; pack/syntax/local runtime and workflow/protocol checks pass. ESLint/Semgrep are unavailable, with manual review and explicit QC review of that limitation.
 
-The user accepted the bounded BA/QC packet: eight-scope mean 4.55/5, minimum dimension 4 and zero critical flags. The child owns the decision record and presentation-only repair of two table rows; source hashes and scores are unchanged. T7, QC verification and the separate human DoD decision are accepted. The trusted QC DoD receipt now has a valid signature and matches the current s08 SHA-256 `ceb88dd15a55a480ff0c3a092e42aadf109cc09f1f6224a0e7bd89593916427b`. The clean declared scope passed the normal close guard without a waiver. Protocol close was performed through CLI; the branch/worktree stays open for parent/main integration review and downstream lifecycle, with no merge, archive or cleanup performed. This bounded repair is not whole-M7 PASS; the parent ledger and thresholds stay unchanged.
+The user accepted the bounded BA/QC packet: eight-scope mean 4.55/5, minimum dimension 4 and zero critical flags. The child owns the decision record and presentation-only repair of two table rows; source hashes and scores are unchanged. T7, QC verification and the separate human DoD decision are accepted. The trusted QC DoD receipt now has a valid signature and matches the current s08 SHA-256 `ceb88dd15a55a480ff0c3a092e42aadf109cc09f1f6224a0e7bd89593916427b`. The clean declared scope passed the normal close guard without a waiver. Protocol close was performed through CLI, followed by the human-approved PR #14 integration. The branch/worktree stays open for the remaining archive/cleanup lifecycle; neither archive nor cleanup has run. This bounded repair is not whole-M7 PASS; the parent ledger and thresholds stay unchanged.
 
-The parent CF-MB2 request retains its original commit/hash binding. This later child contribution needs its own integration review before any revised parent decision. Protected register, frozen master hosts, M7 score ledger, portfolio, installed 2.6.3, five worktrees, unique-commit refs and 19 root untracked files are preserved. Parent M10/M11 and master DoD remain under their existing gates.
+The parent CF-MB2 request retains its original commit/hash binding. This later child contribution has its bounded PR integration review; it does not supply any revised parent decision. Protected register, frozen master hosts, M7 score ledger, portfolio, installed 2.6.3, the five original worktrees, unique-commit refs and 19 root untracked files are preserved. Parent M10/M11 and master DoD remain under their existing gates.
 
 ### Next bounded M7 intake: Light router Vietnamese guidance
 
-Within the user's selected authority/action correction stream, the next recommended boundary is M7-L14's existing router VI omission. Owner: P-LANGUAGE / CF-012, with P-SEM / CF-010 reviewing the shared Light authority semantics first. This remains inside the fifteen-proposal portfolio; no new finding or proposal ID is created. Proposed child slug: `correct-light-router-vietnamese-guidance` (not materialized).
+Within the user's selected authority/action correction stream, the next recommended boundary is M7-L14's existing router VI omission. Owner: P-LANGUAGE / CF-012, with P-SEM / CF-010 reviewing the shared Light authority semantics first. This remains inside the fifteen-proposal portfolio; no new finding or proposal ID is created. Child `correct-light-router-vietnamese-guidance` now has a CLI-owned PROPOSED report at `d1d7296` on `fix/light-router-vietnamese-guidance`, based on integrated main `f27093d`. No authoring notes or source changes are materialized; admission is described below.
 
 Current-source confirmation at child head `46d3ef5810b834eda5d4a4541b5cdc47523e5c72` and fetched main `a36b1852ca13dd5209fad319400e769c5b22cabf`: `skills/orchestration/workflow-governance-router/SKILL.md` SHA-256 `400661cac92f7cbc76f3293ca550f77849a689b342f7912246ebc75d690cc625` contains Light instructions in steps 3 and 4. Its VI sibling SHA-256 `b55ba5cd9682e0d1091ff893a0e638bcab4638f57649824c7c62bbd4fd21236c` has neither paragraph. The omission can direct a VI reader to seek a separate s05 host/receipt for Light. This is a source guidance defect, not evidence of a runtime bypass; the original M7 score remains unchanged.
 
@@ -452,4 +452,99 @@ Proposed acceptance/verify boundaries:
 - A static test fails on the present missing paragraphs, passes on the correction and rejects targeted wrong-host/omitted-gate/extra-s05 mutations. Existing test discovery supplies the standard command; no runner/CI restructuring is proposed.
 - BA reviews the exact EN/VI reading scopes and QC checks the same M7 dimensions: zero critical flags, mean at least 4/5 and each dimension at least 3/5. UTF-8, links, standard regression and an independent child DoD complete verification; the bounded score cannot become whole-M7 PASS.
 
-Proposed route: BUG / maintenance / brownfield; developer and QC own the technical correction, BA contributes the named EN/VI review. All hard triggers are false for this limited guidance/test proposal; discovery of an actual public-contract or security-control change reroutes it. Planning/profile selection, formal dedup and human authoring decisions are still intake work, not inferred from this ledger. Related legacy subjects `sdd-light-authority-cutover` and `sdd-light-code-factory` must be reviewed as possible overlap at admission; this inspection found no protocol reports for them and does not invent a current status. The completed authority-guidance child's eight-source allowlist excludes both router files, so its DoD/grants cannot authorize this follow-up. Start from the integrated PR head when available, record normal child admission and authoring evidence, then use the approved fail-first plan. Rollback would revert only that future child's owned change, preserving earlier receipts and work.
+Proposed route: BUG / maintenance / brownfield; developer and QC own the technical correction, BA contributes the named EN/VI review. All hard triggers are false for this limited guidance/test proposal; discovery of an actual public-contract or security-control change reroutes it. Full/default/agentic is now selected for the critical entry-guidance and cross-language review boundary; formal signed dedup and human authoring decisions remain pending. Related legacy subjects `sdd-light-authority-cutover` and `sdd-light-code-factory` were reviewed for overlap below; neither has a protocol report, so the review uses historical task/DoD evidence without inventing a current protocol status. The completed authority-guidance child's eight-source allowlist excludes both router files, so its DoD/grants cannot authorize this follow-up. The proposal starts from integrated main `f27093d`. Complete normal child admission and authoring evidence, then execute only after its own fail-first Task Plan is human-passed. Rollback would revert only that future child's owned change, preserving earlier receipts and work.
+
+### Router VI admission review and human-terminal handoff
+
+The user accepted the bounded next-work proposal. Source CLI admission preserved the complete request and returned PROPOSED / needs_review / PENDING_REVIEW with no source-write grants. Current report SHA-256 is `09b848c830a628f8d6bf117801f5e24d45b0bec383dbc616ed267b160d158424`. Profile is full/default/agentic, brownfield, medium risk; use the existing legacy writer without an unproven adaptive-parity attestation. This does not approve any work-item, Spec, DoR, Approach or Task Plan gate.
+
+| Runtime near match | Direct scope evidence | Recommended admission disposition |
+| --- | --- | --- |
+| correct-workflow-authority-guidance | DONE/s08 and merged via PR #14; current report SHA-256 `cfe90c7ca6c1c9d950424d0fa2139e107df077a66b4645c1badb304747dd7139`; neither router file is among its eight sources. | Preserve completed repair; the router VI omission is a separate follow-up. |
+| release-workflow-bundle-v2-6-3 | ARCHIVED/s08, no blockers; report SHA-256 `5fe3114104e1575a4587afb833559b7eee1600a93d67fee1d95ed422afe5ce00`; release/publication ownership excludes this new repair. | Preserve release closure and installed 2.6.3; no release reopening. |
+| sdd-light-authority-cutover | Legacy s06 T-F owns router EN only (SHA-256 `8194983fa379e9531c25d3f3dcfe7327a27a14ce83bfa171ea2a0cf891836774`); s08 records human DoD on 2026-07-21 (SHA-256 `30aba0b2acef76fb23701cfe73d45b7b137e103f9836383469cdd60499fab6e7`). No protocol report exists, so this is historical evidence rather than an invented modern lifecycle state. | Reuse canonical EN semantics; no VI repair is owned by the old task. Preserve its evidence. |
+
+Broader grant search found `skills/orchestration` only under ARCHIVED `adaptive-governance-human-approval-ux`; CR-008 owns the completed adaptive routing outcome. Related `sdd-light-code-factory` supplies earlier runtime implementation; CHANGE-003 and CHANGE-007 own different artifact-governance/release boundaries. No current overlapping owner was found for this two-paragraph VI correction. The root CHANGE-005/diagram pair remains attributed to its own diagram-adapter disposition and is untouched. Recommendation: confirm independent intake, one outcome, and existing-scope review. The runtime still requires all three signed Maintainer dispositions; this recommendation does not clear them.
+
+The concrete helper below selects each stable entry by ID, resolves a fresh snapshot-bound `di:` target before the CLI call, and retains fixed operation IDs for safe signed retries. `--inspect-targets` was checked only as a read-only in-memory simulation. JavaScript and shell syntax pass. The agent did not invoke a signer, unlock a key, supply a passphrase or mutate the proposal report. The helper signs only admission decisions, not work-item/authoring approval.
+
+Review the source below, then run the prepared copy in a human-controlled terminal (three hidden prompts):
+
+```sh
+bash /private/tmp/cf-pr14-accepted-k2d65rhj/admit-router-vi.sh
+```
+
+The wrapper changes into `.claude/worktrees/correct-light-router-vietnamese-guidance` and runs Node 22 with this exact source. The source is retained here for review/recovery if temporary files expire.
+
+```js
+"use strict";
+const fs = require("node:fs");
+const path = require("node:path");
+const crypto = require("node:crypto");
+const assert = require("node:assert/strict");
+const { execFileSync } = require("node:child_process");
+const projectRoot = "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-light-router-vietnamese-guidance";
+const slug = "correct-light-router-vietnamese-guidance";
+const expectedHash = "09b848c830a628f8d6bf117801f5e24d45b0bec383dbc616ed267b160d158424";
+const decisions = [
+  {
+    "id": "se:b7df5e4904891b25f3ef86cd7a9c92a906a1ea49de0246cfcaccc5ac66421d9c",
+    "operation": "0470c6cd-57fd-404e-8592-aab2766f215f",
+    "reason": "Reviewed DONE and merged correct-workflow-authority-guidance: its eight-source grant excludes router files. Release 2.6.3 is ARCHIVED and does not own this repair. The historical sdd-light-authority-cutover s06 T-F owns router EN only and its s08 records human DoD on 2026-07-21. Preserve those scopes and admit the remaining VI omission independently."
+  },
+  {
+    "id": "se:385eda799f967f039d7cca6e15d7932dfeb12963bf1f1d6d9f8079568641f89b",
+    "operation": "55dfb4f5-b9a9-4679-9116-39f94c67004e",
+    "reason": "Single bounded outcome: restore the two omitted VI Light router instructions against canonical EN, plus one focused regression. No runtime behavior, public API, release, installed harness, or previous child changes. Keep full planning for the critical entry-guidance and cross-language review boundary."
+  },
+  {
+    "id": "se:a5a8db1a4b263a9d157bf20fe09f0f62babe2902e04bb2f845fed805a195d783",
+    "operation": "76f1da51-4dcd-4b3a-b2e9-09e16e550609",
+    "reason": "Reviewed current managed write grants and related legacy work items. The only broader orchestration grant belongs to ARCHIVED adaptive-governance-human-approval-ux. Existing changes and parent P-LANGUAGE/CF-012 with P-SEM/CF-010 coordination supply no active child owner of this exact VI correction. Preserve archived decisions and use new child authoring gates."
+  }
+];
+assert.equal(fs.realpathSync(process.cwd()), fs.realpathSync(projectRoot), "Wrong worktree");
+for (const name of ["WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE", "WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT", "WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE"]) assert.ok(!process.env[name], "Remove approval override: " + name);
+const { getDispositionTargets, selectDispositionTarget } = require(path.join(projectRoot, "packages/workflow-bundle/scripts/work-item-protocol-utils.js"));
+const reportPath = path.join(projectRoot, "work-items", slug, slug + ".work-item-report.json");
+const inspectOnly = process.argv.includes("--inspect-targets");
+assert.ok(process.argv.slice(2).every(x => x === "--inspect-targets"), "Unsupported argument");
+let simulated = fs.readFileSync(reportPath);
+const initial = JSON.parse(simulated);
+assert.equal(initial.work_item_slug, slug);
+assert.equal(initial.protocol_status, "PROPOSED");
+assert.equal(initial.approval_status, "PENDING_REVIEW");
+assert.ok(!initial.granted_write_paths || initial.granted_write_paths.length === 0);
+if (!(initial.resolved_state_history || []).length) assert.equal(crypto.createHash("sha256").update(simulated).digest("hex"), expectedHash, "Proposal changed: review before signing");
+if (!inspectOnly) assert.ok(process.stdin.isTTY && process.stdout.isTTY, "Run in a human-controlled terminal");
+for (const decision of decisions) {
+  const rawBytes = inspectOnly ? simulated : fs.readFileSync(reportPath);
+  const rawReport = JSON.parse(rawBytes);
+  const prior = (rawReport.resolved_state_history || []).filter(x => x.operation_id === decision.operation);
+  assert.ok(prior.length <= 1, "Ambiguous operation history");
+  let stateId, selected;
+  if (prior.length === 1) {
+    assert.equal(prior[0].original_entry.id, decision.id, "Operation subject changed");
+    assert.equal(prior[0].reason, decision.reason, "Operation reason changed");
+    stateId = prior[0].source_entry_id;
+  } else {
+    const targets = getDispositionTargets(rawReport, rawBytes).filter(x => selectDispositionTarget({rawReport, rawBytes, stateId: x.state_id}).originalEntry.id === decision.id);
+    assert.equal(targets.length, 1, "Expected one current disposition target");
+    stateId = targets[0].state_id;
+    selected = selectDispositionTarget({rawReport, rawBytes, stateId});
+  }
+  if (inspectOnly) {
+    console.log("PASS current selector: " + decision.id + " -> " + stateId);
+    if (selected) {
+      rawReport[selected.collection].splice(selected.index, 1);
+      simulated = Buffer.from(JSON.stringify(rawReport) + "\n");
+    }
+    continue;
+  }
+  console.log(decision.reason);
+  execFileSync(process.execPath, ["packages/workflow-bundle/bin/wfc.js", "work-item", "dispose-state", "--work-item", slug, "--state-id", stateId, "--operation-id", decision.operation, "--reviewed-by", "maintainer", "--reason", decision.reason, "--project-root", ".", "--telemetry", "off"], {stdio:"inherit"});
+}
+console.log(inspectOnly ? "PASS: read-only selector simulation; no signer or file writes executed." : "Admission dispositions submitted. Ask the agent to verify signatures and resume proposal authoring; no work-item or authoring gate was approved.");
+```
+
+After signing, the agent verifies all three signed history entries, reads a fresh proposal SHA, and runs the normal `materialize --resume-proposal` path with that SHA and a new operation UUID. No reuse of the initial hash after disposition, no manual report edit and no direct-scaffold bypass is allowed. Until then, the full-root protocol validator correctly reports the absent s01; validation is NOT_READY for this proposal branch. The initial child-folder validator visited zero items and is not acceptance evidence. Parent CF-MB2, the protected register and all M7 scores remain unchanged.
