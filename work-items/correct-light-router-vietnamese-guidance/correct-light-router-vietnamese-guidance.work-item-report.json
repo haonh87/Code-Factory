@@ -1,0 +1,130 @@
+{
+  "materialization_status": "PROPOSED",
+  "protocol_status": "PROPOSED",
+  "decision_owner": "agent",
+  "protocol_owner": "",
+  "raw_request_summary": "Restore the omitted Vietnamese Light guidance in steps 3 and 4 of workflow-governance-router/SKILL.vi.md to match the existing English router: applicable s04 and s06 hosts, no separate s05 note or receipt, independent gate approvals, Foundation escalation and applicable Contract condition. Add one bounded regression for this source omission. Preserve runtime behavior and the prior completed authority-guidance scope.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "needs_review",
+  "work_items": [
+    {
+      "work_item_slug": "correct-light-router-vietnamese-guidance",
+      "work_item_title": "Correct Light Router Vietnamese Guidance",
+      "work_item_type": "BUG",
+      "scope_summary": "Restore the omitted Vietnamese Light guidance in steps 3 and 4 of workflow-governance-router/SKILL.vi.md to match the existing English router: applicable s04 and s06 hosts, no separate s05 note or receipt, independent gate approvals, Foundation escalation and applicable Contract condition. Add one bounded regression for this source omission. Preserve runtime behavior and the prior completed authority-guidance scope.",
+      "primary_outcome": "Restore the omitted Vietnamese Light guidance in steps 3 and 4 of workflow-governance-router/SKILL.vi.md to match the existing English router: applicable s04 and s06 hosts, no separate s05 note or receipt, independent gate approvals, Foundation escalation and applicable Contract condition. Add one bounded regression for this source omission. Preserve runtime behavior and the prior completed authority-guidance scope.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "full",
+      "sdd_reasons": [],
+      "sdd_preset": "full",
+      "sdd_light_profile": "preview",
+      "governance_profile": "default",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/correct-workflow-authority-guidance",
+        "work-items/release-workflow-bundle-v2-6-3",
+        "work-items/sdd-light-authority-cutover"
+      ],
+      "collision_notes": [
+        "correct-workflow-authority-guidance (score=3)",
+        "release-workflow-bundle-v2-6-3 (score=2)",
+        "sdd-light-authority-cutover (score=2)"
+      ],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "Scope chưa cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item correct-light-router-vietnamese-guidance --planning-track full --delivery-context brownfield",
+        "npm run validate:workflow -- --workflow-root work-items/correct-light-router-vietnamese-guidance --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-light-router-vietnamese-guidance"
+      ],
+      "blockers": [
+        {
+          "id": "se:b7df5e4904891b25f3ef86cd7a9c92a906a1ea49de0246cfcaccc5ac66421d9c",
+          "kind": "delivery_blocker",
+          "text": "Có work item gần nghĩa cần review: correct-workflow-authority-guidance, release-workflow-bundle-v2-6-3, sdd-light-authority-cutover"
+        }
+      ]
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=BUG",
+    "delivery_context=brownfield",
+    "dedup_result=needs_review",
+    "change_strategy=none",
+    "planning_track=full",
+    "governance_profile=default",
+    "sdd_preset=full",
+    "selected_profile=full",
+    "sdd_mode=none",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "correct-light-router-vietnamese-guidance",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "selected_profile": "full",
+  "sdd_mode": "none",
+  "sdd_preset": "full",
+  "sdd_light_profile": "preview",
+  "sdd_reasons": [],
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-light-router-vietnamese-guidance/work-items/correct-light-router-vietnamese-guidance",
+  "current_step": "",
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "human-clarify",
+  "required_actions": [
+    {
+      "id": "se:385eda799f967f039d7cca6e15d7932dfeb12963bf1f1d6d9f8079568641f89b",
+      "kind": "workflow_followup",
+      "text": "Làm rõ scope để chốt single hay split."
+    },
+    {
+      "id": "se:a5a8db1a4b263a9d157bf20fe09f0f62babe2902e04bb2f845fed805a195d783",
+      "kind": "workflow_followup",
+      "text": "Review existing work-items/changes trước khi scaffold."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "se:b7df5e4904891b25f3ef86cd7a9c92a906a1ea49de0246cfcaccc5ac66421d9c",
+      "kind": "delivery_blocker",
+      "text": "Có work item gần nghĩa cần review: correct-workflow-authority-guidance, release-workflow-bundle-v2-6-3, sdd-light-authority-cutover"
+    }
+  ],
+  "refs": [
+    "work-items/correct-workflow-authority-guidance",
+    "work-items/release-workflow-bundle-v2-6-3",
+    "work-items/sdd-light-authority-cutover"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED"
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "review_required": true,
+  "approval_status": "PENDING_REVIEW",
+  "reviewed_by": "",
+  "reviewed_at": "",
+  "review_notes": [],
+  "protocol_events": [
+    {
+      "timestamp": "2026-10-05T14:04:18.068Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    }
+  ]
+}
