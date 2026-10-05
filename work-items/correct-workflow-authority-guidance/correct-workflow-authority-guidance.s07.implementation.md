@@ -88,7 +88,7 @@ tags:
 
 # Step 7 - Implement
 
-> Implementation and developer review are complete for T1–T6. T7 human BA review and T8 QC verification are accepted in s08; the separate human DoD decision is now accepted in s08, with trusted sealing pending.
+> Implementation and developer review are complete for T1–T6. T7 human BA review and T8 QC verification are accepted in s08; the separate human DoD decision has a verified trusted receipt and the CLI has closed the child delivery.
 
 ## Step Contract
 ```yaml
@@ -141,7 +141,7 @@ outputs_actual:
 known_limitations:
   - "Static prose assertions cover known counterexamples, not arbitrary natural-language correctness."
 follow_up_items:
-  - "T8: seal and validate the now-approved DoD through the normal trusted receipt flow; s08 owns the human decision."
+  - "Parent integration review and downstream lifecycle remain separate; T8 trusted receipt validation and child CLI close are complete."
 notes_for_testing:
   - "s08 owns command results, AC coverage, source identities, scan limitations and human review decisions."
 ```
@@ -218,4 +218,4 @@ next_step: "correct-workflow-authority-guidance.s08.verification.md"
 
 ## Handoff
 
-T1–T6 are complete at the implementation-evidence level. The user has accepted the bounded BA/QC packet; s08 owns that decision and unchanged source identities. Technical verification may now progress through the CLI. The separate human DoD decision is recorded in s08. T8 still needs trusted receipt sealing and validation before protocol completion; retain this branch/worktree.
+T1–T6 are complete at the implementation-evidence level. The user has accepted the bounded BA/QC packet; s08 owns that decision and unchanged source identities. Technical verification may now progress through the CLI. The separate human DoD decision is recorded in the immutable s08 host. T8 trusted receipt validation and normal CLI close are now complete; the report owns protocol DONE and its downstream archive action. Retain this branch/worktree for parent integration review; source, release and parent M7 decisions are unchanged.

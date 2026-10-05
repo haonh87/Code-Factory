@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "maintainer",
   "raw_request_summary": "Correct contradictory EN/VI workflow guidance for read-only analysis, all applicable prerequisites before s07, activation at s07, and advisory versus human-approved DoD. Restore existing authority in requirement-analysis, definition-of-done-gate, codex-workflow-chain SKILL and work-item-protocol references, with bounded regression evidence; exclude runtime gate changes, publication and cleanup.",
@@ -87,12 +87,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "id": "se:93b4ab7319a255ffe6130d7fb9db6c18ccd6a24b3b0102800c908f072f836f7f",
+      "id": "se:db8c607582d4bac53df4a9fa810e06d8df950cc17ed8a7fcaa6deda2e04ac7e4",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -112,7 +112,8 @@
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -182,6 +183,14 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "Record technical verification after explicit user acceptance of the BA/QC packet at fcff3b4; all six criteria evidenced. Separate human DoD and trusted receipt remain pending."
+    },
+    {
+      "timestamp": "2026-10-05T03:03:52.566Z",
+      "action": "close",
+      "actor": "agent",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Human DoD accepted and trusted QC receipt signature/current s08 digest verified; all six criteria evidenced and declared scope committed. Child technical delivery complete; parent integration, M7/CF-MB2 and release decisions remain separate."
     }
   ],
   "resolved_state_history": [
