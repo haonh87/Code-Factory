@@ -437,7 +437,7 @@ The parent CF-MB2 request retains its original commit/hash binding. This later c
 
 ### Next bounded M7 intake: Light router Vietnamese guidance
 
-Within the user's selected authority/action correction stream, the next recommended boundary is M7-L14's existing router VI omission. Owner: P-LANGUAGE / CF-012, with P-SEM / CF-010 reviewing the shared Light authority semantics first. This remains inside the fifteen-proposal portfolio; no new finding or proposal ID is created. Child `correct-light-router-vietnamese-guidance` now has a CLI-owned MATERIALIZED/s01 report and a concrete draft authoring packet at `ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f` on `fix/light-router-vietnamese-guidance`, based on integrated main `f27093d`. Signed admission is complete; work-item approval and all four authoring gates remain pending. No source or test implementation has started; the current evidence is recorded below.
+Within the user's selected authority/action correction stream, the next recommended boundary is M7-L14's existing router VI omission. Owner: P-LANGUAGE / CF-012, with P-SEM / CF-010 reviewing the shared Light authority semantics first. This remains inside the fifteen-proposal portfolio; no new finding or proposal ID is created. Child `correct-light-router-vietnamese-guidance` now has a CLI-owned MATERIALIZED/s01 report and a concrete draft authoring packet at `ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f` on `fix/light-router-vietnamese-guidance`, based on integrated main `f27093d`. Signed admission is complete. The user has explicitly accepted work-item approval and all four authoring decisions; normal trusted receipt sealing remains pending, as recorded in the handoff below. No source or test implementation has started; the current evidence is recorded below.
 
 Source confirmation was repeated at integrated main `f27093d06ecab43f40d481542e1be5f49bf279cc` and the new child baseline: `skills/orchestration/workflow-governance-router/SKILL.md` SHA-256 `400661cac92f7cbc76f3293ca550f77849a689b342f7912246ebc75d690cc625` contains Light instructions in steps 3 and 4. Its VI sibling SHA-256 `b55ba5cd9682e0d1091ff893a0e638bcab4638f57649824c7c62bbd4fd21236c` has neither paragraph. The omission can direct a VI reader to seek a separate s05 host/receipt for Light. This is a source guidance defect, not evidence of a runtime bypass; the original M7 score remains unchanged.
 
@@ -452,7 +452,7 @@ Proposed acceptance/verify boundaries:
 - A static test fails on the present missing paragraphs, passes on the correction and rejects targeted wrong-host/omitted-gate/extra-s05 mutations. Existing test discovery supplies the standard command; no runner/CI restructuring is proposed.
 - BA reviews the exact EN/VI reading scopes and QC checks the same M7 dimensions: zero critical flags, mean at least 4/5 and each dimension at least 3/5. UTF-8, links, standard regression and an independent child DoD complete verification; the bounded score cannot become whole-M7 PASS.
 
-Proposed route: BUG / maintenance / brownfield; developer and QC own the technical correction, BA contributes the named EN/VI review. All hard triggers are false for this limited guidance/test proposal; discovery of an actual public-contract or security-control change reroutes it. Full/default/agentic is now selected for the critical entry-guidance and cross-language review boundary; formal signed dedup is complete and human work-item/authoring decisions remain pending. Related legacy subjects `sdd-light-authority-cutover` and `sdd-light-code-factory` were reviewed for overlap below; neither has a protocol report, so the review uses historical task/DoD evidence without inventing a current protocol status. The completed authority-guidance child's eight-source allowlist excludes both router files, so its DoD/grants cannot authorize this follow-up. The proposal starts from integrated main `f27093d`. Review the concrete child authoring packet, then execute only after its own fail-first Task Plan and other required gates are human-passed and activation grants the exact scope. Rollback would revert only that future child's owned change, preserving earlier receipts and work.
+Proposed route: BUG / maintenance / brownfield; developer and QC own the technical correction, BA contributes the named EN/VI review. All hard triggers are false for this limited guidance/test proposal; discovery of an actual public-contract or security-control change reroutes it. Full/default/agentic is now selected for the critical entry-guidance and cross-language review boundary; formal signed dedup is complete and the human work-item/authoring decisions are accepted; trusted sealing remains pending. Related legacy subjects `sdd-light-authority-cutover` and `sdd-light-code-factory` were reviewed for overlap below; neither has a protocol report, so the review uses historical task/DoD evidence without inventing a current protocol status. The completed authority-guidance child's eight-source allowlist excludes both router files, so its DoD/grants cannot authorize this follow-up. The proposal starts from integrated main `f27093d`. Seal the accepted child authoring packet, verify its independent trusted receipts, then activate the exact accepted scope before implementation. Rollback would revert only that future child's owned change, preserving earlier receipts and work.
 
 ### Router VI admission review and human-terminal handoff
 
@@ -556,6 +556,150 @@ The human reported completion of the admission helper. Production `verifyRecorde
 
 Normal recovery used signed-report SHA-256 `e544b44327ff35170b622edaba0f552292d2e3be77ed6a41ab26e0d927c33fe4` with operation `007fa629-c77a-4d6e-8929-7c0754df3f98` and completed at `2026-10-05T14:33:59.986Z`, projection SYNCED. The CLI-owned report is MATERIALIZED/s01, READY, no_conflict and PENDING_REVIEW, with no current blockers and no granted write paths. The historical candidate blocker remains in proposal history; it is not a current unresolved blocker. The CLI report and s01 protocol projection were byte-preserved during subsequent authoring.
 
-The concrete draft packet is at `ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f`: [s04 acceptance and DoR](https://github.com/haonh87/Code-Factory/blob/ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f/work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s04.acceptance-criteria.md), [s05 option A approach](https://github.com/haonh87/Code-Factory/blob/ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f/work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s05.technical-approach.md), and [s06 executable Task Plan](https://github.com/haonh87/Code-Factory/blob/ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f/work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s06.task-breakdown.md). Five criteria and T1–T6 cover actual-defect RED, two VI insertions, targeted mutation checks, ordered review, existing standard verification and exact EN/VI BA/QC reading scopes. The eight full-profile hosts are drafts; s07/s08 explicitly say NOT_STARTED. The source test has not been created and both router files retain their baseline hashes. Work-item approval, Spec, DoR, Approach and Task Plan remain separate pending decisions; no prior general continuation passes them.
+The concrete draft packet is at `ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f`: [s04 acceptance and DoR](https://github.com/haonh87/Code-Factory/blob/ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f/work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s04.acceptance-criteria.md), [s05 option A approach](https://github.com/haonh87/Code-Factory/blob/ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f/work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s05.technical-approach.md), and [s06 executable Task Plan](https://github.com/haonh87/Code-Factory/blob/ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f/work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s06.task-breakdown.md). Five criteria and T1–T6 cover actual-defect RED, two VI insertions, targeted mutation checks, ordered review, existing standard verification and exact EN/VI BA/QC reading scopes. The user subsequently explicitly accepted this review packet; the current finalized host checkpoint is `cd0454738684f2b1bb6d84a05f698f08a6453d7f`. s01–s06 record the accepted content and s07/s08 remain drafts marked NOT_STARTED. The source test has not been created and both router files retain their baseline hashes. Five independent trusted receipts still need the normal human-terminal signing flow. The explicit acceptance and signing handoff below supersede the earlier pending-content-review state.
 
 Naming/governance/execution/planning pass for eight child drafts; full-root protocol passes for 22 managed items and 21 configured legacy skips. YAML/UTF-8/local-link/whitespace checks pass. These checks establish a reviewable authoring packet, not delivery completion. Unit tests, runtime generation, source scanning and human language scores remain future plan tasks. The current bounded request does not close M7, rebind CF-MB2, open M10/M11 or authorize branch/worktree cleanup.
+
+
+### Router VI accepted authoring gates and signing handoff — 2026-10-09
+
+The user replied “accept” to the explicit work-item, Spec + DoR, Approach A and Task Plan review request for `ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f`. Acceptance was recorded at `2026-10-06T06:28:40Z` (recording time, not a claimed chat timestamp). This is the human content decision, not another admission disposition or an agent approval. Child s06 owns the decision table; s04/s05/s06 now contain the matching reviewer roles and timestamp before trusted sealing. The accepted ACs, task definitions, five-path scope and verification commands are unchanged. s05's three option descriptions/tradeoffs were only reformatted into the scalar-list shape accepted by the existing validator; selected option A is unchanged.
+
+Finalized child checkpoint: `cd0454738684f2b1bb6d84a05f698f08a6453d7f`. [Child s06 decision record](https://github.com/haonh87/Code-Factory/blob/cd0454738684f2b1bb6d84a05f698f08a6453d7f/work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s06.task-breakdown.md#human-authoring-decision--2026-10-06). The protocol report is still MATERIALIZED/s01, PENDING_REVIEW, with no grants; the agent has not manually changed the report/projection or executed an approval signer. Five read-only receipt probes return MISSING. Only the human-terminal CLI flow can materialize those accepted decisions into the work-item receipt and four independent authoring receipts.
+
+Run this prepared helper from a human-controlled terminal. On its first successful run, the existing approval passphrase is requested twice: once for the work item and once for the four-receipt ready bundle. Do not paste the passphrase into chat. Valid completed receipts are checked and skipped on retry. The helper performs no activation, source edit, deployment or cleanup.
+
+```sh
+bash /private/tmp/cf-router-vi-approved-c21q48a_/seal-router-vi.sh
+```
+
+The wrapper changes into the child worktree and uses Node 22.23.2. `--check` is a read-only preflight: finalized file hashes, normalized s01 content, exact report scope/admission identity, permitted pre-activation status and gate reviewer metadata must match. Normal mode invokes only `wfc work-item approve` and `wfc gate approve-ready-bundle`, then verifies five trusted signatures and the authoring host digests. No insecure fixture, environment passphrase or manual receipt write is used.
+
+JavaScript source retained here for review/recovery if the temporary copy expires:
+
+```js
+"use strict";
+const fs = require("node:fs");
+const path = require("node:path");
+const crypto = require("node:crypto");
+const assert = require("node:assert/strict");
+const { execFileSync } = require("node:child_process");
+const config = {
+  "workItemSlug": "correct-light-router-vietnamese-guidance",
+  "reviewedAt": "2026-10-06T06:28:40Z",
+  "acceptedCheckpoint": "ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f",
+  "files": {
+    "work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s07.implementation.md": "5c7e6eb6a8b9919a6c7afa0a756b28d147fdcdd4eb39c47a2752623a6b30085c",
+    "work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s04.acceptance-criteria.md": "582b0b3c71ab3dd1784184ce9aca75a342df12833310ee7b88cd3ea6535cf657",
+    "work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s03.open-questions.md": "5a05d8e285589728a7bda08007ec9316b65aadad6912ef111aee1e22882bcd30",
+    "work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s08.verification.md": "29273154432a3f2d54fe9b82d2ddcf3a6c3c367f3cb7d24b5c3e98e54538e8da",
+    "work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s05.technical-approach.md": "6be6146b3c982e4fe841d2d968188594e67f69aceace4f919a455398e74f758c",
+    "work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s02.business-goal.md": "29f33e0c6cc7052fc9e3a70be034a0562fbd4d646bd123bbd6024c0bbc2dc606",
+    "work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s06.task-breakdown.md": "715c8eb8071e75c12027723b5072ba65068b6f7b47f1d6239151f9ebc2073b9e",
+    "skills/orchestration/workflow-governance-router/SKILL.md": "400661cac92f7cbc76f3293ca550f77849a689b342f7912246ebc75d690cc625",
+    "skills/orchestration/workflow-governance-router/SKILL.vi.md": "b55ba5cd9682e0d1091ff893a0e638bcab4638f57649824c7c62bbd4fd21236c"
+  },
+  "s01Path": "work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s01.restate.md",
+  "s01ContentHash": "72c2ebcf14f8e92aa8fbc85ca719b49bc1fb308b9241d5fa45a44b7d7448b8b1",
+  "initialReportHash": "ff36a33097649c0d534b456bb115424b407ab7b78c30aa98973c40dd598e8af2",
+  "reportIdentityKeys": [
+    "work_item_slug",
+    "work_item_type",
+    "delivery_context",
+    "sdd_mode",
+    "selected_profile",
+    "raw_request_summary",
+    "work_items",
+    "refs",
+    "resolved_state_history",
+    "materialization_recovery",
+    "blockers"
+  ],
+  "reportIdentityHash": "e9309c493b587f2c393eacc108119b249fee1d06644602a4ac8101a64c2ce35d"
+};
+const projectRoot = "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-light-router-vietnamese-guidance";
+const slug = config.workItemSlug;
+const checkOnly = process.argv.includes("--check");
+assert.ok(process.argv.slice(2).every(x => x === "--check"), "Unsupported argument");
+assert.equal(fs.realpathSync(process.cwd()), fs.realpathSync(projectRoot), "Wrong worktree");
+for (const key of ["WORKFLOW_BUNDLE_ALLOW_NONINTERACTIVE_APPROVAL_FIXTURE", "WORKFLOW_BUNDLE_ALLOW_INSECURE_APPROVAL_ROOT", "WORKFLOW_BUNDLE_APPROVAL_PASSPHRASE", "WORKFLOW_BUNDLE_APPROVAL_ROOT"]) {
+  assert.ok(!process.env[key], "Remove approval override: " + key);
+}
+const sha = bytes => crypto.createHash("sha256").update(bytes).digest("hex");
+const reportPath = path.join(projectRoot, "work-items", slug, slug + ".work-item-report.json");
+const workflowRoot = path.dirname(reportPath);
+const trust = require(path.join(projectRoot, "packages/workflow-bundle/scripts/workflow-trusted-approval-utils.js"));
+const { loadWorkflowStepGateSnapshot } = require(path.join(projectRoot, "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js"));
+const gates = [["spec", "s04", "ba"], ["dor", "s04", "qc"], ["approach", "s05", "developer"], ["task_plan", "s06", "developer"]];
+
+function preflight() {
+  for (const [relative, expected] of Object.entries(config.files)) {
+    assert.equal(sha(fs.readFileSync(path.join(projectRoot, relative))), expected, "Changed review input: " + relative);
+  }
+  const s01 = fs.readFileSync(path.join(projectRoot, config.s01Path), "utf8");
+  const withoutProtocol = s01.replace(/## Work Item Protocol\n```yaml\n[\s\S]*?\n```\n*/m, "");
+  assert.equal(sha(withoutProtocol), config.s01ContentHash, "s01 content changed outside CLI projection");
+  const raw = fs.readFileSync(reportPath);
+  const report = JSON.parse(raw);
+  assert.equal(report.protocol_status, "MATERIALIZED", "Expected pre-activation item");
+  assert.equal(report.current_step, "s01");
+  assert.ok(["PENDING_REVIEW", "APPROVED"].includes(report.approval_status));
+  assert.deepEqual(report.granted_write_paths || [], [], "Unexpected source grant");
+  const identity = Object.fromEntries(config.reportIdentityKeys.map(k => [k, report[k]]));
+  assert.equal(sha(JSON.stringify(identity)), config.reportIdentityHash, "Admission/scope identity changed");
+  if (report.approval_status === "PENDING_REVIEW") {
+    assert.equal(sha(raw), config.initialReportHash, "Initial report changed before signing");
+  } else {
+    assert.equal(report.reviewed_by, "maintainer");
+    assert.equal(report.reviewed_at, config.reviewedAt);
+  }
+  for (const [gate, stepId, reviewer] of gates) {
+    const s = loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug: slug, stepId });
+    assert.equal(s.status, "approved", "Unfinalized " + gate);
+    assert.equal(s.specStatus, "approved");
+    assert.deepEqual(s.gateReviews[gate].reviewedBy, [reviewer]);
+    assert.equal(s.gateReviews[gate].reviewedAt, config.reviewedAt);
+    assert.ok(s.roleSignoffs[gate].includes(reviewer));
+  }
+  return report;
+}
+
+function approved(kind, gate, reviewer) {
+  const loaded = trust.loadTrustedApprovalReceipt({ projectRoot, kind, workItemSlug: slug, ...(gate ? { gate } : {}) });
+  const r = loaded.receipt;
+  if (!trust.hasApprovedReceipt(r, loaded.approvalRoot) || r.reviewed_by !== reviewer || r.reviewed_at !== config.reviewedAt) return false;
+  if (gate) {
+    const artifact = trust.resolveGateArtifact({ projectRoot, workflowRoot, workItemSlug: slug, gate, sddMode: "none" });
+    return r.artifact_ref === artifact.artifactRef && r.artifact_sha256 === artifact.artifactSha256;
+  }
+  return true;
+}
+
+preflight();
+console.log("PASS: finalized host hashes, admission identity and reviewer metadata.");
+if (checkOnly) {
+  console.log("Work-item receipt: " + (approved("work-item", "", "maintainer") ? "VALID" : "PENDING"));
+  for (const [gate, , reviewer] of gates) console.log(gate + ": " + (approved("gate", gate, reviewer) ? "VALID" : "PENDING"));
+  console.log("CHECK ONLY: no signing, receipt write, protocol mutation or activation.");
+} else {
+  assert.ok(process.stdin.isTTY && process.stdout.isTTY, "Run in a human-controlled terminal");
+  const note = "User explicitly accepted work item, Spec/DoR, Approach A and Task Plan at " + config.acceptedCheckpoint + "; recorded " + config.reviewedAt + ".";
+  const common = ["--work-item", slug, "--project-root", ".", "--reviewed-at", config.reviewedAt, "--note", note, "--telemetry", "off"];
+  if (!approved("work-item", "", "maintainer")) {
+    execFileSync(process.execPath, ["packages/workflow-bundle/bin/wfc.js", "work-item", "approve", ...common, "--reviewed-by", "maintainer"], { stdio: "inherit" });
+  }
+  preflight();
+  assert.ok(approved("work-item", "", "maintainer"), "Missing valid work-item receipt");
+  if (!gates.every(([gate, , reviewer]) => approved("gate", gate, reviewer))) {
+    execFileSync(process.execPath, ["packages/workflow-bundle/bin/wfc.js", "gate", "approve-ready-bundle", ...common], { stdio: "inherit" });
+  }
+  const report = preflight();
+  assert.equal(report.approval_status, "APPROVED");
+  assert.ok(gates.every(([gate, , reviewer]) => approved("gate", gate, reviewer)), "Incomplete authoring receipts");
+  console.log("PASS: five trusted receipts verified. Ask the agent to verify and activate the accepted scope. No source implementation or activation ran here.");
+}
+```
+
+Validation: naming/governance/execution/planning pass for all eight child notes, including the finalized authoring hosts; full-root protocol passes for 22 managed items and 21 configured legacy skips. YAML, strict UTF-8, local links and whitespace pass. Helper JS/shell syntax and its actual `--check` invocation pass without signer, receipt, protocol or source writes. The accepted AC block, exact task definitions, Brownfield impact and verification commands were compared to the reviewed checkpoint and are unchanged; option descriptions/tradeoffs and five accepted paths are preserved. No source tests, runtime generation or language-score pass is claimed for this metadata-only update.
+
+After the human reports completion, recheck all five trusted signatures/current hashes and the protocol state, then run normal CLI activation with the five accepted s06 paths before T2 RED. Do not request another content approval or repeat admission. Keep the parent original register, frozen hosts, M7 score ledger and original CF-MB2 binding unchanged. Parent M7 remains FAIL and M10/M11 stay unopened; this acceptance does not include DoD, release, integration or cleanup.
