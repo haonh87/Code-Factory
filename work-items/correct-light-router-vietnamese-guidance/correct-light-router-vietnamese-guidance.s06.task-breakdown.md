@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -67,8 +67,8 @@ gate_reviews:
   approach_reviewed_at: ""
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  task_plan_reviewed_by: [developer]
+  task_plan_reviewed_at: "2026-10-06T06:28:40Z"
   uat_reviewed_by: []
   uat_reviewed_at: ""
   release_reviewed_by: []
@@ -94,7 +94,7 @@ tags:
 # Step 6 - Task Plan
 
 > [!summary]
-> Draft authoring packet. Human gates are pending; source implementation has not started.
+> The user explicitly accepted the work item, Spec + DoR, Approach A and Task Plan at checkpoint `ef8bf47`. Acceptance was recorded at 2026-10-06T06:28:40Z; this is the recording time, not an inferred chat timestamp. Trusted receipt sealing and CLI activation are still required before source implementation.
 
 ## Step Contract
 
@@ -106,16 +106,16 @@ input_summary:
   - "correct-light-router-vietnamese-guidance.s04.acceptance-criteria.md"
   - "correct-light-router-vietnamese-guidance.s05.technical-approach.md"
 output_summary:
-  - "T1–T6, proposed grants, exact fixture boundaries and verification commands."
+  - "T1–T6, accepted scope awaiting activation grants, exact fixture boundaries and verification commands."
 done_when:
-  - "Outputs are concrete and reviewable; required human gates remain pending until explicit review and trusted sealing."
+  - "Human authoring approval is recorded; trusted sealing and activation remain required before execution."
 owner: "developer"
 constraints:
   - "English authoring; preserve Vietnamese source accents."
   - "No source or test edits before independent child activation."
   - "No parent approval or previous child receipt substitutes for this child."
 risks:
-  - "Draft completeness can be confused with gate approval; retain separate status and empty review metadata."
+  - "Content approval can be confused with runtime authority; retain the separate trusted receipt and activation requirements."
 timebox:
   target_duration: "One authoring pass, then one bounded implementation/review pass after gates."
   deadline: "No external deadline."
@@ -137,19 +137,19 @@ ba_lane:
 dev_lane:
   path_map:
     - path: "skills/orchestration/workflow-governance-router/SKILL.vi.md"
-      ownership: "Proposed source write: only two Step 3/4 insertions."
+      ownership: "Human-accepted source scope; activation required: only two Step 3/4 insertions."
     - path: "packages/workflow-bundle/test/workflow-light-router-guidance.test.js"
-      ownership: "Proposed new focused regression; no runner edits."
+      ownership: "Human-accepted new focused regression; no runner edits."
     - path: "work-items/correct-light-router-vietnamese-guidance/"
       ownership: "Authoring/evidence; report and s01 protocol block remain CLI-owned."
     - path: "packages/workflow-bundle/runtime"
-      ownership: "Proposed derived-only local verification; ignored output, never committed or installed."
+      ownership: "Human-accepted derived-only local verification; activation required; ignored output, never committed or installed."
     - path: "packages/workflow-bundle/workflow-bundle.manifest.json"
-      ownership: "Proposed derived-only local verification; must be byte-identical after generation, no version/metadata change."
+      ownership: "Human-accepted derived-only local verification; activation required; must be byte-identical after generation, no version/metadata change."
   technical_sequence:
     - "T1 -> T2 RED -> T3 GREEN -> T4 review/regression -> T5 BA -> T6 QC/DoD."
   tdd_targets:
-    - "Fail-first static guidance regression is required by this proposed plan; no runtime behavior change is claimed."
+    - "Fail-first static guidance regression is required by the human-accepted plan; no runtime behavior change is claimed."
     - "Capture the original source omissions before the two VI insertions. Do not backfill a claimed RED."
 task_breakdown:
   - id: "T1"
@@ -237,7 +237,7 @@ risk_notes:
 verification_plan:
   - "Known-source RED/GREEN and every mutation in the fixture list below."
   - "Standard full-suite/pack/workflow checks, source/manifest preservation and human bounded language review."
-notes_for_implementation: "This is a draft. A plan draft is not Task Plan pass. Do not execute T1 or edit source/test until the actual human decisions and trusted receipts exist."
+notes_for_implementation: "The user explicitly accepted T1–T6. This records human Task Plan approval, not an inferred draft pass. Finish trusted sealing and verify all receipts before T1 activation; no source/test edit is allowed earlier."
 ```
 
 ## Verification Plan
@@ -278,9 +278,9 @@ checks:
   - "Every task declares owner, exact paths, dependencies, outputs and verification."
   - "No parallel agent or delegated write scope."
 blocking_items:
-  - "Human work-item/Spec/DoR/Approach/Task Plan decisions, trusted receipts and s07 activation."
+  - "Trusted work-item/Spec/DoR/Approach/Task Plan receipts and s07 activation; content decisions are already accepted."
 owner: "developer"
-next_action: "Human reviews this actual plan; authoring completion alone does not pass Task Plan."
+next_action: "Seal the accepted Task Plan and other authoring decisions through the human-controlled CLI flow, then verify and activate the exact scope."
 ```
 
 ## Brownfield Delivery Plan
@@ -302,9 +302,9 @@ rollback_or_restore_steps:
 audit_status: "PARTIAL"
 assessment_mode: "AI_AUTHORING_REVIEW"
 notes:
-  - "Draft is offered for review; no human gate has passed."
+  - "The user accepted the concrete authoring packet; normal trusted receipt sealing remains pending."
   - "Acceptance is owned by s04, the approach by s05, and executable scope/tasks by s06."
-next_action: "Human reviews the concrete authoring packet; trusted receipts and activation follow only after explicit approval."
+next_action: "Seal the accepted decisions against finalized hosts in a human-controlled terminal; verify signatures and host digests before activation."
 ```
 
 ## Traceability
@@ -324,6 +324,24 @@ The three signed admission records were reverified with production signature ver
 
 Authoring review checked scope and human-authority boundaries, then task dependencies, concrete fixture cases and verification commands. One draft routing field was corrected to the canonical `mixed_intent` name before handoff. This review does not open s07 or supply the later ordered implementation review. Source unit tests, runtime generation, pack build/scanning and human language scoring have not run for this authoring-only delta; they remain explicit T2–T6 work after approval.
 
+Finalization checks on 2026-10-09: governance initially counted one of the three s05 options because its current section reader stops at a nested object field. The three options were reformatted as scalar list entries, preserving every description/tradeoff and the accepted selection A; governance then passed for all eight notes. This was an authoring-format correction, with no validator/source change or new design decision. The accepted AC block, verification commands, task objectives/dependencies and five-path scope are unchanged. The decision metadata below is ready for trusted sealing; receipt and activation verification remain pending.
+
+## Human Authoring Decision — 2026-10-06
+
+The repository owner replied **“accept”** to the explicit request to approve this work item, Spec + DoR, Approach A and Task Plan. The reviewed packet is commit `ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f`; acceptance was recorded at `2026-10-06T06:28:40Z` (recording time, not a claimed chat timestamp). The actor is the user in this conversation. The accepted task objectives, paths, dependencies, test cases and AC-LR-001..005 are unchanged.
+
+| Decision | Human reviewer role | Content decision | Trusted sealing |
+| --- | --- | --- | --- |
+| Work item | Maintainer | APPROVED | Pending normal CLI work-item approval |
+| Spec | BA | APPROVED | Pending independent s04 receipt |
+| DoR | QC | READY | Pending independent s04 receipt |
+| Approach A | Developer | APPROVED | Pending s05 receipt |
+| Task Plan T1–T6 | Developer | APPROVED | Pending s06 receipt |
+
+The gate roles above are the reviewed authority assignments; no agent acts as the human signer. No DoD, later BA language result, Release, parent M7/CF-MB2 decision or cleanup is included. The normal `approve-ready-bundle` command can seal all four authoring receipts in one interaction while retaining each gate's own host, reviewer and signature. Work-item approval is a separate command. Both require the existing approval passphrase entered by the human; the agent does not request, read or supply it.
+
+Freeze the finalized s04/s05/s06 bytes before trusted sealing. The report and s01 protocol block remain CLI-owned. The handoff helper is retained in the parent's existing disposition sidecar so that helper preparation or retry instructions cannot invalidate the accepted s06 host.
+
 ## Handoff
 
-First task is T1 after the gates actually pass. Source work is currently NOT_STARTED. The worktree remains HOLD_OPEN; no merge/archive/cleanup is authorized by this draft.
+T1–T6 are human-accepted and NOT_STARTED. Finish the normal trusted work-item and authoring signing flow, verify signatures/current host digests, then activate exactly the five accepted paths before source work. Keep this worktree open; no merge/archive/cleanup decision is included.

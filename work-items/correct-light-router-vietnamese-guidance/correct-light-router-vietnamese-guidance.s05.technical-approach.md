@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -63,8 +63,8 @@ gate_reviews:
   contract_reviewed_at: ""
   dor_reviewed_by: []
   dor_reviewed_at: ""
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
+  approach_reviewed_by: [developer]
+  approach_reviewed_at: "2026-10-06T06:28:40Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -95,7 +95,7 @@ tags:
 # Step 5 - Technical Approach
 
 > [!summary]
-> Draft authoring packet. Human gates are pending; source implementation has not started.
+> The user explicitly accepted the work item, Spec + DoR, Approach A and Task Plan at checkpoint `ef8bf47`. Acceptance was recorded at 2026-10-06T06:28:40Z; this is the recording time, not an inferred chat timestamp. Trusted receipt sealing and CLI activation are still required before source implementation.
 
 ## Step Contract
 
@@ -108,14 +108,14 @@ input_summary:
 output_summary:
   - "Option comparison, boundary, failure handling and validation approach."
 done_when:
-  - "Outputs are concrete and reviewable; required human gates remain pending until explicit review and trusted sealing."
+  - "Human authoring approval is recorded; trusted sealing and activation remain required before execution."
 owner: "developer"
 constraints:
   - "English authoring; preserve Vietnamese source accents."
   - "No source or test edits before independent child activation."
   - "No parent approval or previous child receipt substitutes for this child."
 risks:
-  - "Draft completeness can be confused with gate approval; retain separate status and empty review metadata."
+  - "Content approval can be confused with runtime authority; retain the separate trusted receipt and activation requirements."
 timebox:
   target_duration: "One authoring pass, then one bounded implementation/review pass after gates."
   deadline: "No external deadline."
@@ -127,20 +127,14 @@ timebox:
 ```yaml
 goal: "Satisfy AC-LR-001..005 without expanding the source boundary."
 options:
-  - id: "A"
-    description: "Insert the two missing VI Light instructions using EN as read-only authority; add a section-scoped Node regression and bounded human language review."
-    tradeoff: "Small reviewable delta; static wording guards need human meaning review."
-  - id: "B"
-    description: "Repair the router, all Light examples/references and missing VI translations together."
-    tradeoff: "Broader remediation may help later but exceeds this admitted outcome and needs separate owner approvals."
-  - id: "C"
-    description: "Only link the VI reader to canonical EN."
-    tradeoff: "Smallest byte change, but leaves the local next-action and gate-host instructions incomplete."
+  - "A: Insert the two missing VI Light instructions using EN as read-only authority; add a section-scoped Node regression and bounded human language review. Tradeoff: Small reviewable delta; static wording guards need human meaning review."
+  - "B: Repair the router, all Light examples/references and missing VI translations together. Tradeoff: Broader remediation may help later but exceeds this admitted outcome and needs separate owner approvals."
+  - "C: Only link the VI reader to canonical EN. Tradeoff: Smallest byte change, but leaves the local next-action and gate-host instructions incomplete."
 recommended_option: "A"
 recommendation_reason: "It directly repairs both observed omissions while preserving existing authority and other owners. C fails local VI actionability; B adds unrelated work."
 validation_needed:
   - "Actual two-defect RED; corrected positive controls; targeted mutation rejection; human EN/VI meaning check."
-decision_status: "PROPOSED_PENDING_HUMAN_APPROACH"
+decision_status: "HUMAN_APPROVED_PENDING_TRUSTED_RECEIPT"
 ```
 
 ## Foundation Decision
@@ -153,7 +147,7 @@ reason: "Existing stack, runtime and ownership boundaries stay unchanged. Light 
 ## Main Artifact
 
 ```yaml
-recommended_design: "Option A, pending human Approach decision. Add the Step 3 paragraph and Step 4 Light-host list at their matching VI locations. Preserve existing content byte-for-byte elsewhere."
+recommended_design: "Option A, explicitly accepted by the user. Add the Step 3 paragraph and Step 4 Light-host list at their matching VI locations. Preserve existing content byte-for-byte elsewhere."
 affected_boundary:
   - "VI router steps 3 and 4; one new Node test; own evidence. Exact writable and derived-only paths are in s06."
 data_flow:
@@ -204,9 +198,9 @@ rollback_strategy:
 audit_status: "PARTIAL"
 assessment_mode: "AI_AUTHORING_REVIEW"
 notes:
-  - "Draft is offered for review; no human gate has passed."
+  - "The user accepted the concrete authoring packet; normal trusted receipt sealing remains pending."
   - "Acceptance is owned by s04, the approach by s05, and executable scope/tasks by s06."
-next_action: "Human reviews the concrete authoring packet; trusted receipts and activation follow only after explicit approval."
+next_action: "Seal the accepted decisions against finalized hosts in a human-controlled terminal; verify signatures and host digests before activation."
 ```
 
 ## Traceability
@@ -219,4 +213,4 @@ next_step: "s06"
 
 ## Handoff
 
-Human Developer review must explicitly select/approve the approach. Draft T1–T6 uses option A conditionally and must be revised if another option is selected.
+The user explicitly selected Approach A at the reviewed checkpoint. Seal the Developer Approach receipt against this finalized s05 host. The accepted T1–T6 plan remains unchanged; source work waits for all required receipts and activation.

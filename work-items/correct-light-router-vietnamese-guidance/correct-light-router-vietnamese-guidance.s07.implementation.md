@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -97,7 +97,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> Draft authoring packet. Human gates are pending; source implementation has not started.
+> Implementation and verification are NOT_STARTED. The user accepted the authoring packet; trusted receipts and CLI activation are still required. This draft host records no delivery approval.
 
 ## Step Contract
 
@@ -110,14 +110,14 @@ input_summary:
 output_summary:
   - "Actual changes, RED/GREEN evidence and ordered review."
 done_when:
-  - "Outputs are concrete and reviewable; required human gates remain pending until explicit review and trusted sealing."
+  - "Human authoring approval is recorded; trusted sealing and activation remain required before execution."
 owner: "developer"
 constraints:
   - "English authoring; preserve Vietnamese source accents."
   - "No source or test edits before independent child activation."
   - "No parent approval or previous child receipt substitutes for this child."
 risks:
-  - "Draft completeness can be confused with gate approval; retain separate status and empty review metadata."
+  - "Content approval can be confused with runtime authority; retain the separate trusted receipt and activation requirements."
 timebox:
   target_duration: "One authoring pass, then one bounded implementation/review pass after gates."
   deadline: "No external deadline."
@@ -158,4 +158,4 @@ next_step: "s08"
 
 ## Handoff
 
-WAITING_APPROVAL. No implementation, review pass or verification result is claimed.
+The human accepted the authoring packet. Implementation is NOT_STARTED pending trusted signing and activation. No implementation review, verification result or DoD is claimed.

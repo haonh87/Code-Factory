@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -98,7 +98,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Draft authoring packet. Human gates are pending; source implementation has not started.
+> Implementation and verification are NOT_STARTED. The user accepted the authoring packet; trusted receipts and CLI activation are still required. This draft host records no delivery approval.
 
 ## Step Contract
 
@@ -112,14 +112,14 @@ input_summary:
 output_summary:
   - "Actual AC coverage, bounded language review, compatibility and human verdict."
 done_when:
-  - "Outputs are concrete and reviewable; required human gates remain pending until explicit review and trusted sealing."
+  - "Human authoring approval is recorded; trusted sealing and activation remain required before execution."
 owner: "qc"
 constraints:
   - "English authoring; preserve Vietnamese source accents."
   - "No source or test edits before independent child activation."
   - "No parent approval or previous child receipt substitutes for this child."
 risks:
-  - "Draft completeness can be confused with gate approval; retain separate status and empty review metadata."
+  - "Content approval can be confused with runtime authority; retain the separate trusted receipt and activation requirements."
 timebox:
   target_duration: "One authoring pass, then one bounded implementation/review pass after gates."
   deadline: "No external deadline."
@@ -145,7 +145,7 @@ checks: []
 blocking_items:
   - "No implementation/technical evidence, human BA language assessment or human QC DoD yet."
 owner: "qc"
-next_action: "Wait for the approved plan and actual s07 evidence."
+next_action: "Wait for trusted sealing/activation of the accepted plan and actual s07 evidence."
 ```
 
 ## Regression & Compatibility Summary

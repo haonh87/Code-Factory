@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -57,12 +57,12 @@ role_signoffs:
   dod:
     - "qc"
 gate_reviews:
-  spec_reviewed_by: []
-  spec_reviewed_at: ""
+  spec_reviewed_by: [ba]
+  spec_reviewed_at: "2026-10-06T06:28:40Z"
   contract_reviewed_by: []
   contract_reviewed_at: ""
-  dor_reviewed_by: []
-  dor_reviewed_at: ""
+  dor_reviewed_by: [qc]
+  dor_reviewed_at: "2026-10-06T06:28:40Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   foundation_reviewed_by: []
@@ -97,7 +97,7 @@ tags:
 # Step 4 - Acceptance + DoR
 
 > [!summary]
-> Draft authoring packet. Human gates are pending; source implementation has not started.
+> The user explicitly accepted the work item, Spec + DoR, Approach A and Task Plan at checkpoint `ef8bf47`. Acceptance was recorded at 2026-10-06T06:28:40Z; this is the recording time, not an inferred chat timestamp. Trusted receipt sealing and CLI activation are still required before source implementation.
 
 ## Step Contract
 
@@ -112,14 +112,14 @@ input_summary:
 output_summary:
   - "AC-LR-001..005 and explicit baseline/authority conditions."
 done_when:
-  - "Outputs are concrete and reviewable; required human gates remain pending until explicit review and trusted sealing."
+  - "Human authoring approval is recorded; trusted sealing and activation remain required before execution."
 owner: "ba"
 constraints:
   - "English authoring; preserve Vietnamese source accents."
   - "No source or test edits before independent child activation."
   - "No parent approval or previous child receipt substitutes for this child."
 risks:
-  - "Draft completeness can be confused with gate approval; retain separate status and empty review metadata."
+  - "Content approval can be confused with runtime authority; retain the separate trusted receipt and activation requirements."
 timebox:
   target_duration: "One authoring pass, then one bounded implementation/review pass after gates."
   deadline: "No external deadline."
@@ -129,10 +129,12 @@ timebox:
 ## Requirement Baseline
 
 ```yaml
-status: "PARTIAL"
-approved_spec_refs: []
+status: "APPROVED"
+approved_spec_refs:
+  - "correct-light-router-vietnamese-guidance.s04.acceptance-criteria.md"
 decision_notes:
-  - "This is the proposed authoritative acceptance note for sdd_mode=none. Human Spec and DoR remain pending. Admission is complete; it does not supply these approvals."
+  - "The user explicitly accepted AC-LR-001..005 and independently approved DoR in the bundled review request. This note owns the acceptance contract for sdd_mode=none."
+  - "The decision record is in s06. Trusted Spec/DoR receipts still need to be sealed against this finalized host."
 ```
 
 ## Contract Baseline
@@ -204,22 +206,33 @@ checklist_applied:
 checks:
   - "Source identity, maintenance routing, human-authority separation and exact scope are documented."
 blocking_items:
-  - "Human Spec/DoR review and all remaining implementation-entry gates."
+  - "Trusted work-item and authoring receipts plus exact CLI activation; the accepted content alone cannot open implementation."
 owner: "qc"
-next_action: "Human BA decides Spec and QC decides DoR against this draft, before trusted sealing."
+next_action: "Seal the accepted BA Spec and QC DoR decisions against this finalized host, then verify their independent receipts before activation."
 ```
 
 ## Definition of Ready
 
 ```yaml
-status: "PARTIAL"
-blockers:
-  - "Spec and DoR have not been human-passed."
-owners:
-  - "ba"
-  - "qc"
+work_item_slug: "correct-light-router-vietnamese-guidance"
+status: "READY"
+checks:
+  restated_request_clear: "PASS"
+  business_goal_clear: "PASS"
+  scope_defined: "PASS"
+  open_questions_non_blocking: "PASS"
+  acceptance_criteria_testable: "PASS"
+  dependencies_known: "PASS"
+  verification_direction_present: "PASS"
+blocking_gaps: []
+accepted_assumptions:
+  - "Canonical EN/policy remains the read-only authority; a changed baseline reopens review."
+residual_risks:
+  - "Static wording tests require bounded human EN/VI meaning review."
+owners: [ba, qc]
+next_action: "Seal the explicit human DoR decision; verify current trusted receipts and activate before source work."
 notes:
-  - "AI authoring assessment: technical inputs are sufficient; criteria, baseline and scope are reviewable. This is not a human READY verdict."
+  - "READY records the user's content decision, not an agent-issued execution grant."
 ```
 
 ## Audit
@@ -228,9 +241,9 @@ notes:
 audit_status: "PARTIAL"
 assessment_mode: "AI_AUTHORING_REVIEW"
 notes:
-  - "Draft is offered for review; no human gate has passed."
+  - "The user accepted the concrete authoring packet; normal trusted receipt sealing remains pending."
   - "Acceptance is owned by s04, the approach by s05, and executable scope/tasks by s06."
-next_action: "Human reviews the concrete authoring packet; trusted receipts and activation follow only after explicit approval."
+next_action: "Seal the accepted decisions against finalized hosts in a human-controlled terminal; verify signatures and host digests before activation."
 ```
 
 ## Traceability
@@ -245,4 +258,4 @@ next_step: "s05"
 
 ## Handoff
 
-Review Spec and DoR independently. The draft approach/plan can be read in the same packet; no deeper gate is inferred from their existence.
+The user accepted AC-LR-001..005 and the separate DoR decision. Finalize this host before sealing independent Spec and DoR receipts; do not edit it after sealing without refreshing affected receipts and review when scope or meaning changes.

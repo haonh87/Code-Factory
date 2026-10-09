@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -24,7 +24,7 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -97,7 +97,7 @@ tags:
 # Step 3 - Open Questions
 
 > [!summary]
-> Draft authoring packet. Human gates are pending; source implementation has not started.
+> The user explicitly accepted the work item, Spec + DoR, Approach A and Task Plan at checkpoint `ef8bf47`. Acceptance was recorded at 2026-10-06T06:28:40Z; this is the recording time, not an inferred chat timestamp. Trusted receipt sealing and CLI activation are still required before source implementation.
 
 ## Step Contract
 
@@ -111,14 +111,14 @@ input_summary:
 output_summary:
   - "Explicit decisions, dependencies and input-readiness assessment."
 done_when:
-  - "Outputs are concrete and reviewable; required human gates remain pending until explicit review and trusted sealing."
+  - "Human authoring approval is recorded; trusted sealing and activation remain required before execution."
 owner: "developer"
 constraints:
   - "English authoring; preserve Vietnamese source accents."
   - "No source or test edits before independent child activation."
   - "No parent approval or previous child receipt substitutes for this child."
 risks:
-  - "Draft completeness can be confused with gate approval; retain separate status and empty review metadata."
+  - "Content approval can be confused with runtime authority; retain the separate trusted receipt and activation requirements."
 timebox:
   target_duration: "One authoring pass, then one bounded implementation/review pass after gates."
   deadline: "No external deadline."
@@ -139,9 +139,9 @@ resolved_questions:
   - question: "Are derived outputs needed?"
     answer: "Yes, local runtime generation is prerequisite to the existing standard test path. s06 proposes two explicit derived-only grants; manifest must remain unchanged."
 blocking_dependencies:
-  - "Human work-item and authoring decisions, valid trusted receipts and activation before implementation."
+  - "Valid trusted work-item/authoring receipts and activation before implementation; the human content decisions are recorded in s06."
 decisions_needed:
-  - "Review the s04/s05/s06 packet; select option A or identify required changes."
+  - "The user selected option A and accepted the work-item/Spec/DoR/Approach/Task Plan packet; seal those decisions through the normal CLI."
 ```
 
 ## Input Readiness
@@ -162,9 +162,9 @@ not_authorized:
 audit_status: "PARTIAL"
 assessment_mode: "AI_AUTHORING_REVIEW"
 notes:
-  - "Draft is offered for review; no human gate has passed."
+  - "The user accepted the concrete authoring packet; normal trusted receipt sealing remains pending."
   - "Acceptance is owned by s04, the approach by s05, and executable scope/tasks by s06."
-next_action: "Human reviews the concrete authoring packet; trusted receipts and activation follow only after explicit approval."
+next_action: "Seal the accepted decisions against finalized hosts in a human-controlled terminal; verify signatures and host digests before activation."
 ```
 
 ## Traceability
@@ -178,4 +178,4 @@ next_step: "s04"
 
 ## Handoff
 
-No unanswered technical question blocks drafting. Human gates remain pending and must be satisfied independently before implementation.
+No unanswered technical question blocks the accepted plan. Human content decisions are recorded; independent trusted receipts and activation are still required before implementation.
