@@ -1,0 +1,308 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "DONE",
+  "decision_owner": "agent",
+  "protocol_owner": "developer",
+  "raw_request_summary": "Restore the omitted Vietnamese Light guidance in steps 3 and 4 of workflow-governance-router/SKILL.vi.md to match the existing English router: applicable s04 and s06 hosts, no separate s05 note or receipt, independent gate approvals, Foundation escalation and applicable Contract condition. Add one bounded regression for this source omission. Preserve runtime behavior and the prior completed authority-guidance scope.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "correct-light-router-vietnamese-guidance",
+      "work_item_title": "Correct Light Router Vietnamese Guidance",
+      "work_item_type": "BUG",
+      "scope_summary": "Restore the omitted Vietnamese Light guidance in steps 3 and 4 of workflow-governance-router/SKILL.vi.md to match the existing English router: applicable s04 and s06 hosts, no separate s05 note or receipt, independent gate approvals, Foundation escalation and applicable Contract condition. Add one bounded regression for this source omission. Preserve runtime behavior and the prior completed authority-guidance scope.",
+      "primary_outcome": "Restore the omitted Vietnamese Light guidance in steps 3 and 4 of workflow-governance-router/SKILL.vi.md to match the existing English router: applicable s04 and s06 hosts, no separate s05 note or receipt, independent gate approvals, Foundation escalation and applicable Contract condition. Add one bounded regression for this source omission. Preserve runtime behavior and the prior completed authority-guidance scope.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "full",
+      "sdd_reasons": [],
+      "sdd_preset": "full",
+      "sdd_light_profile": "preview",
+      "governance_profile": "default",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/correct-workflow-authority-guidance",
+        "work-items/release-workflow-bundle-v2-6-3",
+        "work-items/sdd-light-authority-cutover"
+      ],
+      "collision_notes": [
+        "correct-workflow-authority-guidance (score=3)",
+        "release-workflow-bundle-v2-6-3 (score=2)",
+        "sdd-light-authority-cutover (score=2)"
+      ],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "Scope chưa cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item correct-light-router-vietnamese-guidance --planning-track full --delivery-context brownfield",
+        "npm run validate:workflow -- --workflow-root work-items/correct-light-router-vietnamese-guidance --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-light-router-vietnamese-guidance"
+      ],
+      "blockers": [
+        {
+          "id": "se:b7df5e4904891b25f3ef86cd7a9c92a906a1ea49de0246cfcaccc5ac66421d9c",
+          "kind": "delivery_blocker",
+          "text": "Có work item gần nghĩa cần review: correct-workflow-authority-guidance, release-workflow-bundle-v2-6-3, sdd-light-authority-cutover"
+        }
+      ]
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=BUG",
+    "delivery_context=brownfield",
+    "dedup_result=needs_review",
+    "change_strategy=none",
+    "planning_track=full",
+    "governance_profile=default",
+    "sdd_preset=full",
+    "selected_profile=full",
+    "sdd_mode=none",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "correct-light-router-vietnamese-guidance",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-light-router-vietnamese-guidance/work-items/correct-light-router-vietnamese-guidance",
+  "current_step": "s08",
+  "granted_write_paths": [
+    "skills/orchestration/workflow-governance-router/SKILL.vi.md",
+    "packages/workflow-bundle/test/workflow-light-router-guidance.test.js",
+    "work-items/correct-light-router-vietnamese-guidance",
+    "packages/workflow-bundle/runtime",
+    "packages/workflow-bundle/workflow-bundle.manifest.json"
+  ],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "archive-lifecycle",
+  "required_actions": [
+    {
+      "id": "se:c42dc93c789350e5e458a0a2655d40ce90091d2c21b87ff920487f9b147d02b3",
+      "kind": "workflow_followup",
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/correct-workflow-authority-guidance",
+    "work-items/release-workflow-bundle-v2-6-3",
+    "work-items/sdd-light-authority-cutover",
+    "work-items/correct-light-router-vietnamese-guidance"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "READINESS_BUNDLE_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-10-06T06:28:40Z",
+  "review_notes": [
+    "User explicitly accepted work item, Spec/DoR, Approach A and Task Plan at ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f; recorded 2026-10-06T06:28:40Z."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-10-05T14:04:18.068Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-10-05T14:33:59.986Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Signed admission concerns resolved."
+    },
+    {
+      "timestamp": "2026-10-05T14:33:59.986Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Resumed proposal operation 007fa629-c77a-4d6e-8929-7c0754df3f98."
+    },
+    {
+      "timestamp": "2026-10-10T05:50:54.484Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "User explicitly accepted work item, Spec/DoR, Approach A and Task Plan at ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f; recorded 2026-10-06T06:28:40Z."
+    },
+    {
+      "timestamp": "2026-10-06T06:28:40Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "d4d54d6f-55ef-4212-a07c-eb71a88fee66"
+    },
+    {
+      "timestamp": "2026-10-10T06:04:27.108Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-10-10T06:24:25.503Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Technical evidence and explicit human BA/QC acceptance of packet 4a3458c are recorded in s08; separate human QC DoD remains pending."
+    },
+    {
+      "timestamp": "2026-10-10T14:30:52.378Z",
+      "action": "close",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Explicit human DoD accepted and trusted receipt recorded 2026-10-10T14:30:03.617Z; all six signatures and current gate host hashes verified. Close this child only; parent M7 and integration/cleanup remain separate."
+    }
+  ],
+  "resolved_state_history": [
+    {
+      "operation_id": "0470c6cd-57fd-404e-8592-aab2766f215f",
+      "source_collection": "blockers",
+      "source_entry_id": "di:69da1c63c4e2799eecb8bc978fb44a57f50cd634389feb6adb5de851b2cac6c8",
+      "original_entry": {
+        "id": "se:b7df5e4904891b25f3ef86cd7a9c92a906a1ea49de0246cfcaccc5ac66421d9c",
+        "kind": "delivery_blocker",
+        "text": "Có work item gần nghĩa cần review: correct-workflow-authority-guidance, release-workflow-bundle-v2-6-3, sdd-light-authority-cutover"
+      },
+      "original_text": "Có work item gần nghĩa cần review: correct-workflow-authority-guidance, release-workflow-bundle-v2-6-3, sdd-light-authority-cutover",
+      "actor": "maintainer",
+      "reason": "Reviewed DONE and merged correct-workflow-authority-guidance: its eight-source grant excludes router files. Release 2.6.3 is ARCHIVED and does not own this repair. The historical sdd-light-authority-cutover s06 T-F owns router EN only and its s08 records human DoD on 2026-07-21. Preserve those scopes and admit the remaining VI omission independently.",
+      "resolved_at": "2026-10-05T14:32:00.769Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "correct-light-router-vietnamese-guidance",
+          "operation_id": "0470c6cd-57fd-404e-8592-aab2766f215f",
+          "state_id": "di:69da1c63c4e2799eecb8bc978fb44a57f50cd634389feb6adb5de851b2cac6c8",
+          "source_collection": "blockers",
+          "original_entry": {
+            "id": "se:b7df5e4904891b25f3ef86cd7a9c92a906a1ea49de0246cfcaccc5ac66421d9c",
+            "kind": "delivery_blocker",
+            "text": "Có work item gần nghĩa cần review: correct-workflow-authority-guidance, release-workflow-bundle-v2-6-3, sdd-light-authority-cutover"
+          },
+          "original_text": "Có work item gần nghĩa cần review: correct-workflow-authority-guidance, release-workflow-bundle-v2-6-3, sdd-light-authority-cutover",
+          "actor": "maintainer",
+          "reason": "Reviewed DONE and merged correct-workflow-authority-guidance: its eight-source grant excludes router files. Release 2.6.3 is ARCHIVED and does not own this repair. The historical sdd-light-authority-cutover s06 T-F owns router EN only and its s08 records human DoD on 2026-07-21. Preserve those scopes and admit the remaining VI omission independently.",
+          "resolved_at": "2026-10-05T14:32:00.769Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "Ja9K+jCBkRmdQ+ztKXvw9qzvcTmmM8BYcs/SurJgS+c1ijoY+F5xPY2ElFZ6bzBF6LFMDhPr+WMIQuCpxAUECQ=="
+      }
+    },
+    {
+      "operation_id": "55dfb4f5-b9a9-4679-9116-39f94c67004e",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:79f8334b88135cd88d5652228b5a2f908a80e346b1803dd4e59bbfe69f10f723",
+      "original_entry": {
+        "id": "se:385eda799f967f039d7cca6e15d7932dfeb12963bf1f1d6d9f8079568641f89b",
+        "kind": "workflow_followup",
+        "text": "Làm rõ scope để chốt single hay split."
+      },
+      "original_text": "Làm rõ scope để chốt single hay split.",
+      "actor": "maintainer",
+      "reason": "Single bounded outcome: restore the two omitted VI Light router instructions against canonical EN, plus one focused regression. No runtime behavior, public API, release, installed harness, or previous child changes. Keep full planning for the critical entry-guidance and cross-language review boundary.",
+      "resolved_at": "2026-10-05T14:32:03.708Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "correct-light-router-vietnamese-guidance",
+          "operation_id": "55dfb4f5-b9a9-4679-9116-39f94c67004e",
+          "state_id": "di:79f8334b88135cd88d5652228b5a2f908a80e346b1803dd4e59bbfe69f10f723",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:385eda799f967f039d7cca6e15d7932dfeb12963bf1f1d6d9f8079568641f89b",
+            "kind": "workflow_followup",
+            "text": "Làm rõ scope để chốt single hay split."
+          },
+          "original_text": "Làm rõ scope để chốt single hay split.",
+          "actor": "maintainer",
+          "reason": "Single bounded outcome: restore the two omitted VI Light router instructions against canonical EN, plus one focused regression. No runtime behavior, public API, release, installed harness, or previous child changes. Keep full planning for the critical entry-guidance and cross-language review boundary.",
+          "resolved_at": "2026-10-05T14:32:03.708Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "Xd3mVnymWET89yoNRTYmxnyqIQyDAACw+gZt1EuNbiJMuqH+fnL/tner6J7U2exM+9X1T+yH9lnctVVjEqiLCw=="
+      }
+    },
+    {
+      "operation_id": "76f1da51-4dcd-4b3a-b2e9-09e16e550609",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:3ea15e7ee8ecc18a1df4c9cff20258c5f1958825ce741a7c07f2929e710d0e9e",
+      "original_entry": {
+        "id": "se:a5a8db1a4b263a9d157bf20fe09f0f62babe2902e04bb2f845fed805a195d783",
+        "kind": "workflow_followup",
+        "text": "Review existing work-items/changes trước khi scaffold."
+      },
+      "original_text": "Review existing work-items/changes trước khi scaffold.",
+      "actor": "maintainer",
+      "reason": "Reviewed current managed write grants and related legacy work items. The only broader orchestration grant belongs to ARCHIVED adaptive-governance-human-approval-ux. Existing changes and parent P-LANGUAGE/CF-012 with P-SEM/CF-010 coordination supply no active child owner of this exact VI correction. Preserve archived decisions and use new child authoring gates.",
+      "resolved_at": "2026-10-05T14:32:06.601Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "correct-light-router-vietnamese-guidance",
+          "operation_id": "76f1da51-4dcd-4b3a-b2e9-09e16e550609",
+          "state_id": "di:3ea15e7ee8ecc18a1df4c9cff20258c5f1958825ce741a7c07f2929e710d0e9e",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:a5a8db1a4b263a9d157bf20fe09f0f62babe2902e04bb2f845fed805a195d783",
+            "kind": "workflow_followup",
+            "text": "Review existing work-items/changes trước khi scaffold."
+          },
+          "original_text": "Review existing work-items/changes trước khi scaffold.",
+          "actor": "maintainer",
+          "reason": "Reviewed current managed write grants and related legacy work items. The only broader orchestration grant belongs to ARCHIVED adaptive-governance-human-approval-ux. Existing changes and parent P-LANGUAGE/CF-012 with P-SEM/CF-010 coordination supply no active child owner of this exact VI correction. Preserve archived decisions and use new child authoring gates.",
+          "resolved_at": "2026-10-05T14:32:06.601Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "vSyY5IXBLa+tSEAZfgMPCcqAsLSbJ+HAdiYsoGNoIY7SvDHmeeecsQtXmArwEzXw+KwFMamrqQVW5XVxSa1oAQ=="
+      }
+    }
+  ],
+  "materialization_recovery": {
+    "schema_version": 1,
+    "operation_id": "007fa629-c77a-4d6e-8929-7c0754df3f98",
+    "source_report_sha256": "e544b44327ff35170b622edaba0f552292d2e3be77ed6a41ab26e0d927c33fe4",
+    "resulting_status": "MATERIALIZED",
+    "disposition_operation_ids": [
+      "0470c6cd-57fd-404e-8592-aab2766f215f",
+      "55dfb4f5-b9a9-4679-9116-39f94c67004e",
+      "76f1da51-4dcd-4b3a-b2e9-09e16e550609"
+    ],
+    "completed_at": "2026-10-05T14:33:59.986Z"
+  }
+}
