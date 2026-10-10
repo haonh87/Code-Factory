@@ -189,15 +189,20 @@ notes_for_step_2: "Measure correctness and actionable EN/VI parity only within t
 
 ## Work Item Protocol
 ```yaml
-protocol_status: MATERIALIZED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "correct-light-router-vietnamese-guidance"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-light-router-vietnamese-guidance/work-items/correct-light-router-vietnamese-guidance"
-current_step: "s01"
-granted_write_paths: []
+current_step: "s07"
+granted_write_paths:
+  - "skills/orchestration/workflow-governance-router/SKILL.vi.md"
+  - "packages/workflow-bundle/test/workflow-light-router-guidance.test.js"
+  - "work-items/correct-light-router-vietnamese-guidance"
+  - "packages/workflow-bundle/runtime"
+  - "packages/workflow-bundle/workflow-bundle.manifest.json"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -206,18 +211,14 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: "maintainer"
+protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-10-06T06:28:40Z"
-handoff_target: "human-review"
-last_transition_action: "approve"
-last_transition_at: "2026-10-10T05:50:54.484Z"
+handoff_target: "step-s07-owner"
+last_transition_action: "activate"
+last_transition_at: "2026-10-10T06:04:27.108Z"
 required_actions:
-  - {"id":"se:34ea2b4e91fccc9a3abb2c33080a530ff5051f6775bc2b7a99895ca1f62e8634","kind":"gate_approval","text":"wfc gate approve --work-item correct-light-router-vietnamese-guidance --gate spec --reviewed-by <role>","gate":"spec"}
-  - {"id":"se:8210afb101e844775cfe7d9d5a4dd0bb02ea599be6deae197aa535233205d7bb","kind":"gate_approval","text":"wfc gate approve --work-item correct-light-router-vietnamese-guidance --gate dor --reviewed-by <role>","gate":"dor"}
-  - {"id":"se:901bf4814975184120b6f0b655760eb657964286718772583dc48a193f654bb0","kind":"gate_approval","text":"wfc gate approve --work-item correct-light-router-vietnamese-guidance --gate approach --reviewed-by <role>","gate":"approach"}
-  - {"id":"se:68ad795442118bbabd3d5ef2a2bb1549a13d82b70d80830416b9fe36362a2abb","kind":"gate_approval","text":"wfc gate approve --work-item correct-light-router-vietnamese-guidance --gate task_plan --reviewed-by <role>","gate":"task_plan"}
-  - {"id":"se:032f0e2e753911114d8ebc274bda836e0ac66aedc0aa62390897bf6934f63f8c","kind":"work_item_activation","text":"wfc work-item activate --work-item correct-light-router-vietnamese-guidance --step s07 --write-root <path>"}
+  - {"id":"se:af79fe2bab20622033e1c8fa88ef42c72a52a59a1bec34967dd302ac8632fa87","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
 blockers: []
 review_notes:
   - "User explicitly accepted work item, Spec/DoR, Approach A and Task Plan at ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f; recorded 2026-10-06T06:28:40Z."
@@ -234,6 +235,8 @@ audit_events:
   - "WORKFLOW_SCAFFOLDED"
   - "STEP_OPENED"
   - "WORK_ITEM_APPROVED"
+  - "READINESS_BUNDLE_APPROVED"
+  - "WORK_ITEM_ACTIVATED"
 ```
 
 ## Admission Evidence

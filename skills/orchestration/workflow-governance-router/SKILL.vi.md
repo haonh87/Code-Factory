@@ -119,6 +119,8 @@ Chọn step phù hợp nhất trong chain:
 
 Nếu thiếu dữ liệu để vào step sâu hơn, phải quay về step trước thay vì tiến tiếp.
 
+Nếu note của work item khai báo `sdd_mode: light`, không có note vật lý riêng cho `s05`: nội dung Option Analysis, Brownfield Impact và Technical Approach được đặt trong `s06`. Không báo `Missing Gates: s05` hoặc chờ file `s05` cho work item Light; hãy kiểm tra nội dung và receipt `Approach` tại `s06`. Cách gộp note này vẫn giữ đủ tám bước logic. Quy tắc đầy đủ nằm tại `policies/codex/AGENTS.global.md § Hard Rule: SDD Light Profile`.
+
 ### Bước 4: Kiểm Tra Missing Gates
 
 Kiểm tra tối thiểu:
@@ -132,6 +134,13 @@ Kiểm tra tối thiểu:
 - human approval tương ứng
 
 Chỉ được coi gate là PASS nếu approval là explicit và có evidence đủ đọc.
+
+Với `sdd_mode: light`, áp dụng quy tắc đặt gate sau thay cho cách kiểm tra host ở trên. Mỗi gate vẫn cần approval và trusted receipt riêng:
+
+- `Spec` + `DoR` đặt tại `s04`.
+- `Approach` + `Task Plan` cùng đặt tại `s06` (không kiểm tra receipt riêng của `s05`).
+- `Foundation Decision` không được hỗ trợ trong Light — nếu work item cần quyết định này, phải coi đó là hard escalation và chuyển sang chain full, thay vì báo thiếu gate Light.
+- `Contract`, khi có, vẫn áp dụng tại `s04` như full/strict.
 
 ### Bước 5: Chọn Workflow Status
 
