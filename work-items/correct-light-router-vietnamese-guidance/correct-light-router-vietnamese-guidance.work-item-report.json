@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Restore the omitted Vietnamese Light guidance in steps 3 and 4 of workflow-governance-router/SKILL.vi.md to match the existing English router: applicable s04 and s06 hosts, no separate s05 note or receipt, independent gate approvals, Foundation escalation and applicable Contract condition. Add one bounded regression for this source omission. Preserve runtime behavior and the prior completed authority-guidance scope.",
@@ -80,12 +80,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "id": "se:6205d1794dac267c792bc21c93a16c193251c0d52b0441205715be84eccb0b0c",
+      "id": "se:c42dc93c789350e5e458a0a2655d40ce90091d2c21b87ff920487f9b147d02b3",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -105,7 +105,8 @@
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -175,6 +176,14 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "Technical evidence and explicit human BA/QC acceptance of packet 4a3458c are recorded in s08; separate human QC DoD remains pending."
+    },
+    {
+      "timestamp": "2026-10-10T14:30:52.378Z",
+      "action": "close",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Explicit human DoD accepted and trusted receipt recorded 2026-10-10T14:30:03.617Z; all six signatures and current gate host hashes verified. Close this child only; parent M7 and integration/cleanup remain separate."
     }
   ],
   "resolved_state_history": [
