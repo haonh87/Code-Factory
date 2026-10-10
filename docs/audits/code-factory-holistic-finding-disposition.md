@@ -565,9 +565,9 @@ Naming/governance/execution/planning pass for eight child drafts; full-root prot
 
 The user replied “accept” to the explicit work-item, Spec + DoR, Approach A and Task Plan review request for `ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f`. Acceptance was recorded at `2026-10-06T06:28:40Z` (recording time, not a claimed chat timestamp). This is the human content decision, not another admission disposition or an agent approval. Child s06 owns the decision table; s04/s05/s06 now contain the matching reviewer roles and timestamp before trusted sealing. The accepted ACs, task definitions, five-path scope and verification commands are unchanged. s05's three option descriptions/tradeoffs were only reformatted into the scalar-list shape accepted by the existing validator; selected option A is unchanged.
 
-Finalized child checkpoint: `cd0454738684f2b1bb6d84a05f698f08a6453d7f`. [Child s06 decision record](https://github.com/haonh87/Code-Factory/blob/cd0454738684f2b1bb6d84a05f698f08a6453d7f/work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s06.task-breakdown.md#human-authoring-decision--2026-10-06). The protocol report is still MATERIALIZED/s01, PENDING_REVIEW, with no grants; the agent has not manually changed the report/projection or executed an approval signer. Five read-only receipt probes return MISSING. Only the human-terminal CLI flow can materialize those accepted decisions into the work-item receipt and four independent authoring receipts.
+Finalized child checkpoint: `cd0454738684f2b1bb6d84a05f698f08a6453d7f`. [Child s06 decision record](https://github.com/haonh87/Code-Factory/blob/cd0454738684f2b1bb6d84a05f698f08a6453d7f/work-items/correct-light-router-vietnamese-guidance/correct-light-router-vietnamese-guidance.s06.task-breakdown.md#human-authoring-decision--2026-10-06). The protocol report is now MATERIALIZED/s01, APPROVED, with no grants after the human ran the helper. The work-item receipt is valid (Maintainer; recorded at `2026-10-10T05:50:54.490Z`), while Spec, DoR, Approach and Task Plan receipts remain MISSING. The helper stopped after the first signed command because its initial identity comparison did not account for legacy CLI normalization. The correction and read-only verification below supersede the initial helper result. The agent has not manually changed the report/projection or executed an approval signer.
 
-Run this prepared helper from a human-controlled terminal. On its first successful run, the existing approval passphrase is requested twice: once for the work item and once for the four-receipt ready bundle. Do not paste the passphrase into chat. Valid completed receipts are checked and skipped on retry. The helper performs no activation, source edit, deployment or cleanup.
+Run the corrected helper from a human-controlled terminal. The existing valid work-item receipt is verified and skipped; the current retry requests the existing approval passphrase once for the four-receipt ready bundle. Do not paste the passphrase into chat. The helper performs no activation, source edit, deployment or cleanup, and requests no repeat content decision.
 
 ```sh
 bash /private/tmp/cf-router-vi-approved-c21q48a_/seal-router-vi.sh
@@ -645,7 +645,14 @@ function preflight() {
   assert.equal(report.current_step, "s01");
   assert.ok(["PENDING_REVIEW", "APPROVED"].includes(report.approval_status));
   assert.deepEqual(report.granted_write_paths || [], [], "Unexpected source grant");
-  const identity = Object.fromEntries(config.reportIdentityKeys.map(k => [k, report[k]]));
+  const candidates = report.work_items.filter(item => item.work_item_slug === slug);
+  assert.equal(candidates.length, 1, "Expected one original candidate");
+  // The legacy CLI removes these two duplicate top-level fields during normalization.
+  // Preserve the original identity by reading the unchanged candidate when absent.
+  const identity = Object.fromEntries(config.reportIdentityKeys.map(k => [k,
+    !Object.hasOwn(report, k) && ["sdd_mode", "selected_profile"].includes(k)
+      ? candidates[0][k] : report[k]
+  ]));
   assert.equal(sha(JSON.stringify(identity)), config.reportIdentityHash, "Admission/scope identity changed");
   if (report.approval_status === "PENDING_REVIEW") {
     assert.equal(sha(raw), config.initialReportHash, "Initial report changed before signing");
@@ -703,3 +710,16 @@ if (checkOnly) {
 Validation: naming/governance/execution/planning pass for all eight child notes, including the finalized authoring hosts; full-root protocol passes for 22 managed items and 21 configured legacy skips. YAML, strict UTF-8, local links and whitespace pass. Helper JS/shell syntax and its actual `--check` invocation pass without signer, receipt, protocol or source writes. The accepted AC block, exact task definitions, Brownfield impact and verification commands were compared to the reviewed checkpoint and are unchanged; option descriptions/tradeoffs and five accepted paths are preserved. No source tests, runtime generation or language-score pass is claimed for this metadata-only update.
 
 After the human reports completion, recheck all five trusted signatures/current hashes and the protocol state, then run normal CLI activation with the five accepted s06 paths before T2 RED. Do not request another content approval or repeat admission. Keep the parent original register, frozen hosts, M7 score ledger and original CF-MB2 binding unchanged. Parent M7 remains FAIL and M10/M11 stay unopened; this acceptance does not include DoD, release, integration or cleanup.
+
+
+### Router VI signing retry correction — 2026-10-10
+
+The human completed the first approval command. Production signature verification confirms the work-item receipt APPROVED by Maintainer, reviewed at the recorded acceptance time `2026-10-06T06:28:40Z`, signed/recorded at `2026-10-10T05:50:54.490Z`. The normal CLI updated only the report and s01 protocol projection. All four authoring receipts are still MISSING; source grants remain empty and implementation is NOT_STARTED. This is a helper defect, not a rejected human decision or an invalid work-item signature. Child checkpoint `b0b6a8ca6645d22c6ce29b759d3e0ba1c4c99742` preserves exactly the two CLI-updated files; the agent made no content edit to either.
+
+Root cause: the legacy `normalizeProtocolReport` keeps `work_items[0].sdd_mode=none` and `selected_profile=full`, but drops their duplicate top-level fields. The original helper hashed both representations and stopped on `Admission/scope identity changed` immediately after the work-item signature, before invoking the ready bundle. Its earlier pre-signing `--check` was insufficient to cover this transition. No accepted scope, source, gate host or signed admission history changed.
+
+The same retained helper now reads only those two profile values from the unique original candidate when the top-level property is absent. An explicit changed/null top-level value is not normalized away. The original admission identity hash, full candidate record, finalized host hashes and normalized non-protocol s01 hash are unchanged; the check was corrected rather than disabled or rebound to unexplained bytes. No CLI, runtime, schema or production test was edited.
+
+Verification reproduced the original failure against the real post-approval report, then passed four read-only controls: original report, actual signed work-item report, canonical normalization, and pure ready-bundle reconciliation. Ten in-memory negative mutations were rejected: explicit top-level mode/null/profile changes, nested mode/profile changes, missing/duplicate candidates, request-scope change, removed signed history and a new blocker. The reconciled model retains MATERIALIZED/s01, APPROVED, no grants, the same reviewer/timestamp and only activation as a remaining action; this model is not a signed receipt or a real state write. The corrected wrapper's actual `--check` passes and reports one VALID work-item receipt plus four PENDING gates. JS/shell syntax checks pass. No signer ran during these checks.
+
+The concrete retry command above is unchanged and now needs one hidden passphrase entry. Do not sign the work item again, edit s04/s05/s06, refresh their hashes, repeat admission, infer activation from the work-item receipt, or change parent M7/CF-MB2 verdicts. After the human runs the corrected helper, verify all five real receipts and current host digests before activation.
