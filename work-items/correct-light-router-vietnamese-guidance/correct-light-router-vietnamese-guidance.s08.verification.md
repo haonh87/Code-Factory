@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
 governance_status: ALIGNED
@@ -75,8 +75,8 @@ gate_reviews:
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-10-10T12:12:04Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -98,7 +98,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Verification is PASS: technical checks pass and the human explicitly accepted the bounded BA/QC packet at 4a3458c. The step-exit audit remains FAIL only because the separate human QC DoD decision/receipt is pending; DoD is BLOCKED. Parent M7 remains FAIL.
+> Verification is PASS: technical checks pass and the human explicitly accepted the bounded BA/QC packet at 4a3458c. The human separately accepted DoD at checkpoint 71b0c11. Content verification and DoD are approved; protocol remains VERIFIED until the trusted DoD receipt is sealed and validated. Parent M7 remains FAIL.
 
 ## Step Contract
 
@@ -198,7 +198,7 @@ release_blockers: []
 status: PASS
 gaps: []
 residual_risks: ["Static prose tests cover named patterns only; human meaning review is mandatory."]
-recommendation: "Technical and bounded BA/QC verification complete. Record normal CLI verify; request separate human QC DoD."
+recommendation: "Human DoD is accepted. Seal this finalized host in the human-controlled terminal, verify its receipt, then close through the normal CLI."
 notes_for_review: "Release is not applicable; absence of release blockers is not a DoD pass."
 ```
 
@@ -271,10 +271,12 @@ human_qc:
   reviewed_at: "2026-10-10T06:22:24Z"
   verdict: "Explicit chat accept of requested scopes, hashes, excerpts and arithmetic review."
 separate_dod:
-  status: PENDING
-  reviewed_by: []
-  reviewed_at: ""
-  trusted_receipt: ""
+  status: APPROVED
+  reviewed_by: ["user"]
+  reviewer_role: qc
+  reviewed_at: "2026-10-10T12:12:04Z"
+  accepted_checkpoint: "71b0c11e6811c5f276cd04291043fadb3dfa8b60"
+  trusted_receipt: "PENDING at host finalization; verify external receipt before close."
 ```
 
 The preceding response asked the human to approve the BA/QC section of the exact s08 packet at 4a3458c and explicitly reserved DoD as a separate decision. The user replied “accept”. One human acts in the declared BA and QC roles; no independent reviewer is claimed. The UTC value above is the decision-recording time, not an asserted chat-send timestamp. The agent authored this record; the user made the decision. Source bytes, excerpts, ranges, hashes and scores are unchanged. This acceptance does not include DoD, merge, archive, cleanup, global update or whole-M7 PASS.
@@ -288,9 +290,9 @@ checks:
   - "Normal CLI activated five exact grants; report/s01 protocol remain CLI-owned."
   - "Signed hosts and all production runtime/CLI sources unchanged."
   - "No install, release, integration, delegation, archive or cleanup."
-blocking_items: ["Separate human QC DoD decision and trusted receipt pending."]
+blocking_items: ["Trusted DoD receipt pending at finalization; human DoD decision is accepted."]
 owner: "qc"
-next_action: "Request the separate human QC DoD decision; preserve signed authoring hosts."
+next_action: "Seal the accepted DoD in the human terminal; preserve all finalized gate hosts."
 ```
 
 ## Regression & Compatibility Summary
@@ -403,7 +405,7 @@ notes: ["Bounded BA language review belongs to AC-LR-005, not business acceptanc
 
 ```yaml
 step: s08
-status: FAIL
+status: PASS
 checks:
   - criterion: "Technical checks and transparent limits"
     result: PASS
@@ -411,23 +413,45 @@ checks:
   - criterion: "Explicit human BA/QC acceptance"
     result: PASS
     evidence: "Explicit chat accept of the requested packet at 4a3458c; source scopes/hashes/scores unchanged."
-  - criterion: "Separate human QC DoD and trusted receipt"
-    result: FAIL
-    evidence: "Separate DoD decision/receipt remains pending; this is the next human request."
+  - criterion: "Separate human QC DoD content decision"
+    result: PASS
+    evidence: "Explicit user accept of the DoD request against 71b0c11; receipt sealing remains a protocol prerequisite."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Bounded technical pass completed; human review is a planned dependency."
-gaps: ["Separate human QC DoD and trusted receipt"]
+gaps: []
 risk_level: MEDIUM
-next_action: "Obtain separate human QC DoD and trusted sealing before normal close."
+next_action: "Seal the already-approved DoD and verify its current digest before normal close."
+```
+
+```yaml
+finish_target: "fix/light-router-vietnamese-guidance"
+workspace_kind: BOTH
+verify_inputs: ["Accepted AC-LR-001..005", "Human BA/QC review and separate DoD decision"]
+finish_gate_checks:
+  verify_complete: PASS
+  dod_complete: PENDING
+  findings_closed: PASS
+  exceptions_resolved: PASS
+allowed_actions: ["Commit finalized evidence", "Seal already-approved DoD in the human terminal"]
+blocked_actions: ["Protocol close until receipt validates", "Merge/archive/remove before separate finish conditions"]
+cleanup_sequence: []
+merge_conditions: ["Valid trusted DoD receipt and normal close", "Separate integration review"]
+residual_risks: ["This is a pre-signature snapshot; a clean tree alone does not authorize finalization."]
+final_recommendation: HOLD_OPEN
+notes_for_closeout: "Keep signed s08 immutable. Subsequent state is owned by the trusted receipt, CLI report and integration decision."
 ```
 
 ## Definition of Done
 
+The user explicitly replied “accept” to the separate request to approve DoD for this child against s08 at commit 71b0c11e6811c5f276cd04291043fadb3dfa8b60, then instructed continuation. This is the human QC decision; the agent records it rather than approving on the user's behalf. The gate reviewer and UTC recording time are in frontmatter. The time records this decision here, not an asserted chat-send timestamp. It accepts the five AC results, six technical checks, bounded BA/QC review and disclosed scanner limitations in that packet.
+
+The DONE assessment below records the approved content verdict. The protocol remains VERIFIED/s08 until a valid trusted DoD receipt and normal close transition exist. No parent M7, integration, archive, cleanup, installation or release decision is included.
+
 ```yaml
 work_item_slug: "correct-light-router-vietnamese-guidance"
-status: BLOCKED
+status: DONE
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -435,10 +459,10 @@ checks:
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps: ["Separate human QC DoD decision and trusted receipt"]
+gaps: []
 residual_risks: ["Static checks and missing automated scanners have disclosed limitations."]
-follow_up_items: ["Separate QC DoD", "Later integration/finish decision"]
-next_action: "All six technical DoD checks pass. Ask human QC to approve DoD, then finalize/seal the host and close through the normal CLI."
+follow_up_items: ["Trusted receipt sealing and normal protocol close", "Later integration/finish decision"]
+next_action: "Seal the accepted finalized s08, verify its signature and current digest, then close normally. Do not edit this host after signing."
 ```
 
 ## Traceability
@@ -449,12 +473,12 @@ upstream:
   - "correct-light-router-vietnamese-guidance.s05.technical-approach.md"
   - "correct-light-router-vietnamese-guidance.s06.task-breakdown.md"
   - "correct-light-router-vietnamese-guidance.s07.implementation.md"
-next_step: "Separate human QC DoD and trusted receipt"
+next_step: "Trusted DoD receipt validation and normal protocol close"
 ```
 
 ## Handoff
 
-Source correction and bounded BA/QC review are accepted. All five ACs and all six technical DoD checks have evidence. Normal source CLI verify at 2026-10-10T06:24:25.503Z records VERIFIED/s08 (actor qc, technical transition only); the router remains WAITING_APPROVAL for separate human QC DoD. The s08 frontmatter stays draft and dod reviewer fields stay empty until that decision. Protected parent register, M7 ledger, frozen portfolio gates, release 2.6.3, main, unique branches and root untracked paths remain outside this change.
+Source correction and bounded BA/QC review are accepted. All five ACs and all six technical DoD checks have evidence. Normal source CLI verify at 2026-10-10T06:24:25.503Z records VERIFIED/s08 (actor qc, technical transition only); human DoD is now accepted and the host is finalized. The router remains WAITING_APPROVAL only for trusted receipt sealing. Do not edit s08 after signing; later progress belongs to the CLI report and parent disposition owner. Protected parent register, M7 ledger, frozen portfolio gates, release 2.6.3, main, unique branches and root untracked paths remain outside this change.
 
 ## Exact Reading Units
 
@@ -592,3 +616,22 @@ Consistency rule bắt buộc:
 - tuyệt đối không được tạo block mâu thuẫn kiểu `Workflow Status: ACTIVE` trong khi vẫn liệt kê `Missing Gates`
 
 ```
+
+## Trusted Signing Handoff
+
+Human DoD content is already accepted. After this finalized checkpoint is committed, run:
+
+```sh
+bash /private/tmp/cf-router-vi-dod-b06q20hi/seal-dod.sh
+```
+
+The helper checks the clean branch, pinned host/source/authoring hashes, unchanged VERIFIED report, approved QC metadata and five existing trusted receipts. A valid current DoD receipt makes retries read-only; otherwise it invokes only the normal gate approval command. It never supplies the passphrase, uses fixture mode, closes the protocol or changes repository files.
+
+Durable equivalent if the temporary helper is unavailable (from the child worktree):
+
+```sh
+cd /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-light-router-vietnamese-guidance
+/Users/haonguyen87/.nvm/versions/node/v22.23.2/bin/node packages/workflow-bundle/bin/wfc.js gate approve --work-item correct-light-router-vietnamese-guidance --gate dod --reviewed-by qc --reviewed-at 2026-10-10T12:12:04Z --note "Explicit user acceptance of child DoD at 71b0c11; five ACs, bounded BA/QC review and scanner limitations accepted. No parent, release or integration approval." --project-root . --telemetry off
+```
+
+The production CLI requires a human-controlled TTY and hidden passphrase prompt (workflow-trusted-approval-utils.js, promptHiddenInput/resolveApprovalPassphrase). No repeated content approval is needed. After signing, verify all six signatures/current host digests and perform normal close; do not rewrite this signed s08 to record its own receipt.

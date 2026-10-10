@@ -96,7 +96,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> T1–T4 implementation and technical review are complete. Both original VI omissions were reproduced before the two insertions; the full suite passes. T5 human BA/QC language review is accepted; T6 separate human QC DoD remains pending. This is not a DONE declaration.
+> T1–T4 implementation and technical review are complete. Both original VI omissions were reproduced before the two insertions; the full suite passes. T5 human BA/QC language review is accepted; T6 human QC DoD is accepted; trusted receipt sealing and normal close remain pending. This is not a DONE declaration.
 
 ## Step Contract
 
@@ -156,7 +156,7 @@ known_limitations:
   - "Regex checks cover known prose contracts; the bounded human BA/QC review is now accepted in s08."
   - "ESLint and Semgrep unavailable; s08 explicitly discloses skipped scans."
 follow_up_items:
-  - "T6: separate explicit human QC DoD and trusted receipt before normal CLI close."
+  - "T6: seal the accepted human QC DoD, verify its trusted receipt, then close normally."
 notes_for_testing: "Use the evidence and reproducible commands in s08; no further source change is proposed."
 ```
 
@@ -296,4 +296,4 @@ next_step: "s08"
 
 ## Handoff
 
-The [s08 review packet](correct-light-router-vietnamese-guidance.s08.verification.md) owns technical verification, accepted bounded BA/QC scores and the separate pending human DoD decision. No source rework is currently proposed. Keep the child open and parent M7 FAIL until their separate required decisions and evidence exist.
+The [s08 review packet](correct-light-router-vietnamese-guidance.s08.verification.md) owns technical verification, accepted bounded BA/QC scores and the accepted separate human DoD decision and pending trusted sealing. No source rework is currently proposed. Keep the child open and parent M7 FAIL until their separate required decisions and evidence exist.
