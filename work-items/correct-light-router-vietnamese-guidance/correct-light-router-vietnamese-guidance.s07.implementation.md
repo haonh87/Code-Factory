@@ -96,7 +96,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> T1–T4 implementation and technical review are complete. Both original VI omissions were reproduced before the two insertions; the full suite passes. T5 human BA/QC language review and T6 human DoD remain pending. This is not a DONE declaration.
+> T1–T4 implementation and technical review are complete. Both original VI omissions were reproduced before the two insertions; the full suite passes. T5 human BA/QC language review is accepted; T6 separate human QC DoD remains pending. This is not a DONE declaration.
 
 ## Step Contract
 
@@ -128,7 +128,7 @@ timebox:
 ```yaml
 recommended_design: "Accepted s05 option A: restore only the two missing VI Light instructions."
 implementation_mode: BUGFIX
-tasks_completed: [T1, T2, T3, T4]
+tasks_completed: [T1, T2, T3, T4, T5]
 bug_repro_evidence:
   - "Before VI edits, focused test exited 1: Step 3 missing Light host instruction; Step 4 missing Light gate mapping."
 hypothesis_log:
@@ -153,10 +153,9 @@ outputs_actual:
   - "Standard runner discovers 47 unit test files, all PASS."
   - "Derived runtime generation and pack audit PASS; manifest unchanged."
 known_limitations:
-  - "Regex checks cover known prose contracts; BA/QC human review remains required."
+  - "Regex checks cover known prose contracts; the bounded human BA/QC review is now accepted in s08."
   - "ESLint and Semgrep unavailable; s08 explicitly discloses skipped scans."
 follow_up_items:
-  - "T5: human BA/QC review of the two hashed EN/VI reading units in s08."
   - "T6: separate explicit human QC DoD and trusted receipt before normal CLI close."
 notes_for_testing: "Use the evidence and reproducible commands in s08; no further source change is proposed."
 ```
@@ -282,7 +281,7 @@ notes_for_implementation_or_verify: "Targeted review is not an independent human
 
 1. **T2 spec compliance — PASS:** separate Step 3/4 source checks reveal both real defects; EN is a positive control; all eleven planned mutations are present, plus additional logical-step/conditional/contradictory-host checks. Four gates and both host pairs are checked independently.
 2. **T2 code quality — PASS:** Node built-ins only, repository-relative fixed files, in-memory mutation fixtures, deterministic diagnostics and no writes/network/shell. CRLF normalization is covered. The label correction above improves the accuracy of the test description.
-3. **T3/T4 spec compliance — PASS:** eight logical steps remain; the Light physical-host exception is conditional; independent trusted receipts remain explicit; Foundation escalates to full and conditional Contract remains at s04. EN/policy/runtime sources and finalized gate hosts are untouched. Human language acceptance is still pending.
+3. **T3/T4 spec compliance — PASS:** eight logical steps remain; the Light physical-host exception is conditional; independent trusted receipts remain explicit; Foundation escalates to full and conditional Contract remains at s04. EN/policy/runtime sources and finalized gate hosts are untouched. Human language acceptance is recorded in s08.
 4. **T3/T4 code quality — PASS:** the VI delta is two insertions only. Existing terminology is retained to match the surrounding bilingual technical documentation. Long policy sentences are a bounded readability risk for the human reviewer. The new tests scan small static files; synchronous reads stay in the test process.
 
 ## Traceability
@@ -297,4 +296,4 @@ next_step: "s08"
 
 ## Handoff
 
-The [s08 review packet](correct-light-router-vietnamese-guidance.s08.verification.md) owns technical verification, bounded language scores and the pending human decisions. No source rework is currently proposed. Keep the child open and parent M7 FAIL until their separate required decisions and evidence exist.
+The [s08 review packet](correct-light-router-vietnamese-guidance.s08.verification.md) owns technical verification, accepted bounded BA/QC scores and the separate pending human DoD decision. No source rework is currently proposed. Keep the child open and parent M7 FAIL until their separate required decisions and evidence exist.

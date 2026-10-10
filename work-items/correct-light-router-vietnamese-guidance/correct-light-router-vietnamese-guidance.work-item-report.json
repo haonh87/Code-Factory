@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "VERIFIED",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Restore the omitted Vietnamese Light guidance in steps 3 and 4 of workflow-governance-router/SKILL.vi.md to match the existing English router: applicable s04 and s06 hosts, no separate s05 note or receipt, independent gate approvals, Foundation escalation and applicable Contract condition. Add one bounded regression for this source omission. Preserve runtime behavior and the prior completed authority-guidance scope.",
@@ -70,7 +70,7 @@
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-light-router-vietnamese-guidance/work-items/correct-light-router-vietnamese-guidance",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     "skills/orchestration/workflow-governance-router/SKILL.vi.md",
     "packages/workflow-bundle/test/workflow-light-router-guidance.test.js",
@@ -80,12 +80,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "step-s07-owner",
+  "handoff_target": "definition-of-done",
   "required_actions": [
     {
-      "id": "se:af79fe2bab20622033e1c8fa88ef42c72a52a59a1bec34967dd302ac8632fa87",
+      "id": "se:6205d1794dac267c792bc21c93a16c193251c0d52b0441205715be84eccb0b0c",
       "kind": "workflow_followup",
-      "text": "Continue active execution from step 7 onward."
+      "text": "Collect DoD evidence and close the work item when ready."
     }
   ],
   "blockers": [],
@@ -104,7 +104,8 @@
     "STEP_OPENED",
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
-    "WORK_ITEM_ACTIVATED"
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -166,6 +167,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "ACTIVE",
       "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-10-10T06:24:25.503Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Technical evidence and explicit human BA/QC acceptance of packet 4a3458c are recorded in s08; separate human QC DoD remains pending."
     }
   ],
   "resolved_state_history": [

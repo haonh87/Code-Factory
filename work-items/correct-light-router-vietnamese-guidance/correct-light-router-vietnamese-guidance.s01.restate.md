@@ -189,14 +189,14 @@ notes_for_step_2: "Measure correctness and actionable EN/VI parity only within t
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "correct-light-router-vietnamese-guidance"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-light-router-vietnamese-guidance/work-items/correct-light-router-vietnamese-guidance"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - "skills/orchestration/workflow-governance-router/SKILL.vi.md"
   - "packages/workflow-bundle/test/workflow-light-router-guidance.test.js"
@@ -214,11 +214,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-10-06T06:28:40Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-10-10T06:04:27.108Z"
+handoff_target: "definition-of-done"
+last_transition_action: "verify"
+last_transition_at: "2026-10-10T06:24:25.503Z"
 required_actions:
-  - {"id":"se:af79fe2bab20622033e1c8fa88ef42c72a52a59a1bec34967dd302ac8632fa87","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
+  - {"id":"se:6205d1794dac267c792bc21c93a16c193251c0d52b0441205715be84eccb0b0c","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
 blockers: []
 review_notes:
   - "User explicitly accepted work item, Spec/DoR, Approach A and Task Plan at ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f; recorded 2026-10-06T06:28:40Z."
@@ -237,6 +237,7 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
 ## Admission Evidence

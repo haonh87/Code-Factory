@@ -13,7 +13,7 @@ source_of_truth: true
 status: draft
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -98,7 +98,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Verification is PARTIAL: technical checks pass; explicit human BA/QC review of the bounded language packet is pending. The step-exit audit is FAIL solely for missing mandatory human decisions; DoD is BLOCKED. Parent M7 remains FAIL.
+> Verification is PASS: technical checks pass and the human explicitly accepted the bounded BA/QC packet at 4a3458c. The step-exit audit remains FAIL only because the separate human QC DoD decision/receipt is pending; DoD is BLOCKED. Parent M7 remains FAIL.
 
 ## Step Contract
 
@@ -164,11 +164,11 @@ manual_exploration:
   issues_found: []
 criteria_results:
   - criterion: AC-LR-001
-    result: PARTIAL
-    evidence: "Technical PASS: Step 3 and eight-step controls. Required BA reading pending."
+    result: PASS
+    evidence: "Step 3/eight-step controls PASS; human BA accepted the exact reading scope at 4a3458c."
   - criterion: AC-LR-002
-    result: PARTIAL
-    evidence: "Technical PASS: four gates/hosts, Foundation/Contract controls; BA reading pending."
+    result: PASS
+    evidence: "Four gates/hosts and Foundation/Contract controls PASS; human BA accepted the exact reading scope."
   - criterion: AC-LR-003
     result: PASS
     evidence: "Two insertions only; other source/manifest/signed-host hashes preserved."
@@ -176,8 +176,8 @@ criteria_results:
     result: PASS
     evidence: "Original 2-failure RED; 31-check GREEN; 22 mutations; 47 test files and required validators pass."
   - criterion: AC-LR-005
-    result: PARTIAL
-    evidence: "Two hashed reading units and proposed scores below; no human BA/QC verdict yet."
+    result: PASS
+    evidence: "Human BA/QC explicitly accepted both hashed units, scores and arithmetic; decision recorded below."
 test_evidence:
   unit_test: ["Focused 31/31 checks; 22 mutations rejected; full suite 47 files PASS"]
   integration_test: ["Existing CLI integration tests in full suite", "Runtime generation and pack audit PASS"]
@@ -195,10 +195,10 @@ skipped_checks:
   - "ESLint and Semgrep unavailable; no configured lint wrapper. See Scan Summary."
   - "No application build/typecheck, database, deployment, global install or release test: outside source-only scope."
 release_blockers: []
-status: PARTIAL
-gaps: ["Human BA/QC language decision", "Separate human QC DoD"]
+status: PASS
+gaps: []
 residual_risks: ["Static prose tests cover named patterns only; human meaning review is mandatory."]
-recommendation: "Review the bounded packet; retain ACTIVE/s07 protocol until required human review."
+recommendation: "Technical and bounded BA/QC verification complete. Record normal CLI verify; request separate human QC DoD."
 notes_for_review: "Release is not applicable; absence of release blockers is not a DoD pass."
 ```
 
@@ -233,16 +233,16 @@ Preservation comparison against the preactivation snapshot covers all 933 tracke
 
 ## Bounded Language Review
 
-**Assessment mode: AI_PROPOSED; HUMAN BA/QC REVIEW PENDING.** These are exactly two reading units: Steps 3–4 plus immediate Step 5 authority context. They are neither a rescore nor a pass of either entire file, the earlier M7-L14 unit, or the 147-unit parent ledger.
+**Assessment mode: HUMAN_ACCEPTED (scores originally AI_PROPOSED).** These are exactly two reading units: Steps 3–4 plus immediate Step 5 authority context. They are neither a rescore nor a pass of either entire file, the earlier M7-L14 unit, or the 147-unit parent ledger.
 
-The proposed scores use the locked rubric. Each dimension is 1–5. Proposed critical flags are zero, mean 4.6/5 and minimum 4/5; these remain proposals until human BA/QC review.
+The human accepted the proposed scores under the locked rubric. Each dimension is 1–5. Accepted critical flags are zero, mean 4.6/5 and minimum 4/5; this applies only to the two recorded reading units.
 
 | Unit | Clarity | Naturalness | Next action | Terminology | Role/gate relevance | Mean | Critical flags |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| EN Steps 3–5 | 4 | 4 | 5 | 5 | 5 | 4.6 | 0 proposed |
-| VI Steps 3–5 | 4 | 4 | 5 | 5 | 5 | 4.6 | 0 proposed |
+| EN Steps 3–5 | 4 | 4 | 5 | 5 | 5 | 4.6 | 0 |
+| VI Steps 3–5 | 4 | 4 | 5 | 5 | 5 | 4.6 | 0 |
 
-Arithmetic: (4+4+5+5+5)/5 = 4.6 per unit; combined 46/10 = 4.6, minimum 4. Human QC must check arithmetic and source/unit hashes; the agent's calculation does not substitute for that decision.
+Arithmetic: (4+4+5+5+5)/5 = 4.6 per unit; combined 46/10 = 4.6, minimum 4. The requested human QC review of the arithmetic and source/unit hashes is accepted. The agent also rechecked the exact file/unit hashes, ranges, excerpts and arithmetic against 4a3458c before recording the decision; that mechanical recheck is not an independent human review.
 
 Score rationale:
 
@@ -256,17 +256,20 @@ Score rationale:
 
 ```yaml
 review_scope: "Only the two source reading units reproduced below"
-assessment_mode: AI_PROPOSED
+assessment_mode: HUMAN_ACCEPTED
+accepted_checkpoint: "4a3458cefcefe9b3b80542e3d66c4c0deb779692"
 human_ba:
-  status: PENDING
-  reviewed_by: []
-  reviewed_at: ""
-  verdict: ""
+  status: APPROVED
+  reviewed_by: ["user"]
+  reviewer_role: ba
+  reviewed_at: "2026-10-10T06:22:24Z"
+  verdict: "Explicit chat accept of requested bounded meaning review and proposed scores."
 human_qc:
-  status: PENDING
-  reviewed_by: []
-  reviewed_at: ""
-  verdict: ""
+  status: APPROVED
+  reviewed_by: ["user"]
+  reviewer_role: qc
+  reviewed_at: "2026-10-10T06:22:24Z"
+  verdict: "Explicit chat accept of requested scopes, hashes, excerpts and arithmetic review."
 separate_dod:
   status: PENDING
   reviewed_by: []
@@ -274,7 +277,7 @@ separate_dod:
   trusted_receipt: ""
 ```
 
-Requested decision: human BA accepts or corrects meaning/scores; human QC verifies exact scopes, hashes and arithmetic. The later QC DoD is separate. Reading-packet approval does not authorize merge, archive, cleanup, global update or whole-M7 PASS.
+The preceding response asked the human to approve the BA/QC section of the exact s08 packet at 4a3458c and explicitly reserved DoD as a separate decision. The user replied “accept”. One human acts in the declared BA and QC roles; no independent reviewer is claimed. The UTC value above is the decision-recording time, not an asserted chat-send timestamp. The agent authored this record; the user made the decision. Source bytes, excerpts, ranges, hashes and scores are unchanged. This acceptance does not include DoD, merge, archive, cleanup, global update or whole-M7 PASS.
 
 ## Governance Checks
 
@@ -285,9 +288,9 @@ checks:
   - "Normal CLI activated five exact grants; report/s01 protocol remain CLI-owned."
   - "Signed hosts and all production runtime/CLI sources unchanged."
   - "No install, release, integration, delegation, archive or cleanup."
-blocking_items: ["Human BA/QC review and separate human QC DoD pending."]
+blocking_items: ["Separate human QC DoD decision and trusted receipt pending."]
 owner: "qc"
-next_action: "Review the bounded packet; preserve signed authoring hosts."
+next_action: "Request the separate human QC DoD decision; preserve signed authoring hosts."
 ```
 
 ## Regression & Compatibility Summary
@@ -406,18 +409,18 @@ checks:
     result: PASS
     evidence: "Command evidence and scan summary"
   - criterion: "Explicit human BA/QC acceptance"
-    result: FAIL
-    evidence: "Human decision record PENDING; not inferred from authoring approval."
+    result: PASS
+    evidence: "Explicit chat accept of the requested packet at 4a3458c; source scopes/hashes/scores unchanged."
   - criterion: "Separate human QC DoD and trusted receipt"
     result: FAIL
-    evidence: "Not yet requested or signed."
+    evidence: "Separate DoD decision/receipt remains pending; this is the next human request."
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "Bounded technical pass completed; human review is a planned dependency."
-gaps: ["Human reading review", "Human DoD"]
+gaps: ["Separate human QC DoD and trusted receipt"]
 risk_level: MEDIUM
-next_action: "Obtain bounded human review before separate DoD."
+next_action: "Obtain separate human QC DoD and trusted sealing before normal close."
 ```
 
 ## Definition of Done
@@ -426,16 +429,16 @@ next_action: "Obtain bounded human review before separate DoD."
 work_item_slug: "correct-light-router-vietnamese-guidance"
 status: BLOCKED
 checks:
-  acceptance_criteria_evidenced: FAIL
+  acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
-  required_verification_completed: FAIL
+  required_verification_completed: PASS
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps: ["Human evidence for AC-LR-001/002/005", "Separate QC DoD and trusted receipt"]
+gaps: ["Separate human QC DoD decision and trusted receipt"]
 residual_risks: ["Static checks and missing automated scanners have disclosed limitations."]
-follow_up_items: ["BA/QC review", "Separate QC DoD", "Later integration/finish decision"]
-next_action: "Keep the child open; review exact packet before DoD."
+follow_up_items: ["Separate QC DoD", "Later integration/finish decision"]
+next_action: "All six technical DoD checks pass. Ask human QC to approve DoD, then finalize/seal the host and close through the normal CLI."
 ```
 
 ## Traceability
@@ -446,12 +449,12 @@ upstream:
   - "correct-light-router-vietnamese-guidance.s05.technical-approach.md"
   - "correct-light-router-vietnamese-guidance.s06.task-breakdown.md"
   - "correct-light-router-vietnamese-guidance.s07.implementation.md"
-next_step: "Human BA/QC reading review, then separate QC DoD"
+next_step: "Separate human QC DoD and trusted receipt"
 ```
 
 ## Handoff
 
-Source correction is implemented and technically verified. Protocol remains ACTIVE/s07 while this s08 host is a review draft; the router reports WAITING_APPROVAL for outstanding human review. No DoD is inferred from tests or authoring signatures. Protected parent register, M7 ledger, frozen portfolio gates, release 2.6.3, main, unique branches and root untracked paths remain outside this change.
+Source correction and bounded BA/QC review are accepted. All five ACs and all six technical DoD checks have evidence. Normal source CLI verify at 2026-10-10T06:24:25.503Z records VERIFIED/s08 (actor qc, technical transition only); the router remains WAITING_APPROVAL for separate human QC DoD. The s08 frontmatter stays draft and dod reviewer fields stay empty until that decision. Protected parent register, M7 ledger, frozen portfolio gates, release 2.6.3, main, unique branches and root untracked paths remain outside this change.
 
 ## Exact Reading Units
 
