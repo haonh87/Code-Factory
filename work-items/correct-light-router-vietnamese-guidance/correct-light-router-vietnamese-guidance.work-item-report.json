@@ -2,7 +2,7 @@
   "materialization_status": "READY",
   "protocol_status": "MATERIALIZED",
   "decision_owner": "agent",
-  "protocol_owner": "",
+  "protocol_owner": "maintainer",
   "raw_request_summary": "Restore the omitted Vietnamese Light guidance in steps 3 and 4 of workflow-governance-router/SKILL.vi.md to match the existing English router: applicable s04 and s06 hosts, no separate s05 note or receipt, independent gate approvals, Foundation escalation and applicable Contract condition. Add one bounded regression for this source omission. Preserve runtime behavior and the prior completed authority-guidance scope.",
   "request_source": "user",
   "candidate_count": 1,
@@ -69,22 +69,13 @@
   "work_item_slug": "correct-light-router-vietnamese-guidance",
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
-  "selected_profile": "full",
-  "sdd_mode": "none",
-  "sdd_preset": "full",
-  "sdd_light_profile": "preview",
-  "sdd_reasons": [],
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/correct-light-router-vietnamese-guidance/work-items/correct-light-router-vietnamese-guidance",
   "current_step": "s01",
+  "granted_write_paths": [],
   "change_strategy": "none",
   "change_id": "",
   "handoff_target": "human-review",
   "required_actions": [
-    {
-      "id": "se:a32c333b8380f8226333d2e09ba37a91552a6ca76e45d978aaca3998d72a73d8",
-      "kind": "workflow_followup",
-      "text": "wfc work-item approve --work-item correct-light-router-vietnamese-guidance --reviewed-by <role>"
-    },
     {
       "id": "se:34ea2b4e91fccc9a3abb2c33080a530ff5051f6775bc2b7a99895ca1f62e8634",
       "kind": "gate_approval",
@@ -128,17 +119,20 @@
     "SLUG_LOCKED",
     "DEDUP_CONFIRMED",
     "WORKFLOW_SCAFFOLDED",
-    "STEP_OPENED"
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-10-06T06:28:40Z",
+  "review_notes": [
+    "User explicitly accepted work item, Spec/DoR, Approach A and Task Plan at ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f; recorded 2026-10-06T06:28:40Z."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
   "bootstrap_reviewed_by": "",
   "bootstrap_reviewed_at": "",
-  "review_required": true,
-  "approval_status": "PENDING_REVIEW",
-  "reviewed_by": "",
-  "reviewed_at": "",
-  "review_notes": [],
   "protocol_events": [
     {
       "timestamp": "2026-10-05T14:04:18.068Z",
@@ -163,6 +157,14 @@
       "from_status": "READY_TO_MATERIALIZE",
       "to_status": "MATERIALIZED",
       "note": "Resumed proposal operation 007fa629-c77a-4d6e-8929-7c0754df3f98."
+    },
+    {
+      "timestamp": "2026-10-10T05:50:54.484Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "User explicitly accepted work item, Spec/DoR, Approach A and Task Plan at ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f; recorded 2026-10-06T06:28:40Z."
     }
   ],
   "resolved_state_history": [
@@ -272,7 +274,6 @@
       }
     }
   ],
-  "granted_write_paths": [],
   "materialization_recovery": {
     "schema_version": 1,
     "operation_id": "007fa629-c77a-4d6e-8929-7c0754df3f98",

@@ -190,7 +190,7 @@ notes_for_step_2: "Measure correctness and actionable EN/VI parity only within t
 ## Work Item Protocol
 ```yaml
 protocol_status: MATERIALIZED
-approval_status: PENDING_REVIEW
+approval_status: APPROVED
 review_required: true
 work_item_slug: "correct-light-router-vietnamese-guidance"
 work_item_type: BUG
@@ -206,21 +206,21 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: ""
-reviewed_by: ""
-reviewed_at: ""
+protocol_owner: "maintainer"
+reviewed_by: "maintainer"
+reviewed_at: "2026-10-06T06:28:40Z"
 handoff_target: "human-review"
-last_transition_action: "materialize"
-last_transition_at: "2026-10-05T14:33:59.986Z"
+last_transition_action: "approve"
+last_transition_at: "2026-10-10T05:50:54.484Z"
 required_actions:
-  - {"id":"se:a32c333b8380f8226333d2e09ba37a91552a6ca76e45d978aaca3998d72a73d8","kind":"workflow_followup","text":"wfc work-item approve --work-item correct-light-router-vietnamese-guidance --reviewed-by <role>"}
   - {"id":"se:34ea2b4e91fccc9a3abb2c33080a530ff5051f6775bc2b7a99895ca1f62e8634","kind":"gate_approval","text":"wfc gate approve --work-item correct-light-router-vietnamese-guidance --gate spec --reviewed-by <role>","gate":"spec"}
   - {"id":"se:8210afb101e844775cfe7d9d5a4dd0bb02ea599be6deae197aa535233205d7bb","kind":"gate_approval","text":"wfc gate approve --work-item correct-light-router-vietnamese-guidance --gate dor --reviewed-by <role>","gate":"dor"}
   - {"id":"se:901bf4814975184120b6f0b655760eb657964286718772583dc48a193f654bb0","kind":"gate_approval","text":"wfc gate approve --work-item correct-light-router-vietnamese-guidance --gate approach --reviewed-by <role>","gate":"approach"}
   - {"id":"se:68ad795442118bbabd3d5ef2a2bb1549a13d82b70d80830416b9fe36362a2abb","kind":"gate_approval","text":"wfc gate approve --work-item correct-light-router-vietnamese-guidance --gate task_plan --reviewed-by <role>","gate":"task_plan"}
   - {"id":"se:032f0e2e753911114d8ebc274bda836e0ac66aedc0aa62390897bf6934f63f8c","kind":"work_item_activation","text":"wfc work-item activate --work-item correct-light-router-vietnamese-guidance --step s07 --write-root <path>"}
 blockers: []
-review_notes: []
+review_notes:
+  - "User explicitly accepted work item, Spec/DoR, Approach A and Task Plan at ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f; recorded 2026-10-06T06:28:40Z."
 refs:
   - "work-items/correct-workflow-authority-guidance"
   - "work-items/release-workflow-bundle-v2-6-3"
@@ -233,6 +233,7 @@ audit_events:
   - "DEDUP_CONFIRMED"
   - "WORKFLOW_SCAFFOLDED"
   - "STEP_OPENED"
+  - "WORK_ITEM_APPROVED"
 ```
 
 ## Admission Evidence
