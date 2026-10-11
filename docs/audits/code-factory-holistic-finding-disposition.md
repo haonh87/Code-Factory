@@ -751,3 +751,56 @@ Integration preflight: fresh fetch of all refs/tags confirms main `f27093d06ecab
 Finish disposition for PR #15: verify PASS, DoD PASS, child findings closed and no open child exceptions; six trusted signatures/current host digests and all ten PR CI jobs rechecked. With the direct human instruction to proceed, MERGE_ALLOWED applied to exact head `19de466`. PR left draft state and merged at `2026-10-11T05:56:25Z` as `43068b7703d3ef45da4cbad1a53b91b631dd715a`, without branch deletion. Both merge parents are the reviewed base/head and the merge tree equals the reviewed child tree (`ba8ec86868aee8cdb58b9f0d93cf361057069066`). Local main fast-forwarded only after checking no tracked modifications or collisions with all 19 untracked files. [Post-merge main CI run 38116418243](https://github.com/haonh87/Code-Factory/actions/runs/38116418243) completed successfully. Archive/cleanup are not performed in this integration action; worktrees and signed evidence remain preserved. The signed s08 pre-signature assessment stays immutable; current lifecycle evidence is owned here.
 
 Parent M7 remains FAIL (147 units, mean 3.5361, 41 critical, minimum 2, 97 below 4). No whole-ledger rescore or CF-MB2 rebinding occurred; M10/M11 remain unopened. Protected master register, frozen parent hosts, portfolio JSON and M7 ledger remain untouched. Main advanced only by the reviewed merge; prior DONE child, unique-commit backup/eval branches, all six worktrees and root's 19 untracked files remain preserved. CHANGE-005/diagram-adapter matched pair, community README and scratch notes remain retained with their existing dispositions. Release/global bundle 2.6.3 is not reopened.
+
+
+### Completed guidance archive and worktree cleanup — 2026-10-11
+
+This checkpoint supersedes earlier archive-pending statements for the two completed guidance children only. The user explicitly requested archive and cleanup of completed worktrees. Both children had human DoD, all six trusted signatures and matching gate-host digests, empty blockers, and delivery integrated through PRs #14 and #15. The normal source CLI transitioned each DONE -> ARCHIVED and consumed its remaining archive follow-up. Authority receipts contain absolute artifact references, so that transition ran in its original owning worktree; no receipt or signed host was rewritten.
+
+Archive records and generated s01 projections are preserved at `3f9a79e6e9302deaecbaa7ab144d42dc66c3477f` on local and origin `chore/archive-completed-guidance`, proposed in [PR #16](https://github.com/haonh87/Code-Factory/pull/16). Integration into main remains pending human PR review; main still records DONE. Only four CLI-owned metadata files differ from main. Naming, governance, execution, planning, protocol, SDD and change validators passed; the change validator retains existing CHANGE-002 legacy warnings. UTF-8 and diff checks passed and every other child artifact is byte-identical. Unit tests were not rerun for this metadata-only transition.
+
+| Worktree/path | Owner and disposition |
+| --- | --- |
+| `.claude/worktrees/correct-light-router-vietnamese-guidance` | Child ARCHIVED on archive branch; worktree removed normally after remote commit preservation. Original delivery branch retained. |
+| `.claude/worktrees/correct-workflow-authority-guidance` | Child ARCHIVED on archive branch; worktree removed normally. Original branch retains archive commit `12294e3`; equivalent metadata is preserved remotely in PR #16. |
+| Ignored runtime in each removed worktree | 462 files per worktree, all under `packages/workflow-bundle/runtime/`, attributed to the generated bundle runtime. Inventory/hashes were unchanged before removal; no other untracked files existed. |
+| `.claude/worktrees/cf-023-receipt-binding` | KEEP: `protocol-receipt-binding-check` remains PROPOSED/dedup-blocked without DoD. Its ignored runtime is retained. |
+| `.claude/worktrees/code-factory-holistic-audit-remediation` | KEEP: parent ACTIVE/s07, M7 FAIL, unmerged progress still owned here. |
+| `.claude/worktrees/publish-planning-work` | KEEP: merged and clean, but no demonstrated owning s08/DoD closeout for this planning workspace. |
+| Root `main` | KEEP at `43068b7`, including all 19 untracked files: CHANGE-005 (7), add-diagram-design-adapter (9), community-pack-readme-en.md, Untitled.md, New Core FnB Technical.md. Existing CF-004 disposition and unattributed scratch ownership are unchanged. |
+| `backup/local-main-2026-09-16`, `evals/behaviour-axis` | KEEP exact refs; each has work outside main. No branches were deleted. |
+
+```yaml
+finish_target: completed guidance child worktrees
+workspace_kind: WORKTREE
+verify_inputs:
+  - human DoD and six trusted receipts per child
+  - delivery PRs 14 and 15 merged with successful CI
+  - remote preservation of archive metadata at 3f9a79e
+finish_gate_checks:
+  verify_complete: PASS
+  dod_complete: PASS
+  findings_closed: PASS
+  exceptions_resolved: PASS
+allowed_actions:
+  - archive the two completed child lifecycles
+  - remove their clean worktrees after commit preservation
+blocked_actions:
+  - remove any other worktree without its owning DoD
+  - delete protected or unmerged branches
+  - merge archive PR without human review
+cleanup_sequence:
+  - normal CLI archive in owning receipt context
+  - commit and push both archive records
+  - remove authority worktree normally
+  - remove router VI worktree normally
+merge_conditions:
+  - PR 16 checks pass and human review approves
+residual_risks:
+  - main retains DONE until archive PR integration
+  - parent M7 remains FAIL
+final_recommendation: CLEANUP_ALLOWED
+notes_for_closeout: Both completed worktrees removed; all other worktrees and branches retained.
+```
+
+No git clean, forced removal, signed artifact edit, master-register edit, score change, release action or global installation ran. Parent M10/M11 remain unopened. Detailed before/after inventories and local validator logs are retained at `/private/tmp/cf-archive-cleanup-38k8i8ka/` as scratch evidence; Git owns the durable archive records.
