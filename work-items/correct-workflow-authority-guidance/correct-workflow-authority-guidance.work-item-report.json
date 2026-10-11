@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "DONE",
+  "protocol_status": "ARCHIVED",
   "decision_owner": "agent",
   "protocol_owner": "maintainer",
   "raw_request_summary": "Correct contradictory EN/VI workflow guidance for read-only analysis, all applicable prerequisites before s07, activation at s07, and advisory versus human-approved DoD. Restore existing authority in requirement-analysis, definition-of-done-gate, codex-workflow-chain SKILL and work-item-protocol references, with bounded regression evidence; exclude runtime gate changes, publication and cleanup.",
@@ -87,14 +87,8 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "archive-lifecycle",
-  "required_actions": [
-    {
-      "id": "se:db8c607582d4bac53df4a9fa810e06d8df950cc17ed8a7fcaa6deda2e04ac7e4",
-      "kind": "workflow_followup",
-      "text": "Archive the work item when all downstream lifecycle actions are complete."
-    }
-  ],
+  "handoff_target": "none",
+  "required_actions": [],
   "blockers": [],
   "refs": [
     "work-items/sample-workflow-item",
@@ -113,7 +107,8 @@
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
     "VERIFICATION_CONFIRMED",
-    "DONE_CONFIRMED"
+    "DONE_CONFIRMED",
+    "ARCHIVE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -191,6 +186,14 @@
       "from_status": "VERIFIED",
       "to_status": "DONE",
       "note": "Human DoD accepted and trusted QC receipt signature/current s08 digest verified; all six criteria evidenced and declared scope committed. Child technical delivery complete; parent integration, M7/CF-MB2 and release decisions remain separate."
+    },
+    {
+      "timestamp": "2026-10-11T06:16:05.847Z",
+      "action": "archive",
+      "actor": "coordinator",
+      "from_status": "DONE",
+      "to_status": "ARCHIVED",
+      "note": "User requested archive and completed-worktree cleanup on 2026-10-11. DONE and trusted receipts verified; PR #14 merged as f27093d with successful CI. Archive metadata will be preserved on chore/archive-completed-guidance before cleanup."
     }
   ],
   "resolved_state_history": [

@@ -267,7 +267,7 @@ limits:
 
 ## Work Item Protocol
 ```yaml
-protocol_status: DONE
+protocol_status: ARCHIVED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "correct-workflow-authority-guidance"
@@ -299,11 +299,10 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-09-30T04:08:57.705Z"
-handoff_target: "archive-lifecycle"
-last_transition_action: "close"
-last_transition_at: "2026-10-05T03:03:52.566Z"
-required_actions:
-  - {"id":"se:db8c607582d4bac53df4a9fa810e06d8df950cc17ed8a7fcaa6deda2e04ac7e4","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
+handoff_target: "none"
+last_transition_action: "archive"
+last_transition_at: "2026-10-11T06:16:05.847Z"
+required_actions: []
 blockers: []
 review_notes:
   - "Explicit user accept of review packet c495f141b2d5cfb4817ad9d134b80418c2f0238b; work-item approval only."
@@ -324,6 +323,7 @@ audit_events:
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
   - "DONE_CONFIRMED"
+  - "ARCHIVE_CONFIRMED"
 ```
 
 ## Traceability
