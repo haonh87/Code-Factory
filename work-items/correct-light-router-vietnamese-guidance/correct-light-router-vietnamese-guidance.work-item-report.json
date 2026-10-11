@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "DONE",
+  "protocol_status": "ARCHIVED",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Restore the omitted Vietnamese Light guidance in steps 3 and 4 of workflow-governance-router/SKILL.vi.md to match the existing English router: applicable s04 and s06 hosts, no separate s05 note or receipt, independent gate approvals, Foundation escalation and applicable Contract condition. Add one bounded regression for this source omission. Preserve runtime behavior and the prior completed authority-guidance scope.",
@@ -80,14 +80,8 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "archive-lifecycle",
-  "required_actions": [
-    {
-      "id": "se:c42dc93c789350e5e458a0a2655d40ce90091d2c21b87ff920487f9b147d02b3",
-      "kind": "workflow_followup",
-      "text": "Archive the work item when all downstream lifecycle actions are complete."
-    }
-  ],
+  "handoff_target": "none",
+  "required_actions": [],
   "blockers": [],
   "refs": [
     "work-items/correct-workflow-authority-guidance",
@@ -106,7 +100,8 @@
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
     "VERIFICATION_CONFIRMED",
-    "DONE_CONFIRMED"
+    "DONE_CONFIRMED",
+    "ARCHIVE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -184,6 +179,14 @@
       "from_status": "VERIFIED",
       "to_status": "DONE",
       "note": "Explicit human DoD accepted and trusted receipt recorded 2026-10-10T14:30:03.617Z; all six signatures and current gate host hashes verified. Close this child only; parent M7 and integration/cleanup remain separate."
+    },
+    {
+      "timestamp": "2026-10-11T06:15:54.515Z",
+      "action": "archive",
+      "actor": "coordinator",
+      "from_status": "DONE",
+      "to_status": "ARCHIVED",
+      "note": "User requested archive and completed-worktree cleanup on 2026-10-11. DONE and all six trusted approval receipts verified; PR #15 merged as 43068b7 with successful CI. Archive metadata is preserved on chore/archive-completed-guidance before removing the clean delivery worktree."
     }
   ],
   "resolved_state_history": [
