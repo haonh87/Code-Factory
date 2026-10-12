@@ -189,7 +189,7 @@ notes_for_step_2: "Measure correctness and actionable EN/VI parity only within t
 
 ## Work Item Protocol
 ```yaml
-protocol_status: DONE
+protocol_status: ARCHIVED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "correct-light-router-vietnamese-guidance"
@@ -214,11 +214,10 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-10-06T06:28:40Z"
-handoff_target: "archive-lifecycle"
-last_transition_action: "close"
-last_transition_at: "2026-10-10T14:30:52.378Z"
-required_actions:
-  - {"id":"se:c42dc93c789350e5e458a0a2655d40ce90091d2c21b87ff920487f9b147d02b3","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
+handoff_target: "none"
+last_transition_action: "archive"
+last_transition_at: "2026-10-11T06:15:54.515Z"
+required_actions: []
 blockers: []
 review_notes:
   - "User explicitly accepted work item, Spec/DoR, Approach A and Task Plan at ef8bf47e3c4b1c1a2450c7f24ce628dacc1cac3f; recorded 2026-10-06T06:28:40Z."
@@ -239,6 +238,7 @@ audit_events:
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
   - "DONE_CONFIRMED"
+  - "ARCHIVE_CONFIRMED"
 ```
 
 ## Admission Evidence
