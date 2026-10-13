@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -25,7 +25,7 @@ spec_refs:
   brd: ""
   srs: ""
   card: "product-specs/cards/contain-legacy-codex-installer-paths.md"
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -63,12 +63,12 @@ role_signoffs:
   dod:
     - "qc"
 gate_reviews:
-  spec_reviewed_by: []
-  spec_reviewed_at: ""
+  spec_reviewed_by: [ba]
+  spec_reviewed_at: "2026-10-13T13:22:58Z"
   contract_reviewed_by: []
   contract_reviewed_at: ""
-  dor_reviewed_by: []
-  dor_reviewed_at: ""
+  dor_reviewed_by: [ba, qc]
+  dor_reviewed_at: "2026-10-13T13:22:58Z"
   approach_reviewed_by: []
   approach_reviewed_at: ""
   foundation_reviewed_by: []
@@ -126,12 +126,15 @@ timebox: "One authoring pass; unresolved external verification input remains exp
 ## Requirement Baseline
 
 ```yaml
-status: "PARTIAL"
-approved_spec_refs: []
-draft_spec_ref: "product-specs/cards/contain-legacy-codex-installer-paths.md"
-draft_spec_sha256: "65c5f2760d2410206cb88a0a9d9c17c811ca738d11906801f906e550a1ddd82f"
+status: "APPROVED"
+approved_spec_refs:
+  - "product-specs/cards/contain-legacy-codex-installer-paths.md"
+approved_spec_digests:
+  - "product-specs/cards/contain-legacy-codex-installer-paths.md: sha256:978229c0a52ca6f6e100b9455843dc24bdf3d9125d6e0de550a38b07e015307d"
+approved_spec_ref: "product-specs/cards/contain-legacy-codex-installer-paths.md"
+approved_spec_sha256: "978229c0a52ca6f6e100b9455843dc24bdf3d9125d6e0de550a38b07e015307d"
 decision_notes:
-  - "Parent scope acceptance is retained; the detailed child name/encoding/topology rules are new draft content for review."
+  - "Parent scope acceptance is retained; the detailed child name/encoding/topology rules are now explicitly human-accepted."
   - "Card placement provides one spec owner without changing the CLI-selected SDD mode."
   - "Spec v0.2 incorporates the user-selected Windows CI and explicit three-job evidence; no human Spec receipt has been sealed."
 ```
@@ -169,12 +172,24 @@ rollback_constraints:
 ```yaml
 acceptance_criteria_ref: "product-specs/cards/contain-legacy-codex-installer-paths.md#Acceptance Criteria"
 acceptance_criteria:
-  - "AC-PI-001"
-  - "AC-PI-002"
-  - "AC-PI-003"
-  - "AC-PI-004"
-  - "AC-PI-005"
-  - "AC-PI-006"
+  - id: "AC-PI-001"
+    criterion: "Apply AC-PI-001 from product-specs/cards/contain-legacy-codex-installer-paths.md#Acceptance Criteria; that card owns the normative text."
+    verification: "Execute the corresponding spec fixture cases under the s05 CI Verification Contract, preserve source-bound results and map evidence to AC-PI-001 in s08."
+  - id: "AC-PI-002"
+    criterion: "Apply AC-PI-002 from product-specs/cards/contain-legacy-codex-installer-paths.md#Acceptance Criteria; that card owns the normative text."
+    verification: "Execute the corresponding spec fixture cases under the s05 CI Verification Contract, preserve source-bound results and map evidence to AC-PI-002 in s08."
+  - id: "AC-PI-003"
+    criterion: "Apply AC-PI-003 from product-specs/cards/contain-legacy-codex-installer-paths.md#Acceptance Criteria; that card owns the normative text."
+    verification: "Execute the corresponding spec fixture cases under the s05 CI Verification Contract, preserve source-bound results and map evidence to AC-PI-003 in s08."
+  - id: "AC-PI-004"
+    criterion: "Apply AC-PI-004 from product-specs/cards/contain-legacy-codex-installer-paths.md#Acceptance Criteria; that card owns the normative text."
+    verification: "Execute the corresponding spec fixture cases under the s05 CI Verification Contract, preserve source-bound results and map evidence to AC-PI-004 in s08."
+  - id: "AC-PI-005"
+    criterion: "Apply AC-PI-005 from product-specs/cards/contain-legacy-codex-installer-paths.md#Acceptance Criteria; that card owns the normative text."
+    verification: "Execute the corresponding spec fixture cases under the s05 CI Verification Contract, preserve source-bound results and map evidence to AC-PI-005 in s08."
+  - id: "AC-PI-006"
+    criterion: "Apply AC-PI-006 from product-specs/cards/contain-legacy-codex-installer-paths.md#Acceptance Criteria; that card owns the normative text."
+    verification: "Execute the corresponding spec fixture cases under the s05 CI Verification Contract, preserve source-bound results and map evidence to AC-PI-006 in s08."
 edge_cases_ref: "product-specs/cards/contain-legacy-codex-installer-paths.md#Fixture Matrix"
 out_of_scope_ref: "product-specs/cards/contain-legacy-codex-installer-paths.md#Scope"
 done_when:
@@ -231,4 +246,8 @@ next_step: "s05 after DoR"
 
 ## Handoff
 
-Review packet only. Lifecycle remains MATERIALIZED/s01 with no implementation grants. Environment selection and the proposed isolation plan are now concrete; request the work-item and authoring gates. No gate is self-approved.
+The user explicitly accepted packet `89131d9`. Content approval is recorded; trusted receipt sealing and CLI activation remain pending. The CLI lifecycle remains MATERIALIZED/s01 with no implementation grants.
+
+## Human Approval Record
+
+The repository owner replied **accept** to the explicit request covering Work-item, Spec/DoR, Approach A and Task Plan at checkpoint `89131d9`. Recorded at `2026-10-13T13:22:58Z` (recording time, not a claimed chat timestamp). This records the human decision, not an agent approval or a trusted signature. Scope, requirements, ACs, approach and task order are unchanged. Normal CLI sealing and verification must precede activation.

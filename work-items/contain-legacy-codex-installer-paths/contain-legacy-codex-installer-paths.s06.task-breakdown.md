@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -25,7 +25,7 @@ spec_refs:
   brd: ""
   srs: ""
   card: "product-specs/cards/contain-legacy-codex-installer-paths.md"
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -73,8 +73,8 @@ gate_reviews:
   approach_reviewed_at: ""
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  task_plan_reviewed_by: [developer]
+  task_plan_reviewed_at: "2026-10-13T13:22:58Z"
   uat_reviewed_by: []
   uat_reviewed_at: ""
   release_reviewed_by: []
@@ -336,7 +336,7 @@ next_step: "s07 only after all receipts and activation"
 
 ## Handoff
 
-Review packet only. Lifecycle remains MATERIALIZED/s01 with no implementation grants. Environment selection and the proposed isolation plan are now concrete; request the work-item and authoring gates. No gate is self-approved.
+The user explicitly accepted packet `89131d9`. Content approval is recorded; trusted receipt sealing and CLI activation remain pending. The CLI lifecycle remains MATERIALIZED/s01 with no implementation grants.
 
 ## Authoring Verification
 
@@ -353,3 +353,9 @@ The user selected option 1, Windows GitHub Actions. The updated packet proposes 
 The earlier environment/DoR BLOCKED observations and validation correction above are historical. Current discovery inputs are resolved, the AI readiness recommendation is READY, and all human gates remain pending. Request one human interaction covering work-item approval, Spec, DoR, Approach A and Task Plan; each gate still requires its own receipt. No live CI or runtime result is claimed.
 
 Current CI packet verification: naming, governance, execution and planning PASS for eight notes; protocol PASS for 23 managed items (21 legacy skips); full-root SDD PASS for 57 existing notes, without claiming SDD validation for this non-SDD child. All nine Markdown files and 71 YAML blocks parse, UTF-8 and whitespace checks pass, and the current spec digest matches s04. Baseline comparison confirms only the seven intended authoring files changed; root, parent audit, protocol report and generated s07/s08 remain preserved. Review order was scope/spec compliance, then artifact quality. Platform behavior remains untested pending implementation approval.
+
+## Human Approval Record
+
+The repository owner replied **accept** to the explicit request covering Work-item, Spec/DoR, Approach A and Task Plan at checkpoint `89131d9`. Recorded at `2026-10-13T13:22:58Z` (recording time, not a claimed chat timestamp). This records the human decision, not an agent approval or a trusted signature. Scope, requirements, ACs, approach and task order are unchanged. Normal CLI sealing and verification must precede activation.
+
+The reviewed authority assignments are Maintainer for work-item approval, BA for Spec, BA/QC for DoR, and Developer for Approach and Task Plan. One human ready-bundle interaction produces separate authoring receipts. No DoD, Business Acceptance, Release, merge or cleanup approval is included. Freeze s04/s05/s06 after this finalization; further handoff progress belongs to the parent s07.

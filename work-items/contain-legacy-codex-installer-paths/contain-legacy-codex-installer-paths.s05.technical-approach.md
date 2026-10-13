@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -25,7 +25,7 @@ spec_refs:
   brd: ""
   srs: ""
   card: "product-specs/cards/contain-legacy-codex-installer-paths.md"
-spec_status: draft
+spec_status: approved
 planning_track: full
 execution_mode: agentic
 execution_roles:
@@ -69,8 +69,8 @@ gate_reviews:
   contract_reviewed_at: ""
   dor_reviewed_by: []
   dor_reviewed_at: ""
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
+  approach_reviewed_by: [developer]
+  approach_reviewed_at: "2026-10-13T13:22:58Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -128,8 +128,8 @@ options:
   - "A: native preflight in each direct script; preserves direct entry points and existing packaging."
   - "B: retire direct routes; expands into wrapper and P-PUBLIC documentation ownership."
   - "C: delegate to central wfc; adds a runtime/dependency contract to standalone scripts."
-  - "D: only validate stale deletion immediately before rm/Remove-Item; leaves earlier writes and replacement hazards."
 recommended_option: "A"
+rejected_shortcut: "D: only validate stale deletion immediately before rm/Remove-Item; leaves earlier writes and replacement hazards."
 trade_offs:
   - "Some validation is duplicated across languages; common behavioral fixtures must keep them aligned."
   - "Reject unsafe aliases instead of inventing safe traversal through them."
@@ -274,7 +274,7 @@ next_step: "s06 after Approach"
 
 ## Handoff
 
-Review packet only. Lifecycle remains MATERIALIZED/s01 with no implementation grants. Environment selection and the proposed isolation plan are now concrete; request the work-item and authoring gates. No gate is self-approved.
+The user explicitly accepted packet `89131d9`. Content approval is recorded; trusted receipt sealing and CLI activation remain pending. The CLI lifecycle remains MATERIALIZED/s01 with no implementation grants.
 
 ## CI Verification Contract
 
@@ -319,3 +319,7 @@ evidence_contract:
 ## CI Source References
 
 Checked on 2026-10-13: [GitHub-hosted runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners) lists the selected labels and fresh-VM model. [Workflow shell syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idstepsshell) distinguishes `powershell` (Desktop) from the default `pwsh`. These support the proposed environment; they do not prove this repository has executed a job or that a future image passes its runtime assertions.
+
+## Human Approval Record
+
+The repository owner replied **accept** to the explicit request covering Work-item, Spec/DoR, Approach A and Task Plan at checkpoint `89131d9`. Recorded at `2026-10-13T13:22:58Z` (recording time, not a claimed chat timestamp). This records the human decision, not an agent approval or a trusted signature. Scope, requirements, ACs, approach and task order are unchanged. Normal CLI sealing and verification must precede activation.

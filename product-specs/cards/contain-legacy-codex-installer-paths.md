@@ -2,7 +2,7 @@
 artifact_id: "contain-legacy-codex-installer-paths.card"
 artifact_family: "product-spec"
 spec_type: "SPEC_CARD"
-spec_status: "draft"
+spec_status: "approved"
 spec_version: "0.2"
 owner: "ba"
 reviewers:
@@ -17,7 +17,7 @@ linked_crs: []
 
 # Spec Card — Legacy Codex Installer Containment
 
-DRAFT: one requirements owner for this full/strict-governance work item. The CLI retains `sdd_mode=none`; this compact document does not select Light or change the protocol. Scope direction is accepted; the detailed spec and all child authoring gates await review.
+APPROVED CONTENT: one requirements owner for this full/strict-governance work item. The CLI retains `sdd_mode=none`; this compact document does not select Light or change the protocol. The user accepted this spec and the work-item/DoR/Approach A/Task Plan packet at `89131d9`. Decision recorded at 2026-10-13T13:22:58Z; trusted receipts and activation remain pending.
 
 ## Scope
 
