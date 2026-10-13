@@ -34,6 +34,7 @@ execution_roles:
   - "ta"
   - "developer"
   - "qc"
+  - "devops"
 review_mode: self
 verification_owner: "qc"
 approval_gates:
@@ -108,7 +109,7 @@ step: "s02"
 step_goal: "Make the preservation outcome measurable."
 input_summary:
   - "Accepted parent containment scope and three verified Maintainer admission dispositions."
-  - "Existing scripts at main 5a81126; spec card and named environment gaps."
+  - "Existing scripts at main 5a81126; user-selected Windows CI and the proposed source-bound fixture contract."
 output_summary:
   - "Concrete draft artifact with owner, evidence and remaining gates."
 done_when:
@@ -128,7 +129,7 @@ business_goal: "Users can update managed skills without losing unrelated data."
 user_value: "Invalid input is rejected before installation changes the target."
 success_outcome:
   - "Zero changed outside/unmanaged sentinel bytes for all rejection cases."
-  - "Valid supported install and stale cleanup cases pass on both platform families."
+  - "Valid supported install/stale cleanup and negative snapshots pass in all three declared CI jobs on one source commit."
 non_goals:
   - "product-specs/cards/contain-legacy-codex-installer-paths.md#Scope"
 priority_reason: "P-INSTALL is the parent P0 corrective intake because cleanup can delete local data."
@@ -137,7 +138,7 @@ risks_business:
 metrics_candidate:
   - "100% enumerated rejection cases preserve full destination snapshots."
   - "100% required positive cases pass on supported engines; zero hidden platform skips."
-notes_for_next_step: "Resolve environment/isolation dependencies without widening into release or central installer redesign."
+notes_for_next_step: "Review the concrete CI/fixture contract without adding release or central installer redesign."
 ```
 
 ## Traceability
@@ -149,4 +150,4 @@ next_step: "s03"
 
 ## Handoff
 
-Draft authoring only. The work item remains MATERIALIZED/s01 with no implementation grants. Close the named readiness gaps and request the applicable human review; no gate is self-approved.
+Review packet only. Lifecycle remains MATERIALIZED/s01 with no implementation grants. Environment selection and the proposed isolation plan are now concrete; request the work-item and authoring gates. No gate is self-approved.

@@ -34,6 +34,7 @@ execution_roles:
   - "ta"
   - "developer"
   - "qc"
+  - "devops"
 review_mode: self
 verification_owner: "qc"
 approval_gates:
@@ -102,7 +103,7 @@ tags:
 # Step 4 — Acceptance + DoR
 
 > [!summary]
-> Six ACs are drafted; DoR remains BLOCKED pending a concrete verification environment and safe isolation plan.
+> Six ACs and the CI/fixture contract are reviewable. AI DoR recommendation is READY; human Spec/DoR remain pending.
 
 ## Step Contract
 
@@ -111,7 +112,7 @@ step: "s04"
 step_goal: "Bind measurable acceptance to source baseline and state readiness honestly."
 input_summary:
   - "Accepted parent containment scope and three verified Maintainer admission dispositions."
-  - "Existing scripts at main 5a81126; spec card and named environment gaps."
+  - "Existing scripts at main 5a81126; user-selected Windows CI and the proposed source-bound fixture contract."
 output_summary:
   - "Concrete draft artifact with owner, evidence and remaining gates."
 done_when:
@@ -128,10 +129,11 @@ timebox: "One authoring pass; unresolved external verification input remains exp
 status: "PARTIAL"
 approved_spec_refs: []
 draft_spec_ref: "product-specs/cards/contain-legacy-codex-installer-paths.md"
-draft_spec_sha256: "d288bbcf5ff70d353167c2afccf6f7a2570c2176d0da7739c8d56fa94531f54d"
+draft_spec_sha256: "65c5f2760d2410206cb88a0a9d9c17c811ca738d11906801f906e550a1ddd82f"
 decision_notes:
   - "Parent scope acceptance is retained; the detailed child name/encoding/topology rules are new draft content for review."
   - "Card placement provides one spec owner without changing the CLI-selected SDD mode."
+  - "Spec v0.2 incorporates the user-selected Windows CI and explicit three-job evidence; no human Spec receipt has been sealed."
 ```
 
 ## Contract Baseline
@@ -191,36 +193,33 @@ checklist_applied:
 checks:
   - check: "Bounded ownership, human reviewer roles, rollback and compatibility risks recorded"
     status: "PASS"
-  - check: "Disposable platform verification environment and safe fixture invocation locked"
-    status: "FAIL"
-blocking_items:
-  - "OQ-PI-ENV"
-  - "OQ-PI-ISOLATION"
+  - check: "Disposable CI matrix and safe fixture invocation specified in s05; future platform preflight must pass before RED"
+    status: "PASS"
+blocking_items: []
 owner: "ba/qc"
-next_action: "Resolve input gaps before requesting DoR approval."
+next_action: "Request human Spec/DoR on this exact spec digest and CI/fixture contract."
 ```
 
 ## Definition of Ready
 
 ```yaml
 work_item_slug: "contain-legacy-codex-installer-paths"
-status: "BLOCKED"
+status: "READY"
 checks:
   restated_request_clear: "PASS"
   business_goal_clear: "PASS"
   scope_defined: "PASS"
-  open_questions_non_blocking: "FAIL"
+  open_questions_non_blocking: "PASS"
   acceptance_criteria_testable: "PASS"
-  dependencies_known: "FAIL"
+  dependencies_known: "PASS"
   verification_direction_present: "PASS"
-blocking_gaps:
-  - "OQ-PI-ENV"
-  - "OQ-PI-ISOLATION"
+blocking_gaps: []
 accepted_assumptions:
   - "Parent-approved single-writer threat model."
 residual_risks:
   - "Unusual historical/custom names or symlinked installations may now fail closed."
-next_action: "Resolve verification input; review child work-item and Spec/DoR before locking design."
+  - "Hosted image/engine/link capability is asserted in T1; mismatch stops execution and cannot be called a behavioral RED."
+next_action: "Human BA/QC review of Spec/DoR; no approval implied by the AI READY recommendation."
 ```
 
 ## Traceability
@@ -232,4 +231,4 @@ next_step: "s05 after DoR"
 
 ## Handoff
 
-Draft authoring only. The work item remains MATERIALIZED/s01 with no implementation grants. Close the named readiness gaps and request the applicable human review; no gate is self-approved.
+Review packet only. Lifecycle remains MATERIALIZED/s01 with no implementation grants. Environment selection and the proposed isolation plan are now concrete; request the work-item and authoring gates. No gate is self-approved.

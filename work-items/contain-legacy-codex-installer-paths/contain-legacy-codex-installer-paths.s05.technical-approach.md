@@ -34,6 +34,7 @@ execution_roles:
   - "ta"
   - "developer"
   - "qc"
+  - "devops"
 review_mode: self
 verification_owner: "qc"
 approval_gates:
@@ -100,7 +101,7 @@ tags:
 # Step 5 — Technical Approach
 
 > [!summary]
-> Draft only: validate a complete immutable operation plan before performing any mutation. Environment/isolation remain upstream blockers.
+> Reviewable approach: complete native preflight, plus an isolated source-bound hosted integration matrix. No implementation gate is opened.
 
 ## Step Contract
 
@@ -109,7 +110,7 @@ step: "s05"
 step_goal: "Describe the minimum local containment approach without claiming readiness."
 input_summary:
   - "Accepted parent containment scope and three verified Maintainer admission dispositions."
-  - "Existing scripts at main 5a81126; spec card and named environment gaps."
+  - "Existing scripts at main 5a81126; user-selected Windows CI and the proposed source-bound fixture contract."
 output_summary:
   - "Concrete draft artifact with owner, evidence and remaining gates."
 done_when:
@@ -132,7 +133,7 @@ recommended_option: "A"
 trade_offs:
   - "Some validation is duplicated across languages; common behavioral fixtures must keep them aligned."
   - "Reject unsafe aliases instead of inventing safe traversal through them."
-  - "Upstream environment gaps prevent locking the actual fixture invocation today."
+  - "The standalone integration file is invoked only by its dedicated workflow; the normal unit runner remains read-only with respect to this destructive fixture."
 ```
 
 ## Foundation Decision
@@ -154,7 +155,7 @@ business_rule_trace:
   - "REQ-PI-001..004"
   - "AC-PI-001..006"
 recommended_design: "A: parse, validate, inspect and freeze a complete read-only operation plan, then execute only validated literal targets."
-recommendation_reason: "Fits the accepted three-path scope without a new runtime abstraction or install option."
+recommendation_reason: "Fits the proposed four-path scope without a new runtime abstraction or install option."
 component_changes:
   - "Bash: move directory creation and policy copy after manifest/source/topology preflight."
   - "PowerShell: inspect raw entries before Sort-Object -Unique; defer New-Item/Copy-Item; use literal operations after validation."
@@ -188,11 +189,11 @@ rollback_impact:
 observability_hooks:
   - "Nonzero exit and stable input/category context before mutation; successful installer output remains usable."
 constraints_applied:
-  - "Three source/test paths only; platform-native scripts; no shared helper module or added dependency without scope review."
+  - "Four delivery paths: two installer scripts, one standalone integration runner, one dedicated workflow; no central runtime or installer destination option."
 validation_plan:
-  - "Spec fixture matrix on real isolated entry points; bind environment, source SHA and before/after state."
+  - "Execute the spec fixture matrix through the exact CI Verification Contract below; require all final platform jobs on one tested source SHA."
 specialized_followups: []
-notes_for_next_step: "Fill OQ-PI-ENV/ISOLATION before presenting an executable final plan."
+notes_for_next_step: "s06 task ordering owns RED before production repair and final source/evidence reconciliation."
 ```
 
 ## Architecture Details
@@ -203,7 +204,52 @@ domain_boundaries:
 integration_points:
   - "Current/legacy local manifests and canonical source skills."
 data_or_runtime_notes:
-  - "No database or externally hosted service. No container or CI provisioning is authorized by this design draft."
+  - "No database or deployment. New isolated CI verification workflow is the user-selected environment; no container provisioning is needed."
+ci_cd_release:
+  pipeline_scope: "Pre-merge verification only"
+  source_strategy:
+    branch_model: "Existing isolated fix branch; separate PR integration after child DoD"
+    triggers:
+      - "push on fix/legacy-codex-installer-containment (supports pre-merge RED without default-branch workflow registration)"
+      - "pull_request for the four delivery paths"
+  build_and_verify:
+    stages:
+      - "Checkout exact event SHA with persisted credentials disabled"
+      - "Setup Node 22 and preflight exact native engine/runner"
+      - "Run fixture safety checks then integration matrix"
+      - "Upload scoped evidence even on failure"
+    cache_strategy:
+      - "No caches for profiles or fixtures"
+    required_checks:
+      - "windows-powershell51"
+      - "linux-bash"
+      - "macos-bash"
+  artifact_flow:
+    registry: "No registry; scoped GitHub workflow evidence artifacts only"
+    artifact_types:
+      - "JSON summaries and case logs"
+    tagging_strategy:
+      - "No release tag; names bind tested SHA/run ID/attempt/platform"
+    provenance_controls:
+      - "Record source/workflow/script hashes and action run URLs; require same final commit across all jobs"
+  promotion_flow: []
+  approval_controls:
+    - "Work-item/Spec/DoR/Approach/Task Plan before test/workflow implementation"
+    - "contents:read only; no secrets, deployment environment or pull_request_target"
+    - "No branch-protection edits; QC explicitly checks all three jobs at final verify"
+    - "Pin new action references to reviewed immutable upstream SHAs during T1; record versions and avoid inheriting new versions without review"
+  release_controls:
+    pre_release:
+      - "Not applicable: no packaging/publication/deployment"
+    post_release: []
+  rollback_controls:
+    - "Revert the reviewed source/workflow delta; do not run an unsafe legacy installer on a real profile"
+  pipeline_risks:
+    - "Runner images drift; assert actual versions/capabilities and retain provenance"
+    - "Pre-existing managed home causes an intentional preflight failure"
+    - "Local or self-hosted execution is refused"
+  pipeline_recommendation: "READY_WITH_GUARDS"
+  notes_for_implementation_or_ops: "Reviewable design only; do not publish workflow or run hosted jobs before authoring approval/activation."
 ```
 
 ## Brownfield Impact Analysis
@@ -228,4 +274,48 @@ next_step: "s06 after Approach"
 
 ## Handoff
 
-Draft authoring only. The work item remains MATERIALIZED/s01 with no implementation grants. Close the named readiness gaps and request the applicable human review; no gate is self-approved.
+Review packet only. Lifecycle remains MATERIALIZED/s01 with no implementation grants. Environment selection and the proposed isolation plan are now concrete; request the work-item and authoring gates. No gate is self-approved.
+
+## CI Verification Contract
+
+```yaml
+workflow_path: ".github/workflows/legacy-installer-containment.yml"
+test_path: "packages/workflow-bundle/test/legacy-installer-containment.integration.js"
+source_basis: "User selected option 1 (Windows GitHub Actions), then instructed continuation, recorded 2026-10-13T07:54:18Z; authoring approvals remain pending."
+jobs:
+  - id: "windows-powershell51"
+    runner: "windows-2022"
+    shell: "powershell"
+    engine: "Resolve powershell.exe; require PSEdition Desktop and version 5.1 before any fixture write."
+    command: "node packages/workflow-bundle/test/legacy-installer-containment.integration.js --engine powershell51 --ci-disposable --evidence-dir .artifacts/installer-containment/windows"
+  - id: "linux-bash"
+    runner: "ubuntu-24.04"
+    shell: "bash"
+    engine: "Resolve /bin/bash; record version."
+    command: "node packages/workflow-bundle/test/legacy-installer-containment.integration.js --engine bash --ci-disposable --evidence-dir .artifacts/installer-containment/linux"
+  - id: "macos-bash"
+    runner: "macos-14"
+    shell: "bash"
+    engine: "Invoke /bin/bash explicitly; require stock Bash 3.2 for the existing macOS entry point."
+    command: "node packages/workflow-bundle/test/legacy-installer-containment.integration.js --engine bash --ci-disposable --evidence-dir .artifacts/installer-containment/macos"
+ci_limits: "Three independent hosted jobs, maximum 15 minutes each, fail-fast disabled so one platform failure does not suppress other evidence. No self-hosted runner, shared profile, environment credentials or caches."
+execution_contract:
+  - "Require explicit --ci-disposable, GITHUB_ACTIONS=true, RUNNER_ENVIRONMENT=github-hosted, platform match and engine preflight. Without these, fail before mutation; this script is not matched by run-all.js test/*.test.js discovery."
+  - "Do not redefine HOME, home, CODEX_HOME or the operating-system profile. Use the fresh job VM account native home as the disposable target; compare Node/native shell home observations and reject mismatches."
+  - "Before fixture setup, lstat the managed .codex root. Require absence, with no symlink or dangling alias; if pre-existing, abort the job without removing it. Confirm all fixture/control roots and their parents are ordinary directories."
+  - "Copy the unchanged candidate installer bytes into a minimal synthetic repository under RUNNER_TEMP, preserving adapters/codex placement and dummy policies/skills. Hash the executed script against checkout source; invoke the normal Bash or PowerShell -NoProfile -File entry point; no destination parameter or transformed installer source."
+  - "Create fixture-owned .codex content plus unique outside/unmanaged sentinels only in the disposable account/temporary roots. Never use system-root, actual user-data or remote-network targets as malicious inputs; rooted/drive negative cases must point only at designated local fixture endpoints. UNC syntax is checked at the lexical validator boundary without filesystem access; do not execute a legacy installer against UNC targets. The integration runner may load only the pure validation function for these cases, with no installer entry-point execution."
+  - "Before invoking a legacy RED candidate, resolve the expected cleanup endpoints and alias targets in the harness and assert membership in the fixture-owned set; refuse a case that could target anything else. A setup/permission/network/engine failure is not a valid RED observation."
+  - "Execute cases sequentially in each job; compare before/after node inventories, regular-file hashes, link counts and alias targets without following symlinks/reparse points. Failure is nonzero and records the affected case."
+  - "Reset only marker-owned paths with no-follow cleanup and recheck canonical containment; never recursively remove an unknown home subtree. On ambiguous ownership, stop and let the hosted VM be discarded. Do not enable optional drive-root links."
+  - "Require successful setup of Windows symlink/junction and hard-link fixtures before claiming coverage; missing privilege/capability fails the job. Record runtime/image versions rather than assuming a label guarantees them."
+evidence_contract:
+  - "Each job writes a machine-readable summary and case logs with head/source/workflow SHA, run ID/attempt, engine/OS/image versions, script hash, case inventory, exit codes, before/after hashes and unexecuted cases."
+  - "Upload only the designated evidence directory on success or failure, retention 14 days, artifact name includes platform, full tested SHA, run ID and attempt. Never upload home contents, credentials or unrelated files."
+  - "A job can PASS only with its complete expected case inventory; a missing engine, skipped mandatory case, empty summary or absent artifact is a verification failure."
+  - "Capture a real focused RED test commit before production repair and later GREEN commits. All three final jobs must pass for the same final commit; aggregate their direct evidence in s08."
+```
+
+## CI Source References
+
+Checked on 2026-10-13: [GitHub-hosted runner reference](https://docs.github.com/en/actions/reference/runners/github-hosted-runners) lists the selected labels and fresh-VM model. [Workflow shell syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#jobsjob_idstepsshell) distinguishes `powershell` (Desktop) from the default `pwsh`. These support the proposed environment; they do not prove this repository has executed a job or that a future image passes its runtime assertions.

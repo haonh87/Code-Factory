@@ -34,6 +34,7 @@ execution_roles:
   - "ta"
   - "developer"
   - "qc"
+  - "devops"
 review_mode: self
 verification_owner: "qc"
 approval_gates:
@@ -102,7 +103,7 @@ tags:
 # Step 3 — Open Questions
 
 > [!summary]
-> Windows execution and the safe fixture boundary must be resolved before DoR.
+> Windows CI is selected; the fixture isolation contract is specified in s05. No remaining discovery input blocks requesting authoring review.
 
 ## Step Contract
 
@@ -111,7 +112,7 @@ step: "s03"
 step_goal: "Expose concrete readiness gaps and their decision owners."
 input_summary:
   - "Accepted parent containment scope and three verified Maintainer admission dispositions."
-  - "Existing scripts at main 5a81126; spec card and named environment gaps."
+  - "Existing scripts at main 5a81126; user-selected Windows CI and the proposed source-bound fixture contract."
 output_summary:
   - "Concrete draft artifact with owner, evidence and remaining gates."
 done_when:
@@ -125,43 +126,35 @@ timebox: "One authoring pass; unresolved external verification input remains exp
 ## Main Artifact
 
 ```yaml
-open_questions:
-  - id: "OQ-PI-ENV"
-    owner: "maintainer/qc"
-    status: "OPEN"
-    question: "Which disposable Windows host can execute Windows PowerShell 5.1 used by the existing powershell wrapper? PowerShell 7 may add coverage but does not silently replace that entry point."
-    evidence: "No local pwsh/powershell executable; existing workflow jobs all use ubuntu-latest. User asked asynchronously."
-    blocks: "DoR and a complete two-platform verification plan."
-  - id: "OQ-PI-ISOLATION"
-    owner: "developer/qc"
-    status: "OPEN"
-    question: "How will the real fixed-home entry points execute with an OS-owned disposable profile and zero access to real user installation targets?"
-    evidence: "Shell derives destination from HOME; PowerShell derives from its automatic HOME. Both must stay unmodified in each fixture invocation."
-    blocks: "DoR and any test invocation of an installer."
+open_questions: []
 resolved_questions:
   - "Containment direction and fail-closed symlink/reparse policy accepted in parent 9c81d53."
   - "Normal signed dedup recovery establishes one independent work item; no reuse of near-match scopes."
-scope_change_rule: "If Windows CI or a new destination parameter is needed, propose an exact allowlist/contract amendment before writing it."
+  - "OQ-PI-ENV: user selected GitHub Actions Windows; s05 names windows-2022/PowerShell Desktop 5.1 plus Linux/macOS Bash compatibility jobs."
+  - "OQ-PI-ISOLATION: s05 defines disposable job profiles, unchanged script execution and fixture-only mutation endpoints; it is a proposed design for review, not a proven runtime result."
+scope_change_rule: "The new workflow and renamed standalone integration runner are listed in s06 for explicit authoring review. Any further path or installer-parameter change requires re-review."
 ```
 
 ## Input Readiness
 
 ```yaml
-status: "BLOCKED"
+status: "READY"
 ready_inputs:
-  - "Scope, source baseline, role reasons, proposed ACs and security boundary."
-missing_inputs:
-  - "OQ-PI-ENV"
-  - "OQ-PI-ISOLATION"
-owner: "maintainer/developer/qc"
+  - "User-selected CI environment"
+  - "Source baseline and exact four-path delta"
+  - "s05 isolation/evidence contract"
+  - "s06 ordered tasks and fail-closed platform checks"
+missing_inputs: []
+owner: "ba/developer/qc"
+authority_note: "AI assessment of input completeness only; human DoR and other authoring gates remain pending."
 ```
 
 ## Audit
 
 ```yaml
-verdict: "PARTIAL"
-evidence: "Missing inputs are explicit; no environment availability or platform PASS is invented."
-next_action: "Resolve the two listed inputs; continue only reversible drafting in the meantime."
+verdict: "PASS"
+evidence: "Both former questions have explicit source/owner/resolution; failures of future engine/link preflight remain execution blockers."
+next_action: "Review the revised authoring packet; do not repeat the environment-selection question."
 ```
 
 ## Traceability
@@ -173,4 +166,4 @@ next_step: "s04"
 
 ## Handoff
 
-Draft authoring only. The work item remains MATERIALIZED/s01 with no implementation grants. Close the named readiness gaps and request the applicable human review; no gate is self-approved.
+Review packet only. Lifecycle remains MATERIALIZED/s01 with no implementation grants. Environment selection and the proposed isolation plan are now concrete; request the work-item and authoring gates. No gate is self-approved.

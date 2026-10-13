@@ -34,6 +34,7 @@ execution_roles:
   - "ta"
   - "developer"
   - "qc"
+  - "devops"
 review_mode: self
 verification_owner: "qc"
 approval_gates:
@@ -99,7 +100,7 @@ tags:
 # Step 6 — Task Plan
 
 > [!summary]
-> Draft T0–T4 sequence; T0 blocks execution until platform/isolation inputs and all authoring gates are resolved.
+> Reviewable T0–T4 plan with dedicated CI and standalone integration fixtures; normal activation still requires all human authoring receipts.
 
 ## Step Contract
 
@@ -108,7 +109,7 @@ step: "s06"
 step_goal: "Provide owned paths, ordering and verification checkpoints for the accepted boundary."
 input_summary:
   - "Accepted parent containment scope and three verified Maintainer admission dispositions."
-  - "Existing scripts at main 5a81126; spec card and named environment gaps."
+  - "Existing scripts at main 5a81126; user-selected Windows CI and the proposed source-bound fixture contract."
 output_summary:
   - "Concrete draft artifact with owner, evidence and remaining gates."
 done_when:
@@ -122,63 +123,64 @@ timebox: "One authoring pass; unresolved external verification input remains exp
 ## Main Artifact
 
 ```yaml
-implementation_goal: "Deliver the spec-card containment contract through the smallest local three-file change."
+implementation_goal: "Deliver the spec through four bounded delivery paths with isolated CI evidence."
 scope_guards:
-  - "No production/test edit before T0. No CI/runner file, install parameter or release change without scope review."
+  - "Only the four delivery paths named in tasks; no existing workflow/runner edit, install parameter or release change."
   - "Sequential agentic execution; no delegation or concurrent writes."
 task_breakdown:
   - id: "T0"
     owner_role: "developer"
-    name: "Resolve fixture environment and seal authoring"
-    objective: "Resolve both input gaps and obtain work-item/authoring receipts before any test or source implementation."
+    name: "Seal the revised authoring packet"
+    objective: "Obtain the five independent approvals and activate only the revised owned paths."
     paths_in_scope:
       - "work-items/contain-legacy-codex-installer-paths"
       - "product-specs/cards/contain-legacy-codex-installer-paths.md"
     dependencies: []
     outputs_expected:
-      - "Named disposable host/engines and exact safe entry-point invocation"
-      - "Final approved AC/design/plan bindings and normal CLI activation"
+      - "Exact signed host/spec bindings and CLI activation with four delivery paths plus owned authoring/evidence paths"
     review_checkpoint: "BA/QC DoR, Developer approach/plan and independent security perspective; no gate is inferred from admission."
-    verification_hint: "Confirm receipts/current hashes and fixture boundary design; if Windows/CI or input contract expands, stop for scope amendment."
+    verification_hint: "Verify current work-item and spec/dor/approach/task_plan receipts; preserve three signed admission dispositions and no unrelated grants."
   - id: "T1"
     owner_role: "developer"
     name: "Capture regression RED safely"
-    objective: "Create the single focused test with controlled source inputs and before/after sentinel snapshots in the approved disposable environment."
+    objective: "Implement the dedicated CI matrix and standalone fixture harness, verify isolation, then capture meaningful RED against unchanged installers."
     paths_in_scope:
-      - "packages/workflow-bundle/test/legacy-installer-containment.test.js"
+      - "packages/workflow-bundle/test/legacy-installer-containment.integration.js"
+      - ".github/workflows/legacy-installer-containment.yml"
     dependencies:
       - "T0"
     outputs_expected:
-      - "Observed rejection regression failures for Bash and PowerShell at the unsafe baseline"
-      - "Positive controls proving the fixture reaches actual entry points"
+      - "Pinned CI action identities and exact runner/engine preflight logs"
+      - "Fixture safety negatives: local/no-flag/pre-existing-root/platform mismatch rejected before any target write"
+      - "Hosted Windows/Linux/macOS RED with unchanged production scripts and positive controls"
     review_checkpoint: "Review fixture isolation before first invocation; run Spec Compliance before test quality."
-    verification_hint: "Run node packages/workflow-bundle/test/legacy-installer-containment.test.js only inside T0-approved environments; record case/engine RED outcomes. Never point scripts at the real user profile."
+    verification_hint: "Run the three exact s05 job commands after fixture preflight. Push the test/workflow-only commit on the named branch; retain failing case evidence before T2. Never count setup/engine failure as RED."
   - id: "T2"
     owner_role: "developer"
     name: "Implement Bash preflight"
     objective: "Move every target write after the complete validated operation plan and satisfy the matrix for Bash."
     paths_in_scope:
       - "adapters/codex/install-codex-workflow.sh"
-      - "packages/workflow-bundle/test/legacy-installer-containment.test.js"
+      - "packages/workflow-bundle/test/legacy-installer-containment.integration.js"
     dependencies:
       - "T1"
     outputs_expected:
       - "Minimal Bash change and corresponding GREEN cases"
     review_checkpoint: "AC compliance first, then shell quoting/literal-path and no-follow review."
-    verification_hint: "Bash syntax check and real-entry-point malformed-state/alias/name matrix with unchanged negative snapshots; supported valid cases pass."
+    verification_hint: "Run bash -n and the s05 Linux/macOS commands through CI; confirm focused rejection GREEN and valid-install regressions for both /bin/bash versions."
   - id: "T3"
     owner_role: "developer"
     name: "Implement PowerShell preflight"
     objective: "Apply the same contract before deduplication, mutation and optional drive-root actions."
     paths_in_scope:
       - "adapters/codex/install-codex-workflow.ps1"
-      - "packages/workflow-bundle/test/legacy-installer-containment.test.js"
+      - "packages/workflow-bundle/test/legacy-installer-containment.integration.js"
     dependencies:
       - "T2"
     outputs_expected:
       - "Minimal PowerShell change and Windows-specific GREEN evidence"
     review_checkpoint: "AC compliance first, then literal-path/reparse/encoding/error handling review."
-    verification_hint: "PowerShell parser and focused runtime matrix on the agreed Windows engines; reparse/reserved-name and UTF-8 BOM/CRLF cases must execute or remain blocking."
+    verification_hint: "Run the s05 Windows command using Desktop 5.1 with full name/reparse/BOM/CRLF matrix; no missing mandatory case may PASS."
   - id: "T4"
     owner_role: "qc"
     name: "Verify compatibility and parent contribution"
@@ -191,15 +193,13 @@ task_breakdown:
       - "s08 AC/evidence table and source-bound regression summary"
       - "Human DoD and Business Acceptance requests; no release claim"
     review_checkpoint: "Separate human DoD/Business Acceptance; no parent closure from child code completion."
-    verification_hint: "Focused test plus package unit runner and applicable validators; record baseline failures separately. Strict UTF-8, source-only allowlist and unmanaged sentinel comparisons. Missing required platform evidence blocks completion."
+    verification_hint: "Require all three hosted jobs/artifacts on one final SHA with complete case inventory; reconcile earlier RED commits and unchanged input spec. Run unit/regression validators and UTF-8 checks. Record source/CI risks before human DoD/Business Acceptance."
 dependencies_global:
-  - "OQ-PI-ENV"
-  - "OQ-PI-ISOLATION"
-  - "Human work-item, Spec, DoR, Approach and Task Plan approvals."
+  - "Human work-item, Spec, DoR, Approach and Task Plan approvals; normal CLI activation."
 risk_notes:
   - "Real entry-point fixtures invoke destructive operations and require verified OS-level disposable isolation."
   - "No full Windows PASS from parser-only or Bash evidence."
-notes_for_implementation: "This is a draft, not an opened implementation path. Do not improvise the T0 invocation when environment input is missing."
+notes_for_implementation: "Follow the s05 CI Verification Contract exactly; stop on failed isolation/engine setup, missing evidence or an additional required write path."
 ```
 
 ## Verification Plan
@@ -212,13 +212,16 @@ levels:
   - "Independent spec compliance then code quality and human terminal gates"
 required_commands:
   - "bash -n adapters/codex/install-codex-workflow.sh"
-  - "node packages/workflow-bundle/test/legacy-installer-containment.test.js (inside approved disposable environment)"
-  - "node packages/workflow-bundle/test/run-all.js (after baseline attribution)"
+  - "node packages/workflow-bundle/test/legacy-installer-containment.integration.js --engine powershell51 --ci-disposable --evidence-dir .artifacts/installer-containment/windows (dedicated hosted job only)"
+  - "node packages/workflow-bundle/test/legacy-installer-containment.integration.js --engine bash --ci-disposable --evidence-dir .artifacts/installer-containment/linux (dedicated hosted job only)"
+  - "node packages/workflow-bundle/test/legacy-installer-containment.integration.js --engine bash --ci-disposable --evidence-dir .artifacts/installer-containment/macos (dedicated hosted job only)"
+  - "node packages/workflow-bundle/test/run-all.js (does not discover the standalone integration file)"
   - "wfc naming/governance/exec/plan/protocol with explicit child project/workflow roots"
-blocked_detail: "Exact Windows invocation, engine versions and disposable-account provision remain OQ-PI-ENV/ISOLATION; this missing detail blocks final Task Plan readiness."
 not_applicable:
   - "Database, app build/typecheck, browser UI, live install, tag/publication and deployment."
 security_review: "Focused malformed-state and filesystem-boundary review; not a whole-pack security scan."
+execution_guard: "No generic unit run executes installer fixtures; no silent skip branch exists in the standalone integration command. CI/engine/isolation prerequisites fail nonzero."
+evidence_gate: "The source branch may capture intentional RED before T2; child final verification requires three GREEN jobs for the exact final SHA."
 ```
 
 ## Governance Checks
@@ -230,13 +233,11 @@ checklist_applied:
 checks:
   - check: "Every task has concrete ownership and verify intent"
     status: "PASS"
-  - check: "Final safe fixture invocation and Windows host known"
-    status: "FAIL"
-blocking_items:
-  - "OQ-PI-ENV"
-  - "OQ-PI-ISOLATION"
+  - check: "Exact hosted jobs, engine assertions, profile isolation, evidence and commands specified"
+    status: "PASS"
+blocking_items: []
 owner: "developer/qc"
-next_action: "Resolve T0 input before approval and activation."
+next_action: "Request human Task Plan approval on the four-path boundary and CI Verification Contract."
 ```
 
 ## Brownfield Delivery Plan
@@ -300,7 +301,7 @@ task_refs:
       - "T3"
       - "T4"
 test_refs:
-  - "packages/workflow-bundle/test/legacy-installer-containment.test.js"
+  - "packages/workflow-bundle/test/legacy-installer-containment.integration.js"
 ```
 
 ## Workspace Isolation
@@ -335,7 +336,7 @@ next_step: "s07 only after all receipts and activation"
 
 ## Handoff
 
-Draft authoring only. The work item remains MATERIALIZED/s01 with no implementation grants. Close the named readiness gaps and request the applicable human review; no gate is self-approved.
+Review packet only. Lifecycle remains MATERIALIZED/s01 with no implementation grants. Environment selection and the proposed isolation plan are now concrete; request the work-item and authoring gates. No gate is self-approved.
 
 ## Authoring Verification
 
@@ -344,3 +345,11 @@ On 2026-10-13, naming/governance/execution/planning each pass for eight child no
 The recovered raw report, s01 protocol projection and generated s07/s08 templates remain byte-preserved. All 934 baseline source files outside the child report are unchanged; all pre-existing main/audit files and 19 root untracked files are retained. No installer, source regression, platform runtime, signing command, release or global installation ran during authoring. These are draft-quality checks, not DoR/Approach/Task Plan approvals or behavioral PASS evidence. Review checked scope/AC fidelity before artifact quality; OQ-PI-ENV and OQ-PI-ISOLATION remain explicit blockers.
 
 Follow-up correction on 2026-10-13: the final s03 wording edit after the initial YAML check introduced an over-indented `question` key in OQ-PI-ENV. The prior blanket YAML PASS did not cover that last edit. Its indentation is now corrected, and all nine Markdown files' frontmatter/fenced YAML, UTF-8 and the s04 spec digest have been rechecked successfully. No question meaning, approval, protocol state or readiness verdict changes. The user's subsequent `accept` does not identify whether Windows verification will use an existing host or a new CI runner; that selection is being clarified before revising the execution plan.
+
+## CI Authoring Review Request
+
+The user selected option 1, Windows GitHub Actions. The updated packet proposes four delivery paths: two existing installer scripts, `packages/workflow-bundle/test/legacy-installer-containment.integration.js`, and `.github/workflows/legacy-installer-containment.yml`. The former `.test.js` destination was never created and is superseded before implementation so the normal unit runner cannot execute destructive fixtures on a personal profile. The dedicated integration command refuses missing hosted/engine/isolation prerequisites rather than silently skipping. Linux and macOS jobs preserve the Bash script's existing supported surfaces under the same ephemeral-runner model.
+
+The earlier environment/DoR BLOCKED observations and validation correction above are historical. Current discovery inputs are resolved, the AI readiness recommendation is READY, and all human gates remain pending. Request one human interaction covering work-item approval, Spec, DoR, Approach A and Task Plan; each gate still requires its own receipt. No live CI or runtime result is claimed.
+
+Current CI packet verification: naming, governance, execution and planning PASS for eight notes; protocol PASS for 23 managed items (21 legacy skips); full-root SDD PASS for 57 existing notes, without claiming SDD validation for this non-SDD child. All nine Markdown files and 71 YAML blocks parse, UTF-8 and whitespace checks pass, and the current spec digest matches s04. Baseline comparison confirms only the seven intended authoring files changed; root, parent audit, protocol report and generated s07/s08 remain preserved. Review order was scope/spec compliance, then artifact quality. Platform behavior remains untested pending implementation approval.

@@ -3,7 +3,7 @@ artifact_id: "contain-legacy-codex-installer-paths.card"
 artifact_family: "product-spec"
 spec_type: "SPEC_CARD"
 spec_status: "draft"
-spec_version: "0.1"
+spec_version: "0.2"
 owner: "ba"
 reviewers:
   - "developer"
@@ -25,10 +25,11 @@ DRAFT: one requirements owner for this full/strict-governance work item. The CLI
 in_scope:
   - "Direct Bash and PowerShell installer preflight for managed names, manifests, source inventory and destination topology."
   - "Isolated fixtures exercising the real scripts and sentinel preservation."
+  - "A dedicated GitHub Actions verification workflow with Windows PowerShell 5.1 and Bash compatibility jobs; no release or deployment."
 out_of_scope:
   - "Central wfc runtime changes, installer retirement, README/drive-root wrapper changes, live user-profile installation, package generation, publication or release."
   - "Concurrent hostile filesystem replacement during an invocation; an expanded threat model requires new review."
-  - "Other P-INSTALL/P-PUBLIC/security-scan remediation ownership."
+  - "P-PUBLIC/current-doc, whole-pack security scan and unrelated remediation ownership."
 threat_model: "Malformed or tampered local state exists before invocation; no concurrent hostile writer. Input/preflight errors are no-mutation failures; an unrelated I/O failure after a valid preflight is not promised to roll back all successful writes."
 ```
 
@@ -49,7 +50,7 @@ requirements:
     provenance: "BASELINE"
     source: "Parent P-INSTALL / M2-OBS-23, scope accepted at audit 9c81d53"
   - id: "REQ-PI-004"
-    statement: "Prove rejection and valid behavior through isolated real-entry-point tests on Bash and the PowerShell/Windows support surface."
+    statement: "Prove rejection and valid behavior through source-bound real-entry-point integration tests on disposable GitHub-hosted Windows PowerShell 5.1 and Linux/macOS Bash jobs."
     provenance: "BASELINE"
     source: "Parent P-INSTALL / M2-OBS-23, scope accepted at audit 9c81d53"
 ```
@@ -72,7 +73,7 @@ acceptance_criteria:
     description: "Duplicate source basenames across categories or platform-equivalent destinations fail before mutation of policy, manifests or skills."
   - id: "AC-PI-005"
     requirement: "REQ-PI-004"
-    description: "Record meaningful RED then GREEN real-entry-point results on Bash and PowerShell, including Windows-specific names and reparse cases; absent engines/platform cases cannot count as PASS."
+    description: "Record meaningful RED then GREEN real-entry-point results, including Windows names/reparse points, in the dedicated Windows PowerShell 5.1, Linux Bash and macOS Bash jobs. Final PASS requires all three job summaries/artifacts for one commit and zero missing mandatory cases."
   - id: "AC-PI-006"
     requirement: "REQ-PI-003"
     description: "Malformed-state failures identify the rejected input category and stop before policy copy, manifest rewrite, skill replacement/cleanup and optional drive-root actions; ordinary valid entry points remain usable."
@@ -125,15 +126,15 @@ evidence_fields:
 ## Open Decisions
 
 ```yaml
-open_decisions:
+open_decisions: []
+resolved_inputs:
   - id: "OQ-PI-ENV"
     owner: "maintainer/qc"
-    decision: "Identify a disposable Windows verification host and supported PowerShell versions before DoR. Current local engines are absent; existing CI jobs are Ubuntu-only."
-    blocking: true
+    resolution: "User selected GitHub-hosted Windows CI. Exact platform matrix and engine preconditions are proposed in s05 CI Verification Contract; actual capability is checked by T1 before accepting RED."
   - id: "OQ-PI-ISOLATION"
     owner: "developer/qc"
-    decision: "Approve a harness that exercises unmodified entry points in a disposable OS user/profile and proves all writes stay in a fixture-owned boundary. No reuse of the real user HOME/CODEX_HOME; no new destination override assumed."
-    blocking: true
+    resolution: "Dedicated one-job VM account, no HOME/profile override, absent managed-root guard, unchanged script copies and fixture-only mutation endpoints; see s05 CI Verification Contract."
+    approval_status: "Proposed technical resolution, subject to Approach/Task Plan review."
 ```
 
 ## Spec Freeze

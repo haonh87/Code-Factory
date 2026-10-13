@@ -34,6 +34,7 @@ execution_roles:
   - "ta"
   - "developer"
   - "qc"
+  - "devops"
 review_mode: self
 verification_owner: "qc"
 approval_gates:
@@ -99,7 +100,7 @@ tags:
 # Step 1 — Clarify
 
 > [!summary]
-> Admission signatures verified; normal recovery completed. This proposal is ready for discovery review, with Windows/isolation inputs still open.
+> Admission is verified; Windows GitHub Actions is selected. The revised four-path delivery boundary and authoring packet await human approval.
 
 ## Step Contract
 
@@ -108,7 +109,7 @@ step: "s01"
 step_goal: "Restate the bounded correction and keep admission separate from implementation authority."
 input_summary:
   - "Accepted parent containment scope and three verified Maintainer admission dispositions."
-  - "Existing scripts at main 5a81126; spec card and named environment gaps."
+  - "Existing scripts at main 5a81126; user-selected Windows CI and the proposed source-bound fixture contract."
 output_summary:
   - "Concrete draft artifact with owner, evidence and remaining gates."
 done_when:
@@ -138,6 +139,7 @@ triggers:
 profile: "full / strict governance / agentic; CLI sdd_mode=none retained"
 required_reviews:
   - "PO outcome, BA spec/readiness, TA security envelope, Developer approach/plan, QC verification."
+  - "DevOps CI review, work-item-local reason SCOPE_CI_VERIFICATION: hosted runner isolation/evidence; no new release gate."
 prohibited_actions:
   - "Infer execution from admission signatures; enable adaptive writes without activation parity; run a live installer."
 ```
@@ -153,13 +155,11 @@ scope_in:
   - "product-specs/cards/contain-legacy-codex-installer-paths.md#Scope"
 scope_out:
   - "product-specs/cards/contain-legacy-codex-installer-paths.md#Scope"
-open_questions:
-  - "OQ-PI-ENV"
-  - "OQ-PI-ISOLATION"
+open_questions: []
 assumptions:
   - "Single writer during invocation; unsafe legacy/custom input fails explicitly."
 dependencies:
-  - "Independent child authoring approval and isolated two-platform verification."
+  - "Human authoring approval and normal activation; hosted capability checks in T1."
 risks_initial:
   - "Destructive cleanup, aliases/hard links, Windows differences, early writes before validation."
 acceptance_criteria_draft:
@@ -181,7 +181,7 @@ acceptance_criteria_draft:
   - id: "AC-PI-006"
     description: "product-specs/cards/contain-legacy-codex-installer-paths.md#Acceptance Criteria.acceptance_criteria[AC-PI-006]"
     measurable: true
-notes_for_next_step: "Use the card as the only requirement/AC text owner."
+notes_for_next_step: "Spec card v0.2 owns the revised acceptance text; s05 owns the fixture/CI contract, s06 owns the four production/test paths."
 ```
 
 ## Admission Evidence
@@ -258,4 +258,17 @@ next_step: "s02"
 
 ## Handoff
 
-Draft authoring only. The work item remains MATERIALIZED/s01 with no implementation grants. Close the named readiness gaps and request the applicable human review; no gate is self-approved.
+Review packet only. Lifecycle remains MATERIALIZED/s01 with no implementation grants. Environment selection and the proposed isolation plan are now concrete; request the work-item and authoring gates. No gate is self-approved.
+
+## CI Scope Decision
+
+```yaml
+source: "User reply 1 selecting GitHub Actions Windows, followed by explicit continuation."
+recorded_at: "2026-10-13T07:54:18Z"
+decision: "Proceed with CI authoring; add the dedicated workflow and place the destructive integration runner outside unit-test auto-discovery."
+superseded_draft_test_path: "packages/workflow-bundle/test/legacy-installer-containment.test.js"
+replacement_draft_test_path: "packages/workflow-bundle/test/legacy-installer-containment.integration.js"
+new_ci_path: ".github/workflows/legacy-installer-containment.yml"
+ownership_check: "Neither new path exists. No active managed grant for these paths was found; existing workflow-guardrails.yml remains with its existing owner."
+receipt_boundary: "Preserve original signed admission history. No runtime report/grant mutation or new signature is made; concrete four-path authoring approval is requested separately."
+```
