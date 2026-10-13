@@ -129,7 +129,7 @@ open_questions:
   - id: "OQ-PI-ENV"
     owner: "maintainer/qc"
     status: "OPEN"
-      question: "Which disposable Windows host can execute Windows PowerShell 5.1 used by the existing powershell wrapper? PowerShell 7 may add coverage but does not silently replace that entry point."
+    question: "Which disposable Windows host can execute Windows PowerShell 5.1 used by the existing powershell wrapper? PowerShell 7 may add coverage but does not silently replace that entry point."
     evidence: "No local pwsh/powershell executable; existing workflow jobs all use ubuntu-latest. User asked asynchronously."
     blocks: "DoR and a complete two-platform verification plan."
   - id: "OQ-PI-ISOLATION"
