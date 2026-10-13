@@ -1,0 +1,62 @@
+name: Legacy installer containment
+
+on:
+  push:
+    branches: [fix/legacy-codex-installer-containment]
+    paths:
+      - adapters/codex/install-codex-workflow.sh
+      - adapters/codex/install-codex-workflow.ps1
+      - packages/workflow-bundle/test/legacy-installer-containment.integration.js
+      - .github/workflows/legacy-installer-containment.yml
+  pull_request:
+    paths:
+      - adapters/codex/install-codex-workflow.sh
+      - adapters/codex/install-codex-workflow.ps1
+      - packages/workflow-bundle/test/legacy-installer-containment.integration.js
+      - .github/workflows/legacy-installer-containment.yml
+permissions:
+  contents: read
+jobs:
+  containment:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: windows-powershell51
+            os: windows-2022
+            shell: powershell
+            engine: powershell51
+            evidence: windows
+          - name: linux-bash
+            os: ubuntu-24.04
+            shell: bash
+            engine: bash
+            evidence: linux
+          - name: macos-bash
+            os: macos-14
+            shell: bash
+            engine: bash
+            evidence: macos
+    defaults:
+      run:
+        shell: ${{ matrix.shell }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Exercise installer in disposable VM account
+        run: node packages/workflow-bundle/test/legacy-installer-containment.integration.js --engine ${{ matrix.engine }} --ci-disposable --evidence-dir .artifacts/installer-containment/${{ matrix.evidence }}
+      - name: Preserve source-bound evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: installer-${{ matrix.evidence }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .artifacts/installer-containment/${{ matrix.evidence }}
+          if-no-files-found: error
+          retention-days: 14

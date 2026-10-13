@@ -203,15 +203,20 @@ authority_limit: "Admission only; no work-item/authoring/DoD receipt exists from
 
 ## Work Item Protocol
 ```yaml
-protocol_status: MATERIALIZED
-approval_status: PENDING_REVIEW
+protocol_status: ACTIVE
+approval_status: APPROVED
 review_required: true
 work_item_slug: "contain-legacy-codex-installer-paths"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/legacy-codex-installer-containment/work-items/contain-legacy-codex-installer-paths"
-current_step: "s01"
-granted_write_paths: []
+current_step: "s07"
+granted_write_paths:
+  - "adapters/codex/install-codex-workflow.sh"
+  - "adapters/codex/install-codex-workflow.ps1"
+  - "packages/workflow-bundle/test/legacy-installer-containment.integration.js"
+  - ".github/workflows/legacy-installer-containment.yml"
+  - "work-items/contain-legacy-codex-installer-paths"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -220,21 +225,17 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: ""
-reviewed_by: ""
-reviewed_at: ""
-handoff_target: "human-review"
-last_transition_action: "materialize"
-last_transition_at: "2026-10-13T07:31:15.669Z"
+protocol_owner: "maintainer"
+reviewed_by: "maintainer"
+reviewed_at: "2026-10-13T13:34:45.850Z"
+handoff_target: "step-s07-owner"
+last_transition_action: "activate"
+last_transition_at: "2026-10-13T13:35:29.594Z"
 required_actions:
-  - {"id":"se:dc3eb37d0f5a693bebefaf8be74fd8fbbde93de63747a073ec0c2fe026f3df69","kind":"workflow_followup","text":"wfc work-item approve --work-item contain-legacy-codex-installer-paths --reviewed-by <role>"}
-  - {"id":"se:8e59f8007ab8bd934bd0946479ac45bc7bf7c077ffdc7636b8b8bce8a183ef37","kind":"gate_approval","text":"wfc gate approve --work-item contain-legacy-codex-installer-paths --gate spec --reviewed-by <role>","gate":"spec"}
-  - {"id":"se:a6893cd79f5d9236ee3ede11fc1064b748b18ac346345dfe45d0bbdf67829a3d","kind":"gate_approval","text":"wfc gate approve --work-item contain-legacy-codex-installer-paths --gate dor --reviewed-by <role>","gate":"dor"}
-  - {"id":"se:1d411a7e1c912f183895809e6dda59216292f6a1e34a682d2bcd0d43fd3b1871","kind":"gate_approval","text":"wfc gate approve --work-item contain-legacy-codex-installer-paths --gate approach --reviewed-by <role>","gate":"approach"}
-  - {"id":"se:8dff546ad1ad651bb46eed07e2a1c6da6d2bf7c9efa49cd57412191238aae5d0","kind":"gate_approval","text":"wfc gate approve --work-item contain-legacy-codex-installer-paths --gate task_plan --reviewed-by <role>","gate":"task_plan"}
-  - {"id":"se:23929d9fe8e209583741d375a1314e0ba7b9e4ee8fc4a4b91f42b5f63168ebd9","kind":"work_item_activation","text":"wfc work-item activate --work-item contain-legacy-codex-installer-paths --step s07 --write-root <path>"}
+  - {"id":"se:657d7ddb7e2a0fee741327a6614b1103b5d5e23f5cfe1430e3c44a9199a38a49","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
 blockers: []
-review_notes: []
+review_notes:
+  - "User accepted packet 89131d9; finalized authoring content reviewed for trusted sealing."
 refs:
   - "work-items/decouple-tests-from-tree-layout"
   - "work-items/stabilize-architecture-skill-bundle"
@@ -246,8 +247,10 @@ audit_events:
   - "DEDUP_CONFIRMED"
   - "WORKFLOW_SCAFFOLDED"
   - "STEP_OPENED"
+  - "WORK_ITEM_APPROVED"
+  - "READINESS_BUNDLE_APPROVED"
+  - "WORK_ITEM_ACTIVATED"
 ```
-
 
 ## Traceability
 

@@ -1,8 +1,8 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "MATERIALIZED",
+  "protocol_status": "ACTIVE",
   "decision_owner": "agent",
-  "protocol_owner": "",
+  "protocol_owner": "maintainer",
   "raw_request_summary": "Prevent malformed managed skill names and unsafe destination aliases from causing writes or out-of-root deletion in the Bash and PowerShell direct Codex installers; preserve valid managed installation and unrelated data through complete preflight and isolated regression fixtures.",
   "request_source": "User accepted P-INSTALL scope and fail-closed policy on 2026-10-13; parent audit proposal 9c81d53",
   "candidate_count": 1,
@@ -67,50 +67,23 @@
   "work_item_slug": "contain-legacy-codex-installer-paths",
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
-  "selected_profile": "strict",
-  "sdd_mode": "none",
-  "sdd_preset": "strict",
-  "sdd_light_profile": "preview",
-  "sdd_reasons": [],
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/legacy-codex-installer-containment/work-items/contain-legacy-codex-installer-paths",
-  "current_step": "s01",
+  "current_step": "s07",
+  "granted_write_paths": [
+    "adapters/codex/install-codex-workflow.sh",
+    "adapters/codex/install-codex-workflow.ps1",
+    "packages/workflow-bundle/test/legacy-installer-containment.integration.js",
+    ".github/workflows/legacy-installer-containment.yml",
+    "work-items/contain-legacy-codex-installer-paths"
+  ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "human-review",
+  "handoff_target": "step-s07-owner",
   "required_actions": [
     {
-      "id": "se:dc3eb37d0f5a693bebefaf8be74fd8fbbde93de63747a073ec0c2fe026f3df69",
+      "id": "se:657d7ddb7e2a0fee741327a6614b1103b5d5e23f5cfe1430e3c44a9199a38a49",
       "kind": "workflow_followup",
-      "text": "wfc work-item approve --work-item contain-legacy-codex-installer-paths --reviewed-by <role>"
-    },
-    {
-      "id": "se:8e59f8007ab8bd934bd0946479ac45bc7bf7c077ffdc7636b8b8bce8a183ef37",
-      "kind": "gate_approval",
-      "text": "wfc gate approve --work-item contain-legacy-codex-installer-paths --gate spec --reviewed-by <role>",
-      "gate": "spec"
-    },
-    {
-      "id": "se:a6893cd79f5d9236ee3ede11fc1064b748b18ac346345dfe45d0bbdf67829a3d",
-      "kind": "gate_approval",
-      "text": "wfc gate approve --work-item contain-legacy-codex-installer-paths --gate dor --reviewed-by <role>",
-      "gate": "dor"
-    },
-    {
-      "id": "se:1d411a7e1c912f183895809e6dda59216292f6a1e34a682d2bcd0d43fd3b1871",
-      "kind": "gate_approval",
-      "text": "wfc gate approve --work-item contain-legacy-codex-installer-paths --gate approach --reviewed-by <role>",
-      "gate": "approach"
-    },
-    {
-      "id": "se:8dff546ad1ad651bb46eed07e2a1c6da6d2bf7c9efa49cd57412191238aae5d0",
-      "kind": "gate_approval",
-      "text": "wfc gate approve --work-item contain-legacy-codex-installer-paths --gate task_plan --reviewed-by <role>",
-      "gate": "task_plan"
-    },
-    {
-      "id": "se:23929d9fe8e209583741d375a1314e0ba7b9e4ee8fc4a4b91f42b5f63168ebd9",
-      "kind": "work_item_activation",
-      "text": "wfc work-item activate --work-item contain-legacy-codex-installer-paths --step s07 --write-root <path>"
+      "text": "Continue active execution from step 7 onward."
     }
   ],
   "blockers": [],
@@ -125,17 +98,22 @@
     "SLUG_LOCKED",
     "DEDUP_CONFIRMED",
     "WORKFLOW_SCAFFOLDED",
-    "STEP_OPENED"
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "READINESS_BUNDLE_APPROVED",
+    "WORK_ITEM_ACTIVATED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-10-13T13:34:45.850Z",
+  "review_notes": [
+    "User accepted packet 89131d9; finalized authoring content reviewed for trusted sealing."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
   "bootstrap_reviewed_by": "",
   "bootstrap_reviewed_at": "",
-  "review_required": true,
-  "approval_status": "PENDING_REVIEW",
-  "reviewed_by": "",
-  "reviewed_at": "",
-  "review_notes": [],
   "protocol_events": [
     {
       "timestamp": "2026-10-13T06:22:27.912Z",
@@ -160,6 +138,31 @@
       "from_status": "READY_TO_MATERIALIZE",
       "to_status": "MATERIALIZED",
       "note": "Resumed proposal operation c490c032-89ee-48c7-959b-c9f59ebd4bad."
+    },
+    {
+      "timestamp": "2026-10-13T13:34:45.850Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "User accepted packet 89131d9; finalized authoring content reviewed for trusted sealing."
+    },
+    {
+      "timestamp": "2026-10-13T13:34:48.416Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "9c1474f8-7311-4220-9e08-67e6f16f7695"
+    },
+    {
+      "timestamp": "2026-10-13T13:35:29.594Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
     }
   ],
   "resolved_state_history": [
@@ -269,7 +272,6 @@
       }
     }
   ],
-  "granted_write_paths": [],
   "materialization_recovery": {
     "schema_version": 1,
     "operation_id": "c490c032-89ee-48c7-959b-c9f59ebd4bad",

@@ -92,57 +92,80 @@ tags:
 > Tóm tắt thay đổi đã implement, giới hạn còn lại và note cho verify.
 
 ## Step Contract
+
 ```yaml
-step_goal: ""
-input_summary: []
-output_summary: []
-done_when: []
-owner: ""
+step: s07
+step_goal: "Execute T0-T4 in the approved four-path boundary; real hosted RED before production edits."
+owner: developer
 ```
 
-## Artifact Chính
+## Main Artifact
+
 ```yaml
-implemented_changes: []
-doc_changes: []
-operational_notes: []
+recommended_design: "Approved Approach A; complete preflight before mutation."
+implementation_mode: HARDENING
+tasks_completed: [T0]
+bug_repro_evidence: []
+hypothesis_log:
+  - assumption: "Legacy scripts write policy before validating stale manifest names and destination aliases."
+    status: CONFIRMED
+    evidence: "Read-only source review: mkdir/copy precede manifest reads in both entry points. Hosted behavior reproduction pending."
+debug_experiments:
+  - goal: "Confirm local integration refuses mutation"
+    action: "Invoke runner without --ci-disposable"
+    result: "Explicit --ci-disposable required; installer not invoked"
+tdd_evidence: []
+safe_refactor_notes: []
+code_changes:
+  - "Dedicated integration runner; production scripts unchanged pending RED."
+doc_changes:
+  - "This progress note; CLI-owned activation projections."
+config_changes:
+  - "Dedicated three-job GitHub-hosted verification workflow."
+review_checkpoints:
+  - "Spec compliance first: four-path ownership, same-SHA evidence, Windows Desktop 5.1, macOS Bash 3.2, no live-home execution."
+  - "Test quality: fixture marker and bounded cleanup, aliases restricted to fixture-owned endpoints, UNC/drive syntax only through extracted pure validator, mandatory capability/guard preflights."
+outputs_actual:
+  - "T1 harness and workflow ready for hosted RED."
+known_limitations:
+  - "No hosted execution yet; setup failures cannot count as RED."
+follow_up_items:
+  - "Run T1 on hosted CI, inspect artifacts, then T2/T3 only after meaningful RED."
+notes_for_testing: "No local destructive fixture execution; use the approved dedicated workflow."
 ```
 
 ## Delivery Rule Evidence
+
 ```yaml
-behavior_change: YES|NO
-tdd_status: DONE|NOT_REQUIRED|EXCEPTION
-tdd_test_refs: []
+behavior_change: YES
+tdd_status: PENDING
+tdd_test_refs:
+  - "packages/workflow-bundle/test/legacy-installer-containment.integration.js"
 tdd_exception_reason: ""
 tdd_alternative_verify_path: []
-change_risk_profile: QUICK_FIX|STANDARD|LARGE_OR_RISKY
-worktree_status: USED|NOT_REQUIRED|SKIPPED_WITH_REASON
-worktree_refs: []
-worktree_reason: ""
-review_status: COMPLETED|PARTIAL|BLOCKED
+change_risk_profile: LARGE_OR_RISKY
+worktree_status: USED
+worktree_refs:
+  - ".claude/worktrees/legacy-codex-installer-containment"
+worktree_reason: "Approved full-track, destructive filesystem boundary, multiple sessions."
+review_status: PARTIAL
 review_refs: []
-spec_compliance_status: PASS|FAIL|PARTIAL|NOT_RUN
-code_quality_status: PASS|FAIL|PARTIAL|NOT_RUN
-delegation_mode: agentic|multi_agent|subagent|sequential_multi_role
-independence_status: PASS|FAIL|NOT_APPLICABLE
+spec_compliance_status: PASS
+code_quality_status: PASS
+delegation_mode: agentic
+independence_status: NOT_APPLICABLE
 independence_refs: []
-merge_path: ""
-verify_path: []
+merge_path: "Separate finalization after child DoD; no merge authorized here."
+verify_path:
+  - "Three hosted platform jobs and artifacts on one final SHA."
 ```
 
 ## Implementation Notes
-```yaml
-framework_notes: []
-known_limitations: []
-```
 
-## Traceability
-```yaml
-upstream: []
-next_step: ""
-```
+T0: the human sealed work-item approval at 2026-10-13T13:34:45.850Z and readiness bundle at 2026-10-13T13:34:48.416Z, transaction `9c1474f8-7311-4220-9e08-67e6f16f7695`. Production CLI status confirms APPROVED signatures and matching s04/s05/s06 digests. Normal CLI activation succeeded at s07 with exactly four delivery paths plus this work-item evidence root. Accepted spec and s04/s05/s06 are frozen. No signer is executed by the agent.
+
+T1 local review: Node syntax, workflow YAML and whitespace checks PASS; local no-flag guard rejects before writes. Upstream action v4 refs were resolved using the official GitHub API and pinned to immutable commits. Repo Actions is enabled. No source installer has been modified or executed locally. Mandatory hosted safety preflight tests cover missing flag, non-Actions invocation, wrong engine and existing managed root, followed by symlink/junction/hard-link capabilities.
 
 ## Handoff
-- Outputs actual:
-- Known limitations:
-- Notes for testing:
-- Notes for deployment khi có:
+
+ACTIVE, implementation incomplete. Publish the test/workflow commit on the approved branch and inspect real RED plus positive-control results before production repair. No DoD or Business Acceptance verdict is claimed.
