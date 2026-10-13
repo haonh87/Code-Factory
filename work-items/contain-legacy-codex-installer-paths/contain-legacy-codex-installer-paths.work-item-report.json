@@ -1,13 +1,13 @@
 {
-  "materialization_status": "PROPOSED",
-  "protocol_status": "PROPOSED",
+  "materialization_status": "READY",
+  "protocol_status": "MATERIALIZED",
   "decision_owner": "agent",
   "protocol_owner": "",
   "raw_request_summary": "Prevent malformed managed skill names and unsafe destination aliases from causing writes or out-of-root deletion in the Bash and PowerShell direct Codex installers; preserve valid managed installation and unrelated data through complete preflight and isolated regression fixtures.",
   "request_source": "User accepted P-INSTALL scope and fail-closed policy on 2026-10-13; parent audit proposal 9c81d53",
   "candidate_count": 1,
   "split_decision": "single",
-  "dedup_result": "needs_review",
+  "dedup_result": "no_conflict",
   "work_items": [
     {
       "work_item_slug": "contain-legacy-codex-installer-paths",
@@ -73,37 +73,59 @@
   "sdd_light_profile": "preview",
   "sdd_reasons": [],
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/legacy-codex-installer-containment/work-items/contain-legacy-codex-installer-paths",
-  "current_step": "",
+  "current_step": "s01",
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "human-clarify",
+  "handoff_target": "human-review",
   "required_actions": [
     {
-      "id": "se:2f80e00977cfac954cd88e3d9ae320317b34d463cedb6b661d9823d2e20c86a8",
+      "id": "se:dc3eb37d0f5a693bebefaf8be74fd8fbbde93de63747a073ec0c2fe026f3df69",
       "kind": "workflow_followup",
-      "text": "Làm rõ scope để chốt single hay split."
+      "text": "wfc work-item approve --work-item contain-legacy-codex-installer-paths --reviewed-by <role>"
     },
     {
-      "id": "se:e23a5a1eee6997c9e681c55ffc586697edd67e1167ab5ec8751531e7965cb60e",
-      "kind": "workflow_followup",
-      "text": "Review existing work-items/changes trước khi scaffold."
-    }
-  ],
-  "blockers": [
+      "id": "se:8e59f8007ab8bd934bd0946479ac45bc7bf7c077ffdc7636b8b8bce8a183ef37",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item contain-legacy-codex-installer-paths --gate spec --reviewed-by <role>",
+      "gate": "spec"
+    },
     {
-      "id": "se:36368015700626c1819d93ed6573f79d5e7091e2608f94c2430827f32a47231c",
-      "kind": "delivery_blocker",
-      "text": "Có work item gần nghĩa cần review: decouple-tests-from-tree-layout, stabilize-architecture-skill-bundle"
+      "id": "se:a6893cd79f5d9236ee3ede11fc1064b748b18ac346345dfe45d0bbdf67829a3d",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item contain-legacy-codex-installer-paths --gate dor --reviewed-by <role>",
+      "gate": "dor"
+    },
+    {
+      "id": "se:1d411a7e1c912f183895809e6dda59216292f6a1e34a682d2bcd0d43fd3b1871",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item contain-legacy-codex-installer-paths --gate approach --reviewed-by <role>",
+      "gate": "approach"
+    },
+    {
+      "id": "se:8dff546ad1ad651bb46eed07e2a1c6da6d2bf7c9efa49cd57412191238aae5d0",
+      "kind": "gate_approval",
+      "text": "wfc gate approve --work-item contain-legacy-codex-installer-paths --gate task_plan --reviewed-by <role>",
+      "gate": "task_plan"
+    },
+    {
+      "id": "se:23929d9fe8e209583741d375a1314e0ba7b9e4ee8fc4a4b91f42b5f63168ebd9",
+      "kind": "work_item_activation",
+      "text": "wfc work-item activate --work-item contain-legacy-codex-installer-paths --step s07 --write-root <path>"
     }
   ],
+  "blockers": [],
   "refs": [
     "work-items/decouple-tests-from-tree-layout",
-    "work-items/stabilize-architecture-skill-bundle"
+    "work-items/stabilize-architecture-skill-bundle",
+    "work-items/contain-legacy-codex-installer-paths"
   ],
   "audit_events": [
     "REQUEST_CAPTURED",
     "CANDIDATE_PROPOSED",
-    "SLUG_LOCKED"
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED"
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
@@ -122,6 +144,142 @@
       "from_status": "INTAKE",
       "to_status": "PROPOSED",
       "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-10-13T07:31:15.669Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Signed admission concerns resolved."
+    },
+    {
+      "timestamp": "2026-10-13T07:31:15.669Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Resumed proposal operation c490c032-89ee-48c7-959b-c9f59ebd4bad."
     }
-  ]
+  ],
+  "resolved_state_history": [
+    {
+      "operation_id": "7772a610-5aeb-4c87-9bd9-739b8f3aeb8b",
+      "source_collection": "blockers",
+      "source_entry_id": "di:645a74d7c0ec6b44c8adedec04340cd2485cd28200ef708682925ab0fda1997d",
+      "original_entry": {
+        "id": "se:36368015700626c1819d93ed6573f79d5e7091e2608f94c2430827f32a47231c",
+        "kind": "delivery_blocker",
+        "text": "Có work item gần nghĩa cần review: decouple-tests-from-tree-layout, stabilize-architecture-skill-bundle"
+      },
+      "original_text": "Có work item gần nghĩa cần review: decouple-tests-from-tree-layout, stabilize-architecture-skill-bundle",
+      "actor": "maintainer",
+      "reason": "Reviewed the two runtime near matches: decouple-tests-from-tree-layout owns rollback/resolver fixture isolation; stabilize-architecture-skill-bundle T1 owns central workflow-bundle-utils/CLI/sync permission recovery and its named tests. Neither owns the two direct adapters/codex installers or the new legacy-installer-containment test. Preserve both scopes and admit this direct-installer correction separately.",
+      "resolved_at": "2026-10-13T07:29:32.222Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "contain-legacy-codex-installer-paths",
+          "operation_id": "7772a610-5aeb-4c87-9bd9-739b8f3aeb8b",
+          "state_id": "di:645a74d7c0ec6b44c8adedec04340cd2485cd28200ef708682925ab0fda1997d",
+          "source_collection": "blockers",
+          "original_entry": {
+            "id": "se:36368015700626c1819d93ed6573f79d5e7091e2608f94c2430827f32a47231c",
+            "kind": "delivery_blocker",
+            "text": "Có work item gần nghĩa cần review: decouple-tests-from-tree-layout, stabilize-architecture-skill-bundle"
+          },
+          "original_text": "Có work item gần nghĩa cần review: decouple-tests-from-tree-layout, stabilize-architecture-skill-bundle",
+          "actor": "maintainer",
+          "reason": "Reviewed the two runtime near matches: decouple-tests-from-tree-layout owns rollback/resolver fixture isolation; stabilize-architecture-skill-bundle T1 owns central workflow-bundle-utils/CLI/sync permission recovery and its named tests. Neither owns the two direct adapters/codex installers or the new legacy-installer-containment test. Preserve both scopes and admit this direct-installer correction separately.",
+          "resolved_at": "2026-10-13T07:29:32.222Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "5RJ9bNywjUaX16QjreVZaEBNHTCAIB1DTf0p3DlLOyfWoGJsFcJrkX2d0FXo5nEr7GVa6k8gxVn+S6VCVz71BA=="
+      }
+    },
+    {
+      "operation_id": "c229d905-b274-42f7-b39c-cd835cba19cc",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:a17400593e3e0c36535f7b6d05ed3481a402dec7b221c366b15c114cac5c2b07",
+      "original_entry": {
+        "id": "se:2f80e00977cfac954cd88e3d9ae320317b34d463cedb6b661d9823d2e20c86a8",
+        "kind": "workflow_followup",
+        "text": "Làm rõ scope để chốt single hay split."
+      },
+      "original_text": "Làm rõ scope để chốt single hay split.",
+      "actor": "maintainer",
+      "reason": "Single bounded P-INSTALL outcome accepted by the user: reject unsafe managed names and destination aliases before any mutation in both direct installers, preserving valid managed installation and unrelated data. Retain full/strict/agentic brownfield authoring and the stated single-writer threat model. Platform verification gaps remain mandatory; no live install, release or child implementation approval is granted.",
+      "resolved_at": "2026-10-13T07:29:34.719Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "contain-legacy-codex-installer-paths",
+          "operation_id": "c229d905-b274-42f7-b39c-cd835cba19cc",
+          "state_id": "di:a17400593e3e0c36535f7b6d05ed3481a402dec7b221c366b15c114cac5c2b07",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:2f80e00977cfac954cd88e3d9ae320317b34d463cedb6b661d9823d2e20c86a8",
+            "kind": "workflow_followup",
+            "text": "Làm rõ scope để chốt single hay split."
+          },
+          "original_text": "Làm rõ scope để chốt single hay split.",
+          "actor": "maintainer",
+          "reason": "Single bounded P-INSTALL outcome accepted by the user: reject unsafe managed names and destination aliases before any mutation in both direct installers, preserving valid managed installation and unrelated data. Retain full/strict/agentic brownfield authoring and the stated single-writer threat model. Platform verification gaps remain mandatory; no live install, release or child implementation approval is granted.",
+          "resolved_at": "2026-10-13T07:29:34.719Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "ZE4CsD1XeJjI9yJgqOSBEgjJfrJOSWDoH9xWHEttdrMSMsmdj7OF6V/e/h/88KcZtzdQWvmNNpMpbB3MtisaCw=="
+      }
+    },
+    {
+      "operation_id": "1b317897-5993-4c91-aa25-6f2a0ba5bf48",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:021dfdc95c470c4babf7c0909c4feb9eaf86febb7236954749dc8e95e25e9b11",
+      "original_entry": {
+        "id": "se:e23a5a1eee6997c9e681c55ffc586697edd67e1167ab5ec8751531e7965cb60e",
+        "kind": "workflow_followup",
+        "text": "Review existing work-items/changes trước khi scaffold."
+      },
+      "original_text": "Review existing work-items/changes trước khi scaffold.",
+      "actor": "maintainer",
+      "reason": "Reviewed main and all five registered worktrees plus existing change/work-item plans. No active managed write grant covers the candidate paths; broader test grants occur only on DONE or ARCHIVED records. Keep existing central installer, fixture, release, P-PUBLIC and other remediation ownership separate. No change package is reused; normal independent authoring gates remain required.",
+      "resolved_at": "2026-10-13T07:29:37.239Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "contain-legacy-codex-installer-paths",
+          "operation_id": "1b317897-5993-4c91-aa25-6f2a0ba5bf48",
+          "state_id": "di:021dfdc95c470c4babf7c0909c4feb9eaf86febb7236954749dc8e95e25e9b11",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:e23a5a1eee6997c9e681c55ffc586697edd67e1167ab5ec8751531e7965cb60e",
+            "kind": "workflow_followup",
+            "text": "Review existing work-items/changes trước khi scaffold."
+          },
+          "original_text": "Review existing work-items/changes trước khi scaffold.",
+          "actor": "maintainer",
+          "reason": "Reviewed main and all five registered worktrees plus existing change/work-item plans. No active managed write grant covers the candidate paths; broader test grants occur only on DONE or ARCHIVED records. Keep existing central installer, fixture, release, P-PUBLIC and other remediation ownership separate. No change package is reused; normal independent authoring gates remain required.",
+          "resolved_at": "2026-10-13T07:29:37.239Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "cG3M+BC5VOD8/Y0WvKNM8H9qVbb6NOfUz31rpi7tCBMl3f3m5MiDktKjrwsGOBI1yxrCf6wdGjjFjzIoMuclCw=="
+      }
+    }
+  ],
+  "granted_write_paths": [],
+  "materialization_recovery": {
+    "schema_version": 1,
+    "operation_id": "c490c032-89ee-48c7-959b-c9f59ebd4bad",
+    "source_report_sha256": "77bd35cd05ad20c8009a28494cee54e31a81059c7fd861a372c33a5096e29dcc",
+    "resulting_status": "MATERIALIZED",
+    "disposition_operation_ids": [
+      "7772a610-5aeb-4c87-9bd9-739b8f3aeb8b",
+      "c229d905-b274-42f7-b39c-cd835cba19cc",
+      "1b317897-5993-4c91-aa25-6f2a0ba5bf48"
+    ],
+    "completed_at": "2026-10-13T07:31:15.669Z"
+  }
 }
