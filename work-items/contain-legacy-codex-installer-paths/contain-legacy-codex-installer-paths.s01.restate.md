@@ -203,7 +203,7 @@ authority_limit: "Admission only; no work-item/authoring/DoD receipt exists from
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "contain-legacy-codex-installer-paths"
@@ -228,12 +228,11 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-10-13T13:34:45.850Z"
-handoff_target: "protocol-close"
-last_transition_action: "approve-closeout-bundle"
-last_transition_at: "2026-10-14T07:57:20.497Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-10-14T07:58:42.217Z"
 required_actions:
-  - {"id":"se:2d4f6615d19d4faae3b8f20e6933169e85dc4cfca47c6d5cab99e7f51b25282a","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
-  - {"id":"se:039e20473815882ceed80725e3abe9af492f2d3069d58017d5a0071889e1d50c","kind":"work_item_close","text":"wfc work-item close --work-item contain-legacy-codex-installer-paths"}
+  - {"id":"se:637019f41fe4c8cb682e65ccdfd10759b7676831ae521b796a8e26950add553c","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "User accepted packet 89131d9; finalized authoring content reviewed for trusted sealing."
@@ -253,6 +252,7 @@ audit_events:
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
   - "CLOSEOUT_BUNDLE_APPROVED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Traceability

@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "maintainer",
   "raw_request_summary": "Prevent malformed managed skill names and unsafe destination aliases from causing writes or out-of-root deletion in the Bash and PowerShell direct Codex installers; preserve valid managed installation and unrelated data through complete preflight and isolated regression fixtures.",
@@ -78,17 +78,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "protocol-close",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "id": "se:2d4f6615d19d4faae3b8f20e6933169e85dc4cfca47c6d5cab99e7f51b25282a",
+      "id": "se:637019f41fe4c8cb682e65ccdfd10759b7676831ae521b796a8e26950add553c",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
-    },
-    {
-      "id": "se:039e20473815882ceed80725e3abe9af492f2d3069d58017d5a0071889e1d50c",
-      "kind": "work_item_close",
-      "text": "wfc work-item close --work-item contain-legacy-codex-installer-paths"
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -108,7 +103,8 @@
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
     "VERIFICATION_CONFIRMED",
-    "CLOSEOUT_BUNDLE_APPROVED"
+    "CLOSEOUT_BUNDLE_APPROVED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -187,6 +183,14 @@
       "to_status": "VERIFIED",
       "note": "APPROVED closeout gates: dod, business_acceptance",
       "transaction_id": "ac78b9eb-de66-4c99-9d2b-7acd58eb0df9"
+    },
+    {
+      "timestamp": "2026-10-14T07:58:42.217Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Human DoD and Business Acceptance accepted and sealed; all seven receipt signatures and host digests verified. No merge, cleanup or release included."
     }
   ],
   "resolved_state_history": [
