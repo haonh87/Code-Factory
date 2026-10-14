@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -79,10 +79,10 @@ gate_reviews:
   uat_reviewed_at: ""
   release_reviewed_by: []
   release_reviewed_at: ""
-  business_acceptance_reviewed_by: []
-  business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  business_acceptance_reviewed_by: [po]
+  business_acceptance_reviewed_at: "2026-10-14T07:48:24Z"
+  dod_reviewed_by: [qc]
+  dod_reviewed_at: "2026-10-14T07:48:24Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -104,7 +104,7 @@ tags:
 # Step 8 — Verify + DoD
 
 > [!summary]
-> Technical acceptance PASS: 207/207 hosted integration cases at one source commit, plus 47 unit test files across documented environment setup/retry runs. Human DoD and Business Acceptance remain pending. Automated lint/security scanners were unavailable; the scan is PARTIAL with explicit manual-review evidence and limitations.
+> Technical acceptance PASS: 207/207 hosted integration cases at one source commit, plus 47 unit test files across documented environment setup/retry runs. Human DoD and Business Acceptance were explicitly accepted at packet `fbbb112`; trusted terminal sealing remains pending. Automated lint/security scanners were unavailable; the scan is PARTIAL with explicit manual-review evidence and limitations.
 
 ## Step Contract
 
@@ -173,9 +173,9 @@ commands_run: ["node --check integration runner", "bash -n installer", "GitHub h
 skipped_checks: ["Local Windows execution: no local PowerShell; real Desktop 5.1 CI covers it", "ESLint/ShellCheck/Semgrep: unavailable; no lint wrapper or new dependencies installed"]
 release_blockers: []
 status: PASS
-gaps: ["Human DoD and Business Acceptance are pending; scan tooling limitations require reviewer acknowledgement."]
+gaps: ["Trusted terminal sealing remains pending; the human accepted the recorded scan limitations."]
 residual_risks: ["No concurrent hostile writer guarantee", "Post-preflight I/O failure can leave partial installation", "Alias/custom-name rejection is intentional compatibility tightening"]
-recommendation: "Accept technical evidence and request QC DoD / PO Business Acceptance; keep branch and worktree open."
+recommendation: "Seal the accepted QC DoD and PO Business Acceptance receipts; keep branch/worktree open pending a separate integration decision."
 notes_for_review: "PASS describes acceptance evidence, not human gate approval or a claim of full security assurance."
 ```
 
@@ -206,9 +206,9 @@ checks:
   - "Approved card and s04/s05/s06 remain frozen. CLI alone owns activation/report/projection changes."
   - "Four delivery paths plus owned evidence root; worktree retained, no merge/release/cleanup."
   - "Protocol validator PASS: 23 managed items, 21 configured legacy skips; workflow pack audit PASS."
-blocking_items: ["Human DoD", "Human Business Acceptance"]
+blocking_items: ["Trusted DoD receipt", "Trusted Business Acceptance receipt"]
 owner: qc
-next_action: "Human review of this evidence and scan limitations, then normal terminal receipt sealing."
+next_action: "Normal terminal receipt sealing for the explicit human acceptance recorded below."
 ```
 
 ## Regression & Compatibility Summary
@@ -272,7 +272,7 @@ performance_heuristic_results:
 skipped_scans: ["ShellCheck/ESLint/Semgrep not installed; no dependency change or tool installation authorized by this scan. Manual review does not replace a deterministic scanner."]
 overall_status: PARTIAL
 remediation_actions: []
-notes_for_verify: "No observed blocker; human QC must acknowledge these scan limitations. Native regression evidence is complete for the approved threat model."
+notes_for_verify: "No observed blocker; human QC acknowledgement is recorded below; the tooling limitations remain visible. Native regression evidence is complete for the approved threat model."
 ```
 
 ## Spec Coverage
@@ -330,23 +330,23 @@ notes: ["CI verification only; no packaging, publication or live installation."]
 ## Business Acceptance Summary
 
 ```yaml
-status: PARTIAL
-reviewers: []
-notes: ["PO acceptance pending; technical evidence supports the intended installer safety outcome."]
+status: PASS
+reviewers: [po]
+notes: ["Explicit user acceptance of packet fbbb112; trusted Business Acceptance receipt remains pending."]
 ```
 
 ## Audit
 
 ```yaml
-audit_status: PARTIAL
-notes: ["All six technical ACs have evidence; human terminal gates remain pending.", "No parent audit closure or branch finalization follows automatically."]
+audit_status: PASS
+notes: ["All six technical ACs have evidence; human acceptance is recorded and trusted sealing remains pending.", "No parent audit closure or branch finalization follows automatically."]
 ```
 
 ## Definition of Done
 
 ```yaml
 work_item_slug: contain-legacy-codex-installer-paths
-status: PARTIAL
+status: DONE
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -354,19 +354,25 @@ checks:
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps: ["Human QC DoD and PO Business Acceptance not yet approved or sealed."]
+gaps: ["Trusted receipts and normal CLI close transition remain pending; DONE here records the accepted human DoD verdict, not the protocol lifecycle."]
 residual_risks: ["Single-writer threat model", "No transactional rollback after successful preflight", "Automated scan tools unavailable"]
 follow_up_items: ["Separate branch integration decision after terminal gates; preserve worktree until then."]
-next_action: "Request human DoD and Business Acceptance review of this concrete evidence packet."
+next_action: "Seal accepted terminal gates, verify both signatures and the current s08 digest, then use the normal CLI close transition."
 ```
 
 ## Traceability
 
 ```yaml
 upstream: ["Spec card REQ-PI-001..004", "s04 AC-PI-001..006", "s05 Approach A", "s06 T0-T4", "s07 ordered review and RED/GREEN history"]
-next_step: "Human DoD / Business Acceptance; no automatic close, merge or cleanup."
+next_step: "Trusted terminal sealing and verified CLI close; no merge or cleanup approval."
 ```
 
 ## Handoff
 
-Technical acceptance PASS with explicit scan limitations. Request human QC DoD and PO Business Acceptance, then seal the corresponding independent terminal receipts. The branch remains open and is not DONE. Evidence-only follow-up commits do not alter the four delivery blobs tested at `0e6392f`; any delivery-byte change requires rerunning the platform matrix.
+Technical acceptance PASS with human-accepted scan limitations. Human QC DoD and PO Business Acceptance are accepted; seal the corresponding independent terminal receipts before normal CLI closure. Protocol remains VERIFIED, and the branch stays open. Evidence-only follow-up commits do not alter the four delivery blobs tested at `0e6392f`; any delivery-byte change requires rerunning the platform matrix.
+
+## Human Closeout Decision
+
+The repository owner replied **accept** to the explicit request for DoD and Business Acceptance on reviewed packet `fbbb112`, including the stated absence of ShellCheck/ESLint/Semgrep. Decision recorded at `2026-10-14T07:48:24Z` (recording time, not a claimed chat timestamp). The human accepts the QC DoD verdict and PO Business Acceptance for this child work item. All technical evidence, test counts, residual risks and scan status remain unchanged; scan status stays PARTIAL rather than being promoted by approval.
+
+The agent records this explicit decision but does not sign on the user's behalf. Normal `wfc gate approve-closeout-bundle` must produce separate DoD and Business Acceptance trusted receipts bound to these finalized s08 bytes. Verify both before the CLI close transition. This decision does not authorize merge, worktree cleanup, release, actual-profile installation or parent audit closure. Freeze this host after finalization; signing handoff and later progress belong to the parent s07.
