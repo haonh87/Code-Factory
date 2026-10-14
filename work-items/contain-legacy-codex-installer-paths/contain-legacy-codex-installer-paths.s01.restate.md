@@ -228,11 +228,12 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-10-13T13:34:45.850Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-10-14T06:29:53.093Z"
+handoff_target: "protocol-close"
+last_transition_action: "approve-closeout-bundle"
+last_transition_at: "2026-10-14T07:57:20.497Z"
 required_actions:
   - {"id":"se:2d4f6615d19d4faae3b8f20e6933169e85dc4cfca47c6d5cab99e7f51b25282a","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+  - {"id":"se:039e20473815882ceed80725e3abe9af492f2d3069d58017d5a0071889e1d50c","kind":"work_item_close","text":"wfc work-item close --work-item contain-legacy-codex-installer-paths"}
 blockers: []
 review_notes:
   - "User accepted packet 89131d9; finalized authoring content reviewed for trusted sealing."
@@ -251,6 +252,7 @@ audit_events:
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
+  - "CLOSEOUT_BUNDLE_APPROVED"
 ```
 
 ## Traceability

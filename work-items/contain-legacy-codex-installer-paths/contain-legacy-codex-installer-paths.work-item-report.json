@@ -78,12 +78,17 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "protocol-close",
   "required_actions": [
     {
       "id": "se:2d4f6615d19d4faae3b8f20e6933169e85dc4cfca47c6d5cab99e7f51b25282a",
       "kind": "workflow_followup",
       "text": "Collect DoD evidence and close the work item when ready."
+    },
+    {
+      "id": "se:039e20473815882ceed80725e3abe9af492f2d3069d58017d5a0071889e1d50c",
+      "kind": "work_item_close",
+      "text": "wfc work-item close --work-item contain-legacy-codex-installer-paths"
     }
   ],
   "blockers": [],
@@ -102,7 +107,8 @@
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "CLOSEOUT_BUNDLE_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -172,6 +178,15 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "207 native integration cases PASS at 0e6392f; unit evidence and scan limitations recorded in s08. Human DoD and Business Acceptance pending."
+    },
+    {
+      "timestamp": "2026-10-14T07:57:20.497Z",
+      "action": "approve-closeout-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "APPROVED closeout gates: dod, business_acceptance",
+      "transaction_id": "ac78b9eb-de66-4c99-9d2b-7acd58eb0df9"
     }
   ],
   "resolved_state_history": [
