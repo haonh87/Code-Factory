@@ -182,6 +182,12 @@ function main() {
   // Absolute/drive/UNC inputs are pure lexical tests when an old native Join-Path
   // could resolve an unowned endpoint. No remote share is accessed.
   if (process.platform === "win32") cases.pop();
+  for (const manifest of ["current", "legacy"]) {
+    for (const [id, value] of [["bare-carriage", "alpha\r"], ["nul", Buffer.from("al\0pha\n")], ["invalid-utf8", Buffer.from([0xff, 0x0a])]]) {
+      add(`${manifest}-${id}`, "reject", () => { if (manifest === "legacy") clean(current); write(manifest === "current" ? current : legacy, value); });
+    }
+  }
+  add("invalid-source-name", "reject", () => write(path.join(synthetic, "skills", "category", "Invalid", "SKILL.md"), "invalid\n"));
   add("duplicate-source", "reject", () => write(path.join(synthetic, "skills", "second", "alpha", "SKILL.md"), "duplicate\n"));
   for (const node of ["root", "skills", "policy", "current", "legacy", "skill", "nested", "dangling"]) add(`alias-${node}`, "reject", () => {
     const destination = ["policy", "current", "legacy"].includes(node) ? path.join(outside, "sentinel.txt") : outside;
