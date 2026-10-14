@@ -87,7 +87,8 @@ function main() {
   const marker = path.join(work, ".fixture-owner");
   const token = crypto.randomUUID();
   fs.writeFileSync(marker, token);
-  const outside = path.join(work, "outside");
+  // Hard-link sentinels must share the native home volume (Windows temp is D:).
+  const outside = fs.mkdtempSync(path.join(home, ".installer-containment-"));
   const synthetic = path.join(work, "repo");
   const skills = path.join(target, "skills");
   const current = path.join(target, ".codex-workflow-bundle.managed-skills.txt");
@@ -100,7 +101,7 @@ function main() {
     platform: process.platform, os: os.release(), node: process.version, engine: version, image: process.env.ImageOS, image_version: process.env.ImageVersion,
     run_url: `https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`, cases: rows, status: "FAIL", unexecuted: [] };
   const within = (p, root) => p === root || p.startsWith(root + path.sep);
-  function owned(p) { return within(path.resolve(p), target) || within(path.resolve(p), work); }
+  function owned(p) { return within(path.resolve(p), target) || within(path.resolve(p), work) || within(path.resolve(p), outside); }
   function clean(p) {
     assert.equal(fs.readFileSync(marker, "utf8"), token, "Ownership marker changed");
     assert(owned(p) && p !== work && p !== marker, "Unknown cleanup root");
@@ -258,7 +259,7 @@ function main() {
     summary.expected_cases = cases.map((c) => c.id);
     fs.writeFileSync(path.join(evidence, "summary.json"), JSON.stringify(summary, null, 2));
     // Never follow links during fixture cleanup; discard the VM on ambiguity.
-    try { if (targetOwned) clean(target); } catch (e) { summary.cleanup_error = e.message; summary.status = "FAIL"; fs.writeFileSync(path.join(evidence, "summary.json"), JSON.stringify(summary, null, 2)); }
+    try { if (targetOwned) clean(target); clean(outside); } catch (e) { summary.cleanup_error = e.message; summary.status = "FAIL"; fs.writeFileSync(path.join(evidence, "summary.json"), JSON.stringify(summary, null, 2)); }
   }
   if (summary.status !== "PASS" || summary.unexecuted.length) process.exitCode = 1;
 }

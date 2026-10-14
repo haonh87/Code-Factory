@@ -169,3 +169,5 @@ T1 local review: Node syntax, workflow YAML and whitespace checks PASS; local no
 ## Handoff
 
 ACTIVE, implementation incomplete. Publish the test/workflow commit on the approved branch and inspect real RED plus positive-control results before production repair. No DoD or Business Acceptance verdict is claimed.
+
+Hosted run `38407996492` at `8135f70`: Linux and macOS completed their matrices with meaningful containment failures and passing valid-install controls. Windows failed capability setup because RUNNER_TEMP is on D: and home is on C:, so its hard-link probe crossed volumes; this is not counted as RED. T1 correction places unique outside sentinels beside the disposable native home on its own volume, while the synthetic repository stays under RUNNER_TEMP. Ownership and no-follow cleanup include that explicit sentinel root. Production scripts remain unchanged; rerun all jobs before T2.
