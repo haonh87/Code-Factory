@@ -1,0 +1,280 @@
+---
+artifact_id: "contain-legacy-codex-installer-paths.s01.restate"
+artifact_family: workflow-step
+work_item_slug: "contain-legacy-codex-installer-paths"
+step_id: "s01"
+step_slug: "restate"
+workflow_stage: discovery
+work_item_type: BUG
+delivery_context: brownfield
+artifact_role: primary
+artifact_kind: primary-note
+source_of_truth: true
+status: draft
+governance_ref: "project-context/project-context.md"
+governance_profile: strict
+governance_status: CHECKS_PENDING
+checklist_refs:
+  - "project-context/checklists/strict.md"
+change_id: ""
+change_status: draft
+spec_delta_refs: []
+archive_status: not_ready
+sdd_mode: none
+spec_refs:
+  brd: ""
+  srs: ""
+  card: "product-specs/cards/contain-legacy-codex-installer-paths.md"
+spec_status: draft
+planning_track: full
+execution_mode: agentic
+execution_roles:
+  - "po"
+  - "ba"
+  - "ta"
+  - "developer"
+  - "qc"
+  - "devops"
+review_mode: self
+verification_owner: "qc"
+approval_gates:
+  spec: "required"
+  contract: "not_applicable"
+  foundation: "not_applicable"
+  uat: "not_applicable"
+  release: "not_applicable"
+  business_acceptance: "required"
+role_signoffs:
+  spec:
+    - "ba"
+  contract: []
+  dor:
+    - "ba"
+    - "qc"
+  approach:
+    - "developer"
+  foundation: []
+  task_plan:
+    - "developer"
+  uat: []
+  release: []
+  business_acceptance:
+    - "po"
+  dod:
+    - "qc"
+gate_reviews:
+  spec_reviewed_by: []
+  spec_reviewed_at: ""
+  contract_reviewed_by: []
+  contract_reviewed_at: ""
+  dor_reviewed_by: []
+  dor_reviewed_at: ""
+  approach_reviewed_by: []
+  approach_reviewed_at: ""
+  foundation_reviewed_by: []
+  foundation_reviewed_at: ""
+  task_plan_reviewed_by: []
+  task_plan_reviewed_at: ""
+  uat_reviewed_by: []
+  uat_reviewed_at: ""
+  release_reviewed_by: []
+  release_reviewed_at: ""
+  business_acceptance_reviewed_by: []
+  business_acceptance_reviewed_at: ""
+  dod_reviewed_by: []
+  dod_reviewed_at: ""
+content_skills:
+  - "codex-workflow-chain"
+  - "requirement-analysis"
+  - "product-thinking"
+  - "step-goal-contract"
+artifact_skills:
+  - "obsidian-markdown"
+upstream_artifacts: []
+linked_artifacts: []
+tags:
+  - "agent-ops"
+  - "workflow/s01"
+---
+
+# Step 1 — Clarify
+
+> [!summary]
+> Admission is verified; Windows GitHub Actions is selected. The revised four-path delivery boundary and authoring packet await human approval.
+
+## Step Contract
+
+```yaml
+step: "s01"
+step_goal: "Restate the bounded correction and keep admission separate from implementation authority."
+input_summary:
+  - "Accepted parent containment scope and three verified Maintainer admission dispositions."
+  - "Existing scripts at main 5a81126; user-selected Windows CI and the proposed source-bound fixture contract."
+output_summary:
+  - "Concrete draft artifact with owner, evidence and remaining gates."
+done_when:
+  - "The draft is reviewable and its missing inputs are explicit; this does not mean the human gate passed."
+owner: "ba"
+constraints:
+  - "No production/test implementation, installer execution or signing by the agent."
+timebox: "One authoring pass; unresolved external verification input remains explicit."
+```
+
+## Governance Context
+
+```yaml
+governance_ref: "project-context/project-context.md"
+request_lane: "product_delivery"
+routing_reasons:
+  - "LANE_PRODUCT_DELIVERY"
+  - "HARD_SECURITY_SENSITIVE"
+triggers:
+  security_sensitive: true
+  public_contract: false
+  migration: false
+  regulated: false
+  greenfield_foundation: false
+  release: false
+  mixed_intent: false
+profile: "full / strict governance / agentic; CLI sdd_mode=none retained"
+required_reviews:
+  - "PO outcome, BA spec/readiness, TA security envelope, Developer approach/plan, QC verification."
+  - "DevOps CI review, work-item-local reason SCOPE_CI_VERIFICATION: hosted runner isolation/evidence; no new release gate."
+prohibited_actions:
+  - "Infer execution from admission signatures; enable adaptive writes without activation parity; run a live installer."
+```
+
+## Requirement Analysis Spec
+
+```yaml
+raw_request: "Continue after the human ran the P-INSTALL admission helper."
+restated_request: "Contain direct-installer mutation within validated destinations and preserve unrelated data."
+request_type: "BUG"
+business_context: "Malformed pre-existing state can redirect stale cleanup outside skillsHome."
+scope_in:
+  - "product-specs/cards/contain-legacy-codex-installer-paths.md#Scope"
+scope_out:
+  - "product-specs/cards/contain-legacy-codex-installer-paths.md#Scope"
+open_questions: []
+assumptions:
+  - "Single writer during invocation; unsafe legacy/custom input fails explicitly."
+dependencies:
+  - "Human authoring approval and normal activation; hosted capability checks in T1."
+risks_initial:
+  - "Destructive cleanup, aliases/hard links, Windows differences, early writes before validation."
+acceptance_criteria_draft:
+  - id: "AC-PI-001"
+    description: "product-specs/cards/contain-legacy-codex-installer-paths.md#Acceptance Criteria.acceptance_criteria[AC-PI-001]"
+    measurable: true
+  - id: "AC-PI-002"
+    description: "product-specs/cards/contain-legacy-codex-installer-paths.md#Acceptance Criteria.acceptance_criteria[AC-PI-002]"
+    measurable: true
+  - id: "AC-PI-003"
+    description: "product-specs/cards/contain-legacy-codex-installer-paths.md#Acceptance Criteria.acceptance_criteria[AC-PI-003]"
+    measurable: true
+  - id: "AC-PI-004"
+    description: "product-specs/cards/contain-legacy-codex-installer-paths.md#Acceptance Criteria.acceptance_criteria[AC-PI-004]"
+    measurable: true
+  - id: "AC-PI-005"
+    description: "product-specs/cards/contain-legacy-codex-installer-paths.md#Acceptance Criteria.acceptance_criteria[AC-PI-005]"
+    measurable: true
+  - id: "AC-PI-006"
+    description: "product-specs/cards/contain-legacy-codex-installer-paths.md#Acceptance Criteria.acceptance_criteria[AC-PI-006]"
+    measurable: true
+notes_for_next_step: "Spec card v0.2 owns the revised acceptance text; s05 owns the fixture/CI contract, s06 owns the four production/test paths."
+```
+
+## Admission Evidence
+
+```yaml
+proposal_commit: "5a86e91d4187cf5a1d77ab7629b20686d42e05ee"
+accepted_parent_proposal: "9c81d535daaca2f0281412b72d6e5b5fd914d02a"
+verified_at: "2026-10-13T07:30:54.175Z"
+verification: "Production verifyRecordedDisposition checked all three exact reasons and operation IDs against the trusted public key."
+signed_operations:
+  - "7772a610-5aeb-4c87-9bd9-739b8f3aeb8b"
+  - "c229d905-b274-42f7-b39c-cd835cba19cc"
+  - "1b317897-5993-4c91-aa25-6f2a0ba5bf48"
+recovery_operation: "c490c032-89ee-48c7-959b-c9f59ebd4bad"
+recovery_source_sha256: "77bd35cd05ad20c8009a28494cee54e31a81059c7fd861a372c33a5096e29dcc"
+recovery_completed_at: "2026-10-13T07:31:15.669Z"
+authority_limit: "Admission only; no work-item/authoring/DoD receipt exists from this recovery."
+```
+
+## Work Item Protocol
+```yaml
+protocol_status: DONE
+approval_status: APPROVED
+review_required: true
+work_item_slug: "contain-legacy-codex-installer-paths"
+work_item_type: BUG
+delivery_context: brownfield
+workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/legacy-codex-installer-containment/work-items/contain-legacy-codex-installer-paths"
+current_step: "s08"
+granted_write_paths:
+  - "adapters/codex/install-codex-workflow.sh"
+  - "adapters/codex/install-codex-workflow.ps1"
+  - "packages/workflow-bundle/test/legacy-installer-containment.integration.js"
+  - ".github/workflows/legacy-installer-containment.yml"
+  - "work-items/contain-legacy-codex-installer-paths"
+materialization_status: READY
+bootstrap_gate_status: NOT_REQUIRED
+bootstrap_gate_ref: ""
+bootstrap_reviewed_by: ""
+bootstrap_reviewed_at: ""
+change_strategy: none
+change_id: ""
+decision_owner: "agent"
+protocol_owner: "maintainer"
+reviewed_by: "maintainer"
+reviewed_at: "2026-10-13T13:34:45.850Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-10-14T07:58:42.217Z"
+required_actions:
+  - {"id":"se:637019f41fe4c8cb682e65ccdfd10759b7676831ae521b796a8e26950add553c","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
+blockers: []
+review_notes:
+  - "User accepted packet 89131d9; finalized authoring content reviewed for trusted sealing."
+refs:
+  - "work-items/decouple-tests-from-tree-layout"
+  - "work-items/stabilize-architecture-skill-bundle"
+  - "work-items/contain-legacy-codex-installer-paths"
+audit_events:
+  - "REQUEST_CAPTURED"
+  - "CANDIDATE_PROPOSED"
+  - "SLUG_LOCKED"
+  - "DEDUP_CONFIRMED"
+  - "WORKFLOW_SCAFFOLDED"
+  - "STEP_OPENED"
+  - "WORK_ITEM_APPROVED"
+  - "READINESS_BUNDLE_APPROVED"
+  - "WORK_ITEM_ACTIVATED"
+  - "VERIFICATION_CONFIRMED"
+  - "CLOSEOUT_BUNDLE_APPROVED"
+  - "DONE_CONFIRMED"
+```
+
+## Traceability
+
+```yaml
+spec_ref: "product-specs/cards/contain-legacy-codex-installer-paths.md"
+next_step: "s02"
+```
+
+## Handoff
+
+Review packet only. Lifecycle remains MATERIALIZED/s01 with no implementation grants. Environment selection and the proposed isolation plan are now concrete; request the work-item and authoring gates. No gate is self-approved.
+
+## CI Scope Decision
+
+```yaml
+source: "User reply 1 selecting GitHub Actions Windows, followed by explicit continuation."
+recorded_at: "2026-10-13T07:54:18Z"
+decision: "Proceed with CI authoring; add the dedicated workflow and place the destructive integration runner outside unit-test auto-discovery."
+superseded_draft_test_path: "packages/workflow-bundle/test/legacy-installer-containment.test.js"
+replacement_draft_test_path: "packages/workflow-bundle/test/legacy-installer-containment.integration.js"
+new_ci_path: ".github/workflows/legacy-installer-containment.yml"
+ownership_check: "Neither new path exists. No active managed grant for these paths was found; existing workflow-guardrails.yml remains with its existing owner."
+receipt_boundary: "Preserve original signed admission history. No runtime report/grant mutation or new signature is made; concrete four-path authoring approval is requested separately."
+```
