@@ -203,14 +203,14 @@ authority_limit: "Admission only; no work-item/authoring/DoD receipt exists from
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "contain-legacy-codex-installer-paths"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/legacy-codex-installer-containment/work-items/contain-legacy-codex-installer-paths"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - "adapters/codex/install-codex-workflow.sh"
   - "adapters/codex/install-codex-workflow.ps1"
@@ -228,11 +228,11 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-10-13T13:34:45.850Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-10-13T13:35:29.594Z"
+handoff_target: "definition-of-done"
+last_transition_action: "verify"
+last_transition_at: "2026-10-14T06:29:53.093Z"
 required_actions:
-  - {"id":"se:657d7ddb7e2a0fee741327a6614b1103b5d5e23f5cfe1430e3c44a9199a38a49","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
+  - {"id":"se:2d4f6615d19d4faae3b8f20e6933169e85dc4cfca47c6d5cab99e7f51b25282a","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
 blockers: []
 review_notes:
   - "User accepted packet 89131d9; finalized authoring content reviewed for trusted sealing."
@@ -250,6 +250,7 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
 ## Traceability
