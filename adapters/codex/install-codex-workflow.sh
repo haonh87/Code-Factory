@@ -90,12 +90,19 @@ if [[ -n "$selected_manifest" ]]; then
     [[ "$byte" != 0 ]] || fail_preflight 'NUL in manifest'
   done
   first_line=1
-  while IFS= read -r line || [[ -n "$line" ]]; do
+  while true; do
+    line=''
+    record_has_lf=0
+    if IFS= read -r line; then
+      record_has_lf=1
+    elif [[ -z "$line" ]]; then
+      break
+    fi
     if (( first_line )); then
       line="${line#$'\xef\xbb\xbf'}"
       first_line=0
     fi
-    line="${line%$'\r'}"
+    if (( record_has_lf )); then line="${line%$'\r'}"; fi
     [[ -n "$line" ]] || continue
     validate_skill_name "$line" || exit 1
     if (( ${#previous_managed_skill_names[@]} > 0 )); then

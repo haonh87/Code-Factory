@@ -121,9 +121,10 @@ if ($selectedManifest) {
   $manifestText = $utf8.GetString([System.IO.File]::ReadAllBytes($selectedManifest))
   if ($manifestText.Length -gt 0 -and $manifestText[0] -eq [char]0xFEFF) { $manifestText = $manifestText.Substring(1) }
   $seen = @{}
-  foreach ($record in $manifestText.Split([char]10)) {
-    $name = $record
-    if ($name.EndsWith("`r")) { $name = $name.Substring(0, $name.Length - 1) }
+  $records = $manifestText.Split([char]10)
+  for ($index = 0; $index -lt $records.Length; $index++) {
+    $name = $records[$index]
+    if ($index -lt $records.Length - 1 -and $name.EndsWith("`r")) { $name = $name.Substring(0, $name.Length - 1) }
     if ($name.Length -eq 0) { continue }
     Assert-SkillName $name
     if ($seen.ContainsKey($name)) { throw "Installer preflight failed: duplicate manifest name" }
