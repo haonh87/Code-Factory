@@ -1,0 +1,299 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "VERIFIED",
+  "decision_owner": "agent",
+  "protocol_owner": "maintainer",
+  "raw_request_summary": "Extend proposal recovery to safely materialize one unapproved brownfield create_new change package, preserving signed admission history and refusing conflicting existing change artifacts; this standalone prerequisite does not authorize publication.",
+  "request_source": "user-chat",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "recover-proposals-with-new-change",
+      "work_item_title": "Recover Proposals With New Change",
+      "work_item_type": "CHANGE",
+      "scope_summary": "Extend proposal recovery to safely materialize one unapproved brownfield create_new change package, preserving signed admission history and refusing conflicting existing change artifacts; this standalone prerequisite does not authorize publication.",
+      "primary_outcome": "Extend proposal recovery to safely materialize one unapproved brownfield create_new change package, preserving signed admission history and refusing conflicting existing change artifacts; this standalone prerequisite does not authorize publication.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "strict",
+      "sdd_reasons": [
+        "planning-track-not-quick",
+        "governance-profile-not-default"
+      ],
+      "sdd_preset": "auto",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/materialization-dedup-recovery"
+      ],
+      "collision_notes": [
+        "materialization-dedup-recovery (score=1)"
+      ],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "Scope chưa cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item recover-proposals-with-new-change --planning-track full --delivery-context brownfield --governance-profile strict",
+        "npm run validate:workflow -- --workflow-root work-items/recover-proposals-with-new-change --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory"
+      ],
+      "blockers": [
+        {
+          "id": "se:bcf7bc5d83477257f2d291c848c1ec848be3b0b936a7512d0fa3c96736472d42",
+          "kind": "delivery_blocker",
+          "text": "Có work item gần nghĩa cần review: materialization-dedup-recovery"
+        }
+      ]
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=CHANGE",
+    "delivery_context=brownfield",
+    "dedup_result=needs_review",
+    "change_strategy=none",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=auto",
+    "selected_profile=strict",
+    "sdd_mode=none",
+    "sdd_escalation_reasons=planning-track-not-quick|governance-profile-not-default"
+  ],
+  "work_item_slug": "recover-proposals-with-new-change",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/recover-proposals-with-new-change",
+  "current_step": "s08",
+  "granted_write_paths": [
+    ".claude/worktrees/recover-proposals-with-new-change/packages/workflow-bundle/scripts/materialize-work-item.js",
+    ".claude/worktrees/recover-proposals-with-new-change/packages/workflow-bundle/scripts/scaffold-change-package.js",
+    ".claude/worktrees/recover-proposals-with-new-change/packages/workflow-bundle/test/materialize-work-item.test.js",
+    ".claude/worktrees/recover-proposals-with-new-change/packages/workflow-bundle/test/scaffold-change-package.test.js",
+    ".claude/worktrees/recover-proposals-with-new-change/skills/orchestration/codex-workflow-chain/references/work-item-materialization.md",
+    ".claude/worktrees/recover-proposals-with-new-change/skills/orchestration/codex-workflow-chain/references/work-item-materialization.vi.md",
+    "work-items/recover-proposals-with-new-change",
+    "product-specs/srs/recover-proposals-with-new-change.md"
+  ],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "definition-of-done",
+  "required_actions": [
+    {
+      "id": "se:aaad7e8e9f23cffa89c042becaae8fbb5dc03bd90d7f32d5eaa6009523ce225a",
+      "kind": "workflow_followup",
+      "text": "Collect DoD evidence and close the work item when ready."
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/materialization-dedup-recovery",
+    "work-items/recover-proposals-with-new-change"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "READINESS_BUNDLE_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-10-15T08:35:55.572Z",
+  "review_notes": [
+    "User explicitly accepted the bounded recovery scope and authoring packet; chat acceptance recorded at 2026-10-15T08:31:25Z. No release publication approval."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-10-15T08:20:12.242Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-10-15T08:25:36.229Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Signed admission concerns resolved."
+    },
+    {
+      "timestamp": "2026-10-15T08:25:36.229Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Resumed proposal operation 73f43dbb-3c94-4963-b8a2-b03a25aa225b."
+    },
+    {
+      "timestamp": "2026-10-15T08:35:55.572Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "User explicitly accepted the bounded recovery scope and authoring packet; chat acceptance recorded at 2026-10-15T08:31:25Z. No release publication approval."
+    },
+    {
+      "timestamp": "2026-10-15T08:35:58.472Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "a204ed4c-1c1d-4beb-a1b2-e8d9240a3a83"
+    },
+    {
+      "timestamp": "2026-10-15T08:38:11.243Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-10-15T13:51:39.721Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Technical verification: 47 unit files pass; six delivery files reviewed; human DoD and documented scan-gap acceptance pending."
+    }
+  ],
+  "resolved_state_history": [
+    {
+      "operation_id": "bd198283-e1bf-484f-99f2-ba6c7cc66e56",
+      "source_collection": "blockers",
+      "source_entry_id": "di:b17d546fa2b97e37cd86b676f596aa7b60a6f22833ad13195f651c6bd6e9b61c",
+      "original_entry": {
+        "id": "se:bcf7bc5d83477257f2d291c848c1ec848be3b0b936a7512d0fa3c96736472d42",
+        "kind": "delivery_blocker",
+        "text": "Có work item gần nghĩa cần review: materialization-dedup-recovery"
+      },
+      "original_text": "Có work item gần nghĩa cần review: materialization-dedup-recovery",
+      "actor": "maintainer",
+      "reason": "Create one standalone prerequisite for bounded create_new proposal recovery. The matched materialization-dedup-recovery item is ARCHIVED and explicitly excluded linked changes. Preserve that item and the v2.6.4 signed intake unchanged. This new work item has no enclosing change package; it extends the implementation that handles change packages. Review /tmp/change-recovery-proposal.md. Intake separation only; no implementation or release approval.",
+      "resolved_at": "2026-10-15T08:24:58.848Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "recover-proposals-with-new-change",
+          "operation_id": "bd198283-e1bf-484f-99f2-ba6c7cc66e56",
+          "state_id": "di:b17d546fa2b97e37cd86b676f596aa7b60a6f22833ad13195f651c6bd6e9b61c",
+          "source_collection": "blockers",
+          "original_entry": {
+            "id": "se:bcf7bc5d83477257f2d291c848c1ec848be3b0b936a7512d0fa3c96736472d42",
+            "kind": "delivery_blocker",
+            "text": "Có work item gần nghĩa cần review: materialization-dedup-recovery"
+          },
+          "original_text": "Có work item gần nghĩa cần review: materialization-dedup-recovery",
+          "actor": "maintainer",
+          "reason": "Create one standalone prerequisite for bounded create_new proposal recovery. The matched materialization-dedup-recovery item is ARCHIVED and explicitly excluded linked changes. Preserve that item and the v2.6.4 signed intake unchanged. This new work item has no enclosing change package; it extends the implementation that handles change packages. Review /tmp/change-recovery-proposal.md. Intake separation only; no implementation or release approval.",
+          "resolved_at": "2026-10-15T08:24:58.848Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "hyICJEOqhBlH1qeawZ+fF+st3u3cJbrGOSQvlmQAAwu9/nRvpkUwdjh+NXXCY3zIxAqcMOPOxCstBJVSaKFHCQ=="
+      }
+    },
+    {
+      "operation_id": "0ff40a4e-a660-4ca5-b4d7-2d47cb26a662",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:474fba10aa759f0ea9e6bbdb6be3e74f155a2ad07be169120cd1b339c050116a",
+      "original_entry": {
+        "id": "se:2e4b4d6626c769661ccf0ae5b16330a7af6ef433818c0bf046a00bc848a9988c",
+        "kind": "workflow_followup",
+        "text": "Làm rõ scope để chốt single hay split."
+      },
+      "original_text": "Làm rõ scope để chốt single hay split.",
+      "actor": "maintainer",
+      "reason": "Create one standalone prerequisite for bounded create_new proposal recovery. The matched materialization-dedup-recovery item is ARCHIVED and explicitly excluded linked changes. Preserve that item and the v2.6.4 signed intake unchanged. This new work item has no enclosing change package; it extends the implementation that handles change packages. Review /tmp/change-recovery-proposal.md. Intake separation only; no implementation or release approval.",
+      "resolved_at": "2026-10-15T08:25:02.142Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "recover-proposals-with-new-change",
+          "operation_id": "0ff40a4e-a660-4ca5-b4d7-2d47cb26a662",
+          "state_id": "di:474fba10aa759f0ea9e6bbdb6be3e74f155a2ad07be169120cd1b339c050116a",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:2e4b4d6626c769661ccf0ae5b16330a7af6ef433818c0bf046a00bc848a9988c",
+            "kind": "workflow_followup",
+            "text": "Làm rõ scope để chốt single hay split."
+          },
+          "original_text": "Làm rõ scope để chốt single hay split.",
+          "actor": "maintainer",
+          "reason": "Create one standalone prerequisite for bounded create_new proposal recovery. The matched materialization-dedup-recovery item is ARCHIVED and explicitly excluded linked changes. Preserve that item and the v2.6.4 signed intake unchanged. This new work item has no enclosing change package; it extends the implementation that handles change packages. Review /tmp/change-recovery-proposal.md. Intake separation only; no implementation or release approval.",
+          "resolved_at": "2026-10-15T08:25:02.142Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "gXmeO1g81ht9BZu/6S5Y1CbVXYF4TSZJdSpDyeb8kfKIkYbiWQc9ERtAdi3DKzq2Dn+Gvj3jPM78d1KE6YpCDg=="
+      }
+    },
+    {
+      "operation_id": "5167c18e-0580-439b-b6d0-63834a34da32",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:c3367949c07e50823b8ed0e25936f22af61639664c7b1d80f75609be4f3fc612",
+      "original_entry": {
+        "id": "se:7e02a07ffb39c9ba5fa24061938904389103dc31aadf2242bf27c780cff059a3",
+        "kind": "workflow_followup",
+        "text": "Review existing work-items/changes trước khi scaffold."
+      },
+      "original_text": "Review existing work-items/changes trước khi scaffold.",
+      "actor": "maintainer",
+      "reason": "Create one standalone prerequisite for bounded create_new proposal recovery. The matched materialization-dedup-recovery item is ARCHIVED and explicitly excluded linked changes. Preserve that item and the v2.6.4 signed intake unchanged. This new work item has no enclosing change package; it extends the implementation that handles change packages. Review /tmp/change-recovery-proposal.md. Intake separation only; no implementation or release approval.",
+      "resolved_at": "2026-10-15T08:25:06.568Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "recover-proposals-with-new-change",
+          "operation_id": "5167c18e-0580-439b-b6d0-63834a34da32",
+          "state_id": "di:c3367949c07e50823b8ed0e25936f22af61639664c7b1d80f75609be4f3fc612",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:7e02a07ffb39c9ba5fa24061938904389103dc31aadf2242bf27c780cff059a3",
+            "kind": "workflow_followup",
+            "text": "Review existing work-items/changes trước khi scaffold."
+          },
+          "original_text": "Review existing work-items/changes trước khi scaffold.",
+          "actor": "maintainer",
+          "reason": "Create one standalone prerequisite for bounded create_new proposal recovery. The matched materialization-dedup-recovery item is ARCHIVED and explicitly excluded linked changes. Preserve that item and the v2.6.4 signed intake unchanged. This new work item has no enclosing change package; it extends the implementation that handles change packages. Review /tmp/change-recovery-proposal.md. Intake separation only; no implementation or release approval.",
+          "resolved_at": "2026-10-15T08:25:06.568Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "YuzBhnna/dS8QajEfMUkgXi23tVhIsQznDxEI7xI19osOupPamHcTDEj+aGSx1uKrt13n1HZ3Nyji9ltwU8kCg=="
+      }
+    }
+  ],
+  "materialization_recovery": {
+    "schema_version": 1,
+    "operation_id": "73f43dbb-3c94-4963-b8a2-b03a25aa225b",
+    "source_report_sha256": "5f37260c1aa4054eeebcda8145039f6d1e555df78df949a51c5d74da34106a20",
+    "resulting_status": "MATERIALIZED",
+    "disposition_operation_ids": [
+      "bd198283-e1bf-484f-99f2-ba6c7cc66e56",
+      "0ff40a4e-a660-4ca5-b4d7-2d47cb26a662",
+      "5167c18e-0580-439b-b6d0-63834a34da32"
+    ],
+    "completed_at": "2026-10-15T08:25:36.229Z"
+  }
+}
