@@ -1170,6 +1170,133 @@ function testResumeMalformedAdaptiveInputIsReadOnly() {
   } finally { ctx.dispose(); }
 }
 
+function testResumeNewChange() {
+  for (const reviewed of [false, true]) {
+    const ctx = buildRecoveryFixture(reviewed, { "planning-track": "full", "change-strategy": "create_new", "change-id": "CHANGE-950" });
+    try {
+      const before = reviewed ? resolveFixtureAdmission(ctx) : JSON.parse(fs.readFileSync(ctx.reportPath));
+      const args = recoveryArgs(ctx);
+      const result = materializeWorkItem({ args });
+      strictAssert.equal(result.report.protocol_status, "MATERIALIZED");
+      strictAssert.deepEqual(result.report.resolved_state_history, before.resolved_state_history);
+      strictAssert.equal(result.report.approval_status, "PENDING_REVIEW");
+      strictAssert.deepEqual(result.report.granted_write_paths, []);
+      const proposal = fs.readFileSync(path.join(ctx.projectRoot, "changes/CHANGE-950/proposal.md"), "utf8");
+      strictAssert.match(proposal, /approval_status: PENDING_REVIEW/);
+      strictAssert.match(proposal, /dashboard-export-recovery/);
+      const note = fs.readFileSync(path.join(ctx.workflowRoot, ctx.slug + ".s04.acceptance-criteria.md"), "utf8");
+      strictAssert.match(note, /change_id: "CHANGE-950"/);
+      const bytes = fs.readFileSync(ctx.reportPath);
+      strictAssert.equal(materializeWorkItem({ args }).outcome, "NOOP");
+      strictAssert.deepEqual(fs.readFileSync(ctx.reportPath), bytes);
+    } finally { ctx.dispose(); }
+  }
+}
+
+function newChangeFixture(reviewed = false) {
+  return buildRecoveryFixture(reviewed, { "planning-track": "full", "change-strategy": "create_new", "change-id": "CHANGE-950" });
+}
+
+function testNewChangeFailureRecovery() {
+  for (const point of ["after_change_directory", "after_change_manifest", "after_first_change_file", "after_first_note", "before_report_rename", "before_projection_refresh"]) {
+    const ctx = newChangeFixture();
+    try {
+      const args = recoveryArgs(ctx), before = fs.readFileSync(ctx.reportPath);
+      const mode = fs.statSync(ctx.projectRoot).mode;
+      process.env.WORKFLOW_BUNDLE_RECOVERY_FAILURE_POINT = point;
+      try { strictAssert.throws(() => materializeWorkItem({ args }), /Injected|committed/); }
+      finally { delete process.env.WORKFLOW_BUNDLE_RECOVERY_FAILURE_POINT; }
+      if (point !== "before_projection_refresh") strictAssert.deepEqual(fs.readFileSync(ctx.reportPath), before);
+      strictAssert.equal(fs.statSync(ctx.projectRoot).mode, mode, "project permissions restored");
+      if (point === "after_change_directory") {
+        strictAssert.throws(() => materializeWorkItem({ args }), /Unowned/);
+      } else {
+        const result = materializeWorkItem({ args });
+        strictAssert.equal(result.report.protocol_status, "MATERIALIZED");
+        strictAssert.equal(materializeWorkItem({ args }).outcome, "NOOP");
+        strictAssert.throws(() => materializeWorkItem({ args: { ...args, "operation-id": crypto.randomUUID() } }), /Conflicting/);
+      }
+    } finally { delete process.env.WORKFLOW_BUNDLE_RECOVERY_FAILURE_POINT; ctx.dispose(); }
+  }
+}
+
+function testNewChangeRefusals() {
+  for (const kind of ["unowned", "symlink", "file-root", "manifest", "modified", "extra", "missing", "hardlink", "compact", "id", "strategy", "signature"]) {
+    const ctx = newChangeFixture(kind === "signature");
+    try {
+      if (kind === "signature") resolveFixtureAdmission(ctx);
+      let args = recoveryArgs(ctx);
+      const root = path.join(ctx.projectRoot, "changes/CHANGE-950");
+      if (["unowned", "symlink", "file-root"].includes(kind)) {
+        fs.chmodSync(ctx.projectRoot, 0o755);
+        fs.mkdirSync(path.dirname(root), { recursive: true });
+        if (kind === "symlink") fs.symlinkSync(ctx.workflowRoot, root, "dir");
+        else if (kind === "file-root") fs.writeFileSync(root, "sentinel");
+        else fs.mkdirSync(root);
+      } else if (["manifest", "modified", "extra", "missing", "hardlink"].includes(kind)) {
+        materializeWorkItem({ args });
+        const proposal = path.join(root, "proposal.md");
+        if (kind === "manifest") fs.writeFileSync(path.join(root, ".materialization-recovery.json"), "{}");
+        if (kind === "modified") fs.appendFileSync(proposal, "owner edit");
+        if (kind === "extra") fs.writeFileSync(path.join(root, "unowned.txt"), "sentinel");
+        if (kind === "missing") fs.unlinkSync(proposal);
+        if (kind === "hardlink") fs.linkSync(proposal, path.join(ctx.workflowRoot, "linked-sentinel"));
+      } else {
+        const raw = JSON.parse(fs.readFileSync(ctx.reportPath));
+        if (kind === "compact") raw.cr_profile = raw.work_items[0].cr_profile = "compact";
+        if (kind === "id") raw.change_id = raw.work_items[0].change_id = "../ESCAPE";
+        if (kind === "strategy") raw.change_strategy = raw.work_items[0].change_strategy = "reuse_change";
+        if (kind === "signature") raw.resolved_state_history[0].authorization.signature = "forged";
+        fs.writeFileSync(ctx.reportPath, JSON.stringify(raw));
+        args = recoveryArgs(ctx);
+      }
+      assertRecoveryRefusal(ctx, args, "create_new " + kind);
+    } finally { ctx.dispose(); }
+  }
+}
+
+function testNewChangeCompetingClaim() {
+  const ctx = newChangeFixture();
+  try {
+    const secondSlug = "second-claim";
+    const secondRoot = path.join(ctx.projectRoot, "work-items", secondSlug);
+    const secondReport = path.join(secondRoot, secondSlug + ".work-item-report.json");
+    materializeWorkItem({ args: { request: "second independent authoring", "project-root": ctx.projectRoot,
+      "work-item": secondSlug, "delivery-context": "brownfield", "planning-track": "full",
+      "change-strategy": "create_new", "change-id": "CHANGE-950", output: secondReport } });
+    const secondCtx = { ...ctx, slug: secondSlug, workflowRoot: secondRoot, reportPath: secondReport };
+    const raw = JSON.parse(fs.readFileSync(secondReport));
+    if (raw.protocol_status === "PROPOSED") resolveFixtureAdmission(secondCtx);
+    const secondArgs = recoveryArgs(secondCtx);
+    const secondBytes = fs.readFileSync(secondReport);
+    const args = recoveryArgs(ctx), original = fs.openSync;
+    let competed = false;
+    fs.openSync = function(target, ...rest) {
+      const opened = original.call(this, target, ...rest);
+      if (!competed && String(target).endsWith(".materialization-recovery.lock")) {
+        competed = true;
+        const { spawnSync } = require("child_process");
+        const child = spawnSync(process.execPath, [path.resolve(__dirname, "../bin/wfc.js"), "materialize",
+          "--resume-proposal", "--work-item", secondSlug, "--project-root", ctx.projectRoot,
+          "--expected-report-sha256", secondArgs["expected-report-sha256"], "--operation-id", secondArgs["operation-id"],
+          "--approval-root", ctx.approvalRoot], { encoding: "utf8" });
+        strictAssert.notEqual(child.status, 0);
+        strictAssert.match(child.stderr, /locked/);
+        strictAssert.deepEqual(fs.readFileSync(secondReport), secondBytes);
+      }
+      return opened;
+    };
+    try { materializeWorkItem({ args }); } finally { fs.openSync = original; }
+    strictAssert.equal(competed, true);
+    strictAssert.throws(() => materializeWorkItem({ args: secondArgs }), /Conflicting/);
+    strictAssert.deepEqual(fs.readFileSync(secondReport), secondBytes);
+  } finally { ctx.dispose(); }
+}
+
+testNewChangeFailureRecovery();
+testNewChangeRefusals();
+testNewChangeCompetingClaim();
+testResumeNewChange();
 testResumeMalformedAdaptiveInputIsReadOnly();
 testResumeCliAndLegacyFullNotes();
 testResumeMissingReportAndSnapshotRace();

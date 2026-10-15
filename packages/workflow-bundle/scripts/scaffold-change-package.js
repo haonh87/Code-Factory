@@ -308,6 +308,18 @@ function buildCompactRequestContent(changeId, context) {
   return lines.join("\n");
 }
 
+// Pure preparation for proposal recovery. Ordinary scaffold keeps its existing behavior.
+function prepareFullChangePackage({ projectRoot, changeId, workItemSlug, decisionOwner, materializationRef, requestSummary }) {
+  if (typeof changeId !== "string" || !CHANGE_ID_PATTERN.test(changeId)) throw new Error("Invalid recovery change ID.");
+  validateChoice("decision-owner", decisionOwner, CHANGE_DECISION_OWNERS);
+  const context = { workItemSlug, decisionOwner, materializationRef, requestSummary };
+  return REQUIRED_CHANGE_PACKAGE_FILES.map(relativePath => ({
+    relativePath,
+    filePath: path.join(projectRoot, "changes", changeId, relativePath),
+    content: getFileTemplate(changeId, context, relativePath)
+  }));
+}
+
 function scaffoldChangePackage(options) {
   const args = options.args;
   const changeId = normalizeSingleValue(args["change-id"]);
@@ -441,5 +453,6 @@ if (require.main === module) {
 }
 
 module.exports = {
+  prepareFullChangePackage,
   scaffoldChangePackage
 };
