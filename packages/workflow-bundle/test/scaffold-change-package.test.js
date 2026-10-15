@@ -1,7 +1,7 @@
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
-const { scaffoldChangePackage } = require("../scripts/scaffold-change-package");
+const { scaffoldChangePackage, prepareFullChangePackage } = require("../scripts/scaffold-change-package");
 
 let failures = 0;
 
@@ -240,6 +240,21 @@ function testCompactTokenInflectionsEscalate() {
   });
   console.log("  PASS: token inflections (plurals/gerunds) escalate to full");
 }
+
+function testPureFullPreparationParity() {
+  const projectRoot = buildProject();
+  try {
+    const files = prepareFullChangePackage({ projectRoot, changeId: "CHANGE-950", workItemSlug: "recovery-test",
+      decisionOwner: "agent", materializationRef: "work-items/recovery-test/recovery-test.work-item-report.json", requestSummary: "Recover" });
+    assert(fs.readdirSync(path.join(projectRoot, "changes")).length === 0, "preparation has zero filesystem writes");
+    const result = scaffoldChangePackage({ args: { "project-root": projectRoot, "change-root": path.join(projectRoot, "changes/CHANGE-950"),
+      "change-id": "CHANGE-950", "work-item": "recovery-test", "decision-owner": "agent",
+      "materialization-ref": "work-items/recovery-test/recovery-test.work-item-report.json", "request-summary": "Recover" } });
+    assert(result.createdFiles.length === files.length, "all canonical files prepared");
+    for (const file of files) assert(fs.readFileSync(file.filePath, "utf8") === file.content, "canonical parity " + file.relativePath);
+  } finally { rmrf(projectRoot); }
+}
+testPureFullPreparationParity();
 
 console.log("Running scaffold-change-package (compact CR) tests...\n");
 testCompactScaffoldsOnlyRequestMd();

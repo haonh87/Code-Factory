@@ -627,15 +627,24 @@ wfc materialize --resume-proposal --work-item <slug> --expected-report-sha256 <6
 
 Record the hash after all admission decisions. Supply a new canonical lowercase UUID for the recovery operation. Keep that UUID and the original source hash for retries. `--project-root` and `--workflow-root` select the project and its in-project workflow base; the report must be at `<workflow-base>/<slug>/<slug>.work-item-report.json`. Resume accepts no new request, profile overrides, output redirection or `--force`, and never executes stored `scaffold_actions` text.
 
-Supported inputs are single brownfield items with `change_strategy=none`, no change ID, no work-item approval or grants, and no finalized notes:
+Supported inputs are single brownfield items with either `change_strategy=none` and no change ID, or `create_new` and a consistent valid change ID for a new full package. They must have no work-item approval or grants and no finalized notes:
 
 - READY_TO_MATERIALIZE / READY / no_conflict, with no blockers and only the original materializer-owned scaffold/validation actions.
 - PROPOSED / needs_review, with no current blockers/actions and valid signed disposition history for all three admission concerns: near-match review, scope clarification and review of existing work. Resolve each exact current ID through `wfc work-item dispose-state` in the owning maintenance lane; refresh status between dispositions because `di:` IDs depend on the report snapshot. The existing Maintainer identity is unlocked in a human-controlled terminal. Deleting entries or writing an approval sentence is insufficient. Producer `se:` IDs identify concerns; snapshot `di:` IDs identify disposition targets.
 
-Greenfield, split, linked-change, approved/active/terminal items and damaged `reuse_work_item` reports require investigation by their owner. Recovery does not reconstruct overwritten evidence. Conflicting candidate metadata, signatures, note ownership/profile or symlinks fail before target writes.
+Greenfield, split, reuse/link-existing changes, compact changes, approved/active/terminal items and damaged `reuse_work_item` reports require investigation by their owner. Recovery does not reconstruct overwritten evidence. Conflicting candidate metadata, signatures, note ownership/profile or symlinks fail before target writes.
 
 Success reports `APPLIED`, an operation ID and `projection_status=SYNCED`. It reaches MATERIALIZED/s01 with PENDING_REVIEW, empty grants and applicable authoring approval actions. It preserves the original candidate snapshot, including historical `work_items[].blockers`; only top-level blockers/actions represent current pending state. The existing human authoring gates remain required before ACTIVE.
 
 The optional `materialization_recovery` field records schema version 1, operation ID, source-report SHA-256, resulting status MATERIALIZED, referenced disposition operation IDs and UTC completion time. The hash detects concurrent changes; it is not an approval. The record survives current protocol normalization. Do not use older writers on recovered reports because they may discard this field.
 
 Existing correctly owned drafts retain their bytes, except the managed s01 protocol section. A failure while scaffolding may leave new drafts and the original report unchanged; inspect the error and retry with the same inputs. A committed report followed by projection/capability failure explicitly identifies the committed operation. The same UUID and original hash then return `NOOP` and repair the projection without duplicate events. Different operation identity or a later lifecycle state is refused. Recovery never creates trusted receipts, disposes concerns, approves implementation, publishes a release or authorizes cleanup.
+
+
+### Recovery of a new full change package
+
+A single unapproved brownfield proposal with consistent `change_strategy=create_new` and a valid `change_id` can use the same resume command. Signature verification, report snapshot checks and human gates are unchanged. Recovery prepares canonical full change files and workflow notes with that change ID; both change and work-item approvals remain pending. Reuse/link-existing and compact packages remain unsupported.
+
+An exclusive per-change-ID lock prevents competing recovery writers. `.materialization-recovery.json` in the new change root binds the work item, operation UUID, source report hash and generated-file digests. It is provenance, never approval. Unrelated existing packages, edited generated content, symlinks, hardlinks, unexpected files and missing committed files are refused rather than overwritten. Preserve this metadata for retries.
+
+Before report commit, partial writes require the same UUID and original hash. A crash after creating the change directory but before its ownership manifest leaves an unowned directory: inspect it explicitly; do not infer ownership or force overwrite. A stale lock likewise requires owner inspection. After commit, retry repairs projection only when provenance/content still validate. Recovery does not protect against hostile simultaneous filesystem replacement or older writers that ignore this lock.

@@ -619,15 +619,24 @@ wfc materialize --resume-proposal --work-item <slug> --expected-report-sha256 <6
 
 Lấy hash sau khi xử lý các quyết định admission. Dùng một UUID chuẩn, chữ thường, cho operation mới; giữ UUID và hash nguồn ban đầu để retry. `--project-root` và `--workflow-root` chọn project và thư mục gốc workflow bên trong project; report phải nằm ở `<workflow-base>/<slug>/<slug>.work-item-report.json`. Resume không nhận request mới, thay đổi profile, đường dẫn output hay `--force`, và không thực thi chuỗi `scaffold_actions` đã lưu.
 
-Chỉ hỗ trợ một work item brownfield, `change_strategy=none`, không có change ID, approval hay write grant, và chưa có note finalized:
+Hỗ trợ một work item brownfield với `change_strategy=none` và không có change ID, hoặc `create_new` với change ID hợp lệ, nhất quán cho full package mới. Work item chưa có approval, write grant hoặc note finalized:
 
 - READY_TO_MATERIALIZE / READY / no_conflict, không có blocker, chỉ còn action scaffold/validation thuộc materializer.
 - PROPOSED / needs_review, không còn blocker/action hiện tại và có lịch sử disposition đã ký hợp lệ cho đủ ba nội dung: near-match review, làm rõ scope và review work item đã có. Xử lý từng ID hiện tại qua `wfc work-item dispose-state` trong lane có owner; đọc lại status giữa các lần vì ID `di:` phụ thuộc snapshot report. Maintainer mở khóa danh tính hiện có trong terminal do con người điều khiển. Xóa entry hoặc viết câu chấp thuận không thay thế chữ ký. ID `se:` xác định nội dung do producer tạo; ID `di:` xác định entry cần disposition trong snapshot.
 
-Greenfield, split, linked-change, item đã approved/active/terminal và report `reuse_work_item` bị ghi đè cần owner điều tra riêng. Recovery không dựng lại bằng chứng đã mất. Metadata mâu thuẫn, chữ ký sai, note sai owner/profile hoặc symlink bị từ chối trước khi ghi.
+Greenfield, split, change reuse/link-existing, change compact, item đã approved/active/terminal và report `reuse_work_item` bị ghi đè cần owner điều tra riêng. Recovery không dựng lại bằng chứng đã mất. Metadata mâu thuẫn, chữ ký sai, note sai owner/profile hoặc symlink bị từ chối trước khi ghi.
 
 Kết quả thành công ghi `APPLIED`, operation ID và `projection_status=SYNCED`; trạng thái là MATERIALIZED/s01, PENDING_REVIEW, grant rỗng và các action authoring cần thiết. Snapshot candidate ban đầu được giữ nguyên, gồm `work_items[].blockers` lịch sử; chỉ blocker/action ở cấp report thể hiện việc hiện còn chờ. Các gate con người vẫn bắt buộc trước ACTIVE.
 
 Trường tùy chọn `materialization_recovery` giữ schema version 1, operation ID, SHA-256 report nguồn, kết quả MATERIALIZED, các operation ID disposition liên quan và thời gian UTC. Hash kiểm tra thay đổi đồng thời, không phải approval. Normalizer hiện tại giữ trường này; không dùng writer cũ với report đã recovery vì có thể làm mất metadata.
 
 Draft đúng owner giữ nguyên byte, ngoại trừ phần protocol do CLI quản lý trong s01. Lỗi giữa lúc scaffold có thể để lại draft mới nhưng report gốc không đổi; đọc lỗi và retry cùng đầu vào. Nếu report đã commit nhưng cập nhật projection/capability lỗi, thông báo nêu rõ operation đã commit. Retry cùng UUID và hash nguồn ban đầu trả `NOOP`, sửa projection, không lặp event. Operation khác hoặc lifecycle đã tiến bước sẽ bị từ chối. Recovery không tạo receipt, tự disposition, duyệt implement, publish hay cho phép cleanup.
+
+
+### Recovery cho full change package mới
+
+Một proposal brownfield đơn lẻ, chưa được duyệt, có `change_strategy=create_new` và `change_id` hợp lệ, nhất quán có thể dùng cùng lệnh resume. Kiểm tra chữ ký, snapshot report và gate của con người được giữ nguyên. Recovery tạo change chuẩn cùng workflow note liên kết đúng change ID; approval của cả change và work item vẫn pending. Không hỗ trợ reuse/link-existing hoặc compact package.
+
+Khóa riêng theo change ID ngăn hai recovery writer tranh quyền sở hữu. File `.materialization-recovery.json` trong change root mới ràng buộc work item, UUID thao tác, hash report nguồn và digest các file sinh ra. Đây là provenance, không phải approval. Package không thuộc thao tác, nội dung đã sửa, symlink, hardlink, file ngoài dự kiến hoặc file đã commit bị mất đều bị từ chối ghi đè. Giữ metadata này để retry.
+
+Trước khi commit report, retry dùng cùng UUID và hash gốc. Nếu dừng sau khi tạo thư mục nhưng trước khi ghi manifest, thư mục chưa có bằng chứng sở hữu: owner phải kiểm tra, không tự nhận quyền hoặc force overwrite. Khóa còn sót cũng cần owner kiểm tra. Sau commit, chỉ sửa projection khi provenance và nội dung vẫn hợp lệ. Không cam kết chống thay thế filesystem đồng thời có chủ đích hoặc writer cũ không tuân thủ khóa.

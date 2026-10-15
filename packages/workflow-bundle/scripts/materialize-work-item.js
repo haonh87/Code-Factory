@@ -35,7 +35,7 @@ const {
   verifyRecordedDisposition
 } = require("./workflow-trusted-approval-utils");
 const { scaffoldWorkflowNotes, prepareMissingWorkflowNotes, validateRecoveredWorkflowNotes } = require("./scaffold-workflow");
-const { scaffoldChangePackage } = require("./scaffold-change-package");
+const { scaffoldChangePackage, prepareFullChangePackage } = require("./scaffold-change-package");
 const {
   REQUEST_LANES,
   ROLE_ORDER,
@@ -1242,13 +1242,15 @@ function assertRecoveryTree(projectRoot, workflowRoot) {
 
 function validateRecoveryCandidate(raw, { workItemSlug, workflowRoot }) {
   if (!raw || raw.work_item_slug !== workItemSlug || raw.candidate_count !== 1 || raw.split_decision !== "single" ||
-      raw.delivery_context !== "brownfield" || raw.change_strategy !== "none" || raw.change_id !== "" ||
+      raw.delivery_context !== "brownfield" ||
+      !((raw.change_strategy === "none" && raw.change_id === "") ||
+        (raw.change_strategy === "create_new" && typeof raw.change_id === "string" && CHANGE_ID_PATTERN.test(raw.change_id))) ||
       !Array.isArray(raw.work_items) || raw.work_items.length !== 1 || raw.review_required !== true ||
       raw.approval_status !== "PENDING_REVIEW" || raw.reviewed_by || raw.reviewed_at ||
       (raw.granted_write_paths !== undefined && (!Array.isArray(raw.granted_write_paths) || raw.granted_write_paths.length)) ||
       !["PROPOSED", "READY_TO_MATERIALIZE", "MATERIALIZED"].includes(raw.protocol_status) ||
       !["", "s01"].includes(raw.current_step) || path.resolve(raw.workflow_root || ".") !== workflowRoot) {
-    throw new Error("Unsupported recovery candidate: expected one unapproved brownfield item without change or grants.");
+    throw new Error("Unsupported recovery candidate: expected one unapproved brownfield item with none/create_new and no grants.");
   }
   const item = raw.work_items[0];
   for (const key of ["work_item_slug", "work_item_type", "delivery_context", "change_strategy", "change_id",
@@ -1256,7 +1258,7 @@ function validateRecoveryCandidate(raw, { workItemSlug, workflowRoot }) {
     if (Object.hasOwn(raw, key) && raw[key] !== item[key]) throw new Error(`Conflicting candidate metadata: ${key}`);
   }
   if (item.scope_summary !== raw.raw_request_summary || item.primary_outcome !== raw.raw_request_summary ||
-      !Array.isArray(item.blockers) || !Array.isArray(item.scaffold_actions) || item.scaffold_actions.length !== 2 ||
+      !Array.isArray(item.blockers) || !Array.isArray(item.scaffold_actions) || item.scaffold_actions.length !== (raw.change_strategy === "create_new" ? 3 : 2) ||
       !Array.isArray(raw.blockers) || !Array.isArray(raw.required_actions) ||
       !Array.isArray(raw.protocol_events) || !Array.isArray(raw.audit_events) || !Array.isArray(raw.refs)) {
     throw new Error("Conflicting or incomplete persisted candidate metadata.");
@@ -1309,6 +1311,95 @@ function validateRecoveryAdmission(raw, item, approvalRoot) {
     }
     return records[0].operation_id;
   });
+}
+
+// The manifest is operation provenance, never approval. An unowned directory is
+// deliberately not adopted, including a crash between mkdir and manifest creation.
+function prepareRecoveryChange({ projectRoot, raw, item, operationId, sourceHash, reportPath }) {
+  if (raw.change_strategy === "none") return null;
+  if (raw.cr_profile && raw.cr_profile !== "full" || item.cr_profile && item.cr_profile !== "full") {
+    throw new Error("Recovery supports full change packages only.");
+  }
+  const files = prepareFullChangePackage({ projectRoot, changeId: item.change_id,
+    workItemSlug: item.work_item_slug, decisionOwner: raw.decision_owner,
+    materializationRef: path.relative(projectRoot, reportPath), requestSummary: raw.raw_request_summary });
+  const root = path.join(projectRoot, "changes", item.change_id);
+  const manifestPath = path.join(root, ".materialization-recovery.json");
+  const manifest = JSON.stringify({ schema_version: 1, work_item_slug: item.work_item_slug,
+    change_id: item.change_id, operation_id: operationId, source_report_sha256: sourceHash,
+    files: files.map(f => ({ path: f.relativePath, sha256: createHash("sha256").update(f.content).digest("hex") })) }, null, 2) + "\n";
+  const directories = new Set([root]);
+  for (const f of files) {
+    let dir = path.dirname(f.filePath);
+    while (dir !== root) { directories.add(dir); dir = path.dirname(dir); }
+  }
+  const expected = new Map(files.map(f => [f.filePath, f.content]));
+  expected.set(manifestPath, manifest);
+  const validate = () => {
+    assertRecoveryPath(projectRoot, root);
+    if (!fs.existsSync(root)) return;
+    assertRecoveryTree(projectRoot, root);
+    if (!fs.existsSync(manifestPath)) throw new Error("Unowned recovery change directory; inspect its owner.");
+    const visit = dir => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const target = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+          if (!directories.has(target)) throw new Error("Unexpected recovery change directory.");
+          visit(target);
+        } else if (!expected.has(target) || fs.lstatSync(target).nlink !== 1 ||
+                   fs.readFileSync(target, "utf8") !== expected.get(target)) {
+          throw new Error("Conflicting recovery change artifact: " + target);
+        }
+      }
+    };
+    visit(root);
+    if (raw.materialization_recovery && files.some(f => !fs.existsSync(f.filePath))) {
+      throw new Error("Committed recovery change artifact is missing.");
+    }
+  };
+  validate();
+  return { root, files, manifestPath, manifest, validate };
+}
+
+function withRecoveryChange({ projectRoot, change, failurePoint }, callback) {
+  if (!change) return callback();
+  const parent = path.dirname(change.root);
+  assertRecoveryPath(projectRoot, parent);
+  if (!fs.existsSync(parent)) {
+    // Capability control can make the project root read-only while permitting
+    // authoring roots. Bootstrap only changes/, restoring the exact root mode.
+    const mode = fs.statSync(projectRoot).mode;
+    try {
+      if (!(mode & 0o200)) fs.chmodSync(projectRoot, mode | 0o200);
+      fs.mkdirSync(parent);
+    } finally { if (!(mode & 0o200)) fs.chmodSync(projectRoot, mode); }
+  }
+  const lock = path.join(parent, "." + path.basename(change.root) + ".materialization-recovery.lock");
+  let fd;
+  try { fd = fs.openSync(lock, "wx", 0o600); }
+  catch (error) { if (error.code === "EEXIST") throw new Error("Recovery change ID is locked; inspect owner before retry."); throw error; }
+  try {
+    change.validate();
+    if (!fs.existsSync(change.root)) {
+      fs.mkdirSync(change.root);
+      if (failurePoint === "after_change_directory") throw new Error("Injected recovery failure after_change_directory; unowned directory requires inspection.");
+      fs.writeFileSync(change.manifestPath, change.manifest, { flag: "wx", encoding: "utf8" });
+    }
+    if (failurePoint === "after_change_manifest") throw new Error("Injected recovery failure after_change_manifest.");
+    for (const file of change.files) {
+      assertRecoveryPath(projectRoot, file.filePath);
+      if (!fs.existsSync(file.filePath)) {
+        fs.mkdirSync(path.dirname(file.filePath), { recursive: true });
+        fs.writeFileSync(file.filePath, file.content, { flag: "wx", encoding: "utf8" });
+        if (failurePoint === "after_first_change_file") throw new Error("Injected recovery failure after_first_change_file.");
+      }
+    }
+    change.validate();
+    return callback();
+  } finally {
+    fs.closeSync(fd);
+    fs.unlinkSync(lock);
+  }
 }
 
 function resumeMaterialization(args) {
@@ -1386,50 +1477,54 @@ function resumeMaterialization(args) {
     const noteArgs = { "work-item": workItemSlug, "work-item-type": item.work_item_type,
       "delivery-context": item.delivery_context, "planning-track": item.planning_track,
       "governance-profile": item.governance_profile, "execution-mode": item.execution_mode,
-      "sdd-mode": item.sdd_mode, "project-root": projectRoot, "workflow-root": workflowRoot };
+      "sdd-mode": item.sdd_mode, "change-id": item.change_id, "project-root": projectRoot, "workflow-root": workflowRoot };
     const notes = prepareMissingWorkflowNotes({ args: noteArgs,
       adaptiveReport: raw.artifact_shape === "adaptive_v1" ? normalized : null, allowFinalized: Boolean(recovery) });
     validateRecoveredWorkflowNotes({ projectRoot, workflowRoot });
     assertProtocolSnapshotUnchanged({ reportPath: loaded.reportPath, rawBytes: loaded.rawBytes });
     const failurePoint = process.env.WORKFLOW_BUNDLE_RECOVERY_FAILURE_POINT || "";
-    for (const note of notes) {
-      assertRecoveryPath(projectRoot, note.filePath);
-      if (note.original) {
-        if (!fs.readFileSync(note.filePath).equals(note.original)) throw new Error("Recovery note changed during preflight.");
-      } else {
-        fs.writeFileSync(note.filePath, note.content, { encoding: "utf8", flag: "wx" });
-        if (failurePoint === "after_first_note") throw new Error("Injected recovery failure after_first_note; original report unchanged.");
+    const change = prepareRecoveryChange({ projectRoot, raw, item, operationId, sourceHash, reportPath: loaded.reportPath });
+    return withRecoveryChange({ projectRoot, change, failurePoint }, () => {
+      assertProtocolSnapshotUnchanged({ reportPath: loaded.reportPath, rawBytes: loaded.rawBytes });
+      for (const note of notes) {
+        assertRecoveryPath(projectRoot, note.filePath);
+        if (note.original) {
+          if (!fs.readFileSync(note.filePath).equals(note.original)) throw new Error("Recovery note changed during preflight.");
+        } else {
+          fs.writeFileSync(note.filePath, note.content, { encoding: "utf8", flag: "wx" });
+          if (failurePoint === "after_first_note") throw new Error("Injected recovery failure after_first_note; original report unchanged.");
+        }
       }
-    }
-    validateRecoveredWorkflowNotes({ projectRoot, workflowRoot });
-    let report = raw;
-    if (!recovery) {
-      const now = new Date().toISOString();
-      const events = [];
-      if (raw.protocol_status === "PROPOSED") events.push(buildProtocolEvent({ action: "materialize-ready",
-        actor: raw.decision_owner, fromStatus: "PROPOSED", toStatus: "READY_TO_MATERIALIZE", note: "Signed admission concerns resolved." }));
-      events.push(buildProtocolEvent({ action: "materialize", actor: raw.decision_owner,
-        fromStatus: "READY_TO_MATERIALIZE", toStatus: "MATERIALIZED", note: `Resumed proposal operation ${operationId}.` }));
-      report = { ...raw, protocol_status: "MATERIALIZED", materialization_status: "READY", dedup_result: "no_conflict",
-        current_step: "s01", granted_write_paths: [], approval_status: "PENDING_REVIEW", handoff_target: "human-review",
-        required_actions: buildPostMaterializationActions(raw, item),
-        refs: unique([...raw.refs, path.relative(projectRoot, workflowRoot)]),
-        audit_events: [...raw.audit_events, ...(raw.dedup_result === "needs_review" ? ["DEDUP_CONFIRMED"] : []), "WORKFLOW_SCAFFOLDED", "STEP_OPENED"],
-        protocol_events: [...raw.protocol_events, ...events],
-        materialization_recovery: { schema_version: 1, operation_id: operationId, source_report_sha256: sourceHash,
-          resulting_status: "MATERIALIZED", disposition_operation_ids: dispositions, completed_at: now } };
-      atomicWriteRawProtocolReport({ report, reportPath: loaded.reportPath, expectedBytes: loaded.rawBytes,
-        failurePoint: failurePoint === "before_report_rename" ? failurePoint : "" });
-    }
-    try {
-      if (failurePoint === "before_projection_refresh") throw new Error("Injected recovery projection failure.");
-      upsertProtocolBlockInS01(loaded.s01Path, report);
-      syncCapabilityControl({ projectRoot, workflowRootBase });
-    } catch (error) {
-      throw new Error(`Recovery operation '${operationId}' is committed; projection/capability refresh failed: ${error.message}. Retry the same operation ID and original source hash.`);
-    }
-    return { report, reportPath: loaded.reportPath, outcome: recovery ? "NOOP" : "APPLIED",
-      operation_id: operationId, projection_status: "SYNCED" };
+      validateRecoveredWorkflowNotes({ projectRoot, workflowRoot });
+      let report = raw;
+      if (!recovery) {
+        const now = new Date().toISOString();
+        const events = [];
+        if (raw.protocol_status === "PROPOSED") events.push(buildProtocolEvent({ action: "materialize-ready",
+          actor: raw.decision_owner, fromStatus: "PROPOSED", toStatus: "READY_TO_MATERIALIZE", note: "Signed admission concerns resolved." }));
+        events.push(buildProtocolEvent({ action: "materialize", actor: raw.decision_owner,
+          fromStatus: "READY_TO_MATERIALIZE", toStatus: "MATERIALIZED", note: `Resumed proposal operation ${operationId}.` }));
+        report = { ...raw, protocol_status: "MATERIALIZED", materialization_status: "READY", dedup_result: "no_conflict",
+          current_step: "s01", granted_write_paths: [], approval_status: "PENDING_REVIEW", handoff_target: "human-review",
+          required_actions: buildPostMaterializationActions(raw, item),
+          refs: unique([...raw.refs, path.relative(projectRoot, workflowRoot), ...(change ? [path.relative(projectRoot, change.root)] : [])]),
+          audit_events: [...raw.audit_events, ...(raw.dedup_result === "needs_review" ? ["DEDUP_CONFIRMED"] : []), "WORKFLOW_SCAFFOLDED", "STEP_OPENED"],
+          protocol_events: [...raw.protocol_events, ...events],
+          materialization_recovery: { schema_version: 1, operation_id: operationId, source_report_sha256: sourceHash,
+            resulting_status: "MATERIALIZED", disposition_operation_ids: dispositions, completed_at: now } };
+        atomicWriteRawProtocolReport({ report, reportPath: loaded.reportPath, expectedBytes: loaded.rawBytes,
+          failurePoint: failurePoint === "before_report_rename" ? failurePoint : "" });
+      }
+      try {
+        if (failurePoint === "before_projection_refresh") throw new Error("Injected recovery projection failure.");
+        upsertProtocolBlockInS01(loaded.s01Path, report);
+        syncCapabilityControl({ projectRoot, workflowRootBase });
+      } catch (error) {
+        throw new Error(`Recovery operation '${operationId}' is committed; projection/capability refresh failed: ${error.message}. Retry the same operation ID and original source hash.`);
+      }
+      return { report, reportPath: loaded.reportPath, outcome: recovery ? "NOOP" : "APPLIED",
+        operation_id: operationId, projection_status: "SYNCED" };
+    });
   });
 }
 
