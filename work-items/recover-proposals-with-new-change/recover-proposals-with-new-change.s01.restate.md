@@ -120,7 +120,7 @@ notes_for_step_2: "Use the SRS as the requirements owner."
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "recover-proposals-with-new-change"
@@ -148,11 +148,11 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-10-15T08:35:55.572Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-10-15T13:51:39.721Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-10-15T14:05:46.648Z"
 required_actions:
-  - {"id":"se:aaad7e8e9f23cffa89c042becaae8fbb5dc03bd90d7f32d5eaa6009523ce225a","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+  - {"id":"se:5a6cd2842564fcc2ead1b5c9b753b2b45d953eb67a215053b2330d889c7a4078","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "User explicitly accepted the bounded recovery scope and authoring packet; chat acceptance recorded at 2026-10-15T08:31:25Z. No release publication approval."
@@ -170,6 +170,7 @@ audit_events:
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Traceability

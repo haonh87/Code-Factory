@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "maintainer",
   "raw_request_summary": "Extend proposal recovery to safely materialize one unapproved brownfield create_new change package, preserving signed admission history and refusing conflicting existing change artifacts; this standalone prerequisite does not authorize publication.",
@@ -82,12 +82,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "id": "se:aaad7e8e9f23cffa89c042becaae8fbb5dc03bd90d7f32d5eaa6009523ce225a",
+      "id": "se:5a6cd2842564fcc2ead1b5c9b753b2b45d953eb67a215053b2330d889c7a4078",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -105,7 +105,8 @@
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -175,6 +176,14 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "Technical verification: 47 unit files pass; six delivery files reviewed; human DoD and documented scan-gap acceptance pending."
+    },
+    {
+      "timestamp": "2026-10-15T14:05:46.648Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Human DoD signed and verified against finalized s08; 47 unit files passed; accepted limitations retained. Ready to integrate source commit 377b008."
     }
   ],
   "resolved_state_history": [
