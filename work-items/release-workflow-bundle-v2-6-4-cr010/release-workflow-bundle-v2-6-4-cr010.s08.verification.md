@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: reviewed
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: "CR-010"
@@ -45,9 +45,9 @@ role_signoffs:
   foundation: []
   task_plan: []
   uat: []
-  release: []
+  release: ["devops", "qc"]
   business_acceptance: []
-  dod: []
+  dod: ["qc"]
 gate_reviews:
   spec_reviewed_by: []
   spec_reviewed_at: ""
@@ -63,12 +63,12 @@ gate_reviews:
   task_plan_reviewed_at: ""
   uat_reviewed_by: []
   uat_reviewed_at: ""
-  release_reviewed_by: []
-  release_reviewed_at: ""
+  release_reviewed_by: ["devops"]
+  release_reviewed_at: "2026-10-16T13:34:11Z"
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-10-16T13:34:11Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -90,7 +90,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Automated verification PASS for final candidate a50da628efb512dfac65d0f7bd8c18b86f41b460. Advisory assessment PARTIAL pending human acceptance of explicit scan gaps and DoD/Release approval. No release tag/publication.
+> Automated verification PASS for final candidate a50da628efb512dfac65d0f7bd8c18b86f41b460. Human accepted scan gaps and DoD/Release in chat; trusted receipts remain pending. Overall delivery remains PARTIAL until publication verification and Business Acceptance. No release tag/publication.
 
 ## Step Contract
 ```yaml
@@ -780,3 +780,9 @@ bf54f295b74e496e3d94ab19f5ee20243caa717ebced2bcd59580022feedb969 1422 0o644 pack
 ```
 
 </details>
+
+## Human DoD And Release Decision
+
+At `2026-10-16T13:34:11Z`, haonguyen explicitly answered `accept` to the review packet for source `a50da628efb512dfac65d0f7bd8c18b86f41b460` and candidate SHA-256 `9d7c5395ff5fb3ae2a64d26089a2c4c62122fb769a7cacd2e3bcea3f6fa35e84`. This accepts the disclosed ESLint/Semgrep unavailability and manual review fallback, approves technical DoD and authorizes GitHub v2.6.4 tag/release promotion of the exact retained bytes after trusted receipts are sealed and verified. The mapped reviewers are QC for DoD and DevOps for Release; this records the human decision, not an autonomous approval.
+
+Business Acceptance remains pending post-publication verification. Preserve v2.6.3; npm registry publication and live global installation remain outside authorization. Earlier pending-review statements above describe the pre-decision assessment. Scan coverage remains PARTIAL (tools did not run); the human accepted the disclosed limitation rather than converting it into a scan PASS. No publication has occurred.

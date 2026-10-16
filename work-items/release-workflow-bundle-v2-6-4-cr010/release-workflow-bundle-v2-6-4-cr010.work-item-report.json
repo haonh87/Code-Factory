@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "VERIFIED",
   "decision_owner": "agent",
   "protocol_owner": "maintainer",
   "raw_request_summary": "Prepare immutable workflow-bundle v2.6.4 from integrated main cbf6c09, preserving v2.6.3. Include P-INSTALL in the release tag and source archive, inventory all packaged delta, verify one candidate artifact, and publish only after candidate-specific Release approval. This replaces cancelled release-workflow-bundle-v2-6-4 because CHANGE-008 aliases existing CR-008; use unused canonical CR-010.",
@@ -74,7 +74,7 @@
   "work_item_type": "CHANGE",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/release-workflow-bundle-v2-6-4-cr010",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     ".claude/worktrees/release-workflow-bundle-v2-6-4-cr010",
     "work-items/release-workflow-bundle-v2-6-4-cr010",
@@ -83,12 +83,12 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-010",
-  "handoff_target": "step-s07-owner",
+  "handoff_target": "definition-of-done",
   "required_actions": [
     {
-      "id": "se:7cb86ca47ac7eab6924b46bc7fa37ea14a69abdcf8d437a2dcf90cda229de18e",
+      "id": "se:97d705622a29577b6ff882c29045be8f7ef32a01c5293797526e5080035bd3a0",
       "kind": "workflow_followup",
-      "text": "Continue active execution from step 7 onward."
+      "text": "Collect DoD evidence and close the work item when ready."
     }
   ],
   "blockers": [],
@@ -108,7 +108,8 @@
     "STEP_OPENED",
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
-    "WORK_ITEM_ACTIVATED"
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -170,6 +171,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "ACTIVE",
       "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-10-16T13:34:11.874Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Automated candidate verification complete; human accepted scan gaps and DoD/Release in chat; trusted gate receipts pending. Business Acceptance requires post-publication verification."
     }
   ],
   "resolved_state_history": [

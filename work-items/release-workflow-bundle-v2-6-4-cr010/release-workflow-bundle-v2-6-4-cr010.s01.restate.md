@@ -120,14 +120,14 @@ notes_for_step_2: "SRS owns release requirements; existing signed intake preserv
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "release-workflow-bundle-v2-6-4-cr010"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/release-workflow-bundle-v2-6-4-cr010"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - ".claude/worktrees/release-workflow-bundle-v2-6-4-cr010"
   - "work-items/release-workflow-bundle-v2-6-4-cr010"
@@ -144,11 +144,11 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-10-16T07:23:13.132Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-10-16T07:27:04.187Z"
+handoff_target: "definition-of-done"
+last_transition_action: "verify"
+last_transition_at: "2026-10-16T13:34:11.874Z"
 required_actions:
-  - {"id":"se:7cb86ca47ac7eab6924b46bc7fa37ea14a69abdcf8d437a2dcf90cda229de18e","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
+  - {"id":"se:97d705622a29577b6ff882c29045be8f7ef32a01c5293797526e5080035bd3a0","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
 blockers: []
 review_notes:
   - "User accepted CR-010 release preparation packet at 2026-10-16T06:59:48Z. Preserve v2.6.3; require P-INSTALL in v2.6.4 tag/source; no publication authorization."
@@ -168,6 +168,7 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
 ## Traceability
