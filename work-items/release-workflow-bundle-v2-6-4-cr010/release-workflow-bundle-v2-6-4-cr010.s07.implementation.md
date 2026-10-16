@@ -130,22 +130,35 @@ notes_for_testing: "Use retained artifacts and explicit temporary runtime homes;
 ```yaml
 behavior_change: NO
 tdd_status: DONE
-tdd_test_refs: ["/tmp/v264-red-surface.log", "/tmp/v264-red-release-install-all-smoke.log", "/tmp/v264-red-release-candidate-artifact-smoke.log", "/tmp/v264-red-release-rollback-smoke.log"]
+tdd_test_refs:
+  - "/tmp/v264-red-surface.log"
+  - "/tmp/v264-red-release-install-all-smoke.log"
+  - "/tmp/v264-red-release-candidate-artifact-smoke.log"
+  - "/tmp/v264-red-release-rollback-smoke.log"
 tdd_exception_reason: ""
 tdd_alternative_verify_path: []
 change_risk_profile: LARGE_OR_RISKY
 worktree_status: USED
-worktree_refs: [".claude/worktrees/release-workflow-bundle-v2-6-4-cr010"]
+worktree_refs:
+  - ".claude/worktrees/release-workflow-bundle-v2-6-4-cr010"
 worktree_reason: "Full release scope, cross-session isolation and immutable release risk."
 review_status: COMPLETED
-review_refs: ["B1/B2 below; B3 exact artifact review complete; see s08"]
+review_refs:
+  - "B1/B2 below; B3 exact artifact review complete; see s08"
 spec_compliance_status: PASS
 code_quality_status: PASS
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
 independence_refs: []
 merge_path: "release/v2.6.4 -> main only after applicable human closure gates"
-verify_path: ["Full unit", "Fixture and authoring smoke", "Pack audit", "Hosted Node 18/22 same artifact", "Native containment", "Exact rollback", "UTF-8"]
+verify_path:
+  - "Full unit"
+  - "Fixture and authoring smoke"
+  - "Pack audit"
+  - "Hosted Node 18/22 same artifact"
+  - "Native containment"
+  - "Exact rollback"
+  - "UTF-8"
 ```
 
 ## Implementation Notes

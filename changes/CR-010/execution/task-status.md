@@ -10,7 +10,10 @@ linked_work_items:
 
 ## Status
 ```yaml
-task_status: ["R1/R2 implemented and reviewed at a50da62", "R3/R4 automated verification PASS; s08 evidence complete", "R5 pending exact candidate Release authorization"]
-blocking_items: ["Human acceptance of documented scan gaps pending", "Human DoD/Release pending"]
-next_action: "Review s08 exact commit/digest; seal DoD/Release before promotion"
+task_status:
+  - "R1-R4 complete; candidate a50da62 and SHA256 9d7c5395ff5fb3ae2a64d26089a2c4c62122fb769a7cacd2e3bcea3f6fa35e84"
+  - "R5 GitHub v2.6.4 published; public tag, asset and source verification PASS"
+blocking_items:
+  - "Business Acceptance accepted; final closeout receipt sealing and CLI closure pending"
+next_action: "Seal final closeout bundle, verify receipts, close via CLI and push integrated main"
 ```

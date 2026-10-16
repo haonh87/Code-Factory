@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: reviewed
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
 governance_status: ALIGNED
@@ -46,7 +46,7 @@ role_signoffs:
   task_plan: []
   uat: []
   release: ["devops", "qc"]
-  business_acceptance: []
+  business_acceptance: ["po"]
   dod: ["qc"]
 gate_reviews:
   spec_reviewed_by: []
@@ -65,8 +65,8 @@ gate_reviews:
   uat_reviewed_at: ""
   release_reviewed_by: ["devops"]
   release_reviewed_at: "2026-10-16T13:34:11Z"
-  business_acceptance_reviewed_by: []
-  business_acceptance_reviewed_at: ""
+  business_acceptance_reviewed_by: ["po"]
+  business_acceptance_reviewed_at: "2026-10-16T14:38:03Z"
   dod_reviewed_by: ["qc"]
   dod_reviewed_at: "2026-10-16T13:34:11Z"
 content_skills:
@@ -90,7 +90,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Automated verification PASS for final candidate a50da628efb512dfac65d0f7bd8c18b86f41b460. Human accepted scan gaps and DoD/Release in chat; trusted receipts remain pending. Overall delivery remains PARTIAL until publication verification and Business Acceptance. No release tag/publication.
+> v2.6.4 is published and public tag/source/assets verified. Pre-publication DoD/Release receipts were valid at promotion. Human Business Acceptance is recorded; final closeout receipts and CLI closure remain pending.
 
 ## Step Contract
 ```yaml
@@ -123,14 +123,14 @@ manual_exploration:
   issues_found: ["Stale telemetry assertion corrected", "Native CI missing manual trigger corrected"]
 criteria_results:
   - {criterion: AC-REL-01, result: PASS, evidence: "Remote v2.6.3 object/peeled SHA and downloaded asset digest match"}
-  - {criterion: AC-REL-02, result: PARTIAL, evidence: "Candidate ancestry/archive PASS; public tagged download awaits Release"}
+  - {criterion: AC-REL-02, result: PASS, evidence: "Public annotated tag peels to approved a50da62; downloaded source installer hashes and ancestry PASS"}
   - {criterion: AC-REL-03, result: PASS, evidence: "545-file archive inventory; 33 changes, no additions/removals; release note lists all 33 paths"}
   - {criterion: AC-REL-04, result: PASS, evidence: "Release surface and 47 unit files PASS"}
   - {criterion: AC-REL-05, result: PASS, evidence: "Final Guardrails 38876201602 builds once; Node 18/22 smoke same retained SHA-256"}
   - {criterion: AC-REL-06, result: PASS, evidence: "Exact candidate smoke 4/4 on Node 18/22; exact fallback rollback 4/4 on Node 22.23.2"}
-  - {criterion: AC-REL-07, result: PARTIAL, evidence: "Local/hosted suites and 207 native cases PASS; explicit lint/security scan gaps need human review"}
-  - {criterion: AC-REL-08, result: PARTIAL, evidence: "Preparation receipts valid; no tag/publication; human DoD/Release pending"}
-  - {criterion: AC-REL-09, result: PARTIAL, evidence: "Intentionally pending authorized publication and Business Acceptance"}
+  - {criterion: AC-REL-07, result: PASS, evidence: "All required automated checks PASS; human explicitly accepted disclosed ESLint/Semgrep gaps"}
+  - {criterion: AC-REL-08, result: PASS, evidence: "Valid signed DoD/Release host verified before promotion; historical signed evidence preserved"}
+  - {criterion: AC-REL-09, result: PASS, evidence: "Public tag/source/assets verified; human haonguyen accepted Business Acceptance at 2026-10-16T14:38:03Z"}
 test_evidence:
   unit_test: ["/tmp/v264-unit-final.log: 47 test files PASS on Node 22.23.2"]
   integration_test: ["/tmp/v264-authoring.log: 13 cases PASS", "/tmp/v264-fixtures.log: 10 cases PASS"]
@@ -138,12 +138,12 @@ test_evidence:
   feature_test: ["release-surface PASS", "Local source archive SHA checks PASS"]
 commands_run: ["npm run validate:workflow:unit", "npm run validate:workflow:pack-audit", "npm run validate:workflow:fixtures", "npm run validate:workflow:authoring-smoke", "git archive HEAD", "node --check", "UTF-8 strict decode", "gh workflow run"]
 skipped_checks: ["ESLint and Semgrep unavailable; see Scan Summary"]
-release_blockers: ["Human QC scan-gap acceptance and DoD approval missing", "Exact candidate Release receipt missing"]
-status: PARTIAL
-gaps: ["Human scan-gap review"]
+release_blockers: []
+status: PASS
+gaps: ["Final closeout receipt sealing and CLI closure pending"]
 residual_risks: ["CHANGE/CR numeric alias limitation remains documented; no scope expansion"]
-recommendation: "Review scan gaps, then seal DoD and exact candidate Release; publication remains separately gated."
-notes_for_review: "No tag/publication; root evidence remains authoritative and separate from code worktree. All automated technical checks passed; PARTIAL reflects missing scans and human gates."
+recommendation: "Seal final closeout receipts, close via CLI and push integrated main."
+notes_for_review: "Published artifact and source verified. Human accepted business outcome and disclosed scan gaps; no scan PASS is inferred for unavailable tools."
 ```
 
 ## Initial Candidate Provenance (Superseded By Final Candidate Below)
@@ -209,7 +209,7 @@ Not applicable: no end-user UAT requirement in the approved scope.
 PARTIAL: exact artifact evidence complete; human scan-gap/DoD/Release approval pending. Distribution is GitHub tarball/checksum/source archive; npm registry publication is not authorized.
 
 ## Business Acceptance Summary
-Pending post-publication verification and authorized human decision.
+Public verification PASS; human haonguyen accepted the business outcome at 2026-10-16T14:38:03Z. Final trusted receipt is pending.
 
 ## Audit
 Mechanical pack audit PASS and semantic checklist reviewed: no added skill/schema; authority and Light host rules remain consistent. UTF-8 strict decode and absence of replacement characters PASS for all 22 changed files. Historical release digest assertions PASS. This does not close the parent holistic audit.
@@ -786,3 +786,57 @@ bf54f295b74e496e3d94ab19f5ee20243caa717ebced2bcd59580022feedb969 1422 0o644 pack
 At `2026-10-16T13:34:11Z`, haonguyen explicitly answered `accept` to the review packet for source `a50da628efb512dfac65d0f7bd8c18b86f41b460` and candidate SHA-256 `9d7c5395ff5fb3ae2a64d26089a2c4c62122fb769a7cacd2e3bcea3f6fa35e84`. This accepts the disclosed ESLint/Semgrep unavailability and manual review fallback, approves technical DoD and authorizes GitHub v2.6.4 tag/release promotion of the exact retained bytes after trusted receipts are sealed and verified. The mapped reviewers are QC for DoD and DevOps for Release; this records the human decision, not an autonomous approval.
 
 Business Acceptance remains pending post-publication verification. Preserve v2.6.3; npm registry publication and live global installation remain outside authorization. Earlier pending-review statements above describe the pre-decision assessment. Scan coverage remains PARTIAL (tools did not run); the human accepted the disclosed limitation rather than converting it into a scan PASS. No publication has occurred.
+
+## Public Release Verification — 2026-10-16
+
+GitHub Release https://github.com/haonh87/Code-Factory/releases/tag/v2.6.4 was published at 2026-10-16T13:57:42Z after both trusted pre-publication receipts were verified against their host hash. Publication is public, non-draft and non-prerelease, with exactly two assets. No npm registry or live-install mutation occurred.
+
+- Remote annotated tag object: `667fb21045d25a9316228f2cee42d32ac618e072`; API-verified peeled commit: `a50da628efb512dfac65d0f7bd8c18b86f41b460`.
+- Downloaded public tarball: `/tmp/v264-public-download/workflow-bundle-2.6.4.tgz`; version `2.6.4`; 987886 bytes; SHA-256 `9d7c5395ff5fb3ae2a64d26089a2c4c62122fb769a7cacd2e3bcea3f6fa35e84`, matching both approved CI bytes and public checksum companion.
+- Downloaded public source: `/tmp/v264-public-source.tar.gz`, fetched from GitHub tarball endpoint for v2.6.4. Bash installer hash `20e54a10ef2e3fdadda39623913dd3bec8367a1249bc4207eef35e82a4438ce5`; PowerShell hash `859c41118ae1a9c3e8d0bf6154e7d00083a999dae08eb81b0eb60f818f475afa`; both PASS. Ancestry checks for integrated main cbf6c09 and P-INSTALL merge 54243b7 PASS.
+- v2.6.3 unchanged after publication: API tag object `41ae8213a02de994333ddf25993e16ec99644560`, peeled commit `7f810352ca253b9b8356f9116335cc03713adae4`. No old asset or tag was modified.
+- Local main merge: `ec0351f273f773964a650a51e34cbfc9d16a967f`. Remote main remains cbf6c09 while final workflow closure is pending. The release tag deliberately points to the exact approved candidate, not the evidence/merge commit.
+
+The exact pre-publication s08 bytes and signed public receipts are preserved under `.claude/worktrees/release-workflow-bundle-v2-6-4-cr010/.artifacts/v2.6.4/pre-publication-s08.md` and `pre-publication-receipts.json`. Their signatures/host hashes were verified before tagging/publication. This post-publication evidence changes the current s08 hash; final closeout must reseal the applicable gate receipts on this final evidence. Do not treat the historical receipt as a current hash match or as missing authorization for the already completed promotion.
+
+## Spec Coverage
+```yaml
+status: PASS
+coverage:
+  - id: AC-REL-01
+    status: PASS
+    evidence: "Remote old tag object/peeled commit unchanged; retained fallback digest verified"
+  - id: AC-REL-02
+    status: PASS
+    evidence: "Public tag exact a50da62; required ancestors; downloaded source installer hashes both match"
+  - id: AC-REL-03
+    status: PASS
+    evidence: "545-file full inventory and 33-path delta; source/package boundary explicit"
+  - id: AC-REL-04
+    status: PASS
+    evidence: "Metadata/help/docs and public tarball version 2.6.4; 42 skills"
+  - id: AC-REL-05
+    status: PASS
+    evidence: "Hosted build once; Node18/22 same bytes; public download equals approved SHA256"
+  - id: AC-REL-06
+    status: PASS
+    evidence: "Exact install/update smoke and four isolated rollback scenarios pass"
+  - id: AC-REL-07
+    status: PASS
+    evidence: "47 unit files, audit, fixture/authoring, 207 native cases and UTF-8 pass; human accepted disclosed scan gaps"
+  - id: AC-REL-08
+    status: PASS
+    evidence: "DoD/Release signatures and host hashes verified before promotion; signed host retained"
+  - id: AC-REL-09
+    status: PASS
+    evidence: "Public tag/source/assets verified; explicit human Business Acceptance recorded; seal final receipts before closure"
+```
+
+## Current Closure Handoff
+Automated release and public verification are complete. Human Business Acceptance is the remaining business decision. After acceptance, finalize the s08 review fields and seal the closeout bundle (DoD, Release, Business Acceptance) against its final hash, validate the workflow evidence, close the work item through CLI and integrate/push the final main state. Preserve branch/worktree until that handoff completes. Pre-publication pending statements above remain dated historical context, not the current publication state.
+
+## Final Business Acceptance
+
+At `2026-10-16T14:38:03Z`, haonguyen explicitly answered `accept` to the published v2.6.4 outcome and final closeout/main integration request. Record PO Business Acceptance for the verified tag/source/assets. Existing QC/DevOps approvals and accepted scan limitations remain in force. The closeout bundle reseals DoD, Release and Business Acceptance against this final s08 hash; it does not publish again or authorize npm registry/live-install changes.
+
+Human decisions are complete. Protocol stays VERIFIED until final receipts are checked and the CLI closes it; no DONE transition is inferred from this note alone. Preserve the release worktree and artifacts through the final main CI handoff. Earlier pending statements are historical preparation/publication context.
