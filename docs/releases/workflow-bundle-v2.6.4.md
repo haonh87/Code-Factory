@@ -10,12 +10,12 @@ Baseline: `cbf6c095b303f6979ac135b08c063bfdf2ad9fb2` on main, including P-INSTAL
 
 ## Complete Packaged Delta
 
-This inventories changes from immutable v2.6.3 through the preparation baseline plus the v2.6.4 release metadata. The npm allowlist remains `bin`, `README.md`, `runtime`, `scripts`, `tests/fixtures/workflow-governance`, and `workflow-bundle.manifest.json` (plus npm's required package metadata/license files). No new dependency or skill: **42 managed skills** per runtime.
+This inventories changes from immutable v2.6.3 through the preparation baseline plus the v2.6.4 release metadata. The npm allowlist remains `bin`, `README.md`, `runtime`, `scripts`, `tests/fixtures/workflow-governance`, and `workflow-bundle.manifest.json` (plus npm's automatic package metadata, license and README inclusion, including README.vi.md). No new dependency or skill: **42 managed skills** per runtime.
 
 | Package paths | Change |
 | --- | --- |
 | `package.json`, `workflow-bundle.manifest.json`, `bin/wfc.js` | Candidate version/help become 2.6.4; command families remain compatible. |
-| `README.md` | Candidate, recovery support, source/package boundary and immutable v2.6.3 rollback instructions. |
+| `README.md`, `README.vi.md` | Candidate, recovery support, source/package boundary and immutable v2.6.3 rollback instructions. |
 | `scripts/materialize-work-item.js` | Explicit `--resume-proposal`, snapshot hash and UUID identity, eligibility preflight, signed disposition verification, create_new/full change-package recovery, per-change locking, recovery manifest and safe retry/projection repair. Ordinary materialization refuses overwrites. |
 | `scripts/scaffold-change-package.js` | Shared pure canonical template renderer for new change recovery. |
 | `scripts/scaffold-workflow.js` | Non-destructive workflow projection planning for eligible recovery. |
@@ -29,6 +29,48 @@ This inventories changes from immutable v2.6.3 through the preparation baseline 
 | `runtime/{codex,claude}/skills/orchestration/workflow-governance-router/SKILL.vi.md` | Vietnamese Light gate-host guidance aligned with English. |
 
 Runtime copies are generated from canonical source with the standard sync command. Exact archive file/hash differences are captured in s08 against the retained v2.6.3 asset; this release does not claim that the installer-only change is the whole packaged delta.
+
+### Exact Archive Delta
+
+Archive comparison against retained v2.6.3 finds 545 files in both archives: zero added, zero removed and 33 changed (content/size/mode comparison). npm includes `README.vi.md` automatically although the explicit allowlist names `README.md`. The changed archive paths are:
+
+```text
+package/README.md
+package/README.vi.md
+package/bin/wfc.js
+package/package.json
+package/runtime/claude/skills/analysis/requirement-analysis/SKILL.md
+package/runtime/claude/skills/analysis/requirement-analysis/SKILL.vi.md
+package/runtime/claude/skills/guardrails/definition-of-done-gate/SKILL.md
+package/runtime/claude/skills/guardrails/definition-of-done-gate/SKILL.vi.md
+package/runtime/claude/skills/orchestration/codex-workflow-chain/SKILL.md
+package/runtime/claude/skills/orchestration/codex-workflow-chain/SKILL.vi.md
+package/runtime/claude/skills/orchestration/codex-workflow-chain/references/work-item-materialization.md
+package/runtime/claude/skills/orchestration/codex-workflow-chain/references/work-item-materialization.vi.md
+package/runtime/claude/skills/orchestration/codex-workflow-chain/references/work-item-protocol.md
+package/runtime/claude/skills/orchestration/codex-workflow-chain/references/work-item-protocol.vi.md
+package/runtime/claude/skills/orchestration/workflow-governance-router/SKILL.vi.md
+package/runtime/codex/skills/analysis/requirement-analysis/SKILL.md
+package/runtime/codex/skills/analysis/requirement-analysis/SKILL.vi.md
+package/runtime/codex/skills/guardrails/definition-of-done-gate/SKILL.md
+package/runtime/codex/skills/guardrails/definition-of-done-gate/SKILL.vi.md
+package/runtime/codex/skills/orchestration/codex-workflow-chain/SKILL.md
+package/runtime/codex/skills/orchestration/codex-workflow-chain/SKILL.vi.md
+package/runtime/codex/skills/orchestration/codex-workflow-chain/references/work-item-materialization.md
+package/runtime/codex/skills/orchestration/codex-workflow-chain/references/work-item-materialization.vi.md
+package/runtime/codex/skills/orchestration/codex-workflow-chain/references/work-item-protocol.md
+package/runtime/codex/skills/orchestration/codex-workflow-chain/references/work-item-protocol.vi.md
+package/runtime/codex/skills/orchestration/workflow-governance-router/SKILL.vi.md
+package/scripts/materialize-work-item.js
+package/scripts/scaffold-change-package.js
+package/scripts/scaffold-workflow.js
+package/scripts/work-item-protocol-utils.js
+package/scripts/work-item-protocol.js
+package/scripts/workflow-trusted-approval-utils.js
+package/workflow-bundle.manifest.json
+```
+
+The complete 545-file SHA-256/size/mode inventory is retained in s08 evidence. Direct adapters are absent from both npm archives and must instead be checked in the tagged source archive.
 
 ## Non-Packaged Repository Changes
 
