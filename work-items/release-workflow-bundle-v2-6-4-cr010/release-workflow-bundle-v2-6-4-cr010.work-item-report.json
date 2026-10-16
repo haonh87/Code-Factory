@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "maintainer",
   "raw_request_summary": "Prepare immutable workflow-bundle v2.6.4 from integrated main cbf6c09, preserving v2.6.3. Include P-INSTALL in the release tag and source archive, inventory all packaged delta, verify one candidate artifact, and publish only after candidate-specific Release approval. This replaces cancelled release-workflow-bundle-v2-6-4 because CHANGE-008 aliases existing CR-008; use unused canonical CR-010.",
@@ -83,17 +83,12 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-010",
-  "handoff_target": "protocol-close",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "id": "se:97d705622a29577b6ff882c29045be8f7ef32a01c5293797526e5080035bd3a0",
+      "id": "se:a67437dc391a8c857690e62bd2fac03b28fd01195625426aa69b9b4b12807de3",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
-    },
-    {
-      "id": "se:e52e24be13adaab3814ded51a41176744f9a8afddca31b562580effefebe9ded",
-      "kind": "work_item_close",
-      "text": "wfc work-item close --work-item release-workflow-bundle-v2-6-4-cr010"
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -115,7 +110,8 @@
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
     "VERIFICATION_CONFIRMED",
-    "CLOSEOUT_BUNDLE_APPROVED"
+    "CLOSEOUT_BUNDLE_APPROVED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -194,6 +190,14 @@
       "to_status": "VERIFIED",
       "note": "APPROVED closeout gates: dod, release, business_acceptance",
       "transaction_id": "b457e9f9-7ebc-4feb-ac13-21ed2139bc8d"
+    },
+    {
+      "timestamp": "2026-10-16T14:47:21.041Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Final DoD, Release and Business Acceptance receipts verified against final s08. Published v2.6.4 tag/source/assets verified; immutable v2.6.3 preserved. Close accepted delivery; retain worktree and artifacts."
     }
   ],
   "resolved_state_history": [

@@ -120,7 +120,7 @@ notes_for_step_2: "SRS owns release requirements; existing signed intake preserv
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "release-workflow-bundle-v2-6-4-cr010"
@@ -144,12 +144,11 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-10-16T07:23:13.132Z"
-handoff_target: "protocol-close"
-last_transition_action: "approve-closeout-bundle"
-last_transition_at: "2026-10-16T14:46:05.113Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-10-16T14:47:21.041Z"
 required_actions:
-  - {"id":"se:97d705622a29577b6ff882c29045be8f7ef32a01c5293797526e5080035bd3a0","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
-  - {"id":"se:e52e24be13adaab3814ded51a41176744f9a8afddca31b562580effefebe9ded","kind":"work_item_close","text":"wfc work-item close --work-item release-workflow-bundle-v2-6-4-cr010"}
+  - {"id":"se:a67437dc391a8c857690e62bd2fac03b28fd01195625426aa69b9b4b12807de3","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "User accepted CR-010 release preparation packet at 2026-10-16T06:59:48Z. Preserve v2.6.3; require P-INSTALL in v2.6.4 tag/source; no publication authorization."
@@ -171,6 +170,7 @@ audit_events:
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
   - "CLOSEOUT_BUNDLE_APPROVED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Traceability

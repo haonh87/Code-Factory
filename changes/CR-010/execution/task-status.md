@@ -14,6 +14,8 @@ task_status:
   - "R1-R4 complete; candidate a50da62 and SHA256 9d7c5395ff5fb3ae2a64d26089a2c4c62122fb769a7cacd2e3bcea3f6fa35e84"
   - "R5 GitHub v2.6.4 published; public tag, asset and source verification PASS"
 blocking_items:
-  - "Business Acceptance accepted; final closeout receipt sealing and CLI closure pending"
-next_action: "Seal final closeout bundle, verify receipts, close via CLI and push integrated main"
+  - "No delivery blocker; final main push and CI handoff pending"
+next_action: "Push integrated main and check hosted CI; retain worktree/artifacts. Protocol work item is DONE."
 ```
+
+Final closeout: all three trusted receipts verified against final s08; CLI transitioned the work item to DONE. GitHub v2.6.4 public source/assets verified and v2.6.3 unchanged. Archiving is a later lifecycle action, not required for this completed delivery.
