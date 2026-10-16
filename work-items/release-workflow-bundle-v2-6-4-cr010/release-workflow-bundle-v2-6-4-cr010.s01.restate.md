@@ -144,11 +144,12 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-10-16T07:23:13.132Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-10-16T13:34:11.874Z"
+handoff_target: "protocol-close"
+last_transition_action: "approve-closeout-bundle"
+last_transition_at: "2026-10-16T14:46:05.113Z"
 required_actions:
   - {"id":"se:97d705622a29577b6ff882c29045be8f7ef32a01c5293797526e5080035bd3a0","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+  - {"id":"se:e52e24be13adaab3814ded51a41176744f9a8afddca31b562580effefebe9ded","kind":"work_item_close","text":"wfc work-item close --work-item release-workflow-bundle-v2-6-4-cr010"}
 blockers: []
 review_notes:
   - "User accepted CR-010 release preparation packet at 2026-10-16T06:59:48Z. Preserve v2.6.3; require P-INSTALL in v2.6.4 tag/source; no publication authorization."
@@ -169,6 +170,7 @@ audit_events:
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
+  - "CLOSEOUT_BUNDLE_APPROVED"
 ```
 
 ## Traceability

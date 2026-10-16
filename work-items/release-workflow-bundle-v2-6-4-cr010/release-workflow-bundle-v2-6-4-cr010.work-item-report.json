@@ -83,12 +83,17 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-010",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "protocol-close",
   "required_actions": [
     {
       "id": "se:97d705622a29577b6ff882c29045be8f7ef32a01c5293797526e5080035bd3a0",
       "kind": "workflow_followup",
       "text": "Collect DoD evidence and close the work item when ready."
+    },
+    {
+      "id": "se:e52e24be13adaab3814ded51a41176744f9a8afddca31b562580effefebe9ded",
+      "kind": "work_item_close",
+      "text": "wfc work-item close --work-item release-workflow-bundle-v2-6-4-cr010"
     }
   ],
   "blockers": [],
@@ -109,7 +114,8 @@
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "CLOSEOUT_BUNDLE_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -179,6 +185,15 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "Automated candidate verification complete; human accepted scan gaps and DoD/Release in chat; trusted gate receipts pending. Business Acceptance requires post-publication verification."
+    },
+    {
+      "timestamp": "2026-10-16T14:46:05.113Z",
+      "action": "approve-closeout-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "APPROVED closeout gates: dod, release, business_acceptance",
+      "transaction_id": "b457e9f9-7ebc-4feb-ac13-21ed2139bc8d"
     }
   ],
   "resolved_state_history": [
