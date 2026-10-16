@@ -1,0 +1,294 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "ACTIVE",
+  "decision_owner": "agent",
+  "protocol_owner": "maintainer",
+  "raw_request_summary": "Prepare immutable workflow-bundle v2.6.4 from integrated main cbf6c09, preserving v2.6.3. Include P-INSTALL in the release tag and source archive, inventory all packaged delta, verify one candidate artifact, and publish only after candidate-specific Release approval. This replaces cancelled release-workflow-bundle-v2-6-4 because CHANGE-008 aliases existing CR-008; use unused canonical CR-010.",
+  "request_source": "user-chat",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "release-workflow-bundle-v2-6-4-cr010",
+      "work_item_title": "Release Workflow Bundle V2 6 4 Cr010",
+      "work_item_type": "CHANGE",
+      "scope_summary": "Prepare immutable workflow-bundle v2.6.4 from integrated main cbf6c09, preserving v2.6.3. Include P-INSTALL in the release tag and source archive, inventory all packaged delta, verify one candidate artifact, and publish only after candidate-specific Release approval. This replaces cancelled release-workflow-bundle-v2-6-4 because CHANGE-008 aliases existing CR-008; use unused canonical CR-010.",
+      "primary_outcome": "Prepare immutable workflow-bundle v2.6.4 from integrated main cbf6c09, preserving v2.6.3. Include P-INSTALL in the release tag and source archive, inventory all packaged delta, verify one candidate artifact, and publish only after candidate-specific Release approval. This replaces cancelled release-workflow-bundle-v2-6-4 because CHANGE-008 aliases existing CR-008; use unused canonical CR-010.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "strict",
+      "sdd_reasons": [
+        "planning-track-not-quick",
+        "governance-profile-not-default"
+      ],
+      "sdd_preset": "auto",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/release-workflow-bundle-v2-6-3",
+        "work-items/release-workflow-bundle-v2-6-4",
+        "work-items/adaptive-governance-human-approval-ux"
+      ],
+      "collision_notes": [
+        "release-workflow-bundle-v2-6-3 (score=6)",
+        "release-workflow-bundle-v2-6-4 (score=6)",
+        "adaptive-governance-human-approval-ux (score=1)"
+      ],
+      "change_strategy": "create_new",
+      "change_id": "CR-010",
+      "change_reason": "Scope có tín hiệu cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:change -- --change-id CR-010 --work-item release-workflow-bundle-v2-6-4-cr010",
+        "npm run scaffold:workflow -- --work-item release-workflow-bundle-v2-6-4-cr010 --planning-track full --delivery-context brownfield --change-id CR-010 --governance-profile strict",
+        "npm run validate:workflow -- --workflow-root work-items/release-workflow-bundle-v2-6-4-cr010 --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory"
+      ],
+      "blockers": [
+        {
+          "id": "se:18838d046d7493776842db7f0660a8cc719721c15eaafc666026880ae1a97ebd",
+          "kind": "delivery_blocker",
+          "text": "Có work item gần nghĩa cần review: release-workflow-bundle-v2-6-3, release-workflow-bundle-v2-6-4, adaptive-governance-human-approval-ux"
+        }
+      ]
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=CHANGE",
+    "delivery_context=brownfield",
+    "dedup_result=needs_review",
+    "change_strategy=create_new",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=auto",
+    "selected_profile=strict",
+    "sdd_mode=none",
+    "sdd_escalation_reasons=planning-track-not-quick|governance-profile-not-default"
+  ],
+  "work_item_slug": "release-workflow-bundle-v2-6-4-cr010",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/release-workflow-bundle-v2-6-4-cr010",
+  "current_step": "s07",
+  "granted_write_paths": [
+    ".claude/worktrees/release-workflow-bundle-v2-6-4-cr010",
+    "work-items/release-workflow-bundle-v2-6-4-cr010",
+    "changes/CR-010",
+    "product-specs/srs/release-workflow-bundle-v2-6-4.md"
+  ],
+  "change_strategy": "create_new",
+  "change_id": "CR-010",
+  "handoff_target": "step-s07-owner",
+  "required_actions": [
+    {
+      "id": "se:7cb86ca47ac7eab6924b46bc7fa37ea14a69abdcf8d437a2dcf90cda229de18e",
+      "kind": "workflow_followup",
+      "text": "Continue active execution from step 7 onward."
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/release-workflow-bundle-v2-6-3",
+    "work-items/release-workflow-bundle-v2-6-4",
+    "work-items/adaptive-governance-human-approval-ux",
+    "work-items/release-workflow-bundle-v2-6-4-cr010",
+    "changes/CR-010"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "READINESS_BUNDLE_APPROVED",
+    "WORK_ITEM_ACTIVATED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-10-16T07:23:13.132Z",
+  "review_notes": [
+    "User accepted CR-010 release preparation packet at 2026-10-16T06:59:48Z. Preserve v2.6.3; require P-INSTALL in v2.6.4 tag/source; no publication authorization."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-10-15T14:30:10.559Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-10-16T06:30:18.591Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Signed admission concerns resolved."
+    },
+    {
+      "timestamp": "2026-10-16T06:30:18.591Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Resumed proposal operation 3527819e-a511-4ecf-af17-47d0b174a12d."
+    },
+    {
+      "timestamp": "2026-10-16T07:23:13.132Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "User accepted CR-010 release preparation packet at 2026-10-16T06:59:48Z. Preserve v2.6.3; require P-INSTALL in v2.6.4 tag/source; no publication authorization."
+    },
+    {
+      "timestamp": "2026-10-16T07:23:16.247Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "cc8226d9-a658-47ce-8da7-c7a216d29796"
+    },
+    {
+      "timestamp": "2026-10-16T07:27:04.187Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
+    }
+  ],
+  "resolved_state_history": [
+    {
+      "operation_id": "14a88090-84f7-465d-85a8-ce8a40592fb3",
+      "source_collection": "blockers",
+      "source_entry_id": "di:6fa8a4e35e3ec144c2bb2da98f0b2b7fc79fc66aeabf608b4c495a3a2eb7e899",
+      "original_entry": {
+        "id": "se:18838d046d7493776842db7f0660a8cc719721c15eaafc666026880ae1a97ebd",
+        "kind": "delivery_blocker",
+        "text": "Có work item gần nghĩa cần review: release-workflow-bundle-v2-6-3, release-workflow-bundle-v2-6-4, adaptive-governance-human-approval-ux"
+      },
+      "original_text": "Có work item gần nghĩa cần review: release-workflow-bundle-v2-6-3, release-workflow-bundle-v2-6-4, adaptive-governance-human-approval-ux",
+      "actor": "maintainer",
+      "reason": "User explicitly accepted replacing the cancelled release-workflow-bundle-v2-6-4 proposal because CHANGE-008 aliases the existing CR-008. Create one distinct release candidate using unused canonical CR-010. Matched scopes are ARCHIVED v2.6.3, CANCELLED old v2.6.4, and ARCHIVED adaptive governance. Retain all original signed history. Keep v2.6.3 immutable and require P-INSTALL in the v2.6.4 tag/source archive. Intake separation only: no implementation, Release, or publication approval.",
+      "resolved_at": "2026-10-16T06:29:29.173Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "release-workflow-bundle-v2-6-4-cr010",
+          "operation_id": "14a88090-84f7-465d-85a8-ce8a40592fb3",
+          "state_id": "di:6fa8a4e35e3ec144c2bb2da98f0b2b7fc79fc66aeabf608b4c495a3a2eb7e899",
+          "source_collection": "blockers",
+          "original_entry": {
+            "id": "se:18838d046d7493776842db7f0660a8cc719721c15eaafc666026880ae1a97ebd",
+            "kind": "delivery_blocker",
+            "text": "Có work item gần nghĩa cần review: release-workflow-bundle-v2-6-3, release-workflow-bundle-v2-6-4, adaptive-governance-human-approval-ux"
+          },
+          "original_text": "Có work item gần nghĩa cần review: release-workflow-bundle-v2-6-3, release-workflow-bundle-v2-6-4, adaptive-governance-human-approval-ux",
+          "actor": "maintainer",
+          "reason": "User explicitly accepted replacing the cancelled release-workflow-bundle-v2-6-4 proposal because CHANGE-008 aliases the existing CR-008. Create one distinct release candidate using unused canonical CR-010. Matched scopes are ARCHIVED v2.6.3, CANCELLED old v2.6.4, and ARCHIVED adaptive governance. Retain all original signed history. Keep v2.6.3 immutable and require P-INSTALL in the v2.6.4 tag/source archive. Intake separation only: no implementation, Release, or publication approval.",
+          "resolved_at": "2026-10-16T06:29:29.173Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "iirAhjaDq4VUjp/MFXppdqqh6hXX+qjK+jIYdsZxNPUBW3SXHMK/bU1u9mu+YlNf7/eBAwzq+aM0QowNbQalCg=="
+      }
+    },
+    {
+      "operation_id": "d796ce81-6a18-4740-8dad-d3715aaabb26",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:96c981853f6186c7472bf17bc0eb839c0e943a58ae9d3eb4852889d63da58f8f",
+      "original_entry": {
+        "id": "se:61bf5681fa005532a31845ee9a8828e19899c857a364302f6bea2848512b30e3",
+        "kind": "workflow_followup",
+        "text": "Làm rõ scope để chốt single hay split."
+      },
+      "original_text": "Làm rõ scope để chốt single hay split.",
+      "actor": "maintainer",
+      "reason": "User explicitly accepted replacing the cancelled release-workflow-bundle-v2-6-4 proposal because CHANGE-008 aliases the existing CR-008. Create one distinct release candidate using unused canonical CR-010. Matched scopes are ARCHIVED v2.6.3, CANCELLED old v2.6.4, and ARCHIVED adaptive governance. Retain all original signed history. Keep v2.6.3 immutable and require P-INSTALL in the v2.6.4 tag/source archive. Intake separation only: no implementation, Release, or publication approval.",
+      "resolved_at": "2026-10-16T06:29:31.894Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "release-workflow-bundle-v2-6-4-cr010",
+          "operation_id": "d796ce81-6a18-4740-8dad-d3715aaabb26",
+          "state_id": "di:96c981853f6186c7472bf17bc0eb839c0e943a58ae9d3eb4852889d63da58f8f",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:61bf5681fa005532a31845ee9a8828e19899c857a364302f6bea2848512b30e3",
+            "kind": "workflow_followup",
+            "text": "Làm rõ scope để chốt single hay split."
+          },
+          "original_text": "Làm rõ scope để chốt single hay split.",
+          "actor": "maintainer",
+          "reason": "User explicitly accepted replacing the cancelled release-workflow-bundle-v2-6-4 proposal because CHANGE-008 aliases the existing CR-008. Create one distinct release candidate using unused canonical CR-010. Matched scopes are ARCHIVED v2.6.3, CANCELLED old v2.6.4, and ARCHIVED adaptive governance. Retain all original signed history. Keep v2.6.3 immutable and require P-INSTALL in the v2.6.4 tag/source archive. Intake separation only: no implementation, Release, or publication approval.",
+          "resolved_at": "2026-10-16T06:29:31.894Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "FAZGPRyZyqu3yrU/9obpd6UeuIrnuZ9i9292EoTK7da6LksUlUqI7/RX6oLy3V5jjdJwOyf1YtBGdHWpNF5nBg=="
+      }
+    },
+    {
+      "operation_id": "d1043c93-40db-48b8-8536-f57b6cf551b9",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:75dc57d9a586ca492dfa2e99a255b2495fda87ab659fbdab6d64d9c4b84c11df",
+      "original_entry": {
+        "id": "se:b9d74750752f98b69a7d2962ebb9c27e3f25f32753a712c634fc18f4e04a9927",
+        "kind": "workflow_followup",
+        "text": "Review existing work-items/changes trước khi scaffold."
+      },
+      "original_text": "Review existing work-items/changes trước khi scaffold.",
+      "actor": "maintainer",
+      "reason": "User explicitly accepted replacing the cancelled release-workflow-bundle-v2-6-4 proposal because CHANGE-008 aliases the existing CR-008. Create one distinct release candidate using unused canonical CR-010. Matched scopes are ARCHIVED v2.6.3, CANCELLED old v2.6.4, and ARCHIVED adaptive governance. Retain all original signed history. Keep v2.6.3 immutable and require P-INSTALL in the v2.6.4 tag/source archive. Intake separation only: no implementation, Release, or publication approval.",
+      "resolved_at": "2026-10-16T06:29:35.204Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "release-workflow-bundle-v2-6-4-cr010",
+          "operation_id": "d1043c93-40db-48b8-8536-f57b6cf551b9",
+          "state_id": "di:75dc57d9a586ca492dfa2e99a255b2495fda87ab659fbdab6d64d9c4b84c11df",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:b9d74750752f98b69a7d2962ebb9c27e3f25f32753a712c634fc18f4e04a9927",
+            "kind": "workflow_followup",
+            "text": "Review existing work-items/changes trước khi scaffold."
+          },
+          "original_text": "Review existing work-items/changes trước khi scaffold.",
+          "actor": "maintainer",
+          "reason": "User explicitly accepted replacing the cancelled release-workflow-bundle-v2-6-4 proposal because CHANGE-008 aliases the existing CR-008. Create one distinct release candidate using unused canonical CR-010. Matched scopes are ARCHIVED v2.6.3, CANCELLED old v2.6.4, and ARCHIVED adaptive governance. Retain all original signed history. Keep v2.6.3 immutable and require P-INSTALL in the v2.6.4 tag/source archive. Intake separation only: no implementation, Release, or publication approval.",
+          "resolved_at": "2026-10-16T06:29:35.204Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "nJoRb0MFuzPaEfyhn95WQ+dr00xqbYUhBvcPFgOdit6LLQxHotrzp1re2IGMSUVlON7VDqA7cnOwJP1HP7MNAQ=="
+      }
+    }
+  ],
+  "materialization_recovery": {
+    "schema_version": 1,
+    "operation_id": "3527819e-a511-4ecf-af17-47d0b174a12d",
+    "source_report_sha256": "15f715ad6a080191bf7ba3295d01db968557881d52c20e47cb0f61d0de067a91",
+    "resulting_status": "MATERIALIZED",
+    "disposition_operation_ids": [
+      "14a88090-84f7-465d-85a8-ce8a40592fb3",
+      "d796ce81-6a18-4740-8dad-d3715aaabb26",
+      "d1043c93-40db-48b8-8536-f57b6cf551b9"
+    ],
+    "completed_at": "2026-10-16T06:30:18.591Z"
+  }
+}

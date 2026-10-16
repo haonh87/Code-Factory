@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "work_item_slug": "release-workflow-bundle-v2-6-4-cr010",
+  "change_id": "CR-010",
+  "operation_id": "3527819e-a511-4ecf-af17-47d0b174a12d",
+  "source_report_sha256": "15f715ad6a080191bf7ba3295d01db968557881d52c20e47cb0f61d0de067a91",
+  "files": [
+    {
+      "path": "proposal.md",
+      "sha256": "526bdd1a4a3c2a3d5cc9130b1316f4093ae8916c14e041e15d2688e43bf10dea"
+    },
+    {
+      "path": "design.md",
+      "sha256": "f45493409971ccaaf01117b3e9e86daa7484e309ad2c0dab5d120228fd07a9a9"
+    },
+    {
+      "path": "tasks.md",
+      "sha256": "474ecb759cc2e27ef75a3b66219d970534d328dddde7146e7cb107a6d404ea75"
+    },
+    {
+      "path": "spec-delta/brd.delta.md",
+      "sha256": "0378c9900b472ab2408d2a78168095512060d80191397bf58bda6ca84da0c4c5"
+    },
+    {
+      "path": "spec-delta/srs.delta.md",
+      "sha256": "c3049d92799a93dbce61750f681c2f6affa1f1e8ef3e21cb715c6b060f2dad9a"
+    },
+    {
+      "path": "execution/task-status.md",
+      "sha256": "65485b12dc61335d8b4ba6af010a6c4df543b11c8ae2456628fd5c4d871e0dc1"
+    },
+    {
+      "path": "archive-metadata.md",
+      "sha256": "95ee2dc8200364a056fcf3990cd5e577d128cffadb9aa686668d9bd08deb1d68"
+    }
+  ]
+}
