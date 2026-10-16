@@ -10,11 +10,11 @@ const { execFileSync } = require("child_process");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
 const packageRoot = path.join(repoRoot, "packages", "workflow-bundle");
-const candidateVersion = "2.6.3";
+const candidateVersion = "2.6.4";
 const candidateSkillCount = 42;
-const rollbackVersion = "2.6.2";
+const rollbackVersion = "2.6.3";
 const rollbackSkillCount = 42;
-const retainedRollbackDigest = "af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f";
+const retainedRollbackDigest = "f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f";
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -180,12 +180,13 @@ function runRollbackTransition({ candidatePackageRoot, rollbackPackageRoot, temp
   );
   assert(
     fs.existsSync(path.join(rollbackPackageRoot, "scripts", "workflow-adaptive-governance.js")),
-    `${mode}/${scope}: rollback must retain the v2.6.2 adaptive-governance runtime`
+    `${mode}/${scope}: rollback must retain the v2.6.3 adaptive-governance runtime`
   );
+  assert(!fs.readFileSync(path.join(rollbackPackageRoot, "scripts", "materialize-work-item.js"), "utf8").includes("resume-proposal"), `${mode}/${scope}: rollback must remove proposal recovery`);
   const rollbackProtocol = fs.readFileSync(path.join(rollbackPackageRoot, "scripts", "work-item-protocol.js"), "utf8");
   const rollbackProtocolUtils = fs.readFileSync(path.join(rollbackPackageRoot, "scripts", "work-item-protocol-utils.js"), "utf8");
-  assert(!rollbackProtocol.includes('"dispose-state"'), `${mode}/${scope}: rollback must remove v2.6.3 exact state disposition`);
-  assert(!rollbackProtocolUtils.includes("resolved_state_history"), `${mode}/${scope}: rollback must remove v2.6.3 resolved-state history`);
+  assert(rollbackProtocol.includes('"dispose-state"'), `${mode}/${scope}: rollback must retain v2.6.3 exact state disposition`);
+  assert(rollbackProtocolUtils.includes("resolved_state_history"), `${mode}/${scope}: rollback must retain v2.6.3 resolved-state history`);
   return { mode, scope, installedVersion: state.installed_bundle_version, skillCount, unmanaged: after };
 }
 
@@ -194,7 +195,7 @@ function runExactRollback(candidateTarball, candidateDigest, rollbackTarball, ro
   assert(rollbackDigest === retainedRollbackDigest, `v${rollbackVersion} rollback digest must equal the retained immutable digest ${retainedRollbackDigest}`);
   const actualRollbackDigest = assertArtifactIdentity(rollbackTarball, rollbackDigest, `v${rollbackVersion} rollback`);
   console.log(`Running exact v${candidateVersion} -> v${rollbackVersion} rollback transition smoke...\n`);
-  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-v2.6.3-rollback-"));
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-v2.6.4-rollback-"));
   try {
     const cacheRoot = path.join(tempRoot, "npm-cache");
     const candidatePackageRoot = installArtifact(candidateTarball, path.join(tempRoot, "candidate-package"), cacheRoot);

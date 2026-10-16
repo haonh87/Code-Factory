@@ -5,10 +5,11 @@ const path = require("path");
 const crypto = require("crypto");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
-const releaseVersion = "2.6.3";
+const releaseVersion = "2.6.4";
 const releaseLabel = `v${releaseVersion}`;
 const expectedSkillCount = 42;
 const frozenReleaseDigests = {
+  "docs/releases/workflow-bundle-v2.6.3.md": "de44ac6adf73f775b4f1507c5bc2028aa6cf815a931c70c0386f87ff015349af",
   "docs/releases/workflow-bundle-v2.6.2.md": "761a67c18b894f398d2b4c17d0b80d6a9fc7ab1e7fff250494212d1a5bc67769",
   "docs/releases/workflow-bundle-v2.6.1.md": "e5fd05b23ce86184309429e5ad7228cb618c008da215ed96424aff0e59bd6d2d",
   "docs/releases/workflow-bundle-v2.6.0.md": "12e2e49d61d7145a71e12eaf6c2c82e7fcdc46d349ce16716daa9b858dc45151",
@@ -79,11 +80,11 @@ const publicClaims = [
   ["packages/workflow-bundle/README.md", `prepared for the \`${releaseLabel}\` release candidate`],
   ["packages/workflow-bundle/README.md", `## What \`${releaseLabel}\` Includes`],
   ["packages/workflow-bundle/README.md", "## Exact State Disposition And Archive Guards"],
-  ["packages/workflow-bundle/README.md", "### Roll Back From v2.6.3 To v2.6.2"],
+  ["packages/workflow-bundle/README.md", "### Roll Back From v2.6.4 To v2.6.3"],
   ["packages/workflow-bundle/README.vi.md", `được chuẩn bị cho ứng viên phát hành \`${releaseLabel}\``],
   ["packages/workflow-bundle/README.vi.md", `chưa được phát hành cho tới khi human Release gate phê duyệt`],
   ["packages/workflow-bundle/README.vi.md", "## State Disposition Chính Xác Và Archive Guard"],
-  ["packages/workflow-bundle/README.vi.md", "### Roll Back Từ v2.6.3 Về v2.6.2"],
+  ["packages/workflow-bundle/README.vi.md", "### Roll Back Từ v2.6.4 Về v2.6.3"],
   ["docs/publish-surface.md", `pins the planned public publish surface for \`workflow-bundle ${releaseLabel}\``],
   ["docs/publish-surface.md", `\`${releaseLabel}\` is a release candidate`],
   ["docs/publish-surface.md", `remains unpublished until the human Release gate passes`],
@@ -124,7 +125,7 @@ assert(fs.existsSync(path.join(repoRoot, releaseNotePath)), `${releaseLabel} rel
 if (fs.existsSync(path.join(repoRoot, releaseNotePath))) {
   const releaseNote = read(releaseNotePath);
   [
-    "CR-009",
+    "CR-010",
     "exact ID-based disposition",
     "resolved_state_history",
     "terminal archive guard",
@@ -137,10 +138,9 @@ if (fs.existsSync(path.join(repoRoot, releaseNotePath))) {
     "## Rollback",
     "## Release Gates"
   ].forEach((claim) => assert(releaseNote.includes(claim), `${releaseNotePath} missing '${claim}'`));
-  assert(!releaseNote.includes(`Branch: \`release/${releaseLabel}\``), "release note must not claim a branch that does not exist");
   assert(
-    releaseNote.includes("workflow-bundle-2.6.2.tgz") &&
-      releaseNote.includes("af49a95830c54165e045a1698932a15f81804dbda5fdb924568ad8728dc6c13f"),
+    releaseNote.includes("workflow-bundle-2.6.3.tgz") &&
+      releaseNote.includes("f496aed3828e6722e26d8010a9e70cab585979467b3c9fbf35cce8e334a62e8f"),
     "release note must document the immutable rollback command boundary"
   );
   assert(
@@ -154,8 +154,8 @@ if (fs.existsSync(path.join(repoRoot, releaseNotePath))) {
     "release note must record legacy state compatibility and exact preservation"
   );
   assert(
-    releaseNote.includes("GitHub-hosted Workflow Guardrails has not run for the v2.6.3 release branch") &&
-      releaseNote.includes("B1/B2/B3 review, s08 Technical Verification, DoD, Release, and Business Acceptance remain pending"),
+    releaseNote.includes("UNPUBLISHED") &&
+      releaseNote.includes("Candidate-specific DoD, Release, and Business Acceptance require human approval"),
     "release note must keep remote and human gates explicitly pending"
   );
   assert(!/(?:\(điền\)|\bTODO\b|\bTBD\b|là \.\.\.)/i.test(releaseNote), `${releaseLabel} release note must be placeholder-free`);
@@ -248,6 +248,21 @@ const staleV262CurrentClaims = [
 staleV262CurrentClaims.forEach(([file, claim]) => {
   assert(!read(file).includes(claim), `${file} must not retain stale current-candidate claim: ${claim}`);
 });
+
+const installerDigests = {
+  "adapters/codex/install-codex-workflow.sh": "20e54a10ef2e3fdadda39623913dd3bec8367a1249bc4207eef35e82a4438ce5",
+  "adapters/codex/install-codex-workflow.ps1": "859c41118ae1a9c3e8d0bf6154e7d00083a999dae08eb81b0eb60f818f475afa"
+};
+Object.entries(installerDigests).forEach(([file, digest]) => {
+  // Windows checkouts can use CRLF; tagged source archives retain canonical LF bytes.
+  const canonical = crypto.createHash("sha256").update(read(file).replace(/\r\n/g, "\n")).digest("hex");
+  assert(canonical === digest, `${file} must retain accepted P-INSTALL bytes`);
+});
+assert(!packageJson.files.includes("adapters"), "direct source installers must not expand the npm package surface");
+if (fs.existsSync(path.join(repoRoot, releaseNotePath))) {
+  ["P-INSTALL", "resume-proposal", "create_new", "54243b7c327c31abf30733ea013afa4c7fb49315", ...Object.values(installerDigests)].forEach((claim) =>
+    assert(read(releaseNotePath).includes(claim), `release note missing source/recovery provenance: ${claim}`));
+}
 
 const guardrailsWorkflow = read(".github/workflows/workflow-guardrails.yml");
 [

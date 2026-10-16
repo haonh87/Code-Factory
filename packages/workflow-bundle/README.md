@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: README.vi.md
 
-`workflow-bundle` is the CLI package prepared for the `v2.6.3` release candidate. It installs the workflow bundle for Codex or Claude Code, routes requests into an applicable governance lane, scaffolds or validates delivery workflows, supports journaled human approval bundles, and provides exact workflow-state disposition. Applicable gates still require their authorized human reviewers and independent trusted receipts. The package remains unpublished until the human Release gate passes.
+`workflow-bundle` is the CLI package prepared for the `v2.6.4` release candidate. It installs the workflow bundle for Codex or Claude Code, routes requests into an applicable governance lane, scaffolds or validates delivery workflows, supports journaled human approval bundles, and provides exact workflow-state disposition. Applicable gates still require their authorized human reviewers and independent trusted receipts. The package remains unpublished until the human Release gate passes.
 
 Detailed quickstart: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -43,31 +43,31 @@ npm link
 wfc version
 ```
 
-### Roll Back From v2.6.3 To v2.6.2
+### Roll Back From v2.6.4 To v2.6.3
 
 Capture the current mode, scope, project roots, and status before replacing the package. Stop adaptive
 writes by omitting `--adaptive-writes true`, then complete or retry the originating bundle command so
 its transaction recovery leaves no live journal. Individual `wfc gate approve` commands remain the
-fallback. Then install the retained immutable v2.6.2 tarball and run `install` for every recorded target:
+fallback. Then install the retained immutable v2.6.3 tarball and run `install` for every recorded target:
 
 ```bash
 wfc status --mode codex
-npm install -g /absolute/path/to/workflow-bundle-2.6.2.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.6.3.tgz
 wfc install --mode codex --scope global
 wfc install --mode codex --scope project --project-root <repo-root>
 wfc status --mode codex
 wfc skills list --mode codex
 ```
 
-Use the same sequence with `--mode claude` for Claude Code. Use the retained immutable v2.6.2
+Use the same sequence with `--mode claude` for Claude Code. Use the retained immutable v2.6.3
 artifact and `wfc install` for the downgrade so the fallback identity is explicit; do not rely on a
-mutable registry alias. The supported path restores the v2.6.2 source behavior and preserves the
+mutable registry alias. The supported path restores the v2.6.3 source behavior and preserves the
 42-skill inventory plus unmanaged files. Legacy/adaptive dual-read compatibility and historical receipts
 must remain intact; never rewrite or re-sign them as part of rollback. Rehearse against isolated homes
 before operating on a live installation, and do not mutate a live global install before the human Release
 gate authorizes it.
 
-## What `v2.6.3` Includes
+## What `v2.6.4` Includes
 
 - workflow bundle install surface via `wfc install|update|status|skills`
 - core authoring CLI via `wfc init|scaffold|validate`
@@ -305,8 +305,20 @@ npm pack
 
 `prepack` will bundle the support policies and the full `runtime/codex/**`, `runtime/claude/**` trees before creating the tarball.
 
-## Persisted Proposal Recovery (Source Change)
+## Persisted Proposal Recovery
 
-The source CLI adds explicit `materialize --resume-proposal`; the installed 2.6.3 release remains unchanged. Ordinary materialization refuses to overwrite existing reports. Recovery supports unapproved single brownfield items without a change layer or write grants: either READY/no_conflict with original scaffold actions, or needs_review after valid Maintainer-signed disposition of all three admission concerns. It never signs or approves on the user's behalf.
+The v2.6.4 candidate adds explicit `materialize --resume-proposal` for eligible unapproved single brownfield proposals, with `change_strategy=none` or `create_new` (full template profile only for `create_new`). Ordinary materialization refuses to overwrite existing reports. Recovery requires either READY/no_conflict with original scaffold actions, or valid Maintainer-signed disposition of all admission concerns. It never signs or approves on the user's behalf.
 
-Read `wfc work-item status`, resolve applicable concerns in their owning lane, then hash the current report with `shasum -a 256 work-items/<slug>/<slug>.work-item-report.json`. Pass that hash and a new canonical UUID to the command above. Keep both values for retry. Success is MATERIALIZED/PENDING_REVIEW with no grants. Existing draft content, raw history and candidate snapshots are preserved; only missing notes and the managed s01 protocol section are authored. Retry with the same identity returns NOOP or repairs a committed projection failure. Unsupported state, stale hash, conflicting metadata, invalid signatures or symlinks are rejected. Do not use an older protocol writer on a recovered report: it may drop the optional `materialization_recovery` identity. See the EN/VI work-item-materialization references for the full support and failure contract.
+Read `wfc work-item status`, resolve applicable concerns in their owning lane, then hash the current report with `shasum -a 256 work-items/<slug>/<slug>.work-item-report.json`. Pass that hash and a new canonical UUID:
+
+```bash
+wfc materialize --resume-proposal --work-item <slug> --expected-report-sha256 <64-hex> --operation-id <canonical-uuid>
+```
+
+Success is MATERIALIZED/PENDING_REVIEW with no grants. Draft content, raw history and candidate snapshots remain intact. A new change package uses canonical templates, a per-change lock and a recovery manifest; matching retries are idempotent or repair an interrupted projection. Stale hashes, unsupported states, altered owned files, conflicting identities and symlinks are rejected. Do not retry after authoring or approval, and do not use an older writer on a recovered report: it can drop `materialization_recovery`. See the work-item-materialization reference for the full support and failure contract.
+
+The CHANGE/CR numeric alias collision remains a known limitation: verify both spellings before selecting a new change ID. Recovery does not infer that an existing directory is safe to reuse.
+
+### v2.6.4 Source And Package Boundary
+
+The candidate includes persisted proposal recovery and corrected human-authority/Light guidance. P-INSTALL containment fixes are in `adapters/codex/install-codex-workflow.sh` and `.ps1` in the Git tag/source archive; those direct installers are not in the npm tarball allowlist. The package retains 42 managed skills and the existing install surface. The immutable v2.6.3 fallback retains exact state disposition and signed history, but has no proposal recovery. A GitHub Release asset is an npm-format tarball; registry publication requires separate authorization. Review the complete delta in [the v2.6.4 release record](../../docs/releases/workflow-bundle-v2.6.4.md).
