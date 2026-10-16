@@ -6,7 +6,7 @@ language: vi
 
 > Tiếng Anh / English: workflow-bundle-quickstart.md
 
-Hướng dẫn này tập trung vào ứng viên phát hành `workflow-bundle v2.6.3`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, định tuyến request bằng adaptive governance, xử lý workflow state cũ theo ID chính xác, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Không thể cài từ registry cho tới khi human Release gate phê duyệt. Candidate giữ 42 managed skill và giữ nguyên thẩm quyền độc lập của human cho từng gate áp dụng.
+Hướng dẫn này tập trung vào ứng viên phát hành `workflow-bundle v2.6.4`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, định tuyến request bằng adaptive governance, xử lý workflow state cũ theo ID chính xác, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Không thể cài từ registry cho tới khi human Release gate phê duyệt. Candidate giữ 42 managed skill và giữ nguyên thẩm quyền độc lập của human cho từng gate áp dụng.
 
 ## Mục Tiêu
 
@@ -408,3 +408,7 @@ Nếu đang dùng `npm link` từ source repo:
 cd packages/workflow-bundle
 npm link
 ```
+
+### Phạm Vi Source Và Package v2.6.4
+
+Candidate bổ sung recovery cho proposal đã lưu và sửa hướng dẫn thẩm quyền human/Light. P-INSTALL nằm trong hai installer trực tiếp `adapters/codex/install-codex-workflow.sh` và `.ps1` của Git tag/source archive; hai file này không nằm trong allowlist npm tarball. Package vẫn có 42 skill. Fallback v2.6.3 bất biến giữ state disposition và lịch sử có chữ ký nhưng chưa có proposal recovery. Tarball trên GitHub Release không đồng nghĩa đã publish npm registry; registry cần được cho phép riêng.

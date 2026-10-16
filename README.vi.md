@@ -6,9 +6,9 @@ language: vi
 
 > Tiếng Anh / English: README.md
 
-Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent. Ứng viên phát hành hiện tại là `workflow-bundle v2.6.3`: workflow bundle cài được cho Codex và Claude Code, có định tuyến request thích ứng, chỉ gọi những role/gate thực sự áp dụng, hỗ trợ approval bundle có transaction journal, telemetry cục bộ với giới hạn riêng tư rõ ràng, state disposition theo ID chính xác và terminal archive guard. Quyền phê duyệt của con người không đổi: mỗi gate áp dụng vẫn phải có đúng reviewer có thẩm quyền và một trusted receipt độc lập. Ứng viên chưa được phát hành cho tới khi human Release gate phê duyệt.
+Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent. Ứng viên phát hành hiện tại là `workflow-bundle v2.6.4`: workflow bundle cài được cho Codex và Claude Code, có định tuyến request thích ứng, chỉ gọi những role/gate thực sự áp dụng, hỗ trợ approval bundle có transaction journal, telemetry cục bộ với giới hạn riêng tư rõ ràng, state disposition theo ID chính xác và terminal archive guard. Quyền phê duyệt của con người không đổi: mỗi gate áp dụng vẫn phải có đúng reviewer có thẩm quyền và một trusted receipt độc lập. Ứng viên chưa được phát hành cho tới khi human Release gate phê duyệt.
 
-Cho tới khi gate đó pass, dùng source commit của candidate và SHA-256 do Workflow Guardrails tạo làm release-candidate reference. Guardrails chỉ pack một lần rồi kiểm tra đúng artifact đó trên Node 18 và Node 22, không build lại theo từng môi trường. Chỉ tạo và chia sẻ tag `v2.6.3` sau khi Release được phê duyệt. Baseline rollback đã xác minh là release bất biến `v2.6.2/42`.
+Cho tới khi gate đó pass, dùng source commit của candidate và SHA-256 do Workflow Guardrails tạo làm release-candidate reference. Guardrails chỉ pack một lần rồi kiểm tra đúng artifact đó trên Node 18 và Node 22, không build lại theo từng môi trường. Chỉ tạo và chia sẻ tag `v2.6.4` sau khi Release được phê duyệt. Baseline rollback đã xác minh là release bất biến `v2.6.3/42`.
 
 ## Requirements
 
@@ -20,7 +20,7 @@ Cho tới khi gate đó pass, dùng source commit của candidate và SHA-256 do
 
 ## Bắt Đầu Ở Đây
 
-Nếu đang tiếp cận repo lần đầu và muốn review ứng viên phát hành `v2.6.3`:
+Nếu đang tiếp cận repo lần đầu và muốn review ứng viên phát hành `v2.6.4`:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -38,7 +38,7 @@ Các tài liệu dưới đây là maintainer hoặc historical context, không 
 
 ## Workflow Commands Nhanh
 
-Command surface public của `v2.6.3` dùng `wfc`.
+Command surface public của `v2.6.4` dùng `wfc`.
 
 Install và quản lý workflow bundle:
 
@@ -103,7 +103,7 @@ Ghi chú:
 - lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase trực tiếp trên TTY đó.
 - implementation path bị khóa ở mức filesystem cho tới khi work item vào `ACTIVE` ở `s07` và được cấp `write-root`.
 - `work-items/` là canonical artifact root cho workflow artifacts của repo.
-- Approval model của `v2.6.3` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate, trusted signed receipts và step-gate evidence bắt buộc đã có.
+- Approval model của `v2.6.4` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate, trusted signed receipts và step-gate evidence bắt buộc đã có.
 
 ## Contract Adaptive Governance
 
@@ -126,7 +126,7 @@ Ghi chú:
 ### Theo Mục Đích
 
 - Public docs cho người mới dùng workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface cho `v2.6.3`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface cho `v2.6.4`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart cho `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README cho cài đặt hoặc publish: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 
@@ -458,3 +458,7 @@ Ghi chú vận hành:
 - Cấu trúc nhóm trong repo chỉ phục vụ quản trị nguồn và đọc hiểu.
 - Layout runtime sau khi cài global cho Codex hiện là flat theo `skill-name`.
 - Khi thêm skill mới, nên kiểm tra tên skill là duy nhất ở mức toàn repo để tránh ghi đè lúc cài global.
+
+### Phạm Vi Source Và Package v2.6.4
+
+Candidate bổ sung recovery cho proposal đã lưu và sửa hướng dẫn thẩm quyền human/Light. P-INSTALL nằm trong hai installer trực tiếp `adapters/codex/install-codex-workflow.sh` và `.ps1` của Git tag/source archive; hai file này không nằm trong allowlist npm tarball. Package vẫn có 42 skill. Fallback v2.6.3 bất biến giữ state disposition và lịch sử có chữ ký nhưng chưa có proposal recovery. Tarball trên GitHub Release không đồng nghĩa đã publish npm registry; registry cần được cho phép riêng.

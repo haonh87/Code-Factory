@@ -6,15 +6,15 @@ language: vi
 
 > Tiếng Anh / English: publish-surface.md
 
-Tài liệu này ghim bề mặt phát hành công khai dự kiến cho `workflow-bundle v2.6.3`.
+Tài liệu này ghim bề mặt phát hành công khai dự kiến cho `workflow-bundle v2.6.4`.
 
-`v2.6.3` là một ứng viên phát hành và vẫn chưa được phát hành cho đến khi human Release gate phê duyệt. Khi được phê duyệt, public surface dự kiến sẽ cung cấp:
+`v2.6.4` là một ứng viên phát hành và vẫn chưa được phát hành cho đến khi human Release gate phê duyệt. Khi được phê duyệt, public surface dự kiến sẽ cung cấp:
 - khả năng cài vào Codex hoặc Claude Code bằng `wfc install|update|status|skills`
 - khả năng author workflow bằng `wfc init|scaffold|validate`
 - khả năng để agent chủ động đề xuất `work-item` và `change`
 - quyền phê duyệt tiếp tục thuộc về human ở từng gate trước khi delivery tiếp diễn
 
-`v2.0.0` vẫn là first public release. Nếu được phê duyệt, `v2.6.3` tiếp tục trên cùng public surface và không tạo breaking change cho command line:
+`v2.0.0` vẫn là first public release. Nếu được phê duyệt, `v2.6.4` tiếp tục trên cùng public surface và không tạo breaking change cho command line:
 
 - `v2.2.x` thêm harness adapter registry và hooks/instincts tooling nội bộ.
 - `v2.3.x` thêm English-first public surface, Vietnamese `*.vi.md`, `sdd_mode=light` và hai architecture-driver skill `sa`/`ta`.
@@ -29,8 +29,8 @@ Tất cả thay đổi trên đều additive; public promise bên dưới không
 
 ## Planned Canonical Release Ref
 
-- Tag sau Release approval: `v2.6.3`
-- Candidate evidence trước approval: source commit và immutable tarball digest ghi trong CHANGE-007
+- Tag sau Release approval: `v2.6.4`
+- Candidate evidence trước approval: source commit và immutable tarball digest ghi trong CR-010
 
 Không tạo tag, không gọi candidate branch là canonical và không publish package trước khi human Release gate pass.
 
@@ -53,7 +53,7 @@ Không tạo tag, không gọi candidate branch là canonical và không publish
 5. [`../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`](../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
 6. [`../skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](../skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
 
-## Public Promise Of `v2.6.3`
+## Public Promise Of `v2.6.4`
 
 - Installable workflow bundle cho Codex và Claude Code qua `wfc install|update|status|skills`
 - Core authoring CLI qua `wfc init`, `wfc scaffold`, `wfc`, `wfc sdd|change|exec|plan`
@@ -76,13 +76,13 @@ Không tạo tag, không gọi candidate branch là canonical và không publish
   - legacy config `workflow-contracts.config.json`
   - legacy state `.codex-workflow-pack.*`
 
-Hai lớp legacy trên hiện vẫn được giữ để migration êm hơn, nhưng không nên coi đó là core public story của `v2.6.3`.
+Hai lớp legacy trên hiện vẫn được giữ để migration êm hơn, nhưng không nên coi đó là core public story của `v2.6.4`.
 
 ## Tương Thích Và Hoàn Tác
 
 - Các command, flag, state file, output block SA/TA, block ownership, yêu cầu Node `>=18` và npm `>=9` hiện có vẫn tương thích.
-- Trước publication, rollback chỉ khôi phục các source surface và candidate surface do CHANGE-007 quản lý về baseline `v2.6.2/42` đã xác minh.
-- Sau publication được phê duyệt, dùng artifact v2.6.2 bất biến đã lưu và `wfc install` để hạ cấp có quản lý, xác minh `v2.6.2/42`, đồng thời giữ nguyên file và mode unmanaged.
+- Trước publication, rollback chỉ khôi phục các source surface và candidate surface do CR-010 quản lý về baseline `v2.6.3/42` đã xác minh.
+- Sau publication được phê duyệt, dùng artifact v2.6.3 bất biến đã lưu và `wfc install` để hạ cấp có quản lý, xác minh `v2.6.3/42`, đồng thời giữ nguyên file và mode unmanaged.
 - Candidate này không có migration database, API, event, deployment, user configuration hoặc global install live.
 
 ## Internal Or Maintainer Docs
@@ -108,6 +108,10 @@ Các file dưới đây là working assets cục bộ, không phải source-of-t
 
 ## Publish Rule
 
-- cho tới khi Release được phê duyệt, gọi `v2.6.3` là ứng viên phát hành thay vì public release hiện tại
+- cho tới khi Release được phê duyệt, gọi `v2.6.4` là ứng viên phát hành thay vì public release hiện tại
 - nếu nói về approval model, phải nêu rõ `agent proposes, human approves`
 - không dùng tài liệu internal hoặc memory-bank làm public onboarding path
+
+### Phạm Vi Source Và Package v2.6.4
+
+Candidate bổ sung recovery cho proposal đã lưu và sửa hướng dẫn thẩm quyền human/Light. P-INSTALL nằm trong hai installer trực tiếp `adapters/codex/install-codex-workflow.sh` và `.ps1` của Git tag/source archive; hai file này không nằm trong allowlist npm tarball. Package vẫn có 42 skill. Fallback v2.6.3 bất biến giữ state disposition và lịch sử có chữ ký nhưng chưa có proposal recovery. Tarball trên GitHub Release không đồng nghĩa đã publish npm registry; registry cần được cho phép riêng.

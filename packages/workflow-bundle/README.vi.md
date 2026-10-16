@@ -6,7 +6,7 @@ language: vi
 
 > Tiếng Anh / English: README.md
 
-`workflow-bundle` là package CLI được chuẩn bị cho ứng viên phát hành `v2.6.3`. Package cài workflow bundle cho Codex hoặc Claude Code, định tuyến request vào governance lane phù hợp, scaffold hoặc validate delivery workflow, hỗ trợ human approval bundle có transaction journal và cung cấp workflow-state disposition chính xác. Gate nào áp dụng vẫn phải có đúng human reviewer có thẩm quyền và một trusted receipt độc lập. Package chưa được phát hành cho tới khi human Release gate phê duyệt.
+`workflow-bundle` là package CLI được chuẩn bị cho ứng viên phát hành `v2.6.4`. Package cài workflow bundle cho Codex hoặc Claude Code, định tuyến request vào governance lane phù hợp, scaffold hoặc validate delivery workflow, hỗ trợ human approval bundle có transaction journal và cung cấp workflow-state disposition chính xác. Gate nào áp dụng vẫn phải có đúng human reviewer có thẩm quyền và một trusted receipt độc lập. Package chưa được phát hành cho tới khi human Release gate phê duyệt.
 
 Quickstart chi tiết: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -43,30 +43,30 @@ npm link
 wfc version
 ```
 
-### Roll Back Từ v2.6.3 Về v2.6.2
+### Roll Back Từ v2.6.4 Về v2.6.3
 
 Ghi lại mode, scope, project root và status hiện tại trước khi thay package. Dừng adaptive writer bằng
 cách không truyền `--adaptive-writes true`, sau đó hoàn tất hoặc chạy lại bundle command ban đầu để
 transaction recovery không để lại live journal. Các lệnh `wfc gate approve` riêng lẻ vẫn là fallback.
-Tiếp theo, cài đúng tarball v2.6.2 bất biến đã được lưu và chạy `install` cho từng target đã ghi:
+Tiếp theo, cài đúng tarball v2.6.3 bất biến đã được lưu và chạy `install` cho từng target đã ghi:
 
 ```bash
 wfc status --mode codex
-npm install -g /absolute/path/to/workflow-bundle-2.6.2.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.6.3.tgz
 wfc install --mode codex --scope global
 wfc install --mode codex --scope project --project-root <repo-root>
 wfc status --mode codex
 wfc skills list --mode codex
 ```
 
-Dùng cùng chuỗi lệnh với `--mode claude` cho Claude Code. Dùng artifact v2.6.2 bất biến đã được lưu
+Dùng cùng chuỗi lệnh với `--mode claude` cho Claude Code. Dùng artifact v2.6.3 bất biến đã được lưu
 và `wfc install` để hạ cấp nhằm giữ identity của fallback tường minh; không dựa vào registry alias
-có thể thay đổi. Đường được hỗ trợ sẽ khôi phục hành vi source v2.6.2, giữ inventory 42 skill và các file
+có thể thay đổi. Đường được hỗ trợ sẽ khôi phục hành vi source v2.6.3, giữ inventory 42 skill và các file
 unmanaged. Phải giữ nguyên khả năng dual-read legacy/adaptive cùng mọi historical receipt; không rewrite
 hoặc ký lại receipt khi rollback. Hãy diễn tập với home cô lập trước khi thao tác trên bản cài live, và
 không thay đổi global install live trước khi human Release gate cho phép.
 
-## What `v2.6.3` Includes
+## What `v2.6.4` Includes
 
 - workflow bundle install surface qua `wfc install|update|status|skills`
 - core authoring CLI qua `wfc init|scaffold|validate`
@@ -297,3 +297,13 @@ npm pack
 ```
 
 `prepack` sẽ tự bundle support policy và toàn bộ `runtime/codex/**`, `runtime/claude/**` trước khi tạo tarball.
+
+## Khôi Phục Proposal Đã Lưu
+
+Candidate v2.6.4 thêm `materialize --resume-proposal` cho proposal brownfield đơn chưa được duyệt, hỗ trợ `change_strategy=none` hoặc `create_new` (create_new chỉ dùng template full). Recovery cần hash report hiện tại, UUID operation và disposition có chữ ký Maintainer khi admission còn yêu cầu review. Thành công trả về MATERIALIZED/PENDING_REVIEW, không tự phê duyệt hay cấp quyền ghi.
+
+Change mới dùng template chuẩn, lock theo change ID và manifest recovery. Retry cùng identity có tính idempotent hoặc sửa projection bị gián đoạn; hash cũ, file đã sửa, identity xung đột và symlink bị từ chối. Không retry sau khi đã author hoặc duyệt, không dùng writer cũ có thể làm mất `materialization_recovery`. Kiểm tra cả tên CHANGE/CR trước khi chọn ID mới vì collision giữa hai cách viết vẫn là hạn chế đã biết.
+
+### Phạm Vi Source Và Package v2.6.4
+
+Candidate bổ sung recovery cho proposal đã lưu và sửa hướng dẫn thẩm quyền human/Light. P-INSTALL nằm trong hai installer trực tiếp `adapters/codex/install-codex-workflow.sh` và `.ps1` của Git tag/source archive; hai file này không nằm trong allowlist npm tarball. Package vẫn có 42 skill. Fallback v2.6.3 bất biến giữ state disposition và lịch sử có chữ ký nhưng chưa có proposal recovery. Tarball trên GitHub Release không đồng nghĩa đã publish npm registry; registry cần được cho phép riêng.

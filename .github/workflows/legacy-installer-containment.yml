@@ -1,6 +1,7 @@
 name: Legacy installer containment
 
 on:
+  workflow_dispatch:
   push:
     branches: [fix/legacy-codex-installer-containment]
     paths:
