@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "VERIFIED",
   "decision_owner": "coordinator",
   "protocol_owner": "developer",
   "raw_request_summary": "",
@@ -16,7 +16,7 @@
   "work_item_type": "BUG",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/decouple-tests-from-tree-layout/work-items/decouple-tests-from-tree-layout",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js",
     "work-items/decouple-tests-from-tree-layout",
@@ -24,7 +24,7 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "step-s07-owner",
+  "handoff_target": "definition-of-done",
   "required_actions": [
     {
       "id": "se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194",
@@ -32,9 +32,9 @@
       "text": "Review and continue workflow backbone s01 -> s08."
     },
     {
-      "id": "se:eb937e030d6ce6dc964605f19279888bd361eea4a1cd8b37b3a71e880f589a24",
+      "id": "se:d83900ce5580ff1810da416e564d9ac2ed9c990101459b559b01aca89ce5a466",
       "kind": "workflow_followup",
-      "text": "Continue active execution from step 7 onward."
+      "text": "Collect DoD evidence and close the work item when ready."
     }
   ],
   "blockers": [],
@@ -45,7 +45,8 @@
     "REPORT_BOOTSTRAPPED",
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
-    "WORK_ITEM_ACTIVATED"
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -91,6 +92,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "ACTIVE",
       "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-10-19T09:39:07.889Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "AC-001..003 verified; both identical-source suites 47/47. Human QC DoD remains pending; no closure authorization."
     }
   ]
 }

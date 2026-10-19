@@ -135,14 +135,14 @@ conflicts: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "decouple-tests-from-tree-layout"
 work_item_type: BUG
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/decouple-tests-from-tree-layout/work-items/decouple-tests-from-tree-layout"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js"
   - "work-items/decouple-tests-from-tree-layout"
@@ -158,12 +158,12 @@ decision_owner: "coordinator"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-10-19T03:09:32Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-10-19T03:21:39.714Z"
+handoff_target: "definition-of-done"
+last_transition_action: "verify"
+last_transition_at: "2026-10-19T09:39:07.889Z"
 required_actions:
   - {"id":"se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194","kind":"workflow_followup","text":"Review and continue workflow backbone s01 -> s08."}
-  - {"id":"se:eb937e030d6ce6dc964605f19279888bd361eea4a1cd8b37b3a71e880f589a24","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
+  - {"id":"se:d83900ce5580ff1810da416e564d9ac2ed9c990101459b559b01aca89ce5a466","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
 blockers: []
 review_notes:
   - "Accepted bounded fixture packet T0/T2/T3; no DoD, release, merge or cleanup."
@@ -174,6 +174,7 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
 ## Traceability

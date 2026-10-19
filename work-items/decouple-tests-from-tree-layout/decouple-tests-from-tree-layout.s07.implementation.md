@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: reviewed
 governance_ref: "project-context/project-context.md"
 governance_profile: default
 governance_status: ALIGNED
@@ -112,15 +112,21 @@ These are technical self-review findings, not human signoffs. Automated scanner 
 ```yaml
 behavior_change: YES
 tdd_status: DONE
-tdd_test_refs: ["T0-absent-red.log", "T2-results.json", "workflow-gate-evidence-utils.test.js"]
+tdd_test_refs:
+  - "T0-absent-red.log"
+  - "T2-results.json"
+  - "workflow-gate-evidence-utils.test.js"
 tdd_exception_reason: ""
 tdd_alternative_verify_path: []
 change_risk_profile: QUICK_FIX
 worktree_status: USED
-worktree_refs: [".claude/worktrees/decouple-tests-from-tree-layout", ".claude/worktrees/decouple-tests-verify"]
+worktree_refs:
+  - ".claude/worktrees/decouple-tests-from-tree-layout"
+  - ".claude/worktrees/decouple-tests-verify"
 worktree_reason: "Existing multi-session item; isolated implementation and equivalent-source comparison."
 review_status: COMPLETED
-review_refs: ["s07 Early Review"]
+review_refs:
+  - "s07 Early Review"
 spec_compliance_status: PASS
 code_quality_status: PASS
 delegation_mode: agentic
