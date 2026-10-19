@@ -5,15 +5,15 @@ work_item_slug: "decouple-tests-from-tree-layout"
 step_id: "s06"
 step_slug: "task-breakdown"
 workflow_stage: delivery
-work_item_type: FEATURE
+work_item_type: BUG
 delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -23,7 +23,7 @@ archive_status: not_ready
 sdd_mode: light
 spec_refs:
   card: "product-specs/cards/decouple-tests-from-tree-layout.md"
-spec_status: draft
+spec_status: approved
 planning_track: quick
 execution_mode: agentic
 review_mode: self
@@ -46,10 +46,10 @@ gate_reviews:
   spec_reviewed_at: ""
   dor_reviewed_by: []
   dor_reviewed_at: ""
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
-  task_plan_reviewed_by: []
-  task_plan_reviewed_at: ""
+  approach_reviewed_by: ["developer"]
+  approach_reviewed_at: "2026-10-19T03:09:32Z"
+  task_plan_reviewed_by: ["developer"]
+  task_plan_reviewed_at: "2026-10-19T03:09:32Z"
   dod_reviewed_by: []
   dod_reviewed_at: ""
 content_skills:
@@ -69,231 +69,159 @@ tags:
 # Step 6 - Task Plan
 
 > [!summary]
-> Light hosts Option Analysis, Approach, Brownfield Impact and Task Plan here. Three tasks,
-> `T1` gated on `OQ-1`. Test-only, no worktree - the change is two files finished in one
-> session with no conflict risk against either open branch.
+> The user accepted the bounded fixture approach and T0/T2/T3. This Light host owns Approach and Task Plan. Human content approval is complete; trusted signatures and child activation remain pending. Implementation has not started.
 
-## Artifact Chính
+## Step Contract
 ```yaml
-tasks:
-  - id: T0
-    owner_role: developer
-    name: "Two-tree baseline"
-    objective: "Record the failing-file count and both target files' verdicts from the main tree AND from a worktree, because the whole defect is that these two numbers differ."
-    paths_in_scope:
-      - "work-items/decouple-tests-from-tree-layout"
-    outputs_expected:
-      - "run-all.js failing-file count from each tree"
-      - "release-rollback-smoke.test.js verdict from each tree"
-      - "grep count of live work-item references in workflow-gate-evidence-utils.test.js"
-    review_checkpoint: "Confirm the baseline is recorded per tree, not as one number. Recording a single number is the mistake that made both preceding work items re-measure."
-    verification_hint: "node packages/workflow-bundle/test/run-all.js in each tree; node packages/workflow-bundle/test/release-rollback-smoke.test.js in each tree; grep -c for work-items/ paths."
-    dependencies: []
-  - id: T1
-    owner_role: developer
-    name: "G-A - locate the rollback artifact without depending on what sits beside the repo"
-    objective: "Make release-rollback-smoke.test.js give one verdict everywhere, keeping the identity comparison and the negative case."
-    paths_in_scope:
-      - "packages/workflow-bundle/test/release-rollback-smoke.test.js"
-    outputs_expected:
-      - "Observed failing first FROM THE MAIN TREE, which is where it is currently red"
-      - "The rollback artifact resolved by a means that does not read repoRoot/.."
-      - "A negative case proving the test still fails when the artifact is genuinely absent"
-    review_checkpoint: "SPEC_COMPLIANCE: AC-001. The fix must not be a skip-if-missing, and must not assert something trivially true. CODE_QUALITY: if a fixture tarball is built, build and clean it up in the test, matching the tmpdir pattern already used in this package."
-    verification_hint: "Run the file from both trees and compare verdicts. Then perturb the artifact location in a scratch copy and confirm red."
-    dependencies: ["T0"]
-    blocked: false
-    status: SUPERSEDED
-    superseded_2026_08_28:
-      by: "a9888a9 fix(release): separate rollback source preflight - a peer session's release work, not this work item"
-      what_changed: "release-rollback-smoke.test.js no longer depends on what sits beside the repo. It now branches on WORKFLOW_BUNDLE_CANDIDATE_TARBALL: set -> runExactRollback against a supplied artifact; unset -> runSourcePreflight, which needs no retained tarball at all. CI supplies the artifact by packing it IN-JOB, via the separate `Pack, install, and smoke the exact candidate artifact` step."
-      measured:
-        repo_root_traversal: "GONE. repoRoot is path.resolve(__dirname, '..', '..', '..') - the repo root itself. No repoRoot/.. lookup remains; grep for '..' traversal returns only that one line."
-        verdict_from_main_tree: "exit 0"
-        verdict_from_a_second_tree: "exit 0"
-        method: "Created a throwaway detached worktree at the same commit, ran the file in both, compared. Equal verdicts - which is AC-003's criterion for this file."
-      consequence_for_this_work_item: "REQ-001 / AC-001 / G-A is satisfied, by someone else. T1 has nothing left to do. Kept visible as SUPERSEDED rather than deleted, matching how this note kept its own wrong OQ-1 recommendation visible - the reversal is the useful part."
-      consequence_for_OQ_2: "MOOT. OQ-2 asked whether CI should gate on a retained release binary. Answered in practice: it gates on an artifact PACKED IN-JOB, so nothing is retained beside the repo and no fetchable home is needed. The po/devops call the DoR was blocked on has been resolved by implementation rather than by decision."
-      not_claimed_by_this_work_item: "This is not a delivery by this work item. It is a defect that stopped existing while the plan waited on a human answer."
-  - id: T2
-    owner_role: developer
-    name: "G-B - fixture the cross-file resolver assertion"
-    objective: "Remove the last two reads of a live work item note, keeping cross-file resolver coverage."
-    paths_in_scope:
-      - "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js"
-    outputs_expected:
-      - "A fixture pair - a current file and a target file - written by the test itself"
-      - "Cross-file resolution still asserted, against a value the fixture chooses"
-      - "grep for live work-item paths in this file returns 0"
-    review_checkpoint: "SPEC_COMPLIANCE: AC-002. Mirror what D-E did for the same-note case in this same file, including its lesson - prove the resolver actually reads by writing more than one value, so the assertion cannot pass against a constant."
-    verification_hint: "Run the file; grep -c live work-item paths must be 0, baseline 2. Then re-run the whole suite."
-    dependencies: ["T0"]
-  - id: T3
-    owner_role: developer
-    name: "Two-tree regression"
-    objective: "Show AC-003 directly: the same failing-file count from both trees."
-    paths_in_scope:
-      - "work-items/decouple-tests-from-tree-layout"
-    outputs_expected:
-      - "run-all.js count from both trees, recorded side by side"
-      - "A statement of which criteria closed and which deferred"
-    review_checkpoint: "SPEC_COMPLIANCE: compare against T0's recorded numbers, never against what this note predicts."
-    verification_hint: "run-all.js in both trees; the two counts must be equal. If they are equal but non-zero, say what still fails and why - equality is the criterion, not zero."
-    dependencies: ["T2"]
-
-dependencies:
-  - "T0 -> T2 -> T3 runs with nothing outstanding"
-  - "T1 is SUPERSEDED as of 2026-08-28 - see T1.superseded_2026_08_28. It needs no answer to OQ-2 because OQ-2 is moot."
-  - "History of this line, kept because it shows the plan drifting twice: it first said 'T1 additionally needs OQ-1 answered'; the reversal commit answered OQ-1 and raised OQ-2 but updated only T1.dependencies, leaving this summary stale; then the underlying defect was fixed elsewhere, retiring both questions."
-  - "Live work remaining: T0 -> T2 -> T3, none blocked."
-  - "T2 and T1 touch different files and may commit in either order"
-
-delegation_decision:
-  mode: agentic
-  subagent: false
-  reason: "Two files, three sequential-ish tasks, one of them externally blocked. No pair has disjoint ownership worth splitting."
-
-worktree_decision:
-  status: NOT_REQUIRED
-  reason: "Two test files, no production code, finishable in one session, no conflict risk - neither open branch touches these paths. Per the worktree rule this is the small-and-quick case where a worktree may be skipped, and the reason is recorded rather than assumed."
-  caveat: "T0 and T3 still need A SECOND TREE to run in, because the criterion is a two-tree comparison - the whole defect is that one suite gives two different answers depending on which tree runs it."
-  caveat_invalidated_2026_08_28:
-    was: "Any existing worktree serves; none needs to be created for this work item."
-    now: "FALSE. All four worktrees were removed today under branch-finish-discipline after worktree-and-closure-integrity and trusted-receipt-namespace-resolution closed DONE. `git worktree list` shows main only."
-    consequence: "T0 and T3 must now CREATE a throwaway second tree rather than borrow one. That does not change worktree_decision - this work item still needs no worktree of its own for isolation - but the plan can no longer assume a tree is lying around."
-    concrete: "git worktree add --detach .claude/worktrees/tmp-two-tree-check HEAD -> run the comparison -> git worktree remove <path> --force. It exists only to be a second path for the same commit, so it takes no branch of its own."
-    command_was_wrong_first_time: "The obvious form, `git worktree add <path> main`, FAILS: 'fatal: main is already used by worktree at <repo>' - the primary worktree already has main checked out. --detach HEAD is the form that works. Verified by running both, because an untested command in a plan is exactly the kind of thing the implementer pays for."
-    disclosure: "This was invalidated by the same agent that wrote it, one hour later, by cleaning up the worktrees. Recorded rather than silently repaired, because a plan that quietly stops matching the machine is how both preceding work items got their defects."
+step_goal: "Make the accepted one-file fixture change executable and verifiable."
+input_summary: ["Spec Card 0.2", "s04 READY", "Known ENOENT reproduction"]
+output_summary: ["Fixture approach", "Ordered tasks", "Review and two-tree verification boundary"]
+done_when: ["Owned scope and checks are explicit", "No production or unrelated work-item edit is needed"]
+owner: developer
 ```
 
 ## Option Analysis
 ```yaml
-goal: "OQ-1 - how should release-rollback-smoke.test.js obtain the v2.5.0 rollback artifact?"
-status: "ANSWERED 2026-08-27 by measurement, which rejected the recommendation this block originally carried."
-measurement_that_decided_it:
-  digest_is_real: "retainedRollbackDigest 36615668ad2bcc752998d33e4e7e6f837aef3f1feabf83b04aecd612cabb92ec matches workflow-bundle-2.5.0.tgz byte for byte."
-  where_the_artifact_lives: ".claude/worktrees/artifact-governance-enforcement/packages/workflow-bundle/ - inside a gitignored worktree."
-  tracked_in_git: "No. .gitignore:30 excludes packages/workflow-bundle/*.tgz and git tracks zero .tgz files."
-  rebuildable: "No. The package is at 2.6.0; the rollback target is 2.5.0."
-  ci_runs_it: "workflow-guardrails.yml:210 runs the unit suite, which includes this file."
+goal: "Remove the live-data dependency while keeping the intended protocol/materialization regression."
 options:
-  - "Opt-A: build a fixture tarball in a tmpdir and point the test at it - REJECTED BY EVIDENCE"
-  - "Opt-B: resolve the artifact from a known path inside the repo - REJECTED BY EVIDENCE"
-  - "Opt-C: declare the artifact location explicitly and handle its absence deliberately"
-recommended_option: "Opt-C"
-correction_notice: "This block first recommended Opt-A on reasoning alone, and called Opt-C the weakest of the three. Measurement reversed that. The original recommendation is left visible above rather than quietly swapped, because the reversal is the useful part."
-trade_offs:
-  - "Opt-A is not merely worse, it is impossible without gutting the check: a fixture tarball has a different digest, so adopting it means editing retainedRollbackDigest, and a digest you rewrite to match whatever you built asserts nothing."
-  - "Opt-B has nothing to relocate. The artifact is not in the repository and .gitignore:30 says that is deliberate, not an oversight."
-  - "Opt-C keeps the environmental dependency, which is exactly why this block rejected it first. The difference measurement makes: the dependency is real and unavoidable, so the honest move is to DECLARE it rather than to hide it behind a relative path that happens to resolve on one machine."
-  - "Opt-C splits into two shapes and choosing between them is OQ-2, a po/devops call: declare a fetchable home for the retained artifact and fail loudly when it is missing, or move the check out of the unit suite into a release lane that runs where the artifact exists."
-what_the_current_code_does_wrong_under_any_option:
-  - "path.resolve(repoRoot, '..', <a worktree name>, ...) encodes one developer's directory layout as a test dependency."
-  - "The worktree name in that path has ALREADY been hand-edited once - it was stabilize-architecture-skill-bundle-v2.4.0 and is now artifact-governance-enforcement, changed in 26591a2 when the rollback target moved. It will need editing again at the next release. That maintenance cost is the defect, independent of OQ-2."
+  - "A: Replace the live block with synthetic note/report fixtures and changed-value/missing-target controls; preserves the checks with one test-file change."
+  - "B: Delete the live block and rely on the separate cross-file test; smaller but loses the explicit protocol/materialization coverage. Rejected."
+  - "C: Copy the real work-item record into a fixture; retains irrelevant lifecycle detail and remains unnecessarily coupled. Rejected."
+recommended_option: "A"
+reason: "Smallest change preserving the approved acceptance criteria and negative controls."
+validation_needed: "No-live-data RED before the fix; changed-value and missing-target controls must exercise actual file reads."
 ```
 
 ## Technical Approach
 ```yaml
-recommended_approach: "Each test builds or points at input it controls. G-B follows the shape D-E already proved in the same file: write a fixture pair in a tmpdir, assert against a value the fixture chose, clean up in a finally. G-A follows the same idea once OQ-1 fixes whether the artifact is fixtured (Opt-A) or relocated inside the repo (Opt-B)."
-why: "The defect is not in what these tests assert but in where they read from. The smallest correct change is therefore to move the input under the test's control and leave every assertion intact."
-boundaries:
-  in_scope_files:
-    - "packages/workflow-bundle/test/release-rollback-smoke.test.js"
-    - "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js"
-  explicitly_untouched:
-    - "All production code under packages/workflow-bundle/scripts and bin"
-    - "What any assertion checks"
-    - "scripts/hooks/tdd-enforce.sh - L-04 is a different concern in a different file"
-    - "The work items these tests reference; none is re-run, re-verified or renamed"
-validation_plan:
-  - "Each defect observed failing first from the tree where it is currently red - for G-A that is the MAIN tree, which is the opposite of where it was authored."
-  - "Negative-check the check: perturb the input and confirm red, for both G-A and G-B."
-  - "Two-tree comparison for AC-003, recording both numbers rather than asserting equality."
-risk_notes:
-  - id: "R-01"
-    risk: "Fixing G-A by weakening it - skip-if-missing or a trivially true assertion."
-    severity: MEDIUM
-    mitigation: "AC-001 requires the negative case to survive, and T1's review checkpoint names this failure mode explicitly."
-  - id: "R-02"
-    risk: "Opt-A silently drops coverage of a real released artifact."
-    severity: MEDIUM
-    mitigation: "That trade-off is OQ-1 itself, and it is a decision rather than an oversight. If OQ-1 answers 'a real artifact matters', Opt-B is taken instead."
+recommended_approach: "Use existing test helpers to create temporary protocol/materialization note data and a matching report. Keep same-note/report and cross-file assertions, re-resolve a changed field, then remove the fixture target and assert the missing-file error. Clean only test-owned temporary paths in finally."
+explicitly_untouched: ["Production scripts/bin", "Rollback test implementation", "Real work items", "CI/releases/global installations"]
+failure_model: "A constant assertion can mask a broken read; a missing fixture must fail through the expected resolver error, never skip."
+compatibility: "No resolver API or production behavior changes."
+rollback: "Revert the isolated test-source commit; no state migration."
 ```
 
 ## Brownfield Impact Analysis
 ```yaml
-impacted_modules:
-  - "packages/workflow-bundle/test - two files"
-  - "The aggregate result of run-all.js, which is what CI and every future baseline read"
-compatibility_risks:
-  - risk: "A future release check silently stops verifying a real artifact."
-    assessment: "Open until OQ-1 is answered. Recorded as R-02 rather than assumed away."
-  - risk: "Merge conflict with either open branch."
-    assessment: "Eliminated by measurement: neither codex/worktree-and-closure-integrity nor codex/trusted-receipt-namespace-resolution touches these two files."
-migration_notes:
-  - "None. Test-only, no disk state, no receipts, no config."
-rollback_notes:
-  - "Two independent commits, each a plain git revert."
+existing_baseline: "e5dc98aac70196f9d3a391153325049c0402eb17"
+impacted_modules: ["workflow-bundle resolver unit test"]
+compatibility_risks: ["Accidentally dropping same-note/report or cross-file coverage", "Comparing different source/runtime trees"]
+mitigations: ["Retain both assertions and negative controls", "Pin identical source and runtime prerequisites for both full-suite runs"]
+migration_notes: ["None"]
+rollback_notes: ["Revert only the test change; retain evidence and separate approval history"]
+```
+
+## Artifact Chính
+```yaml
+task_breakdown:
+  - id: T0
+    owner_role: developer
+    name: "Finalize readiness and capture baseline"
+    objective: "Establish child admission and reproduce the current dependency before modifying the test."
+    paths_in_scope: ["work-items/decouple-tests-from-tree-layout", "product-specs/cards/decouple-tests-from-tree-layout.md"]
+    dependencies: ["Trusted work-item and Spec/DoR/Approach/Task Plan receipts before implementation activation"]
+    outputs_expected: ["Same-source baseline and runtime prerequisites", "Focused absent-live-data RED", "T1 predecessor evidence retained"]
+    verification_hint: "Record node version, source SHA, focused test verdicts and full-suite counts/identities in two equivalent source trees. Real work items must remain untouched."
+    review_checkpoint: "Confirm approved scope and valid receipts before s07."
+  - id: T1
+    owner_role: developer
+    name: "Historical rollback-layout fix"
+    status: SUPERSEDED
+    objective: "Preserve a9888a9 as the owner of the completed rollback independence change."
+    paths_in_scope: []
+    dependencies: []
+    outputs_expected: ["No new rollback implementation"]
+    verification_hint: "Run the unchanged rollback source check under T3; do not claim a new exact-artifact rehearsal."
+    review_checkpoint: "No modification of release-rollback-smoke.test.js."
+  - id: T2
+    owner_role: developer
+    name: "Isolate resolver test inputs"
+    objective: "Replace the real-work-item block with temporary synthetic fixtures while retaining both regression assertions."
+    paths_in_scope: ["packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js"]
+    dependencies: ["T0"]
+    outputs_expected: ["Temporary note/report pair", "Retained same-note/report and cross-file assertions", "Changed-value and missing-target controls", "Finally cleanup"]
+    verification_hint: "Observe absent-live-data RED first, then GREEN. Repeat with absent, present and independently changed real-work-item data in scratch copies. Verify zero references to the real artifact-governance-enforcement subject; generic fixture-owned work-items paths remain valid."
+    review_checkpoint: "Spec Compliance against AC-002, then Code Quality for fixture ownership, useful negative controls and cleanup."
+  - id: T3
+    owner_role: qc
+    name: "Verify equal-source portability and record handoff"
+    objective: "Prove fixture independence and compare full-suite results without misreporting unrelated failures."
+    paths_in_scope: ["work-items/decouple-tests-from-tree-layout"]
+    dependencies: ["T2"]
+    outputs_expected: ["AC-001..003 evidence", "Two source/runtime identities and full-suite counts/identities", "Ordered review findings", "s08 ready for separate QC DoD"]
+    verification_hint: "Run the focused test, unchanged rollback source test and run-all.js in two identical post-change trees with equivalent generated runtimes. Require no new failures; report equal nonzero counts honestly. Run node --check, git diff --check and strict UTF-8 decoding."
+    review_checkpoint: "Technical verification is separate from human QC DoD, merge and cleanup."
+delegation_decision:
+  mode: agentic
+  subagent: false
+  reason: "One coupled test file and a sequential verify path."
+```
+
+## Worktree Decision
+```yaml
+worktree_target: decouple-tests-from-tree-layout
+worktree_decision: REQUIRED
+risk_signals: ["Existing multi-session work item", "Other worktrees hold unrelated work"]
+isolation_strategy:
+  branch_name: "test/decouple-tests-from-tree-layout"
+  worktree_path: ".claude/worktrees/decouple-tests-from-tree-layout"
+  base_commit: "e5dc98aac70196f9d3a391153325049c0402eb17"
+notes: "Created for authoring after the user's acceptance. A second same-source verification tree is required for T0/T3; retain all trees until lawful closeout. No production scaffold was created."
 ```
 
 ## Verification Plan
-- **Mandatory:** `run-all.js` from both trees with the counts recorded; each target file run from both trees; the negative check for each fix; `grep` count for live work-item paths.
-- **Evidence rule:** compare against `T0`'s recorded numbers, never against this note. Both preceding work items found their own plan text stale at verify time.
-- **Not gating:** which work items happen to be `ACTIVE` or `DONE` while the suite runs — that independence is the point of the change.
+
+Run the checks owned by T0/T2/T3 in that order. A missing live fixture should first reproduce ENOENT, then the completed test must work without any real work-item records. Preserve changed-value and missing-target controls. Full-suite comparisons use identical source and equivalent generated runtime prerequisites; source mode rollback is not exact-artifact release verification. No new dependencies, browser, database, release or global-install tests are needed for the one-file test change.
 
 ## Governance Checks
 ```yaml
-checklist_applied:
-  - "project-context/checklists/default.md"
+checklist_applied: ["project-context/checklists/default.md"]
 checks:
-  - check: "the task plan covers build, verify and docs for the scope needed"
-    status: PASS
-    evidence: "Build T1/T2, verify T0/T3, docs are the s07 note. No user-facing documentation changes because no documented behaviour changes."
-  - check: "packaging or release check if scope touches release"
-    status: NOT_APPLICABLE
-    evidence: "Test-only. No version bump, no artifact published. Note that G-A touches a release SMOKE test, which is a test of release, not a release step."
-  - check: "governance-exception route determined in advance"
-    status: PASS
-    evidence: "Named in T1's review checkpoint: if the fix cannot avoid production code, stop and re-scope rather than widening quietly."
-blocking_items:
-  - id: "OQ-1"
-    item: "Fixture the rollback artifact, or relocate the lookup inside the repo?"
-    owner: "developer"
-    blocks: "T1 only"
-owner: "developer"
-next_action: "Answer OQ-1. Then a human reviews s04 and this note, fills gate_reviews, and seals spec, dor, approach and task_plan - Light allows sealing them in one interaction, but each still gets its own receipt."
+  - {check: "Accepted packet preserved", status: PASS, evidence: "Fixture option A and T0/T2/T3 match the accepted parent packet; T1 remains superseded."}
+  - {check: "Execution boundary", status: PASS, evidence: "One test file plus child evidence; no parent-grant inheritance or production write."}
+  - {check: "Review/verification", status: PASS, evidence: "Spec Compliance precedes Code Quality; independent QC DoD remains required."}
+blocking_items: []
+owner: developer
+next_action: "Human signs the already accepted work-item/readiness package; agent verifies signatures and activates only the declared child paths."
 ```
 
 ## Brownfield Delivery Plan
 ```yaml
-regression_checkpoints:
-  - "T0 records both trees; T3 compares against it. Both halves required."
-  - "Full suite must not gain a failing file. It may LOSE one - that is the point of G-A."
-compatibility_checkpoints:
-  - "Coverage preserved: rollback identity comparison and cross-file resolution both still asserted."
-  - "Negative cases survive for both fixes."
-migration_or_backfill_steps:
-  - "None."
-rollback_or_restore_steps:
-  - "git revert per commit; no state outside git is touched."
+regression_checkpoints: ["T0 source/runtime identities", "T2 RED then GREEN", "T3 full-suite counts and identities"]
+compatibility_checkpoints: ["Both original assertions retained", "Production resolver and rollback behavior unchanged"]
+migration_or_backfill_steps: []
+rollback_or_restore_steps: ["Revert the test-source change; do not delete unrelated files or signed history"]
+```
+
+## Human Authoring Decision — 2026-10-19
+
+The user replied **accept** to the explicit fixture/T0/T2/T3 review request and reiterated acceptance during preparation. Decision recording time: `2026-10-19T03:09:32Z` (UTC recording time, not a claimed chat timestamp). Reviewer: Hao, Nguyen Huu. Existing reviewer roles are used: work-item owner PO, Spec/DoR BA, Approach/Task Plan Developer. Content acceptance covers this bounded child, Spec Card 0.2, READY, option A and T0/T2/T3. It excludes DoD, release, merge and cleanup. The later repeated accept is confirmation, not a separate scope expansion.
+
+The accepted upstream packet is parent s07, section `Current continuation checkpoint — 2026-10-19`, in the retained audit worktree. Its whole-file SHA-256 at handoff is `b8c5c2658de32481b32d1d486bab5d433170d9e1e92412d98ccd252771b13b08`. This finalization removes obsolete rollback questions and records implementation isolation; it adds no production scope. Normal CLI `work-item approve` provides supported legacy-report bootstrap, then `gate approve-ready-bundle` signs four independent receipts. No agent signer, hand-written report or test-only approval override may replace that path.
+
+## Signing Handoff
+
+The content decision above is final; do not request it again. Normal approval requires a human-controlled terminal because `workflow-trusted-approval-utils.js` rejects noninteractive passphrases. The prepared temporary helper `/private/tmp/cf-decouple-sign-20261019.cjs` checks exact authoring/source hashes and reviewer authority before executing the two normal commands below. Its `--check` mode is read-only. A retry verifies existing signatures and skips already signed matching work-item/readiness approval. It does not activate, implement, close, commit, merge or clean up.
+
+If the temporary helper is unavailable, ask the agent to regenerate its hash-bound preflight from these unchanged hosts before running approval. The underlying operations, run only in this child worktree's human terminal, are:
+
+```bash
+node packages/workflow-bundle/bin/wfc.js work-item approve --work-item decouple-tests-from-tree-layout --reviewed-by po --reviewed-at 2026-10-19T03:09:32Z --note 'Accepted bounded fixture packet T0/T2/T3; no DoD, release, merge or cleanup.' --project-root . --telemetry off
+node packages/workflow-bundle/bin/wfc.js gate approve-ready-bundle --work-item decouple-tests-from-tree-layout --reviewed-at 2026-10-19T03:09:32Z --note 'Accepted Spec/DoR and fixture Approach/Task Plan; independent receipts required.' --project-root . --telemetry off
+```
+
+After signing, the agent must verify five signatures and current host hashes, confirm the normal CLI report and applicable capability boundary, then activate only `packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js`, `work-items/decouple-tests-from-tree-layout` and `product-specs/cards/decouple-tests-from-tree-layout.md`. No source test edits occur before that verification.
+
+## Traceability
+```yaml
+upstream: ["s04 READY", "Spec Card 0.2", "Accepted parent continuation packet"]
+next_step: "Verify trusted receipts, activate child, then T0/T2/T3."
 ```
 
 ## SDD Traceability
 ```yaml
-requirement_refs:
-  - "REQ-001"
-  - "REQ-002"
-  - "REQ-003"
-acceptance_refs:
-  - "AC-001"
-  - "AC-002"
-  - "AC-003"
-task_refs:
-  - "T0"
-  - "T1"
-  - "T2"
-  - "T3"
-test_refs:
-  - "packages/workflow-bundle/test/release-rollback-smoke.test.js"
-  - "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js"
+requirement_refs: ["REQ-001", "REQ-002", "REQ-003"]
+acceptance_refs: ["AC-001", "AC-002", "AC-003"]
+task_refs: ["REQ-001 -> T1 SUPERSEDED / T3", "REQ-002 -> T0/T2/T3", "REQ-003 -> T0/T3"]
+test_refs: ["workflow-gate-evidence-utils.test.js", "release-rollback-smoke.test.js", "run-all.js"]
 ```
