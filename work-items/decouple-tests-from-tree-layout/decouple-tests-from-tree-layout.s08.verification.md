@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
 governance_status: ALIGNED
@@ -44,8 +44,8 @@ gate_reviews:
   approach_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-10-19T09:49:17Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -67,7 +67,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Technical verification PASS: AC-001..003 evidenced, both post-change full suites 47/47 with zero failures. Code scan PARTIAL because ESLint/Semgrep are unavailable; syntax and targeted manual review passed. Delivery DoD PARTIAL pending a separate human QC decision and trusted receipt. No release, merge or cleanup is included.
+> Technical verification PASS: AC-001..003 evidenced, both post-change full suites 47/47 with zero failures. Code scan PARTIAL because ESLint/Semgrep are unavailable; syntax and targeted manual review passed. Human QC accepted DoD; its verdict is DONE. The trusted receipt is still pending, so protocol closure is not yet complete. No release, merge or cleanup is included.
 
 ## Step Contract
 ```yaml
@@ -115,7 +115,7 @@ release_blockers: []
 status: PASS
 gaps: []
 residual_risks: ["Automated lint/security scans absent; bounded diff manually reviewed.", "Validation used Node 26.5.0, not a Node-version matrix."]
-recommendation: "Submit this verified packet for independent human QC DoD."
+recommendation: "Seal the accepted QC DoD through the normal human-controlled CLI, then close the child after receipt verification."
 notes_for_review: "Technical PASS does not approve DoD, release, merge or cleanup."
 ```
 
@@ -137,10 +137,10 @@ checklist_applied: ["project-context/checklists/default.md"]
 checks:
   - {check: "Scope", status: PASS, evidence: "One test source plus child workflow evidence; production, unrelated work items and signed authoring hosts unchanged."}
   - {check: "Execution", status: PASS, evidence: "s07 owns RED/GREEN, worktree and ordered early self-review; no delegation."}
-  - {check: "Completion authority", status: PASS, evidence: "DoD remains PARTIAL; reviewer fields empty until explicit human QC approval."}
-blocking_items: ["Human QC DoD required before DONE or branch finalization."]
+  - {check: "Completion authority", status: PASS, evidence: "User explicitly accepted QC DoD; reviewer qc and decision recording timestamp entered. Trusted seal and protocol closure remain separate."}
+blocking_items: ["Trusted QC DoD receipt required before protocol DONE."]
 owner: qc
-next_action: "Review this concrete verification packet and issue a separate DoD decision."
+next_action: "Sign the already accepted DoD; do not request content approval again."
 ```
 
 ## Regression & Compatibility Summary
@@ -208,7 +208,7 @@ notes_for_verify: "Manual review found no semantic or unsafe path issue: mkdtemp
 
 ## Review Findings
 
-Spec Compliance PASS precedes Code Quality PASS in s07. Final diff review confirms those findings remain valid. These are agent self-review results. No human QC signoff is claimed. No unresolved code finding was identified.
+Spec Compliance PASS precedes Code Quality PASS in s07. Final diff review confirms those findings remain valid. These are agent self-review results. The subsequent human QC acceptance is recorded separately below. No unresolved code finding was identified.
 
 ## Audit
 ```yaml
@@ -217,20 +217,20 @@ status: PASS
 checks:
   - {criterion: "All acceptance criteria evidenced", result: PASS, evidence: "Spec Coverage 3/3 PASS; T0/T2/T3 evidence above."}
   - {criterion: "Verification and limitations explicit", result: PASS, evidence: "Two full suites, isolated negative scenarios, scan/tool limitations recorded."}
-  - {criterion: "Human completion boundary preserved", result: PASS, evidence: "DoD PARTIAL and empty reviewer fields; no merge/push/cleanup."}
+  - {criterion: "Human completion boundary preserved", result: PASS, evidence: "Explicit human QC acceptance recorded; trusted seal still required before protocol closure; no merge/push/cleanup."}
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "No fixed execution timebox was specified."
 gaps: []
 risk_level: LOW
-next_action: "Human QC reviews and signs DoD if accepted."
+next_action: "Human signs the accepted DoD, then the agent verifies the receipt before protocol closure."
 ```
 
 ## Definition of Done
 ```yaml
 work_item_slug: decouple-tests-from-tree-layout
-status: PARTIAL
+status: DONE
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -238,10 +238,10 @@ checks:
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps: ["Independent human QC DoD decision and trusted receipt are pending."]
+gaps: []
 residual_risks: ["Automated lint/security scanning unavailable; manual fallback and executed tests recorded."]
 follow_up_items: ["Retain implementation and comparison worktrees until authorized closeout."]
-next_action: "Request human QC DoD for this verified packet; finalize/sign the host only after explicit acceptance."
+next_action: "Seal this finalized accepted host; protocol remains VERIFIED until its receipt is verified and close succeeds."
 ```
 
 ## SDD Traceability
@@ -260,8 +260,15 @@ Spec Card 0.2 and s04 acceptance -> signed s06 approach/T0/T2/T3 -> s07 test cha
 
 Scoped naming/governance, SDD, execution and planning validators passed for all five child notes. The full-root protocol validator passed for 26 managed items (20 legacy skipped by repository policy). Strict UTF-8 decoding passed for every changed text file; `git diff --check` and the Node syntax check passed. The finalized s07 evidence lists use the validator-supported block-list form.
 
-All five trusted approval signatures remain valid. The Spec Card, s04 and s06 hashes match their signed handoff values. The normal CLI recorded technical `VERIFIED` at `2026-10-19T09:39:07.889Z`, with current step s08 and handoff `definition-of-done`. This protocol state records verification only; the delivery decision remains waiting for human QC DoD. No source change followed T3.
+All five trusted approval signatures remain valid. The Spec Card, s04 and s06 hashes match their signed handoff values. The normal CLI recorded technical `VERIFIED` at `2026-10-19T09:39:07.889Z`, with current step s08 and handoff `definition-of-done`. This protocol state records verification only; the human QC decision has now been accepted; its trusted signature is pending. No source change followed T3.
 
 ## Handoff
 
-Technical verification PASS; scan PARTIAL with justified tooling limits; delivery DoD PARTIAL pending human QC. Recommend approval of this bounded test fix. Release/UAT/business acceptance are outside this maintenance scope. Keep both worktrees and local commits; no merge, push, release or cleanup has been performed for this child.
+Technical verification PASS; scan PARTIAL with disclosed tooling limits accepted by human QC; DoD content verdict DONE. Trusted signing and normal protocol close remain pending. Release/UAT/business acceptance are outside this maintenance scope. Keep both worktrees and local commits; no merge, push, release or cleanup has been performed for this child.
+
+
+## Human QC Decision — 2026-10-19
+
+The user replied **accept** to the explicit QC DoD request for this s08 packet after the 47/47 results and unavailable ESLint/Semgrep scans were disclosed. Reviewer: Hao, Nguyen Huu, acting in the existing authorized `qc` role. Decision recording time: `2026-10-19T09:49:17Z` (UTC recording time, not a claimed chat timestamp). This accepts the bounded test fix and recorded verification limitations. It does not authorize merge, push, release or worktree cleanup, nor close the parent audit.
+
+Content approval is complete; no repeat content approval is needed. The normal CLI requires a human-controlled terminal to sign the finalized host. The prepared `/private/tmp/cf-decouple-dod-sign-20261019.cjs` helper checks the exact committed inputs, existing readiness signatures, reviewer authority, clean delivery scope and current VERIFIED state before calling `wfc gate approve --gate dod`. Its `--check` mode is read-only. It verifies and skips an already matching DoD receipt on retry. It performs no protocol close or source mutation. After signing, the agent must verify the receipt and run the normal `work-item close` action, retaining both worktrees.
