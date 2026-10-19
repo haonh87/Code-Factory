@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "coordinator",
   "protocol_owner": "developer",
   "raw_request_summary": "",
@@ -24,7 +24,7 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
       "id": "se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194",
@@ -32,9 +32,9 @@
       "text": "Review and continue workflow backbone s01 -> s08."
     },
     {
-      "id": "se:d83900ce5580ff1810da416e564d9ac2ed9c990101459b559b01aca89ce5a466",
+      "id": "se:9d5e713d781c9eb18351babce336a3fa19ffdfe89b206b4e211bc08736314940",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -46,7 +46,8 @@
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -100,6 +101,14 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "AC-001..003 verified; both identical-source suites 47/47. Human QC DoD remains pending; no closure authorization."
+    },
+    {
+      "timestamp": "2026-10-19T09:53:44.373Z",
+      "action": "close",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Human QC accepted DoD; matching trusted receipt verified. AC-001..003 evidenced, two full suites 47/47. Retain both worktrees; merge, push, release and cleanup excluded."
     }
   ]
 }
