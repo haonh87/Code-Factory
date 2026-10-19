@@ -69,12 +69,12 @@ gate_reviews:
   approach_reviewed_by:
     - "developer"
     - "devops"
-  approach_reviewed_at: "2026-09-11T04:49:59.000Z"
+  approach_reviewed_at: "2026-10-19T13:21:50Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by:
     - "developer"
-  task_plan_reviewed_at: "2026-09-11T04:49:59.000Z"
+  task_plan_reviewed_at: "2026-10-19T13:21:50Z"
   uat_reviewed_by: []
   uat_reviewed_at: ""
   release_reviewed_by: []
@@ -90,7 +90,7 @@ content_skills:
 artifact_skills:
   - "obsidian-markdown"
 upstream_artifacts:
-  - "ci-guardrails-parallelisation.s05.technical-approach.md"
+  - "ci-guardrails-parallelisation.s04.acceptance-criteria.md"
 linked_artifacts: []
 tags:
   - "agent-ops"
@@ -100,247 +100,187 @@ tags:
 # Step 6 - Task Plan
 
 > [!summary]
-> One file, four tasks, each with its own verify step. Chosen option is a single matrix job over
-> the six validators with `fail-fast: false`, which is what makes one run report every failure.
-> `authoring-smoke` stays gated behind the validators. Actions move v4 to v7 in the same change
-> because both edits touch the same preamble and splitting them would mean writing it twice.
-
-> [!note] SDD Light
-> This note hosts Option Analysis, Technical Approach, Brownfield Impact and Task Plan. There is
-> no separate `s05`.
+> The user accepted the bounded resumption amendment T1-R..T4-R, conditional GOV-EX-002 resolution and publishing candidate/probe branches for GitHub Actions verification. Consolidate only the six validators; preserve the current build-once artifact chain. Approach/Task Plan content is approved; replacement signatures and signed stale-state dispositions are required before resume.
 
 ## Step Contract
 ```yaml
-step_goal: "Choose the smallest correct pipeline shape and produce a task plan executable without re-deriving the design."
-input_summary: ["s04 acceptance criteria", "existing workflow-guardrails.yml", "GitHub API action majors read 2026-09-11"]
-output_summary: ["Option analysis with a recommendation", "Target YAML shape", "Four tasks with verify paths"]
-done_when: ["Every task names its files and its verify step", "No placeholder tasks"]
-owner: "devops"
+step_goal: "Make the accepted validator-parallelisation amendment executable against current main."
+input_summary: ["Approved Spec Card and s04", "Current e5dc98a workflow", "Accepted resumption packet in s07"]
+output_summary: ["Bounded matrix approach", "T1-R..T4-R", "Hosted proof and authority boundaries"]
+done_when: ["Exact source scope and dependencies defined", "All ACs retain a concrete verify path", "Existing artifact pipeline preserved"]
+owner: devops
 ```
 
 ## Option Analysis
 ```yaml
-goal: "Make one CI run report every validator failure instead of the first, and keep the pipeline alive past the 2026-09-23 Node 20 removal, with the smallest correct change to one file."
-ba_lane:
-  business_goal: "A maintainer fixing CI sees every broken validator in one run instead of discovering them one round trip at a time."
-  user_scenarios:
-    - "A maintainer pushes a branch where three validators are broken and the run summary names all three."
-    - "A release reviewer opens a green run after 2026-09-23 and finds no deprecation annotations and no missing checks."
-  business_rules:
-    - "No validator may be dropped, renamed in behaviour, or given different arguments."
-    - "release-candidate stays terminal - it never runs against a tree that failed validation."
-    - "A red validator still fails the workflow."
-  scope_notes:
-    - "Pipeline shape and action versions only; validator behaviour is out of scope."
-    - "npm caching is deliberately excluded - it has its own correctness questions."
-  open_questions: []
-dev_lane:
-  repo_constraints:
-    - "Eight jobs form one needs: chain; six of them are independent validators."
-    - "Each job repeats an identical checkout + setup-node + version-echo preamble."
-    - "release-candidate needs fetch-depth 0 and a node 18/22 matrix; both are product support claims, not conveniences."
-    - "packages/workflow-bundle/** is owned by open branch codex/adaptive-governance-human-approval-ux and must not be touched."
-  technical_risks:
-    - "Skipping three action majors at once can change defaults for fetch-depth, submodules, credential persistence or cache."
-    - "Parallelisation could silently drop a validator if the command list is not compared before and after."
-    - "Order-dependent validator behaviour, if any exists, would surface as a new failure."
-  integration_points:
-    - "GitHub Actions runners and the checkout/setup-node actions"
-    - "npm scripts in package.json - read, never modified"
-    - "Branch protection and required status checks - confirmed absent on 2026-09-11"
-  nfr_notes:
-    - "Target: green-run wall-clock below the recorded pre-change baseline; actual figure recorded, not predicted."
-    - "Target: zero Node deprecation annotations on a hosted green run."
-  baseline_context: "Brownfield. One workflow file at commit 2e3aade, eight chained jobs, actions pinned at v4 on the Node 20 runtime that GitHub removes on 2026-09-23."
+goal: "Report all independent validator failures in one run while preserving release-candidate gating."
 options:
-  - "Option A - Single matrix job over the validators with fail-fast false"
-  - "Option B - Six separate jobs with the needs edges removed"
-  - "Option C - Keep the chain and only upgrade the actions"
-option_details:
-  - name: "Option A - Single matrix job over the validators with fail-fast false"
-    summary: "One job named Validate with a strategy.matrix.include list of name and run pairs. Six entries today; a seventh validator is one list line. authoring-smoke stays gated on Validate, release-candidate on authoring-smoke."
-    pros:
-      - "fail-fast false makes every failure visible in one run, which is AC-001 and the reason the work item exists."
-      - "The checkout and setup-node contract exists once, satisfying AC-005 and REQ-004."
-      - "Adding or removing a validator is a single list entry with no copied job block."
-    cons:
-      - "Check names become Validate (Artifacts) rather than Workflow Artifacts."
-    risks:
-      - "Renamed checks would read as missing to any branch protection rule - measured absent on 2026-09-11, so this risk is closed rather than mitigated."
-  - name: "Option B - Six separate jobs with the needs edges removed"
-    summary: "Keep the existing job blocks exactly as they are and delete the needs line from the six validator jobs."
-    pros:
-      - "Check names stay identical, so nothing downstream can be surprised."
-      - "Smallest possible diff - six deleted lines."
-    cons:
-      - "The preamble stays duplicated six times, so REQ-004 and AC-005 are not met."
-      - "A seventh validator still means copying an entire job block, which is how the current drift risk arose."
-    risks:
-      - "The duplication that this work item exists partly to remove survives, and the next edit to the runner contract must be applied six times."
-  - name: "Option C - Keep the chain and only upgrade the actions"
-    summary: "Bump checkout and setup-node from v4 to v7 and change nothing else."
-    pros:
-      - "Closes CF-018 with a two-line diff before the 2026-09-23 deadline."
-    cons:
-      - "One run still reports one failure, so the reason the work item exists is untouched."
-      - "Leaves the eight-job chain and its per-job setup cost in place."
-    risks:
-      - "Closing the urgent half makes the remaining half easy to defer indefinitely."
-recommended_option: "Option A - Single matrix job over the validators with fail-fast false"
-recommendation_reason: "Option A is the only option that satisfies AC-001 and AC-005 together. Option B is smaller but leaves the duplication intact, so it is the smallest change rather than the smallest change that is correct. Option C addresses only the deadline and none of the feedback problem. Option A's single drawback, renamed checks, was measured harmless on 2026-09-11: main carries no branch protection and no rulesets."
+  - "A: One six-entry matrix with fail-fast false; authoring smoke needs the matrix."
+  - "B: Remove validator needs edges but retain duplicated job setup."
+  - "C: Parallelize artifact consumers before candidate build."
+recommended_option: "A"
+recommendation_reason: "A meets AC-001 and AC-005 while preserving the actual artifact dependencies. B fails the one-place setup requirement; C violates candidate provenance."
 validation_plan:
-  - "Record the pre-change wall-clock baseline before editing, since it is unrecoverable afterwards."
-  - "Read the release notes for checkout v5, v6, v7 and setup-node v5, v6, v7 for default changes before editing."
-  - "Compare the extracted run: line set before and after the change; they must be identical."
-  - "One hosted green run with zero Node deprecation annotations."
-  - "One deliberate double-failure run on a throwaway branch showing two failed matrix entries in the same run."
-notes_for_next_step: "Technical Approach and Task Plan follow in this same Light host. Developer and DevOps approve the recommendation before s07."
+  - "Compare exact six commands and arguments before/after."
+  - "Observe structural matrix assertion fail before edit, then pass."
+  - "Hosted green run plus two-real-validator-failure probe; inspect annotations and downstream skip behavior."
 ```
 
 ## Technical Approach
 ```yaml
-target_shape: |
-  jobs:
-    validate:              # 6 entries, parallel, fail-fast: false
-      strategy:
-        fail-fast: false
-        matrix:
-          include:
-            - {name: Fixtures,  run: "npm run validate:workflow:fixtures"}
-            - {name: Artifacts, run: "npm run validate:workflow -- --workflow-root work-items --project-root ."}
-            - {name: SDD,       run: "npm run validate:workflow:sdd -- --workflow-root work-items --project-root ."}
-            - {name: Changes,   run: "npm run validate:workflow:change -- --workflow-root work-items --project-root ."}
-            - {name: Execution, run: "npm run validate:workflow:execution -- --workflow-root work-items"}
-            - {name: Planning,  run: "npm run validate:workflow:planning -- --workflow-root work-items"}
-    authoring-smoke:       # needs: validate
-    release-candidate:     # needs: authoring-smoke, matrix node 18/22, fetch-depth 0
-action_versions:
-  - "actions/checkout@v4 -> v7   (v7.0.1 latest on 2026-09-11)"
-  - "actions/setup-node@v4 -> v7 (v7.0.0 latest on 2026-09-11)"
-unchanged:
-  - "Every validator command string and its arguments"
-  - "release-candidate: node 18 and 22 matrix, fetch-depth 0, four steps in order"
-  - "Triggers: pull_request, push to main, workflow_dispatch"
-  - "permissions: contents: read"
-  - "timeout-minutes per job"
-dropped:
-  - "The 'Show runtime versions' echo step - it exists once per job and setup-node already logs the version"
-```
-
-## CI/CD Release Controls
-```yaml
-gate_before_merge:
-  - "ODC-001 RESOLVED 2026-09-11: haonh87/Code-Factory main has no branch protection and no rulesets, checked via gh api. No required status check names any job, so renaming checks breaks nothing. This is no longer a merge blocker."
-  - "One hosted green run with zero Node deprecation annotations"
-promotion: "No promotion. This changes the pipeline that guards releases, not any released artifact."
-rollback: "git revert of the single commit. No state to unwind."
-observability:
-  - "Record pre-change and post-change wall-clock from the run list; both figures go in s08"
+recommended_approach: "Replace the six serial validator job blocks with validate matrix.include entries containing name and command; use fail-fast false, ubuntu-latest, Node 22 and a 10-minute timeout. Change only workflow-authoring-smoke.needs to validate outside those blocks."
+validator_entries:
+  - {name: Fixtures, command: "npm run validate:workflow:fixtures"}
+  - {name: Artifacts, command: "npm run validate:workflow -- --workflow-root work-items --project-root ."}
+  - {name: SDD, command: "npm run validate:workflow:sdd -- --workflow-root work-items --project-root ."}
+  - {name: Changes, command: "npm run validate:workflow:change -- --workflow-root work-items --project-root ."}
+  - {name: Execution, command: "npm run validate:workflow:execution -- --workflow-root work-items"}
+  - {name: Planning, command: "npm run validate:workflow:planning -- --workflow-root work-items"}
+controls:
+  - "Retain current checkout/setup-node v7; REQ-002 was delivered by upgrade-guardrails-actions-node24."
+  - "One checkout/setup-node contract for the six validator entries; downstream jobs retain their own runner setup."
+  - "No continue-on-error; every validator failure still fails the workflow."
+explicitly_untouched:
+  - "All authoring smoke steps; both complete candidate job definitions, their artifact/digest/environment contracts and Node 18/22 matrix."
+  - "Other workflow files, npm scripts, validator behavior, package versions and release artifacts."
+  - "Repository settings, branch protection, global installation, release publication and merge."
 ```
 
 ## Brownfield Impact Analysis
 ```yaml
-affected_boundary: [".github/workflows/workflow-guardrails.yml"]
-not_touched:
-  - "packages/workflow-bundle/** - owned by branch codex/adaptive-governance-human-approval-ux"
-  - "package.json, work-items/**, skills/**"
-regression_surface:
-  - "Any consumer that reads CI check names: branch protection, status badges, dashboards"
-  - "Order-dependent validator behaviour, if any exists - surfaced by AC-006 and the edge case in s04"
-compatibility: "No runtime, API, schema or artifact compatibility surface."
+baseline_commit: "e5dc98aac70196f9d3a391153325049c0402eb17"
+existing_graph: "Six serial validators -> workflow-authoring-smoke -> release-candidate-build -> release-candidate Node 18/22."
+proposed_graph: "Six parallel validate entries -> unchanged workflow-authoring-smoke -> unchanged release-candidate-build -> unchanged release-candidate Node 18/22."
+compatibility_risks: ["Validator check names change", "CI scheduling noise affects wall-clock", "Historical absolute workflow_root requires canonical authoring-host consistency"]
+mitigations: ["Recheck branch rules before integration", "Keep 105s acceptance threshold and report measured 158s current comparison separately", "Retain canonical workflow artifacts and verify identical worktree snapshots; never hand-edit protocol paths"]
+rollback: "Revert only the isolated workflow change; no artifact or data migration."
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
-tasks:
-  - id: T1
-    title: "Record the pre-change baseline"
-    owned_paths: []
-    detail: "Read wall-clock and job count from the most recent green hosted run. Write both figures into this note before editing anything, so AC-002 has something to compare against."
-    verify: "Baseline figures present in s06 with the run id they came from"
-  - id: T2
-    title: "Read the action release notes for the majors being skipped"
-    owned_paths: []
-    detail: "checkout v5, v6, v7 and setup-node v5, v6, v7. Looking for default changes to fetch-depth, submodules, credential persistence and cache behaviour. Record anything that would change current behaviour."
-    verify: "A written list of behaviour changes, or an explicit 'none found' with the versions checked"
-  - id: T3
-    title: "Rewrite the job graph"
-    owned_paths: [".github/workflows/workflow-guardrails.yml"]
-    detail: "Replace the six chained validator jobs with one matrix job per the target shape. Keep authoring-smoke gated on validate, release-candidate gated on authoring-smoke. Bump both actions to v7. Drop the per-job version-echo step."
-    verify: "Local: the command set before and after is identical - AC-006, done with a diff of extracted run: lines, not by eye. Hosted: one run, all jobs green, zero Node annotations - AC-003, AC-004."
-  - id: T4
-    title: "Prove AC-001 with a deliberate double failure"
-    owned_paths: []
-    detail: "On a throwaway branch, break two validators - for example rename a fixture and corrupt one frontmatter field. Push, observe the run, confirm both are reported failed in the same run. Delete the branch."
-    verify: "Run summary shows two failed matrix entries, not one. Screenshot or run id recorded in s08."
-dependencies:
-  - "T1 before T3 - the baseline is unrecoverable once the change lands"
-  - "T2 before T3 - a default change found late means redoing T3"
-  - "T3 before T4"
-  - "ODC-001 resolved 2026-09-11; no longer a dependency"
-handoff_points:
-  - "After T3: self review of the diff against AC-005 and AC-006 before pushing"
-  - "After T4: hand run ids to s08"
+implementation_goal: "Implement and prove the accepted six-validator matrix without changing downstream artifact behavior."
+task_breakdown:
+  - id: T1-R
+    owner_role: devops
+    name: "Refresh and pin baseline"
+    paths_in_scope: ["work-items/ci-guardrails-parallelisation"]
+    dependencies: ["Valid amended authoring signatures and signed stale-state dispositions before resume"]
+    outputs_expected: ["Exact source SHA/workflow hash", "Six-command list", "Run durations and branch-rule observation"]
+    verification_hint: "Recheck main SHA and rules before source edits. Preserve historical run 32825477258 / 105s; record current run 38919485042 / 158s using started_at to updated_at. Do not substitute the larger threshold for AC-002."
+    review_checkpoint: "Normal CLI resume only after accepted exception disposition is recorded."
+  - id: T2-R
+    owner_role: devops
+    name: "Inherit completed action upgrade"
+    paths_in_scope: ["work-items/ci-guardrails-parallelisation"]
+    dependencies: ["T1-R"]
+    outputs_expected: ["Node24 owner closure and current action references recorded"]
+    verification_hint: "Confirm upgrade owner ARCHIVED and v7 references. No action update. AC-003 still needs a new green run with zero Node deprecation annotations."
+    review_checkpoint: "Separate inherited implementation from fresh hosted evidence."
+  - id: T3-R
+    owner_role: developer
+    name: "Parallelize only independent validators"
+    paths_in_scope: [".github/workflows/workflow-guardrails.yml", "work-items/ci-guardrails-parallelisation"]
+    dependencies: ["T2-R"]
+    outputs_expected: ["One matrix with six exact commands", "Authoring smoke gated by validate", "Preserved candidate jobs"]
+    verification_hint: "Scratch structural assertion must fail on missing matrix first. After edit parse YAML and require six exact commands, fail-fast false, no per-entry needs, authoring dependency, byte-identical candidate jobs and unchanged authoring steps. Run actionlint if present; otherwise disclose the gap."
+    review_checkpoint: "Spec Compliance then Code Quality before any push."
+  - id: T4-R
+    owner_role: devops
+    name: "Hosted green and real double-failure proof"
+    paths_in_scope:
+      - "work-items/ci-guardrails-parallelisation"
+      - "Probe branch only: packages/workflow-bundle/tests/fixtures/workflow-governance/valid-default/workflow/customer-search.s04.acceptance-criteria.md"
+      - "Probe branch only: work-items/sample-sdd-item/sample-sdd-item.s04.acceptance-criteria.md"
+    dependencies: ["T3-R review PASS"]
+    outputs_expected: ["Green run and fault-injection run IDs", "AC-001..006 evidence in s08", "Annotations and timing comparison"]
+    verification_hint: "Push candidate and dispatch workflow. In a separate isolated probe remove required Governance Checks from the valid-default fixture and point the sample SDD SRS ref at a nonexistent probe path. Confirm the real Fixtures and SDD commands fail locally, then push/dispatch probe. Both named entries must fail, all other validators must finish, downstream smoke/build/consumers must skip. Keep commands unchanged and fault injection out of candidate branch; record additional expected failures."
+    review_checkpoint: "Human QC DoD remains separate. Retain branches pending explicit cleanup authority."
 ```
 
 ## Verification Plan
-- Mandatory checks: one hosted green run with zero Node annotations; one deliberate-failure run showing two failures; a before-and-after comparison of extracted `run:` lines.
-- Risk note: R3 from s01 - skipping three majors at once can change action defaults silently. T2 exists to catch that before T3 rather than after a red run.
-- Rollout note: none. A workflow file takes effect on the next run; there is no environment to promote through.
+
+The historical 105s baseline remains the AC-002 acceptance threshold: a green run must be strictly faster. Also compare against the current 158s run, with matching duration definitions. No estimated speedup, rerun cherry-picking, weakened threshold or post-hoc waiver counts as PASS. If the result misses 105s, report the actual FAIL/PARTIAL and return that criterion to BA without silently changing scope.
+
+Run local YAML/structural/command-preservation checks and bounded validators before hosted execution. The pipeline-shape behavior uses RED then GREEN structural verification; T4-R exercises actual validator failure paths. Record source/runtime context, hosted annotations and scheduling effects. No new dependency, container, deployment, tag or benchmark is required by this change. Text changes require UTF-8 and whitespace checks.
+
+## Architecture Details
+```yaml
+pipeline_scope: "Existing Workflow Guardrails validator scheduling only"
+source_strategy:
+  branch_model: "Isolated candidate worktree plus disposable fault-injection probe"
+  triggers: ["Existing pull_request and push main unchanged", "Explicit workflow_dispatch on authorized candidate/probe branches"]
+build_and_verify:
+  stages: ["Six validator matrix entries", "Authoring smoke", "Build exact candidate once", "Consume and verify on Node 18/22"]
+  cache_strategy: ["Unchanged; no cache optimization"]
+  required_checks: ["All validators", "Existing smoke/build/candidate checks"]
+artifact_flow:
+  registry: "Existing GitHub Actions artifact store"
+  artifact_types: ["workflow-bundle-candidate tarball and SHA-256"]
+  tagging_strategy: ["No tag or release created"]
+  provenance_controls: ["Preserve build-once upload and downstream digest checks byte-for-byte"]
+promotion_flow: []
+approval_controls: ["Human content acceptance recorded", "New Approach/Task Plan signatures before resume", "Separate human DoD"]
+release_controls:
+  pre_release: ["No release operation in scope"]
+  post_release: []
+rollback_controls: ["Revert isolated workflow commit; no state migration"]
+pipeline_risks: ["Renamed check requirements must be rechecked", "105s threshold may not be achieved despite improvement"]
+pipeline_recommendation: READY_WITH_GUARDS
+notes_for_implementation_or_ops: "Hosted branch publication/dispatch authorized by acceptance; merge, release, settings changes and cleanup excluded."
+```
+
+## Worktree and Protocol Boundary
+
+Use `.claude/worktrees/ci-guardrails-resumption` on `docs/ci-guardrails-resumption`, based at `e5dc98a`. Multi-session work now requires isolation; no subagents are needed. Candidate/probe publishing and GitHub Actions dispatch are explicitly accepted. Retain branches after evidence collection; do not merge, delete or release.
+
+The inherited report has an absolute `workflow_root` pointing to the canonical main checkout. The existing CLI has no relocation action. Preserve that pointer; author the approved workflow hosts canonically and keep byte-identical snapshots in the isolated delivery branch. Production YAML edits remain isolated. Use supported CLI transitions/dispositions only; never patch the report to fake relocation, approval or blocker clearance. Verify host digest equality before each transition. Only this item's canonical workflow notes may be synchronized; unrelated main changes remain untouched.
 
 ## Governance Checks
 ```yaml
 checklist_applied: ["project-context/checklists/default.md"]
 checks:
-  - "Option analysis present with a rejected option - PASS"
-  - "Smallest correct option justified against the smaller OPT-B - PASS"
-  - "Task plan names files and verify paths, no placeholders - PASS"
-  - "TDD: no production behaviour change; T4 is the equivalent observed-failure-first step - documented deviation with reason"
-  - "Worktree: single file, one session - not required, reason recorded"
-blocking_items: []
-owner: "devops"
-next_action: "Seal Approach and Task Plan via ready-bundle, then s07"
+  - "Accepted amendment retains all six ACs and the 105s threshold."
+  - "Source change confined to validator blocks plus authoring-smoke.needs."
+  - "GOV-EX-002 conditional resolution accepted; record RESOLVED only after amended signatures validate."
+  - "Only affected s06 gates are resealed. Spec/DoR hosts remain unchanged."
+blocking_items: ["Fresh Approach/Task Plan signatures", "Signed retirement of two obsolete protocol state entries"]
+owner: devops
+next_action: "Human runs one prepared signing helper; agent verifies, records exception resolution and resumes through CLI."
 ```
 
 ## Brownfield Delivery Plan
 ```yaml
-regression_checkpoints:
-  - "AC-006 command-set comparison at T3"
-  - "Full green hosted run at T3"
-compatibility_checkpoints:
-  - "ODC-001 closed: no branch protection, no rulesets on main as of 2026-09-11"
+regression_checkpoints: ["Six exact command preservation", "Unchanged downstream artifact structures", "Green and double-failure hosted runs"]
+compatibility_checkpoints: ["Current branch protection/rulesets", "Canonical/worktree host digest equality"]
 migration_or_backfill_steps: []
-rollback_or_restore_steps:
-  - "git revert of the T3 commit; next run uses the old graph"
+rollback_or_restore_steps: ["Revert isolated workflow change; preserve accepted evidence and receipts"]
 ```
 
 ## SDD Traceability
 ```yaml
 requirement_refs:
-  - "REQ-001 -> T3, T4"
-  - "REQ-002 -> T2, T3"
-  - "REQ-003 -> T3"
-  - "REQ-004 -> T3"
+  - "REQ-001 -> T1-R/T3-R/T4-R"
+  - "REQ-002 -> inherited upgrade owner and T2-R/T4-R evidence"
+  - "REQ-003 -> T3-R/T4-R"
+  - "REQ-004 -> T3-R"
 acceptance_refs:
-  - "AC-001 -> TEST-001"
-  - "AC-002 -> T1 baseline vs post-change run"
-  - "AC-003 -> TEST-002"
-  - "AC-004 -> TEST-004"
-  - "AC-005 -> diff review at T3"
-  - "AC-006 -> TEST-003"
+  - "AC-001 -> T4-R double-failure run"
+  - "AC-002 -> 105s threshold and measured run durations"
+  - "AC-003 -> new hosted annotation inspection"
+  - "AC-004 -> observed downstream dependency/skip behavior"
+  - "AC-005 -> one validator matrix setup contract"
+  - "AC-006 -> exact before/after command comparison"
 task_refs:
-  - "T1 through T4 in Artifact Chính"
+  - "T1-R through T4-R in Main Artifact"
 test_refs:
-  - "TEST-001 through TEST-004 in Verification Plan"
+  - "Scratch structural RED/GREEN and YAML/command comparison"
+  - "Hosted green and real double-failure runs"
 ```
 
-## Traceability
-```yaml
-upstream: ["ci-guardrails-parallelisation.s04.acceptance-criteria.md"]
-next_step: "s07 Implement - blocked until Approach and Task Plan are sealed"
-```
+## Human Amendment Decision — 2026-10-19
 
-## Handoff
-- First task: T1. The pre-change baseline disappears the moment the change lands, so it is recorded first.
-- Blocking dependency: none. ODC-001 was resolved on 2026-09-11 - main carries no branch protection and no rulesets, so renamed checks break nothing.
-- Condition to enter s07: Approach and Task Plan sealed with their own receipts. Under Light both seal in one ready-bundle interaction.
+The user replied **accept** to the concrete CI packet, including publishing candidate/probe branches and running GitHub Actions. Reviewer: Hao, Nguyen Huu, acting as Developer/DevOps for the plan and conditional GOV-EX-002 resolution. Decision recording time: `2026-10-19T13:21:50Z` (recording time, not a claimed chat timestamp). Acceptance does not waive ACs or authorize merge, release, global installation, repository-setting changes, branch deletion or DoD.
+
+Normal runtime requires a signed Maintainer disposition of the exact obsolete blocker and its legacy resume follow-up before `resume`. Their retirement implements the accepted unblock decision; no unrelated state is removed. A single human-terminal helper signs Approach and Task Plan, then signs these two narrow dispositions. It refuses any unexpected host, source, report or receipt drift and never activates/implements. Content approval is complete; do not request it again.
+
+Historical s06 is preserved at main `e5dc98a` with SHA-256 `8ab34e3773b01913361c0eb3790838794b2834deceded1b9186df67f5608b97c`; its receipts are intentionally superseded by the newly approved host. No original Spec or DoR host is altered.

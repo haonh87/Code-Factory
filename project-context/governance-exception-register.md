@@ -124,3 +124,13 @@ notes: >-
   made that error; approved_by is deliberately empty because the authority belongs to a human per
   project-context/governance-role-model.md.
 ```
+
+
+#### GOV-EX-002 proposed disposition — 2026-10-19
+
+Reassessment authorized by the user's acceptance of the CI continuation recommendation. The old collision owner and the transferred Node24 owner are now ARCHIVED on main `e5dc98a`; current CI contains the build-once artifact chain and v7 checkout/setup-node. The historical exception status remains **PROPOSED**, with `approved_by` unchanged.
+
+The concrete task amendment and evidence are owned by `work-items/ci-guardrails-parallelisation/ci-guardrails-parallelisation.s07.implementation.md#Resumption Assessment and Proposed Amendment — 2026-10-19`. Recommend RESOLVED only after the human Developer/DevOps decision, matching revised s06 signatures and recorded DevOps disposition. No criterion is waived and no retrospective exception approval is asserted. No new exception identifier is introduced.
+
+
+The human accepted this conditional disposition with the CI amendment on 2026-10-19 (decision recorded 2026-10-19T13:21:50Z), acting as Developer/DevOps. The accepted plan is finalized in s06. Status remains PROPOSED until the replacement signatures validate; it is not a retrospective waiver. The exact obsolete blocker and legacy follow-up may then be retired through the normal signed Maintainer disposition commands. All ACs, separate QC DoD and release/merge exclusions remain in force.
