@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: reviewed
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -23,7 +23,7 @@ archive_status: not_ready
 sdd_mode: light
 spec_refs:
   card: "product-specs/cards/ci-guardrails-parallelisation.md"
-spec_status: draft
+spec_status: approved
 planning_track: quick
 execution_mode: agentic
 review_mode: self
@@ -66,15 +66,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> T1 is complete: the pre-change baseline is recorded from run `32825477258` on `main`.
-> T3 is **BLOCKED** by a file-ownership collision found at implementation time, not at planning
-> time: branch `codex/adaptive-governance-human-approval-ux` already modifies
-> `.github/workflows/workflow-guardrails.yml` with 60 insertions, adding a
-> `release-candidate-build` job that packs the candidate once and passes it downstream as an
-> artifact. Rewriting the same file on `main` would produce a near-unmergeable conflict.
-> REQ-002, the action upgrade, is transferred out of this work item to that branch because it is
-> deadline-bound. `GOV-EX-002` is proposed to cover the transfer. Nothing has been written to the
-> workflow file.
+> Resumed after the accepted amendment, two replacement gate signatures and two signed state dispositions. GOV-EX-002 is RESOLVED. T3-R implemented with structural RED/GREEN; six local validators pass. Ordered self-review PASS. T4-R hosted green/double-failure evidence remains pending. Historical blocked sections below preserve earlier observations; current evidence is in the implementation checkpoint at the end.
 
 ## Artifact Chính
 ```yaml
@@ -128,28 +120,30 @@ notes: >-
 
 ## Delivery Rule Evidence
 ```yaml
-behavior_change: NO
-tdd_status: NOT_REQUIRED
-tdd_test_refs: []
-tdd_exception_reason: "CI pipeline configuration. No production behaviour changes, so there is no unit-level behaviour to drive out. The equivalent observe-failure-first discipline is T4, which proves AC-001 with a deliberate double failure before the change is trusted."
-tdd_alternative_verify_path:
-  - "Command-set comparison before and after - AC-006"
-  - "Hosted green run with zero Node deprecation annotations - AC-003"
-  - "Deliberate double-failure run - AC-001"
-change_risk_profile: QUICK_FIX
-worktree_status: NOT_REQUIRED
-worktree_refs: []
-worktree_reason: "One file, one session, low conflict risk against the main tree. Recorded at s04 and unchanged. Note that the conflict discovered here is a cross-branch collision, which a worktree would not have prevented or revealed."
-review_status: BLOCKED
-review_refs: []
-spec_compliance_status: NOT_RUN
-code_quality_status: NOT_RUN
+behavior_change: YES
+tdd_status: DONE
+tdd_test_refs:
+  - "/private/tmp/cf-ci-verify-20261019/T3-red.log"
+  - "/private/tmp/cf-ci-verify-20261019/verify-structure.cjs"
+tdd_exception_reason: ""
+tdd_alternative_verify_path: []
+change_risk_profile: STANDARD
+worktree_status: USED
+worktree_refs:
+  - ".claude/worktrees/ci-guardrails-resumption"
+worktree_reason: "Multi-session CI change; source edits isolated, canonical workflow hosts synchronized for legacy absolute workflow_root."
+review_status: COMPLETED
+review_refs:
+  - "Implementation checkpoint: Spec Compliance then Code Quality"
+spec_compliance_status: PASS
+code_quality_status: PASS
 delegation_mode: agentic
 independence_status: NOT_APPLICABLE
 independence_refs: []
-merge_path: "Not opened. No commit touches the workflow file from this work item."
+merge_path: "Not authorized; retain candidate/probe branches and worktrees."
 verify_path:
-  - "Blocked until the Codex branch merges and T3 is redesigned"
+  - "T4-R hosted green and real double-failure runs; s08 criteria/annotation/timing evidence"
+  - "Separate human QC DoD"
 ```
 
 ## SDD Traceability
@@ -237,3 +231,16 @@ The user explicitly accepted the concrete T1-R..T4-R packet, conditional GOV-EX-
 The normal CLI refuses resume while the obsolete GOV-EX-002 blocker and opaque legacy follow-up remain. The prepared `/private/tmp/cf-ci-resume-sign-20261019.cjs` signs only the two amended gates and retires only those exact entries under Maintainer authority. It pins existing approval/source hashes, checks every prior signature and existing disposition on retries, and uses normal interactive commands. It performs no source edit, resume, push, dispatch, merge, release or cleanup. After signing, the agent verifies all receipts/history, records GOV-EX-002 RESOLVED, and resumes the approved scope via CLI. No further content approval is needed for this accepted packet.
 
 The historical report's absolute workflow_root remains canonical; revised s06 is byte-identical in the main checkout and isolated authoring tree. No report path is hand-edited. Source edits stay in the worktree; transition-time gate hosts must match exactly. Normal CLI projections are retained in the delivery branch and synchronized only for this item's canonical notes when needed. This avoids a new protocol implementation change inside the CI task.
+
+
+## Implementation Checkpoint — 2026-10-19
+
+All new Approach/Task Plan receipts and both Maintainer state-disposition signatures verified. GOV-EX-002 is RESOLVED under its accepted conditional decision. The first resume attempt from the isolated project root failed artifact-ref binding because the inherited report's absolute workflow_root points to canonical main. No transition occurred on failure. Copying the exact CLI-generated report/projection to that existing canonical location and running the normal CLI there succeeded; its output was copied unchanged back into this delivery branch. No report field or receipt was patched, and no additional approval was needed.
+
+Remote main remains `e5dc98a`; repository ruleset count is zero. T1-R preserves 105s historical acceptance and 158s current comparison. T2-R inherits v7 actions from the ARCHIVED upgrade owner. T3-R replaces six serial jobs with `validate`, fail-fast false and six fixed command values; authoring smoke now needs `validate`. Authoring steps, both full candidate job definitions, triggers and permissions are unchanged.
+
+Structural RED: exit 1, `Expected six-validator matrix is absent`, before modifying YAML. GREEN: the same scratch check passes after the edit, proving six exact commands, one setup contract, failure semantics, downstream gate and byte-identical candidate blocks. All six exact npm validator commands pass locally. YAML parsed with the existing js-yaml module; actionlint is unavailable, so no actionlint PASS is claimed. No dependency was installed. UTF-8/whitespace checks apply before commit.
+
+Early review (agent self-review): **Spec Compliance PASS** first — accepted T3-R only, all six ACs retain their hosted checks, no artifact-flow drift, AC-002 still requires <105s. **Code Quality PASS** second — matrix values are fixed repository literals, no user/PR metadata is interpolated, no continue-on-error, no per-entry needs, one bounded setup path, no production or secret-handling change. No finding requires a source amendment. Hosted T4-R remains required; local passing checks are not DoD.
+
+Raw supporting checks: `/private/tmp/cf-ci-verify-20261019/T3-red.log`, `verify-structure.cjs`, `baseline.yml`, and `local-{fixtures,artifacts,sdd,changes,execution,planning}.log`. This canonical note records the verdicts so temporary log expiry does not erase the conclusions. The candidate branch is `docs/ci-guardrails-resumption`; fault injection will use a separate branch and will never enter the candidate commit.

@@ -11,10 +11,26 @@ permissions:
   contents: read
 
 jobs:
-  workflow-tooling:
-    name: Workflow Tooling
+  validate:
+    name: Validate (${{ matrix.name }})
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Fixtures
+            command: npm run validate:workflow:fixtures
+          - name: Artifacts
+            command: npm run validate:workflow -- --workflow-root work-items --project-root .
+          - name: SDD
+            command: npm run validate:workflow:sdd -- --workflow-root work-items --project-root .
+          - name: Changes
+            command: npm run validate:workflow:change -- --workflow-root work-items --project-root .
+          - name: Execution
+            command: npm run validate:workflow:execution -- --workflow-root work-items
+          - name: Planning
+            command: npm run validate:workflow:planning -- --workflow-root work-items
 
     steps:
       - name: Checkout repository
@@ -25,140 +41,15 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Show runtime versions
-        run: |
-          node --version
-          npm --version
-
-      - name: Validate workflow fixture suite
-        run: npm run validate:workflow:fixtures
-
-  workflow-artifacts:
-    name: Workflow Artifacts
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs:
-      - workflow-tooling
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: "22"
-
-      - name: Show runtime versions
-        run: |
-          node --version
-          npm --version
-
-      - name: Validate canonical workflow artifact root
-        run: npm run validate:workflow -- --workflow-root work-items --project-root .
-
-  workflow-sdd:
-    name: Workflow SDD
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs:
-      - workflow-artifacts
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: "22"
-
-      - name: Show runtime versions
-        run: |
-          node --version
-          npm --version
-
-      - name: Validate SDD artifacts and references
-        run: npm run validate:workflow:sdd -- --workflow-root work-items --project-root .
-
-  workflow-changes:
-    name: Workflow Changes
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs:
-      - workflow-sdd
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: "22"
-
-      - name: Show runtime versions
-        run: |
-          node --version
-          npm --version
-
-      - name: Validate change packages and change-linked workflow artifacts
-        run: npm run validate:workflow:change -- --workflow-root work-items --project-root .
-
-  workflow-execution:
-    name: Workflow Execution
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs:
-      - workflow-changes
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: "22"
-
-      - name: Show runtime versions
-        run: |
-          node --version
-          npm --version
-
-      - name: Validate execution runtime artifacts and multi-agent contracts
-        run: npm run validate:workflow:execution -- --workflow-root work-items
-
-  workflow-planning:
-    name: Workflow Planning
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs:
-      - workflow-execution
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: "22"
-
-      - name: Show runtime versions
-        run: |
-          node --version
-          npm --version
-
-      - name: Validate planning tracks and routing presets
-        run: npm run validate:workflow:planning -- --workflow-root work-items
+      - name: Run validator
+        run: ${{ matrix.command }}
 
   workflow-authoring-smoke:
     name: Workflow Authoring Smoke
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs:
-      - workflow-planning
+      - validate
 
     steps:
       - name: Checkout repository

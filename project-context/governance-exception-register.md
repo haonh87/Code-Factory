@@ -42,7 +42,7 @@ notes: ""
 | Exception ID | Work Item | Step | Principle | Owner | Status | Review Date | Notes |
 |---|---|---|---|---|---|---|---|
 | GOV-EX-001 | none - that is the exception | n/a | Spec/Design Before Code | developer | RESOLVED | 2026-08-28 | Approved by developer; residual debt paid - readStdinByteSync exported and the EAGAIN retry covered by 5 assertions. |
-| GOV-EX-002 | ci-guardrails-parallelisation | s07 | Spec/Design Before Code | devops | PROPOSED | 2026-09-18 | Sealed Task Plan T3 cannot execute; REQ-002 transferred to the Codex branch which owns the file. |
+| GOV-EX-002 | ci-guardrails-parallelisation | s07 | Spec/Design Before Code | devops | RESOLVED | 2026-10-19 | Accepted revised T1-R..T4-R; replacement gate signatures and two signed stale-state dispositions verified. CI implementation/DoD remain separate. |
 
 ### `GOV-EX-001`
 
@@ -110,9 +110,10 @@ mitigation:
 residual_debt:
   - "T3 and T4 are not merely deferred; T3 must be redesigned against a workflow file that will have gained a job. The current Task Plan text describes a file that will no longer exist in that form when work resumes."
 owner: "devops"
-approved_by: ""
-status: PROPOSED
-review_date: "2026-09-18 - the CR-008 stop-and-reassess checkpoint"
+approved_by: "Hao, Nguyen Huu (human Developer/DevOps); accepted 2026-10-19, decision recorded 2026-10-19T13:21:50Z"
+status: RESOLVED
+review_date: "2026-10-19"
+resolved_at: "2026-10-19T13:33:02Z"
 contingency: >-
   If CR-008 has not closed by approximately 2026-09-20, bump the two action tokens directly on main
   for main's own jobs and accept a small conflict at merge. A broken pipeline costs more than a
@@ -134,3 +135,6 @@ The concrete task amendment and evidence are owned by `work-items/ci-guardrails-
 
 
 The human accepted this conditional disposition with the CI amendment on 2026-10-19 (decision recorded 2026-10-19T13:21:50Z), acting as Developer/DevOps. The accepted plan is finalized in s06. Status remains PROPOSED until the replacement signatures validate; it is not a retrospective waiver. The exact obsolete blocker and legacy follow-up may then be retired through the normal signed Maintainer disposition commands. All ACs, separate QC DoD and release/merge exclusions remain in force.
+
+
+Resolution evidence — 2026-10-19T13:33:02Z: both replacement Approach/Task Plan signatures match the accepted s06, and both Maintainer disposition records verify cryptographically. The conditional acceptance is satisfied; GOV-EX-002 is RESOLVED. This retires the historical ownership collision and stale-plan exception only. No acceptance criterion, CI verification, DoD, merge or release is waived. Historical proposal paragraphs above retain their submission-time state.
