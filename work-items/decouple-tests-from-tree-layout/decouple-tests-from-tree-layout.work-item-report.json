@@ -1,0 +1,114 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "DONE",
+  "decision_owner": "coordinator",
+  "protocol_owner": "developer",
+  "raw_request_summary": "",
+  "request_source": "legacy-scaffold",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [],
+  "decision_log": [
+    "bootstrap_from_existing_s01=true"
+  ],
+  "work_item_slug": "decouple-tests-from-tree-layout",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/decouple-tests-from-tree-layout/work-items/decouple-tests-from-tree-layout",
+  "current_step": "s08",
+  "granted_write_paths": [
+    "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js",
+    "work-items/decouple-tests-from-tree-layout",
+    "product-specs/cards/decouple-tests-from-tree-layout.md"
+  ],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "archive-lifecycle",
+  "required_actions": [
+    {
+      "id": "se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194",
+      "kind": "workflow_followup",
+      "text": "Review and continue workflow backbone s01 -> s08."
+    },
+    {
+      "id": "se:9d5e713d781c9eb18351babce336a3fa19ffdfe89b206b4e211bc08736314940",
+      "kind": "workflow_followup",
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/decouple-tests-from-tree-layout"
+  ],
+  "audit_events": [
+    "REPORT_BOOTSTRAPPED",
+    "WORK_ITEM_APPROVED",
+    "READINESS_BUNDLE_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-10-19T03:09:32Z",
+  "review_notes": [
+    "Accepted bounded fixture packet T0/T2/T3; no DoD, release, merge or cleanup."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-10-19T03:21:09.236Z",
+      "action": "bootstrap",
+      "actor": "system",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Bootstrapped read-only report from existing scaffold."
+    },
+    {
+      "timestamp": "2026-10-19T03:21:09.237Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Accepted bounded fixture packet T0/T2/T3; no DoD, release, merge or cleanup."
+    },
+    {
+      "timestamp": "2026-10-19T03:09:32Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "985e16b7-97a0-47c8-a805-f7e54ddb88f9"
+    },
+    {
+      "timestamp": "2026-10-19T03:21:39.714Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-10-19T09:39:07.889Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "AC-001..003 verified; both identical-source suites 47/47. Human QC DoD remains pending; no closure authorization."
+    },
+    {
+      "timestamp": "2026-10-19T09:53:44.373Z",
+      "action": "close",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Human QC accepted DoD; matching trusted receipt verified. AC-001..003 evidenced, two full suites 47/47. Retain both worktrees; merge, push, release and cleanup excluded."
+    }
+  ]
+}

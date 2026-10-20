@@ -56,9 +56,6 @@ assert(
   "T4 legacy reader preserves fixed-shape spec/dor requirements"
 );
 
-const repoRoot = path.resolve(__dirname, "..", "..", "..");
-
-
 // D-E / T7: this assertion used to read a LIVE work item note and require protocol_status to be
 // ACTIVE. It broke the moment that work item closed, which made the suite result depend on which
 // work items happen to be ACTIVE rather than on the resolver. The fixture below controls its own
@@ -106,46 +103,57 @@ try {
   fs.rmSync(sameNoteRoot, { recursive: true, force: true });
 }
 
-// Merge note (2026-08-28): main's 26591a2 fixed the same original brittleness a different way -
-// it kept reading the live note but compared against the live report, so a status change no longer
-// breaks it. AC-006 requires the CONTROLLED fixture, so that one is authoritative here; main's
-// live self-consistency check is kept as an additional assertion so the merge loses nothing.
-// The live check is coupled to that work item continuing to EXIST, which is the residual risk
-// already recorded in s07 as residual-cross-file and owned by the test-hygiene work item.
-const liveS01 = path.join(
-  repoRoot,
-  "work-items",
-  "artifact-governance-enforcement",
-  "artifact-governance-enforcement.s01.restate.md"
-);
-const liveReport = JSON.parse(
-  fs.readFileSync(
-    path.join(
-      repoRoot,
-      "work-items",
-      "artifact-governance-enforcement",
-      "artifact-governance-enforcement.work-item-report.json"
-    ),
-    "utf8"
-  )
-);
-const liveSameNote = resolveArtifactReference({
-  projectRoot: repoRoot,
-  currentFile: liveS01,
-  reference: "#Work Item Protocol.protocol_status"
-});
-assert(
-  liveSameNote.value === liveReport.protocol_status,
-  "same-note resolver must match the live P2 protocol source-of-truth"
-);
+// Preserve the protocol/report comparison and materialization lookup without reading a real
+// work item. Resolve twice with different values so a constant or stale result cannot pass.
+const protocolRoot = fs.mkdtempSync(path.join(os.tmpdir(), "artifact-reference-protocol-"));
+try {
+  const noteRef = "work-items/fixture-item/fixture-item.s01.restate.md";
+  const fixtureNote = path.join(protocolRoot, noteRef);
+  const reportPath = path.join(protocolRoot, "work-items", "fixture-item", "fixture-item.work-item-report.json");
+  const crossFileReference = `${noteRef}#Work Item Materialization.work_item_slug`;
 
-const liveCrossFile = resolveArtifactReference({
-  projectRoot: repoRoot,
-  currentFile: __filename,
-  reference:
-    "work-items/artifact-governance-enforcement/artifact-governance-enforcement.s01.restate.md#Work Item Materialization.work_item_slug"
-});
-assert(liveCrossFile.value === "artifact-governance-enforcement", "cross-file resolver must read the live P2 materialization block");
+  for (const [status, slug] of [["VERIFIED", "fixture-before"], ["DONE", "fixture-after"]]) {
+    writeFile(reportPath, JSON.stringify({ protocol_status: status }));
+    writeFile(fixtureNote, [
+      "# Fixture",
+      "",
+      "## Work Item Protocol",
+      "```yaml",
+      `protocol_status: ${status}`,
+      "```",
+      "",
+      "## Work Item Materialization",
+      "```yaml",
+      `work_item_slug: ${slug}`,
+      "```",
+      ""
+    ].join("\n"));
+
+    const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+    const sameNote = resolveArtifactReference({
+      projectRoot: protocolRoot,
+      currentFile: fixtureNote,
+      reference: "#Work Item Protocol.protocol_status"
+    });
+    assert(sameNote.value === report.protocol_status, `same-note resolver must match the fixture report (${status})`);
+
+    const crossFile = resolveArtifactReference({
+      projectRoot: protocolRoot,
+      currentFile: __filename,
+      reference: crossFileReference
+    });
+    assert(crossFile.value === slug, `cross-file resolver must read the fixture materialization block (${slug})`);
+    assert(crossFile.artifactPath === fixtureNote, "cross-file resolver must return the fixture note path");
+  }
+
+  fs.unlinkSync(fixtureNote);
+  expectReferenceError(
+    () => resolveArtifactReference({ projectRoot: protocolRoot, currentFile: __filename, reference: crossFileReference }),
+    "ARTIFACT_REFERENCE_FILE_MISSING"
+  );
+} finally {
+  fs.rmSync(protocolRoot, { recursive: true, force: true });
+}
 
 const projectRoot = fs.mkdtempSync(path.join(os.tmpdir(), "artifact-reference-"));
 try {
