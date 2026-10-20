@@ -184,14 +184,14 @@ notes_for_step_2: >-
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "ci-guardrails-parallelisation"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/ci-guardrails-parallelisation"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - ".github/workflows/workflow-guardrails.yml"
   - "work-items/ci-guardrails-parallelisation"
@@ -209,11 +209,11 @@ decision_owner: "coordinator"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-11T05:05:20.242Z"
-handoff_target: "step-owner"
-last_transition_action: "resume"
-last_transition_at: "2026-10-19T13:33:29.890Z"
+handoff_target: "definition-of-done"
+last_transition_action: "verify"
+last_transition_at: "2026-10-20T04:23:17.175Z"
 required_actions:
-  - {"id":"se:167e5b5e566f41b3a3b2841d04eabcd69cf5ab55e68a84e1c32228f62cd76c70","kind":"workflow_followup","text":"Continue active execution from the current step."}
+  - {"id":"se:da136e2e25bb28c9beba2c977961d1e27546b74bc25a42dafb2e1ccbd48c3d2f","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
 blockers: []
 review_notes:
   - "Human review approved."
@@ -225,6 +225,7 @@ audit_events:
   - "WORK_ITEM_ACTIVATED"
   - "WORK_ITEM_BLOCKED"
   - "WORK_ITEM_RESUMED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
 ## Traceability

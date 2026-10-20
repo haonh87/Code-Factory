@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "VERIFIED",
   "decision_owner": "coordinator",
   "protocol_owner": "po",
   "raw_request_summary": "",
@@ -16,7 +16,7 @@
   "work_item_type": "CHANGE",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/ci-guardrails-parallelisation",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     ".github/workflows/workflow-guardrails.yml",
     "work-items/ci-guardrails-parallelisation",
@@ -26,12 +26,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "step-owner",
+  "handoff_target": "definition-of-done",
   "required_actions": [
     {
-      "id": "se:167e5b5e566f41b3a3b2841d04eabcd69cf5ab55e68a84e1c32228f62cd76c70",
+      "id": "se:da136e2e25bb28c9beba2c977961d1e27546b74bc25a42dafb2e1ccbd48c3d2f",
       "kind": "workflow_followup",
-      "text": "Continue active execution from the current step."
+      "text": "Collect DoD evidence and close the work item when ready."
     }
   ],
   "blockers": [],
@@ -43,7 +43,8 @@
     "WORK_ITEM_APPROVED",
     "WORK_ITEM_ACTIVATED",
     "WORK_ITEM_BLOCKED",
-    "WORK_ITEM_RESUMED"
+    "WORK_ITEM_RESUMED",
+    "VERIFICATION_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -104,6 +105,14 @@
       "from_status": "BLOCKED",
       "to_status": "ACTIVE",
       "note": "Accepted T1-R..T4-R; fresh gate signatures and two signed dispositions verified; GOV-EX-002 resolved. Fixture paths restricted to isolated probe. Candidate/probe push and dispatch authorized; no merge/release/cleanup."
+    },
+    {
+      "timestamp": "2026-10-20T04:23:17.175Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "AC-001..006 verified: candidate run 39261539913 success in 92s; controlled double-failure run 39368831066 gates downstream correctly; zero Node deprecation annotations. Human QC DoD remains pending."
     }
   ],
   "resolved_state_history": [

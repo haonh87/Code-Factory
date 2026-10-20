@@ -66,7 +66,7 @@ tags:
 # Step 7 - Implement
 
 > [!summary]
-> Resumed after the accepted amendment, two replacement gate signatures and two signed state dispositions. GOV-EX-002 is RESOLVED. T3-R implemented with structural RED/GREEN; six local validators pass. Ordered self-review PASS. T4-R hosted green/double-failure evidence remains pending. Historical blocked sections below preserve earlier observations; current evidence is in the implementation checkpoint at the end.
+> Resumed after the accepted amendment, two replacement gate signatures and two signed state dispositions. GOV-EX-002 is RESOLVED. T3-R implemented with structural RED/GREEN; six local validators pass. Ordered self-review PASS. T4-R hosted green/double-failure verification is complete; s08 owns final criteria and human DoD handoff. Historical blocked sections below preserve earlier observations; current evidence is in the implementation checkpoint at the end.
 
 ## Artifact Chính
 ```yaml
@@ -244,3 +244,8 @@ Structural RED: exit 1, `Expected six-validator matrix is absent`, before modify
 Early review (agent self-review): **Spec Compliance PASS** first — accepted T3-R only, all six ACs retain their hosted checks, no artifact-flow drift, AC-002 still requires <105s. **Code Quality PASS** second — matrix values are fixed repository literals, no user/PR metadata is interpolated, no continue-on-error, no per-entry needs, one bounded setup path, no production or secret-handling change. No finding requires a source amendment. Hosted T4-R remains required; local passing checks are not DoD.
 
 Raw supporting checks: `/private/tmp/cf-ci-verify-20261019/T3-red.log`, `verify-structure.cjs`, `baseline.yml`, and `local-{fixtures,artifacts,sdd,changes,execution,planning}.log`. This canonical note records the verdicts so temporary log expiry does not erase the conclusions. The candidate branch is `docs/ci-guardrails-resumption`; fault injection will use a separate branch and will never enter the candidate commit.
+
+
+## T4-R Verification Handoff — 2026-10-20
+
+Candidate `80bc20b` is pushed to `docs/ci-guardrails-resumption`; run 39261539913 succeeds in 92s. Probe `e453f13` is on separate `test/ci-guardrails-double-failure`; run 39368831066 reports the intended Fixtures/SDD failures, four remaining validator successes and skipped downstream jobs. Exact fixture failures reproduced locally before probe publication. The candidate retains original fixtures and unchanged artifact job blocks. s08 owns AC-001..006, annotations, timestamps, disclosed API inconsistency, scan limits and the pending human QC DoD. No merge, release or cleanup occurred.
