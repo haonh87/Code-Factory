@@ -184,7 +184,7 @@ notes_for_step_2: >-
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "ci-guardrails-parallelisation"
@@ -209,11 +209,11 @@ decision_owner: "coordinator"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-11T05:05:20.242Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-10-20T04:23:17.175Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-10-20T04:40:30.968Z"
 required_actions:
-  - {"id":"se:da136e2e25bb28c9beba2c977961d1e27546b74bc25a42dafb2e1ccbd48c3d2f","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+  - {"id":"se:6ab00b3a97ddd61133cfa82f234aafd046a8dd09ede68f89d0e62745728920db","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "Human review approved."
@@ -226,6 +226,7 @@ audit_events:
   - "WORK_ITEM_BLOCKED"
   - "WORK_ITEM_RESUMED"
   - "VERIFICATION_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Traceability

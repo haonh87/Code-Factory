@@ -249,3 +249,9 @@ Raw supporting checks: `/private/tmp/cf-ci-verify-20261019/T3-red.log`, `verify-
 ## T4-R Verification Handoff — 2026-10-20
 
 Candidate `80bc20b` is pushed to `docs/ci-guardrails-resumption`; run 39261539913 succeeds in 92s. Probe `e453f13` is on separate `test/ci-guardrails-double-failure`; run 39368831066 reports the intended Fixtures/SDD failures, four remaining validator successes and skipped downstream jobs. Exact fixture failures reproduced locally before probe publication. The candidate retains original fixtures and unchanged artifact job blocks. s08 owns AC-001..006, annotations, timestamps, disclosed API inconsistency, scan limits and the pending human QC DoD. No merge, release or cleanup occurred.
+
+## Protocol Closeout — 2026-10-20
+
+Human QC DoD acceptance and the trusted signature were verified against the committed s08 host. The normal CLI transitioned VERIFIED -> DONE at `2026-10-20T04:40:30.968Z`; no blockers remain. The signed s08 is retained unchanged as the decision snapshot. Its signing-pending language describes the moment it was sealed; the CLI-owned report is authoritative for current lifecycle status.
+
+Candidate publication remains authorized. Integration, merge, release, archiving and branch/worktree cleanup are separate lifecycle actions and were not performed.
