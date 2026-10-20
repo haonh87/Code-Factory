@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
 governance_status: ALIGNED
@@ -44,8 +44,8 @@ gate_reviews:
   approach_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-10-20T04:37:37Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -67,7 +67,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Technical verification PASS for AC-001..006. Candidate run succeeds in 92s; both deliberate validator failures appear in one probe and downstream jobs skip. Zero Node deprecation annotations; ten Ubuntu image migration notices remain disclosed. Scan PARTIAL because actionlint/static security tooling is unavailable. Human QC DoD is pending; no merge, release or cleanup is authorized.
+> Technical verification PASS for AC-001..006. Candidate run succeeds in 92s; both deliberate validator failures appear in one probe and downstream jobs skip. Zero Node deprecation annotations; ten Ubuntu image migration notices remain disclosed. Scan PARTIAL because actionlint/static security tooling is unavailable. Human QC accepted DoD; the trusted signature and CLI closure remain pending. No merge, release or cleanup is authorized.
 
 ## Step Contract
 ```yaml
@@ -141,10 +141,10 @@ checks:
   - {check: "Admission", status: PASS, evidence: "Two new gate signatures and two signed Maintainer dispositions verified before canonical CLI resume."}
   - {check: "Exception", status: PASS, evidence: "GOV-EX-002 RESOLVED after accepted conditions; no criteria waived."}
   - {check: "Scope", status: PASS, evidence: "Only validator blocks and authoring dependency changed; probe inputs isolated; no merge/release/settings/cleanup."}
-  - {check: "Completion authority", status: PASS, evidence: "Human DoD remains pending, reviewer fields empty."}
-blocking_items: ["Separate human QC DoD required before DONE."]
+  - {check: "Completion authority", status: PASS, evidence: "Explicit human QC acceptance recorded; trusted signature required before protocol closure."}
+blocking_items: ["Trusted QC DoD signature required before protocol DONE."]
 owner: qc
-next_action: "Review this concrete s08 packet for DoD."
+next_action: "Sign the accepted DoD host, then verify the receipt before CLI closure."
 ```
 
 ## Regression & Compatibility Summary
@@ -222,7 +222,7 @@ notes_for_verify: "Manual review: commands are fixed repository literals; no use
 
 ## Review Findings
 
-Early s07 Spec Compliance PASS preceded Code Quality PASS. Final review preserves the same conclusions: accepted delta only, unchanged thresholds/contracts, isolated probe, and no hidden failure or annotation. These are agent review findings, not human DoD approval.
+Early s07 Spec Compliance PASS preceded Code Quality PASS. Final review preserves the same conclusions: accepted delta only, unchanged thresholds/contracts, isolated probe, and no hidden failure or annotation. These agent review findings are distinct from the explicit human QC decision recorded below.
 
 ## Audit
 ```yaml
@@ -231,20 +231,20 @@ status: PASS
 checks:
   - {criterion: "All six ACs evidenced", result: PASS, evidence: "Coverage 6/6 PASS; two hosted runs and local checks."}
   - {criterion: "Probe excluded from candidate", result: PASS, evidence: "Separate e453f13 branch; candidate 80bc20b retains original fixture inputs."}
-  - {criterion: "Human completion boundary preserved", result: PASS, evidence: "DoD PARTIAL, no human reviewer fabricated."}
+  - {criterion: "Human completion boundary preserved", result: PASS, evidence: "Human QC explicitly accepted DoD; trusted signature still required before protocol closure."}
 constraint_violations: []
 unmitigated_high_risks: []
 timebox_breach: false
 timebox_evidence: "No fixed deadline in accepted amendment; resumed across sessions."
 gaps: []
 risk_level: LOW
-next_action: "Human QC DoD review."
+next_action: "Human signs the accepted DoD; agent checks the receipt before CLI closure."
 ```
 
 ## Definition of Done
 ```yaml
 work_item_slug: ci-guardrails-parallelisation
-status: PARTIAL
+status: DONE
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -252,10 +252,10 @@ checks:
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps: ["Human QC DoD decision and trusted signature pending."]
+gaps: []
 residual_risks: ["Single timing sample", "Ubuntu migration notices", "API metadata inconsistency", "No dedicated actionlint/security scan"]
 follow_up_items: ["Retain branches/worktrees; integration and cleanup are separate decisions."]
-next_action: "Obtain human QC DoD on this verified packet."
+next_action: "Seal the accepted QC DoD and close through the normal CLI after receipt verification."
 ```
 
 ## SDD Traceability
@@ -270,8 +270,14 @@ test_refs: ["verify-structure.cjs", "six npm validator commands", "39261539913",
 
 Downloaded hosted logs confirm SDD validated 57 notes, and **47 workflow-bundle unit test files passed on both Node 18 and Node 22**. Failed-job logs confirm the exact intended fixture and missing-SRS failures. These corroborate the API conclusions and preserve the disclosed SDD metadata inconsistency.
 
-Scoped naming/governance, SDD, planning and execution passed for all five child notes. Structural/YAML/command-preservation checks, strict UTF-8 and whitespace checks passed. Candidate fixture inputs are byte-identical to the main baseline; no fault injection entered the candidate. Canonical/worktree workflow hosts match. The normal CLI has recorded VERIFIED/s08 at its canonical location; human QC DoD remains pending.
+Scoped naming/governance, SDD, planning and execution passed for all five child notes. Structural/YAML/command-preservation checks, strict UTF-8 and whitespace checks passed. Candidate fixture inputs are byte-identical to the main baseline; no fault injection entered the candidate. Canonical/worktree workflow hosts match. The normal CLI has recorded VERIFIED/s08 at its canonical location. Human QC DoD is now accepted; trusted sealing and CLI closure remain pending.
 
 ## Handoff
 
-Technical PASS, scan PARTIAL with justified limitations, human DoD pending. Candidate and probe are pushed under the accepted authorization; no PR merge, release, branch deletion or worktree cleanup occurred. Diagram-adapter readiness and parent-audit completion remain separate work; this CI verification does not close them.
+Technical PASS, scan PARTIAL with accepted limitations, human QC DoD accepted; trusted signature and protocol closure pending. Candidate and probe are pushed under the accepted authorization; no PR merge, release, branch deletion or worktree cleanup occurred. Diagram-adapter readiness and parent-audit completion remain separate work; this CI verification does not close them.
+
+## Human QC Decision — 2026-10-20
+
+The user explicitly replied `accept` to the request to approve QC DoD for this CI item. Decision recorded at `2026-10-20T04:37:37Z`, reviewer role `qc`, with all six acceptance criteria evidenced. Acceptance includes the disclosed single timing sample, Ubuntu notices, SDD API metadata inconsistency, and unavailable actionlint/security scanner. The DoD verdict is DONE; protocol remains VERIFIED until a trusted receipt is sealed and the normal CLI closes the item.
+
+This decision does not authorize integration, merge, release, branch deletion or worktree cleanup. The authorized candidate push remains in scope. Source candidate `80bc20b`, green run `39261539913`, and isolated probe `e453f13` / run `39368831066` remain the verified implementation evidence.
