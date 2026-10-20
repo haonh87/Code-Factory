@@ -24,7 +24,7 @@ archive_status: ready_to_archive
 sdd_mode: strict
 spec_refs:
   brd: "product-specs/brd/sample-sdd-item.md"
-  srs: "product-specs/srs/sample-sdd-item.md"
+  srs: "product-specs/srs/ci-probe-intentionally-missing.md"
 spec_status: frozen
 execution_mode: agentic
 execution_roles: []

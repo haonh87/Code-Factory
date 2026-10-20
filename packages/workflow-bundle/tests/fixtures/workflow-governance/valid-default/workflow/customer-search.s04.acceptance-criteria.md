@@ -157,22 +157,6 @@ done_when:
   - "AC đều có test path rõ"
 ```
 
-## Governance Checks
-```yaml
-checklist_applied:
-  - "project-context/checklists/default.md"
-checks:
-  - id: GOV-CHK-001
-    status: PASS
-    evidence: "Requirement và AC đã rõ"
-  - id: GOV-CHK-002
-    status: PASS
-    evidence: "Không có boundary risk đặc biệt"
-blocking_items: []
-owner: "ba"
-next_action: "Sang step 5"
-```
-
 ## Definition of Ready
 ```yaml
 status: READY
