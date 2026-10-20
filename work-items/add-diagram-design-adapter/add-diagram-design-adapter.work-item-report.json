@@ -1,0 +1,237 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "MATERIALIZED",
+  "decision_owner": "agent",
+  "protocol_owner": "po",
+  "raw_request_summary": "Add a governed adapter lane that lets SA and TA request polished diagram-design presentation artifacts downstream of architecture-modeling while preserving pre-design authority and canonical architecture artifacts.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "add-diagram-design-adapter",
+      "work_item_title": "Add Diagram Design Adapter",
+      "work_item_type": "CHANGE",
+      "scope_summary": "Add a separately governed presentation-artifact adapter downstream of architecture-modeling without changing SA/TA output ownership or replacing canonical Draw.io, Mermaid, or Structurizr artifacts.",
+      "primary_outcome": "SA and TA can request a polished presentation derivative whose facts remain traceable to the canonical architecture model and whose renderer, provenance, and verification are explicit.",
+      "in_scope": [
+        "Define the adapter handoff between SA/TA landscape intent, architecture-modeling facts, and diagram-design presentation rendering",
+        "Keep canonical model and governed diagram formats as source of truth",
+        "Pin and verify external skill provenance, license, capabilities, and update policy",
+        "Add representative contract, traceability, security, parity, packaging, rollback, and UTF-8 checks",
+        "Synchronize canonical and managed runtime surfaces only after required gates pass"
+      ],
+      "out_of_scope": [
+        "Direct diagram generation inside SA or TA",
+        "Changing the existing SA/TA output schema or block ownership",
+        "Replacing the architecture-modeling canonical renderer",
+        "Arbitrary URL-based brand onboarding",
+        "Editing the active CHANGE-004 scope",
+        "Global installation or publication before Release approval"
+      ],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "full",
+      "sdd_reasons": [],
+      "sdd_preset": "full",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/integrate-design-checklists-into-sa-ta",
+        "work-items/artifact-governance-model",
+        "work-items/stabilize-architecture-skill-bundle"
+      ],
+      "collision_notes": [
+        "CHANGE-004 changes pre-design checklist guidance and explicitly preserves downstream s05 ownership; this adapter does not edit its owned SA/TA paths",
+        "artifact-governance-model is DONE and supplies baseline artifact-governance rules rather than the requested adapter",
+        "stabilize-architecture-skill-bundle is DONE and supplies the architecture-modeling baseline rather than a presentation derivative lane"
+      ],
+      "change_strategy": "create_new",
+      "change_id": "CHANGE-005",
+      "change_reason": "The scope adds a public bundle capability, an external skill dependency contract, and a separately reviewable release and rollback path.",
+      "change_refs": [
+        "changes/CHANGE-005"
+      ],
+      "scaffold_actions": [
+        "npm run scaffold:change -- --change-id CHANGE-005 --work-item add-diagram-design-adapter",
+        "npm run scaffold:workflow -- --work-item add-diagram-design-adapter --planning-track full --delivery-context brownfield --change-id CHANGE-005 --governance-profile strict",
+        "npm run validate:workflow -- --workflow-root work-items/add-diagram-design-adapter --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "user selected the adapter direction",
+    "split_decision=single",
+    "work_item_type=CHANGE",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict after manual review of three semantic near matches",
+    "change_strategy=create_new",
+    "change_id=CHANGE-005",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=full",
+    "sdd_mode=none",
+    "execution_mode=agentic",
+    "s02 Business Goal reviewed by po and s03 Open Questions opened",
+    "po approved recommendation A for OQ-001, OQ-002, OQ-003, OQ-004, and OQ-006 plus sequencing A for OQ-007",
+    "OQ-009 resolved by a repeatable SHA-256 manifest for the exact pinned skills/diagram-design content",
+    "s03 input readiness for s04 authoring is READY; downstream gates remain unpassed",
+    "user authorized s04 Acceptance + DoR authoring; Spec, Contract, and DoR receipts remain pending",
+    "human explicitly approved Spec as ba, Contract as developer, and DoR as ba+qc; source artifacts finalized at 2026-08-21T07:40:03Z pending signed trusted receipts",
+    "Spec, Contract, and DoR trusted receipts verified APPROVED with digest_match=true; human continuation opened s05 authoring at 2026-08-21T07:46:58Z",
+    "s05 APPROACH-005-A authored for Developer review; option A selects a first-party adapter with pinned vendored resources, while PNG provisioning and CHANGE-004 remain downstream blockers",
+    "human explicitly accepted APPROACH-005-A as Developer; s05 finalized at 2026-08-21T08:42:34Z pending a trusted Approach receipt",
+    "Approach trusted receipt verified APPROVED with digest_match=true; human continuation opened s06 Task Plan authoring at 2026-08-21T08:49:37Z",
+    "s06 T0-T9 execution plan authored and validator-preflighted for Developer review; CHANGE-004 and PNG provisioning remain hard pre-s07 blockers",
+    "human explicitly approved the T0-T9 Task Plan as Developer; s06 finalized at 2026-08-21T09:08:18Z pending a trusted Task Plan receipt",
+    "Task Plan trusted receipt verified APPROVED with digest_match=true; T0 readiness remains BLOCKED because CHANGE-004 is not VERIFIED and Python Playwright/Chromium is not provisioned"
+  ],
+  "work_item_slug": "add-diagram-design-adapter",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/add-diagram-design-adapter",
+  "current_step": "s06",
+  "granted_write_paths": [],
+  "change_strategy": "create_new",
+  "change_id": "CHANGE-005",
+  "handoff_target": "t0-prerequisite-resolution",
+  "required_actions": [
+    "Complete CHANGE-004 to VERIFIED, then re-read the resulting baseline and recheck CHANGE-005 compatibility",
+    "Explicitly approve and provision Python Playwright plus compatible Chromium, then pass import and launch preflight",
+    "After all T0 prerequisites pass, revalidate trusted receipts and activate s07 with explicit write roots"
+  ],
+  "blockers": [
+    "CHANGE-004 is MATERIALIZED at s01, not VERIFIED",
+    "Python Playwright is not installed; Chromium launch preflight cannot run"
+  ],
+  "refs": [
+    "changes/CHANGE-005",
+    "work-items/add-diagram-design-adapter",
+    "work-items/integrate-design-checklists-into-sa-ta",
+    "work-items/artifact-governance-model",
+    "work-items/stabilize-architecture-skill-bundle"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "CHANGE_CREATED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "STEP_OPENED",
+    "STEP_OPENED",
+    "GATE_REVIEW_RECORDED",
+    "STEP_OPENED",
+    "GATE_REVIEW_RECORDED",
+    "STEP_OPENED",
+    "GATE_REVIEW_RECORDED",
+    "INPUT_READINESS_BLOCKED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-08-21T03:47:48.570Z",
+  "review_notes": [
+    "Human review approved."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-08-21T03:16:33.067Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial adapter candidate proposed; automated dedup requested manual review."
+    },
+    {
+      "timestamp": "2026-08-21T03:18:49Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "User selected the adapter direction; manual review confirmed a separate CHANGE-005 boundary and scaffolded authoring artifacts with all human approvals pending."
+    },
+    {
+      "timestamp": "2026-08-21T03:47:48.570Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-08-21T04:08:30Z",
+      "action": "open-step",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human approved s02 Business Goal and opened s03 Open Questions; s04 remains blocked pending the recorded readiness inputs."
+    },
+    {
+      "timestamp": "2026-08-21T07:12:33Z",
+      "action": "open-step",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human explicitly continued after s03 reached READY, opening s04 authoring while Spec, Contract, and DoR remain pending human-controlled gates."
+    },
+    {
+      "timestamp": "2026-08-21T07:40:03Z",
+      "action": "record-gate-review",
+      "actor": "human",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human explicitly approved Spec as BA, Contract as Developer, and DoR as BA and QC. The source artifacts are finalized; signed trusted receipts remain required before opening s05."
+    },
+    {
+      "timestamp": "2026-08-21T07:46:58Z",
+      "action": "open-step",
+      "actor": "human",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Spec, Contract, and DoR trusted receipts are APPROVED with digest_match=true; the human confirmed completion and opened s05 Technical Approach authoring."
+    },
+    {
+      "timestamp": "2026-08-21T08:42:34Z",
+      "action": "record-gate-review",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human explicitly accepted APPROACH-005-A as Developer. The s05 source artifact is finalized; a matching trusted Approach receipt remains required before opening s06."
+    },
+    {
+      "timestamp": "2026-08-21T08:49:37Z",
+      "action": "open-step",
+      "actor": "human",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "The trusted Approach receipt is APPROVED with digest_match=true; the human confirmed completion and opened s06 Task Plan authoring."
+    },
+    {
+      "timestamp": "2026-08-21T09:08:18Z",
+      "action": "record-gate-review",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human explicitly approved the T0-T9 Task Plan as Developer. The s06 source artifact is finalized; a matching trusted Task Plan receipt remains required before opening s07."
+    },
+    {
+      "timestamp": "2026-08-21T14:44:48Z",
+      "action": "readiness-check",
+      "actor": "agent",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Task Plan receipt is APPROVED with digest_match=true. T0 remains blocked because CHANGE-004 is not VERIFIED and Python Playwright/Chromium is not provisioned; s07 stays closed."
+    }
+  ]
+}
