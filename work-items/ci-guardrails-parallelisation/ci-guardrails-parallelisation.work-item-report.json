@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "coordinator",
   "protocol_owner": "po",
   "raw_request_summary": "",
@@ -26,12 +26,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "id": "se:da136e2e25bb28c9beba2c977961d1e27546b74bc25a42dafb2e1ccbd48c3d2f",
+      "id": "se:6ab00b3a97ddd61133cfa82f234aafd046a8dd09ede68f89d0e62745728920db",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -44,7 +44,8 @@
     "WORK_ITEM_ACTIVATED",
     "WORK_ITEM_BLOCKED",
     "WORK_ITEM_RESUMED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -113,6 +114,14 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "AC-001..006 verified: candidate run 39261539913 success in 92s; controlled double-failure run 39368831066 gates downstream correctly; zero Node deprecation annotations. Human QC DoD remains pending."
+    },
+    {
+      "timestamp": "2026-10-20T04:40:30.968Z",
+      "action": "close",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Human QC DoD accepted and trusted receipt verified against finalized s08. All six ACs evidenced; scan limits accepted. Candidate publication authorized; integration, merge, release and cleanup remain outside this closeout."
     }
   ],
   "resolved_state_history": [
