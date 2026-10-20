@@ -184,17 +184,20 @@ notes_for_step_2: >-
 
 ## Work Item Protocol
 ```yaml
-protocol_status: BLOCKED
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "ci-guardrails-parallelisation"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/ci-guardrails-parallelisation"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - ".github/workflows/workflow-guardrails.yml"
   - "work-items/ci-guardrails-parallelisation"
+  - "project-context/governance-exception-register.md"
+  - "packages/workflow-bundle/tests/fixtures/workflow-governance/valid-default/workflow/customer-search.s04.acceptance-criteria.md"
+  - "work-items/sample-sdd-item/sample-sdd-item.s04.acceptance-criteria.md"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -206,13 +209,12 @@ decision_owner: "coordinator"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-09-11T05:05:20.242Z"
-handoff_target: "blocker-owner"
-last_transition_action: "block"
-last_transition_at: "2026-09-11T11:42:18.861Z"
+handoff_target: "definition-of-done"
+last_transition_action: "verify"
+last_transition_at: "2026-10-20T04:23:17.175Z"
 required_actions:
-  - "Resolve blockers before resuming the work item."
-blockers:
-  - "GOV-EX-002: T3 collides with codex/adaptive-governance-human-approval-ux ownership of .github/workflows/workflow-guardrails.yml (+60/-2). REQ-002 transferred to that branch as work item upgrade-guardrails-actions-node24."
+  - {"id":"se:da136e2e25bb28c9beba2c977961d1e27546b74bc25a42dafb2e1ccbd48c3d2f","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+blockers: []
 review_notes:
   - "Human review approved."
 refs:
@@ -222,6 +224,8 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "WORK_ITEM_BLOCKED"
+  - "WORK_ITEM_RESUMED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
 ## Traceability

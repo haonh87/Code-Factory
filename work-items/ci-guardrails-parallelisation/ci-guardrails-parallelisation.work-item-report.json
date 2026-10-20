@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "BLOCKED",
+  "protocol_status": "VERIFIED",
   "decision_owner": "coordinator",
   "protocol_owner": "po",
   "raw_request_summary": "",
@@ -16,20 +16,25 @@
   "work_item_type": "CHANGE",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/ci-guardrails-parallelisation",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     ".github/workflows/workflow-guardrails.yml",
-    "work-items/ci-guardrails-parallelisation"
+    "work-items/ci-guardrails-parallelisation",
+    "project-context/governance-exception-register.md",
+    "packages/workflow-bundle/tests/fixtures/workflow-governance/valid-default/workflow/customer-search.s04.acceptance-criteria.md",
+    "work-items/sample-sdd-item/sample-sdd-item.s04.acceptance-criteria.md"
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "blocker-owner",
+  "handoff_target": "definition-of-done",
   "required_actions": [
-    "Resolve blockers before resuming the work item."
+    {
+      "id": "se:da136e2e25bb28c9beba2c977961d1e27546b74bc25a42dafb2e1ccbd48c3d2f",
+      "kind": "workflow_followup",
+      "text": "Collect DoD evidence and close the work item when ready."
+    }
   ],
-  "blockers": [
-    "GOV-EX-002: T3 collides with codex/adaptive-governance-human-approval-ux ownership of .github/workflows/workflow-guardrails.yml (+60/-2). REQ-002 transferred to that branch as work item upgrade-guardrails-actions-node24."
-  ],
+  "blockers": [],
   "refs": [
     "work-items/ci-guardrails-parallelisation"
   ],
@@ -37,7 +42,9 @@
     "REPORT_BOOTSTRAPPED",
     "WORK_ITEM_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "WORK_ITEM_BLOCKED"
+    "WORK_ITEM_BLOCKED",
+    "WORK_ITEM_RESUMED",
+    "VERIFICATION_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -90,6 +97,78 @@
       "from_status": "ACTIVE",
       "to_status": "BLOCKED",
       "note": "Work item blocked."
+    },
+    {
+      "timestamp": "2026-10-19T13:33:29.890Z",
+      "action": "resume",
+      "actor": "developer",
+      "from_status": "BLOCKED",
+      "to_status": "ACTIVE",
+      "note": "Accepted T1-R..T4-R; fresh gate signatures and two signed dispositions verified; GOV-EX-002 resolved. Fixture paths restricted to isolated probe. Candidate/probe push and dispatch authorized; no merge/release/cleanup."
+    },
+    {
+      "timestamp": "2026-10-20T04:23:17.175Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "AC-001..006 verified: candidate run 39261539913 success in 92s; controlled double-failure run 39368831066 gates downstream correctly; zero Node deprecation annotations. Human QC DoD remains pending."
+    }
+  ],
+  "resolved_state_history": [
+    {
+      "operation_id": "ci-resume-20261019-retire-collision",
+      "source_collection": "blockers",
+      "source_entry_id": "di:7cf168a161211168efde6f2fea5ac3de38cdc19042dadbb09641a8c162e9d860",
+      "original_entry": "GOV-EX-002: T3 collides with codex/adaptive-governance-human-approval-ux ownership of .github/workflows/workflow-guardrails.yml (+60/-2). REQ-002 transferred to that branch as work item upgrade-guardrails-actions-node24.",
+      "original_text": "GOV-EX-002: T3 collides with codex/adaptive-governance-human-approval-ux ownership of .github/workflows/workflow-guardrails.yml (+60/-2). REQ-002 transferred to that branch as work item upgrade-guardrails-actions-node24.",
+      "actor": "maintainer",
+      "reason": "Accepted CI amendment: collision owner and transferred action-upgrade owner are ARCHIVED; revised s06 signatures verified. Retire obsolete collision blocker only; no AC waiver, merge or release.",
+      "resolved_at": "2026-10-19T13:31:41.002Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "ci-guardrails-parallelisation",
+          "operation_id": "ci-resume-20261019-retire-collision",
+          "state_id": "di:7cf168a161211168efde6f2fea5ac3de38cdc19042dadbb09641a8c162e9d860",
+          "source_collection": "blockers",
+          "original_entry": "GOV-EX-002: T3 collides with codex/adaptive-governance-human-approval-ux ownership of .github/workflows/workflow-guardrails.yml (+60/-2). REQ-002 transferred to that branch as work item upgrade-guardrails-actions-node24.",
+          "original_text": "GOV-EX-002: T3 collides with codex/adaptive-governance-human-approval-ux ownership of .github/workflows/workflow-guardrails.yml (+60/-2). REQ-002 transferred to that branch as work item upgrade-guardrails-actions-node24.",
+          "actor": "maintainer",
+          "reason": "Accepted CI amendment: collision owner and transferred action-upgrade owner are ARCHIVED; revised s06 signatures verified. Retire obsolete collision blocker only; no AC waiver, merge or release.",
+          "resolved_at": "2026-10-19T13:31:41.002Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "PUmKJNKaF5V3Q6FtKu8VzeSJ1yvtIuuT3Votvc3gRjRO24mkDa9QgMs8Rv5RUw5yPku0jxKqAvL8JT0oUdaXCQ=="
+      }
+    },
+    {
+      "operation_id": "ci-resume-20261019-retire-legacy-followup",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:2d88de6f0b380063ceb33ffdb7906643f57b928795c751c44011686b523a6aa1",
+      "original_entry": "Resolve blockers before resuming the work item.",
+      "original_text": "Resolve blockers before resuming the work item.",
+      "actor": "maintainer",
+      "reason": "Accepted CI amendment: obsolete blocker retired and revised s06 signed. Retire legacy resolve-blockers follow-up; normal CLI resume will own subsequent execution. No DoD, merge or release.",
+      "resolved_at": "2026-10-19T13:31:57.907Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "ci-guardrails-parallelisation",
+          "operation_id": "ci-resume-20261019-retire-legacy-followup",
+          "state_id": "di:2d88de6f0b380063ceb33ffdb7906643f57b928795c751c44011686b523a6aa1",
+          "source_collection": "required_actions",
+          "original_entry": "Resolve blockers before resuming the work item.",
+          "original_text": "Resolve blockers before resuming the work item.",
+          "actor": "maintainer",
+          "reason": "Accepted CI amendment: obsolete blocker retired and revised s06 signed. Retire legacy resolve-blockers follow-up; normal CLI resume will own subsequent execution. No DoD, merge or release.",
+          "resolved_at": "2026-10-19T13:31:57.907Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "4aQud0E7qezzQUmCMXxDsBK5wo2u5/dduUDwETRbnu/+rEtiHyo/L5cR59IwvGQdkNmXcTfLu1X5ip/N0Vk8Ag=="
+      }
     }
   ]
 }
