@@ -288,15 +288,18 @@ notes_for_step_2: "Lock the user value and measurable success of a presentation 
 
 ## Work Item Protocol
 ```yaml
-protocol_status: MATERIALIZED
+protocol_status: BLOCKED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "add-diagram-design-adapter"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/add-diagram-design-adapter"
-current_step: "s06"
-granted_write_paths: []
+current_step: "s08"
+granted_write_paths:
+  - ".claude/worktrees/add-diagram-design-adapter-v2.7.0"
+  - "work-items/add-diagram-design-adapter"
+  - "changes/CHANGE-005"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -305,19 +308,17 @@ bootstrap_reviewed_at: ""
 change_strategy: create_new
 change_id: "CHANGE-005"
 decision_owner: "agent"
-protocol_owner: "po"
+protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-21T03:47:48.570Z"
-handoff_target: "t0-prerequisite-resolution"
-last_transition_action: "readiness-check"
-last_transition_at: "2026-08-21T14:44:48Z"
+handoff_target: "qc"
+last_transition_action: "block"
+last_transition_at: "2026-10-21T13:43:51.742Z"
 required_actions:
-  - "Complete CHANGE-004 to VERIFIED, then re-read the resulting baseline and recheck CHANGE-005 compatibility"
-  - "Explicitly approve and provision Python Playwright plus compatible Chromium, then pass import and launch preflight"
-  - "After all T0 prerequisites pass, revalidate trusted receipts and activate s07 with explicit write roots"
+  - {"id":"se:089a0a6531b64fabaa383e60224a3deed4fcd982b7a98556cac0a4fa6e8e02c1","kind":"workflow_followup","text":"Resolve blockers before resuming the work item."}
 blockers:
-  - "CHANGE-004 is MATERIALIZED at s01, not VERIFIED"
-  - "Python Playwright is not installed; Chromium launch preflight cannot run"
+  - {"id":"se:8b7cd04e6d8d154237a5de0a7ae3886574b521b78bc6c57a90a6d3aa0f8e792e","kind":"delivery_blocker","text":"AC-007: execute READER-TASK-001 with two independent representative reviewers; evidence packet is in s08."}
+  - {"id":"se:50eedc7a1e5d344420671dd39d9839fe5754c1e3be1d8edc51c8d6562bf74353","kind":"delivery_blocker","text":"QC: record canonical Draw.io first-open review and disposition of unavailable dedicated SAST before DoD; required DoD, Release and Business Acceptance human decisions remain pending."}
 review_notes:
   - "Human review approved."
 refs:
@@ -339,10 +340,12 @@ audit_events:
   - "STEP_OPENED"
   - "GATE_REVIEW_RECORDED"
   - "STEP_OPENED"
+  - "GATE_REVIEW_RECORDED"
   - "STEP_OPENED"
   - "GATE_REVIEW_RECORDED"
-  - "GATE_REVIEW_RECORDED"
   - "INPUT_READINESS_BLOCKED"
+  - "WORK_ITEM_ACTIVATED"
+  - "WORK_ITEM_BLOCKED"
 ```
 
 ## Traceability
