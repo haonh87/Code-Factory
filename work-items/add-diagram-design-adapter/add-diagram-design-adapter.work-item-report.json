@@ -1,8 +1,8 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "MATERIALIZED",
+  "protocol_status": "BLOCKED",
   "decision_owner": "agent",
-  "protocol_owner": "po",
+  "protocol_owner": "developer",
   "raw_request_summary": "Add a governed adapter lane that lets SA and TA request polished diagram-design presentation artifacts downstream of architecture-modeling while preserving pre-design authority and canonical architecture artifacts.",
   "request_source": "user",
   "candidate_count": 1,
@@ -94,19 +94,33 @@
   "work_item_type": "CHANGE",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/add-diagram-design-adapter",
-  "current_step": "s06",
-  "granted_write_paths": [],
+  "current_step": "s08",
+  "granted_write_paths": [
+    ".claude/worktrees/add-diagram-design-adapter-v2.7.0",
+    "work-items/add-diagram-design-adapter",
+    "changes/CHANGE-005"
+  ],
   "change_strategy": "create_new",
   "change_id": "CHANGE-005",
-  "handoff_target": "t0-prerequisite-resolution",
+  "handoff_target": "qc",
   "required_actions": [
-    "Complete CHANGE-004 to VERIFIED, then re-read the resulting baseline and recheck CHANGE-005 compatibility",
-    "Explicitly approve and provision Python Playwright plus compatible Chromium, then pass import and launch preflight",
-    "After all T0 prerequisites pass, revalidate trusted receipts and activate s07 with explicit write roots"
+    {
+      "id": "se:089a0a6531b64fabaa383e60224a3deed4fcd982b7a98556cac0a4fa6e8e02c1",
+      "kind": "workflow_followup",
+      "text": "Resolve blockers before resuming the work item."
+    }
   ],
   "blockers": [
-    "CHANGE-004 is MATERIALIZED at s01, not VERIFIED",
-    "Python Playwright is not installed; Chromium launch preflight cannot run"
+    {
+      "id": "se:8b7cd04e6d8d154237a5de0a7ae3886574b521b78bc6c57a90a6d3aa0f8e792e",
+      "kind": "delivery_blocker",
+      "text": "AC-007: execute READER-TASK-001 with two independent representative reviewers; evidence packet is in s08."
+    },
+    {
+      "id": "se:50eedc7a1e5d344420671dd39d9839fe5754c1e3be1d8edc51c8d6562bf74353",
+      "kind": "delivery_blocker",
+      "text": "QC: record canonical Draw.io first-open review and disposition of unavailable dedicated SAST before DoD; required DoD, Release and Business Acceptance human decisions remain pending."
+    }
   ],
   "refs": [
     "changes/CHANGE-005",
@@ -131,7 +145,9 @@
     "GATE_REVIEW_RECORDED",
     "STEP_OPENED",
     "GATE_REVIEW_RECORDED",
-    "INPUT_READINESS_BLOCKED"
+    "INPUT_READINESS_BLOCKED",
+    "WORK_ITEM_ACTIVATED",
+    "WORK_ITEM_BLOCKED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -232,6 +248,159 @@
       "from_status": "MATERIALIZED",
       "to_status": "MATERIALIZED",
       "note": "Task Plan receipt is APPROVED with digest_match=true. T0 remains blocked because CHANGE-004 is not VERIFIED and Python Playwright/Chromium is not provisioned; s07 stays closed."
+    },
+    {
+      "timestamp": "2026-10-20T14:18:33.874Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "A1 signature, all five prerequisite dispositions, predecessor DoD and pinned PNG preflight verified; execute accepted T0-T9 in isolated worktree."
+    },
+    {
+      "timestamp": "2026-10-21T13:43:51.742Z",
+      "action": "block",
+      "actor": "developer",
+      "from_status": "ACTIVE",
+      "to_status": "BLOCKED",
+      "note": "T0-T9 implementation and final exact-candidate automated verification complete; s08 PARTIAL. Preserve branch, worktree and final artifact. No human approval inferred."
+    }
+  ],
+  "resolved_state_history": [
+    {
+      "operation_id": "adapter-a1-20261020-change004-blocker",
+      "source_collection": "blockers",
+      "source_entry_id": "di:ffbbe481d4bd8b95eb9f6eb8092c4360dd8a746ee79e5fa17041bbeee7b64fc2",
+      "original_entry": "CHANGE-004 is MATERIALIZED at s01, not VERIFIED",
+      "original_text": "CHANGE-004 is MATERIALIZED at s01, not VERIFIED",
+      "actor": "maintainer",
+      "reason": "Accepted A1: CHANGE-004 owner is DONE with valid DoD and the post-change baseline compatibility checks passed. Retire only this obsolete prerequisite; activation remains separate.",
+      "resolved_at": "2026-10-20T13:51:47.191Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "add-diagram-design-adapter",
+          "operation_id": "adapter-a1-20261020-change004-blocker",
+          "state_id": "di:ffbbe481d4bd8b95eb9f6eb8092c4360dd8a746ee79e5fa17041bbeee7b64fc2",
+          "source_collection": "blockers",
+          "original_entry": "CHANGE-004 is MATERIALIZED at s01, not VERIFIED",
+          "original_text": "CHANGE-004 is MATERIALIZED at s01, not VERIFIED",
+          "actor": "maintainer",
+          "reason": "Accepted A1: CHANGE-004 owner is DONE with valid DoD and the post-change baseline compatibility checks passed. Retire only this obsolete prerequisite; activation remains separate.",
+          "resolved_at": "2026-10-20T13:51:47.191Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "Ivjmd+HE/E/SoVPmYjYOLqtG2tcmv0K9BYjq3dpQykN2X5kK0QzrlV/DZHfJ4G+n6IRp597bYY+lZxFv7wFVBg=="
+      }
+    },
+    {
+      "operation_id": "adapter-a1-20261020-change004-followup",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:0e7a87549eefb6c752eec523cad75f39266a83dc8ed128dbe822feec701d3ae4",
+      "original_entry": "Complete CHANGE-004 to VERIFIED, then re-read the resulting baseline and recheck CHANGE-005 compatibility",
+      "original_text": "Complete CHANGE-004 to VERIFIED, then re-read the resulting baseline and recheck CHANGE-005 compatibility",
+      "actor": "maintainer",
+      "reason": "Accepted A1: CHANGE-004 owner is DONE with valid DoD and the post-change baseline compatibility checks passed. Retire only this obsolete prerequisite; activation remains separate.",
+      "resolved_at": "2026-10-20T13:51:49.821Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "add-diagram-design-adapter",
+          "operation_id": "adapter-a1-20261020-change004-followup",
+          "state_id": "di:0e7a87549eefb6c752eec523cad75f39266a83dc8ed128dbe822feec701d3ae4",
+          "source_collection": "required_actions",
+          "original_entry": "Complete CHANGE-004 to VERIFIED, then re-read the resulting baseline and recheck CHANGE-005 compatibility",
+          "original_text": "Complete CHANGE-004 to VERIFIED, then re-read the resulting baseline and recheck CHANGE-005 compatibility",
+          "actor": "maintainer",
+          "reason": "Accepted A1: CHANGE-004 owner is DONE with valid DoD and the post-change baseline compatibility checks passed. Retire only this obsolete prerequisite; activation remains separate.",
+          "resolved_at": "2026-10-20T13:51:49.821Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "/DwxrgFovZ/kuLktnGHCQqfuEPvtGWhqk2mq8f27Rcdw4D9q3tJNw/aPUzAOgBaPnMQ0nQJ/+8yqrMgPKpWEAQ=="
+      }
+    },
+    {
+      "operation_id": "adapter-a1-20261020-png-blocker",
+      "source_collection": "blockers",
+      "source_entry_id": "di:a9023fab09d22f322975466ad1adc7b04f7bfd53a2103dc240abdbf4fbdd5fee",
+      "original_entry": "Python Playwright is not installed; Chromium launch preflight cannot run",
+      "original_text": "Python Playwright is not installed; Chromium launch preflight cannot run",
+      "actor": "maintainer",
+      "reason": "Accepted A1: isolated pinned PNG toolchain installed with matching hashes; pip check, exact browser launch, transparent PNG and HTTP/HTTPS blocking probes pass. Retire only this satisfied prerequisite; activation remains separate.",
+      "resolved_at": "2026-10-20T13:51:52.578Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "add-diagram-design-adapter",
+          "operation_id": "adapter-a1-20261020-png-blocker",
+          "state_id": "di:a9023fab09d22f322975466ad1adc7b04f7bfd53a2103dc240abdbf4fbdd5fee",
+          "source_collection": "blockers",
+          "original_entry": "Python Playwright is not installed; Chromium launch preflight cannot run",
+          "original_text": "Python Playwright is not installed; Chromium launch preflight cannot run",
+          "actor": "maintainer",
+          "reason": "Accepted A1: isolated pinned PNG toolchain installed with matching hashes; pip check, exact browser launch, transparent PNG and HTTP/HTTPS blocking probes pass. Retire only this satisfied prerequisite; activation remains separate.",
+          "resolved_at": "2026-10-20T13:51:52.578Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "wEVQTtzYS7SrtfyjitfE0353aKny6MXfzK+TMrp4LxIKqHxlk5qQ7drgyyfOv8dtMI4o214qPvckTAKOheN+DA=="
+      }
+    },
+    {
+      "operation_id": "adapter-a1-20261020-png-followup",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:356db4fa433872131f68ca4e7a6042037c12f522bc2a3da74fc4486891895ec1",
+      "original_entry": "Explicitly approve and provision Python Playwright plus compatible Chromium, then pass import and launch preflight",
+      "original_text": "Explicitly approve and provision Python Playwright plus compatible Chromium, then pass import and launch preflight",
+      "actor": "maintainer",
+      "reason": "Accepted A1: isolated pinned PNG toolchain installed with matching hashes; pip check, exact browser launch, transparent PNG and HTTP/HTTPS blocking probes pass. Retire only this satisfied prerequisite; activation remains separate.",
+      "resolved_at": "2026-10-20T13:51:55.258Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "add-diagram-design-adapter",
+          "operation_id": "adapter-a1-20261020-png-followup",
+          "state_id": "di:356db4fa433872131f68ca4e7a6042037c12f522bc2a3da74fc4486891895ec1",
+          "source_collection": "required_actions",
+          "original_entry": "Explicitly approve and provision Python Playwright plus compatible Chromium, then pass import and launch preflight",
+          "original_text": "Explicitly approve and provision Python Playwright plus compatible Chromium, then pass import and launch preflight",
+          "actor": "maintainer",
+          "reason": "Accepted A1: isolated pinned PNG toolchain installed with matching hashes; pip check, exact browser launch, transparent PNG and HTTP/HTTPS blocking probes pass. Retire only this satisfied prerequisite; activation remains separate.",
+          "resolved_at": "2026-10-20T13:51:55.258Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "lplWB/y7JMJsWb9mNvvlLxgjjLlO0FRtyeRUevwmTvTd/iTCmmplMj6cH7KfEIy0/y8gF0Xx+kbER/X3fbjrAA=="
+      }
+    },
+    {
+      "operation_id": "adapter-a1-20261020-activation-followup",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:1a784ba43f4564598657d4bd6cf8e04559a4f74e3d4d6ec405e3a93ccfd687dd",
+      "original_entry": "After all T0 prerequisites pass, revalidate trusted receipts and activate s07 with explicit write roots",
+      "original_text": "After all T0 prerequisites pass, revalidate trusted receipts and activate s07 with explicit write roots",
+      "actor": "maintainer",
+      "reason": "A1 gates and all four prerequisite dispositions are verified; CHANGE-004 DoD and pinned PNG preflight pass. Retire only the opaque legacy activation reminder so the standard activate command can recheck gates and grant the accepted isolated write roots. This disposition does not itself activate, approve release, or waive any gate.",
+      "resolved_at": "2026-10-20T14:18:07.200Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "add-diagram-design-adapter",
+          "operation_id": "adapter-a1-20261020-activation-followup",
+          "state_id": "di:1a784ba43f4564598657d4bd6cf8e04559a4f74e3d4d6ec405e3a93ccfd687dd",
+          "source_collection": "required_actions",
+          "original_entry": "After all T0 prerequisites pass, revalidate trusted receipts and activate s07 with explicit write roots",
+          "original_text": "After all T0 prerequisites pass, revalidate trusted receipts and activate s07 with explicit write roots",
+          "actor": "maintainer",
+          "reason": "A1 gates and all four prerequisite dispositions are verified; CHANGE-004 DoD and pinned PNG preflight pass. Retire only the opaque legacy activation reminder so the standard activate command can recheck gates and grant the accepted isolated write roots. This disposition does not itself activate, approve release, or waive any gate.",
+          "resolved_at": "2026-10-20T14:18:07.200Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "Hu69LYMRHFQBGtNghsQEpcmnpfSSsy+EY6Gojgc4yVbDvAZsKcsFn7cyw3pjNPb3PgO2Lql7Jj+FRkGwlJLuDg=="
+      }
     }
   ]
 }

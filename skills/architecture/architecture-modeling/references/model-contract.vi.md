@@ -101,3 +101,10 @@ Unknown không cho phép đoán. Human có thể xử lý gap; fact bịa sẽ k
 - Mọi relationship trỏ tới element ID tồn tại và có hướng rõ.
 - Mọi derived view liệt kê `source_fact_ids` và chỉ dùng ID có trong model.
 - Mọi governed field trống có gap, evidence state và resolution owner.
+
+
+## Kết quả tùy chọn sau bản chính tắc
+
+`presentation_derivative` tùy chọn chứa request/result riêng sau xác thực chính tắc.
+Xem presentation-derivative-contract.vi.md. Đây không phải fact hay mục render_plan;
+thiếu, tắt hoặc từ chối adapter đều giữ nguyên kết quả chính tắc.

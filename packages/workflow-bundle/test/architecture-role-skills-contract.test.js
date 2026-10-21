@@ -624,6 +624,16 @@ testDesignReadinessNegativeFixtures();
 testDesignReadinessReferencesAndContract();
 testDesignReadinessSkillHooks();
 
+// Presentation intent is additive guidance; public output schemas remain unchanged.
+for (const language of ['md','vi.md']) {
+  const shared = ['sa','ta'].map(role => path.join(repoRoot,'skills/analysis',role,'references/presentation-intent.'+language));
+  shared.forEach(file=>assert(fs.existsSync(file),'Missing presentation intent reference: '+file));
+  if(shared.every(file=>fs.existsSync(file))) assert(fs.readFileSync(shared[0],'utf8')===fs.readFileSync(shared[1],'utf8'),'SA/TA intent reference parity');
+  for(const role of ['sa','ta']) {
+    const content=fs.readFileSync(path.join(repoRoot,'skills/analysis',role,'SKILL.'+language),'utf8');
+    assert(content.includes('references/presentation-intent.'+language),'Missing intent hook');
+  }
+}
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in architecture-role-skills-contract.test.js`);
   process.exit(1);

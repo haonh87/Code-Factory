@@ -102,3 +102,10 @@ distinguished from truth later.
 - Every relationship references existing element IDs and has an explicit direction.
 - Every derived view lists its `source_fact_ids` and only uses IDs present in the model.
 - Every blank governed field has a gap, evidence state, and resolution owner.
+
+
+## Optional post-canonical result
+
+An optional `presentation_derivative` contains a separate request/result after canonical
+validation. See presentation-derivative-contract.md. It is not a model fact or render_plan
+entry; absence, disablement and rejection preserve the canonical result.

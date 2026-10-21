@@ -1,0 +1,4 @@
+interface:
+  display_name: "Diagram Design Presentation Adapter"
+  short_description: "Create traced, offline architecture presentation derivatives"
+  default_prompt: "Use $diagram-design-presentation-adapter after validating the canonical architecture model and view."

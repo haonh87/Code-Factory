@@ -224,3 +224,10 @@ part of the constraint you are stating, not part of the design someone else will
 - `references/example.md` — one complete filled artifact, showing quantified, binary and not_quantified drivers side by side.
 - `references/invocation-rules.md` — directive grammar, profile selection, hard escalation and format rules.
 - `references/design-readiness-checklist.md` — conditional pre-design checks, driver questions and owned handoffs.
+
+
+## Optional presentation intent
+
+When presentation intent is requested, read references/presentation-intent.md and map it
+to existing directives_parsed, landscape.question_answered and handoff fields. Stop at
+intent in s01-s04; downstream architecture-modeling owns canonical validation.

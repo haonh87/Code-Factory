@@ -37,36 +37,19 @@ release_tasks:
   - "A1 proposes 2.7.0 from main fa9ad237f8179e58b16ca6c6c589bdd0728ec476 (bundle 2.6.4); recheck tag/release availability before T7."
   - "Update/rollback uses the recorded published 2.6.4 artifact; source baseline and release bytes are separate identities."
   - "Retain one exact candidate; no tag, publication, live install, merge or cleanup is authorized by plan authoring."
-task_plan_gate: "ACCEPTED_PENDING_SIGNATURE"
+task_plan_gate: "SIGNED; T0 admission completed 2026-10-20"
 ~~~
 
-## T0 Input Readiness
+## Execution Status — 2026-10-21
 
-~~~yaml
-step: "s07 T0 prerequisite gate"
-status: BLOCKED
-available_inputs:
-  - "Spec, Contract, DoR and Approach trusted receipts match unchanged hosts."
-  - "CHANGE-004 owner is DONE with valid DoD; baseline role/modeling/Draw.io suites pass."
-  - "A1 owns exact baseline, version proposal, exporter tuple, wheel hashes, provisioning order and acceptance checks."
-  - "Approved isolated PNG provisioning passes package/hash, pip check, launch, transparent PNG and HTTP/HTTPS blocking probes; s07 owns measured evidence."
-missing_inputs:
-  - "Matching new trusted Task Plan signature for accepted A1."
+T0 admission completed through normal CLI activation at 2026-10-20T14:18:33.874Z after
+A1 signature verification and all five signed state dispositions. Accepted isolated PNG
+provisioning and baseline compatibility passed. T1-T9 implementation, targeted reviews,
+packaging and exact-candidate lifecycle verification are complete. Independent s08
+verification and human closeout remain pending; the work item is not DONE.
 
-  - "Signed disposition of stale/satisfied protocol prerequisites through supported CLI."
-  - "s07 activation and exact write grants, followed by isolated worktree."
-invalid_inputs:
-  - "Old Task Plan signature applies to the prior host only; it does not approve A1."
-conflicts: []
-assumptions: []
-risk_level: HIGH
-next_action: "Complete accepted isolated provisioning, sign the finalized plan and exact satisfied state dispositions, then continue T0."
-~~~
-
-## Boundary
-
-- The s06 work-item note owns the plan, exporter lock and compatibility evidence; this file mirrors execution order only.
-- Prior Task Plan approval remains historical. A1 is accepted and finalized, requiring a fresh trusted receipt.
-- Spec/Contract/DoR/Approach, AC-001..011 and pinned upstream content are unchanged.
-- No production/test/runtime/release writes are opened while T0 is BLOCKED.
-- The protocol report still contains historical prerequisites and is intentionally untouched until signed disposition is authorized.
+- Execution evidence: `work-items/add-diagram-design-adapter/add-diagram-design-adapter.s07.implementation.md`.
+- Acceptance matrix, exact artifact identity, reader packet and residual gates: `work-items/add-diagram-design-adapter/add-diagram-design-adapter.s08.verification.md`.
+- The signed s06 remains the plan owner; this file mirrors execution order and links progress.
+- Spec/Contract/DoR/Approach/Task Plan hosts and accepted upstream provenance are unchanged.
+- No tag, publication, live managed install, push, merge or cleanup is authorized by this update.

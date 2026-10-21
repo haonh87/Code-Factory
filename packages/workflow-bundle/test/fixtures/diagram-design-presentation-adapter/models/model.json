@@ -1,0 +1,59 @@
+{
+  "architecture_model": {
+    "model_id": "store-baseline",
+    "architecture_state": "baseline",
+    "model_format": "ARCHITECTURE_YAML",
+    "model_source": "models/model.json",
+    "elements": [
+      {
+        "system_id": "store",
+        "name": "Store",
+        "kind": "software_system",
+        "responsibility": "Capture orders",
+        "domain": "Sales",
+        "boundary_id": "retail",
+        "parent_system_id": "",
+        "owner": "Retail team",
+        "owner_kind": "internal_team",
+        "technology": "Web",
+        "tags": [],
+        "evidence_state": "CONFIRMED",
+        "evidence_ref": "approved baseline",
+        "decision_impact": "Removing Store hides the order capture owner."
+      },
+      {
+        "system_id": "erp",
+        "name": "ERP",
+        "kind": "external_system",
+        "responsibility": "Fulfil orders",
+        "domain": "Operations",
+        "boundary_id": "enterprise",
+        "parent_system_id": "",
+        "owner": "Operations team",
+        "owner_kind": "internal_team",
+        "technology": "ERP",
+        "tags": [],
+        "evidence_state": "CONFIRMED",
+        "evidence_ref": "approved baseline",
+        "decision_impact": "Removing ERP hides the order fulfilment owner."
+      }
+    ],
+    "relationships": [
+      {
+        "integration_id": "orders",
+        "from_system_id": "store",
+        "to_system_id": "erp",
+        "direction": "DIRECTED",
+        "business_purpose": "Submit orders",
+        "protocol": "HTTPS",
+        "interaction": "SYNC",
+        "contract_owner": "Retail team",
+        "error_policy": "Retry with idempotency key",
+        "data_classification": "Internal",
+        "evidence_state": "CONFIRMED",
+        "evidence_ref": "approved baseline"
+      }
+    ]
+  },
+  "gaps": []
+}

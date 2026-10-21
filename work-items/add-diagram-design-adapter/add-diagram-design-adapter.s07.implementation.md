@@ -17,37 +17,39 @@ governance_status: CHECKS_PENDING
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: "CHANGE-005"
-change_status: draft
-spec_delta_refs: []
+change_status: approved
+spec_delta_refs:
+  - "changes/CHANGE-005/spec-delta/brd.delta.md"
+  - "changes/CHANGE-005/spec-delta/srs.delta.md"
 archive_status: not_ready
 sdd_mode: none
 spec_refs:
-  brd: ""
-  srs: ""
-spec_status: draft
+  brd: "changes/CHANGE-005/spec-delta/brd.delta.md"
+  srs: "changes/CHANGE-005/spec-delta/srs.delta.md"
+spec_status: approved
 planning_track: full
 execution_mode: agentic
-execution_roles: []
+execution_roles: ["po", "ba", "developer", "qc", "devops"]
 review_mode: self
-verification_owner: ""
+verification_owner: "qc"
 approval_gates:
   spec: "required"
-  contract: "not_applicable"
+  contract: "required"
   foundation: "not_applicable"
   uat: "not_applicable"
-  release: "not_applicable"
-  business_acceptance: "not_applicable"
+  release: "required"
+  business_acceptance: "required"
 role_signoffs:
-  spec: []
-  contract: []
-  dor: []
-  approach: []
+  spec: ["ba"]
+  contract: ["developer"]
+  dor: ["ba", "qc"]
+  approach: ["developer"]
   foundation: []
-  task_plan: []
+  task_plan: ["developer"]
   uat: []
-  release: []
-  business_acceptance: []
-  dod: []
+  release: ["devops", "qc"]
+  business_acceptance: ["po"]
+  dod: ["qc"]
 gate_reviews:
   spec_reviewed_by: []
   spec_reviewed_at: ""
@@ -93,60 +95,125 @@ tags:
 
 ## Step Contract
 ```yaml
-step_goal: ""
-input_summary: []
-output_summary: []
-done_when: []
-owner: ""
+step_goal: "Execute accepted A1 T0-T9 without changing canonical ownership or human gates."
+input_summary: ["Signed s04/s05/s06", "CHANGE-004 DONE", "Pinned PNG preflight"]
+output_summary: ["One optional adapter", "Focused tests", "Generated candidate and lifecycle evidence"]
+done_when: ["T9 evidence ready for QC; no unresolved blocking implementation findings"]
+owner: "developer"
 ```
 
-## Artifact Chính
+## Main Artifact
 ```yaml
-implemented_changes: []
-doc_changes: []
-operational_notes: []
+recommended_design: "APPROACH-005-A / accepted A1"
+implementation_mode: FEATURE
+tasks_completed: [T0, T1, T2, T3, T4, T5, T6, T7, T8, T9]
+bug_repro_evidence: []
+hypothesis_log: []
+debug_experiments: []
+tdd_evidence:
+  - behavior: "Pinned provenance and no nested discovery"
+    failing_test: "diagram-design-provenance.test.js: missing verifier"
+    passing_test: "155 files / 2113085 bytes / approved digest; tamper, symlink and nested skill rejection"
+  - behavior: "Request admission"
+    failing_test: "diagram-design-presentation-adapter-contract.test.js: missing validator"
+    passing_test: "Four role/audience combinations and fail-closed cases"
+  - behavior: "Offline atomic output"
+    failing_test: "diagram-design-presentation-adapter-output.test.js: missing exporter"
+    passing_test: "Two layouts; semantic/static/accessibility cases; actual pinned PNG; missing tool/browser and forced rename rollback"
+  - behavior: "SA/TA and modeling optional handoff"
+    failing_test: "Role suite: eight missing hooks/refs; modeling suite: six missing optional contract assertions"
+    passing_test: "Role/modeling/Draw.io suites pass; SA/TA schema bytes unchanged"
+  - behavior: "Review fixes"
+    failing_test: "Bidi control accepted; model-level constraint not visibly emitted"
+    passing_test: "Unsafe canonical text rejects; all model metadata retained visibly"
+safe_refactor_notes: ["Existing canonical renderer implementation unchanged"]
+code_changes: ["Adapter provenance, request, static export, PNG and output validation scripts"]
+doc_changes: ["Bilingual adapter contracts", "SA/TA intent", "Modeling optional derivative guidance"]
+config_changes: ["Adapter agents/openai.yaml"]
+review_checkpoints: ["T6 spec compliance then code quality, recorded below"]
+outputs_actual: ["Implementation in codex/add-diagram-design-adapter-v2.7.0"]
+known_limitations: ["Closed one/two-column layouts", "Local JSON model projection", "Human reader study pending"]
+follow_up_items: ["s08 independent reader study", "QC scan disposition and Draw.io first-open review", "Human DoD, Release and Business Acceptance"]
+notes_for_testing: "Positive PNG needs the pinned task-local interpreter/browser; normal unit runs explicitly report absence of positive integration coverage."
 ```
 
 ## Delivery Rule Evidence
 ```yaml
-behavior_change: YES|NO
-tdd_status: DONE|NOT_REQUIRED|EXCEPTION
-tdd_test_refs: []
+behavior_change: YES
+tdd_status: DONE
+tdd_test_refs: ["diagram-design-provenance.test.js", "diagram-design-presentation-adapter-contract.test.js", "diagram-design-presentation-adapter-output.test.js", "architecture-role-skills-contract.test.js", "architecture-modeling-contract.test.js"]
 tdd_exception_reason: ""
 tdd_alternative_verify_path: []
-change_risk_profile: QUICK_FIX|STANDARD|LARGE_OR_RISKY
-worktree_status: USED|NOT_REQUIRED|SKIPPED_WITH_REASON
-worktree_refs: []
-worktree_reason: ""
-review_status: COMPLETED|PARTIAL|BLOCKED
-review_refs: []
-spec_compliance_status: PASS|FAIL|PARTIAL|NOT_RUN
-code_quality_status: PASS|FAIL|PARTIAL|NOT_RUN
-delegation_mode: agentic|multi_agent|subagent|sequential_multi_role
-independence_status: PASS|FAIL|NOT_APPLICABLE
+change_risk_profile: LARGE_OR_RISKY
+worktree_status: USED
+worktree_refs: [".claude/worktrees/add-diagram-design-adapter-v2.7.0"]
+worktree_reason: "Full plan, vendored resources, multiple skills and candidate packaging"
+review_status: DONE
+review_refs: ["T6 Targeted Review", "T7-T9 Candidate and Handoff — 2026-10-21"]
+spec_compliance_status: PASS
+code_quality_status: PASS
+delegation_mode: agentic
+independence_status: NOT_APPLICABLE
 independence_refs: []
-merge_path: ""
-verify_path: []
+merge_path: "Keep branch/worktree until s08 DoD and separate integration decision"
+verify_path: ["Focused suites", "Runtime parity", "Full unit suite", "Exact candidate lifecycle", "Independent reader review"]
 ```
 
 ## Implementation Notes
 ```yaml
-framework_notes: []
-known_limitations: []
+worktree_target: ".claude/worktrees/add-diagram-design-adapter-v2.7.0"
+planning_track: full
+risk_signals: ["Multiple boundaries", "Vendored resources", "Release candidate"]
+worktree_decision: REQUIRED
+decision_reason: ["Accepted A1 isolation"]
+isolation_strategy:
+  branch_name: "codex/add-diagram-design-adapter-v2.7.0"
+  worktree_path: ".claude/worktrees/add-diagram-design-adapter-v2.7.0"
+  owned_paths: ["Adapter", "SA/TA/modeling hooks", "Tests", "Generated runtimes", "Candidate surfaces"]
+  expected_duration: "Accepted multi-session plan"
+execution_guards: ["Canonical governance root remains main workspace", "No delegation", "No tag, push, live install or cleanup"]
+skip_reason: ""
+cleanup_preconditions: ["s08 DoD", "Branch-finish decision"]
+notes_for_implementation: "Worktree based on d43ef61; source baseline is fa9ad23 and d43 adds governance notes only."
 ```
+
+## T6 Targeted Review
+
+Spec compliance PASS for implemented AC-001..006/008/010 behavior: distinct optional
+ownership, no SA/TA schema change, exact provenance, complete output, fail-closed input,
+canonical preservation and no invocation-time provisioning. AC-007 reader outcomes are
+unmeasured; AC-009/011 candidate lifecycle and final gates remain pending T7-T9/s08.
+
+Code quality review followed spec review. Fixed two actual semantic issues test-first:
+bidirectional control text could obscure labels; model-level metadata/constraints were
+not emitted. Added safe recursive canonical text checks, visible model metadata and
+conservative Unicode wrapping. Forced browser and publication failures leave no staging
+or partial destination. Closed template reconstruction checks emitted markup rather than
+trusting a self-reported fact manifest; two layouts pass without pixel comparisons.
+
+Pack audit initially found two skill-root-relative pointers inside immutable vendored
+resources. Added two first-party reference entry points to their actual vendored owners;
+no upstream byte changed and no validator bypass was introduced. Pack audit now passes.
+This is a small adapter-local reference compatibility repair within T6, not a new dependency.
+
+JS/Python syntax and manual static/security/performance review pass for the first-party
+scripts. No dedicated ESLint/Semgrep result is claimed. Inputs/canvas are bounded; no
+network, shell execution or installation occurs in adapter execution. Browser context is
+offline with JavaScript disabled; no OS-wide network-isolation claim. Publication assumes
+a trusted single-writer destination parent, not an adversarial concurrent filesystem.
 
 ## Traceability
-```yaml
-upstream: []
-next_step: ""
-```
+
+- Source requirements: CHANGE-005 BRD/SRS and signed s04 AC-001..011.
+- Design/plan: signed s05 and s06 Amendment A1.
+- Implementation evidence: focused suites above; s08 owns final exact-artifact evidence.
+- Next step: independent s08 reader verification and human decisions.
 
 ## Handoff
-- Outputs actual:
-- Known limitations:
-- Notes for testing:
-- Notes for deployment khi có:
 
+Implementation T0-T9 is complete; s08 remains PARTIAL, not DONE. No merge/push/publication/cleanup is authorized
+by a test pass. Historical sections below are retained as dated evidence; current state
+and T0 admission are recorded in the latest execution section.
 
 ## T0 Readiness Reassessment — 2026-10-19
 
@@ -201,3 +268,51 @@ Browser executable: `/private/tmp/cf-diagram-png-1.64.0/browsers/chromium_headle
 PNG SHA-256: `167e23f387080be1175b185208a65e38cd26c32ac4c5365be734464167d742cc`. Scratch evidence: `/private/tmp/cf-diagram-png-1.64.0/{requirements.lock,probe.py,fixture.html,probe.png,evidence.json}`; JSON retains version, request and license/NOTICE inventories. This prerequisite probe is not adapter T3 or AC verification; no adapter source has been imported or implemented.
 
 The two blocker entries (CHANGE-004 status and missing PNG tooling) and their first two required-action entries are now factually obsolete/satisfied. A prepared human-terminal helper will seal the accepted Task Plan and use the normal signed state-disposition command for exactly those four entries. The activation follow-up is retained. The report remains MATERIALIZED/s06 with no write grants until the required signatures are verified and normal CLI activation succeeds. No report/signature was hand-edited.
+
+
+## T0 Admission and Execution — 2026-10-20/21
+
+All five normal signed state dispositions were verified, including the legacy activation
+reminder omitted from the first helper. A1 and unchanged Spec/Contract/DoR/Approach
+receipts are valid. Normal CLI activation succeeded at 2026-10-20T14:18:33.874Z with
+exact worktree/workflow/CHANGE-005 write roots. No protocol report or receipt was hand-edited.
+The required worktree was created at the accepted path on branch
+codex/add-diagram-design-adapter-v2.7.0, based on d43ef61 (governance-only delta on fa9ad23).
+The zero-byte path placeholder was preserved in /private/tmp before worktree creation.
+Main's unrelated untracked files and other worktrees remain untouched.
+
+T1 upstream checkout is exactly 5f1b6ddc66036554dd68701798bd12aa5e3ef3f9; verified raw
+manifest digest 97c4979fcbb92f4b0e1af8ef6fa79728ed2fa9cffccf838c6a0fa2e11738de96.
+Actual PNG integration passed with the accepted task-local tuple after explicit sandbox
+escalation for Chromium MachPort; missing browser, missing tool and forced rename failure
+also pass. No global packages or managed homes changed. T7 preparation remains unpublished.
+
+
+## T7-T9 Candidate and Handoff — 2026-10-21
+
+T7 generated 43 skills per Codex/Claude runtime (86 total) using the existing sync path.
+Version surfaces nominate 2.7.0, with 2.6.4/42 skills retained as rollback. Mirrored public
+README, quickstart, documentation-map, publish-surface and Claude entrypoint metadata
+were updated to keep existing release checks coherent; this bounded metadata extension
+adds no runtime boundary. Historical release documents and native installers remain unchanged.
+GitHub tag/release availability was checked before T7; no publication occurred.
+
+T8 retained one final tarball: `artifacts/workflow-bundle-2.7.0.tgz`, 1,556,920 bytes,
+901 files, SHA-256 `1a0f6f5ee468f531cc81ec1b116819a266cf96381812a6839538ace0590b7538`.
+The initial candidate was superseded after visual review found dark header text on a
+transparent background difficult to read on dark hosts. A failing assertion preceded
+opaque header/annotation backplates; margins remain transparent. Actual decoded PNG
+pixels confirm transparent corner and opaque header. All final unit and exact-artifact
+lifecycle checks were rerun after rebuilding; the old candidate is not promotable.
+
+T9 spec compliance review PASS for the implemented scope, followed by code quality PASS.
+Final unit suite passes 50/50 files. Exact tarball install passes all four Codex/Claude x
+global/project combinations on Node 18.20.8 and 22.23.2; exact update/disable/re-enable/
+rollback passes 4/4 combinations and preserves unmanaged bytes/modes. Bundle smoke,
+ten workflow fixture cases, runtime parity, pack audit and scoped authoring validators
+pass. Actual pinned PNG export and failure cleanup paths pass. s08 owns the acceptance
+matrix, retained log index, reader packet and explicit remaining gates.
+
+No independent reader result is inferred from producer visual checks or automated
+semantic tests. No DoD, Release or Business Acceptance signature has been recorded.
+No push, merge, managed live install, tag, release publication or worktree cleanup occurred.

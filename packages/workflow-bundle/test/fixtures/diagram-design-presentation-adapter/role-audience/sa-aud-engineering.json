@@ -1,0 +1,25 @@
+{
+  "invocation": {
+    "skill": "sa",
+    "directives_parsed": [
+      {
+        "raw": "SA presentation for AUD-ENGINEERING",
+        "interpreted_as": "audience",
+        "effect": "Request AUD-ENGINEERING presentation after canonical validation"
+      }
+    ]
+  },
+  "landscape": {
+    "question_answered": "Who owns the order flow from Store to ERP?",
+    "produced_by": "architecture-modeling"
+  },
+  "handoff": {
+    "to_dev": {
+      "applicable": true,
+      "reason": "",
+      "items": [
+        "Preserve canonical facts; optional presentation derivative only after validation"
+      ]
+    }
+  }
+}

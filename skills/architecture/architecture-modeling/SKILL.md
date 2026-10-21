@@ -151,3 +151,9 @@ the human first-open check.
 - A built-in-owned path contains no competing house artifact.
 - All applicable quality metrics are reported, including failures and gaps.
 - No domain design or deployment-generation responsibility was absorbed.
+
+
+## Optional presentation derivative
+
+After canonical validation/rendering, follow references/presentation-derivative-contract.md
+only when an optional presentation is requested. Keep canonical render_plan unchanged.

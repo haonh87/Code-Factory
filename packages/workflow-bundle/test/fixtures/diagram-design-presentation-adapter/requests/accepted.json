@@ -1,0 +1,8 @@
+{
+  "requesting_role":"SA","audience_profile":"AUD-BUSINESS",
+  "declared_question":"Who owns the order flow from Store to ERP?",
+  "canonical_model_ref":"models/model.json","canonical_view_ref":"models/view.json",
+  "source_fact_ids":["store","erp","orders"],"destination_ref":"out/presentation",
+  "requested_formats":["HTML","SVG","PNG"],"presentation_artifact_id":"store-presentation",
+  "render_owner":"diagram-design-presentation-adapter"
+}

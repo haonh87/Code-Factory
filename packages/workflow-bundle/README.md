@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: README.vi.md
 
-`workflow-bundle` is the CLI package prepared for the `v2.6.4` release candidate. It installs the workflow bundle for Codex or Claude Code, routes requests into an applicable governance lane, scaffolds or validates delivery workflows, supports journaled human approval bundles, and provides exact workflow-state disposition. Applicable gates still require their authorized human reviewers and independent trusted receipts. The package remains unpublished until the human Release gate passes.
+`workflow-bundle` is the CLI package prepared for the `v2.7.0` release candidate. It installs the workflow bundle for Codex or Claude Code, routes requests into an applicable governance lane, scaffolds or validates delivery workflows, supports journaled human approval bundles, and provides exact workflow-state disposition. Applicable gates still require their authorized human reviewers and independent trusted receipts. The package remains unpublished until the human Release gate passes.
 
 Detailed quickstart: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -43,31 +43,31 @@ npm link
 wfc version
 ```
 
-### Roll Back From v2.6.4 To v2.6.3
+### Roll Back From v2.7.0 To v2.6.4
 
 Capture the current mode, scope, project roots, and status before replacing the package. Stop adaptive
 writes by omitting `--adaptive-writes true`, then complete or retry the originating bundle command so
 its transaction recovery leaves no live journal. Individual `wfc gate approve` commands remain the
-fallback. Then install the retained immutable v2.6.3 tarball and run `install` for every recorded target:
+fallback. Then install the retained immutable v2.6.4 tarball and run `install` for every recorded target:
 
 ```bash
 wfc status --mode codex
-npm install -g /absolute/path/to/workflow-bundle-2.6.3.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.6.4.tgz
 wfc install --mode codex --scope global
 wfc install --mode codex --scope project --project-root <repo-root>
 wfc status --mode codex
 wfc skills list --mode codex
 ```
 
-Use the same sequence with `--mode claude` for Claude Code. Use the retained immutable v2.6.3
+Use the same sequence with `--mode claude` for Claude Code. Use the retained immutable v2.6.4
 artifact and `wfc install` for the downgrade so the fallback identity is explicit; do not rely on a
-mutable registry alias. The supported path restores the v2.6.3 source behavior and preserves the
+mutable registry alias. The supported path restores the v2.6.4 source behavior and preserves the
 42-skill inventory plus unmanaged files. Legacy/adaptive dual-read compatibility and historical receipts
 must remain intact; never rewrite or re-sign them as part of rollback. Rehearse against isolated homes
 before operating on a live installation, and do not mutate a live global install before the human Release
 gate authorizes it.
 
-## What `v2.6.4` Includes
+## What `v2.7.0` Includes
 
 - workflow bundle install surface via `wfc install|update|status|skills`
 - core authoring CLI via `wfc init|scaffold|validate`
@@ -76,7 +76,7 @@ gate authorizes it.
 - human approval gates for change packages and work items, including readiness and closeout bundles
 - capability control to lock the implementation path until the work item reaches `ACTIVE` at `s07`
 - multi-block runtime prompt with `AGENTS.global.md` as authority, `workflow-governance-router` as the entry router, and `codex-workflow-chain` as the workflow backbone
-- 42 managed skills in each generated runtime, including corrected `sa` and `ta` contracts
+- 43 managed skills in each generated runtime, including corrected `sa` and `ta` contracts
 - `architecture-modeling` with one-model/two-audience views, explicit render ownership, and deterministic draw.io support for landscape and integration views
 - `artifact-governance` with one-fact/one-owner placement rules, English/Vietnamese content, and canonical/runtime parity
 - additive design-readiness guidance for the existing `sa` and `ta` skills, mapped into their existing fields without selecting an s05 solution
@@ -307,7 +307,7 @@ npm pack
 
 ## Persisted Proposal Recovery
 
-The v2.6.4 candidate adds explicit `materialize --resume-proposal` for eligible unapproved single brownfield proposals, with `change_strategy=none` or `create_new` (full template profile only for `create_new`). Ordinary materialization refuses to overwrite existing reports. Recovery requires either READY/no_conflict with original scaffold actions, or valid Maintainer-signed disposition of all admission concerns. It never signs or approves on the user's behalf.
+The v2.7.0 candidate retains explicit `materialize --resume-proposal` from v2.6.4 for eligible unapproved single brownfield proposals, with `change_strategy=none` or `create_new` (full template profile only for `create_new`). Ordinary materialization refuses to overwrite existing reports. Recovery requires either READY/no_conflict with original scaffold actions, or valid Maintainer-signed disposition of all admission concerns. It never signs or approves on the user's behalf.
 
 Read `wfc work-item status`, resolve applicable concerns in their owning lane, then hash the current report with `shasum -a 256 work-items/<slug>/<slug>.work-item-report.json`. Pass that hash and a new canonical UUID:
 
@@ -319,6 +319,13 @@ Success is MATERIALIZED/PENDING_REVIEW with no grants. Draft content, raw histor
 
 The CHANGE/CR numeric alias collision remains a known limitation: verify both spellings before selecting a new change ID. Recovery does not infer that an existing directory is safe to reuse.
 
-### v2.6.4 Source And Package Boundary
 
-The candidate includes persisted proposal recovery and corrected human-authority/Light guidance. P-INSTALL containment fixes are in `adapters/codex/install-codex-workflow.sh` and `.ps1` in the Git tag/source archive; those direct installers are not in the npm tarball allowlist. The package retains 42 managed skills and the existing install surface. The immutable v2.6.3 fallback retains exact state disposition and signed history, but has no proposal recovery. A GitHub Release asset is an npm-format tarball; registry publication requires separate authorization. Review the complete delta in [the v2.6.4 release record](../../docs/releases/workflow-bundle-v2.6.4.md).
+## Optional Architecture Presentation Candidate
+
+The unpublished v2.7.0 candidate adds `diagram-design-presentation-adapter` to the
+43 managed skills. SA/TA record intent; architecture-modeling retains canonical
+ownership. The adapter emits a separate validated offline HTML/SVG/PNG set with
+pinned upstream resources. Python/Playwright/Chromium must be provisioned separately.
+The current source includes post-v2.6.4 CI and fixture-isolation maintenance; this does
+not claim byte identity with the published v2.6.4 rollback artifact. Reader review,
+DoD, Release and Business Acceptance remain pending. See the v2.7.0 release record.
