@@ -160,7 +160,7 @@ The candidate before the header-contrast fix is superseded and must not be promo
 | Workflow fixture cases | PASS, 10 expected positive/negative cases; `cf-adapter-fixtures-20261021.log` |
 | Pack audit | PASS; `cf-adapter-pack-audit-final-20261021.log` |
 | JS syntax / Python parsing | PASS; first-party scripts; no separate compilation/typecheck applies |
-| Workflow authoring / UTF-8 / package-source preservation | PASS: naming/governance/change/execution/planning validate 8 notes; SDD has 0 applicable notes; strict UTF-8 and whitespace checks pass; all 901 package entries match source bytes; five signed gate hosts and work-item/change approvals remain valid |
+| Workflow authoring / UTF-8 / package-source preservation | PASS: naming/governance/change/execution/planning validate 8 notes; SDD has 0 applicable notes; strict UTF-8 and first-party whitespace checks pass; all 901 package entries match source bytes; five signed gate hosts and work-item/change approvals remain valid |
 | Hosted CI | NOT RUN: branch has not been pushed; no hosted result claimed |
 
 ## Final Handoff Checks
@@ -171,6 +171,12 @@ Report and s01 protocol projection were not edited by hand. Five trusted gate re
 (Spec, Contract, DoR, Approach, Task Plan) still verify against unchanged host bytes.
 Work-item and CHANGE-005 approval signatures remain valid. Final tarball SHA and all
 901 file contents match current package source. No release source changed after packing.
+
+The full staged diff reports 2,337 whitespace warnings across 11 immutable upstream
+files (including original CRLF content). The first-party diff passes `git diff --check`.
+Upstream bytes are intentionally preserved under the approved provenance contract;
+normalizing them would invalidate AC-008. This is a documented upstream formatting
+limitation for QC, not a claim that the full-tree whitespace command passed.
 
 ## READER-TASK-001 Review Packet
 
