@@ -95,7 +95,7 @@ tags:
 > [!summary]
 > Automated verification passes for the final 2.7.0 candidate. Overall verdict is PARTIAL:
 > User-authorized AI reader review scores 20/20 with 2/2 source checks and no semantic contradictions.
-> QC scan/finding disposition, canonical Draw.io first-open review,
+> First-open and SAST now pass; accepted wrapping repair, rebuilt-candidate verification,
 > and human DoD/Release/Business Acceptance remain pending. No publication is authorized.
 
 ## Step Contract
@@ -149,7 +149,7 @@ The candidate before the header-contrast fix is superseded and must not be promo
 | AC-008 | PASS | Pinned provenance verifier, key hashes, 155-file digest, tamper/symlink/nested-skill rejection |
 | AC-009 | PASS in isolated supported matrix | Node 18 and 22 exact-candidate installs, 4/4 each; exact 2.6.4 update/disable/re-enable/rollback, 4/4; parity and unmanaged-file preservation |
 | AC-010 | PASS | s07 T0 admission: CHANGE-004 DONE, signed dispositions, baseline re-read and authorized grants; SA/TA schemas and canonical renderer implementation preserved |
-| AC-011 | PARTIAL — named review blockers remain | Automated lanes and AI reader comparison pass; dedicated SAST unavailable; QC finding/scan disposition, first-open and human gates pending |
+| AC-011 | PARTIAL — named review blockers remain | Automated lanes and AI reader comparison pass; dedicated SAST and first-open now pass; wrapping repair, re-verification and human gates pending |
 
 | Verification lane | Result and retained log |
 | --- | --- |
@@ -281,9 +281,9 @@ Pass only with **at least 18/20 correct tasks, 2/2 complete source-of-truth chec
 and zero semantic contradictions**. AI-assessed aggregate: **20/20, 2/2, 0**.
 The coordinator checked frozen answers against a separately derived canonical scoring key;
 all 20 match, including equivalent system names/IDs and synchronous/SYNC wording. This
-check is technical evidence and is not a human QC signoff. QC must also
-open the canonical Draw.io in a compatible viewer and record first-open readability;
-automated canonical quality checks passed but do not replace that manual observation.
+check is technical evidence and is not a human QC signoff. Canonical first-open was subsequently executed in draw.io desktop; see the separate
+QC Follow-up evidence below. The original automated report alone was not used as proof
+of application first-open.
 
 ## AI Review Authorization and Delegation — 2026-10-23
 
@@ -352,7 +352,7 @@ candidate execution evidence covers that separate concern.
 | AI-R01 | Mid-word wrapping and orphan punctuation in the derivative | Low; visible reading friction, no tested answer lost | Developer: propose word-aware wrapping; QC to decide fix-before-close or tracked follow-up |
 | AI-R02 | Business hierarchy is metadata-heavy; flow requires matching IDs across fact cards | Low, presentation suggestion; no demonstrated semantic loss | Developer/BA: consider concise ownership/flow emphasis in a subsequent approved change |
 | AI-R03 | INFERRED mixed-evidence records, external_system/internal_team and ARCHITECTURE_YAML/JSON labels need context | Low, source-native metadata ambiguity preserved by adapter | Fixture/model owner and QC: review wording; do not silently change source meaning in renderer |
-| AI-R04 | Draw.io report still says PENDING_QC_FIRST_OPEN | Existing verification gap, not a newly observed renderer defect | QC: open canonical Draw.io in a compatible viewer and record result |
+| AI-R04 | Original Draw.io report says PENDING_QC_FIRST_OPEN; subsequent actual application first-open is recorded below | Resolved by agent-executed GUI inspection; final gate review remains human-controlled | See Accepted QC Follow-up evidence |
 
 No production fix, package rebuild or acceptance-threshold change was made during review.
 AI-R01..03 remain explicitly open for QC disposition; this note does not accept them on
@@ -363,16 +363,16 @@ and Business Acceptance controls remain unchanged, and no human usability metric
 
 The CLI-owned report remains BLOCKED/s08. The AC-007 blocker now has this review evidence
 available for the authorized reviewer to assess and dispose through the supported signed
-CLI flow. It is not hand-removed. QC first-open, scan/finding disposition and final gate
-receipts remain outstanding; successful AI reading alone cannot close the work item.
+CLI flow. It is not hand-removed. Subsequent QC follow-up below records first-open and SAST; accepted wrapping repair,
+re-verification and final gate receipts remain outstanding. AI reading alone cannot close the work item.
 
 ## Governance Checks
 ```yaml
 checklist_applied: ["project-context/checklists/strict.md"]
 checks: ["Accepted scope and trusted upstream hosts preserved", "No self-approval", "No deployment or publication from local checks"]
-blocking_items: ["QC acceptance/disposition of AI reader evidence and open findings", "QC scan disposition and Draw.io first-open", "Required human closeout gates"]
+blocking_items: ["Signed blocker disposition before approved s07 rework", "AI-R01 wrapping repair and rebuilt-candidate verification", "Required human closeout gates"]
 owner: "qc"
-next_action: "QC reviews AI evidence and open findings, completes first-open/scan disposition, then finalizes s08 for human gates and signed blocker disposition."
+next_action: "Maintainer signs bounded blocker dispositions; resume s07 for accepted AI-R01 repair, then rebuild and reverify candidate before human closeout gates."
 ```
 
 ## Regression & Compatibility Summary
@@ -393,7 +393,8 @@ readiness describes isolated evidence, not permission to modify a managed instal
 status: PARTIAL
 notes:
   - "Syntax PASS; manual static/security/performance review PASS after spec compliance."
-  - "ESLint and Semgrep are unavailable; dedicated automated lint/SAST is SKIPPED. QC must accept the documented review path or request additional scans before DoD."
+  - "Semgrep 1.182.1 OSS security-audit: 99 applicable rules, 5 first-party files, 0 findings, 0 analysis errors; raw output and rules digest in QC follow-up."
+  - "Dedicated ESLint remains unavailable; syntax, targeted tests, manual static review and Semgrep pattern analysis are recorded separately and do not claim ESLint coverage."
   - "Closed static templates, bounded inputs, no arbitrary URL fetch or invocation-time installation; browser context offline, JavaScript disabled, service workers blocked."
   - "No OS-wide network sandbox claim. Atomic output assumes a trusted single-writer destination parent."
 ```
@@ -428,7 +429,7 @@ notes: ["Automated evidence tied to exact final artifact", "AI reader review com
 ## Definition of Done
 ```yaml
 status: BLOCKED
-residual_risks: ["AI assessment does not measure human usability", "Low-severity findings await QC disposition", "Manual canonical first-open pending", "Dedicated SAST unavailable", "Hosted CI not run"]
+residual_risks: ["AI assessment does not measure human usability", "AI-R01 repair pending signed return to s07", "Source change requires rebuilt candidate verification", "Dedicated ESLint unavailable", "Hosted CI not run"]
 owners: ["qc", "devops", "po"]
 ```
 
@@ -438,10 +439,44 @@ upstream: ["CHANGE-005 BRD/SRS", "s04 AC-001..011", "s05 APPROACH-005-A", "s06 A
 next_step: "QC disposition and remaining verification before human closeout gates; preserve branch/worktree."
 ```
 
+## Accepted QC Follow-up and Rework Admission — 2026-10-23
+
+The user accepted the proposed QC treatment: repair word wrapping, defer business-layout
+improvements, clarify source-fixture labels, execute Draw.io first-open and supplement
+security scanning. This accepts bounded remediation, not DoD/Release/Business Acceptance.
+
+| Item | Actual result / accepted disposition | Next action |
+| --- | --- | --- |
+| AI-R01 | REPRODUCED: a read-only render probe fails because integration becomes inte gration / integr ation / integrat ion across lines | Fix after normal s07 resume; preserve Unicode and bounded long-token fallback |
+| AI-R02 | User accepted a later improvement for business hierarchy; all reader answers remain recoverable | Track team/flow emphasis here as follow-up; no layout redesign in this repair |
+| AI-R03 | Current fixture explains enterprise vs technical team ownership and marks other architecture fields as illustrative | Preserve caveats and source meaning; future label clarification belongs to fixture owner |
+| AI-R04 | PASS: actual draw.io desktop 31.7.0 opened canonical.drawio in an isolated profile; legible POS/G-POS and ERP/SAP groups and POS-to-ERP arrow, no error dialog, source bytes unchanged | Agent-executed visual evidence ready for gate review; original automatic quality report remains historical |
+| Dedicated SAST | PASS: Semgrep 1.182.1 OSS security-audit, 99 applicable rules over all 5 first-party adapter scripts, 0 findings, 0 errors, about 100% parsed lines | Rerun after wrapping fix |
+| Syntax / static / performance | JS parser and Python AST PASS; Semgrep pattern analysis complements existing manual static review and tests. Dedicated ESLint unavailable. Inputs/canvas and loops bounded; no benchmark claim | Recheck wrapping regressions, Unicode and overlong tokens after repair |
+
+[QC evidence index](../../.claude/worktrees/add-diagram-design-adapter-v2.7.0/artifacts/reader-review-golden-gate/qc-followup/index.json)
+retains the Draw.io screenshot/DOM evidence, scanner JSON/log, exact rule bytes/digest,
+environment inventory, reproducer and expected failure. Semgrep used an isolated temporary
+virtualenv, local rules, metrics off and version checking off. The initial sandbox scan
+failed on trust-anchor access; the approved outside-sandbox run succeeded. No global
+installation, source change or tarball rebuild occurred. This scan covers first-party
+adapter scripts, not all vendored upstream examples. No human QC signature is inferred.
+
+The CLI still requires two signed state dispositions before `resume --step s07`: the
+reader blocker now has AI evidence; the combined QC/closeout blocker must be re-scoped
+because first-open/SAST are evidenced while final gates belong after repair and reverify.
+Those gates stay mandatory. Maintainer signs exact reasons in their interactive terminal;
+the agent neither reads nor supplies the passphrase and never hand-edits the report.
+
+Prepared helper: `/private/tmp/cf-adapter-qc-rework-20261023.cjs`; `--check` is read-only.
+Normal execution seals only the two named blocker dispositions, then resumes the existing
+approved s07 scope with the same three write roots. It never approves final gates, merges,
+pushes, publishes or changes a managed install. Signed s04/s05/s06 stay unchanged.
+
 ## Handoff
 
 Implementation, automated verification and user-authorized AI reader review are recorded.
-Overall status remains PARTIAL/BLOCKED. QC must disposition the AI evidence and low-severity
-findings, complete canonical first-open and the scan decision, then finalize the artifact
-for human signatures and supported blocker disposition. No further reviewer-name request
+Overall status remains PARTIAL/BLOCKED. First-open and SAST evidence are available. The accepted wrapping repair requires
+signed blocker disposition and return to s07, followed by candidate rebuild and affected
+verification before human closeout signatures. No further reviewer-name request
 is needed for the selected AI mode. Local commits and AI review do not approve DoD or release.

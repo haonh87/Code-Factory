@@ -316,3 +316,26 @@ matrix, retained log index, reader packet and explicit remaining gates.
 No independent reader result is inferred from producer visual checks or automated
 semantic tests. No DoD, Release or Business Acceptance signature has been recorded.
 No push, merge, managed live install, tag, release publication or worktree cleanup occurred.
+
+
+## Accepted AI-R01 QC Rework — 2026-10-23
+
+User accepted repairing mid-word line breaks after independent SA/BA/TA review. This is
+small-delta remediation within the approved presentation contract. Admission remains
+BLOCKED pending signed disposition and normal s07 resume; no repair source written yet.
+
+- Read-only reproduction: implementation worktree `artifacts/reader-review-golden-gate/qc-followup/wrap-repro.cjs`
+  and `wrap-red.log`. Current renderer splits short words; whole-word recovery fails.
+  This is reproduction evidence, not a completed TDD cycle.
+- After admission, touch only adapter `scripts/export-svg.js` and
+  `packages/workflow-bundle/test/diagram-design-presentation-adapter-output.test.js` initially.
+- Add regression assertion and run RED; implement word-boundary wrapping with bounded
+  fallback for overlong tokens; run GREEN for headers, fact rows, ASCII/Unicode, both
+  layouts and semantic/static/accessibility validation.
+- Review spec compliance then code quality. Preserve all canonical content, transparent
+  margins/opaque headers, closed static template and atomic output.
+- Re-sync runtimes, retain superseded tarball, rebuild/hash candidate and rerun parity,
+  output/SAST and exact-artifact lifecycle checks. Re-render samples and verify answers
+  and meaning remain unchanged; old output hashes do not transfer to new outputs.
+- AI-R02 is a later layout enhancement; AI-R03 preserves existing fixture caveats.
+- Return to s08 for verification and human closeout. No push, merge, publication or cleanup.
