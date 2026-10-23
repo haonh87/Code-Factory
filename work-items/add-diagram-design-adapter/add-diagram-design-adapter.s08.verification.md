@@ -94,7 +94,8 @@ tags:
 
 > [!summary]
 > Automated verification passes for the final 2.7.0 candidate. Overall verdict is PARTIAL:
-> READER-TASK-001 is not measured; QC scan disposition, canonical Draw.io first-open review,
+> User-authorized AI reader review scores 20/20 with 2/2 source checks and no semantic contradictions.
+> QC scan/finding disposition, canonical Draw.io first-open review,
 > and human DoD/Release/Business Acceptance remain pending. No publication is authorized.
 
 ## Step Contract
@@ -144,11 +145,11 @@ The candidate before the header-contrast fix is superseded and must not be promo
 | AC-003 | PASS: invalid input fails closed | Missing facts, unsafe/control text, traversal/symlinks, ownership/destination collisions, missing tool/browser tests |
 | AC-004/005 | PASS: distinct canonical ownership; complete semantic coverage | Modeling/Draw.io suites; reconstructed HTML/SVG validation; two layouts; canonical source recheck before atomic publication |
 | AC-006 | PASS for packaged checks and producer visual review; independent review pending | HTML/SVG/PNG sets; static/accessibility assertions; actual offline PNG, transparent margin/opaque header pixels; failure cleanup tests |
-| AC-007 | NOT_MEASURED — blocking | Two independent reviewers and 20 answers pending below |
+| AC-007 | AI-assessed threshold MET; QC acceptance pending | User-selected AI mode: BA 10/10 + TA 10/10, 2/2 source checks, 0 semantic contradictions; SA supplementary. This is not measured human usability. |
 | AC-008 | PASS | Pinned provenance verifier, key hashes, 155-file digest, tamper/symlink/nested-skill rejection |
 | AC-009 | PASS in isolated supported matrix | Node 18 and 22 exact-candidate installs, 4/4 each; exact 2.6.4 update/disable/re-enable/rollback, 4/4; parity and unmanaged-file preservation |
 | AC-010 | PASS | s07 T0 admission: CHANGE-004 DONE, signed dispositions, baseline re-read and authorized grants; SA/TA schemas and canonical renderer implementation preserved |
-| AC-011 | PARTIAL — named review blockers remain | Automated lanes below pass; dedicated SAST unavailable; reader, QC first-open and human gates pending |
+| AC-011 | PARTIAL — named review blockers remain | Automated lanes and AI reader comparison pass; dedicated SAST unavailable; QC finding/scan disposition, first-open and human gates pending |
 
 | Verification lane | Result and retained log |
 | --- | --- |
@@ -181,10 +182,11 @@ limitation for QC, not a claim that the full-tree whitespace command passed.
 ## READER-TASK-001 Review Packet
 
 This executes the already-approved [Reader Review Protocol](../../changes/CHANGE-005/spec-delta/srs.delta.md#reader-review-protocol).
-Use two independent representative people, one business decision-maker and one engineering
-reviewer. Neither may have generated the evaluated derivative. Record a reviewer ID,
-representative role, UTC review time, and independence confirmation. Keep personal names
-outside the repo if needed; stable anonymized IDs suffice.
+The user selected AI agents for this execution on 2026-10-23. BA represents the business
+reading profile; TA represents the engineering reading profile. SA supplies a separate
+business perspective and does not increase the primary 20-task denominator. Each agent
+started in a fresh context and did not generate the derivative. This execution measures
+AI answer recoverability and semantic consistency, not human reading performance.
 
 ### Ownership clarification and revised fixture — 2026-10-22
 
@@ -215,11 +217,10 @@ accessibility checks pass. Both PNGs export using the pinned offline browser con
 producer visual inspection confirms the business output's team labels and shared
 responsibility are legible. Canonical Draw.io human first-open is still pending.
 
-No reviewer profile, independence statement, elapsed review time, completed answer set
-or score was supplied. Ownership clarification is not evidence of two independent reader
-sessions. All AC-007 scores remain NOT_MEASURED. Because ownership answers have been
-explained in this conversation, a scored session must use independent reviewers who
-have not been coached with the answer key. QC must record the actual review conditions.
+At the 2026-10-22 clarification, no independent reviewer sessions had been executed and
+scores were NOT_MEASURED. The subsequent user-selected AI execution below uses fresh
+contexts without the conversation or answer key; it does not score the user clarification
+as a reader response. No elapsed human reading-time or human usability result is claimed.
 
 For each participant, the task is to read what the example displays, not to validate
 Golden Gate production details or supply missing business requirements.
@@ -242,52 +243,136 @@ and unreadable content must be recorded, not silently corrected during the revie
 
 | ID | Business task | Reviewer answer | QC score (0/1) |
 | --- | --- | --- | --- |
-| B01 | Đội nào chịu trách nhiệm kỹ thuật cho POS (Store)? | PENDING | PENDING |
-| B02 | Đội nào chịu trách nhiệm kỹ thuật cho ERP? | PENDING | PENDING |
-| B03 | Những đội nào cùng chịu trách nhiệm tích hợp orders? | PENDING | PENDING |
-| B04 | Trong ví dụ, hệ thống nào ghi nhận đơn hàng? | PENDING | PENDING |
-| B05 | Trong ví dụ, hệ thống nào thực hiện đơn hàng? | PENDING | PENDING |
-| B06 | Trong ví dụ, luồng đơn hàng bắt đầu từ hệ thống nào? | PENDING | PENDING |
-| B07 | Trong ví dụ, luồng đơn hàng đến hệ thống nào? | PENDING | PENDING |
-| B08 | Trong ví dụ, POS (Store) thuộc boundary nào? | PENDING | PENDING |
-| B09 | Trong ví dụ, ERP thuộc boundary nào? | PENDING | PENDING |
-| B10 | Trạng thái được ghi trong view minh họa là baseline hay target? | PENDING | PENDING |
+| B01 | Đội nào chịu trách nhiệm kỹ thuật cho POS (Store)? | G-POS | 1 |
+| B02 | Đội nào chịu trách nhiệm kỹ thuật cho ERP? | SAP | 1 |
+| B03 | Những đội nào cùng chịu trách nhiệm tích hợp orders? | SAP and G-POS jointly | 1 |
+| B04 | Trong ví dụ, hệ thống nào ghi nhận đơn hàng? | POS (Store), system_id store | 1 |
+| B05 | Trong ví dụ, hệ thống nào thực hiện đơn hàng? | ERP, system_id erp | 1 |
+| B06 | Trong ví dụ, luồng đơn hàng bắt đầu từ hệ thống nào? | POS (Store), system_id store | 1 |
+| B07 | Trong ví dụ, luồng đơn hàng đến hệ thống nào? | ERP, system_id erp | 1 |
+| B08 | Trong ví dụ, POS (Store) thuộc boundary nào? | retail | 1 |
+| B09 | Trong ví dụ, ERP thuộc boundary nào? | enterprise | 1 |
+| B10 | Trạng thái được ghi trong view minh họa là baseline hay target? | baseline | 1 |
 
 | ID | Engineering task | Reviewer answer | QC score (0/1) |
 | --- | --- | --- | --- |
-| E01 | ID hệ thống nguồn của orders trong ví dụ là gì? | PENDING | PENDING |
-| E02 | ID hệ thống đích trong ví dụ là gì? | PENDING | PENDING |
-| E03 | Quan hệ trong ví dụ có hướng hay hai chiều? | PENDING | PENDING |
-| E04 | Ví dụ ghi giao thức nào cho orders? | PENDING | PENDING |
-| E05 | Ví dụ ghi tương tác đồng bộ hay bất đồng bộ? | PENDING | PENDING |
-| E06 | Chính sách xử lý lỗi được ghi trong ví dụ là gì? | PENDING | PENDING |
-| E07 | Theo ví dụ, retry phải kèm loại khóa nào? | PENDING | PENDING |
-| E08 | Ví dụ ghi mức phân loại dữ liệu nào? | PENDING | PENDING |
-| E09 | Những đội nào cùng chịu trách nhiệm tích hợp trong ví dụ? | PENDING | PENDING |
-| E10 | Có bao nhiêu hệ thống tham gia trong view này? | PENDING | PENDING |
+| E01 | ID hệ thống nguồn của orders trong ví dụ là gì? | store | 1 |
+| E02 | ID hệ thống đích trong ví dụ là gì? | erp | 1 |
+| E03 | Quan hệ trong ví dụ có hướng hay hai chiều? | DIRECTED (store to erp) | 1 |
+| E04 | Ví dụ ghi giao thức nào cho orders? | HTTPS | 1 |
+| E05 | Ví dụ ghi tương tác đồng bộ hay bất đồng bộ? | Synchronous (SYNC) | 1 |
+| E06 | Chính sách xử lý lỗi được ghi trong ví dụ là gì? | Retry with idempotency key | 1 |
+| E07 | Theo ví dụ, retry phải kèm loại khóa nào? | Idempotency key | 1 |
+| E08 | Ví dụ ghi mức phân loại dữ liệu nào? | Internal | 1 |
+| E09 | Những đội nào cùng chịu trách nhiệm tích hợp trong ví dụ? | SAP + G-POS | 1 |
+| E10 | Có bao nhiêu hệ thống tham gia trong view này? | 2 | 1 |
 
 | Review record | Business reviewer | Engineering reviewer |
 | --- | --- | --- |
-| Stable ID / representative role | PENDING | PENDING |
-| UTC review time / independence confirmation | PENDING | PENDING |
-| Canonical artifact identified (answer + QC verdict) | PENDING | PENDING |
-| Derivative purpose identified (answer + QC verdict) | PENDING | PENDING |
-| Canonical and derivative owners identified (answer + QC verdict) | PENDING | PENDING |
-| Correct tasks out of 10 | NOT_MEASURED | NOT_MEASURED |
-| Semantic contradictions / readability findings | NOT_MEASURED | NOT_MEASURED |
+| Stable ID / representative role | AI-BA-01 / BA | AI-TA-01 / TA |
+| Phase 1 UTC time / independence | 2026-10-23T03:04:46Z / fresh-context, derivative-only | 2026-10-23T03:04:57Z / fresh-context, derivative-only |
+| Canonical artifact identified / coordinator check | models/model.json + models/view.json; view points to canonical.drawio / PASS | Same source chain / PASS |
+| Derivative purpose / coordinator check | Noncanonical business presentation / PASS | Noncanonical engineering presentation / PASS |
+| Canonical and derivative render owners / coordinator check | architecture-modeling / diagram-design-presentation-adapter / PASS | Same two distinct render owners / PASS |
+| Correct tasks out of 10 | 10/10 (AI-assessed) | 10/10 (AI-assessed) |
+| Semantic contradictions / readability findings | 0 / nonblocking findings below | 0 / nonblocking findings below |
 
 Pass only with **at least 18/20 correct tasks, 2/2 complete source-of-truth checks,
-and zero semantic contradictions**. Current aggregate: NOT_MEASURED. QC must also
+and zero semantic contradictions**. AI-assessed aggregate: **20/20, 2/2, 0**.
+The coordinator checked frozen answers against a separately derived canonical scoring key;
+all 20 match, including equivalent system names/IDs and synchronous/SYNC wording. This
+check is technical evidence and is not a human QC signoff. QC must also
 open the canonical Draw.io in a compatible viewer and record first-open readability;
 automated canonical quality checks passed but do not replace that manual observation.
+
+## AI Review Authorization and Delegation — 2026-10-23
+
+The user explicitly selected option 1: AI agents acting as SA/BA for business review
+and TA for technical review. This later instruction authorizes independent s08 review
+only. The signed s06 no-delegation plan remains the historical T0-T9 implementation
+boundary; no implementation task is delegated or reopened. No human gate is approved.
+The earlier s08 wording requiring people does not describe this selected AI review mode.
+Results will be labelled AI-assessed; no human usability metric will be inferred.
+
+```yaml
+delegation_target: "s08 independent AI reader review"
+planning_track: full
+execution_mode_recommendation: MULTI_AGENT
+independence_checks:
+  owned_scope_clear: PASS
+  owned_paths_clear: PASS
+  merge_path_clear: PASS
+  verify_path_clear: PASS
+worker_assignments:
+  - role: ba
+    task: "Primary business reader: B01-B10, then canonical comparison"
+    owned_scope: ["Business derivative review only"]
+    owned_paths: ["/private/tmp/cf-adapter-ai-review-20261023/ba-phase1.json", "/private/tmp/cf-adapter-ai-review-20261023/ba-phase2.json"]
+    outputs_expected: ["Frozen answers", "Source identification", "Findings with evidence"]
+  - role: ta
+    task: "Primary engineering reader: E01-E10, then canonical comparison"
+    owned_scope: ["Engineering derivative review only"]
+    owned_paths: ["/private/tmp/cf-adapter-ai-review-20261023/ta-phase1.json", "/private/tmp/cf-adapter-ai-review-20261023/ta-phase2.json"]
+    outputs_expected: ["Frozen answers", "Source identification", "Findings with evidence"]
+  - role: sa
+    task: "Supplementary business review of ownership, boundaries and decision usefulness"
+    owned_scope: ["Business derivative review only; not included in the primary 20-task score"]
+    owned_paths: ["/private/tmp/cf-adapter-ai-review-20261023/sa-phase1.json", "/private/tmp/cf-adapter-ai-review-20261023/sa-phase2.json"]
+    outputs_expected: ["Independent interpretation", "Ambiguities and semantic findings"]
+merge_strategy: ["Coordinator preserves raw reports in ignored evidence directory and summarizes in this s08 note; no source merge"]
+verify_strategy: ["BA and TA selected before results", "Fresh contexts without answer key or conversation", "Freeze phase-1 responses before canonical access", "Coordinator checks answers and output hashes", "QC retains final gate authority"]
+blocked_reasons: []
+coordination_guards: ["No code, package or protocol writes", "No cross-reviewer answers", "No subdelegation", "No human signoff or release claims"]
+notes_for_execution: "User-authorized verification delegation; implementation remains sequential and unchanged."
+```
+
+## AI Review Results — 2026-10-23
+
+[Raw reports and hash index](../../.claude/worktrees/add-diagram-design-adapter-v2.7.0/artifacts/reader-review-golden-gate/ai-review/index.json)
+retain all six phase reports and the coordinator's scoring key. Phase-1 bytes were
+hashed and remained unchanged through source comparison. BA/TA were designated as the
+primary pair before results were known; SA is supplementary, avoiding score selection.
+All three inspected the assigned HTML and PNG, then the canonical model/view/Draw.io XML
+and quality report. None generated the evaluated artifacts or received another agent's
+answers. They are separate AI contexts, not three human reviewers or independent model
+families. Their reports do not independently attest exporter provenance; existing exact-
+candidate execution evidence covers that separate concern.
+
+| Review | Result | Decision boundary |
+| --- | --- | --- |
+| BA business reading | 10/10 answers match source; source/owner identification passes with stated provenance limits | AI assessment only |
+| TA engineering reading | 10/10 answers match source; source/owner identification passes | AI assessment only |
+| SA supplementary business review | No blocking derivative semantic defect; ownership and fixture caveats retained | Not added to the 20-task score |
+| Canonical comparison | 0 identified semantic contradictions; all phase-1 answers preserved | Does not verify a production Golden Gate architecture |
+
+### Consolidated findings
+
+| ID | Finding and scope | Severity / effect | Owner / next action |
+| --- | --- | --- | --- |
+| AI-R01 | Mid-word wrapping and orphan punctuation in the derivative | Low; visible reading friction, no tested answer lost | Developer: propose word-aware wrapping; QC to decide fix-before-close or tracked follow-up |
+| AI-R02 | Business hierarchy is metadata-heavy; flow requires matching IDs across fact cards | Low, presentation suggestion; no demonstrated semantic loss | Developer/BA: consider concise ownership/flow emphasis in a subsequent approved change |
+| AI-R03 | INFERRED mixed-evidence records, external_system/internal_team and ARCHITECTURE_YAML/JSON labels need context | Low, source-native metadata ambiguity preserved by adapter | Fixture/model owner and QC: review wording; do not silently change source meaning in renderer |
+| AI-R04 | Draw.io report still says PENDING_QC_FIRST_OPEN | Existing verification gap, not a newly observed renderer defect | QC: open canonical Draw.io in a compatible viewer and record result |
+
+No production fix, package rebuild or acceptance-threshold change was made during review.
+AI-R01..03 remain explicitly open for QC disposition; this note does not accept them on
+QC's behalf. The prior requirement for human-only reader sessions was an s08 authoring
+interpretation; the signed Reader Review Protocol defines independence as not generating
+the derivative. The user's explicit choice now selects AI execution. Human DoD, Release
+and Business Acceptance controls remain unchanged, and no human usability metric is claimed.
+
+The CLI-owned report remains BLOCKED/s08. The AC-007 blocker now has this review evidence
+available for the authorized reviewer to assess and dispose through the supported signed
+CLI flow. It is not hand-removed. QC first-open, scan/finding disposition and final gate
+receipts remain outstanding; successful AI reading alone cannot close the work item.
 
 ## Governance Checks
 ```yaml
 checklist_applied: ["project-context/checklists/strict.md"]
 checks: ["Accepted scope and trusted upstream hosts preserved", "No self-approval", "No deployment or publication from local checks"]
-blocking_items: ["AC-007 independent reader evidence", "QC scan disposition and Draw.io first-open", "Required human closeout gates"]
+blocking_items: ["QC acceptance/disposition of AI reader evidence and open findings", "QC scan disposition and Draw.io first-open", "Required human closeout gates"]
 owner: "qc"
-next_action: "Collect reader evidence, resolve findings, then present final s08 for DoD and applicable Release/Business Acceptance review."
+next_action: "QC reviews AI evidence and open findings, completes first-open/scan disposition, then finalizes s08 for human gates and signed blocker disposition."
 ```
 
 ## Regression & Compatibility Summary
@@ -331,31 +416,32 @@ notes: ["Candidate remains unpublished", "DevOps and QC decisions pending", "No 
 ```yaml
 status: PARTIAL
 reviewers: []
-notes: ["PO decision pending independent reader evidence; no achieved readability metric claimed"]
+notes: ["PO decision pending; AI reader evidence available; no human readability metric claimed"]
 ```
 
 ## Audit
 ```yaml
 audit_status: PARTIAL
-notes: ["Automated evidence tied to exact final artifact", "Independent verification and human closeout still outstanding"]
+notes: ["Automated evidence tied to exact final artifact", "AI reader review complete; QC verification gaps and human closeout still outstanding"]
 ```
 
 ## Definition of Done
 ```yaml
 status: BLOCKED
-residual_risks: ["Unmeasured reader comprehension", "Manual canonical first-open pending", "Dedicated SAST unavailable", "Hosted CI not run"]
+residual_risks: ["AI assessment does not measure human usability", "Low-severity findings await QC disposition", "Manual canonical first-open pending", "Dedicated SAST unavailable", "Hosted CI not run"]
 owners: ["qc", "devops", "po"]
 ```
 
 ## Traceability
 ```yaml
 upstream: ["CHANGE-005 BRD/SRS", "s04 AC-001..011", "s05 APPROACH-005-A", "s06 Amendment A1 T0-T9", "s07 implementation and review"]
-next_step: "Independent reader review and QC disposition before human closeout gates; preserve branch/worktree."
+next_step: "QC disposition and remaining verification before human closeout gates; preserve branch/worktree."
 ```
 
 ## Handoff
 
-Implementation and automated verification are ready for independent review. Overall
-status remains PARTIAL/BLOCKED. Collect the two reviewer records above, resolve actual
-findings, and only then finalize the gate artifact for human signatures. Do not treat
-this report, local commits, tests or producer visual inspection as DoD or release approval.
+Implementation, automated verification and user-authorized AI reader review are recorded.
+Overall status remains PARTIAL/BLOCKED. QC must disposition the AI evidence and low-severity
+findings, complete canonical first-open and the scan decision, then finalize the artifact
+for human signatures and supported blocker disposition. No further reviewer-name request
+is needed for the selected AI mode. Local commits and AI review do not approve DoD or release.
