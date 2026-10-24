@@ -288,7 +288,7 @@ notes_for_step_2: "Lock the user value and measurable success of a presentation 
 
 ## Work Item Protocol
 ```yaml
-protocol_status: BLOCKED
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "add-diagram-design-adapter"
@@ -311,14 +311,12 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-21T03:47:48.570Z"
-handoff_target: "qc"
-last_transition_action: "block"
-last_transition_at: "2026-10-21T13:43:51.742Z"
+handoff_target: "definition-of-done"
+last_transition_action: "verify"
+last_transition_at: "2026-10-24T05:54:20.998Z"
 required_actions:
-  - {"id":"se:089a0a6531b64fabaa383e60224a3deed4fcd982b7a98556cac0a4fa6e8e02c1","kind":"workflow_followup","text":"Resolve blockers before resuming the work item."}
-blockers:
-  - {"id":"se:8b7cd04e6d8d154237a5de0a7ae3886574b521b78bc6c57a90a6d3aa0f8e792e","kind":"delivery_blocker","text":"AC-007: execute READER-TASK-001 with two independent representative reviewers; evidence packet is in s08."}
-  - {"id":"se:50eedc7a1e5d344420671dd39d9839fe5754c1e3be1d8edc51c8d6562bf74353","kind":"delivery_blocker","text":"QC: record canonical Draw.io first-open review and disposition of unavailable dedicated SAST before DoD; required DoD, Release and Business Acceptance human decisions remain pending."}
+  - {"id":"se:2110d25a8cdb57b28bafefe0b7926eb5d34bf55eb9df7689914b9802f35b9561","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+blockers: []
 review_notes:
   - "Human review approved."
 refs:
@@ -346,6 +344,8 @@ audit_events:
   - "INPUT_READINESS_BLOCKED"
   - "WORK_ITEM_ACTIVATED"
   - "WORK_ITEM_BLOCKED"
+  - "WORK_ITEM_RESUMED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
 ## Traceability

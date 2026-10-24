@@ -39,7 +39,8 @@ canvas is 1600 x 16000; excessive input rejects instead of clipping. The publish
 a trusted single-writer destination parent. Browser-context offline mode is not an OS sandbox.
 PNG needs separately provisioned Playwright 1.64.0, greenlet 3.5.6, pyee 14.0.0,
 typing-extensions 4.16.0 and Chromium headless shell 156.0.8078.4/revision 1248.
-Independent READER-TASK-001 results are not yet measured; no reader-success claim is made.
+User-selected independent AI READER-TASK-001 results and post-wrap regression checks are
+recorded in s08. They are AI assessment, not measured human usability or human gate approval.
 
 ## Verification
 

@@ -132,8 +132,8 @@ doc_changes: ["Bilingual adapter contracts", "SA/TA intent", "Modeling optional 
 config_changes: ["Adapter agents/openai.yaml"]
 review_checkpoints: ["T6 spec compliance then code quality, recorded below"]
 outputs_actual: ["Implementation in codex/add-diagram-design-adapter-v2.7.0"]
-known_limitations: ["Closed one/two-column layouts", "Local JSON model projection", "Human reader study pending"]
-follow_up_items: ["s08 independent reader study", "QC scan disposition and Draw.io first-open review", "Human DoD, Release and Business Acceptance"]
+known_limitations: ["Closed one/two-column layouts", "Local JSON model projection", "AI reader assessment is not human usability evidence"]
+follow_up_items: ["Human DoD, Release and Business Acceptance", "Accepted later business-layout and fixture-label improvements"]
 notes_for_testing: "Positive PNG needs the pinned task-local interpreter/browser; normal unit runs explicitly report absence of positive integration coverage."
 ```
 
@@ -149,7 +149,7 @@ worktree_status: USED
 worktree_refs: [".claude/worktrees/add-diagram-design-adapter-v2.7.0"]
 worktree_reason: "Full plan, vendored resources, multiple skills and candidate packaging"
 review_status: DONE
-review_refs: ["T6 Targeted Review", "T7-T9 Candidate and Handoff — 2026-10-21"]
+review_refs: ["T6 Targeted Review", "T7-T9 Candidate and Handoff — 2026-10-21", "AI-R01 Rework Completion — 2026-10-24"]
 spec_compliance_status: PASS
 code_quality_status: PASS
 delegation_mode: agentic
@@ -321,8 +321,8 @@ No push, merge, managed live install, tag, release publication or worktree clean
 ## Accepted AI-R01 QC Rework — 2026-10-23
 
 User accepted repairing mid-word line breaks after independent SA/BA/TA review. This is
-small-delta remediation within the approved presentation contract. Admission remains
-BLOCKED pending signed disposition and normal s07 resume; no repair source written yet.
+small-delta remediation within the approved presentation contract. The admission below
+records the historical 2026-10-23 plan; signed resume and execution are completed below.
 
 - Read-only reproduction: implementation worktree `artifacts/reader-review-golden-gate/qc-followup/wrap-repro.cjs`
   and `wrap-red.log`. Current renderer splits short words; whole-word recovery fails.
@@ -339,3 +339,37 @@ BLOCKED pending signed disposition and normal s07 resume; no repair source writt
   and meaning remain unchanged; old output hashes do not transfer to new outputs.
 - AI-R02 is a later layout enhancement; AI-R03 preserves existing fixture caveats.
 - Return to s08 for verification and human closeout. No push, merge, publication or cleanup.
+
+## AI-R01 Rework Completion — 2026-10-24
+
+Both authorized blocker dispositions have trusted signatures and normal CLI resume opened
+s07 with the existing three write roots. The helper failure was an identifier mismatch:
+`dispose-state` requires the current snapshot's `di:` target, not the stable `se:` entry ID.
+The corrected helper refreshes each target immediately before signing and safely recognizes
+completed operations. No report or signature was hand-edited; no final gate was approved.
+
+TDD RED reproduced broken short fact words in the actual output suite. GREEN follows the
+minimal private `wrap()` change in adapter `scripts/export-svg.js`: keep words together when
+they fit a complete row; preserve whitespace and every code point; retain bounded hard-wrap
+for overlong tokens. The regression covers headers and fact rows, one/two-column layouts,
+ASCII, Vietnamese, emoji and overlong ASCII/CJK/emoji tokens. Existing semantic, static,
+accessibility, transparent-margin/opaque-header and atomic-failure checks still pass.
+
+Two-tier targeted review: **spec compliance PASS** first — approved output contract, canonical
+facts, ownership, provenance and scope are unchanged. **Code quality PASS** second — bounded
+linear token processing, no new dependency or public API, code-point-safe fallback, exact
+content preservation, focused regression assertions. Independent AI BA/TA output rechecks
+also pass; they review rendering and semantics, not production code or human gates.
+
+Runtime sync, 50/50 unit files, actual pinned PNG/failure paths, pack audit, and Semgrep
+(99 rules / 5 first-party files / zero findings or errors) pass. The rebuilt exact candidate
+passes Node 18 and 22 install matrices (4/4 each) and published-2.6.4 update/disable/re-enable/
+rollback (4/4), preserving unmanaged bytes/modes. S08 owns the current candidate identity,
+raw log index, final coverage and residual risks. The prior tarball is retained under
+`artifacts/superseded/workflow-bundle-2.7.0-before-word-wrap.tgz`.
+
+All four role/audience output sets were regenerated from the exact new tarball. Canonical
+model/view/Draw.io bytes and concatenated primary visible text match the prior fixtures.
+BA/TA visual rechecks close AI-R01 with no clipping or semantic regression in inspected PNGs.
+This is regression verification, not a new blind 20-task study. Implementation is ready for
+s08 human closeout review; the work item is not DONE and the branch/worktree remains retained.

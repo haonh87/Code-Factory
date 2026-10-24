@@ -29,6 +29,42 @@ try {
  accepted.prepared.model.constraints=['Retain orders for seven days'];
  assert(render(accepted).svg.includes('Retain orders for seven days'),'Model constraints must remain visible');
  delete accepted.prepared.model.constraints;
+ // Regression: preserve canonical text and ordinary words at visible line boundaries.
+ const unescape=s=>s.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&amp;/g,'&');
+ const lines=svg=>[...svg.matchAll(/<text\b[^>]*>(.*?)<\/text>/g)].map(m=>unescape(m[1]));
+ const originalQuestion=accepted.declared_question;
+ const sourceFact=accepted.prepared.facts.find(f=>f.system_id==='store');
+ const originalResponsibility=sourceFact.responsibility;
+ for(const columns of [1,2]) {
+   for(const phrase of ['integration ownership ', 'đơn hàng tích hợp ', '😀 team SAP ']) {
+     const question=phrase.repeat(30).trim();accepted.declared_question=question;
+     sourceFact.responsibility=question;
+     const output=render(accepted,{columns}), text=lines(output.svg);
+     const start=text.findIndex(t=>t.startsWith('Question: '));
+     const end=text.findIndex(t=>t.startsWith('Architecture state: '));
+     const heading=text.slice(start,end);
+     assert.equal(heading.join(''),'Question: '+question,'Wrapping must preserve all header content');
+     assert.equal(heading.join(' ').replace(/\s+/gu,' ').trim(),'Question: '+question,'Short header words must not split across lines');
+     const card=output.svg.match(/<g data-source-fact-id="store">(.*?)<\/g>/s)[1];
+     const cardLines=lines(card),factStart=cardLines.findIndex(t=>t.startsWith('responsibility: '));
+     const factEnd=cardLines.findIndex(t=>t.startsWith('system_id: '));
+     const factLines=cardLines.slice(factStart,factEnd);
+     assert.equal(factLines.join(''),'responsibility: '+question,'Wrapping must preserve all fact content');
+     assert.equal(factLines.join(' ').replace(/\s+/gu,' ').trim(),'responsibility: '+question,'Short fact words must not split across lines');
+     assert.equal(validateOutput(accepted,output).status,'PASS');
+   }
+   for(const token of ['x'.repeat(300), '漢'.repeat(150), '😀'.repeat(150)]) {
+     accepted.declared_question=token;sourceFact.responsibility=token;
+     const output=render(accepted,{columns}),text=lines(output.svg);
+     const start=text.findIndex(t=>t.startsWith('Question: ')),end=text.findIndex(t=>t.startsWith('Architecture state: '));
+     const rows=text.slice(start,end);assert(rows.length>1,'Overlong tokens must wrap');
+     assert.equal(rows.join(''),'Question: '+token,'Hard-wrap must preserve long Unicode tokens');
+     const headerWidth=Math.floor((output.width-64)/8.5);
+     for(const row of rows)assert([...row].reduce((n,ch)=>n+(ch.codePointAt(0)>127?2:1),0)<=headerWidth,'Header row exceeds safe width');
+     assert.equal(validateOutput(accepted,output).status,'PASS');
+   }
+ }
+ accepted.declared_question=originalQuestion;sourceFact.responsibility=originalResponsibility;
  const originals=Object.fromEntries(fs.readdirSync(path.join(root,'models')).map(n=>[n,fs.readFileSync(path.join(root,'models',n))]));
  for(const columns of [1,2]) {
    const output=render(accepted,{columns});

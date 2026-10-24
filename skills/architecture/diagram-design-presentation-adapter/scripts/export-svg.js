@@ -4,10 +4,21 @@ const {sha}=require('./verify-upstream-provenance');
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 function wrap(text,width) {
   const rows=[]; let row='', used=0;
-  for(const ch of Array.from(text)) {
-    const cells=ch.codePointAt(0)>127?2:1;
-    if(used+cells>width){rows.push(row);row='';used=0;}
-    row+=ch;used+=cells;
+  for(const token of text.match(/\s+|\S+/gu) || []) {
+    const chars=Array.from(token);
+    const tokenWidth=chars.reduce((sum,ch)=>sum+(ch.codePointAt(0)>127?2:1),0);
+    // Keep a word intact when it fits on a line; retain every whitespace character.
+    if(!/^\s/u.test(token) && tokenWidth<=width) {
+      if(used+tokenWidth>width){rows.push(row);row='';used=0;}
+      row+=token;used+=tokenWidth;
+    } else {
+      // Overlong tokens still wrap safely without splitting a Unicode code point.
+      for(const ch of chars) {
+        const cells=ch.codePointAt(0)>127?2:1;
+        if(used+cells>width){rows.push(row);row='';used=0;}
+        row+=ch;used+=cells;
+      }
+    }
   }
   if(row)rows.push(row);
   return rows.length?rows:[''];
