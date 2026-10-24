@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "BLOCKED",
+  "protocol_status": "VERIFIED",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Add a governed adapter lane that lets SA and TA request polished diagram-design presentation artifacts downstream of architecture-modeling while preserving pre-design authority and canonical architecture artifacts.",
@@ -102,26 +102,15 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CHANGE-005",
-  "handoff_target": "qc",
+  "handoff_target": "definition-of-done",
   "required_actions": [
     {
-      "id": "se:089a0a6531b64fabaa383e60224a3deed4fcd982b7a98556cac0a4fa6e8e02c1",
+      "id": "se:2110d25a8cdb57b28bafefe0b7926eb5d34bf55eb9df7689914b9802f35b9561",
       "kind": "workflow_followup",
-      "text": "Resolve blockers before resuming the work item."
+      "text": "Collect DoD evidence and close the work item when ready."
     }
   ],
-  "blockers": [
-    {
-      "id": "se:8b7cd04e6d8d154237a5de0a7ae3886574b521b78bc6c57a90a6d3aa0f8e792e",
-      "kind": "delivery_blocker",
-      "text": "AC-007: execute READER-TASK-001 with two independent representative reviewers; evidence packet is in s08."
-    },
-    {
-      "id": "se:50eedc7a1e5d344420671dd39d9839fe5754c1e3be1d8edc51c8d6562bf74353",
-      "kind": "delivery_blocker",
-      "text": "QC: record canonical Draw.io first-open review and disposition of unavailable dedicated SAST before DoD; required DoD, Release and Business Acceptance human decisions remain pending."
-    }
-  ],
+  "blockers": [],
   "refs": [
     "changes/CHANGE-005",
     "work-items/add-diagram-design-adapter",
@@ -147,7 +136,9 @@
     "GATE_REVIEW_RECORDED",
     "INPUT_READINESS_BLOCKED",
     "WORK_ITEM_ACTIVATED",
-    "WORK_ITEM_BLOCKED"
+    "WORK_ITEM_BLOCKED",
+    "WORK_ITEM_RESUMED",
+    "VERIFICATION_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -264,6 +255,22 @@
       "from_status": "ACTIVE",
       "to_status": "BLOCKED",
       "note": "T0-T9 implementation and final exact-candidate automated verification complete; s08 PARTIAL. Preserve branch, worktree and final artifact. No human approval inferred."
+    },
+    {
+      "timestamp": "2026-10-24T05:39:43.660Z",
+      "action": "resume",
+      "actor": "developer",
+      "from_status": "BLOCKED",
+      "to_status": "ACTIVE",
+      "note": "User-accepted AI-R01 word-wrap repair; reader and QC evidence reviewed through signed dispositions. Rebuild and reverify before final human gates."
+    },
+    {
+      "timestamp": "2026-10-24T05:54:20.998Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "AI-R01 word-wrap repair verified against candidate ecc194da5398b6b5ef321549600711bd4b96cf6f2621f0b95ca958547e5061ac: 50/50 unit files, actual PNG, Semgrep, exact Node 18/22 installs and fallback lifecycle pass; BA/TA regression rechecks preserve facts and caveats. Technical verification only; human DoD, Release and Business Acceptance remain pending."
     }
   ],
   "resolved_state_history": [
@@ -400,6 +407,76 @@
           "authorization_mode": "tty"
         },
         "signature": "Hu69LYMRHFQBGtNghsQEpcmnpfSSsy+EY6Gojgc4yVbDvAZsKcsFn7cyw3pjNPb3PgO2Lql7Jj+FRkGwlJLuDg=="
+      }
+    },
+    {
+      "operation_id": "add-diagram-design-adapter-qc-rework-20261023-1",
+      "source_collection": "blockers",
+      "source_entry_id": "di:60013a9b927ae9aaa10e049ebc99c4cbb4740b0702d49a77bec02fd63fe39a3f",
+      "original_entry": {
+        "id": "se:8b7cd04e6d8d154237a5de0a7ae3886574b521b78bc6c57a90a6d3aa0f8e792e",
+        "kind": "delivery_blocker",
+        "text": "AC-007: execute READER-TASK-001 with two independent representative reviewers; evidence packet is in s08."
+      },
+      "original_text": "AC-007: execute READER-TASK-001 with two independent representative reviewers; evidence packet is in s08.",
+      "actor": "maintainer",
+      "reason": "User selected independent AI SA/BA/TA review and accepted QC remediation. BA and TA each scored 10/10 with 2/2 source checks and zero semantic contradictions, retained in s08. Dispose this reader blocker to return to approved s07 wrapping repair; reverify changed outputs before closeout. No human usability or final gate approval is claimed.",
+      "resolved_at": "2026-10-24T05:39:37.590Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "add-diagram-design-adapter",
+          "operation_id": "add-diagram-design-adapter-qc-rework-20261023-1",
+          "state_id": "di:60013a9b927ae9aaa10e049ebc99c4cbb4740b0702d49a77bec02fd63fe39a3f",
+          "source_collection": "blockers",
+          "original_entry": {
+            "id": "se:8b7cd04e6d8d154237a5de0a7ae3886574b521b78bc6c57a90a6d3aa0f8e792e",
+            "kind": "delivery_blocker",
+            "text": "AC-007: execute READER-TASK-001 with two independent representative reviewers; evidence packet is in s08."
+          },
+          "original_text": "AC-007: execute READER-TASK-001 with two independent representative reviewers; evidence packet is in s08.",
+          "actor": "maintainer",
+          "reason": "User selected independent AI SA/BA/TA review and accepted QC remediation. BA and TA each scored 10/10 with 2/2 source checks and zero semantic contradictions, retained in s08. Dispose this reader blocker to return to approved s07 wrapping repair; reverify changed outputs before closeout. No human usability or final gate approval is claimed.",
+          "resolved_at": "2026-10-24T05:39:37.590Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "pKnT/bgYtTy5Xdst2J7JJjonyj/iqsH5ITNsFDX8Cy7qU4Z4OPyFekF11IocQejxAJAvquuJZ0IaU6Gizek/BQ=="
+      }
+    },
+    {
+      "operation_id": "add-diagram-design-adapter-qc-rework-20261023-2",
+      "source_collection": "blockers",
+      "source_entry_id": "di:30dae1641ffdfc2a5c8c70c5a26462a6b5a3ddc88ba793b3654113e71663a63e",
+      "original_entry": {
+        "id": "se:50eedc7a1e5d344420671dd39d9839fe5754c1e3be1d8edc51c8d6562bf74353",
+        "kind": "delivery_blocker",
+        "text": "QC: record canonical Draw.io first-open review and disposition of unavailable dedicated SAST before DoD; required DoD, Release and Business Acceptance human decisions remain pending."
+      },
+      "original_text": "QC: record canonical Draw.io first-open review and disposition of unavailable dedicated SAST before DoD; required DoD, Release and Business Acceptance human decisions remain pending.",
+      "actor": "maintainer",
+      "reason": "User accepted bounded QC treatment. Draw.io 31.7.0 first-open and agent visual inspection passed with source unchanged; Semgrep 1.182.1 ran 99 rules on 5 first-party files with zero findings/errors. Re-scope this combined QC/closeout blocker for the authorized AI-R01 repair and subsequent re-verification. DoD, Release and Business Acceptance remain required after s08; none is waived or passed.",
+      "resolved_at": "2026-10-24T05:39:40.455Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "add-diagram-design-adapter",
+          "operation_id": "add-diagram-design-adapter-qc-rework-20261023-2",
+          "state_id": "di:30dae1641ffdfc2a5c8c70c5a26462a6b5a3ddc88ba793b3654113e71663a63e",
+          "source_collection": "blockers",
+          "original_entry": {
+            "id": "se:50eedc7a1e5d344420671dd39d9839fe5754c1e3be1d8edc51c8d6562bf74353",
+            "kind": "delivery_blocker",
+            "text": "QC: record canonical Draw.io first-open review and disposition of unavailable dedicated SAST before DoD; required DoD, Release and Business Acceptance human decisions remain pending."
+          },
+          "original_text": "QC: record canonical Draw.io first-open review and disposition of unavailable dedicated SAST before DoD; required DoD, Release and Business Acceptance human decisions remain pending.",
+          "actor": "maintainer",
+          "reason": "User accepted bounded QC treatment. Draw.io 31.7.0 first-open and agent visual inspection passed with source unchanged; Semgrep 1.182.1 ran 99 rules on 5 first-party files with zero findings/errors. Re-scope this combined QC/closeout blocker for the authorized AI-R01 repair and subsequent re-verification. DoD, Release and Business Acceptance remain required after s08; none is waived or passed.",
+          "resolved_at": "2026-10-24T05:39:40.455Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "5Gfo1r4x+M0YCBduSNhAdpxw/z43GI6oNQjBuj1WDHm8K+Uy42fKByVVof0+GxViggNnziHjjd6KCoi44ZDWDA=="
       }
     }
   ]

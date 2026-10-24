@@ -95,8 +95,8 @@ tags:
 > [!summary]
 > Automated verification passes for the final 2.7.0 candidate. Overall verdict is PARTIAL:
 > User-authorized AI reader review scores 20/20 with 2/2 source checks and no semantic contradictions.
-> First-open and SAST now pass; accepted wrapping repair, rebuilt-candidate verification,
-> and human DoD/Release/Business Acceptance remain pending. No publication is authorized.
+> Wrapping repair, independent regression rechecks, first-open, SAST and rebuilt-candidate
+> verification pass. Human DoD/Release/Business Acceptance remain pending. No publication is authorized.
 
 ## Step Contract
 ```yaml
@@ -116,15 +116,15 @@ summary_verdict: PARTIAL
 
 ## Candidate Identity
 
-Evidence was measured on 2026-10-20/21. The canonical governance workspace owns this
+Current candidate evidence was measured on 2026-10-24; dated earlier evidence is retained with its original identity. The canonical governance workspace owns this
 note; relative artifact links below resolve from that workspace. Outputs and raw logs
 remain in the isolated worktree's ignored `artifacts/` directory, not in the npm package.
 Keep that directory until review and integration are complete.
 
 | Artifact | Identity |
 | --- | --- |
-| Final candidate | `workflow-bundle-2.7.0.tgz`; 1,556,920 bytes; 901 files |
-| Candidate SHA-256 | `1a0f6f5ee468f531cc81ec1b116819a266cf96381812a6839538ace0590b7538` |
+| Final candidate | `workflow-bundle-2.7.0.tgz`; 1,557,138 bytes; 901 files |
+| Candidate SHA-256 | `ecc194da5398b6b5ef321549600711bd4b96cf6f2621f0b95ca958547e5061ac` |
 | Published fallback | `workflow-bundle-2.6.4.tgz`; SHA-256 `9d7c5395ff5fb3ae2a64d26089a2c4c62122fb769a7cacd2e3bcea3f6fa35e84` |
 | Source baseline | `fa9ad237f8179e58b16ca6c6c589bdd0728ec476`; worktree base `d43ef61` adds governance only |
 | Upstream commit | `5f1b6ddc66036554dd68701798bd12aa5e3ef3f9` |
@@ -133,9 +133,12 @@ Keep that directory until review and integration are complete.
 | PNG environment | Isolated CPython 3.14.6 / Playwright 1.64.0 / Chromium Headless Shell 156.0.8078.4 revision 1248; exact lock and executable hash in s07 |
 
 [Final candidate](../../.claude/worktrees/add-diagram-design-adapter-v2.7.0/artifacts/workflow-bundle-2.7.0.tgz),
-[output execution evidence](../../.claude/worktrees/add-diagram-design-adapter-v2.7.0/artifacts/reader-review-final/execution-evidence.json),
-[retained verification log index](../../.claude/worktrees/add-diagram-design-adapter-v2.7.0/artifacts/verification-final/index.json).
-The candidate before the header-contrast fix is superseded and must not be promoted.
+[output execution evidence](../../.claude/worktrees/add-diagram-design-adapter-v2.7.0/artifacts/reader-review-word-wrap/execution-evidence.json),
+[retained verification log index](../../.claude/worktrees/add-diagram-design-adapter-v2.7.0/artifacts/verification-word-wrap/index.json).
+Both earlier candidates are superseded and must not be promoted. The 2026-10-23 blind AI study
+used prior candidate `1a0f6f5ee468f531cc81ec1b116819a266cf96381812a6839538ace0590b7538`,
+retained at `artifacts/superseded/workflow-bundle-2.7.0-before-word-wrap.tgz`. Its historical
+logs remain in `artifacts/verification-final`; current logs are indexed above.
 
 ## Acceptance Evidence
 
@@ -144,30 +147,33 @@ The candidate before the header-contrast fix is superseded and must not be promo
 | AC-001/002 | PASS: optional SA/TA intent for both audiences; schemas unchanged | Role contract suite; four role/audience fixtures and final output sets |
 | AC-003 | PASS: invalid input fails closed | Missing facts, unsafe/control text, traversal/symlinks, ownership/destination collisions, missing tool/browser tests |
 | AC-004/005 | PASS: distinct canonical ownership; complete semantic coverage | Modeling/Draw.io suites; reconstructed HTML/SVG validation; two layouts; canonical source recheck before atomic publication |
-| AC-006 | PASS for packaged checks and producer visual review; independent review pending | HTML/SVG/PNG sets; static/accessibility assertions; actual offline PNG, transparent margin/opaque header pixels; failure cleanup tests |
-| AC-007 | AI-assessed threshold MET; QC acceptance pending | User-selected AI mode: BA 10/10 + TA 10/10, 2/2 source checks, 0 semantic contradictions; SA supplementary. This is not measured human usability. |
+| AC-006 | PASS: packaged checks, actual PNG and independent AI visual rechecks | HTML/SVG/PNG sets; static/accessibility assertions; actual offline PNG, transparent margin/opaque header pixels; failure cleanup tests |
+| AC-007 | AI-assessed threshold MET; human gate decision pending | User-selected AI mode: BA 10/10 + TA 10/10, 2/2 source checks, 0 semantic contradictions; SA supplementary. Post-fix BA/TA regression rechecks preserve all answers and caveats; not a new blind study or measured human usability. |
 | AC-008 | PASS | Pinned provenance verifier, key hashes, 155-file digest, tamper/symlink/nested-skill rejection |
 | AC-009 | PASS in isolated supported matrix | Node 18 and 22 exact-candidate installs, 4/4 each; exact 2.6.4 update/disable/re-enable/rollback, 4/4; parity and unmanaged-file preservation |
 | AC-010 | PASS | s07 T0 admission: CHANGE-004 DONE, signed dispositions, baseline re-read and authorized grants; SA/TA schemas and canonical renderer implementation preserved |
-| AC-011 | PARTIAL — named review blockers remain | Automated lanes and AI reader comparison pass; dedicated SAST and first-open now pass; wrapping repair, re-verification and human gates pending |
+| AC-011 | PASS for evidence/accounting contract | Automated lanes, AI comparison, first-open and rebuilt-candidate verification pass; ESLint skip and hosted-CI limitation explicitly recorded; human gates remain pending |
 
 | Verification lane | Result and retained log |
 | --- | --- |
-| Full unit suite | PASS, 50/50 test files; `cf-adapter-unit-contrast-20261021.log` |
-| Exact candidate, Node 18.20.8 | PASS 4/4; `cf-adapter-final-node18-20261021.log` |
-| Exact candidate, Node 22.23.2 | PASS 4/4; `cf-adapter-final-node22-20261021.log` |
-| Exact published fallback lifecycle | PASS 4/4; `cf-adapter-final-rollback-20261021.log` |
-| Bundle smoke / runtime parity | PASS; `cf-adapter-bundle-smoke-20261021.log` and unit runtime-parity suite |
+| Full unit suite | PASS, 50/50 test files; `cf-adapter-unit-20261024.log` |
+| Exact candidate, Node 18.20.8 | PASS 4/4; `cf-adapter-node18-20261024.log` |
+| Exact candidate, Node 22.23.2 | PASS 4/4; `cf-adapter-node22-20261024.log` |
+| Exact published fallback lifecycle | PASS 4/4; `cf-adapter-rollback-20261024.log` |
+| Bundle smoke / runtime parity | Historical baseline bundle smoke PASS; current full-unit runtime parity PASS; `cf-adapter-bundle-smoke-20261021.log` and unit runtime-parity suite |
 | Workflow fixture cases | PASS, 10 expected positive/negative cases; `cf-adapter-fixtures-20261021.log` |
-| Pack audit | PASS; `cf-adapter-pack-audit-final-20261021.log` |
+| Pack audit | PASS; `cf-adapter-audit-20261024.log` |
 | JS syntax / Python parsing | PASS; first-party scripts; no separate compilation/typecheck applies |
 | Workflow authoring / UTF-8 / package-source preservation | PASS: naming/governance/change/execution/planning validate 8 notes; SDD has 0 applicable notes; strict UTF-8 and first-party whitespace checks pass; all 901 package entries match source bytes; five signed gate hosts and work-item/change approvals remain valid |
 | Hosted CI | NOT RUN: branch has not been pushed; no hosted result claimed |
 
 ## Final Handoff Checks
 
-Normal CLI recorded `BLOCKED/s08` with two precise review blockers and QC handoff.
-Protocol validation passes for all 27 managed work items (20 permitted legacy items skipped).
+The two prior review blockers were disposed through the signed CLI flow, followed by
+normal s07 resume. The supported CLI `verify` transition now records `VERIFIED/s08`
+with no technical blockers. Workflow routing is `WAITING_APPROVAL` for human DoD, Release
+and Business Acceptance; protocol verification does not approve these gates.
+Protocol validation passes for all 28 managed work items (21 permitted legacy items skipped).
 Report and s01 protocol projection were not edited by hand. Five trusted gate receipts
 (Spec, Contract, DoR, Approach, Task Plan) still verify against unchanged host bytes.
 Work-item and CHANGE-005 approval signatures remain valid. Final tarball SHA and all
@@ -349,30 +355,95 @@ candidate execution evidence covers that separate concern.
 
 | ID | Finding and scope | Severity / effect | Owner / next action |
 | --- | --- | --- | --- |
-| AI-R01 | Mid-word wrapping and orphan punctuation in the derivative | Low; visible reading friction, no tested answer lost | Developer: propose word-aware wrapping; QC to decide fix-before-close or tracked follow-up |
-| AI-R02 | Business hierarchy is metadata-heavy; flow requires matching IDs across fact cards | Low, presentation suggestion; no demonstrated semantic loss | Developer/BA: consider concise ownership/flow emphasis in a subsequent approved change |
-| AI-R03 | INFERRED mixed-evidence records, external_system/internal_team and ARCHITECTURE_YAML/JSON labels need context | Low, source-native metadata ambiguity preserved by adapter | Fixture/model owner and QC: review wording; do not silently change source meaning in renderer |
+| AI-R01 | Mid-word wrapping and orphan punctuation in the derivative | Low; visible reading friction, no tested answer lost | CLOSED: word-aware wrapping and post-fix BA/TA rechecks PASS on 2026-10-24 |
+| AI-R02 | Business hierarchy is metadata-heavy; flow requires matching IDs across fact cards | Low, presentation suggestion; no demonstrated semantic loss | Accepted follow-up: Developer/BA may propose concise ownership/flow emphasis in a subsequent change |
+| AI-R03 | INFERRED mixed-evidence records, external_system/internal_team and ARCHITECTURE_YAML/JSON labels need context | Low, source-native metadata ambiguity preserved by adapter | Accepted source caveats retained; fixture owner owns any later label clarification |
 | AI-R04 | Original Draw.io report says PENDING_QC_FIRST_OPEN; subsequent actual application first-open is recorded below | Resolved by agent-executed GUI inspection; final gate review remains human-controlled | See Accepted QC Follow-up evidence |
 
-No production fix, package rebuild or acceptance-threshold change was made during review.
-AI-R01..03 remain explicitly open for QC disposition; this note does not accept them on
-QC's behalf. The prior requirement for human-only reader sessions was an s08 authoring
-interpretation; the signed Reader Review Protocol defines independence as not generating
-the derivative. The user's explicit choice now selects AI execution. Human DoD, Release
-and Business Acceptance controls remain unchanged, and no human usability metric is claimed.
+The 2026-10-23 study changed no production source or acceptance threshold. The user's
+explicit choice selects independent AI execution; the signed Reader Review Protocol defines
+independence as not generating the derivative. The later accepted remediation closes AI-R01;
+AI-R02/03 retain the accepted follow-up/caveat treatment. Human DoD, Release and Business
+Acceptance remain unchanged. No human usability metric is claimed.
 
-The CLI-owned report remains BLOCKED/s08. The AC-007 blocker now has this review evidence
-available for the authorized reviewer to assess and dispose through the supported signed
-CLI flow. It is not hand-removed. Subsequent QC follow-up below records first-open and SAST; accepted wrapping repair,
-re-verification and final gate receipts remain outstanding. AI reading alone cannot close the work item.
+## Spec Coverage
+```yaml
+spec_refs: ["changes/CHANGE-005/spec-delta/brd.delta.md", "changes/CHANGE-005/spec-delta/srs.delta.md"]
+coverage:
+  - requirement: "BR-001/BR-002/FR-002"
+    acceptance: "AC-001"
+    task: "T1/T4"
+    evidence: "Four role/audience contract fixtures"
+    status: PASS
+  - requirement: "FR-001/FR-004"
+    acceptance: "AC-002"
+    task: "T2/T3"
+    evidence: "Request/result identity and ownership assertions"
+    status: PASS
+  - requirement: "FR-003/FR-007/FR-008/FR-011"
+    acceptance: "AC-003"
+    task: "T2/T3/T8"
+    evidence: "Fail-closed negative tests and admission guards"
+    status: PASS
+  - requirement: "BR-004/FR-004"
+    acceptance: "AC-004"
+    task: "T3/T5"
+    evidence: "Canonical byte preservation and non-canonical labels"
+    status: PASS
+  - requirement: "FR-005/NFR-001/NFR-005"
+    acceptance: "AC-005"
+    task: "T3/T8"
+    evidence: "Normalized semantics and exact primary visible-text preservation"
+    status: PASS
+  - requirement: "FR-006/FR-007/NFR-004"
+    acceptance: "AC-006"
+    task: "T3/T8"
+    evidence: "Three-format sets, accessibility, actual PNG and security checks"
+    status: PASS
+  - requirement: "NFR-002/NFR-003"
+    acceptance: "AC-007"
+    task: "T9"
+    evidence: "User-selected AI study 20/20, 2/2 source checks, zero contradictions; post-fix regression rechecks"
+    status: PASS
+  - requirement: "FR-008/FR-009"
+    acceptance: "AC-008"
+    task: "T1/T8"
+    evidence: "Pinned 155-file manifest and tamper checks"
+    status: PASS
+  - requirement: "FR-010/NFR-006"
+    acceptance: "AC-009"
+    task: "T7/T8"
+    evidence: "Exact-candidate Node 18/22 install and fallback lifecycle"
+    status: PASS
+  - requirement: "BR-008/FR-011"
+    acceptance: "AC-010"
+    task: "T0"
+    evidence: "Signed admission and predecessor baseline reassessment"
+    status: PASS
+  - requirement: "BR-007/NFR-004/NFR-006"
+    acceptance: "AC-011"
+    task: "T8/T9"
+    evidence: "Complete lane accounting; named skips; no unsupported release claim"
+    status: PASS
+summary:
+  total: 11
+  pass: 11
+  partial: 0
+  untested: 0
+  fail: 0
+status: PASS
+```
+
+This is technical evidence coverage, not approval of DoD, Release or Business Acceptance.
+AC-007 uses the explicitly selected AI review mode and does not assert human usability.
 
 ## Governance Checks
 ```yaml
 checklist_applied: ["project-context/checklists/strict.md"]
 checks: ["Accepted scope and trusted upstream hosts preserved", "No self-approval", "No deployment or publication from local checks"]
-blocking_items: ["Signed blocker disposition before approved s07 rework", "AI-R01 wrapping repair and rebuilt-candidate verification", "Required human closeout gates"]
+blocking_items: ["Required human DoD, Release and Business Acceptance decisions"]
 owner: "qc"
-next_action: "Maintainer signs bounded blocker dispositions; resume s07 for accepted AI-R01 repair, then rebuild and reverify candidate before human closeout gates."
+next_action: "QC reviews DoD; DevOps/QC review Release; PO reviews Business Acceptance against the frozen candidate and this evidence."
 ```
 
 ## Regression & Compatibility Summary
@@ -423,23 +494,33 @@ notes: ["PO decision pending; AI reader evidence available; no human readability
 ## Audit
 ```yaml
 audit_status: PARTIAL
-notes: ["Automated evidence tied to exact final artifact", "AI reader review complete; QC verification gaps and human closeout still outstanding"]
+notes: ["Automated evidence tied to exact final artifact", "Technical verification complete; required human closeout decisions outstanding"]
 ```
 
 ## Definition of Done
 ```yaml
-status: BLOCKED
-residual_risks: ["AI assessment does not measure human usability", "AI-R01 repair pending signed return to s07", "Source change requires rebuilt candidate verification", "Dedicated ESLint unavailable", "Hosted CI not run"]
-owners: ["qc", "devops", "po"]
+work_item_slug: "add-diagram-design-adapter"
+status: PARTIAL
+checks:
+  acceptance_criteria_evidenced: PASS
+  implementation_recorded: PASS
+  required_verification_completed: PASS
+  code_scan_completed_or_justified: PASS
+  traceability_complete: PASS
+  residual_risks_documented: PASS
+gaps: ["Human DoD approval", "Human Release approval", "Human Business Acceptance approval"]
+residual_risks: ["AI assessment does not measure human usability", "Dedicated ESLint unavailable; alternative checks recorded", "Hosted CI not run because branch is unpublished", "Evidence artifacts are local and must be retained through review/integration"]
+follow_up_items: ["AI-R02 business hierarchy improvement", "AI-R03 source-fixture label clarification"]
+next_action: "Review and sign the required human gates against this exact candidate; do not close or finalize the branch before those decisions."
 ```
 
 ## Traceability
 ```yaml
 upstream: ["CHANGE-005 BRD/SRS", "s04 AC-001..011", "s05 APPROACH-005-A", "s06 Amendment A1 T0-T9", "s07 implementation and review"]
-next_step: "QC disposition and remaining verification before human closeout gates; preserve branch/worktree."
+next_step: "Human closeout gate review; preserve branch/worktree and exact candidate."
 ```
 
-## Accepted QC Follow-up and Rework Admission — 2026-10-23
+## Historical QC Follow-up and Rework Admission — 2026-10-23
 
 The user accepted the proposed QC treatment: repair word wrapping, defer business-layout
 improvements, clarify source-fixture labels, execute Draw.io first-open and supplement
@@ -462,7 +543,7 @@ failed on trust-anchor access; the approved outside-sandbox run succeeded. No gl
 installation, source change or tarball rebuild occurred. This scan covers first-party
 adapter scripts, not all vendored upstream examples. No human QC signature is inferred.
 
-The CLI still requires two signed state dispositions before `resume --step s07`: the
+At this historical checkpoint, the CLI required two signed state dispositions before `resume --step s07`: the
 reader blocker now has AI evidence; the combined QC/closeout blocker must be re-scoped
 because first-open/SAST are evidenced while final gates belong after repair and reverify.
 Those gates stay mandatory. Maintainer signs exact reasons in their interactive terminal;
@@ -473,10 +554,30 @@ Normal execution seals only the two named blocker dispositions, then resumes the
 approved s07 scope with the same three write roots. It never approves final gates, merges,
 pushes, publishes or changes a managed install. Signed s04/s05/s06 stay unchanged.
 
+## Post-Rework Verification — 2026-10-24
+
+Both authorized dispositions and normal s07 resume completed with the same write roots.
+S07 owns RED/GREEN and two-tier source review. The exact rebuilt candidate above passed
+50/50 unit files, actual pinned PNG and cleanup cases, current pack audit and Semgrep,
+Node 18/22 install (4/4 each) and published-fallback lifecycle (4/4).
+
+[Current render provenance](../../.claude/worktrees/add-diagram-design-adapter-v2.7.0/artifacts/reader-review-word-wrap/execution-evidence.json)
+records four complete output sets generated from the exact candidate. Canonical model,
+view and Draw.io bytes are unchanged. Primary business/engineering concatenated visible
+text is exactly preserved. The prior Draw.io first-open evidence therefore remains applicable.
+
+[BA regression recheck](../../.claude/worktrees/add-diagram-design-adapter-v2.7.0/artifacts/verification-word-wrap/ba-recheck-20261024.json)
+and [TA regression recheck](../../.claude/worktrees/add-diagram-design-adapter-v2.7.0/artifacts/verification-word-wrap/ta-recheck-20261024.json)
+confirm normal words remain intact, all prior answers and caveats are preserved, no new
+semantic contradiction, and no visible clipping at the inspected PNG sizes. AI-R01 is
+closed in the reviewed outputs. These reviewers already knew the previous answers: this
+is a regression recheck, not a fresh blind study or an additional scored 20-task sample.
+AI-R02/03 remain the accepted later enhancement/source-caveat treatment. AI-R04 is resolved.
+
 ## Handoff
 
-Implementation, automated verification and user-authorized AI reader review are recorded.
-Overall status remains PARTIAL/BLOCKED. First-open and SAST evidence are available. The accepted wrapping repair requires
-signed blocker disposition and return to s07, followed by candidate rebuild and affected
-verification before human closeout signatures. No further reviewer-name request
-is needed for the selected AI mode. Local commits and AI review do not approve DoD or release.
+Technical implementation and verification are complete; the overall verdict is PARTIAL
+pending human DoD, Release and Business Acceptance. No further reviewer-name request is
+needed for the selected AI mode. S08 is ready for those decisions against the frozen
+candidate. No merge, push, release publication, managed install or cleanup is authorized
+by local tests or AI review. Required human gate review fields remain empty.
