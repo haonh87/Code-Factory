@@ -110,3 +110,10 @@ Built-in path phải ghi `owner_skill: architecture-modeling`, chỉ dùng bundl
 - `ARCHITECTURE_MODELING` kéo theo `REQUIRED` cho output DRAWIO được yêu cầu và không có house handoff.
 - `UNRESOLVED` kéo theo `BLOCKED` và emitted-artifact list rỗng.
 - `competing_artifact_count` luôn bằng 0.
+
+
+## Ownership trình bày riêng
+
+Lane presentation_derivative tùy chọn chỉ chạy sau định tuyến/kết xuất chính tắc.
+Owner của nó không phải renderer chính tắc thứ hai. Xem presentation-derivative-contract.vi.md;
+giữ nguyên các trường hợp một owner và competing_artifact_count hiện có.

@@ -6,29 +6,29 @@ language: en
 
 > Vietnamese: publish-surface.vi.md
 
-This document pins the planned public publish surface for `workflow-bundle v2.6.4`.
+This document pins the planned public publish surface for `workflow-bundle v2.7.0`.
 
-`v2.6.4` is a release candidate. It remains unpublished until the human Release gate passes. Once approved, its planned public surface will provide:
+`v2.7.0` is a release candidate. It remains unpublished until the human Release gate passes. Once approved, its planned public surface will provide:
 - installation into Codex or Claude Code via `wfc install|update|status|skills`
 - workflow authoring with `wfc init|scaffold|validate`
 - proactive agent proposals for `work-item` and `change`
 - continued human approval authority at each gate before delivery proceeds
 
-`v2.0.0` remains the first public release. If approved, `v2.6.4` will continue on the same public surface and make no breaking command-line change:
+`v2.0.0` remains the first public release. If approved, `v2.7.0` will continue on the same public surface and make no breaking command-line change:
 - `v2.2.x` added the harness adapter registry and internal hooks/instincts tooling.
 - `v2.3.x` added the English-first public surface, Vietnamese `*.vi.md` supplements, `sdd_mode=light`, and the `sa`/`ta` architecture-driver skills.
 - `v2.4.0` fixes managed repeat updates and evidence validation, corrects the `sa`/`ta` contracts, and adds `architecture-modeling` to both 41-skill runtimes.
 - `v2.5.0` adds `artifact-governance` as managed skill 42 and ships its placement, ownership, execution-reader, and role-indexed handoff enforcement.
-- `v2.6.0` adds additive design-readiness guidance for the existing `sa` and `ta` skills while retaining 42 managed skills and the existing output contract.
-- `v2.6.1` aligns the stale authoring smoke with approved legacy-scaffold bootstrap behavior while retaining 42 managed skills and the public contract.
+- `v2.6.0` adds additive design-readiness guidance for the existing `sa` and `ta` skills while retaining 43 managed skills and the existing output contract.
+- `v2.6.1` aligns the stale authoring smoke with approved legacy-scaffold bootstrap behavior while retaining 43 managed skills and the public contract.
 - `v2.6.2` adds adaptive request routing, applicable-only roles and gates, recoverable approval bundles, privacy-bounded telemetry, and build-once candidate verification without weakening human authority.
-- `v2.6.3` adds exact ID-based state disposition, signed resolved-state history, and terminal archive guards while retaining the same command families, five install modes, and 42 managed skills.
+- `v2.6.4` adds exact ID-based state disposition, signed resolved-state history, and terminal archive guards while retaining the same command families, five install modes, and 43 managed skills.
 
 All of the above are additive — the public promise below is unchanged.
 
 ## Planned Canonical Release Ref
 
-- Tag after Release approval: `v2.6.4`
+- Tag after Release approval: `v2.7.0`
 - Candidate evidence before approval: source commit and immutable tarball digest recorded in CR-010
 
 Do not create the tag, present a candidate branch as canonical, or publish the package until the human Release gate passes.
@@ -52,7 +52,7 @@ This is the document set to use for public onboarding:
 5. [`../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`](../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
 6. [`../skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](../skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
 
-## Public Promise Of `v2.6.4`
+## Public Promise Of `v2.7.0`
 
 - Installable workflow bundle for Codex and Claude Code via `wfc install|update|status|skills`
 - Core authoring CLI via `wfc init`, `wfc scaffold`, `wfc`, `wfc sdd|change|exec|plan`
@@ -60,7 +60,7 @@ This is the document set to use for public onboarding:
 - Human approval gates for `change`, `work-item`, and workflow gate receipts
 - Trusted signed receipts outside the project root for the mandatory human gates
 - Migration from legacy state `.codex-workflow-pack.*` to `.codex-workflow-bundle.*`
-- 42 managed skills in each Codex and Claude runtime, with canonical/runtime byte parity
+- 43 managed skills in each Codex and Claude runtime, with canonical/runtime byte parity
 - Architecture-driver analysis through `sa` and `ta`, followed by model/view production through `architecture-modeling` at `s05`
 - Deterministic built-in draw.io rendering for allowlisted landscape and integration views when no house renderer owns the artifact
 - Artifact placement and one-fact/one-owner guidance through `artifact-governance`, with English/Vietnamese parity
@@ -75,13 +75,13 @@ This is the document set to use for public onboarding:
   - legacy config `workflow-contracts.config.json`
   - legacy state `.codex-workflow-pack.*`
 
-The two legacy layers above are still kept to make migration smoother, but they should not be treated as the core public story of `v2.6.4`.
+The two legacy layers above are still kept to make migration smoother, but they should not be treated as the core public story of `v2.7.0`.
 
 ## Compatibility And Rollback
 
 - Existing `wfc` commands, flags, state files, SA/TA output blocks, block ownership, Node `>=18`, and npm `>=9` requirements remain compatible.
-- Before publication, rollback restores only CR-010-managed source and candidate surfaces to the verified `v2.6.3/42` baseline.
-- After an authorized publication, use the retained immutable v2.6.3 artifact and `wfc install` for a managed downgrade, verify `v2.6.3/42`, and preserve unmanaged files and modes.
+- Before publication, rollback restores only CHANGE-005 source and candidate surfaces to the verified `v2.6.4/42` baseline.
+- After an authorized publication, use the retained immutable v2.6.4 artifact and `wfc install` for a managed downgrade, verify `v2.6.4/42`, and preserve unmanaged files and modes.
 - No database, API, event, deployment, user-configuration, or live global-install migration is part of this candidate.
 
 ## Internal Or Maintainer Docs
@@ -107,10 +107,10 @@ The files below are local working assets, not source-of-truth:
 
 ## Publish Rule
 
-- until Release approval, call `v2.6.4` a release candidate rather than the current public release
+- until Release approval, call `v2.7.0` a release candidate rather than the current public release
 - when talking about the approval model, state clearly `agent proposes, human approves`
 - do not use internal docs or memory-bank as the public onboarding path
 
-### v2.6.4 Source And Package Boundary
+### v2.7.0 Source And Package Boundary
 
-The candidate includes persisted proposal recovery and corrected human-authority/Light guidance. P-INSTALL containment fixes are in `adapters/codex/install-codex-workflow.sh` and `.ps1` in the Git tag/source archive; those direct installers are not in the npm tarball allowlist. The package retains 42 managed skills and the existing install surface. The immutable v2.6.3 fallback retains exact state disposition and signed history, but has no proposal recovery. A GitHub Release asset is an npm-format tarball; registry publication requires separate authorization. Review the complete delta in [the v2.6.4 release record](releases/workflow-bundle-v2.6.4.md).
+The candidate retains v2.6.4 proposal recovery and adds the optional diagram-design-presentation-adapter. P-INSTALL containment fixes are in `adapters/codex/install-codex-workflow.sh` and `.ps1` in the Git tag/source archive; those direct installers are not in the npm tarball allowlist. The package retains 43 managed skills and the existing install surface. The immutable v2.6.4 fallback retains exact state disposition and signed history, including proposal recovery. A GitHub Release asset is an npm-format tarball; registry publication requires separate authorization. Review the complete delta in [the v2.7.0 release record](releases/workflow-bundle-v2.7.0.md).

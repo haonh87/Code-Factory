@@ -112,3 +112,10 @@ renderer.
 - `ARCHITECTURE_MODELING` implies `REQUIRED` for requested DRAWIO output and no house handoff.
 - `UNRESOLVED` implies `BLOCKED` and an empty emitted-artifact list.
 - `competing_artifact_count` is always zero.
+
+
+## Separate presentation ownership
+
+The optional presentation_derivative lane runs only after canonical routing and rendering.
+Its owner is not a second canonical renderer. See presentation-derivative-contract.md;
+all existing exactly-one-owner cases and competing_artifact_count remain unchanged.

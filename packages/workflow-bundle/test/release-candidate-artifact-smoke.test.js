@@ -11,8 +11,8 @@ const { execFileSync } = require("child_process");
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
 const packageRoot = path.join(repoRoot, "packages", "workflow-bundle");
 const guardrailsPath = path.join(repoRoot, ".github", "workflows", "workflow-guardrails.yml");
-const expectedVersion = "2.6.4";
-const expectedSkillCount = 42;
+const expectedVersion = "2.7.0";
+const expectedSkillCount = 43;
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);

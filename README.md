@@ -6,9 +6,9 @@ language: en
 
 > Vietnamese: README.vi.md
 
-This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.6.4`: an installable workflow bundle for Codex and Claude Code with adaptive request routing, applicable-only roles and gates, journaled approval bundles, privacy-bounded local telemetry, exact ID-based state disposition and terminal archive guards. Human authority is unchanged: every applicable gate still needs its authorized reviewer and independent trusted receipt. The candidate remains unpublished until the human Release gate passes.
+This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.7.0`: an installable workflow bundle for Codex and Claude Code with adaptive request routing, applicable-only roles and gates, journaled approval bundles, privacy-bounded local telemetry, exact ID-based state disposition and terminal archive guards. Human authority is unchanged: every applicable gate still needs its authorized reviewer and independent trusted receipt. The candidate remains unpublished until the human Release gate passes.
 
-Until that gate passes, use the candidate source commit and the SHA-256 produced by Workflow Guardrails as the release-candidate references. Guardrails packs once and verifies that same artifact on Node 18 and Node 22; it does not rebuild per environment. Create and share the `v2.6.4` tag only after Release approval. The verified rollback baseline is the immutable `v2.6.3/42` release.
+Until that gate passes, use the candidate source commit and the SHA-256 produced by Workflow Guardrails as the release-candidate references. Guardrails packs once and verifies that same artifact on Node 18 and Node 22; it does not rebuild per environment. Create and share the `v2.7.0` tag only after Release approval. The verified rollback baseline is the immutable `v2.6.4/42` release.
 
 > Looking for the community-facing English overview? See [`docs/release/community-pack-readme.md`](docs/release/community-pack-readme.md) (Vietnamese: [`docs/release/community-pack-readme.vi.md`](docs/release/community-pack-readme.vi.md)).
 
@@ -22,7 +22,7 @@ Until that gate passes, use the candidate source commit and the SHA-256 produced
 
 ## Start Here
 
-If you are approaching the repo for the first time and want to review the `v2.6.4` release candidate:
+If you are approaching the repo for the first time and want to review the `v2.7.0` release candidate:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -40,7 +40,7 @@ The documents below are maintainer or historical context and should not be used 
 
 ## Quick Workflow Commands
 
-The public command surface of `v2.6.4` uses `wfc`.
+The public command surface of `v2.7.0` uses `wfc`.
 
 Install and manage the workflow bundle:
 
@@ -105,7 +105,7 @@ Notes:
 - The first approval in a trusted approval root creates an approver keypair and requires the human to enter an approval passphrase directly in that TTY.
 - The implementation path is locked at the filesystem level until the work item reaches `ACTIVE` at `s07` and is granted a `write-root`.
 - `work-items/` is the canonical artifact root for the repo's workflow artifacts.
-- The approval model of `v2.6.4` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
+- The approval model of `v2.7.0` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
 
 ## Adaptive Governance Contract
 
@@ -128,7 +128,7 @@ Notes:
 ### By Purpose
 
 - Public docs for newcomers to the workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface for `v2.6.4`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface for `v2.7.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart for `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README for installation or publishing: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 
@@ -461,6 +461,13 @@ Operational notes:
 - The runtime layout after a global install for Codex is currently flat by `skill-name`.
 - When adding a new skill, check that the skill name is unique across the repo to avoid overwrites during a global install.
 
-### v2.6.4 Source And Package Boundary
 
-The candidate includes persisted proposal recovery and corrected human-authority/Light guidance. P-INSTALL containment fixes are in `adapters/codex/install-codex-workflow.sh` and `.ps1` in the Git tag/source archive; those direct installers are not in the npm tarball allowlist. The package retains 42 managed skills and the existing install surface. The immutable v2.6.3 fallback retains exact state disposition and signed history, but has no proposal recovery. A GitHub Release asset is an npm-format tarball; registry publication requires separate authorization. Review the complete delta in [the v2.6.4 release record](docs/releases/workflow-bundle-v2.6.4.md).
+## Optional Architecture Presentation Candidate
+
+The unpublished v2.7.0 candidate adds `diagram-design-presentation-adapter` to the
+43 managed skills. SA/TA record intent; architecture-modeling retains canonical
+ownership. The adapter emits a separate validated offline HTML/SVG/PNG set with
+pinned upstream resources. Python/Playwright/Chromium must be provisioned separately.
+The current source includes post-v2.6.4 CI and fixture-isolation maintenance; this does
+not claim byte identity with the published v2.6.4 rollback artifact. Reader review,
+DoD, Release and Business Acceptance remain pending. See the v2.7.0 release record.

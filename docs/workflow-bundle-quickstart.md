@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: workflow-bundle-quickstart.vi.md
 
-This guide focuses on the `workflow-bundle v2.6.4` release candidate: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, resolve legacy workflow state by exact ID, bootstrap a new repo, and run the `agent proposes, human approves` flow. Registry installation remains unavailable until the human Release gate passes. The candidate retains 42 managed skills and preserves independent human authority for every applicable gate.
+This guide focuses on the `workflow-bundle v2.7.0` release candidate: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, resolve legacy workflow state by exact ID, bootstrap a new repo, and run the `agent proposes, human approves` flow. Registry installation remains unavailable until the human Release gate passes. The candidate retains 43 managed skills and preserves independent human authority for every applicable gate.
 
 ## Objectives
 
@@ -409,6 +409,6 @@ cd packages/workflow-bundle
 npm link
 ```
 
-### v2.6.4 Source And Package Boundary
+### v2.7.0 Source And Package Boundary
 
-The candidate includes persisted proposal recovery and corrected human-authority/Light guidance. P-INSTALL containment fixes are in `adapters/codex/install-codex-workflow.sh` and `.ps1` in the Git tag/source archive; those direct installers are not in the npm tarball allowlist. The package retains 42 managed skills and the existing install surface. The immutable v2.6.3 fallback retains exact state disposition and signed history, but has no proposal recovery. A GitHub Release asset is an npm-format tarball; registry publication requires separate authorization. Review the complete delta in [the v2.6.4 release record](releases/workflow-bundle-v2.6.4.md).
+The candidate retains v2.6.4 proposal recovery and adds the optional diagram-design-presentation-adapter. P-INSTALL containment fixes are in `adapters/codex/install-codex-workflow.sh` and `.ps1` in the Git tag/source archive; those direct installers are not in the npm tarball allowlist. The package retains 43 managed skills and the existing install surface. The immutable v2.6.4 fallback retains exact state disposition and signed history, including proposal recovery. A GitHub Release asset is an npm-format tarball; registry publication requires separate authorization. Review the complete delta in [the v2.7.0 release record](releases/workflow-bundle-v2.7.0.md).

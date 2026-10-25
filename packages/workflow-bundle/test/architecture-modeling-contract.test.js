@@ -197,6 +197,12 @@ if (expectedFiles.every((relativePath) => fs.existsSync(path.join(skillRoot, rel
   assertBilingualContractParity();
 }
 
+for(const lang of ['md','vi.md']) {
+  assert(read('SKILL.'+lang).includes('references/presentation-derivative-contract.'+lang),'Missing optional derivative hook');
+  assert(read('references/model-contract.'+lang).includes('presentation_derivative'),'Missing optional derivative model contract');
+  const ref=path.join(skillRoot,'references/presentation-derivative-contract.'+lang);
+  assert(fs.existsSync(ref),'Missing derivative contract reference');
+}
 if (failures > 0) {
   console.error(`\n${failures} assertion(s) failed in architecture-modeling-contract.test.js`);
   process.exit(1);

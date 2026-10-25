@@ -149,3 +149,9 @@ human first-open check.
 - Built-in-owned path không có house artifact cạnh tranh.
 - Mọi metric chất lượng áp dụng đều được báo, kể cả failure và gap.
 - Không hấp thụ trách nhiệm domain design hoặc deployment generation.
+
+
+## Bản trình bày tùy chọn
+
+Sau xác thực/kết xuất chính tắc, theo references/presentation-derivative-contract.vi.md
+khi có yêu cầu trình bày riêng. Giữ nguyên render_plan chính tắc.

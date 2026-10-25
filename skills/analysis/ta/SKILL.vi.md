@@ -220,3 +220,10 @@ buộc bạn đang phát biểu, không phải một phần của thiết kế m
 - `references/example.md` — một artifact hoàn chỉnh đã điền, cho thấy driver quantified, binary và not_quantified cạnh nhau.
 - `references/invocation-rules.md` — cú pháp chỉ thị, chọn profile, escalation cứng và luật định dạng.
 - `references/design-readiness-checklist.vi.md` — check tiền thiết kế có điều kiện, câu hỏi driver và handoff đúng quyền sở hữu.
+
+
+## Ý định trình bày tùy chọn
+
+Khi có yêu cầu trình bày, đọc references/presentation-intent.vi.md và ánh xạ vào
+directives_parsed, landscape.question_answered và handoff hiện có. Dừng ở ý định tại
+s01-s04; architecture-modeling phía sau sở hữu xác thực chính tắc.
