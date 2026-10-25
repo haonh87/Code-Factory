@@ -311,11 +311,12 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-21T03:47:48.570Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-10-24T05:54:20.998Z"
+handoff_target: "protocol-close"
+last_transition_action: "approve-closeout-bundle"
+last_transition_at: "2026-10-25T05:19:28Z"
 required_actions:
   - {"id":"se:2110d25a8cdb57b28bafefe0b7926eb5d34bf55eb9df7689914b9802f35b9561","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+  - {"id":"se:d40a7767d24045f06b2dd01550f9ee4ce8ff5adc1f7cc776a182aa4fe9e8845b","kind":"work_item_close","text":"wfc work-item close --work-item add-diagram-design-adapter"}
 blockers: []
 review_notes:
   - "Human review approved."
@@ -346,6 +347,7 @@ audit_events:
   - "WORK_ITEM_BLOCKED"
   - "WORK_ITEM_RESUMED"
   - "VERIFICATION_CONFIRMED"
+  - "CLOSEOUT_BUNDLE_APPROVED"
 ```
 
 ## Traceability
