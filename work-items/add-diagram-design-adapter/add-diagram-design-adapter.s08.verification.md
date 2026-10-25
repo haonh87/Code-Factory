@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: "CHANGE-005"
@@ -65,12 +65,12 @@ gate_reviews:
   task_plan_reviewed_at: ""
   uat_reviewed_by: []
   uat_reviewed_at: ""
-  release_reviewed_by: []
-  release_reviewed_at: ""
-  business_acceptance_reviewed_by: []
-  business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  release_reviewed_by: ["devops", "qc"]
+  release_reviewed_at: "2026-10-25T05:19:28Z"
+  business_acceptance_reviewed_by: ["po"]
+  business_acceptance_reviewed_at: "2026-10-25T05:19:28Z"
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-10-25T05:19:28Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -93,10 +93,11 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Automated verification passes for the final 2.7.0 candidate. Overall verdict is PARTIAL:
+> Automated verification passes for the final 2.7.0 candidate. Human closeout decisions are approved:
 > User-authorized AI reader review scores 20/20 with 2/2 source checks and no semantic contradictions.
 > Wrapping repair, independent regression rechecks, first-open, SAST and rebuilt-candidate
-> verification pass. Human DoD/Release/Business Acceptance remain pending. No publication is authorized.
+> verification pass. Human acceptance on 2026-10-25 approves DoD, Release readiness and Business
+> Acceptance. Seal the three trusted receipts before protocol close. Publication remains a separate action.
 
 ## Step Contract
 ```yaml
@@ -111,7 +112,7 @@ owner: "qc"
 ```yaml
 verification_scope: ["Adapter and role/modeling hooks", "Provenance", "Static HTML/SVG and offline PNG", "Runtime packaging and rollback", "Workflow evidence"]
 evidence_refs: ["s07 implementation", "Candidate Identity", "Acceptance Evidence", "READER-TASK-001 Review Packet"]
-summary_verdict: PARTIAL
+summary_verdict: PASS
 ```
 
 ## Candidate Identity
@@ -148,11 +149,11 @@ logs remain in `artifacts/verification-final`; current logs are indexed above.
 | AC-003 | PASS: invalid input fails closed | Missing facts, unsafe/control text, traversal/symlinks, ownership/destination collisions, missing tool/browser tests |
 | AC-004/005 | PASS: distinct canonical ownership; complete semantic coverage | Modeling/Draw.io suites; reconstructed HTML/SVG validation; two layouts; canonical source recheck before atomic publication |
 | AC-006 | PASS: packaged checks, actual PNG and independent AI visual rechecks | HTML/SVG/PNG sets; static/accessibility assertions; actual offline PNG, transparent margin/opaque header pixels; failure cleanup tests |
-| AC-007 | AI-assessed threshold MET; human gate decision pending | User-selected AI mode: BA 10/10 + TA 10/10, 2/2 source checks, 0 semantic contradictions; SA supplementary. Post-fix BA/TA regression rechecks preserve all answers and caveats; not a new blind study or measured human usability. |
+| AC-007 | AI-assessed threshold MET; accepted by human review | User-selected AI mode: BA 10/10 + TA 10/10, 2/2 source checks, 0 semantic contradictions; SA supplementary. Post-fix BA/TA regression rechecks preserve all answers and caveats; not a new blind study or measured human usability. |
 | AC-008 | PASS | Pinned provenance verifier, key hashes, 155-file digest, tamper/symlink/nested-skill rejection |
 | AC-009 | PASS in isolated supported matrix | Node 18 and 22 exact-candidate installs, 4/4 each; exact 2.6.4 update/disable/re-enable/rollback, 4/4; parity and unmanaged-file preservation |
 | AC-010 | PASS | s07 T0 admission: CHANGE-004 DONE, signed dispositions, baseline re-read and authorized grants; SA/TA schemas and canonical renderer implementation preserved |
-| AC-011 | PASS for evidence/accounting contract | Automated lanes, AI comparison, first-open and rebuilt-candidate verification pass; ESLint skip and hosted-CI limitation explicitly recorded; human gates remain pending |
+| AC-011 | PASS for evidence/accounting contract | Automated lanes, AI comparison, first-open and rebuilt-candidate verification pass; ESLint skip and hosted-CI limitation explicitly recorded; human decisions approved; trusted sealing required |
 
 | Verification lane | Result and retained log |
 | --- | --- |
@@ -171,8 +172,9 @@ logs remain in `artifacts/verification-final`; current logs are indexed above.
 
 The two prior review blockers were disposed through the signed CLI flow, followed by
 normal s07 resume. The supported CLI `verify` transition now records `VERIFIED/s08`
-with no technical blockers. Workflow routing is `WAITING_APPROVAL` for human DoD, Release
-and Business Acceptance; protocol verification does not approve these gates.
+with no technical blockers. The subsequent explicit human acceptance is recorded below.
+Trusted receipt sealing and protocol close remain required; protocol verification alone
+does not approve any gate.
 Protocol validation passes for all 28 managed work items (21 permitted legacy items skipped).
 Report and s01 protocol projection were not edited by hand. Five trusted gate receipts
 (Spec, Contract, DoR, Approach, Task Plan) still verify against unchanged host bytes.
@@ -441,9 +443,9 @@ AC-007 uses the explicitly selected AI review mode and does not assert human usa
 ```yaml
 checklist_applied: ["project-context/checklists/strict.md"]
 checks: ["Accepted scope and trusted upstream hosts preserved", "No self-approval", "No deployment or publication from local checks"]
-blocking_items: ["Required human DoD, Release and Business Acceptance decisions"]
+blocking_items: ["Trusted receipts for the three accepted closeout gates before protocol close"]
 owner: "qc"
-next_action: "QC reviews DoD; DevOps/QC review Release; PO reviews Business Acceptance against the frozen candidate and this evidence."
+next_action: "Seal the three independent trusted receipts against this frozen s08 host, then close through the supported protocol CLI."
 ```
 
 ## Regression & Compatibility Summary
@@ -479,28 +481,28 @@ notes: ["Approved plan requires AC-007 reader verification, not a separate UAT g
 
 ## Release Summary
 ```yaml
-status: PARTIAL
-reviewers: []
-notes: ["Candidate remains unpublished", "DevOps and QC decisions pending", "No tag, push, merge, managed install or cleanup"]
+status: APPROVED
+reviewers: ["devops", "qc"]
+notes: ["Human accepted Release readiness for the exact retained local candidate", "Candidate remains unpublished; hosted CI has not run", "Seal trusted receipt before separately authorized integration/publication", "No tag, push, merge, managed install or cleanup performed"]
 ```
 
 ## Business Acceptance Summary
 ```yaml
-status: PARTIAL
-reviewers: []
-notes: ["PO decision pending; AI reader evidence available; no human readability metric claimed"]
+status: APPROVED
+reviewers: ["po"]
+notes: ["Human accepted the delivered capability and selected AI reader evidence with stated limitations", "No human readability metric claimed; trusted receipt required"]
 ```
 
 ## Audit
 ```yaml
-audit_status: PARTIAL
-notes: ["Automated evidence tied to exact final artifact", "Technical verification complete; required human closeout decisions outstanding"]
+audit_status: PASS
+notes: ["Automated evidence tied to exact final artifact", "Technical verification and explicit human decisions complete; trusted sealing and protocol close remain"]
 ```
 
 ## Definition of Done
 ```yaml
 work_item_slug: "add-diagram-design-adapter"
-status: PARTIAL
+status: DONE
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -508,16 +510,18 @@ checks:
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps: ["Human DoD approval", "Human Release approval", "Human Business Acceptance approval"]
+gaps: []
+human_decision: "Explicit acceptance on 2026-10-25; this is the human DoD verdict, not a claim that protocol close has already executed."
+receipt_requirement: "Seal digest-bound DoD, Release and Business Acceptance receipts before protocol close."
 residual_risks: ["AI assessment does not measure human usability", "Dedicated ESLint unavailable; alternative checks recorded", "Hosted CI not run because branch is unpublished", "Evidence artifacts are local and must be retained through review/integration"]
 follow_up_items: ["AI-R02 business hierarchy improvement", "AI-R03 source-fixture label clarification"]
-next_action: "Review and sign the required human gates against this exact candidate; do not close or finalize the branch before those decisions."
+next_action: "Seal accepted gate receipts, verify their artifact digests, commit CLI projections and close through the normal CLI; integration requires separate authorization."
 ```
 
 ## Traceability
 ```yaml
 upstream: ["CHANGE-005 BRD/SRS", "s04 AC-001..011", "s05 APPROACH-005-A", "s06 Amendment A1 T0-T9", "s07 implementation and review"]
-next_step: "Human closeout gate review; preserve branch/worktree and exact candidate."
+next_step: "Trusted closeout receipt sealing and normal protocol close; retain branch/worktree and exact candidate."
 ```
 
 ## Historical QC Follow-up and Rework Admission — 2026-10-23
@@ -574,10 +578,34 @@ closed in the reviewed outputs. These reviewers already knew the previous answer
 is a regression recheck, not a fresh blind study or an additional scored 20-task sample.
 AI-R02/03 remain the accepted later enhancement/source-caveat treatment. AI-R04 is resolved.
 
+## Human Closeout Decision — 2026-10-25
+
+The project maintainer explicitly replied **accept** to the concrete proposal to approve
+DoD, Release readiness and Business Acceptance for this candidate. Decision recorded at
+`2026-10-25T05:19:28Z`. The named role fields record this human decision under QC (DoD),
+DevOps/QC (Release) and PO (Business Acceptance); they do not invent additional people or
+attribute any human decision to the AI reviewers.
+
+The approval binds candidate SHA-256
+`ecc194da5398b6b5ef321549600711bd4b96cf6f2621f0b95ca958547e5061ac`,
+implementation commit `af4f1e8`, 11/11 acceptance-evidence coverage, 50/50 unit files,
+actual PNG, Semgrep, exact Node 18/22 install and rollback results, and the documented
+AI reader study plus post-fix regression checks. The user reviewed the explicit limits:
+AI assessment is not human usability measurement, dedicated ESLint is unavailable with
+alternative checks recorded, and hosted CI has not run because the branch is unpublished.
+AI-R02/03 retain their previously accepted follow-up/source-caveat treatment.
+
+This approves readiness of the retained local candidate. Merge, push, tag, publication,
+managed installation and worktree cleanup remain separate execution decisions. No source
+or candidate byte changes in this approval-recording step. All three gate fields are
+finalized together before signing so the receipts bind the same frozen s08 digest.
+Do not edit this host after sealing without renewed review and replacement receipts.
+
 ## Handoff
 
-Technical implementation and verification are complete; the overall verdict is PARTIAL
-pending human DoD, Release and Business Acceptance. No further reviewer-name request is
-needed for the selected AI mode. S08 is ready for those decisions against the frozen
-candidate. No merge, push, release publication, managed install or cleanup is authorized
-by local tests or AI review. Required human gate review fields remain empty.
+Human DoD, Release readiness and Business Acceptance decisions are approved. The protocol
+remains VERIFIED/s08 until all three trusted receipts verify and the normal close action
+succeeds. The helper uses the supported closeout-bundle command, which displays the three
+gates and seals independent receipts through one human-controlled terminal interaction.
+No passphrase is read or supplied by the agent. Keep the candidate, evidence and worktree
+for the next authorized integration step; no publication or merge has occurred.
