@@ -43,6 +43,6 @@ for(const mode of ['codex','claude']){
  assert(fs.existsSync(path.join(runtime,'architecture/diagram-design-presentation-adapter/SKILL.md')));
 }
 const note=read('docs/releases/workflow-bundle-v2.7.0.md');
-for(const term of ['UNPUBLISHED','CHANGE-005','43 managed skills','HTML','SVG','PNG','## Compatibility','## Known Limitations','## Verification','## Rollback','## Release Gates','READER-TASK-001','9d7c5395ff5fb3ae2a64d26089a2c4c62122fb769a7cacd2e3bcea3f6fa35e84'])assert(note.includes(term),'Release record missing '+term);
+for(const term of ['Status: **PUBLISHED on GitHub**','CHANGE-005','43 managed skills','HTML','SVG','PNG','## Compatibility','## Known Limitations','## Verification','## Rollback','## Release Gates','READER-TASK-001','9d7c5395ff5fb3ae2a64d26089a2c4c62122fb769a7cacd2e3bcea3f6fa35e84'])assert(note.includes(term),'Release record missing '+term);
 assert(!/\bTODO\b|\bTBD\b/.test(note));
-console.log('PASS: v2.7.0 candidate, 43-skill inventory, unpublished claims and immutable history/installers.');
+console.log('PASS: v2.7.0 publication record, 43-skill inventory, frozen package snapshot and immutable history/installers.');

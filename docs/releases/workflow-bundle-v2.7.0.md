@@ -1,7 +1,18 @@
-# Workflow Bundle v2.7.0 Candidate
+# Workflow Bundle v2.7.0
 
-Status: **UNPUBLISHED**. CHANGE-005 / add-diagram-design-adapter. This is preparation,
-not a release approval or publication record.
+Status: **PUBLISHED on GitHub** at `2026-10-25T13:53:08Z`.
+[GitHub Release v2.7.0](https://github.com/haonh87/Code-Factory/releases/tag/v2.7.0). CHANGE-005 / add-diagram-design-adapter is DONE.
+
+Tag `v2.7.0` points to verified merge commit `a894bd345f321bd4e2fffcadddda7bb1eae00fb6`.
+The published `workflow-bundle-2.7.0.tgz` is the original reviewed candidate: 901 files,
+1,557,138 bytes, SHA-256 `ecc194da5398b6b5ef321549600711bd4b96cf6f2621f0b95ca958547e5061ac`.
+The release includes `SHA256SUMS`; both assets were downloaded again and their bytes verified.
+The separate CI archive has a different tarball digest but all 901 file contents match;
+it was not substituted for the approved candidate.
+
+This record owns the publication outcome. Packaged README/CLI and signed workflow notes
+remain the immutable pre-publication snapshot. The GitHub asset is an npm-format package;
+npm registry publication and managed local installation were not performed.
 
 ## Complete Packaged Delta
 
@@ -47,8 +58,11 @@ recorded in s08. They are AI assessment, not measured human usability or human g
 Focused TDD and first-party review cover provenance, negative admission, static/semantic
 validation, accessibility names/descriptions, actual PNG export, failure atomicity and
 unchanged canonical files. Runtime parity, full unit and retained exact-artifact lifecycle
-results are recorded in the owning s07 note as executed; this document does not claim
-unexecuted checks or hosted Node 18/22 verification. Release blockers remain in s08.
+results are recorded in the owning s07/s08 notes. Human DoD, Release readiness and Business
+Acceptance receipts verify against frozen s08. [Workflow Guardrails run 40183550189](https://github.com/haonh87/Code-Factory/actions/runs/40183550189)
+passed all ten jobs on the tagged commit, including Node 18/22 unit/regression, pack audit,
+source install/update and exact-candidate smoke checks. The downloaded published asset
+also passes isolated Codex/Claude global/project installs (4/4) on Node 22.23.2.
 
 ## Rollback
 
@@ -61,8 +75,10 @@ No global/live rollback runs during candidate preparation.
 
 ## Release Gates
 
-Candidate-specific DoD, Release, and Business Acceptance require human approval.
+Candidate-specific DoD, Release and Business Acceptance were explicitly human-approved
+and signed before protocol close. The user separately authorized merge/push and publication.
 READER-TASK-001 requires two independent reviewers, 2/2 canonical/derivative/owner checks,
 at least 18/20 declared-question answers and zero semantic contradictions.
-No tag, registry publication, live installation, merge, push or worktree cleanup follows
-from local test success. The exact frozen tarball must be retained and reviewed before promotion.
+Tag and GitHub publication used that explicit authorization and the exact frozen tarball.
+The branch, worktree, signed hosts and raw verification evidence remain retained. Registry
+publication, managed installation and worktree cleanup were not part of this operation.
