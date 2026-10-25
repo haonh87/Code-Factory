@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Add a governed adapter lane that lets SA and TA request polished diagram-design presentation artifacts downstream of architecture-modeling while preserving pre-design authority and canonical architecture artifacts.",
@@ -102,12 +102,12 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CHANGE-005",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "id": "se:2110d25a8cdb57b28bafefe0b7926eb5d34bf55eb9df7689914b9802f35b9561",
+      "id": "se:60621b9335d9a84ff0ba35597614cf6e41224684dd6d8e7d842287d2392a568a",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -138,7 +138,9 @@
     "WORK_ITEM_ACTIVATED",
     "WORK_ITEM_BLOCKED",
     "WORK_ITEM_RESUMED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "CLOSEOUT_BUNDLE_APPROVED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -271,6 +273,23 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "AI-R01 word-wrap repair verified against candidate ecc194da5398b6b5ef321549600711bd4b96cf6f2621f0b95ca958547e5061ac: 50/50 unit files, actual PNG, Semgrep, exact Node 18/22 installs and fallback lifecycle pass; BA/TA regression rechecks preserve facts and caveats. Technical verification only; human DoD, Release and Business Acceptance remain pending."
+    },
+    {
+      "timestamp": "2026-10-25T05:19:28Z",
+      "action": "approve-closeout-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "APPROVED closeout gates: dod, release, business_acceptance",
+      "transaction_id": "8d5c80f0-1848-4e71-81a0-59c53b240d61"
+    },
+    {
+      "timestamp": "2026-10-25T05:30:10.410Z",
+      "action": "close",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Human accepted DoD, Release readiness and Business Acceptance; all three trusted receipts match frozen s08 and candidate ecc194da5398b6b5ef321549600711bd4b96cf6f2621f0b95ca958547e5061ac. Technical verification and committed delivery complete. Close work item only; retain branch, worktree and evidence for separately authorized integration."
     }
   ],
   "resolved_state_history": [

@@ -288,7 +288,7 @@ notes_for_step_2: "Lock the user value and measurable success of a presentation 
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "add-diagram-design-adapter"
@@ -311,11 +311,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "po"
 reviewed_at: "2026-08-21T03:47:48.570Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-10-24T05:54:20.998Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-10-25T05:30:10.410Z"
 required_actions:
-  - {"id":"se:2110d25a8cdb57b28bafefe0b7926eb5d34bf55eb9df7689914b9802f35b9561","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+  - {"id":"se:60621b9335d9a84ff0ba35597614cf6e41224684dd6d8e7d842287d2392a568a","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "Human review approved."
@@ -346,6 +346,8 @@ audit_events:
   - "WORK_ITEM_BLOCKED"
   - "WORK_ITEM_RESUMED"
   - "VERIFICATION_CONFIRMED"
+  - "CLOSEOUT_BUNDLE_APPROVED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Traceability
