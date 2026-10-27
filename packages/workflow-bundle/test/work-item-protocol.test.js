@@ -2181,7 +2181,146 @@ function testMaterializationRecoveryMetadataRoundTrip() {
   }
 }
 
+
+// CF-023: run the actual protocol validator against isolated, genuinely signed
+// fixture evidence. Neither live workflow notes nor the operator's signer is used.
+function testCurrentHostBindingInProtocolCollector() {
+  const { validateWorkItemProtocol } = require("../scripts/validate-work-item-protocol");
+  const { writeTrustedApprovalReceipt } = require("../scripts/workflow-trusted-approval-utils");
+  const previousRoot = process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
+  const snapshot = (root) => {
+    const files = {};
+    const visit = (dir) => fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name)).forEach(entry => {
+      const file = path.join(dir, entry.name);
+      if (entry.isDirectory()) visit(file);
+      else files[path.relative(root, file)] = crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
+    });
+    visit(root);
+    return files;
+  };
+  for (const profile of ["none", "light"]) {
+    const slug = `binding-${profile}-item`;
+    const { projectRoot, workflowRoot } = buildLightProject(slug);
+    const approvalRoot = fs.mkdtempSync(path.join(os.tmpdir(), "binding-trust-"));
+    const s01Path = path.join(workflowRoot, `${slug}.s01.restate.md`);
+    const reportPath = path.join(workflowRoot, `${slug}.work-item-report.json`);
+    process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = approvalRoot;
+    try {
+      if (profile === "none") {
+        for (const name of fs.readdirSync(workflowRoot)) {
+          const file = path.join(workflowRoot, name);
+          fs.writeFileSync(file, fs.readFileSync(file, "utf8").replace("sdd_mode: light", "sdd_mode: none"));
+        }
+        writeFile(path.join(workflowRoot, `${slug}.s05.technical-approach.md`),
+          makeHostNoteFrontmatter(slug, "s05", "technical-approach").replace("sdd_mode: light", "sdd_mode: none"));
+      }
+      const report = normalizeProtocolReport({
+        work_item_slug: slug, work_item_type: "FEATURE", delivery_context: "brownfield",
+        workflow_root: workflowRoot, protocol_status: "MATERIALIZED", materialization_status: "READY",
+        current_step: "s01", approval_status: "APPROVED", review_required: true,
+        reviewed_by: "po", reviewed_at: "2026-07-16T00:00:00Z", bootstrap_gate_status: "NOT_REQUIRED",
+        granted_write_paths: ["src"], blockers: [], required_actions: [],
+        protocol_events: [{ timestamp: "2026-07-16T00:00:00Z", action: "materialize", actor: "fixture", from_status: "READY_TO_MATERIALIZE", to_status: "MATERIALIZED", note: "Isolated binding regression" }]
+      });
+      const setState = (status, pending = true, opaque = false) => {
+        report.protocol_status = status;
+        report.current_step = status === "ACTIVE" ? "s07" : "s01";
+        report.protocol_events = report.protocol_events.slice(0, 1);
+        if (status === "ACTIVE") report.protocol_events.push({ timestamp: "2026-07-16T01:00:00Z", action: "activate", actor: "fixture", from_status: "MATERIALIZED", to_status: "ACTIVE", note: "Isolated lifecycle check" });
+        report.required_actions = !pending ? [] : opaque ? ["Approval for approach is still pending"] : [
+          createStateEntry({ collection: "required_actions", kind: "gate_approval", gate: "approach",
+            sourceKey: "binding-approach", text: "Review the current approach" })
+        ];
+        writeFile(reportPath, JSON.stringify(report, null, 2) + "\n");
+        upsertProtocolBlockInS01(s01Path, report);
+      };
+      const sign = (gate, overrides = {}) => {
+        const artifact = gate ? resolveGateArtifact({ projectRoot, workflowRoot, workItemSlug: slug, gate, sddMode: profile }) : {};
+        return writeTrustedApprovalReceipt({ projectRoot, overrideRoot: approvalRoot,
+          kind: gate ? "gate" : "work-item", workItemSlug: slug, gate,
+          reviewedBy: ["approach", "task_plan"].includes(gate) ? "tech-lead" : "po",
+          reviewedAt: "2026-07-16T00:00:00Z", approvalStatus: "APPROVED",
+          artifactRef: artifact.artifactRef, artifactSha256: artifact.artifactSha256,
+          resolvedPassphrase: "isolated-cf023-fixture", ...overrides });
+      };
+      sign("");
+      ["spec", "dor", "approach", "task_plan"].forEach(gate => sign(gate));
+      const host = resolveGateArtifact({ projectRoot, workflowRoot, workItemSlug: slug, gate: "approach", sddMode: profile });
+      const hostBytes = fs.readFileSync(host.artifactPath);
+      const receiptPath = loadTrustedApprovalReceipt({ projectRoot, kind: "gate", workItemSlug: slug, gate: "approach" }).receiptPath;
+      const receiptBytes = fs.readFileSync(receiptPath);
+      const publicKeyPath = path.join(approvalRoot, "approver-public.pem");
+      const publicKeyBytes = fs.readFileSync(publicKeyPath);
+      const restored = () => {
+        fs.writeFileSync(host.artifactPath, hostBytes);
+        fs.writeFileSync(receiptPath, receiptBytes);
+        fs.writeFileSync(publicKeyPath, publicKeyBytes);
+      };
+      const validate = (injectIo = false) => {
+        const before = [snapshot(projectRoot), snapshot(approvalRoot)];
+        const read = fs.readFileSync;
+        if (injectIo) fs.readFileSync = function(file, ...args) {
+          if (String(file) === host.artifactPath) throw Object.assign(new Error("EACCES injected gate host"), { code: "EACCES" });
+          return read.call(this, file, ...args);
+        };
+        let error = "";
+        try { validateWorkItemProtocol({ args: { "project-root": projectRoot, "workflow-root": path.dirname(workflowRoot) } }); }
+        catch (caught) { error = caught.message; }
+        finally { fs.readFileSync = read; }
+        strictAssert.deepEqual([snapshot(projectRoot), snapshot(approvalRoot)], before, `${profile}: validator must not mutate fixture bytes`);
+        return error;
+      };
+      const contradiction = text => /claim gate 'approach' is pending after trusted receipt is APPROVED/.test(text);
+      setState("MATERIALIZED");
+      assert(contradiction(validate()), `${profile}: matching receipt plus typed pending state remains a real contradiction`);
+      setState("MATERIALIZED", false);
+      assert(validate() === "", `${profile}: matching receipt without pending state validates`);
+      setState("ACTIVE", false);
+      const matchingActiveError = validate();
+      assert(matchingActiveError === "", `${profile}: matching readiness evidence remains valid at ACTIVE (got: ${matchingActiveError})`);
+      setState("MATERIALIZED", true, true);
+      assert(validate() === "", `${profile}: opaque prose is not interpreted as typed pending approval`);
+      for (const variant of ["stale-hash", "wrong-ref", "missing-host", "missing-receipt", "rejected", "invalid-signature", "wrong-key"]) {
+        restored();
+        if (variant === "stale-hash") fs.appendFileSync(host.artifactPath, "\nChanged current host.\n");
+        if (variant === "wrong-ref") sign("approach", { artifactRef: "work-items/other/other.s05.technical-approach.md" });
+        if (variant === "missing-host") fs.unlinkSync(host.artifactPath);
+        if (variant === "missing-receipt") fs.unlinkSync(receiptPath);
+        if (variant === "rejected") sign("approach", { approvalStatus: "REJECTED" });
+        if (variant === "invalid-signature") {
+          const receipt = JSON.parse(receiptBytes); receipt.signature = Buffer.alloc(64).toString("base64");
+          fs.writeFileSync(receiptPath, JSON.stringify(receipt));
+        }
+        if (variant === "wrong-key") fs.writeFileSync(publicKeyPath,
+          crypto.generateKeyPairSync("ed25519").publicKey.export({ type: "spki", format: "pem" }));
+        setState("MATERIALIZED");
+        const error = validate();
+        assert(error === "", `${profile}/${variant}: unrelated or absent evidence must not falsely contradict pending review (got: ${error})`);
+        setState("ACTIVE");
+        const activeError = validate();
+        assert(!contradiction(activeError), `${profile}/${variant}: ACTIVE must not add a false approval contradiction`);
+        const guard = variant === "stale-hash" ? /stale after artifact changed/ : variant === "wrong-ref" ? /stale artifact ref/ : /Missing.*(?:workflow step note|trusted approval receipt)/;
+        assert(guard.test(activeError), `${profile}/${variant}: ACTIVE still rejects missing/stale evidence (got: ${activeError})`);
+      }
+      restored(); setState("MATERIALIZED");
+      assert(/EACCES/.test(validate(true)), `${profile}: unexpected host I/O must remain visible`);
+      fs.writeFileSync(receiptPath, "{ corrupt JSON");
+      assert(/JSON|Unexpected|property name/i.test(validate()), `${profile}: corrupt receipt JSON remains an explicit failure`);
+      restored(); setState("MATERIALIZED", false);
+      const cli = runGateCommand(path.resolve(__dirname, "..", "scripts", "validate-work-item-protocol.js"),
+        ["--project-root", projectRoot, "--workflow-root", path.dirname(workflowRoot)], { ...process.env });
+      assert(cli.status === 0, `${profile}: real validator CLI accepts matching fixture`);
+      console.log(`  CHECKED: CF-023 current-host binding matrix (${profile}), actual validator and CLI, read-only snapshots`);
+    } finally {
+      if (previousRoot === undefined) delete process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT;
+      else process.env.WORKFLOW_BUNDLE_APPROVAL_ROOT = previousRoot;
+      rmrf(projectRoot); rmrf(approvalRoot);
+    }
+  }
+}
+
 console.log("Running work-item-protocol (Light) tests...\n");
+testCurrentHostBindingInProtocolCollector();
 testMaterializationRecoveryMetadataRoundTrip();
 testLegacyReceiptV1AndAdaptiveProtocolDualRead();
 testEnsureLightLazyStepNoteCreatesS07S08();

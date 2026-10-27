@@ -25,12 +25,17 @@ const {
 } = require("./work-item-protocol-utils");
 const {
   getProtocolStateContradictionErrors,
-  getProtocolStepGateErrors
+  getProtocolStepGateErrors,
+  getTrustedReceiptArtifactErrors,
+  loadWorkflowStepGateSnapshot
 } = require("./workflow-gate-evidence-utils");
 const {
   hasApprovedReceipt,
+  getGateStepId,
+  getWorkflowStepNotePath,
   isTrustedDispositionSignatureValid,
   loadTrustedApprovalReceipt,
+  resolveGateArtifact,
   resolveTrustedApprovalRoot
 } = require("./workflow-trusted-approval-utils");
 const {
@@ -466,6 +471,7 @@ function validateProtocolState(report, context, errors) {
   }
 
   const approvedGates = new Set();
+  const { sddMode } = loadWorkflowStepGateSnapshot({ workflowRoot, workItemSlug: slug, stepId: "s01" });
   ["spec", "contract", "dor", "approach", "foundation", "task_plan", "uat", "release", "business_acceptance", "dod"].forEach(
     (gate) => {
       const loaded = loadTrustedApprovalReceipt({
@@ -475,7 +481,20 @@ function validateProtocolState(report, context, errors) {
         gate
       });
       if (hasApprovedReceipt(loaded.receipt, loaded.approvalRoot)) {
-        approvedGates.add(gate);
+        const hostPath = getWorkflowStepNotePath(workflowRoot, slug, getGateStepId(gate, sddMode));
+        try {
+          // Missing evidence is not current approval. Unlike existsSync, statSync
+          // keeps permission and other unexpected filesystem failures visible.
+          fs.statSync(hostPath);
+          const artifact = resolveGateArtifact({
+            projectRoot: context.projectRoot, workflowRoot, workItemSlug: slug, gate, sddMode
+          });
+          if (getTrustedReceiptArtifactErrors({ gate, receipt: loaded.receipt, artifact, filePath: hostPath }).length === 0) {
+            approvedGates.add(gate);
+          }
+        } catch (error) {
+          if (error.code !== "ENOENT") throw error;
+        }
       }
     }
   );
