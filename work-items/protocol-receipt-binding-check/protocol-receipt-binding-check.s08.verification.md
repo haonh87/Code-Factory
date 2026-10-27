@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
 governance_status: ALIGNED
@@ -70,8 +70,8 @@ gate_reviews:
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-10-27T10:04:04.500Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -93,7 +93,8 @@ tags:
 # Step 8 — CF-023 Verify + DoD
 
 Technical acceptance coverage is PASS (9/9). The registered suite passes 50/50 test files.
-DoD is PARTIAL until the human QC reviewer signs this exact evidence. The implementation is
+Human QC approves this evidence and the disclosed scan limitation; the DoD receipt must match
+this finalized note before the separate work-item closure transition. The implementation is
 committed on `fix/cf-023-binding-current`; main's production files are unchanged and no merge,
 release or worktree cleanup has occurred.
 
@@ -143,9 +144,9 @@ commands_run:
   - "Node 22.23.2: sync-workflow-bundle-runtime.js then test/run-all.js in /tmp/cf023-verify-20261027 with local Git index"
   - "node --check on both changed JS files; git diff --check; workflow naming/governance/execution/planning/protocol; strict UTF-8"
 skipped_checks: ["ESLint/type analysis: no configured wrapper or installed eslint/tsc", "Semgrep: not installed; no installation requested"]
-release_blockers: ["Human DoD not yet signed; publication is outside this work item"]
+release_blockers: []
 status: PASS
-gaps: ["Completion authority remains with human QC; the automated-scan limitation is disclosed below."]
+gaps: []
 residual_risks: ["Manual static/security review cannot claim scanner coverage", "No concurrent-write atomic snapshot guarantee is introduced"]
 recommendation: "Approve technical DoD if the stated scan limitation is accepted; retain branch until signed and reviewed closure."
 notes_for_review: "No production behavior beyond the approved collector changed. No actual signer/receipt store was mutated by the new tests."
@@ -297,9 +298,9 @@ outside the diff. There are no known open findings from this targeted review.
 ```yaml
 checklist_applied: ["project-context/checklists/strict.md"]
 checks: ["Nine criteria have source-bound evidence", "TDD/worktree/ordered review recorded", "Readiness host hashes unchanged", "Production diff limited to approved two files"]
-blocking_items: ["Human QC DoD signature"]
+blocking_items: []
 owner: qc
-next_action: "Review evidence and scan limitations, then finalize and sign DoD; do not self-close."
+next_action: "Verify the QC DoD receipt and committed delivery before the separate CLI close transition."
 ```
 
 ## UAT Summary
@@ -329,15 +330,15 @@ notes: ["No separately required business acceptance gate"]
 ## Audit
 
 ```yaml
-audit_status: PARTIAL
-notes: ["Technical evidence PASS; automated scan limitations disclosed; human DoD pending"]
+audit_status: PASS
+notes: ["Technical evidence PASS; human QC accepts the disclosed automated-scan limitation."]
 ```
 
 ## Definition of Done
 
 ```yaml
 work_item_slug: protocol-receipt-binding-check
-status: PARTIAL
+status: DONE
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -345,10 +346,10 @@ checks:
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps: ["Human QC review and signed DoD receipt"]
+gaps: []
 residual_risks: ["Automated lint/SAST unavailable; targeted manual review and negative tests substitute, subject to human acceptance"]
 follow_up_items: []
-next_action: "Human QC accepts the evidence and scan limitation, finalizes this note and seals DoD."
+next_action: "Verify the matching signed DoD receipt, then close the work item through the CLI."
 ```
 
 ## Traceability
@@ -357,7 +358,7 @@ next_action: "Human QC accepts the evidence and scan limitation, finalizes this 
 upstream: ["protocol-receipt-binding-check.s07.implementation.md"]
 requirement_refs: [REQ-RB-001, REQ-RB-002, REQ-RB-003, REQ-RB-004]
 acceptance_refs: [AC-RB-001, AC-RB-002, AC-RB-003, AC-RB-004, AC-RB-005, AC-RB-006, AC-RB-007, AC-RB-008, AC-RB-009]
-next_step: "Human QC DoD; branch stays open until then."
+next_step: "Signed DoD permits a separate reviewed branch/closure decision; this note does not itself merge or close."
 ```
 
 Source commit: `0f0f5ad7fe4b20e6536c4ba31c084c2ff98cab95`.
