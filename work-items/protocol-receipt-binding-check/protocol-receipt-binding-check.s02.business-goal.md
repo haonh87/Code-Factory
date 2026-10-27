@@ -5,7 +5,7 @@ work_item_slug: "protocol-receipt-binding-check"
 step_id: "s02"
 step_slug: "business-goal"
 workflow_stage: discovery
-work_item_type: BUG
+work_item_type: FEATURE
 delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
@@ -24,10 +24,14 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
+  card: "product-specs/cards/protocol-receipt-binding-check.md"
 spec_status: draft
 planning_track: full
 execution_mode: agentic
 execution_roles:
+  - "po"
+  - "ba"
+  - "ta"
   - "developer"
   - "qc"
 review_mode: self
@@ -40,16 +44,16 @@ approval_gates:
   release: "not_applicable"
   business_acceptance: "not_applicable"
 role_signoffs:
-  spec: []
+  spec: ["ba"]
   contract: []
-  dor: []
-  approach: []
+  dor: ["ba", "qc"]
+  approach: ["developer"]
   foundation: []
-  task_plan: []
+  task_plan: ["developer"]
   uat: []
   release: []
   business_acceptance: []
-  dod: []
+  dod: ["qc"]
 gate_reviews:
   spec_reviewed_by: []
   spec_reviewed_at: ""
@@ -85,37 +89,39 @@ tags:
   - "workflow/s02"
 ---
 
-# Step 2 - Business Goal
+# Step 2 — Business Goal
 
 > [!summary]
-> Tóm tắt user problem, business outcome, success metric và non-goals.
+> Make protocol diagnostics safe to act on: pending review must remain pending when the available
+> receipt approves different evidence. This is a draft goal, not a passed delivery gate.
 
 ## Step Contract
+
 ```yaml
-step_goal: ""
-input_summary: []
-output_summary: []
-done_when: []
-owner: ""
+step_goal: "State value and measurable outcome for the bounded validator correction."
+input_summary: ["s01 reproduced false contradiction and accepted scope"]
+output_summary: ["User value", "Success measures", "Non-goals"]
+done_when: ["Outcome traces directly to the Spec Card's nine criteria."]
+owner: ba
 ```
 
-## Artifact Chính
+## Main Artifact
+
 ```yaml
-user_problem: ""
-business_goal: ""
-success_metrics: []
-non_goals: []
-constraints: []
-assumptions: []
+business_goal: "Remove false already-approved conclusions without weakening real approval controls."
+user_value: "Maintainers can retain accurate pending-review entries and respond to the correct evidence problem."
+success_metrics:
+  - "Zero false approved-gate contradictions across the stale-ref/hash/absent-host fixture matrix."
+  - "All matching-receipt contradiction controls still reject genuinely inconsistent pending state."
+  - "Zero writes to reports, notes, keys or receipts from validation."
+  - "All existing lifecycle refusal and shared-namespace regressions remain green."
+non_goals_ref: "product-specs/cards/protocol-receipt-binding-check.md#Scope.out_of_scope"
+value_boundary: "Diagnostic correctness; no claimed incident prevention, performance benefit or bypass closure."
 ```
 
 ## Traceability
-```yaml
-upstream: []
-next_step: ""
-```
 
-## Handoff
-- User problem đã chốt:
-- Non-goals:
-- Điều kiện sang step 3:
+```yaml
+upstream: ["protocol-receipt-binding-check.s01.restate.md"]
+next_step: "Resolve admission/signing and review the bounded compatibility choices in s03."
+```

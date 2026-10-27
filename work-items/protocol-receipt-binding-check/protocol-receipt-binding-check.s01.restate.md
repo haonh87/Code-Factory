@@ -5,7 +5,7 @@ work_item_slug: "protocol-receipt-binding-check"
 step_id: "s01"
 step_slug: "restate"
 workflow_stage: discovery
-work_item_type: BUG
+work_item_type: FEATURE
 delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
@@ -24,32 +24,36 @@ sdd_mode: none
 spec_refs:
   brd: ""
   srs: ""
+  card: "product-specs/cards/protocol-receipt-binding-check.md"
 spec_status: draft
 planning_track: full
 execution_mode: agentic
 execution_roles:
+  - "po"
+  - "ba"
+  - "ta"
   - "developer"
   - "qc"
 review_mode: self
 verification_owner: "qc"
 approval_gates:
   spec: "required"
-  contract: "required"
+  contract: "not_applicable"
   foundation: "not_applicable"
   uat: "not_applicable"
   release: "not_applicable"
   business_acceptance: "not_applicable"
 role_signoffs:
-  spec: []
+  spec: ["ba"]
   contract: []
-  dor: []
-  approach: []
+  dor: ["ba", "qc"]
+  approach: ["developer"]
   foundation: []
-  task_plan: []
+  task_plan: ["developer"]
   uat: []
   release: []
   business_acceptance: []
-  dod: []
+  dod: ["qc"]
 gate_reviews:
   spec_reviewed_by: []
   spec_reviewed_at: ""
@@ -85,196 +89,133 @@ tags:
   - "workflow/s01"
 ---
 
-# Step 1 - Clarify
+# Step 1 — Clarify
 
 > [!summary]
-> A gate is reported as approved from a signature-valid receipt without checking that the receipt is bound to the gate-host note being examined. The binding data is present in the receipt and the comparison already exists elsewhere in the codebase; it is simply not on this path.
+> The user accepted continuing CF-023 admission and preparing the readiness packet on 2026-10-26.
+> The defect is reproduced on main 96917b57ee8966abcc66b2466f2325351a55e218. The existing proposal
+> remains PROPOSED; no work-item or authoring gate has been passed by this note.
 
 ## Step Contract
+
 ```yaml
-step_goal: "Restate the receipt-binding defect with reproduction evidence, lock the classification, and record what must not break - without choosing a fix."
-input_summary:
-  - "Measured evidence from the 2026-09-16 audit of PR #5 (docs/publish-planning-work)"
-  - "Four trusted receipts for code-factory-holistic-audit-remediation sealed 2026-09-11 and 2026-09-12"
-  - "Approved decision in trusted-receipt-namespace-resolution: one repository, one receipt namespace"
-output_summary:
-  - "Restated defect with a reproduction that does not depend on this session"
-  - "Classification: BUG, brownfield, full/strict"
-  - "Invariants that any fix must preserve"
-  - "Open questions that must be answered before an approach is chosen"
-done_when:
-  - "The defect is reproducible from this note alone"
-  - "The non-negotiable invariants are written down"
-  - "The spec and contract impact is classified, or recorded as an open question owned by a named role"
-owner: "developer"
+step_goal: "Prepare one bounded, independently reviewable correction without rewriting admission history."
+input_summary: ["Accepted scope", "Six-case current-main diagnostic", "Three persisted admission concerns"]
+output_summary: ["Current scope and source baseline", "Concrete disposition rationale", "Draft s02-s06 and Spec Card"]
+done_when: ["The packet is reviewable and the supported signing/recovery boundary is explicit."]
+owner: developer
 ```
+
+## Requirement Analysis Spec
+
+```yaml
+raw_request: "accept đề xuất, hãy làm"
+restated_request: "Continue admission for the existing CF-023 item and prepare its Spec/DoR, Approach and Task Plan; implement only after applicable human gates."
+request_type: BUG
+business_context: "A false already-approved verdict can encourage deleting accurate pending-review state."
+scope_in_ref: "product-specs/cards/protocol-receipt-binding-check.md#Scope.in_scope"
+scope_out_ref: "product-specs/cards/protocol-receipt-binding-check.md#Scope.out_of_scope"
+open_questions: ["Admission is complete; signed work-item and readiness decisions remain pending."]
+assumptions: ["The current ref/hash binding contract is the intended behavior; no new receipt format is needed."]
+dependencies: ["Source CLI with resume-proposal support", "Existing human Maintainer signing identity", "Current baseline for later implementation worktree"]
+risks_initial: ["Incorrectly suppressing real contradictions", "Broad error catches", "Using stale profile host mapping", "Confusing chat scope acceptance with signed gate approval"]
+acceptance_criteria_draft_ref: "product-specs/cards/protocol-receipt-binding-check.md#Acceptance Criteria.acceptance_criteria"
+notes_for_next_step: "Review admission and current drafts; no production implementation path is open."
+```
+
+## Classification and Source Baseline
+
+Semantic classification is BUG. The persisted materialization report has FEATURE at top level
+and in its candidate snapshot, while old draft headers said BUG. Recovery validates equality.
+All unsigned draft headers now retain FEATURE to match the immutable CLI snapshot. This is an
+explicit legacy metadata compatibility choice, not a claim of new-feature scope. No report,
+candidate history or managed protocol block is hand-edited. The CLI's next signed disposition
+refreshes its own s01 projection. No supported reclassification command was found; do not use
+ordinary materialize to overwrite an existing report.
+
+The stored workflow_root points to this main checkout. Draft-only authoring therefore uses this
+canonical owner. The old detached worktree at 0dc985d is preserved read-only; it lacks current
+recovery/runtime changes and must not become the implementation baseline. s06 T0 owns the future
+fresh, isolated implementation checkout once the admission and work-item gates permit it.
+
+## Admission Decision Packet
+
+User scope acceptance is recorded at 2026-10-26T14:07:31.408850+00:00 (UTC recording time, not the chat timestamp).
+One existing item remains sufficient. The exact near-match concern names three completed owners:
+
+| Existing owner | Distinct scope | Disposition rationale |
+| --- | --- | --- |
+| trusted-receipt-namespace-resolution | Git-root namespace resolution and dirty-delivery close protection | Preserve DONE and the shared namespace; collector binding is a separate defect. |
+| artifact-governance-enforcement | Ownership/layer enforcement, resolver and release contracts | Shared utility use does not duplicate this collector correction. |
+| artifact-governance-model | Documentation of artifact ownership/placement | Preserve the model; no governance-model redesign is required. |
+
+The other concerns are scope clarification and review of existing work. The Spec Card fixes one
+outcome and the overlap analysis above completes that review. These are accepted-scope evidence
+and proposed signed reasons, not forged admission history. All three current entries require
+normal Maintainer disposition with fresh snapshot-specific `di:` IDs. A reviewed helper at
+`/tmp/cf023-admission-20261026/admit-cf023.cjs` defaults to read-only inspection. Its `--sign` mode
+is for the user's own TTY and stops after those three dispositions. It never approves the work
+item, authoring gates or implementation. The command and verification appear in s03; the helper
+checksum is supplied with the handoff.
 
 ## Governance Context
+
 ```yaml
-governance_ref: "project-context/project-context.md"
-applicable_principles:
-  - "Prefer the smallest solution that is correct"
-  - "TDD for behavior change"
-  - "Do not self-declare done"
-  - "AI proposes, human approves"
-required_reviews:
-  - "Spec at s04"
-  - "Contract at s04 if the approved-gate verdict is judged a contract"
-  - "DoR at s04"
-  - "Approach at s05"
-  - "Task Plan at s06"
-prohibited_actions:
-  - "Weakening any existing control: TTY, passphrase, per-gate receipt, signature verification, human-filled gate_reviews"
-  - "Reverting the approved one-repository-one-namespace decision from trusted-receipt-namespace-resolution"
-  - "Invalidating, relocating or rewriting receipts already on disk"
-  - "Clearing blockers or required_actions to make a validator green"
-open_governance_questions:
-  - id: "GOV-Q1"
-    question: "Is the approved-gate verdict a contract? Tightening it will make some currently green work items report errors, and the tightened rule is observable to every consumer of the published bundle. If yes, this needs the contract gate and a compatibility story rather than a plain defect fix."
-    owner: "po"
-  - id: "GOV-Q2"
-    question: "Prospective-only or retrospective? trusted-receipt-namespace-resolution set a prospective-only precedent for an equivalent tightening. Reconfirm it here, or decide that existing receipts whose digests no longer match must be re-sealed."
-    owner: "po"
+request_lane: product_delivery
+classification_reasons: ["HARD_SECURITY_SENSITIVE", "Existing full/strict trust-boundary correction"]
+trigger_basis: "Approval-evidence attribution in a trusted validator; no signing or credential behavior changes."
+adaptive_writes: disabled
+adaptive_reason: "Source 2.7.0 versus installed 2.6.3 minor mismatch; retain existing legacy writer/profile."
+required_role_reasons:
+  po: [ROLE_PO_PRODUCT_OUTCOME]
+  ba: [ROLE_BA_REQUIREMENTS]
+  ta: [ROLE_TA_SECURITY_RISK]
+  developer: [ROLE_DEVELOPER_DELIVERY]
+  qc: [ROLE_QC_VERIFICATION]
+required_gate_reasons:
+  spec: [GATE_SPEC_PRODUCT_DELIVERY]
+  dor: [GATE_DOR_PRODUCT_DELIVERY]
+  approach: [GATE_APPROACH_PRODUCT_DELIVERY]
+  task_plan: [GATE_TASK_PLAN_PRODUCT_DELIVERY]
+  dod: [GATE_DOD_PRODUCT_DELIVERY]
+legacy_gate_boundary: "Preserve the existing report/profile. Reasoned role input is not an adaptive materialization or a new gate."
+not_applicable: "No public API/event/data schema, migration, new foundation, UAT environment or release operation."
 ```
 
-## Artifact Chính
-```yaml
-raw_request: >-
-  Found during the 2026-09-16 audit of PR #5: wfc protocol reported four errors saying the
-  report claims gates are pending after a trusted receipt is APPROVED. The report was correct
-  and the validator was wrong.
-restated_request: >-
-  getProtocolStateContradictionErrors decides that a gate is approved by calling
-  hasApprovedReceipt, which checks only approval_status and signature validity. It never
-  compares the receipt's artifact_ref and artifact_sha256 against the gate-host note present in
-  the checkout being validated. Because the receipt namespace is deliberately shared across the
-  whole repository, a gate approved against one version of a note is read as approved against
-  any other version of that same note, and accurate required_actions are then reported as
-  contradictions.
-request_type: BUG
-user_problem_initial: >-
-  A human reading the validator is told that work already approved is being falsely claimed as
-  pending. Acting on that message means deleting accurate required actions. The cheapest
-  response to the error is the one that destroys correct state.
-business_context_initial: >-
-  This sits in the authority chain. The receipt is the artifact that proves a human approved a
-  specific document; a receipt that is accepted without its binding proves only that some
-  document was once signed. REQ-AG-009 enforcement depends on this verdict being right.
-scope_draft:
-  in:
-    - "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js - getProtocolStateContradictionErrors"
-    - "packages/workflow-bundle/scripts/validate-work-item-protocol.js - approvedGates construction"
-    - "Regression fixtures covering matched digest, mismatched digest and missing artifact"
-  out:
-    - "Receipt schema redesign, including the block-level binding discussed as R-07"
-    - "The receipt namespace layout, which is an approved decision and not in question here"
-    - "Re-sealing or migrating existing receipts"
-    - "Any change to signing, passphrase or TTY controls"
-constraints_initial:
-  - "Receipts already on disk must stay readable and valid; schema v1 is unchanged"
-  - "One repository addresses one receipt namespace, per the approved decision in trusted-receipt-namespace-resolution"
-  - "The comparison to be used already exists as getTrustedReceiptArtifactErrors and needs no new crypto"
-  - "Behavior change - TDD applies: a failing fixture must reproduce the false verdict before any fix"
-assumptions_initial:
-  - "artifact_ref plus artifact_sha256 in a schema v1 receipt is sufficient to decide whether a receipt binds to the note in this checkout"
-  - "A receipt whose bound artifact is absent from the checkout should not count as an approval for that checkout"
-open_questions_initial:
-  - id: "OQ-01"
-    question: "When a receipt is signature-valid but its digest does not match the local note, what is the correct verdict: not-approved, or a distinct third state such as approved-elsewhere? The second preserves the information that a human did approve something."
-    owner: "developer"
-  - id: "OQ-02"
-    question: "How many currently green work items turn red once this check is added? Measure before choosing prospective-only or retrospective."
-    owner: "qc"
-  - id: "OQ-03"
-    question: "Does the same unbound-receipt assumption appear on other paths that call hasApprovedReceipt, in particular work-item approval and change approval?"
-    owner: "developer"
-dependencies_initial:
-  - "trusted-receipt-namespace-resolution (ARCHIVED) - its one-namespace decision is an input, not a target"
-  - "CR-008 REQ-AG-009, whose enforcement produces the false message"
-risks_initial:
-  - "Tightening the check turns currently green work items red; without OQ-02 measured first, the size of that blast radius is unknown"
-  - "A wrong third-state design could let approved-elsewhere be read as approved-here, reintroducing the same defect under a new name"
-  - "Fixing only the protocol path leaves the same assumption live on the other callers named in OQ-03"
-notes_for_step_2: >-
-  The business goal step should state the value in terms of what the verdict is for: a human
-  must be able to act on a validator message without destroying correct state. Speed of the
-  validator is not the point.
-```
+## Current Diagnostic Evidence
 
-## Evidence
-```yaml
-code_path:
-  - ref: "packages/workflow-bundle/scripts/validate-work-item-protocol.js:401-419"
-    note: "Builds approvedGates by loading each gate receipt and calling hasApprovedReceipt."
-  - ref: "packages/workflow-bundle/scripts/workflow-trusted-approval-utils.js:546-553"
-    note: "hasApprovedReceipt checks approval_status and signature only."
-  - ref: "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js:827-836"
-    note: "getTrustedReceiptArtifactErrors compares artifact_ref and artifact_sha256; it is not called on the protocol path."
-  - ref: "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js:838-864"
-    note: "getProtocolStateContradictionErrors raises the contradiction from approvedGates alone."
-reproduction:
-  work_item: "code-factory-holistic-audit-remediation"
-  receipts_sealed:
-    - "spec - ba - 2026-09-11T14:33:43.972Z"
-    - "dor - qc - 2026-09-11T14:33:56.365Z"
-    - "approach - developer - 2026-09-12T05:51:55.282Z"
-    - "task_plan - developer - 2026-09-12T06:23:55.010Z"
-  digest_comparison:
-    - gate_host: "s04.acceptance-criteria.md"
-      receipt: "41078181e9b0e8186c900b8d1908ca9f52820d6b763b37467681325edc389f29"
-      branch_codex_holistic_audit: "41078181e9b0e8186c900b8d1908ca9f52820d6b763b37467681325edc389f29"
-      branch_docs_publish_planning_work: "979785f8f9755580d1936373f761755fc2a96df9ffabeb29274456b2e9007e87"
-    - gate_host: "s05.technical-approach.md"
-      receipt: "10b4015018013eebc9a623c5651148f3b4e648c46717f83b1c401b1df2048f8b"
-      branch_codex_holistic_audit: "10b4015018013eebc9a623c5651148f3b4e648c46717f83b1c401b1df2048f8b"
-      branch_docs_publish_planning_work: "8e72e89280e1c2c795676ff48ab075217e2d22e11c0189feb9f30796eca4da08"
-    - gate_host: "s06.task-breakdown.md"
-      receipt: "5e27d9630ad5d502709069103f5deb22952604b30ab52115c5a03917ad9b4bb5"
-      branch_codex_holistic_audit: "5e27d9630ad5d502709069103f5deb22952604b30ab52115c5a03917ad9b4bb5"
-      branch_docs_publish_planning_work: "e165fd8aca4e673b145fa83317777d5a9ac975363d1883b55a4fbe07af68d665"
-  observed: >-
-    On docs/publish-planning-work, wfc protocol emits four errors claiming gates spec, dor,
-    approach and task_plan are pending after an APPROVED receipt. None of those four gates was
-    approved against the notes present on that branch.
-  expected: >-
-    A receipt whose artifact_sha256 does not match the gate-host note in this checkout does not
-    make that gate approved here, and produces no contradiction error.
-pattern_reference: >-
-  This is the CF-022 shape in the authority chain: a mechanism issues a confident verdict while
-  the input that disproves it - artifact_sha256, inside the receipt it has just loaded - is
-  available and unread. Proposed portfolio id CF-023.
-```
+The parent audit's October 26 s07 checkpoint owns the exact six-case diagnostic and source.
+Validator hash: 26b6bd6be16eb5855a2f4e01e3701677452beea7d4e5cccf84f012a3ef6d0746.
+Collector: validate-work-item-protocol.js:468-480. It accepts signature/status alone.
+Lifecycle guard uses getTrustedReceiptArtifactErrors and rejects stale ref/hash.
+Three controls pass; stale hash, wrong relative ref and MATERIALIZED/stale-host cases reproduce
+false contradiction reporting. This is not evidence of an ACTIVE authorization bypass. Earlier
+September source line numbers and speculative broader approval impacts are superseded by this
+bounded current-main result. Permanent regressions must use synthetic evidence, not these live hosts.
 
-## Existing System Baseline
+## Traceability
+
 ```yaml
-current_behavior: >-
-  validate-work-item-protocol builds the set of approved gates by loading one trusted receipt per
-  gate and accepting it when approval_status is APPROVED and the signature verifies. That set is
-  then used to decide whether the report's blockers and required_actions contradict reality.
-what_already_works:
-  - "Receipt signing, passphrase and TTY controls"
-  - "Signature verification, which correctly rejects a forged or altered receipt"
-  - "getTrustedReceiptArtifactErrors, which already performs the missing comparison on other paths"
-  - "The one-repository-one-namespace address, approved in trusted-receipt-namespace-resolution"
-what_must_not_regress:
-  - "Every receipt currently on disk stays readable and valid under schema v1"
-  - "No gate becomes easier to pass than it is today"
-  - "Work items whose receipts do match their gate-host notes keep reporting exactly as they do now"
-blast_radius: "packages/workflow-bundle validator paths only; no artifact, note or receipt is rewritten."
+upstream: ["User scope acceptance", "Parent audit s07 Current portfolio reconciliation and CF-023 triage — 2026-10-26"]
+next_step: "Signed admission/recovery; work-item approval; review the prepared readiness drafts."
 ```
 
 ## Work Item Protocol
 ```yaml
-protocol_status: PROPOSED
-approval_status: PENDING_REVIEW
+protocol_status: VERIFIED
+approval_status: APPROVED
 review_required: true
 work_item_slug: "protocol-receipt-binding-check"
-work_item_type: BUG
+work_item_type: FEATURE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/protocol-receipt-binding-check"
-current_step: ""
-granted_write_paths: []
-materialization_status: PROPOSED
+current_step: "s08"
+granted_write_paths:
+  - "packages/workflow-bundle/scripts/validate-work-item-protocol.js"
+  - "packages/workflow-bundle/test/work-item-protocol.test.js"
+  - "work-items/protocol-receipt-binding-check"
+  - "product-specs/cards/protocol-receipt-binding-check.md"
+materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
 bootstrap_reviewed_by: ""
@@ -282,37 +223,39 @@ bootstrap_reviewed_at: ""
 change_strategy: none
 change_id: ""
 decision_owner: "agent"
-protocol_owner: ""
-reviewed_by: ""
-reviewed_at: ""
-handoff_target: "human-clarify"
-dedup_result: needs_review
+protocol_owner: "developer"
+reviewed_by: "maintainer"
+reviewed_at: "2026-10-27T02:46:56.257Z"
+handoff_target: "definition-of-done"
+last_transition_action: "verify"
+last_transition_at: "2026-10-27T09:57:59.806Z"
 required_actions:
-  - {"id":"se:b967516478eb716faf4acecf2c1bc793df1ee73a625fcf275c54d4811f275bde","kind":"workflow_followup","text":"Làm rõ scope để chốt single hay split."}
-  - {"id":"se:198b45f070c91dc20c943b1592896ae0c5b21f18e09679c4306aa6d7a95e9876","kind":"workflow_followup","text":"Review existing work-items/changes trước khi scaffold."}
-blockers:
-  - {"id":"se:5d63f0e5eab3755098c7f439497813754ef25cc3621cdb58b82d86ce754f675f","kind":"delivery_blocker","text":"Có work item gần nghĩa cần review: trusted-receipt-namespace-resolution, artifact-governance-enforcement, artifact-governance-model"}
+  - {"id":"se:c57e1d0a4fb23291a137cb50d8b9fb4f2f72dd48c05dda98a45a16ca97190c47","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+blockers: []
+review_notes:
+  - "Human approves the existing bounded CF-023 work item and reviews the displayed Spec/DoR/Approach/Task Plan packet. No implementation is authorized until all readiness receipts and activation checks pass."
 refs:
   - "work-items/trusted-receipt-namespace-resolution"
   - "work-items/artifact-governance-enforcement"
   - "work-items/artifact-governance-model"
+  - "work-items/protocol-receipt-binding-check"
 audit_events:
   - "REQUEST_CAPTURED"
   - "CANDIDATE_PROPOSED"
   - "SLUG_LOCKED"
+  - "DEDUP_CONFIRMED"
+  - "WORKFLOW_SCAFFOLDED"
+  - "STEP_OPENED"
+  - "WORK_ITEM_APPROVED"
+  - "READINESS_BUNDLE_APPROVED"
+  - "WORK_ITEM_ACTIVATED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
-## Traceability
-```yaml
-source_inputs:
-  - "2026-09-16 audit of PR #5 docs/publish-planning-work"
-  - "work-items/trusted-receipt-namespace-resolution"
-  - "changes/CR-008/spec-delta/srs.delta.md REQ-AG-009"
-next_step: "s02 Business Goal"
-```
+## Admission Recovery Evidence
 
-## Handoff
-- Settled: the defect is one missing comparison on one path; the receipt namespace layout is an approved decision and stays out of scope.
-- Still open: OQ-01 verdict shape, OQ-02 blast radius, OQ-03 other callers, and GOV-Q1 whether this is a contract change.
-- Condition to enter step 2: a human approves this work item; the three open questions do not block s02 but must be closed before s05.
-- Proposed write scope for the approval to grant, narrower than a directory grant: `packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js`, `packages/workflow-bundle/scripts/validate-work-item-protocol.js`, `packages/workflow-bundle/test`, `.claude/worktrees/cf-023-receipt-binding`, `work-items/protocol-receipt-binding-check`.
+The source CLI verified all three signed Maintainer dispositions and applied recovery operation
+`4e41e2d8-13a1-41e3-89ca-3177ea2b63cb` at 2026-10-27T02:37:22.596Z.
+The report now owns MATERIALIZED/s01, READY materialization and no_conflict. Its original candidate
+and signed history are preserved. The previous admission helper is now historical; do not rerun it.
+Work-item approval and four independent readiness receipts remain pending.
