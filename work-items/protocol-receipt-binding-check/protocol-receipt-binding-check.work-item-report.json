@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "CF-023: the protocol state-contradiction check treats a gate as approved from a signature-valid trusted receipt without comparing the receipt artifact_ref and artifact_sha256 against the current gate-host note, so a gate approved against one checkout of a note reads as approved against a different version of that same note elsewhere in the repository.",
@@ -82,12 +82,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "id": "se:c57e1d0a4fb23291a137cb50d8b9fb4f2f72dd48c05dda98a45a16ca97190c47",
+      "id": "se:00998458639659bddb911632eedc0ad6188984d228c05fe5b7582c1d1294a2c8",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -107,7 +107,8 @@
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -177,6 +178,14 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "CF-023 technical verification: source commit 0f0f5ad, 9/9 criteria and 50/50 registered test files PASS; lint/SAST unavailable and disclosed; human DoD remains pending."
+    },
+    {
+      "timestamp": "2026-10-27T10:09:23.635Z",
+      "action": "close",
+      "actor": "qc",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Human QC DoD signature verified against committed s08 in main and implementation branch. Technical delivery: 0f0f5ad; 9/9 criteria and 50/50 test files PASS. Signed reviewer accepts disclosed lint/SAST limitation. Source branch remains separate pending integration decision."
     }
   ],
   "resolved_state_history": [

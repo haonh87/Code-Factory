@@ -202,7 +202,7 @@ next_step: "Signed admission/recovery; work-item approval; review the prepared r
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "protocol-receipt-binding-check"
@@ -226,11 +226,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-10-27T02:46:56.257Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-10-27T09:57:59.806Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-10-27T10:09:23.635Z"
 required_actions:
-  - {"id":"se:c57e1d0a4fb23291a137cb50d8b9fb4f2f72dd48c05dda98a45a16ca97190c47","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+  - {"id":"se:00998458639659bddb911632eedc0ad6188984d228c05fe5b7582c1d1294a2c8","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "Human approves the existing bounded CF-023 work item and reviews the displayed Spec/DoR/Approach/Task Plan packet. No implementation is authorized until all readiness receipts and activation checks pass."
@@ -250,6 +250,7 @@ audit_events:
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Admission Recovery Evidence
