@@ -1,13 +1,13 @@
 {
-  "materialization_status": "PROPOSED",
-  "protocol_status": "PROPOSED",
+  "materialization_status": "READY",
+  "protocol_status": "VERIFIED",
   "decision_owner": "agent",
-  "protocol_owner": "",
+  "protocol_owner": "developer",
   "raw_request_summary": "CF-023: the protocol state-contradiction check treats a gate as approved from a signature-valid trusted receipt without comparing the receipt artifact_ref and artifact_sha256 against the current gate-host note, so a gate approved against one checkout of a note reads as approved against a different version of that same note elsewhere in the repository.",
   "request_source": "user",
   "candidate_count": 1,
   "split_decision": "single",
-  "dedup_result": "needs_review",
+  "dedup_result": "no_conflict",
   "work_items": [
     {
       "work_item_slug": "protocol-receipt-binding-check",
@@ -72,57 +72,54 @@
   "work_item_slug": "protocol-receipt-binding-check",
   "work_item_type": "FEATURE",
   "delivery_context": "brownfield",
-  "selected_profile": "strict",
-  "sdd_mode": "none",
-  "sdd_preset": "auto",
-  "sdd_light_profile": "preview",
-  "sdd_reasons": [
-    "planning-track-not-quick",
-    "governance-profile-not-default"
-  ],
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/protocol-receipt-binding-check",
-  "current_step": "",
+  "current_step": "s08",
+  "granted_write_paths": [
+    "packages/workflow-bundle/scripts/validate-work-item-protocol.js",
+    "packages/workflow-bundle/test/work-item-protocol.test.js",
+    "work-items/protocol-receipt-binding-check",
+    "product-specs/cards/protocol-receipt-binding-check.md"
+  ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "human-clarify",
+  "handoff_target": "definition-of-done",
   "required_actions": [
     {
-      "id": "se:b967516478eb716faf4acecf2c1bc793df1ee73a625fcf275c54d4811f275bde",
+      "id": "se:c57e1d0a4fb23291a137cb50d8b9fb4f2f72dd48c05dda98a45a16ca97190c47",
       "kind": "workflow_followup",
-      "text": "Làm rõ scope để chốt single hay split."
-    },
-    {
-      "id": "se:198b45f070c91dc20c943b1592896ae0c5b21f18e09679c4306aa6d7a95e9876",
-      "kind": "workflow_followup",
-      "text": "Review existing work-items/changes trước khi scaffold."
+      "text": "Collect DoD evidence and close the work item when ready."
     }
   ],
-  "blockers": [
-    {
-      "id": "se:5d63f0e5eab3755098c7f439497813754ef25cc3621cdb58b82d86ce754f675f",
-      "kind": "delivery_blocker",
-      "text": "Có work item gần nghĩa cần review: trusted-receipt-namespace-resolution, artifact-governance-enforcement, artifact-governance-model"
-    }
-  ],
+  "blockers": [],
   "refs": [
     "work-items/trusted-receipt-namespace-resolution",
     "work-items/artifact-governance-enforcement",
-    "work-items/artifact-governance-model"
+    "work-items/artifact-governance-model",
+    "work-items/protocol-receipt-binding-check"
   ],
   "audit_events": [
     "REQUEST_CAPTURED",
     "CANDIDATE_PROPOSED",
-    "SLUG_LOCKED"
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "READINESS_BUNDLE_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-10-27T02:46:56.257Z",
+  "review_notes": [
+    "Human approves the existing bounded CF-023 work item and reviews the displayed Spec/DoR/Approach/Task Plan packet. No implementation is authorized until all readiness receipts and activation checks pass."
   ],
   "bootstrap_gate_status": "NOT_REQUIRED",
   "bootstrap_gate_ref": "",
   "bootstrap_reviewed_by": "",
   "bootstrap_reviewed_at": "",
-  "review_required": true,
-  "approval_status": "PENDING_REVIEW",
-  "reviewed_by": "",
-  "reviewed_at": "",
-  "review_notes": [],
   "protocol_events": [
     {
       "timestamp": "2026-09-16T06:17:44.229Z",
@@ -131,6 +128,174 @@
       "from_status": "INTAKE",
       "to_status": "PROPOSED",
       "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-10-27T02:37:22.596Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Signed admission concerns resolved."
+    },
+    {
+      "timestamp": "2026-10-27T02:37:22.596Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Resumed proposal operation 4e41e2d8-13a1-41e3-89ca-3177ea2b63cb."
+    },
+    {
+      "timestamp": "2026-10-27T02:46:56.316Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human approves the existing bounded CF-023 work item and reviews the displayed Spec/DoR/Approach/Task Plan packet. No implementation is authorized until all readiness receipts and activation checks pass."
+    },
+    {
+      "timestamp": "2026-10-27T02:46:56.257Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "05db74c5-b282-4081-a6b2-f90506118e3f"
+    },
+    {
+      "timestamp": "2026-10-27T02:47:43.303Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-10-27T09:57:59.806Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "CF-023 technical verification: source commit 0f0f5ad, 9/9 criteria and 50/50 registered test files PASS; lint/SAST unavailable and disclosed; human DoD remains pending."
     }
-  ]
+  ],
+  "resolved_state_history": [
+    {
+      "operation_id": "2a3317dc-c6cd-4ce1-a8d6-7bb6b59be52f",
+      "source_collection": "blockers",
+      "source_entry_id": "di:b9a6706e0258a4801226ca4dd4d2d3649c41f2585c99abf37d8fa9360bc88914",
+      "original_entry": {
+        "id": "se:5d63f0e5eab3755098c7f439497813754ef25cc3621cdb58b82d86ce754f675f",
+        "kind": "delivery_blocker",
+        "text": "Có work item gần nghĩa cần review: trusted-receipt-namespace-resolution, artifact-governance-enforcement, artifact-governance-model"
+      },
+      "original_text": "Có work item gần nghĩa cần review: trusted-receipt-namespace-resolution, artifact-governance-enforcement, artifact-governance-model",
+      "actor": "maintainer",
+      "reason": "CF-023 near-match review: retain protocol-receipt-binding-check as a separate bounded collector ref/hash diagnostic correction. Preserve the completed namespace-resolution, artifact-governance-enforcement and artifact-governance-model scopes and decisions; no signing, schema or namespace redesign.",
+      "resolved_at": "2026-10-27T02:36:54.771Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "protocol-receipt-binding-check",
+          "operation_id": "2a3317dc-c6cd-4ce1-a8d6-7bb6b59be52f",
+          "state_id": "di:b9a6706e0258a4801226ca4dd4d2d3649c41f2585c99abf37d8fa9360bc88914",
+          "source_collection": "blockers",
+          "original_entry": {
+            "id": "se:5d63f0e5eab3755098c7f439497813754ef25cc3621cdb58b82d86ce754f675f",
+            "kind": "delivery_blocker",
+            "text": "Có work item gần nghĩa cần review: trusted-receipt-namespace-resolution, artifact-governance-enforcement, artifact-governance-model"
+          },
+          "original_text": "Có work item gần nghĩa cần review: trusted-receipt-namespace-resolution, artifact-governance-enforcement, artifact-governance-model",
+          "actor": "maintainer",
+          "reason": "CF-023 near-match review: retain protocol-receipt-binding-check as a separate bounded collector ref/hash diagnostic correction. Preserve the completed namespace-resolution, artifact-governance-enforcement and artifact-governance-model scopes and decisions; no signing, schema or namespace redesign.",
+          "resolved_at": "2026-10-27T02:36:54.771Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "7ZFy/iLOCUaHuOYUV1Y/JrfKesfaIhs1fM8OC16Fb/X0bzHYSJ8WIikZFrUzPh1GgsRc2ffHBKQnISwusH36Dw=="
+      }
+    },
+    {
+      "operation_id": "7559a8ab-9462-4e2a-9a9c-3d79bb62abb5",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:3e907aabdcce35e37f887e21806d620617ea4c72d96d9b592ce46548bcbe07a4",
+      "original_entry": {
+        "id": "se:b967516478eb716faf4acecf2c1bc793df1ee73a625fcf275c54d4811f275bde",
+        "kind": "workflow_followup",
+        "text": "Làm rõ scope để chốt single hay split."
+      },
+      "original_text": "Làm rõ scope để chốt single hay split.",
+      "actor": "maintainer",
+      "reason": "CF-023 scope clarification: one existing work item and one outcome, approvedGates membership bound to the current gate-host ref/hash using existing helpers. Limit implementation to the validator collector and its protocol tests; no feature expansion or receipt-format change.",
+      "resolved_at": "2026-10-27T02:36:57.635Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "protocol-receipt-binding-check",
+          "operation_id": "7559a8ab-9462-4e2a-9a9c-3d79bb62abb5",
+          "state_id": "di:3e907aabdcce35e37f887e21806d620617ea4c72d96d9b592ce46548bcbe07a4",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:b967516478eb716faf4acecf2c1bc793df1ee73a625fcf275c54d4811f275bde",
+            "kind": "workflow_followup",
+            "text": "Làm rõ scope để chốt single hay split."
+          },
+          "original_text": "Làm rõ scope để chốt single hay split.",
+          "actor": "maintainer",
+          "reason": "CF-023 scope clarification: one existing work item and one outcome, approvedGates membership bound to the current gate-host ref/hash using existing helpers. Limit implementation to the validator collector and its protocol tests; no feature expansion or receipt-format change.",
+          "resolved_at": "2026-10-27T02:36:57.635Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "T7jPd4I2N5oJ7gYjcawGdd8holp1Jfv2n6oHH3NuTWV9yqdoUDRKcwKeNSQmVjtubUOJV/gp9d1efeWlb5ZnBQ=="
+      }
+    },
+    {
+      "operation_id": "b8e65245-f3a4-4db2-b8df-9a4e194ce5e5",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:1fbb57f077cddb3f03a1389516c6b3628d9498d58c51ce39f67df8c223f65dea",
+      "original_entry": {
+        "id": "se:198b45f070c91dc20c943b1592896ae0c5b21f18e09679c4306aa6d7a95e9876",
+        "kind": "workflow_followup",
+        "text": "Review existing work-items/changes trước khi scaffold."
+      },
+      "original_text": "Review existing work-items/changes trước khi scaffold.",
+      "actor": "maintainer",
+      "reason": "CF-023 existing-work review: reviewed the three named completed owners and their distinct responsibilities. Reuse the current trust and binding helpers; retain this existing proposal, preserve other work-item states and grants, and do not create a duplicate item.",
+      "resolved_at": "2026-10-27T02:37:00.465Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "protocol-receipt-binding-check",
+          "operation_id": "b8e65245-f3a4-4db2-b8df-9a4e194ce5e5",
+          "state_id": "di:1fbb57f077cddb3f03a1389516c6b3628d9498d58c51ce39f67df8c223f65dea",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:198b45f070c91dc20c943b1592896ae0c5b21f18e09679c4306aa6d7a95e9876",
+            "kind": "workflow_followup",
+            "text": "Review existing work-items/changes trước khi scaffold."
+          },
+          "original_text": "Review existing work-items/changes trước khi scaffold.",
+          "actor": "maintainer",
+          "reason": "CF-023 existing-work review: reviewed the three named completed owners and their distinct responsibilities. Reuse the current trust and binding helpers; retain this existing proposal, preserve other work-item states and grants, and do not create a duplicate item.",
+          "resolved_at": "2026-10-27T02:37:00.465Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "8hQhVlLRdGG6GT8ADQgH0sl6giqxCZjcned5MTG/yXPzLm8jhYrKEqOOto5YkIEGIZhkVJM/+7Hq9giFtnPGBg=="
+      }
+    }
+  ],
+  "materialization_recovery": {
+    "schema_version": 1,
+    "operation_id": "4e41e2d8-13a1-41e3-89ca-3177ea2b63cb",
+    "source_report_sha256": "feb6d5ac4965f349a1f047022f1f4218fc506642c12167d274ecae034ac8e860",
+    "resulting_status": "MATERIALIZED",
+    "disposition_operation_ids": [
+      "2a3317dc-c6cd-4ce1-a8d6-7bb6b59be52f",
+      "7559a8ab-9462-4e2a-9a9c-3d79bb62abb5",
+      "b8e65245-f3a4-4db2-b8df-9a4e194ce5e5"
+    ],
+    "completed_at": "2026-10-27T02:37:22.596Z"
+  }
 }
