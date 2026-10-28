@@ -1,0 +1,118 @@
+{
+  "checked_at": "2026-10-28T03:02:03.849888+00:00",
+  "artifact_checks": [
+    {
+      "check": "workflow",
+      "command": [
+        "node",
+        "packages/workflow-bundle/bin/wfc.js",
+        "--workflow-root",
+        "work-items/workflow-pack-security-baseline",
+        "--project-root",
+        "."
+      ],
+      "exit_code": 0,
+      "output": "OK: validated workflow naming (8 files) and governance (8 notes) under <project>/work-items/workflow-pack-security-baseline\n"
+    },
+    {
+      "check": "naming",
+      "command": [
+        "node",
+        "packages/workflow-bundle/bin/wfc.js",
+        "naming",
+        "--workflow-root",
+        "work-items/workflow-pack-security-baseline",
+        "--project-root",
+        "."
+      ],
+      "exit_code": 0,
+      "output": "OK: validated 8 workflow artifact files under <project>/work-items/workflow-pack-security-baseline\n"
+    },
+    {
+      "check": "governance",
+      "command": [
+        "node",
+        "packages/workflow-bundle/bin/wfc.js",
+        "governance",
+        "--workflow-root",
+        "work-items/workflow-pack-security-baseline",
+        "--project-root",
+        "."
+      ],
+      "exit_code": 0,
+      "output": "OK: validated governance for 8 workflow note files under <project>/work-items/workflow-pack-security-baseline\n"
+    },
+    {
+      "check": "execution",
+      "command": [
+        "node",
+        "packages/workflow-bundle/bin/wfc.js",
+        "exec",
+        "--workflow-root",
+        "work-items/workflow-pack-security-baseline",
+        "--project-root",
+        "."
+      ],
+      "exit_code": 0,
+      "output": "OK: validated execution runtime for 8 workflow note files under <project>/work-items/workflow-pack-security-baseline\n"
+    },
+    {
+      "check": "planning",
+      "command": [
+        "node",
+        "packages/workflow-bundle/bin/wfc.js",
+        "plan",
+        "--workflow-root",
+        "work-items/workflow-pack-security-baseline",
+        "--project-root",
+        "."
+      ],
+      "exit_code": 0,
+      "output": "OK: validated planning track for 8 workflow note files under <project>/work-items/workflow-pack-security-baseline\n"
+    },
+    {
+      "check": "protocol",
+      "command": [
+        "node",
+        "packages/workflow-bundle/bin/wfc.js",
+        "protocol",
+        "--workflow-root",
+        "work-items",
+        "--project-root",
+        "."
+      ],
+      "exit_code": 0,
+      "output": "OK: validated 30 protocol-managed work items under <project>/work-items (skipped legacy: 21)\n"
+    }
+  ],
+  "utf8_text_files": 20,
+  "utf8": "PASS",
+  "json_sarif_parse": "PASS",
+  "evidence_shape": "498 manifest/coverage rows; 43 skills; 420 unique advisory IDs; six manual findings",
+  "sanitizer_controls": {
+    "allowlist_redaction": "PASS",
+    "private_path_rejection": "PASS",
+    "untracked_path_rejection": "PASS",
+    "traversal_rejection": "PASS"
+  },
+  "retained_secret_markers_and_private_paths": "ABSENT",
+  "source_main_worktree_export_hashes": "498/498 PASS",
+  "main_tracked_hashes": "1186/1186 PASS",
+  "readiness_receipts": "See readiness-verification.json: five signatures; four current host hashes PASS",
+  "protocol_status": "BLOCKED/s08",
+  "historical_preservation_gap": "AC-SEC-008 PARTIAL; no invented snapshot or exception approval",
+  "skip_reasons": [
+    "No production behavior change: no target program/unit/integration/build run",
+    "Native PowerShell/CMD parsers unavailable",
+    "No dependency CVE or history scan in approved scope"
+  ],
+  "overall": "PARTIAL: technical checks above pass, historical evidence gap and human closure remain open",
+  "closeout_preparation": {
+    "decision_recorded_at": "2026-10-28T08:31:58.975803+00:00",
+    "exception_id": "GOV-EX-003",
+    "exception_status": "APPROVED by explicit user acceptance",
+    "scope": "Historical evidence-method limitation only; no finding waived",
+    "protocol": "BLOCKED until signed disposition",
+    "human_closure": "QC DoD and PO business acceptance pending"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "checked_at": "2026-10-28T02:39:32.115633+00:00",
+  "source_commit": "7dce0335c7339ba6f3859e1bc34aaa1168f40971",
+  "source_files_main_worktree_export": 498,
+  "source_hashes": "PASS",
+  "main_tracked_files": 1186,
+  "main_tracked_hashes": "PASS",
+  "preexisting_child_files_checked": 7,
+  "preexisting_child_hashes": "PASS",
+  "installed_harness_before_after_hashes": "NOT_CAPTURED",
+  "unrelated_untracked_before_after_hashes": "NOT_CAPTURED",
+  "scope_guards": "Containers received only exported source/config/output/temp; no host home, Git metadata, credentials or installed harness mount. Host actions were limited to scanner acquisition, dedicated scratch, worktree creation and owned evidence.",
+  "verdict": "PARTIAL",
+  "gap": "AC-SEC-008 requires before/after hashes for installed harnesses and unrelated work. Historical missing hashes cannot be reconstructed. Isolation evidence does not replace this exact requirement.",
+  "remediation": "QC/governance owner must decide a documented evidence-method amendment or exception before closeout. No waiver is self-approved."
+}

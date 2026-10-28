@@ -1,0 +1,350 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "VERIFIED",
+  "decision_owner": "agent",
+  "protocol_owner": "developer",
+  "raw_request_summary": "Create one bounded security baseline evidence work item for CF-006 / P-SECURITY. Audit the tracked skills, hooks, adapters, MCP services and workflow-bundle scripts at main commit 7dce0335c7339ba6f3859e1bc34aaa1168f40971 using isolated pinned local scanners and manual trust-boundary review. Produce source and tool manifests, control results, coverage accounting and sanitized finding dispositions. No production fixes, release, installed harness changes or source upload; remediation requires separate work items.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "workflow-pack-security-baseline",
+      "work_item_title": "Workflow Pack Security Baseline",
+      "work_item_type": "RESEARCH",
+      "scope_summary": "Create one bounded security baseline evidence work item for CF-006 / P-SECURITY. Audit the tracked skills, hooks, adapters, MCP services and workflow-bundle scripts at main commit 7dce0335c7339ba6f3859e1bc34aaa1168f40971 using isolated pinned local scanners and manual trust-boundary review. Produce source and tool manifests, control results, coverage accounting and sanitized finding dispositions. No production fixes, release, installed harness changes or source upload; remediation requires separate work items.",
+      "primary_outcome": "Create one bounded security baseline evidence work item for CF-006 / P-SECURITY. Audit the tracked skills, hooks, adapters, MCP services and workflow-bundle scripts at main commit 7dce0335c7339ba6f3859e1bc34aaa1168f40971 using isolated pinned local scanners and manual trust-boundary review. Produce source and tool manifests, control results, coverage accounting and sanitized finding dispositions. No production fixes, release, installed harness changes or source upload; remediation requires separate work items.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "strict",
+      "sdd_reasons": [],
+      "sdd_preset": "strict",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/release-workflow-bundle-v2-6-3",
+        "work-items/release-workflow-bundle-v2-6-4",
+        "work-items/release-workflow-bundle-v2-6-4-cr010"
+      ],
+      "collision_notes": [
+        "release-workflow-bundle-v2-6-3 (score=3)",
+        "release-workflow-bundle-v2-6-4 (score=3)",
+        "release-workflow-bundle-v2-6-4-cr010 (score=3)"
+      ],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "Scope chưa cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item workflow-pack-security-baseline --planning-track full --delivery-context brownfield --governance-profile strict",
+        "npm run validate:workflow -- --workflow-root work-items/workflow-pack-security-baseline --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory"
+      ],
+      "blockers": [
+        {
+          "id": "se:3ecfb16a24993a1e73a9bddb63061c5e2e9f153d083ac769d73a79c053fe59c7",
+          "kind": "delivery_blocker",
+          "text": "Có work item gần nghĩa cần review: release-workflow-bundle-v2-6-3, release-workflow-bundle-v2-6-4, release-workflow-bundle-v2-6-4-cr010"
+        }
+      ]
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=RESEARCH",
+    "delivery_context=brownfield",
+    "dedup_result=needs_review",
+    "change_strategy=none",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=strict",
+    "selected_profile=strict",
+    "sdd_mode=none",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "workflow-pack-security-baseline",
+  "work_item_type": "RESEARCH",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/workflow-pack-security-baseline",
+  "current_step": "s08",
+  "granted_write_paths": [
+    "work-items/workflow-pack-security-baseline",
+    ".claude/worktrees/workflow-pack-security-baseline/work-items/workflow-pack-security-baseline",
+    "project-context/governance-exception-register.md"
+  ],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "definition-of-done",
+  "required_actions": [
+    {
+      "id": "se:2343c85ac53dba2cf5d7db3d8c6bee4d1dda889ef4f0ebd1b1e1786c0971f97c",
+      "kind": "workflow_followup",
+      "text": "Collect DoD evidence and close the work item when ready."
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/release-workflow-bundle-v2-6-3",
+    "work-items/release-workflow-bundle-v2-6-4",
+    "work-items/release-workflow-bundle-v2-6-4-cr010",
+    "work-items/workflow-pack-security-baseline"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "READINESS_BUNDLE_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "WORK_ITEM_BLOCKED",
+    "WORK_ITEM_RESUMED",
+    "VERIFICATION_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-10-27T14:39:32.499Z",
+  "review_notes": [
+    "Human approves the existing bounded P-SECURITY work item and reviews the displayed Spec/DoR/Approach/Task Plan packet. No implementation is authorized until all readiness receipts and activation checks pass."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-10-27T10:42:42.632Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-10-27T10:45:40.141Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Signed admission concerns resolved."
+    },
+    {
+      "timestamp": "2026-10-27T10:45:40.141Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Resumed proposal operation a2936447-0ea5-43be-baae-be03cb2d9a40."
+    },
+    {
+      "timestamp": "2026-10-27T14:39:32.559Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human approves the existing bounded P-SECURITY work item and reviews the displayed Spec/DoR/Approach/Task Plan packet. No implementation is authorized until all readiness receipts and activation checks pass."
+    },
+    {
+      "timestamp": "2026-10-27T14:39:32.499Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "183f17d1-9a58-4f5b-ae86-8a1e50968a0d"
+    },
+    {
+      "timestamp": "2026-10-27T14:45:13.049Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Activate the human-approved evidence-only security baseline. Canonical main CLI owns protocol; isolated worktree holds scan evidence. No production source or installed harness mutation."
+    },
+    {
+      "timestamp": "2026-10-28T03:01:22.892Z",
+      "action": "block",
+      "actor": "developer",
+      "from_status": "ACTIVE",
+      "to_status": "BLOCKED",
+      "note": "Scans, bounded triage and verification report prepared. Preserve evidence and worktree; AC-SEC-008 remains PARTIAL. No waiver, DoD, business acceptance or remediation approved."
+    },
+    {
+      "timestamp": "2026-10-28T09:30:04.625Z",
+      "action": "resume",
+      "actor": "developer",
+      "from_status": "BLOCKED",
+      "to_status": "ACTIVE",
+      "note": "GOV-EX-003 explicitly accepted by human; exact historical blocker disposition signature verified. Continue bounded evidence closeout only."
+    },
+    {
+      "timestamp": "2026-10-28T09:30:04.953Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Bounded security evidence verified under accepted GOV-EX-003; historical missing hashes and all findings remain disclosed. Human closeout gates are separate."
+    }
+  ],
+  "resolved_state_history": [
+    {
+      "operation_id": "35b1af33-d88f-4d60-b63a-4b24f182ce72",
+      "source_collection": "blockers",
+      "source_entry_id": "di:13b565149efc05e0b505f1e555b9808fe5563b029c322a77450c497138dacddb",
+      "original_entry": {
+        "id": "se:3ecfb16a24993a1e73a9bddb63061c5e2e9f153d083ac769d73a79c053fe59c7",
+        "kind": "delivery_blocker",
+        "text": "Có work item gần nghĩa cần review: release-workflow-bundle-v2-6-3, release-workflow-bundle-v2-6-4, release-workflow-bundle-v2-6-4-cr010"
+      },
+      "original_text": "Có work item gần nghĩa cần review: release-workflow-bundle-v2-6-3, release-workflow-bundle-v2-6-4, release-workflow-bundle-v2-6-4-cr010",
+      "actor": "maintainer",
+      "reason": "CF-006 near-match review: v2.6.3 is ARCHIVED, the original v2.6.4 proposal is CANCELLED and v2.6.4-cr010 is DONE. Their release/promote scopes are distinct from this current-source security baseline. Preserve all three; admit workflow-pack-security-baseline as the separate P-SECURITY child.",
+      "resolved_at": "2026-10-27T10:45:13.218Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "workflow-pack-security-baseline",
+          "operation_id": "35b1af33-d88f-4d60-b63a-4b24f182ce72",
+          "state_id": "di:13b565149efc05e0b505f1e555b9808fe5563b029c322a77450c497138dacddb",
+          "source_collection": "blockers",
+          "original_entry": {
+            "id": "se:3ecfb16a24993a1e73a9bddb63061c5e2e9f153d083ac769d73a79c053fe59c7",
+            "kind": "delivery_blocker",
+            "text": "Có work item gần nghĩa cần review: release-workflow-bundle-v2-6-3, release-workflow-bundle-v2-6-4, release-workflow-bundle-v2-6-4-cr010"
+          },
+          "original_text": "Có work item gần nghĩa cần review: release-workflow-bundle-v2-6-3, release-workflow-bundle-v2-6-4, release-workflow-bundle-v2-6-4-cr010",
+          "actor": "maintainer",
+          "reason": "CF-006 near-match review: v2.6.3 is ARCHIVED, the original v2.6.4 proposal is CANCELLED and v2.6.4-cr010 is DONE. Their release/promote scopes are distinct from this current-source security baseline. Preserve all three; admit workflow-pack-security-baseline as the separate P-SECURITY child.",
+          "resolved_at": "2026-10-27T10:45:13.218Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "5nsYiMF7wFE41lEK5n+d7Ut8dMxHjAj3WPv9zW0EHEh2De1MTDEei5ttFQ6I/hIs87gQJnIxHce3BIPR3PmTCQ=="
+      }
+    },
+    {
+      "operation_id": "0f7befa4-eb7e-483d-ba9e-e9df6d6431a3",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:9f7a9f95b2c75e969f3e3258df264a1d56fcb455dcfe5276f9e608b469eebf44",
+      "original_entry": {
+        "id": "se:0136967b72237d6b3470771595c2c9845936c6446115b245afe13f67c503b1fa",
+        "kind": "workflow_followup",
+        "text": "Làm rõ scope để chốt single hay split."
+      },
+      "original_text": "Làm rõ scope để chốt single hay split.",
+      "actor": "maintainer",
+      "reason": "CF-006 scope clarification: one evidence-only RESEARCH outcome, covering the five pinned tracked roots with isolated scanners, controls, coverage and sanitized finding dispositions. No production fixes, release, live harness update or source upload; corrections are separate work items.",
+      "resolved_at": "2026-10-27T10:45:15.953Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "workflow-pack-security-baseline",
+          "operation_id": "0f7befa4-eb7e-483d-ba9e-e9df6d6431a3",
+          "state_id": "di:9f7a9f95b2c75e969f3e3258df264a1d56fcb455dcfe5276f9e608b469eebf44",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:0136967b72237d6b3470771595c2c9845936c6446115b245afe13f67c503b1fa",
+            "kind": "workflow_followup",
+            "text": "Làm rõ scope để chốt single hay split."
+          },
+          "original_text": "Làm rõ scope để chốt single hay split.",
+          "actor": "maintainer",
+          "reason": "CF-006 scope clarification: one evidence-only RESEARCH outcome, covering the five pinned tracked roots with isolated scanners, controls, coverage and sanitized finding dispositions. No production fixes, release, live harness update or source upload; corrections are separate work items.",
+          "resolved_at": "2026-10-27T10:45:15.953Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "OnOsEpcE9r5n1M9kCR/1+Y/H4/WCZs6kpqLs1XMkAqhp3N+v09U1SCCP0r7GqqnPGdEvrpxNczARjZ6hd1CNDw=="
+      }
+    },
+    {
+      "operation_id": "890ab099-c825-4e8d-9211-1ade67065d5c",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:3c94d81400a6c900029bbcb80a766bad4fcab7a70bff8502946ae4f66509c9e9",
+      "original_entry": {
+        "id": "se:284905ff79aab9426e5c7b92217933f3af605130e4bbda6ad4588688a7c32988",
+        "kind": "workflow_followup",
+        "text": "Review existing work-items/changes trước khi scaffold."
+      },
+      "original_text": "Review existing work-items/changes trước khi scaffold.",
+      "actor": "maintainer",
+      "reason": "CF-006 existing-work review: the parent audit coordinates the security gap but does not own child scanner execution; the three release near-matches do not provide the requested current-source baseline. Retain this single proposal and the reviewed Spec Card/s04-s06; preserve other work-item states and grants.",
+      "resolved_at": "2026-10-27T10:45:18.595Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "workflow-pack-security-baseline",
+          "operation_id": "890ab099-c825-4e8d-9211-1ade67065d5c",
+          "state_id": "di:3c94d81400a6c900029bbcb80a766bad4fcab7a70bff8502946ae4f66509c9e9",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:284905ff79aab9426e5c7b92217933f3af605130e4bbda6ad4588688a7c32988",
+            "kind": "workflow_followup",
+            "text": "Review existing work-items/changes trước khi scaffold."
+          },
+          "original_text": "Review existing work-items/changes trước khi scaffold.",
+          "actor": "maintainer",
+          "reason": "CF-006 existing-work review: the parent audit coordinates the security gap but does not own child scanner execution; the three release near-matches do not provide the requested current-source baseline. Retain this single proposal and the reviewed Spec Card/s04-s06; preserve other work-item states and grants.",
+          "resolved_at": "2026-10-27T10:45:18.595Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "LKz7PnU41Lt/W8xSWiXZqY5tDlIhTQ370+8eW4yIgx9weUnKm9rMeKW3zC8FoLxgX4cmrphY/JM6p6/mDgWxCA=="
+      }
+    },
+    {
+      "operation_id": "897dcb13-eaf0-4b2c-9d70-a6a0228fec49",
+      "source_collection": "blockers",
+      "source_entry_id": "di:61afdf8ce39c79c3d1224f085a0e278ce18b11301c7f169479750a9a61c48774",
+      "original_entry": {
+        "id": "se:fc5ecbb400d7e35a0e09fced0fb3b8f33c36bf88d6a164e545c2c7397dc2e04a",
+        "kind": "delivery_blocker",
+        "text": "GAP-SEC-008: historical installed-harness and unrelated-untracked before/after hashes were not captured. Human technical owner, QC and PO must decide the evidence-method proposal in s08 before DoD."
+      },
+      "original_text": "GAP-SEC-008: historical installed-harness and unrelated-untracked before/after hashes were not captured. Human technical owner, QC and PO must decide the evidence-method proposal in s08 before DoD.",
+      "actor": "maintainer",
+      "reason": "Human accepts GOV-EX-003 for AC-SEC-008: retain missing historical installed/unrelated-untracked hashes, accept demonstrated scanner non-access plus tracked-source preservation for this baseline only, require scoped non-secret pre/post snapshots for future scans. Retire this exact historical blocker; no finding, DoD, business-acceptance, merge or release gate is waived.",
+      "resolved_at": "2026-10-28T09:30:01.869Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "workflow-pack-security-baseline",
+          "operation_id": "897dcb13-eaf0-4b2c-9d70-a6a0228fec49",
+          "state_id": "di:61afdf8ce39c79c3d1224f085a0e278ce18b11301c7f169479750a9a61c48774",
+          "source_collection": "blockers",
+          "original_entry": {
+            "id": "se:fc5ecbb400d7e35a0e09fced0fb3b8f33c36bf88d6a164e545c2c7397dc2e04a",
+            "kind": "delivery_blocker",
+            "text": "GAP-SEC-008: historical installed-harness and unrelated-untracked before/after hashes were not captured. Human technical owner, QC and PO must decide the evidence-method proposal in s08 before DoD."
+          },
+          "original_text": "GAP-SEC-008: historical installed-harness and unrelated-untracked before/after hashes were not captured. Human technical owner, QC and PO must decide the evidence-method proposal in s08 before DoD.",
+          "actor": "maintainer",
+          "reason": "Human accepts GOV-EX-003 for AC-SEC-008: retain missing historical installed/unrelated-untracked hashes, accept demonstrated scanner non-access plus tracked-source preservation for this baseline only, require scoped non-secret pre/post snapshots for future scans. Retire this exact historical blocker; no finding, DoD, business-acceptance, merge or release gate is waived.",
+          "resolved_at": "2026-10-28T09:30:01.869Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "JuN5OGmbEyRosiLyNTEsK5xuAjDbSxLD3Njtk8B0BkAjGwyRqNSs4XhNBWv5NayLBZ77au7xyuA1o9IduOlSAQ=="
+      }
+    }
+  ],
+  "materialization_recovery": {
+    "schema_version": 1,
+    "operation_id": "a2936447-0ea5-43be-baae-be03cb2d9a40",
+    "source_report_sha256": "d7cb476c028b30dc3c927a832031621ceaaf486b98a19542cddd6985743dc992",
+    "resulting_status": "MATERIALIZED",
+    "disposition_operation_ids": [
+      "35b1af33-d88f-4d60-b63a-4b24f182ce72",
+      "0f7befa4-eb7e-483d-ba9e-e9df6d6431a3",
+      "890ab099-c825-4e8d-9211-1ade67065d5c"
+    ],
+    "completed_at": "2026-10-27T10:45:40.141Z"
+  }
+}

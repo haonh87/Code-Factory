@@ -1,0 +1,48 @@
+{
+  "isolation": {
+    "uid": 65534,
+    "no_repository_metadata": true,
+    "no_host_home_mount": true,
+    "input_write_denied": true,
+    "input_write_denied_errno": 30,
+    "root_write_denied": true,
+    "root_write_denied_errno": 30,
+    "network_denied": true,
+    "network_errno": 101,
+    "capabilities": [
+      "CapEff:\t0000000000000000",
+      "NoNewPrivs:\t1"
+    ]
+  },
+  "semgrep_rule_controls": {
+    "count": 6,
+    "result": "PASS",
+    "source": "upstream annotated positive/negative fixtures at pinned commit"
+  },
+  "gitleaks_controls": {
+    "detected_rules": [
+      "generic-api-key",
+      "gitlab-pat",
+      "private-key"
+    ],
+    "negative_environment_reference": "NO_ALERT",
+    "redaction": "PASS",
+    "note": "Credential token and private-key classes checked; this is not exhaustive per-provider rule validation."
+  },
+  "sanitizer_controls": {
+    "allowlist_redaction": "PASS",
+    "private_path_rejection": "PASS",
+    "untracked_path_rejection": "PASS",
+    "traversal_rejection": "PASS"
+  },
+  "semgrep_errors": 0,
+  "supplemental_errors": 0,
+  "source_preservation": true,
+  "gitleaks_supplement": {
+    "files": 4,
+    "exit_code": 0,
+    "alerts": 0,
+    "byte_identity": "PASS",
+    "reason": "Default global path allowlist excludes package-lock.json."
+  }
+}

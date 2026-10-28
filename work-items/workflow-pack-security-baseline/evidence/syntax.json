@@ -1,0 +1,278 @@
+[
+  {
+    "path": "adapters/claude/adapter.json",
+    "check": "JSON parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "adapters/codex/adapter.json",
+    "check": "JSON parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "adapters/codex/install-codex-workflow.sh",
+    "check": "Bash syntax",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "adapters/codex/update-codex-workflow.sh",
+    "check": "Bash syntax",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "adapters/mcp/install-github-push.sh",
+    "check": "Bash syntax",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "adapters/mcp/install-gitlab.sh",
+    "check": "Bash syntax",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "adapters/mcp/install-notebooklm.sh",
+    "check": "Bash syntax",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "adapters/mcp/install-session-search.sh",
+    "check": "Bash syntax",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "mcp/github-push/package-lock.json",
+    "check": "JSON parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "mcp/github-push/package.json",
+    "check": "JSON parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "mcp/gitlab/package-lock.json",
+    "check": "JSON parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "mcp/gitlab/package.json",
+    "check": "JSON parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "mcp/notebooklm/package-lock.json",
+    "check": "JSON parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "mcp/notebooklm/package.json",
+    "check": "JSON parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "mcp/session-search/package-lock.json",
+    "check": "JSON parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "mcp/session-search/package.json",
+    "check": "JSON parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "scripts/hooks/load-workflow-context.sh",
+    "check": "Bash syntax",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "scripts/hooks/persist-context.sh",
+    "check": "Bash syntax",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "scripts/hooks/tdd-enforce.sh",
+    "check": "Bash syntax",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "scripts/hooks/tdd-track-write.sh",
+    "check": "Bash syntax",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "scripts/hooks/tdd-track.sh",
+    "check": "Bash syntax",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/analysis/brainstorming/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/analysis/sa/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/analysis/system-design/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/analysis/ta/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/architecture/architecture-modeling/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/architecture/diagram-design-presentation-adapter/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/architecture/diagram-design-presentation-adapter/resources/upstream/codex-plugin.json",
+    "check": "JSON parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/architecture/diagram-design-presentation-adapter/resources/upstream/diagram-design/scripts/drawio_extract.py",
+    "check": "Python AST",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/architecture/diagram-design-presentation-adapter/resources/upstream/diagram-design/scripts/mermaid_extract.py",
+    "check": "Python AST",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/architecture/diagram-design-presentation-adapter/resources/upstream/diagram-design/scripts/self_check.py",
+    "check": "Python AST",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/architecture/diagram-design-presentation-adapter/scripts/export-png.py",
+    "check": "Python AST",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/architecture/frontend-architecture/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/architecture/frontend-experience-design/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/delivery/branch-finish-discipline/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/delivery/delegation-discipline/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/delivery/frontend-quality-review/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/delivery/implementation/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/delivery/react-best-practices-review/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/delivery/react-web-implementation/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/delivery/review-discipline/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/delivery/task-breakdown-planner/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/delivery/testing/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/delivery/worktree-discipline/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/guardrails/workflow-pack-audit/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  },
+  {
+    "path": "skills/orchestration/workflow-governance-router/agents/openai.yaml",
+    "check": "YAML safe parser",
+    "status": "PASS",
+    "detail": ""
+  }
+]

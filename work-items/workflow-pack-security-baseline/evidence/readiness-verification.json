@@ -1,0 +1,48 @@
+{
+  "checked_at": "2026-10-28T03:01:22.809Z",
+  "receipts": [
+    {
+      "gate": "spec",
+      "reviewed_by": "ba",
+      "reviewed_at": "2026-10-27T14:39:32.499Z",
+      "signature_valid": true,
+      "current_host_hash_valid": true,
+      "artifact_ref": "work-items/workflow-pack-security-baseline/workflow-pack-security-baseline.s04.acceptance-criteria.md",
+      "artifact_sha256": "482e70fa11dd61f9d3f5e08c2ccb2f0d38273016d7304d08a9da998763252360"
+    },
+    {
+      "gate": "dor",
+      "reviewed_by": "ba",
+      "reviewed_at": "2026-10-27T14:39:32.499Z",
+      "signature_valid": true,
+      "current_host_hash_valid": true,
+      "artifact_ref": "work-items/workflow-pack-security-baseline/workflow-pack-security-baseline.s04.acceptance-criteria.md",
+      "artifact_sha256": "482e70fa11dd61f9d3f5e08c2ccb2f0d38273016d7304d08a9da998763252360"
+    },
+    {
+      "gate": "approach",
+      "reviewed_by": "developer",
+      "reviewed_at": "2026-10-27T14:39:32.499Z",
+      "signature_valid": true,
+      "current_host_hash_valid": true,
+      "artifact_ref": "work-items/workflow-pack-security-baseline/workflow-pack-security-baseline.s05.technical-approach.md",
+      "artifact_sha256": "8030b3e3a3cadd727c25d15b61ffce9afa144f04427a5a28707254393ce06c9e"
+    },
+    {
+      "gate": "task_plan",
+      "reviewed_by": "developer",
+      "reviewed_at": "2026-10-27T14:39:32.499Z",
+      "signature_valid": true,
+      "current_host_hash_valid": true,
+      "artifact_ref": "work-items/workflow-pack-security-baseline/workflow-pack-security-baseline.s06.task-breakdown.md",
+      "artifact_sha256": "d4f8cb338f283733f126338ac58a0ce02637d1e3c690677ee71445cc9d10cea6"
+    },
+    {
+      "gate": "work-item",
+      "signature_valid": true,
+      "reviewed_by": "maintainer",
+      "reviewed_at": "2026-10-27T14:39:32.499Z"
+    }
+  ],
+  "closure_receipts": "ABSENT"
+}

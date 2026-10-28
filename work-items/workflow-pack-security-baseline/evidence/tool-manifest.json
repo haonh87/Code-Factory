@@ -1,0 +1,116 @@
+{
+  "semgrep": {
+    "version": "1.182.0",
+    "image": "semgrep/semgrep@sha256:4a34048c04fef049f71665047f074cffb00cc3d89482f965a5cd151d589237af",
+    "license": "LGPL-2.1"
+  },
+  "gitleaks": {
+    "version": "8.30.1",
+    "image": "zricethezav/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+    "license": "MIT",
+    "config_sha256": "e163e53b9e7e8a8511e77271e2b323ed057759542a6d988258afe3a1fa329caf"
+  },
+  "rules": {
+    "commit": "16b9e6d45f10649f6a531ec4838ed9924372c3bc",
+    "files": [
+      {
+        "path": "javascript/lang/security/detect-child-process.yaml",
+        "sha256": "baee696b05b3c38fa5a82435ae458026ec81ce9a6e6a73116d68dc963496296c",
+        "license": "Semgrep Rules License v1.0",
+        "use": "Internal local baseline; no rule redistribution or scanning service."
+      },
+      {
+        "path": "javascript/lang/security/detect-child-process.js",
+        "sha256": "f9ba9116a5a148d3a204dddab60d9fb5c93130512a6c0462cc07a37ed08491f6",
+        "license": "Semgrep Rules License v1.0",
+        "use": "Internal local baseline; no rule redistribution or scanning service."
+      },
+      {
+        "path": "javascript/lang/security/detect-eval-with-expression.yaml",
+        "sha256": "3b8fe2524b094c72c34aaa6d21b0408ffdac2471a335125cf726993253777951",
+        "license": "Semgrep Rules License v1.0",
+        "use": "Internal local baseline; no rule redistribution or scanning service."
+      },
+      {
+        "path": "javascript/lang/security/detect-eval-with-expression.js",
+        "sha256": "d6e655a27c418381e5cb9a42b6aa28232d3aca7e3b69da3b320c3ab92df15d6e",
+        "license": "Semgrep Rules License v1.0",
+        "use": "Internal local baseline; no rule redistribution or scanning service."
+      },
+      {
+        "path": "javascript/lang/security/audit/spawn-shell-true.yaml",
+        "sha256": "452fb593301edca721a151ed3c051f428ca1df1fc1af613380d58b076601b5ba",
+        "license": "Semgrep Rules License v1.0",
+        "use": "Internal local baseline; no rule redistribution or scanning service."
+      },
+      {
+        "path": "javascript/lang/security/audit/spawn-shell-true.js",
+        "sha256": "92132e89a75ebf2cd0bb2ab0c896b7b3f79d92259216ca2b8ff88d39af071228",
+        "license": "Semgrep Rules License v1.0",
+        "use": "Internal local baseline; no rule redistribution or scanning service."
+      },
+      {
+        "path": "javascript/lang/security/audit/path-traversal/path-join-resolve-traversal.yaml",
+        "sha256": "d9a1c9b559fee5b993bb9150fead40a48570a58f08762d7b6674125f6e0784bc",
+        "license": "Semgrep Rules License v1.0",
+        "use": "Internal local baseline; no rule redistribution or scanning service."
+      },
+      {
+        "path": "javascript/lang/security/audit/path-traversal/path-join-resolve-traversal.js",
+        "sha256": "905fef2574c22c5fb8a12fec7c4f8bb4b676ce3782cdcc1426d334d0913df601",
+        "license": "Semgrep Rules License v1.0",
+        "use": "Internal local baseline; no rule redistribution or scanning service."
+      },
+      {
+        "path": "javascript/jsonwebtoken/security/jwt-none-alg.yaml",
+        "sha256": "61cd42e96ebbb3b88e8dec1fc5096378467a8a15636104c2385348776c80d3f4",
+        "license": "Semgrep Rules License v1.0",
+        "use": "Internal local baseline; no rule redistribution or scanning service."
+      },
+      {
+        "path": "javascript/jsonwebtoken/security/jwt-none-alg.js",
+        "sha256": "589838135ccf6273d028e9e4d9c0079ab23fd7ba546a7aa331f89a64603351ff",
+        "license": "Semgrep Rules License v1.0",
+        "use": "Internal local baseline; no rule redistribution or scanning service."
+      },
+      {
+        "path": "javascript/node-crypto/security/gcm-no-tag-length.yaml",
+        "sha256": "1ed0553e584f3a12feba324ed352db660acb177f8f631876747372c27193962e",
+        "license": "Semgrep Rules License v1.0",
+        "use": "Internal local baseline; no rule redistribution or scanning service."
+      },
+      {
+        "path": "javascript/node-crypto/security/gcm-no-tag-length.js",
+        "sha256": "a380b71faa33a14f3f39abaa7c83af1e24e0a0227760526167fa170dcd976975",
+        "license": "Semgrep Rules License v1.0",
+        "use": "Internal local baseline; no rule redistribution or scanning service."
+      }
+    ]
+  },
+  "license_hashes": {
+    "semgrep-LICENSE": "20c17d8b8c48a600800dfd14f95d5cb9ff47066a9641ddeab48dc54aec96e331",
+    "gitleaks-LICENSE": "e3884b252b3bfc045e55be43a34d1e80da070bc6f804ac95bf4660e97d62ebc6",
+    "LICENSE": "1a6466ae5f1c68631bbd13e3f1aa8f380d84219853c08f0456b853fccfacee1d"
+  },
+  "license_disposition": "Internal tool use only; notices preserved in scratch, no third-party rule redistribution. Semgrep Rules License v1.0 permits own internal business use.",
+  "acquisition": "Official versioned Docker registry images; registry digest and layer checksums verified by Docker. Rule archive resolved from GitHub commit API and individual files SHA-256 recorded. No independent publisher signing claim.",
+  "isolation": {
+    "uid": 65534,
+    "no_repository_metadata": true,
+    "no_host_home_mount": true,
+    "input_write_denied": true,
+    "input_write_denied_errno": 30,
+    "root_write_denied": true,
+    "root_write_denied_errno": 30,
+    "network_denied": true,
+    "network_errno": 101,
+    "capabilities": [
+      "CapEff:\t0000000000000000",
+      "NoNewPrivs:\t1"
+    ]
+  },
+  "controls": {
+    "semgrep_upstream": "6/6 passed",
+    "gitleaks": "positive credentials detected; negative environment reference absent; markers absent from raw redacted report/logs"
+  }
+}

@@ -43,6 +43,7 @@ notes: ""
 |---|---|---|---|---|---|---|---|
 | GOV-EX-001 | none - that is the exception | n/a | Spec/Design Before Code | developer | RESOLVED | 2026-08-28 | Approved by developer; residual debt paid - readStdinByteSync exported and the EAGAIN retry covered by 5 assertions. |
 | GOV-EX-002 | ci-guardrails-parallelisation | s07 | Spec/Design Before Code | devops | RESOLVED | 2026-10-19 | Accepted revised T1-R..T4-R; replacement gate signatures and two signed stale-state dispositions verified. CI implementation/DoD remain separate. |
+| GOV-EX-003 | workflow-pack-security-baseline | s07,s08 | AC-SEC-008 preservation evidence | developer | APPROVED | 2026-10-28 | Human accepted bounded non-access/tracked-hash evidence; historical missing hashes and security findings remain; QC/PO gate receipts separate. |
 
 ### `GOV-EX-001`
 
@@ -138,3 +139,22 @@ The human accepted this conditional disposition with the CI amendment on 2026-10
 
 
 Resolution evidence — 2026-10-19T13:33:02Z: both replacement Approach/Task Plan signatures match the accepted s06, and both Maintainer disposition records verify cryptographically. The conditional acceptance is satisfied; GOV-EX-002 is RESOLVED. This retires the historical ownership collision and stale-plan exception only. No acceptance criterion, CI verification, DoD, merge or release is waived. Historical proposal paragraphs above retain their submission-time state.
+
+### `GOV-EX-003`
+
+```yaml
+exception_id: GOV-EX-003
+work_item_ref: "work-items/workflow-pack-security-baseline"
+step_ref: "s07,s08"
+principle_ref: "AC-SEC-008 preservation evidence"
+reason: "Historical pre-scan hashes were not captured for installed harnesses and unrelated untracked files; they cannot be reconstructed."
+impact: "Accept a bounded evidence-method limitation for this baseline; do not assert hash preservation for the excluded locations."
+mitigation: ["Retain the historical gap and isolation evidence", "Retain 498 pinned source hashes and 1186 pre-existing tracked-main hash checks", "Require explicitly scoped non-secret pre/post snapshots before any future authorized scan", "Keep all six findings and 420 advisories open for separate remediation"]
+owner: "developer"
+approved_by: "developer,qc,po"
+status: APPROVED
+review_date: "2026-10-28"
+decision_recorded_at: "2026-10-28T08:31:58.975803+00:00"
+human_decision: "User explicitly replied accept to the proposed limited evidence exception and remediation priority in this conversation. Approval applies to the evidence-method trade-off described in s08, including technical/QC/product authority requirements; it is one human decision, not an assertion of independent reviews."
+limits: ["No historical hashes invented", "No vulnerability waiver", "No DoD or business-acceptance gate receipt created by this record", "No production fix, merge, release or parent closure authorized by this exception"]
+```
