@@ -155,7 +155,7 @@ If interrupted after any signing command, stop and inspect actual receipt/report
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "workflow-pack-security-baseline"
@@ -178,11 +178,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-10-27T14:39:32.499Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-10-28T09:30:04.953Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-10-28T09:41:27.944Z"
 required_actions:
-  - {"id":"se:2343c85ac53dba2cf5d7db3d8c6bee4d1dda889ef4f0ebd1b1e1786c0971f97c","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+  - {"id":"se:39249cef3285465391730b21e0af24d62b80daa8dfc95e47d4ac35ea82b514a6","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "Human approves the existing bounded P-SECURITY work item and reviews the displayed Spec/DoR/Approach/Task Plan packet. No implementation is authorized until all readiness receipts and activation checks pass."
@@ -204,5 +204,6 @@ audit_events:
   - "WORK_ITEM_BLOCKED"
   - "WORK_ITEM_RESUMED"
   - "VERIFICATION_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```
 

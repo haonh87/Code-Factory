@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Create one bounded security baseline evidence work item for CF-006 / P-SECURITY. Audit the tracked skills, hooks, adapters, MCP services and workflow-bundle scripts at main commit 7dce0335c7339ba6f3859e1bc34aaa1168f40971 using isolated pinned local scanners and manual trust-boundary review. Produce source and tool manifests, control results, coverage accounting and sanitized finding dispositions. No production fixes, release, installed harness changes or source upload; remediation requires separate work items.",
@@ -78,12 +78,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "id": "se:2343c85ac53dba2cf5d7db3d8c6bee4d1dda889ef4f0ebd1b1e1786c0971f97c",
+      "id": "se:39249cef3285465391730b21e0af24d62b80daa8dfc95e47d4ac35ea82b514a6",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -105,7 +105,8 @@
     "WORK_ITEM_ACTIVATED",
     "WORK_ITEM_BLOCKED",
     "WORK_ITEM_RESUMED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -191,6 +192,14 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "Bounded security evidence verified under accepted GOV-EX-003; historical missing hashes and all findings remain disclosed. Human closeout gates are separate."
+    },
+    {
+      "timestamp": "2026-10-28T09:41:27.944Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Human-authorized evidence merge is on main at b46179b; QC DoD and PO acceptance signatures match current s08. Close the bounded baseline under GOV-EX-003. Canonical checkout is now the separate maintenance branch; identical delivery mirrors were proven committed on clean main before using the checkout-mismatch override. Six security findings and 420 advisories remain separate remediation; no release or parent closure."
     }
   ],
   "resolved_state_history": [
