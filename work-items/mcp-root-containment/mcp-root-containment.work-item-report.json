@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Fix SEC-002 physical allowed-root containment across the existing github-push, gitlab, session-search MCPs as one security remediation. Scope: canonical path validation, bounded missing-path handling, isolated regression evidence. Exclusions: SEC-001 merge; remote-host policy SEC-005; dependencies; live deployment; release.",
@@ -88,12 +88,12 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "id": "se:d25915d6f2bee0fca4aae16e857835e3d5f7b4b8b4a27cff753ef11a5448c0f8",
+      "id": "se:97016268a85152e6072dbe9e85a872270ca9be19cae9d4d27040b0a70a0bf3e2",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -113,7 +113,8 @@
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -183,6 +184,14 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "Technical verification: 82 package tests; 50 workflow files in byte-identical snapshot; targeted static/security/encoding/workflow checks passed. Native Windows and scanner limits disclosed. Human QC DoD pending; no merge or release."
+    },
+    {
+      "timestamp": "2026-10-29T10:49:14.493Z",
+      "action": "close",
+      "actor": "developer",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Verified current-host human QC DoD receipt at 2026-10-29T10:48:23.975Z and committed review 5ec92fe; all 1241 other pinned files unchanged. Technical evidence: 82 package tests and 50 workflow test files; disclosed Windows/scanner/trusted-filesystem limits accepted. Close SEC-002 delivery only; retain branch, no merge or rollout."
     }
   ],
   "resolved_state_history": [

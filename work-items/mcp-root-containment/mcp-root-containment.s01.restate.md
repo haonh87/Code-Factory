@@ -155,7 +155,7 @@ exception_required: false
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "mcp-root-containment"
@@ -188,11 +188,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-10-29T02:32:08.173Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-10-29T10:29:18.200Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-10-29T10:49:14.493Z"
 required_actions:
-  - {"id":"se:d25915d6f2bee0fca4aae16e857835e3d5f7b4b8b4a27cff753ef11a5448c0f8","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+  - {"id":"se:97016268a85152e6072dbe9e85a872270ca9be19cae9d4d27040b0a70a0bf3e2","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "Human approves the bounded SEC-002 physical containment packet across three MCPs, with the explicit creation/history/filtering policy, canonical path values and trusted-filesystem/platform limits. Other security findings, live rollout and merge remain separate."
@@ -212,5 +212,6 @@ audit_events:
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```
 
