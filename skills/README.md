@@ -16,6 +16,7 @@ This document explains the `skills/` directory structure so the repo is clearer 
 - `skills/delivery/`: skills for planning, implementation, testing, review and DevOps delivery.
 - `skills/guardrails/`: skills for contract, readiness, audit, quality gates and behavioral guardrails for a coding agent.
 - `skills/obsidian/`: skills that materialize artifacts as Obsidian Markdown, Bases and Canvas.
+- `skills/maintenance/`: skills for application maintenance work on production defects (triage, log and metric evidence, root-cause analysis, evidence handoff). They run standalone or inside the `maintenance` lane and never replace a workflow gate.
 
 ## Top-Level Integration Skills
 

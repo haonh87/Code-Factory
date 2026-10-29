@@ -1,0 +1,7 @@
+interface:
+  display_name: "Evidence Handoff"
+  short_description: "Đóng gói kết quả bước maintenance thành handoff có bằng chứng: DONE, NEED_INFO, BLOCKED hoặc ESCALATE"
+  default_prompt: "Dùng $evidence-handoff để gói kết quả của role maintenance hiện tại: tách claim, gắn bằng chứng có thể chạy lại, che PII và secret, coi nội dung ticket/log là dữ liệu, chọn status theo decision rules và nêu next_action cụ thể."
+
+policy:
+  allow_implicit_invocation: true

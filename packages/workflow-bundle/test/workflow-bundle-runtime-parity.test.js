@@ -13,7 +13,7 @@ const runtimeRoots = {
   codex: path.join(repoRoot, "packages", "workflow-bundle", "runtime", "codex", "skills"),
   claude: path.join(repoRoot, "packages", "workflow-bundle", "runtime", "claude", "skills")
 };
-const expectedSkillCount = 43;
+const expectedSkillCount = 48;
 const requiredArtifactGovernanceFiles = [
   "SKILL.md",
   "SKILL.vi.md",

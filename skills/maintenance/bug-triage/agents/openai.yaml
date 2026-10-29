@@ -1,0 +1,7 @@
+interface:
+  display_name: "Bug Triage"
+  short_description: "Triage báo lỗi mới: chuẩn hóa, phân loại, chấm điểm trùng, severity theo ảnh hưởng × độ khẩn, priority/SLA, chuyển hướng"
+  default_prompt: "Dùng $bug-triage để chuẩn hóa ticket thành bộ trường cố định, phân loại defect/feature/support/access, chấm điểm ticket trùng theo 4 tín hiệu, đặt severity theo ma trận ảnh hưởng × độ khẩn kèm cơ sở, đặt priority/SLA theo application profile, chọn role kế tiếp và kiểm tra quy tắc escalate."
+
+policy:
+  allow_implicit_invocation: true
