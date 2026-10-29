@@ -1,0 +1,7 @@
+interface:
+  display_name: "Log Investigation"
+  short_description: "Điều tra log lỗi production: khung lỗi vs mốc khỏe, xếp hạng dấu hiệu, trace theo correlation id, lọc nhiễu, điều kiện tái hiện"
+  default_prompt: "Dùng $log-investigation để khoanh khung lỗi và mốc khỏe, xếp hạng dấu hiệu lỗi theo mức thay đổi, lần theo 3-5 request lỗi và 1-2 request thành công bằng correlation id, lọc nhiễu, định lượng và rút điều kiện tái hiện. Ở production chỉ dùng named query qua data broker."
+
+policy:
+  allow_implicit_invocation: true

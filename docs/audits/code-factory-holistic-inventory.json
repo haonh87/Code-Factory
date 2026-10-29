@@ -5,12 +5,13 @@
   "main_identity": "2e3aaded1779787d993b7e5cacc96bfae008b3bc",
   "evidence_tier": "unmerged-child",
   "counts": {
-    "source_skills": 42,
+    "source_skills": 47,
     "groups": {
       "analysis": 6,
       "architecture": 5,
       "delivery": 16,
       "guardrails": 8,
+      "maintenance": 5,
       "notebooklm": 1,
       "obsidian": 3,
       "orchestration": 3
@@ -2436,6 +2437,274 @@
         {
           "path": "skills/orchestration/workflow-governance-router/agents/openai.yaml",
           "artifact_sha256": "b3bd889e1b9718883ca1f82312a3ccf34dda79735107120673b4d78d371e45cf"
+        }
+      ]
+    },
+    {
+      "id": "SK-043",
+      "subject": "evidence-handoff",
+      "path": "skills/maintenance/evidence-handoff/SKILL.md",
+      "name": "evidence-handoff",
+      "group": "maintenance",
+      "bytes": 7695,
+      "expected": "One unique canonical source skill and equivalent bundled runtime copies.",
+      "observed": "New source skill added by work item maintenance-skill-family (unmerged branch); semantic review pending.",
+      "result": "PARTIAL",
+      "evidence_tier": "unmerged-child",
+      "source_ref": "skills/maintenance/evidence-handoff/SKILL.md",
+      "source_identity": "7dce0335c7339ba6f3859e1bc34aaa1168f40971",
+      "artifact_sha256": "cc38144b906b4b9ae89b598503647a564f4a8931524b14454f348d5c08f641ed",
+      "observed_at": "2026-10-28T14:40:00Z",
+      "owner": "developer",
+      "child_or_proposal": "maintenance-skill-family",
+      "next_gate": "maintenance-skill-family s08 Verify + DoD",
+      "closure_evidence": [],
+      "runtime": {
+        "codex": {
+          "path": "packages/workflow-bundle/runtime/codex/skills/evidence-handoff/SKILL.md",
+          "missing": true,
+          "observation": "NOT_GENERATED: gitignored runtime absent in this worktree; this is not installed or release package evidence."
+        },
+        "claude": {
+          "path": "packages/workflow-bundle/runtime/claude/skills/evidence-handoff/SKILL.md",
+          "missing": true,
+          "observation": "NOT_GENERATED: gitignored runtime absent in this worktree; this is not installed or release package evidence."
+        }
+      },
+      "main_sha256": null,
+      "main_source_equal": false,
+      "supporting_files": [
+        {
+          "path": "skills/maintenance/evidence-handoff/SKILL.md",
+          "artifact_sha256": "cc38144b906b4b9ae89b598503647a564f4a8931524b14454f348d5c08f641ed"
+        },
+        {
+          "path": "skills/maintenance/evidence-handoff/SKILL.vi.md",
+          "artifact_sha256": "f46ce0baf25192eedeab4b95a151cd554b624dec29dc603b3d5c2a7434b2dc87"
+        },
+        {
+          "path": "skills/maintenance/evidence-handoff/agents/openai.yaml",
+          "artifact_sha256": "513b71d9af3fca535fbc9b45e5c97ec70e41127e1e1be1efdb10aa100c8322ae"
+        },
+        {
+          "path": "skills/maintenance/evidence-handoff/references/eval-seeds.md",
+          "artifact_sha256": "cbb11e9a0c8647f9367937af2270f078fdcd76ff3dd734f149bff6a38327172d"
+        }
+      ]
+    },
+    {
+      "id": "SK-044",
+      "subject": "root-cause-analysis",
+      "path": "skills/maintenance/root-cause-analysis/SKILL.md",
+      "name": "root-cause-analysis",
+      "group": "maintenance",
+      "bytes": 7979,
+      "expected": "One unique canonical source skill and equivalent bundled runtime copies.",
+      "observed": "New source skill added by work item maintenance-skill-family (unmerged branch); semantic review pending.",
+      "result": "PARTIAL",
+      "evidence_tier": "unmerged-child",
+      "source_ref": "skills/maintenance/root-cause-analysis/SKILL.md",
+      "source_identity": "7dce0335c7339ba6f3859e1bc34aaa1168f40971",
+      "artifact_sha256": "cc5034f0d40d7dccd6a9db6939a3242cd020c47330ca540ae50e9852686a315e",
+      "observed_at": "2026-10-28T14:40:00Z",
+      "owner": "developer",
+      "child_or_proposal": "maintenance-skill-family",
+      "next_gate": "maintenance-skill-family s08 Verify + DoD",
+      "closure_evidence": [],
+      "runtime": {
+        "codex": {
+          "path": "packages/workflow-bundle/runtime/codex/skills/root-cause-analysis/SKILL.md",
+          "missing": true,
+          "observation": "NOT_GENERATED: gitignored runtime absent in this worktree; this is not installed or release package evidence."
+        },
+        "claude": {
+          "path": "packages/workflow-bundle/runtime/claude/skills/root-cause-analysis/SKILL.md",
+          "missing": true,
+          "observation": "NOT_GENERATED: gitignored runtime absent in this worktree; this is not installed or release package evidence."
+        }
+      },
+      "main_sha256": null,
+      "main_source_equal": false,
+      "supporting_files": [
+        {
+          "path": "skills/maintenance/root-cause-analysis/SKILL.md",
+          "artifact_sha256": "cc5034f0d40d7dccd6a9db6939a3242cd020c47330ca540ae50e9852686a315e"
+        },
+        {
+          "path": "skills/maintenance/root-cause-analysis/SKILL.vi.md",
+          "artifact_sha256": "fe63fd6781ad68fbcd5b6da60d71ef5e7782ea92cecd4d8d1410cf2ca6e4ba4a"
+        },
+        {
+          "path": "skills/maintenance/root-cause-analysis/agents/openai.yaml",
+          "artifact_sha256": "c317589f6b35263112873f18eb480759a4ca839b9d75f02fbe4b9edab14526d2"
+        },
+        {
+          "path": "skills/maintenance/root-cause-analysis/references/eval-seeds.md",
+          "artifact_sha256": "9252fd90ce70e1a8ccc962e7c0f814b22ad102d1d41f27edd1c5cb7c762569d2"
+        }
+      ]
+    },
+    {
+      "id": "SK-045",
+      "subject": "bug-triage",
+      "path": "skills/maintenance/bug-triage/SKILL.md",
+      "name": "bug-triage",
+      "group": "maintenance",
+      "bytes": 8440,
+      "expected": "One unique canonical source skill and equivalent bundled runtime copies.",
+      "observed": "New source skill added by work item maintenance-skill-family (unmerged branch); semantic review pending.",
+      "result": "PARTIAL",
+      "evidence_tier": "unmerged-child",
+      "source_ref": "skills/maintenance/bug-triage/SKILL.md",
+      "source_identity": "7dce0335c7339ba6f3859e1bc34aaa1168f40971",
+      "artifact_sha256": "893f432a608846f3bb660cbfed2ebbd8c84a3c397aafc0dbde3426748ebe341a",
+      "observed_at": "2026-10-28T14:40:00Z",
+      "owner": "developer",
+      "child_or_proposal": "maintenance-skill-family",
+      "next_gate": "maintenance-skill-family s08 Verify + DoD",
+      "closure_evidence": [],
+      "runtime": {
+        "codex": {
+          "path": "packages/workflow-bundle/runtime/codex/skills/bug-triage/SKILL.md",
+          "missing": true,
+          "observation": "NOT_GENERATED: gitignored runtime absent in this worktree; this is not installed or release package evidence."
+        },
+        "claude": {
+          "path": "packages/workflow-bundle/runtime/claude/skills/bug-triage/SKILL.md",
+          "missing": true,
+          "observation": "NOT_GENERATED: gitignored runtime absent in this worktree; this is not installed or release package evidence."
+        }
+      },
+      "main_sha256": null,
+      "main_source_equal": false,
+      "supporting_files": [
+        {
+          "path": "skills/maintenance/bug-triage/SKILL.md",
+          "artifact_sha256": "893f432a608846f3bb660cbfed2ebbd8c84a3c397aafc0dbde3426748ebe341a"
+        },
+        {
+          "path": "skills/maintenance/bug-triage/SKILL.vi.md",
+          "artifact_sha256": "109e0b31ef9925ef8794972c89062b7418cc01b5f5edf660755308fce2e04614"
+        },
+        {
+          "path": "skills/maintenance/bug-triage/agents/openai.yaml",
+          "artifact_sha256": "2f38536388b5fc15244520077639581373b0e26680fa9d87d6bf787ac6420031"
+        },
+        {
+          "path": "skills/maintenance/bug-triage/references/eval-seeds.md",
+          "artifact_sha256": "eb6a9673e5a5b379281884250ba123ac87d048abd728d3421a8a2ae489791ccc"
+        }
+      ]
+    },
+    {
+      "id": "SK-046",
+      "subject": "log-investigation",
+      "path": "skills/maintenance/log-investigation/SKILL.md",
+      "name": "log-investigation",
+      "group": "maintenance",
+      "bytes": 8253,
+      "expected": "One unique canonical source skill and equivalent bundled runtime copies.",
+      "observed": "New source skill added by work item maintenance-skill-family (unmerged branch); semantic review pending.",
+      "result": "PARTIAL",
+      "evidence_tier": "unmerged-child",
+      "source_ref": "skills/maintenance/log-investigation/SKILL.md",
+      "source_identity": "7dce0335c7339ba6f3859e1bc34aaa1168f40971",
+      "artifact_sha256": "7ee7c3a3814d9cf99274a0e8013a5c411332b1941cc555fe2d5b9ea56692ee1b",
+      "observed_at": "2026-10-28T14:40:00Z",
+      "owner": "developer",
+      "child_or_proposal": "maintenance-skill-family",
+      "next_gate": "maintenance-skill-family s08 Verify + DoD",
+      "closure_evidence": [],
+      "runtime": {
+        "codex": {
+          "path": "packages/workflow-bundle/runtime/codex/skills/log-investigation/SKILL.md",
+          "missing": true,
+          "observation": "NOT_GENERATED: gitignored runtime absent in this worktree; this is not installed or release package evidence."
+        },
+        "claude": {
+          "path": "packages/workflow-bundle/runtime/claude/skills/log-investigation/SKILL.md",
+          "missing": true,
+          "observation": "NOT_GENERATED: gitignored runtime absent in this worktree; this is not installed or release package evidence."
+        }
+      },
+      "main_sha256": null,
+      "main_source_equal": false,
+      "supporting_files": [
+        {
+          "path": "skills/maintenance/log-investigation/SKILL.md",
+          "artifact_sha256": "7ee7c3a3814d9cf99274a0e8013a5c411332b1941cc555fe2d5b9ea56692ee1b"
+        },
+        {
+          "path": "skills/maintenance/log-investigation/SKILL.vi.md",
+          "artifact_sha256": "4222b6bb9e5e935fb4d010c3f1cbbc58915b63a5ce59fe23851bedab7da2de4c"
+        },
+        {
+          "path": "skills/maintenance/log-investigation/agents/openai.yaml",
+          "artifact_sha256": "0dff93a7c9821d788cd55d6185a2b5885e4c520244c81225111e56c930f333b8"
+        },
+        {
+          "path": "skills/maintenance/log-investigation/references/eval-seeds.md",
+          "artifact_sha256": "f89e118fa5bded89273cb02c8a88ceea3ed297619abbd7e64b24422bbae33d7e"
+        },
+        {
+          "path": "skills/maintenance/log-investigation/references/query-examples.md",
+          "artifact_sha256": "e4c2ae6acafc469ed8ae5a2440567a7f5f7d5ff40ec0a31d4c9e8b9a4a7fe486"
+        }
+      ]
+    },
+    {
+      "id": "SK-047",
+      "subject": "metric-correlation",
+      "path": "skills/maintenance/metric-correlation/SKILL.md",
+      "name": "metric-correlation",
+      "group": "maintenance",
+      "bytes": 7758,
+      "expected": "One unique canonical source skill and equivalent bundled runtime copies.",
+      "observed": "New source skill added by work item maintenance-skill-family (unmerged branch); semantic review pending.",
+      "result": "PARTIAL",
+      "evidence_tier": "unmerged-child",
+      "source_ref": "skills/maintenance/metric-correlation/SKILL.md",
+      "source_identity": "7dce0335c7339ba6f3859e1bc34aaa1168f40971",
+      "artifact_sha256": "24961c8d3e5827cf9917ae80fd031520e6b44a5245c62b4a56d747c7e97c9776",
+      "observed_at": "2026-10-28T14:40:00Z",
+      "owner": "developer",
+      "child_or_proposal": "maintenance-skill-family",
+      "next_gate": "maintenance-skill-family s08 Verify + DoD",
+      "closure_evidence": [],
+      "runtime": {
+        "codex": {
+          "path": "packages/workflow-bundle/runtime/codex/skills/metric-correlation/SKILL.md",
+          "missing": true,
+          "observation": "NOT_GENERATED: gitignored runtime absent in this worktree; this is not installed or release package evidence."
+        },
+        "claude": {
+          "path": "packages/workflow-bundle/runtime/claude/skills/metric-correlation/SKILL.md",
+          "missing": true,
+          "observation": "NOT_GENERATED: gitignored runtime absent in this worktree; this is not installed or release package evidence."
+        }
+      },
+      "main_sha256": null,
+      "main_source_equal": false,
+      "supporting_files": [
+        {
+          "path": "skills/maintenance/metric-correlation/SKILL.md",
+          "artifact_sha256": "24961c8d3e5827cf9917ae80fd031520e6b44a5245c62b4a56d747c7e97c9776"
+        },
+        {
+          "path": "skills/maintenance/metric-correlation/SKILL.vi.md",
+          "artifact_sha256": "6ffb06c24de740538236fc0efc72b78ed69fada442110a7c4044b5cf93c70ae6"
+        },
+        {
+          "path": "skills/maintenance/metric-correlation/agents/openai.yaml",
+          "artifact_sha256": "7f323fbd68072244b04a3b8a5ff3e46b2bc7efc0a446c8bbb9c888d42563dd4d"
+        },
+        {
+          "path": "skills/maintenance/metric-correlation/references/eval-seeds.md",
+          "artifact_sha256": "f392d831c0df4d5de9a38eaa2b0562e1a518ca8aa896e6ea85eccb78f1d2f1c6"
+        },
+        {
+          "path": "skills/maintenance/metric-correlation/references/query-examples.md",
+          "artifact_sha256": "6d944ccce11e2f858522d6ff90367064c04a405938c10bc9c324dd5057bb0add"
         }
       ]
     }

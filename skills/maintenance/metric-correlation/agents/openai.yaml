@@ -1,0 +1,7 @@
+interface:
+  display_name: "Metric Correlation"
+  short_description: "Đọc metric quanh lỗi production: request vs tài nguyên, tín hiệu lệch đầu tiên, đối chiếu deploy/config/lưu lượng, mức đốt SLO, tương quan có độ mạnh"
+  default_prompt: "Dùng $metric-correlation để so khung lỗi với mốc khỏe ở mức request (rate, error ratio, p95/p99) và mức tài nguyên (utilization, saturation, lỗi tài nguyên), xác định tín hiệu lệch đầu tiên, đối chiếu với deploy/config/lưu lượng/sự cố phụ thuộc, tính mức đốt mục tiêu và viết tương quan kèm độ mạnh và phản ví dụ, không khẳng định nhân quả."
+
+policy:
+  allow_implicit_invocation: true

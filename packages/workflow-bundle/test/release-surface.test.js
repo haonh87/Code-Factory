@@ -39,10 +39,10 @@ for(const p of ['README.md','packages/workflow-bundle/README.md']){
 }
 for(const mode of ['codex','claude']){
  const runtime=path.join(root,'packages/workflow-bundle/runtime',mode,'skills');
- const files=[];const walk=d=>fs.readdirSync(d,{withFileTypes:true}).forEach(e=>e.isDirectory()?walk(path.join(d,e.name)):e.name==='SKILL.md'&&files.push(path.join(d,e.name)));walk(runtime);assert.equal(files.length,43);
+ const files=[];const walk=d=>fs.readdirSync(d,{withFileTypes:true}).forEach(e=>e.isDirectory()?walk(path.join(d,e.name)):e.name==='SKILL.md'&&files.push(path.join(d,e.name)));walk(runtime);assert.equal(files.length,48);
  assert(fs.existsSync(path.join(runtime,'architecture/diagram-design-presentation-adapter/SKILL.md')));
 }
 const note=read('docs/releases/workflow-bundle-v2.7.0.md');
 for(const term of ['Status: **PUBLISHED on GitHub**','CHANGE-005','43 managed skills','HTML','SVG','PNG','## Compatibility','## Known Limitations','## Verification','## Rollback','## Release Gates','READER-TASK-001','9d7c5395ff5fb3ae2a64d26089a2c4c62122fb769a7cacd2e3bcea3f6fa35e84'])assert(note.includes(term),'Release record missing '+term);
 assert(!/\bTODO\b|\bTBD\b/.test(note));
-console.log('PASS: v2.7.0 publication record, 43-skill inventory, frozen package snapshot and immutable history/installers.');
+console.log('PASS: v2.7.0 publication record, 48-skill inventory, frozen package snapshot and immutable history/installers.');

@@ -7,6 +7,8 @@ Evidence tier: unmerged-child. M0/M1 are observed; M2 semantics and final AC clo
 
 42/42 unique canonical skills across seven groups; 227 tracked supporting files are pinned in [inventory](code-factory-holistic-inventory.json). All 42 SKILL.md files match the tracked main comparator. Eight surface families are enumerated, with deliberately overlapping membership. Generated runtime is absent and gitignored in this worktree; no prepack/sync was executed.
 
+> Addendum 2026-10-28 (work item `maintenance-skill-family`, branch not merged): five new canonical skills in a new group `maintenance` (inventory SK-043 to SK-047). They are outside the audit snapshot above and are listed below as NOT_REVIEWED.
+
 | Skill | Group | Trigger/boundary | Input/output/schema | References/examples | Authority/applicability | Runtime discovery | Semantic result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | brainstorming | analysis | Ambiguous options; forbids code/scaffold | Option-analysis YAML and BA/DEV lanes read | Full SKILL and agent metadata; no local operative EN refs | User-confirmed option wording needs gate/interaction mapping; EN default conflict | Installed present; precedence unknown | PARTIAL |
@@ -51,6 +53,11 @@ Evidence tier: unmerged-child. M0/M1 are observed; M2 semantics and final AC clo
 | codex-workflow-chain | orchestration | NOT_REVIEWED | NOT_REVIEWED | NOT_REVIEWED | NOT_REVIEWED | Installed present; precedence unknown | PARTIAL |
 | goal-griller | orchestration | NOT_REVIEWED | NOT_REVIEWED | NOT_REVIEWED | NOT_REVIEWED | Installed present; precedence unknown | PARTIAL |
 | workflow-governance-router | orchestration | Delivery versus Q&A entry; unknown gates fail closed | Full seven-field router status/invariant read | Full canonical SKILL; source/installed bytes equal; operative authority cross-check in progress | Explicit human authority and no inferred ACTIVE; later child applicability requires separate tier | Installed present; source bytes equal; precedence unknown | PARTIAL |
+| evidence-handoff | maintenance | NOT_REVIEWED | NOT_REVIEWED | NOT_REVIEWED | NOT_REVIEWED | Not installed (new on branch feat/maintenance-skill-family) | PARTIAL |
+| root-cause-analysis | maintenance | NOT_REVIEWED | NOT_REVIEWED | NOT_REVIEWED | NOT_REVIEWED | Not installed (new on branch feat/maintenance-skill-family) | PARTIAL |
+| bug-triage | maintenance | NOT_REVIEWED | NOT_REVIEWED | NOT_REVIEWED | NOT_REVIEWED | Not installed (new on branch feat/maintenance-skill-family) | PARTIAL |
+| log-investigation | maintenance | NOT_REVIEWED | NOT_REVIEWED | NOT_REVIEWED | NOT_REVIEWED | Not installed (new on branch feat/maintenance-skill-family) | PARTIAL |
+| metric-correlation | maintenance | NOT_REVIEWED | NOT_REVIEWED | NOT_REVIEWED | NOT_REVIEWED | Not installed (new on branch feat/maintenance-skill-family) | PARTIAL |
 
 ## Acceptance coverage
 

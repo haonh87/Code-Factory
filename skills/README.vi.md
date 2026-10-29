@@ -16,6 +16,7 @@ Tài liệu này giải thích cấu trúc thư mục `skills/` để publish re
 - `skills/delivery/`: skill planning, implementation, testing, review và DevOps delivery.
 - `skills/guardrails/`: skill contract, readiness, audit, quality gate và behavioral guardrail cho coding agent.
 - `skills/obsidian/`: skill materialize artifact theo Obsidian Markdown, Bases và Canvas.
+- `skills/maintenance/`: skill cho công việc bảo trì ứng dụng với lỗi production (triage, bằng chứng log và metric, phân tích nguyên nhân gốc, handoff có bằng chứng). Chạy độc lập hoặc trong lane `maintenance`, không bao giờ thay thế gate của workflow.
 
 ## Top-Level Integration Skills
 

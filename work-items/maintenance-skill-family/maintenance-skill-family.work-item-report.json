@@ -1,0 +1,166 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "DONE",
+  "decision_owner": "coordinator",
+  "protocol_owner": "po",
+  "raw_request_summary": "",
+  "request_source": "legacy-scaffold",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [],
+  "decision_log": [
+    "bootstrap_from_existing_s01=true"
+  ],
+  "work_item_slug": "maintenance-skill-family",
+  "work_item_type": "FEATURE",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/maintenance-skill-family",
+  "current_step": "s08",
+  "granted_write_paths": [
+    "skills/maintenance",
+    "skills/README.md",
+    "skills/README.vi.md",
+    "docs/audits/code-factory-holistic-inventory.json",
+    "docs/audits/code-factory-holistic-coverage-matrix.md",
+    "packages/workflow-bundle/test/release-candidate-artifact-smoke.test.js",
+    "packages/workflow-bundle/test/release-install-all-smoke.test.js",
+    "packages/workflow-bundle/test/release-rollback-smoke.test.js",
+    "packages/workflow-bundle/test/release-surface.test.js",
+    "packages/workflow-bundle/test/workflow-bundle-runtime-parity.test.js"
+  ],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "archive-lifecycle",
+  "required_actions": [
+    {
+      "id": "se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194",
+      "kind": "workflow_followup",
+      "text": "Review and continue workflow backbone s01 -> s08."
+    },
+    {
+      "id": "se:6dc91370697aabe426d6f1e9e3774347f416c6a8af58196a5d16060beb077658",
+      "kind": "workflow_followup",
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/maintenance-skill-family"
+  ],
+  "audit_events": [
+    "REPORT_BOOTSTRAPPED",
+    "WORK_ITEM_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "WORK_ITEM_BLOCKED",
+    "WORK_ITEM_RESUMED",
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "po",
+  "reviewed_at": "2026-10-27T14:43:06.590Z",
+  "review_notes": [
+    "Human review approved."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-10-27T14:43:06.589Z",
+      "action": "bootstrap",
+      "actor": "system",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Bootstrapped read-only report from existing scaffold."
+    },
+    {
+      "timestamp": "2026-10-27T14:43:06.590Z",
+      "action": "approve",
+      "actor": "po",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-10-28T02:55:18.223Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-10-28T14:34:36.381Z",
+      "action": "block",
+      "actor": "coordinator",
+      "from_status": "ACTIVE",
+      "to_status": "BLOCKED",
+      "note": "Work item blocked."
+    },
+    {
+      "timestamp": "2026-10-28T14:38:08.022Z",
+      "action": "resume",
+      "actor": "coordinator",
+      "from_status": "BLOCKED",
+      "to_status": "ACTIVE",
+      "note": "Blockers resolved and work item resumed."
+    },
+    {
+      "timestamp": "2026-10-29T02:48:44.298Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Technical verification completed."
+    },
+    {
+      "timestamp": "2026-10-29T02:48:54.663Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Definition of Done confirmed."
+    }
+  ],
+  "resolved_state_history": [
+    {
+      "operation_id": "sc2-regrant-1",
+      "source_collection": "blockers",
+      "source_entry_id": "di:5afce467389400cc7f7ed90d6768e81de5979dfdaedfe3ded82a54ffa6a64740",
+      "original_entry": {
+        "id": "se:92647dcff1d75e059435d5fed65a13a44b7e2e2bfcb1f5d0637d5ca3507b08cc",
+        "kind": "delivery_blocker",
+        "text": "SC-2: mở rộng write-root cho 5 test release (D-T7=A)"
+      },
+      "original_text": "SC-2: mở rộng write-root cho 5 test release (D-T7=A)",
+      "actor": "maintainer",
+      "reason": "Owner chốt D-T7=A; cấp write-root qua resume",
+      "resolved_at": "2026-10-28T14:37:32.313Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "maintenance-skill-family",
+          "operation_id": "sc2-regrant-1",
+          "state_id": "di:5afce467389400cc7f7ed90d6768e81de5979dfdaedfe3ded82a54ffa6a64740",
+          "source_collection": "blockers",
+          "original_entry": {
+            "id": "se:92647dcff1d75e059435d5fed65a13a44b7e2e2bfcb1f5d0637d5ca3507b08cc",
+            "kind": "delivery_blocker",
+            "text": "SC-2: mở rộng write-root cho 5 test release (D-T7=A)"
+          },
+          "original_text": "SC-2: mở rộng write-root cho 5 test release (D-T7=A)",
+          "actor": "maintainer",
+          "reason": "Owner chốt D-T7=A; cấp write-root qua resume",
+          "resolved_at": "2026-10-28T14:37:32.313Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "aIu73r5OwoNpLNtKy/NrPcbypi/feNROT5JwTyL6iPpL6zHJ87lVK2H/jvvtHei3NnmCooZZ8f/lnbsKW9fhCA=="
+      }
+    }
+  ]
+}

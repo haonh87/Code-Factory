@@ -1,0 +1,7 @@
+interface:
+  display_name: "Root Cause Analysis"
+  short_description: "Tìm nguyên nhân gốc bug production: timeline, giả thuyết kiểm chứng được, truy về nguồn gốc, ≥2 phương án sửa"
+  default_prompt: "Dùng $root-cause-analysis để dựng timeline từ bằng chứng, liệt kê 3-5 giả thuyết có điều kiện bác bỏ, kiểm từng giả thuyết, truy nguyên nhân còn lại về nguồn gốc trong code/config/data, chấm confidence và đề xuất ít nhất hai phương án sửa kèm blast radius, rollback và test chứng minh."
+
+policy:
+  allow_implicit_invocation: true
