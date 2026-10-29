@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "DONE",
   "decision_owner": "coordinator",
   "protocol_owner": "po",
   "raw_request_summary": "",
@@ -16,7 +16,7 @@
   "work_item_type": "FEATURE",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/maintenance-skill-family",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     "skills/maintenance",
     "skills/README.md",
@@ -31,7 +31,7 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "step-owner",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
       "id": "se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194",
@@ -39,9 +39,9 @@
       "text": "Review and continue workflow backbone s01 -> s08."
     },
     {
-      "id": "se:65a8ff65742d42ba80eae93e205f2159dd27c589faeab84cd9f8b5d53232b228",
+      "id": "se:6dc91370697aabe426d6f1e9e3774347f416c6a8af58196a5d16060beb077658",
       "kind": "workflow_followup",
-      "text": "Continue active execution from the current step."
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -53,7 +53,9 @@
     "WORK_ITEM_APPROVED",
     "WORK_ITEM_ACTIVATED",
     "WORK_ITEM_BLOCKED",
-    "WORK_ITEM_RESUMED"
+    "WORK_ITEM_RESUMED",
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -106,6 +108,22 @@
       "from_status": "BLOCKED",
       "to_status": "ACTIVE",
       "note": "Blockers resolved and work item resumed."
+    },
+    {
+      "timestamp": "2026-10-29T02:48:44.298Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Technical verification completed."
+    },
+    {
+      "timestamp": "2026-10-29T02:48:54.663Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Definition of Done confirmed."
     }
   ],
   "resolved_state_history": [

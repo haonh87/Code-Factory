@@ -175,14 +175,14 @@ notes_for_step_2: "Business goal: give maintenance agents a governed, evidence-f
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "maintenance-skill-family"
 work_item_type: FEATURE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/maintenance-skill-family"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - "skills/maintenance"
   - "skills/README.md"
@@ -205,12 +205,12 @@ decision_owner: "coordinator"
 protocol_owner: "po"
 reviewed_by: "po"
 reviewed_at: "2026-10-27T14:43:06.590Z"
-handoff_target: "step-owner"
-last_transition_action: "resume"
-last_transition_at: "2026-10-28T14:38:08.022Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-10-29T02:48:54.663Z"
 required_actions:
   - {"id":"se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194","kind":"workflow_followup","text":"Review and continue workflow backbone s01 -> s08."}
-  - {"id":"se:65a8ff65742d42ba80eae93e205f2159dd27c589faeab84cd9f8b5d53232b228","kind":"workflow_followup","text":"Continue active execution from the current step."}
+  - {"id":"se:6dc91370697aabe426d6f1e9e3774347f416c6a8af58196a5d16060beb077658","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "Human review approved."
@@ -222,6 +222,8 @@ audit_events:
   - "WORK_ITEM_ACTIVATED"
   - "WORK_ITEM_BLOCKED"
   - "WORK_ITEM_RESUMED"
+  - "VERIFICATION_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Traceability

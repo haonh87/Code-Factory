@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: default
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/default.md"
 change_id: ""
@@ -67,8 +67,8 @@ gate_reviews:
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-10-29T02:41:38Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -90,7 +90,7 @@ tags:
 # Step 8 - Verify + DoD
 
 > [!summary]
-> Verify of the five `skills/maintenance` skills against AC-1..AC-10. All mechanical checks pass on a clean checkout with the change applied (unit 50/50). Proposed verdict **PARTIAL** until the owner phrase spot-check (AC-8) and the QC DoD sign-off. Not committed, not merged.
+> Verify of the five `skills/maintenance` skills against AC-1..AC-10: all PASS (unit 50/50 on a clean checkout with the change; originality search 0 copies). DoD accepted by QC (owner) on 2026-10-29. Delivered in commit 248feb4 on `feat/maintenance-skill-family`; merge to main after the DoD receipt is sealed.
 
 ## Step Contract
 ```yaml
@@ -115,7 +115,13 @@ ac_coverage:
   AC-5: {verdict: PASS, note: "N1", evidence: "no vendor-only API required; vendor query syntax (KQL, Lucene, ES|QL, PromQL) only in references/query-examples.md; grep of SKILL.md/SKILL.vi.md for vendor names = 0"}
   AC-6: {verdict: PASS, evidence: "SKILL.md words 1142/1213/1286/1246/1131 (<=1500); totals excl. VI 1713-2041 (<=3000)"}
   AC-7: {verdict: PASS, evidence: "eval seeds 5/4/4/4/4 (>=3)"}
-  AC-8: {verdict: PARTIAL, evidence: "agent attestation + 10 phrases per skill in s07 '## Originality T8'; owner spot-check against public skill repos pending"}
+  AC-8: {verdict: PASS, evidence: "originality_check below; owner confirmed in chat 'accept DoD' at 2026-10-29T02:41:38Z"}
+originality_check:
+  run_at: "2026-10-29"
+  approved_by_owner_to_run: "yes (chat: 'Tôi đồng ý, a và b')"
+  web_search: "50/50 phrases from s07 '## Originality T8' searched as exact quotes: 0 POSSIBLE_COPY, 6 GENERIC_IDIOM (same engineering idea in different words: #4 untrusted input as data, #13 falsifiable hypotheses, #33 healthy vs failed trace, #39 clock skew, #45 averages and tails, #47 deploy timing as lead), 44 NO_MATCH; no hit in anthropics/skills, obra/superpowers, wshobson/agents, mattpocock/skills, Elastic, skills.sh/agent-skills.md mirrors"
+  github_code_search: "gh search code exact phrase, 6 most distinctive (#1, #2, #6, #25, #29, #37): 0 results each; tool sanity-checked with a known public string (returned results)"
+  limitation: "Search engines and GitHub code search do not index all repositories; NO_MATCH supports originality, it is not proof"
   AC-9: {verdict: PASS, evidence: "README EN/VI maintenance line; inventory SK-043..SK-047 + counts; coverage matrix addendum + 5 rows"}
   AC-10: {verdict: PASS, note: "N2", evidence: "clean detached worktree of HEAD 7dce033 + this change applied (2026-10-29T02:28Z): build runtime OK, validate:workflow:unit 'OK: 50 workflow-bundle unit test file(s) passed', pack-audit 155/0, bundle-smoke OK; main tree validate:workflow OK; 33 files UTF-8 no BOM"}
 notes:
@@ -125,7 +131,7 @@ evidence_refs:
   - "maintenance-skill-family.s07.implementation.md#Validation T7"
   - "maintenance-skill-family.s07.implementation.md#Review R2 (T3-T5)"
   - "maintenance-skill-family.s07.implementation.md#Originality T8"
-summary_verdict: PARTIAL
+summary_verdict: PASS
 ```
 
 ## Governance Checks
@@ -136,11 +142,9 @@ checks:
   - "Scope drift recorded and decided: SC-1 (s05), SC-2 (s07, owner D-T7=A, write roots re-granted via block/dispose/resume)"
   - "No external skill text (owner constraint) — attestation recorded; spot-check pending"
   - "Encoding: UTF-8 without BOM on all new/changed text files"
-blocking_items:
-  - "AC-8 owner phrase spot-check"
-  - "Delivery not committed: DoD seal reads committed delivery; commit on branch needed before sealing"
+blocking_items: []
 owner: "qc"
-next_action: "owner spot-check AC-8 → commit on branch (owner approval) → QC seals DoD → verify/close → merge to main"
+next_action: "QC seals DoD receipt → work-item verify → close → merge feat/maintenance-skill-family to main (owner approval)"
 ```
 
 ## Regression & Compatibility Summary
@@ -185,15 +189,16 @@ notes: ["approval_gates marks this not_applicable for the work item"]
 
 ## Audit
 ```yaml
-audit_status: PARTIAL
-notes: ["All AC evidenced except AC-8 owner spot-check", "Tool finding TF-1 (wfc re-activate duplicate id) recorded in s07, out of scope"]
+audit_status: PASS
+notes: ["AC-1..AC-10 evidenced; AC-8 confirmed by owner", "Tool finding TF-1 (wfc re-activate duplicate id) recorded in s07, out of scope"]
 ```
 
 ## Definition of Done
 ```yaml
-status: PARTIAL
+status: DONE
+dod_decision: {decided_by: "qc (owner, chat 'accept DoD')", decided_at: "2026-10-29T02:41:38Z", basis: "AC-1..AC-10 PASS; notes N1, N2 accepted"}
 residual_risks:
-  - "AC-8 originality relies on attestation until owner spot-check"
+  - "Originality evidence is search-based (supporting, not proof)"
   - "Skill quality on real cases is unmeasured until the ai-maintainer-spike eval (S1b)"
   - "Next bundle release must state 48 managed skills (SC-2 follow-up)"
   - "Two diagram tests fail in the governed working tree (read-only modes); environment issue outside this item"
@@ -207,8 +212,8 @@ next_step: "DoD seal by qc, then work-item verify/close and merge"
 ```
 
 ## Handoff
-- Overall status: PARTIAL — 9/10 AC PASS, AC-8 chờ owner dò thử câu đặc trưng.
+- Overall status: DONE (QC/owner accept 2026-10-29) — 10/10 AC PASS; commit 248feb4.
 - Residual risks: originality dựa trên cam kết cho tới khi dò thử; chất lượng thực tế đo ở spike S1b; release kế tiếp ghi 48 skill.
 - Recommendation: đủ điều kiện DoD sau khi AC-8 xong và delivery được commit trên branch.
 - Release recommendation khi có: không phát hành trong item này; gom vào release work item kế tiếp.
-- Next action: owner dò thử AC-8 → duyệt commit → QC ký DoD → verify/close → merge.
+- Next action: QC seal receipt DoD → verify → close → merge (hỏi owner trước khi merge).
