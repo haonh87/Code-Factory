@@ -157,3 +157,30 @@ Input:
 3. `search_sessions`
 4. `view_session`
 5. `get_related_sessions`
+## Physical path boundary
+
+Configured roots must exist and resolve to directories. Paths are checked against the
+configured root and its canonical location; symlinks inside the root are accepted only
+when their physical targets remain inside it. Returned path fields may use canonical
+spellings. Missing roots, invalid inputs, dangling/cyclic links, non-directory ancestors
+and filesystem errors fail closed. Segment-aware checks allow names such as `..notes`.
+
+Session files must exist as regular files beneath the sessions root before any transcript
+read or `cass view/context` call. Historical workspace names may have missing suffixes
+only beneath a verified existing directory within the workspace root.
+
+List, search and related results validate each source file and the workspace recorded in
+that file. Entries with missing/invalid/outside paths or contradictory index workspace
+metadata are omitted. Related groups are limited to the source workspace and its children.
+Stale indexes may therefore return fewer results. Search retains its page/limit caps.
+
+These checks assume administrator-controlled configuration, trusted Git/cass binaries and
+filesystem directories that are not concurrently replaced by a hostile local process.
+Revalidation reduces stale checks; it does not provide atomic confinement. Hard links,
+repository hooks/configuration, external `.git` metadata and remote-host policy are
+separate boundaries. No live rollout is implied by this change.
+
+Containment tests use temporary fixtures and stub child processes. Local Git positive
+controls isolate configuration, credentials and network transports. Directory fixtures
+select junctions on Windows, but native Windows validation must run before Windows rollout;
+macOS results are not Windows evidence.

@@ -1,0 +1,150 @@
+{
+  "materialization_status": "PROPOSED",
+  "protocol_status": "CANCELLED",
+  "decision_owner": "agent",
+  "protocol_owner": "",
+  "raw_request_summary": "Fix SEC-002: enforce physical allowed-root containment for repository paths in github-push and gitlab MCP and for workspace/session paths in session-search MCP. Resolve symlinks before Git or session reads, retain safe repository creation and bounded historical-workspace handling, fail closed on invalid filesystem paths, and add isolated regression tests. Separate remediation from the accepted security baseline; no SEC-001 merge, remote host policy (SEC-005), dependency changes, live MCP deployment, push, release or merge.",
+  "request_source": "user",
+  "candidate_count": 2,
+  "split_decision": "split",
+  "dedup_result": "needs_review",
+  "work_items": [
+    {
+      "work_item_slug": "mcp-physical-root-containment",
+      "work_item_title": "Mcp Physical Root Containment",
+      "work_item_type": "BUG",
+      "scope_summary": "Fix SEC-002: enforce physical allowed-root containment for repository paths in github-push and gitlab MCP and for workspace/session paths in session-search MCP. Resolve symlinks before Git or session reads, retain safe repository creation and bounded historical-workspace handling, fail closed on invalid filesystem paths, and add isolated regression tests. Separate remediation from the accepted security baseline; no SEC-001 merge, remote host policy (SEC-005), dependency changes, live MCP deployment, push, release or merge.",
+      "primary_outcome": "Fix SEC-002: enforce physical allowed-root containment for repository paths in github-push and gitlab MCP and for workspace/session paths in session-search MCP. Resolve symlinks before Git or session reads, retain safe repository creation and bounded historical-workspace handling, fail closed on invalid filesystem paths, and add isolated regression tests. Separate remediation from the accepted security baseline; no SEC-001 merge, remote host policy (SEC-005), dependency changes, live MCP deployment, push, release or merge.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "strict",
+      "sdd_reasons": [],
+      "sdd_preset": "strict",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/decouple-tests-from-tree-layout",
+        "work-items/mcp-gitlab",
+        "work-items/workflow-pack-security-baseline"
+      ],
+      "collision_notes": [
+        "decouple-tests-from-tree-layout (score=2)",
+        "mcp-gitlab (score=2)",
+        "workflow-pack-security-baseline (score=2)"
+      ],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "Scope chưa cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item mcp-physical-root-containment --planning-track full --delivery-context brownfield --governance-profile strict",
+        "npm run validate:workflow -- --workflow-root work-items/mcp-physical-root-containment --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment"
+      ],
+      "blockers": [
+        {
+          "id": "se:d6bac38fcc1ffb60a4d8e9c75f7c658d52eb906242d3b775c2aa48b27568d6ca",
+          "kind": "delivery_blocker",
+          "text": "Request có dấu hiệu chứa nhiều outcome; cần split trước khi scaffold."
+        },
+        {
+          "id": "se:65abf818691e7bd6f6f4a8d22cd18f2f1299013dac5c5a5a047a4a1c265652b6",
+          "kind": "delivery_blocker",
+          "text": "Có work item gần nghĩa cần review: decouple-tests-from-tree-layout, mcp-gitlab, workflow-pack-security-baseline"
+        }
+      ]
+    }
+  ],
+  "decision_log": [
+    "split_decision=split",
+    "work_item_type=BUG",
+    "delivery_context=brownfield",
+    "dedup_result=needs_review",
+    "change_strategy=none",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=strict",
+    "selected_profile=strict",
+    "sdd_mode=none",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "mcp-physical-root-containment",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/work-items/mcp-physical-root-containment",
+  "current_step": "",
+  "granted_write_paths": [],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "none",
+  "required_actions": [
+    {
+      "id": "se:70e9ddb120a96d3d9e84013f2ef1e708e58e5f4e5ea6a0f3fd6cec307b03754d",
+      "kind": "workflow_followup",
+      "text": "Làm rõ scope để chốt single hay split."
+    },
+    {
+      "id": "se:d5897462a60d7be3818fab338e08a1e9580692b99d2a69a4a0593174ccbd57c6",
+      "kind": "workflow_followup",
+      "text": "Review existing work-items/changes trước khi scaffold."
+    }
+  ],
+  "blockers": [
+    {
+      "id": "se:d6bac38fcc1ffb60a4d8e9c75f7c658d52eb906242d3b775c2aa48b27568d6ca",
+      "kind": "delivery_blocker",
+      "text": "Request có dấu hiệu chứa nhiều outcome; cần split trước khi scaffold."
+    },
+    {
+      "id": "se:65abf818691e7bd6f6f4a8d22cd18f2f1299013dac5c5a5a047a4a1c265652b6",
+      "kind": "delivery_blocker",
+      "text": "Có work item gần nghĩa cần review: decouple-tests-from-tree-layout, mcp-gitlab, workflow-pack-security-baseline"
+    },
+    {
+      "id": "se:84b13bcac4c2974c5b198d8ead5bd3f4df6d5f225aab59bc863831aa9bb8312f",
+      "kind": "delivery_blocker",
+      "text": "Superseded before admission by mcp-root-containment. Intake wording caused an automatic split=2 despite one coupled SEC-002 security outcome. No approval, grants or production edits existed. Preserve this CLI history; do not rewrite the report."
+    }
+  ],
+  "refs": [
+    "work-items/decouple-tests-from-tree-layout",
+    "work-items/mcp-gitlab",
+    "work-items/workflow-pack-security-baseline"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "WORK_ITEM_CANCELLED"
+  ],
+  "review_required": true,
+  "approval_status": "PENDING_REVIEW",
+  "reviewed_by": "",
+  "reviewed_at": "",
+  "review_notes": [],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-10-29T02:16:55.794Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-10-29T02:18:43.992Z",
+      "action": "cancel",
+      "actor": "developer",
+      "from_status": "PROPOSED",
+      "to_status": "CANCELLED",
+      "note": "Superseded before admission by mcp-root-containment. Intake wording caused an automatic split=2 despite one coupled SEC-002 security outcome. No approval, grants or production edits existed. Preserve this CLI history; do not rewrite the report."
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "at": "2026-10-29T02:47:14.908Z",
+  "changed_production_scope": [
+    "mcp/github-push/src/core.js",
+    "mcp/github-push/test/core.test.js",
+    "mcp/github-push/test/containment.test.js",
+    "mcp/github-push/README.md",
+    "mcp/gitlab/src/core.js",
+    "mcp/gitlab/test/core.test.js",
+    "mcp/gitlab/test/containment.test.js",
+    "mcp/gitlab/README.md",
+    "mcp/session-search/src/core.js",
+    "mcp/session-search/test/core.test.js",
+    "mcp/session-search/test/containment.test.js",
+    "mcp/session-search/README.md"
+  ],
+  "unchanged_readiness_pinned_files": 1201,
+  "signature_valid_current_hosts": [
+    "work-item",
+    "spec",
+    "dor",
+    "approach",
+    "task_plan"
+  ],
+  "approved_card_unchanged": true,
+  "syntax_checked": [
+    "mcp/github-push/src/core.js",
+    "mcp/github-push/test/core.test.js",
+    "mcp/github-push/test/containment.test.js",
+    "mcp/gitlab/src/core.js",
+    "mcp/gitlab/test/core.test.js",
+    "mcp/gitlab/test/containment.test.js",
+    "mcp/session-search/src/core.js",
+    "mcp/session-search/test/core.test.js",
+    "mcp/session-search/test/containment.test.js"
+  ],
+  "snapshot_bytes_match": 1211,
+  "source_hashes": {
+    "mcp/github-push/src/core.js": "d503c0d51e3854f8760a3aa4ad202f53208895c3e57b4413213c6d33b48178e8",
+    "mcp/github-push/test/core.test.js": "05478eb4b8f91456e53cf9ada0e171b765f022a09fe51a03f7a969c609d8ae41",
+    "mcp/github-push/test/containment.test.js": "fe5d6cde36fb338e0c2aca4d084ac451e815ee4f36235e5dc6cc1f6a25f21f8e",
+    "mcp/github-push/README.md": "593e639d73b1ac63721e3a5cd9ac04d45fd4ce4e53083a7ea80b6975717163ff",
+    "mcp/gitlab/src/core.js": "d87568697b70feb369faf981d7d95422d9272570b7dc4f7c97778de7915086e3",
+    "mcp/gitlab/test/core.test.js": "35a14465b9a1e71e61d250c30704bafd2ce8a795931d38da81ffabd641fdc9dc",
+    "mcp/gitlab/test/containment.test.js": "61f32beb30416de390ea79ced21a277b30bcf557451ee8ddc34ec128d8d0202b",
+    "mcp/gitlab/README.md": "0ef1ab1f0dd8ac65217f9d24313d9f3d98553755d792d1c87da8230db2419477",
+    "mcp/session-search/src/core.js": "d14934e273fd2e61818ffd13d350c359f55c94a4fbc1fa0e05d80ca2bc89afb1",
+    "mcp/session-search/test/core.test.js": "4e95443f2f90e179211b180699af01cc0edc1ff046957d8365b5d8945ed893ad",
+    "mcp/session-search/test/containment.test.js": "8adb2359d0123717e40a3e2b985d3f16449e733f8e2c0a6809184f001585f841",
+    "mcp/session-search/README.md": "686e39de5185d4d17cc71a13536d1fe4ff70e21c88651ee82237a87de6456a0c"
+  },
+  "review": {
+    "static_analysis": "PASS: inspected canonical resolution, segment checks, type validation, call sites and cleanup",
+    "security": "PASS within signed threat model: fail closed before Git/cass/open, ancestor policy, actual workspace filtering, generic diagnostics",
+    "performance": "Heuristic only: synchronous canonical checks per operation/result; transcript scan retains 20-line limit; search retains 10-page/50-page-size caps; no extra subprocess or dependency"
+  },
+  "unavailable_tools": [
+    "eslint",
+    "semgrep"
+  ],
+  "platform": {
+    "os": "darwin",
+    "node": "v26.5.0",
+    "windows": "NOT RUN"
+  }
+}

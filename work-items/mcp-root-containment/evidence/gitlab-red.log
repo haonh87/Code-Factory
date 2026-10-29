@@ -1,0 +1,206 @@
+✔ repository rejects sibling before Git launch (1.525833ms)
+✔ repository rejects traversal before Git launch (0.716042ms)
+✖ repository rejects escape before Git launch (3.419375ms)
+✖ repository rejects chain before Git launch (1.61325ms)
+✖ repository rejects cycle before Git launch (1.643166ms)
+✖ repository rejects dangling before Git launch (1.414875ms)
+✖ repository rejects file before Git launch (1.792917ms)
+✖ repository rejects missing before Git launch (1.407042ms)
+✖ repository rejects null before Git launch (1.226333ms)
+✔ repository rejects nul before Git launch (0.630417ms)
+✔ repository rejects object before Git launch (0.660542ms)
+✖ canonical root aliases, contained directory links and ..notes are accepted (1.020375ms)
+✖ missing root and non-directory ancestor fail closed (0.62625ms)
+✖ permission/canonicalization failure has a bounded diagnostic (0.639834ms)
+✖ retargeted link is checked again on the next operation (2.195458ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 4
+ℹ fail 11
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 63.688625
+
+✖ failing tests:
+
+test at mcp/gitlab/test/containment.test.js:51:3
+✖ repository rejects escape before Git launch (3.419375ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/gitlab/test/containment.test.js:68:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at mcp/gitlab/test/containment.test.js:51:3
+✖ repository rejects chain before Git launch (1.61325ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/gitlab/test/containment.test.js:68:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at mcp/gitlab/test/containment.test.js:51:3
+✖ repository rejects cycle before Git launch (1.643166ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/gitlab/test/containment.test.js:68:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at mcp/gitlab/test/containment.test.js:51:3
+✖ repository rejects dangling before Git launch (1.414875ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/gitlab/test/containment.test.js:68:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at mcp/gitlab/test/containment.test.js:51:3
+✖ repository rejects file before Git launch (1.792917ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/gitlab/test/containment.test.js:68:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at mcp/gitlab/test/containment.test.js:51:3
+✖ repository rejects missing before Git launch (1.407042ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/gitlab/test/containment.test.js:68:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at mcp/gitlab/test/containment.test.js:51:3
+✖ repository rejects null before Git launch (1.226333ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/gitlab/test/containment.test.js:68:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at mcp/gitlab/test/containment.test.js:73:1
+✖ canonical root aliases, contained directory links and ..notes are accepted (1.020375ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/containment-HcIbir/root-alias/repo'
+  - '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/containment-HcIbir/root/repo'
+  
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/gitlab/test/containment.test.js:79:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/containment-HcIbir/root-alias/repo',
+    expected: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/containment-HcIbir/root/repo',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at mcp/gitlab/test/containment.test.js:89:1
+✖ missing root and non-directory ancestor fail closed (0.62625ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/gitlab/test/containment.test.js:92:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at mcp/gitlab/test/containment.test.js:97:1
+✖ permission/canonicalization failure has a bounded diagnostic (0.639834ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/gitlab/test/containment.test.js:101:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at mcp/gitlab/test/containment.test.js:108:1
+✖ retargeted link is checked again on the next operation (2.195458ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/gitlab/test/containment.test.js:116:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }

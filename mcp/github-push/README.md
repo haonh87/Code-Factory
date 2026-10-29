@@ -199,3 +199,25 @@ Input:
 5. `push_current_branch`
 
 Or run `publish_repository_to_github` once if you want the server to do the full flow.
+## Physical path boundary
+
+Configured roots must exist and resolve to directories. Paths are checked against the
+configured root and its canonical location; symlinks inside the root are accepted only
+when their physical targets remain inside it. Returned path fields may use canonical
+spellings. Missing roots, invalid inputs, dangling/cyclic links, non-directory ancestors
+and filesystem errors fail closed. Segment-aware checks allow names such as `..notes`.
+
+Existing repository operations require a real directory. With `initializeIfMissing`,
+a missing destination is permitted only below a verified existing directory inside the
+root. The server checks again before creation, after `mkdir` and before Git invocation.
+
+These checks assume administrator-controlled configuration, trusted Git/cass binaries and
+filesystem directories that are not concurrently replaced by a hostile local process.
+Revalidation reduces stale checks; it does not provide atomic confinement. Hard links,
+repository hooks/configuration, external `.git` metadata and remote-host policy are
+separate boundaries. No live rollout is implied by this change.
+
+Containment tests use temporary fixtures and stub child processes. Local Git positive
+controls isolate configuration, credentials and network transports. Directory fixtures
+select junctions on Windows, but native Windows validation must run before Windows rollout;
+macOS results are not Windows evidence.

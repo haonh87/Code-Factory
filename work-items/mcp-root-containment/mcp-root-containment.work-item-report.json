@@ -1,0 +1,307 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "VERIFIED",
+  "decision_owner": "agent",
+  "protocol_owner": "developer",
+  "raw_request_summary": "Fix SEC-002 physical allowed-root containment across the existing github-push, gitlab, session-search MCPs as one security remediation. Scope: canonical path validation, bounded missing-path handling, isolated regression evidence. Exclusions: SEC-001 merge; remote-host policy SEC-005; dependencies; live deployment; release.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "mcp-root-containment",
+      "work_item_title": "Mcp Root Containment",
+      "work_item_type": "BUG",
+      "scope_summary": "Fix SEC-002 physical allowed-root containment across the existing github-push, gitlab, session-search MCPs as one security remediation. Scope: canonical path validation, bounded missing-path handling, isolated regression evidence. Exclusions: SEC-001 merge; remote-host policy SEC-005; dependencies; live deployment; release.",
+      "primary_outcome": "Fix SEC-002 physical allowed-root containment across the existing github-push, gitlab, session-search MCPs as one security remediation. Scope: canonical path validation, bounded missing-path handling, isolated regression evidence. Exclusions: SEC-001 merge; remote-host policy SEC-005; dependencies; live deployment; release.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "strict",
+      "sdd_reasons": [],
+      "sdd_preset": "strict",
+      "sdd_light_profile": "preview",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/mcp-physical-root-containment",
+        "work-items/approval-path-defects",
+        "work-items/arch-role-skills-release"
+      ],
+      "collision_notes": [
+        "mcp-physical-root-containment (score=3)",
+        "approval-path-defects (score=1)",
+        "arch-role-skills-release (score=1)"
+      ],
+      "change_strategy": "none",
+      "change_id": "",
+      "change_reason": "Scope chưa cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:workflow -- --work-item mcp-root-containment --planning-track full --delivery-context brownfield --governance-profile strict",
+        "npm run validate:workflow -- --workflow-root work-items/mcp-root-containment --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment"
+      ],
+      "blockers": [
+        {
+          "id": "se:638804512ac0117c06bb2d5c7c19fc37e000a7bcd80d56a8b84668633e986993",
+          "kind": "delivery_blocker",
+          "text": "Có work item gần nghĩa cần review: mcp-physical-root-containment, approval-path-defects, arch-role-skills-release"
+        }
+      ]
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=BUG",
+    "delivery_context=brownfield",
+    "dedup_result=needs_review",
+    "change_strategy=none",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=strict",
+    "selected_profile=strict",
+    "sdd_mode=none",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "mcp-root-containment",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/work-items/mcp-root-containment",
+  "current_step": "s08",
+  "granted_write_paths": [
+    "mcp/github-push/src/core.js",
+    "mcp/github-push/test/core.test.js",
+    "mcp/github-push/test/containment.test.js",
+    "mcp/github-push/README.md",
+    "mcp/gitlab/src/core.js",
+    "mcp/gitlab/test/core.test.js",
+    "mcp/gitlab/test/containment.test.js",
+    "mcp/gitlab/README.md",
+    "mcp/session-search/src/core.js",
+    "mcp/session-search/test/core.test.js",
+    "mcp/session-search/test/containment.test.js",
+    "mcp/session-search/README.md",
+    "work-items/mcp-root-containment"
+  ],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "definition-of-done",
+  "required_actions": [
+    {
+      "id": "se:d25915d6f2bee0fca4aae16e857835e3d5f7b4b8b4a27cff753ef11a5448c0f8",
+      "kind": "workflow_followup",
+      "text": "Collect DoD evidence and close the work item when ready."
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/mcp-physical-root-containment",
+    "work-items/approval-path-defects",
+    "work-items/arch-role-skills-release",
+    "work-items/mcp-root-containment"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "READINESS_BUNDLE_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-10-29T02:32:08.173Z",
+  "review_notes": [
+    "Human approves the bounded SEC-002 physical containment packet across three MCPs, with the explicit creation/history/filtering policy, canonical path values and trusted-filesystem/platform limits. Other security findings, live rollout and merge remain separate."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-10-29T02:18:44.201Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-10-29T02:32:08.088Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Signed admission concerns resolved."
+    },
+    {
+      "timestamp": "2026-10-29T02:32:08.088Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Resumed proposal operation 7dced58a-fd93-41f5-8f30-e85eb84cf9eb."
+    },
+    {
+      "timestamp": "2026-10-29T02:32:08.247Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human approves the bounded SEC-002 physical containment packet across three MCPs, with the explicit creation/history/filtering policy, canonical path values and trusted-filesystem/platform limits. Other security findings, live rollout and merge remain separate."
+    },
+    {
+      "timestamp": "2026-10-29T02:32:08.173Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "450f655a-f9b5-4dd1-ab55-50c7eeb21ca1"
+    },
+    {
+      "timestamp": "2026-10-29T02:32:57.629Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Five current-host readiness receipts and three signed admission dispositions verified. Activate bounded SEC-002 TDD in the isolated worktree; no live MCP, network remote operation, merge or release."
+    },
+    {
+      "timestamp": "2026-10-29T10:29:18.200Z",
+      "action": "verify",
+      "actor": "developer",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Technical verification: 82 package tests; 50 workflow files in byte-identical snapshot; targeted static/security/encoding/workflow checks passed. Native Windows and scanner limits disclosed. Human QC DoD pending; no merge or release."
+    }
+  ],
+  "resolved_state_history": [
+    {
+      "operation_id": "3146b593-a85a-470e-90ef-5f9e2150af3d",
+      "source_collection": "blockers",
+      "source_entry_id": "di:18787a98247d8db4116ba73431561abb88b8e3c6964b15a2a6ecf07bb15370f6",
+      "original_entry": {
+        "id": "se:638804512ac0117c06bb2d5c7c19fc37e000a7bcd80d56a8b84668633e986993",
+        "kind": "delivery_blocker",
+        "text": "Có work item gần nghĩa cần review: mcp-physical-root-containment, approval-path-defects, arch-role-skills-release"
+      },
+      "original_text": "Có work item gần nghĩa cần review: mcp-physical-root-containment, approval-path-defects, arch-role-skills-release",
+      "actor": "maintainer",
+      "reason": "SEC-002 dedup reviewed: mcp-physical-root-containment is a cancelled pre-admission split inference, approval-path-defects is DONE for unrelated approval CLI defects, arch-role-skills-release is legacy approved role-skill release documentation. None grants or owns MCP physical-containment remediation. Admit the single successor mcp-root-containment; preserve all prior histories.",
+      "resolved_at": "2026-10-29T02:32:00.447Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "mcp-root-containment",
+          "operation_id": "3146b593-a85a-470e-90ef-5f9e2150af3d",
+          "state_id": "di:18787a98247d8db4116ba73431561abb88b8e3c6964b15a2a6ecf07bb15370f6",
+          "source_collection": "blockers",
+          "original_entry": {
+            "id": "se:638804512ac0117c06bb2d5c7c19fc37e000a7bcd80d56a8b84668633e986993",
+            "kind": "delivery_blocker",
+            "text": "Có work item gần nghĩa cần review: mcp-physical-root-containment, approval-path-defects, arch-role-skills-release"
+          },
+          "original_text": "Có work item gần nghĩa cần review: mcp-physical-root-containment, approval-path-defects, arch-role-skills-release",
+          "actor": "maintainer",
+          "reason": "SEC-002 dedup reviewed: mcp-physical-root-containment is a cancelled pre-admission split inference, approval-path-defects is DONE for unrelated approval CLI defects, arch-role-skills-release is legacy approved role-skill release documentation. None grants or owns MCP physical-containment remediation. Admit the single successor mcp-root-containment; preserve all prior histories.",
+          "resolved_at": "2026-10-29T02:32:00.447Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "5q/QWaVkIDkatDZoHXSWUXYZxwadxJfZYuXNMjk/4LKt+QjSXcFLxhuuvPFwbko3hrfQT3zACJK69yBeRPtiAw=="
+      }
+    },
+    {
+      "operation_id": "417775f3-addc-4598-bb71-2237e7fee7a1",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:b4a48529afee28fa252770a431f5a580a328ed564828ca766485762c8aa6a1e0",
+      "original_entry": {
+        "id": "se:e938c7de958906a0da600e4c3af86577961f153d108847ec7e3bee427bb15642",
+        "kind": "workflow_followup",
+        "text": "Làm rõ scope để chốt single hay split."
+      },
+      "original_text": "Làm rõ scope để chốt single hay split.",
+      "actor": "maintainer",
+      "reason": "Human scope decision: one coupled SEC-002 physical-filesystem boundary correction across three existing MCP modules, their tests and README notes. No separate outcomes for remote-policy SEC-005, live deployment, SEC-001 merge or dependencies. Approve single scope, with the Spec Card missing-path, filtering and trusted-filesystem limits.",
+      "resolved_at": "2026-10-29T02:32:03.024Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "mcp-root-containment",
+          "operation_id": "417775f3-addc-4598-bb71-2237e7fee7a1",
+          "state_id": "di:b4a48529afee28fa252770a431f5a580a328ed564828ca766485762c8aa6a1e0",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:e938c7de958906a0da600e4c3af86577961f153d108847ec7e3bee427bb15642",
+            "kind": "workflow_followup",
+            "text": "Làm rõ scope để chốt single hay split."
+          },
+          "original_text": "Làm rõ scope để chốt single hay split.",
+          "actor": "maintainer",
+          "reason": "Human scope decision: one coupled SEC-002 physical-filesystem boundary correction across three existing MCP modules, their tests and README notes. No separate outcomes for remote-policy SEC-005, live deployment, SEC-001 merge or dependencies. Approve single scope, with the Spec Card missing-path, filtering and trusted-filesystem limits.",
+          "resolved_at": "2026-10-29T02:32:03.024Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "z81+X72D9afMtMDpc/SSVESwj11FZ15ReoBdsn+RIEWHnEgc050rNhAPrnohfkmg82Zbj6wX2gEWnhF/YAzWAg=="
+      }
+    },
+    {
+      "operation_id": "860acea6-0617-4511-9658-ffa6a6ec467c",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:dcd44c6e509109a68ae295389d8826cbc60afd0b490e2a21e04cfb75a3c7302b",
+      "original_entry": {
+        "id": "se:a91f86b61f2dad2cbdd77826f4d560a8eeed2d55c7c6efdb1298f73055291168",
+        "kind": "workflow_followup",
+        "text": "Review existing work-items/changes trước khi scaffold."
+      },
+      "original_text": "Review existing work-items/changes trước khi scaffold.",
+      "actor": "maintainer",
+      "reason": "Existing work-items and changes reviewed: the accepted security baseline is DONE and evidence-only; original mcp-gitlab delivery is legacy reference with no protocol approval for this fix. No change package owns this remediation. Preserve existing work and use change_strategy none for the bounded single SEC-002 item.",
+      "resolved_at": "2026-10-29T02:32:05.619Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "mcp-root-containment",
+          "operation_id": "860acea6-0617-4511-9658-ffa6a6ec467c",
+          "state_id": "di:dcd44c6e509109a68ae295389d8826cbc60afd0b490e2a21e04cfb75a3c7302b",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:a91f86b61f2dad2cbdd77826f4d560a8eeed2d55c7c6efdb1298f73055291168",
+            "kind": "workflow_followup",
+            "text": "Review existing work-items/changes trước khi scaffold."
+          },
+          "original_text": "Review existing work-items/changes trước khi scaffold.",
+          "actor": "maintainer",
+          "reason": "Existing work-items and changes reviewed: the accepted security baseline is DONE and evidence-only; original mcp-gitlab delivery is legacy reference with no protocol approval for this fix. No change package owns this remediation. Preserve existing work and use change_strategy none for the bounded single SEC-002 item.",
+          "resolved_at": "2026-10-29T02:32:05.619Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "SYeowhd/JiKdlwlrxZjD+5orgPfvW/m3220lBTmdDT0kDDrBQ3ICVlQoEVfhEnpHFJoj2iPNsG5srxeX+8NDDg=="
+      }
+    }
+  ],
+  "materialization_recovery": {
+    "schema_version": 1,
+    "operation_id": "7dced58a-fd93-41f5-8f30-e85eb84cf9eb",
+    "source_report_sha256": "9aa1e0df15e1ec3fe6dfa6fe0811998e20104cf37cc6108ca335da1598df0c63",
+    "resulting_status": "MATERIALIZED",
+    "disposition_operation_ids": [
+      "3146b593-a85a-470e-90ef-5f9e2150af3d",
+      "417775f3-addc-4598-bb71-2237e7fee7a1",
+      "860acea6-0617-4511-9658-ffa6a6ec467c"
+    ],
+    "completed_at": "2026-10-29T02:32:08.088Z"
+  }
+}

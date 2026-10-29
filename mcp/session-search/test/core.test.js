@@ -1,5 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 
 import {
   isPathInside,
@@ -17,35 +20,15 @@ test("isPathInside accepts nested paths", () => {
   );
 });
 
-test("resolveWorkspacePath keeps workspace inside allowed root", () => {
-  const resolved = resolveWorkspacePath("/workspace/root/project", "/workspace/root");
-  assert.equal(resolved, "/workspace/root/project");
-});
-
-test("resolveWorkspacePath rejects workspace outside allowed root", () => {
-  assert.throws(
-    () => resolveWorkspacePath("/workspace/other/project", "/workspace/root"),
-    /allowed root/i,
-  );
-});
-
-test("resolveSessionPath keeps session inside sessions root", () => {
-  const resolved = resolveSessionPath(
-    "/Users/example/.codex/sessions/2026/04/09/session.jsonl",
-    "/Users/example/.codex/sessions",
-  );
-
-  assert.equal(resolved, "/Users/example/.codex/sessions/2026/04/09/session.jsonl");
-});
-
-test("resolveSessionPath rejects session outside sessions root", () => {
-  assert.throws(
-    () => resolveSessionPath(
-      "/Users/example/Documents/private.txt",
-      "/Users/example/.codex/sessions",
-    ),
-    /sessions root/i,
-  );
+test("workspace and session resolvers use portable filesystem fixtures", (t) => {
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "session-path-")));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const file = path.join(root, "session.jsonl");
+  fs.writeFileSync(file, "{}\n");
+  assert.equal(resolveWorkspacePath(path.join(root, "historical"), root), path.join(root, "historical"));
+  assert.equal(resolveSessionPath(file, root), file);
+  assert.throws(() => resolveWorkspacePath(root + "-other", root), /allowed root/i);
+  assert.throws(() => resolveSessionPath(root + "-other", root), /sessions root/i);
 });
 
 test("parseSessionWorkspaceFromLines extracts cwd from session_meta", () => {
@@ -58,7 +41,7 @@ test("parseSessionWorkspaceFromLines extracts cwd from session_meta", () => {
     }),
   ]);
 
-  assert.equal(workspace, "/Users/example/workspaces/repo");
+  assert.equal(workspace, path.resolve("/Users/example/workspaces/repo"));
 });
 
 test("parseSessionWorkspaceFromLines falls back to turn_context", () => {
@@ -72,7 +55,7 @@ test("parseSessionWorkspaceFromLines falls back to turn_context", () => {
     }),
   ]);
 
-  assert.equal(workspace, "/Users/example/workspaces/repo-2");
+  assert.equal(workspace, path.resolve("/Users/example/workspaces/repo-2"));
 });
 
 test("truncateText preserves short strings and truncates long strings", () => {

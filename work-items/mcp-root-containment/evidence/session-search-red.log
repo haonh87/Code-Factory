@@ -1,0 +1,516 @@
+✖ view/context reject directory-escape before transcript open or cass (5.946833ms)
+✖ view/context reject file-escape before transcript open or cass (1.933791ms)
+✖ view/context reject chain before transcript open or cass (1.854916ms)
+✔ view/context reject cycle before transcript open or cass (1.641084ms)
+✔ view/context reject dangling before transcript open or cass (1.562459ms)
+✔ view/context reject missing before transcript open or cass (1.206375ms)
+✖ view/context reject directory before transcript open or cass (1.618291ms)
+✔ view/context reject nul before transcript open or cass (1.17975ms)
+✔ view/context reject object before transcript open or cass (1.132459ms)
+✖ contained file alias is canonical downstream and retargeting is rejected (1.292666ms)
+✖ historical workspace suffixes and configured root aliases are canonical (1.071417ms)
+✖ workspace rejects escape (1.006875ms)
+✖ workspace rejects dangling (1.017542ms)
+✖ workspace rejects cycle (0.943292ms)
+✖ workspace rejects file-parent (0.907417ms)
+✖ workspace rejects missing-root (0.782292ms)
+✔ workspace rejects nul (0.781ms)
+✖ workspace rejects null (0.936167ms)
+✔ workspace rejects object (0.858417ms)
+✔ workspace rejects sibling (0.852417ms)
+✔ workspace rejects traversal (0.889833ms)
+✖ canonicalization permission failures are bounded and fail closed (1.176959ms)
+✖ list filters source files and actual/declared workspace before applying limit (2.606708ms)
+✖ search filters across pages and preserves bounded pagination (2.006833ms)
+✖ search stops after the existing ten-page cap when all results are invalid (2.663792ms)
+✖ related groups are restricted to the source workspace and validated source paths (5.698292ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 9
+ℹ fail 17
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 84.781375
+
+✖ failing tests:
+
+test at mcp/session-search/test/containment.test.js:58:3
+✖ view/context reject directory-escape before transcript open or cass (5.946833ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:78:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:58:3
+✖ view/context reject file-escape before transcript open or cass (1.933791ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:78:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:58:3
+✖ view/context reject chain before transcript open or cass (1.854916ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:78:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:58:3
+✖ view/context reject directory before transcript open or cass (1.618291ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 0
+  
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:80:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:85:1
+✖ contained file alias is canonical downstream and retargeting is rejected (1.292666ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-MWQbNb/sessions/alias.jsonl'
+  - '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-MWQbNb/sessions/good.jsonl'
+  
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:90:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-MWQbNb/sessions/alias.jsonl',
+    expected: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-MWQbNb/sessions/good.jsonl',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:100:1
+✖ historical workspace suffixes and configured root aliases are canonical (1.071417ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-hHJQR7/workspace/parent/missing/nested'
+  - '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-hHJQR7/workspace/project/missing/nested'
+  
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:104:10)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-hHJQR7/workspace/parent/missing/nested',
+    expected: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-hHJQR7/workspace/project/missing/nested',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:112:3
+✖ workspace rejects escape (1.006875ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:127:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:112:3
+✖ workspace rejects dangling (1.017542ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:127:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:112:3
+✖ workspace rejects cycle (0.943292ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:127:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:112:3
+✖ workspace rejects file-parent (0.907417ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:127:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:112:3
+✖ workspace rejects missing-root (0.782292ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:127:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:112:3
+✖ workspace rejects null (0.936167ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:127:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:131:1
+✖ canonicalization permission failures are bounded and fail closed (1.176959ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:138:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:164:1
+✖ list filters source files and actual/declared workspace before applying limit (2.606708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'OUTSIDE',
+  +   'LIE'
+  -   'GOOD',
+  -   'HISTORY'
+    ]
+  
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:169:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'OUTSIDE', 'LIE' ],
+    expected: [ 'GOOD', 'HISTORY' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:174:1
+✖ search filters across pages and preserves bounded pagination (2.006833ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'OUTSIDE'
+  -   'GOOD'
+    ]
+  
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:182:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'OUTSIDE' ],
+    expected: [ 'GOOD' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:189:1
+✖ search stops after the existing ten-page cap when all results are invalid (2.663792ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + [
+  +   {
+  +     agent: null,
+  +     content: null,
+  +     createdAt: null,
+  +     lineNumber: null,
+  +     matchType: null,
+  +     originHost: null,
+  +     originKind: null,
+  +     score: null,
+  +     sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing',
+  +     snippet: null,
+  +     sourceId: null,
+  +     title: null,
+  +     workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project'
+  +   },
+  +   {
+  +     agent: null,
+  +     content: null,
+  +     createdAt: null,
+  +     lineNumber: null,
+  +     matchType: null,
+  +     originHost: null,
+  +     originKind: null,
+  +     score: null,
+  +     sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing',
+  +     snippet: null,
+  +     sourceId: null,
+  +     title: null,
+  +     workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project'
+  +   },
+  +   {
+  +     agent: null,
+  +     content: null,
+  +     createdAt: null,
+  +     lineNumber: null,
+  +     matchType: null,
+  +     originHost: null,
+  +     originKind: null,
+  +     score: null,
+  +     sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing',
+  +     snippet: null,
+  +     sourceId: null,
+  +     title: null,
+  +     workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project'
+  +   },
+  +   {
+  +     agent: null,
+  +     content: null,
+  +     createdAt: null,
+  +     lineNumber: null,
+  +     matchType: null,
+  +     originHost: null,
+  +     originKind: null,
+  +     score: null,
+  +     sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing',
+  +     snippet: null,
+  +     sourceId: null,
+  +     title: null,
+  +     workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project'
+  +   },
+  +   {
+  +     agent: null,
+  +     content: null,
+  +     createdAt: null,
+  +     lineNumber: null,
+  +     matchType: null,
+  +     originHost: null,
+  +     originKind: null,
+  +     score: null,
+  +     sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing',
+  +     snippet: null,
+  +     sourceId: null,
+  +     title: null,
+  +     workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project'
+  +   },
+  +   {
+  +     agent: null,
+  +     content: null,
+  +     createdAt: null,
+  +     lineNumber: null,
+  +     matchType: null,
+  +     originHost: null,
+  +     originKind: null,
+  +     score: null,
+  +     sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing',
+  +     snippet: null,
+  +     sourceId: null,
+  +     title: null,
+  +     workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project'
+  +   },
+  +   {
+  +     agent: null,
+  +     content: null,
+  +     createdAt: null,
+  +     lineNumber: null,
+  +     matchType: null,
+  +     originHost: null,
+  +     originKind: null,
+  +     score: null,
+  +     sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing',
+  +     snippet: null,
+  +     sourceId: null,
+  +     title: null,
+  +     workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project'
+  +   },
+  +   {
+  +     agent: null,
+  +     content: null,
+  +     createdAt: null,
+  +     lineNumber: null,
+  +     matchType: null,
+  +     originHost: null,
+  +     originKind: null,
+  +     score: null,
+  +     sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing',
+  +     snippet: null,
+  +     sourceId: null,
+  +     title: null,
+  +     workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project'
+  +   },
+  +   {
+  +     agent: null,
+  +     content: null,
+  +     createdAt: null,
+  +     lineNumber: null,
+  +     matchType: null,
+  +     originHost: null,
+  +     originKind: null,
+  +     score: null,
+  +     sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing',
+  +     snippet: null,
+  +     sourceId: null,
+  +     title: null,
+  +     workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project'
+  +   },
+  +   {
+  +     agent: null,
+  +     content: null,
+  +     createdAt: null,
+  +     lineNumber: null,
+  +     matchType: null,
+  +     originHost: null,
+  +     originKind: null,
+  +     score: null,
+  +     sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing',
+  +     snippet: null,
+  +     sourceId: null,
+  +     title: null,
+  +     workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project'
+  +   }
+  + ]
+  - []
+  
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:196:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ { title: null, snippet: null, content: null, score: null, sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing', agent: null, workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project', createdAt: null, lineNumber: null, matchType: null, sourceId: null, originKind: null, originHost: null }, { title: null, snippet: null, content: null, score: null, sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing', agent: null, workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project', createdAt: null, lineNumber: null, matchType: null, sourceId: null, originKind: null, originHost: null }, { title: null, snippet: null, content: null, score: null, sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing', agent: null, workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project', createdAt: null, lineNumber: null, matchType: null, sourceId: null, originKind: null, originHost: null }, { title: null, snippet: null, content: null, score: null, sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing', agent: null, workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project', createdAt: null, lineNumber: null, matchType: null, sourceId: null, originKind: null, originHost: null }, { title: null, snippet: null, content: null, score: null, sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing', agent: null, workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project', createdAt: null, lineNumber: null, matchType: null, sourceId: null, originKind: null, originHost: null }, { title: null, snippet: null, content: null, score: null, sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing', agent: null, workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project', createdAt: null, lineNumber: null, matchType: null, sourceId: null, originKind: null, originHost: null }, { title: null, snippet: null, content: null, score: null, sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing', agent: null, workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project', createdAt: null, lineNumber: null, matchType: null, sourceId: null, originKind: null, originHost: null }, { title: null, snippet: null, content: null, score: null, sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing', agent: null, workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project', createdAt: null, lineNumber: null, matchType: null, sourceId: null, originKind: null, originHost: null }, { title: null, snippet: null, content: null, score: null, sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing', agent: null, workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project', createdAt: null, lineNumber: null, matchType: null, sourceId: null, originKind: null, originHost: null }, { title: null, snippet: null, content: null, score: null, sessionPath: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/sessions/missing', agent: null, workspace: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-Hln1Fb/workspace/project', createdAt: null, lineNumber: null, matchType: null, sourceId: null, originKind: null, originHost: null } ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at mcp/session-search/test/containment.test.js:199:1
+✖ related groups are restricted to the source workspace and validated source paths (5.698292ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'incorrect'
+  - '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-genpNR/sessions/good.jsonl'
+  
+      at TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:206:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'incorrect',
+    expected: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/session-containment-genpNR/sessions/good.jsonl',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,47 @@
+
+> @code-factory/session-search-mcp@0.1.0 check
+> node --test && node --check src/core.js && node --check src/index.js
+
+✔ view/context reject directory-escape before transcript open or cass (3.215333ms)
+✔ view/context reject file-escape before transcript open or cass (1.487958ms)
+✔ view/context reject chain before transcript open or cass (1.478417ms)
+✔ view/context reject cycle before transcript open or cass (1.305459ms)
+✔ view/context reject dangling before transcript open or cass (1.311125ms)
+✔ view/context reject missing before transcript open or cass (1.078792ms)
+✔ view/context reject directory before transcript open or cass (1.020291ms)
+✔ view/context reject nul before transcript open or cass (1.044875ms)
+✔ view/context reject object before transcript open or cass (1.0435ms)
+✔ contained file alias is canonical downstream and retargeting is rejected (5.3485ms)
+✔ historical workspace suffixes and configured root aliases are canonical (1.437041ms)
+✔ workspace rejects escape (1.022833ms)
+✔ workspace rejects dangling (0.86925ms)
+✔ workspace rejects cycle (0.883041ms)
+✔ workspace rejects file-parent (0.926375ms)
+✔ workspace rejects missing-root (0.744542ms)
+✔ workspace rejects nul (1.059875ms)
+✔ workspace rejects null (0.838666ms)
+✔ workspace rejects object (0.829916ms)
+✔ workspace rejects sibling (0.862125ms)
+✔ workspace rejects traversal (0.857334ms)
+✔ canonicalization permission failures are bounded and fail closed (1.267917ms)
+✔ list filters source files and actual/declared workspace before applying limit (6.05375ms)
+✔ search filters across pages and preserves bounded pagination (4.460292ms)
+✔ search stops after the existing ten-page cap when all results are invalid (2.389334ms)
+✔ related groups are restricted to the source workspace and validated source paths (7.863ms)
+✔ transcript read failures have bounded diagnostics and never invoke cass (1.252958ms)
+✔ an escaped actual workspace is rejected before cass despite an in-root file (1.672583ms)
+✔ missing sessions root and non-directory file ancestor reject before cass (1.125917ms)
+✔ isPathInside accepts nested paths (0.345167ms)
+✔ workspace and session resolvers use portable filesystem fixtures (1.175583ms)
+✔ parseSessionWorkspaceFromLines extracts cwd from session_meta (0.085167ms)
+✔ parseSessionWorkspaceFromLines falls back to turn_context (0.062292ms)
+✔ truncateText preserves short strings and truncates long strings (0.279833ms)
+✔ sanitizeStatus removes sensitive cass paths while keeping health summary (0.159542ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 100.229084
