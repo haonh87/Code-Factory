@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: approved
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: ""
@@ -72,8 +72,8 @@ gate_reviews:
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-10-29T10:48:23.975Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -94,7 +94,7 @@ tags:
 
 # Step 8 — Verify + DoD
 
-Technical verification PASS for the bounded SEC-002 fix. Human QC DoD remains pending.
+Technical verification PASS for the bounded SEC-002 fix. Human QC DoD reviewed and approved at 2026-10-29T10:48:23.975Z.
 The branch is retained; merge and live rollout are separate decisions.
 
 ## Step Contract
@@ -159,8 +159,8 @@ release_blockers: []
 status: PASS
 gaps: []
 residual_risks: ["Non-atomic checks assume trusted filesystem writers and configured binaries", "Native Windows not validated", "General SAST unavailable", "No live rollout"]
-recommendation: "Human QC review and DoD signature; retain branch."
-notes_for_review: "Technical PASS is not human DoD. Other security findings and merge remain separate."
+recommendation: "Verify the trusted QC receipt and close protocol; retain branch pending a separate merge decision."
+notes_for_review: "Human QC accepts this bounded technical evidence and disclosed tool/platform limits. Other security findings and merge remain separate."
 ```
 
 ## Verification Environment
@@ -183,9 +183,9 @@ not provisioned. These results do not claim live MCP installation, remote Git op
 ```yaml
 checklist_applied: ["project-context/checklists/strict.md"]
 checks: ["Five readiness signatures valid and current-host-bound", "Approved card and s04/s05/s06 unchanged", "Only twelve approved source/test/README paths changed", "TDD and targeted two-tier review", "Cancelled intake preserved as history", "No delegation, dependency or live rollout"]
-blocking_items: ["Human QC DoD signature pending"]
+blocking_items: []
 owner: qc
-next_action: "Review the exact evidence and use the standard signing CLI through the prepared helper."
+next_action: "Verify the trusted QC receipt, then close the work item through the canonical CLI."
 ```
 
 ## Regression & Compatibility Summary
@@ -269,14 +269,14 @@ checks:
   - {id: traceability, status: PASS, evidence: "REQ-MR-001..003 -> AC-MR-001..010 -> T1..T4 -> core/test diffs -> s08"}
 findings: []
 overall_status: PASS
-follow_up_actions: ["Human QC DoD", "Separate merge/rollout decision", "Native Windows verification before Windows rollout"]
+follow_up_actions: ["Verify trusted QC receipt and close protocol", "Separate merge/rollout decision", "Native Windows verification before Windows rollout"]
 notes: "Mechanical checks do not replace human approval."
 ```
 
 ## Definition of Done
 ```yaml
 work_item_slug: mcp-root-containment
-status: PARTIAL
+status: DONE
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -284,19 +284,19 @@ checks:
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps: ["Human QC DoD signature pending"]
+gaps: []
 residual_risks: ["Trusted filesystem assumption", "Native Windows not run", "General SAST unavailable", "No live rollout"]
 follow_up_items: ["Separate merge/rollout decision", "Native Windows verification"]
-next_action: "Human QC reviews this packet and signs DoD; no automatic approval."
+next_action: "Confirm the matching trusted QC signature before protocol closure."
 ```
 
 ## Traceability
 ```yaml
 upstream: ["mcp-root-containment.s07.implementation.md", "product-specs/cards/mcp-root-containment.md"]
-next_step: "Human QC DoD, then protocol closure; merge/rollout remain separate decisions"
+next_step: "Verify trusted QC receipt, then protocol closure; merge/rollout remain separate decisions"
 ```
 
 ## Handoff
-- Technical result: PASS within the approved scope and disclosed limits; human DoD pending.
+- Technical result: PASS within the approved scope and disclosed limits; human QC review recorded; receipt must match this exact host before closure.
 - Branch: fix/mcp-physical-root-containment, retained for QC review.
 - No merge, remote push or live rollout has run.
