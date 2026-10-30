@@ -1,7 +1,14 @@
 # Workflow Bundle v2.8.0
 
-Status: **AUTHORIZED; local candidate verification passed; hosted CI pending**. Publication outcome will
-be recorded here after the GitHub assets have been downloaded and verified.
+Status: **PUBLISHED on GitHub** at `2026-10-30T04:15:18Z`.
+[GitHub Release v2.8.0](https://github.com/haonh87/Code-Factory/releases/tag/v2.8.0).
+Tag `v2.8.0` points to verified commit `6c70a4ef9758948acf3d3e3add94c8c7f407846c`,
+which was integrated into `main` before publication. The release is neither draft nor prerelease.
+
+The original verified tarball and `SHA256SUMS` are published. Both were downloaded
+again: the tarball matches its frozen SHA-256 and size; the checksum file matches
+the expected bytes. The downloaded tarball also passes all four isolated
+Codex/Claude global/project install/update scenarios. No live installation changed.
 
 ## Release Scope
 
@@ -35,13 +42,21 @@ instructions only; it does not implement A1/A2 scenario/task contracts.
 
 ## Verification
 
-Verification runs in an isolated Git worktree based on main `6f7303d` plus the
-completed SEC-02 branch. Logs and candidate assets are retained at
-`/private/tmp/cf-release-280-evidence` during preparation. Final results and artifact
-identity are recorded below when checks finish. An earlier archive-only check was
-invalid because a regression test requires Git metadata; no product failure was
-inferred from that run. Initial 2.8.0 checks correctly rejected stale 2.7.0 release
-expectations; those metadata expectations were updated without removing invariants.
+Verification ran in an isolated Git worktree based on main `6f7303d` plus the
+completed SEC-02 branch. [Workflow Guardrails run 41001143561](https://github.com/haonh87/Code-Factory/actions/runs/41001143561)
+passed all ten jobs on the tagged commit, including Node 18/22 unit/regression,
+pack audit, source install/update and exact-candidate smoke checks.
+
+All 945 file contents and modes match the CI tarball. Its archive SHA-256 is
+`1042cc3e99414d3efeadbb56ae8962ba6ef64955ed68cf340a2d53d41982a3e6`;
+archive bytes differ from the original locally tested tarball, which was retained
+unchanged for publication. The release asset and checksums are the durable package
+identity; temporary local preparation logs are not a permanent evidence store.
+
+An earlier archive-only check could not satisfy a regression test that requires Git
+metadata; the complete suite subsequently passed in a Git worktree. Initial 2.8.0
+checks rejected stale release expectations, which were updated to the actual
+2.8.0 -> 2.7.0 inventory transition without removing preservation assertions.
 
 ## Known Limitations
 
@@ -68,11 +83,10 @@ Existing completed work-item DoD and their signed hosts are preserved unchanged.
 The maintainer explicitly authorized publishing the completed scope in this session:
 “SEC-01, SEC-02 cũng xong, 5 skill mới đủ phát hành hãy phát hành”.
 This record documents that operational release instruction; it does not mint a
-trusted gate receipt or alter a work item's approval state. Publication is conditional
-on the integrated candidate's technical checks. This operation uses the existing
+trusted gate receipt or alter a work item's approval state. The integrated candidate's technical checks passed before publication. This operation uses the existing
 GitHub release channel; there is no registry or live-deployment approval inferred.
 
-## Candidate Evidence
+## Verification Evidence
 
 - Artifact: `workflow-bundle-2.8.0.tgz`, 945 files, 1,621,314 bytes.
 - SHA-256: `397108e725d22111f328fd5d7bc5765090d7f5e441eb3256860b1a3e579e0d1f`.
@@ -89,4 +103,5 @@ GitHub release channel; there is no registry or live-deployment approval inferre
 - Semantic review inherits the accepted skill-family scope and checks the release delta:
   no skill/template authority changes; source/package boundaries and 48-skill inventory
   are explicit. No behavior implementation or new dependency is introduced here.
-- Hosted Node 18/22 Guardrails verification is required before tagging/publication.
+- Hosted Node 18/22 Guardrails: 10/10 jobs passed before tagging/publication.
+- Published-asset re-download: checksum/size verified; isolated install/update 4/4 passed.
