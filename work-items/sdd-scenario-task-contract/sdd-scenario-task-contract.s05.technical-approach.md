@@ -71,7 +71,7 @@ gate_reviews:
   dor_reviewed_by: []
   dor_reviewed_at: ""
   approach_reviewed_by: ["developer"]
-  approach_reviewed_at: "2026-10-30T07:15:09Z"
+  approach_reviewed_at: "2026-10-30T13:47:34Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -172,7 +172,7 @@ validation_plan:
 
 ## Architecture Details
 
-No architecture-modeling, database, frontend or DevOps design is required. Contract schema is owned by the draft SRS; affected paths are owned only by s06 tasks.
+No architecture-modeling, database, frontend or DevOps design is required. Contract schema is owned by the approved SRS; affected paths are owned only by s06 tasks.
 
 ## Brownfield Impact Analysis
 
@@ -202,8 +202,33 @@ upstream:
   - "docs/audits/code-factory-sdd-kit-adoption-plan.md"
   - "product-specs/brd/sdd-scenario-task-contract.md"
   - "product-specs/srs/sdd-scenario-task-contract.md"
-next_step: "human authoring review; implementation remains locked"
+next_step: "Seal amended Approach and Task Plan receipts, then resume T2-T6."
 ```
+
+## Accepted Amendment A1A2-AMEND-001
+
+The maintainer explicitly approved the presented amendment with `accept, duyệt`.
+Recorded at: `2026-10-30T13:47:34Z`. The maintainer acts as the authorized developer reviewer.
+This records the chat decision; it does not mint a trusted receipt.
+
+The retained diagnostic in s07 shows that the shared semantic evidence and artifact
+reference reader rejects the accepted JSON v1 owner. Keeping the original path
+boundary cannot satisfy the contract; duplicating authoritative JSON into YAML
+would violate its single-owner rule. Extend the existing reader under explicit v1
+opt-in, using the additional owned paths listed only in s06 task T4.
+
+Bounded behavior: finalized s06 semantic task checks and exact task artifact-reference
+resolution accept the single JSON owner. Reuse deterministic duplicate-key rejection
+from the planning reader where feasible without circular imports. Unknown versions,
+malformed JSON and duplicate owners/keys fail without YAML fallback. Unversioned
+YAML retains its existing behavior. Signatures, reviewer authority, receipt hashing
+and protocol transitions remain outside this implementation boundary.
+
+Verification: convert the retained diagnostic into failing consumer tests before
+production changes; check accepted JSON lookup/readiness, malformed/duplicate
+rejection and legacy parity. The nine acceptance criteria remain unchanged.
+The original s04 host and its Spec/Contract/DoR receipts remain unchanged. The
+changed s05/s06 hosts require new Approach/Task Plan receipts before A2 resumes.
 
 ## Handoff
 

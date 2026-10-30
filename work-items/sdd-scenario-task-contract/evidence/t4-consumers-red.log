@@ -1,0 +1,215 @@
+node:internal/assert/utils:146
+  throw error;
+  ^
+
+AssertionError [ERR_ASSERTION]: v1 semantic readiness: Expected values to be strictly deep-equal:
++ actual - expected
+
++ [
++   'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-Jp3VqU/work-items/sample/sample.s06.task-breakdown.md'
++ ]
+- []
+
+Light uses the same JSON trace owner: Expected values to be strictly deep-equal:
++ actual - expected
+
++ [
++   'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-6U8cZz/work-items/sample/sample.s06.task-breakdown.md',
++   'SDD Traceability.requirement_refs must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-6U8cZz/work-items/sample/sample.s06.task-breakdown.md',
++   'SDD Traceability.acceptance_refs must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-6U8cZz/work-items/sample/sample.s06.task-breakdown.md',
++   'SDD Traceability.task_refs must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-6U8cZz/work-items/sample/sample.s06.task-breakdown.md',
++   'SDD Traceability.test_refs must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-6U8cZz/work-items/sample/sample.s06.task-breakdown.md'
++ ]
+- []
+
+exact task lookup: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-9AVfEb/work-items/sample/sample.s06.task-breakdown.md.
+trace lookup: Artifact reference heading '## Traceability' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-nY4rKF/work-items/sample/sample.s06.task-breakdown.md.
+unknown version semantic rejects: The input did not match the regular expression /task_contract_version/. Input:
+
+'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-FeW7Gp/work-items/sample/sample.s06.task-breakdown.md'
+
+unknown version reference rejects without fallback: The input did not match the regular expression /task_contract_version/. Input:
+
+"Error: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-htfJZ7/work-items/sample/sample.s06.task-breakdown.md."
+
+duplicate key semantic rejects: The input did not match the regular expression /duplicate/. Input:
+
+'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-QimHPl/work-items/sample/sample.s06.task-breakdown.md'
+
+duplicate key reference rejects without fallback: The input did not match the regular expression /duplicate/. Input:
+
+"Error: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-usHwKi/work-items/sample/sample.s06.task-breakdown.md."
+
+duplicate heading semantic rejects: The input did not match the regular expression /owner/. Input:
+
+'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-4OYMB8/work-items/sample/sample.s06.task-breakdown.md'
+
+duplicate heading reference rejects without fallback: The input did not match the regular expression /owner/. Input:
+
+"Error: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-QF0mrc/work-items/sample/sample.s06.task-breakdown.md."
+
+malformed JSON semantic rejects: The input did not match the regular expression /JSON/. Input:
+
+'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-gHEGnw/work-items/sample/sample.s06.task-breakdown.md'
+
+malformed JSON reference rejects without fallback: The input did not match the regular expression /JSON/. Input:
+
+"Error: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-S3Q9oT/work-items/sample/sample.s06.task-breakdown.md."
+
+governance catches duplicated JSON path map: The input did not match the regular expression /Duplicate task paths/. Input:
+
+''
+
+SDD validates opted-in mapping even with sdd_mode none: The input did not match the regular expression /T9/. Input:
+
+''
+
+default-profile gate rejects invalid v1: The input did not match the regular expression /task_breakdown/. Input:
+
+''
+
+reference missing task is explicit: The validation function is expected to return "true". Received false
+
+Caught error:
+
+Error: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-ldPkH1/work-items/sample/sample.s06.task-breakdown.md.
++ actual - expected
+
++ [
++   'v1 semantic readiness: Expected values to be strictly deep-equal:\n' +
++     '+ actual - expected\n' +
++     '\n' +
++     '+ [\n' +
++     "+   'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-Jp3VqU/work-items/sample/sample.s06.task-breakdown.md'\n" +
++     '+ ]\n' +
++     '- []\n',
++   'Light uses the same JSON trace owner: Expected values to be strictly deep-equal:\n' +
++     '+ actual - expected\n' +
++     '\n' +
++     '+ [\n' +
++     "+   'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-6U8cZz/work-items/sample/sample.s06.task-breakdown.md',\n" +
++     "+   'SDD Traceability.requirement_refs must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-6U8cZz/work-items/sample/sample.s06.task-breakdown.md',\n" +
++     "+   'SDD Traceability.acceptance_refs must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-6U8cZz/work-items/sample/sample.s06.task-breakdown.md',\n" +
++     "+   'SDD Traceability.task_refs must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-6U8cZz/work-items/sample/sample.s06.task-breakdown.md',\n" +
++     "+   'SDD Traceability.test_refs must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-6U8cZz/work-items/sample/sample.s06.task-breakdown.md'\n" +
++     '+ ]\n' +
++     '- []\n',
++   "exact task lookup: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-9AVfEb/work-items/sample/sample.s06.task-breakdown.md.",
++   "trace lookup: Artifact reference heading '## Traceability' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-nY4rKF/work-items/sample/sample.s06.task-breakdown.md.",
++   'unknown version semantic rejects: The input did not match the regular expression /task_contract_version/. Input:\n' +
++     '\n' +
++     "'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-FeW7Gp/work-items/sample/sample.s06.task-breakdown.md'\n",
++   'unknown version reference rejects without fallback: The input did not match the regular expression /task_contract_version/. Input:\n' +
++     '\n' +
++     `"Error: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-htfJZ7/work-items/sample/sample.s06.task-breakdown.md."\n`,
++   'duplicate key semantic rejects: The input did not match the regular expression /duplicate/. Input:\n' +
++     '\n' +
++     "'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-QimHPl/work-items/sample/sample.s06.task-breakdown.md'\n",
++   'duplicate key reference rejects without fallback: The input did not match the regular expression /duplicate/. Input:\n' +
++     '\n' +
++     `"Error: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-usHwKi/work-items/sample/sample.s06.task-breakdown.md."\n`,
++   'duplicate heading semantic rejects: The input did not match the regular expression /owner/. Input:\n' +
++     '\n' +
++     "'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-4OYMB8/work-items/sample/sample.s06.task-breakdown.md'\n",
++   'duplicate heading reference rejects without fallback: The input did not match the regular expression /owner/. Input:\n' +
++     '\n' +
++     `"Error: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-QF0mrc/work-items/sample/sample.s06.task-breakdown.md."\n`,
++   'malformed JSON semantic rejects: The input did not match the regular expression /JSON/. Input:\n' +
++     '\n' +
++     "'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-gHEGnw/work-items/sample/sample.s06.task-breakdown.md'\n",
++   'malformed JSON reference rejects without fallback: The input did not match the regular expression /JSON/. Input:\n' +
++     '\n' +
++     `"Error: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-S3Q9oT/work-items/sample/sample.s06.task-breakdown.md."\n`,
++   'governance catches duplicated JSON path map: The input did not match the regular expression /Duplicate task paths/. Input:\n' +
++     '\n' +
++     "''\n",
++   'SDD validates opted-in mapping even with sdd_mode none: The input did not match the regular expression /T9/. Input:\n' +
++     '\n' +
++     "''\n",
++   'default-profile gate rejects invalid v1: The input did not match the regular expression /task_breakdown/. Input:\n' +
++     '\n' +
++     "''\n",
++   'reference missing task is explicit: The validation function is expected to return "true". Received false\n' +
++     '\n' +
++     'Caught error:\n' +
++     '\n' +
++     "Error: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-ldPkH1/work-items/sample/sample.s06.task-breakdown.md."
++ ]
+- []
+
+    at Object.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js:47:8)
+    at Module._compile (node:internal/modules/cjs/loader:1934:14)
+    at Object..js (node:internal/modules/cjs/loader:2074:10)
+    at Module.load (node:internal/modules/cjs/loader:1656:32)
+    at Module._load (node:internal/modules/cjs/loader:1448:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'v1 semantic readiness: Expected values to be strictly deep-equal:\n' +
+      '+ actual - expected\n' +
+      '\n' +
+      '+ [\n' +
+      "+   'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-Jp3VqU/work-items/sample/sample.s06.task-breakdown.md'\n" +
+      '+ ]\n' +
+      '- []\n',
+    'Light uses the same JSON trace owner: Expected values to be strictly deep-equal:\n' +
+      '+ actual - expected\n' +
+      '\n' +
+      '+ [\n' +
+      "+   'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-6U8cZz/work-items/sample/sample.s06.task-breakdown.md',\n" +
+      "+   'SDD Traceability.requirement_refs must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-6U8cZz/work-items/sample/sample.s06.task-breakdown.md',\n" +
+      "+   'SDD Traceability.acceptance_refs must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-6U8cZz/work-items/sample/sample.s06.task-breakdown.md',\n" +
+      "+   'SDD Traceability.task_refs must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-6U8cZz/work-items/sample/sample.s06.task-breakdown.md',\n" +
+      "+   'SDD Traceability.test_refs must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-6U8cZz/work-items/sample/sample.s06.task-breakdown.md'\n" +
+      '+ ]\n' +
+      '- []\n',
+    "exact task lookup: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-9AVfEb/work-items/sample/sample.s06.task-breakdown.md.",
+    "trace lookup: Artifact reference heading '## Traceability' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-nY4rKF/work-items/sample/sample.s06.task-breakdown.md.",
+    'unknown version semantic rejects: The input did not match the regular expression /task_contract_version/. Input:\n' +
+      '\n' +
+      "'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-FeW7Gp/work-items/sample/sample.s06.task-breakdown.md'\n",
+    'unknown version reference rejects without fallback: The input did not match the regular expression /task_contract_version/. Input:\n' +
+      '\n' +
+      `"Error: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-htfJZ7/work-items/sample/sample.s06.task-breakdown.md."\n`,
+    'duplicate key semantic rejects: The input did not match the regular expression /duplicate/. Input:\n' +
+      '\n' +
+      "'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-QimHPl/work-items/sample/sample.s06.task-breakdown.md'\n",
+    'duplicate key reference rejects without fallback: The input did not match the regular expression /duplicate/. Input:\n' +
+      '\n' +
+      `"Error: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-usHwKi/work-items/sample/sample.s06.task-breakdown.md."\n`,
+    'duplicate heading semantic rejects: The input did not match the regular expression /owner/. Input:\n' +
+      '\n' +
+      "'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-4OYMB8/work-items/sample/sample.s06.task-breakdown.md'\n",
+    'duplicate heading reference rejects without fallback: The input did not match the regular expression /owner/. Input:\n' +
+      '\n' +
+      `"Error: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-QF0mrc/work-items/sample/sample.s06.task-breakdown.md."\n`,
+    'malformed JSON semantic rejects: The input did not match the regular expression /JSON/. Input:\n' +
+      '\n' +
+      "'Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-gHEGnw/work-items/sample/sample.s06.task-breakdown.md'\n",
+    'malformed JSON reference rejects without fallback: The input did not match the regular expression /JSON/. Input:\n' +
+      '\n' +
+      `"Error: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-S3Q9oT/work-items/sample/sample.s06.task-breakdown.md."\n`,
+    'governance catches duplicated JSON path map: The input did not match the regular expression /Duplicate task paths/. Input:\n' +
+      '\n' +
+      "''\n",
+    'SDD validates opted-in mapping even with sdd_mode none: The input did not match the regular expression /T9/. Input:\n' +
+      '\n' +
+      "''\n",
+    'default-profile gate rejects invalid v1: The input did not match the regular expression /task_breakdown/. Input:\n' +
+      '\n' +
+      "''\n",
+    'reference missing task is explicit: The validation function is expected to return "true". Received false\n' +
+      '\n' +
+      'Caught error:\n' +
+      '\n' +
+      "Error: Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-ldPkH1/work-items/sample/sample.s06.task-breakdown.md."
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.5.0

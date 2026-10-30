@@ -75,7 +75,7 @@ gate_reviews:
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: ["developer"]
-  task_plan_reviewed_at: "2026-10-30T07:15:09Z"
+  task_plan_reviewed_at: "2026-10-30T13:47:34Z"
   uat_reviewed_by: []
   uat_reviewed_at: ""
   release_reviewed_by: []
@@ -177,15 +177,17 @@ task_breakdown:
       - "packages/workflow-bundle/scripts/validate-workflow-planning.js"
       - "packages/workflow-bundle/scripts/validate-workflow-sdd.js"
       - "packages/workflow-bundle/scripts/validate-workflow-governance.js"
+      - "packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js"
       - "packages/workflow-bundle/test/validate-workflow-planning.test.js"
       - "packages/workflow-bundle/test/validate-workflow-sdd.test.js"
       - "packages/workflow-bundle/test/validate-workflow-governance.test.js"
+      - "packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js"
     dependencies:
       - "T3"
     outputs_expected:
       - "Scoped source/tests and inspectable evidence for AC-006, AC-007, AC-008"
     review_checkpoint: "Spec compliance first, then code quality, before the next batch."
-    verification_hint: "Run the three named Node test files: missing/duplicate/unknown AC and task references fail; old Spec Card/SRS/governance fixtures remain unchanged and pass."
+    verification_hint: "Run all four named Node test files. Before shared reader edits, promote evidence/reader-compatibility-repro.cjs into RED tests for JSON s06 semantic readiness and exact task lookup, then GREEN. Missing/duplicate/unknown AC and task references, malformed JSON, duplicate keys/owners and unknown versions must fail without fallback. Legacy YAML and Spec Card/SRS/governance fixtures must pass unchanged."
   - id: "T5"
     owner_role: "developer"
     name: "Document v1 opt-in examples and compatibility; preserve default scaffold behavior and avoid duplicate owner fields."
@@ -247,7 +249,7 @@ checklist_applied:
 checks:
   - "Owner references and brownfield constraints recorded."
 blocking_items:
-  - "Trusted authoring gate receipts pending."
+  - "Amended Approach/Task Plan receipts pending; original Spec/Contract/DoR receipts remain valid."
 owner: "qc"
 next_action: "Seal accepted host artifacts in the human terminal; do not activate before receipt verification."
 ```
@@ -256,7 +258,7 @@ next_action: "Seal accepted host artifacts in the human terminal; do not activat
 
 ```yaml
 base_sha: "4f4cf4d3234e0b71c220531c36f2b283bce80bdb"
-workspace: "Create a fresh isolated worktree from the pinned main before activation; preserve accepted artifact bytes and verify receipts there; do not reuse dirty root/runtime."
+workspace: "Use the existing .worktrees/sdd-scenario-task-contract implementation worktree from the pinned main. Canonical protocol and receipt hosts remain at the original project root; map signed production paths into that worktree. Workflow-note copies are transport only. Verify actual worktree HEAD/diff at closeout."
 execution_mode: "agentic"
 review: "Targeted review per batch."
 rollback: "Disable new-version authoring and retain legacy path; do not silently downgrade v1 artifacts."
@@ -321,23 +323,27 @@ Human chat acceptance is recorded below. This note creates no trusted receipt; i
 - Trust status: chat decision recorded; CLI receipts have not been minted and
   protocol approval/activation have not been changed by this authoring edit.
 
+## Accepted Amendment A1A2-AMEND-001
+
+The maintainer explicitly approved the presented two-path T4 amendment with
+`accept, duyệt`; recorded at `2026-10-30T13:47:34Z` under the developer reviewer role.
+The design decision is owned by s05. T4 above owns the added paths and verification.
+The six-task sequence and nine acceptance criteria are unchanged. T1 checkpoint is
+`aa55d6b`; T2-T6 resume only after the amended host receipts match.
+
 ## Receipt Sealing Handoff
 
-The following commands run in the repository root in a human-controlled terminal.
-Use the existing human approval passphrase; never put it in chat, an environment
-variable or a script argument. The published 2.8.0 CLI is pinned for this operation.
-The maintainer signs CR/work-item approval, then the readiness bundle and Contract
-separately. The legacy readiness bundle covers Spec, DoR, Approach and Task Plan.
-Do not edit s04/s05/s06 after sealing without re-reviewing the changed host.
+The human has approved the amendment in chat. Only the two changed hosts need
+new trusted signatures. Run these commands in a human-controlled terminal and
+enter the existing approval passphrase at the hidden prompts. Do not put the
+passphrase in chat, an environment variable or an argument.
 
 ```sh
-cf_a1a2_cli="$HOME/.workflow-bundle-artifacts/v2.8.0/package/bin/wfc.js"
-node "$cf_a1a2_cli" change-item approve --change-id CR-011 --reviewed-by maintainer &&
-node "$cf_a1a2_cli" work-item approve --work-item sdd-scenario-task-contract --reviewed-by maintainer &&
-node "$cf_a1a2_cli" gate approve-ready-bundle --work-item sdd-scenario-task-contract &&
-node "$cf_a1a2_cli" gate approve --work-item sdd-scenario-task-contract --gate contract --reviewed-by developer
+cd "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory" &&
+node "$HOME/.workflow-bundle-artifacts/v2.8.0/package/bin/wfc.js" gate approve --work-item sdd-scenario-task-contract --gate approach --reviewed-by developer &&
+node "$HOME/.workflow-bundle-artifacts/v2.8.0/package/bin/wfc.js" gate approve --work-item sdd-scenario-task-contract --gate task_plan --reviewed-by developer
 ```
 
-After successful signing, the agent verifies current-host receipts, preserves the
-accepted packet in an isolated worktree based on the pinned main, activates only
-the reviewed paths and starts T1 then T2. No DoD or release gate is included here.
+Do not re-sign CR/work-item approval or the unchanged s04 host. After signing, the
+agent verifies all five current-host receipts and resumes with the amended path
+grant. No DoD, release, merge or global installation is authorized by these gates.

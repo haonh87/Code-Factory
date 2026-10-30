@@ -208,15 +208,41 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: MATERIALIZED
+protocol_status: ACTIVE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "sdd-scenario-task-contract"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/sdd-scenario-task-contract"
-current_step: "s01"
-granted_write_paths: []
+current_step: "s07"
+granted_write_paths:
+  - ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/scripts/validate-workflow-governance.js"
+  - ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/scripts/validate-workflow-planning.js"
+  - ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/scripts/validate-workflow-sdd.js"
+  - ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/scripts/workflow-step-definitions.js"
+  - ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/run-all.js"
+  - ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/scaffold-workflow.test.js"
+  - ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/validate-workflow-governance.test.js"
+  - ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/validate-workflow-planning.test.js"
+  - ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/validate-workflow-sdd.test.js"
+  - ".worktrees/sdd-scenario-task-contract/product-specs/templates/spec-card.template.md"
+  - ".worktrees/sdd-scenario-task-contract/product-specs/templates/srs.template.md"
+  - ".worktrees/sdd-scenario-task-contract/skills/analysis/brainstorming/SKILL.md"
+  - ".worktrees/sdd-scenario-task-contract/skills/analysis/brainstorming/SKILL.vi.md"
+  - ".worktrees/sdd-scenario-task-contract/skills/analysis/requirement-analysis/SKILL.md"
+  - ".worktrees/sdd-scenario-task-contract/skills/analysis/requirement-analysis/SKILL.vi.md"
+  - ".worktrees/sdd-scenario-task-contract/skills/delivery/task-breakdown-planner/SKILL.md"
+  - ".worktrees/sdd-scenario-task-contract/skills/delivery/task-breakdown-planner/SKILL.vi.md"
+  - ".worktrees/sdd-scenario-task-contract/skills/guardrails/definition-of-ready-gate/SKILL.md"
+  - ".worktrees/sdd-scenario-task-contract/skills/guardrails/definition-of-ready-gate/SKILL.vi.md"
+  - ".worktrees/sdd-scenario-task-contract/skills/orchestration/codex-workflow-chain/references/spec-driven-development.md"
+  - ".worktrees/sdd-scenario-task-contract/skills/orchestration/codex-workflow-chain/references/spec-driven-development.vi.md"
+  - "work-items/sdd-scenario-task-contract"
+  - "changes/CR-011/execution"
+  - ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js"
+  - ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js"
+  - ".worktrees/sdd-scenario-task-contract/work-items/sdd-scenario-task-contract"
 materialization_status: READY
 bootstrap_gate_status: NOT_REQUIRED
 bootstrap_gate_ref: ""
@@ -225,15 +251,15 @@ bootstrap_reviewed_at: ""
 change_strategy: create_new
 change_id: "CR-011"
 decision_owner: "agent"
-protocol_owner: "maintainer"
+protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-10-30T07:24:18.780Z"
-handoff_target: "step-s07-activation"
-last_transition_action: "approve-readiness-bundle"
-last_transition_at: "2026-10-30T07:24:22.219Z"
+handoff_target: "step-owner"
+last_transition_action: "resume"
+last_transition_at: "2026-10-30T13:57:16.187Z"
 required_actions:
-  - {"id":"se:ae3785a6a3d0e64a7ca1a041e285644005d0d4837f63423f5356ccab9f0b66f3","kind":"workflow_followup","text":"wfc change-item approve --change-id CR-011 --reviewed-by <role>"}
-  - {"id":"se:69e885d9d8d9c66a02cbaf85e861feebc9195766515b4ef9b997af3e88204ff5","kind":"work_item_activation","text":"wfc work-item activate --work-item sdd-scenario-task-contract --step s07 --write-root <path>"}
+  - {"id":"se:9ea25adcfe677b6326a378f9e671185e19c022e8d826b3a504a3a3c49abff995","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
+  - {"id":"se:0ccd063edc9b0155a48677af8ae12a52b9eabe3866c1e3049d29108082b42e1a","kind":"workflow_followup","text":"Continue active execution from the current step."}
 blockers: []
 review_notes:
   - "Human review approved."
@@ -249,6 +275,8 @@ audit_events:
   - "STEP_OPENED"
   - "WORK_ITEM_APPROVED"
   - "READINESS_BUNDLE_APPROVED"
+  - "WORK_ITEM_ACTIVATED"
+  - "WORK_ITEM_RESUMED"
 ```
 
 ## Traceability

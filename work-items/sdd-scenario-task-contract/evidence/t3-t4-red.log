@@ -1,0 +1,287 @@
+node:internal/assert/utils:146
+  throw error;
+  ^
+
+AssertionError [ERR_ASSERTION]: invalid scope : invalid scope : []
+
+true !== false
+
+invalid scope .: invalid scope .: []
+
+true !== false
+
+invalid scope ..: invalid scope ..: []
+
+true !== false
+
+invalid scope ../out.js: invalid scope ../out.js: []
+
+true !== false
+
+invalid scope /tmp/a.js: invalid scope /tmp/a.js: []
+
+true !== false
+
+invalid scope C:/a.js: invalid scope C:/a.js: []
+
+true !== false
+
+invalid scope C:a.js: invalid scope C:a.js: []
+
+true !== false
+
+invalid scope \\server/share.js: invalid scope \\server/share.js: []
+
+true !== false
+
+invalid scope src/*.js: invalid scope src/*.js: []
+
+true !== false
+
+invalid scope src/../a.js: invalid scope src/../a.js: []
+
+true !== false
+
+invalid scope src//a.js: invalid scope src//a.js: []
+
+true !== false
+
+invalid scope TODO: invalid scope TODO: []
+
+true !== false
+
+directory is not file grant: directory is not file grant: []
+
+true !== false
+
+symlink escape: symlink escape: []
+
+true !== false
+
+broken symlink fails closed: broken symlink fails closed: []
+
+true !== false
+
+missing verification: missing verification: []
+
+true !== false
+
+bad cwd: bad cwd: []
+
+true !== false
+
+file cwd: file cwd: []
+
+true !== false
+
+empty argv: empty argv: []
+
+true !== false
+
+empty argv token: empty argv token: []
+
+true !== false
+
+placeholder argv: placeholder argv: []
+
+true !== false
+
+shell command/control: shell command/control: []
+
+true !== false
+
+shell command/control: shell command/control: []
+
+true !== false
+
+shell command/control: shell command/control: []
+
+true !== false
+
+shell command/control: shell command/control: []
+
+true !== false
+
+shell command/control: shell command/control: []
+
+true !== false
+
+missing behavior tests: missing behavior tests: []
+
+true !== false
+
+out of scope tests: out of scope tests: []
+
+true !== false
+
+unknown changed AC: unknown changed AC: []
+
+true !== false
+
+missing mapping: missing mapping: []
+
+true !== false
+
+unknown mapped task: unknown mapped task: []
+
+true !== false
+
+duplicate mapped task: duplicate mapped task: []
+
+true !== false
+
+duplicate mapping: duplicate mapping: []
+
+true !== false
+
+duplicate declared AC: duplicate declared AC: []
+
+true !== false
+
+undeclared AC mapping: undeclared AC mapping: []
+
+true !== false
+
+empty trace: empty trace: []
+
+true !== false
+
+exact spec lookup, no substring: exact spec lookup, no substring: []
+
+true !== false
+
+duplicate spec AC: duplicate spec AC: []
+
+true !== false
+
+spec path traversal: spec path traversal: []
+
+true !== false
+
+missing spec: missing spec: []
+
+true !== false
+
++ actual - expected
+
++ [
++   'invalid scope : invalid scope : []\n\ntrue !== false\n',
++   'invalid scope .: invalid scope .: []\n\ntrue !== false\n',
++   'invalid scope ..: invalid scope ..: []\n\ntrue !== false\n',
++   'invalid scope ../out.js: invalid scope ../out.js: []\n\ntrue !== false\n',
++   'invalid scope /tmp/a.js: invalid scope /tmp/a.js: []\n\ntrue !== false\n',
++   'invalid scope C:/a.js: invalid scope C:/a.js: []\n\ntrue !== false\n',
++   'invalid scope C:a.js: invalid scope C:a.js: []\n\ntrue !== false\n',
++   'invalid scope \\\\server/share.js: invalid scope \\\\server/share.js: []\n' +
++     '\n' +
++     'true !== false\n',
++   'invalid scope src/*.js: invalid scope src/*.js: []\n\ntrue !== false\n',
++   'invalid scope src/../a.js: invalid scope src/../a.js: []\n\ntrue !== false\n',
++   'invalid scope src//a.js: invalid scope src//a.js: []\n\ntrue !== false\n',
++   'invalid scope TODO: invalid scope TODO: []\n\ntrue !== false\n',
++   'directory is not file grant: directory is not file grant: []\n' +
++     '\n' +
++     'true !== false\n',
++   'symlink escape: symlink escape: []\n\ntrue !== false\n',
++   'broken symlink fails closed: broken symlink fails closed: []\n' +
++     '\n' +
++     'true !== false\n',
++   'missing verification: missing verification: []\n\ntrue !== false\n',
++   'bad cwd: bad cwd: []\n\ntrue !== false\n',
++   'file cwd: file cwd: []\n\ntrue !== false\n',
++   'empty argv: empty argv: []\n\ntrue !== false\n',
++   'empty argv token: empty argv token: []\n\ntrue !== false\n',
++   'placeholder argv: placeholder argv: []\n\ntrue !== false\n',
++   'shell command/control: shell command/control: []\n\ntrue !== false\n',
++   'shell command/control: shell command/control: []\n\ntrue !== false\n',
++   'shell command/control: shell command/control: []\n\ntrue !== false\n',
++   'shell command/control: shell command/control: []\n\ntrue !== false\n',
++   'shell command/control: shell command/control: []\n\ntrue !== false\n',
++   'missing behavior tests: missing behavior tests: []\n\ntrue !== false\n',
++   'out of scope tests: out of scope tests: []\n\ntrue !== false\n',
++   'unknown changed AC: unknown changed AC: []\n\ntrue !== false\n',
++   'missing mapping: missing mapping: []\n\ntrue !== false\n',
++   'unknown mapped task: unknown mapped task: []\n\ntrue !== false\n',
++   'duplicate mapped task: duplicate mapped task: []\n\ntrue !== false\n',
++   'duplicate mapping: duplicate mapping: []\n\ntrue !== false\n',
++   'duplicate declared AC: duplicate declared AC: []\n\ntrue !== false\n',
++   'undeclared AC mapping: undeclared AC mapping: []\n\ntrue !== false\n',
++   'empty trace: empty trace: []\n\ntrue !== false\n',
++   'exact spec lookup, no substring: exact spec lookup, no substring: []\n' +
++     '\n' +
++     'true !== false\n',
++   'duplicate spec AC: duplicate spec AC: []\n\ntrue !== false\n',
++   'spec path traversal: spec path traversal: []\n\ntrue !== false\n',
++   'missing spec: missing spec: []\n\ntrue !== false\n'
++ ]
+- []
+
+    at run (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/validate-workflow-planning.test.js:96:10)
+    at Object.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/validate-workflow-planning.test.js:99:30)
+    at Module._compile (node:internal/modules/cjs/loader:1934:14)
+    at Object..js (node:internal/modules/cjs/loader:2074:10)
+    at Module.load (node:internal/modules/cjs/loader:1656:32)
+    at Module._load (node:internal/modules/cjs/loader:1448:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'invalid scope : invalid scope : []\n\ntrue !== false\n',
+    'invalid scope .: invalid scope .: []\n\ntrue !== false\n',
+    'invalid scope ..: invalid scope ..: []\n\ntrue !== false\n',
+    'invalid scope ../out.js: invalid scope ../out.js: []\n\ntrue !== false\n',
+    'invalid scope /tmp/a.js: invalid scope /tmp/a.js: []\n\ntrue !== false\n',
+    'invalid scope C:/a.js: invalid scope C:/a.js: []\n\ntrue !== false\n',
+    'invalid scope C:a.js: invalid scope C:a.js: []\n\ntrue !== false\n',
+    'invalid scope \\\\server/share.js: invalid scope \\\\server/share.js: []\n' +
+      '\n' +
+      'true !== false\n',
+    'invalid scope src/*.js: invalid scope src/*.js: []\n\ntrue !== false\n',
+    'invalid scope src/../a.js: invalid scope src/../a.js: []\n' +
+      '\n' +
+      'true !== false\n',
+    'invalid scope src//a.js: invalid scope src//a.js: []\n\ntrue !== false\n',
+    'invalid scope TODO: invalid scope TODO: []\n\ntrue !== false\n',
+    'directory is not file grant: directory is not file grant: []\n' +
+      '\n' +
+      'true !== false\n',
+    'symlink escape: symlink escape: []\n\ntrue !== false\n',
+    'broken symlink fails closed: broken symlink fails closed: []\n' +
+      '\n' +
+      'true !== false\n',
+    'missing verification: missing verification: []\n\ntrue !== false\n',
+    'bad cwd: bad cwd: []\n\ntrue !== false\n',
+    'file cwd: file cwd: []\n\ntrue !== false\n',
+    'empty argv: empty argv: []\n\ntrue !== false\n',
+    'empty argv token: empty argv token: []\n\ntrue !== false\n',
+    'placeholder argv: placeholder argv: []\n\ntrue !== false\n',
+    'shell command/control: shell command/control: []\n\ntrue !== false\n',
+    'shell command/control: shell command/control: []\n\ntrue !== false\n',
+    'shell command/control: shell command/control: []\n\ntrue !== false\n',
+    'shell command/control: shell command/control: []\n\ntrue !== false\n',
+    'shell command/control: shell command/control: []\n\ntrue !== false\n',
+    'missing behavior tests: missing behavior tests: []\n\ntrue !== false\n',
+    'out of scope tests: out of scope tests: []\n\ntrue !== false\n',
+    'unknown changed AC: unknown changed AC: []\n\ntrue !== false\n',
+    'missing mapping: missing mapping: []\n\ntrue !== false\n',
+    'unknown mapped task: unknown mapped task: []\n\ntrue !== false\n',
+    'duplicate mapped task: duplicate mapped task: []\n\ntrue !== false\n',
+    'duplicate mapping: duplicate mapping: []\n\ntrue !== false\n',
+    'duplicate declared AC: duplicate declared AC: []\n\ntrue !== false\n',
+    'undeclared AC mapping: undeclared AC mapping: []\n\ntrue !== false\n',
+    'empty trace: empty trace: []\n\ntrue !== false\n',
+    'exact spec lookup, no substring: exact spec lookup, no substring: []\n' +
+      '\n' +
+      'true !== false\n',
+    'duplicate spec AC: duplicate spec AC: []\n\ntrue !== false\n',
+    'spec path traversal: spec path traversal: []\n\ntrue !== false\n',
+    'missing spec: missing spec: []\n\ntrue !== false\n'
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.5.0
