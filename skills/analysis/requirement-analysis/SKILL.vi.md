@@ -140,3 +140,16 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 ## Ví Dụ Ngắn
 
 Xem `references/example.vi.md` để có ví dụ minh hoạ đầy đủ (từ yêu cầu đăng nhập tới artifact mong đợi). Đọc khi dùng skill này lần đầu hoặc khi chưa rõ ý nghĩa schema; bỏ qua khi đã quen schema.
+
+## Hướng dẫn mô tả scenario
+
+Với thay đổi hành vi, nêu actor hoặc ngữ cảnh kích hoạt, điều kiện trước, kết quả
+thành công và thất bại quan sát được, cùng tham chiếu business rule/AC làm căn cứ.
+Hành vi được chấp nhận thuộc Spec Card hoặc SRS hiện có; phần phân tích bàn giao
+tham chiếu và quyết định còn thiếu, không tạo bản đặc tả thứ hai. Việc bảo trì nhỏ
+chỉ cần scenario ngắn trong artifact hiện có. Nếu không áp dụng (ví dụ sửa chính
+tả), nêu lý do và bỏ payload scenario; không tự tạo actor hoặc artifact mới.
+
+Ví dụ: event trùng ID khác với cùng một object được gửi lại. Nếu chưa có quy tắc
+về giữ giá trị đầu hay cuối, đưa thành câu hỏi có owner thay vì tự chọn chính sách.
+Hành vi lỗi chưa rõ vẫn là quyết định mở cho đến khi con người trả lời.

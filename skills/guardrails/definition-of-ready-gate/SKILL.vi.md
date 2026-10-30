@@ -82,3 +82,14 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 - Có kết luận `READY|BLOCKED` rõ ràng.
 - Có `blocking_gaps` khi chưa READY.
 - Có `next_action` đủ cụ thể để chuyển sang step tiếp theo hoặc quay lại step trước.
+
+## Mức sẵn sàng của scenario
+
+Với thay đổi hành vi có áp dụng, kiểm tra Spec Card/SRS sở hữu nội dung: actor hoặc
+ngữ cảnh kích hoạt, điều kiện trước, kết quả thành công/thất bại quan sát được và
+tham chiếu rule/AC chính xác. Chính sách còn thiếu làm thay đổi kết quả thì chặn
+readiness; giả định hợp lý của agent không giải quyết được quyết định đó. Đối
+chiếu edge case với quy tắc được chấp nhận, không dùng số scenario làm độ phủ.
+Trường hợp không áp dụng đã có lý do không cần scenario giả hoặc tài liệu use case
+riêng. Đánh giá này cung cấp bằng chứng; con người có thẩm quyền vẫn quyết định
+và ký gate tương ứng.

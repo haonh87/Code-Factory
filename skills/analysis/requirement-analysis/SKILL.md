@@ -140,3 +140,18 @@ If this skill's output is saved as a `.md` note within the workflow chain:
 ## Short Example
 
 See `references/example.md` for a full worked example (login feature request through to the expected artifact). Read it on first use of this skill or when the schema's intent is unclear; skip it once the schema is familiar.
+
+## Scenario Guidance
+
+For a behavior change, describe the actor or triggering context, preconditions,
+observable success and failure outcomes, and the business-rule/AC references that
+justify them. Store accepted behavior in the existing Spec Card or SRS; this
+analysis hands off references and unresolved decisions, not a second specification.
+For a small maintenance request, use a short scenario within the existing artifact.
+If scenarios are inapplicable (for example a spelling correction), state why and
+omit the scenario payload; do not invent actors or extra artifacts.
+
+Example: for a duplicate event, distinguish “the same event ID arrives again” from
+“the same object instance arrives again”. Ask whether first or last value wins if
+that rule is missing; do not silently choose a policy. Unknown failure behavior
+remains an owned open decision until the human answers it.

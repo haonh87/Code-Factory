@@ -1,0 +1,23 @@
+Running validate-workflow-sdd (Spec Card) tests...
+
+  PASS: valid-light-card
+  PASS: missing-provenance-origin (fails as expected)
+  PASS: invalid-provenance-value (fails as expected)
+  PASS: ac-mapping-unknown-requirement (fails as expected)
+  PASS: ac-missing-requirement-mapping (fails as expected)
+  PASS: requirement-without-ac-mapping (fails as expected)
+  PASS: freeze-authority-missing (fails as expected)
+  PASS: required-cr-missing (fails as expected)
+  PASS: duplicate-requirement-id (fails as expected)
+  PASS: duplicate-ac-id (fails as expected)
+  PASS: freeze-status-missing (fails as expected)
+  PASS: freeze-status-invalid (fails as expected)
+  PASS: frozen-requires-decided-at (fails as expected)
+  PASS: draft-freeze-no-decided-at
+  PASS: spec-version-missing (fails as expected)
+  PASS: open-decision-missing-owner (fails as expected)
+  PASS: assumption-missing-owner (fails as expected)
+  PASS: missing-card-ref (fails as expected)
+  PASS: strict-mode-regression (brd/srs path unchanged)
+
+All validate-workflow-sdd (Spec Card) tests passed.

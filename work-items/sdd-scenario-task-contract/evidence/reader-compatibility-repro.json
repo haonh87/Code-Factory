@@ -1,0 +1,12 @@
+{
+  "result": "REPRODUCED",
+  "legacy_semantic_errors": [],
+  "versioned_semantic_errors": [
+    "Main Artifact.tasks must be a non-empty evidence list in finalized note: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/sdd-v1-reader-repro-U2yuaY/probe.s06.task-breakdown.md"
+  ],
+  "versioned_reference_error": {
+    "code": "ARTIFACT_REFERENCE_YAML_MISSING",
+    "message": "Artifact reference heading '## Main Artifact' has no complete YAML block in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/sdd-v1-reader-repro-U2yuaY/probe.s06.task-breakdown.md."
+  },
+  "source_changed": false
+}

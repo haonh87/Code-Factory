@@ -142,3 +142,13 @@ If the output of this skill is saved as a `.md` note in the workflow chain:
 - A clear `recommended_option` and `recommendation_reason`.
 - A `validation_plan`.
 - `notes_for_next_step` sufficient to move to `system-design`.
+
+## Validate Options Against Behavior Scenarios
+
+Compare each option against the accepted success and failure outcomes referenced
+from the Spec Card/SRS. Use actor/context and preconditions to expose assumptions;
+do not reproduce or redefine accepted behavior in the option analysis. If two
+options require different business rules, record that choice in the existing open
+decision owner and resolve it before locking the approach. Technical convenience
+does not select the product policy. A documentation-only change may explain why
+behavior scenarios are inapplicable instead of creating artificial scenarios.

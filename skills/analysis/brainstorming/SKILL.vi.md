@@ -142,3 +142,12 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 - Có `recommended_option` và `recommendation_reason` rõ ràng.
 - Có `validation_plan`.
 - Có `notes_for_next_step` đủ để sang `system-design`.
+
+## Đối chiếu phương án với scenario hành vi
+
+So sánh từng phương án với kết quả thành công và thất bại đã được chấp nhận trong
+Spec Card/SRS. Dùng actor/ngữ cảnh và điều kiện trước để phát hiện giả định; không
+chép lại hoặc định nghĩa lại hành vi trong phân tích phương án. Nếu hai phương án
+cần business rule khác nhau, ghi lựa chọn vào nơi sở hữu quyết định mở hiện có và
+giải quyết trước khi chốt approach. Sự thuận tiện kỹ thuật không quyết định chính
+sách sản phẩm. Thay đổi chỉ tài liệu có thể nêu lý do scenario không áp dụng.

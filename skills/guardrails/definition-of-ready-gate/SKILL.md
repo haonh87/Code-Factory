@@ -82,3 +82,14 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 - A clear `READY|BLOCKED` conclusion.
 - `blocking_gaps` when not READY.
 - A `next_action` specific enough to move to the next step or go back to the previous step.
+
+## Scenario Readiness
+
+For an applicable behavior change, inspect the owning Spec Card/SRS for actor or
+triggering context, preconditions, observable success/failure outcomes and exact
+rule/AC links. An unresolved policy affecting those outcomes blocks readiness;
+a plausible agent assumption does not resolve it. Check edge cases against the
+accepted rules rather than treating a scenario count as coverage. A documented
+inapplicable case needs no fabricated scenario or separate use-case document.
+This assessment supplies readiness evidence; the applicable human authority still
+makes and signs the gate decision.
