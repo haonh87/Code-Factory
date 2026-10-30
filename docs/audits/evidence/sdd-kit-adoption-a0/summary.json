@@ -1,0 +1,147 @@
+{
+  "runs": [
+    {
+      "run": "feature-1",
+      "exit_code": 1,
+      "seconds": 11.96,
+      "command_count": 2,
+      "proposal_bytes": 0,
+      "proposal_words": 0,
+      "source_and_tests_unchanged": true,
+      "changed_files": [],
+      "usage": [],
+      "outcome": "failed_usage_limit"
+    },
+    {
+      "run": "feature-2",
+      "exit_code": 0,
+      "seconds": 188.81,
+      "command_count": 8,
+      "proposal_bytes": 10394,
+      "proposal_words": 1451,
+      "source_and_tests_unchanged": true,
+      "changed_files": [
+        "proposal.md"
+      ],
+      "usage": [
+        {
+          "input_tokens": 323556,
+          "cached_input_tokens": 270592,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 4031,
+          "reasoning_output_tokens": 248
+        }
+      ],
+      "outcome": "proposal_completed"
+    },
+    {
+      "run": "feature-3",
+      "exit_code": 0,
+      "seconds": 170.36,
+      "command_count": 7,
+      "proposal_bytes": 10837,
+      "proposal_words": 1510,
+      "source_and_tests_unchanged": true,
+      "changed_files": [
+        "proposal.md"
+      ],
+      "usage": [
+        {
+          "input_tokens": 318575,
+          "cached_input_tokens": 268032,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 3831,
+          "reasoning_output_tokens": 125
+        }
+      ],
+      "outcome": "proposal_completed"
+    },
+    {
+      "run": "bug-1",
+      "exit_code": 0,
+      "seconds": 126.28,
+      "command_count": 8,
+      "proposal_bytes": 7325,
+      "proposal_words": 1021,
+      "source_and_tests_unchanged": true,
+      "changed_files": [
+        "proposal.md"
+      ],
+      "usage": [
+        {
+          "input_tokens": 252557,
+          "cached_input_tokens": 215296,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 3138,
+          "reasoning_output_tokens": 104
+        }
+      ],
+      "outcome": "proposal_completed"
+    },
+    {
+      "run": "bug-2",
+      "exit_code": 0,
+      "seconds": 128.5,
+      "command_count": 7,
+      "proposal_bytes": 7540,
+      "proposal_words": 1026,
+      "source_and_tests_unchanged": true,
+      "changed_files": [
+        "proposal.md"
+      ],
+      "usage": [
+        {
+          "input_tokens": 209129,
+          "cached_input_tokens": 170752,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 3104,
+          "reasoning_output_tokens": 63
+        }
+      ],
+      "outcome": "proposal_completed"
+    },
+    {
+      "run": "bug-3",
+      "exit_code": 0,
+      "seconds": 127.94,
+      "command_count": 8,
+      "proposal_bytes": 8300,
+      "proposal_words": 1103,
+      "source_and_tests_unchanged": true,
+      "changed_files": [
+        "proposal.md"
+      ],
+      "usage": [
+        {
+          "input_tokens": 217688,
+          "cached_input_tokens": 176512,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 3073,
+          "reasoning_output_tokens": 38
+        }
+      ],
+      "outcome": "proposal_completed"
+    }
+  ],
+  "attempted": 6,
+  "completed": 5,
+  "failed": 1,
+  "unstarted": 0,
+  "median_completed_seconds": 128.5,
+  "range_completed_seconds": [
+    126.28,
+    188.81
+  ],
+  "total_attempt_seconds": 753.85,
+  "reported_usage_totals": {
+    "input_tokens": 1321505,
+    "cached_input_tokens": 1101184,
+    "output_tokens": 17177,
+    "reasoning_output_tokens": 578
+  },
+  "usage_missing_runs": [
+    "feature-1"
+  ],
+  "monetary_cost": "unmeasured",
+  "scope": "admission/proposal baseline; no implementation or TDD completion evidence"
+}

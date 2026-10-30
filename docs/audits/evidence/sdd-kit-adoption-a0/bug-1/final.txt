@@ -1,0 +1,9 @@
+Created [proposal.md](proposal.md) with the proposed fix, acceptance criteria, and TDD plan.
+
+Actually ran:
+
+- Existing regression: passed.
+- Read-only reproduction using two distinct objects sharing an ID: confirmed duplicate ledger entries.
+- UTF-8 and source/test preservation checks: passed.
+
+Implementation remains blocked by missing Task Plan and work-item approvals under the pinned [workflow skill](.agents/skills/codex-workflow-chain/SKILL.md): “A draft artifact is not a passed gate.” Only `proposal.md` changed. No human DoD declared.

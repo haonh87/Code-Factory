@@ -1,0 +1,49 @@
+{
+  "before_source_sha256": {
+    "src/index.js": "cf39669cc34aecc627a9d45e6e60cab2138bc78eafab9d2b53c50bff4add3d11",
+    "test/regression.js": "9b14a6bfdecbfaa261454092968f54fd60cdab0cc83bf503727144638f678948",
+    "package.json": "29c0f4aca5ca027e6fcc6b5ccd725f2dc0ddd4d98e90403346c3a26037741752"
+  },
+  "after_source_sha256": {
+    "src/index.js": "cf39669cc34aecc627a9d45e6e60cab2138bc78eafab9d2b53c50bff4add3d11",
+    "test/regression.js": "9b14a6bfdecbfaa261454092968f54fd60cdab0cc83bf503727144638f678948",
+    "package.json": "29c0f4aca5ca027e6fcc6b5ccd725f2dc0ddd4d98e90403346c3a26037741752"
+  },
+  "changed_files": [
+    "proposal.md"
+  ],
+  "commands": [
+    {
+      "command": "/bin/zsh -lc \"pwd && rg --files -g 'AGENTS.md' -g 'package.json' -g 'src/**' -g 'test/**' -g 'proposal.md' -g '*report*.json' -g 'work-items/**' -g '.agents/skills/workflow-governance-router/**' -g '.agents/skills/codex-workflow-chain/**'\"",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc 'cat .agents/skills/workflow-governance-router/SKILL.md .agents/skills/codex-workflow-chain/SKILL.md'",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc \"cat src/index.js test/regression.js package.json && rg --files -g '\"'!'\"\\\\.agents/**' -g '\"'!'\"\\\\.git/**' -g '\"'!'\"\\\\.codex/**'\"",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc \"cat .agents/skills/obsidian-markdown/SKILL.md && sed -n '90,160p' .agents/skills/codex-workflow-chain/SKILL.md && rg -n 'maintenance|reason|bug|Gate|gate|reviewer' .agents/skills/codex-workflow-chain/references/adaptive-planning.md\"",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '1,85p' .agents/skills/codex-workflow-chain/references/adaptive-planning.md && rg --files --hidden -g '\"'!'\"\\\\.git/**' -g '*adaptive-governance*' -g '*report*.json' -g '*workflow-chain.md' && sed -n '65,91p' .agents/skills/codex-workflow-chain/SKILL.md\"",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc 'node test/regression.js'",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc \"node <<'NODE'\nconst { createProcessor } = require('./src/index');\nconst p = createProcessor();\nconst first = { id: 'one', amount: 100 };\nconst redelivery = { id: 'one', amount: 200 };\nconst results = [p.process(first), p.process(redelivery)];\nconsole.log(JSON.stringify({ distinctObjects: first \"'!== redelivery, results, ledger: p.ledger }));\nconst reproduced = results[0] === true && results[1] === true && p.ledger.length === 2;\nconsole.log(reproduced ? '\"'BUG REPRODUCED: fresh object with same ID accepted twice' : 'BUG NOT REPRODUCED');\nprocess.exitCode = reproduced ? 0 : 1;\nNODE\"",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc \"node <<'NODE'\nconst fs = require('node:fs');\nconst assert = require('node:assert/strict');\nconst bytes = fs.readFileSync('proposal.md');\nconst text = new TextDecoder('utf-8', { fatal: true }).decode(bytes);\nassert(\"'!text.includes('\"'\\\\uFFFD'));\nassert.equal(fs.readFileSync('src/index.js', 'utf8'), 'function createProcessor() { const seen=new Set(); const ledger=[]; return { ledger, process(event) { if(seen.has(event)) return false; seen.add(event); ledger.push({id:event.id,amount:event.amount}); return true; } }; } module.exports={createProcessor};\\\\n');\nassert.equal(fs.readFileSync('test/regression.js', 'utf8'), \\\"const assert=require('node:assert/strict'); const {createProcessor}=require('../src/index'); const p=createProcessor(); const e={id:'one',amount:100}; assert.equal(p.process(e),true); assert.equal(p.process(e),false); assert.equal(p.ledger.length,1); console.log('existing regression PASS');\\\\n\\\");\nconsole.log('proposal.md UTF-8 PASS; source and regression test unchanged');\nNODE\"",
+      "exit_code": 0
+    }
+  ]
+}

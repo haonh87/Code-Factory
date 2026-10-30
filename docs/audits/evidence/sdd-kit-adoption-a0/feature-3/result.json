@@ -1,0 +1,44 @@
+{
+  "id": "feature-3",
+  "status": "exited",
+  "exit_code": 0,
+  "elapsed_seconds": 170.36,
+  "event_types": [
+    "thread.started",
+    "turn.started",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.completed",
+    "turn.completed"
+  ],
+  "changed_files": [
+    "proposal.md"
+  ],
+  "usage": [
+    {
+      "input_tokens": 318575,
+      "cached_input_tokens": 268032,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 3831,
+      "reasoning_output_tokens": 125
+    }
+  ],
+  "events_sha256": "e593b28182c607d511ec16363ffaaaa83248f76a28391e63870d1bf695e8e47a"
+}

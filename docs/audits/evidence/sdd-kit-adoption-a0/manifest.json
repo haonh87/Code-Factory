@@ -1,0 +1,27 @@
+{
+  "baseline_sha": "6f7303d00562d2cfa28630278a0c3bc64223e040",
+  "model": "gpt-6-astra",
+  "reasoning": "high",
+  "cli": "0.164.0",
+  "max_runs": 6,
+  "timeout_seconds": 600,
+  "order": [
+    "feature-1",
+    "feature-2",
+    "feature-3",
+    "bug-1",
+    "bug-2",
+    "bug-3"
+  ],
+  "phase": "admission-and-delivery-attempt; no synthetic approval receipts",
+  "source_skill_count": 48,
+  "observed_at_utc": "2026-10-29T14:29:45.120673+00:00",
+  "authorization": "User accepted six sequential baseline runs, at most ten minutes each; then requested continue.",
+  "state": "COHORT_ATTEMPTS_FINISHED_WITH_LIMITATIONS",
+  "agent_runs_attempted": 6,
+  "agent_runs_completed": 5,
+  "unstarted_runs": [],
+  "failed_run_preserved": true,
+  "resume_policy": "All six authorized attempts are retained. No automatic replacement of failed feature-1 and no extra run beyond the accepted budget.",
+  "docs_reference": "https://learn.chatgpt.com/docs/config-file/config-reference"
+}

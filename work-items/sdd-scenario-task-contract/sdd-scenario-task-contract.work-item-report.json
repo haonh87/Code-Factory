@@ -1,0 +1,146 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "MATERIALIZED",
+  "decision_owner": "agent",
+  "protocol_owner": "maintainer",
+  "raw_request_summary": "Scenario descriptors and executable task graph validation.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "sdd-scenario-task-contract",
+      "work_item_title": "Sdd Scenario Task Contract",
+      "work_item_type": "CHANGE",
+      "scope_summary": "Scenario descriptors and executable task graph validation.",
+      "primary_outcome": "Scenario descriptors and executable task graph validation.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "full",
+      "sdd_reasons": [],
+      "sdd_preset": "full",
+      "sdd_light_profile": "preview",
+      "governance_profile": "default",
+      "execution_mode": "agentic",
+      "existing_refs": [],
+      "collision_notes": [],
+      "change_strategy": "create_new",
+      "change_id": "CR-011",
+      "change_reason": "Scope có tín hiệu cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:change -- --change-id CR-011 --work-item sdd-scenario-task-contract",
+        "npm run scaffold:workflow -- --work-item sdd-scenario-task-contract --planning-track full --delivery-context brownfield --change-id CR-011",
+        "npm run validate:workflow -- --workflow-root work-items/sdd-scenario-task-contract --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=CHANGE",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict",
+    "change_strategy=create_new",
+    "planning_track=full",
+    "governance_profile=default",
+    "sdd_preset=full",
+    "selected_profile=full",
+    "sdd_mode=none",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "sdd-scenario-task-contract",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/sdd-scenario-task-contract",
+  "current_step": "s01",
+  "granted_write_paths": [],
+  "change_strategy": "create_new",
+  "change_id": "CR-011",
+  "handoff_target": "step-s07-activation",
+  "required_actions": [
+    {
+      "id": "se:ae3785a6a3d0e64a7ca1a041e285644005d0d4837f63423f5356ccab9f0b66f3",
+      "kind": "workflow_followup",
+      "text": "wfc change-item approve --change-id CR-011 --reviewed-by <role>"
+    },
+    {
+      "id": "se:69e885d9d8d9c66a02cbaf85e861feebc9195766515b4ef9b997af3e88204ff5",
+      "kind": "work_item_activation",
+      "text": "wfc work-item activate --work-item sdd-scenario-task-contract --step s07 --write-root <path>"
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/sdd-scenario-task-contract"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "CHANGE_CREATED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "READINESS_BUNDLE_APPROVED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-10-30T07:24:18.780Z",
+  "review_notes": [
+    "Human review approved."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-10-30T01:19:17.551Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-10-30T01:19:17.551Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Materialization inputs are ready for scaffold."
+    },
+    {
+      "timestamp": "2026-10-30T01:19:17.825Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Auto-scaffolded workflow artifacts."
+    },
+    {
+      "timestamp": "2026-10-30T07:24:18.781Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-10-30T07:24:22.219Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "051abf40-4e2e-455c-9580-2f7555c09730"
+    }
+  ]
+}

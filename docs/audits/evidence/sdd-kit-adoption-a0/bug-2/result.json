@@ -1,0 +1,44 @@
+{
+  "id": "bug-2",
+  "status": "exited",
+  "exit_code": 0,
+  "elapsed_seconds": 128.5,
+  "event_types": [
+    "thread.started",
+    "turn.started",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.completed",
+    "turn.completed"
+  ],
+  "changed_files": [
+    "proposal.md"
+  ],
+  "usage": [
+    {
+      "input_tokens": 209129,
+      "cached_input_tokens": 170752,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 3104,
+      "reasoning_output_tokens": 63
+    }
+  ],
+  "events_sha256": "89755587aa36e8b4cb0729c4983dc591fcbf1e5aad70c790a663363f52b647e3"
+}

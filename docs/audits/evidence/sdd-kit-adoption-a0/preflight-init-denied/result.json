@@ -1,0 +1,10 @@
+{
+  "id": "feature-1",
+  "status": "exited",
+  "exit_code": 1,
+  "elapsed_seconds": 0.25,
+  "event_types": [],
+  "changed_files": [],
+  "usage": [],
+  "events_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

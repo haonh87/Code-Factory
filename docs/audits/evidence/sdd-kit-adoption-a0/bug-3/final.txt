@@ -1,0 +1,9 @@
+Created [proposal.md](proposal.md) with the cause, proposed fix, acceptance criteria, and TDD plan. Source and tests remain unchanged.
+
+Actually ran:
+
+- Existing regression: passed.
+- Inline reproduction using distinct objects sharing an ID: failed as expected, confirming duplicate ledger entries.
+- Proposal UTF-8 check: passed.
+
+Implementation is blocked by missing gate approvals. The pinned [workflow skill](.agents/skills/codex-workflow-chain/SKILL.md) requires: “The right to `implement` only opens after the matching human gates have passed.” Broader gate applicability remains unresolved; no human DoD is claimed.

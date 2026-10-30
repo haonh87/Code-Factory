@@ -1,0 +1,45 @@
+{
+  "before_source_sha256": {
+    "src/index.js": "cf39669cc34aecc627a9d45e6e60cab2138bc78eafab9d2b53c50bff4add3d11",
+    "test/regression.js": "9b14a6bfdecbfaa261454092968f54fd60cdab0cc83bf503727144638f678948",
+    "package.json": "29c0f4aca5ca027e6fcc6b5ccd725f2dc0ddd4d98e90403346c3a26037741752"
+  },
+  "after_source_sha256": {
+    "src/index.js": "cf39669cc34aecc627a9d45e6e60cab2138bc78eafab9d2b53c50bff4add3d11",
+    "test/regression.js": "9b14a6bfdecbfaa261454092968f54fd60cdab0cc83bf503727144638f678948",
+    "package.json": "29c0f4aca5ca027e6fcc6b5ccd725f2dc0ddd4d98e90403346c3a26037741752"
+  },
+  "changed_files": [
+    "proposal.md"
+  ],
+  "commands": [
+    {
+      "command": "/bin/zsh -lc \"pwd; rg --files -g 'AGENTS.md' -g 'package.json' -g 'src/**' -g 'test/**' -g '*report*.json' -g 'proposal.md' -g '*workflow*' -g '\"'!node_modules'\"'\"",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc 'cat .agents/skills/workflow-governance-router/SKILL.md .agents/skills/codex-workflow-chain/SKILL.md'",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc 'cat src/index.js test/regression.js package.json'",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc \"cat .agents/skills/obsidian-markdown/SKILL.md; sed -n '100,155p' .agents/skills/codex-workflow-chain/SKILL.md; rg -n 'maintenance|reason|reviewer|s01|Clarify' .agents/skills/codex-workflow-chain/references/adaptive-planning.md .agents/skills/codex-workflow-chain/references/workflow-chain.md\"",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '1,150p' .agents/skills/codex-workflow-chain/references/adaptive-planning.md; sed -n '1030,1145p' .agents/skills/codex-workflow-chain/references/workflow-chain.md\"",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc \"node test/regression.js\nnode <<'NODE'\nconst assert = require('node:assert/strict');\nconst { createProcessor } = require('./src/index');\nconst p = createProcessor();\nconst first = { id: 'one', amount: 100 };\nconst redelivery = { id: 'one', amount: 200 };\nassert.notStrictEqual(first, redelivery);\nconst results = [p.process(first), p.process(redelivery)];\nconsole.log(JSON.stringify({ distinctObjects: first \"'!== redelivery, results, ledger: p.ledger }));\nassert.equal(results[1], false, '\"'fresh object with same ID must be rejected');\nNODE\"",
+      "exit_code": 1
+    },
+    {
+      "command": "/bin/zsh -lc \"node <<'NODE'\nconst fs = require('node:fs');\nconst assert = require('node:assert/strict');\nconst bytes = fs.readFileSync('proposal.md');\nnew TextDecoder('utf-8', { fatal: true }).decode(bytes);\nassert.equal(fs.readFileSync('src/index.js', 'utf8'), \\\"function createProcessor() { const seen=new Set(); const ledger=[]; return { ledger, process(event) { if(seen.has(event)) return false; seen.add(event); ledger.push({id:event.id,amount:event.amount}); return true; } }; } module.exports={createProcessor};\\\\n\\\");\nassert.equal(fs.readFileSync('test/regression.js', 'utf8'), \\\"const assert=require('node:assert/strict'); const {createProcessor}=require('../src/index'); const p=createProcessor(); const e={id:'one',amount:100}; assert.equal(p.process(e),true); assert.equal(p.process(e),false); assert.equal(p.ledger.length,1); console.log('existing regression PASS');\\\\n\\\");\nconsole.log('proposal UTF-8 PASS; source and regression unchanged PASS');\nNODE\"",
+      "exit_code": 0
+    }
+  ]
+}
