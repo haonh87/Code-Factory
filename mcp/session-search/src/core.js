@@ -1,6 +1,5 @@
 import { spawn } from "node:child_process";
-import { createReadStream } from "node:fs";
-import { access } from "node:fs/promises";
+import { createReadStream, lstatSync, realpathSync, statSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import readline from "node:readline";
@@ -48,33 +47,58 @@ export function getSessionsRoot() {
 
 export function isPathInside(childPath, parentPath) {
   const relative = path.relative(parentPath, childPath);
-  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+  return relative === "" || (relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative));
+}
+
+// Administrative roots and filesystem writers are trusted. These checks are not
+// atomic confinement against a process concurrently replacing directories.
+function resolvePhysicalPath(value, configuredRoot, { allowMissing = false, file = false, label = "allowed root" } = {}) {
+  try {
+    if (typeof configuredRoot !== "string" || !configuredRoot || configuredRoot.includes("\0")) throw new Error();
+    const root = path.resolve(configuredRoot);
+    const physicalRoot = realpathSync(root);
+    if (!statSync(physicalRoot).isDirectory()) throw new Error();
+    const input = value === undefined && !file ? root : value;
+    if (typeof input !== "string" || !input || input.includes("\0")) throw new Error();
+    const candidate = path.resolve(input);
+    if (!isPathInside(candidate, root) && !isPathInside(candidate, physicalRoot)) throw new Error();
+
+    let ancestor = candidate;
+    const suffix = [];
+    for (;;) {
+      try {
+        // lstat distinguishes a dangling link from a genuinely missing suffix.
+        lstatSync(ancestor);
+        break;
+      } catch (error) {
+        if (!allowMissing || error.code !== "ENOENT") throw error;
+        const parent = path.dirname(ancestor);
+        if (parent === ancestor) throw error;
+        suffix.unshift(path.basename(ancestor));
+        ancestor = parent;
+      }
+    }
+    const physical = realpathSync(ancestor);
+    if (!isPathInside(physical, physicalRoot)) throw new Error();
+    const stat = statSync(physical);
+    if (suffix.length || !file) {
+      if (!stat.isDirectory()) throw new Error();
+    } else if (!stat.isFile()) throw new Error();
+    const resolved = path.join(physical, ...suffix);
+    if (!isPathInside(resolved, physicalRoot)) throw new Error();
+    return resolved;
+  } catch {
+    // Do not leak OS error strings, rejected paths or transcript contents.
+    throw new Error(`Path must resolve to a valid ${file ? "file" : "directory"} inside ${label}`);
+  }
 }
 
 export function resolveWorkspacePath(workspacePath, allowedRoot = getAllowedRoot()) {
-  const root = path.resolve(allowedRoot);
-  const candidate = path.resolve(workspacePath ?? root);
-
-  if (!isPathInside(candidate, root)) {
-    throw new Error(`Workspace path must stay inside allowed root: ${root}`);
-  }
-
-  return candidate;
+  return resolvePhysicalPath(workspacePath, allowedRoot, { allowMissing: true });
 }
 
 export function resolveSessionPath(sessionPath, sessionsRoot = getSessionsRoot()) {
-  if (!sessionPath) {
-    throw new Error("Session path is required");
-  }
-
-  const root = path.resolve(sessionsRoot);
-  const candidate = path.resolve(sessionPath);
-
-  if (!isPathInside(candidate, root)) {
-    throw new Error(`Session path must stay inside sessions root: ${root}`);
-  }
-
-  return candidate;
+  return resolvePhysicalPath(sessionPath, sessionsRoot, { file: true, label: "sessions root" });
 }
 
 export function truncateText(value, maxLength) {
@@ -138,7 +162,7 @@ export function parseSessionWorkspaceFromLines(lines) {
 
 async function readSessionWorkspace(sessionPath) {
   const lines = [];
-  const stream = createReadStream(sessionPath, { encoding: "utf8" });
+  const stream = createReadStream(resolveSessionPath(sessionPath), { encoding: "utf8" });
   const rl = readline.createInterface({
     input: stream,
     crlfDelay: Infinity,
@@ -157,6 +181,8 @@ async function readSessionWorkspace(sessionPath) {
         }
       }
     }
+  } catch {
+    throw new Error("Cannot read session workspace from validated file");
   } finally {
     rl.close();
     stream.destroy();
@@ -245,12 +271,17 @@ async function runCassJson(args, options = {}) {
   }
 }
 
-function isWorkspaceAllowed(candidateWorkspace, workspaceRoot) {
-  if (typeof candidateWorkspace !== "string" || !candidateWorkspace) {
-    return false;
+async function validateIndexedSession(entry, workspaceRoot, sourceField = "path") {
+  try {
+    const session = await ensureReadableSessionPath(entry?.[sourceField]);
+    const requestedRoot = resolveWorkspacePath(workspaceRoot);
+    if (!isPathInside(session.workspacePath, requestedRoot)) return null;
+    // Some related entries omit workspace; when present it must agree with the file.
+    if (Object.hasOwn(entry, "workspace") && resolveWorkspacePath(entry.workspace) !== session.workspacePath) return null;
+    return { ...entry, [sourceField]: session.sessionPath, workspace: session.workspacePath };
+  } catch {
+    return null;
   }
-
-  return isPathInside(path.resolve(candidateWorkspace), workspaceRoot);
 }
 
 function sanitizeSession(session) {
@@ -358,14 +389,9 @@ export function sanitizeStatus(status) {
 
 async function ensureReadableSessionPath(sessionPath) {
   const resolvedSessionPath = resolveSessionPath(sessionPath);
-  await access(resolvedSessionPath);
-
-  const workspacePath = await readSessionWorkspace(resolvedSessionPath);
-  const allowedRoot = getAllowedRoot();
-
-  if (!isPathInside(workspacePath, allowedRoot)) {
-    throw new Error(`Session workspace must stay inside allowed root: ${allowedRoot}`);
-  }
+  const workspacePath = resolveWorkspacePath(await readSessionWorkspace(resolvedSessionPath));
+  const allowedRoot = resolveWorkspacePath();
+  resolveSessionPath(resolvedSessionPath);
 
   return {
     sessionPath: resolvedSessionPath,
@@ -432,10 +458,12 @@ export async function listSessions(options = {}) {
     String(fetchLimit),
   ]);
 
-  const filteredSessions = (payload.sessions ?? [])
-    .filter((session) => isWorkspaceAllowed(session.workspace, workspaceRoot))
-    .slice(0, limit)
-    .map(sanitizeSession);
+  const filteredSessions = [];
+  for (const entry of Array.isArray(payload.sessions) ? payload.sessions : []) {
+    const validated = await validateIndexedSession(entry, workspaceRoot);
+    if (validated) filteredSessions.push(sanitizeSession(validated));
+    if (filteredSessions.length >= limit) break;
+  }
 
   return {
     allowedRoot,
@@ -500,11 +528,9 @@ export async function searchSessions(options = {}) {
     rawHitsScanned += hits.length;
 
     for (const hit of hits) {
-      if (!isWorkspaceAllowed(hit.workspace, workspaceRoot)) {
-        continue;
-      }
-
-      collectedHits.push(sanitizeSearchHit(hit));
+      const validated = await validateIndexedSession(hit, workspaceRoot, "source_path");
+      if (!validated) continue;
+      collectedHits.push(sanitizeSearchHit(validated));
 
       if (collectedHits.length >= limit) {
         break;
@@ -566,7 +592,7 @@ export async function viewSession(options = {}) {
   const session = await ensureReadableSessionPath(options.sessionPath);
   const payload = await runCassJson([
     "view",
-    session.sessionPath,
+    resolveSessionPath(session.sessionPath),
     "-n",
     String(lineNumber),
     "-C",
@@ -577,22 +603,17 @@ export async function viewSession(options = {}) {
   return {
     allowedRoot: session.allowedRoot,
     workspacePath: session.workspacePath,
-    ...sanitizeViewPayload(payload, maxLineLength),
+    ...sanitizeViewPayload({ ...payload, path: session.sessionPath }, maxLineLength),
   };
 }
 
-async function filterRelatedSessions(entries) {
+async function filterRelatedSessions(entries, workspaceRoot, limit) {
   const filtered = [];
-
-  for (const entry of entries ?? []) {
-    try {
-      await ensureReadableSessionPath(entry.path);
-      filtered.push(sanitizeRelatedSession(entry));
-    } catch {
-      continue;
-    }
+  for (const entry of Array.isArray(entries) ? entries : []) {
+    const validated = await validateIndexedSession(entry, workspaceRoot);
+    if (validated) filtered.push(sanitizeRelatedSession(validated));
+    if (filtered.length >= limit) break;
   }
-
   return filtered;
 }
 
@@ -601,23 +622,23 @@ export async function getRelatedSessions(options = {}) {
   const session = await ensureReadableSessionPath(options.sessionPath);
   const payload = await runCassJson([
     "context",
-    session.sessionPath,
+    resolveSessionPath(session.sessionPath),
     "--limit",
     String(limit),
     "--json",
   ]);
 
-  const sameWorkspace = await filterRelatedSessions(payload.related?.same_workspace);
-  const sameDay = await filterRelatedSessions(payload.related?.same_day);
-  const sameAgent = await filterRelatedSessions(payload.related?.same_agent);
+  const sameWorkspace = await filterRelatedSessions(payload.related?.same_workspace, session.workspacePath, limit);
+  const sameDay = await filterRelatedSessions(payload.related?.same_day, session.workspacePath, limit);
+  const sameAgent = await filterRelatedSessions(payload.related?.same_agent, session.workspacePath, limit);
 
   return {
     allowedRoot: session.allowedRoot,
     source: {
-      path: payload.source?.path ?? session.sessionPath,
+      path: session.sessionPath,
       title: payload.source?.title ?? null,
       agent: payload.source?.agent ?? null,
-      workspace: payload.source?.workspace ?? session.workspacePath,
+      workspace: session.workspacePath,
       sourceId: payload.source?.source_id ?? null,
       startedAt: payload.source?.started_at ?? null,
     },

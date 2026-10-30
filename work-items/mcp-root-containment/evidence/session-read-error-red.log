@@ -1,0 +1,59 @@
+✔ view/context reject directory-escape before transcript open or cass (2.810916ms)
+✔ view/context reject file-escape before transcript open or cass (1.324375ms)
+✔ view/context reject chain before transcript open or cass (1.49025ms)
+✔ view/context reject cycle before transcript open or cass (1.341ms)
+✔ view/context reject dangling before transcript open or cass (1.366333ms)
+✔ view/context reject missing before transcript open or cass (1.177333ms)
+✔ view/context reject directory before transcript open or cass (1.13575ms)
+✔ view/context reject nul before transcript open or cass (1.104292ms)
+✔ view/context reject object before transcript open or cass (1.101625ms)
+✔ contained file alias is canonical downstream and retargeting is rejected (5.42475ms)
+✔ historical workspace suffixes and configured root aliases are canonical (1.549666ms)
+✔ workspace rejects escape (1.001875ms)
+✔ workspace rejects dangling (0.929625ms)
+✔ workspace rejects cycle (1.068542ms)
+✔ workspace rejects file-parent (1.008709ms)
+✔ workspace rejects missing-root (0.826459ms)
+✔ workspace rejects nul (0.847708ms)
+✔ workspace rejects null (0.85425ms)
+✔ workspace rejects object (0.757167ms)
+✔ workspace rejects sibling (1.00525ms)
+✔ workspace rejects traversal (0.887833ms)
+✔ canonicalization permission failures are bounded and fail closed (1.08925ms)
+✔ list filters source files and actual/declared workspace before applying limit (5.977792ms)
+✔ search filters across pages and preserves bounded pagination (4.335459ms)
+✔ search stops after the existing ten-page cap when all results are invalid (2.310958ms)
+✔ related groups are restricted to the source workspace and validated source paths (7.853875ms)
+✖ transcript read failures have bounded diagnostics and never invoke cass (1.558708ms)
+✔ an escaped actual workspace is rejected before cass despite an in-root file (2.512833ms)
+✔ missing sessions root and non-directory file ancestor reject before cass (1.245584ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 28
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 96.580375
+
+✖ failing tests:
+
+test at mcp/session-search/test/containment.test.js:214:1
+✖ transcript read failures have bounded diagnostics and never invoke cass (1.558708ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+  
+  Caught error:
+  
+  Error: PRIVATE_SENTINEL
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:224:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: PRIVATE_SENTINEL
+        at file:///Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.claude/worktrees/mcp-physical-root-containment/mcp/session-search/test/containment.test.js:220:57
+        at process.processTicksAndRejections (node:internal/process/task_queues:85:11),
+    operator: 'rejects',
+    diff: 'simple'
+  }

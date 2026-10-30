@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-29T10:29:18.099324+00:00",
+  "utf8_files": 42,
+  "strict_decode": true,
+  "no_replacement_or_nul": true,
+  "tracked_diff_whitespace": "PASS",
+  "signed_hosts": "Preserved byte-for-byte; no formatting rewrite",
+  "staged_mcp_diff_whitespace": "PASS",
+  "full_staged_whitespace_limits": "Verbatim RED output has whitespace-only lines; approved/generated s01/s02/s03/s05 have blank EOF lines. Preserved to retain original evidence and signatures."
+}

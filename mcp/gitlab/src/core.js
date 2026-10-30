@@ -1,5 +1,6 @@
 import { spawn } from "node:child_process";
 import path from "node:path";
+import { realpathSync, statSync } from "node:fs";
 
 function getAllowedRoot() {
   return path.resolve(process.env.GITLAB_ALLOWED_ROOT ?? process.cwd());
@@ -15,18 +16,27 @@ function normalizeGitPath(value) {
 
 function isPathInside(childPath, parentPath) {
   const relative = path.relative(parentPath, childPath);
-  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+  return relative === "" || (relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative));
 }
 
+// Administrative roots and filesystem writers are trusted. These checks are not
+// atomic confinement against a process concurrently replacing directories.
 export function resolveRepoPath(repoPath, allowedRoot = getAllowedRoot()) {
-  const root = path.resolve(allowedRoot);
-  const candidate = path.resolve(repoPath ?? root);
-
-  if (!isPathInside(candidate, root)) {
-    throw new Error(`Repository path must stay inside allowed root: ${root}`);
+  try {
+    if (typeof allowedRoot !== "string" || !allowedRoot || allowedRoot.includes("\0")) throw new Error();
+    const root = path.resolve(allowedRoot);
+    const physicalRoot = realpathSync(root);
+    if (!statSync(physicalRoot).isDirectory()) throw new Error();
+    const input = repoPath === undefined ? root : repoPath;
+    if (typeof input !== "string" || !input || input.includes("\0")) throw new Error();
+    const candidate = path.resolve(input);
+    if (!isPathInside(candidate, root) && !isPathInside(candidate, physicalRoot)) throw new Error();
+    const physical = realpathSync(candidate);
+    if (!isPathInside(physical, physicalRoot) || !statSync(physical).isDirectory()) throw new Error();
+    return physical;
+  } catch {
+    throw new Error("Repository path must resolve to a directory inside allowed root");
   }
-
-  return candidate;
 }
 
 async function runCommand(command, args, options = {}) {

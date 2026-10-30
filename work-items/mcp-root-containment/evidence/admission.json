@@ -1,0 +1,31 @@
+{
+  "checks": [
+    {
+      "gate": "work-item",
+      "reviewer": "maintainer",
+      "at": "2026-10-29T02:32:08.173Z"
+    },
+    {
+      "gate": "spec",
+      "reviewer": "ba",
+      "at": "2026-10-29T02:32:08.173Z"
+    },
+    {
+      "gate": "dor",
+      "reviewer": "ba",
+      "at": "2026-10-29T02:32:08.173Z"
+    },
+    {
+      "gate": "approach",
+      "reviewer": "developer",
+      "at": "2026-10-29T02:32:08.173Z"
+    },
+    {
+      "gate": "task_plan",
+      "reviewer": "developer",
+      "at": "2026-10-29T02:32:08.173Z"
+    }
+  ],
+  "dispositions": 3,
+  "unchanged_source_pins": 1210
+}

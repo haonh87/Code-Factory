@@ -1,0 +1,145 @@
+
+> validate:workflow:pack-audit
+> node packages/workflow-bundle/scripts/audit-workflow-pack.js --repo-root .
+
+WORKFLOW_PACK_AUDIT=PASS
+  [PASS] cross_ref — 175 skill-to-skill references resolve in flat runtime layout; 4 non-skill pointers skipped (out of scope)
+  [PASS] folder_name::architecture-modeling — folder matches name
+  [PASS] folder_name::artifact-governance — folder matches name
+  [PASS] folder_name::brainstorming — folder matches name
+  [PASS] folder_name::branch-finish-discipline — folder matches name
+  [PASS] folder_name::ci-cd-release — folder matches name
+  [PASS] folder_name::code-scan-review — folder matches name
+  [PASS] folder_name::codex-workflow-chain — folder matches name
+  [PASS] folder_name::containerization-packaging — folder matches name
+  [PASS] folder_name::database-change-review — folder matches name
+  [PASS] folder_name::database-design — folder matches name
+  [PASS] folder_name::definition-of-done-gate — folder matches name
+  [PASS] folder_name::definition-of-ready-gate — folder matches name
+  [PASS] folder_name::delegation-discipline — folder matches name
+  [PASS] folder_name::deployment-devops — folder matches name
+  [PASS] folder_name::diagram-design-presentation-adapter — folder matches name
+  [PASS] folder_name::domain-architecture — folder matches name
+  [PASS] folder_name::frontend-architecture — folder matches name
+  [PASS] folder_name::frontend-experience-design — folder matches name
+  [PASS] folder_name::frontend-quality-review — folder matches name
+  [PASS] folder_name::goal-griller — folder matches name
+  [PASS] folder_name::implementation — folder matches name
+  [PASS] folder_name::input-readiness-assessor — folder matches name
+  [PASS] folder_name::json-canvas — folder matches name
+  [PASS] folder_name::karpathy-coding-discipline — folder matches name
+  [PASS] folder_name::notebooklm — folder matches name
+  [PASS] folder_name::obsidian-bases — folder matches name
+  [PASS] folder_name::obsidian-markdown — folder matches name
+  [PASS] folder_name::platform-runtime-deployment — folder matches name
+  [PASS] folder_name::product-thinking — folder matches name
+  [PASS] folder_name::react-best-practices-review — folder matches name
+  [PASS] folder_name::react-web-implementation — folder matches name
+  [PASS] folder_name::requirement-analysis — folder matches name
+  [PASS] folder_name::review-discipline — folder matches name
+  [PASS] folder_name::sa — folder matches name
+  [PASS] folder_name::step-goal-auditor — folder matches name
+  [PASS] folder_name::step-goal-contract — folder matches name
+  [PASS] folder_name::system-design — folder matches name
+  [PASS] folder_name::ta — folder matches name
+  [PASS] folder_name::task-breakdown-planner — folder matches name
+  [PASS] folder_name::testing — folder matches name
+  [PASS] folder_name::workflow-governance-router — folder matches name
+  [PASS] folder_name::workflow-pack-audit — folder matches name
+  [PASS] folder_name::worktree-discipline — folder matches name
+  [PASS] frontmatter::skills/analysis/brainstorming/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/analysis/product-thinking/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/analysis/requirement-analysis/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/analysis/sa/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/analysis/system-design/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/analysis/ta/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/architecture/architecture-modeling/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/architecture/database-design/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/architecture/diagram-design-presentation-adapter/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/architecture/domain-architecture/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/architecture/frontend-architecture/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/architecture/frontend-experience-design/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/branch-finish-discipline/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/ci-cd-release/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/code-scan-review/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/containerization-packaging/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/database-change-review/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/delegation-discipline/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/deployment-devops/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/frontend-quality-review/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/implementation/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/platform-runtime-deployment/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/react-best-practices-review/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/react-web-implementation/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/review-discipline/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/task-breakdown-planner/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/testing/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/delivery/worktree-discipline/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/guardrails/artifact-governance/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/guardrails/definition-of-done-gate/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/guardrails/definition-of-ready-gate/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/guardrails/input-readiness-assessor/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/guardrails/karpathy-coding-discipline/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/guardrails/step-goal-auditor/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/guardrails/step-goal-contract/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/guardrails/workflow-pack-audit/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/notebooklm/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/obsidian/json-canvas/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/obsidian/obsidian-bases/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/obsidian/obsidian-markdown/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/orchestration/codex-workflow-chain/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/orchestration/goal-griller/SKILL.md — name + description present, parsed field-order independent
+  [PASS] frontmatter::skills/orchestration/workflow-governance-router/SKILL.md — name + description present, parsed field-order independent
+  [PASS] hard_rule_sync::codex-workflow-chain/references/workflow-chain.md — matches AGENTS.global.md (router exception applied)
+  [PASS] hard_rule_sync::codex-workflow-chain/SKILL.md — matches AGENTS.global.md (router exception applied)
+  [PASS] skill_files_found — Found 43 SKILL.md files
+  [PASS] skill_name_unique — all skill names unique
+  [PASS] workflow_chain_exists — skills/orchestration/codex-workflow-chain/references/workflow-chain.md
+  [PASS] workflow_marker::audit — found
+  [PASS] workflow_marker::definition-of-done — found
+  [PASS] workflow_marker::definition-of-ready — found
+  [PASS] workflow_marker::step-contract — found
+  [PASS] workflow_skill_integration::architecture-modeling — s05 backbone routing, required-block mapping, template, and schema catalog are present
+  [PASS] yaml_scalar::skills/analysis/brainstorming/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/analysis/product-thinking/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/analysis/requirement-analysis/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/analysis/sa/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/analysis/system-design/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/analysis/ta/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/architecture/architecture-modeling/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/architecture/database-design/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/architecture/diagram-design-presentation-adapter/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/architecture/domain-architecture/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/architecture/frontend-architecture/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/architecture/frontend-experience-design/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/branch-finish-discipline/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/ci-cd-release/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/code-scan-review/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/containerization-packaging/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/database-change-review/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/delegation-discipline/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/deployment-devops/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/frontend-quality-review/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/implementation/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/platform-runtime-deployment/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/react-best-practices-review/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/react-web-implementation/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/review-discipline/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/task-breakdown-planner/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/testing/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/delivery/worktree-discipline/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/guardrails/artifact-governance/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/guardrails/definition-of-done-gate/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/guardrails/definition-of-ready-gate/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/guardrails/input-readiness-assessor/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/guardrails/karpathy-coding-discipline/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/guardrails/step-goal-auditor/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/guardrails/step-goal-contract/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/guardrails/workflow-pack-audit/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/notebooklm/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/obsidian/json-canvas/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/obsidian/obsidian-bases/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/obsidian/obsidian-markdown/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/orchestration/codex-workflow-chain/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/orchestration/goal-griller/SKILL.md — scalars are YAML-valid
+  [PASS] yaml_scalar::skills/orchestration/workflow-governance-router/SKILL.md — scalars are YAML-valid

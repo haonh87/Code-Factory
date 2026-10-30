@@ -1,0 +1,36 @@
+{
+  "at": "2026-10-29T10:28:51.147215+00:00",
+  "package_tests": {
+    "github-push": 25,
+    "gitlab": 22,
+    "session-search": 35
+  },
+  "workflow_suite": {
+    "worktree": "48 passed; two diagram tests failed copied read-only fixture writes (EACCES)",
+    "snapshot": "50 registered files passed",
+    "snapshot_files": 1211,
+    "manifest_sha256": "7235963ad1c28d19193b64fc06cb1be4cdc87d5bc67452dbc169c5e682af4323",
+    "manifest_local_path": "/tmp/cf-sec002-implementation-20261029/snapshot-manifest.json",
+    "all_source_bytes_match": true
+  },
+  "limits": [
+    "Native Windows not run",
+    "ESLint/Semgrep unavailable; manual targeted static/security review used",
+    "No live installation, real remote, real cass, merge or release",
+    "Existing optional diagram renderer integration unprovisioned"
+  ],
+  "log_hashes": {
+    "admission.json": "0ce1c1f74fcd99869c7ce72a80b0b958b2b321350e17c98e05c52c3636eee2e1",
+    "github-push-green.log": "ee2e790ff1b0e4a1ba11290d6acd5cdc98bc29a5a6293bed8412e0fc4db09128",
+    "github-push-red.log": "1fb0444b83ce53bb580d00762678c429b0a233b59abd0a8f2a49043a962f37c1",
+    "gitlab-green.log": "2176aa69728e5c38d85777bbcc375f1eca2b1b9a52a6e4e4ec943d216d4beeee",
+    "gitlab-red.log": "afbe4befe34deace5f074735b44043b219ffeaddfed3ece5a6ec888bcfc2f9bb",
+    "pack-audit.log": "f5eaa4bfe40c749ed308684b0c97089ebd2f62684702434a50843e868385da8a",
+    "session-read-error-red.log": "69203b53f8212310e17d80c0a38e6809749269b1fd61d05bb7d0940baeac2e90",
+    "session-search-green.log": "f50670b784b9d3fb772874919f1d53a95d95efe97407726cbab2ecebe48e51c8",
+    "session-search-red.log": "079612f2d898dffb6a8119b831dd027e7775330933ed3e1234525619083f4158",
+    "static-audit.json": "a82f10aa632fc734399a997aaa7aed37c7c224595ecae53ccfa5f67e33da184a",
+    "workflow-unit-snapshot.log": "65a90e980e8a4fae7e2df3221fc54a20696ee1b5275ab268de1733e3ef1d9d2c",
+    "workflow-unit-worktree.log": "358766d27dcb284f8f260793e804ae405e5c65d5b39c286f22ac6afb71045898"
+  }
+}

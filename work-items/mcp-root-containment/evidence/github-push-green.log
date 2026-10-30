@@ -1,0 +1,37 @@
+
+> @code-factory/github-push-mcp@0.1.0 check
+> node --test && node --check src/core.js && node --check src/index.js
+
+✔ repository rejects sibling before Git launch (1.852875ms)
+✔ repository rejects traversal before Git launch (0.855666ms)
+✔ repository rejects escape before Git launch (1.193416ms)
+✔ repository rejects chain before Git launch (0.926916ms)
+✔ repository rejects cycle before Git launch (0.846833ms)
+✔ repository rejects dangling before Git launch (0.831834ms)
+✔ repository rejects file before Git launch (0.888ms)
+✔ repository rejects missing before Git launch (0.66125ms)
+✔ repository rejects null before Git launch (0.673666ms)
+✔ repository rejects nul before Git launch (0.63975ms)
+✔ repository rejects object before Git launch (0.633625ms)
+✔ canonical root aliases, contained directory links and ..notes are accepted (4.022084ms)
+✔ missing root and non-directory ancestor fail closed (1.031209ms)
+✔ permission/canonicalization failure has a bounded diagnostic (0.819291ms)
+✔ retargeted link is checked again on the next operation (2.03425ms)
+✔ creation follows a contained parent and initializes a local repository (17.604708ms)
+✔ creation rejects escaped-parent without writes or Git (0.989ms)
+✔ creation rejects dangling-parent without writes or Git (0.842209ms)
+✔ creation rejects file-parent without writes or Git (0.821792ms)
+✔ creation rejects missing-root without writes or Git (0.656667ms)
+✔ creation revalidates after mkdir before init (0.881334ms)
+✔ file symlink outside cannot be used as a repository (1.087375ms)
+✔ resolveRepoPath uses an existing portable root (1.685458ms)
+✔ parseGitStatusPorcelain extracts staged, unstaged, and untracked files (0.391666ms)
+✔ parseGitRemotes groups fetch and push URLs per remote (0.139375ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 84.5845

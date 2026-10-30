@@ -1,5 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 
 import {
   parseGitRemotes,
@@ -7,20 +10,12 @@ import {
   resolveRepoPath,
 } from "../src/core.js";
 
-test("resolveRepoPath keeps repository inside allowed root", () => {
-  const allowedRoot = "D:\\workspace\\root";
-  const resolved = resolveRepoPath("D:\\workspace\\root\\repo", allowedRoot);
-
-  assert.equal(resolved, "D:\\workspace\\root\\repo");
-});
-
-test("resolveRepoPath rejects repository outside allowed root", () => {
-  const allowedRoot = "D:\\workspace\\root";
-
-  assert.throws(
-    () => resolveRepoPath("D:\\workspace\\other\\repo", allowedRoot),
-    /allowed root/i,
-  );
+test("resolveRepoPath uses an existing portable root", (t) => {
+  const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "github-path-")));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  fs.mkdirSync(path.join(root, "repo"));
+  assert.equal(resolveRepoPath(path.join(root, "repo"), root), path.join(root, "repo"));
+  assert.throws(() => resolveRepoPath(root + "-other", root), /allowed root/i);
 });
 
 test("parseGitStatusPorcelain extracts staged, unstaged, and untracked files", () => {

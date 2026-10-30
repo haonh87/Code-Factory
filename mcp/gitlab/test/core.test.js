@@ -3,7 +3,27 @@ import assert from "node:assert/strict";
 import os from "node:os";
 import path from "node:path";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import cp from "node:child_process";
+import { syncBuiltinESMExports } from "node:module";
 import { spawn } from "node:child_process";
+
+// Isolate every fixture and core Git child from host config, credentials and network.
+const originalSpawn = cp.spawn;
+test.before(() => {
+  cp.spawn = (command, args, options = {}) => originalSpawn(command, args, {
+    ...options, timeout: 10000,
+    env: { PATH: process.env.PATH, SystemRoot: process.env.SystemRoot,
+      GIT_CONFIG_NOSYSTEM: "1", GIT_CONFIG_GLOBAL: os.devNull, GIT_ALLOW_PROTOCOL: "file",
+      GIT_TERMINAL_PROMPT: "0", GIT_CONFIG_COUNT: "2",
+      GIT_CONFIG_KEY_0: "core.hooksPath", GIT_CONFIG_VALUE_0: os.devNull,
+      GIT_CONFIG_KEY_1: "credential.helper", GIT_CONFIG_VALUE_1: "" },
+  });
+  syncBuiltinESMExports();
+});
+test.after(() => { cp.spawn = originalSpawn; syncBuiltinESMExports(); });
+function restoreEnv(key, value) {
+  if (value === undefined) delete process.env[key]; else process.env[key] = value;
+}
 
 import {
   inspectRepository,
@@ -93,13 +113,10 @@ async function createRemoteFixture(rootDir) {
   };
 }
 
-test("resolveRepoPath rejects repository outside allowed root", () => {
-  const allowedRoot = "D:\\workspace\\root";
-
-  assert.throws(
-    () => resolveRepoPath("D:\\workspace\\other\\repo", allowedRoot),
-    /allowed root/i,
-  );
+test("resolveRepoPath rejects a sibling of an existing root", async (t) => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "gitlab-path-"));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  assert.throws(() => resolveRepoPath(root + "-other", root), /allowed root/i);
 });
 
 test("parseGitLabRemote parses scp style ssh remotes", () => {
@@ -116,8 +133,8 @@ test("inspectRepository reports upstream and gitlab remote metadata", async (t) 
   const previousAllowedRoot = process.env.GITLAB_ALLOWED_ROOT;
   const previousHost = process.env.GITLAB_HOST;
   t.after(async () => {
-    process.env.GITLAB_ALLOWED_ROOT = previousAllowedRoot;
-    process.env.GITLAB_HOST = previousHost;
+    restoreEnv("GITLAB_ALLOWED_ROOT", previousAllowedRoot);
+    restoreEnv("GITLAB_HOST", previousHost);
     await rm(rootDir, { recursive: true, force: true });
   });
 
@@ -138,8 +155,8 @@ test("pullCurrentBranch rejects dirty working tree", async (t) => {
   const previousAllowedRoot = process.env.GITLAB_ALLOWED_ROOT;
   const previousHost = process.env.GITLAB_HOST;
   t.after(async () => {
-    process.env.GITLAB_ALLOWED_ROOT = previousAllowedRoot;
-    process.env.GITLAB_HOST = previousHost;
+    restoreEnv("GITLAB_ALLOWED_ROOT", previousAllowedRoot);
+    restoreEnv("GITLAB_HOST", previousHost);
     await rm(rootDir, { recursive: true, force: true });
   });
 
@@ -159,8 +176,8 @@ test("pullCurrentBranch rejects diverged branch when ff-only is impossible", asy
   const previousAllowedRoot = process.env.GITLAB_ALLOWED_ROOT;
   const previousHost = process.env.GITLAB_HOST;
   t.after(async () => {
-    process.env.GITLAB_ALLOWED_ROOT = previousAllowedRoot;
-    process.env.GITLAB_HOST = previousHost;
+    restoreEnv("GITLAB_ALLOWED_ROOT", previousAllowedRoot);
+    restoreEnv("GITLAB_HOST", previousHost);
     await rm(rootDir, { recursive: true, force: true });
   });
 
@@ -189,8 +206,8 @@ test("pushCurrentBranch rejects missing upstream", async (t) => {
   const previousAllowedRoot = process.env.GITLAB_ALLOWED_ROOT;
   const previousHost = process.env.GITLAB_HOST;
   t.after(async () => {
-    process.env.GITLAB_ALLOWED_ROOT = previousAllowedRoot;
-    process.env.GITLAB_HOST = previousHost;
+    restoreEnv("GITLAB_ALLOWED_ROOT", previousAllowedRoot);
+    restoreEnv("GITLAB_HOST", previousHost);
     await rm(rootDir, { recursive: true, force: true });
   });
 

@@ -1,0 +1,34 @@
+
+> @code-factory/gitlab-mcp@0.1.0 check
+> node --test && node --check src/core.js && node --check src/index.js
+
+✔ repository rejects sibling before Git launch (1.855458ms)
+✔ repository rejects traversal before Git launch (1.042375ms)
+✔ repository rejects escape before Git launch (1.268084ms)
+✔ repository rejects chain before Git launch (1.0925ms)
+✔ repository rejects cycle before Git launch (0.869084ms)
+✔ repository rejects dangling before Git launch (0.743167ms)
+✔ repository rejects file before Git launch (0.827292ms)
+✔ repository rejects missing before Git launch (0.648625ms)
+✔ repository rejects null before Git launch (0.643917ms)
+✔ repository rejects nul before Git launch (0.65325ms)
+✔ repository rejects object before Git launch (0.62525ms)
+✔ canonical root aliases, contained directory links and ..notes are accepted (4.239ms)
+✔ missing root and non-directory ancestor fail closed (0.919125ms)
+✔ permission/canonicalization failure has a bounded diagnostic (0.673208ms)
+✔ retargeted link is checked again on the next operation (2.1615ms)
+✔ file symlink outside cannot be used as a repository (0.822542ms)
+✔ resolveRepoPath rejects a sibling of an existing root (2.098167ms)
+✔ parseGitLabRemote parses scp style ssh remotes (0.174125ms)
+✔ inspectRepository reports upstream and gitlab remote metadata (256.07ms)
+✔ pullCurrentBranch rejects dirty working tree (260.595041ms)
+✔ pullCurrentBranch rejects diverged branch when ff-only is impossible (402.3905ms)
+✔ pushCurrentBranch rejects missing upstream (87.319958ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1053.098917

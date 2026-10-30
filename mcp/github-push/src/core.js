@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { promises as fs } from "node:fs";
+import { promises as fs, lstatSync, realpathSync, statSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
@@ -13,18 +13,51 @@ function normalizeGitPath(value) {
 
 function isPathInside(childPath, parentPath) {
   const relative = path.relative(parentPath, childPath);
-  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+  return relative === "" || (relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative));
+}
+
+// Administrative roots and filesystem writers are trusted. These checks are not
+// atomic confinement against a process concurrently replacing directories.
+function resolveRepositoryPath(value, configuredRoot, { allowMissing = false } = {}) {
+  try {
+    if (typeof configuredRoot !== "string" || !configuredRoot || configuredRoot.includes("\0")) throw new Error();
+    const root = path.resolve(configuredRoot);
+    const physicalRoot = realpathSync(root);
+    if (!statSync(physicalRoot).isDirectory()) throw new Error();
+    const input = value === undefined ? root : value;
+    if (typeof input !== "string" || !input || input.includes("\0")) throw new Error();
+    const candidate = path.resolve(input);
+    if (!isPathInside(candidate, root) && !isPathInside(candidate, physicalRoot)) throw new Error();
+
+    let ancestor = candidate;
+    const suffix = [];
+    for (;;) {
+      try {
+        // lstat distinguishes a dangling link from a genuinely missing suffix.
+        lstatSync(ancestor);
+        break;
+      } catch (error) {
+        if (!allowMissing || error.code !== "ENOENT") throw error;
+        const parent = path.dirname(ancestor);
+        if (parent === ancestor) throw error;
+        suffix.unshift(path.basename(ancestor));
+        ancestor = parent;
+      }
+    }
+    const physical = realpathSync(ancestor);
+    if (!isPathInside(physical, physicalRoot)) throw new Error();
+    if (!statSync(physical).isDirectory()) throw new Error();
+    const resolved = path.join(physical, ...suffix);
+    if (!isPathInside(resolved, physicalRoot)) throw new Error();
+    return resolved;
+  } catch {
+    // Do not leak OS error strings, rejected paths or transcript contents.
+    throw new Error("Repository path must resolve to a directory inside allowed root");
+  }
 }
 
 export function resolveRepoPath(repoPath, allowedRoot = getAllowedRoot()) {
-  const root = path.resolve(allowedRoot);
-  const candidate = path.resolve(repoPath ?? root);
-
-  if (!isPathInside(candidate, root)) {
-    throw new Error(`Repository path must stay inside allowed root: ${root}`);
-  }
-
-  return candidate;
+  return resolveRepositoryPath(repoPath, allowedRoot);
 }
 
 async function runCommand(command, args, options = {}) {
@@ -183,20 +216,25 @@ export async function ensureRepository(repoPath, options = {}) {
     initialBranch = "main",
   } = options;
 
-  const resolvedRepoPath = resolveRepoPath(repoPath);
-
-  if (await isGitRepository(resolvedRepoPath)) {
-    return {
-      repoPath: resolvedRepoPath,
-      initializedRepository: false,
-    };
+  let resolvedRepoPath = resolveRepositoryPath(repoPath, getAllowedRoot(), { allowMissing: initializeIfMissing });
+  let exists = true;
+  try {
+    lstatSync(resolvedRepoPath);
+  } catch (error) {
+    if (error.code !== "ENOENT") throw new Error("Cannot inspect repository inside allowed root");
+    exists = false;
   }
 
+  if (exists && await isGitRepository(resolvedRepoPath)) {
+    return { repoPath: resolvedRepoPath, initializedRepository: false };
+  }
   if (!initializeIfMissing) {
     throw new Error(`No Git repository found at ${resolvedRepoPath}`);
   }
 
+  resolvedRepoPath = resolveRepositoryPath(repoPath, getAllowedRoot(), { allowMissing: true });
   await fs.mkdir(resolvedRepoPath, { recursive: true });
+  resolvedRepoPath = resolveRepoPath(repoPath);
   await runGit(["init", "--initial-branch", initialBranch], resolvedRepoPath);
 
   return {
