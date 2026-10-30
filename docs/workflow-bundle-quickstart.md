@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: workflow-bundle-quickstart.vi.md
 
-This guide focuses on the `workflow-bundle v2.7.0` release candidate: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, resolve legacy workflow state by exact ID, bootstrap a new repo, and run the `agent proposes, human approves` flow. Registry installation remains unavailable until the human Release gate passes. The candidate retains 43 managed skills and preserves independent human authority for every applicable gate.
+This guide focuses on the `workflow-bundle v2.8.0` release candidate: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, resolve legacy workflow state by exact ID, bootstrap a new repo, and run the `agent proposes, human approves` flow. Install the GitHub Release asset; this operation does not publish to the npm registry. The release contains 48 managed skills and preserves independent human authority for every applicable gate.
 
 ## Objectives
 
@@ -37,10 +37,10 @@ npm -v
 
 ## Install The `wfc` CLI
 
-The standard way once the package is published:
+Download the tarball and SHA256SUMS from the v2.8.0 GitHub Release, verify the checksum, then install:
 
 ```bash
-npm install -g workflow-bundle
+npm install -g /absolute/path/to/workflow-bundle-2.8.0.tgz
 wfc help
 wfc version
 ```
@@ -49,7 +49,7 @@ If upgrading from the old `workflow-contracts` CLI:
 
 ```bash
 npm uninstall -g workflow-contracts
-npm install -g workflow-bundle
+npm install -g /absolute/path/to/workflow-bundle-2.8.0.tgz
 wfc version
 ```
 
@@ -399,7 +399,7 @@ npm run validate:workflow
 If you installed the published package:
 
 ```bash
-npm install -g workflow-bundle@latest
+npm install -g /absolute/path/to/workflow-bundle-2.8.0.tgz
 ```
 
 If you are using `npm link` from the source repo:
@@ -409,6 +409,15 @@ cd packages/workflow-bundle
 npm link
 ```
 
-### v2.7.0 Source And Package Boundary
+### v2.8.0 Source And Package Boundary
 
-The candidate retains v2.6.4 proposal recovery and adds the optional diagram-design-presentation-adapter. P-INSTALL containment fixes are in `adapters/codex/install-codex-workflow.sh` and `.ps1` in the Git tag/source archive; those direct installers are not in the npm tarball allowlist. The package retains 43 managed skills and the existing install surface. The immutable v2.6.4 fallback retains exact state disposition and signed history, including proposal recovery. A GitHub Release asset is an npm-format tarball; registry publication requires separate authorization. Review the complete delta in [the v2.7.0 release record](releases/workflow-bundle-v2.7.0.md).
+Version 2.8.0 adds five maintenance skills (`bug-triage`, `log-investigation`,
+`metric-correlation`, `root-cause-analysis`, `evidence-handoff`), bringing each
+Codex and Claude runtime to 48 skills. It also includes CF-023 current-host receipt
+binding validation. The Git tag/source archive contains SEC-01 legacy installer
+containment (already shipped in v2.7.0) and SEC-02 physical-root containment for
+`github-push`, `gitlab`, and `session-search` MCPs. Direct installers and MCP servers
+are outside the workflow npm tarball allowlist; update those from the tagged source.
+The existing optional presentation adapter remains available; PNG dependencies
+must be provisioned separately. See the v2.8.0 release record for verification,
+artifact checksums, limits, and rollback. npm registry publication is separate.

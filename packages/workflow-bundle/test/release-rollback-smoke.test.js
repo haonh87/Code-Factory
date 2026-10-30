@@ -10,11 +10,11 @@ const { execFileSync } = require("child_process");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
 const packageRoot = path.join(repoRoot, "packages", "workflow-bundle");
-const candidateVersion = "2.7.0";
+const candidateVersion = "2.8.0";
 const candidateSkillCount = 48;
-const rollbackVersion = "2.6.4";
-const rollbackSkillCount = 42;
-const retainedRollbackDigest = "9d7c5395ff5fb3ae2a64d26089a2c4c62122fb769a7cacd2e3bcea3f6fa35e84";
+const rollbackVersion = "2.7.0";
+const rollbackSkillCount = 43;
+const retainedRollbackDigest = "ecc194da5398b6b5ef321549600711bd4b96cf6f2621f0b95ca958547e5061ac";
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -126,11 +126,17 @@ function runRollbackTransition({ candidatePackageRoot, rollbackPackageRoot, temp
   assert(countSkills(path.join(runtimeHome,'skills'))===rollbackSkillCount,'Start from exact published baseline');
   execFileSync(process.execPath,[candidateBin,'update','--mode',mode,homeFlag,runtimeHome],{cwd:candidatePackageRoot,stdio:'pipe'});
   assert(countSkills(path.join(runtimeHome,'skills'))===rollbackSkillCount,'Update preserves existing selected skills');
-  for(const action of ['add','remove','add']){
-    execFileSync(process.execPath,[candidateBin,'skills',action,'--mode',mode,homeFlag,runtimeHome,'--skill','diagram-design-presentation-adapter'],{cwd:candidatePackageRoot,stdio:'pipe'});
-    assert(fs.existsSync(path.join(runtimeHome,'skills','diagram-design-presentation-adapter'))===(action==='add'),'Explicit adapter enable/disable');
-    assert(countSkills(path.join(runtimeHome,'skills'))===(action==='add'?candidateSkillCount:rollbackSkillCount),'Enable/disable inventory');
+  const addedSkills = ['bug-triage', 'log-investigation', 'metric-correlation', 'root-cause-analysis', 'evidence-handoff'];
+  let selectedCount = rollbackSkillCount;
+  for (const action of ['add', 'remove', 'add']) {
+    for (const skill of addedSkills) {
+      execFileSync(process.execPath, [candidateBin, 'skills', action, '--mode', mode, homeFlag, runtimeHome, '--skill', skill], {cwd: candidatePackageRoot, stdio: 'pipe'});
+      selectedCount += action === 'add' ? 1 : -1;
+      assert(fs.existsSync(path.join(runtimeHome, 'skills', skill)) === (action === 'add'), `Explicit ${skill} enable/disable`);
+      assert(countSkills(path.join(runtimeHome, 'skills')) === selectedCount, 'Enable/disable inventory');
+    }
   }
+
 
   execFileSync(process.execPath, [path.join(candidatePackageRoot, "bin", "wfc.js"), ...installArgs], {
     cwd: candidatePackageRoot,
@@ -194,7 +200,10 @@ function runRollbackTransition({ candidatePackageRoot, rollbackPackageRoot, temp
     `${mode}/${scope}: rollback must retain the v2.6.3 adaptive-governance runtime`
   );
   assert(fs.readFileSync(path.join(rollbackPackageRoot, "scripts", "materialize-work-item.js"), "utf8").includes("resume-proposal"), `${mode}/${scope}: rollback must retain 2.6.4 proposal recovery`);
-  assert(!fs.existsSync(path.join(runtimeHome,"skills","diagram-design-presentation-adapter")), `${mode}/${scope}: rollback must remove the optional adapter`);
+  assert(fs.existsSync(path.join(runtimeHome, 'skills', 'diagram-design-presentation-adapter')), `${mode}/${scope}: rollback retains the v2.7.0 adapter`);
+  for (const skill of addedSkills) {
+    assert(!fs.existsSync(path.join(runtimeHome, 'skills', skill)), `${mode}/${scope}: rollback must remove ${skill}`);
+  }
   const rollbackProtocol = fs.readFileSync(path.join(rollbackPackageRoot, "scripts", "work-item-protocol.js"), "utf8");
   const rollbackProtocolUtils = fs.readFileSync(path.join(rollbackPackageRoot, "scripts", "work-item-protocol-utils.js"), "utf8");
   assert(rollbackProtocol.includes('"dispose-state"'), `${mode}/${scope}: rollback must retain v2.6.3 exact state disposition`);

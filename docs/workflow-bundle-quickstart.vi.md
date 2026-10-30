@@ -6,7 +6,7 @@ language: vi
 
 > Tiếng Anh / English: workflow-bundle-quickstart.md
 
-Hướng dẫn này tập trung vào ứng viên phát hành `workflow-bundle v2.7.0`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, định tuyến request bằng adaptive governance, xử lý workflow state cũ theo ID chính xác, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Không thể cài từ registry cho tới khi human Release gate phê duyệt. Candidate có 43 managed skill và giữ nguyên thẩm quyền độc lập của human cho từng gate áp dụng.
+Hướng dẫn này tập trung vào ứng viên phát hành `workflow-bundle v2.8.0`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, định tuyến request bằng adaptive governance, xử lý workflow state cũ theo ID chính xác, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Cài từ tarball GitHub Release đã xác minh checksum; đợt này không publish npm registry. Candidate có 48 managed skill và giữ nguyên thẩm quyền độc lập của human cho từng gate áp dụng.
 
 ## Mục Tiêu
 
@@ -40,7 +40,7 @@ npm -v
 Cách chuẩn sau khi package đã publish:
 
 ```bash
-npm install -g workflow-bundle
+npm install -g /absolute/path/to/workflow-bundle-2.8.0.tgz
 wfc help
 wfc version
 ```
@@ -49,7 +49,7 @@ Nếu đang nâng từ CLI cũ `workflow-contracts`:
 
 ```bash
 npm uninstall -g workflow-contracts
-npm install -g workflow-bundle
+npm install -g /absolute/path/to/workflow-bundle-2.8.0.tgz
 wfc version
 ```
 
@@ -399,7 +399,7 @@ npm run validate:workflow
 Nếu đã cài package publish:
 
 ```bash
-npm install -g workflow-bundle@latest
+npm install -g /absolute/path/to/workflow-bundle-2.8.0.tgz
 ```
 
 Nếu đang dùng `npm link` từ source repo:
@@ -409,6 +409,10 @@ cd packages/workflow-bundle
 npm link
 ```
 
-### Phạm Vi Source Và Package v2.7.0
+### Phạm Vi Source Và Package v2.8.0
 
-Candidate giữ recovery cho proposal đã lưu từ v2.6.4 và thêm diagram-design-presentation-adapter tùy chọn. P-INSTALL nằm trong hai installer trực tiếp `adapters/codex/install-codex-workflow.sh` và `.ps1` của Git tag/source archive; hai file này không nằm trong allowlist npm tarball. Package có 43 skill. Fallback v2.6.4 bất biến giữ state disposition và lịch sử có chữ ký bao gồm proposal recovery. Tarball trên GitHub Release không đồng nghĩa đã publish npm registry; registry cần được cho phép riêng.
+Bản 2.8.0 giữ proposal recovery và diagram-design-presentation-adapter, thêm năm skill bảo trì và CF-023, tổng cộng 48 skill. SEC-01/SEC-02 nằm trong Git tag/source archive; installer trực tiếp và MCP không nằm trong tarball workflow. Fallback workflow là 2.7.0/43. Xem release record để biết checksum và kết quả publication.
+
+## Cập nhật phát hành 2.8.0
+
+Bản 2.8.0 có 48 skill cho mỗi runtime Codex/Claude, thêm năm skill bảo trì và sửa CF-023. SEC-01 đã có từ 2.7.0; SEC-02 được đưa vào source Git của bản này. MCP và installer trực tiếp không nằm trong tarball workflow. Tải tarball cùng SHA256SUMS trên GitHub Release; không mặc định gói đã có trên npm registry. Trạng thái phát hành và bằng chứng nằm trong `docs/releases/workflow-bundle-v2.8.0.md`. Bản dự phòng workflow là 2.7.0/43.

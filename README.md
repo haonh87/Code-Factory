@@ -6,9 +6,9 @@ language: en
 
 > Vietnamese: README.vi.md
 
-This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.7.0`: an installable workflow bundle for Codex and Claude Code with adaptive request routing, applicable-only roles and gates, journaled approval bundles, privacy-bounded local telemetry, exact ID-based state disposition and terminal archive guards. Human authority is unchanged: every applicable gate still needs its authorized reviewer and independent trusted receipt. The candidate remains unpublished until the human Release gate passes.
+This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.8.0`: an installable workflow bundle for Codex and Claude Code with adaptive request routing, applicable-only roles and gates, journaled approval bundles, privacy-bounded local telemetry, exact ID-based state disposition and terminal archive guards. Human authority is unchanged: every applicable gate still needs its authorized reviewer and independent trusted receipt. The maintainer authorized this release; publication status and exact artifacts are recorded in the release record.
 
-Until that gate passes, use the candidate source commit and the SHA-256 produced by Workflow Guardrails as the release-candidate references. Guardrails packs once and verifies that same artifact on Node 18 and Node 22; it does not rebuild per environment. Create and share the `v2.7.0` tag only after Release approval. The verified rollback baseline is the immutable `v2.6.4/42` release.
+The release artifact is `workflow-bundle-2.8.0.tgz` with `SHA256SUMS` on GitHub Releases. Verify its checksum before installation. The immutable `v2.7.0/43` release is the workflow-package rollback baseline. See [the release record](docs/releases/workflow-bundle-v2.8.0.md) for the publication outcome and verification.
 
 > Looking for the community-facing English overview? See [`docs/release/community-pack-readme.md`](docs/release/community-pack-readme.md) (Vietnamese: [`docs/release/community-pack-readme.vi.md`](docs/release/community-pack-readme.vi.md)).
 
@@ -22,7 +22,7 @@ Until that gate passes, use the candidate source commit and the SHA-256 produced
 
 ## Start Here
 
-If you are approaching the repo for the first time and want to review the `v2.7.0` release candidate:
+If you are approaching the repo for the first time and want to review the `v2.8.0` release candidate:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -40,7 +40,7 @@ The documents below are maintainer or historical context and should not be used 
 
 ## Quick Workflow Commands
 
-The public command surface of `v2.7.0` uses `wfc`.
+The public command surface of `v2.8.0` uses `wfc`.
 
 Install and manage the workflow bundle:
 
@@ -105,7 +105,7 @@ Notes:
 - The first approval in a trusted approval root creates an approver keypair and requires the human to enter an approval passphrase directly in that TTY.
 - The implementation path is locked at the filesystem level until the work item reaches `ACTIVE` at `s07` and is granted a `write-root`.
 - `work-items/` is the canonical artifact root for the repo's workflow artifacts.
-- The approval model of `v2.7.0` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
+- The approval model of `v2.8.0` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
 
 ## Adaptive Governance Contract
 
@@ -128,7 +128,7 @@ Notes:
 ### By Purpose
 
 - Public docs for newcomers to the workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface for `v2.7.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface for `v2.8.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart for `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README for installation or publishing: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 
@@ -321,7 +321,7 @@ Notes:
 Once the package is published, install directly:
 
 ```bash
-npm install -g workflow-bundle
+npm install -g /absolute/path/to/workflow-bundle-2.8.0.tgz
 wfc install --mode codex --scope global
 ```
 
@@ -462,12 +462,15 @@ Operational notes:
 - When adding a new skill, check that the skill name is unique across the repo to avoid overwrites during a global install.
 
 
-## Optional Architecture Presentation Candidate
+## Version 2.8.0 Release Scope
 
-The unpublished v2.7.0 candidate adds `diagram-design-presentation-adapter` to the
-43 managed skills. SA/TA record intent; architecture-modeling retains canonical
-ownership. The adapter emits a separate validated offline HTML/SVG/PNG set with
-pinned upstream resources. Python/Playwright/Chromium must be provisioned separately.
-The current source includes post-v2.6.4 CI and fixture-isolation maintenance; this does
-not claim byte identity with the published v2.6.4 rollback artifact. Reader review,
-DoD, Release and Business Acceptance remain pending. See the v2.7.0 release record.
+Version 2.8.0 adds five maintenance skills (`bug-triage`, `log-investigation`,
+`metric-correlation`, `root-cause-analysis`, `evidence-handoff`), bringing each
+Codex and Claude runtime to 48 skills. It also includes CF-023 current-host receipt
+binding validation. The Git tag/source archive contains SEC-01 legacy installer
+containment (already shipped in v2.7.0) and SEC-02 physical-root containment for
+`github-push`, `gitlab`, and `session-search` MCPs. Direct installers and MCP servers
+are outside the workflow npm tarball allowlist; update those from the tagged source.
+The existing optional presentation adapter remains available; PNG dependencies
+must be provisioned separately. See the v2.8.0 release record for verification,
+artifact checksums, limits, and rollback. npm registry publication is separate.

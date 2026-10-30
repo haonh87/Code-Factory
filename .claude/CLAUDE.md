@@ -1,9 +1,9 @@
 # Code-Factory - Project Context
 
 Repository: AI Agent Ops - policy, workflow, skill and adapter for AI agent tasks.
-Public release: `workflow-bundle v2.6.4`.
-Prepared candidate: `workflow-bundle v2.7.0` (`UNPUBLISHED`; human Release gate pending).
-Candidate baseline and rollback: immutable `v2.6.4/42`; do not tag, publish, or mutate live global installs from candidate evidence alone.
+Release target: `workflow-bundle v2.8.0` (48 skills per harness).
+Publication is authorized by the maintainer; see `docs/releases/workflow-bundle-v2.8.0.md` for the verified outcome.
+Workflow rollback: immutable `v2.7.0/43`. MCP source fixes are delivered through the Git tag, not the workflow tarball.
 
 ## Commands
 
