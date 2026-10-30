@@ -246,3 +246,75 @@ if (failures > 0) {
 }
 
 console.log("OK: workflow-gate-evidence-utils.test.js passed");
+
+// Opt-in task contract compatibility; keep every legacy resolver regression above.
+(() => {
+const assert = require('assert');
+const fs = require('fs');
+const { fixture } = require('./validate-workflow-planning.test');
+const { getFinalizedStepSemanticEvidenceErrors, getMissingGateEvidenceErrors, resolveArtifactReference } = require('../scripts/workflow-gate-evidence-utils');
+const { getArtifactOwnershipDuplicationErrors } = require('../scripts/validate-workflow-governance');
+const { validateWorkflowSdd } = require('../scripts/validate-workflow-sdd');
+const failures = [];
+let count = 0;
+function check(name, run) {
+  const f = fixture();
+  try { run(f); count++; } catch (e) { failures.push(`${name}: ${e.message}`); }
+  finally { fs.rmSync(f.root, { recursive: true, force: true }); }
+}
+function semantic(f, content = f.render(), sddMode = 'none') {
+  fs.writeFileSync(f.file, content);
+  return getFinalizedStepSemanticEvidenceErrors({ stepId: 's06', filePath: f.file, content, projectRoot: f.root, sddMode });
+}
+function resolve(f, fragment) { return resolveArtifactReference({projectRoot:f.root,currentFile:f.file,reference:fragment}); }
+check('v1 semantic readiness', f => assert.deepStrictEqual(semantic(f), []));
+check('Light uses the same JSON trace owner', f => assert.deepStrictEqual(semantic(f, f.render(), 'light'), []));
+check('exact task lookup', f => { fs.writeFileSync(f.file,f.render()); assert.strictEqual(resolve(f,'#Main Artifact.task_breakdown[T1].id').value,'T1'); });
+check('trace lookup', f => { fs.writeFileSync(f.file,f.render()); assert.deepStrictEqual(resolve(f,'#Traceability.acceptance_refs').value,['AC-001']); });
+check('legacy semantics unchanged', f => { f.version=undefined; assert.deepStrictEqual(semantic(f, f.render().replace(/## Main Artifact[\s\S]*/, '## Main Artifact\n```yaml\ntask_breakdown:\n  - id: T1\n    verification_hint: Run event regression\n```\n')),[]); assert.strictEqual(resolve(f,'#Main Artifact.task_breakdown[T1].id').value,'T1'); });
+for (const [name, edit, pattern] of [
+ ['unknown version', s=>s.replace('task_contract_version: 1','task_contract_version: 9'),/task_contract_version/],
+ ['duplicate key', s=>s.replace('"id": "T1",','"id": "T1", "id": "T9",'),/duplicate/],
+ ['duplicate heading', s=>s+'\n## Main Artifact\n```json\n{}\n```',/owner/],
+ ['malformed JSON', s=>s.replace('"implementation_goal":','"implementation_goal"'),/JSON/]
+]) {
+ check(`${name} semantic rejects`, f=>assert.match(semantic(f,edit(f.render())).join('\n'),pattern));
+ check(`${name} reference rejects without fallback`, f=>{fs.writeFileSync(f.file,edit(f.render())); assert.throws(()=>resolve(f,'#Main Artifact.task_breakdown[T1].id'),pattern);});
+}
+check('governance catches duplicated JSON path map', f=>{
+ f.main.dev_lane={path_map:['src/events.js']}; const content=f.render(); fs.writeFileSync(f.file,content);
+ assert.match(getArtifactOwnershipDuplicationErrors({filePath:f.file,content,projectRoot:f.root}).join('\n'),/Duplicate task paths/);
+});
+check('SDD validates opted-in mapping even with sdd_mode none', f=>{
+ f.trace.task_refs[0].task_ids=['T9']; fs.writeFileSync(f.file,f.render());
+ assert.match(validateWorkflowSdd({workflowRoot:f.dir,projectRoot:f.root}).errors.join('\n'),/T9/);
+});
+check('default-profile gate rejects invalid v1', f=>{
+ f.main.task_breakdown=[];
+ const errors=getMissingGateEvidenceErrors({exists:true,frontmatterLines:[],status:'reviewed',roleSignoffs:{},gateReviews:{},governanceProfile:'default',filePath:f.file,content:f.render()}, [], {stepId:'s06',projectRoot:f.root});
+ assert.match(errors.join('\n'),/task_breakdown/);
+});
+check('reference missing task is explicit', f=>{fs.writeFileSync(f.file,f.render());assert.throws(()=>resolve(f,'#Main Artifact.task_breakdown[T9].id'),e=>e.code==='ARTIFACT_REFERENCE_PATH_MISSING');});
+for (const mode of ['light', 'strict']) check(`SDD ${mode} integration uses JSON Traceability`, f => {
+  const path = require('path');
+  const spec = path.join(f.root, 'product-specs/spec.md');
+  let content = f.render().replace('planning_track: full', `planning_track: full\nsdd_mode: ${mode}\nspec_status: approved`);
+  if (mode === 'light') {
+    fs.writeFileSync(spec, ['---','spec_type: SPEC_CARD','spec_status: approved','spec_version: "1.0"','---',
+      '## Requirements','```yaml','requirements:','  - id: REQ-001','    provenance: BASELINE','    cr_required: false','```',
+      '## Acceptance Criteria','```yaml','acceptance_criteria:','  - id: AC-001','    requirement: REQ-001','```',
+      '## Spec Freeze','```yaml','status: FROZEN','authority: ba','decided_at: "2026-10-30"','```'].join('\n'));
+    content = content.replace('  srs:', '  card:');
+  } else {
+    fs.writeFileSync(spec, fs.readFileSync(spec,'utf8').replace('spec_type: SRS', 'spec_type: SRS\nspec_status: approved') + '\nSRS-FR-001\n');
+    fs.writeFileSync(path.join(f.root,'product-specs/brd.md'), '---\nspec_type: BRD\nspec_status: approved\n---\nBRD-001\n');
+    content = content.replace('spec_refs:', 'spec_refs:\n  brd: product-specs/brd.md');
+  }
+  fs.writeFileSync(f.file,content);
+  const result=validateWorkflowSdd({workflowRoot:f.dir,projectRoot:f.root});
+  assert.deepStrictEqual(result.errors,[]);
+});
+assert.deepStrictEqual(failures, [], failures.join('\n'));
+console.log(`OK: ${count} versioned reader and legacy compatibility cases passed`);
+
+})();

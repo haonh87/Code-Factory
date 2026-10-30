@@ -1,3 +1,4 @@
+const { readTaskContract } = require("./validate-workflow-planning");
 const path = require("path");
 const fs = require("fs");
 const {
@@ -185,9 +186,12 @@ function getArtifactOwnershipDuplicationErrors({ filePath, content, projectRoot 
   if (!artifactSection) return [];
   const errors = [];
 
+  let contract;
+  try { contract = readTaskContract({ content, filePath }); }
+  catch (error) { return [error.message]; }
   ARTIFACT_OWNERSHIP_RULES.forEach((rule) => {
     const leafKey = rule.duplicatePath.split(".").pop();
-    if (!new RegExp(`^\\s*${escapeRegExp(leafKey)}:\\s*`, "m").test(artifactSection)) {
+    if (!contract && !new RegExp(`^\\s*${escapeRegExp(leafKey)}:\\s*`, "m").test(artifactSection)) {
       return;
     }
     try {
@@ -670,6 +674,7 @@ function validateWorkflowGovernance(options) {
         errors.push(
           ...getFinalizedStepSemanticEvidenceErrors({
             stepId,
+            projectRoot,
             content,
             filePath,
             sddMode,

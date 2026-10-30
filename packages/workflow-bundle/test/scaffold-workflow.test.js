@@ -128,6 +128,7 @@ function testCompactScaffold() {
   assert(/## Business Goal/.test(s01), "s01 must host ## Business Goal (s02) for light");
   assert(/## Open Questions/.test(s01), "s01 must host ## Open Questions (s03) for light");
   const s06 = readNote(workflowRoot, "light-compact-item", "s06", STEP_SLUGS.s06);
+  assert(!/^task_contract_version:/m.test(s06), "Light scaffold must remain legacy unless explicitly authored as v1");
   assert(/## Option Analysis/.test(s06), "s06 must host ## Option Analysis (s05) for light");
   assert(/## Technical Approach/.test(s06), "s06 must host ## Technical Approach (s05) for light");
   assert(/## Brownfield Impact Analysis/.test(s06), "s06 must host ## Brownfield Impact Analysis for brownfield light");
@@ -207,6 +208,7 @@ function testNonLightStillScaffoldsAll() {
   scaffoldWorkflowNotes({ args });
   const mdFiles = fs.readdirSync(workflowRoot).filter((f) => f.endsWith(".md")).sort();
   assert(mdFiles.length === 8, `non-light should scaffold 8 notes, got ${mdFiles.length}`);
+  assert(!/^task_contract_version:/m.test(readNote(workflowRoot, "full-item", "s06", STEP_SLUGS.s06)), "full scaffold must remain legacy");
   // Non-light must use brd/srs, not card.
   const s01 = readNote(workflowRoot, "full-item", "s01", STEP_SLUGS.s01);
   assert(/^\s{2}brd:\s*""$/m.test(s01), "non-light s01 must emit brd");

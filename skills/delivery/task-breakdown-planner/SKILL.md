@@ -134,3 +134,89 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 - `task_breakdown` is clear enough for implementation to start safely.
 - `verification_plan` and `risk_notes` exist.
 - `notes_for_implementation` is enough that the implement step does not have to re-infer the design.
+
+## Opt-in Task Contract v1
+
+Legacy YAML remains the default. To opt an s06 note (including Light) into v1,
+set the integer `task_contract_version: 1` in frontmatter; a quoted string or any
+other explicit value is invalid. Replace its task and trace payloads together:
+`## Main Artifact` owns one JSON object and `## Traceability` owns one JSON object.
+Do not keep an authoritative YAML duplicate. Other step blocks and gates remain.
+
+Keep every task's existing fields; add `kind` (`behavior`, `documentation`, or
+`verification`) and `verification` with `cwd`, `argv`, and `test_refs`. Declare
+explicit repository-relative files, including planned files, without directory,
+glob, traversal or symlink-escape grants. Dependencies must resolve within the
+plan, be unique, exclude self and form an acyclic graph.
+
+Every behavior task names at least one test file in its own `paths_in_scope`.
+For other kinds, explain an empty test list in `verification_hint`. Use concrete
+outputs, objectives and review checkpoints. `argv` is a token array, never a shell
+command string; shell `-c` equivalents and standalone control operators are invalid.
+The validator never executes these tokens or grants permission to run them.
+
+Declare changed AC IDs in `acceptance_refs`; resolve them exactly in the existing
+`spec_refs.card` or `spec_refs.srs`. Each has one mapping to nonempty valid task IDs.
+The human reviewer still checks whether the changed-AC set and task classification
+are complete and whether the proposed tests actually establish the behavior.
+
+The following paired payloads illustrate one owner each; the referenced AC must
+exist in the project's owning specification. They are not additional artifacts.
+
+Main Artifact payload:
+```json
+{
+  "implementation_goal": "Preserve the first accepted event for duplicate IDs",
+  "task_breakdown": [
+    {
+      "id": "T1",
+      "owner_role": "developer",
+      "name": "Reject duplicate events",
+      "objective": "Preserve the first accepted event",
+      "kind": "behavior",
+      "paths_in_scope": [
+        "src/events.js",
+        "test/events.test.js"
+      ],
+      "dependencies": [],
+      "outputs_expected": [
+        "Duplicate event regression passes"
+      ],
+      "review_checkpoint": "Review AC-001 then code quality",
+      "verification_hint": "Run the duplicate-event regression",
+      "verification": {
+        "cwd": ".",
+        "argv": [
+          "node",
+          "test/events.test.js"
+        ],
+        "test_refs": [
+          "test/events.test.js"
+        ]
+      }
+    }
+  ]
+}
+```
+
+Traceability payload:
+```json
+{
+  "acceptance_refs": [
+    "AC-001"
+  ],
+  "task_refs": [
+    {
+      "acceptance_ref": "AC-001",
+      "task_ids": [
+        "T1"
+      ]
+    }
+  ]
+}
+```
+
+Run `wfc plan --workflow-root work-items --project-root .` and the applicable SDD
+and governance checks with the same project root. Older readers cannot consume v1;
+retain the legacy authoring path for rollback and never silently downgrade a signed
+v1 note. Malformed JSON, duplicate decoded keys/owners and wrong field types fail.

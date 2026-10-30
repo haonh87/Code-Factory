@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { readTaskContract, validateTaskContract } = require("./validate-workflow-planning");
 const path = require("path");
 const { execFileSync } = require("child_process");
 const {
@@ -291,7 +292,15 @@ function resolveArtifactReference({ projectRoot, currentFile, reference }) {
     );
   }
 
-  const lines = readUtf8(artifactPath).split(/\r?\n/);
+  const artifactContent = readUtf8(artifactPath);
+  const contract = readTaskContract({ content: artifactContent, filePath: artifactPath });
+  if (contract && ['Main Artifact', 'Traceability'].includes(heading)) {
+    const errors = validateTaskContract({ content: artifactContent, filePath: artifactPath, projectRoot: root });
+    if (errors.length) throw artifactReferenceError('TASK_CONTRACT_INVALID', errors.join('\n'));
+    return { artifactPath, heading, dottedPath,
+      value: resolveArtifactYamlPath(heading === 'Main Artifact' ? contract.main : contract.trace, dottedPath, rawReference) };
+  }
+  const lines = artifactContent.split(/\r?\n/);
   const headingLine = `## ${heading}`;
   const headingIndex = lines.findIndex((line) => line.trim() === headingLine);
   if (headingIndex < 0) {
@@ -724,7 +733,8 @@ function getFinalizedStepSemanticEvidenceErrors({
   filePath,
   sddMode = "none",
   deliveryContext = "brownfield",
-  requireReady = false
+  requireReady = false,
+  projectRoot = process.cwd()
 }) {
   const errors = [];
 
@@ -770,6 +780,10 @@ function getFinalizedStepSemanticEvidenceErrors({
   }
 
   if (stepId === "s06") {
+    try {
+      if (readTaskContract({ content, filePath }))
+        return validateTaskContract({ content, filePath, projectRoot });
+    } catch (error) { return [error.message]; }
     const artifactSection = getArtifactSection(content);
     const taskKey = /(?:^|\n)\s*task_breakdown:\s*/.test(artifactSection) ? "task_breakdown" : "tasks";
     const taskBlocks = getYamlListItemBlocks(artifactSection, taskKey);
@@ -1036,10 +1050,13 @@ function getMissingGateEvidenceErrors(snapshot, requiredKeys, context = {}) {
 
   // Semantic enforcement is mandatory for strict/regulated transitions. Default
   // remains backward-compatible with already-finalized legacy notes.
-  if (context.stepId && ["strict", "regulated"].includes(snapshot.governanceProfile)) {
+  const versionedTaskHost = context.stepId === 's06' &&
+    /^(?:task_contract_version|"task_contract_version"|'task_contract_version')\s*:/m.test(snapshot.content);
+  if (context.stepId && (versionedTaskHost || ["strict", "regulated"].includes(snapshot.governanceProfile))) {
     errors.push(
       ...getFinalizedStepSemanticEvidenceErrors({
         stepId: context.stepId,
+        projectRoot: context.projectRoot,
         content: snapshot.content,
         filePath: snapshot.filePath,
         sddMode: context.sddMode || snapshot.sddMode,
