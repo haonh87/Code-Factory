@@ -1,6 +1,9 @@
 # Workflow Bundle v2.9.0
 
-Status: authorized release candidate; local verification passed, hosted verification and publication pending.
+Status: **PUBLISHED on GitHub** at `2026-10-31T14:59:04Z`.
+[GitHub Release v2.9.0](https://github.com/haonh87/Code-Factory/releases/tag/v2.9.0).
+The release is neither draft nor prerelease.
+Tag commit: `864e7a6cf51de0ced1132fddb6e3a83cf9a2f28e`, merged via [PR #19](https://github.com/haonh87/Code-Factory/pull/19).
 
 ## Release Scope
 
@@ -42,7 +45,7 @@ Node 18/22: [run 41176484587](https://github.com/haonh87/Code-Factory/actions/ru
 The release candidate is prepared in an isolated in-repository worktree. The
 publish boundary requires all unit/regression checks, pack audit, six validator
 lanes, authoring smoke, exact package install/update and rollback rehearsal.
-Candidate identity and hosted release results will be recorded before publication.
+[Release Guardrails run 41212092460](https://github.com/haonh87/Code-Factory/actions/runs/41212092460) passed all ten jobs, including Node 18/22. All 945 package file contents and modes match the CI candidate (SHA-256 `6905add68a6f4a9a09072a20890a4b5001a89b49730732b4ab3d24d189b00971`). Archive bytes differ; the original locally verified tarball is published unchanged.
 
 ## Known Limitations
 
@@ -103,5 +106,18 @@ checks:
 findings: []
 overall_status: PASS
 follow_up_actions: []
-notes: "Hosted Node 18/22 and publication checks remain distinct release operations."
+notes: "Hosted Node 18/22 passed; published-asset identity and all four install/update scenarios passed."
 ```
+
+## Publication Verification
+
+The release assets were downloaded again. The tarball matches the frozen SHA-256
+and 1,635,673-byte size; `SHA256SUMS` matches the original bytes. The downloaded
+tarball passed all four isolated Codex/Claude global/project install/update
+scenarios, including unmanaged-content preservation. No live harness was changed.
+
+[Post-merge Guardrails run 41212362446](https://github.com/haonh87/Code-Factory/actions/runs/41212362446)
+also passed on main merge commit `d140b5401c1acc74037374add22bcd4793768601`.
+Its source tree is identical to the tagged, pre-merge verified commit.
+The immutable GitHub assets and these hosted runs are durable evidence;
+local temporary preparation logs are not a permanent evidence store.
