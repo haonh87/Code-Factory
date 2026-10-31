@@ -6,9 +6,9 @@ language: en
 
 > Vietnamese: README.vi.md
 
-This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.8.0`: an installable workflow bundle for Codex and Claude Code with adaptive request routing, applicable-only roles and gates, journaled approval bundles, privacy-bounded local telemetry, exact ID-based state disposition and terminal archive guards. Human authority is unchanged: every applicable gate still needs its authorized reviewer and independent trusted receipt. The maintainer authorized this release; publication status and exact artifacts are recorded in the release record.
+This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.9.0`: an installable workflow bundle for Codex and Claude Code with adaptive request routing, applicable-only roles and gates, journaled approval bundles, privacy-bounded local telemetry, exact ID-based state disposition and terminal archive guards. Human authority is unchanged: every applicable gate still needs its authorized reviewer and independent trusted receipt. The maintainer authorized this release; publication status and exact artifacts are recorded in the release record.
 
-The release artifact is `workflow-bundle-2.8.0.tgz` with `SHA256SUMS` on GitHub Releases. Verify its checksum before installation. The immutable `v2.7.0/43` release is the workflow-package rollback baseline. See [the release record](docs/releases/workflow-bundle-v2.8.0.md) for the publication outcome and verification.
+The release artifact is `workflow-bundle-2.9.0.tgz` with `SHA256SUMS` on GitHub Releases. Verify its checksum before installation. The immutable `v2.8.0/48` release is the workflow-package rollback baseline. See [the release record](docs/releases/workflow-bundle-v2.9.0.md) for the publication outcome and verification.
 
 > Looking for the community-facing English overview? See [`docs/release/community-pack-readme.md`](docs/release/community-pack-readme.md) (Vietnamese: [`docs/release/community-pack-readme.vi.md`](docs/release/community-pack-readme.vi.md)).
 
@@ -22,7 +22,7 @@ The release artifact is `workflow-bundle-2.8.0.tgz` with `SHA256SUMS` on GitHub 
 
 ## Start Here
 
-If you are approaching the repo for the first time and want to review the `v2.8.0` release candidate:
+If you are approaching the repo for the first time and want to review the `v2.9.0` release candidate:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -40,7 +40,7 @@ The documents below are maintainer or historical context and should not be used 
 
 ## Quick Workflow Commands
 
-The public command surface of `v2.8.0` uses `wfc`.
+The public command surface of `v2.9.0` uses `wfc`.
 
 Install and manage the workflow bundle:
 
@@ -105,7 +105,7 @@ Notes:
 - The first approval in a trusted approval root creates an approver keypair and requires the human to enter an approval passphrase directly in that TTY.
 - The implementation path is locked at the filesystem level until the work item reaches `ACTIVE` at `s07` and is granted a `write-root`.
 - `work-items/` is the canonical artifact root for the repo's workflow artifacts.
-- The approval model of `v2.8.0` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
+- The approval model of `v2.9.0` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
 
 ## Adaptive Governance Contract
 
@@ -128,7 +128,7 @@ Notes:
 ### By Purpose
 
 - Public docs for newcomers to the workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface for `v2.8.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface for `v2.9.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart for `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README for installation or publishing: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 
@@ -321,7 +321,7 @@ Notes:
 Once the package is published, install directly:
 
 ```bash
-npm install -g /absolute/path/to/workflow-bundle-2.8.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.9.0.tgz
 wfc install --mode codex --scope global
 ```
 
@@ -462,15 +462,16 @@ Operational notes:
 - When adding a new skill, check that the skill name is unique across the repo to avoid overwrites during a global install.
 
 
-## Version 2.8.0 Release Scope
+## Version 2.9.0 Release Scope
 
-Version 2.8.0 adds five maintenance skills (`bug-triage`, `log-investigation`,
-`metric-correlation`, `root-cause-analysis`, `evidence-handoff`), bringing each
-Codex and Claude runtime to 48 skills. It also includes CF-023 current-host receipt
-binding validation. The Git tag/source archive contains SEC-01 legacy installer
-containment (already shipped in v2.7.0) and SEC-02 physical-root containment for
-`github-push`, `gitlab`, and `session-search` MCPs. Direct installers and MCP servers
-are outside the workflow npm tarball allowlist; update those from the tagged source.
-The existing optional presentation adapter remains available; PNG dependencies
-must be provisioned separately. See the v2.8.0 release record for verification,
-artifact checksums, limits, and rollback. npm registry publication is separate.
+Version 2.9.0 adds optional scenario guidance (A1) and opt-in integer
+`task_contract_version: 1` (A2). The JSON task contract validates task IDs,
+dependencies, bounded file paths, structured verification commands and exact
+acceptance-criteria coverage. Validation never executes the recorded commands.
+Legacy YAML authoring and default scaffolds remain supported; human gates are unchanged.
+Codex and Claude retain 48 skills, including the five maintenance skills and
+`diagram-design-presentation-adapter` from earlier releases, plus CF-023 validation.
+SEC-01 and SEC-02 remain in tagged source; direct installers and MCP servers are
+outside the workflow tarball. Optional PNG dependencies are provisioned separately.
+See the v2.9.0 release record for checksum, verification, limits and rollback.
+npm registry publication is separate.

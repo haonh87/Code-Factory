@@ -6,7 +6,7 @@ const path = require("path");
 const { runHardenedUpdateMatrix } = require("../scripts/run-workflow-bundle-smoke");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
-const expectedVersion = "2.8.0";
+const expectedVersion = "2.9.0";
 const expectedSkillCount = 48;
 
 console.log(`Running v${expectedVersion} install-all hardened update matrix...\n`);

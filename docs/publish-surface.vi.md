@@ -6,15 +6,15 @@ language: vi
 
 > Tiếng Anh / English: publish-surface.md
 
-Tài liệu này ghim bề mặt phát hành công khai dự kiến cho `workflow-bundle v2.8.0`.
+Tài liệu này ghim bề mặt phát hành công khai dự kiến cho `workflow-bundle v2.9.0`.
 
-Maintainer đã yêu cầu phát hành `v2.8.0`. Public surface cung cấp:
+Maintainer đã yêu cầu phát hành `v2.9.0`. Public surface cung cấp:
 - khả năng cài vào Codex hoặc Claude Code bằng `wfc install|update|status|skills`
 - khả năng author workflow bằng `wfc init|scaffold|validate`
 - khả năng để agent chủ động đề xuất `work-item` và `change`
 - quyền phê duyệt tiếp tục thuộc về human ở từng gate trước khi delivery tiếp diễn
 
-`v2.0.0` vẫn là first public release. Nếu được phê duyệt, `v2.8.0` tiếp tục trên cùng public surface và không tạo breaking change cho command line:
+`v2.0.0` vẫn là first public release. Nếu được phê duyệt, `v2.9.0` tiếp tục trên cùng public surface và không tạo breaking change cho command line:
 
 - `v2.2.x` thêm harness adapter registry và hooks/instincts tooling nội bộ.
 - `v2.3.x` thêm English-first public surface, Vietnamese `*.vi.md`, `sdd_mode=light` và hai architecture-driver skill `sa`/`ta`.
@@ -29,8 +29,8 @@ Tất cả thay đổi trên đều additive; public promise bên dưới không
 
 ## Canonical Release Ref
 
-- Tag: `v2.8.0`
-- Kết quả publication và immutable tarball digest: `docs/releases/workflow-bundle-v2.8.0.md`
+- Tag: `v2.9.0`
+- Kết quả publication và immutable tarball digest: `docs/releases/workflow-bundle-v2.9.0.md`
 
 Chỉ publish artifact đã kiểm chứng theo chỉ thị phát hành của maintainer.
 
@@ -53,7 +53,7 @@ Chỉ publish artifact đã kiểm chứng theo chỉ thị phát hành của ma
 5. [`../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`](../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
 6. [`../skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](../skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
 
-## Public Promise Of `v2.8.0`
+## Public Promise Of `v2.9.0`
 
 - Installable workflow bundle cho Codex và Claude Code qua `wfc install|update|status|skills`
 - Core authoring CLI qua `wfc init`, `wfc scaffold`, `wfc`, `wfc sdd|change|exec|plan`
@@ -76,13 +76,13 @@ Chỉ publish artifact đã kiểm chứng theo chỉ thị phát hành của ma
   - legacy config `workflow-contracts.config.json`
   - legacy state `.codex-workflow-pack.*`
 
-Hai lớp legacy trên hiện vẫn được giữ để migration êm hơn, nhưng không nên coi đó là core public story của `v2.8.0`.
+Hai lớp legacy trên hiện vẫn được giữ để migration êm hơn, nhưng không nên coi đó là core public story của `v2.9.0`.
 
 ## Tương Thích Và Hoàn Tác
 
 - Các command, flag, state file, output block SA/TA, block ownership, yêu cầu Node `>=18` và npm `>=9` hiện có vẫn tương thích.
-- Giữ tarball v2.7.0 bất biến làm baseline rollback workflow (43 skill).
-- Dùng artifact v2.7.0 bất biến và `wfc install` để hạ cấp có quản lý; xác minh v2.7.0/43 và bảo toàn file/mode unmanaged.
+- Giữ tarball v2.8.0 bất biến làm baseline rollback workflow (48 skill).
+- Dùng artifact v2.8.0 bất biến và `wfc install` để hạ cấp có quản lý; xác minh v2.8.0/48 và bảo toàn file/mode unmanaged.
 - Candidate này không có migration database, API, event, deployment, user configuration hoặc global install live.
 
 ## Internal Or Maintainer Docs
@@ -108,14 +108,20 @@ Các file dưới đây là working assets cục bộ, không phải source-of-t
 
 ## Publish Rule
 
-- cho tới khi Release được phê duyệt, gọi `v2.8.0` là ứng viên phát hành thay vì public release hiện tại
+- cho tới khi Release được phê duyệt, gọi `v2.9.0` là ứng viên phát hành thay vì public release hiện tại
 - nếu nói về approval model, phải nêu rõ `agent proposes, human approves`
 - không dùng tài liệu internal hoặc memory-bank làm public onboarding path
 
-### Phạm Vi Source Và Package v2.8.0
+## Cập nhật phát hành 2.9.0
 
-Bản 2.8.0 giữ proposal recovery và diagram-design-presentation-adapter, thêm năm skill bảo trì và CF-023, tổng cộng 48 skill. SEC-01/SEC-02 nằm trong Git tag/source archive; installer trực tiếp và MCP không nằm trong tarball workflow. Fallback workflow là 2.7.0/43. Xem release record để biết checksum và kết quả publication.
-
-## Cập nhật phát hành 2.8.0
-
-Bản 2.8.0 có 48 skill cho mỗi runtime Codex/Claude, thêm năm skill bảo trì và sửa CF-023. SEC-01 đã có từ 2.7.0; SEC-02 được đưa vào source Git của bản này. MCP và installer trực tiếp không nằm trong tarball workflow. Tải tarball cùng SHA256SUMS trên GitHub Release; không mặc định gói đã có trên npm registry. Trạng thái phát hành và bằng chứng nằm trong `docs/releases/workflow-bundle-v2.8.0.md`. Bản dự phòng workflow là 2.7.0/43.
+Bản 2.9.0 bổ sung hướng dẫn scenario tùy chọn (A1) và task contract JSON
+opt-in với số nguyên `task_contract_version: 1` (A2). Validator kiểm tra ID,
+dependency, đường dẫn file, cấu trúc lệnh kiểm chứng và ánh xạ acceptance criteria;
+không thực thi các lệnh được ghi. YAML và scaffold mặc định vẫn được hỗ trợ.
+Giữ 48 skill cho mỗi runtime, năm skill bảo trì, presentation adapter và CF-023.
+SEC-01/SEC-02 nằm trong source Git; MCP và installer trực tiếp ngoài tarball workflow.
+Tải tarball cùng SHA256SUMS trên GitHub Release; npm registry là kênh riêng.
+Xem `docs/releases/workflow-bundle-v2.9.0.md` để biết bằng chứng và trạng thái phát hành.
+Rollback dùng đúng gói 2.8.0/48 đã phát hành. Trước khi rollback, lưu nguyên artifact
+v1 và receipt đã ký; tiếp tục dùng runtime 2.9.0 để xử lý artifact v1 vì 2.8.0
+không hỗ trợ contract này. Không tự chuyển đổi hoặc ký lại artifact khi hạ cấp.
