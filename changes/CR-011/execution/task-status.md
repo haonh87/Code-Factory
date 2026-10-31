@@ -1,7 +1,7 @@
 ---
 change_id: "CR-011"
 artifact_kind: "change-task-status"
-status: draft
+status: reviewed
 linked_work_items:
   - "sdd-scenario-task-contract"
 ---
@@ -12,8 +12,11 @@ linked_work_items:
 
 ```yaml
 task_status: []
-blocking_items:
-  - "Implementation is not active."
-next_action: "Human review of authoring packet; task definitions remain in s06."
+blocking_items: []
+implementation_evidence_ref: "work-items/sdd-scenario-task-contract/sdd-scenario-task-contract.s07.implementation.md"
+verification_evidence_ref: "work-items/sdd-scenario-task-contract/sdd-scenario-task-contract.s08.verification.md"
+work_item_protocol_ref: "work-items/sdd-scenario-task-contract/sdd-scenario-task-contract.work-item-report.json"
+closeout_evidence_ref: "work-items/sdd-scenario-task-contract/evidence/close-transition.log"
+next_action: "Work item is DONE after trusted human DoD. Branch integration and change-package archival remain separate lifecycle actions."
 ```
 

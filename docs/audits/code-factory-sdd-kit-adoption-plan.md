@@ -568,3 +568,21 @@ Current handoff: seal CR-011, the work item, the four-gate readiness bundle and 
 separate Contract gate in a human terminal. The legacy readiness bundle does not
 include Contract. Verify all receipts before activation in an isolated worktree.
 No A1-A2 production implementation, DoD, release or global rollout has occurred.
+
+
+## 14. A1-A2 closeout and integration — 2026-10-31
+
+Sections 12-13 describe historical authoring milestones. The current lifecycle
+owner is the [work-item protocol](../../work-items/sdd-scenario-task-contract/sdd-scenario-task-contract.work-item-report.json).
+A1-A2 is DONE after signed human QC DoD; the [s08 evidence](../../work-items/sdd-scenario-task-contract/sdd-scenario-task-contract.s08.verification.md)
+records the accepted verification scope and limits. A1A2-AMEND-001 added the shared
+consumer boundary through reviewed s05/s06 hosts before implementation.
+
+The integration branch carries the canonical closeout files byte-for-byte from
+`f7c8701`, including the signed s08 host, instead of the earlier worktree snapshot.
+All 20 verified source/test/document fingerprints remain unchanged. The maintained
+Workflow Guardrails pipeline runs the unit/regression suite and exact candidate
+smoke on Node 18 and Node 22 before integration. CI results belong to the PR checks.
+
+This integration does not bump a version, publish a release or update globally
+installed harnesses. A3-A6, B and C retain their existing scope and admission gates.

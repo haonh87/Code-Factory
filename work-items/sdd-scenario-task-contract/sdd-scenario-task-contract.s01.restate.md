@@ -208,14 +208,14 @@ blockers: []
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "sdd-scenario-task-contract"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/sdd-scenario-task-contract"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/scripts/validate-workflow-governance.js"
   - ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/scripts/validate-workflow-planning.js"
@@ -254,12 +254,11 @@ decision_owner: "agent"
 protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-10-30T07:24:18.780Z"
-handoff_target: "step-owner"
-last_transition_action: "resume"
-last_transition_at: "2026-10-30T13:57:16.187Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-10-31T06:15:02.868Z"
 required_actions:
-  - {"id":"se:9ea25adcfe677b6326a378f9e671185e19c022e8d826b3a504a3a3c49abff995","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
-  - {"id":"se:0ccd063edc9b0155a48677af8ae12a52b9eabe3866c1e3049d29108082b42e1a","kind":"workflow_followup","text":"Continue active execution from the current step."}
+  - {"id":"se:2f998e8efb188799834269442fde602a8ce96d8498996e87193e06ed1bf68d7d","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "Human review approved."
@@ -277,6 +276,8 @@ audit_events:
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "WORK_ITEM_RESUMED"
+  - "VERIFICATION_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```
 
 ## Traceability

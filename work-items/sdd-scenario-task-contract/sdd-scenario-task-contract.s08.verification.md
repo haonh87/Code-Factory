@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: reviewed
 governance_ref: "project-context/project-context.md"
 governance_profile: default
 governance_status: ALIGNED
@@ -82,8 +82,8 @@ gate_reviews:
   release_reviewed_at: ""
   business_acceptance_reviewed_by: []
   business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-10-31T06:09:32Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -109,7 +109,7 @@ tags:
 step_goal: "Assess the implemented A1-A2 delta against all nine accepted criteria."
 input_summary: ["Approved s04-s06", "Implementation commit bf9654b and T1 aa55d6b"]
 output_summary: ["Technical evidence", "Advisory DoD assessment for human QC"]
-done_when: ["Technical evidence mapped and human DoD decided; human decision pending"]
+done_when: ["Technical evidence mapped and human DoD approved in chat; trusted receipt pending"]
 owner: qc
 ```
 
@@ -152,7 +152,7 @@ commands_run: ["node packages/workflow-bundle/test/run-all.js", "node packages/w
 skipped_checks: ["Node 18/22 not installed locally; tested Node 26.5.0", "ESLint/Semgrep unavailable", "No TypeScript build: plain CommonJS", "No live deployment/global install/release in scope"]
 release_blockers: []
 status: PASS
-gaps: ["Human DoD has not been approved", "Cross-version CI remains necessary for a later release"]
+gaps: ["DoD approved in chat; trusted CLI receipt pending", "Cross-version CI remains necessary for a later release"]
 residual_risks: ["Structural validation cannot prove complete changed-AC coverage or correct task kind", "No automatic security scanner result", "No runtime performance benchmark"]
 recommendation: "Ready for human QC review with the stated local verification limits."
 notes_for_review: "Technical PASS is not human DoD, a release decision or merge authorization."
@@ -162,9 +162,9 @@ notes_for_review: "Technical PASS is not human DoD, a release decision or merge 
 ```yaml
 checklist_applied: ["project-context/checklists/default.md"]
 checks: ["Five authoring receipts verified before implementation", "Approved two-path amendment only", "TDD and in-repo worktree", "Targeted spec-then-quality review"]
-blocking_items: ["Human DoD decision pending"]
+blocking_items: ["Trusted DoD receipt pending"]
 owner: qc
-next_action: "Review this evidence and decide DoD; only then finalize and sign the s08 host."
+next_action: "Seal the finalized s08 host with the human QC DoD signature."
 ```
 
 ## Regression & Compatibility Summary
@@ -264,7 +264,7 @@ notes: ["All nine ACs mapped", "51 test files passed", "20 source/test/doc file 
 ## Definition of Done
 ```yaml
 work_item_slug: sdd-scenario-task-contract
-status: PARTIAL
+status: DONE
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -272,23 +272,61 @@ checks:
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps: ["Authorized human QC DoD decision and receipt pending"]
+gaps: ["Trusted receipt pending for the explicit human QC approval"]
 residual_risks: ["Local Node 26 only", "Automatic lint/security scan unavailable"]
 follow_up_items: ["Node 18/22 CI before release"]
-next_action: "Human QC review; do not close, merge or release based on this advisory assessment."
+next_action: "Seal DoD in the human terminal; verify the receipt before protocol closure."
 ```
 
 ## Traceability
 ```yaml
 upstream: ["product-specs/srs/sdd-scenario-task-contract.md", "sdd-scenario-task-contract.s06.task-breakdown.md", "sdd-scenario-task-contract.s07.implementation.md"]
-next_step: "Human QC DoD review"
+next_step: "Seal trusted DoD receipt, verify current-host binding, then close the work item."
 ```
 
 ## Handoff
 
-Technical verification PASS; human DoD pending. Implementation checkpoint:
+Technical verification PASS; human DoD approved in chat, trusted signature pending. Implementation checkpoint:
 `bf9654b`, based on T1 `aa55d6b`. Source fingerprints are in
 `evidence/t6-source-fingerprints.json`; the full successful run is in
 `evidence/t6-full-suite.log`. The initial environment-only failure is retained in
 `t6-full-suite-initial.log` for transparency. Inspect the actual implementation
 worktree at closeout because its parent repository ignores `.worktrees/`.
+
+## Protocol Checkpoint
+
+Canonical protocol transitioned to VERIFIED/s08 after technical checks. The CLI
+then protected worktree transport copies against writes; synchronizing the new
+s01/report into the transport directory was refused. No filesystem protection was
+bypassed. The copied protocol remains an ACTIVE snapshot; read the original-root
+report for current lifecycle state. This does not affect source hashes or test
+results. Original-root transition evidence: `evidence/verify-transition.log`.
+The implementation worktree source/test/doc diff against bf9654b is empty.
+
+## Human DoD Review Record
+
+- Decision: APPROVED in chat by the repository maintainer, acting as the authorized
+  `qc` reviewer for this self-review item. Source: explicit `accept` to the offered
+  A1-A2 DoD assessment, followed by `Tiếp tục`.
+- Recorded at: `2026-10-31T06:09:32Z` (recording time; not a fabricated message timestamp).
+- Scope reviewed: AC-001 through AC-009, the 51-file test result, source/runtime
+  parity and the disclosed Node 26-only / unavailable ESLint-Semgrep limitations.
+- Implementation worktree HEAD: `a4834cdd38a96d240e57d6963ab3bf5bea6f4fba`; the tree is clean and all 20 recorded
+  source/test/doc fingerprints still match the tested bytes.
+- This chat record finalizes the host for signing; it does not mint a trusted
+  receipt or change the canonical protocol from VERIFIED to DONE.
+- No merge, release, publication or global installation is included in this DoD
+  decision. The worktree protocol remains a transport snapshot as described above.
+
+## Receipt Sealing Handoff
+
+The maintainer signs the finalized canonical s08 host using the existing approval
+passphrase in a human-controlled terminal. No uncommitted-delivery waiver is used.
+
+```sh
+cd "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory" &&
+node "$HOME/.workflow-bundle-artifacts/v2.8.0/package/bin/wfc.js" gate approve --work-item sdd-scenario-task-contract --gate dod --reviewed-by qc
+```
+
+After signing, verify digest binding before the protocol close transition. Do not
+edit this signed host afterwards without re-reviewing and re-sealing it.

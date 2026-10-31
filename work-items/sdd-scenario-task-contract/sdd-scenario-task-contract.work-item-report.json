@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "developer",
   "raw_request_summary": "Scenario descriptors and executable task graph validation.",
@@ -57,7 +57,7 @@
   "work_item_type": "CHANGE",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/sdd-scenario-task-contract",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/scripts/validate-workflow-governance.js",
     ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/scripts/validate-workflow-planning.js",
@@ -88,17 +88,12 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-011",
-  "handoff_target": "step-owner",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "id": "se:9ea25adcfe677b6326a378f9e671185e19c022e8d826b3a504a3a3c49abff995",
+      "id": "se:2f998e8efb188799834269442fde602a8ce96d8498996e87193e06ed1bf68d7d",
       "kind": "workflow_followup",
-      "text": "Continue active execution from step 7 onward."
-    },
-    {
-      "id": "se:0ccd063edc9b0155a48677af8ae12a52b9eabe3866c1e3049d29108082b42e1a",
-      "kind": "workflow_followup",
-      "text": "Continue active execution from the current step."
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -116,7 +111,9 @@
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "WORK_ITEM_RESUMED"
+    "WORK_ITEM_RESUMED",
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -186,6 +183,22 @@
       "from_status": "ACTIVE",
       "to_status": "ACTIVE",
       "note": "Resume after human-approved A1A2-AMEND-001 and five verified current-host receipts. Add only the two T4 paths and workflow-note transport; canonical protocol stays at original root."
+    },
+    {
+      "timestamp": "2026-10-30T14:26:57.174Z",
+      "action": "verify",
+      "actor": "developer",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Technical verification complete: 51 workflow test files passed in isolated runtime copy; 75 planning cases, 19 consumer cases and legacy regressions. Source commit bf9654b. Human QC DoD remains pending; no merge or release."
+    },
+    {
+      "timestamp": "2026-10-31T06:15:02.868Z",
+      "action": "close",
+      "actor": "developer",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Close after explicit human QC DoD approval and trusted current-host receipt sealed 2026-10-31T06:14:10.294Z. s08 sha256 94f7db460cc5a7a54ca05480911ef52a00cbef958c45c3a59e6c26c6b0bed63f; source worktree clean at a4834cd, all 20 verified source hashes unchanged. No uncommitted-delivery waiver."
     }
   ]
 }
