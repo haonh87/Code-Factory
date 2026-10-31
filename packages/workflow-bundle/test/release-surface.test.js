@@ -3,6 +3,7 @@ const root=path.resolve(__dirname,'../../..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const sha=p=>crypto.createHash('sha256').update(fs.readFileSync(path.join(root,p))).digest('hex');
 const frozenReleaseDigests = {
+  "docs/releases/workflow-bundle-v2.8.0.md": "613910778e8574d5a21e9d6164016d3272a6914f6e45f46d175025408fd8c57d",
   "docs/releases/workflow-bundle-v2.7.0.md": "868646449c2ee8c8e53dcc9dbb31f4ca6a3ff2bac5456b6272541aad32da36ce",
   "docs/releases/workflow-bundle-v2.6.4.md": "32f2ba37279141ae0e8aae8ca7e53414481ae4d7bbd06adb5c133475f99843b4",
   "docs/releases/workflow-bundle-v2.6.3.md": "de44ac6adf73f775b4f1507c5bc2028aa6cf815a931c70c0386f87ff015349af",
@@ -25,14 +26,14 @@ const installerDigests = {
   "adapters/codex/install-codex-workflow.ps1": "859c41118ae1a9c3e8d0bf6154e7d00083a999dae08eb81b0eb60f818f475afa"
 };
 for(const [p,h] of Object.entries({...frozenReleaseDigests,...installerDigests}))assert.equal(sha(p),h,'Historical/installer drift: '+p);
-for(const p of ['workflow-bundle.manifest.json','packages/workflow-bundle/workflow-bundle.manifest.json'])assert.equal(JSON.parse(read(p)).bundleVersion,'2.8.0');
-assert.equal(JSON.parse(read('packages/workflow-bundle/package.json')).version,'2.8.0');
-assert(read('packages/workflow-bundle/bin/wfc.js').includes('Public v2.8.0 Flow:'));
+for(const p of ['workflow-bundle.manifest.json','packages/workflow-bundle/workflow-bundle.manifest.json'])assert.equal(JSON.parse(read(p)).bundleVersion,'2.9.0');
+assert.equal(JSON.parse(read('packages/workflow-bundle/package.json')).version,'2.9.0');
+assert(read('packages/workflow-bundle/bin/wfc.js').includes('Public v2.9.0 Flow:'));
 const docs=['README.md','README.vi.md','packages/workflow-bundle/README.md','packages/workflow-bundle/README.vi.md','.claude/CLAUDE.md','docs/publish-surface.md','docs/publish-surface.vi.md','docs/workflow-docs-map.md','docs/workflow-docs-map.vi.md','docs/workflow-bundle-quickstart.md','docs/workflow-bundle-quickstart.vi.md'];
 for(const p of docs){
- const s=read(p);assert(s.includes('v2.8.0'),p+' release identity');
- assert(!s.includes('prepared release candidate is `workflow-bundle v2.7.0`'),p+' stale candidate');
- assert(!s.includes('prepared for the `v2.7.0` release candidate'),p+' stale package candidate');
+ const s=read(p);assert(s.includes('v2.9.0'),p+' release identity');
+ assert(!s.includes('prepared release candidate is `workflow-bundle v2.8.0`'),p+' stale candidate');
+ assert(!s.includes('prepared for the `v2.8.0` release candidate'),p+' stale package candidate');
 }
 for(const p of ['README.md','packages/workflow-bundle/README.md']){
  const s=read(p);assert(s.includes('48 skills'));assert(s.includes('SEC-01'));assert(s.includes('SEC-02'));assert(s.includes('CF-023'));assert(s.includes('npm registry publication is separate'));
@@ -42,7 +43,7 @@ for(const mode of ['codex','claude']){
  const files=[];const walk=d=>fs.readdirSync(d,{withFileTypes:true}).forEach(e=>e.isDirectory()?walk(path.join(d,e.name)):e.name==='SKILL.md'&&files.push(path.join(d,e.name)));walk(runtime);assert.equal(files.length,48);
  assert(fs.existsSync(path.join(runtime,'architecture/diagram-design-presentation-adapter/SKILL.md')));
 }
-const note=read('docs/releases/workflow-bundle-v2.8.0.md');
-for(const term of ['48 managed skills','SEC-01','SEC-02','CF-023','## Compatibility','## Known Limitations','## Verification','## Rollback','## Release Gates','ecc194da5398b6b5ef321549600711bd4b96cf6f2621f0b95ca958547e5061ac'])assert(note.includes(term),'Release record missing '+term);
+const note=read('docs/releases/workflow-bundle-v2.9.0.md');
+for(const term of ['task_contract_version: 1','A1','A2','48 managed skills','SEC-01','SEC-02','CF-023','## Compatibility','## Known Limitations','## Verification','## Rollback','## Release Gates','397108e725d22111f328fd5d7bc5765090d7f5e441eb3256860b1a3e579e0d1f'])assert(note.includes(term),'Release record missing '+term);
 assert(!/\bTODO\b|\bTBD\b/.test(note));
-console.log('PASS: v2.8.0 release record, 48-skill inventory, source/package boundaries and immutable history/installers.');
+console.log('PASS: v2.9.0 release record, 48-skill inventory, source/package boundaries and immutable history/installers.');

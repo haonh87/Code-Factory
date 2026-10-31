@@ -6,7 +6,7 @@ language: vi
 
 > Tiếng Anh / English: README.md
 
-`workflow-bundle` là package CLI được chuẩn bị cho ứng viên phát hành `v2.8.0`. Package cài workflow bundle cho Codex hoặc Claude Code, định tuyến request vào governance lane phù hợp, scaffold hoặc validate delivery workflow, hỗ trợ human approval bundle có transaction journal và cung cấp workflow-state disposition chính xác. Gate nào áp dụng vẫn phải có đúng human reviewer có thẩm quyền và một trusted receipt độc lập. Maintainer đã yêu cầu phát hành; kết quả publication được ghi trong release record.
+`workflow-bundle` là package CLI được chuẩn bị cho ứng viên phát hành `v2.9.0`. Package cài workflow bundle cho Codex hoặc Claude Code, định tuyến request vào governance lane phù hợp, scaffold hoặc validate delivery workflow, hỗ trợ human approval bundle có transaction journal và cung cấp workflow-state disposition chính xác. Gate nào áp dụng vẫn phải có đúng human reviewer có thẩm quyền và một trusted receipt độc lập. Maintainer đã yêu cầu phát hành; kết quả publication được ghi trong release record.
 
 Quickstart chi tiết: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -22,7 +22,7 @@ Quickstart chi tiết: [`docs/workflow-bundle-quickstart.md`](../../docs/workflo
 Cài package publish:
 
 ```bash
-npm install -g /absolute/path/to/workflow-bundle-2.8.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.9.0.tgz
 wfc help
 wfc version
 ```
@@ -31,7 +31,7 @@ Nâng từ package legacy:
 
 ```bash
 npm uninstall -g workflow-contracts
-npm install -g /absolute/path/to/workflow-bundle-2.8.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.9.0.tgz
 wfc version
 ```
 
@@ -43,30 +43,30 @@ npm link
 wfc version
 ```
 
-### Roll Back Từ v2.8.0 Về v2.7.0
+### Roll Back Từ v2.9.0 Về v2.8.0
 
 Ghi lại mode, scope, project root và status hiện tại trước khi thay package. Dừng adaptive writer bằng
 cách không truyền `--adaptive-writes true`, sau đó hoàn tất hoặc chạy lại bundle command ban đầu để
 transaction recovery không để lại live journal. Các lệnh `wfc gate approve` riêng lẻ vẫn là fallback.
-Tiếp theo, cài đúng tarball v2.7.0 bất biến đã được lưu và chạy `install` cho từng target đã ghi:
+Tiếp theo, cài đúng tarball v2.8.0 bất biến đã được lưu và chạy `install` cho từng target đã ghi:
 
 ```bash
 wfc status --mode codex
-npm install -g /absolute/path/to/workflow-bundle-2.7.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.8.0.tgz
 wfc install --mode codex --scope global
 wfc install --mode codex --scope project --project-root <repo-root>
 wfc status --mode codex
 wfc skills list --mode codex
 ```
 
-Dùng cùng chuỗi lệnh với `--mode claude` cho Claude Code. Dùng artifact v2.7.0 bất biến đã được lưu
+Dùng cùng chuỗi lệnh với `--mode claude` cho Claude Code. Dùng artifact v2.8.0 bất biến đã được lưu
 và `wfc install` để hạ cấp nhằm giữ identity của fallback tường minh; không dựa vào registry alias
-có thể thay đổi. Đường được hỗ trợ sẽ khôi phục hành vi source v2.7.0, giữ inventory 43 skill và các file
+có thể thay đổi. Đường được hỗ trợ sẽ khôi phục hành vi source v2.8.0, giữ inventory 48 skill và các file
 unmanaged. Phải giữ nguyên khả năng dual-read legacy/adaptive cùng mọi historical receipt; không rewrite
 hoặc ký lại receipt khi rollback. Hãy diễn tập với home cô lập trước khi thao tác trên bản cài live, và
 không thay đổi global install live trước khi human Release gate cho phép.
 
-## What `v2.8.0` Includes
+## What `v2.9.0` Includes
 
 - workflow bundle install surface qua `wfc install|update|status|skills`
 - core authoring CLI qua `wfc init|scaffold|validate`
@@ -300,22 +300,20 @@ npm pack
 
 ## Khôi Phục Proposal Đã Lưu
 
-Candidate v2.8.0 giữ `materialize --resume-proposal` từ v2.6.4 cho proposal brownfield đơn chưa được duyệt, hỗ trợ `change_strategy=none` hoặc `create_new` (create_new chỉ dùng template full). Recovery cần hash report hiện tại, UUID operation và disposition có chữ ký Maintainer khi admission còn yêu cầu review. Thành công trả về MATERIALIZED/PENDING_REVIEW, không tự phê duyệt hay cấp quyền ghi.
+Candidate v2.9.0 giữ `materialize --resume-proposal` từ v2.6.4 cho proposal brownfield đơn chưa được duyệt, hỗ trợ `change_strategy=none` hoặc `create_new` (create_new chỉ dùng template full). Recovery cần hash report hiện tại, UUID operation và disposition có chữ ký Maintainer khi admission còn yêu cầu review. Thành công trả về MATERIALIZED/PENDING_REVIEW, không tự phê duyệt hay cấp quyền ghi.
 
 Change mới dùng template chuẩn, lock theo change ID và manifest recovery. Retry cùng identity có tính idempotent hoặc sửa projection bị gián đoạn; hash cũ, file đã sửa, identity xung đột và symlink bị từ chối. Không retry sau khi đã author hoặc duyệt, không dùng writer cũ có thể làm mất `materialization_recovery`. Kiểm tra cả tên CHANGE/CR trước khi chọn ID mới vì collision giữa hai cách viết vẫn là hạn chế đã biết.
 
-### Phạm Vi Source Và Package v2.8.0
+## Cập nhật phát hành 2.9.0
 
-Bản 2.8.0 giữ proposal recovery và diagram-design-presentation-adapter, thêm năm skill bảo trì và CF-023, tổng cộng 48 skill. SEC-01/SEC-02 nằm trong Git tag/source archive; installer trực tiếp và MCP không nằm trong tarball workflow. Fallback workflow là 2.7.0/43. Xem release record để biết checksum và kết quả publication.
-
-## Candidate trình bày kiến trúc tùy chọn
-
-Bản 2.8.0 giữ `diagram-design-presentation-adapter` và thêm năm skill bảo trì, tổng cộng 48 skill.
-SA/TA chỉ ghi ý định; architecture-modeling giữ quyền chính tắc. Adapter xuất bộ
-HTML/SVG/PNG offline riêng. Công cụ Python/Playwright/Chromium phải được cài riêng.
-DoD của adapter đã hoàn tất trong 2.7.0; kết quả phát hành lần này nằm trong release record 2.8.0.
-Rollback workflow dùng đúng tarball 2.7.0 đã phát hành, không dựng lại từ main.
-
-## Cập nhật phát hành 2.8.0
-
-Bản 2.8.0 có 48 skill cho mỗi runtime Codex/Claude, thêm năm skill bảo trì và sửa CF-023. SEC-01 đã có từ 2.7.0; SEC-02 được đưa vào source Git của bản này. MCP và installer trực tiếp không nằm trong tarball workflow. Tải tarball cùng SHA256SUMS trên GitHub Release; không mặc định gói đã có trên npm registry. Trạng thái phát hành và bằng chứng nằm trong `docs/releases/workflow-bundle-v2.8.0.md`. Bản dự phòng workflow là 2.7.0/43.
+Bản 2.9.0 bổ sung hướng dẫn scenario tùy chọn (A1) và task contract JSON
+opt-in với số nguyên `task_contract_version: 1` (A2). Validator kiểm tra ID,
+dependency, đường dẫn file, cấu trúc lệnh kiểm chứng và ánh xạ acceptance criteria;
+không thực thi các lệnh được ghi. YAML và scaffold mặc định vẫn được hỗ trợ.
+Giữ 48 skill cho mỗi runtime, năm skill bảo trì, presentation adapter và CF-023.
+SEC-01/SEC-02 nằm trong source Git; MCP và installer trực tiếp ngoài tarball workflow.
+Tải tarball cùng SHA256SUMS trên GitHub Release; npm registry là kênh riêng.
+Xem `docs/releases/workflow-bundle-v2.9.0.md` để biết bằng chứng và trạng thái phát hành.
+Rollback dùng đúng gói 2.8.0/48 đã phát hành. Trước khi rollback, lưu nguyên artifact
+v1 và receipt đã ký; tiếp tục dùng runtime 2.9.0 để xử lý artifact v1 vì 2.8.0
+không hỗ trợ contract này. Không tự chuyển đổi hoặc ký lại artifact khi hạ cấp.

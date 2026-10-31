@@ -6,9 +6,9 @@ language: vi
 
 > Tiếng Anh / English: README.md
 
-Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent. Ứng viên phát hành hiện tại là `workflow-bundle v2.8.0`: workflow bundle cài được cho Codex và Claude Code, có định tuyến request thích ứng, chỉ gọi những role/gate thực sự áp dụng, hỗ trợ approval bundle có transaction journal, telemetry cục bộ với giới hạn riêng tư rõ ràng, state disposition theo ID chính xác và terminal archive guard. Quyền phê duyệt của con người không đổi: mỗi gate áp dụng vẫn phải có đúng reviewer có thẩm quyền và một trusted receipt độc lập. Maintainer đã yêu cầu phát hành; kết quả publication được ghi trong release record.
+Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent. Ứng viên phát hành hiện tại là `workflow-bundle v2.9.0`: workflow bundle cài được cho Codex và Claude Code, có định tuyến request thích ứng, chỉ gọi những role/gate thực sự áp dụng, hỗ trợ approval bundle có transaction journal, telemetry cục bộ với giới hạn riêng tư rõ ràng, state disposition theo ID chính xác và terminal archive guard. Quyền phê duyệt của con người không đổi: mỗi gate áp dụng vẫn phải có đúng reviewer có thẩm quyền và một trusted receipt độc lập. Maintainer đã yêu cầu phát hành; kết quả publication được ghi trong release record.
 
-Artifact phát hành là `workflow-bundle-2.8.0.tgz` cùng `SHA256SUMS` trên GitHub Releases. Xác minh checksum trước khi cài. Baseline rollback workflow là `v2.7.0/43` bất biến; xem `docs/releases/workflow-bundle-v2.8.0.md` để biết kết quả publication và kiểm chứng.
+Artifact phát hành là `workflow-bundle-2.9.0.tgz` cùng `SHA256SUMS` trên GitHub Releases. Xác minh checksum trước khi cài. Baseline rollback workflow là `v2.8.0/48` bất biến; xem `docs/releases/workflow-bundle-v2.9.0.md` để biết kết quả publication và kiểm chứng.
 
 ## Requirements
 
@@ -20,7 +20,7 @@ Artifact phát hành là `workflow-bundle-2.8.0.tgz` cùng `SHA256SUMS` trên Gi
 
 ## Bắt Đầu Ở Đây
 
-Nếu đang tiếp cận repo lần đầu và muốn review ứng viên phát hành `v2.8.0`:
+Nếu đang tiếp cận repo lần đầu và muốn review ứng viên phát hành `v2.9.0`:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -38,7 +38,7 @@ Các tài liệu dưới đây là maintainer hoặc historical context, không 
 
 ## Workflow Commands Nhanh
 
-Command surface public của `v2.8.0` dùng `wfc`.
+Command surface public của `v2.9.0` dùng `wfc`.
 
 Install và quản lý workflow bundle:
 
@@ -103,7 +103,7 @@ Ghi chú:
 - lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase trực tiếp trên TTY đó.
 - implementation path bị khóa ở mức filesystem cho tới khi work item vào `ACTIVE` ở `s07` và được cấp `write-root`.
 - `work-items/` là canonical artifact root cho workflow artifacts của repo.
-- Approval model của `v2.8.0` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate, trusted signed receipts và step-gate evidence bắt buộc đã có.
+- Approval model của `v2.9.0` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate, trusted signed receipts và step-gate evidence bắt buộc đã có.
 
 ## Contract Adaptive Governance
 
@@ -126,7 +126,7 @@ Ghi chú:
 ### Theo Mục Đích
 
 - Public docs cho người mới dùng workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface cho `v2.8.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface cho `v2.9.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart cho `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README cho cài đặt hoặc publish: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 
@@ -319,7 +319,7 @@ Ghi chú:
 Khi package đã được publish, cài trực tiếp:
 
 ```bash
-npm install -g /absolute/path/to/workflow-bundle-2.8.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.9.0.tgz
 wfc install --mode codex --scope global
 ```
 
@@ -459,18 +459,16 @@ Ghi chú vận hành:
 - Layout runtime sau khi cài global cho Codex hiện là flat theo `skill-name`.
 - Khi thêm skill mới, nên kiểm tra tên skill là duy nhất ở mức toàn repo để tránh ghi đè lúc cài global.
 
-### Phạm Vi Source Và Package v2.8.0
+## Cập nhật phát hành 2.9.0
 
-Bản 2.8.0 giữ proposal recovery và diagram-design-presentation-adapter, thêm năm skill bảo trì và CF-023, tổng cộng 48 skill. SEC-01/SEC-02 nằm trong Git tag/source archive; installer trực tiếp và MCP không nằm trong tarball workflow. Fallback workflow là 2.7.0/43. Xem release record để biết checksum và kết quả publication.
-
-## Candidate trình bày kiến trúc tùy chọn
-
-Bản 2.8.0 giữ `diagram-design-presentation-adapter` và thêm năm skill bảo trì, tổng cộng 48 skill.
-SA/TA chỉ ghi ý định; architecture-modeling giữ quyền chính tắc. Adapter xuất bộ
-HTML/SVG/PNG offline riêng. Công cụ Python/Playwright/Chromium phải được cài riêng.
-Đánh giá người đọc, DoD, Release và Business Acceptance vẫn chờ quyết định con người.
-Rollback workflow dùng đúng tarball 2.7.0 đã phát hành, không dựng lại từ main.
-
-## Cập nhật phát hành 2.8.0
-
-Bản 2.8.0 có 48 skill cho mỗi runtime Codex/Claude, thêm năm skill bảo trì và sửa CF-023. SEC-01 đã có từ 2.7.0; SEC-02 được đưa vào source Git của bản này. MCP và installer trực tiếp không nằm trong tarball workflow. Tải tarball cùng SHA256SUMS trên GitHub Release; không mặc định gói đã có trên npm registry. Trạng thái phát hành và bằng chứng nằm trong `docs/releases/workflow-bundle-v2.8.0.md`. Bản dự phòng workflow là 2.7.0/43.
+Bản 2.9.0 bổ sung hướng dẫn scenario tùy chọn (A1) và task contract JSON
+opt-in với số nguyên `task_contract_version: 1` (A2). Validator kiểm tra ID,
+dependency, đường dẫn file, cấu trúc lệnh kiểm chứng và ánh xạ acceptance criteria;
+không thực thi các lệnh được ghi. YAML và scaffold mặc định vẫn được hỗ trợ.
+Giữ 48 skill cho mỗi runtime, năm skill bảo trì, presentation adapter và CF-023.
+SEC-01/SEC-02 nằm trong source Git; MCP và installer trực tiếp ngoài tarball workflow.
+Tải tarball cùng SHA256SUMS trên GitHub Release; npm registry là kênh riêng.
+Xem `docs/releases/workflow-bundle-v2.9.0.md` để biết bằng chứng và trạng thái phát hành.
+Rollback dùng đúng gói 2.8.0/48 đã phát hành. Trước khi rollback, lưu nguyên artifact
+v1 và receipt đã ký; tiếp tục dùng runtime 2.9.0 để xử lý artifact v1 vì 2.8.0
+không hỗ trợ contract này. Không tự chuyển đổi hoặc ký lại artifact khi hạ cấp.
