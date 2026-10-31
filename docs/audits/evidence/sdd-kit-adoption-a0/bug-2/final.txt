@@ -1,0 +1,9 @@
+Created [proposal.md](proposal.md) with the cause, acceptance criteria, minimal fix, and TDD plan.
+
+Actually ran:
+
+- Existing regression: passed.
+- Fresh-object, same-ID reproduction: failed as expected; both events were accepted.
+- Proposal UTF-8 and source/test unchanged checks: passed.
+
+Implementation remains blocked by missing human gate approval. The [pinned router](.agents/skills/workflow-governance-router/SKILL.md) requires gates before code changes. Gate-applicability uncertainty is recorded in the proposal; no approvals or human DoD were declared.

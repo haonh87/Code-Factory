@@ -1,0 +1,49 @@
+{
+  "before_source_sha256": {
+    "src/index.js": "5dc0c7d5b869e09344bb8f9182dd70e513ecc2a6ba7245663232ba99bfe57772",
+    "test/regression.js": "d53d25636f0760ac2903f26d7ab88bfc3eb8240a27276768867749eacd8005d9",
+    "package.json": "29c0f4aca5ca027e6fcc6b5ccd725f2dc0ddd4d98e90403346c3a26037741752"
+  },
+  "after_source_sha256": {
+    "src/index.js": "5dc0c7d5b869e09344bb8f9182dd70e513ecc2a6ba7245663232ba99bfe57772",
+    "test/regression.js": "d53d25636f0760ac2903f26d7ab88bfc3eb8240a27276768867749eacd8005d9",
+    "package.json": "29c0f4aca5ca027e6fcc6b5ccd725f2dc0ddd4d98e90403346c3a26037741752"
+  },
+  "changed_files": [
+    "proposal.md"
+  ],
+  "commands": [
+    {
+      "command": "/bin/zsh -lc \"pwd; rg --files -g 'AGENTS.md' -g 'package.json' -g 'src/**' -g 'test/**' -g 'proposal.md' -g '*report*' -g '*receipt*' -g '*context*' -g '.agents/skills/workflow-governance-router/**' -g '.agents/skills/codex-workflow-chain/**'\"",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc 'cat .agents/skills/workflow-governance-router/SKILL.md .agents/skills/codex-workflow-chain/SKILL.md'",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc \"cat .agents/skills/obsidian-markdown/SKILL.md .agents/skills/requirement-analysis/SKILL.md; rg -n 'maintenance|reason|reviewer|spec|contract' .agents/skills/codex-workflow-chain/references/adaptive-planning.md\"",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc \"cat src/index.js test/regression.js package.json; rg --files -g '\"'!node_modules'\"' -g '\"'!'\"\\\\.git' -g '\"'!'\"\\\\.agents' -g '\"'!'\"\\\\.codex'\"",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '18,85p' .agents/skills/codex-workflow-chain/references/adaptive-planning.md; rg -n 's01|Step 1|Clarify|Main Artifact|Step Goal' .agents/skills/codex-workflow-chain/references/workflow-chain.md; cat .agents/skills/requirement-analysis/references/example.md\"",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc \"node test/regression.js; rg --files --hidden -g '\"'!'\"\\\\.git/**' -g '\"'!'\"\\\\.agents/**' -g '\"'!'\"\\\\.codex/**'; cat AGENTS.md\"",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '1030,1155p' .agents/skills/codex-workflow-chain/references/workflow-chain.md; sed -n '95,148p' .agents/skills/codex-workflow-chain/SKILL.md\"",
+      "exit_code": 0
+    },
+    {
+      "command": "/bin/zsh -lc \"node - <<'NODE'\nconst fs = require('node:fs');\nconst assert = require('node:assert/strict');\nconst { TextDecoder } = require('node:util');\nconst proposal = new TextDecoder('utf-8', { fatal: true }).decode(fs.readFileSync('proposal.md'));\nassert(proposal.includes('Workflow Status: BLOCKED'));\nassert.equal(fs.readFileSync('src/index.js', 'utf8'), 'module.exports = { total: items => items.reduce((sum, item) => sum + item.price * item.quantity, 0) };\\\\n');\nassert.equal(fs.readFileSync('test/regression.js', 'utf8'), \\\"const assert=require('node:assert/strict'); const {total}=require('../src/index'); assert.equal(total([{price:100,quantity:2}]),200); console.log('existing regression PASS');\\\\n\\\");\nconsole.log('proposal UTF-8 PASS; source and regression unchanged PASS');\nNODE\"",
+      "exit_code": 0
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+Created [proposal.md](proposal.md) with acceptance cases, a minimal approach and a proposed TDD sequence.
+
+Ran:
+
+- `node test/regression.js` — passed.
+- UTF-8 validation of the proposal — passed.
+- Exact-content checks — source and tests unchanged.
+
+Implementation and new behavior tests are blocked by missing human gate receipts. Explicit `undefined` behavior remains a review question. No human DoD was declared.
+
+The pinned [workflow router](.agents/skills/workflow-governance-router/SKILL.md) states: “If unsure whether implementation is allowed, do not implement.” The proposal is ready for the required human review.

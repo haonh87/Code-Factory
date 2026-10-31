@@ -1,0 +1,978 @@
+Running approval-path-defects regression fixtures...
+Expected state before the fixes land: every TD assertion RED.
+
+
+TD-01 / REQ-001: a scaffold-created work item is approvable
+  PASS: scaffold-step succeeds
+  PASS: precondition: scaffold-step alone writes no report, which is correct - scaffold makes notes, protocol makes protocol state
+    approve exit=0; first line: OK: work item 'td01-item' | protocol_status=MATERIALIZED | approval_status=APPROVED | current_step=s01 | handoff_target=author-s01 | trusted_receipt=MISSING
+  PASS: wfc work-item approve succeeds on a scaffold-created work item with no manual file creation (today: Missing work item report - TD-01)
+  PASS: approve leaves a persisted report behind
+  PASS: the report came from the bootstrap path, not fabricated (request_source="legacy-scaffold")
+  PASS: after approve the report records the human decision, and only then
+  PASS: the audit trail says the report was bootstrapped, so its provenance is not hidden
+
+TD-02 / REQ-002: sealing an unfinalized note is refused
+  PASS: precondition: the host note is still status draft
+    seal exit=1; first line: ERROR: Cannot seal gate 'spec': host note is still status draft in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/apd-td02-39318Y/work-items/td02-item/td02-item.s04.acceptance-criteria.md. Correct order: fill gate_reviews -> set status and spec_status -> seal the gate -> activate. Sealing before the note is finalized produces a receipt that activate will reject as stale, because the receipt is bound to the note's content hash.
+  PASS: sealing is refused while the host note is draft (today it succeeds, then activate calls the receipt stale - TD-02)
+  PASS: the refusal names the unfinalized field so the failure teaches the fix (no refusal exists today - TD-02)
+
+TD-03 / REQ-003: a lazily created note inherits spec_refs, type and spec_status
+  PASS: scaffold-step s01 succeeds
+  PASS: the lazy s07 note is created
+  PASS: s07 inherits spec_refs.card (got "product-specs/cards/td03-item.md" - TD-03)
+  PASS: s07 inherits work_item_type (got "BUG" - TD-03)
+  PASS: s07 keeps the documented spec_status default, not a sibling's lifecycle value (got "draft")
+  PASS: s07 still inherits sdd_mode (already works)
+  PASS: s07 still inherits planning_track (already works)
+
+TD-04 / REQ-004: scaffold-step inherits planning_track, sdd_mode and type
+  PASS: scaffold s01 succeeds
+  PASS: scaffold s04 succeeds
+  PASS: s04 inherits planning_track from s01 (got "quick" - TD-04)
+  PASS: s04 inherits sdd_mode from s01 (got "light" - TD-04)
+  PASS: s04 inherits work_item_type from s01 (got "BUG" - TD-04)
+  PASS: wfc validate passes on the scaffolded pair with no hand editing (today it reports Inconsistent planning_track - TD-04)
+  PASS: EDGE-001: a first scaffold with no sibling still succeeds
+  PASS: EDGE-001: with no sibling the documented defaults apply (got full/FEATURE)
+  PASS: EDGE-002: scaffolding is refused while siblings disagree, rather than inheriting from an inconsistent set
+
+All approval-path-defects fixtures passed.
+Running architecture-modeling public contract tests...
+
+OK: architecture-modeling-contract.test.js passed
+Running architecture-modeling deterministic drawio tests...
+
+OK: architecture-modeling-drawio.test.js passed
+Running architecture role skills contract tests...
+
+  PASS: YAML schema/example fences and threshold enum contract checked
+  PASS: SA/TA driver and handoff ownership contract checked
+  PASS: M-01..M-10 inventory and worked coverage values checked
+  PASS: shared-reference and agents metadata contract checked
+  PASS: EN/VI example semantic structure checked
+  PASS: design-readiness negative validation fixtures checked
+  PASS: design-readiness reference inventory, authority, confidentiality, and behavior contract checked
+  PASS: concise EN/VI SA/TA design-readiness invocation hooks checked
+
+OK: architecture-role-skills-contract.test.js passed
+Running audit-workflow-pack tests...
+
+  PASS: frontmatter parsed independent of field order
+  PASS: colon-in-scalar YAML safety detected correctly
+  PASS: hard-rule equality applies router exception, still catches real drift
+  PASS: cross-reference depth resolves correctly for flat runtime
+  PASS: real repo audit overall = PASS
+
+OK: audit-workflow-pack.test.js passed
+Running bump-version tests...
+
+  PASS: rejects missing version argument
+  PASS: rejects invalid semver
+  PASS: rejects same version as current
+  PASS: successful bump updates structured metadata and creates a reviewed-boundary release note
+  PASS: does not overwrite existing release note
+  PASS: rejects prerelease semver (only X.Y.Z accepted)
+  PASS: public and historical docs are not blindly rewritten
+  PASS: resolveRepoRoot returns outermost manifest (repo root), not inner package
+
+All bump-version tests passed.
+Running change-item-utils (CR canonical/dual-read) tests...
+
+  PASS: resolveChangePaths fresh -> canonical root + proposal.md (full)
+  PASS: resolveChangePaths dual-reads legacy CHANGE-### dir
+  PASS: resolveChangePaths detects compact request.md
+  PASS: normalizeChangeProposalState reads canonical cr_* fields
+  PASS: normalizeChangeProposalState legacy alias fallback -> canonical
+  PASS: loadChangeProposalState reads compact request.md (canonical)
+WARNING: reading legacy change package 'CHANGE-001' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-001 --apply
+  PASS: loadChangeProposalState dual-reads legacy CHANGE proposal.md
+  PASS: buildManagedProposalLines compact emits canonical only (new writer CR/cr_*)
+  PASS: syncChangeProposalState compact canonical-write strips legacy aliases
+
+All change-item-utils (CR canonical/dual-read) tests passed.
+Running change-item-utils (Light classification) tests...
+
+  PASS: normalizeChangeProposalState defaults defect_source=n/a, spec_impact_classified=false
+WARNING: reading legacy change package 'CHANGE-001' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-001 --apply
+  PASS: loadChangeProposalState reads defect_source + spec_impact_classified
+  PASS: buildManagedProposalLines emits defect_source + spec_impact_classified
+WARNING: reading legacy change package 'CHANGE-001' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-001 --apply
+WARNING: reading legacy change package 'CHANGE-001' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-001 --apply
+  PASS: syncChangeProposalState round-trips defect_source + spec_impact_classified
+
+All change-item-utils (Light classification) tests passed.
+Running change-item-utils (legacy dual-read warning) tests...
+
+  PASS: legacy CHANGE dir read emits deprecation warning
+  PASS: canonical compact read emits no warning
+WARNING: reading legacy change package 'CHANGE-022' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-022 --apply
+  PASS: cr_vocabulary=dual discovers both canonical and legacy dirs
+  PASS: cr_vocabulary=canonical ignores legacy dir (no fallback)
+  PASS: cr_vocabulary=legacy ignores canonical dir (no fallback)
+
+All change-item-utils (legacy dual-read warning) tests passed.
+Running change-item migrate (dry-run idempotent) tests...
+
+  PASS: dry-run (default) plans without writing
+  PASS: migrate renames dir + rewrites frontmatter aliases
+  PASS: migrate idempotent (canonical dirs no-op)
+  PASS: migrate scoped by --change-id
+  PASS: migrate canonicalizes status case + linked CR ids
+WARNING: skipped migrating 'CHANGE-013' -> 'CR-013' (canonical dir already exists). Legacy content is shadowed and will not be read; reconcile or remove 'CHANGE-013' manually.
+  PASS: migrate reports shadowed skips explicitly
+
+All change-item migrate (dry-run idempotent) tests passed.
+Running T7 CR aggregate reconciliation + atomic ACCEPTED spec bump tests...
+
+  PASS: reconcile all-DONE + PASS -> coverage_pass + can_accept
+  PASS: missing contribution blocks coverage_pass
+  PASS: un-waived PARTIAL blocks; waived FAIL does not count as failure
+  PASS: sibling not DONE blocks can_accept (no self-ACCEPT of whole CR)
+  PASS: full profile CR skips aggregate reconciliation
+  PASS: ACCEPTED without accepted_spec_version errors
+  PASS: ACCEPTED but spec card not bumped errors (atomic bump check)
+  PASS: ACCEPTED with wrong provenance errors
+  PASS: ACCEPTED while sibling not DONE errors (no self-ACCEPT)
+  PASS: VERIFIED with premature spec bump errors
+  PASS: VERIFIED ready (all DONE + PASS, no premature bump) no errors
+  PASS: ACCEPTED happy path (atomic bump + provenance + all DONE) no errors
+  PASS: ARCHIVED (post-ACCEPTED) keeps accepted_spec_version without errors
+  PASS: ARCHIVED still enforces atomic bump invariant
+  PASS: REJECTED exceptional status skips bump enforcement
+  PASS: ACCEPTED with zero linked work items errors
+  PASS: foreign-CR contribution not mis-attributed as failure
+  PASS: primary s08 note preferred over alphabetically-first draft
+  PASS: custom workflowRootBase respected
+  PASS: reconcile emits CR mismatch metric to optional recorder
+  PASS: reconcile without recorder is backward-compatible (noop)
+
+All T7 CR aggregate reconciliation + atomic ACCEPTED spec bump tests passed.
+PASS: four role/audience profiles and fail-closed request cases.
+Positive PNG integration not run: set DIAGRAM_PNG_PYTHON and PLAYWRIGHT_BROWSERS_PATH to the pre-provisioned tuple.
+PASS: semantics, two layouts, static security, accessibility, missing-tool failure and canonical preservation.
+PASS: pinned identity, byte manifest, mutation, nested discovery and symlink rejection.
+Running materialize-work-item (Light routing) tests...
+
+  PASS: non-delivery lane short-circuits before report, scaffold, and capability writes
+  PASS: ambiguous text stays non-delivery while a structured hard trigger escalates
+  PASS: adaptive boolean typo fails closed instead of downgrading risk
+  PASS: incomplete non-delivery human override fails closed before writes
+  PASS: impossible human-override timestamp fails closed
+  PASS: complete human override opens materialization and remains auditable
+  PASS: adaptive materializer version skew fails before all delivery writes
+  PASS: adaptive materialize/scaffold/protocol adapters preserve one kernel decision
+  PASS: one activation flag restores the legacy writer shape
+  PASS: light-eligible selects sdd-light + passes --sdd-mode light
+  PASS: preset full short-circuits to full (no escalation)
+  PASS: greenfield escalates with recorded reason (not silently light)
+  PASS: preset light cannot override greenfield hard escalation (BR-02)
+  PASS: BUG without defect_source escalates (not silently light)
+  PASS: BUG with defect_source override + spec_impact classified becomes light
+  PASS: token inflections escalate light -> full with correct reasons
+  PASS: --spec-impact-classified strict parse rejects non-boolean
+  PASS: auto-scaffold routes Light contract (3 compact notes, sdd_mode=light)
+  PASS: sdd_light_profile=off rolls auto back to full + records reason
+  PASS: sdd_light_profile=preview preserves current auto->light behavior
+  PASS: sdd_light_profile=off does not block explicit --sdd-preset light
+  PASS: invalid sdd_light_profile rejected with allowed-values hint
+  PASS: proposal recovery CLI, signatures, refusal matrix, partial-write retry, notes, and snapshot race
+  PASS: materialize emits privacy-bounded opt-in lifecycle telemetry
+  PASS: telemetry is opt-in (no telemetry written by default)
+
+All materialize-work-item (Light routing) tests passed.
+OK: pre-candidate source contract passed for v2.8.0/48; no tarball was created
+Running v2.8.0 install-all hardened update matrix...
+
+  PASS: codex/global managed_skills=48, unmanaged_unchanged=true
+  PASS: codex/project managed_skills=48, unmanaged_unchanged=true
+  PASS: claude/global managed_skills=48, unmanaged_unchanged=true
+  PASS: claude/project managed_skills=48, unmanaged_unchanged=true
+
+OK: release-install-all-smoke.test.js passed
+OK: rollback source contract passed for v2.8.0 -> v2.7.0; exact artifacts are required only in exact-artifact mode
+PASS: v2.8.0 release record, 48-skill inventory, source/package boundaries and immutable history/installers.
+Running authoring-smoke golden Light baseline tests...
+
+  PASS: runCaseLightGoldenBudget exported
+  PASS: light-golden-budget registered in case list
+  PASS: light-golden-budget case runs green on fresh fixture
+  PASS: semantic evidence guard exported, registered, and runnable
+
+All authoring-smoke golden Light baseline tests passed.
+Running run-workflow-bundle-smoke (source snippet sync) tests...
+
+  PASS: router hard-stop + QR Voucher snippets present in source policy/skill files
+  PASS: hardened Codex/Claude x global/project update matrix
+
+OK: run-workflow-bundle-smoke.test.js passed
+Running scaffold-change-package (compact CR) tests...
+
+  PASS: compact scaffolds only request.md with canonical contract
+  PASS: full (default) scaffolds 7-file package, no request.md
+WARNING: compact CR eligibility violation (risk=n/a, summary="migrate customer index backfill"); escalating cr_profile to full.
+  PASS: compact eligibility violation (migration) escalates to full
+WARNING: compact CR eligibility violation (risk=n/a, summary="change public api contract policy"); escalating cr_profile to full.
+  PASS: compact eligibility violation (api/contract/policy) escalates to full
+WARNING: compact CR eligibility violation (risk=high, summary="small delta"); escalating cr_profile to full.
+  PASS: compact + risk-level high escalates to full
+  PASS: compact normalizes legacy CHANGE-### -> canonical CR-###
+  PASS: compact respects explicit --change-root
+WARNING: compact CR eligibility violation (risk=n/a, summary="run database migrations"); escalating cr_profile to full.
+WARNING: compact CR eligibility violation (risk=n/a, summary="migrating user data"); escalating cr_profile to full.
+WARNING: compact CR eligibility violation (risk=n/a, summary="update the apis"); escalating cr_profile to full.
+WARNING: compact CR eligibility violation (risk=n/a, summary="renegotiate contracts"); escalating cr_profile to full.
+WARNING: compact CR eligibility violation (risk=n/a, summary="apply retention policies"); escalating cr_profile to full.
+  PASS: token inflections (plurals/gerunds) escalate to full
+
+All scaffold-change-package (compact CR) tests passed.
+Running scaffold-workflow (Light compact) tests...
+
+  PASS: compact-scaffold (3 notes, 360 lines, no dangling refs)
+  PASS: lazy-s07-s08 idempotent (5 notes, 583 lines, no dangling)
+  PASS: explicit-steps-respected
+  PASS: non-light-scaffolds-all-8 (brd/srs, no card)
+  PASS: adaptive maintenance scaffold emits only applicable role/gate ceremony
+  PASS: public-contract adaptive scaffold adds reasoned SA/TA and contract gate
+  PASS: adaptive scaffold version skew fails before writes
+  PASS: multi-agent 2/3/4/8 roles keep flat file count 3/3/3/3 and reject orphan ids
+
+All scaffold-workflow (Light compact) tests passed.
+Running schema-version-sync (AC-14 contract) tests...
+
+  PASS: WORKFLOW_SCHEMA_VERSION aliases SDD_LIGHT_SCHEMA_VERSION
+  PASS: root manifest schema versions match code constants (AC-14 no drift)
+
+OK: schema-version-sync.test.js passed
+Running sync-workflow-bundle-runtime (copy permissions) tests...
+
+  PASS: copyDirectory chuẩn hóa quyền 644/755 (read-only source thành writable)
+  PASS: copyDirectory replaces hardened managed destination
+  PASS: sync propagates schema versions + bundle identity to package manifest
+  PASS: absent source schema versions default to empty string in package manifest
+
+OK: sync-workflow-bundle-runtime.test.js passed
+Running uncommitted-delivery guard tests...
+
+evaluateUncommittedDelivery is exported so the rule is testable without git
+  PASS: evaluateUncommittedDelivery is exported
+
+AC-004: a clean declared scope passes
+  PASS: a clean tree over a non-empty declared scope produces no error
+  PASS: and it is not recorded as a waiver
+
+REQ-004: a dirty declared path is refused and named
+  PASS: a dirty declared path produces an error
+  PASS: the error names the offending path so the operator knows what to commit
+  PASS: every offending path is named, not just the first
+  PASS: a refusal is not a waiver
+
+ODC-001 fallback: an empty declared scope refuses rather than passing vacuously
+  PASS: an empty granted_write_paths produces an error
+  PASS: the error explains that an empty declared scope is not evidence of a clean tree
+
+EDGE-002: the hatch WITH a stated reason waives the refusal and is visible
+  PASS: the hatch with a reason clears the refusal
+  PASS: the outcome is recorded as a waiver, not as a pass
+  PASS: the stated reason is carried out so the caller can echo it
+
+AC-004: the hatch WITHOUT a reason is refused - an invisible exemption is worse than no check
+  PASS: the hatch without a reason produces an error
+  PASS: the error names the missing reason
+  PASS: an unreasoned hatch does not waive
+  PASS: a whitespace-only reason is treated as no reason
+  PASS: the hatch without a reason is refused even over a clean tree
+
+a non-git project has no history to check, so the guard stays quiet
+  PASS: no error is raised outside a git repository
+  PASS: the outcome says WHY it passed, so a caller can surface the limitation
+
+All uncommitted-delivery guard tests passed.
+Running workflow_root equivalence tests...
+
+isEquivalentWorkflowRoot is exported so the rule is testable in isolation
+  PASS: isEquivalentWorkflowRoot is exported
+
+an identical absolute path is equivalent
+  PASS: the same absolute path matches itself
+
+D-A: a report written in one tree is read in an equivalent tree
+  PASS: a report storing the MAIN tree path validates when resolved inside a worktree
+  PASS: and the reverse direction too - a worktree-written report validates from the main tree
+  PASS: an unrelated checkout path with the same relative location is equivalent (CI, moved clone)
+
+EDGE-003: a genuinely wrong workflow_root is still rejected
+  PASS: a different work item slug is NOT equivalent
+  PASS: the workflow root base itself is NOT equivalent to a work item dir
+  PASS: the right slug under the WRONG parent directory is NOT equivalent
+  PASS: a deeper path that merely contains the expected one is NOT equivalent
+  PASS: a slug that only shares a prefix is NOT equivalent - segment comparison, not substring
+
+missing or malformed input is not equivalent
+  PASS: an empty stored workflow_root is not equivalent
+  PASS: an undefined stored workflow_root is not equivalent
+  PASS: a null stored workflow_root is not equivalent
+
+non-normalised but equivalent input is accepted
+  PASS: a trailing separator does not change equivalence
+  PASS: a redundant '.' segment does not change equivalence
+  PASS: a '..' segment is resolved before comparing
+  PASS: a RELATIVE stored workflow_root with the right relative location is equivalent
+
+a workflow root outside the project root falls back to strict equality
+  PASS: an out-of-tree workflow root still matches itself
+  PASS: an out-of-tree workflow root does not match a different out-of-tree path
+  PASS: typed collection validator is exported
+  PASS: protocol mirror validator is exported
+  PASS: duplicate IDs name collection/index
+  PASS: non-gate kind cannot carry gate
+  PASS: structured mirror mismatch is rejected
+  PASS: blockers rejects duplicate empty key
+  PASS: blockers rejects duplicate key with invalid entry
+  PASS: blockers rejects spaced duplicate key
+  PASS: blockers rejects entry after empty list
+  PASS: blockers rejects empty mapping
+  PASS: blockers rejects nonempty inline list
+  PASS: blockers rejects wrong list indentation
+  PASS: blockers rejects broken flow mapping
+  PASS: blockers rejects scalar followed by non-contiguous entry
+  PASS: blockers rejects scalar followed by comment and entry
+  PASS: blockers rejects unexpected continuation
+  PASS: blockers consumes or rejects invalid tail after matching first entry
+  PASS: blockers consumes or rejects invalid tail after matching first entry
+  PASS: blockers consumes or rejects invalid tail after matching first entry
+  PASS: blockers rejects duplicate entry IDs
+  PASS: required_actions rejects duplicate empty key
+  PASS: required_actions rejects duplicate key with invalid entry
+  PASS: required_actions rejects spaced duplicate key
+  PASS: required_actions rejects entry after empty list
+  PASS: required_actions rejects empty mapping
+  PASS: required_actions rejects nonempty inline list
+  PASS: required_actions rejects wrong list indentation
+  PASS: required_actions rejects broken flow mapping
+  PASS: required_actions rejects scalar followed by non-contiguous entry
+  PASS: required_actions rejects scalar followed by comment and entry
+  PASS: required_actions rejects unexpected continuation
+  PASS: required_actions consumes or rejects invalid tail after matching first entry
+  PASS: required_actions consumes or rejects invalid tail after matching first entry
+  PASS: required_actions consumes or rejects invalid tail after matching first entry
+  PASS: required_actions rejects duplicate entry IDs
+  PASS: TAR history validator is independently testable
+  PASS: TAR incomplete or unsigned history fails closed
+  PASS: TAR tampered signature fails closed
+  PASS: TAR changed original text fails closed
+  PASS: TAR changed operation ID fails closed
+  PASS: TAR changed source collection fails closed
+  PASS: TAR missing reason fails closed
+  PASS: TAR duplicate operation_id is rejected
+  PASS: TAR fixture-mode signature cannot count as production authorization
+  PASS: TAR tracked corpus contains protocol reports (32)
+  PASS: TAR 32 tracked reports load with exact legacy text and no migration
+
+All workflow_root equivalence tests passed.
+Running validate-workflow-artifact-names tests...
+
+OK: validate-workflow-artifact-names.test.js passed
+Running T7b wiring (validate-workflow-change aggregate) tests...
+
+  PASS: validateWorkflowChange surfaces ACCEPTED-without-bump error
+  PASS: validateWorkflowChange surfaces missing-contribution error (blocks ACCEPTED)
+  PASS: validateWorkflowChange surfaces un-waived PARTIAL error
+  PASS: validateWorkflowChange happy ACCEPTED passes
+
+All T7b wiring (validate-workflow-change aggregate) tests passed.
+Running validate-workflow-change (compact CR + dual-read) tests...
+
+WARNING: reading legacy change package 'CHANGE-001' (legacy CHANGE-###/change_* vocabulary). Migrate with: wfc change-item migrate --change-id CHANGE-001 --apply
+  PASS: legacy full CHANGE-001 fixture dual-reads and passes
+  PASS: compact CR validates via request.md (no 7-file requirement)
+  PASS: compact missing request.md produces error
+  PASS: compact invalid cr_status produces error
+  PASS: dual-read change_id alias resolves compact request.md
+
+All validate-workflow-change (compact CR + dual-read) tests passed.
+Running validate-workflow-change review-fix tests...
+
+  PASS: REJECTED cr_status is valid and representable
+  PASS: CANCELLED valid; BOGUS still invalid
+  PASS: request.md own cr_status validated
+  PASS: canonical cr_status wins over legacy change_status
+  PASS: custom --workflow-root threaded to aggregate reconcile
+
+All validate-workflow-change review-fix tests passed.
+Running validate-workflow-execution (heading i18n) tests...
+
+  PASS: accepts legacy '## Artifact Chính' heading
+  PASS: accepts translated '## Main Artifact' heading
+  PASS: reads assignments[] from ## Role Outputs
+  PASS: assignment_id/role/owned_scope/done_when/status readers reject missing fields
+  PASS: legacy worker-assignment file remains accepted
+
+OK: validate-workflow-execution.test.js passed
+Running validate-workflow-governance (light gate guard) tests...
+
+  PASS: artifactGovernance layer roots default + custom config
+  PASS: artifact placement rejects unplaced/empty exemption and echoes stated reason
+  PASS: custom artifactGovernance roots accept an adopter layout
+  PASS: five F9 duplication rules name their owners; deduplicated equivalent passes
+  PASS: light + foundation=required errors (no silent skip)
+  PASS: light + contract=required errors (no silent skip)
+  PASS: light without foundation/contract still passes
+  PASS: finalized semantic evidence negative/control fixtures
+  PASS: strict/regulated finalized notes route through semantic validator
+  PASS: adaptive applicability requires reasoned selected roles/gates
+
+All validate-workflow-governance (light gate guard) tests passed.
+OK: 75 task contract cases passed
+Running validate-workflow-sdd (Spec Card) tests...
+
+  PASS: valid-light-card
+  PASS: missing-provenance-origin (fails as expected)
+  PASS: invalid-provenance-value (fails as expected)
+  PASS: ac-mapping-unknown-requirement (fails as expected)
+  PASS: ac-missing-requirement-mapping (fails as expected)
+  PASS: requirement-without-ac-mapping (fails as expected)
+  PASS: freeze-authority-missing (fails as expected)
+  PASS: required-cr-missing (fails as expected)
+  PASS: duplicate-requirement-id (fails as expected)
+  PASS: duplicate-ac-id (fails as expected)
+  PASS: freeze-status-missing (fails as expected)
+  PASS: freeze-status-invalid (fails as expected)
+  PASS: frozen-requires-decided-at (fails as expected)
+  PASS: draft-freeze-no-decided-at
+  PASS: spec-version-missing (fails as expected)
+  PASS: open-decision-missing-owner (fails as expected)
+  PASS: assumption-missing-owner (fails as expected)
+  PASS: missing-card-ref (fails as expected)
+  PASS: strict-mode-regression (brd/srs path unchanged)
+
+All validate-workflow-sdd (Spec Card) tests passed.
+Running wfc CLI help tests...
+
+AC-002: the flow documents finalizing the note before sealing
+  PASS: the flow names a step for finalizing the gate host note
+  PASS: the step names both fields that activate checks: status and spec_status
+  PASS: the flow says why the order matters, not just what to do
+
+AC-002: the finalize step appears before the seal step, not after
+  PASS: all three flow steps are present
+  PASS: the finalize step comes before sealing (finalize@2483, seal@2801)
+  PASS: sealing still comes before activating
+
+AC-003: the flow documents the verify-stage finalization requirement
+  PASS: the documented flow includes a step for the verify transition
+  PASS: the verify step names s07, so the operator knows WHICH note must be finalized
+  PASS: the verify step names the finalize/reviewed requirement, not merely the word verify
+
+AC-003: the verify step sits after activate, matching the state machine
+  PASS: the flow names `wfc work-item verify`
+  PASS: activate is documented before verify (activate@3238, verify@3438)
+
+the existing approval controls are still documented
+  PASS: the TTY requirement is still stated
+  PASS: the non-interactive restriction is still stated
+
+CR-008 T7: telemetry help states opt-in, local retention and purge
+  PASS: help makes telemetry opt-in explicit
+  PASS: help states that telemetry stays local-only
+  PASS: help states the raw/aggregate retention window
+  PASS: help exposes the purge command
+
+CR-008 T7: wfc telemetry purge reaches the retention implementation
+  PASS: purge reports one expired event deletion (got: OK: telemetry purge scanned=1 deleted=1 kept=0 invalid=0)
+  PASS: wfc purge removes the expired raw event
+
+All wfc CLI help tests passed.
+✔ new bundle events require a direct canonical transaction identity; lifecycle events omit it (1.364166ms)
+✔ normalization preserves direct identity and exact human notes without backfilling historical events (0.597875ms)
+✔ all bundle decisions append direct identity independent of note wording and coarse audit history (1.2285ms)
+✔ explicit malformed persisted identity is rejected, never generated by the compatibility reader (0.18175ms)
+✔ typed entries survive normalization, including display whitespace (0.104625ms)
+✔ unknown legacy strings retain exact text and stay legacy on repeated loads (0.375ms)
+✔ one constructor creates deterministic full SHA-256 opaque IDs from a JSON tuple (0.130917ms)
+✔ typed shape validation rejects missing fields, unknown kinds, invalid gates and duplicate IDs (0.467458ms)
+✔ exact known values and fully consumed command grammar are adapted only at load (0.46525ms)
+✔ selectors use exact ID or kind+gate and never read display text (0.1175ms)
+✔ legacy command grammar consumes the whole input and binds commands to their owning subject (0.163917ms)
+✔ renderer emits stable YAML flow mappings with normalized report collection equality (0.211667ms)
+✔ load-only adapter reads a legacy report without rewriting its bytes (0.865083ms)
+✔ new reject/block/cancel writers emit valid typed state, not adapted legacy strings (0.671958ms)
+✔ work-item approval clears only its exact purpose IDs and preserves opaque feedback (0.125ms)
+✔ work-item rejection replaces only its own feedback and preserves unrelated state (0.164667ms)
+✔ closeout clears selected typed gates but preserves unknown blockers and actions across 20 display mutations (0.822875ms)
+✔ bundle rejection emits unique typed markers/actions and approval clears only its own phase (0.2035ms)
+✔ approval contradictions use exact gate or non-gate purpose identity, not wording or aliases (0.7775ms)
+✔ disposition target IDs bind report bytes, collection, and position (0.185041ms)
+✔ legacy report load retains raw entry shape and snapshot without rewriting bytes (0.866375ms)
+✔ normalization preserves optional resolved-state history rather than dropping it (0.083333ms)
+✔ empty optional history survives report write and reload without adding it to old reports (0.748333ms)
+✔ one per-work-item report lock rejects competing writers and releases only its own lock (1.011208ms)
+✔ report commit refuses a changed or unexpectedly created snapshot (0.492958ms)
+✔ disposition selects one raw entry only by the locked snapshot ID (0.218542ms)
+✔ atomic report replacement preserves whole pre-state or whole post-state at injected boundaries (36.882916ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 57.005541
+Running work-item-protocol (Light) tests...
+
+  CHECKED: CF-023 current-host binding matrix (none), actual validator and CLI, read-only snapshots
+  CHECKED: CF-023 current-host binding matrix (light), actual validator and CLI, read-only snapshots
+  PASS: receipt v1 and protocol reports dual-read without rewriting legacy shape
+  PASS: ensure-light-lazy-step-note (s07 on activate, s08 on verify, idempotent)
+  PASS: ensure-light-lazy-noop-for-non-light
+  PASS: approve-ready-bundle (4 independent receipts, approach->s06, per-gate reviewer)
+  PASS: twenty real cycles, twenty NOOP retries, direct event identities and report/mirror parity
+  PASS: all-bundle atomicity matrix completed 64/64 cases
+  PASS: real concurrent CLI race and two completed retries
+  PASS: failed verify leaves no premature s08 note (AC-05)
+  PASS: stale trusted-receipt digest fixture is rejected
+  PASS: contradictory protocol state fixture is rejected without inferring from opaque prose
+
+E-B / AC-004: a clean declared scope still reaches DONE (no false positive)
+
+E-B / REQ-004 / L-01: DONE is refused when a declared path is dirty AFTER a clean seal
+
+E-B / AC-004: the transition hatch requires a stated reason and echoes it
+WAIVED: closed over an uncommitted delivery. Reason: docs-only follow-up, nothing to commit
+
+E-B / EDGE-005: an empty granted_write_paths refuses rather than passing vacuously
+
+E-B / EDGE-006: outside a git repository the guard stays silent (consistent with L-02)
+
+E-B / T5 checkpoint: the guard is on the path the close CLI actually calls
+
+CR-008 T6: closeout bundle preserves the uncommitted-delivery guard
+
+All work-item-protocol (Light) tests passed.
+Running CR-008 adaptive-governance T0 tests...
+
+  BASELINE: canonical lane and transaction surfaces locked
+  CF-019: canonical Skill Requirement router precedence locked
+  BASELINE: eight lanes, exact maintenance exclusions, and 20x determinism locked
+  BASELINE: six hard triggers plus mixed intent reject every downgrade
+  CF-019: exact six-trigger role, reason, gate, and negative-role matrix locked
+  BASELINE: terminal gate applicability locked
+  BASELINE: bundle summary and injectable failure/crash contract locked
+  BASELINE: telemetry allowlist and secret canary locked
+  BASELINE: runtime-minor skew fail-closed behavior locked
+  BASELINE: 20 controlled adaptive runs; median 7->3 interactions (57.14% reduction), retry=0.00%
+
+OK: workflow-adaptive-governance.test.js passed
+PASS en / analysis source contract
+PASS en / chain source contract
+PASS en / protocol source contract
+PASS en / dod source contract
+PASS en / old read-only exception
+PASS en / clarity grants writes
+PASS en / optional prerequisites
+PASS en / full missing s04
+PASS en / full missing s05
+PASS en / full missing s06
+PASS en / Light missing s04
+PASS en / Light missing s06
+PASS en / Light missing Spec
+PASS en / Light missing DoR
+PASS en / Light missing Approach
+PASS en / Light missing Task Plan
+PASS en / unqualified ACTIVE hosts
+PASS en / draft grants approval
+PASS en / extra Light s05 host
+PASS en / activation at s01
+PASS en / unconditional legacy read
+PASS en / CLI legacy condition omitted
+PASS en / scaffold is approval
+PASS en / list future-only
+PASS en / AI self-approval
+PASS en / unqualified evaluation
+PASS en / evidence check removed
+PASS en / schema enum drift
+PASS vi / analysis source contract
+PASS vi / chain source contract
+PASS vi / protocol source contract
+PASS vi / dod source contract
+PASS vi / old read-only exception
+PASS vi / clarity grants writes
+PASS vi / optional prerequisites
+PASS vi / full missing s04
+PASS vi / full missing s05
+PASS vi / full missing s06
+PASS vi / Light missing s04
+PASS vi / Light missing s06
+PASS vi / Light missing Spec
+PASS vi / Light missing DoR
+PASS vi / Light missing Approach
+PASS vi / Light missing Task Plan
+PASS vi / unqualified ACTIVE hosts
+PASS vi / draft grants approval
+PASS vi / extra Light s05 host
+PASS vi / activation at s01
+PASS vi / unconditional legacy read
+PASS vi / CLI legacy condition omitted
+PASS vi / scaffold is approval
+PASS vi / list future-only
+PASS vi / AI self-approval
+PASS vi / unqualified evaluation
+PASS vi / evidence check removed
+PASS vi / schema enum drift
+Guidance checks: 56 passed, 0 failed; 48 negative mutations rejected.
+Running workflow-bundle canonical/runtime parity tests...
+
+  codex: checked 48 skill directories against canonical source
+  claude: checked 48 skill directories against canonical source
+OK: workflow-bundle-runtime-parity.test.js passed
+Running workflow-bundle adapter tests...
+
+  PASS: loadAdapter hợp lệ cho codex + claude
+  PASS: loadAdapter error paths (not-found, invalid id, JSON hỏng, mismatch, thiếu section)
+  PASS: listAvailableHarnesses (sorted, adapters/ vắng, adapter hỏng skip im lặng)
+  PASS: detectActiveHarness explicit + fallback codex
+  PASS: detectActiveHarness env detection + ambiguity (0/1/nhiều)
+  PASS: getRuntimeConfigFromAdapter (fixture new-format; precedence adapter > manifest)
+  PASS: normalizeInstallState tôn trọng context.repoRoot
+  PASS: manifest schema-version readers return declared values
+  PASS: absent schema versions default to empty string (no crash on null/undefined)
+  PASS: hardened managed destinations recover without mutating unmanaged content or mode
+  PASS: managed write refuses symbolic-link targets
+  PASS: managed skill cleanup rejects path traversal
+
+OK: workflow-bundle-utils.test.js passed
+OK: workflow-change-definitions.test.js passed
+Running workflow-gate-evidence (Light) tests...
+
+  PASS: gate-host-map-light (approach->s06)
+  PASS: required-finalized-gate-keys-light
+  PASS: gate snapshot dual-reads adaptive compact and legacy fixed shapes
+  PASS: protocol-step-gates-light-skips-s05 (requires s04+s06+approach, no s05)
+  PASS: protocol-step-gates-non-light-checks-s05
+  PASS: protocol-step-gates-s08-requires-s07-evidence
+  PASS: resolve-gate-artifact-light-approach (s06)
+
+All workflow-gate-evidence (Light) tests passed.
+Running artifact reference resolver tests...
+
+OK: workflow-gate-evidence-utils.test.js passed
+OK: 19 versioned reader and legacy compatibility cases passed
+Running workflow-gate-review tests...
+
+validateSnapshotAuthority is exported so the guard is testable
+  PASS: validateSnapshotAuthority is exported
+
+a finalized note with full authority seals
+  PASS: a finalized note with reviewer, timestamp and signoff is accepted
+
+TD-02: a draft host note is refused, and the message states the order
+  PASS: sealing is refused while the host note is status draft (got: Cannot seal gate 'spec': host note is still status draft in /tmp/example.s04.acceptance-criteria.md. Correct o)
+  PASS: the refusal states the correct order so the failure teaches the fix (got: Cannot seal gate 'spec': host note is still status draft in /tmp/example.s04.acceptance-criteria.md. Correct o)
+
+TD-02: spec gate requires spec_status approved or frozen
+  PASS: sealing the spec gate is refused while spec_status is draft (got: Cannot seal gate 'spec': spec_status is 'draft' in /tmp/example.s04.acceptance-criteria.md, expected approved )
+  PASS: a non-spec gate is unaffected by spec_status, mirroring the activate-time rule
+  PASS: spec_status 'approved' is accepted
+  PASS: spec_status 'frozen' is accepted
+
+the pre-existing authority checks are unchanged
+  PASS: an empty gate_reviews.spec_reviewed_by is still refused (got: gate_reviews.spec_reviewed_by in /tmp/example.s04.acceptance-criteria.md must include 'ba' before sealing trus)
+  PASS: a missing gate_reviews.spec_reviewed_at is still refused (got: gate_reviews.spec_reviewed_at is required in /tmp/example.s04.acceptance-criteria.md before sealing trusted ap)
+  PASS: a reviewer absent from role_signoffs is still refused (got: role_signoffs.spec in /tmp/example.s04.acceptance-criteria.md must include 'ba' before sealing trusted approva)
+
+the bootstrap gate stays exempt
+  PASS: gate 'bootstrap' returns early as before
+
+CR-008 T5: transaction surface and complete human summary
+  PASS: failure-point catalog is exported
+  PASS: buildApprovalBundlePlan is exported
+  PASS: executeApprovalTransaction is exported
+  PASS: recoverApprovalTransaction is exported
+  PASS: getApprovalTransactionPaths is exported
+  PASS: bundle summary preserves the readiness phase
+  PASS: bundle summary lists every applicable gate
+  PASS: bundle summary includes gate
+  PASS: bundle summary includes reviewer_role
+  PASS: bundle summary includes artifact_digest
+  PASS: bundle summary includes consequence
+  PASS: bundle summary includes gate
+  PASS: bundle summary includes reviewer_role
+  PASS: bundle summary includes artifact_digest
+  PASS: bundle summary includes consequence
+  PASS: transaction publishes at least five failure boundaries including after_first_commit
+
+CR-008 T5: preflight failure leaves zero receipt, state, journal or lock writes
+  PASS: a stale host digest is rejected during preflight (got: Approval transaction preflight failed: digest mismatch for guard: expected b53f24a04941a64abefe80d2403fa55f866)
+  PASS: preflight failure writes no receipt
+  PASS: preflight failure creates no journal or lock directory
+
+CR-008 T5: successful commit is atomic and keeps independent receipt-v1 files
+  PASS: successful transaction returns COMMITTED
+  PASS: an omitted transaction_id preserves the generated canonical UUID result
+  PASS: derived protocol state commits with receipts
+  PASS: each gate keeps an independent receipt schema v1 file
+  PASS: receipt files retain independent gate identities
+  PASS: successful commit removes journal and lock
+  PASS: approve-readiness-bundle: preserve a committed journal for direct comparison (got: Injected approval transaction crash at after_verified_commit.)
+  PASS: approve-readiness-bundle: normalized event matches journal identity directly
+  PASS: approve-readiness-bundle: recovery result shares exact event/journal identity
+  PASS: approve-readiness-bundle: completed recovery retry appends nothing
+  PASS: reject-readiness-bundle: preserve a committed journal for direct comparison (got: Injected approval transaction crash at after_verified_commit.)
+  PASS: reject-readiness-bundle: normalized event matches journal identity directly
+  PASS: reject-readiness-bundle: recovery result shares exact event/journal identity
+  PASS: reject-readiness-bundle: completed recovery retry appends nothing
+  PASS: approve-closeout-bundle: preserve a committed journal for direct comparison (got: Injected approval transaction crash at after_verified_commit.)
+  PASS: approve-closeout-bundle: normalized event matches journal identity directly
+  PASS: approve-closeout-bundle: recovery result shares exact event/journal identity
+  PASS: approve-closeout-bundle: completed recovery retry appends nothing
+  PASS: reject-closeout-bundle: preserve a committed journal for direct comparison (got: Injected approval transaction crash at after_verified_commit.)
+  PASS: reject-closeout-bundle: normalized event matches journal identity directly
+  PASS: reject-closeout-bundle: recovery result shares exact event/journal identity
+  PASS: reject-closeout-bundle: completed recovery retry appends nothing
+  PASS: invalid new event suffix is rejected before transaction writes (got: Approval transaction requires exactly one new protocol event with matching action and transaction_id.)
+  PASS: invalid event binding leaves history/state unchanged with zero journal/lock writes
+  PASS: invalid new event suffix is rejected before transaction writes (got: Approval transaction requires exactly one new protocol event with matching action and transaction_id.)
+  PASS: invalid event binding leaves history/state unchanged with zero journal/lock writes
+  PASS: invalid new event suffix is rejected before transaction writes (got: Approval transaction requires exactly one new protocol event with matching action and transaction_id.)
+  PASS: invalid event binding leaves history/state unchanged with zero journal/lock writes
+  PASS: invalid new event suffix is rejected before transaction writes (got: Approval transaction requires exactly one new protocol event with matching action and transaction_id.)
+  PASS: invalid event binding leaves history/state unchanged with zero journal/lock writes
+  PASS: invalid new event suffix is rejected before transaction writes (got: Approval transaction requires exactly one new protocol event with matching action and transaction_id.)
+  PASS: invalid event binding leaves history/state unchanged with zero journal/lock writes
+  PASS: valid bound suffix commits after unbound legacy history
+  PASS: coordinator does not backfill historical identity
+
+F-AG11-001 T1: optional transaction identity is validated before writes and reused
+  PASS: a valid caller-supplied transaction_id is reused by the committed transaction
+  PASS: a malformed caller-supplied transaction_id is rejected (got: Invalid approval transaction transaction_id 'not-a-canonical-uuid'; expected a canonical UUID.)
+  PASS: malformed transaction identity is rejected before any target write
+  PASS: malformed transaction identity is rejected before transaction journal or lock directories exist
+
+CR-008 T5: every caught persistence failure rolls every target back
+  PASS: failure injection reaches after_lock (got: Injected approval transaction failure at after_lock.)
+  PASS: after_lock: rollback removes every partial receipt
+  PASS: after_lock: rollback restores prior derived state
+  PASS: after_lock: rollback removes journal and lock
+  PASS: failure injection reaches after_journal (got: Injected approval transaction failure at after_journal.)
+  PASS: after_journal: rollback removes every partial receipt
+  PASS: after_journal: rollback restores prior derived state
+  PASS: after_journal: rollback removes journal and lock
+  PASS: failure injection reaches after_first_stage (got: Injected approval transaction failure at after_first_stage.)
+  PASS: after_first_stage: rollback removes every partial receipt
+  PASS: after_first_stage: rollback restores prior derived state
+  PASS: after_first_stage: rollback removes journal and lock
+  PASS: failure injection reaches after_staging (got: Injected approval transaction failure at after_staging.)
+  PASS: after_staging: rollback removes every partial receipt
+  PASS: after_staging: rollback restores prior derived state
+  PASS: after_staging: rollback removes journal and lock
+  PASS: failure injection reaches after_first_commit (got: Injected approval transaction failure at after_first_commit.)
+  PASS: after_first_commit: rollback removes every partial receipt
+  PASS: after_first_commit: rollback restores prior derived state
+  PASS: after_first_commit: rollback removes journal and lock
+  PASS: failure injection reaches after_commit (got: Injected approval transaction failure at after_commit.)
+  PASS: after_commit: rollback removes every partial receipt
+  PASS: after_commit: rollback restores prior derived state
+  PASS: after_commit: rollback removes journal and lock
+  PASS: failure injection reaches before_verify (got: Injected approval transaction failure at before_verify.)
+  PASS: before_verify: rollback removes every partial receipt
+  PASS: before_verify: rollback restores prior derived state
+  PASS: before_verify: rollback removes journal and lock
+  PASS: failure injection reaches after_verified_commit (got: Injected approval transaction failure at after_verified_commit.)
+  PASS: after_verified_commit: rollback removes every partial receipt
+  PASS: after_verified_commit: rollback restores prior derived state
+  PASS: after_verified_commit: rollback removes journal and lock
+
+CR-008 T5: crash recovery rolls back deterministically and is idempotent
+  PASS: crash injection interrupts after the first visible commit (got: Injected approval transaction crash at after_first_commit.)
+  PASS: simulated crash leaves a recovery journal
+  PASS: first recovery rolls the interrupted transaction back
+  PASS: recovery restores the complete pre-transaction state
+  PASS: repeating recovery is a no-op
+
+CR-008 T5: recovery completes a fully verified commit instead of rolling it back
+  PASS: crash injection interrupts after the verified COMMITTED journal state (got: Injected approval transaction crash at after_verified_commit.)
+  PASS: recovery completes a fully verified committed transaction
+  PASS: completed recovery retains every committed receipt
+  PASS: completed recovery retains reconciled protocol state
+  PASS: completed recovery is idempotent on retry
+
+CR-008 T5: per-work-item lock refuses a concurrent transaction
+  PASS: a live lock blocks another transaction for the same work item (got: Approval transaction already in progress for 'transaction-item' (lock: /var/folders/w2/l4tbcf3d0_196pvyvzsdm81)
+  PASS: concurrent refusal writes no receipt
+  PASS: concurrent refusal leaves derived state unchanged
+  PASS: early concurrent refusal preserves the existing lock
+
+TS6a: native wx acquisition loss preserves the foreign live lock and journal
+  PASS: journal=false: the native losing wx open fails before ownership
+  PASS: journal=false: failed acquisition preserves the foreign live lock bytes
+  PASS: journal=false: failed acquisition preserves the winner journal state
+  PASS: journal=false: failed acquisition writes no current authority or state
+  PASS: journal=true: the native losing wx open fails before ownership
+  PASS: journal=true: failed acquisition preserves the foreign live lock bytes
+  PASS: journal=true: failed acquisition preserves the winner journal state
+  PASS: journal=true: failed acquisition writes no current authority or state
+
+TS6a: failure writing a successfully acquired lock still cleans its own lock
+  PASS: lock payload write fails after native acquisition
+  PASS: own acquired lock is cleaned when payload writing fails
+  PASS: acquired-lock failure writes no authority or derived state
+
+All workflow-gate-review tests passed.
+PASS en Step 3 source
+PASS en Step 4 source
+PASS en explicit approval and fail-closed status
+PASS vi Step 3 source
+PASS vi Step 4 source
+PASS vi explicit approval and fail-closed status
+PASS VI Step 3 positive control
+PASS VI Step 4 positive control
+PASS CRLF controls
+PASS reject removed Step 3 Light paragraph
+PASS reject required separate s05 physical note
+PASS reject required separate s05 receipt
+PASS reject Spec/DoR moved to s06
+PASS reject Approach/Task Plan moved to s05
+PASS reject missing Spec
+PASS reject missing DoR
+PASS reject missing Approach
+PASS reject missing Task Plan
+PASS reject Foundation without full escalation
+PASS reject dropped conditional Contract
+PASS reject unconditional Contract
+PASS reject removed Step 4 Light mapping
+PASS reject appended contradictory s05 requirement
+PASS reject missing logical s01
+PASS reject missing logical s02
+PASS reject missing logical s03
+PASS reject missing logical s04
+PASS reject missing logical s05
+PASS reject missing logical s06
+PASS reject missing logical s07
+PASS reject missing logical s08
+Light router checks: 31 passed, 0 failed; 22 negative mutations rejected.
+OK: workflow-sdd-definitions.test.js passed
+Running workflow-telemetry tests...
+
+  PASS: sanitizer applies absolute allowlist + per-install pseudonym + canary rejection
+  PASS: lead time is bucketed instead of persisted as a raw duration
+  PASS: telemetry disabled mode is a complete filesystem no-op
+  PASS: recorder writes only privacy-bounded, local, allowlisted metrics
+  PASS: purge enforces raw<=30d and aggregate<=90d without unsafe deletion
+  PASS: helper outputs contain counts, not messages or identifiers
+  PASS: telemetry output remains local and out-of-band by default
+
+OK: workflow-telemetry.test.js passed
+  PASS: T4: signed receipt schema v1 stays the compatibility shape
+  PASS: T4: receipt v1 is returned unchanged, never auto-rewritten
+  PASS: T4: unknown receipt schema fails closed
+  PASS: AC-001: repo and its worktree resolve to one canonical root (/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/wf-canonical-root-H3KAmz/repo-a vs /private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/wf-canonical-root-H3KAmz/repo-a)
+  PASS: AC-001: the canonical root is the main worktree toplevel, not the worktree path
+  PASS: SM-3: the approval namespace is identical from both paths
+  PASS: EDGE-003: a worktree inside the main tree resolves to the main identity
+  PASS: EDGE-003: a worktree created from another worktree still resolves to the main identity
+  PASS: AC-003: an independent repository resolves to a different canonical root
+  PASS: AC-003: two repositories never share an approval namespace
+  PASS: AC-001: the planted receipt is readable from the repo itself
+  PASS: AC-001: the SAME receipt is readable from the worktree - this is the whole defect
+  PASS: AC-003: a different project cannot read it - refused lookup, not just an unequal string
+  PASS: EDGE-002: a non-git directory does not throw
+  PASS: EDGE-002: a non-git directory falls back to the projectRoot it was given (legacy behaviour)
+  PASS: S05-R01: a separate-git-dir layout falls back to the given projectRoot instead of guessing
+  PASS: AC-006: resolution is deterministic for repo
+  PASS: AC-006: resolution is deterministic for worktree
+  PASS: AC-006: resolution is deterministic for non-git
+  PASS: AC-006: resolution is deterministic for separate-git-dir
+  PASS: AC-002: for a plain main-tree checkout the new namespace equals the legacy one - no receipt moves
+  PASS: AC-002: a receipt written under the legacy scheme is readable from a worktree after the change
+  PASS: AC-005 control 1: an inline passphrase is refused in normal mode
+  PASS: AC-005 control 2: the fixture hatch still works when explicitly enabled - gated, not removed
+  PASS: AC-005 control 3: every gate still gets its own independent receipt path
+  PASS: AC-005 control 4: a receipt binds to the host artifact sha256, so a post-seal edit is detectable
+
+GOV-EX-001: the EAGAIN retry in the passphrase read is covered
+  PASS: readStdinByteSync is exported so the retry can be tested at all (the register names this as part of the debt)
+  PASS: a byte is returned after transient EAGAIN (got 1)
+  PASS: the read is retried rather than failing on the first EAGAIN (calls=3)
+  PASS: a non-EAGAIN error still throws instead of looping (threw=true, code=EBADF)
+  PASS: a zero-byte read is returned, not retried forever
+  PASS: TAR structured disposition signer and verifier are available
+  PASS: TAR missing keypair refuses without creating a new identity
+  PASS: TAR missing keypair leaves approval root untouched
+  PASS: TAR inline credential is rejected in normal mode
+  PASS: TAR claimed Maintainer role alone cannot sign without a human TTY
+  PASS: TAR fixture credential is visibly marked, never disguised as TTY evidence
+  PASS: TAR existing key signs a verifiable structured intent
+  PASS: TAR signature binds work_item_slug
+  PASS: TAR signature binds operation_id
+  PASS: TAR signature binds state_id
+  PASS: TAR signature binds source_collection
+  PASS: TAR signature binds actor
+  PASS: TAR signature binds reason
+  PASS: TAR signature binds original_text
+  PASS: TAR signature binds resolved_at
+  PASS: TAR signature binds authorization_mode
+  PASS: TAR signature binds the exact original entry object
+  PASS: TAR wrong passphrase cannot produce a signature
+  PASS: TAR non-Maintainer actor is rejected
+  PASS: TAR never rewrites the existing key
+
+OK: workflow-trusted-approval-utils.test.js passed
+
+D-A / REQ-001: wfc protocol tolerates a stored workflow_root from a sibling tree
+  PASS: scaffold s01 succeeds
+  PASS: work item approve bootstraps a report
+  PASS: precondition: the report stores an ABSOLUTE workflow_root (got "/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/wci-da-origin-GtEKAm/work-items/da-item")
+    protocol-from-copy exit=0; first line: OK: validated 1 protocol-managed work items under /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/wci-da-origin-GtEKAm-copy/work-items (skipped legacy: 0)
+  PASS: wfc protocol does not report a workflow_root mismatch when run against an equivalent tree (today: it does - D-A)
+    protocol-wrong-root exit=1; first line: ERROR: workflow_root mismatch in /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/wci-da-origin-GtEKAm-copy/work-items/da-item/da-item.work-item-report.json: expected '/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/wci-da-origin-GtEKAm-copy/work-items/da-item', stored '/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/wci-da-origin-GtEKAm-copy/work-items/a-completely-different-item'
+  PASS: EDGE-003: a genuinely wrong workflow_root is STILL rejected after normalisation
+
+D-B / REQ-002: tdd-enforce maps packages/X/bin/foo.js to packages/X/test/foo.test.js
+  PASS: precondition: packages/workflow-bundle/test/wfc.test.js exists
+  PASS: precondition: packages/workflow-bundle/bin/test/wfc.test.js does NOT exist
+    bin/wfc.js exit=0; expected-test line: (none)
+  PASS: editing packages/workflow-bundle/bin/wfc.js is ALLOWED because its test exists at packages/workflow-bundle/test/wfc.test.js (today: blocked, demanding bin/test/ - D-B)
+    bin/no-such-module-xyz.js exit=2
+  PASS: EDGE-004: a bin/ file with NO matching test is still blocked - the mapping is fixed, not the policy
+  PASS: control: the existing packages/X/scripts/ mapping still allows a file whose test exists
+  PASS: control: a packages/X/scripts/ file with no test is still blocked
+  PASS: exemption preserved: markdown docs (CLAUDE.md)
+  PASS: exemption preserved: json config (packages/workflow-bundle/workflow-bundle.manifest.json)
+  PASS: exemption preserved: hook scripts (scripts/hooks/tdd-enforce.sh)
+  PASS: exemption preserved: test files themselves (packages/workflow-bundle/test/wfc.test.js)
+
+D-C / REQ-003: wfc help documents the verify-stage finalization requirement
+  PASS: wfc help exits 0
+  PASS: precondition: the guard message "s07 implementation note must be reviewed or finalized before verification" exists in workflow-gate-evidence-utils.js
+    flow lines mentioning verify: ["  9b. finalize the s07 implementation note BEFORE verifying: set its status to non-draft, or record its review","  9c. wfc work-item verify --work-item <work-item-slug>"]
+  PASS: the documented flow includes a step for the verify transition (today: absent - D-C)
+  PASS: the verify flow step names s07, so the operator knows WHICH note must be finalized
+  PASS: the verify flow step names the finalize/reviewed requirement, not just the word verify
+  PASS: the flow keeps activate before verify, so the documented order matches the state machine
+
+D-D / AC-004: a clean declared path still seals dod (no false positive)
+  PASS: precondition: src is clean (git status: "")
+    seal exit=0; first line: OK: workflow gate 'dod' | work_item=dd-clean-item | status=APPROVED | digest_match=true
+  PASS: sealing dod over a CLEAN declared path succeeds
+
+D-D / REQ-004: sealing dod over a DIRTY declared path is refused
+  PASS: precondition: src is dirty (git status: "M src/app.js")
+    seal exit=1; first line: ERROR: Cannot seal gate 'dod' for 'dd-dirty-item':
+  PASS: sealing dod is REFUSED while a declared path holds uncommitted changes (today: it succeeds - D-D)
+  PASS: the refusal names the offending path, so the operator knows what to commit
+
+D-D / AC-004: the escape hatch requires a stated reason and echoes it
+    hatch-with-reason exit=0; first line: OK: workflow gate 'dod' | work_item=dd-hatch-yes-item | status=APPROVED | digest_match=true
+  PASS: the hatch WITH a stated reason permits the seal (EDGE-002)
+  PASS: the stated reason is echoed into output - an invisible exemption is worse than no check
+    hatch-without-reason exit=1; first line: ERROR: Cannot seal gate 'dod' for 'dd-hatch-no-item':
+  PASS: the hatch WITHOUT a reason is refused, so the exemption cannot be silent
+
+D-D / ODC-001 fallback: an empty granted_write_paths refuses rather than passing vacuously
+    seal exit=1; first line: ERROR: Cannot seal gate 'dod' for 'dd-empty-item':
+  PASS: an empty declared scope is not evidence of a clean tree, so the seal is refused (today: it succeeds)
+
+All worktree-and-closure-integrity tests passed.
+
+OK: 51 workflow-bundle unit test file(s) passed

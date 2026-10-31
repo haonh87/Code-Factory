@@ -1,0 +1,20 @@
+{
+  "id": "feature-1",
+  "status": "exited",
+  "exit_code": 1,
+  "elapsed_seconds": 11.96,
+  "event_types": [
+    "thread.started",
+    "turn.started",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "item.started",
+    "item.completed",
+    "error",
+    "turn.failed"
+  ],
+  "changed_files": [],
+  "usage": [],
+  "events_sha256": "f760e893a40d6ab23ee7e3e3163332a0e0d6a12f9436975f3cb743eb93ecda02"
+}

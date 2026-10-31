@@ -1,0 +1,4 @@
+Running artifact reference resolver tests...
+
+OK: workflow-gate-evidence-utils.test.js passed
+OK: 19 versioned reader and legacy compatibility cases passed

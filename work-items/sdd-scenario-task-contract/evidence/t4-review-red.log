@@ -1,0 +1,49 @@
+node:internal/assert/utils:146
+  throw error;
+  ^
+
+AssertionError [ERR_ASSERTION]: AC id can follow description: AC id can follow description: ["/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-VYLUTp/work-items/sample/sample.s06.task-breakdown.md: Traceability.acceptance_refs: unresolved AC AC-001"]
+
+false !== true
+
+AC list accepts four-space indentation: AC list accepts four-space indentation: ["/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-reVDh1/work-items/sample/sample.s06.task-breakdown.md: spec_refs: no acceptance criterion IDs","/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-reVDh1/work-items/sample/sample.s06.task-breakdown.md: Traceability.acceptance_refs: unresolved AC AC-001"]
+
+false !== true
+
++ actual - expected
+
++ [
++   'AC id can follow description: AC id can follow description: ["/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-VYLUTp/work-items/sample/sample.s06.task-breakdown.md: Traceability.acceptance_refs: unresolved AC AC-001"]\n' +
++     '\n' +
++     'false !== true\n',
++   'AC list accepts four-space indentation: AC list accepts four-space indentation: ["/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-reVDh1/work-items/sample/sample.s06.task-breakdown.md: spec_refs: no acceptance criterion IDs","/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-reVDh1/work-items/sample/sample.s06.task-breakdown.md: Traceability.acceptance_refs: unresolved AC AC-001"]\n' +
++     '\n' +
++     'false !== true\n'
++ ]
+- []
+
+    at run (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/validate-workflow-planning.test.js:104:10)
+    at Object.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/validate-workflow-planning.test.js:107:30)
+    at Module._compile (node:internal/modules/cjs/loader:1934:14)
+    at Object..js (node:internal/modules/cjs/loader:2074:10)
+    at Module.load (node:internal/modules/cjs/loader:1656:32)
+    at Module._load (node:internal/modules/cjs/loader:1448:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'AC id can follow description: AC id can follow description: ["/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-VYLUTp/work-items/sample/sample.s06.task-breakdown.md: Traceability.acceptance_refs: unresolved AC AC-001"]\n' +
+      '\n' +
+      'false !== true\n',
+    'AC list accepts four-space indentation: AC list accepts four-space indentation: ["/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-reVDh1/work-items/sample/sample.s06.task-breakdown.md: spec_refs: no acceptance criterion IDs","/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/task-contract-reVDh1/work-items/sample/sample.s06.task-breakdown.md: Traceability.acceptance_refs: unresolved AC AC-001"]\n' +
+      '\n' +
+      'false !== true\n'
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.5.0

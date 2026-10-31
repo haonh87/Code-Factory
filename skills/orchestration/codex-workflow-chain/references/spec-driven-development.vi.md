@@ -256,3 +256,13 @@ residual_risks: []
 business_acceptance_readiness: READY|READY_WITH_GUARDS|BLOCKED
 release_readiness: READY|READY_WITH_GUARDS|BLOCKED|NOT_APPLICABLE
 ```
+
+## Payload task và trace có version
+
+Note s06 có thể opt-in bằng `task_contract_version: 1`; mặc định legacy và các
+gate con người vẫn được giữ. Contract payload, field và verification được sở hữu
+bởi [Task Breakdown Planner](../../../delivery/task-breakdown-planner/SKILL.vi.md#task-contract-v1-theo-opt-in).
+Dùng hai owner JSON của skill, không sao chép task/AC sang YAML hoặc block
+SDD Traceability legacy. Spec Card/SRS vẫn sở hữu hành vi và ID AC; plan sở hữu
+mapping AC thay đổi tới task. Cấu trúc hợp lệ không chứng minh độ phủ ngữ nghĩa,
+test đã pass hoặc quyền thực thi.

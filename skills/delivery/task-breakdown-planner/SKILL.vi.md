@@ -134,3 +134,89 @@ Nếu output của skill này được lưu thành note `.md` trong workflow cha
 - Có `task_breakdown` đủ rõ để implement bắt đầu an toàn.
 - Có `verification_plan` và `risk_notes`.
 - Có `notes_for_implementation` đủ để bước implement không phải suy diễn lại design.
+
+## Task contract v1 theo opt-in
+
+YAML legacy vẫn là mặc định. Để s06 (kể cả Light) dùng v1, đặt số nguyên
+`task_contract_version: 1` trong frontmatter; chuỗi có dấu nháy và mọi giá trị
+khác đều không hợp lệ. Thay đồng thời payload task và trace: `## Main Artifact`
+sở hữu một object JSON, `## Traceability` sở hữu một object JSON. Không giữ bản
+YAML trùng nguồn sự thật. Các block và gate khác của step vẫn áp dụng.
+
+Giữ các field task hiện có; thêm `kind` (`behavior`, `documentation`, `verification`)
+và `verification` gồm `cwd`, `argv`, `test_refs`. Khai báo file cụ thể tương đối với
+repo, cho phép file dự kiến chưa tồn tại; không cấp scope thư mục, glob, traversal
+hay symlink thoát repo. Dependency phải tồn tại trong plan, không trùng, không tự
+tham chiếu và không tạo chu trình.
+
+Task behavior phải có ít nhất một file test thuộc `paths_in_scope` của chính nó.
+Kind khác cần giải thích danh sách test rỗng trong `verification_hint`. Objective,
+output và checkpoint phải cụ thể. `argv` là mảng token, không phải chuỗi lệnh shell;
+không chấp nhận shell `-c` tương đương hoặc toán tử điều khiển đứng riêng. Validator
+không chạy lệnh và không cấp quyền thực thi.
+
+`acceptance_refs` khai báo AC thay đổi và phải khớp ID chính xác trong
+`spec_refs.card` hoặc `spec_refs.srs`. Mỗi AC có đúng một mapping tới danh sách
+ID task hợp lệ không rỗng. Người review vẫn kiểm tra độ đầy đủ của AC, phân loại
+kind và việc test có thật sự chứng minh hành vi hay không.
+
+Hai payload dưới đây minh họa hai owner; AC được tham chiếu phải tồn tại trong
+spec sở hữu của dự án. Đây không phải artifact mới.
+
+Payload Main Artifact:
+```json
+{
+  "implementation_goal": "Preserve the first accepted event for duplicate IDs",
+  "task_breakdown": [
+    {
+      "id": "T1",
+      "owner_role": "developer",
+      "name": "Reject duplicate events",
+      "objective": "Preserve the first accepted event",
+      "kind": "behavior",
+      "paths_in_scope": [
+        "src/events.js",
+        "test/events.test.js"
+      ],
+      "dependencies": [],
+      "outputs_expected": [
+        "Duplicate event regression passes"
+      ],
+      "review_checkpoint": "Review AC-001 then code quality",
+      "verification_hint": "Run the duplicate-event regression",
+      "verification": {
+        "cwd": ".",
+        "argv": [
+          "node",
+          "test/events.test.js"
+        ],
+        "test_refs": [
+          "test/events.test.js"
+        ]
+      }
+    }
+  ]
+}
+```
+
+Payload Traceability:
+```json
+{
+  "acceptance_refs": [
+    "AC-001"
+  ],
+  "task_refs": [
+    {
+      "acceptance_ref": "AC-001",
+      "task_ids": [
+        "T1"
+      ]
+    }
+  ]
+}
+```
+
+Chạy `wfc plan --workflow-root work-items --project-root .` và các kiểm tra SDD,
+governance áp dụng với cùng project root. Reader cũ không đọc được v1; giữ đường
+viết legacy để rollback, không tự hạ cấp note v1 đã ký. JSON lỗi, key/owner trùng
+và kiểu dữ liệu sai đều bị từ chối.

@@ -293,3 +293,13 @@ residual_risks: []
 business_acceptance_readiness: READY|READY_WITH_GUARDS|BLOCKED
 release_readiness: READY|READY_WITH_GUARDS|BLOCKED|NOT_APPLICABLE
 ```
+
+## Versioned task and trace payloads
+
+An s06 note may explicitly opt into `task_contract_version: 1`. This preserves
+legacy defaults and all human gates. The payload, field and verification contract
+is owned by [Task Breakdown Planner](../../../delivery/task-breakdown-planner/SKILL.md#opt-in-task-contract-v1).
+Use its paired JSON owners instead of duplicating task/AC data into YAML or the
+legacy SDD Traceability block. The Spec Card/SRS still owns accepted behavior and
+AC IDs; the plan owns changed-AC-to-task mappings. Structural validity does not
+prove semantic coverage, passing tests or authorization to execute.

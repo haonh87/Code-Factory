@@ -420,6 +420,8 @@ const STEP_DEFINITIONS = [
     }
   },
   {
+    // task_contract_version is intentionally absent: v1 is an explicit authored opt-in,
+    // never an implicit scaffold migration. See task-breakdown-planner.
     stepId: "s06",
     stepSlug: "task-breakdown",
     title: "Task Plan",

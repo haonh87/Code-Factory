@@ -1,3 +1,4 @@
+const { readTaskContract, validateTaskContract } = require("./validate-workflow-planning");
 const path = require("path");
 const {
   collectFilesRecursive,
@@ -88,7 +89,7 @@ function resolveSpecPath(projectRoot, specRef, label, filePath, errors) {
   }
 }
 
-function validateStrictSectionContent(stepId, filePath, content, errors) {
+function validateStrictSectionContent(stepId, filePath, content, errors, versionedTask = false) {
   if (stepId === "s04") {
     const freezeSection = getMarkdownSectionContent(content, "## Spec Freeze");
     if (!hasSectionContent(freezeSection, /\b(BRD|SRS)-[A-Z0-9-]*\d{3}\b/)) {
@@ -97,7 +98,7 @@ function validateStrictSectionContent(stepId, filePath, content, errors) {
   }
 
   if (["s04", "s05", "s06", "s07", "s08"].includes(stepId)) {
-    const traceSection = getMarkdownSectionContent(content, "## SDD Traceability");
+    const traceSection = getMarkdownSectionContent(content, versionedTask ? "## Traceability" : "## SDD Traceability");
     if (!hasSectionContent(traceSection, /\b(SRS-(FR|NFR|UX)-\d{3}|AC-\d{3}|TASK-\d{3}|TEST-\d{3})\b/)) {
       errors.push(`Strict SDD requires trace IDs in '## SDD Traceability': ${filePath}`);
     }
@@ -363,6 +364,14 @@ function validateWorkflowSdd(options) {
       continue;
     }
 
+    const stepId = match.groups.step_id;
+    const content = readUtf8(filePath);
+    let taskContract = null;
+    if (stepId === 's06') {
+      try { taskContract = readTaskContract({ content, filePath }); }
+      catch (error) { errors.push(error.message); continue; }
+      if (taskContract) errors.push(...validateTaskContract({ content, filePath, projectRoot }));
+    }
     const sddMode = getFrontmatterValue(frontmatterLines, "sdd_mode") || "none";
     if (sddMode === "none") {
       continue;
@@ -375,8 +384,6 @@ function validateWorkflowSdd(options) {
       continue;
     }
 
-    const stepId = match.groups.step_id;
-    const content = readUtf8(filePath);
     const specStatus = getFrontmatterValue(frontmatterLines, "spec_status");
     const lightMode = sddMode === "light";
     const strictMode = sddMode === "strict";
@@ -388,7 +395,8 @@ function validateWorkflowSdd(options) {
     }
 
     const requiredBlocks = REQUIRED_SDD_BLOCKS_BY_STEP[stepId] || [];
-    requiredBlocks.forEach((heading) => {
+    requiredBlocks.forEach((legacyHeading) => {
+      const heading = taskContract && legacyHeading === "## SDD Traceability" ? "## Traceability" : legacyHeading;
       if (!getMarkdownSectionContent(content, heading)) {
         errors.push(`Missing required SDD block '${heading}' in ${filePath}`);
       }
@@ -418,7 +426,7 @@ function validateWorkflowSdd(options) {
     }
 
     if (strictMode) {
-      validateStrictSectionContent(stepId, filePath, content, errors);
+      validateStrictSectionContent(stepId, filePath, content, errors, Boolean(taskContract));
     }
   }
 

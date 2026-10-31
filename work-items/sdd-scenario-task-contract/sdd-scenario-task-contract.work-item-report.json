@@ -1,0 +1,204 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "DONE",
+  "decision_owner": "agent",
+  "protocol_owner": "developer",
+  "raw_request_summary": "Scenario descriptors and executable task graph validation.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "sdd-scenario-task-contract",
+      "work_item_title": "Sdd Scenario Task Contract",
+      "work_item_type": "CHANGE",
+      "scope_summary": "Scenario descriptors and executable task graph validation.",
+      "primary_outcome": "Scenario descriptors and executable task graph validation.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "full",
+      "sdd_reasons": [],
+      "sdd_preset": "full",
+      "sdd_light_profile": "preview",
+      "governance_profile": "default",
+      "execution_mode": "agentic",
+      "existing_refs": [],
+      "collision_notes": [],
+      "change_strategy": "create_new",
+      "change_id": "CR-011",
+      "change_reason": "Scope có tín hiệu cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:change -- --change-id CR-011 --work-item sdd-scenario-task-contract",
+        "npm run scaffold:workflow -- --work-item sdd-scenario-task-contract --planning-track full --delivery-context brownfield --change-id CR-011",
+        "npm run validate:workflow -- --workflow-root work-items/sdd-scenario-task-contract --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory"
+      ],
+      "blockers": []
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=CHANGE",
+    "delivery_context=brownfield",
+    "dedup_result=no_conflict",
+    "change_strategy=create_new",
+    "planning_track=full",
+    "governance_profile=default",
+    "sdd_preset=full",
+    "selected_profile=full",
+    "sdd_mode=none",
+    "sdd_escalation_reasons="
+  ],
+  "work_item_slug": "sdd-scenario-task-contract",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/sdd-scenario-task-contract",
+  "current_step": "s08",
+  "granted_write_paths": [
+    ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/scripts/validate-workflow-governance.js",
+    ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/scripts/validate-workflow-planning.js",
+    ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/scripts/validate-workflow-sdd.js",
+    ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/scripts/workflow-step-definitions.js",
+    ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/run-all.js",
+    ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/scaffold-workflow.test.js",
+    ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/validate-workflow-governance.test.js",
+    ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/validate-workflow-planning.test.js",
+    ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/validate-workflow-sdd.test.js",
+    ".worktrees/sdd-scenario-task-contract/product-specs/templates/spec-card.template.md",
+    ".worktrees/sdd-scenario-task-contract/product-specs/templates/srs.template.md",
+    ".worktrees/sdd-scenario-task-contract/skills/analysis/brainstorming/SKILL.md",
+    ".worktrees/sdd-scenario-task-contract/skills/analysis/brainstorming/SKILL.vi.md",
+    ".worktrees/sdd-scenario-task-contract/skills/analysis/requirement-analysis/SKILL.md",
+    ".worktrees/sdd-scenario-task-contract/skills/analysis/requirement-analysis/SKILL.vi.md",
+    ".worktrees/sdd-scenario-task-contract/skills/delivery/task-breakdown-planner/SKILL.md",
+    ".worktrees/sdd-scenario-task-contract/skills/delivery/task-breakdown-planner/SKILL.vi.md",
+    ".worktrees/sdd-scenario-task-contract/skills/guardrails/definition-of-ready-gate/SKILL.md",
+    ".worktrees/sdd-scenario-task-contract/skills/guardrails/definition-of-ready-gate/SKILL.vi.md",
+    ".worktrees/sdd-scenario-task-contract/skills/orchestration/codex-workflow-chain/references/spec-driven-development.md",
+    ".worktrees/sdd-scenario-task-contract/skills/orchestration/codex-workflow-chain/references/spec-driven-development.vi.md",
+    "work-items/sdd-scenario-task-contract",
+    "changes/CR-011/execution",
+    ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/scripts/workflow-gate-evidence-utils.js",
+    ".worktrees/sdd-scenario-task-contract/packages/workflow-bundle/test/workflow-gate-evidence-utils.test.js",
+    ".worktrees/sdd-scenario-task-contract/work-items/sdd-scenario-task-contract"
+  ],
+  "change_strategy": "create_new",
+  "change_id": "CR-011",
+  "handoff_target": "archive-lifecycle",
+  "required_actions": [
+    {
+      "id": "se:2f998e8efb188799834269442fde602a8ce96d8498996e87193e06ed1bf68d7d",
+      "kind": "workflow_followup",
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/sdd-scenario-task-contract"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "CHANGE_CREATED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "READINESS_BUNDLE_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "WORK_ITEM_RESUMED",
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-10-30T07:24:18.780Z",
+  "review_notes": [
+    "Human review approved."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-10-30T01:19:17.551Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-10-30T01:19:17.551Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Materialization inputs are ready for scaffold."
+    },
+    {
+      "timestamp": "2026-10-30T01:19:17.825Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Auto-scaffolded workflow artifacts."
+    },
+    {
+      "timestamp": "2026-10-30T07:24:18.781Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Human review approved."
+    },
+    {
+      "timestamp": "2026-10-30T07:24:22.219Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "051abf40-4e2e-455c-9580-2f7555c09730"
+    },
+    {
+      "timestamp": "2026-10-30T07:42:54.301Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Verified all five current-host receipts and change/work-item signatures at canonical project root. Canonical workflow stays at its approved absolute root; production paths map one-to-one to signed s06 within .worktrees/sdd-scenario-task-contract. Independently verify worktree Git status and commits at closeout; no release/global update/delegation."
+    },
+    {
+      "timestamp": "2026-10-30T13:57:16.187Z",
+      "action": "resume",
+      "actor": "developer",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "Resume after human-approved A1A2-AMEND-001 and five verified current-host receipts. Add only the two T4 paths and workflow-note transport; canonical protocol stays at original root."
+    },
+    {
+      "timestamp": "2026-10-30T14:26:57.174Z",
+      "action": "verify",
+      "actor": "developer",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Technical verification complete: 51 workflow test files passed in isolated runtime copy; 75 planning cases, 19 consumer cases and legacy regressions. Source commit bf9654b. Human QC DoD remains pending; no merge or release."
+    },
+    {
+      "timestamp": "2026-10-31T06:15:02.868Z",
+      "action": "close",
+      "actor": "developer",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Close after explicit human QC DoD approval and trusted current-host receipt sealed 2026-10-31T06:14:10.294Z. s08 sha256 94f7db460cc5a7a54ca05480911ef52a00cbef958c45c3a59e6c26c6b0bed63f; source worktree clean at a4834cd, all 20 verified source hashes unchanged. No uncommitted-delivery waiver."
+    }
+  ]
+}

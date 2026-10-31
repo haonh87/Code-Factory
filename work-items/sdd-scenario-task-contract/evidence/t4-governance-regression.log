@@ -1,0 +1,14 @@
+Running validate-workflow-governance (light gate guard) tests...
+
+  PASS: artifactGovernance layer roots default + custom config
+  PASS: artifact placement rejects unplaced/empty exemption and echoes stated reason
+  PASS: custom artifactGovernance roots accept an adopter layout
+  PASS: five F9 duplication rules name their owners; deduplicated equivalent passes
+  PASS: light + foundation=required errors (no silent skip)
+  PASS: light + contract=required errors (no silent skip)
+  PASS: light without foundation/contract still passes
+  PASS: finalized semantic evidence negative/control fixtures
+  PASS: strict/regulated finalized notes route through semantic validator
+  PASS: adaptive applicability requires reasoned selected roles/gates
+
+All validate-workflow-governance (light gate guard) tests passed.

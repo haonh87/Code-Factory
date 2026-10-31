@@ -1,0 +1,9 @@
+Created [proposal.md](proposal.md) with acceptance cases, approach and TDD plan. Source and tests remain unchanged.
+
+Actually ran:
+
+- `node test/regression.js` — passed.
+- Proposal UTF-8 validation — passed.
+- Source/test unchanged checks — passed.
+
+Implementation is blocked by missing human gates under the pinned workflow skill. The proposal records the explicit-`undefined` ambiguity. New behavior tests remain unexecuted; no human DoD is claimed.

@@ -71,3 +71,23 @@ status: draft
 authority: ""
 decided_at: ""
 ```
+
+## Optional Behavior Scenarios
+
+Use this section only when scenarios clarify changed behavior. Keep the accepted
+behavior here in the owning specification and reference its IDs from workflow
+notes. For an inapplicable change, state the reason and omit the scenario payload.
+Do not invent a missing product decision to complete an example.
+
+```yaml
+# Illustrative fields, not a new mandatory artifact/schema. Replace with accepted facts.
+# scenarios:
+#   - id: SC-001
+#     actor_or_context: "Event consumer receives a previously processed event ID"
+#     preconditions: ["The ID was accepted successfully once"]
+#     success_outcome: "Outcome determined by the accepted duplicate-event rule"
+#     failure_outcome: "Observable handling determined by the accepted error rule"
+#     rule_refs: ["<existing rule ID>"]
+#     acceptance_refs: ["<existing AC ID>"]
+# Missing first-value/last-value or error policy belongs in the existing open decisions.
+```

@@ -1,0 +1,46 @@
+from pathlib import Path
+import json, subprocess, time, os, signal, hashlib, sys
+
+BASE=Path('/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/cf-a0-agent-pilot-8m5c18ve')
+manifest=json.loads((BASE/'manifest.json').read_text())
+disabled=[]
+for p in (Path('/Users/haonguyen87/.codex/skills')).rglob('SKILL.md'):
+    disabled.append('{path = '+json.dumps(str(p.parent))+', enabled = false}')
+for run_id in sys.argv[1:]:
+    assert run_id in manifest['order']
+    run=BASE/run_id; ws=run/'workspace'
+    assert not (run/'result.json').exists(), 'Do not replace a recorded run'
+    cmd=['/opt/homebrew/bin/codex','exec','--ignore-user-config','--ignore-rules',
+         '--ephemeral','--json','--color','never','--sandbox','workspace-write',
+         '--model',manifest['model'],'-c','model_reasoning_effort="high"',
+         '-c','approval_policy="never"','-c','web_search="disabled"',
+         '-c','features.multi_agent=false','-c','features.hooks=false',
+         '-c','skills.config=['+','.join(disabled)+']',
+         '-c','project_doc_max_bytes=65536',
+         '-C',str(ws),'-o',str(run/'final.txt'),'-']
+    (run/'invocation.json').write_text(json.dumps(cmd,indent=2)+'\n')
+    start=time.time(); status='exited'
+    with (run/'events.jsonl').open('w') as out,(run/'stderr.log').open('w') as err:
+        proc=subprocess.Popen(cmd,stdin=subprocess.PIPE,stdout=out,stderr=err,text=True,start_new_session=True)
+        try: proc.communicate((run/'prompt.txt').read_text(),timeout=manifest['timeout_seconds'])
+        except subprocess.TimeoutExpired:
+            status='timeout';os.killpg(proc.pid,signal.SIGTERM)
+            try:proc.wait(timeout=5)
+            except subprocess.TimeoutExpired:os.killpg(proc.pid,signal.SIGKILL);proc.wait()
+    before=json.loads((run/'before.json').read_text())
+    after={str(p.relative_to(ws)):hashlib.sha256(p.read_bytes()).hexdigest() for p in ws.rglob('*') if p.is_file() and '.git' not in p.parts}
+    changed=sorted(k for k in set(before)|set(after) if before.get(k)!=after.get(k))
+    events=[]
+    for line in (run/'events.jsonl').read_text().splitlines():
+        try: events.append(json.loads(line))
+        except ValueError:pass
+    result={'id':run_id,'status':status,'exit_code':proc.returncode,'elapsed_seconds':round(time.time()-start,2),
+            'event_types':[e.get('type') for e in events], 'changed_files':changed,
+            'usage':[e.get('usage') for e in events if e.get('usage')],
+            'events_sha256':hashlib.sha256((run/'events.jsonl').read_bytes()).hexdigest()}
+    (run/'after.json').write_text(json.dumps(after,indent=2)+'\n')
+    (run/'result.json').write_text(json.dumps(result,indent=2)+'\n')
+    print(json.dumps(result),flush=True)
+    if proc.returncode!=0:
+        print('Infrastructure/nonzero exit: stopping batch; retain failure and inspect before continuing.',flush=True)
+        break
