@@ -3,6 +3,7 @@ const root=path.resolve(__dirname,'../../..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const sha=p=>crypto.createHash('sha256').update(fs.readFileSync(path.join(root,p))).digest('hex');
 const frozenReleaseDigests = {
+  "docs/releases/workflow-bundle-v2.9.0.md": "278938de73365469e03003f5cc970a41954ece9f804b254e7f57ff1c04e5103b",
   "docs/releases/workflow-bundle-v2.8.0.md": "613910778e8574d5a21e9d6164016d3272a6914f6e45f46d175025408fd8c57d",
   "docs/releases/workflow-bundle-v2.7.0.md": "868646449c2ee8c8e53dcc9dbb31f4ca6a3ff2bac5456b6272541aad32da36ce",
   "docs/releases/workflow-bundle-v2.6.4.md": "32f2ba37279141ae0e8aae8ca7e53414481ae4d7bbd06adb5c133475f99843b4",
@@ -26,12 +27,12 @@ const installerDigests = {
   "adapters/codex/install-codex-workflow.ps1": "859c41118ae1a9c3e8d0bf6154e7d00083a999dae08eb81b0eb60f818f475afa"
 };
 for(const [p,h] of Object.entries({...frozenReleaseDigests,...installerDigests}))assert.equal(sha(p),h,'Historical/installer drift: '+p);
-for(const p of ['workflow-bundle.manifest.json','packages/workflow-bundle/workflow-bundle.manifest.json'])assert.equal(JSON.parse(read(p)).bundleVersion,'2.9.0');
-assert.equal(JSON.parse(read('packages/workflow-bundle/package.json')).version,'2.9.0');
-assert(read('packages/workflow-bundle/bin/wfc.js').includes('Public v2.9.0 Flow:'));
+for(const p of ['workflow-bundle.manifest.json','packages/workflow-bundle/workflow-bundle.manifest.json'])assert.equal(JSON.parse(read(p)).bundleVersion,'2.10.0');
+assert.equal(JSON.parse(read('packages/workflow-bundle/package.json')).version,'2.10.0');
+assert(read('packages/workflow-bundle/bin/wfc.js').includes('Public v2.10.0 Flow:'));
 const docs=['README.md','README.vi.md','packages/workflow-bundle/README.md','packages/workflow-bundle/README.vi.md','.claude/CLAUDE.md','docs/publish-surface.md','docs/publish-surface.vi.md','docs/workflow-docs-map.md','docs/workflow-docs-map.vi.md','docs/workflow-bundle-quickstart.md','docs/workflow-bundle-quickstart.vi.md'];
 for(const p of docs){
- const s=read(p);assert(s.includes('v2.9.0'),p+' release identity');
+ const s=read(p);assert(s.includes('v2.10.0'),p+' release identity');
  assert(!s.includes('prepared release candidate is `workflow-bundle v2.8.0`'),p+' stale candidate');
  assert(!s.includes('prepared for the `v2.8.0` release candidate'),p+' stale package candidate');
 }
@@ -46,4 +47,4 @@ for(const mode of ['codex','claude']){
 const note=read('docs/releases/workflow-bundle-v2.9.0.md');
 for(const term of ['task_contract_version: 1','A1','A2','48 managed skills','SEC-01','SEC-02','CF-023','## Compatibility','## Known Limitations','## Verification','## Rollback','## Release Gates','397108e725d22111f328fd5d7bc5765090d7f5e441eb3256860b1a3e579e0d1f'])assert(note.includes(term),'Release record missing '+term);
 assert(!/\bTODO\b|\bTBD\b/.test(note));
-console.log('PASS: v2.9.0 release record, 48-skill inventory, source/package boundaries and immutable history/installers.');
+console.log('PASS: v2.10.0 candidate and v2.9.0 release record, 48-skill inventory, source/package boundaries and immutable history/installers.');

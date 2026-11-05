@@ -1,0 +1,304 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "VERIFIED",
+  "decision_owner": "agent",
+  "protocol_owner": "maintainer",
+  "raw_request_summary": "Package reusable project instructions, memory and harness integration into a Code Factory release for upgrading existing Codex and Claude projects. Include non-destructive native instruction onboarding, canonical project context and session handoff, bounded historical retrieval, installed-versus-operational diagnostics, exact release artifact upgrade and rollback. Pilot ai-maintainer. Preserve user files and receipt authority. Release proposal requested by maintainer on 2026-11-03; production gates remain pending.",
+  "request_source": "user",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [
+    {
+      "work_item_slug": "project-context-session-continuity",
+      "work_item_title": "Project Context Session Continuity",
+      "work_item_type": "FEATURE",
+      "scope_summary": "Package reusable project instructions, memory and harness integration into a Code Factory release for upgrading existing Codex and Claude projects. Include non-destructive native instruction onboarding, canonical project context and session handoff, bounded historical retrieval, installed-versus-operational diagnostics, exact release artifact upgrade and rollback. Pilot ai-maintainer. Preserve user files and receipt authority. Release proposal requested by maintainer on 2026-11-03; production gates remain pending.",
+      "primary_outcome": "Package reusable project instructions, memory and harness integration into a Code Factory release for upgrading existing Codex and Claude projects. Include non-destructive native instruction onboarding, canonical project context and session handoff, bounded historical retrieval, installed-versus-operational diagnostics, exact release artifact upgrade and rollback. Pilot ai-maintainer. Preserve user files and receipt authority. Release proposal requested by maintainer on 2026-11-03; production gates remain pending.",
+      "in_scope": [],
+      "out_of_scope": [],
+      "planning_track": "full",
+      "delivery_context": "brownfield",
+      "sdd_mode": "none",
+      "selected_profile": "strict",
+      "sdd_reasons": [
+        "planning-track-not-quick",
+        "governance-profile-not-default"
+      ],
+      "sdd_preset": "auto",
+      "sdd_light_profile": "off",
+      "governance_profile": "strict",
+      "execution_mode": "agentic",
+      "existing_refs": [
+        "work-items/code-factory-holistic-audit-remediation",
+        "work-items/sdd-light-code-factory",
+        "work-items/arch-role-skills-release"
+      ],
+      "collision_notes": [
+        "code-factory-holistic-audit-remediation (score=2)",
+        "sdd-light-code-factory (score=2)",
+        "arch-role-skills-release (score=1)"
+      ],
+      "change_strategy": "create_new",
+      "change_id": "CR-013",
+      "change_reason": "Scope có tín hiệu cần change layer riêng.",
+      "change_refs": [],
+      "scaffold_actions": [
+        "npm run scaffold:change -- --change-id CR-013 --work-item project-context-session-continuity",
+        "npm run scaffold:workflow -- --work-item project-context-session-continuity --planning-track full --delivery-context brownfield --change-id CR-013 --governance-profile strict",
+        "npm run validate:workflow -- --workflow-root work-items/project-context-session-continuity --project-root /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory"
+      ],
+      "blockers": [
+        {
+          "id": "se:38b3adc6a98c721c8af8928bb0b4302338e4bf95c5147663c20797efb29d58b5",
+          "kind": "delivery_blocker",
+          "text": "Có work item gần nghĩa cần review: code-factory-holistic-audit-remediation, sdd-light-code-factory, arch-role-skills-release"
+        }
+      ]
+    }
+  ],
+  "decision_log": [
+    "split_decision=single",
+    "work_item_type=FEATURE",
+    "delivery_context=brownfield",
+    "dedup_result=needs_review",
+    "change_strategy=create_new",
+    "planning_track=full",
+    "governance_profile=strict",
+    "sdd_preset=auto",
+    "selected_profile=strict",
+    "sdd_mode=none",
+    "sdd_escalation_reasons=planning-track-not-quick|governance-profile-not-default"
+  ],
+  "work_item_slug": "project-context-session-continuity",
+  "work_item_type": "FEATURE",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/project-context-session-continuity",
+  "current_step": "s08",
+  "granted_write_paths": [
+    ".worktrees/project-context-session-continuity",
+    "work-items/project-context-session-continuity/project-context-session-continuity.s07.implementation.md",
+    "work-items/project-context-session-continuity/project-context-session-continuity.s08.verification.md",
+    "work-items/project-context-session-continuity/evidence",
+    "changes/CR-013/execution.md"
+  ],
+  "change_strategy": "create_new",
+  "change_id": "CR-013",
+  "handoff_target": "definition-of-done",
+  "required_actions": [
+    {
+      "id": "se:d8de27e88726cca9033c819366d8c09f8e69462df72e0fbee04f51d3bce19e41",
+      "kind": "workflow_followup",
+      "text": "Collect DoD evidence and close the work item when ready."
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/code-factory-holistic-audit-remediation",
+    "work-items/sdd-light-code-factory",
+    "work-items/arch-role-skills-release",
+    "work-items/project-context-session-continuity",
+    "changes/CR-013"
+  ],
+  "audit_events": [
+    "REQUEST_CAPTURED",
+    "CANDIDATE_PROPOSED",
+    "SLUG_LOCKED",
+    "DEDUP_CONFIRMED",
+    "WORKFLOW_SCAFFOLDED",
+    "STEP_OPENED",
+    "WORK_ITEM_APPROVED",
+    "READINESS_BUNDLE_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-11-04T02:07:39.146Z",
+  "review_notes": [
+    "Maintainer accepted Spec/Contract/DoR/Approach/Task Plan and separate CR-013 in chat on 2026-11-04; one bounded release, historical work retained."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-11-03T14:38:04.269Z",
+      "action": "propose",
+      "actor": "agent",
+      "from_status": "INTAKE",
+      "to_status": "PROPOSED",
+      "note": "Initial work item materialization decision."
+    },
+    {
+      "timestamp": "2026-11-04T02:07:35.965Z",
+      "action": "materialize-ready",
+      "actor": "agent",
+      "from_status": "PROPOSED",
+      "to_status": "READY_TO_MATERIALIZE",
+      "note": "Signed admission concerns resolved."
+    },
+    {
+      "timestamp": "2026-11-04T02:07:35.965Z",
+      "action": "materialize",
+      "actor": "agent",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Resumed proposal operation 167f08c0-5933-40e6-8fd6-c71a53572fd1."
+    },
+    {
+      "timestamp": "2026-11-04T02:07:39.147Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Maintainer accepted Spec/Contract/DoR/Approach/Task Plan and separate CR-013 in chat on 2026-11-04; one bounded release, historical work retained."
+    },
+    {
+      "timestamp": "2026-11-04T02:07:41.616Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "c43a1c6b-64a8-4e2e-9aac-5447731edf0b"
+    },
+    {
+      "timestamp": "2026-11-04T02:09:42.855Z",
+      "action": "activate",
+      "actor": "coordinator",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Work item moved into active workflow execution."
+    },
+    {
+      "timestamp": "2026-11-04T13:54:19.905Z",
+      "action": "verify",
+      "actor": "qc",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Technical verification of exact core/companion artifacts and native pilot completed; terminal human approvals and publication remain pending."
+    }
+  ],
+  "resolved_state_history": [
+    {
+      "operation_id": "953125ac-bf9d-48d1-98e4-7830a29c19c5",
+      "source_collection": "blockers",
+      "source_entry_id": "di:dbbb45a50ecd4f6b2a78ce8980486a5a22d853efc1b88fd605e569ef20d153ea",
+      "original_entry": {
+        "id": "se:38b3adc6a98c721c8af8928bb0b4302338e4bf95c5147663c20797efb29d58b5",
+        "kind": "delivery_blocker",
+        "text": "Có work item gần nghĩa cần review: code-factory-holistic-audit-remediation, sdd-light-code-factory, arch-role-skills-release"
+      },
+      "original_text": "Có work item gần nghĩa cần review: code-factory-holistic-audit-remediation, sdd-light-code-factory, arch-role-skills-release",
+      "actor": "maintainer",
+      "reason": "Maintainer accepted Spec/Contract/DoR/Approach/Task Plan and separate CR-013 in chat on 2026-11-04; one bounded release, historical work retained.",
+      "resolved_at": "2026-11-04T02:07:27.526Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "project-context-session-continuity",
+          "operation_id": "953125ac-bf9d-48d1-98e4-7830a29c19c5",
+          "state_id": "di:dbbb45a50ecd4f6b2a78ce8980486a5a22d853efc1b88fd605e569ef20d153ea",
+          "source_collection": "blockers",
+          "original_entry": {
+            "id": "se:38b3adc6a98c721c8af8928bb0b4302338e4bf95c5147663c20797efb29d58b5",
+            "kind": "delivery_blocker",
+            "text": "Có work item gần nghĩa cần review: code-factory-holistic-audit-remediation, sdd-light-code-factory, arch-role-skills-release"
+          },
+          "original_text": "Có work item gần nghĩa cần review: code-factory-holistic-audit-remediation, sdd-light-code-factory, arch-role-skills-release",
+          "actor": "maintainer",
+          "reason": "Maintainer accepted Spec/Contract/DoR/Approach/Task Plan and separate CR-013 in chat on 2026-11-04; one bounded release, historical work retained.",
+          "resolved_at": "2026-11-04T02:07:27.526Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "IiTc0vtxkt4XnleAHkSBtf2gCTfd3BUiOsQ+lCtaRcVUopEylcPF2ceA0CTQTSgfHrCSHEDWFfbClEix2ACVAw=="
+      }
+    },
+    {
+      "operation_id": "78d75f4c-9757-45d3-9cb6-775ff29ef86c",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:a730bb9a1e80925ff30e40fadc7b9069c7074d91d2ca13528e2470b6216052f8",
+      "original_entry": {
+        "id": "se:801cae0e235df8f8c0b25b8f463944097592608c0de923f5af0e635a68945e4b",
+        "kind": "workflow_followup",
+        "text": "Làm rõ scope để chốt single hay split."
+      },
+      "original_text": "Làm rõ scope để chốt single hay split.",
+      "actor": "maintainer",
+      "reason": "Maintainer accepted Spec/Contract/DoR/Approach/Task Plan and separate CR-013 in chat on 2026-11-04; one bounded release, historical work retained.",
+      "resolved_at": "2026-11-04T02:07:31.154Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "project-context-session-continuity",
+          "operation_id": "78d75f4c-9757-45d3-9cb6-775ff29ef86c",
+          "state_id": "di:a730bb9a1e80925ff30e40fadc7b9069c7074d91d2ca13528e2470b6216052f8",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:801cae0e235df8f8c0b25b8f463944097592608c0de923f5af0e635a68945e4b",
+            "kind": "workflow_followup",
+            "text": "Làm rõ scope để chốt single hay split."
+          },
+          "original_text": "Làm rõ scope để chốt single hay split.",
+          "actor": "maintainer",
+          "reason": "Maintainer accepted Spec/Contract/DoR/Approach/Task Plan and separate CR-013 in chat on 2026-11-04; one bounded release, historical work retained.",
+          "resolved_at": "2026-11-04T02:07:31.154Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "xc0lNlO9zIT91lAkcPv4E1nuwtxw57N9xQgQxzeP7EPaTzh2emmyajLC4xK2jfHhHxfgMCNOUgI+ccUVLrqgDA=="
+      }
+    },
+    {
+      "operation_id": "a4faea8e-2bc7-4222-b008-19101a9a9518",
+      "source_collection": "required_actions",
+      "source_entry_id": "di:6e3c2d321a1dae5eea6b0658eca293c5f2fd3812945793f94fb42d55f0cde712",
+      "original_entry": {
+        "id": "se:dc858a73296e7ef9eaeaa94ad13ef436f99d55e7f1fd9cc61674ac087b459a8b",
+        "kind": "workflow_followup",
+        "text": "Review existing work-items/changes trước khi scaffold."
+      },
+      "original_text": "Review existing work-items/changes trước khi scaffold.",
+      "actor": "maintainer",
+      "reason": "Maintainer accepted Spec/Contract/DoR/Approach/Task Plan and separate CR-013 in chat on 2026-11-04; one bounded release, historical work retained.",
+      "resolved_at": "2026-11-04T02:07:33.740Z",
+      "authorization": {
+        "intent": {
+          "schema_version": 1,
+          "purpose": "state_disposition",
+          "work_item_slug": "project-context-session-continuity",
+          "operation_id": "a4faea8e-2bc7-4222-b008-19101a9a9518",
+          "state_id": "di:6e3c2d321a1dae5eea6b0658eca293c5f2fd3812945793f94fb42d55f0cde712",
+          "source_collection": "required_actions",
+          "original_entry": {
+            "id": "se:dc858a73296e7ef9eaeaa94ad13ef436f99d55e7f1fd9cc61674ac087b459a8b",
+            "kind": "workflow_followup",
+            "text": "Review existing work-items/changes trước khi scaffold."
+          },
+          "original_text": "Review existing work-items/changes trước khi scaffold.",
+          "actor": "maintainer",
+          "reason": "Maintainer accepted Spec/Contract/DoR/Approach/Task Plan and separate CR-013 in chat on 2026-11-04; one bounded release, historical work retained.",
+          "resolved_at": "2026-11-04T02:07:33.740Z",
+          "authorization_mode": "tty"
+        },
+        "signature": "D/9F2Xz5/AUR+PSkxhGEJ8E6QWl5bud+p+X6z2AMu3eQfcSwERZSNVHiP72LbL+7Eo+yvreT0/TeujdS+62xDg=="
+      }
+    }
+  ],
+  "materialization_recovery": {
+    "schema_version": 1,
+    "operation_id": "167f08c0-5933-40e6-8fd6-c71a53572fd1",
+    "source_report_sha256": "f3d23e2d68acbe585c2833cd482ffd4809923b6cbdfbc69e29e02cfb9ee8fab0",
+    "resulting_status": "MATERIALIZED",
+    "disposition_operation_ids": [
+      "953125ac-bf9d-48d1-98e4-7830a29c19c5",
+      "78d75f4c-9757-45d3-9cb6-775ff29ef86c",
+      "a4faea8e-2bc7-4222-b008-19101a9a9518"
+    ],
+    "completed_at": "2026-11-04T02:07:35.965Z"
+  }
+}

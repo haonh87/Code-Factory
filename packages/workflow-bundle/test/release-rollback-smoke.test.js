@@ -10,11 +10,11 @@ const { execFileSync } = require("child_process");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
 const packageRoot = path.join(repoRoot, "packages", "workflow-bundle");
-const candidateVersion = "2.9.0";
+const candidateVersion = "2.10.0";
 const candidateSkillCount = 48;
-const rollbackVersion = "2.8.0";
+const rollbackVersion = "2.9.0";
 const rollbackSkillCount = 48;
-const retainedRollbackDigest = "397108e725d22111f328fd5d7bc5765090d7f5e441eb3256860b1a3e579e0d1f";
+const retainedRollbackDigest = "08ebdd2757f01ac69c10d3792e8c1758ade46aa97269194ee65721b554baa32b";
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -124,8 +124,20 @@ function runRollbackTransition({ candidatePackageRoot, rollbackPackageRoot, temp
   const candidateBin=path.join(candidatePackageRoot,'bin','wfc.js');
   execFileSync(process.execPath,[path.join(rollbackPackageRoot,'bin','wfc.js'),...installArgs],{cwd:rollbackPackageRoot,stdio:'pipe'});
   assert(countSkills(path.join(runtimeHome,'skills'))===rollbackSkillCount,'Start from exact published baseline');
+  const integrationRoot = scope === 'project' ? projectRoot : runtimeHome;
+  const legacyEntry = scope === 'project' ? (mode === 'codex' ? 'AGENTS.md' : 'CLAUDE.md') : (mode === 'codex' ? 'AGENTS.global.md' : 'CLAUDE.md');
+  const legacyBytes = fs.readFileSync(path.join(integrationRoot,legacyEntry));
+
   execFileSync(process.execPath,[candidateBin,'update','--mode',mode,homeFlag,runtimeHome],{cwd:candidatePackageRoot,stdio:'pipe'});
   assert(countSkills(path.join(runtimeHome,'skills'))===rollbackSkillCount,'Update preserves existing selected skills');
+  const nativeEntry = mode === 'codex' ? 'AGENTS.md' : 'CLAUDE.md';
+  assert(fs.statSync(path.join(integrationRoot,nativeEntry)).size < 8192, 'Known legacy policy migrates into a bounded native entrypoint');
+  const integration = require(path.join(candidatePackageRoot,'scripts','workflow-project-context.js'));
+  const lifecycleDir = scope === 'project' ? path.join(integrationRoot,'.'+mode,'code-factory') : path.join(integrationRoot,'code-factory');
+  const integrationBefore = snapshot(path.join(lifecycleDir,'install.json'));
+  execFileSync(process.execPath,[candidateBin,'update','--mode',mode,homeFlag,runtimeHome],{cwd:candidatePackageRoot,stdio:'pipe'});
+  assert(JSON.stringify(snapshot(path.join(lifecycleDir,'install.json'))) === JSON.stringify(integrationBefore),'Repeat update is byte-idempotent');
+
   const maintenanceSkills = ['bug-triage', 'log-investigation', 'metric-correlation', 'root-cause-analysis', 'evidence-handoff'];
   let selectedCount = rollbackSkillCount;
   for (const action of ['remove', 'add']) {
@@ -170,6 +182,8 @@ function runRollbackTransition({ candidatePackageRoot, rollbackPackageRoot, temp
   assert(candidateProtocol.includes('"dispose-state"'), `${mode}/${scope}: candidate must expose exact state disposition`);
   assert(candidateProtocolUtils.includes("resolved_state_history"), `${mode}/${scope}: candidate must preserve resolved-state history`);
 
+  integration.rollback(integrationRoot,mode,scope === 'global');
+  assert(fs.readFileSync(path.join(integrationRoot,legacyEntry)).equals(legacyBytes),'Integration restoration recovers exact published baseline bytes');
   execFileSync(process.execPath, [path.join(rollbackPackageRoot, "bin", "wfc.js"), ...installArgs], {
     cwd: rollbackPackageRoot,
     stdio: "pipe",

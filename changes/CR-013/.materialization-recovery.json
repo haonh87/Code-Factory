@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "work_item_slug": "project-context-session-continuity",
+  "change_id": "CR-013",
+  "operation_id": "167f08c0-5933-40e6-8fd6-c71a53572fd1",
+  "source_report_sha256": "f3d23e2d68acbe585c2833cd482ffd4809923b6cbdfbc69e29e02cfb9ee8fab0",
+  "files": [
+    {
+      "path": "proposal.md",
+      "sha256": "3e023a30a9a258a3fd946e28b4614773c3133df6f9170d049e5d73b0cb2b9a37"
+    },
+    {
+      "path": "design.md",
+      "sha256": "18771f29f01482c2bde86223911919ea9f4bb7d5aaf9e2923b220de4e4548793"
+    },
+    {
+      "path": "tasks.md",
+      "sha256": "93f3b28352e71946a72608adf06e0573cd6c6416c83984ed87705674816eed84"
+    },
+    {
+      "path": "spec-delta/brd.delta.md",
+      "sha256": "9f13ba76df43db73b56a1a457f4c098b63815271ae5da13fb64885ae8309d3ee"
+    },
+    {
+      "path": "spec-delta/srs.delta.md",
+      "sha256": "f2a91acadc774e15b0d5e387399ebf5b82b5df16392fff62768b88d866f2e966"
+    },
+    {
+      "path": "execution/task-status.md",
+      "sha256": "f72a9ace24bf4429da71ae871404a49f123963431cf8128f038f4e883b093e6f"
+    },
+    {
+      "path": "archive-metadata.md",
+      "sha256": "44e19ebd72ac65054f9a8f85b919b8f19a75ec1938597ba5e52d5a906d044194"
+    }
+  ]
+}

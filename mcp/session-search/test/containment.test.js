@@ -175,7 +175,7 @@ test("search filters across pages and preserves bounded pagination", async (t) =
   const f = fixture(t);
   const { records, good } = mixedRecords(f);
   const hits = records.map((r) => ({ ...r, source_path: r.path, content: r.title }));
-  const calls = stubCass(t, (args, count) => count === 1
+  const calls = stubCass(t, (args, count) => count === 2
     ? { hits: hits.slice(0, 6), cursor: "page-2", total_matches: 8 }
     : { hits: hits.slice(6), cursor: null, total_matches: 8 });
   const result = await searchSessions({ query: "test", workspacePath: f.project, limit: 1 });
@@ -183,14 +183,14 @@ test("search filters across pages and preserves bounded pagination", async (t) =
   assert.equal(result.hits[0].sessionPath, good);
   assert.equal(result.pagesScanned, 2);
   assert.equal(result.rawHitsScanned, 8);
-  assert.ok(calls[1].args.includes("page-2"));
+  assert.ok(calls[2].args.includes("page-2"));
 });
 
 test("search stops after the existing ten-page cap when all results are invalid", async (t) => {
   const f = fixture(t);
   const calls = stubCass(t, { hits: [{ source_path: path.join(f.sessions, "missing"), workspace: f.project }], cursor: "next" });
   const result = await searchSessions({ query: "test", workspacePath: f.project });
-  assert.equal(calls.length, 10);
+  assert.equal(calls.length, 11);
   assert.equal(result.pagesScanned, 10);
   assert.equal(result.partial, true);
   assert.deepEqual(result.hits, []);
@@ -243,4 +243,14 @@ test("missing sessions root and non-directory file ancestor reject before cass",
   process.env.SESSION_SEARCH_SESSIONS_ROOT = path.join(f.base, "absent");
   await assert.rejects(() => viewSession({ sessionPath: path.join(f.base, "absent", "file") }));
   assert.equal(calls.length, 0);
+});
+
+test('empty search reports degraded history instead of claiming no conversation', async t => {
+  const f=fixture(t);
+  const calls=stubCass(t, {hits:[]});
+  const result=await searchSessions({query:'synthetic-missing',workspacePath:f.project});
+  assert.equal(result.history.status,'degraded');
+  assert.match(result.history.action,/index|status/i);
+  assert.ok(calls.some(c=>c.args.includes('status')));
+  assert.ok(calls.every(c=>!c.args.includes('index')));
 });

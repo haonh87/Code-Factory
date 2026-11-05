@@ -1,0 +1,61 @@
+name: Session search companion
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: ['mcp/session-search/**', '.github/workflows/session-search.yml']
+  push:
+    branches: [main, feat/project-context-session-continuity]
+    paths: ['mcp/session-search/**', '.github/workflows/session-search.yml']
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - run: npm ci --ignore-scripts
+        working-directory: mcp/session-search
+      - run: npm audit --omit=dev --audit-level=high
+        working-directory: mcp/session-search
+      - name: Pack once
+        working-directory: mcp/session-search
+        run: |
+          mkdir -p "$RUNNER_TEMP/companion"
+          npm pack --pack-destination "$RUNNER_TEMP/companion"
+          cd "$RUNNER_TEMP/companion"
+          sha256sum *.tgz > SHA256SUMS
+      - uses: actions/upload-artifact@v6
+        with:
+          name: session-search-candidate
+          path: ${{ runner.temp }}/companion/
+          if-no-files-found: error
+  verify:
+    needs: package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20', '22']
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+      - uses: actions/download-artifact@v7
+        with:
+          name: session-search-candidate
+          path: ${{ runner.temp }}/companion/
+      - name: Validate packed dependency tree and protocol
+        working-directory: mcp/session-search
+        run: |
+          npm ci --ignore-scripts
+          npm run check
+          cd "$RUNNER_TEMP/companion"
+          sha256sum -c SHA256SUMS
+          tar -xzf code-factory-session-search-mcp-0.2.0.tgz
+          SESSION_SEARCH_CANDIDATE_ROOT="$RUNNER_TEMP/companion/package" node "$GITHUB_WORKSPACE/mcp/session-search/test/protocol.test.js"

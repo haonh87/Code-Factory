@@ -5,22 +5,22 @@ const {
   DEFAULT_ALWAYS_WRITABLE_PATHS,
   DEFAULT_AUTHORING_ROOTS,
   DEFAULT_IGNORED_ROOTS,
-  syncCapabilityControl
+  syncCapabilityControl,
 } = require("./workflow-capability-control");
 
 const DEFAULT_CONFIG = {
   projectRoot: ".",
   workflowRoot: "work-items",
   protocolControl: {
-    legacyScaffoldPolicy: "forbid"
+    legacyScaffoldPolicy: "forbid",
   },
   capabilityControl: {
     enabled: true,
     authoringRoots: DEFAULT_AUTHORING_ROOTS,
     alwaysWritablePaths: DEFAULT_ALWAYS_WRITABLE_PATHS,
     ignoredRoots: DEFAULT_IGNORED_ROOTS,
-    protectedRoots: []
-  }
+    protectedRoots: [],
+  },
 };
 
 function normalizeSingleValue(value) {
@@ -45,31 +45,31 @@ function getBootstrapFiles() {
   return [
     {
       relativePath: "workflow-bundle.config.json",
-      content: `${JSON.stringify(DEFAULT_CONFIG, null, 2)}\n`
+      content: `${JSON.stringify(DEFAULT_CONFIG, null, 2)}\n`,
     },
     {
       relativePath: "work-items/.gitkeep",
-      content: ""
+      content: "",
     },
     {
       relativePath: "changes/.gitkeep",
-      content: ""
+      content: "",
     },
     {
       relativePath: "product-specs/brd/.gitkeep",
-      content: ""
+      content: "",
     },
     {
       relativePath: "product-specs/srs/.gitkeep",
-      content: ""
+      content: "",
     },
     {
       relativePath: "project-context/project-context.md",
-      content: "# Project Context\n\nContext tối thiểu cho workflow bundle.\n"
+      content: "# Project Context\n\nContext tối thiểu cho workflow bundle.\n",
     },
     {
       relativePath: "project-context/constitution.md",
-      content: "# Constitution\n\nNguyên tắc nền cho workflow bundle.\n"
+      content: "# Constitution\n\nNguyên tắc nền cho workflow bundle.\n",
     },
     {
       relativePath: "project-context/governance-exception-register.md",
@@ -81,32 +81,53 @@ function getBootstrapFiles() {
         "| Exception ID | Work Item | Step | Principle | Owner | Status | Review Date | Notes |",
         "|---|---|---|---|---|---|---|---|",
         "| _none_ |  |  |  |  |  |  | Chưa có exception đang mở |",
-        ""
-      ].join("\n")
+        "",
+      ].join("\n"),
     },
     {
       relativePath: "project-context/checklists/default.md",
-      content: "# Default Checklist\n\n- default\n"
+      content: "# Default Checklist\n\n- default\n",
     },
     {
       relativePath: "project-context/checklists/strict.md",
-      content: "# Strict Checklist\n\n- strict\n"
+      content: "# Strict Checklist\n\n- strict\n",
     },
     {
       relativePath: "project-context/checklists/regulated.md",
-      content: "# Regulated Checklist\n\n- regulated\n"
+      content: "# Regulated Checklist\n\n- regulated\n",
     },
     {
       relativePath: "project-context/custom/design-review.md",
-      content: "# Custom Design Review\n\n- custom\n"
-    }
+      content: "# Custom Design Review\n\n- custom\n",
+    },
   ];
 }
 
 function initWorkflowBundle(options) {
-  const projectRootInput = normalizeSingleValue(options.projectRoot || process.cwd());
+  const projectRootInput = normalizeSingleValue(
+    options.projectRoot || process.cwd(),
+  );
   const projectRoot = path.resolve(projectRootInput);
   const force = Boolean(options.force);
+  const requestedMode = options.mode || "both";
+  if (!["codex", "claude", "both"].includes(requestedMode))
+    throw new Error("init --mode must be codex, claude or both");
+  const modes =
+    requestedMode === "both" ? ["codex", "claude"] : [requestedMode];
+  const integration = require("./workflow-project-context");
+  const packaged = path.resolve(__dirname, "../runtime/codex/AGENTS.global.md");
+  const source = fs.existsSync(packaged)
+    ? packaged
+    : path.resolve(__dirname, "../../../policies/codex/AGENTS.global.md");
+  const policy = fs.readFileSync(source);
+  for (const mode of modes)
+    integration.install({
+      root: projectRoot,
+      mode,
+      entry: mode === "codex" ? "AGENTS.md" : "CLAUDE.md",
+      policy,
+      preflight: true,
+    });
   const createdFiles = [];
   const skippedFiles = [];
 
@@ -114,7 +135,13 @@ function initWorkflowBundle(options) {
 
   getBootstrapFiles().forEach((fileSpec) => {
     const filePath = path.join(projectRoot, fileSpec.relativePath);
-    const created = writeFileWithGuard(filePath, fileSpec.content, force);
+    const isContext =
+      fileSpec.relativePath === "project-context/project-context.md";
+    const created = writeFileWithGuard(
+      filePath,
+      isContext ? integration.initialContext(projectRoot) : fileSpec.content,
+      isContext ? false : force,
+    );
     if (created) {
       createdFiles.push(filePath);
     } else {
@@ -122,15 +149,23 @@ function initWorkflowBundle(options) {
     }
   });
 
+  for (const mode of modes)
+    integration.install({
+      root: projectRoot,
+      mode,
+      entry: mode === "codex" ? "AGENTS.md" : "CLAUDE.md",
+      policy,
+    });
+
   syncCapabilityControl({
     projectRoot,
-    workflowRootBase: path.join(projectRoot, DEFAULT_CONFIG.workflowRoot)
+    workflowRootBase: path.join(projectRoot, DEFAULT_CONFIG.workflowRoot),
   });
 
   return {
     projectRoot,
     createdFiles,
-    skippedFiles
+    skippedFiles,
   };
 }
 
@@ -140,10 +175,13 @@ function runCli() {
   try {
     const result = initWorkflowBundle({
       projectRoot: args["project-root"],
-      force: args.force
+      force: args.force,
+      mode: args.mode,
     });
 
-    console.log(`OK: initialized workflow bundle baseline under ${result.projectRoot}`);
+    console.log(
+      `OK: initialized workflow bundle baseline under ${result.projectRoot}`,
+    );
 
     if (result.createdFiles.length > 0) {
       console.log(`Created ${result.createdFiles.length} file(s):`);
@@ -153,10 +191,16 @@ function runCli() {
     }
 
     if (result.skippedFiles.length > 0) {
-      console.log(`Skipped ${result.skippedFiles.length} existing file(s). Use --force to overwrite.`);
+      console.log(
+        `Skipped ${result.skippedFiles.length} existing file(s). Use --force to overwrite.`,
+      );
     }
   } catch (error) {
-    console.error(error.message.startsWith("ERROR:") ? error.message : `ERROR: ${error.message}`);
+    console.error(
+      error.message.startsWith("ERROR:")
+        ? error.message
+        : `ERROR: ${error.message}`,
+    );
     process.exit(1);
   }
 }
@@ -168,5 +212,5 @@ if (require.main === module) {
 module.exports = {
   DEFAULT_CONFIG,
   getBootstrapFiles,
-  initWorkflowBundle
+  initWorkflowBundle,
 };

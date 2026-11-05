@@ -2,4 +2,4 @@
 command = "node"
 args = ["{{ENTRY_POINT}}"]
 cwd = "{{MCP_ROOT}}"
-env = { SESSION_SEARCH_ALLOWED_ROOT = "{{ALLOWED_ROOT}}" }
+env = { SESSION_SEARCH_ALLOWED_ROOT = "{{ALLOWED_ROOT}}", SESSION_SEARCH_SESSIONS_ROOT = "{{SESSIONS_ROOT}}" }

@@ -6,7 +6,7 @@ const path = require("path");
 const { runHardenedUpdateMatrix } = require("../scripts/run-workflow-bundle-smoke");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
-const expectedVersion = "2.9.0";
+const expectedVersion = "2.10.0";
 const expectedSkillCount = 48;
 
 console.log(`Running v${expectedVersion} install-all hardened update matrix...\n`);
@@ -34,5 +34,7 @@ try {
   });
   console.log("\nOK: release-install-all-smoke.test.js passed");
 } finally {
+  // Installer preserves a hardened project's mode; cleanup must make only fixture directories writable.
+  (function writable(dir) { if (!fs.existsSync(dir)) return; const st=fs.lstatSync(dir); if(st.isSymbolicLink())return; if(st.isDirectory()){ fs.chmodSync(dir,0o755); for(const name of fs.readdirSync(dir))writable(path.join(dir,name)); } })(tempRoot);
   fs.rmSync(tempRoot, { recursive: true, force: true });
 }

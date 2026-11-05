@@ -69,7 +69,9 @@ function testHardenedUpdateMatrix() {
     assert(results.every((result) => result.unmanaged_unchanged), "all unmanaged content and mode snapshots remain unchanged");
     console.log("  PASS: hardened Codex/Claude x global/project update matrix");
   } finally {
-    fs.rmSync(tempRoot, { recursive: true, force: true });
+    // Installer preserves a hardened project's mode; cleanup must make only fixture directories writable.
+  (function writable(dir) { if (!fs.existsSync(dir)) return; const st=fs.lstatSync(dir); if(st.isSymbolicLink())return; if(st.isDirectory()){ fs.chmodSync(dir,0o755); for(const name of fs.readdirSync(dir))writable(path.join(dir,name)); } })(tempRoot);
+  fs.rmSync(tempRoot, { recursive: true, force: true });
   }
 }
 

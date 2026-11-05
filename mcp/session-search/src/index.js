@@ -3,6 +3,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 
 import {
+  getAllowedRoot,
   getRelatedSessions,
   getSessionSearchStatus,
   listSessions,
@@ -40,9 +41,11 @@ function withErrorBoundary(handler) {
   };
 }
 
+getAllowedRoot(); // Fail closed before advertising tools when project scope is missing.
+
 const server = new McpServer({
   name: "session-search",
-  version: "0.1.0",
+  version: "0.2.0",
 });
 
 server.tool(

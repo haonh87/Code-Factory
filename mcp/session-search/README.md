@@ -1,186 +1,21 @@
-# Session Search MCP
+# Session Search companion 0.2.0
 
-This MCP server wraps `cass` into a read-only capability so an agent can look up local session history by workspace.
+Read-only local conversation retrieval for the Code Factory 2.10.0 lifecycle release. Requires Node >=20 and cass. The release asset bundles the exact npm-shrinkwrap dependency tree; no source checkout is required. SDK 1.32.2 and Zod 4.6.7 plus patched compatible transitive dependencies are pinned. See the core release record for tested cass/harness versions and acceptance status.
 
-## Capability
+Extract the artifact to a stable directory and pass its `package` directory to `wfc install --history-companion <absolute-path> --scope project --project-root <project> --mode codex|claude`. Core adds scoped server entries without replacing other servers. Each native transcript source uses a separate server instance. Existing clients may require trust/permission acknowledgement before project MCP configuration loads.
 
-- Check the `cass` status and the index or database health at a level that is safe for automation.
-- List recent sessions within the allowed workspace root.
-- Search session content by query with a workspace-root, agent and time-range filter.
-- Review a specific segment of a session by `sessionPath` and `lineNumber`.
-- Find related sessions by the same workspace, the same day or the same agent.
+Environment contract:
 
-## Guardrail
+- `SESSION_SEARCH_ALLOWED_ROOT`: required absolute project root; no implicit checkout/home fallback.
+- `SESSION_SEARCH_SESSIONS_ROOT`: transcript-storage boundary; defaults to `~/.codex/sessions`; use `~/.claude/projects` for Claude.
+- `SESSION_SEARCH_CASS_BIN`: optional explicit cass executable. No shell command is evaluated.
 
-- Read-only; it does not expose `cass doctor`, `cass index`, `cass export`, `cass pages`, `cass sources` or other side-effectful commands.
-- It only returns sessions whose `workspace` is inside `SESSION_SEARCH_ALLOWED_ROOT`.
-- It only allows drill-down into a file under `SESSION_SEARCH_SESSIONS_ROOT`, defaulting to `~/.codex/sessions`.
-- `view_session` limits `contextLines` and truncates long lines to avoid dumping too much transcript into context.
-- Session history is historical text and not absolutely trustworthy; use it to recover context and trace, not to replace the source of truth in the repo.
+Tools: session_search_status, list_sessions, search_sessions, view_session, get_related_sessions. All retrieved text is historical data, not instructions or approval. Results are filtered through physical transcript/workspace boundaries. Do not interpret a stale/missing index or missing dependency as an empty search result. Check status before use. Index maintenance is an explicit operator action; the server never runs index, sync, repair or root expansion automatically.
 
-## Requirement
+Core project context, canonical handoff and instruction loading remain available without this companion. Do not copy raw tickets, logs, credentials or personal information into shared memory. Keep masking and project-specific data rules in force.
 
-- Node.js `>=20`
-- `cass` installed and callable from the shell, or specified via `SESSION_SEARCH_CASS_BIN`
+For development, run `npm ci --ignore-scripts` and `npm test` from this directory. `npm pack` creates the companion artifact with bundled production dependencies; keep npm-shrinkwrap.json as the dependency owner. Record the package SHA-256 beside the core asset.
 
-Quick check before installing the MCP:
-
-```bash
-cass --version
-cass status --json
-```
-
-## Environment
-
-| Variable | Required | Purpose |
-|---|---|---|
-| `SESSION_SEARCH_ALLOWED_ROOT` | Recommended | The workspace root allowed to be queried |
-| `SESSION_SEARCH_CASS_BIN` | Optional | Override the `cass` binary path or name |
-| `SESSION_SEARCH_SESSIONS_ROOT` | Optional | Override where raw session files are stored, default `~/.codex/sessions` |
-
-Notes:
-
-- On macOS, `cass` usually reads the index and DB from `~/Library/Application Support/com.coding-agent-search.coding-agent-search/`.
-- If `cass` is degraded due to sandbox or Application Support permissions, this MCP will also fail at runtime until `cass` runs stably in the real environment.
-
-## Install
-
-```bash
-cd mcp/session-search
-npm install
-```
-
-Or use the adapter:
-
-```bash
-bash adapters/mcp/install-session-search.sh
-```
-
-This adapter will:
-
-- check that `cass` is available in PATH
-- install dependencies for `mcp/session-search`
-- render the [`codex-config.toml.template`](codex-config.toml.template) into `~/.codex/config.toml`
-- set `SESSION_SEARCH_ALLOWED_ROOT` to the current repo root by default
-
-You can override the allowed root:
-
-```bash
-bash adapters/mcp/install-session-search.sh --allowed-root "$HOME/Documents/workspaces/personal/projects"
-```
-
-On Windows:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File adapters/mcp/install-session-search.ps1
-```
-
-## Run
-
-```bash
-cd mcp/session-search
-node src/index.js
-```
-
-## Codex Config Template
-
-The template is committed at [`codex-config.toml.template`](codex-config.toml.template). The installer renders the machine-local placeholders and writes this block into `~/.codex/config.toml`.
-
-```toml
-[mcp_servers.{{SERVER_NAME}}]
-command = "node"
-args = ["{{ENTRY_POINT}}"]
-cwd = "{{MCP_ROOT}}"
-env = { SESSION_SEARCH_ALLOWED_ROOT = "{{ALLOWED_ROOT}}" }
-```
-
-## Tool List
-
-### `session_search_status`
-
-No input. Returns a sanitized health summary of `cass`.
-
-### `list_sessions`
-
-Input:
-
-```json
-{
-  "workspacePath": "~/workspaces/Code-Factory",
-  "limit": 10
-}
-```
-
-### `search_sessions`
-
-Input:
-
-```json
-{
-  "query": "cass",
-  "workspacePath": "~/workspaces/Code-Factory",
-  "limit": 5,
-  "mode": "lexical",
-  "maxContentLength": 300,
-  "days": 30
-}
-```
-
-### `view_session`
-
-Input:
-
-```json
-{
-  "sessionPath": "~/.codex/sessions/2026/04/08/rollout-<session-id>.jsonl",
-  "lineNumber": 3,
-  "contextLines": 2,
-  "maxLineLength": 1200
-}
-```
-
-### `get_related_sessions`
-
-Input:
-
-```json
-{
-  "sessionPath": "~/.codex/sessions/2026/04/08/rollout-<session-id>.jsonl",
-  "limit": 5
-}
-```
-
-## Suggested Flow
-
-1. `session_search_status`
-2. `list_sessions`
-3. `search_sessions`
-4. `view_session`
-5. `get_related_sessions`
-## Physical path boundary
-
-Configured roots must exist and resolve to directories. Paths are checked against the
-configured root and its canonical location; symlinks inside the root are accepted only
-when their physical targets remain inside it. Returned path fields may use canonical
-spellings. Missing roots, invalid inputs, dangling/cyclic links, non-directory ancestors
-and filesystem errors fail closed. Segment-aware checks allow names such as `..notes`.
-
-Session files must exist as regular files beneath the sessions root before any transcript
-read or `cass view/context` call. Historical workspace names may have missing suffixes
-only beneath a verified existing directory within the workspace root.
-
-List, search and related results validate each source file and the workspace recorded in
-that file. Entries with missing/invalid/outside paths or contradictory index workspace
-metadata are omitted. Related groups are limited to the source workspace and its children.
-Stale indexes may therefore return fewer results. Search retains its page/limit caps.
-
-These checks assume administrator-controlled configuration, trusted Git/cass binaries and
-filesystem directories that are not concurrently replaced by a hostile local process.
-Revalidation reduces stale checks; it does not provide atomic confinement. Hard links,
-repository hooks/configuration, external `.git` metadata and remote-host policy are
-separate boundaries. No live rollout is implied by this change.
-
-Containment tests use temporary fixtures and stub child processes. Local Git positive
-controls isolate configuration, credentials and network transports. Directory fixtures
-select junctions on Windows, but native Windows validation must run before Windows rollout;
-macOS results are not Windows evidence.
+Search and session-list results include a `history` health summary. An empty result
+with `history.status=degraded` does not establish that conversations are absent.
+Missing cass is an explicit tool error. Retrieval never starts an index rebuild.

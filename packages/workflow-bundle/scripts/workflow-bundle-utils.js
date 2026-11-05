@@ -891,24 +891,20 @@ function syncSkills({ selectedSkillNames, availableSkills, skillsHome, previousM
 }
 
 function syncGlobalPolicy({ globalAgentsSource, globalAgentsDest }) {
-  prepareManagedPathForWrite(globalAgentsDest);
-  ensureDirectory(path.dirname(globalAgentsDest));
-  fs.copyFileSync(globalAgentsSource, globalAgentsDest);
-  return globalAgentsDest;
+  const integration = require("./workflow-project-context");
+  const root = path.dirname(globalAgentsDest);
+  const mode = path.basename(globalAgentsDest) === "CLAUDE.md" ? "claude" : "codex";
+  const entry = mode === "codex" ? "AGENTS.md" : "CLAUDE.md";
+  integration.install({root,mode,global:true,entry,legacyEntry:path.basename(globalAgentsDest),policy:fs.readFileSync(globalAgentsSource)});
+  return path.join(root, entry);
 }
 
-function syncProjectPolicy({ globalAgentsSource, projectRoot, projectAgentsFileName }) {
-  const resolvedProjectRoot = path.resolve(projectRoot);
-  prepareManagedPathForWrite(resolvedProjectRoot);
-  ensureDirectory(resolvedProjectRoot);
-  const destinationPath = path.join(resolvedProjectRoot, projectAgentsFileName);
-  prepareManagedPathForWrite(destinationPath);
-  fs.copyFileSync(globalAgentsSource, destinationPath);
-
-  return {
-    project_root: resolvedProjectRoot,
-    agents_path: destinationPath
-  };
+function syncProjectPolicy({ globalAgentsSource, projectRoot, projectAgentsFileName, historyCompanion }) {
+  const mode = projectAgentsFileName === "CLAUDE.md" ? "claude" : "codex";
+  return require("./workflow-project-context").install({
+    root:path.resolve(projectRoot), mode, entry:projectAgentsFileName, historyCompanion,
+    policy:fs.readFileSync(globalAgentsSource)
+  });
 }
 
 function copyTreeContents(sourceRoot, destinationRoot, excludedFileNames) {

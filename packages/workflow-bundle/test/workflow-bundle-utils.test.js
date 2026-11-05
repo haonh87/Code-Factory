@@ -353,8 +353,8 @@ function testHardenedManagedDestinationsRecoverWithoutTouchingUnmanagedFiles() {
     );
 
     assert(fs.readFileSync(path.join(managedSkill, "SKILL.md"), "utf8") === "new skill\n", "managed skill content updated");
-    assert(fs.readFileSync(globalDest, "utf8") === "new policy\n", "global policy content updated");
-    assert(fs.readFileSync(projectDest, "utf8") === "new policy\n", "project policy content updated");
+    assert(fs.readFileSync(globalDest, "utf8").includes("Code Factory"), "global policy content updated");
+    assert(fs.readFileSync(projectDest, "utf8").includes("Code Factory"), "project policy content updated");
     assert(fs.readFileSync(path.join(supportDest, "rule.md"), "utf8") === "new rule\n", "support policy content updated");
     assert(digestFile(unmanagedFile) === unmanagedBefore.digest, "unmanaged file digest remains unchanged");
     assert((fs.statSync(unmanagedFile).mode & 0o777) === unmanagedBefore.mode, "unmanaged file mode remains unchanged");
