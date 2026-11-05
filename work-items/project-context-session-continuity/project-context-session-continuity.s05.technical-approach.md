@@ -112,18 +112,9 @@ Propose the smallest reusable installation/recovery design that satisfies CTX-01
 
 ```yaml
 options:
-  - id: option-1
-    direction: "Patch AGENTS.md/CLAUDE.md only in ai-maintainer"
-    value: "Fast local instruction correction"
-    limitation: "Does not fix downstream upgrades, stale history or session persistence; insufficient"
-  - id: option-2
-    direction: "Extend existing Code Factory installer, context readers and harness adapters"
-    value: "Reuses release path and source ownership; portable upgrades"
-    limitation: "Needs merge-safe installation and lifecycle tests"
-  - id: option-3
-    direction: "Add a new agent framework/vector memory platform"
-    value: "Broad future automation"
-    limitation: "Unnecessary dependency and migration surface; rejected"
+  - "option-1: Patch AGENTS.md/CLAUDE.md only in ai-maintainer. Value: Fast local instruction correction. Limitation: Does not fix downstream upgrades, stale history or session persistence; insufficient."
+  - "option-2: Extend existing Code Factory installer, context readers and harness adapters. Value: Reuses release path and source ownership; portable upgrades. Limitation: Needs merge-safe installation and lifecycle tests."
+  - "option-3: Add a new agent framework/vector memory platform. Value: Broad future automation. Limitation: Unnecessary dependency and migration surface; rejected."
 recommended_option: "option-2"
 ```
 

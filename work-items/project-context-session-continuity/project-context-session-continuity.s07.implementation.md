@@ -122,7 +122,8 @@ tdd_alternative_verify_path: []
 tdd_cycle_evidence: "Installer overwrite/native-entry failures were reproduced first; context/hook/status/history behavior followed RED/GREEN. Later review reproduced missing observation binding, legacy bridge overflow and degraded-history ambiguity before fixes. Additional cache/branch/concurrency/failure tests found and corrected corrupt-cache classification. Logs under evidence/ retain RED and final GREEN results."
 change_risk_profile: LARGE_OR_RISKY
 worktree_status: USED
-worktree_refs: [".worktrees/project-context-session-continuity"]
+worktree_refs:
+  - ".worktrees/project-context-session-continuity"
 worktree_reason: "Full multi-file release change across sessions; keep other work isolated."
 review_status: COMPLETED
 review_refs:
