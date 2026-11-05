@@ -23,7 +23,7 @@ Tuân thủ workflow delivery 8 bước cho các tác vụ coding.
 
 ## Quy Tắc Ngôn Ngữ Và Mã Hóa
 
-- Mặc định trao đổi với người dùng bằng tiếng Việt.
+- Mặc định trao đổi với người dùng bằng tiếng Việt có dấu, trừ khi người dùng yêu cầu rõ ngôn ngữ khác. Áp dụng cho câu hỏi, giải thích, cập nhật tiến độ và phản hồi cuối.
 - Mặc định nội dung tài liệu và báo cáo bằng tiếng Việt, trừ khi có yêu cầu khác.
 - Khi sửa tài liệu văn bản, lưu UTF-8 và kiểm tra lỗi mã hóa trước khi bàn giao.
 

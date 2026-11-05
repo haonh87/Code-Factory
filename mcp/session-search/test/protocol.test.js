@@ -1,0 +1,23 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {Client} from '@modelcontextprotocol/sdk/client/index.js';
+import {StdioClientTransport} from '@modelcontextprotocol/sdk/client/stdio.js';
+const source=process.env.SESSION_SEARCH_CANDIDATE_ROOT ? path.join(process.env.SESSION_SEARCH_CANDIDATE_ROOT,'src/index.js') : path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../src/index.js');
+test('patched SDK and Zod serve the scoped read-only protocol over stdio',async t=>{
+ const root=fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(),'cf-history-protocol-')));
+ t.after(()=>fs.rmSync(root,{recursive:true,force:true}));
+ const fake=path.join(root,'cass-fixture');
+ fs.writeFileSync(fake,`#!${process.execPath}\nconsole.log(JSON.stringify({status:'healthy',healthy:true,index:{fresh:true,exists:true},database:{conversations:1,messages:2}}));\n`,{mode:0o755});
+ const transport=new StdioClientTransport({command:process.execPath,args:[source],env:{...process.env,SESSION_SEARCH_ALLOWED_ROOT:root,SESSION_SEARCH_SESSIONS_ROOT:root,SESSION_SEARCH_CASS_BIN:fake},stderr:'pipe'});
+ const client=new Client({name:'release-protocol-test',version:'1.0.0'});
+ t.after(async()=>{await client.close();});
+ await client.connect(transport);
+ const {tools}=await client.listTools();assert.equal(tools.length,5);assert.ok(tools.some(x=>x.name==='session_search_status'));
+ const result=await client.callTool({name:'session_search_status',arguments:{}});
+ assert.notEqual(result.isError,true);const status=JSON.parse(result.content[0].text);assert.equal(status.allowedRoot,root);assert.equal(status.healthy,true);
+ const denied=await client.callTool({name:'search_sessions',arguments:{query:'synthetic',workspacePath:path.dirname(root)}});assert.equal(denied.isError,true);
+});

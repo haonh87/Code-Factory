@@ -120,7 +120,7 @@ Apply this section only when `frontend_style = MODULE_FIRST` or `MODULE_FIRST_WI
 
 ## Quality Rules
 
-- Default to writing and communicating in English.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise.
 - Do not organize the frontend by global `components`, `hooks`, `services`, `stores` as the root business structure.
 - Do not put business rules in `shared`, `common`, `core`, `app`, or utility folders.
 - Do not name modules by technical concern such as `api`, `modal`, `table`, `hook`, `store`.

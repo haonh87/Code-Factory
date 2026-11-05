@@ -6,15 +6,15 @@ language: en
 
 > Vietnamese: publish-surface.vi.md
 
-This document pins the public publish surface for `workflow-bundle v2.9.0`.
+This document pins the public publish surface for `workflow-bundle v2.10.0`.
 
-The maintainer has authorized the v2.9.0 release. Its public surface provides:
+The maintainer has accepted preparation of the v2.10.0 release; publication remains pending verification and terminal approvals. Its public surface provides:
 - installation into Codex or Claude Code via `wfc install|update|status|skills`
 - workflow authoring with `wfc init|scaffold|validate`
 - proactive agent proposals for `work-item` and `change`
 - continued human approval authority at each gate before delivery proceeds
 
-`v2.0.0` remains the first public release. `v2.9.0` continues on the same public surface and makes no breaking command-line change:
+`v2.0.0` remains the first public release. `v2.10.0` continues on the same public surface and makes no breaking command-line change:
 - `v2.2.x` added the harness adapter registry and internal hooks/instincts tooling.
 - `v2.3.x` added the English-first public surface, Vietnamese `*.vi.md` supplements, `sdd_mode=light`, and the `sa`/`ta` architecture-driver skills.
 - `v2.4.0` fixes managed repeat updates and evidence validation, corrects the `sa`/`ta` contracts, and adds `architecture-modeling` to both 41-skill runtimes.
@@ -28,8 +28,8 @@ All of the above are additive — the public promise below is unchanged.
 
 ## Canonical Release Ref
 
-- Tag: `v2.9.0`
-- Publication outcome, verification and immutable artifact digest: [release record](releases/workflow-bundle-v2.9.0.md)
+- Tag: `v2.10.0`
+- Publication outcome, verification and immutable artifact digest: [release record](releases/workflow-bundle-v2.10.0.md)
 
 Publish only the verified artifact under the immutable tag authorized by the maintainer.
 
@@ -52,7 +52,7 @@ This is the document set to use for public onboarding:
 5. [`../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`](../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
 6. [`../skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](../skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
 
-## Public Promise Of `v2.9.0`
+## Public Promise Of `v2.10.0`
 
 - Installable workflow bundle for Codex and Claude Code via `wfc install|update|status|skills`
 - Core authoring CLI via `wfc init`, `wfc scaffold`, `wfc`, `wfc sdd|change|exec|plan`
@@ -75,14 +75,14 @@ This is the document set to use for public onboarding:
   - legacy config `workflow-contracts.config.json`
   - legacy state `.codex-workflow-pack.*`
 
-The two legacy layers above are still kept to make migration smoother, but they should not be treated as the core public story of `v2.9.0`.
+The two legacy layers above are still kept to make migration smoother, but they should not be treated as the core public story of `v2.10.0`.
 
 ## Compatibility And Rollback
 
 - Existing `wfc` commands, flags, state files, SA/TA output blocks, block ownership, Node `>=18`, and npm `>=9` requirements remain compatible.
-- Keep the immutable `v2.8.0/48` package as the workflow rollback baseline.
-- After an authorized publication, use the retained immutable v2.8.0 artifact and `wfc install` for a managed downgrade, verify `v2.8.0/48`, and preserve unmanaged files and modes.
-- No database, API, event, deployment, user-configuration, or live global-install migration is part of this candidate.
+- Keep the immutable `v2.9.0/48` package as the workflow rollback baseline.
+- Restore project integration with `update --rollback-context` before package downgrade. Intervening edits cause a conflict. Do not run the old overwrite-based installer over customized instructions.
+- Project instruction and hook configuration is migrated only for explicitly selected roots. The optional companion is a separate versioned release asset.
 
 ## Internal Or Maintainer Docs
 
@@ -111,7 +111,7 @@ The files below are local working assets, not source-of-truth:
 - when talking about the approval model, state clearly `agent proposes, human approves`
 - do not use internal docs or memory-bank as the public onboarding path
 
-### v2.9.0 Source And Package Boundary
+### v2.10.0 Source And Package Boundary
 
 Version 2.9.0 adds optional scenario guidance (A1) and opt-in integer
 `task_contract_version: 1` (A2). The JSON task contract validates task IDs,
@@ -122,5 +122,5 @@ Codex and Claude retain 48 skills, including the five maintenance skills and
 `diagram-design-presentation-adapter` from earlier releases, plus CF-023 validation.
 SEC-01 and SEC-02 remain in tagged source; direct installers and MCP servers are
 outside the workflow tarball. Optional PNG dependencies are provisioned separately.
-See the v2.9.0 release record for checksum, verification, limits and rollback.
+See the v2.10.0 release record for checksum, verification, limits and rollback.
 npm registry publication is separate.

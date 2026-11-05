@@ -104,7 +104,7 @@ The role skill places its own section (for example `triage`, `evidence`, `rca`) 
 - Confidence reflects evidence, not tone. Lower it when sources are few, indirect or conflicting.
 - One handoff per role per step. Updates create a new handoff that references the previous one in `open_issues` or `summary`.
 - Keep the envelope short; detail belongs in the role section and behind links.
-- Write in English by default; store as UTF-8.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write reports and saved artifacts in English unless requested otherwise; store as UTF-8.
 
 ## Use In The Maintenance Lane And s01-s08
 

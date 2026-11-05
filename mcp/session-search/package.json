@@ -1,6 +1,6 @@
 {
   "name": "@code-factory/session-search-mcp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Read-only MCP server for searching local coding-agent session history through cass",
   "type": "module",
@@ -13,7 +13,18 @@
     "check": "node --test && node --check src/core.js && node --check src/index.js"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "latest",
-    "zod": "^3.25.0"
-  }
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "zod": "4.6.7"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "npm-shrinkwrap.json",
+    "codex-config.toml.template",
+    "claude-config.json.template"
+  ],
+  "bundledDependencies": [
+    "@modelcontextprotocol/sdk",
+    "zod"
+  ]
 }

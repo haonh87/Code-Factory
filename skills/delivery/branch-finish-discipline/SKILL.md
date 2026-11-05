@@ -91,7 +91,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 - `blocked_actions` must not be empty when the recommendation is `HOLD_OPEN`.
 - If there are multiple workspaces, `cleanup_sequence` must state the order.
 - If verify is incomplete or findings are still open, do not use vague wording like "merge can be considered".
-- Default to writing and communicating in English.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise.
 - Text files must be stored as UTF-8.
 
 ## Decision Rule

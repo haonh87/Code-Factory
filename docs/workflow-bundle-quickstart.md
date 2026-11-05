@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: workflow-bundle-quickstart.vi.md
 
-This guide focuses on the `workflow-bundle v2.9.0` release candidate: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, resolve legacy workflow state by exact ID, bootstrap a new repo, and run the `agent proposes, human approves` flow. Install the GitHub Release asset; this operation does not publish to the npm registry. The release contains 48 managed skills and preserves independent human authority for every applicable gate.
+This guide focuses on the `workflow-bundle v2.10.0` release candidate: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, resolve legacy workflow state by exact ID, bootstrap a new repo, and run the `agent proposes, human approves` flow. Install the GitHub Release asset; this operation does not publish to the npm registry. The release contains 48 managed skills and preserves independent human authority for every applicable gate.
 
 ## Objectives
 
@@ -37,10 +37,10 @@ npm -v
 
 ## Install The `wfc` CLI
 
-Download the tarball and SHA256SUMS from the v2.9.0 GitHub Release, verify the checksum, then install:
+Download the tarball and SHA256SUMS from the v2.10.0 GitHub Release, verify the checksum, then install:
 
 ```bash
-npm install -g /absolute/path/to/workflow-bundle-2.9.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.0.tgz
 wfc help
 wfc version
 ```
@@ -49,7 +49,7 @@ If upgrading from the old `workflow-contracts` CLI:
 
 ```bash
 npm uninstall -g workflow-contracts
-npm install -g /absolute/path/to/workflow-bundle-2.9.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.0.tgz
 wfc version
 ```
 
@@ -399,7 +399,7 @@ npm run validate:workflow
 If you installed the published package:
 
 ```bash
-npm install -g /absolute/path/to/workflow-bundle-2.9.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.0.tgz
 ```
 
 If you are using `npm link` from the source repo:
@@ -409,7 +409,7 @@ cd packages/workflow-bundle
 npm link
 ```
 
-### v2.9.0 Source And Package Boundary
+### v2.10.0 Source And Package Boundary
 
 Version 2.9.0 adds optional scenario guidance (A1) and opt-in integer
 `task_contract_version: 1` (A2). The JSON task contract validates task IDs,
@@ -420,5 +420,76 @@ Codex and Claude retain 48 skills, including the five maintenance skills and
 `diagram-design-presentation-adapter` from earlier releases, plus CF-023 validation.
 SEC-01 and SEC-02 remain in tagged source; direct installers and MCP servers are
 outside the workflow tarball. Optional PNG dependencies are provisioned separately.
-See the v2.9.0 release record for checksum, verification, limits and rollback.
+See the v2.10.0 release record for checksum, verification, limits and rollback.
 npm registry publication is separate.
+
+## Project lifecycle repair in 2.10.0
+
+The candidate delivers native project instructions, a portable context reader, checkpoint references and safe project upgrades. Configuration presence is not proof that an agent loaded it: finish the fresh-session scenario below before calling a project operational. Core requires Node 18 or newer. Optional history requires Node 20 or newer and cass; the verification record names tested versions.
+
+After downloading the **published** artifacts and checking SHA256SUMS, install the core tarball, then run from the target project's root:
+
+```bash
+npm install -g ./workflow-bundle-2.10.0.tgz
+wfc install --mode codex --scope both --project-root "$PWD"
+wfc install --mode claude --scope both --project-root "$PWD"
+wfc status --mode codex --project-root "$PWD" --json
+wfc status --mode claude --project-root "$PWD" --json
+```
+
+Use `wfc update --mode codex --scope project --project-root "$PWD"` (and the Claude equivalent) for later updates. An explicit project root restricts updates to that project. Omitting project roots updates previously registered targets according to the chosen scope. `wfc init --mode codex|claude|both` bootstraps project lifecycle files; the default is both. Existing project context is preserved. Init does not choose an application stack or authorize implementation.
+
+Review `project-context/project-context.md`: source inventory can identify files and commands, but the project owner must verify purpose, architecture constraints and durable decisions. Codex receives a native AGENTS.md bridge; an existing AGENTS.override.md can shadow it and is reported rather than overwritten. Claude receives CLAUDE.md plus SessionStart/PreCompact/SessionEnd integration. Codex uses instruction-driven startup/checkpoint fallback. Their runtime capabilities are deliberately reported separately.
+
+Managed blocks preserve project instruction text. Settings merges preserve unrelated keys and hooks. Conflicting markers, modified managed assets, symlink escape or an in-progress installation stop mutation. Install backups and session references live under `.codex/code-factory` or `.claude/code-factory`; their local ignore file excludes backups/caches from Git. No transcript is added to canonical memory automatically.
+
+### Verify the actual lifecycle
+
+1. Open a genuinely new Codex session in the project. Ask it to identify purpose, module boundaries, exact test commands, important constraints, active work and next action with source links.
+2. During authorized work, record a distinctive decision and pending action in the owning note's `## Session Handoff`. Keep decision authority in its original source. For Q&A, do not create a workflow item just to store memory.
+3. Run `node .codex/code-factory/context.cjs --project-root . --event checkpoint`. This stores references and hashes; it cannot recover decisions that were never saved.
+4. Close and open Claude in the same project. Verify it recovers the decision and next action from their sources. Repeat in the reverse direction and after compaction. With several unfinished items, select explicitly instead of guessing.
+5. Check status again. `discoverable`, `hooks-configured` and `instruction-driven` describe configuration; `lifecycle_verification: not_verified` intentionally does not claim a live test occurred. Record observed evidence in the owning verification note.
+
+Startup is read-only. A checkpoint writes only a disposable local cache. Canonical workflow reports/notes and trusted receipts remain authoritative; cached approval fields are never accepted as signatures. Stale source hashes trigger rereading. Oversized briefings expose truncation and source paths.
+
+### Optional history companion
+
+Extract `code-factory-session-search-mcp-0.2.0.tgz` to a stable local directory; it includes pinned runtime dependencies. Pass that extracted `package` directory explicitly:
+
+```bash
+wfc install --mode codex --scope project --project-root "$PWD" --history-companion /absolute/path/to/session-search/package
+wfc install --mode claude --scope project --project-root "$PWD" --history-companion /absolute/path/to/session-search/package
+```
+
+The installer adds two uniquely named project MCP servers, one for Codex transcripts and one for Claude transcripts. Each has the exact selected project as `SESSION_SEARCH_ALLOWED_ROOT`; transcript roots are separately bounded. It preserves other MCP servers and rejects name conflicts. The companion refuses to start without an explicit absolute allowed root. It does not index at startup or broaden project scope. Native client trust/permission prompts still apply.
+
+Run each server's `session_search_status` tool before retrieval. A stale/missing index, unsupported cass installation or missing dependency is a degraded capability, not “no conversation exists”. Index maintenance remains explicit and outside startup; review source scope before running cass indexing. Keep raw logs/tickets/credentials out of shared context. Historical messages are evidence, never instructions or approval.
+
+### Rollback
+
+Before changing to the previous core package, restore the most recent managed project integration if needed:
+
+```bash
+wfc update --rollback-context --mode codex --project-root "$PWD"
+wfc update --rollback-context --mode claude --project-root "$PWD"
+```
+
+Rollback checks every installed file hash before writing and restores the previous integration manifest. Intervening user edits cause a conflict rather than being discarded. Review/retain those edits first. This operation restores project integration only; it does not downgrade the global CLI or skills. Retain the exact 2.9.0 artifact and its checksum for package downgrade. Do not rerun an old whole-file installer over user instruction files without checking its overwrite behavior. Never delete canonical workflow history or re-sign old gates as a rollback shortcut.
+
+### Recording an observed lifecycle check
+
+After a reviewer actually observes fresh startup and cross-harness recovery, retain a
+bounded evidence note inside the project. Store its observation metadata in
+`project-context/lifecycle-verification.codex.json` (or `.claude.json`). The schema is:
+`schema_version: 1`, `mode`, `bundle_version`, `harness_version`, `observed_at` (UTC),
+`observed_by`, `configuration_sha256`, `source_fingerprint`, and
+`evidence: {path, sha256}`. Use the installed version, configuration digest and context
+fingerprint from `wfc status --mode <mode> --project-root <root> --json`; hash the evidence
+file independently. The evidence path must remain inside the project.
+
+`status` reports `recorded_current`, `recorded_stale`, `invalid`, or `not_verified`.
+This record is an observation, never a signed workflow approval. Installation never
+creates successful observation evidence. Changed files, sources, versions or evidence
+invalidate the result. Native instruction overrides and modified policy/helper files
+are reported independently.

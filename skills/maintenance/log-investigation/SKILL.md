@@ -112,7 +112,7 @@ Wrap it with the `evidence-handoff` envelope (`role: qc`).
 - Trace successful requests as well as failing ones; the difference is the evidence.
 - State the time zone everywhere and note clock skew between services when timestamps disagree.
 - Prefer message templates over raw messages when grouping, so ids and amounts do not split one signature into thousands.
-- Write in English by default; store as UTF-8.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write reports and saved artifacts in English unless requested otherwise; store as UTF-8.
 
 ## Use In The Maintenance Lane And s01-s08
 

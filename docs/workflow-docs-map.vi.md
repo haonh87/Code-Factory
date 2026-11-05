@@ -6,11 +6,11 @@ language: vi
 
 > Tiếng Anh / English: workflow-docs-map.md
 
-Tài liệu này tách rõ đâu là public onboarding path của `workflow-bundle v2.9.0`, đâu là deep-dive docs, và đâu là maintainer context.
+Tài liệu này tách rõ đâu là public onboarding path của `workflow-bundle v2.10.0`, đâu là deep-dive docs, và đâu là maintainer context.
 
 ## Public Onboarding Docs
 
-Đây là bộ nên đọc khi review ứng viên phát hành `workflow-bundle v2.9.0`.
+Đây là bộ nên đọc khi review ứng viên phát hành `workflow-bundle v2.10.0`.
 
 1. [`../README.md`](../README.md)
 2. [`publish-surface.md`](publish-surface.md)
@@ -21,7 +21,7 @@ Tài liệu này tách rõ đâu là public onboarding path của `workflow-bund
 
 Quy tắc đọc:
 
-- `README` trả lời repo này là gì và public promise của `v2.9.0` là gì.
+- `README` trả lời repo này là gì và public promise của `v2.10.0` là gì.
 - `publish-surface` chốt tag hoặc branch canonical và system requirements.
 - `quickstart` trả lời cài `wfc`, cài workflow bundle, init repo và chạy flow đầu tiên như thế nào.
 - package `README` trả lời install, upgrade, command overview và publish mechanics ở mức package.
@@ -115,7 +115,7 @@ không thực thi các lệnh được ghi. YAML và scaffold mặc định vẫ
 Giữ 48 skill cho mỗi runtime, năm skill bảo trì, presentation adapter và CF-023.
 SEC-01/SEC-02 nằm trong source Git; MCP và installer trực tiếp ngoài tarball workflow.
 Tải tarball cùng SHA256SUMS trên GitHub Release; npm registry là kênh riêng.
-Xem `docs/releases/workflow-bundle-v2.9.0.md` để biết bằng chứng và trạng thái phát hành.
-Rollback dùng đúng gói 2.8.0/48 đã phát hành. Trước khi rollback, lưu nguyên artifact
-v1 và receipt đã ký; tiếp tục dùng runtime 2.9.0 để xử lý artifact v1 vì 2.8.0
+Xem `docs/releases/workflow-bundle-v2.10.0.md` để biết bằng chứng và trạng thái phát hành.
+Rollback dùng đúng gói 2.9.0/48 đã phát hành. Giữ nguyên artifact v1 và receipt đã ký.
+Không dùng installer cũ ghi đè instructions đã tùy chỉnh. Bản 2.8.0
 không hỗ trợ contract này. Không tự chuyển đổi hoặc ký lại artifact khi hạ cấp.

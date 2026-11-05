@@ -27,11 +27,23 @@ const {
   syncSkills,
   validateInstallScope,
   writeInstallState,
-  writeManagedSkillsManifest
+  writeManagedSkillsManifest,
 } = require("./workflow-bundle-utils");
 
-const SUPPORTED_ACTIONS = new Set(["help", "status", "install", "update", "skills"]);
-const SUPPORTED_SKILL_ACTIONS = new Set(["list", "install", "add", "remove", "delete"]);
+const SUPPORTED_ACTIONS = new Set([
+  "help",
+  "status",
+  "install",
+  "update",
+  "skills",
+]);
+const SUPPORTED_SKILL_ACTIONS = new Set([
+  "list",
+  "install",
+  "add",
+  "remove",
+  "delete",
+]);
 const INSTALL_SCOPE_OPTIONS = ["global", "project", "both"];
 
 function getNowIso() {
@@ -45,7 +57,7 @@ function isHelpToken(value) {
 async function promptForChoice({ label, options }) {
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
 
   try {
@@ -55,9 +67,15 @@ async function promptForChoice({ label, options }) {
     });
 
     while (true) {
-      const answer = String(await rl.question(`Choose [1-${options.length}]: `)).trim();
+      const answer = String(
+        await rl.question(`Choose [1-${options.length}]: `),
+      ).trim();
       const numeric = Number.parseInt(answer, 10);
-      if (Number.isInteger(numeric) && numeric >= 1 && numeric <= options.length) {
+      if (
+        Number.isInteger(numeric) &&
+        numeric >= 1 &&
+        numeric <= options.length
+      ) {
         return options[numeric - 1];
       }
 
@@ -71,11 +89,13 @@ async function promptForChoice({ label, options }) {
 async function promptForInput({ label, defaultValue = "" }) {
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
 
   try {
-    const promptLabel = defaultValue ? `${label} [${defaultValue}]: ` : `${label}: `;
+    const promptLabel = defaultValue
+      ? `${label} [${defaultValue}]: `
+      : `${label}: `;
     while (true) {
       const answer = String(await rl.question(promptLabel)).trim();
       if (answer) {
@@ -97,7 +117,7 @@ function assertInteractivePromptAvailable(actionLabel, missingFieldLabels) {
   }
 
   throw new Error(
-    `${actionLabel} requires ${missingFieldLabels.join(" and ")} when not running in an interactive terminal.`
+    `${actionLabel} requires ${missingFieldLabels.join(" and ")} when not running in an interactive terminal.`,
   );
 }
 
@@ -105,14 +125,18 @@ async function prepareInteractiveInstallArgs(args) {
   const nextArgs = { ...args };
   const missingFields = [];
 
-  const repoRoot = resolveRepoRoot(normalizeSingleValue(nextArgs["repo-root"] || ""));
+  const repoRoot = resolveRepoRoot(
+    normalizeSingleValue(nextArgs["repo-root"] || ""),
+  );
   const availableHarnesses = listAvailableHarnesses(repoRoot);
-  const modeOptions = availableHarnesses.length > 0
-    ? availableHarnesses.map((h) => h.harnessId)
-    : ["codex", "claude"];
-  const modeLabels = availableHarnesses.length > 0
-    ? availableHarnesses.map((h) => `${h.harnessId} (${h.harnessLabel})`)
-    : modeOptions;
+  const modeOptions =
+    availableHarnesses.length > 0
+      ? availableHarnesses.map((h) => h.harnessId)
+      : ["codex", "claude"];
+  const modeLabels =
+    availableHarnesses.length > 0
+      ? availableHarnesses.map((h) => `${h.harnessId} (${h.harnessLabel})`)
+      : modeOptions;
 
   if (!normalizeSingleValue(nextArgs.mode || "")) {
     missingFields.push("'--mode <harness>'");
@@ -128,28 +152,33 @@ async function prepareInteractiveInstallArgs(args) {
   if (!normalizeSingleValue(nextArgs.mode || "")) {
     nextArgs.mode = await promptForChoice({
       label: "Select runtime mode",
-      options: modeLabels.length > 1 ? modeLabels : modeOptions
+      options: modeLabels.length > 1 ? modeLabels : modeOptions,
     });
     // Extract harnessId if the choice includes a label
     const chosenLabel = nextArgs.mode;
-    const matchingHarness = availableHarnesses.find((h) => `${h.harnessId} (${h.harnessLabel})` === chosenLabel);
+    const matchingHarness = availableHarnesses.find(
+      (h) => `${h.harnessId} (${h.harnessLabel})` === chosenLabel,
+    );
     nextArgs.mode = matchingHarness ? matchingHarness.harnessId : chosenLabel;
   }
 
   if (!normalizeSingleValue(nextArgs.scope || "")) {
     nextArgs.scope = await promptForChoice({
       label: "Select install scope",
-      options: INSTALL_SCOPE_OPTIONS
+      options: INSTALL_SCOPE_OPTIONS,
     });
   }
 
   const scopeValue = normalizeSingleValue(nextArgs.scope || "");
   const projectRoots = normalizeArray(nextArgs["project-root"]);
-  if ((scopeValue === "project" || scopeValue === "both") && projectRoots.length === 0) {
+  if (
+    (scopeValue === "project" || scopeValue === "both") &&
+    projectRoots.length === 0
+  ) {
     assertInteractivePromptAvailable("install", ["'--project-root <path>'"]);
     nextArgs["project-root"] = await promptForInput({
       label: "Project root",
-      defaultValue: process.cwd()
+      defaultValue: process.cwd(),
     });
   }
 
@@ -163,7 +192,9 @@ async function prepareInteractiveModeArgs(args, actionLabel) {
   }
 
   // Try auto-detection first
-  const repoRoot = resolveRepoRoot(normalizeSingleValue(nextArgs["repo-root"] || ""));
+  const repoRoot = resolveRepoRoot(
+    normalizeSingleValue(nextArgs["repo-root"] || ""),
+  );
   const detectedMode = detectActiveHarness(repoRoot, "");
   if (detectedMode) {
     nextArgs.mode = detectedMode;
@@ -172,31 +203,39 @@ async function prepareInteractiveModeArgs(args, actionLabel) {
 
   // Multiple harnesses detected or none detected — prompt user
   const availableHarnesses = listAvailableHarnesses(repoRoot);
-  const modeOptions = availableHarnesses.length > 0
-    ? availableHarnesses.map((h) => `${h.harnessId} (${h.harnessLabel})`)
-    : ["codex", "claude"];
+  const modeOptions =
+    availableHarnesses.length > 0
+      ? availableHarnesses.map((h) => `${h.harnessId} (${h.harnessLabel})`)
+      : ["codex", "claude"];
 
   assertInteractivePromptAvailable(actionLabel, ["'--mode <harness>'"]);
   const chosen = await promptForChoice({
     label: `Select runtime mode for ${actionLabel}`,
-    options: modeOptions
+    options: modeOptions,
   });
   // Extract harnessId if the choice includes a label
-  const matchingHarness = availableHarnesses.find((h) => `${h.harnessId} (${h.harnessLabel})` === chosen);
+  const matchingHarness = availableHarnesses.find(
+    (h) => `${h.harnessId} (${h.harnessLabel})` === chosen,
+  );
   nextArgs.mode = matchingHarness ? matchingHarness.harnessId : chosen;
   return nextArgs;
 }
 
 function getRuntimeContext(args) {
-  const repoRoot = resolveRepoRoot(normalizeSingleValue(args["repo-root"] || ""));
+  const repoRoot = resolveRepoRoot(
+    normalizeSingleValue(args["repo-root"] || ""),
+  );
   const { manifest } = loadBundleManifest(repoRoot);
-  const mode = resolveRuntimeMode(normalizeSingleValue(args.mode || ""), repoRoot);
+  const mode = resolveRuntimeMode(
+    normalizeSingleValue(args.mode || ""),
+    repoRoot,
+  );
   const runtimeHome = resolveRuntimeHome({
     mode,
     explicitRuntimeHome: normalizeSingleValue(args["runtime-home"] || ""),
     explicitCodexHome: normalizeSingleValue(args["codex-home"] || ""),
     explicitClaudeHome: normalizeSingleValue(args["claude-home"] || ""),
-    repoRoot
+    repoRoot,
   });
   const bundlePaths = getBundlePaths({ repoRoot, runtimeHome, manifest, mode });
 
@@ -208,7 +247,7 @@ function getRuntimeContext(args) {
     mode,
     runtimeHome,
     bundlePaths,
-    availableSkills: collectSourceSkills(bundlePaths.skillsSourceRoot)
+    availableSkills: collectSourceSkills(bundlePaths.skillsSourceRoot),
   };
 }
 
@@ -220,7 +259,8 @@ function printHelp() {
       "Usage:",
       "  wfc install [--mode <harness>] [--scope global|project|both] [--project-root PATH] [--skill NAME] [--exclude-skill NAME]",
       "  wfc update [--mode <harness>] [--scope global|project|both] [--project-root PATH] [--skill NAME] [--exclude-skill NAME]",
-      "  wfc status [--mode <harness>] [--json]",
+      "  wfc status [--mode <harness>] [--project-root <path>] [--json]",
+      "  wfc update --rollback-context --mode <harness> --project-root <path>",
       "  wfc skills list [--mode <harness>] [--json]",
       "  wfc skills add [--mode <harness>] --skill NAME [--skill NAME]",
       "  wfc skills remove [--mode <harness>] --skill NAME [--skill NAME]",
@@ -242,8 +282,8 @@ function printHelp() {
       "  - 'wfc update' overwrites the current installed bundle using the recorded install state.",
       "  - 'wfc install' shows numbered choices for mode and scope when they are omitted in an interactive terminal.",
       "  - 'wfc update', 'wfc status' and 'wfc skills ...' auto-detect the active harness or show a choice when '--mode' is omitted.",
-      "  - When '--mode' is omitted, the harness is auto-detected from home directory markers and environment variables."
-    ].join("\n")
+      "  - When '--mode' is omitted, the harness is auto-detected from home directory markers and environment variables.",
+    ].join("\n"),
   );
 }
 
@@ -265,7 +305,7 @@ function printJson(summary, payload) {
   console.log(JSON.stringify(payload, null, 2));
 }
 
-function printStatusSummary(context, installState, jsonOutput) {
+function printStatusSummary(context, installState, jsonOutput, args = {}) {
   const bundleName = getManifestBundleName(context.manifest);
   const bundleVersion = getManifestBundleVersion(context.manifest);
   const payload = {
@@ -281,13 +321,22 @@ function printStatusSummary(context, installState, jsonOutput) {
     global_policy_enabled: installState.global_policy.enabled,
     global_agents_path: installState.global_policy.agents_path,
     support_policies_path:
-      context.bundlePaths.supportPoliciesHome && fs.existsSync(context.bundlePaths.supportPoliciesHome)
+      context.bundlePaths.supportPoliciesHome &&
+      fs.existsSync(context.bundlePaths.supportPoliciesHome)
         ? context.bundlePaths.supportPoliciesHome
         : "",
     managed_skills: installState.managed_skills,
     installed_skill_dirs: getInstalledSkillDirs(context.bundlePaths.skillsHome),
     project_targets: installState.project_targets,
-    updated_at: installState.updated_at
+    updated_at: installState.updated_at,
+    project_context: [
+      ...new Set([
+        ...installState.project_targets.map((t) => t.project_root),
+        ...normalizeArray(args["project-root"]),
+      ]),
+    ].map((root) =>
+      require("./workflow-project-context").diagnose(root, context.mode),
+    ),
   };
 
   const summary = [
@@ -296,7 +345,7 @@ function printStatusSummary(context, installState, jsonOutput) {
     `source_version=${bundleVersion}`,
     `installed_version=${installState.installed_bundle_version || "<none>"}`,
     `managed_skills=${installState.managed_skills.length}`,
-    `project_targets=${installState.project_targets.length}`
+    `project_targets=${installState.project_targets.length}`,
   ].join(" | ");
 
   if (jsonOutput) {
@@ -309,11 +358,20 @@ function printStatusSummary(context, installState, jsonOutput) {
   console.log(`runtime_mode=${payload.runtime_mode}`);
   console.log(`runtime_home=${payload.runtime_home}`);
   console.log(`install_scope=${payload.install_scope}`);
-  console.log(`global_policy_enabled=${payload.global_policy_enabled ? "true" : "false"}`);
+  console.log(
+    `global_policy_enabled=${payload.global_policy_enabled ? "true" : "false"}`,
+  );
   console.log(`global_agents_path=${payload.global_agents_path || "<none>"}`);
-  console.log(`support_policies_path=${payload.support_policies_path || "<none>"}`);
-  console.log(`managed_skills=${payload.managed_skills.join(", ") || "<none>"}`);
+  console.log(
+    `support_policies_path=${payload.support_policies_path || "<none>"}`,
+  );
+  console.log(
+    `managed_skills=${payload.managed_skills.join(", ") || "<none>"}`,
+  );
   console.log(`project_targets=${payload.project_targets.length}`);
+  payload.project_context.forEach((target) =>
+    console.log(JSON.stringify(target)),
+  );
   payload.project_targets.forEach((target) => {
     console.log(`- ${target.project_root}`);
   });
@@ -327,25 +385,35 @@ function applyInstallOrUpdate({ args, action }) {
     runtimeHome: context.runtimeHome,
     mode: context.mode,
     installStatePath: context.bundlePaths.installStatePath,
-    legacyInstallStatePath: context.bundlePaths.legacyInstallStatePath
+    legacyInstallStatePath: context.bundlePaths.legacyInstallStatePath,
   });
-  const requestedProjectRoots = normalizeArray(args["project-root"]).map((item) => path.resolve(item));
+  const requestedProjectRoots = normalizeArray(args["project-root"]).map(
+    (item) => path.resolve(item),
+  );
   const scopeValue =
     normalizeSingleValue(args.scope || "") ||
     (action === "update" ? currentState.install_scope || "global" : "global");
   validateInstallScope(scopeValue);
 
-  if ((scopeValue === "project" || scopeValue === "both") && requestedProjectRoots.length === 0 && action === "install") {
-    throw new Error("install with scope=project|both requires at least one '--project-root <path>'.");
+  if (
+    (scopeValue === "project" || scopeValue === "both") &&
+    requestedProjectRoots.length === 0 &&
+    action === "install"
+  ) {
+    throw new Error(
+      "install with scope=project|both requires at least one '--project-root <path>'.",
+    );
   }
 
-  const projectRootsForAction =
-    action === "update"
-      ? [
-          ...currentState.project_targets.map((target) => target.project_root),
-          ...requestedProjectRoots
-        ]
-      : requestedProjectRoots;
+  const projectRootsForAction = [
+    ...new Set(
+      requestedProjectRoots.length > 0
+        ? requestedProjectRoots
+        : action === "update"
+          ? currentState.project_targets.map((target) => target.project_root)
+          : [],
+    ),
+  ];
 
   const selectedSkillNames = selectSkills({
     availableSkills: context.availableSkills,
@@ -357,27 +425,51 @@ function applyInstallOrUpdate({ args, action }) {
         ? normalizeArray(args.skill).length > 0
           ? "requested"
           : "all"
-        : "current-or-all"
+        : "current-or-all",
   });
+
+  const integration = require("./workflow-project-context");
+  const policy = fs.readFileSync(context.bundlePaths.globalAgentsSource);
+  if (scopeValue === "global" || scopeValue === "both")
+    integration.install({
+      root: context.runtimeHome,
+      mode: context.mode,
+      global: true,
+      entry: context.mode === "codex" ? "AGENTS.md" : "CLAUDE.md",
+      legacyEntry: context.bundlePaths.globalAgentsFileName,
+      policy,
+      preflight: true,
+    });
+  if (scopeValue === "project" || scopeValue === "both")
+    for (const root of projectRootsForAction)
+      integration.install({
+        root,
+        mode: context.mode,
+        entry: context.bundlePaths.projectAgentsFileName,
+        policy,
+        preflight: true,
+        historyCompanion: normalizeSingleValue(args["history-companion"] || ""),
+      });
 
   const previousManagedSkills = [
     ...readManagedSkillsManifest({
       managedSkillsManifestPath: context.bundlePaths.managedSkillsManifestPath,
-      legacyManagedSkillsManifestPath: context.bundlePaths.legacyManagedSkillsManifestPath
+      legacyManagedSkillsManifestPath:
+        context.bundlePaths.legacyManagedSkillsManifestPath,
     }),
-    ...currentState.managed_skills
+    ...currentState.managed_skills,
   ];
   const skillSyncResult = syncSkills({
     selectedSkillNames,
     availableSkills: context.availableSkills,
     skillsHome: context.bundlePaths.skillsHome,
-    previousManagedSkills
+    previousManagedSkills,
   });
   writeManagedSkillsManifest(context.bundlePaths, selectedSkillNames);
   const supportPoliciesPath = syncSupportPolicies({
     supportPoliciesSourceRoot: context.bundlePaths.supportPoliciesSourceRoot,
     supportPoliciesDestRoot: context.bundlePaths.supportPoliciesHome,
-    excludedFileNames: [context.bundlePaths.globalAgentsFileName]
+    excludedFileNames: [context.bundlePaths.globalAgentsFileName],
   });
 
   let globalAgentsPath = currentState.global_policy.agents_path;
@@ -385,7 +477,7 @@ function applyInstallOrUpdate({ args, action }) {
   if (installGlobalPolicy) {
     globalAgentsPath = syncGlobalPolicy({
       globalAgentsSource: context.bundlePaths.globalAgentsSource,
-      globalAgentsDest: context.bundlePaths.globalAgentsDest
+      globalAgentsDest: context.bundlePaths.globalAgentsDest,
     });
   }
 
@@ -395,8 +487,11 @@ function applyInstallOrUpdate({ args, action }) {
           syncProjectPolicy({
             globalAgentsSource: context.bundlePaths.globalAgentsSource,
             projectRoot,
-            projectAgentsFileName: context.bundlePaths.projectAgentsFileName
-          })
+            projectAgentsFileName: context.bundlePaths.projectAgentsFileName,
+            historyCompanion: normalizeSingleValue(
+              args["history-companion"] || "",
+            ),
+          }),
         )
       : [];
 
@@ -413,19 +508,24 @@ function applyInstallOrUpdate({ args, action }) {
       install_scope: mergeInstallScope(currentState.install_scope, scopeValue),
       managed_skills: selectedSkillNames,
       global_policy: {
-        enabled: installGlobalPolicy ? true : currentState.global_policy.enabled,
-        agents_path: globalAgentsPath
+        enabled: installGlobalPolicy
+          ? true
+          : currentState.global_policy.enabled,
+        agents_path: globalAgentsPath,
       },
-      project_targets: mergeProjectTargets(currentState.project_targets, syncedProjectTargets),
+      project_targets: mergeProjectTargets(
+        currentState.project_targets,
+        syncedProjectTargets,
+      ),
       installed_at: currentState.installed_at || timestamp,
-      updated_at: timestamp
+      updated_at: timestamp,
     },
     {
       manifest: context.manifest,
       repoRoot: context.repoRoot,
       runtimeHome: context.runtimeHome,
-      mode: context.mode
-    }
+      mode: context.mode,
+    },
   );
 
   return {
@@ -433,7 +533,7 @@ function applyInstallOrUpdate({ args, action }) {
     state: nextState,
     skillSyncResult,
     supportPoliciesPath,
-    syncedProjectTargets
+    syncedProjectTargets,
   };
 }
 
@@ -445,7 +545,7 @@ function printInstallOrUpdateResult(action, result, jsonOutput) {
     `mode=${result.context.mode}`,
     `bundle_version=${bundleVersion}`,
     `managed_skills=${result.state.managed_skills.length}`,
-    `project_targets=${result.state.project_targets.length}`
+    `project_targets=${result.state.project_targets.length}`,
   ].join(" | ");
 
   const payload = {
@@ -460,7 +560,7 @@ function printInstallOrUpdateResult(action, result, jsonOutput) {
     installed_skill_paths: result.skillSyncResult.installed,
     removed_skill_paths: result.skillSyncResult.removed,
     project_targets: result.state.project_targets,
-    install_state_path: result.context.bundlePaths.installStatePath
+    install_state_path: result.context.bundlePaths.installStatePath,
   };
 
   if (jsonOutput) {
@@ -470,12 +570,18 @@ function printInstallOrUpdateResult(action, result, jsonOutput) {
 
   console.log(summary);
   console.log(`runtime=${payload.runtime_mode} home=${payload.runtime_home}`);
-  console.log(`global_policy=${payload.global_policy.enabled ? payload.global_policy.agents_path : "<disabled>"}`);
+  console.log(
+    `global_policy=${payload.global_policy.enabled ? payload.global_policy.agents_path : "<disabled>"}`,
+  );
   console.log(`support_policies=${payload.support_policies_path || "<none>"}`);
-  console.log(`managed_skills=${payload.managed_skills.join(", ") || "<none>"}`);
+  console.log(
+    `managed_skills=${payload.managed_skills.join(", ") || "<none>"}`,
+  );
   if (payload.project_targets.length > 0) {
     console.log(`project_targets=${payload.project_targets.length}`);
-    payload.project_targets.forEach((target) => console.log(`- ${target.project_root}`));
+    payload.project_targets.forEach((target) =>
+      console.log(`- ${target.project_root}`),
+    );
   }
 }
 
@@ -487,47 +593,53 @@ function applySkillsAction({ args, action }) {
     runtimeHome: context.runtimeHome,
     mode: context.mode,
     installStatePath: context.bundlePaths.installStatePath,
-    legacyInstallStatePath: context.bundlePaths.legacyInstallStatePath
+    legacyInstallStatePath: context.bundlePaths.legacyInstallStatePath,
   });
 
   if (action === "list") {
-    const installedSkillDirs = getInstalledSkillDirs(context.bundlePaths.skillsHome);
+    const installedSkillDirs = getInstalledSkillDirs(
+      context.bundlePaths.skillsHome,
+    );
     const managedSkillSet = new Set(currentState.managed_skills);
     const availableSkills = context.availableSkills.map((skill) => ({
       name: skill.name,
       installed: installedSkillDirs.includes(skill.name),
       managed: managedSkillSet.has(skill.name),
-      relative_dir: skill.relativeDir
+      relative_dir: skill.relativeDir,
     }));
 
     return {
       context,
       currentState,
       availableSkills,
-      installedSkillDirs
+      installedSkillDirs,
     };
   }
 
-  const selectionMode = action === "remove" || action === "delete" ? "remove-requested" : "merge-requested";
+  const selectionMode =
+    action === "remove" || action === "delete"
+      ? "remove-requested"
+      : "merge-requested";
   const nextManagedSkills = selectSkills({
     availableSkills: context.availableSkills,
     requestedSkills: args.skill,
     excludedSkills: [],
     currentManagedSkills: currentState.managed_skills,
-    mode: selectionMode
+    mode: selectionMode,
   });
   const previousManagedSkills = [
     ...readManagedSkillsManifest({
       managedSkillsManifestPath: context.bundlePaths.managedSkillsManifestPath,
-      legacyManagedSkillsManifestPath: context.bundlePaths.legacyManagedSkillsManifestPath
+      legacyManagedSkillsManifestPath:
+        context.bundlePaths.legacyManagedSkillsManifestPath,
     }),
-    ...currentState.managed_skills
+    ...currentState.managed_skills,
   ];
   const skillSyncResult = syncSkills({
     selectedSkillNames: nextManagedSkills,
     availableSkills: context.availableSkills,
     skillsHome: context.bundlePaths.skillsHome,
-    previousManagedSkills
+    previousManagedSkills,
   });
   writeManagedSkillsManifest(context.bundlePaths, nextManagedSkills);
 
@@ -536,19 +648,21 @@ function applySkillsAction({ args, action }) {
     {
       ...currentState,
       bundle_name: getManifestBundleName(context.manifest),
-      installed_bundle_version: currentState.installed_bundle_version || getManifestBundleVersion(context.manifest),
+      installed_bundle_version:
+        currentState.installed_bundle_version ||
+        getManifestBundleVersion(context.manifest),
       repo_root: context.repoRoot,
       runtime_mode: context.mode,
       runtime_home: context.runtimeHome,
       managed_skills: nextManagedSkills,
-      updated_at: getNowIso()
+      updated_at: getNowIso(),
     },
     {
       manifest: context.manifest,
       repoRoot: context.repoRoot,
       runtimeHome: context.runtimeHome,
-      mode: context.mode
-    }
+      mode: context.mode,
+    },
   );
 
   return {
@@ -556,7 +670,7 @@ function applySkillsAction({ args, action }) {
     currentState,
     nextState,
     skillSyncResult,
-    action
+    action,
   };
 }
 
@@ -565,14 +679,14 @@ function printSkillsResult(result, jsonOutput) {
     const summary = [
       `OK: listed ${result.availableSkills.length} source skills`,
       `installed_dirs=${result.installedSkillDirs.length}`,
-      `managed_skills=${result.currentState.managed_skills.length}`
+      `managed_skills=${result.currentState.managed_skills.length}`,
     ].join(" | ");
 
     if (jsonOutput) {
       printJson(summary, {
         source_skills: result.availableSkills,
         installed_skill_dirs: result.installedSkillDirs,
-        managed_skills: result.currentState.managed_skills
+        managed_skills: result.currentState.managed_skills,
       });
       return;
     }
@@ -580,7 +694,7 @@ function printSkillsResult(result, jsonOutput) {
     console.log(summary);
     result.availableSkills.forEach((skill) => {
       console.log(
-        `- ${skill.name} | installed=${skill.installed ? "yes" : "no"} | managed=${skill.managed ? "yes" : "no"}`
+        `- ${skill.name} | installed=${skill.installed ? "yes" : "no"} | managed=${skill.managed ? "yes" : "no"}`,
       );
     });
     return;
@@ -590,13 +704,13 @@ function printSkillsResult(result, jsonOutput) {
     `OK: ${result.action} skill set`,
     `managed_skills=${result.nextState.managed_skills.length}`,
     `installed_paths=${result.skillSyncResult.installed.length}`,
-    `removed_paths=${result.skillSyncResult.removed.length}`
+    `removed_paths=${result.skillSyncResult.removed.length}`,
   ].join(" | ");
 
   const payload = {
     managed_skills: result.nextState.managed_skills,
     installed_skill_paths: result.skillSyncResult.installed,
-    removed_skill_paths: result.skillSyncResult.removed
+    removed_skill_paths: result.skillSyncResult.removed,
   };
 
   if (jsonOutput) {
@@ -605,14 +719,18 @@ function printSkillsResult(result, jsonOutput) {
   }
 
   console.log(summary);
-  console.log(`managed_skills=${result.nextState.managed_skills.join(", ") || "<none>"}`);
+  console.log(
+    `managed_skills=${result.nextState.managed_skills.join(", ") || "<none>"}`,
+  );
 }
 
 async function runCli() {
   const action = normalizeSingleValue(process.argv[2] || "help");
   if (!SUPPORTED_ACTIONS.has(action)) {
     console.error(
-      formatErrors([`Unknown workflow bundle action '${action}'. Use one of: ${[...SUPPORTED_ACTIONS].join(", ")}`])
+      formatErrors([
+        `Unknown workflow bundle action '${action}'. Use one of: ${[...SUPPORTED_ACTIONS].join(", ")}`,
+      ]),
     );
     process.exit(1);
   }
@@ -640,9 +758,9 @@ async function runCli() {
           runtimeHome: context.runtimeHome,
           mode: context.mode,
           installStatePath: context.bundlePaths.installStatePath,
-          legacyInstallStatePath: context.bundlePaths.legacyInstallStatePath
+          legacyInstallStatePath: context.bundlePaths.legacyInstallStatePath,
         });
-        printStatusSummary(context, state, jsonOutput);
+        printStatusSummary(context, state, jsonOutput, args);
         return;
       }
       case "install": {
@@ -653,6 +771,27 @@ async function runCli() {
       }
       case "update": {
         args = await prepareInteractiveModeArgs(args, "update");
+        if (args["rollback-context"]) {
+          const roots = normalizeArray(args["project-root"]);
+          if (!roots.length)
+            throw new Error(
+              "--rollback-context requires explicit --project-root; it never rolls back all registered projects implicitly.",
+            );
+          const mode = resolveRuntimeMode(
+            normalizeSingleValue(args.mode),
+            resolveRepoRoot(normalizeSingleValue(args["repo-root"] || "")),
+          );
+          for (const root of roots)
+            console.log(
+              JSON.stringify(
+                require("./workflow-project-context").rollback(
+                  path.resolve(root),
+                  mode,
+                ),
+              ),
+            );
+          return;
+        }
         const result = applyInstallOrUpdate({ args, action: "update" });
         printInstallOrUpdateResult("updated", result, jsonOutput);
         return;
@@ -665,17 +804,22 @@ async function runCli() {
         }
         const skillAction = rawSkillAction;
         if (!SUPPORTED_SKILL_ACTIONS.has(skillAction)) {
-          throw new Error(`Unknown skills action '${skillAction}'. Use one of: ${[...SUPPORTED_SKILL_ACTIONS].join(", ")}`);
+          throw new Error(
+            `Unknown skills action '${skillAction}'. Use one of: ${[...SUPPORTED_SKILL_ACTIONS].join(", ")}`,
+          );
         }
         const skillArgs = parseCliArgs(process.argv.slice(4));
         if (skillArgs.help) {
           printHelp();
           return;
         }
-        const preparedSkillArgs = await prepareInteractiveModeArgs(skillArgs, `skills ${skillAction}`);
+        const preparedSkillArgs = await prepareInteractiveModeArgs(
+          skillArgs,
+          `skills ${skillAction}`,
+        );
         const result = applySkillsAction({
           args: preparedSkillArgs,
-          action: skillAction
+          action: skillAction,
         });
         printSkillsResult(result, Boolean(preparedSkillArgs.json));
         return;
@@ -684,7 +828,9 @@ async function runCli() {
         throw new Error(`Unsupported action '${action}'.`);
     }
   } catch (error) {
-    const message = error.message.startsWith("ERROR:") ? error.message : formatErrors([error.message]);
+    const message = error.message.startsWith("ERROR:")
+      ? error.message
+      : formatErrors([error.message]);
     console.error(message);
     process.exit(1);
   }
@@ -692,7 +838,9 @@ async function runCli() {
 
 if (require.main === module) {
   runCli().catch((error) => {
-    const message = error.message.startsWith("ERROR:") ? error.message : formatErrors([error.message]);
+    const message = error.message.startsWith("ERROR:")
+      ? error.message
+      : formatErrors([error.message]);
     console.error(message);
     process.exit(1);
   });
@@ -703,5 +851,5 @@ module.exports = {
   applySkillsAction,
   prepareInteractiveInstallArgs,
   prepareInteractiveModeArgs,
-  runCli
+  runCli,
 };

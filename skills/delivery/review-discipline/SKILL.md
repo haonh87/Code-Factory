@@ -98,7 +98,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 - `full` and `enterprise` must not leave `review_batches` empty when there is medium or high risk.
 - `INDEPENDENT` should be used when the review owner is separate from the implementer or release risk is high.
 - `finding_policy.blocker_threshold` must be explicit; do not use vague wording.
-- Default to writing and communicating in English.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise.
 - Text files must be stored as UTF-8.
 
 ## Decision Rules

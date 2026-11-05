@@ -94,7 +94,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 - If `worktree_decision != NOT_NEEDED`, `isolation_strategy` must not be empty.
 - If `worktree_decision=OPTIONAL|NOT_NEEDED`, explain why the main workspace is still safe.
 - If `worktree_path` escapes the repo working tree without a recorded reason in `decision_reason`, treat `isolation_strategy` as incomplete.
-- Default to writing and communicating in English.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise.
 - Text files must be stored as UTF-8.
 
 ## Location Constraint

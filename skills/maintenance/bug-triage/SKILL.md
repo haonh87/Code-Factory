@@ -115,7 +115,7 @@ Wrap it with the `evidence-handoff` envelope (`role: pm`).
 - Ask for missing information once, as a complete list, in plain language the reporter can answer.
 - A duplicate is a proposal; the human at the intake gate links or closes.
 - Triage states symptoms, not causes. "Payment failed after the update" stays a symptom until analysis.
-- Write in English by default; store as UTF-8.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write reports and saved artifacts in English unless requested otherwise; store as UTF-8.
 
 ## Use In The Maintenance Lane And s01-s08
 

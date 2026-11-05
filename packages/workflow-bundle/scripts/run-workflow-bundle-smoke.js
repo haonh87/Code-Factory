@@ -286,7 +286,14 @@ function runCodexModeSmoke({ wfcBin, tempRoot, repoRoot }) {
     "Expected support policies path in status output."
   );
 
-  const globalAgentsContent = fs.readFileSync(globalAgentsPath, "utf8");
+  for (const entry of [globalAgentsPath, path.join(codexHome, "AGENTS.md")]) {
+    assertContentIncludes(
+      fs.readFileSync(entry, "utf8"),
+      "`code-factory/policy.md`",
+      "Expected native and legacy global instructions to reference the managed policy."
+    );
+  }
+  const globalAgentsContent = fs.readFileSync(path.join(codexHome, "code-factory", "policy.md"), "utf8");
   assertContentIncludes(
     globalAgentsContent,
     ROUTER_HARDSTOP_SNIPPET,
@@ -401,7 +408,7 @@ function main() {
   const repoRoot = path.resolve(__dirname, "..", "..", "..");
   const packageRoot = path.join(repoRoot, "packages", "workflow-bundle");
   const wfcBin = path.join(packageRoot, "bin", "wfc.js");
-  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-smoke-"));
+  const tempRoot = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "workflow-bundle-smoke-")));
 
   try {
     runNodeScriptCaptureOutput(path.join(packageRoot, "scripts", "sync-workflow-bundle-runtime.js"), [], repoRoot);
@@ -411,6 +418,14 @@ function main() {
     runConfigHardeningSmoke({ wfcBin, tempRoot });
     console.log(`OK: workflow bundle smoke passed under ${tempRoot}`);
   } finally {
+    // The installer preserves hardened directory modes; relax only our temporary fixtures for cleanup.
+    function makeFixtureRemovable(dir) {
+      const stat = fs.lstatSync(dir);
+      if (!stat.isDirectory() || stat.isSymbolicLink()) return;
+      fs.chmodSync(dir, stat.mode | 0o700);
+      for (const name of fs.readdirSync(dir)) makeFixtureRemovable(path.join(dir, name));
+    }
+    makeFixtureRemovable(tempRoot);
     fs.rmSync(tempRoot, { recursive: true, force: true });
   }
 }

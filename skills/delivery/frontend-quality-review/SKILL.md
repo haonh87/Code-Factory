@@ -124,7 +124,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 
 ## Quality Rules
 
-- Default to writing and communicating in English.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise.
 - Do not mark `PASS` without evidence for a primary surface or flow.
 - Do not treat a static analysis pass as sufficient evidence for frontend quality.
 - If a browser or manual check cannot run, record the limit clearly in `checks_skipped`.

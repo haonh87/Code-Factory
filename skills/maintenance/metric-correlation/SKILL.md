@@ -111,7 +111,7 @@ Wrap it with the `evidence-handoff` envelope.
 - Rates are compared as rates, not as raw counters.
 - A coincidence with a deploy is a lead, not a conclusion; say what in the deploy would have to be true.
 - Keep graphs behind links; the output holds numbers.
-- Write in English by default; store as UTF-8.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write reports and saved artifacts in English unless requested otherwise; store as UTF-8.
 
 ## Use In The Maintenance Lane And s01-s08
 

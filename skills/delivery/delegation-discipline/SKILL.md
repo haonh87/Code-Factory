@@ -97,7 +97,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 - `SUBAGENT` and `MULTI_AGENT` must not be used when `owned_paths` overlap strongly.
 - `worker_assignments` must not be vague like "handle the rest".
 - `verify_strategy` must be enough to know who is responsible for concluding the final evidence.
-- Default to writing and communicating in English.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise.
 - Text files must be stored as UTF-8.
 
 ## Decision Rule

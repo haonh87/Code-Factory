@@ -1,8 +1,8 @@
 # Code-Factory - Project Context
 
 Repository: AI Agent Ops - policy, workflow, skill and adapter for AI agent tasks.
-Release target: `workflow-bundle v2.9.0` (48 skills per harness).
-Publication is authorized by the maintainer; see `docs/releases/workflow-bundle-v2.9.0.md` for the verified outcome.
+Release target: `workflow-bundle v2.10.0` (48 skills per harness).
+Technical verification and terminal release approval have passed; publication status is recorded in `docs/releases/workflow-bundle-v2.10.0.md` for the verified outcome.
 Workflow rollback: immutable `v2.8.0/48`. MCP source fixes are delivered through the Git tag, not the workflow tarball.
 
 ## Commands
@@ -29,7 +29,8 @@ Workflow rollback: immutable `v2.8.0/48`. MCP source fixes are delivered through
 - Workflow chain: s01 Clarify -> s08 Verify + DoD
 - Artifact root: `work-items/<work_item_slug>/`
 - Workflow notes: `.md` with Obsidian flavor
-- Language: English by default; Vietnamese retained as supplementary reference (`*.vi.md` siblings and `docs/vi/`) for the Vietnamese community. Runtime skills are EN-first.
+- User communication: Vietnamese (with diacritics) by default, unless the user explicitly requests another language. Applies to questions, explanations, progress updates and final responses.
+- Documentation and runtime skill source: English by default; Vietnamese supplements remain available in `*.vi.md` and `docs/vi/`.
 - Encoding: UTF-8 required for text files
 - TDD for behavior change, worktree for large changes
 - `AI proposes, human approves` at every gate

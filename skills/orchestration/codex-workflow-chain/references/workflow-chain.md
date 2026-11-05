@@ -3126,7 +3126,7 @@ next_action: ""
 ## Language Gate And Encoding
 
 Default policy:
-- Communication with users: English.
+- Communication with users: Vietnamese (with diacritics), unless the user explicitly requests another language; includes questions, explanations, progress updates and final responses.
 - Documentation and handoff reports: English (unless the user requests another language).
 - Vietnamese is retained as a supplementary reference via `*.vi.md` siblings for the Vietnamese community.
 

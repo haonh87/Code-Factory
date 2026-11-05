@@ -95,7 +95,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 
 - Do not guess to fill gaps for mandatory inputs.
 - Every conclusion must have evidence or state the assumption explicitly.
-- Default to writing and communicating in English; store as UTF-8.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise; store as UTF-8.
 - When there are multiple input sources, prefer the more reliable source and state this clearly.
 
 ## Completion Conditions

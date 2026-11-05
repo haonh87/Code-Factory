@@ -131,7 +131,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 
 ## Quality Rules
 
-- Default to writing and communicating in English.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise.
 - Do not mark `PASS` when a change touches an important React boundary without evidence that the corresponding gate was reviewed correctly.
 - Do not use `useEffect` as the default place to compute derived data or sync state if it can be done directly in render or via an event.
 - If the codebase already follows React Compiler or a guideline against sprawling `useMemo`/`useCallback`, do not turn the absence of those two hooks into a finding purely out of habit.

@@ -3,7 +3,6 @@ import { createReadStream, lstatSync, realpathSync, statSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import readline from "node:readline";
-import { fileURLToPath } from "node:url";
 
 export const DEFAULT_SESSION_LIMIT = 10;
 export const MAX_SESSION_LIMIT = 20;
@@ -22,8 +21,6 @@ export const MAX_SEARCH_PAGE_SIZE = 50;
 export const MAX_SEARCH_PAGES = 10;
 export const MAX_SESSION_SCAN_LINES = 20;
 
-const moduleDir = path.dirname(fileURLToPath(import.meta.url));
-const defaultAllowedRoot = path.resolve(moduleDir, "../../..");
 
 function clampInteger(value, min, max, fallback) {
   if (!Number.isInteger(value)) {
@@ -38,7 +35,11 @@ export function getCassBinary() {
 }
 
 export function getAllowedRoot() {
-  return path.resolve(process.env.SESSION_SEARCH_ALLOWED_ROOT ?? defaultAllowedRoot);
+  const root = process.env.SESSION_SEARCH_ALLOWED_ROOT;
+  if (typeof root !== "string" || !root.trim() || !path.isAbsolute(root)) {
+    throw new Error("SESSION_SEARCH_ALLOWED_ROOT must name one explicit absolute project root");
+  }
+  return path.resolve(root);
 }
 
 export function getSessionsRoot() {
@@ -123,6 +124,8 @@ export function truncateText(value, maxLength) {
 }
 
 function getWorkspaceCandidateFromEntry(entry) {
+  // Claude Code JSONL records carry cwd at the top level; content stays data.
+  if (typeof entry?.cwd === "string") return entry.cwd;
   const payload = entry?.payload;
 
   if (!payload || typeof payload !== "object") {
@@ -446,10 +449,21 @@ export async function getSessionSearchStatus() {
   return sanitizeStatus(payload);
 }
 
+async function historyHealth() {
+  const status = await getSessionSearchStatus();
+  const healthy = status.healthy && status.index.exists && status.index.fresh && !status.index.rebuilding;
+  return {
+    status: healthy ? "healthy" : "degraded",
+    index: status.index,
+    action: healthy ? null : "Check session_search_status and explicitly repair the scoped index; empty results do not establish that history is absent.",
+  };
+}
+
 export async function listSessions(options = {}) {
   const allowedRoot = getAllowedRoot();
   const workspaceRoot = resolveWorkspacePath(options.workspacePath, allowedRoot);
   const limit = clampInteger(options.limit, 1, MAX_SESSION_LIMIT, DEFAULT_SESSION_LIMIT);
+  const history = await historyHealth();
   const fetchLimit = Math.max(100, limit * 10);
   const payload = await runCassJson([
     "sessions",
@@ -469,6 +483,7 @@ export async function listSessions(options = {}) {
     allowedRoot,
     workspaceRoot,
     limit,
+    history,
     returned: filteredSessions.length,
     sessions: filteredSessions,
   };
@@ -509,6 +524,7 @@ export async function searchSessions(options = {}) {
     until: options.until,
   });
 
+  const history = await historyHealth();
   const collectedHits = [];
   let cursor = null;
   let pagesScanned = 0;
@@ -551,6 +567,7 @@ export async function searchSessions(options = {}) {
     pagesScanned,
     rawHitsScanned,
     rawTotalMatches,
+    history,
     partial: Boolean(cursor),
     hits: collectedHits,
   };
