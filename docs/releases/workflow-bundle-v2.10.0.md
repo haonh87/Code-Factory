@@ -36,7 +36,7 @@ See [English quickstart](../workflow-bundle-quickstart.md#project-lifecycle-repa
 
 | Asset | SHA-256 |
 |---|---|
-| workflow-bundle-2.10.0.tgz | `12a7ce94d6fea335b67acbcf178d946566de98ec80024eea8f2bdaa9464a8978` |
+| workflow-bundle-2.10.0.tgz | `f2f60fe3addc17a0e8089e350750af88e5359f238070de88a1df3517b5ca53d3` |
 | code-factory-session-search-mcp-0.2.0.tgz | `20d4384baae1784a54c0eb4b98e8c0945e0e75f37ab71b663c11f23deb70d51f` |
 
 Publish these exact bytes with SHA256SUMS after approval; a later rebuild is a new

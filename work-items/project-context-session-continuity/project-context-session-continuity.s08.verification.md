@@ -201,6 +201,10 @@ notes:
   - "Pilot handoff contains older contradictory progress; both agents surfaced this. Its active application owner must reconcile it; integration does not rewrite that ongoing work."
 ```
 
+## CI Smoke Regression
+
+The first CI run exposed an outdated smoke assertion against the legacy full policy. The smoke now checks native and legacy bridges plus the managed policy, resolves macOS temporary paths and cleans up hardened fixture directories. Source smoke passes. The rebuilt core differs in exactly one packaged file, the smoke runner; all pilot-installed production files remain byte-identical. Exact Node18/22 install checks and 2.9.0 rollback were rerun against the new checksum and passed.
+
 ## Scan Summary
 ```yaml
 status: PASS
@@ -268,4 +272,4 @@ next_step: "Human terminal review, then authorized release."
 
 ## Session Handoff
 
-Retained candidate assets are in `.worktrees/project-context-session-continuity/.release-candidate/v2.10.0/`. Core digest `12a7ce94d6fea335b67acbcf178d946566de98ec80024eea8f2bdaa9464a8978`; companion digest `20d4384baae1784a54c0eb4b98e8c0945e0e75f37ab71b663c11f23deb70d51f`. Source branch and worktree must remain open until human DoD. Do not publish rebuilt bytes or claim complete automatic conversation recall.
+Retained candidate assets are in `.worktrees/project-context-session-continuity/.release-candidate/v2.10.0/`. Core digest `f2f60fe3addc17a0e8089e350750af88e5359f238070de88a1df3517b5ca53d3`; companion digest `20d4384baae1784a54c0eb4b98e8c0945e0e75f37ab71b663c11f23deb70d51f`. Source branch and worktree must remain open until human DoD. Do not publish rebuilt bytes or claim complete automatic conversation recall.
