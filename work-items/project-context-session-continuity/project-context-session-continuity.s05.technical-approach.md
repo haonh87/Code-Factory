@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: reviewed
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: "CR-013"
@@ -71,8 +71,9 @@ gate_reviews:
   contract_reviewed_at: ""
   dor_reviewed_by: []
   dor_reviewed_at: ""
-  approach_reviewed_by: []
-  approach_reviewed_at: ""
+  approach_reviewed_by:
+    - "developer"
+  approach_reviewed_at: "2026-11-05T03:11:14.731Z"
   foundation_reviewed_by: []
   foundation_reviewed_at: ""
   task_plan_reviewed_by: []
@@ -179,7 +180,3 @@ A failed/stale context read gives an explicit degraded result and source pointer
 ## Validation And Rollback
 
 Test the entire lifecycle from extracted artifacts with the source checkout unavailable. Test a clean install and an upgrade from 2.9.0, and detect older owned-file formats. Rehearse rollback to exact prior package plus backups while preserving later user edits; downgrade does not delete canonical decisions or restore stale gate state. Detailed ordering and owned paths: s06.
-
-## Review Snapshot Notice
-
-This draft changes only Option Analysis representation. Canonical s05 remains signed at the original root until the maintainer applies the prepared correction and renews the Approach receipt.

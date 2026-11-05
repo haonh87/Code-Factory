@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: reviewed
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: "CR-013"
@@ -144,4 +144,14 @@ verify_path:
 
 ## Session Handoff
 
-Source is ready for final review. Candidate core SHA-256: `f2f60fe3addc17a0e8089e350750af88e5359f238070de88a1df3517b5ca53d3`; companion: `20d4384baae1784a54c0eb4b98e8c0945e0e75f37ab71b663c11f23deb70d51f`. Assets are retained in the implementation worktree `.release-candidate/v2.10.0/`. The pilot's real cass index is stale and was not rebuilt; synthetic history used an isolated index with user-home and network access denied. Pilot application handoff remains owned by its active worker; do not overwrite its concurrent edits. Next: finalize s08 review packet, source commit/CI, human DoD/UAT/Release/Business Acceptance, then publish the exact tested bytes. No release or terminal approval is claimed.
+Source is ready for final review. Candidate core SHA-256: `aa0b87b9c80f621fd073dfa602925a1894b46cf36b6e88661491fac6aaa8ae6b`; companion: `20d4384baae1784a54c0eb4b98e8c0945e0e75f37ab71b663c11f23deb70d51f`. Assets are retained in the implementation worktree `.release-candidate/v2.10.0/`. The pilot's real cass index is stale and was not rebuilt; synthetic history used an isolated index with user-home and network access denied. Pilot application handoff remains owned by its active worker; do not overwrite its concurrent edits. Next: finalize s08 review packet, source commit/CI, human DoD/UAT/Release/Business Acceptance, then publish the exact tested bytes. No release or terminal approval is claimed.
+
+## Vietnamese Communication Amendment
+
+The maintainer explicitly requested Vietnamese as the default communication language after the initial closeout review. The native global/project instruction bridges, canonical policy, workflow backbone and conflicting skill language rules now default questions, explanations, progress updates and final responses to Vietnamese unless the user explicitly asks for another language. Documentation language remains governed separately.
+
+The changed policy exposed a legacy upgrade assumption: whole-file recognition compared only with the new policy bytes. The exact 2.9.0 rollback smoke failed first. Recognition now also accepts the SHA-256 of the unmodified policy extracted from the retained published 2.9.0 archive, while unknown or edited content stays preserved. No broad marker or substring match authorizes replacement.
+
+Verification: existing 25 lifecycle cases, runtime parity (48 skills per harness), pack audit, exact Node18/22 install and four-way 2.9.0 upgrade/rollback. Fresh native Codex and Claude sessions on the pilot answered a neutral English prompt in Vietnamese. The pilot preservation check covered 113 pre-existing files with zero changes outside integration. The final legacy-recognition fix changes installer code only; pilot entrypoints, installed policy and context helper bytes are unchanged from the observed language sessions. Private transcripts remain excluded from Git and release assets.
+
+Review order: spec compliance PASS for the explicit language request and CTX-07/CTX-12 compatibility; code quality PASS for exact-hash legacy recognition and preserved unknown content. No new test was added for wording-only instructions; the existing exact upgrade test supplied RED/GREEN evidence for the compatibility fix.

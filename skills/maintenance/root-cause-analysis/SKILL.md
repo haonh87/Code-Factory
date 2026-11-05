@@ -112,7 +112,7 @@ Wrap it with the `evidence-handoff` envelope (`role: techlead`).
 - Keep hypotheses that were disproved in the output; they show the reviewer what was ruled out.
 - Do not recommend a fix that only hides the symptom (retry, larger timeout, catch-and-ignore) without naming it as containment.
 - Keep the output compact: link long traces instead of pasting them.
-- Write in English by default; store as UTF-8.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write reports and saved artifacts in English unless requested otherwise; store as UTF-8.
 
 ## Use In The Maintenance Lane And s01-s08
 

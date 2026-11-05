@@ -72,7 +72,7 @@ This repo runs on a multi-block model, not a single monolithic prompt.
 
 ## Language And Encoding Policy
 
-- Default to communicating with the user in English.
+- Default to communicating with the user in Vietnamese (with diacritics), unless the user explicitly requests another language. This includes questions, explanations, progress updates and final responses.
 - Default documentation and handoff reports to English, unless the user requests another language.
 - When updating text files (`.md`, `.txt`, `.yml`, `.yaml`, `.json`), store as UTF-8 and preserve accented characters in any `*.vi.md` supplement files.
 - In the Verify step, you must check text encoding for the changed text files.

@@ -110,7 +110,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 
 ## Quality Rules
 
-- Default to writing and communicating in English.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise.
 - Do not use `DDD` as a formal label without pointing to concrete boundaries and ownership.
 - If you choose `DOD`, default to a `module-first` structure; do not use `layer-first` as the root structure for all business code unless the system truly has only one domain module.
 - Do not merge all business into one shared module like `core`, `common`, `shared` without a clear reason.

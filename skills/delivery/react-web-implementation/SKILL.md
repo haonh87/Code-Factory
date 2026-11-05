@@ -106,7 +106,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 
 ## Quality Rules
 
-- Default to writing and communicating in English; follow project conventions for code.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise; follow project conventions for code.
 - Do not move a subtree to the client just because a hook is convenient if it can still be solved on the server or via props/data contracts.
 - Do not use `useEffect` to compute derived state or sync data that can be solved through render, events or a suitable fetch layer.
 - Use context only for data that truly needs to be shared broadly; avoid turning context into a global dumping ground.

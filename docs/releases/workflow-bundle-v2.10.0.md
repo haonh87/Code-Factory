@@ -8,6 +8,8 @@ Project context, native instructions, session handoff and Codex/Claude harness i
 
 Optional Session Search companion 0.2.0 is a separate artifact in the same release. It bundles pinned SDK/Zod dependencies, requires explicit project scope, supports Claude top-level cwd metadata, and preserves physical-root containment. No index rebuild or cross-project root expansion runs automatically. A3–A4 is not included: its independent QC closeout is still required.
 
+User communication now defaults to Vietnamese (with diacritics), including native entrypoints and skill guidance, unless the user explicitly requests another language. Exact published 2.9.0 policy hashes remain recognized when upgrading across this wording change.
+
 ## Compatibility
 
 Core remains Node >=18; companion requires Node >=20 and separately provisioned cass. Codex uses instruction-driven start/checkpoint fallback; Claude uses supported lifecycle hooks. Existing user instruction text, other hooks and MCP entries are preserved. Overrides and conflicting managed edits are reported. Verified on macOS 27.0.1 arm64, Codex 0.166.0 and Claude Code 2.1.316. Core was exercised on Node 18.20.8 and 22.23.4; companion on Node 20.20.2 and 22.23.4 with cass 0.2.7. Native Windows lifecycle hooks are unverified. The 48 managed skills, A1/A2 task contract, SEC-01/SEC-02 and CF-023 baseline remain.
@@ -26,7 +28,7 @@ Retain the published `workflow-bundle-2.9.0.tgz`, SHA-256 `08ebdd2757f01ac69c10d
 
 ## Release Gates
 
-Spec, Contract, DoR, Approach and Task Plan have trusted readiness signatures. DoD, UAT, Release and Business Acceptance remain pending human review. The accepted s05 option table has a prepared YAML-only normalization; its Approach signature must be renewed in the same terminal review. Source CI and publication remain pending. Publish only exact tested artifact bytes with SHA256SUMS after these gates. GitHub Releases remains the channel; npm registry publication is separate.
+All five readiness receipts validate. The first candidate received human DoD/UAT/Release/Business Acceptance; a subsequent explicit Vietnamese-language preference changed the packaged instructions. The amended candidate requires renewed terminal receipts bound to its updated checksum after green source CI. No new readiness approval is requested. Publish only the exact tested bytes with SHA256SUMS. GitHub Releases remains the delivery channel; npm registry publication is separate.
 
 ## Upgrade Guide
 
@@ -36,7 +38,7 @@ See [English quickstart](../workflow-bundle-quickstart.md#project-lifecycle-repa
 
 | Asset | SHA-256 |
 |---|---|
-| workflow-bundle-2.10.0.tgz | `f2f60fe3addc17a0e8089e350750af88e5359f238070de88a1df3517b5ca53d3` |
+| workflow-bundle-2.10.0.tgz | `aa0b87b9c80f621fd073dfa602925a1894b46cf36b6e88661491fac6aaa8ae6b` |
 | code-factory-session-search-mcp-0.2.0.tgz | `20d4384baae1784a54c0eb4b98e8c0945e0e75f37ab71b663c11f23deb70d51f` |
 
 Publish these exact bytes with SHA256SUMS after approval; a later rebuild is a new

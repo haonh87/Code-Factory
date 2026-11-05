@@ -109,7 +109,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 
 ## Quality Rules
 
-- Default to communicating and documenting in English.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise.
 - Text files must be stored as UTF-8.
 - Do not start execution before the contract is meaningful enough.
 - Do not use vague contracts such as "just get it done" or "optimize."

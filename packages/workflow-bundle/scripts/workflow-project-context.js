@@ -81,10 +81,11 @@ function writeAtomic(root, rel, bytes, mode) {
 }
 function instruction(mode, global) {
   if (global)
-    return "# Code Factory\nRead the managed policy at `code-factory/policy.md` relative to this instruction file before governed delivery. Project context and native project instructions remain project-specific.";
+    return "# Code Factory\nDefault to Vietnamese (with diacritics) for user communication, unless the user explicitly requests another language.\nRead the managed policy at `code-factory/policy.md` relative to this instruction file before governed delivery. Project context and native project instructions remain project-specific.";
   const local = "." + mode + "/code-factory";
   return (
     "# Code Factory project lifecycle\n" +
+    "Default to Vietnamese (with diacritics) for user communication, unless the user explicitly requests another language.\n" +
     "At the start of work, read `project-context/project-context.md`, project README and the relevant native instructions; establish purpose, module boundaries, build/test commands and constraints from sources. Do not invent a stack or project structure.\n" +
     "Read `" +
     local +
@@ -297,11 +298,17 @@ function install({
         mode: old ? fs.statSync(safe(root, rel)).mode & 0o777 : 0o644,
       });
   }
+  // Exact policy bytes shipped in the immutable 2.9.0 release, for both harnesses.
+  // Preserve any edited/unknown legacy text; policy wording may change across upgrades.
+  const isLegacyPolicy = (content) => content && (
+    content.equals(policy) ||
+    sha(content) === "4d8e8c686a266908b1642c829c7daa2ad7572e989e802432ec3dc9e4010435c9"
+  );
   const existing = read(root, entry);
   plan(
     entry,
     merge(
-      existing && !existing.equals(policy) ? existing.toString("utf8") : "",
+      existing && !isLegacyPolicy(existing) ? existing.toString("utf8") : "",
       instruction(mode, global),
       previous.files[entry]?.block_sha256,
     ),
@@ -312,7 +319,7 @@ function install({
     plan(
       legacyEntry,
       merge(
-        old && !old.equals(policy) ? old.toString("utf8") : "",
+        old && !isLegacyPolicy(old) ? old.toString("utf8") : "",
         instruction(mode, true),
         previous.files[legacyEntry]?.block_sha256,
       ),

@@ -101,7 +101,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 
 ## Quality Rules
 
-- Default to writing and communicating in English.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise.
 - Every conclusion must have evidence; do not use subjective impressions.
 - Do not mark `PASS` when there is not enough data to prove it.
 - If a check was skipped, reflect it in `gaps` or `next_action`.

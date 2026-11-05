@@ -23,7 +23,7 @@ Follow the 8-step delivery workflow for coding tasks.
 
 ## Language Gate And Encoding
 
-- Default to communicating with the user in English.
+- Default to communicating with the user in Vietnamese (with diacritics), unless the user explicitly requests another language. This includes questions, explanations, progress updates and final responses.
 - Default to document content and reports in English, unless another language is requested.
 - When editing text files, store as UTF-8 and check for encoding errors before handoff, including Vietnamese diacritics in `*.vi.md` supplement files.
 

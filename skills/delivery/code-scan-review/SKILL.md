@@ -210,7 +210,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 
 ## Quality Rules
 
-- Default to writing and communicating in English.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise.
 - Default to scanning only `changed_files` or `affected_modules`; a full-repo scan needs a clear reason.
 - Prefer the project's existing wrappers, scripts, and config over raw tools.
 - Do not mark `PASS` if an important static analysis or security scan was skipped without a clear reason.

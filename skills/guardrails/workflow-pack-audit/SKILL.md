@@ -97,7 +97,7 @@ notes: ""
 
 ## Quality Rules
 
-- Default to writing and communicating in English.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise.
 - Every conclusion must point to a specific path or marker.
 - Do not mark `PASS` if you only grepped the skill name without checking the matching template/schema.
 - If the script passes but the semantic checklist fails, the conclusion must not be `PASS`.

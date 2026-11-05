@@ -110,7 +110,7 @@ If this skill's output is saved as a `.md` note within the workflow chain:
 
 ## Quality Rules
 
-- Default to writing and communicating in English.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise.
 - Document content must be stored as UTF-8 and must not corrupt text, including Vietnamese diacritics in `*.vi.md` supplement files.
 - Do not use vague terms such as "optimal," "complete," or "stable" unless they carry a measurable meaning.
 - Each item in `scope_out` must be clear enough to prevent misunderstandings.

@@ -117,7 +117,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 - Do not change the design implicitly while coding; if the design is not feasible, return to the design step.
 - Do not use "will verify later" to dodge evidence hooks during implementation.
 - If the bug cannot be reproduced, record the lower confidence level instead of wording it as a certain fix.
-- Default to writing and communicating in English; follow project conventions for code.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise; follow project conventions for code.
 - Text files must be stored as UTF-8.
 
 ## Decision Rules

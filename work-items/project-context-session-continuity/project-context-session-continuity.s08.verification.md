@@ -99,7 +99,7 @@ tags:
 
 # Verification — CR-013 / 2.10.0 candidate
 
-Technical evidence is prepared for human review. DoD, UAT, Release and Business Acceptance are not yet approved. Publication has not occurred. Readiness signatures remain valid; this note does not replace them.
+The earlier candidate received human closeout approval. The maintainer subsequently requested the Vietnamese communication default; this review snapshot covers the amended artifact and awaits renewed terminal receipts. Publication has not occurred. Readiness signatures remain valid; this note does not replace them.
 
 ## Step Contract
 ```yaml
@@ -125,15 +125,15 @@ evidence_refs:
   - "evidence/exact-rollback.log"
   - "evidence/pack-audit.log"
 summary_verdict: PASS
-summary_verdict_scope: "Technical verification only; human terminal gates and publication remain pending."
+summary_verdict_scope: "Technical verification includes the language amendment; terminal acceptance of the amended artifact is pending."
 ```
 
 ## Spec Coverage
 
-Technical evidence is recorded below. CTX-11 remains PARTIAL until human QC reviews the pilot observations.
+Technical evidence is recorded below. Human QC has reviewed the pilot observations in this terminal interaction.
 
 ```yaml
-status: PARTIAL
+status: PASS
 coverage:
   - requirement: "CTX-01"
     covered_by: "Native Codex 0.166.0 and Claude 2.1.316 fresh sessions read project instructions/context. Global/project, malformed markers, preserved custom rules, legacy migration and override handling have fixture coverage. Native transcripts are summarized in pilot-codex-first.txt and pilot-claude-first.txt."
@@ -166,8 +166,8 @@ coverage:
     covered_by: "macOS 27.0.1 arm64; core Node18.20.8/22.23.4, companion Node20.20.2/22.23.4. Native Codex0.166.0 instruction fallback; Claude2.1.316 hooks and compaction. Native Windows is not verified; no support claim for its lifecycle hooks."
     status: PASS
   - requirement: "CTX-11"
-    covered_by: "ai-maintainer actual candidate install and fresh/reopen sessions completed. Initial 99 and final 113 pre-existing files hash-checked unchanged outside integration. PII constraints preserved. Human QC acceptance of the attached observations is pending."
-    status: PARTIAL
+    covered_by: "ai-maintainer actual candidate install and fresh/reopen sessions completed. Initial 99 and final 113 pre-existing files hash-checked unchanged outside integration. PII constraints preserved. Human QC accepts the attached observations in this review."
+    status: PASS
   - requirement: "CTX-12"
     covered_by: "Exact 2.10.0 to 2.9.0 rehearsal passes 4/4 Codex/Claude x global/project; owned integration restored before old installer runs. Later edits cause conflict. EN/VI upgrade/status/history/repair/rollback instructions are available."
     status: PASS
@@ -175,17 +175,14 @@ coverage:
 
 ## Governance Checks
 
-Final validation exposed an authoring defect in my earlier s05 packet: the accepted three-option Markdown table is not recognized by the validator, which requires `options` and `recommended_option` YAML fields. The canonical signed host remains unchanged. A representation-only correction is prepared at evidence/s05-format-normalized.txt and bound to original/proposed hashes in s05-format-repair.json. Human execution will apply it and re-seal Approach in the same terminal interaction as closeout. This is not new design approval. Until then, canonical validate/governance report these two known format errors; the corrected review snapshot is checked separately.
+The accepted s05 options have been normalized to the required YAML fields without changing the design. This review renews Approach and records terminal decisions. Trusted receipts remain authoritative.
 
 ```yaml
 checklist_applied: ["project-context/checklists/strict.md"]
-checks:
-  - "Five readiness receipts verified; no signed readiness source edited."
-  - "Isolated implementation; no delegation or A3-A4 inclusion."
-  - "Technical results do not approve human-controlled gates."
-blocking_items: ["Human DoD/UAT/Release/Business Acceptance decisions; source CI and authorized publication", "Existing signed s05 option table needs YAML normalization and renewed Approach signature; no design change"]
+checks: ["Unchanged readiness receipts validated", "Representation-only Approach correction reviewed", "Exact amended asset checks passed; latest source CI tracked in evidence/language-source-ci.json", "Human terminal decisions recorded"]
+blocking_items: ["Renew terminal receipts for the amended artifact after green source CI."]
 owner: "qc"
-next_action: "Review exact candidate and pilot evidence, then seal the applicable terminal receipts."
+next_action: "Validate all trusted receipts, synchronize approved records, require green CI, then merge and publish the tested assets."
 ```
 
 ## Regression & Compatibility Summary
@@ -224,27 +221,27 @@ GitHub Releases remains the delivery channel; no npm registry publication is inc
 ```yaml
 status: PARTIAL
 reviewers: []
-notes: ["Native/pilot observations pass; human QC acceptance pending."]
+notes: ["Human QC accepts the recorded native/pilot observations and limitations."]
 ```
 
 ## Release Summary
 ```yaml
 status: PARTIAL
 reviewers: []
-notes: ["Candidate assets ready; terminal Release receipt, CI and publication pending."]
+notes: ["Human DevOps approves publication of the exact tested assets after approved metadata sync and green CI; publication remains an execution step."]
 ```
 
 ## Business Acceptance Summary
 ```yaml
 status: PARTIAL
 reviewers: []
-notes: ["Maintainer must accept the demonstrated continuity outcome and documented limits."]
+notes: ["Human PO accepts the demonstrated continuity outcome and documented limits."]
 ```
 
 ## Audit
 ```yaml
 audit_status: PARTIAL
-notes: ["Technical traceability complete; human terminal gate decisions pending."]
+notes: ["Technical traceability and human decisions recorded; trusted receipts determine approval validity."]
 ```
 
 ## Definition of Done
@@ -258,10 +255,10 @@ checks:
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps: ["Human terminal decisions and authorized publication remain."]
+gaps: ["Human acceptance of the amended artifact is pending."]
 residual_risks: ["Recorded sources determine continuity; unsaved chats are not durable memory.", "Native Windows not verified; existing pilot index remains stale until explicit operator maintenance."]
 follow_up_items: ["Application owner reconciles its older handoff; no application code changed here."]
-next_action: "Human QC/DevOps/PO review this packet and sign terminal gates; only then merge/publish."
+next_action: "Validate trusted receipts, synchronize approved metadata, require green CI, then merge/publish; protocol closure follows publication."
 ```
 
 ## Traceability
@@ -272,4 +269,16 @@ next_step: "Human terminal review, then authorized release."
 
 ## Session Handoff
 
-Retained candidate assets are in `.worktrees/project-context-session-continuity/.release-candidate/v2.10.0/`. Core digest `f2f60fe3addc17a0e8089e350750af88e5359f238070de88a1df3517b5ca53d3`; companion digest `20d4384baae1784a54c0eb4b98e8c0945e0e75f37ab71b663c11f23deb70d51f`. Source branch and worktree must remain open until human DoD. Do not publish rebuilt bytes or claim complete automatic conversation recall.
+Retained candidate assets are in `.worktrees/project-context-session-continuity/.release-candidate/v2.10.0/`. Core digest `aa0b87b9c80f621fd073dfa602925a1894b46cf36b6e88661491fac6aaa8ae6b`; companion digest `20d4384baae1784a54c0eb4b98e8c0945e0e75f37ab71b663c11f23deb70d51f`. Source branch and worktree must remain open until human DoD. Do not publish rebuilt bytes or claim complete automatic conversation recall.
+
+## Prior Human Terminal Review
+
+Reviewed at 2026-11-05T03:11:14.731Z by the human signing in QC, DevOps and PO role lanes. The s05 correction preserves the accepted design. Pilot observations and known limitations are accepted. This is approval to proceed with the exact tested release, not a claim that publication already happened. Trusted receipts remain authoritative.
+
+## Vietnamese Communication Amendment
+
+Requested explicitly by the maintainer: “Mặc định trao đổi tiếng việt”. The preference applies to questions, explanations, progress updates and final responses, with an explicit user language request taking precedence. It is present in native entrypoints as well as the policy, so ordinary conversation does not depend on loading delivery governance.
+
+The implementation and compatibility review are recorded in s07. Both fresh pilot harnesses responded in Vietnamese without an explicit language request in the probe. Runtime parity, pack audit, UTF-8, 25 lifecycle cases, exact Node18/22 install checks and four-way published 2.9.0 upgrade/rollback passed. The compatibility test first reproduced the old-policy recognition failure and then passed with exact published-policy hash recognition. No transcript content is included in this repository.
+
+The prior review applies to the previous frozen checksum, not to this amended artifact. Five readiness receipts remain unchanged and valid. The canonical signed s08 is preserved until the human applies this proposal and renews the four terminal receipts bound to that host. Latest source CI and artifact identity are recorded in evidence/language-source-ci.json and evidence/language-review.json.

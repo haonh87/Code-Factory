@@ -84,12 +84,17 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-013",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "protocol-close",
   "required_actions": [
     {
       "id": "se:d8de27e88726cca9033c819366d8c09f8e69462df72e0fbee04f51d3bce19e41",
       "kind": "workflow_followup",
       "text": "Collect DoD evidence and close the work item when ready."
+    },
+    {
+      "id": "se:15ab5dd89082c94cca0bb936f56d9993087cfc7681cce0d82aa1e0a69c3c2cfd",
+      "kind": "work_item_close",
+      "text": "wfc work-item close --work-item project-context-session-continuity"
     }
   ],
   "blockers": [],
@@ -110,7 +115,8 @@
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "CLOSEOUT_BUNDLE_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -180,6 +186,15 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "Technical verification of exact core/companion artifacts and native pilot completed; terminal human approvals and publication remain pending."
+    },
+    {
+      "timestamp": "2026-11-05T03:11:18.033Z",
+      "action": "approve-closeout-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "APPROVED closeout gates: dod, uat, release, business_acceptance",
+      "transaction_id": "4bef630a-0a1b-4175-bfe4-9e2d8365a1d0"
     }
   ],
   "resolved_state_history": [

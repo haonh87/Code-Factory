@@ -132,7 +132,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 
 ## Quality Rules
 
-- Default to writing and communicating in English.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise.
 - Each `CORE` surface must have clear loading, empty, error, and blocked handling, unless there is a good reason.
 - Do not use vague descriptions like "good responsive" or "smoother UX"; state concrete rules by breakpoint, density, or interaction.
 - Motion is only used to orient, give feedback, or change context; do not add motion only for decoration.

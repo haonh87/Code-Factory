@@ -117,7 +117,7 @@ If this skill's output is saved as a `.md` note in the workflow chain:
 - Each task must have an `objective`, `paths_in_scope`, `outputs_expected` and `verification_hint`.
 - The `BA lane` must ensure acceptance criteria are not lost while splitting tasks.
 - The `DEV lane` must ensure the implementer does not have to guess paths or dependencies again.
-- Default to communicating and documenting in English.
+- Communicate with the user in Vietnamese by default unless another language is explicitly requested; write documentation in English unless requested otherwise.
 - Text files must be stored as UTF-8.
 
 ## Decision Rules
