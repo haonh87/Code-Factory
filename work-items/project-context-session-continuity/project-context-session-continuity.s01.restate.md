@@ -176,7 +176,7 @@ The read-only ACTIVE gate preflight returned exactly one error: missing Contract
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "project-context-session-continuity"
@@ -201,12 +201,11 @@ decision_owner: "agent"
 protocol_owner: "maintainer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-11-04T02:07:39.146Z"
-handoff_target: "protocol-close"
-last_transition_action: "approve-closeout-bundle"
-last_transition_at: "2026-11-05T08:11:07.912Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-11-05T08:33:48.448Z"
 required_actions:
-  - {"id":"se:d8de27e88726cca9033c819366d8c09f8e69462df72e0fbee04f51d3bce19e41","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
-  - {"id":"se:15ab5dd89082c94cca0bb936f56d9993087cfc7681cce0d82aa1e0a69c3c2cfd","kind":"work_item_close","text":"wfc work-item close --work-item project-context-session-continuity"}
+  - {"id":"se:441f93c307348439b5ceb86f06e228bcb7b6d77862c26b74b3e394cd50ac37e0","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "Maintainer accepted Spec/Contract/DoR/Approach/Task Plan and separate CR-013 in chat on 2026-11-04; one bounded release, historical work retained."
@@ -228,5 +227,6 @@ audit_events:
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
   - "CLOSEOUT_BUNDLE_APPROVED"
+  - "DONE_CONFIRMED"
 ```
 
