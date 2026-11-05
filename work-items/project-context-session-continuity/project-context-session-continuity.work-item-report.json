@@ -195,6 +195,15 @@
       "to_status": "VERIFIED",
       "note": "APPROVED closeout gates: dod, uat, release, business_acceptance",
       "transaction_id": "4bef630a-0a1b-4175-bfe4-9e2d8365a1d0"
+    },
+    {
+      "timestamp": "2026-11-05T08:11:07.912Z",
+      "action": "approve-closeout-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "APPROVED closeout gates: dod, uat, release, business_acceptance",
+      "transaction_id": "8c5e41d4-828e-4156-9c50-7fc834d4fe3d"
     }
   ],
   "resolved_state_history": [

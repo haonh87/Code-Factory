@@ -203,7 +203,7 @@ reviewed_by: "maintainer"
 reviewed_at: "2026-11-04T02:07:39.146Z"
 handoff_target: "protocol-close"
 last_transition_action: "approve-closeout-bundle"
-last_transition_at: "2026-11-05T03:11:18.033Z"
+last_transition_at: "2026-11-05T08:11:07.912Z"
 required_actions:
   - {"id":"se:d8de27e88726cca9033c819366d8c09f8e69462df72e0fbee04f51d3bce19e41","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
   - {"id":"se:15ab5dd89082c94cca0bb936f56d9993087cfc7681cce0d82aa1e0a69c3c2cfd","kind":"work_item_close","text":"wfc work-item close --work-item project-context-session-continuity"}

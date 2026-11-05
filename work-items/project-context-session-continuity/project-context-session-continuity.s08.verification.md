@@ -10,10 +10,10 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: reviewed
 governance_ref: "project-context/project-context.md"
 governance_profile: strict
-governance_status: CHECKS_PENDING
+governance_status: ALIGNED
 checklist_refs:
   - "project-context/checklists/strict.md"
 change_id: "CR-013"
@@ -77,14 +77,18 @@ gate_reviews:
   foundation_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
-  uat_reviewed_by: []
-  uat_reviewed_at: ""
-  release_reviewed_by: []
-  release_reviewed_at: ""
-  business_acceptance_reviewed_by: []
-  business_acceptance_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  uat_reviewed_by:
+    - "qc"
+  uat_reviewed_at: "2026-11-05T08:11:07.506Z"
+  release_reviewed_by:
+    - "devops"
+  release_reviewed_at: "2026-11-05T08:11:07.506Z"
+  business_acceptance_reviewed_by:
+    - "po"
+  business_acceptance_reviewed_at: "2026-11-05T08:11:07.506Z"
+  dod_reviewed_by:
+    - "qc"
+  dod_reviewed_at: "2026-11-05T08:11:07.506Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -99,7 +103,7 @@ tags:
 
 # Verification — CR-013 / 2.10.0 candidate
 
-The earlier candidate received human closeout approval. The maintainer subsequently requested the Vietnamese communication default; this review snapshot covers the amended artifact and awaits renewed terminal receipts. Publication has not occurred. Readiness signatures remain valid; this note does not replace them.
+The earlier candidate received human closeout approval. The maintainer subsequently requested the Vietnamese communication default; this human review accepts the amended artifact, effective only when its renewed terminal receipts validate. Publication has not occurred. Readiness signatures remain valid; this note does not replace them.
 
 ## Step Contract
 ```yaml
@@ -125,7 +129,7 @@ evidence_refs:
   - "evidence/exact-rollback.log"
   - "evidence/pack-audit.log"
 summary_verdict: PASS
-summary_verdict_scope: "Technical verification includes the language amendment; terminal acceptance of the amended artifact is pending."
+summary_verdict_scope: "Technical verification and human acceptance include the language amendment; trusted receipts determine validity."
 ```
 
 ## Spec Coverage
@@ -179,8 +183,8 @@ The accepted s05 options have been normalized to the required YAML fields withou
 
 ```yaml
 checklist_applied: ["project-context/checklists/strict.md"]
-checks: ["Unchanged readiness receipts validated", "Representation-only Approach correction reviewed", "Exact amended asset checks passed; latest source CI tracked in evidence/language-source-ci.json", "Human terminal decisions recorded"]
-blocking_items: ["Renew terminal receipts for the amended artifact after green source CI."]
+checks: ["Unchanged readiness receipts validated", "Representation-only Approach correction reviewed", "Exact amended asset checks and latest source CI passed; evidence/language-source-ci.json", "Human terminal decisions recorded"]
+blocking_items: []
 owner: "qc"
 next_action: "Validate all trusted receipts, synchronize approved records, require green CI, then merge and publish the tested assets."
 ```
@@ -219,35 +223,35 @@ GitHub Releases remains the delivery channel; no npm registry publication is inc
 
 ## UAT Summary
 ```yaml
-status: PARTIAL
-reviewers: []
+status: PASS
+reviewers: ["qc"]
 notes: ["Human QC accepts the recorded native/pilot observations and limitations."]
 ```
 
 ## Release Summary
 ```yaml
-status: PARTIAL
-reviewers: []
+status: PASS
+reviewers: ["devops"]
 notes: ["Human DevOps approves publication of the exact tested assets after approved metadata sync and green CI; publication remains an execution step."]
 ```
 
 ## Business Acceptance Summary
 ```yaml
-status: PARTIAL
-reviewers: []
+status: PASS
+reviewers: ["po"]
 notes: ["Human PO accepts the demonstrated continuity outcome and documented limits."]
 ```
 
 ## Audit
 ```yaml
-audit_status: PARTIAL
+audit_status: PASS
 notes: ["Technical traceability and human decisions recorded; trusted receipts determine approval validity."]
 ```
 
 ## Definition of Done
 ```yaml
 work_item_slug: "project-context-session-continuity"
-status: PARTIAL
+status: DONE
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -255,7 +259,7 @@ checks:
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-gaps: ["Human acceptance of the amended artifact is pending."]
+gaps: []
 residual_risks: ["Recorded sources determine continuity; unsaved chats are not durable memory.", "Native Windows not verified; existing pilot index remains stale until explicit operator maintenance."]
 follow_up_items: ["Application owner reconciles its older handoff; no application code changed here."]
 next_action: "Validate trusted receipts, synchronize approved metadata, require green CI, then merge/publish; protocol closure follows publication."
@@ -281,4 +285,8 @@ Requested explicitly by the maintainer: “Mặc định trao đổi tiếng vi�
 
 The implementation and compatibility review are recorded in s07. Both fresh pilot harnesses responded in Vietnamese without an explicit language request in the probe. Runtime parity, pack audit, UTF-8, 25 lifecycle cases, exact Node18/22 install checks and four-way published 2.9.0 upgrade/rollback passed. The compatibility test first reproduced the old-policy recognition failure and then passed with exact published-policy hash recognition. No transcript content is included in this repository.
 
-The prior review applies to the previous frozen checksum, not to this amended artifact. Five readiness receipts remain unchanged and valid. The canonical signed s08 is preserved until the human applies this proposal and renews the four terminal receipts bound to that host. Latest source CI and artifact identity are recorded in evidence/language-source-ci.json and evidence/language-review.json.
+The prior review applies to the previous frozen checksum, not to this amended artifact. Five readiness receipts remain unchanged and valid. This terminal interaction applies the proposal and renews the four terminal receipts bound to the amended host. Latest source CI and artifact identity are recorded in evidence/language-source-ci.json and evidence/language-review.json.
+
+## Amended Human Terminal Review
+
+Reviewed at 2026-11-05T08:11:07.506Z by the human signing in the QC, DevOps and PO lanes. The explicitly requested Vietnamese communication default and exact 2.9.0 compatibility fix are accepted. Core SHA-256: `aa0b87b9c80f621fd073dfa602925a1894b46cf36b6e88661491fac6aaa8ae6b`; companion SHA-256: `20d4384baae1784a54c0eb4b98e8c0945e0e75f37ab71b663c11f23deb70d51f`. Authorize publication of these exact tested assets after approved metadata sync and green CI. Publication and protocol closure remain execution steps.
