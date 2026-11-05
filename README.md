@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: README.vi.md
 
-This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The prepared release candidate is `workflow-bundle v2.10.0`: an installable workflow bundle for Codex and Claude Code with adaptive request routing, applicable-only roles and gates, journaled approval bundles, privacy-bounded local telemetry, exact ID-based state disposition and terminal archive guards. Human authority is unchanged: every applicable gate still needs its authorized reviewer and independent trusted receipt. Implementation scope is accepted; publication remains gated by candidate verification and terminal approvals.
+This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The published release is [`workflow-bundle v2.10.0`](https://github.com/haonh87/Code-Factory/releases/tag/v2.10.0): an installable workflow bundle for Codex and Claude Code with adaptive request routing, applicable-only roles and gates, journaled approval bundles, privacy-bounded local telemetry, exact ID-based state disposition and terminal archive guards. Human authority is unchanged: every applicable gate still needs its authorized reviewer and independent trusted receipt. This release includes native instructions, project context and durable handoff recovery, harness integration, and Vietnamese user communication by default. Technical verification, human approvals and publication are complete.
 
 The release artifact is `workflow-bundle-2.10.0.tgz` with `SHA256SUMS` on GitHub Releases. Verify its checksum before installation. The immutable `v2.9.0/48` release is the workflow-package rollback baseline. See [the release record](docs/releases/workflow-bundle-v2.10.0.md) for the publication outcome and verification.
 
@@ -22,7 +22,7 @@ The release artifact is `workflow-bundle-2.10.0.tgz` with `SHA256SUMS` on GitHub
 
 ## Start Here
 
-If you are approaching the repo for the first time and want to review the `v2.10.0` release candidate:
+If you are approaching the repo for the first time and want to use the `v2.10.0` release:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)

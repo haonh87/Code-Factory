@@ -6,7 +6,7 @@ language: vi
 
 > Tiếng Anh / English: workflow-bundle-quickstart.md
 
-Hướng dẫn này tập trung vào ứng viên phát hành `workflow-bundle v2.10.0`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, định tuyến request bằng adaptive governance, xử lý workflow state cũ theo ID chính xác, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Cài từ tarball GitHub Release đã xác minh checksum; đợt này không publish npm registry. Candidate có 48 managed skill và giữ nguyên thẩm quyền độc lập của human cho từng gate áp dụng.
+Hướng dẫn này tập trung vào bản phát hành `workflow-bundle v2.10.0`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, định tuyến request bằng adaptive governance, xử lý workflow state cũ theo ID chính xác, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Cài từ tarball GitHub Release đã xác minh checksum; đợt này không publish npm registry. Bản phát hành có 48 managed skill và giữ nguyên thẩm quyền độc lập của human cho từng gate áp dụng.
 
 ## Mục Tiêu
 
@@ -423,7 +423,7 @@ Rollback dùng đúng gói 2.9.0/48 đã phát hành. Giữ nguyên artifact v1 
 Không dùng installer cũ ghi đè instructions đã tùy chỉnh. Bản 2.8.0
 không hỗ trợ contract này. Không tự chuyển đổi hoặc ký lại artifact khi hạ cấp.
 
-## Sửa chu trình project trong candidate 2.10.0
+## Sửa chu trình project trong 2.10.0
 
 Bản này bổ sung instruction đúng entrypoint của Codex/Claude, đọc context theo project, lưu tham chiếu bàn giao và nâng cấp có kiểm tra xung đột. Core giữ Node >=18; history companion cần Node >=20 và cass. Xem release record để biết phiên bản và kiểm thử thực tế; file đã cài chưa đồng nghĩa AI đã nạp đúng.
 

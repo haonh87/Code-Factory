@@ -20,7 +20,7 @@ Artifact phát hành là `workflow-bundle-2.10.0.tgz` cùng `SHA256SUMS` trên G
 
 ## Bắt Đầu Ở Đây
 
-Nếu đang tiếp cận repo lần đầu và muốn review ứng viên phát hành `v2.10.0`:
+Nếu đang tiếp cận repo lần đầu và muốn sử dụng bản phát hành [`v2.10.0`](https://github.com/haonh87/Code-Factory/releases/tag/v2.10.0):
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)

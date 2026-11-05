@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: workflow-bundle-quickstart.vi.md
 
-This guide focuses on the `workflow-bundle v2.10.0` release candidate: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, resolve legacy workflow state by exact ID, bootstrap a new repo, and run the `agent proposes, human approves` flow. Install the GitHub Release asset; this operation does not publish to the npm registry. The release contains 48 managed skills and preserves independent human authority for every applicable gate.
+This guide focuses on the `workflow-bundle v2.10.0` release: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, resolve legacy workflow state by exact ID, bootstrap a new repo, and run the `agent proposes, human approves` flow. Install the GitHub Release asset; this operation does not publish to the npm registry. The release contains 48 managed skills and preserves independent human authority for every applicable gate.
 
 ## Objectives
 
@@ -425,7 +425,7 @@ npm registry publication is separate.
 
 ## Project lifecycle repair in 2.10.0
 
-The candidate delivers native project instructions, a portable context reader, checkpoint references and safe project upgrades. Configuration presence is not proof that an agent loaded it: finish the fresh-session scenario below before calling a project operational. Core requires Node 18 or newer. Optional history requires Node 20 or newer and cass; the verification record names tested versions.
+This release delivers native project instructions, a portable context reader, checkpoint references and safe project upgrades. Configuration presence is not proof that an agent loaded it: finish the fresh-session scenario below before calling a project operational. Core requires Node 18 or newer. Optional history requires Node 20 or newer and cass; the verification record names tested versions.
 
 After downloading the **published** artifacts and checking SHA256SUMS, install the core tarball, then run from the target project's root:
 

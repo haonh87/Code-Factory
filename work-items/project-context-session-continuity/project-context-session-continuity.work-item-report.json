@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "agent",
   "protocol_owner": "maintainer",
   "raw_request_summary": "Package reusable project instructions, memory and harness integration into a Code Factory release for upgrading existing Codex and Claude projects. Include non-destructive native instruction onboarding, canonical project context and session handoff, bounded historical retrieval, installed-versus-operational diagnostics, exact release artifact upgrade and rollback. Pilot ai-maintainer. Preserve user files and receipt authority. Release proposal requested by maintainer on 2026-11-03; production gates remain pending.",
@@ -84,17 +84,12 @@
   ],
   "change_strategy": "create_new",
   "change_id": "CR-013",
-  "handoff_target": "protocol-close",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
-      "id": "se:d8de27e88726cca9033c819366d8c09f8e69462df72e0fbee04f51d3bce19e41",
+      "id": "se:441f93c307348439b5ceb86f06e228bcb7b6d77862c26b74b3e394cd50ac37e0",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
-    },
-    {
-      "id": "se:15ab5dd89082c94cca0bb936f56d9993087cfc7681cce0d82aa1e0a69c3c2cfd",
-      "kind": "work_item_close",
-      "text": "wfc work-item close --work-item project-context-session-continuity"
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -116,7 +111,8 @@
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
     "VERIFICATION_CONFIRMED",
-    "CLOSEOUT_BUNDLE_APPROVED"
+    "CLOSEOUT_BUNDLE_APPROVED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -204,6 +200,14 @@
       "to_status": "VERIFIED",
       "note": "APPROVED closeout gates: dod, uat, release, business_acceptance",
       "transaction_id": "8c5e41d4-828e-4156-9c50-7fc834d4fe3d"
+    },
+    {
+      "timestamp": "2026-11-05T08:33:48.448Z",
+      "action": "close",
+      "actor": "coordinator",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Published v2.10.0 at 34d8b612193b663e7a552031bff5b225c2c48f84. All nine human gate receipts validate; source and main CI passed; downloaded core, companion and SHA256SUMS match approved bytes; post-publication core install and companion protocol smoke passed."
     }
   ],
   "resolved_state_history": [
