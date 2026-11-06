@@ -143,7 +143,7 @@ test_refs: ["packages/workflow-bundle/test/project-context-lifecycle.test.js"]
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "fix-claude-sessionstart-context"
@@ -167,12 +167,12 @@ decision_owner: "coordinator"
 protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-11-06T06:50:18.931Z"
-handoff_target: "definition-of-done"
-last_transition_action: "verify"
-last_transition_at: "2026-11-06T07:04:49.144Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-11-06T07:14:02.670Z"
 required_actions:
   - {"id":"se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194","kind":"workflow_followup","text":"Review and continue workflow backbone s01 -> s08."}
-  - {"id":"se:b551f8c1eb489f0a704581608f8f219eb0c5e94fada6c8be931250d590b7b569","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
+  - {"id":"se:5702c18bf4f1f0192b4f045972ef61a3f761115aaef1fd6290e5e2dd59849e71","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "Maintainer explicitly accepted the diagnosed SessionStart fix and verification plan in chat."
@@ -184,5 +184,6 @@ audit_events:
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```
 

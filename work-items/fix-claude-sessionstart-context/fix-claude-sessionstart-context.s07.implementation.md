@@ -170,5 +170,20 @@ Source commit `e41bea1` fixes the reported defect. Readiness signatures validate
 before implementation. RED→minimal wrapper→budget RED→GREEN evidence is retained.
 Native Claude2.1.318 control returned NOT_SEEN; the patched case returned the exact
 briefing-only sentinel. Full core suite and local package install matrix passed.
-The canonical s08 owns final technical evidence and the remaining human DoD action.
+The canonical s08 owns final technical evidence and the accepted human DoD decision.
 No package version/tag or real downstream project was changed.
+
+Human QC accepted the concrete patch and disclosed limits in chat. The trusted DoD
+receipt was signed at `2026-11-06T07:13:31.788Z`; signature and current-host digest
+validated before closure. Canonical s08 SHA-256:
+`7ff25e933d04b98206b2f016c5e6c0368aba8ff13d2a55cbbbec4c0844932ea3`.
+The receipt lives at
+`~/.workflow-bundle/trusted-approvals/code-factory-916d1d6e915b/gates/fix-claude-sessionstart-context/dod.json`.
+
+The CLI transitioned VERIFIED → DONE at `2026-11-06T07:14:02.670Z` after all
+step-gate and delivery-cleanliness checks passed without waiver. T1–T3 and
+AC-001..005 are complete; there are no remaining blockers for this work item.
+The signed s08 remains unchanged after sealing. Retain the branch/worktree for
+separate integration, version bump, release and managed downstream rollout;
+archive after those lifecycle actions. Source `e41bea1` and its verified hashes
+are unchanged.

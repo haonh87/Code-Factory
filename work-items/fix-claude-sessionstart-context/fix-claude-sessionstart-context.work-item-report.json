@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "coordinator",
   "protocol_owner": "developer",
   "raw_request_summary": "",
@@ -25,7 +25,7 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
       "id": "se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194",
@@ -33,9 +33,9 @@
       "text": "Review and continue workflow backbone s01 -> s08."
     },
     {
-      "id": "se:b551f8c1eb489f0a704581608f8f219eb0c5e94fada6c8be931250d590b7b569",
+      "id": "se:5702c18bf4f1f0192b4f045972ef61a3f761115aaef1fd6290e5e2dd59849e71",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -47,7 +47,8 @@
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -101,6 +102,14 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "Implemented e41bea1; 29 lifecycle tests and 52 core test files pass. Native Claude2.1.318 with tools disabled and empty CLAUDE.md: published helper returns NOT_SEEN, patched helper returns exact briefing-only sentinel. Local tarball 4/4 install matrix and helper byte parity pass; gitleaks and pack audit pass. Human DoD remains pending; no release or downstream rollout."
+    },
+    {
+      "timestamp": "2026-11-06T07:14:02.670Z",
+      "action": "close",
+      "actor": "developer",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Human QC explicitly accepted source e41bea1 and packet d3c5d92 with disclosed Node/OS/scanner limits. Trusted DoD receipt signed at 2026-11-06T07:13:31.788Z validates against canonical s08; all DONE preconditions and declared-scope cleanliness pass without waiver. Close the fix work item; integration, publication and downstream rollout remain separate."
     }
   ]
 }
