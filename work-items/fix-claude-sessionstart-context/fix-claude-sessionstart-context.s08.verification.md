@@ -10,7 +10,7 @@ delivery_context: brownfield
 artifact_role: primary
 artifact_kind: primary-note
 source_of_truth: true
-status: draft
+status: reviewed
 governance_ref: "project-context/project-context.md"
 governance_profile: default
 governance_status: ALIGNED
@@ -44,8 +44,8 @@ gate_reviews:
   approach_reviewed_at: ""
   task_plan_reviewed_by: []
   task_plan_reviewed_at: ""
-  dod_reviewed_by: []
-  dod_reviewed_at: ""
+  dod_reviewed_by: ["qc"]
+  dod_reviewed_at: "2026-11-06T07:11:31Z"
 content_skills:
   - "codex-workflow-chain"
   - "testing"
@@ -67,7 +67,7 @@ tags:
 # Verification — Claude SessionStart context delivery
 
 > [!summary]
-> Technical PASS for AC-001..005 against source `e41bea1`. Human QC DoD is pending.
+> Technical PASS for AC-001..005 against source `e41bea1`; human QC accepted DoD and the disclosed limits.
 > Actual Claude delivery is proven independently of instruction-file fallback.
 
 ## Main Artifact
@@ -95,9 +95,9 @@ skipped_checks: ["ESLint and Semgrep unavailable", "Fresh Node18/22 matrix and n
 status: PASS
 summary_verdict: PASS
 release_blockers: []
-gaps: ["Human QC DoD pending; publication and rollout are separate"]
+gaps: ["Trusted DoD receipt sealing pending; publication and rollout are separate"]
 residual_risks: ["Native observation covers Claude2.1.318/macOS", "Old installed helpers need a future managed update"]
-recommendation: "Review this concrete patch and evidence, then authorize integration and release separately"
+recommendation: "Seal the accepted DoD host, verify its receipt, then close the canonical protocol"
 notes_for_review: "Same-version local tarball is verification-only and must not replace the immutable published asset"
 ```
 
@@ -106,9 +106,9 @@ notes_for_review: "Same-version local tarball is verification-only and must not 
 ```yaml
 checklist_applied: ["project-context/checklists/default.md"]
 checks: ["Readiness receipts validated before source edits", "Exact approved two-file source/test scope", "Self review ordered spec then quality"]
-blocking_items: ["Human QC DoD pending"]
+blocking_items: ["Trusted DoD receipt sealing pending"]
 owner: "qc"
-next_action: "Review source e41bea1 and the evidence packet"
+next_action: "Seal the human-accepted canonical s08 and verify closure preconditions"
 ```
 
 ## Regression & Compatibility Summary
@@ -166,11 +166,11 @@ evidence: ["evidence/security.log", "evidence/pack-audit.log"]
 
 ## Definition of Done
 
-This is an advisory assessment for human QC; it is not a gate approval.
+The human QC decision is recorded below. Trusted receipt sealing remains required for protocol closure.
 
 ```yaml
 work_item_slug: "fix-claude-sessionstart-context"
-status: PARTIAL
+status: DONE
 checks:
   acceptance_criteria_evidenced: PASS
   implementation_recorded: PASS
@@ -178,11 +178,11 @@ checks:
   code_scan_completed_or_justified: PASS
   traceability_complete: PASS
   residual_risks_documented: PASS
-follow_up_items: ["Human QC DoD", "Separate integration, release and managed rollout"]
+follow_up_items: ["Separate integration, release and managed rollout"]
 residual_risks: ["Node/version/OS and scanner limits above", "Installed downstream helpers remain on old release until rollout"]
 owners: ["qc"]
-gaps: ["Authorized human QC verdict and trusted DoD receipt pending"]
-next_action: "Review the concrete verified patch; keep branch open for integration"
+gaps: ["Human QC accepted; matching trusted DoD receipt remains pending"]
+next_action: "Seal and validate the accepted DoD, then close through the CLI; retain branch for integration"
 ```
 
 ## SDD Traceability
@@ -208,7 +208,35 @@ metadata, not a replacement release asset. The first pack orchestration attempt
 tried to parse npm prepack logging as JSON; packaging itself succeeded, and the
 existing tarball was then discovered by filename and tested without rebuilding.
 
-Next: human QC reviews the source/evidence and accepted limits, then seals DoD.
+The maintainer explicitly accepted this packet and its disclosed limits. Next: seal DoD.
 Protocol status remains owned by the original project's CLI report; worktree copies
 are snapshots. Integration, version bump, publication and the reported 26-project
 managed rollout are separate follow-up work.
+
+## Human DoD Review Record
+
+The maintainer replied `accept` to the explicit DoD request for source `e41bea1`
+and packet `d3c5d92`, acting as human QC. The decision was recorded at
+`2026-11-06T07:11:31Z` (recording time, not an inferred message timestamp).
+Acceptance covers AC-001..005, 29 lifecycle tests, 52 core test files, the 4/4
+package install matrix and the native Claude2.1.318 control-versus-patched test.
+The disclosed limits are accepted: fresh execution used Node26/macOS; Node18/22
+and native Windows were not rerun; ESLint and Semgrep were unavailable. Gitleaks,
+syntax, pack audit, targeted manual review and the recorded regressions passed.
+
+This records the human decision without inventing a trusted receipt or changing
+the CLI-owned protocol state. Finalize and commit this host before signing.
+After sealing, preserve its bytes and record subsequent progress in s07 and the
+canonical protocol report. The branch remains available for separately scoped
+integration, publication and downstream rollout.
+
+## Receipt Sealing Handoff
+
+From the original project root, in a human-controlled terminal:
+
+```sh
+node .worktrees/fix-claude-sessionstart-context/packages/workflow-bundle/bin/wfc.js gate approve --project-root . --work-item fix-claude-sessionstart-context --gate dod --reviewed-by qc
+```
+
+Enter the existing passphrase directly in that terminal. Verify the signature
+and current-host digest before CLI closure. No uncommitted-delivery waiver is used.
