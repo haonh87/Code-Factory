@@ -219,6 +219,106 @@ test("context reader denies symlink context; oversized briefing is explicitly tr
   assert.equal(b.truncated, true);
   assert.ok(Buffer.byteLength(JSON.stringify(b)) < 17000);
 });
+function claudeInstalled(t) {
+  const f = installed(t);
+  syncProjectPolicy({
+    globalAgentsSource: f.source,
+    projectRoot: f.project,
+    projectAgentsFileName: "CLAUDE.md",
+  });
+  const helper = path.join(f.project, ".claude/code-factory/context.cjs");
+  const invoke = (args = [], input = {}) =>
+    require("node:child_process").spawnSync(
+      process.execPath,
+      [helper, "--project-root", f.project, ...args],
+      {
+        encoding: "utf8",
+        input: JSON.stringify({ cwd: f.project, session_id: "probe", ...input }),
+      },
+    );
+  return { ...f, helper, invoke };
+}
+function hookBrief(result) {
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.stderr, "");
+  const envelope = JSON.parse(result.stdout);
+  assert.deepEqual(Object.keys(envelope), ["hookSpecificOutput"]);
+  assert.equal(envelope.hookSpecificOutput.hookEventName, "SessionStart");
+  assert.equal(typeof envelope.hookSpecificOutput.additionalContext, "string");
+  assert.ok(Buffer.byteLength(result.stdout) <= 16385, "hook stdout exceeds 16KiB plus newline");
+  return JSON.parse(envelope.hookSpecificOutput.additionalContext);
+}
+
+test("installed Claude SessionStart delivers context and handoff through the documented envelope", (t) => {
+  const { project, invoke } = claudeInstalled(t);
+  item(project);
+  const unicode = 'Tiếng Việt: "đúng" \\ đường dẫn\nDòng hai 🚀';
+  fs.appendFileSync(path.join(project, "project-context/project-context.md"), unicode);
+  for (const source of ["startup", "resume", "clear", "compact"]) {
+    for (const args of [["--hook"], ["--hook", "--event", "start"]]) {
+      const b = hookBrief(invoke(args, { hook_event_name: "SessionStart", source }));
+      assert.ok(b.project_context.text.includes(unicode));
+      assert.equal(b.selected_work_item, "repair");
+      assert.equal(b.work_items[0].reported_status, "ACTIVE");
+      assert.match(b.work_items[0].handoff.text, /Decision D17/);
+      assert.equal(b.approval_verification, "not_verified_by_briefing");
+    }
+  }
+  const direct = JSON.parse(invoke().stdout);
+  assert.equal(direct.schema_version, 1);
+  assert.equal(direct.hookSpecificOutput, undefined);
+  assert.deepEqual(direct, brief(project));
+});
+
+test("Claude hook output accounts for JSON escaping in its total byte budget", (t) => {
+  const { project, invoke } = claudeInstalled(t);
+  // Below the context text cap: the raw briefing fits, but an escaped string
+  // inside the hook envelope would exceed 16KiB without transport-aware sizing.
+  fs.writeFileSync(path.join(project, "project-context/project-context.md"), '"'.repeat(6000));
+  const direct = JSON.parse(invoke().stdout);
+  assert.equal(direct.truncated, false);
+  assert.equal(direct.project_context.text.length, 6000);
+  const b = hookBrief(invoke(["--hook", "--event", "start"]));
+  assert.equal(b.truncated, true);
+  assert.equal(b.project_context.text, "Read source; context budget exceeded");
+  assert.match(b.project_context.sha256, /^[a-f0-9]{64}$/);
+});
+
+test("Claude hook keeps missing context and work-item selection explicit", (t) => {
+  const { project, invoke } = claudeInstalled(t);
+  item(project);
+  item(project, "second");
+  const multiple = hookBrief(invoke(["--hook"]));
+  assert.equal(multiple.status, "selection_required");
+  assert.equal(multiple.selected_work_item, null);
+  assert.equal(multiple.work_items.length, 2);
+  fs.unlinkSync(path.join(project, "project-context/project-context.md"));
+  const missing = hookBrief(invoke(["--hook", "--work-item", "repair"]));
+  assert.equal(missing.status, "context_missing");
+  assert.equal(missing.project_context, null);
+});
+
+test("Claude checkpoint hooks stay silent and rejected hook input emits no context", (t) => {
+  const { project, helper, invoke } = claudeInstalled(t);
+  for (const event of ["PreCompact", "SessionEnd"]) {
+    const result = invoke(["--hook", "--event", "checkpoint"], {
+      hook_event_name: event,
+      session_id: event,
+    });
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.stdout, "");
+    assert.equal(result.stderr, "");
+  }
+  const caches = fs.readdirSync(path.dirname(helper)).filter((n) => /^session-.*\.json$/.test(n));
+  assert.equal(caches.length, 2);
+  const sessions = caches.map((name) => JSON.parse(fs.readFileSync(path.join(path.dirname(helper), name))).session_id);
+  assert.deepEqual(sessions.sort(), ["PreCompact", "SessionEnd"]);
+  const rejected = invoke(["--hook"], { cwd: path.dirname(project) });
+  assert.equal(rejected.status, 1);
+  assert.equal(rejected.stdout, "");
+  assert.match(rejected.stderr, /Hook project mismatch/);
+});
+
 test("Claude custom hooks survive repeat installation and edited managed hook conflicts", (t) => {
   const { source, project } = fixture(t);
   fs.mkdirSync(path.join(project, ".claude"), { recursive: true });

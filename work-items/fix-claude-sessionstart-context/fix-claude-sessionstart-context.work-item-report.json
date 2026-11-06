@@ -1,0 +1,115 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "DONE",
+  "decision_owner": "coordinator",
+  "protocol_owner": "developer",
+  "raw_request_summary": "",
+  "request_source": "legacy-scaffold",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [],
+  "decision_log": [
+    "bootstrap_from_existing_s01=true"
+  ],
+  "work_item_slug": "fix-claude-sessionstart-context",
+  "work_item_type": "BUG",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/fix-claude-sessionstart-context",
+  "current_step": "s08",
+  "granted_write_paths": [
+    ".worktrees/fix-claude-sessionstart-context",
+    "work-items/fix-claude-sessionstart-context/fix-claude-sessionstart-context.s07.implementation.md",
+    "work-items/fix-claude-sessionstart-context/fix-claude-sessionstart-context.s08.verification.md",
+    "work-items/fix-claude-sessionstart-context/evidence"
+  ],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "archive-lifecycle",
+  "required_actions": [
+    {
+      "id": "se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194",
+      "kind": "workflow_followup",
+      "text": "Review and continue workflow backbone s01 -> s08."
+    },
+    {
+      "id": "se:5702c18bf4f1f0192b4f045972ef61a3f761115aaef1fd6290e5e2dd59849e71",
+      "kind": "workflow_followup",
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/fix-claude-sessionstart-context"
+  ],
+  "audit_events": [
+    "REPORT_BOOTSTRAPPED",
+    "WORK_ITEM_APPROVED",
+    "READINESS_BUNDLE_APPROVED",
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED",
+    "DONE_CONFIRMED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-11-06T06:50:18.931Z",
+  "review_notes": [
+    "Maintainer explicitly accepted the diagnosed SessionStart fix and verification plan in chat."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-11-06T06:50:18.930Z",
+      "action": "bootstrap",
+      "actor": "system",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Bootstrapped read-only report from existing scaffold."
+    },
+    {
+      "timestamp": "2026-11-06T06:50:18.931Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "Maintainer explicitly accepted the diagnosed SessionStart fix and verification plan in chat."
+    },
+    {
+      "timestamp": "2026-11-06T06:50:24.347Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "8c484612-744c-4e5b-b42c-183ad5dd9a63"
+    },
+    {
+      "timestamp": "2026-11-06T06:50:27.652Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Execute accepted T1-T3 after trusted readiness; isolated source baseline d9e2103."
+    },
+    {
+      "timestamp": "2026-11-06T07:04:49.144Z",
+      "action": "verify",
+      "actor": "developer",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Implemented e41bea1; 29 lifecycle tests and 52 core test files pass. Native Claude2.1.318 with tools disabled and empty CLAUDE.md: published helper returns NOT_SEEN, patched helper returns exact briefing-only sentinel. Local tarball 4/4 install matrix and helper byte parity pass; gitleaks and pack audit pass. Human DoD remains pending; no release or downstream rollout."
+    },
+    {
+      "timestamp": "2026-11-06T07:14:02.670Z",
+      "action": "close",
+      "actor": "developer",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "Human QC explicitly accepted source e41bea1 and packet d3c5d92 with disclosed Node/OS/scanner limits. Trusted DoD receipt signed at 2026-11-06T07:13:31.788Z validates against canonical s08; all DONE preconditions and declared-scope cleanliness pass without waiver. Close the fix work item; integration, publication and downstream rollout remain separate."
+    }
+  ]
+}

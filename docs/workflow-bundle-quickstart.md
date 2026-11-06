@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: workflow-bundle-quickstart.vi.md
 
-This guide focuses on the `workflow-bundle v2.10.0` release: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, resolve legacy workflow state by exact ID, bootstrap a new repo, and run the `agent proposes, human approves` flow. Install the GitHub Release asset; this operation does not publish to the npm registry. The release contains 48 managed skills and preserves independent human authority for every applicable gate.
+This guide focuses on the `workflow-bundle v2.10.1` release: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, resolve legacy workflow state by exact ID, bootstrap a new repo, and run the `agent proposes, human approves` flow. Install the GitHub Release asset; this operation does not publish to the npm registry. The release contains 48 managed skills and preserves independent human authority for every applicable gate.
 
 ## Objectives
 
@@ -37,10 +37,10 @@ npm -v
 
 ## Install The `wfc` CLI
 
-Download the tarball and SHA256SUMS from the v2.10.0 GitHub Release, verify the checksum, then install:
+Download the tarball and SHA256SUMS from the v2.10.1 GitHub Release, verify the checksum, then install:
 
 ```bash
-npm install -g /absolute/path/to/workflow-bundle-2.10.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.1.tgz
 wfc help
 wfc version
 ```
@@ -49,7 +49,7 @@ If upgrading from the old `workflow-contracts` CLI:
 
 ```bash
 npm uninstall -g workflow-contracts
-npm install -g /absolute/path/to/workflow-bundle-2.10.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.1.tgz
 wfc version
 ```
 
@@ -399,7 +399,7 @@ npm run validate:workflow
 If you installed the published package:
 
 ```bash
-npm install -g /absolute/path/to/workflow-bundle-2.10.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.1.tgz
 ```
 
 If you are using `npm link` from the source repo:
@@ -409,7 +409,7 @@ cd packages/workflow-bundle
 npm link
 ```
 
-### v2.10.0 Source And Package Boundary
+### v2.10.1 Source And Package Boundary
 
 Version 2.9.0 adds optional scenario guidance (A1) and opt-in integer
 `task_contract_version: 1` (A2). The JSON task contract validates task IDs,
@@ -420,7 +420,7 @@ Codex and Claude retain 48 skills, including the five maintenance skills and
 `diagram-design-presentation-adapter` from earlier releases, plus CF-023 validation.
 SEC-01 and SEC-02 remain in tagged source; direct installers and MCP servers are
 outside the workflow tarball. Optional PNG dependencies are provisioned separately.
-See the v2.10.0 release record for checksum, verification, limits and rollback.
+See the v2.10.1 release record for checksum, verification, limits and rollback.
 npm registry publication is separate.
 
 ## Project lifecycle repair in 2.10.0
@@ -430,7 +430,7 @@ This release delivers native project instructions, a portable context reader, ch
 After downloading the **published** artifacts and checking SHA256SUMS, install the core tarball, then run from the target project's root:
 
 ```bash
-npm install -g ./workflow-bundle-2.10.0.tgz
+npm install -g ./workflow-bundle-2.10.1.tgz
 wfc install --mode codex --scope both --project-root "$PWD"
 wfc install --mode claude --scope both --project-root "$PWD"
 wfc status --mode codex --project-root "$PWD" --json

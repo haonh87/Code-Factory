@@ -1,0 +1,8 @@
+Running exact v2.10.0 package-artifact smoke...
+
+  PASS: tarball=/private/tmp/cf-sessionstart-package-9zwsMO/workflow-bundle-2.10.0.tgz
+  PASS: sha256=b1ebf1b22f63801b7e6f426587b142ce0f632ecd5016c4a46183b7f911a4378c
+  PASS: wfc version=2.10.0; Codex/Claude x global/project=4/4
+
+OK: release-candidate-artifact-smoke.test.js passed
+{"purpose":"Local verification package; unpublished, not the immutable 2.10.0 release","tarball":"/private/tmp/cf-sessionstart-package-9zwsMO/workflow-bundle-2.10.0.tgz","sha256":"b1ebf1b22f63801b7e6f426587b142ce0f632ecd5016c4a46183b7f911a4378c","install_matrix":"4/4 passed","installed_helper_sha256":"1eac88f2c88dfe5780276dc63974d81b1442bab713891486beff9ab7eddce455","hook_contract_pass":true,"stdout_bytes":1019}

@@ -1,0 +1,23 @@
+{
+  "artifact_sha256": "aa0b87b9c80f621fd073dfa602925a1894b46cf36b6e88661491fac6aaa8ae6b",
+  "helper_sha256": "2da5191aefdebe6fd37806ff8631ed048675e790848b46a15a84740eb400f4a6",
+  "released_source_matches_artifact": true,
+  "node": "v26.5.0",
+  "hook_exit_code": 0,
+  "hook_stdout_valid_json": true,
+  "briefing_present_in_stdout": true,
+  "hook_event_name": null,
+  "additional_context_type": "NoneType",
+  "sessionstart_output_contract_pass": false,
+  "codex_raw_briefing_pass": true,
+  "precompact": {
+    "exit_code": 0,
+    "stdout_bytes": 0
+  },
+  "sessionend": {
+    "exit_code": 0,
+    "stdout_bytes": 0
+  },
+  "checkpoint_count": 1,
+  "scope": "Isolated artifact/output reproduction only; no real Claude model session run."
+}

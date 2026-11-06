@@ -1,0 +1,82 @@
+{
+  "claude_version": "2.1.318",
+  "tools": [],
+  "project_claude_md_empty": true,
+  "results": [
+    {
+      "variant": "published",
+      "exit_code": 0,
+      "duration_seconds": 6.14,
+      "result": "NOT_SEEN",
+      "is_error": false,
+      "sentinel_match": false,
+      "cost_usd": 0.011188,
+      "model_usage": [
+        "claude-opus-5-5"
+      ],
+      "expected_sentinel": "CTX_3dd6f36b20367daa40299f22e9b7286c",
+      "command_argv": [
+        "claude",
+        "--print",
+        "--tools",
+        "",
+        "--disable-slash-commands",
+        "--strict-mcp-config",
+        "--mcp-config",
+        "{\"mcpServers\":{}}",
+        "--setting-sources",
+        "",
+        "--settings",
+        "/private/tmp/cf-native-sessionstart-XTawKV/published/.claude/settings.json",
+        "--no-session-persistence",
+        "--output-format",
+        "json",
+        "--max-budget-usd",
+        "0.50",
+        "--system-prompt",
+        "This is an isolated context delivery test. Do not use tools. Answer only the exact sentinel from the SessionStart probe briefing, or NOT_SEEN if no sentinel is in your context.",
+        "Return the SessionStart probe sentinel from the hook briefing. If absent, return NOT_SEEN."
+      ],
+      "cwd": "/private/tmp/cf-native-sessionstart-XTawKV/published",
+      "helper_sha256": "2da5191aefdebe6fd37806ff8631ed048675e790848b46a15a84740eb400f4a6"
+    },
+    {
+      "variant": "patched",
+      "exit_code": 0,
+      "duration_seconds": 4.06,
+      "result": "CTX_ba93b11cbbefb5fc086258c57db92e40",
+      "is_error": false,
+      "sentinel_match": true,
+      "cost_usd": 0.008626,
+      "model_usage": [
+        "claude-opus-5-5"
+      ],
+      "expected_sentinel": "CTX_ba93b11cbbefb5fc086258c57db92e40",
+      "command_argv": [
+        "claude",
+        "--print",
+        "--tools",
+        "",
+        "--disable-slash-commands",
+        "--strict-mcp-config",
+        "--mcp-config",
+        "{\"mcpServers\":{}}",
+        "--setting-sources",
+        "",
+        "--settings",
+        "/private/tmp/cf-native-sessionstart-XTawKV/patched/.claude/settings.json",
+        "--no-session-persistence",
+        "--output-format",
+        "json",
+        "--max-budget-usd",
+        "0.50",
+        "--system-prompt",
+        "This is an isolated context delivery test. Do not use tools. Answer only the exact sentinel from the SessionStart probe briefing, or NOT_SEEN if no sentinel is in your context.",
+        "Return the SessionStart probe sentinel from the hook briefing. If absent, return NOT_SEEN."
+      ],
+      "cwd": "/private/tmp/cf-native-sessionstart-XTawKV/patched",
+      "helper_sha256": "1eac88f2c88dfe5780276dc63974d81b1442bab713891486beff9ab7eddce455"
+    }
+  ],
+  "claim_boundary": "Real Claude 2.1.318 using synthetic fixture data; no downstream project modified. Published helper returned NOT_SEEN; patched helper returned exact unpredictable briefing-only sentinel."
+}

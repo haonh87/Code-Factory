@@ -1,0 +1,39 @@
+Code Factory context unavailable: Invalid work-item selection
+Code Factory context unavailable: Refusing linked context path: project-context/project-context.md
+✔ project upgrade preserves user instructions and installs bounded project context entrypoint (8.920334ms)
+✔ global Codex has a native AGENTS entrypoint while retaining legacy policy (2.582083ms)
+✔ malformed managed markers fail before changing user bytes (1.007917ms)
+✔ project destination symlink cannot overwrite outside instruction file (0.878208ms)
+✔ briefing recovers actual context and canonical handoff without creating workflow artifacts (44.915083ms)
+✔ multiple active items require selection; unknown item and escaped root fail (112.561792ms)
+✔ cross-harness checkpoints retain references; changed source is stale not silently trusted (159.901583ms)
+✔ context reader denies symlink context; oversized briefing is explicitly truncated (74.815709ms)
+✔ installed Claude SessionStart delivers context and handoff through the documented envelope (384.432334ms)
+✔ Claude hook output accounts for JSON escaping in its total byte budget (84.741375ms)
+✔ Claude hook keeps missing context and work-item selection explicit (83.00775ms)
+✔ Claude checkpoint hooks stay silent and rejected hook input emits no context (110.638542ms)
+✔ Claude custom hooks survive repeat installation and edited managed hook conflicts (4.011ms)
+✔ rollback restores previous user instructions and refuses subsequent user edits (2.532708ms)
+✔ integration upgrades a read-only project root and restores original permission (2.66225ms)
+✔ install bootstraps project context from sources without inventing project facts (2.852125ms)
+✔ status diagnoses explicit unregistered project without writing and without claiming live verification (52.233417ms)
+✔ init installs project lifecycle for both supported harnesses and preserves existing context (13.868708ms)
+✔ rollback after a version upgrade restores prior manifest so reinstall stays idempotent (6.369ms)
+✔ opt-in companion config uses exact project scope and preserves other MCP servers (3.950625ms)
+✔ read-only briefing exposes a pending proposal without inferring approval (40.138708ms)
+✔ an in-progress managed installation blocks a concurrent writer before file changes (1.181667ms)
+✔ explicit project update does not mutate or preflight other registered projects (17.765542ms)
+✔ status binds a recorded lifecycle observation to installed bytes, sources and evidence (25.133083ms)
+✔ known legacy full-policy entrypoint migrates to a bounded bridge with exact rollback (3.848541ms)
+✔ large unowned instructions keep their exact bytes while lifecycle bridge remains discoverable first (3.220625ms)
+✔ branch switch and lost/corrupt caches recover from canonical sources (230.356833ms)
+✔ Claude checkpoint events isolate simultaneous session identities and survive missing end hook (81.204666ms)
+✔ interrupted managed transaction restores existing bytes and removes partial files (2.719333ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1606.158792

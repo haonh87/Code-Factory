@@ -1,0 +1,53 @@
+{
+  "validated_signature_and_digest": true,
+  "receipts": [
+    {
+      "gate": "spec",
+      "approval_status": "APPROVED",
+      "reviewed_by": "developer",
+      "reviewed_at": "2026-11-06T13:29:27.258Z",
+      "artifact_ref": "work-items/release-workflow-bundle-v2-10-1/release-workflow-bundle-v2-10-1.s04.acceptance-criteria.md",
+      "artifact_sha256": "b0087e75eddc9ee3dbff6274dd1bf6b24a1cf52a1ade16d515bc5911fb6768eb"
+    },
+    {
+      "gate": "dor",
+      "approval_status": "APPROVED",
+      "reviewed_by": "qc",
+      "reviewed_at": "2026-11-06T13:29:27.258Z",
+      "artifact_ref": "work-items/release-workflow-bundle-v2-10-1/release-workflow-bundle-v2-10-1.s04.acceptance-criteria.md",
+      "artifact_sha256": "b0087e75eddc9ee3dbff6274dd1bf6b24a1cf52a1ade16d515bc5911fb6768eb"
+    },
+    {
+      "gate": "approach",
+      "approval_status": "APPROVED",
+      "reviewed_by": "developer",
+      "reviewed_at": "2026-11-06T13:29:27.258Z",
+      "artifact_ref": "work-items/release-workflow-bundle-v2-10-1/release-workflow-bundle-v2-10-1.s05.technical-approach.md",
+      "artifact_sha256": "c6b62dbc5a13fbefa4ad455bd4bcf5927b4c1a65d571bfe87ce231835ccd2869"
+    },
+    {
+      "gate": "task_plan",
+      "approval_status": "APPROVED",
+      "reviewed_by": "developer",
+      "reviewed_at": "2026-11-06T13:29:27.258Z",
+      "artifact_ref": "work-items/release-workflow-bundle-v2-10-1/release-workflow-bundle-v2-10-1.s06.task-breakdown.md",
+      "artifact_sha256": "792fa6a0f9faf5db2d6e829b0e7cee767417fb6b5cc5639a527bfe14f5c5a9a4"
+    },
+    {
+      "gate": "dod",
+      "approval_status": "APPROVED",
+      "reviewed_by": "qc",
+      "reviewed_at": "2026-11-06T13:48:20.682Z",
+      "artifact_ref": "work-items/release-workflow-bundle-v2-10-1/release-workflow-bundle-v2-10-1.s08.verification.md",
+      "artifact_sha256": "6c6d7266fed31144106a62bf283d307b46954753cf80d984d91abd560e895e95"
+    },
+    {
+      "gate": "release",
+      "approval_status": "APPROVED",
+      "reviewed_by": "devops",
+      "reviewed_at": "2026-11-06T13:48:20.682Z",
+      "artifact_ref": "work-items/release-workflow-bundle-v2-10-1/release-workflow-bundle-v2-10-1.s08.verification.md",
+      "artifact_sha256": "6c6d7266fed31144106a62bf283d307b46954753cf80d984d91abd560e895e95"
+    }
+  ]
+}

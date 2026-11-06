@@ -6,7 +6,7 @@ language: en
 
 > Vietnamese: README.vi.md
 
-`workflow-bundle` is the CLI package prepared for the `v2.10.0` release candidate. It installs the workflow bundle for Codex or Claude Code, routes requests into an applicable governance lane, scaffolds or validates delivery workflows, supports journaled human approval bundles, and provides exact workflow-state disposition. Applicable gates still require their authorized human reviewers and independent trusted receipts. Publication status and exact artifacts are recorded in the v2.10.0 release record.
+`workflow-bundle` is the CLI package prepared for the `v2.10.1` release candidate. It installs the workflow bundle for Codex or Claude Code, routes requests into an applicable governance lane, scaffolds or validates delivery workflows, supports journaled human approval bundles, and provides exact workflow-state disposition. Applicable gates still require their authorized human reviewers and independent trusted receipts. Publication status and exact artifacts are recorded in the v2.10.1 release record.
 
 Detailed quickstart: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
@@ -19,10 +19,10 @@ Detailed quickstart: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-
 
 ## Install
 
-Download `workflow-bundle-2.10.0.tgz` and `SHA256SUMS` from the GitHub Release, verify the SHA-256, then install the local artifact:
+Download `workflow-bundle-2.10.1.tgz` and `SHA256SUMS` from the GitHub Release, verify the SHA-256, then install the local artifact:
 
 ```bash
-npm install -g /absolute/path/to/workflow-bundle-2.10.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.1.tgz
 wfc help
 wfc version
 ```
@@ -31,7 +31,7 @@ Upgrade from the legacy package:
 
 ```bash
 npm uninstall -g workflow-contracts
-npm install -g /absolute/path/to/workflow-bundle-2.10.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.1.tgz
 wfc version
 ```
 
@@ -56,7 +56,7 @@ Do not run the old overwrite-based installer over customized native instructions
 Record status and preserve managed backups before downgrade; package rollback and
 project integration rollback are separate. Rehearse on a temporary project first.
 
-## What `v2.10.0` Includes
+## What `v2.10.1` Includes
 
 - workflow bundle install surface via `wfc install|update|status|skills`
 - core authoring CLI via `wfc init|scaffold|validate`
@@ -296,7 +296,7 @@ npm pack
 
 ## Persisted Proposal Recovery
 
-The v2.10.0 candidate retains explicit `materialize --resume-proposal` from v2.6.4 for eligible unapproved single brownfield proposals, with `change_strategy=none` or `create_new` (full template profile only for `create_new`). Ordinary materialization refuses to overwrite existing reports. Recovery requires either READY/no_conflict with original scaffold actions, or valid Maintainer-signed disposition of all admission concerns. It never signs or approves on the user's behalf.
+The v2.10.1 candidate retains explicit `materialize --resume-proposal` from v2.6.4 for eligible unapproved single brownfield proposals, with `change_strategy=none` or `create_new` (full template profile only for `create_new`). Ordinary materialization refuses to overwrite existing reports. Recovery requires either READY/no_conflict with original scaffold actions, or valid Maintainer-signed disposition of all admission concerns. It never signs or approves on the user's behalf.
 
 Read `wfc work-item status`, resolve applicable concerns in their owning lane, then hash the current report with `shasum -a 256 work-items/<slug>/<slug>.work-item-report.json`. Pass that hash and a new canonical UUID:
 
@@ -320,7 +320,7 @@ Codex and Claude retain 48 skills, including the five maintenance skills and
 `diagram-design-presentation-adapter` from earlier releases, plus CF-023 validation.
 SEC-01 and SEC-02 remain in tagged source; direct installers and MCP servers are
 outside the workflow tarball. Optional PNG dependencies are provisioned separately.
-See the v2.10.0 release record for checksum, verification, limits and rollback.
+See the v2.10.1 release record for checksum, verification, limits and rollback.
 npm registry publication is separate.
 
 ## Project lifecycle repair in 2.10.0
@@ -330,7 +330,7 @@ The candidate delivers native project instructions, a portable context reader, c
 After downloading the **published** artifacts and checking SHA256SUMS, install the core tarball, then run from the target project's root:
 
 ```bash
-npm install -g ./workflow-bundle-2.10.0.tgz
+npm install -g ./workflow-bundle-2.10.1.tgz
 wfc install --mode codex --scope both --project-root "$PWD"
 wfc install --mode claude --scope both --project-root "$PWD"
 wfc status --mode codex --project-root "$PWD" --json
@@ -376,3 +376,7 @@ wfc update --rollback-context --mode claude --project-root "$PWD"
 ```
 
 Rollback checks every installed file hash before writing and restores the previous integration manifest. Intervening user edits cause a conflict rather than being discarded. Review/retain those edits first. This operation restores project integration only; it does not downgrade the global CLI or skills. Retain the exact 2.9.0 artifact and its checksum for package downgrade. Do not rerun an old whole-file installer over user instruction files without checking its overwrite behavior. Never delete canonical workflow history or re-sign old gates as a rollback shortcut.
+
+## SessionStart hotfix in 2.10.1
+
+Claude SessionStart now delivers the briefing through `hookSpecificOutput.additionalContext`, with the 16 KiB limit measured on the serialized hook envelope. Direct CLI/Codex JSON and quiet checkpoint hooks remain unchanged. After installing the new CLI archive, run `wfc update --mode claude --project-root /absolute/path/to/project` for each selected project and open a new Claude session. Updating the CLI alone does not replace installed project helpers. See the [release record](../../docs/releases/workflow-bundle-v2.10.1.md).

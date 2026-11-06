@@ -6,9 +6,9 @@ language: en
 
 > Vietnamese: README.vi.md
 
-This repository stores the policy, workflow, skills, and adapters for AI agent tasks. The published release is [`workflow-bundle v2.10.0`](https://github.com/haonh87/Code-Factory/releases/tag/v2.10.0): an installable workflow bundle for Codex and Claude Code with adaptive request routing, applicable-only roles and gates, journaled approval bundles, privacy-bounded local telemetry, exact ID-based state disposition and terminal archive guards. Human authority is unchanged: every applicable gate still needs its authorized reviewer and independent trusted receipt. This release includes native instructions, project context and durable handoff recovery, harness integration, and Vietnamese user communication by default. Technical verification, human approvals and publication are complete.
+This repository stores the policy, workflow, skills, and adapters for AI agent tasks. This repository targets [`workflow-bundle v2.10.1`](https://github.com/haonh87/Code-Factory/releases/tag/v2.10.1): an installable workflow bundle for Codex and Claude Code with adaptive request routing, applicable-only roles and gates, journaled approval bundles, privacy-bounded local telemetry, exact ID-based state disposition and terminal archive guards. Human authority is unchanged: every applicable gate still needs its authorized reviewer and independent trusted receipt. This release includes native instructions, project context and durable handoff recovery, harness integration, and Vietnamese user communication by default. Publication status and verification are recorded in the versioned release record.
 
-The release artifact is `workflow-bundle-2.10.0.tgz` with `SHA256SUMS` on GitHub Releases. Verify its checksum before installation. The immutable `v2.9.0/48` release is the workflow-package rollback baseline. See [the release record](docs/releases/workflow-bundle-v2.10.0.md) for the publication outcome and verification.
+The release artifact is `workflow-bundle-2.10.1.tgz` with `SHA256SUMS` on GitHub Releases. Verify its checksum before installation. The immutable `v2.9.0/48` release is the workflow-package rollback baseline. See [the release record](docs/releases/workflow-bundle-v2.10.1.md) for the publication outcome and verification.
 
 > Looking for the community-facing English overview? See [`docs/release/community-pack-readme.md`](docs/release/community-pack-readme.md) (Vietnamese: [`docs/release/community-pack-readme.vi.md`](docs/release/community-pack-readme.vi.md)).
 
@@ -22,7 +22,7 @@ The release artifact is `workflow-bundle-2.10.0.tgz` with `SHA256SUMS` on GitHub
 
 ## Start Here
 
-If you are approaching the repo for the first time and want to use the `v2.10.0` release:
+If you are approaching the repo for the first time and want to use the `v2.10.1` release:
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -40,7 +40,7 @@ The documents below are maintainer or historical context and should not be used 
 
 ## Quick Workflow Commands
 
-The public command surface of `v2.10.0` uses `wfc`.
+The public command surface of `v2.10.1` uses `wfc`.
 
 Install and manage the workflow bundle:
 
@@ -105,7 +105,7 @@ Notes:
 - The first approval in a trusted approval root creates an approver keypair and requires the human to enter an approval passphrase directly in that TTY.
 - The implementation path is locked at the filesystem level until the work item reaches `ACTIVE` at `s07` and is granted a `write-root`.
 - `work-items/` is the canonical artifact root for the repo's workflow artifacts.
-- The approval model of `v2.10.0` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
+- The approval model of `v2.10.1` is `agent proposes, human approves`; `ACTIVE` opens only when the approval gate, trusted signed receipts, and the required step-gate evidence are present.
 
 ## Adaptive Governance Contract
 
@@ -128,7 +128,7 @@ Notes:
 ### By Purpose
 
 - Public docs for newcomers to the workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface for `v2.10.0`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface for `v2.10.1`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart for `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README for installation or publishing: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 
@@ -321,7 +321,7 @@ Notes:
 Once the package is published, install directly:
 
 ```bash
-npm install -g /absolute/path/to/workflow-bundle-2.10.0.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.1.tgz
 wfc install --mode codex --scope global
 ```
 
@@ -473,5 +473,9 @@ Codex and Claude retain 48 skills, including the five maintenance skills and
 `diagram-design-presentation-adapter` from earlier releases, plus CF-023 validation.
 SEC-01 and SEC-02 remain in tagged source; direct installers and MCP servers are
 outside the workflow tarball. Optional PNG dependencies are provisioned separately.
-See the v2.10.0 release record for checksum, verification, limits and rollback.
+See the v2.10.1 release record for checksum, verification, limits and rollback.
 npm registry publication is separate.
+
+## SessionStart hotfix in 2.10.1
+
+Claude SessionStart now delivers the briefing through `hookSpecificOutput.additionalContext`, with the 16 KiB limit measured on the serialized hook envelope. Direct CLI/Codex JSON and quiet checkpoint hooks remain unchanged. After installing the new CLI archive, run `wfc update --mode claude --project-root /absolute/path/to/project` for each selected project and open a new Claude session. Updating the CLI alone does not replace installed project helpers. See the [release record](docs/releases/workflow-bundle-v2.10.1.md).

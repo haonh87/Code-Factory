@@ -1,0 +1,43 @@
+{
+  "recorded_at": "2026-11-06T07:01:20.842657+00:00",
+  "source_commit": "e41bea190d048fcac3b43fee0cc57afb19658e72",
+  "node": "v26.5.0",
+  "claude": "2.1.318",
+  "lifecycle": {
+    "tests": 29,
+    "passed": 29,
+    "failed": 0
+  },
+  "core_test_files": {
+    "passed": 52,
+    "failed": 0
+  },
+  "native": {
+    "published_sentinel_visible": false,
+    "patched_sentinel_visible": true
+  },
+  "package_install_matrix": "4/4",
+  "scanners": {
+    "gitleaks": "PASS: no leaks in two-file diff",
+    "eslint": "unavailable",
+    "semgrep": "unavailable"
+  },
+  "limits": [
+    "Node18/22 not rerun for this patch",
+    "Native Windows unverified",
+    "Local verification package unpublished; downstream rollout not performed"
+  ],
+  "evidence_sha256": {
+    "budget-red.log": "017af8d6ae71c1dc55fa6e4a2cef0bbbf196bbfa6e07408f0b7402307986f567",
+    "lifecycle-green.log": "ec43ba649115566a6915ed761be16f07dd6a1bd91de2d36c644474a2fcb2d548",
+    "native-results.json": "ccd78df7f3b469af8652fcda82a4ee498b0887490a0c8161a2050140ab2e3ab7",
+    "pack-audit.log": "077ee060fccb636c64b9c0036b548319c194613ffcdef1573925656604b22470",
+    "package-result.json": "e32fb8c44cd9559ea0f13f87e8833c4f896e219de93a891ab06a985304d0d4db",
+    "package-smoke.log": "1ac5ee4907a36fd0704941b84728a049cff967b5cf5eb662d1b29603e6c75875",
+    "red.log": "fef743e1ec0e3bc86b5f2a61acf9f3d2f8e1140ba827a0ba00e3087c939472f5",
+    "repro.json": "4bb95c3dadaa6c5be74c0762e72cc2c5fb1f966df8790a5d84c8db81b22e80b7",
+    "security.log": "f574295ba2f73c26ae4f501ac9fcbcc5ca4cff4d29a562aaa02a844efcdef2a1",
+    "source-manifest.json": "dcf6ad8a22284c37809009e608bdbed55f30a45d219585fe1154a0b6f49240c4",
+    "unit-suite.log": "d767c3980377ba78d6d2d0b8d87342db940e658a4fbac1eb7c584b197c5508d4"
+  }
+}

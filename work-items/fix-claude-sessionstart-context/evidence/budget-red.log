@@ -1,0 +1,60 @@
+Code Factory context unavailable: Invalid work-item selection
+Code Factory context unavailable: Refusing linked context path: project-context/project-context.md
+✔ project upgrade preserves user instructions and installs bounded project context entrypoint (9.709291ms)
+✔ global Codex has a native AGENTS entrypoint while retaining legacy policy (2.862625ms)
+✔ malformed managed markers fail before changing user bytes (1.861042ms)
+✔ project destination symlink cannot overwrite outside instruction file (1.055834ms)
+✔ briefing recovers actual context and canonical handoff without creating workflow artifacts (52.585833ms)
+✔ multiple active items require selection; unknown item and escaped root fail (119.16925ms)
+✔ cross-harness checkpoints retain references; changed source is stale not silently trusted (155.589333ms)
+✔ context reader denies symlink context; oversized briefing is explicitly truncated (76.3205ms)
+✔ installed Claude SessionStart delivers context and handoff through the documented envelope (382.551875ms)
+✖ Claude hook output accounts for JSON escaping in its total byte budget (85.262417ms)
+✔ Claude hook keeps missing context and work-item selection explicit (81.097667ms)
+✔ Claude checkpoint hooks stay silent and rejected hook input emits no context (110.54575ms)
+✔ Claude custom hooks survive repeat installation and edited managed hook conflicts (4.277583ms)
+✔ rollback restores previous user instructions and refuses subsequent user edits (2.535292ms)
+✔ integration upgrades a read-only project root and restores original permission (3.059791ms)
+✔ install bootstraps project context from sources without inventing project facts (2.961125ms)
+✔ status diagnoses explicit unregistered project without writing and without claiming live verification (53.094541ms)
+✔ init installs project lifecycle for both supported harnesses and preserves existing context (14.951583ms)
+✔ rollback after a version upgrade restores prior manifest so reinstall stays idempotent (5.96275ms)
+✔ opt-in companion config uses exact project scope and preserves other MCP servers (3.9455ms)
+✔ read-only briefing exposes a pending proposal without inferring approval (41.956333ms)
+✔ an in-progress managed installation blocks a concurrent writer before file changes (1.228792ms)
+✔ explicit project update does not mutate or preflight other registered projects (20.193708ms)
+✔ status binds a recorded lifecycle observation to installed bytes, sources and evidence (26.054791ms)
+✔ known legacy full-policy entrypoint migrates to a bounded bridge with exact rollback (4.141583ms)
+✔ large unowned instructions keep their exact bytes while lifecycle bridge remains discoverable first (3.118708ms)
+✔ branch switch and lost/corrupt caches recover from canonical sources (244.471125ms)
+✔ Claude checkpoint events isolate simultaneous session identities and survive missing end hook (87.956125ms)
+✔ interrupted managed transaction restores existing bytes and removes partial files (3.241375ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 28
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1650.930917
+
+✖ failing tests:
+
+test at packages/workflow-bundle/test/project-context-lifecycle.test.js:273:1
+✖ Claude hook output accounts for JSON escaping in its total byte budget (85.262417ms)
+  AssertionError [ERR_ASSERTION]: hook stdout exceeds 16KiB plus newline
+      at hookBrief (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-claude-sessionstart-context/packages/workflow-bundle/test/project-context-lifecycle.test.js:248:10)
+      at TestContext.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-claude-sessionstart-context/packages/workflow-bundle/test/project-context-lifecycle.test.js:281:13)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
