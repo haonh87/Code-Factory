@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "ACTIVE",
+  "protocol_status": "VERIFIED",
   "decision_owner": "coordinator",
   "protocol_owner": "developer",
   "raw_request_summary": "",
@@ -16,7 +16,7 @@
   "work_item_type": "CHANGE",
   "delivery_context": "brownfield",
   "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/release-workflow-bundle-v2-10-1",
-  "current_step": "s07",
+  "current_step": "s08",
   "granted_write_paths": [
     ".worktrees/release-v2.10.1",
     "work-items/release-workflow-bundle-v2-10-1/release-workflow-bundle-v2-10-1.s07.implementation.md",
@@ -25,7 +25,7 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "step-s07-owner",
+  "handoff_target": "definition-of-done",
   "required_actions": [
     {
       "id": "se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194",
@@ -33,9 +33,9 @@
       "text": "Review and continue workflow backbone s01 -> s08."
     },
     {
-      "id": "se:56ebf383567a2e0d0e10a94afa836ab756886e590a3075e67f8191b7f39bc223",
+      "id": "se:888b01eff27b4e78cfe7963ae23755f5176e30ed97f5c35a16c97af5b0e49a79",
       "kind": "workflow_followup",
-      "text": "Continue active execution from step 7 onward."
+      "text": "Collect DoD evidence and close the work item when ready."
     }
   ],
   "blockers": [],
@@ -46,7 +46,8 @@
     "REPORT_BOOTSTRAPPED",
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
-    "WORK_ITEM_ACTIVATED"
+    "WORK_ITEM_ACTIVATED",
+    "VERIFICATION_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -92,6 +93,14 @@
       "from_status": "MATERIALIZED",
       "to_status": "ACTIVE",
       "note": "Execute accepted release plan after trusted readiness."
+    },
+    {
+      "timestamp": "2026-11-06T13:47:36.776Z",
+      "action": "verify",
+      "actor": "developer",
+      "from_status": "ACTIVE",
+      "to_status": "VERIFIED",
+      "note": "Frozen core99ce8b8b:52 test files,29 lifecycle cases,exact Node18/22 four-way smoke,upgrade/rollback,CI10 jobs and947-file payload parity PASS. Publication remains pending trusted terminal release seal."
     }
   ]
 }

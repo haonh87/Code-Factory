@@ -113,14 +113,14 @@ Readiness is prepared from the explicit publish request. Source is isolated in `
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: VERIFIED
 approval_status: APPROVED
 review_required: true
 work_item_slug: "release-workflow-bundle-v2-10-1"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/release-workflow-bundle-v2-10-1"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - ".worktrees/release-v2.10.1"
   - "work-items/release-workflow-bundle-v2-10-1/release-workflow-bundle-v2-10-1.s07.implementation.md"
@@ -137,12 +137,12 @@ decision_owner: "coordinator"
 protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-11-06T13:29:20.920Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-11-06T13:29:30.550Z"
+handoff_target: "definition-of-done"
+last_transition_action: "verify"
+last_transition_at: "2026-11-06T13:47:36.776Z"
 required_actions:
   - {"id":"se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194","kind":"workflow_followup","text":"Review and continue workflow backbone s01 -> s08."}
-  - {"id":"se:56ebf383567a2e0d0e10a94afa836ab756886e590a3075e67f8191b7f39bc223","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
+  - {"id":"se:888b01eff27b4e78cfe7963ae23755f5176e30ed97f5c35a16c97af5b0e49a79","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
 blockers: []
 review_notes:
   - "User explicitly accepted and requested publication of the signed SessionStart fix as a patch release."
@@ -153,5 +153,6 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
+  - "VERIFICATION_CONFIRMED"
 ```
 
