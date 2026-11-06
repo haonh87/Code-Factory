@@ -110,15 +110,21 @@ notes_for_testing: "See s08 and evidence/verification-result.json for commands, 
 ```yaml
 behavior_change: YES
 tdd_status: DONE
-tdd_test_refs: ["packages/workflow-bundle/test/project-context-lifecycle.test.js", "evidence/red.log", "evidence/budget-red.log", "evidence/lifecycle-green.log"]
+tdd_test_refs:
+  - "packages/workflow-bundle/test/project-context-lifecycle.test.js"
+  - "evidence/red.log"
+  - "evidence/budget-red.log"
+  - "evidence/lifecycle-green.log"
 tdd_exception_reason: ""
 tdd_alternative_verify_path: []
 change_risk_profile: QUICK_FIX
 worktree_status: USED
-worktree_refs: [".worktrees/fix-claude-sessionstart-context"]
+worktree_refs:
+  - ".worktrees/fix-claude-sessionstart-context"
 worktree_reason: "Root checkout is older and has unrelated changes; use the published 2.10.0 baseline"
 review_status: COMPLETED
-review_refs: ["#Implementation Notes"]
+review_refs:
+  - "#Implementation Notes"
 spec_compliance_status: PASS
 code_quality_status: PASS
 delegation_mode: agentic
