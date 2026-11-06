@@ -1,6 +1,6 @@
 {
   "materialization_status": "READY",
-  "protocol_status": "VERIFIED",
+  "protocol_status": "DONE",
   "decision_owner": "coordinator",
   "protocol_owner": "developer",
   "raw_request_summary": "",
@@ -25,7 +25,7 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "protocol-close",
+  "handoff_target": "archive-lifecycle",
   "required_actions": [
     {
       "id": "se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194",
@@ -33,14 +33,9 @@
       "text": "Review and continue workflow backbone s01 -> s08."
     },
     {
-      "id": "se:888b01eff27b4e78cfe7963ae23755f5176e30ed97f5c35a16c97af5b0e49a79",
+      "id": "se:67f6c0f1d54481fda5b83b0ea99bdcdd9c33cf1aeb0b0263fdb9e638ed220180",
       "kind": "workflow_followup",
-      "text": "Collect DoD evidence and close the work item when ready."
-    },
-    {
-      "id": "se:7ea10cfed388f241ab473390e6aec5fbe340cbe5f21534d981eceafb710935c9",
-      "kind": "work_item_close",
-      "text": "wfc work-item close --work-item release-workflow-bundle-v2-10-1"
+      "text": "Archive the work item when all downstream lifecycle actions are complete."
     }
   ],
   "blockers": [],
@@ -53,7 +48,8 @@
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
     "VERIFICATION_CONFIRMED",
-    "CLOSEOUT_BUNDLE_APPROVED"
+    "CLOSEOUT_BUNDLE_APPROVED",
+    "DONE_CONFIRMED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -116,6 +112,14 @@
       "to_status": "VERIFIED",
       "note": "APPROVED closeout gates: dod, release",
       "transaction_id": "fd6d7232-dd34-43da-8ebd-1d2ab5f6ae63"
+    },
+    {
+      "timestamp": "2026-11-06T14:35:24.938Z",
+      "action": "close",
+      "actor": "developer",
+      "from_status": "VERIFIED",
+      "to_status": "DONE",
+      "note": "All six signed gates valid; v2.10.1 published on GitHub at14:30:16Z on df55da6 after green latest-head/main CI. Downloaded core and SHA256SUMS byte-identical; public core Node22 four-way smoke PASS. All five release acceptance criteria complete. No npm publication or downstream rollout."
     }
   ]
 }

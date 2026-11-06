@@ -113,7 +113,7 @@ Readiness is prepared from the explicit publish request. Source is isolated in `
 
 ## Work Item Protocol
 ```yaml
-protocol_status: VERIFIED
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "release-workflow-bundle-v2-10-1"
@@ -137,13 +137,12 @@ decision_owner: "coordinator"
 protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-11-06T13:29:20.920Z"
-handoff_target: "protocol-close"
-last_transition_action: "approve-closeout-bundle"
-last_transition_at: "2026-11-06T13:48:20.682Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-11-06T14:35:24.938Z"
 required_actions:
   - {"id":"se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194","kind":"workflow_followup","text":"Review and continue workflow backbone s01 -> s08."}
-  - {"id":"se:888b01eff27b4e78cfe7963ae23755f5176e30ed97f5c35a16c97af5b0e49a79","kind":"workflow_followup","text":"Collect DoD evidence and close the work item when ready."}
-  - {"id":"se:7ea10cfed388f241ab473390e6aec5fbe340cbe5f21534d981eceafb710935c9","kind":"work_item_close","text":"wfc work-item close --work-item release-workflow-bundle-v2-10-1"}
+  - {"id":"se:67f6c0f1d54481fda5b83b0ea99bdcdd9c33cf1aeb0b0263fdb9e638ed220180","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "User explicitly accepted and requested publication of the signed SessionStart fix as a patch release."
@@ -156,5 +155,6 @@ audit_events:
   - "WORK_ITEM_ACTIVATED"
   - "VERIFICATION_CONFIRMED"
   - "CLOSEOUT_BUNDLE_APPROVED"
+  - "DONE_CONFIRMED"
 ```
 
