@@ -5,6 +5,17 @@ const path = require("path");
 const crypto = require("crypto");
 const { execFileSync } = require("child_process");
 const hash = (b) => crypto.createHash("sha256").update(b).digest("hex");
+function serializeBriefing(out, hook = false) {
+  const briefing = JSON.stringify(out);
+  return hook
+    ? JSON.stringify({
+        hookSpecificOutput: {
+          hookEventName: "SessionStart",
+          additionalContext: briefing,
+        },
+      })
+    : briefing;
+}
 function contained(root, relative) {
   if (
     typeof relative !== "string" ||
@@ -54,7 +65,7 @@ function git(root) {
     return "unavailable";
   }
 }
-function render({ projectRoot, workItem, cacheDir, sessionId = "default" }) {
+function render({ projectRoot, workItem, cacheDir, sessionId = "default", hook = false }) {
   const root = fs.realpathSync(projectRoot);
   if (workItem && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(workItem))
     throw new Error("Invalid work-item selection");
@@ -210,7 +221,8 @@ function render({ projectRoot, workItem, cacheDir, sessionId = "default" }) {
       context.text.slice(0, 1536) + "\n[truncated: read project context]";
     out.truncated = true;
   }
-  if (Buffer.byteLength(JSON.stringify(out)) > 16384) {
+  // Bound the actual transport: the hook envelope escapes the briefing again.
+  if (Buffer.byteLength(serializeBriefing(out, hook)) > 16384) {
     out.project_context = context
       ? {
           path: context.path,
@@ -229,7 +241,7 @@ function render({ projectRoot, workItem, cacheDir, sessionId = "default" }) {
     out.sources = [];
     out.truncated = true;
   }
-  if (Buffer.byteLength(JSON.stringify(out)) > 16384) {
+  if (Buffer.byteLength(serializeBriefing(out, hook)) > 16384) {
     out.work_items = [];
     out.status = "context_budget_exceeded";
     out.warnings = [
@@ -299,6 +311,7 @@ function main() {
     workItem: args["--work-item"],
     cacheDir,
     sessionId,
+    hook: Boolean(args["--hook"]) && event === "start",
   });
   if (event === "checkpoint") {
     if (!cacheDir)
@@ -316,7 +329,7 @@ function main() {
     }
   }
   if (!args["--hook"] || event === "start")
-    console.log(JSON.stringify(result.out));
+    console.log(serializeBriefing(result.out, Boolean(args["--hook"])));
 }
 if (require.main === module) {
   try {
