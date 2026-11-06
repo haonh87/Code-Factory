@@ -25,7 +25,7 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "definition-of-done",
+  "handoff_target": "protocol-close",
   "required_actions": [
     {
       "id": "se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194",
@@ -36,6 +36,11 @@
       "id": "se:888b01eff27b4e78cfe7963ae23755f5176e30ed97f5c35a16c97af5b0e49a79",
       "kind": "workflow_followup",
       "text": "Collect DoD evidence and close the work item when ready."
+    },
+    {
+      "id": "se:7ea10cfed388f241ab473390e6aec5fbe340cbe5f21534d981eceafb710935c9",
+      "kind": "work_item_close",
+      "text": "wfc work-item close --work-item release-workflow-bundle-v2-10-1"
     }
   ],
   "blockers": [],
@@ -47,7 +52,8 @@
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
     "WORK_ITEM_ACTIVATED",
-    "VERIFICATION_CONFIRMED"
+    "VERIFICATION_CONFIRMED",
+    "CLOSEOUT_BUNDLE_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -101,6 +107,15 @@
       "from_status": "ACTIVE",
       "to_status": "VERIFIED",
       "note": "Frozen core99ce8b8b:52 test files,29 lifecycle cases,exact Node18/22 four-way smoke,upgrade/rollback,CI10 jobs and947-file payload parity PASS. Publication remains pending trusted terminal release seal."
+    },
+    {
+      "timestamp": "2026-11-06T13:48:20.682Z",
+      "action": "approve-closeout-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "VERIFIED",
+      "to_status": "VERIFIED",
+      "note": "APPROVED closeout gates: dod, release",
+      "transaction_id": "fd6d7232-dd34-43da-8ebd-1d2ab5f6ae63"
     }
   ]
 }
