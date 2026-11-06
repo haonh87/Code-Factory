@@ -6,15 +6,15 @@ language: vi
 
 > Tiếng Anh / English: publish-surface.md
 
-Tài liệu này ghim bề mặt phát hành công khai dự kiến cho `workflow-bundle v2.10.0`.
+Tài liệu này ghim bề mặt phát hành công khai dự kiến cho `workflow-bundle v2.10.1`.
 
-Maintainer đã yêu cầu phát hành `v2.10.0`. Public surface cung cấp:
+Maintainer đã yêu cầu phát hành `v2.10.1`. Public surface cung cấp:
 - khả năng cài vào Codex hoặc Claude Code bằng `wfc install|update|status|skills`
 - khả năng author workflow bằng `wfc init|scaffold|validate`
 - khả năng để agent chủ động đề xuất `work-item` và `change`
 - quyền phê duyệt tiếp tục thuộc về human ở từng gate trước khi delivery tiếp diễn
 
-`v2.0.0` vẫn là first public release. Nếu được phê duyệt, `v2.10.0` tiếp tục trên cùng public surface và không tạo breaking change cho command line:
+`v2.0.0` vẫn là first public release. Nếu được phê duyệt, `v2.10.1` tiếp tục trên cùng public surface và không tạo breaking change cho command line:
 
 - `v2.2.x` thêm harness adapter registry và hooks/instincts tooling nội bộ.
 - `v2.3.x` thêm English-first public surface, Vietnamese `*.vi.md`, `sdd_mode=light` và hai architecture-driver skill `sa`/`ta`.
@@ -29,8 +29,8 @@ Tất cả thay đổi trên đều additive; public promise bên dưới không
 
 ## Canonical Release Ref
 
-- Tag: `v2.10.0`
-- Kết quả publication và immutable tarball digest: `docs/releases/workflow-bundle-v2.10.0.md`
+- Tag: `v2.10.1`
+- Kết quả publication và immutable tarball digest: `docs/releases/workflow-bundle-v2.10.1.md`
 
 Chỉ publish artifact đã kiểm chứng theo chỉ thị phát hành của maintainer.
 
@@ -53,7 +53,7 @@ Chỉ publish artifact đã kiểm chứng theo chỉ thị phát hành của ma
 5. [`../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md`](../skills/orchestration/codex-workflow-chain/references/workflow-overview-author-edition.md)
 6. [`../skills/orchestration/codex-workflow-chain/references/workflow-chain.md`](../skills/orchestration/codex-workflow-chain/references/workflow-chain.md)
 
-## Public Promise Of `v2.10.0`
+## Public Promise Of `v2.10.1`
 
 - Installable workflow bundle cho Codex và Claude Code qua `wfc install|update|status|skills`
 - Core authoring CLI qua `wfc init`, `wfc scaffold`, `wfc`, `wfc sdd|change|exec|plan`
@@ -76,7 +76,7 @@ Chỉ publish artifact đã kiểm chứng theo chỉ thị phát hành của ma
   - legacy config `workflow-contracts.config.json`
   - legacy state `.codex-workflow-pack.*`
 
-Hai lớp legacy trên hiện vẫn được giữ để migration êm hơn, nhưng không nên coi đó là core public story của `v2.10.0`.
+Hai lớp legacy trên hiện vẫn được giữ để migration êm hơn, nhưng không nên coi đó là core public story của `v2.10.1`.
 
 ## Tương Thích Và Hoàn Tác
 
@@ -108,7 +108,7 @@ Các file dưới đây là working assets cục bộ, không phải source-of-t
 
 ## Publish Rule
 
-- cho tới khi Release được phê duyệt, gọi `v2.10.0` là ứng viên phát hành thay vì public release hiện tại
+- cho tới khi Release được phê duyệt, gọi `v2.10.1` là ứng viên phát hành thay vì public release hiện tại
 - nếu nói về approval model, phải nêu rõ `agent proposes, human approves`
 - không dùng tài liệu internal hoặc memory-bank làm public onboarding path
 
@@ -121,7 +121,11 @@ không thực thi các lệnh được ghi. YAML và scaffold mặc định vẫ
 Giữ 48 skill cho mỗi runtime, năm skill bảo trì, presentation adapter và CF-023.
 SEC-01/SEC-02 nằm trong source Git; MCP và installer trực tiếp ngoài tarball workflow.
 Tải tarball cùng SHA256SUMS trên GitHub Release; npm registry là kênh riêng.
-Xem `docs/releases/workflow-bundle-v2.10.0.md` để biết bằng chứng và trạng thái phát hành.
+Xem `docs/releases/workflow-bundle-v2.10.1.md` để biết bằng chứng và trạng thái phát hành.
 Rollback dùng đúng gói 2.9.0/48 đã phát hành. Giữ nguyên artifact v1 và receipt đã ký.
 Không dùng installer cũ ghi đè instructions đã tùy chỉnh. Bản 2.8.0
 không hỗ trợ contract này. Không tự chuyển đổi hoặc ký lại artifact khi hạ cấp.
+
+## Bản vá SessionStart trong 2.10.1
+
+Claude nhận briefing qua `hookSpecificOutput.additionalContext`; giới hạn 16 KiB được tính trên toàn bộ JSON envelope. JSON của CLI/Codex và hook checkpoint giữ nguyên. Sau khi cài CLI mới, chạy `wfc update --mode claude --project-root /duong/dan/project` cho từng project được chọn rồi mở session Claude mới. Chỉ cập nhật CLI chưa thay helper đã cài trong project.

@@ -1,0 +1,7 @@
+Running exact v2.10.1 package-artifact smoke...
+
+  PASS: tarball=/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/release-v2.10.1/.release-candidate/v2.10.1/workflow-bundle-2.10.1.tgz
+  PASS: sha256=99ce8b8b8af89861d228decd07655d94e2d377beb99bbcf0c3b302d350b03d3f
+  PASS: wfc version=2.10.1; Codex/Claude x global/project=4/4
+
+OK: release-candidate-artifact-smoke.test.js passed

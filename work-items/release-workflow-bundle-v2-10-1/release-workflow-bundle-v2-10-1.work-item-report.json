@@ -1,0 +1,97 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "ACTIVE",
+  "decision_owner": "coordinator",
+  "protocol_owner": "developer",
+  "raw_request_summary": "",
+  "request_source": "legacy-scaffold",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [],
+  "decision_log": [
+    "bootstrap_from_existing_s01=true"
+  ],
+  "work_item_slug": "release-workflow-bundle-v2-10-1",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/release-workflow-bundle-v2-10-1",
+  "current_step": "s07",
+  "granted_write_paths": [
+    ".worktrees/release-v2.10.1",
+    "work-items/release-workflow-bundle-v2-10-1/release-workflow-bundle-v2-10-1.s07.implementation.md",
+    "work-items/release-workflow-bundle-v2-10-1/release-workflow-bundle-v2-10-1.s08.verification.md",
+    "work-items/release-workflow-bundle-v2-10-1/evidence"
+  ],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "step-s07-owner",
+  "required_actions": [
+    {
+      "id": "se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194",
+      "kind": "workflow_followup",
+      "text": "Review and continue workflow backbone s01 -> s08."
+    },
+    {
+      "id": "se:56ebf383567a2e0d0e10a94afa836ab756886e590a3075e67f8191b7f39bc223",
+      "kind": "workflow_followup",
+      "text": "Continue active execution from step 7 onward."
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/release-workflow-bundle-v2-10-1"
+  ],
+  "audit_events": [
+    "REPORT_BOOTSTRAPPED",
+    "WORK_ITEM_APPROVED",
+    "READINESS_BUNDLE_APPROVED",
+    "WORK_ITEM_ACTIVATED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-11-06T13:29:20.920Z",
+  "review_notes": [
+    "User explicitly accepted and requested publication of the signed SessionStart fix as a patch release."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-11-06T13:29:20.919Z",
+      "action": "bootstrap",
+      "actor": "system",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Bootstrapped read-only report from existing scaffold."
+    },
+    {
+      "timestamp": "2026-11-06T13:29:20.920Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "User explicitly accepted and requested publication of the signed SessionStart fix as a patch release."
+    },
+    {
+      "timestamp": "2026-11-06T13:29:27.258Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "d4cf9ec7-2131-4d7b-ab88-bb58caa2c7b1"
+    },
+    {
+      "timestamp": "2026-11-06T13:29:30.550Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Execute accepted release plan after trusted readiness."
+    }
+  ]
+}
