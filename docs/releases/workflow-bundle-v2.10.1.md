@@ -1,6 +1,8 @@
 # Workflow Bundle v2.10.1
 
-Status: **APPROVED for publication; awaiting integration and public asset verification.**
+Status: **PUBLISHED on GitHub** at `2026-11-06T14:30:16Z`.
+[GitHub Release v2.10.1](https://github.com/haonh87/Code-Factory/releases/tag/v2.10.1), neither draft nor prerelease.
+Immutable tag commit: `df55da6ade22ac0acd1c175203fedc8ebf61eb7c`, merged via [PR #22](https://github.com/haonh87/Code-Factory/pull/22).
 
 ## Release Scope
 
@@ -16,7 +18,7 @@ Core requires Node >=18 and npm >=9. Both Codex and Claude retain 48 managed ski
 
 The signed hotfix work item records 29 lifecycle scenarios and 52 core test files, package installation checks, pack audit and actual Claude Code 2.1.318 delivery. In a native probe with tools disabled and empty CLAUDE.md, the published helper returned NOT_SEEN while the fixed helper delivered the exact briefing-only sentinel. See [signed hotfix evidence](../../work-items/fix-claude-sessionstart-context/fix-claude-sessionstart-context.s08.verification.md).
 
-Release candidate checks passed on Node 18.20.8 and 22.23.4 (macOS arm64): the same tarball installs/updates all four Codex/Claude global/project combinations and preserves unmanaged files. Published 2.10.0 upgrade/rollback, custom hook/instruction preservation, raw JSON and quiet checkpoint checks passed. The source helper remains byte-identical to accepted commit e41bea1. [Source CI](https://github.com/haonh87/Code-Factory/actions/runs/42227522966) passed all ten jobs. All 947 payload file contents, sizes and modes match the independently packed CI archive. Public download verification follows publication.
+Release candidate checks passed on Node 18.20.8 and 22.23.4 (macOS arm64): the same tarball installs/updates all four Codex/Claude global/project combinations and preserves unmanaged files. Published 2.10.0 upgrade/rollback, custom hook/instruction preservation, raw JSON and quiet checkpoint checks passed. The source helper remains byte-identical to accepted commit e41bea1. [Source CI](https://github.com/haonh87/Code-Factory/actions/runs/42227522966) passed all ten jobs. All 947 payload file contents, sizes and modes match the independently packed CI archive. The public download checks below also passed.
 
 ## Upgrade
 
@@ -41,12 +43,18 @@ Retain exact `workflow-bundle-2.10.0.tgz`, SHA-256 `aa0b87b9c80f621fd073dfa60292
 
 ## Release Gates
 
-The maintainer explicitly requested publication. Release work item `release-workflow-bundle-v2-10-1` uses strict/full planning, valid signed readiness and a separate DoD/Release seal for the exact tested archive. All six readiness/terminal receipts validate. Human QC/DevOps signed the exact release at `2026-11-06T13:48:20.682Z`; signed s08 SHA-256 `6c6d7266fed31144106a62bf283d307b46954753cf80d984d91abd560e895e95`. Publication follows green latest-head and main CI; protocol closure follows public download verification.
+The maintainer explicitly requested publication. Release work item `release-workflow-bundle-v2-10-1` uses strict/full planning, valid signed readiness and a separate DoD/Release seal for the exact tested archive. All six readiness/terminal receipts validate. Human QC/DevOps signed the exact release at `2026-11-06T13:48:20.682Z`; signed s08 SHA-256 `6c6d7266fed31144106a62bf283d307b46954753cf80d984d91abd560e895e95`. [Approved-head CI](https://github.com/haonh87/Code-Factory/actions/runs/42228927606) and [main CI](https://github.com/haonh87/Code-Factory/actions/runs/42229239358) passed before publication. Public download verification passed before protocol closure.
 
-## Frozen Candidate Assets
+## Published Immutable Assets
 
 | Asset | SHA-256 |
 |---|---|
 | workflow-bundle-2.10.1.tgz | `99ce8b8b8af89861d228decd07655d94e2d377beb99bbcf0c3b302d350b03d3f` |
 
-Core archive: 1,652,917 bytes, 947 files. Publish these retained bytes and SHA256SUMS without rebuilding.
+Core archive: 1,652,917 bytes, 947 files. These exact retained bytes and SHA256SUMS were published without rebuilding.
+
+## Publication Verification
+
+Both public assets were downloaded again and compared byte-for-byte with the retained approved files. Core: 1,652,917 bytes; SHA256SUMS: 93 bytes. The downloaded core passed all four Codex/Claude global/project install/update scenarios on Node22.23.4. The public tag resolves to the merge commit above. Earlier Node18/22 verification used the identical archive bytes. Evidence: [publication result](../../work-items/release-workflow-bundle-v2-10-1/evidence/publication.json).
+
+The signed s08 remains unchanged. No global/user-owned harness installation or downstream project was changed by publication. Existing projects require the explicit managed update shown above.

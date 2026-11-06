@@ -6,7 +6,7 @@ language: vi
 
 > Tiếng Anh / English: README.md
 
-Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent. Ứng viên phát hành hiện tại là `workflow-bundle v2.10.1`: workflow bundle cài được cho Codex và Claude Code, có định tuyến request thích ứng, chỉ gọi những role/gate thực sự áp dụng, hỗ trợ approval bundle có transaction journal, telemetry cục bộ với giới hạn riêng tư rõ ràng, state disposition theo ID chính xác và terminal archive guard. Quyền phê duyệt của con người không đổi: mỗi gate áp dụng vẫn phải có đúng reviewer có thẩm quyền và một trusted receipt độc lập. Maintainer đã yêu cầu phát hành; kết quả publication được ghi trong release record.
+Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent. Bản phát hành công khai hiện tại là `workflow-bundle v2.10.1`: workflow bundle cài được cho Codex và Claude Code, có định tuyến request thích ứng, chỉ gọi những role/gate thực sự áp dụng, hỗ trợ approval bundle có transaction journal, telemetry cục bộ với giới hạn riêng tư rõ ràng, state disposition theo ID chính xác và terminal archive guard. Quyền phê duyệt của con người không đổi: mỗi gate áp dụng vẫn phải có đúng reviewer có thẩm quyền và một trusted receipt độc lập. Maintainer đã yêu cầu phát hành; kết quả publication được ghi trong release record.
 
 Artifact phát hành là `workflow-bundle-2.10.1.tgz` cùng `SHA256SUMS` trên GitHub Releases. Xác minh checksum trước khi cài. Baseline rollback workflow là `v2.9.0/48` bất biến; xem `docs/releases/workflow-bundle-v2.10.1.md` để biết kết quả publication và kiểm chứng.
 
