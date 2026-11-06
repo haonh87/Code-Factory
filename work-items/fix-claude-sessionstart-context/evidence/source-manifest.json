@@ -1,0 +1,4 @@
+{
+  "packages/workflow-bundle/scripts/workflow-session-context.js": "1eac88f2c88dfe5780276dc63974d81b1442bab713891486beff9ab7eddce455",
+  "packages/workflow-bundle/test/project-context-lifecycle.test.js": "dbfff32eeddd97865c3c749fb9190a09a68561a7554061dac8f483b9ec1b57d3"
+}

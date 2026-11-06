@@ -1,0 +1,161 @@
+Code Factory context unavailable: Invalid work-item selection
+Code Factory context unavailable: Refusing linked context path: project-context/project-context.md
+✔ project upgrade preserves user instructions and installs bounded project context entrypoint (8.985291ms)
+✔ global Codex has a native AGENTS entrypoint while retaining legacy policy (2.407792ms)
+✔ malformed managed markers fail before changing user bytes (0.896375ms)
+✔ project destination symlink cannot overwrite outside instruction file (0.964959ms)
+✔ briefing recovers actual context and canonical handoff without creating workflow artifacts (43.305625ms)
+✔ multiple active items require selection; unknown item and escaped root fail (112.909458ms)
+✔ cross-harness checkpoints retain references; changed source is stale not silently trusted (173.752875ms)
+✔ context reader denies symlink context; oversized briefing is explicitly truncated (77.794ms)
+✖ installed Claude SessionStart delivers context and handoff through the documented envelope (46.755708ms)
+✖ Claude hook output accounts for JSON escaping in its total byte budget (84.07475ms)
+✖ Claude hook keeps missing context and work-item selection explicit (45.823ms)
+✔ Claude checkpoint hooks stay silent and rejected hook input emits no context (111.302333ms)
+✔ Claude custom hooks survive repeat installation and edited managed hook conflicts (4.262417ms)
+✔ rollback restores previous user instructions and refuses subsequent user edits (2.422667ms)
+✔ integration upgrades a read-only project root and restores original permission (2.446917ms)
+✔ install bootstraps project context from sources without inventing project facts (2.776125ms)
+✔ status diagnoses explicit unregistered project without writing and without claiming live verification (52.942834ms)
+✔ init installs project lifecycle for both supported harnesses and preserves existing context (13.943167ms)
+✔ rollback after a version upgrade restores prior manifest so reinstall stays idempotent (5.792ms)
+✔ opt-in companion config uses exact project scope and preserves other MCP servers (3.625875ms)
+✔ read-only briefing exposes a pending proposal without inferring approval (42.314958ms)
+✔ an in-progress managed installation blocks a concurrent writer before file changes (1.083583ms)
+✔ explicit project update does not mutate or preflight other registered projects (18.05525ms)
+✔ status binds a recorded lifecycle observation to installed bytes, sources and evidence (25.603541ms)
+✔ known legacy full-policy entrypoint migrates to a bounded bridge with exact rollback (4.406667ms)
+✔ large unowned instructions keep their exact bytes while lifecycle bridge remains discoverable first (3.510833ms)
+✔ branch switch and lost/corrupt caches recover from canonical sources (245.565458ms)
+✔ Claude checkpoint events isolate simultaneous session identities and survive missing end hook (86.769208ms)
+✔ interrupted managed transaction restores existing bytes and removes partial files (3.024417ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 26
+ℹ fail 3
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1273.429541
+
+✖ failing tests:
+
+test at packages/workflow-bundle/test/project-context-lifecycle.test.js:252:1
+✖ installed Claude SessionStart delivers context and handoff through the documented envelope (46.755708ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'schema_version',
+  +   'project_root',
+  +   'status',
+  +   'approval_verification',
+  +   'history',
+  +   'project_context',
+  +   'readme',
+  +   'selected_work_item',
+  +   'work_items',
+  +   'warnings',
+  +   'truncated',
+  +   'cache',
+  +   'source_fingerprint',
+  +   'sources',
+  +   'branch'
+  -   'hookSpecificOutput'
+    ]
+  
+      at hookBrief (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-claude-sessionstart-context/packages/workflow-bundle/test/project-context-lifecycle.test.js:245:10)
+      at TestContext.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-claude-sessionstart-context/packages/workflow-bundle/test/project-context-lifecycle.test.js:259:17)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'schema_version', 'project_root', 'status', 'approval_verification', 'history', 'project_context', 'readme', 'selected_work_item', 'work_items', 'warnings', 'truncated', 'cache', 'source_fingerprint', 'sources', 'branch' ],
+    expected: [ 'hookSpecificOutput' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/workflow-bundle/test/project-context-lifecycle.test.js:273:1
+✖ Claude hook output accounts for JSON escaping in its total byte budget (84.07475ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'schema_version',
+  +   'project_root',
+  +   'status',
+  +   'approval_verification',
+  +   'history',
+  +   'project_context',
+  +   'readme',
+  +   'selected_work_item',
+  +   'work_items',
+  +   'warnings',
+  +   'truncated',
+  +   'cache',
+  +   'source_fingerprint',
+  +   'sources',
+  +   'branch'
+  -   'hookSpecificOutput'
+    ]
+  
+      at hookBrief (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-claude-sessionstart-context/packages/workflow-bundle/test/project-context-lifecycle.test.js:245:10)
+      at TestContext.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-claude-sessionstart-context/packages/workflow-bundle/test/project-context-lifecycle.test.js:281:13)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'schema_version', 'project_root', 'status', 'approval_verification', 'history', 'project_context', 'readme', 'selected_work_item', 'work_items', 'warnings', 'truncated', 'cache', 'source_fingerprint', 'sources', 'branch' ],
+    expected: [ 'hookSpecificOutput' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/workflow-bundle/test/project-context-lifecycle.test.js:287:1
+✖ Claude hook keeps missing context and work-item selection explicit (45.823ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+  +   'schema_version',
+  +   'project_root',
+  +   'status',
+  +   'approval_verification',
+  +   'history',
+  +   'project_context',
+  +   'readme',
+  +   'selected_work_item',
+  +   'work_items',
+  +   'warnings',
+  +   'truncated',
+  +   'cache',
+  +   'source_fingerprint',
+  +   'sources',
+  +   'branch'
+  -   'hookSpecificOutput'
+    ]
+  
+      at hookBrief (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-claude-sessionstart-context/packages/workflow-bundle/test/project-context-lifecycle.test.js:245:10)
+      at TestContext.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-claude-sessionstart-context/packages/workflow-bundle/test/project-context-lifecycle.test.js:291:20)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'schema_version', 'project_root', 'status', 'approval_verification', 'history', 'project_context', 'readme', 'selected_work_item', 'work_items', 'warnings', 'truncated', 'cache', 'source_fingerprint', 'sources', 'branch' ],
+    expected: [ 'hookSpecificOutput' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
