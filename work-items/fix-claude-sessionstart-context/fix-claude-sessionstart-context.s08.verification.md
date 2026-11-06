@@ -166,8 +166,19 @@ evidence: ["evidence/security.log", "evidence/pack-audit.log"]
 
 ## Definition of Done
 
+This is an advisory assessment for human QC; it is not a gate approval.
+
 ```yaml
+work_item_slug: "fix-claude-sessionstart-context"
 status: PARTIAL
+checks:
+  acceptance_criteria_evidenced: PASS
+  implementation_recorded: PASS
+  required_verification_completed: PASS
+  code_scan_completed_or_justified: PASS
+  traceability_complete: PASS
+  residual_risks_documented: PASS
+follow_up_items: ["Human QC DoD", "Separate integration, release and managed rollout"]
 residual_risks: ["Node/version/OS and scanner limits above", "Installed downstream helpers remain on old release until rollout"]
 owners: ["qc"]
 gaps: ["Authorized human QC verdict and trusted DoD receipt pending"]
