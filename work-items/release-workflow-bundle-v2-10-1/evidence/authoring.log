@@ -1,0 +1,14 @@
+PASS: basic-full
+PASS: light-golden-budget
+PASS: semantic-evidence-guard
+PASS: quick-single-step
+PASS: legacy-scaffold-approval-bootstraps-report
+PASS: strict-default-blocks-legacy-scaffold
+PASS: capability-control
+PASS: approval-requires-interactive-human
+PASS: enterprise-multi-agent
+PASS: strict-sdd-change
+PASS: materialize-auto-scaffold
+PASS: greenfield-bootstrap-preflight
+PASS: greenfield-qr-voucher-proposal
+OK: workflow authoring smoke passed for 13 scaffold cases under /var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/workflow-authoring-smoke-HQ0H7Q

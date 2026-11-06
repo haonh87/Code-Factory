@@ -16,7 +16,7 @@ Core requires Node >=18 and npm >=9. Both Codex and Claude retain 48 managed ski
 
 The signed hotfix work item records 29 lifecycle scenarios and 52 core test files, package installation checks, pack audit and actual Claude Code 2.1.318 delivery. In a native probe with tools disabled and empty CLAUDE.md, the published helper returned NOT_SEEN while the fixed helper delivered the exact briefing-only sentinel. See [signed hotfix evidence](../../work-items/fix-claude-sessionstart-context/fix-claude-sessionstart-context.s08.verification.md).
 
-Release-specific Node18/22 archive checks, integration CI, checksum and publication verification will be recorded here before publication. The source helper remains byte-identical to accepted commit e41bea1.
+Release candidate checks passed on Node18.20.8 and22.23.4 (macOS arm64): the same tarball installs/updates all four Codex/Claude global/project combinations and preserves unmanaged files. Published2.10.0 upgrade/rollback, custom hook/instruction preservation, raw JSON and quiet checkpoint checks passed. The source helper remains byte-identical to accepted commit e41bea1. [Source CI](https://github.com/haonh87/Code-Factory/actions/runs/42227522966) passed all ten jobs. All947 payload file contents, sizes and modes match the independently packed CI archive. Public download verification follows publication.
 
 ## Upgrade
 
@@ -42,3 +42,11 @@ Retain exact `workflow-bundle-2.10.0.tgz`, SHA-256 `aa0b87b9c80f621fd073dfa60292
 ## Release Gates
 
 The maintainer explicitly requested publication. Release work item `release-workflow-bundle-v2-10-1` uses strict/full planning, valid signed readiness and a separate DoD/Release seal for the exact tested archive. Terminal release signing and publication are pending.
+
+## Frozen Candidate Assets
+
+| Asset | SHA-256 |
+|---|---|
+| workflow-bundle-2.10.1.tgz | `99ce8b8b8af89861d228decd07655d94e2d377beb99bbcf0c3b302d350b03d3f` |
+
+Core archive: 1,652,917 bytes,947 files. Publish these retained bytes and SHA256SUMS without rebuilding.

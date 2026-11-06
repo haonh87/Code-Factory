@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "source_commit": "b568a0d28b86056ff70b9ec17ff1dc9d3d37c5f9",
+  "evidence_sha256": {
+    "artifact.json": "452258901ce4f8fa878088288f36476eb21a4dbc2d35d5900439264fdfdecb62",
+    "authoring.log": "4a091607bd622c4098a84fde6b5efe09e46d39298bc54a61e4d2a57d3097de97",
+    "ci-parity.json": "bf8db697b6150db076c4a88354675f3c1904af92dc2cc93d44fc342b915eee6d",
+    "exact-node18.log": "869193aea6db427f76433dd5f855115db73fb600d661255525bb8491e699ea31",
+    "exact-node22.log": "869193aea6db427f76433dd5f855115db73fb600d661255525bb8491e699ea31",
+    "fixtures.log": "2ff39c5f80f834c2003b32f4b79c5d5f4579aa405287d0bb9071e28322824fc2",
+    "pack-audit.log": "077ee060fccb636c64b9c0036b548319c194613ffcdef1573925656604b22470",
+    "security.log": "9492433023e1d0e11296ba077d4834ab221460782248a34604a38da438bdcce1",
+    "source-ci.json": "2606d2f12b995438f555d22142af2c3e3b3c38bc89f0f96cdb0eb31fea7cde8f",
+    "unit-suite.log": "c77cbd2300e17492218fb6484418b0bd2c2a8cc8a146ccfbd9a2dab2e32e90d5",
+    "upgrade-result.json": "ee4318f105263cc1de2c68f32a27de192d7a479a893ce1ac2da2ed5c74392820"
+  },
+  "publication": "PENDING"
+}
