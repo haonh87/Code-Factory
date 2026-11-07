@@ -6,19 +6,19 @@ language: en
 
 > Vietnamese: workflow-bundle-quickstart.vi.md
 
-This guide focuses on the `workflow-bundle v2.10.1` release: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, resolve legacy workflow state by exact ID, bootstrap a new repo, and run the `agent proposes, human approves` flow. Install the GitHub Release asset; this operation does not publish to the npm registry. The release contains 48 managed skills and preserves independent human authority for every applicable gate.
+This guide focuses on the `workflow-bundle v2.10.2` release: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, resolve legacy workflow state by exact ID, bootstrap a new repo, and run the `agent proposes, human approves` flow. Install the GitHub Release asset; this operation does not publish to the npm registry. The release contains 48 managed skills and preserves independent human authority for every applicable gate.
 
-## Source selection and update safety (unreleased)
+## Source selection and update safety
 
-The fix after v2.10.1 uses the running CLI's bundle regardless of cwd. Explicit
+Version v2.10.2 uses the running CLI's bundle regardless of cwd. Explicit
 `--repo-root` selects another source. Update refuses an older source or lifecycle
 helper before changing runtime/project bytes or permissions; deliberate downgrade
 uses `install` with a chosen source and explicit scope/targets.
 
-See [source selection and update safety](../packages/workflow-bundle/README.md#source-selection-and-update-safety-unreleased)
-for source authoring, version compatibility and rollback details. The published
-v2.10.1 artifact does not contain this fix: when using it from an old checkout,
-select the installed package explicitly with `--repo-root` and inspect status first.
+See [source selection and update safety](../packages/workflow-bundle/README.md#source-selection-and-update-safety)
+for source authoring, version compatibility and rollback details. Install the
+v2.10.2 CLI before managed updates. With an older CLI, select its installed package
+explicitly using `--repo-root` and inspect status before updating from an old checkout.
 
 ## Objectives
 
@@ -49,10 +49,10 @@ npm -v
 
 ## Install The `wfc` CLI
 
-Download the tarball and SHA256SUMS from the v2.10.1 GitHub Release, verify the checksum, then install:
+Download the tarball and SHA256SUMS from the v2.10.2 GitHub Release, verify the checksum, then install:
 
 ```bash
-npm install -g /absolute/path/to/workflow-bundle-2.10.1.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.2.tgz
 wfc help
 wfc version
 ```
@@ -61,7 +61,7 @@ If upgrading from the old `workflow-contracts` CLI:
 
 ```bash
 npm uninstall -g workflow-contracts
-npm install -g /absolute/path/to/workflow-bundle-2.10.1.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.2.tgz
 wfc version
 ```
 
@@ -411,7 +411,7 @@ npm run validate:workflow
 If you installed the published package:
 
 ```bash
-npm install -g /absolute/path/to/workflow-bundle-2.10.1.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.2.tgz
 ```
 
 If you are using `npm link` from the source repo:
@@ -421,7 +421,7 @@ cd packages/workflow-bundle
 npm link
 ```
 
-### v2.10.1 Source And Package Boundary
+### v2.10.2 Source And Package Boundary
 
 Version 2.9.0 adds optional scenario guidance (A1) and opt-in integer
 `task_contract_version: 1` (A2). The JSON task contract validates task IDs,
@@ -432,7 +432,7 @@ Codex and Claude retain 48 skills, including the five maintenance skills and
 `diagram-design-presentation-adapter` from earlier releases, plus CF-023 validation.
 SEC-01 and SEC-02 remain in tagged source; direct installers and MCP servers are
 outside the workflow tarball. Optional PNG dependencies are provisioned separately.
-See the v2.10.1 release record for checksum, verification, limits and rollback.
+See the v2.10.2 release record for checksum, verification, limits and rollback.
 npm registry publication is separate.
 
 ## Project lifecycle repair in 2.10.0
@@ -442,7 +442,7 @@ This release delivers native project instructions, a portable context reader, ch
 After downloading the **published** artifacts and checking SHA256SUMS, install the core tarball, then run from the target project's root:
 
 ```bash
-npm install -g ./workflow-bundle-2.10.1.tgz
+npm install -g ./workflow-bundle-2.10.2.tgz
 wfc install --mode codex --scope both --project-root "$PWD"
 wfc install --mode claude --scope both --project-root "$PWD"
 wfc status --mode codex --project-root "$PWD" --json
@@ -505,3 +505,7 @@ This record is an observation, never a signed workflow approval. Installation ne
 creates successful observation evidence. Changed files, sources, versions or evidence
 invalidate the result. Native instruction overrides and modified policy/helper files
 are reported independently.
+
+## Known briefing limit
+
+Large Claude briefings can still hit the 10,000-character cap. See [limitations and evidence](releases/workflow-bundle-v2.10.2.md#known-limitations).

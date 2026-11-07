@@ -1,9 +1,9 @@
 # Code-Factory - Project Context
 
 Repository: AI Agent Ops - policy, workflow, skill and adapter for AI agent tasks.
-Release target: `workflow-bundle v2.10.1` (48 skills per harness).
-Verification and publication status are recorded in `docs/releases/workflow-bundle-v2.10.1.md` for the verified outcome.
-Core rollback: immutable `v2.9.0/48`. Session Search companion 0.2.0 is packaged separately in the same GitHub release.
+Release target: `workflow-bundle v2.10.2` (48 skills per harness).
+Verification and publication status are recorded in `docs/releases/workflow-bundle-v2.10.2.md` for the verified outcome.
+Core rollback: immutable `v2.9.0/48`. Session Search companion 0.2.0 remains at release v2.10.0 and is not rebuilt for this patch.
 
 ## Commands
 

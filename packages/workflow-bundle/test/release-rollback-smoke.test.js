@@ -10,7 +10,7 @@ const { execFileSync } = require("child_process");
 
 const repoRoot = path.resolve(__dirname, "..", "..", "..");
 const packageRoot = path.join(repoRoot, "packages", "workflow-bundle");
-const candidateVersion = "2.10.1";
+const candidateVersion = "2.10.2";
 const candidateSkillCount = 48;
 const rollbackVersion = "2.9.0";
 const rollbackSkillCount = 48;

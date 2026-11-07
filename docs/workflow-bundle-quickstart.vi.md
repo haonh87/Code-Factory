@@ -6,19 +6,19 @@ language: vi
 
 > Tiếng Anh / English: workflow-bundle-quickstart.md
 
-Hướng dẫn này tập trung vào bản phát hành `workflow-bundle v2.10.1`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, định tuyến request bằng adaptive governance, xử lý workflow state cũ theo ID chính xác, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Cài từ tarball GitHub Release đã xác minh checksum; đợt này không publish npm registry. Bản phát hành có 48 managed skill và giữ nguyên thẩm quyền độc lập của human cho từng gate áp dụng.
+Hướng dẫn này tập trung vào bản phát hành `workflow-bundle v2.10.2`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, định tuyến request bằng adaptive governance, xử lý workflow state cũ theo ID chính xác, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Cài từ tarball GitHub Release đã xác minh checksum; đợt này không publish npm registry. Bản phát hành có 48 managed skill và giữ nguyên thẩm quyền độc lập của human cho từng gate áp dụng.
 
-## Chọn source và bảo vệ update (chưa phát hành)
+## Chọn source và bảo vệ update
 
-Bản sửa sau v2.10.1 dùng bundle của CLI đang chạy, không phụ thuộc cwd. Có thể chọn
+Bản v2.10.2 dùng bundle của CLI đang chạy, không phụ thuộc cwd. Có thể chọn
 source khác bằng `--repo-root`. Update từ chối source/helper lifecycle cũ hơn trước
 khi đổi byte hoặc quyền file runtime/project; khi chủ đích hạ version, dùng `install`
 với source đã chọn và scope/project rõ ràng.
 
-Xem [chọn source và bảo vệ update](../packages/workflow-bundle/README.vi.md#chọn-source-và-bảo-vệ-update-chưa-phát-hành)
-về phát triển từ source, tương thích version và rollback. Artifact v2.10.1 đã phát
-hành chưa có bản sửa này: khi dùng nó từ checkout cũ, truyền `--repo-root` trỏ tới
-package đã cài và kiểm tra status trước.
+Xem [chọn source và bảo vệ update](../packages/workflow-bundle/README.vi.md#chọn-source-và-bảo-vệ-update)
+về phát triển từ source, tương thích version và rollback. Cài CLI v2.10.2 trước
+khi cập nhật managed. Nếu còn dùng CLI cũ từ checkout cũ, truyền `--repo-root` trỏ
+tới package đã cài và kiểm tra status trước.
 
 ## Mục Tiêu
 
@@ -52,7 +52,7 @@ npm -v
 Cách chuẩn sau khi package đã publish:
 
 ```bash
-npm install -g /absolute/path/to/workflow-bundle-2.10.1.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.2.tgz
 wfc help
 wfc version
 ```
@@ -61,7 +61,7 @@ Nếu đang nâng từ CLI cũ `workflow-contracts`:
 
 ```bash
 npm uninstall -g workflow-contracts
-npm install -g /absolute/path/to/workflow-bundle-2.10.1.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.2.tgz
 wfc version
 ```
 
@@ -411,7 +411,7 @@ npm run validate:workflow
 Nếu đã cài package publish:
 
 ```bash
-npm install -g /absolute/path/to/workflow-bundle-2.10.1.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.2.tgz
 ```
 
 Nếu đang dùng `npm link` từ source repo:
@@ -430,7 +430,7 @@ không thực thi các lệnh được ghi. YAML và scaffold mặc định vẫ
 Giữ 48 skill cho mỗi runtime, năm skill bảo trì, presentation adapter và CF-023.
 SEC-01/SEC-02 nằm trong source Git; MCP và installer trực tiếp ngoài tarball workflow.
 Tải tarball cùng SHA256SUMS trên GitHub Release; npm registry là kênh riêng.
-Xem `docs/releases/workflow-bundle-v2.10.1.md` để biết bằng chứng và trạng thái phát hành.
+Xem `docs/releases/workflow-bundle-v2.10.2.md` để biết bằng chứng và trạng thái phát hành.
 Rollback dùng đúng gói 2.9.0/48 đã phát hành. Giữ nguyên artifact v1 và receipt đã ký.
 Không dùng installer cũ ghi đè instructions đã tùy chỉnh. Bản 2.8.0
 không hỗ trợ contract này. Không tự chuyển đổi hoặc ký lại artifact khi hạ cấp.
@@ -442,7 +442,7 @@ Bản này bổ sung instruction đúng entrypoint của Codex/Claude, đọc co
 Sau khi có artifact đã publish và đối chiếu SHA256SUMS, cài core rồi chạy tại thư mục project:
 
 ```bash
-npm install -g ./workflow-bundle-2.10.1.tgz
+npm install -g ./workflow-bundle-2.10.2.tgz
 wfc install --mode codex --scope both --project-root "$PWD"
 wfc install --mode claude --scope both --project-root "$PWD"
 wfc status --mode codex --project-root "$PWD" --json
@@ -462,3 +462,7 @@ hoặc `.claude.json` sau khi quan sát phiên thật. Xem schema trong quicksta
 `status` đối chiếu phiên bản, hash cấu hình, nguồn context và file bằng chứng; trả về
 `recorded_current`, `recorded_stale`, `invalid` hoặc `not_verified`. Đây là ghi nhận quan
 sát, không thay thế receipt phê duyệt workflow. Installer không tự tạo bằng chứng thành công.
+
+## Giới hạn briefing đã biết
+
+Briefing Claude lớn vẫn có thể bị cắt bởi giới hạn 10.000 ký tự. Xem [giới hạn và bằng chứng](releases/workflow-bundle-v2.10.2.md#known-limitations).
