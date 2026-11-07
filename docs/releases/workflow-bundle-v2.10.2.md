@@ -77,11 +77,21 @@ Preserve canonical context, handoffs and signed receipts; never rewrite old tags
 
 ## Verification And Publication Evidence
 
-Release verification is in progress. The approved source work item has 53 passing
-core test files, 12 focused cases on Node18/22 and four exact test-archive scenarios.
-Those results do not substitute for verifying this new2.10.2 archive. Final artifact
-digest, CI references, signed gate identity and public download results are recorded
-here after their respective checks complete.
+Candidate verification passed:53 core test files; all workflow/SDD/change/execution/
+planning validators; authoring smoke, governance fixtures and pack audit. The same
+archive passed all4 Codex/Claude global/project scenarios on Node18.20.8 and22.23.4.
+Published2.10.1 upgrade/rollback and downgrade no-write checks passed all4 Node/harness
+combinations, preserving custom instructions/hooks and file modes. Gitleaks found no
+leaks in the54 changed source/docs/evidence files. [Source CI](https://github.com/haonh87/Code-Factory/actions/runs/42385698676) passed all10 jobs.
+All947 CI payload file contents, modes and sizes match the local archive.
+
+| Asset | SHA-256 |
+|---|---|
+| workflow-bundle-2.10.2.tgz | `b846fa659cd8d1526631efe4cd0fb1dc9e29e45582b9ea294d28c437084cd2d0` |
+
+Archive size: 1654846 bytes;947 files. These verified bytes are frozen.
+Public tag/upload/download checks remain pending the final release execution.
+Evidence: [verification](../../work-items/release-workflow-bundle-v2-10-2/release-workflow-bundle-v2-10-2.s08.verification.md).
 
 ## Release Gates
 

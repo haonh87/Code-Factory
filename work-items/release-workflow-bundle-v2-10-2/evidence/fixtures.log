@@ -1,0 +1,11 @@
+PASS: valid-default
+PASS: valid-regulated-waiver
+PASS: valid-custom
+EXPECTED_FAIL: invalid-missing-block
+EXPECTED_FAIL: invalid-checklist-mismatch
+EXPECTED_FAIL: invalid-waiver-missing-approval
+EXPECTED_FAIL: invalid-waiver-wrong-authority
+EXPECTED_FAIL: invalid-reviewed-gate-pending
+EXPECTED_FAIL: invalid-option-count
+EXPECTED_FAIL: invalid-s07-rule-evidence
+OK: validated 10 workflow governance fixture cases under /Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/release-v2.10.2/packages/workflow-bundle/tests/fixtures/workflow-governance

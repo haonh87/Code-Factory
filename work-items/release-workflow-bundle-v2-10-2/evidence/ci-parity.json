@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "ci_run": "42385698676",
+  "local_sha256": "b846fa659cd8d1526631efe4cd0fb1dc9e29e45582b9ea294d28c437084cd2d0",
+  "ci_sha256": "4adc947ad297b161e4b65f23d7103d1a7597cdb6becfeb01ef4c60e2b3ac1d66",
+  "payload_files": 947,
+  "equal_contents_sizes_modes": true,
+  "container_bytes_equal": false
+}
