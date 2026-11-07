@@ -1,0 +1,31 @@
+{
+  "verified_at": "2026-11-07T15:24:30.800808+00:00",
+  "source_commit": "bb7e97325131b66f75c9a3e2e7c41e7f030fb257",
+  "approved_fix": "676e8f25f6a3eb97037a2f0198af86bfbaaf1c14",
+  "status": "PASS",
+  "full_suite_files": 53,
+  "exact_artifact_node_versions": [
+    "18.20.8",
+    "22.23.4"
+  ],
+  "scenarios_per_node": 4,
+  "upgrade_rollback_combinations": 4,
+  "skills_each": 48,
+  "ci_jobs": 10,
+  "ci_payload_files": 947,
+  "artifact_sha256": "b846fa659cd8d1526631efe4cd0fb1dc9e29e45582b9ea294d28c437084cd2d0",
+  "production_helper_sha256": "1eac88f2c88dfe5780276dc63974d81b1442bab713891486beff9ab7eddce455",
+  "real_installations_mutated": false,
+  "remaining_release_conditions": [
+    "Human trusted DoD/Release",
+    "Final metadata head CI",
+    "Merge and main CI",
+    "Immutable tag/publication",
+    "Public download checksum/smoke"
+  ],
+  "known_limits": [
+    "Inherited Claude additionalContext10000-character cap",
+    "Native Windows lifecycle unverified",
+    "No configured ESLint runner; Semgrep unavailable"
+  ]
+}

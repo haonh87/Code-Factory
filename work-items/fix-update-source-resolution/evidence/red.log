@@ -1,0 +1,199 @@
+✖ packaged source follows the running CLI from stale and nested checkout directories (551.1795ms)
+✔ explicit source wins and an invalid explicit source never falls back (536.361541ms)
+✖ codex: update from stale cwd retains the running CLI release (633.976709ms)
+✖ codex: explicitly selected older source is refused before any write (547.126708ms)
+✖ codex: newer integration metadata protects runtime and selected projects (534.247208ms)
+✔ codex: fresh, equal, forward, deliberate reinstall and context rollback remain usable (1039.488125ms)
+✖ claude: update from stale cwd retains the running CLI release (617.093791ms)
+✖ claude: explicitly selected older source is refused before any write (574.479333ms)
+✖ claude: newer integration metadata protects runtime and selected projects (569.358041ms)
+✔ claude: fresh, equal, forward, deliberate reinstall and context rollback remain usable (1055.915208ms)
+✖ installed versions compare numeric major/minor/patch boundaries; unsupported versions fail closed (861.984208ms)
+✖ unsupported source version is rejected and a new home can bootstrap with update (578.605666ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 3
+ℹ fail 9
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8145.864708
+
+✖ failing tests:
+
+test at packages/workflow-bundle/test/bundle-source-resolution.test.js:89:1
+✖ packaged source follows the running CLI from stale and nested checkout directories (551.1795ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/wfc-source-pTET47/older-checkout'
+  - '/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/wfc-source-pTET47/package'
+  
+      at TestContext.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:93:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '/private/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/wfc-source-pTET47/older-checkout',
+    expected: '/var/folders/w2/l4tbcf3d0_196pvyvzsdm81h0000gn/T/wfc-source-pTET47/package',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/workflow-bundle/test/bundle-source-resolution.test.js:107:3
+✖ codex: update from stale cwd retains the running CLI release (633.976709ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  '2.7.0' !== '2.10.1'
+  
+      at TestContext.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:111:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '2.7.0',
+    expected: '2.10.1',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/workflow-bundle/test/bundle-source-resolution.test.js:116:3
+✖ codex: explicitly selected older source is refused before any write (547.126708ms)
+  AssertionError [ERR_ASSERTION]: unsafe update must fail
+      at Object.rejectUpdate (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:78:12)
+      at TestContext.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:119:22)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/workflow-bundle/test/bundle-source-resolution.test.js:124:3
+✖ codex: newer integration metadata protects runtime and selected projects (534.247208ms)
+  AssertionError [ERR_ASSERTION]: unsafe update must fail
+      at Object.rejectUpdate (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:78:12)
+      at TestContext.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:128:7)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/workflow-bundle/test/bundle-source-resolution.test.js:107:3
+✖ claude: update from stale cwd retains the running CLI release (617.093791ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  '2.7.0' !== '2.10.1'
+  
+      at TestContext.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:111:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '2.7.0',
+    expected: '2.10.1',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at packages/workflow-bundle/test/bundle-source-resolution.test.js:116:3
+✖ claude: explicitly selected older source is refused before any write (574.479333ms)
+  AssertionError [ERR_ASSERTION]: unsafe update must fail
+      at Object.rejectUpdate (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:78:12)
+      at TestContext.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:119:22)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/workflow-bundle/test/bundle-source-resolution.test.js:124:3
+✖ claude: newer integration metadata protects runtime and selected projects (569.358041ms)
+  AssertionError [ERR_ASSERTION]: unsafe update must fail
+      at Object.rejectUpdate (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:78:12)
+      at TestContext.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:128:7)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/workflow-bundle/test/bundle-source-resolution.test.js:154:1
+✖ installed versions compare numeric major/minor/patch boundaries; unsupported versions fail closed (861.984208ms)
+  AssertionError [ERR_ASSERTION]: unsafe update must fail
+      at Object.rejectUpdate (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:78:12)
+      at TestContext.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:163:7)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/workflow-bundle/test/bundle-source-resolution.test.js:167:1
+✖ unsupported source version is rejected and a new home can bootstrap with update (578.605666ms)
+  AssertionError [ERR_ASSERTION]: unsafe update must fail
+      at Object.rejectUpdate (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:78:12)
+      at TestContext.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:171:5)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

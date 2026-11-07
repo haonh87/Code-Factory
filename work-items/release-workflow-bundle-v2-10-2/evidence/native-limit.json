@@ -1,0 +1,29 @@
+{
+  "source_owner": "release-workflow-bundle-v2-10-1/evidence/machine-rollout.json#native_session_observation",
+  "observed_at": "2026-11-07T06:21:30.505881+00:00",
+  "claude_version": "2.1.318 (Claude Code)",
+  "status": "PARTIAL",
+  "case": {
+    "project": "Code-Factory",
+    "additional_context_utf16_units": 12352,
+    "negative_control": "PASS",
+    "native_delivery": "PARTIAL",
+    "expected_context_sha256": "04dc8bc14d1bc8485f310f5a7c9503e7dca2ded268fe6da581d1da094950ca39",
+    "expected_selected_work_item": "code-factory-holistic-audit-remediation",
+    "expected_work_item_statuses": [
+      {
+        "slug": "code-factory-holistic-audit-remediation",
+        "reported_status": "ACTIVE",
+        "handoff_sha256": "65660f38b29b16cc26b196dd1a7032a2f70c1f5129334b525e7b48f2a36b81dd",
+        "handoff_excerpt_matched": false
+      }
+    ],
+    "helper_sha256": "1eac88f2c88dfe5780276dc63974d81b1442bab713891486beff9ab7eddce455",
+    "exit_code": 0,
+    "project_context_hash_visible": true,
+    "cost_usd": 0.032512
+  },
+  "finding": "Code-Factory additionalContext is 12,352 UTF-16 units, above the Claude 10,000-character per-field limit. The model sees only a 2,000-character preview and cannot recover selected ACTIVE item or handoff with tools disabled. The other three projects and all four hook-disabled negative controls passed.",
+  "vendor_reference": "https://code.claude.com/docs/en/hooks#json-output",
+  "release_disposition": "Inherited known limitation, explicitly excluded from the approved CLI fix and2.10.2 release implementation."
+}

@@ -6,9 +6,35 @@ language: vi
 
 > Tiếng Anh / English: README.md
 
-`workflow-bundle` là package CLI được chuẩn bị cho ứng viên phát hành `v2.10.1`. Package cài workflow bundle cho Codex hoặc Claude Code, định tuyến request vào governance lane phù hợp, scaffold hoặc validate delivery workflow, hỗ trợ human approval bundle có transaction journal và cung cấp workflow-state disposition chính xác. Gate nào áp dụng vẫn phải có đúng human reviewer có thẩm quyền và một trusted receipt độc lập. Maintainer đã yêu cầu phát hành; kết quả publication được ghi trong release record.
+`workflow-bundle` là package CLI của `v2.10.2`. Package cài workflow bundle cho Codex hoặc Claude Code, định tuyến request vào governance lane phù hợp, scaffold hoặc validate delivery workflow, hỗ trợ human approval bundle có transaction journal và cung cấp workflow-state disposition chính xác. Gate nào áp dụng vẫn phải có đúng human reviewer có thẩm quyền và một trusted receipt độc lập. Maintainer đã yêu cầu phát hành; kết quả publication được ghi trong release record.
 
 Quickstart chi tiết: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
+
+## Chọn source và bảo vệ update
+
+Bản v2.10.2 mặc định lấy bundle đi kèm CLI đang chạy, không lấy source theo
+thư mục hiện tại. Muốn dùng checkout khác, truyền
+`--repo-root /duong-dan-tuyet-doi/toi/Code-Factory`. Khi phát triển từ source, chạy
+`npm run build:workflow:bundle-runtime` tại repo root để dựng packaged runtime,
+hoặc chọn repo bằng `--repo-root`. `wfc status --json` hiển thị đường dẫn source,
+version source và version đã cài.
+
+`wfc update` kiểm tra runtime và mọi project được chọn trước khi ghi, gồm cả version
+source đã chọn và version CLI cung cấp helper lifecycle. Nếu version
+đã cài mới hơn, hoặc metadata version khác rỗng nhưng không được hỗ trợ, lệnh dừng
+và giữ nguyên byte cùng quyền file. Version ổn định `X.Y.Z` được so sánh theo số;
+update cùng version hoặc lên version mới vẫn được hỗ trợ. Bản cài cũ chưa có
+metadata version giữ đường bootstrap hiện tại.
+
+Khi chủ đích hạ version, kiểm tra backup rồi dùng CLI/source đã chọn với
+`wfc install --repo-root /duong-dan/source-da-chon --mode codex --scope both
+--project-root /duong-dan/project` (hoặc `--mode claude`), ghi rõ scope và project.
+`update --rollback-context` vẫn chỉ khôi phục integration project trước đó.
+Giữ nguyên project context, handoff và receipt đã ký.
+
+Cài CLI v2.10.2 trước khi cập nhật các bản cài managed. Nếu còn dùng CLI cũ, truyền
+`--repo-root` trỏ tới package đang cài và kiểm tra version source/installed trước
+khi update từ checkout cũ.
 
 ## Requirements
 
@@ -22,7 +48,7 @@ Quickstart chi tiết: [`docs/workflow-bundle-quickstart.md`](../../docs/workflo
 Cài package publish:
 
 ```bash
-npm install -g /absolute/path/to/workflow-bundle-2.10.1.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.2.tgz
 wfc help
 wfc version
 ```
@@ -31,7 +57,7 @@ Nâng từ package legacy:
 
 ```bash
 npm uninstall -g workflow-contracts
-npm install -g /absolute/path/to/workflow-bundle-2.10.1.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.2.tgz
 wfc version
 ```
 
@@ -56,7 +82,7 @@ Không chạy installer cũ lên instructions đã tùy chỉnh vì nó ghi đè
 Ghi lại status và giữ backup; hạ package và khôi phục tích hợp project là hai thao tác
 riêng. Thử trên project tạm trước khi áp dụng.
 
-## What `v2.10.1` Includes
+## What `v2.10.2` Includes
 
 - workflow bundle install surface qua `wfc install|update|status|skills`
 - core authoring CLI qua `wfc init|scaffold|validate`
@@ -290,7 +316,7 @@ npm pack
 
 ## Khôi Phục Proposal Đã Lưu
 
-Candidate v2.10.1 giữ `materialize --resume-proposal` từ v2.6.4 cho proposal brownfield đơn chưa được duyệt, hỗ trợ `change_strategy=none` hoặc `create_new` (create_new chỉ dùng template full). Recovery cần hash report hiện tại, UUID operation và disposition có chữ ký Maintainer khi admission còn yêu cầu review. Thành công trả về MATERIALIZED/PENDING_REVIEW, không tự phê duyệt hay cấp quyền ghi.
+Candidate v2.10.2 giữ `materialize --resume-proposal` từ v2.6.4 cho proposal brownfield đơn chưa được duyệt, hỗ trợ `change_strategy=none` hoặc `create_new` (create_new chỉ dùng template full). Recovery cần hash report hiện tại, UUID operation và disposition có chữ ký Maintainer khi admission còn yêu cầu review. Thành công trả về MATERIALIZED/PENDING_REVIEW, không tự phê duyệt hay cấp quyền ghi.
 
 Change mới dùng template chuẩn, lock theo change ID và manifest recovery. Retry cùng identity có tính idempotent hoặc sửa projection bị gián đoạn; hash cũ, file đã sửa, identity xung đột và symlink bị từ chối. Không retry sau khi đã author hoặc duyệt, không dùng writer cũ có thể làm mất `materialization_recovery`. Kiểm tra cả tên CHANGE/CR trước khi chọn ID mới vì collision giữa hai cách viết vẫn là hạn chế đã biết.
 
@@ -303,11 +329,15 @@ không thực thi các lệnh được ghi. YAML và scaffold mặc định vẫ
 Giữ 48 skill cho mỗi runtime, năm skill bảo trì, presentation adapter và CF-023.
 SEC-01/SEC-02 nằm trong source Git; MCP và installer trực tiếp ngoài tarball workflow.
 Tải tarball cùng SHA256SUMS trên GitHub Release; npm registry là kênh riêng.
-Xem `docs/releases/workflow-bundle-v2.10.1.md` để biết bằng chứng và trạng thái phát hành.
+Xem `docs/releases/workflow-bundle-v2.10.2.md` để biết bằng chứng và trạng thái phát hành.
 Rollback dùng đúng gói 2.9.0/48 đã phát hành. Giữ nguyên artifact v1 và receipt đã ký.
 Không dùng installer cũ ghi đè instructions đã tùy chỉnh. Bản 2.8.0
 không hỗ trợ contract này. Không tự chuyển đổi hoặc ký lại artifact khi hạ cấp.
 
-## Bản vá SessionStart trong 2.10.1
+## Hành vi SessionStart kế thừa từ 2.10.1
 
 Claude nhận briefing qua `hookSpecificOutput.additionalContext`; giới hạn 16 KiB được tính trên toàn bộ JSON envelope. JSON của CLI/Codex và hook checkpoint giữ nguyên. Sau khi cài CLI mới, chạy `wfc update --mode claude --project-root /duong/dan/project` cho từng project được chọn rồi mở session Claude mới. Chỉ cập nhật CLI chưa thay helper đã cài trong project.
+
+## Giới hạn briefing đã biết
+
+Briefing Claude lớn vẫn có thể bị cắt bởi giới hạn 10.000 ký tự. Xem [giới hạn và bằng chứng](../../docs/releases/workflow-bundle-v2.10.2.md#known-limitations).
