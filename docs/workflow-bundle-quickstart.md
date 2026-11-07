@@ -8,6 +8,18 @@ language: en
 
 This guide focuses on the `workflow-bundle v2.10.1` release: install `wfc`, install the workflow bundle for Codex or Claude Code, route requests with adaptive governance, resolve legacy workflow state by exact ID, bootstrap a new repo, and run the `agent proposes, human approves` flow. Install the GitHub Release asset; this operation does not publish to the npm registry. The release contains 48 managed skills and preserves independent human authority for every applicable gate.
 
+## Source selection and update safety (unreleased)
+
+The fix after v2.10.1 uses the running CLI's bundle regardless of cwd. Explicit
+`--repo-root` selects another source. Update refuses an older source or lifecycle
+helper before changing runtime/project bytes or permissions; deliberate downgrade
+uses `install` with a chosen source and explicit scope/targets.
+
+See [source selection and update safety](../packages/workflow-bundle/README.md#source-selection-and-update-safety-unreleased)
+for source authoring, version compatibility and rollback details. The published
+v2.10.1 artifact does not contain this fix: when using it from an old checkout,
+select the installed package explicitly with `--repo-root` and inspect status first.
+
 ## Objectives
 
 When you are done, you will:

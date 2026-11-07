@@ -8,6 +8,18 @@ language: vi
 
 Hướng dẫn này tập trung vào bản phát hành `workflow-bundle v2.10.1`: cài `wfc`, cài workflow bundle cho Codex hoặc Claude Code, định tuyến request bằng adaptive governance, xử lý workflow state cũ theo ID chính xác, bootstrap một repo mới và chạy flow `agent proposes, human approves`. Cài từ tarball GitHub Release đã xác minh checksum; đợt này không publish npm registry. Bản phát hành có 48 managed skill và giữ nguyên thẩm quyền độc lập của human cho từng gate áp dụng.
 
+## Chọn source và bảo vệ update (chưa phát hành)
+
+Bản sửa sau v2.10.1 dùng bundle của CLI đang chạy, không phụ thuộc cwd. Có thể chọn
+source khác bằng `--repo-root`. Update từ chối source/helper lifecycle cũ hơn trước
+khi đổi byte hoặc quyền file runtime/project; khi chủ đích hạ version, dùng `install`
+với source đã chọn và scope/project rõ ràng.
+
+Xem [chọn source và bảo vệ update](../packages/workflow-bundle/README.vi.md#chọn-source-và-bảo-vệ-update-chưa-phát-hành)
+về phát triển từ source, tương thích version và rollback. Artifact v2.10.1 đã phát
+hành chưa có bản sửa này: khi dùng nó từ checkout cũ, truyền `--repo-root` trỏ tới
+package đã cài và kiểm tra status trước.
+
 ## Mục Tiêu
 
 Sau khi làm xong, bạn sẽ:

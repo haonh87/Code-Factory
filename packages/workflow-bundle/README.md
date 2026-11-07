@@ -10,6 +10,33 @@ language: en
 
 Detailed quickstart: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
+## Source selection and update safety (unreleased)
+
+The source fix after v2.10.1 defaults to the bundle shipped with the running CLI,
+regardless of the current directory. To use another source checkout, pass
+`--repo-root /absolute/path/to/Code-Factory`. For source development, either build
+the packaged runtime with `npm run build:workflow:bundle-runtime` from the repo
+root, or select the repo explicitly. `wfc status --json` reports the source path,
+source version and installed version.
+
+`wfc update` checks the runtime and every selected project before writing. It checks
+both the selected source version and the running CLI version that supplies lifecycle
+helpers. A newer
+installed version, or unsupported nonempty version metadata, stops the update
+without changing files or permissions. Stable `X.Y.Z` versions are compared
+numerically; equal and forward updates remain supported. Existing installations
+without version metadata keep their bootstrap path.
+
+For a deliberate downgrade, review backups and use the chosen CLI/source with
+`wfc install --repo-root /absolute/path/to/chosen-source --mode codex --scope both
+--project-root /absolute/path/to/project` (or `--mode claude`), selecting the scope
+and targets explicitly. `update --rollback-context` still restores only the
+previous project integration. Keep canonical context, handoffs and signed receipts.
+
+These fixes are not in the published v2.10.1 artifact. Until a new release is
+installed, pass `--repo-root` pointing at the installed v2.10.1 package when
+updating from an old checkout, and inspect source/installed versions first.
+
 ## Requirements
 
 - `node >= 18`

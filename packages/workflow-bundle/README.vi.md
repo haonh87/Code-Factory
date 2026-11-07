@@ -10,6 +10,32 @@ language: vi
 
 Quickstart chi tiết: [`docs/workflow-bundle-quickstart.md`](../../docs/workflow-bundle-quickstart.md)
 
+## Chọn source và bảo vệ update (chưa phát hành)
+
+Bản sửa sau v2.10.1 mặc định lấy bundle đi kèm CLI đang chạy, không lấy source theo
+thư mục hiện tại. Muốn dùng checkout khác, truyền
+`--repo-root /duong-dan-tuyet-doi/toi/Code-Factory`. Khi phát triển từ source, chạy
+`npm run build:workflow:bundle-runtime` tại repo root để dựng packaged runtime,
+hoặc chọn repo bằng `--repo-root`. `wfc status --json` hiển thị đường dẫn source,
+version source và version đã cài.
+
+`wfc update` kiểm tra runtime và mọi project được chọn trước khi ghi, gồm cả version
+source đã chọn và version CLI cung cấp helper lifecycle. Nếu version
+đã cài mới hơn, hoặc metadata version khác rỗng nhưng không được hỗ trợ, lệnh dừng
+và giữ nguyên byte cùng quyền file. Version ổn định `X.Y.Z` được so sánh theo số;
+update cùng version hoặc lên version mới vẫn được hỗ trợ. Bản cài cũ chưa có
+metadata version giữ đường bootstrap hiện tại.
+
+Khi chủ đích hạ version, kiểm tra backup rồi dùng CLI/source đã chọn với
+`wfc install --repo-root /duong-dan/source-da-chon --mode codex --scope both
+--project-root /duong-dan/project` (hoặc `--mode claude`), ghi rõ scope và project.
+`update --rollback-context` vẫn chỉ khôi phục integration project trước đó.
+Giữ nguyên project context, handoff và receipt đã ký.
+
+Các sửa đổi này chưa có trong artifact v2.10.1 đã phát hành. Trong lúc chờ bản mới,
+khi chạy update từ checkout cũ, truyền `--repo-root` trỏ tới package v2.10.1 đang
+cài và kiểm tra version source/installed trước.
+
 ## Requirements
 
 - `node >= 18`
