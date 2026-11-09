@@ -136,12 +136,13 @@ decision_owner: "coordinator"
 protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-11-07T15:09:02.801Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-11-07T15:09:13.309Z"
+handoff_target: "protocol-close"
+last_transition_action: "approve-closeout-bundle"
+last_transition_at: "2026-11-07T15:27:25.096Z"
 required_actions:
   - {"id":"se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194","kind":"workflow_followup","text":"Review and continue workflow backbone s01 -> s08."}
   - {"id":"se:220308c81521170d22ec0dcea5285a3bb710794dc04436e260e27c6823a5a94a","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
+  - {"id":"se:8c4ab42c293e4009c405b28b30c5bd782e6c67b304e46b7f321876abd9f022c2","kind":"work_item_close","text":"wfc work-item close --work-item release-workflow-bundle-v2-10-2"}
 blockers: []
 review_notes:
   - "User explicitly requested merge and publication of approved update-source fix676e8f2 as the next patch release."
@@ -152,5 +153,6 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
+  - "CLOSEOUT_BUNDLE_APPROVED"
 ```
 

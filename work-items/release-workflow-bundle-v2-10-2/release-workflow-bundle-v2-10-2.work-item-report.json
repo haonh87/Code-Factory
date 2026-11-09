@@ -25,7 +25,7 @@
   ],
   "change_strategy": "none",
   "change_id": "",
-  "handoff_target": "step-s07-owner",
+  "handoff_target": "protocol-close",
   "required_actions": [
     {
       "id": "se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194",
@@ -36,6 +36,11 @@
       "id": "se:220308c81521170d22ec0dcea5285a3bb710794dc04436e260e27c6823a5a94a",
       "kind": "workflow_followup",
       "text": "Continue active execution from step 7 onward."
+    },
+    {
+      "id": "se:8c4ab42c293e4009c405b28b30c5bd782e6c67b304e46b7f321876abd9f022c2",
+      "kind": "work_item_close",
+      "text": "wfc work-item close --work-item release-workflow-bundle-v2-10-2"
     }
   ],
   "blockers": [],
@@ -46,7 +51,8 @@
     "REPORT_BOOTSTRAPPED",
     "WORK_ITEM_APPROVED",
     "READINESS_BUNDLE_APPROVED",
-    "WORK_ITEM_ACTIVATED"
+    "WORK_ITEM_ACTIVATED",
+    "CLOSEOUT_BUNDLE_APPROVED"
   ],
   "review_required": true,
   "approval_status": "APPROVED",
@@ -92,6 +98,15 @@
       "from_status": "MATERIALIZED",
       "to_status": "ACTIVE",
       "note": "Execute R1-R4 after trusted readiness; source baseline676e8f2."
+    },
+    {
+      "timestamp": "2026-11-07T15:27:25.096Z",
+      "action": "approve-closeout-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "ACTIVE",
+      "to_status": "ACTIVE",
+      "note": "APPROVED closeout gates: dod, release",
+      "transaction_id": "8bbcd7be-2019-4254-b82c-7ad3ca199976"
     }
   ]
 }

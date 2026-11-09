@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "release_url": "https://github.com/haonh87/Code-Factory/releases/tag/v2.10.2",
+  "published_at": "2026-11-09T01:37:08Z",
+  "tag_commit": "8475d058259d4b745f484b7bc0e71c90d38b2508",
+  "release_assets": [
+    {
+      "name": "workflow-bundle-2.10.2.tgz",
+      "size": 1654846,
+      "sha256": "b846fa659cd8d1526631efe4cd0fb1dc9e29e45582b9ea294d28c437084cd2d0",
+      "byte_identical": true
+    },
+    {
+      "name": "SHA256SUMS",
+      "size": 93,
+      "sha256": "81134b4816ca0f52a2a3e3764fc55540b6c18352bea3473d68162bca429c187d",
+      "byte_identical": true
+    }
+  ],
+  "post_publication_smoke": {
+    "node": "22.23.4",
+    "matrix": "Codex/Claude x global/project",
+    "passed": 4,
+    "total": 4,
+    "log_sha256": "e327f1348a2db8cc8a1a59e76f31f49cbe163f5322d355ceb97baa1af836ab86"
+  },
+  "source_ci": "https://github.com/haonh87/Code-Factory/actions/runs/42385698676",
+  "approved_head_ci": "https://github.com/haonh87/Code-Factory/actions/runs/42386382955",
+  "merge_ci": "https://github.com/haonh87/Code-Factory/actions/runs/42545999770",
+  "signed_s08_sha256": "dcc5d024b6c637983b214f0c229ce87f7a3ef6d4219c367f068358b507f715cf"
+}
