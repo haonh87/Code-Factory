@@ -112,3 +112,6 @@ Trusted QC DoD and DevOps Release receipts were verified before merge/publicatio
 The signed s08 SHA256 is `dcc5d024b6c637983b214f0c229ce87f7a3ef6d4219c367f068358b507f715cf`
 and remains unchanged. AC-R4 public execution is complete. Existing installations
 remain at their prior versions until an explicit managed update is performed.
+
+The canonical release work item reached `DONE` through the CLI at 2026-11-09T01:43:43.795Z
+after public verification and all trusted gates passed without waiver.

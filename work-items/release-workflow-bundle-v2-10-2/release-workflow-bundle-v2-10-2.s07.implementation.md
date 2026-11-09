@@ -182,7 +182,8 @@ notes_for_closeout: "Release execution complete; documentation integration remai
 - Archive SHA256: `b846fa659cd8d1526631efe4cd0fb1dc9e29e45582b9ea294d28c437084cd2d0`; 1,654,846 bytes; 947 files.
 - Trusted DoD/Release receipts are valid. Signed s08 SHA256 remains
   `dcc5d024b6c637983b214f0c229ce87f7a3ef6d4219c367f068358b507f715cf`.
-- Next: commit publication evidence, transition VERIFIED -> DONE through CLI,
-  then integrate publication documentation from `docs/v2.10.2-publication`.
+- CLI transitioned VERIFIED -> DONE at 2026-11-09T01:43:43.795Z without waiver.
+  The remaining documentation integration is on `docs/v2.10.2-publication`;
+  no release execution remains.
 - Retain archive/worktrees for rollback. Known large-Claude-briefing limit is
   unchanged. No npm publication or real global/project rollout occurred.
