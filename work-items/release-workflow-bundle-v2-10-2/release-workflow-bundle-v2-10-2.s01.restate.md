@@ -112,14 +112,14 @@ trusted gates. Latest remote release is 2.10.1; origin/main is 8e4fae4. New work
 
 ## Work Item Protocol
 ```yaml
-protocol_status: ACTIVE
+protocol_status: DONE
 approval_status: APPROVED
 review_required: true
 work_item_slug: "release-workflow-bundle-v2-10-2"
 work_item_type: CHANGE
 delivery_context: brownfield
 workflow_root: "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/release-workflow-bundle-v2-10-2"
-current_step: "s07"
+current_step: "s08"
 granted_write_paths:
   - ".worktrees/release-v2.10.2"
   - "work-items/release-workflow-bundle-v2-10-2/release-workflow-bundle-v2-10-2.s07.implementation.md"
@@ -136,12 +136,12 @@ decision_owner: "coordinator"
 protocol_owner: "developer"
 reviewed_by: "maintainer"
 reviewed_at: "2026-11-07T15:09:02.801Z"
-handoff_target: "step-s07-owner"
-last_transition_action: "activate"
-last_transition_at: "2026-11-07T15:09:13.309Z"
+handoff_target: "archive-lifecycle"
+last_transition_action: "close"
+last_transition_at: "2026-11-09T01:43:43.795Z"
 required_actions:
   - {"id":"se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194","kind":"workflow_followup","text":"Review and continue workflow backbone s01 -> s08."}
-  - {"id":"se:220308c81521170d22ec0dcea5285a3bb710794dc04436e260e27c6823a5a94a","kind":"workflow_followup","text":"Continue active execution from step 7 onward."}
+  - {"id":"se:831f18d6e86af278507993917ec8ac75fd2c72c69da829c9225886baf6686337","kind":"workflow_followup","text":"Archive the work item when all downstream lifecycle actions are complete."}
 blockers: []
 review_notes:
   - "User explicitly requested merge and publication of approved update-source fix676e8f2 as the next patch release."
@@ -152,5 +152,8 @@ audit_events:
   - "WORK_ITEM_APPROVED"
   - "READINESS_BUNDLE_APPROVED"
   - "WORK_ITEM_ACTIVATED"
+  - "CLOSEOUT_BUNDLE_APPROVED"
+  - "VERIFICATION_CONFIRMED"
+  - "DONE_CONFIRMED"
 ```
 
