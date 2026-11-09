@@ -1,0 +1,50 @@
+✖ codex: newer integration metadata protects runtime and selected projects (940.194083ms)
+✖ claude: newer integration metadata protects runtime and selected projects (872.948833ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1862.078625
+
+✖ failing tests:
+
+test at packages/workflow-bundle/test/bundle-source-resolution.test.js:124:3
+✖ codex: newer integration metadata protects runtime and selected projects (940.194083ms)
+  AssertionError [ERR_ASSERTION]: unsafe update must fail
+      at Object.rejectUpdate (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:78:12)
+      at TestContext.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:146:7)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at packages/workflow-bundle/test/bundle-source-resolution.test.js:124:3
+✖ claude: newer integration metadata protects runtime and selected projects (872.948833ms)
+  AssertionError [ERR_ASSERTION]: unsafe update must fail
+      at Object.rejectUpdate (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:78:12)
+      at TestContext.<anonymous> (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/fix-update-source-resolution/packages/workflow-bundle/test/bundle-source-resolution.test.js:146:7)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at node:internal/test_runner/test:1285:31
+      at node:internal/process/task_queues:151:7
+      at AsyncResource.runInAsyncScope (node:async_hooks:226:14)
+      at AsyncResource.runMicrotask (node:internal/process/task_queues:148:8) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

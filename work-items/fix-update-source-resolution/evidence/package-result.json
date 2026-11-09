@@ -1,0 +1,77 @@
+{
+  "recorded_at": "2026-11-07T06:39:00.477733+00:00",
+  "artifact": "/private/tmp/cf-update-fix-artifact/workflow-bundle-2.10.1.tgz",
+  "sha256": "61d9dd0c504fff3f9e507cf6e29af1fac8c9d94e8cce1186e3a916b80bd0378b",
+  "artifact_boundary": "Unpublished local test archive of the patch; version metadata remains 2.10.1. Not the immutable published 2.10.1 archive.",
+  "results": [
+    {
+      "node": "18.20.8",
+      "mode": "codex",
+      "status": "PASS",
+      "source_version": "2.10.1",
+      "installed_version": "2.10.1",
+      "managed_skill_count": 48,
+      "checks": [
+        "fresh install",
+        "status from actual stale checkout",
+        "same-version update from stale checkout",
+        "explicit old source rejected with unchanged bytes/modes",
+        "newer project rejected with unchanged bytes/modes"
+      ],
+      "older_source_diagnostic": "ERROR: Refusing bundle downgrade: source 2.7.0 (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory) is older than installed 2.10.1 at /private/tmp/cf-update-fix-artifact/node-18.20.8/codex-home. For a deliberate reinstall, review backups and use 'wfc install --repo-root <chosen-source>' with explicit scope and targets.",
+      "newer_project_diagnostic": "ERROR: Refusing bundle downgrade: source 2.10.1 (/private/tmp/cf-update-fix-artifact/node-18.20.8/prefix/node_modules/workflow-bundle) is older than installed 2.10.2 at /private/tmp/cf-update-fix-artifact/node-18.20.8/codex-project/.codex/code-factory/install.json. For a deliberate reinstall, review backups and use 'wfc install --repo-root <chosen-source>' with explicit scope and targets."
+    },
+    {
+      "node": "18.20.8",
+      "mode": "claude",
+      "status": "PASS",
+      "source_version": "2.10.1",
+      "installed_version": "2.10.1",
+      "managed_skill_count": 48,
+      "checks": [
+        "fresh install",
+        "status from actual stale checkout",
+        "same-version update from stale checkout",
+        "explicit old source rejected with unchanged bytes/modes",
+        "newer project rejected with unchanged bytes/modes"
+      ],
+      "older_source_diagnostic": "ERROR: Refusing bundle downgrade: source 2.7.0 (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory) is older than installed 2.10.1 at /private/tmp/cf-update-fix-artifact/node-18.20.8/claude-home. For a deliberate reinstall, review backups and use 'wfc install --repo-root <chosen-source>' with explicit scope and targets.",
+      "newer_project_diagnostic": "ERROR: Refusing bundle downgrade: source 2.10.1 (/private/tmp/cf-update-fix-artifact/node-18.20.8/prefix/node_modules/workflow-bundle) is older than installed 2.10.2 at /private/tmp/cf-update-fix-artifact/node-18.20.8/claude-project/.claude/code-factory/install.json. For a deliberate reinstall, review backups and use 'wfc install --repo-root <chosen-source>' with explicit scope and targets."
+    },
+    {
+      "node": "22.23.4",
+      "mode": "codex",
+      "status": "PASS",
+      "source_version": "2.10.1",
+      "installed_version": "2.10.1",
+      "managed_skill_count": 48,
+      "checks": [
+        "fresh install",
+        "status from actual stale checkout",
+        "same-version update from stale checkout",
+        "explicit old source rejected with unchanged bytes/modes",
+        "newer project rejected with unchanged bytes/modes"
+      ],
+      "older_source_diagnostic": "ERROR: Refusing bundle downgrade: source 2.7.0 (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory) is older than installed 2.10.1 at /private/tmp/cf-update-fix-artifact/node-22.23.4/codex-home. For a deliberate reinstall, review backups and use 'wfc install --repo-root <chosen-source>' with explicit scope and targets.",
+      "newer_project_diagnostic": "ERROR: Refusing bundle downgrade: source 2.10.1 (/private/tmp/cf-update-fix-artifact/node-22.23.4/prefix/node_modules/workflow-bundle) is older than installed 2.10.2 at /private/tmp/cf-update-fix-artifact/node-22.23.4/codex-project/.codex/code-factory/install.json. For a deliberate reinstall, review backups and use 'wfc install --repo-root <chosen-source>' with explicit scope and targets."
+    },
+    {
+      "node": "22.23.4",
+      "mode": "claude",
+      "status": "PASS",
+      "source_version": "2.10.1",
+      "installed_version": "2.10.1",
+      "managed_skill_count": 48,
+      "checks": [
+        "fresh install",
+        "status from actual stale checkout",
+        "same-version update from stale checkout",
+        "explicit old source rejected with unchanged bytes/modes",
+        "newer project rejected with unchanged bytes/modes"
+      ],
+      "older_source_diagnostic": "ERROR: Refusing bundle downgrade: source 2.7.0 (/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory) is older than installed 2.10.1 at /private/tmp/cf-update-fix-artifact/node-22.23.4/claude-home. For a deliberate reinstall, review backups and use 'wfc install --repo-root <chosen-source>' with explicit scope and targets.",
+      "newer_project_diagnostic": "ERROR: Refusing bundle downgrade: source 2.10.1 (/private/tmp/cf-update-fix-artifact/node-22.23.4/prefix/node_modules/workflow-bundle) is older than installed 2.10.2 at /private/tmp/cf-update-fix-artifact/node-22.23.4/claude-project/.claude/code-factory/install.json. For a deliberate reinstall, review backups and use 'wfc install --repo-root <chosen-source>' with explicit scope and targets."
+    }
+  ],
+  "real_installations_mutated": false
+}

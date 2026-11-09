@@ -1,0 +1,13 @@
+{
+  "source_commit": "676e8f25f6a3eb97037a2f0198af86bfbaaf1c14",
+  "base_commit": "8e4fae42fd1e419dec031b61161eb15e88dc73bf",
+  "files": {
+    "docs/workflow-bundle-quickstart.md": "3dc5f5b600db144048e5a1323ed1ed4040590bd0bbd6bfa916bad13ad6731759",
+    "docs/workflow-bundle-quickstart.vi.md": "78578c79ff8d7fba737746e85970a8c730bca0748cfca95b65d05402cdea3127",
+    "packages/workflow-bundle/README.md": "7da442deebeadf4c55fa14e2d1db665e29463030204378bed05d30e6dd021f6e",
+    "packages/workflow-bundle/README.vi.md": "9145f7a464ddeb895328e026bb17745a26ecff4c9b80103034ae7444d02c3d90",
+    "packages/workflow-bundle/scripts/workflow-bundle-cli.js": "91949cc9378b911cfad4c065b5bea7ea2881784f79645a27092343bb9e864889",
+    "packages/workflow-bundle/scripts/workflow-bundle-utils.js": "707b1a398a9753b52e03be50fccb223fb0f0c4441a6dea29927b8eb9a40471de",
+    "packages/workflow-bundle/test/bundle-source-resolution.test.js": "6f9cad300c9a728b776036e9e4ac0750d1518f268575c33fa9e8964a52e895cf"
+  }
+}

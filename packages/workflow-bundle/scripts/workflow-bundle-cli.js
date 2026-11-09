@@ -266,7 +266,7 @@ function printHelp() {
       "  wfc skills remove [--mode <harness>] --skill NAME [--skill NAME]",
       "",
       "Options:",
-      "  --repo-root PATH    Path to the workflow bundle source repo.",
+      "  --repo-root PATH    Explicit bundle source. Default: the running CLI's own bundle.",
       "  --mode VALUE        Runtime harness mode (e.g. codex, claude). Auto-detected when omitted in TTY.",
       "  --runtime-home PATH Override runtime home directly.",
       "  --codex-home PATH   Override Codex home. Default: $CODEX_HOME or ~/.codex",
@@ -279,7 +279,9 @@ function printHelp() {
       "",
       "Notes:",
       "  - 'wfc status' shows both source_bundle_version and installed_bundle_version.",
-      "  - 'wfc update' overwrites the current installed bundle using the recorded install state.",
+      "  - 'wfc update' uses the recorded targets and refuses version downgrades before writing.",
+      "  - cwd never selects bundle sources. Use '--repo-root' for another source checkout.",
+      "  - For a deliberate downgrade, review backups and use 'wfc install --repo-root <chosen-source>'.",
       "  - 'wfc install' shows numbered choices for mode and scope when they are omitted in an interactive terminal.",
       "  - 'wfc update', 'wfc status' and 'wfc skills ...' auto-detect the active harness or show a choice when '--mode' is omitted.",
       "  - When '--mode' is omitted, the harness is auto-detected from home directory markers and environment variables.",
@@ -377,6 +379,56 @@ function printStatusSummary(context, installState, jsonOutput, args = {}) {
   });
 }
 
+function assertUpdateVersions(context, currentState, projectRoots) {
+  const sourceVersion = getManifestBundleVersion(context.manifest);
+  function parts(version, location) {
+    if (
+      typeof version !== "string" ||
+      !/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/.test(version)
+    ) {
+      throw new Error(
+        `Unsupported bundle version '${version}' at ${location}. Updates require stable X.Y.Z versions.`,
+      );
+    }
+    return version.split(".").map((part) => BigInt(part));
+  }
+  function check(installedVersion, location, candidateVersion = sourceVersion, candidateRoot = context.repoRoot) {
+    const candidateParts = parts(candidateVersion, candidateRoot);
+    // Pre-versioned legacy installations and new targets retain their bootstrap path.
+    if (installedVersion == null || installedVersion === "") return;
+    const installedParts = parts(installedVersion, location);
+    for (let i = 0; i < candidateParts.length; i += 1) {
+      if (candidateParts[i] > installedParts[i]) return;
+      if (candidateParts[i] < installedParts[i]) {
+        throw new Error(
+          `Refusing bundle downgrade: source ${candidateVersion} (${candidateRoot}) is older than installed ${installedVersion} at ${location}. ` +
+          "For a deliberate reinstall, review backups and use 'wfc install --repo-root <chosen-source>' with explicit scope and targets.",
+        );
+      }
+    }
+  }
+  check(currentState.installed_bundle_version, context.runtimeHome);
+  const integration = require("./workflow-project-context");
+  // Even project-only updates sync runtime skills. Protect the runtime as well
+  // as every selected project, which may be ahead of the runtime install state.
+  const targets = [
+    [context.runtimeHome, "code-factory/install.json"],
+    ...projectRoots.map((root) => [root, `.${context.mode}/code-factory/install.json`]),
+  ];
+  for (const [root, relative] of targets) {
+    const physicalRoot = fs.existsSync(root) ? fs.realpathSync(root) : root;
+    const bytes = integration.read(physicalRoot, relative);
+    if (bytes) {
+      const installedVersion = JSON.parse(bytes).bundle_version;
+      const location = path.join(root, relative);
+      check(installedVersion, location);
+      // --repo-root selects policies/skills, but lifecycle helpers and their
+      // integration version come from the running CLI's package.
+      check(installedVersion, location, require("../package.json").version, path.resolve(__dirname, ".."));
+    }
+  }
+}
+
 function applyInstallOrUpdate({ args, action }) {
   const context = getRuntimeContext(args);
   const currentState = loadInstallState({
@@ -414,6 +466,14 @@ function applyInstallOrUpdate({ args, action }) {
           : [],
     ),
   ];
+
+  if (action === "update") {
+    assertUpdateVersions(
+      context,
+      currentState,
+      scopeValue === "project" || scopeValue === "both" ? projectRootsForAction : [],
+    );
+  }
 
   const selectedSkillNames = selectSkills({
     availableSkills: context.availableSkills,

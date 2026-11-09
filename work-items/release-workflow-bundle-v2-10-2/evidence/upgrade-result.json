@@ -1,0 +1,73 @@
+{
+  "verified_at": "2026-11-07T15:19:16.488503+00:00",
+  "artifact": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/.worktrees/release-v2.10.2/.release-candidate/v2.10.2/workflow-bundle-2.10.2.tgz",
+  "sha256": "b846fa659cd8d1526631efe4cd0fb1dc9e29e45582b9ea294d28c437084cd2d0",
+  "rollback_sha256": "99ce8b8b8af89861d228decd07655d94e2d377beb99bbcf0c3b302d350b03d3f",
+  "results": [
+    {
+      "node": "18.20.8",
+      "mode": "codex",
+      "status": "PASS",
+      "skills": 48,
+      "checks": [
+        "published2.10.1 install",
+        "2.10.1->2.10.2 upgrade from actual2.7.0 checkout",
+        "CLI-owned default source",
+        "explicit older source rejected with byte/mode equality",
+        "newer project rejected with byte/mode equality",
+        "custom instructions/hooks retained",
+        "context rollback to2.10.1",
+        "intentional old-CLI reinstall with explicit source"
+      ]
+    },
+    {
+      "node": "18.20.8",
+      "mode": "claude",
+      "status": "PASS",
+      "skills": 48,
+      "checks": [
+        "published2.10.1 install",
+        "2.10.1->2.10.2 upgrade from actual2.7.0 checkout",
+        "CLI-owned default source",
+        "explicit older source rejected with byte/mode equality",
+        "newer project rejected with byte/mode equality",
+        "custom instructions/hooks retained",
+        "context rollback to2.10.1",
+        "intentional old-CLI reinstall with explicit source"
+      ]
+    },
+    {
+      "node": "22.23.4",
+      "mode": "codex",
+      "status": "PASS",
+      "skills": 48,
+      "checks": [
+        "published2.10.1 install",
+        "2.10.1->2.10.2 upgrade from actual2.7.0 checkout",
+        "CLI-owned default source",
+        "explicit older source rejected with byte/mode equality",
+        "newer project rejected with byte/mode equality",
+        "custom instructions/hooks retained",
+        "context rollback to2.10.1",
+        "intentional old-CLI reinstall with explicit source"
+      ]
+    },
+    {
+      "node": "22.23.4",
+      "mode": "claude",
+      "status": "PASS",
+      "skills": 48,
+      "checks": [
+        "published2.10.1 install",
+        "2.10.1->2.10.2 upgrade from actual2.7.0 checkout",
+        "CLI-owned default source",
+        "explicit older source rejected with byte/mode equality",
+        "newer project rejected with byte/mode equality",
+        "custom instructions/hooks retained",
+        "context rollback to2.10.1",
+        "intentional old-CLI reinstall with explicit source"
+      ]
+    }
+  ],
+  "real_installations_mutated": false
+}

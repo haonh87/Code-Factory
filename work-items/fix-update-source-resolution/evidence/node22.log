@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: packaged source follows the running CLI from stale and nested checkout directories
+ok 1 - packaged source follows the running CLI from stale and nested checkout directories
+  ---
+  duration_ms: 579.810167
+  type: 'test'
+  ...
+# Subtest: explicit source wins and an invalid explicit source never falls back
+ok 2 - explicit source wins and an invalid explicit source never falls back
+  ---
+  duration_ms: 540.658041
+  type: 'test'
+  ...
+# Subtest: codex: update from stale cwd retains the running CLI release
+ok 3 - codex: update from stale cwd retains the running CLI release
+  ---
+  duration_ms: 649.256166
+  type: 'test'
+  ...
+# Subtest: codex: explicitly selected older source is refused before any write
+ok 4 - codex: explicitly selected older source is refused before any write
+  ---
+  duration_ms: 578.39475
+  type: 'test'
+  ...
+# Subtest: codex: newer integration metadata protects runtime and selected projects
+ok 5 - codex: newer integration metadata protects runtime and selected projects
+  ---
+  duration_ms: 794.051625
+  type: 'test'
+  ...
+# Subtest: codex: fresh, equal, forward, deliberate reinstall and context rollback remain usable
+ok 6 - codex: fresh, equal, forward, deliberate reinstall and context rollback remain usable
+  ---
+  duration_ms: 939.305792
+  type: 'test'
+  ...
+# Subtest: claude: update from stale cwd retains the running CLI release
+ok 7 - claude: update from stale cwd retains the running CLI release
+  ---
+  duration_ms: 619.603584
+  type: 'test'
+  ...
+# Subtest: claude: explicitly selected older source is refused before any write
+ok 8 - claude: explicitly selected older source is refused before any write
+  ---
+  duration_ms: 560.762458
+  type: 'test'
+  ...
+# Subtest: claude: newer integration metadata protects runtime and selected projects
+ok 9 - claude: newer integration metadata protects runtime and selected projects
+  ---
+  duration_ms: 818.738583
+  type: 'test'
+  ...
+# Subtest: claude: fresh, equal, forward, deliberate reinstall and context rollback remain usable
+ok 10 - claude: fresh, equal, forward, deliberate reinstall and context rollback remain usable
+  ---
+  duration_ms: 958.257625
+  type: 'test'
+  ...
+# Subtest: installed versions compare numeric major/minor/patch boundaries; unsupported versions fail closed
+ok 11 - installed versions compare numeric major/minor/patch boundaries; unsupported versions fail closed
+  ---
+  duration_ms: 1141.8565
+  type: 'test'
+  ...
+# Subtest: unsupported source version is rejected and a new home can bootstrap with update
+ok 12 - unsupported source version is rejected and a new home can bootstrap with update
+  ---
+  duration_ms: 586.740667
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8821.26725

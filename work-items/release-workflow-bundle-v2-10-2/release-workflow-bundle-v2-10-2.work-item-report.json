@@ -1,0 +1,97 @@
+{
+  "materialization_status": "READY",
+  "protocol_status": "ACTIVE",
+  "decision_owner": "coordinator",
+  "protocol_owner": "developer",
+  "raw_request_summary": "",
+  "request_source": "legacy-scaffold",
+  "candidate_count": 1,
+  "split_decision": "single",
+  "dedup_result": "no_conflict",
+  "work_items": [],
+  "decision_log": [
+    "bootstrap_from_existing_s01=true"
+  ],
+  "work_item_slug": "release-workflow-bundle-v2-10-2",
+  "work_item_type": "CHANGE",
+  "delivery_context": "brownfield",
+  "workflow_root": "/Users/haonguyen87/Documents/workspaces/personal/projects/RnD-AI/Code-Factory/work-items/release-workflow-bundle-v2-10-2",
+  "current_step": "s07",
+  "granted_write_paths": [
+    ".worktrees/release-v2.10.2",
+    "work-items/release-workflow-bundle-v2-10-2/release-workflow-bundle-v2-10-2.s07.implementation.md",
+    "work-items/release-workflow-bundle-v2-10-2/release-workflow-bundle-v2-10-2.s08.verification.md",
+    "work-items/release-workflow-bundle-v2-10-2/evidence"
+  ],
+  "change_strategy": "none",
+  "change_id": "",
+  "handoff_target": "step-s07-owner",
+  "required_actions": [
+    {
+      "id": "se:59c625c9768efc1c74009edec61fad2b0b44dcef89d4e849bad61d9efcc03194",
+      "kind": "workflow_followup",
+      "text": "Review and continue workflow backbone s01 -> s08."
+    },
+    {
+      "id": "se:220308c81521170d22ec0dcea5285a3bb710794dc04436e260e27c6823a5a94a",
+      "kind": "workflow_followup",
+      "text": "Continue active execution from step 7 onward."
+    }
+  ],
+  "blockers": [],
+  "refs": [
+    "work-items/release-workflow-bundle-v2-10-2"
+  ],
+  "audit_events": [
+    "REPORT_BOOTSTRAPPED",
+    "WORK_ITEM_APPROVED",
+    "READINESS_BUNDLE_APPROVED",
+    "WORK_ITEM_ACTIVATED"
+  ],
+  "review_required": true,
+  "approval_status": "APPROVED",
+  "reviewed_by": "maintainer",
+  "reviewed_at": "2026-11-07T15:09:02.801Z",
+  "review_notes": [
+    "User explicitly requested merge and publication of approved update-source fix676e8f2 as the next patch release."
+  ],
+  "bootstrap_gate_status": "NOT_REQUIRED",
+  "bootstrap_gate_ref": "",
+  "bootstrap_reviewed_by": "",
+  "bootstrap_reviewed_at": "",
+  "protocol_events": [
+    {
+      "timestamp": "2026-11-07T15:09:02.800Z",
+      "action": "bootstrap",
+      "actor": "system",
+      "from_status": "READY_TO_MATERIALIZE",
+      "to_status": "MATERIALIZED",
+      "note": "Bootstrapped read-only report from existing scaffold."
+    },
+    {
+      "timestamp": "2026-11-07T15:09:02.801Z",
+      "action": "approve",
+      "actor": "maintainer",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "User explicitly requested merge and publication of approved update-source fix676e8f2 as the next patch release."
+    },
+    {
+      "timestamp": "2026-11-07T15:09:07.069Z",
+      "action": "approve-readiness-bundle",
+      "actor": "human-review-bundle",
+      "from_status": "MATERIALIZED",
+      "to_status": "MATERIALIZED",
+      "note": "APPROVED readiness gates: spec, dor, approach, task_plan",
+      "transaction_id": "289290b4-f56f-4626-89e2-4ce7511fd1c7"
+    },
+    {
+      "timestamp": "2026-11-07T15:09:13.309Z",
+      "action": "activate",
+      "actor": "developer",
+      "from_status": "MATERIALIZED",
+      "to_status": "ACTIVE",
+      "note": "Execute R1-R4 after trusted readiness; source baseline676e8f2."
+    }
+  ]
+}

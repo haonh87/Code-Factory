@@ -280,11 +280,8 @@ function resolveRepoRoot(explicitRepoRoot) {
     return resolved;
   }
 
-  const foundFromCwd = findManifestUpwards(process.cwd());
-  if (foundFromCwd) {
-    return path.dirname(foundFromCwd);
-  }
-
+  // Bundle sources belong to the running CLI, not to a checkout it happens to
+  // be invoked from. Authors can deliberately select another source above.
   const defaultRepoRoot = getDefaultRepoRoot();
   const defaultManifest = resolveExistingPath(defaultRepoRoot, [BUNDLE_MANIFEST_FILE, LEGACY_BUNDLE_MANIFEST_FILE]);
   if (defaultManifest) {

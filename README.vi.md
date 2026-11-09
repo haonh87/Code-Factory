@@ -6,9 +6,9 @@ language: vi
 
 > Tiếng Anh / English: README.md
 
-Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent. Bản phát hành công khai hiện tại là `workflow-bundle v2.10.1`: workflow bundle cài được cho Codex và Claude Code, có định tuyến request thích ứng, chỉ gọi những role/gate thực sự áp dụng, hỗ trợ approval bundle có transaction journal, telemetry cục bộ với giới hạn riêng tư rõ ràng, state disposition theo ID chính xác và terminal archive guard. Quyền phê duyệt của con người không đổi: mỗi gate áp dụng vẫn phải có đúng reviewer có thẩm quyền và một trusted receipt độc lập. Maintainer đã yêu cầu phát hành; kết quả publication được ghi trong release record.
+Repository này lưu trữ policy, workflow, skill và adapter cho các tác vụ AI agent. Phiên bản đang chuẩn bị phát hành là `workflow-bundle v2.10.2`: workflow bundle cài được cho Codex và Claude Code, có định tuyến request thích ứng, chỉ gọi những role/gate thực sự áp dụng, hỗ trợ approval bundle có transaction journal, telemetry cục bộ với giới hạn riêng tư rõ ràng, state disposition theo ID chính xác và terminal archive guard. Quyền phê duyệt của con người không đổi: mỗi gate áp dụng vẫn phải có đúng reviewer có thẩm quyền và một trusted receipt độc lập. Maintainer đã yêu cầu phát hành; kết quả publication được ghi trong release record.
 
-Artifact phát hành là `workflow-bundle-2.10.1.tgz` cùng `SHA256SUMS` trên GitHub Releases. Xác minh checksum trước khi cài. Baseline rollback workflow là `v2.9.0/48` bất biến; xem `docs/releases/workflow-bundle-v2.10.1.md` để biết kết quả publication và kiểm chứng.
+Artifact phát hành là `workflow-bundle-2.10.2.tgz` cùng `SHA256SUMS` trên GitHub Releases. Xác minh checksum trước khi cài. Baseline rollback workflow là `v2.9.0/48` bất biến; xem `docs/releases/workflow-bundle-v2.10.2.md` để biết kết quả publication và kiểm chứng.
 
 ## Requirements
 
@@ -20,7 +20,7 @@ Artifact phát hành là `workflow-bundle-2.10.1.tgz` cùng `SHA256SUMS` trên G
 
 ## Bắt Đầu Ở Đây
 
-Nếu đang tiếp cận repo lần đầu và muốn sử dụng bản phát hành [`v2.10.1`](https://github.com/haonh87/Code-Factory/releases/tag/v2.10.1):
+Nếu đang tiếp cận repo lần đầu và muốn sử dụng bản phát hành [`v2.10.2`](https://github.com/haonh87/Code-Factory/releases/tag/v2.10.2):
 
 1. [`docs/publish-surface.md`](docs/publish-surface.md)
 2. [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
@@ -38,7 +38,7 @@ Các tài liệu dưới đây là maintainer hoặc historical context, không 
 
 ## Workflow Commands Nhanh
 
-Command surface public của `v2.10.1` dùng `wfc`.
+Command surface public của `v2.10.2` dùng `wfc`.
 
 Install và quản lý workflow bundle:
 
@@ -103,7 +103,7 @@ Ghi chú:
 - lần approve đầu tiên trong một trusted approval root sẽ tạo keypair approver và yêu cầu human nhập approval passphrase trực tiếp trên TTY đó.
 - implementation path bị khóa ở mức filesystem cho tới khi work item vào `ACTIVE` ở `s07` và được cấp `write-root`.
 - `work-items/` là canonical artifact root cho workflow artifacts của repo.
-- Approval model của `v2.10.1` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate, trusted signed receipts và step-gate evidence bắt buộc đã có.
+- Approval model của `v2.10.2` là `agent proposes, human approves`; `ACTIVE` chỉ mở khi approval gate, trusted signed receipts và step-gate evidence bắt buộc đã có.
 
 ## Contract Adaptive Governance
 
@@ -126,7 +126,7 @@ Ghi chú:
 ### Theo Mục Đích
 
 - Public docs cho người mới dùng workflow: [`docs/workflow-docs-map.md`](docs/workflow-docs-map.md)
-- Public publish surface cho `v2.10.1`: [`docs/publish-surface.md`](docs/publish-surface.md)
+- Public publish surface cho `v2.10.2`: [`docs/publish-surface.md`](docs/publish-surface.md)
 - Quickstart cho `wfc`: [`docs/workflow-bundle-quickstart.md`](docs/workflow-bundle-quickstart.md)
 - Package README cho cài đặt hoặc publish: [`packages/workflow-bundle/README.md`](packages/workflow-bundle/README.md)
 
@@ -319,7 +319,7 @@ Ghi chú:
 Khi package đã được publish, cài trực tiếp:
 
 ```bash
-npm install -g /absolute/path/to/workflow-bundle-2.10.1.tgz
+npm install -g /absolute/path/to/workflow-bundle-2.10.2.tgz
 wfc install --mode codex --scope global
 ```
 
@@ -468,11 +468,15 @@ không thực thi các lệnh được ghi. YAML và scaffold mặc định vẫ
 Giữ 48 skill cho mỗi runtime, năm skill bảo trì, presentation adapter và CF-023.
 SEC-01/SEC-02 nằm trong source Git; MCP và installer trực tiếp ngoài tarball workflow.
 Tải tarball cùng SHA256SUMS trên GitHub Release; npm registry là kênh riêng.
-Xem `docs/releases/workflow-bundle-v2.10.1.md` để biết bằng chứng và trạng thái phát hành.
+Xem `docs/releases/workflow-bundle-v2.10.2.md` để biết bằng chứng và trạng thái phát hành.
 Rollback dùng đúng gói 2.9.0/48 đã phát hành. Giữ nguyên artifact v1 và receipt đã ký.
 Không dùng installer cũ ghi đè instructions đã tùy chỉnh. Bản 2.8.0
 không hỗ trợ contract này. Không tự chuyển đổi hoặc ký lại artifact khi hạ cấp.
 
-## Bản vá SessionStart trong 2.10.1
+## Hành vi SessionStart kế thừa từ 2.10.1
 
 Claude nhận briefing qua `hookSpecificOutput.additionalContext`; giới hạn 16 KiB được tính trên toàn bộ JSON envelope. JSON của CLI/Codex và hook checkpoint giữ nguyên. Sau khi cài CLI mới, chạy `wfc update --mode claude --project-root /duong/dan/project` cho từng project được chọn rồi mở session Claude mới. Chỉ cập nhật CLI chưa thay helper đã cài trong project.
+
+## Giới hạn briefing đã biết
+
+Briefing Claude lớn vẫn có thể bị cắt bởi giới hạn 10.000 ký tự. Xem [giới hạn và bằng chứng](docs/releases/workflow-bundle-v2.10.2.md#known-limitations).
